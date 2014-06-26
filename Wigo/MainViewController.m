@@ -404,7 +404,7 @@ static BOOL pushed;
 }
 
 - (void)myProfileSegue {
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:[Profile user]];
+    self.profileViewController = [[ProfileViewController alloc] initWithProfile:YES];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
 }

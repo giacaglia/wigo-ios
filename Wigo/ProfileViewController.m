@@ -288,7 +288,12 @@
         _tapScrollView.enabled = NO;
         _isSeingImages = YES;
         _lastLineView.hidden = NO;
-        _pageControl.center = CGPointMake(73, 25);
+        if (self.isMyProfile) {
+            _pageControl.center = CGPointMake(73, 25);
+        }
+        else {
+            _pageControl.center = CGPointMake(100, 25);
+        }
 
         self.navigationController.navigationBar.barTintColor = RGB(23, 23, 23);
         UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"closeButton"] style:UIBarButtonItemStylePlain target:self action:@selector(chooseImage)];
