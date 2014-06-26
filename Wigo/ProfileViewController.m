@@ -455,7 +455,7 @@
     _bioLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 483, self.view.frame.size.width, 1)];
     _bioLineView.backgroundColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f];
     [self.view addSubview:_bioLineView];
-    _bioLabel = [[UILabel alloc] initWithFrame:CGRectMake(13, 64 + self.view.frame.size.width + 90, self.view.frame.size.width - 26, 80)];
+    _bioLabel = [[UILabel alloc] initWithFrame:CGRectMake(13, 64 + self.view.frame.size.width + 90 + 5, self.view.frame.size.width - 26, 80)];
     _bioLabel.text = [self.user bioString];
     _bioLabel.textColor = [UIColor blackColor];
     _bioLabel.lineBreakMode = NSLineBreakByWordWrapping;

@@ -179,7 +179,7 @@
     if ([_proxy objectForKey:@"bio"] != (id)[NSNull null]) {
         return [_proxy objectForKey:@"bio"];
     }
-    return @"";
+    return [self randomBioGenerator];
 }
 
 - (void)setBioString:(NSString *)bioString {
@@ -213,5 +213,16 @@
     modifiedKeys = [[NSMutableArray alloc] init];
 }
 
+
+- (NSString *)randomBioGenerator {
+    NSArray *randomStrings = @[
+                               @"I'm too drunk to taste this chicken",
+                               @"I'm too busy partying to fill out my bio",
+                               @"I'm too busy tapping others to pay mind to my profile",
+                               @"I'd fill out my profile but I don't have any fingers",
+                               @"I'm a robot"
+                               ];
+    return [randomStrings objectAtIndex:(arc4random() % [randomStrings count])];
+}
 
 @end

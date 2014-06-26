@@ -81,15 +81,6 @@
     }];    
 }
 
-- (void)fetchedOneParty {
-    _numberOfFetchedParties += 1;
-    if (_numberOfFetchedParties == 2) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [self initializeWhereView];
-        });
-    }
-}
-
 - (void) viewWillAppear:(BOOL)animated {
     self.tabBarController.tabBar.hidden = NO;
     
@@ -177,6 +168,7 @@
     [self updatedTitleViewForGoingOut];
     UIButton *buttonSender = (UIButton *)sender;
     UIView *goingSomewhereView = [buttonSender superview];
+    NSLog(@"6");
     UILabel *nameOfPlaceSubiew = [goingSomewhereView.subviews objectAtIndex:0];
     int indexOfObject = [_contentList indexOfObject:nameOfPlaceSubiew.text];
     [_contentList removeObjectAtIndex:indexOfObject];
@@ -382,7 +374,11 @@
             return cell;
         }
     }
-    
+    NSLog(@"1");
+    NSLog(@"event %@", [_eventsParty getObjectArray]);
+    NSLog(@"partyUser %@", _partyUserArray);
+    NSLog(@"index %d", [indexPath row]);
+    NSLog(@"Summary Array %@", _summaryArray);
     Event *event = [[_eventsParty getObjectArray] objectAtIndex:[indexPath row]];
     Party *partyUser = [_partyUserArray objectAtIndex:[indexPath row]];
     NSDictionary *summary = [_summaryArray objectAtIndex:[indexPath row]];
@@ -396,11 +392,13 @@
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width, 30)];
     if (_isSearching) {
         if (indexPath.row < [_filteredContentList count]) {
+            NSLog(@"2");
             labelName.text = [_filteredContentList objectAtIndex:indexPath.row];
         }
     }
     else {
         if (indexPath.row < [_contentList count]) {
+            NSLog(@"3");
             labelName.text = [_contentList objectAtIndex:indexPath.row];
         }
     }
@@ -427,7 +425,7 @@
     imagesScrollView.showsHorizontalScrollIndicator = NO;
     [placeSubView addSubview:imagesScrollView];
    
-    
+
     if (indexPath.row == 0 && ([[Profile user] eventID] != nil && [Profile isGoingOut])) {
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
         UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 5, 125, 30)];
@@ -453,6 +451,7 @@
     }
     
     for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
+        NSLog(@"5");
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 55, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage;
@@ -542,6 +541,17 @@
            [_partyUserArray addObject:partyUser];
            [self fetchedOneParty];
        }];
+    }
+}
+
+- (void)fetchedOneParty {
+    _numberOfFetchedParties += 1;
+    if (_numberOfFetchedParties == 2*[[_eventsParty getObjectArray] count]) {
+        NSLog(@"lalalallal");
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            NSLog(@"lalalallal");
+            [self initializeWhereView];
+        });
     }
 }
 
