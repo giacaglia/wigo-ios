@@ -22,6 +22,7 @@
 		E921D6441923967D00361247 /* WigoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6431923967D00361247 /* WigoTests.m */; };
 		E921D66819239ED900361247 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D66119239ED900361247 /* MainViewController.m */; };
 		E93DE52A195C82B900079074 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E93DE529195C82B900079074 /* MessageViewController.m */; };
+		E93DE530195C99F600079074 /* UIImageCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = E93DE52F195C99F600079074 /* UIImageCrop.m */; };
 		E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */; };
 		E93F84FE1942076A00B3B448 /* plusSquare.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F84FD1942076A00B3B448 /* plusSquare.png */; };
 		E93F85001945F94900B3B448 /* peopleIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F84FF1945F94900B3B448 /* peopleIcon@2x.png */; };
@@ -194,6 +195,8 @@
 		E921D66119239ED900361247 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		E93DE528195C829E00079074 /* MessageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
 		E93DE529195C82B900079074 /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
+		E93DE52E195C99F600079074 /* UIImageCrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageCrop.h; sourceTree = "<group>"; };
+		E93DE52F195C99F600079074 /* UIImageCrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageCrop.m; sourceTree = "<group>"; };
 		E93F84FA1940B3AC00B3B448 /* UIPageControlAligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPageControlAligned.h; sourceTree = "<group>"; };
 		E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPageControlAligned.m; sourceTree = "<group>"; };
 		E93F84FD1942076A00B3B448 /* plusSquare.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plusSquare.png; sourceTree = "<group>"; };
@@ -794,6 +797,8 @@
 				E9AAAFC7193E357E0069F700 /* UIButtonAligned.h */,
 				E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */,
 				E9681C79195084B700182E0E /* UIButtonUngoOut.h */,
+				E93DE52E195C99F600079074 /* UIImageCrop.h */,
+				E93DE52F195C99F600079074 /* UIImageCrop.m */,
 				E9681C7A195084B700182E0E /* UIButtonUngoOut.m */,
 			);
 			name = ViewExtensions;
@@ -1051,6 +1056,7 @@
 				E9681C62194F745300182E0E /* User.m in Sources */,
 				E9CD47141948E27500AEA17D /* UIImageViewShake.m in Sources */,
 				E921D6261923967D00361247 /* AppDelegate.m in Sources */,
+				E93DE530195C99F600079074 /* UIImageCrop.m in Sources */,
 				E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */,
 				E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */,
 				E921D6221923967D00361247 /* main.m in Sources */,
