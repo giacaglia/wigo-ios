@@ -12,6 +12,6 @@
 
 + (UIImageView *) blurImageView:(UIImageView *)profileImgView;
 + (UIImage *)croppingImage:(UIImage *)imageToCrop toRect:(CGRect)rect;
-+ (UIImage*)imageWithImage:(UIImage*)image scaledToSize:(CGSize)newSize;
++ (UIImage*)image:(UIImage*)image scaledToSize:(CGSize)newSize;
 + (UIImage*)imageByScalingAndCroppingForSize:(CGSize)targetSize andImage:(UIImage *)sourceImage;
 @end

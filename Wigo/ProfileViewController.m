@@ -247,7 +247,7 @@
 }
 
 - (void) addBlurredImage:(UIImage *)image toImageView:(UIImageView *)imageView {
-    UIImage *imageRightSize = [UIImageCrop imageWithImage:image scaledToSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.width)];
+    UIImage *imageRightSize = [UIImageCrop image:image scaledToSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.width)];
     // Add Blurred Image
     UIImage *croppedImage = [UIImageCrop croppingImage:imageRightSize toRect:CGRectMake(0, imageView.frame.size.height - 80, self.view.frame.size.width, 80)];
     UIImageView *croppedImageView = [[UIImageView alloc] initWithImage:croppedImage];
@@ -521,7 +521,5 @@
     }
     [_scrollView setContentOffset:CGPointMake(self.view.frame.size.width * page, 0.0f) animated:YES];
 }
-
-
 
 @end

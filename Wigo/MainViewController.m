@@ -20,6 +20,9 @@
 #import "Party.h"
 #import "Network.h"
 
+//Crop
+#import "UIImageCrop.h"
+
 @interface MainViewController ()
 
 // Properties shared by Who and Where View
@@ -106,18 +109,22 @@ static BOOL pushed;
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         [Profile setEveryoneParty:_everyoneParty];
         [self fetchedOneParty];
+        
+        
+        [Network fetchAsynchronousAPI:@"goingouts/" withResult:^(NSArray *arrayOfUsers, NSError *error) {
+            _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+            for (NSDictionary *object in arrayOfUsers) {
+                NSNumber* userID = [object objectForKey:@"user"];
+                [_whoIsGoingOutParty addObject:[_everyoneParty getObjectWithId:userID]];
+            }
+            [Profile setIsGoingOut:[_whoIsGoingOutParty containsObject:[Profile user]]];
+            [_whoIsGoingOutParty removeUserFromParty:[Profile user]];
+            [self fetchedOneParty];
+        }];
+        
     }];
     
-    [Network fetchAsynchronousAPI:@"goingouts/" withResult:^(NSArray *arrayOfUsers, NSError *error) {
-        _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-        for (NSDictionary *object in arrayOfUsers) {
-            NSNumber* userID = [object objectForKey:@"user"];
-            [_whoIsGoingOutParty addObject:[_everyoneParty getObjectWithId:userID]];
-        }
-        [Profile setIsGoingOut:[_whoIsGoingOutParty containsObject:[Profile user]]];
-        [_whoIsGoingOutParty removeUserFromParty:[Profile user]];
-        [self fetchedOneParty];
-    }];
+
 
     [Network fetchAsynchronousAPI:@"taps/" withResult:^(NSArray *taps, NSError *error) {
         _userTappedIDArray = [[NSMutableArray alloc] init];
@@ -259,6 +266,7 @@ static BOOL pushed;
         User *user = [userArray objectAtIndex:i];
         UIImageView *imgView = [[UIImageView alloc] initWithImage:[user coverImage]];
         imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
+        imgView.image = [UIImageCrop imageByScalingAndCroppingForSize:imgView.frame.size andImage:imgView.image];
         imgView.userInteractionEnabled = YES;
         positionX += sizeOfEachImage + distanceOfEachImage;
         if (i%(NImages) == (NImages -1)) { //If it's the last image in the row
@@ -396,7 +404,7 @@ static BOOL pushed;
 }
 
 - (void)myProfileSegue {
-    self.profileViewController = [[ProfileViewController alloc] initWithProfile:YES];
+    self.profileViewController = [[ProfileViewController alloc] initWithUser:[Profile user]];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
 }
@@ -460,10 +468,6 @@ static BOOL pushed;
     [self showTapIcons];
     
     [Network postGoOut];
-}
-
-
-- (void) tellUsPressed {
 }
 
 

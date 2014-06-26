@@ -10,7 +10,7 @@
 
 @implementation UIImageCrop
 
-+ (UIImage*)imageWithImage:(UIImage*)image scaledToSize:(CGSize)newSize {
++ (UIImage*)image:(UIImage*)image scaledToSize:(CGSize)newSize {
     UIGraphicsBeginImageContext(newSize);
     [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -19,7 +19,7 @@
 }
 
 
-+ (UIImageView *) blurImageView:(UIImageView *)profileImgView {
++ (UIImageView *)blurImageView:(UIImageView *)profileImgView {
     UIGraphicsBeginImageContext(profileImgView.bounds.size);
     [profileImgView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewImg = UIGraphicsGetImageFromCurrentImageContext();
