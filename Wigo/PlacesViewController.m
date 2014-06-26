@@ -72,8 +72,7 @@
     _everyoneParty = [Profile everyoneParty];
     _numberOfFetchedParties = 0;
     [Network queryAsynchronousAPI:@"events/?date=tonight" withHandler:^(NSDictionary *jsonRespone, NSError *error) {
-        NSArray *events = (NSArray *)jsonRespone;
-//        NSArray *events = [jsonRespone objectForKey:@"objects"];
+        NSArray *events = [jsonRespone objectForKey:@"objects"];
         _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
         [_eventsParty addObjectsFromArray:events];
         [self fetchEventAttendeesAsynchronous];
@@ -355,7 +354,6 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    
     if (_isSearching) {
         return [_filteredContentList count] + 1;
     }
@@ -512,8 +510,8 @@
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             if (jsonResponse) {
                 [_summaryArray addObject:jsonResponse];
-                [self fetchedOneParty];
             }
+            [self fetchedOneParty];
         }];
     }
 }
@@ -523,12 +521,18 @@
     for (Event *event in [_eventsParty getObjectArray]) {
         NSNumber *eventId = [event eventID];
         NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@", [eventId stringValue]];
+        NSLog(@"query String: %@", queryString);
        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-           NSArray *eventAttendeesArray = (NSArray *)jsonResponse;
-//           NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
+           NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
            Party *partyUser = [[Party alloc] init];
            for (NSDictionary *eventAttendee in eventAttendeesArray) {
-               User *user = (User *)[_everyoneParty getObjectWithId:[eventAttendee objectForKey:@"user"]];
+               User *user;
+               if ([[eventAttendee objectForKey:@"user"] isKindOfClass:[NSDictionary class]]) {
+                   user = [[User alloc] initWithDictionary:[eventAttendee objectForKey:@"user"]];
+               }
+               else {
+                  user = (User *)[_everyoneParty getObjectWithId:[eventAttendee objectForKey:@"user"]];
+               }
                if ([user isEqualToUser:[Profile user]]) {
                    [Profile setIsGoingOut:YES];
                    [[Profile user] setEventID:eventId];

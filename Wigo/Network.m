@@ -14,7 +14,8 @@
 
 + (void)fetchAsynchronousAPI:(NSString *)apiName withResult:(FetchResult)fetchResult {
     [self queryAsynchronousAPI:apiName withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        fetchResult((NSArray *)jsonResponse,error);
+        NSArray *result = [jsonResponse objectForKey:@"objects"];
+        fetchResult(result,error);
     }];
 }
 
@@ -26,8 +27,7 @@
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [query sendAsynchronousGETRequestHandler:^(NSDictionary *jsonResponse, NSError *error) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-        NSDictionary *result = [jsonResponse objectForKey:@"objects"];
-        handler(result, error);
+        handler(jsonResponse, error);
     }];
 }
 
