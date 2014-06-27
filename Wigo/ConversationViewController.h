@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "User.h"
 
 @interface ConversationViewController : UIViewController  <UITextFieldDelegate>
 
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;
-
+- (id)initWithUser: (User *)user;
 @end

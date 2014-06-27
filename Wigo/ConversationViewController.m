@@ -10,6 +10,9 @@
 #import "FontProperties.h"
 #import "UIButtonAligned.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Network.h"
+#import "MBProgressHUD.h"
+#import "Party.h"
 
 @interface ConversationViewController ()
 
@@ -19,6 +22,8 @@
 @property UITextField *messageTextBox;
 
 @property UIButton *sendButton;
+@property User *user;
+@property Party *messageParty;
 
 @end
 
@@ -27,6 +32,17 @@
 static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCurve curve)
 {
     return (UIViewAnimationOptions)curve << 16;
+}
+
+- (id)initWithUser: (User *)user
+{
+    self = [super init];
+    if (self) {
+        // Custom initialization
+        self.user = user;
+        self.view.backgroundColor = [UIColor whiteColor];
+    }
+    return self;
 }
 
 - (id)init
@@ -46,16 +62,26 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
     // Title setup
     
-    self.title = @"Alice Banger";
+    self.title = [self.user fullName];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
     [self initializeLeftBarButton];
     [self initializeScrollView];
     [self initializeTapHandler];
-    [self addMessageFromSenderWithText:@"I am going out to MeadHall with Katie and Rob. Wanna join?"];
-    [self addMessageFromReceiverWithText:@"See you at MeadHall tonight!"];
-    [self addTextBox];
     
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    NSString *queryString = [NSString stringWithFormat:@"messages/?conversation=%@",[self.user objectForKey:@"id"]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
+            _messageParty = [[Party alloc] initWithObjectName:@"Message"];
+            [_messageParty addObjectsFromArray:arrayOfMessages];
+            [self addMessages];
+        });
+    }];
+
+    [self addTextBox];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
@@ -65,7 +91,20 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillBeHidden:)
                                                  name:UIKeyboardWillHideNotification
-                                               object:nil];}
+                                               object:nil];
+}
+
+- (void) addMessages {
+    for (Message *message in [_messageParty getObjectArray]) {
+        
+        if ([[message fromUser] class] == nil) {
+            [self addMessageFromSenderWithText:[message messageString]];
+        }
+        else {
+            [self addMessageFromReceiverWithText:[message messageString]];
+        }
+    }
+}
 
 - (void) initializeScrollView {
     _positionOfLastMessage = 10;

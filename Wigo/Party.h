@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "User.h"
+#import "Event.h"
+#import "Message.h"
 
 @interface Party : NSObject
 

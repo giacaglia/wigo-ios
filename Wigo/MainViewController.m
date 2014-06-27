@@ -291,7 +291,7 @@ static BOOL pushed;
         [imgView addSubview:profileButton];
         
         UILabel *profileName = [[UILabel alloc] init];
-        profileName.text = [user name];
+        profileName.text = [user firstName];
         profileName.textColor = [UIColor whiteColor];
         profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
         profileName.textAlignment = NSTextAlignmentCenter;

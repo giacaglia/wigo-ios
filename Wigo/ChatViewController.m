@@ -11,12 +11,14 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIButtonAligned.h"
 
+#import "Message.h"
 #import "Network.h"
 #import "MBProgressHUD.h"
+
 @interface ChatViewController ()
 
 @property UITableView *tableViewOfPeople;
-
+@property Party * messageParty;
 
 @end
 
@@ -28,10 +30,14 @@
     
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [Network queryAsynchronousAPI:@"messages/?to_user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        NSLog(@"Called here");
-        [self initializeTableOfChats];
+    [Network queryAsynchronousAPI:@"messages/summary/?to_user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
+            _messageParty = [[Party alloc] initWithObjectName:@"Message"];
+            [_messageParty addObjectsFromArray:arrayOfMessages];
+            [self initializeTableOfChats];
+        });
     }];
 }
 
@@ -88,27 +94,26 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 5;
-
+    return [[_messageParty getObjectArray] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
+    Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
+    User *user = [message fromUser];
     
-    UITableViewCell *cell = (UITableViewCell*)[tableView
-                                               dequeueReusableCellWithIdentifier:CellIdentifier];
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                  reuseIdentifier:CellIdentifier];
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
     
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    profileImageView.image = [UIImage imageNamed:@"giu2.jpg"];
+    profileImageView.image = [user coverImage];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    textLabel.text = @"Alice Banger";
+    textLabel.text = [user fullName];
     if (indexPath.row == 0) {
         cell.backgroundColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
     }
@@ -122,7 +127,7 @@
     [cell.contentView addSubview:textLabel];
     
     UILabel *lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 30, 150, 20)];
-    lastMessageLabel.text = @"See you at Meadhall tonight";
+    lastMessageLabel.text = [message messageString];
     lastMessageLabel.font = [UIFont fontWithName:@"Whitney-Light" size:13.0f];
     lastMessageLabel.textColor = [UIColor blackColor];
     lastMessageLabel.textAlignment = NSTextAlignmentLeft;
@@ -132,7 +137,7 @@
     
     UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, 10, 80, 20)];
     timeStampLabel.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
-    timeStampLabel.text = @"4:12pm";
+    timeStampLabel.text = [message timeOfCreation];
     timeStampLabel.textColor = RGB(179, 179, 179);
     timeStampLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:timeStampLabel];
@@ -150,11 +155,13 @@
 
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self getChat];
+    Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
+    User *user = [message fromUser];
+    [self getChatOfUser:user];
 }
 
-- (void) getChat {
-    self.conversationViewController = [[ConversationViewController alloc] init];
+- (void) getChatOfUser:(User *)user {
+    self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
     self.conversationViewController.view.backgroundColor = [UIColor whiteColor];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;

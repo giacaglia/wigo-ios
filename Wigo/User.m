@@ -112,13 +112,13 @@
     self.coverImage = coverImage;
 }
 
-- (NSString *)name {
+- (NSString *)firstName {
     return [_proxy objectForKey:@"first_name"];
 }
 
-- (void)setName:(NSString *)name {
-    [_proxy setValue:name forKey:@"name"];
-    [modifiedKeys addObject:@"name"];
+- (void)setFirstName:(NSString *)name {
+    [_proxy setValue:name forKey:@"first_name"];
+    [modifiedKeys addObject:@"first_anme"];
 }
 
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback {
@@ -236,6 +236,10 @@
     return [randomStrings objectAtIndex:(arc4random() % [randomStrings count])];
 }
 
+- (NSString *)fullName {
+    return [NSString stringWithFormat:@"%@ %@", [_proxy objectForKey:@"first_name"], [_proxy objectForKey:@"last_name"]];
+}
+
 
 #pragma mark - Saving data
 - (void)login {
@@ -260,8 +264,6 @@
     [_proxy addEntriesFromDictionary:dictionaryUser];
     modifiedKeys = [[NSMutableArray alloc] init];
 }
-
-
 
 
 @end

@@ -7,8 +7,6 @@
 //
 
 #import "Party.h"
-#import "User.h"
-#import "Event.h"
 
 @implementation Party {
     NSMutableArray *objectArray;
@@ -52,6 +50,10 @@
         else if ([self.objectName isEqualToString:@"Event"]) {
             Event *newEvent = [[Event alloc] initWithDictionary:newObjectArray[i]];
             [objectArray addObject:newEvent];
+        }
+        if ([self.objectName isEqualToString:@"Message"]) {
+            Message *newMessage = [[Message alloc] initWithDictionary:newObjectArray[i]];
+            [objectArray addObject:newMessage];
         }
     }
 }

@@ -460,7 +460,7 @@
         [imageButton addSubview:imgView];
         
         UILabel *profileName = [[UILabel alloc] init];
-        profileName.text = [user name];
+        profileName.text = [user firstName];
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);

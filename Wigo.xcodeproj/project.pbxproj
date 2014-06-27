@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E900C251195DCC4100A01F50 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C250195DCC4100A01F50 /* Message.m */; };
 		E9147B6C1925123C00C25C9A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9147B6B1925123C00C25C9A /* ProfileViewController.m */; };
 		E921D6161923967D00361247 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6151923967D00361247 /* Foundation.framework */; };
 		E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6171923967D00361247 /* CoreGraphics.framework */; };
@@ -173,6 +174,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E900C24F195DCC4100A01F50 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
+		E900C250195DCC4100A01F50 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		E9147B6A1925123C00C25C9A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
 		E9147B6B1925123C00C25C9A /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
 		E921D6121923967D00361247 /* Wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -592,6 +595,8 @@
 				E95DC77C195329B10012AA20 /* Party.m */,
 				E9681C60194F745300182E0E /* User.h */,
 				E9681C61194F745300182E0E /* User.m */,
+				E900C24F195DCC4100A01F50 /* Message.h */,
+				E900C250195DCC4100A01F50 /* Message.m */,
 				E9BE8C4A192A54F3008BB84C /* Profile.h */,
 				E9BE8C4B192A54F3008BB84C /* Profile.m */,
 				E95DC77E19538A270012AA20 /* Event.h */,
@@ -1067,6 +1072,7 @@
 				E95DC77D195329B10012AA20 /* Party.m in Sources */,
 				E9A17C70195C761E0057C89A /* Network.m in Sources */,
 				E9CD472B194B889800AEA17D /* RWBlurImage.m in Sources */,
+				E900C251195DCC4100A01F50 /* Message.m in Sources */,
 				E9BE8C49192A48F1008BB84C /* FontProperties.m in Sources */,
 				E9CD473A194B9AD600AEA17D /* PhotoViewController.m in Sources */,
 				E9147B6C1925123C00C25C9A /* ProfileViewController.m in Sources */,

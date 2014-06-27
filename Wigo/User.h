@@ -14,7 +14,7 @@
 
 @property NSString *email;
 @property UIImage *coverImage;
-@property NSString *name;
+@property NSString *firstName;
 @property NSArray *images;
 @property NSNumber* eventID;
 @property NSString *groupName;
@@ -28,6 +28,7 @@
 - (void)login;
 - (void)save;
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
+- (NSString *)fullName;
 
 // NEED TO IMPLEMENT
 @property BOOL *isFavorite;
