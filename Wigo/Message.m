@@ -122,4 +122,9 @@
     return [utcCreationTime substringWithRange:NSMakeRange(11, 5)];
 }
 
+- (void)setTimeOfCreation:(NSString *)timeOfCreation {
+    [_proxy setObject:timeOfCreation forKey:@"created"];
+    [modifiedKeys addObject:@"created"];
+}
+
 @end

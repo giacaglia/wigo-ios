@@ -16,5 +16,5 @@
 @property User *toUser;
 @property BOOL wasMessageRead;
 - (NSString *)timeOfCreation;
-
+- (void)setTimeOfCreation:(NSString *)timeOfCreation;
 @end

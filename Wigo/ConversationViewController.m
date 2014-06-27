@@ -98,10 +98,10 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     for (Message *message in [_messageParty getObjectArray]) {
         
         if ([[message fromUser] class] == nil) {
-            [self addMessageFromSenderWithText:[message messageString]];
+            [self addMessageFromSender:message];
         }
         else {
-            [self addMessageFromReceiverWithText:[message messageString]];
+            [self addMessageFromReceiver:message];
         }
     }
 }
@@ -140,7 +140,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self.view endEditing:YES];
 }
 
-- (void)addMessageFromSenderWithText:(NSString *)messageText {
+- (void)addMessageFromSender:(Message *)message {
     UIView *messageWrapper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
     messageWrapper.backgroundColor = RGB(234, 234, 234);
     [messageWrapper.layer setCornerRadius:5];
@@ -149,7 +149,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
     UILabel *messageFromSender = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3 , 50)];
     messageFromSender.backgroundColor = RGB(234, 234, 234);
-    messageFromSender.text = messageText;
+    messageFromSender.text = [message messageString];
     messageFromSender.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
     messageFromSender.numberOfLines = 0;
     messageFromSender.lineBreakMode = NSLineBreakByWordWrapping;
@@ -159,8 +159,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     messageWrapper.frame = CGRectMake(10, _positionOfLastMessage , MAX(sizeOfMessage.width + 20, 100+ 20), sizeOfMessage.height + 20);
     [messageWrapper addSubview:messageFromSender];
 
-    
-    [self addTimerToView:messageWrapper];
+    [self addTimerOfMessage:message ToView:messageWrapper];
     
     // left Image view for the chat
     UIImageView *leftBarBeforeMessage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"leftBeforeChatIcon"]];
@@ -171,7 +170,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 
-- (void)addMessageFromReceiverWithText:(NSString *)messageText {
+- (void)addMessageFromReceiver:(Message *)message {
     UIView *messageWraper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
     messageWraper.backgroundColor = RGB(250, 233, 212);
     [messageWraper.layer setCornerRadius:5];
@@ -180,7 +179,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
     // Add text to the wrapper
     UILabel *messageFromReceiver = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3, 50)];
-    messageFromReceiver.text = messageText;
+    messageFromReceiver.text = [message messageString];;
     messageFromReceiver.textAlignment = NSTextAlignmentRight;
     messageFromReceiver.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
     [messageFromReceiver sizeToFit];
@@ -189,7 +188,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     CGSize sizeOfMessage = messageFromReceiver.frame.size;
     messageWraper.frame = CGRectMake(self.view.frame.size.width - sizeOfMessage.width - 10 - 20,_positionOfLastMessage , MAX(sizeOfMessage.width + 20, 100 + 20), sizeOfMessage.height + 20);
     [messageWraper addSubview:messageFromReceiver];
-    [self addTimerToView:messageWraper];
+    [self addTimerOfMessage:message ToView:messageWraper];
     
     // image at the right of the message
     UIImageView *rightBarAfterMessage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightAfterChatIcon"]];
@@ -199,14 +198,14 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     _positionOfLastMessage += messageWraper.frame.size.height + 10;
 }
 
-- (void) addTimerToView:(UIView *)messageWrapper {
+- (void) addTimerOfMessage:(Message *)message ToView:(UIView *)messageWrapper {
     messageWrapper.frame = CGRectMake(messageWrapper.frame.origin.x, messageWrapper.frame.origin.y, messageWrapper.frame.size.width, messageWrapper.frame.size.height + 20);
     
     UILabel *timerLabel = [[UILabel alloc] initWithFrame:CGRectMake(messageWrapper.frame.size.width - 110, messageWrapper.frame.size.height - 28, 100, 20)];
-    NSDateFormatter *DateFormatter = [[NSDateFormatter alloc] init];
-    [DateFormatter setDateFormat:@"hh:mm a"];
-    
-    timerLabel.text = [DateFormatter stringFromDate:[NSDate date]];
+//    NSDateFormatter *DateFormatter = [[NSDateFormatter alloc] init];
+//    [DateFormatter setDateFormat:@"hh:mm a"];
+//    [DateFormatter stringFromDate:[NSDate date]]
+    timerLabel.text = [message timeOfCreation];
     timerLabel.font = [UIFont fontWithName:@"Whitney-Medium" size:13.0f];
     timerLabel.textAlignment = NSTextAlignmentRight;
     timerLabel.textColor = RGB(179, 179, 179);
@@ -266,7 +265,13 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void)sendMessage {
-    [self addMessageFromSenderWithText:_messageTextBox.text];
+    Message *message = [[Message alloc] init];
+    [message setMessageString:_messageTextBox.text];
+    NSDateFormatter *DateFormatter = [[NSDateFormatter alloc] init];
+    [DateFormatter setDateFormat:@"hh:mm a"];
+    [message setTimeOfCreation:[DateFormatter stringFromDate:[NSDate date]]];
+    
+    [self addMessageFromSender:message];
     _messageTextBox.text = @"";
     [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:YES];
 }
