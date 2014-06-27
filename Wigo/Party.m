@@ -51,9 +51,13 @@
             Event *newEvent = [[Event alloc] initWithDictionary:newObjectArray[i]];
             [objectArray addObject:newEvent];
         }
-        if ([self.objectName isEqualToString:@"Message"]) {
+        else if ([self.objectName isEqualToString:@"Message"]) {
             Message *newMessage = [[Message alloc] initWithDictionary:newObjectArray[i]];
             [objectArray addObject:newMessage];
+        }
+        else if ([self.objectName isEqualToString:@"Notification"]) {
+            Notification *newNotification = [[Notification alloc] initWithDictionary:newObjectArray[i]];
+            [objectArray addObject:newNotification];
         }
     }
 }

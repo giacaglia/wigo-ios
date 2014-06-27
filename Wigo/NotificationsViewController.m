@@ -9,6 +9,8 @@
 #import "NotificationsViewController.h"
 #import "FontProperties.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Network.h"
+#import "Party.h"
 
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
@@ -17,6 +19,8 @@
 @property UITableView *notificationsTableView;
 
 @property NSMutableArray *notificationArray;
+@property Party *notificationsParty;
+@property Party *everyoneParty;
 
 @end
 
@@ -26,7 +30,17 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self initializeTableNotifications];
+    _everyoneParty = [Profile everyoneParty];
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [Network queryAsynchronousAPI:@"notifications/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
+            _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
+            [_notificationsParty addObjectsFromArray:arrayOfNotifications];
+            [self initializeTableNotifications];
+        });
+    }];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -51,16 +65,16 @@
 }
 
 - (void) initializeTableNotifications {
-    NSDictionary *notification = @{@"name": @"Alice Banger", @"message": @"What's popping?", @"type": @"chat", @"timeString": @"2 hours ago"};
-    _notificationArray = [[NSMutableArray alloc] initWithObjects:notification, nil];
-    notification = @{@"name": @"Lisa Kerry", @"message": @"What are you up to?", @"type": @"chat", @"timeString": @"1 day ago"};
-    [_notificationArray addObject:notification];
-    notification = @{@"name": @"Greg Sono", @"message": @"wants to see you out tonight", @"type": @"tap", @"timeString": @"2 days ago"};
-    [_notificationArray addObject:notification];
-    notification = @{@"name": @"Lisa Kerry", @"message": @"is now following you", @"type": @"following", @"timeString": @"2 days ago"};
-    [_notificationArray addObject:notification];
-    notification = @{@"name": @"Brad Wang", @"message": @"joined WiGo", @"type": @"joined", @"timeString": @"2 days ago"};
-    [_notificationArray addObject:notification];
+//    NSDictionary *notification = @{@"name": @"Alice Banger", @"message": @"What's popping?", @"type": @"chat", @"timeString": @"2 hours ago"};
+//    _notificationArray = [[NSMutableArray alloc] initWithObjects:notification, nil];
+//    notification = @{@"name": @"Lisa Kerry", @"message": @"What are you up to?", @"type": @"chat", @"timeString": @"1 day ago"};
+//    [_notificationArray addObject:notification];
+//    notification = @{@"name": @"Greg Sono", @"message": @"wants to see you out tonight", @"type": @"tap", @"timeString": @"2 days ago"};
+//    [_notificationArray addObject:notification];
+//    notification = @{@"name": @"Lisa Kerry", @"message": @"is now following you", @"type": @"following", @"timeString": @"2 days ago"};
+//    [_notificationArray addObject:notification];
+//    notification = @{@"name": @"Brad Wang", @"message": @"joined WiGo", @"type": @"joined", @"timeString": @"2 days ago"};
+//    [_notificationArray addObject:notification];
 
     _notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     _notificationsTableView.backgroundColor = [UIColor clearColor];
@@ -100,28 +114,27 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_notificationArray count];
+    return [[_notificationsParty getObjectArray] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = (UITableViewCell*)[tableView
-                                               dequeueReusableCellWithIdentifier:CellIdentifier];
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1
-                                  reuseIdentifier:CellIdentifier];
+    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
-
-    NSDictionary *notification = [_notificationArray objectAtIndex:[indexPath row]];
-    NSString *name = [notification objectForKey:@"name"];
-    NSString * typeString = [notification objectForKey:@"type"];
-    NSString *message = [notification objectForKey:@"message"];
-    NSString *timeString = [notification objectForKey:@"timeString"];
+    Notification *notifcation = [[_notificationsParty getObjectArray] objectAtIndex:[indexPath row]];
+//    NSDictionary *notification = [_notificationArray objectAtIndex:[indexPath row]];
+    User *user = (User *)[_everyoneParty getObjectWithId:[notifcation fromUserID]];
+    
+    NSString *name = [user fullName];
+    NSString * typeString = [notifcation type];
+    NSString *message = [notifcation message];
+    NSString *timeString = [notifcation timeString];
     
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
     
-    UIImageView *profileImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"giu3.jpg"]];
+    UIImageView *profileImageView = [[UIImageView alloc] initWithImage:[user coverImage]];
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
     profileImageView.layer.cornerRadius = 3;
     profileImageView.layer.borderWidth = 1;
@@ -152,22 +165,7 @@
     }
     [notificationButton addSubview:iconLabel];
     
-//    UILabel *profileLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, 140, 20)];
-//    profileLabel.text = name;
-//    profileLabel.textAlignment = NSTextAlignmentLeft;
-//    profileLabel.font = [FontProperties getBioFont];
-//    [profileLabel sizeToFit];
-//    [notificationButton addSubview:profileLabel];
-//    
-//    UILabel *chatMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(80 + profileLabel.frame.size.width + 5, 8, self.view.frame.size.width - (80 + profileLabel.frame.size.width + 5), 20)];
-//    chatMessageLabel.text = message;
-//    chatMessageLabel.textAlignment = NSTextAlignmentLeft;
-//    chatMessageLabel.font = [FontProperties getBioFont];
-//    chatMessageLabel.textColor = [UIColor grayColor];
-//    chatMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
-//    chatMessageLabel.numberOfLines = 0;
-//    [notificationButton addSubview:chatMessageLabel];
-    
+
     UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 11, 200, 18)];
     NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:name ];
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:@": " attributes:nil]];

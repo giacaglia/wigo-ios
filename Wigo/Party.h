@@ -10,6 +10,7 @@
 #import "User.h"
 #import "Event.h"
 #import "Message.h"
+#import "Notification.h"
 
 @interface Party : NSObject
 
