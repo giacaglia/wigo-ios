@@ -11,9 +11,10 @@
 #import "ConversationViewController.h"
 #import "PeopleViewController.h"
 #import "User.h"
+#import "MBProgressHUD.h"
 
 
-@interface ProfileViewController : UIViewController <UIScrollViewDelegate>
+@interface ProfileViewController : UIViewController <UIScrollViewDelegate, MBProgressHUDDelegate>
 
 -(id)initWithProfile:(BOOL)isMyProfile;
 -(id)initWithUser:(User *)user;
@@ -25,4 +26,5 @@
 @property EditProfileViewController *editProfileViewController;
 @property ConversationViewController *conversationViewController;
 @property PeopleViewController *peopleViewController;
+
 @end

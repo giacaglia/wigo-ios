@@ -22,5 +22,6 @@
 - (NSMutableDictionary *)getObjectWithId:(NSNumber *)objectID;
 - (BOOL)containsObject:(NSMutableDictionary *)otherObjectDictionary;
 - (void)removeUserFromParty:(User*)newUser;
+- (void)exchangeObjectAtIndex:(NSUInteger)idx1 withObjectAtIndex:(NSUInteger)idx2;
 
 @end

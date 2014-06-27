@@ -64,10 +64,11 @@
     self = [super init];
     if (self) {
         self.isMyProfile = isMyProfile;
-        self.view.backgroundColor = [UIColor whiteColor];
         if (self.isMyProfile) {
             self.user = [Profile user];
         }
+        self.view.backgroundColor = [UIColor whiteColor];
+
     }
     return self;
 }
@@ -96,12 +97,23 @@
         [self initializeFollowingAndFollowers];
     }
     
-    [self initializeProfileImage];
-    [self initializeNameOfPerson];
     [self initializeLeftProfileButton];
     [self initializeRightProfileButton];
     [self initializeBioLabel];
 
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [self.user loadImagesWithCallback:^(
+                                        NSArray *imagesArray
+                                        ) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [self initializeProfileImage];
+        [self initializeNameOfPerson];
+        
+    }];
 }
 
 - (void) initializeLeftBarButton {
@@ -526,5 +538,7 @@
     }
     [_scrollView setContentOffset:CGPointMake(self.view.frame.size.width * page, 0.0f) animated:YES];
 }
+
+
 
 @end

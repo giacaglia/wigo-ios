@@ -11,6 +11,7 @@
 #import "UIButtonAligned.h"
 #import "Profile.h"
 #import "RWBlurPopover.h"
+#import "MBProgressHUD.h"
 
 
 
@@ -63,10 +64,17 @@
 }
 
 - (void)saveDataAndGoBack {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+
     User *profileUser = [Profile user];
     [profileUser setBioString:_bioTextView.text];
+//    NSDictionary *properties = [profileUser objectForKey:@"properties"];
+//    NSLog(@"properties :%@", properties);
+    [profileUser setPrivate:_privacySwitch.on];
     [Profile setUser:profileUser];
     [profileUser save];
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -235,6 +243,8 @@
     publicLabel.font = [FontProperties getNormalFont];
     [publicView addSubview:publicLabel];
     _privacySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 60, 10, 40, 20)];
+    _privacySwitch.on = [[Profile user] private];
+    
     [publicView addSubview:_privacySwitch];
     [_scrollView addSubview:publicView];
     

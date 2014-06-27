@@ -11,9 +11,12 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIButtonAligned.h"
 
+#import "Network.h"
+#import "MBProgressHUD.h"
 @interface ChatViewController ()
 
 @property UITableView *tableViewOfPeople;
+
 
 @end
 
@@ -23,7 +26,13 @@
 {
     [super viewDidLoad];
     
-    [self initializeTableOfChats];
+    
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [Network queryAsynchronousAPI:@"messages/?to_user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        NSLog(@"Called here");
+        [self initializeTableOfChats];
+    }];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -34,7 +43,6 @@
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
 }
-
 
 
 - (void) viewDidAppear:(BOOL)animated {

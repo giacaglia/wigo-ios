@@ -19,9 +19,12 @@
 #import "User.h"
 #import "Party.h"
 #import "Network.h"
+#import "MBProgressHUD.h"
 
 //Crop
 #import "UIImageCrop.h"
+
+
 
 @interface MainViewController ()
 
@@ -103,6 +106,8 @@ static BOOL pushed;
 }
 
 - (void)loadViewAfterSigningUser {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+
     _numberOfFetchedParties = 0;
     [Network fetchAsynchronousAPI:@"users/" withResult:^(NSArray *arrayOfUsers, NSError *error) {
         _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
@@ -138,6 +143,7 @@ static BOOL pushed;
 - (void)fetchedOneParty {
     _numberOfFetchedParties +=1;
     if (_numberOfFetchedParties == 2) {
+        
         // Update NOT GOING OUT PARTY
         _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
         for (User *user in [_everyoneParty getObjectArray]) {
@@ -148,6 +154,7 @@ static BOOL pushed;
         [_notGoingOutParty removeUserFromParty:[Profile user]];
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
             [self newInitializeWhoView];
         });
     }

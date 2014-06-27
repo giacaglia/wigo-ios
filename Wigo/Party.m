@@ -92,5 +92,8 @@
         }
     }
 }
+- (void)exchangeObjectAtIndex:(NSUInteger)idx1 withObjectAtIndex:(NSUInteger)idx2 {
+    [objectArray exchangeObjectAtIndex:idx1 withObjectAtIndex:idx2];
+}
 
 @end

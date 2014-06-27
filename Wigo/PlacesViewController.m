@@ -21,6 +21,7 @@
 #import "Event.h"
 #import "Network.h"
 
+#import "MBProgressHUD.h"
 @interface PlacesViewController ()
 
 // TextField
@@ -55,6 +56,7 @@
 @property NSMutableArray *summaryArray;
 @property Party *everyoneParty;
 @property int numberOfFetchedParties;
+@property int indexOfEventProfileUserIsAttending;
 
 @end
 
@@ -71,6 +73,7 @@
 
     _everyoneParty = [Profile everyoneParty];
     _numberOfFetchedParties = 0;
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [Network queryAsynchronousAPI:@"events/?date=tonight" withHandler:^(NSDictionary *jsonRespone, NSError *error) {
         NSArray *events = [jsonRespone objectForKey:@"objects"];
         _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
@@ -80,6 +83,8 @@
         
     }];    
 }
+
+
 
 - (void) viewWillAppear:(BOOL)animated {
     self.tabBarController.tabBar.hidden = NO;
@@ -514,7 +519,8 @@
        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
            NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
            Party *partyUser = [[Party alloc] init];
-           for (NSDictionary *eventAttendee in eventAttendeesArray) {
+           for (int i = 0; i < [eventAttendeesArray count]; i++) {
+               NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:i];
                User *user;
                if ([[eventAttendee objectForKey:@"user"] isKindOfClass:[NSDictionary class]]) {
                    user = [[User alloc] initWithDictionary:[eventAttendee objectForKey:@"user"]];
@@ -525,6 +531,7 @@
                if ([user isEqualToUser:[Profile user]]) {
                    [Profile setIsGoingOut:YES];
                    [[Profile user] setEventID:eventId];
+                   _indexOfEventProfileUserIsAttending = i;
                }
                [partyUser addObject:user];
            }
@@ -538,10 +545,17 @@
     _numberOfFetchedParties += 1;
     if (_numberOfFetchedParties == 2*[[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+//            [self reorderEventsSuchThatProfileUserEventIsFirst];
             [self initializeWhereView];
         });
     }
 }
 
+- (void)reorderEventsSuchThatProfileUserEventIsFirst {
+    [_partyUserArray exchangeObjectAtIndex:_indexOfEventProfileUserIsAttending withObjectAtIndex:0];
+    [_summaryArray exchangeObjectAtIndex:_indexOfEventProfileUserIsAttending withObjectAtIndex:0];
+    [_eventsParty exchangeObjectAtIndex:_indexOfEventProfileUserIsAttending withObjectAtIndex:0];
+}
 
 @end

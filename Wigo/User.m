@@ -121,6 +121,31 @@
     [modifiedKeys addObject:@"name"];
 }
 
+- (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback {
+    
+    NSDictionary *properties = [_proxy objectForKey:@"properties"];
+    NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
+    NSMutableArray *imagesDataArray = [[NSMutableArray alloc] initWithCapacity:3];
+    NSMutableArray *imagesReturned = [[NSMutableArray alloc] initWithCapacity:3];
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+    dispatch_async(queue, ^{
+        for (NSString *key in [imagesDictionary allKeys]) {
+            NSString *pictureURL = [imagesDictionary objectForKey:key];
+            NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
+            [imagesDataArray addObject:imageData];
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            for (NSData *imageData in imagesDataArray) {
+                [imagesReturned addObject:[UIImage imageWithData:imageData]];
+            }
+            [_proxy setObject:imagesReturned forKey:@"images"];
+            callback([NSArray arrayWithArray:imagesReturned]);
+        });
+    });
+}
+
 - (NSArray *)images {
     if ([_proxy objectForKey:@"images"] != (id)[NSNull null] && [_proxy objectForKey:@"images"] != nil) {
         return [_proxy objectForKey:@"images"];
@@ -187,7 +212,32 @@
     [modifiedKeys addObject:@"bio"];
 }
 
-#pragma mark - Login
+- (BOOL)private {
+    return [[_proxy objectForKey:@"privacy"] isEqualToString:@"private"];
+}
+
+- (void)setPrivate:(BOOL)private {
+    if (private) {
+        [_proxy setObject:@"private" forKey:@"privacy"];
+    }
+    [_proxy setObject:@"public" forKey:@"privacy"];
+    [modifiedKeys addObject:@"privacy"];
+}
+
+- (NSString *)randomBioGenerator {
+    NSArray *randomStrings = @[
+                               @"I'm too drunk to taste this chicken",
+                               @"I'm too busy partying to fill out my bio",
+                               @"I'm too busy tapping others to pay mind to my profile",
+                               @"I'd fill out my profile but I don't have any fingers",
+                               @"I'm a robot",
+                               @"This is my bio, there are many like it, but this one is mine. My bio is my friend. My bio cares for me like no man can. PS: I am hot!"
+                               ];
+    return [randomStrings objectAtIndex:(arc4random() % [randomStrings count])];
+}
+
+
+#pragma mark - Saving data
 - (void)login {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"login"];
@@ -199,8 +249,6 @@
     modifiedKeys = [[NSMutableArray alloc] init];
 }
 
-
-#pragma mark - Storing the info
 - (void)save {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"users/me/"];
@@ -214,15 +262,6 @@
 }
 
 
-- (NSString *)randomBioGenerator {
-    NSArray *randomStrings = @[
-                               @"I'm too drunk to taste this chicken",
-                               @"I'm too busy partying to fill out my bio",
-                               @"I'm too busy tapping others to pay mind to my profile",
-                               @"I'd fill out my profile but I don't have any fingers",
-                               @"I'm a robot"
-                               ];
-    return [randomStrings objectAtIndex:(arc4random() % [randomStrings count])];
-}
+
 
 @end

@@ -150,18 +150,24 @@
                               for (FBGraphObject *photoRepresentation in resultObject) {
                                   FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
                                   FBGraphObject *newPhoto = [self getFirstFacebookPhotoGreaterThanSixHundred:images];
-                                  [profilePictures addObject:[newPhoto objectForKey:@"source"]];
-                                  if ([profilePictures count] == 1) {
-                                      [[Profile user] setValue:[profilePictures objectAtIndex:0] forKey:@"image"];
-                                  }
-                                  if ([profilePictures count] >= 3) {
-                                      [[Profile user] setImages:profilePictures];
-                                      [[Profile user] save];
-                                      [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
-                                      [self dismissViewControllerAnimated:YES completion:nil];
-                                      break;
+                                  if (newPhoto != nil) {
+                                      [profilePictures addObject:[newPhoto objectForKey:@"source"]];
+                                      if ([profilePictures count] == 1) {
+                                          [[Profile user] setValue:[profilePictures objectAtIndex:0] forKey:@"image"];
+                                      }
+                                      if ([profilePictures count] >= 3) {
+                                          [[Profile user] setImages:profilePictures];
+                                          [[Profile user] save];
+                                          [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+                                          [self dismissViewControllerAnimated:YES completion:nil];
+                                          break;
+                                      }
                                   }
                               }
+                              [[Profile user] setImages:profilePictures];
+                              [[Profile user] save];
+                              [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+                              [self dismissViewControllerAnimated:YES completion:nil];
                           }];
 }
 

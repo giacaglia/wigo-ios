@@ -19,16 +19,17 @@
 @property NSNumber* eventID;
 @property NSString *groupName;
 @property NSString *bioString;
+@property BOOL private;
 
 
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
 - (NSString *)key;
 - (void)login;
--(void)save;
+- (void)save;
+- (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
 
 // NEED TO IMPLEMENT
-@property BOOL privacy;
 @property BOOL *isFavorite;
 @property BOOL isGoingOut;
 @property NSString *placeWhereGoingOut;
