@@ -21,7 +21,6 @@
 
 @end
 
-
 @implementation SignViewController
 
 
@@ -93,8 +92,12 @@
         [userProfile setObject:[fbGraphUser objectID] forKey:@"fbID"];
         [userProfile setEmail:fbGraphUser[@"email"]];
         [Profile setUser:userProfile];
-        [userProfile login];
-        BOOL userDidSignUp = [self didUserSignUp];
+       
+        NSString *response = [userProfile login];
+        [userProfile setFirstName:fbGraphUser[@"first_name"]];
+        [userProfile setLastName:fbGraphUser[@"last_name"]];
+        [Profile setUser:userProfile];
+        BOOL userDidSignUp = [self didUserSignUp:response];
         if (userDidSignUp) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
             [self dismissViewControllerAnimated:YES completion:nil];
@@ -105,13 +108,14 @@
     }
 }
 
-- (BOOL) didUserSignUp {
-    return YES;
-//    User *userProfile = [Profile user];
-//    if ([userProfile objectForKey:@"image"] ==  (id)[NSNull null]) {
-//        return NO;
-//    }
-//    return YES;
+- (BOOL) didUserSignUp:(NSString *)response {
+    if ([response isEqualToString:@"invalid_email"]) {
+        NSLog(@"invalid email");
+        return NO;
+    }
+    else {
+        return YES;
+    }
 }
 
 - (void) fetchProfilePicturesAlbumFacebook {
@@ -128,7 +132,6 @@
                                   if ([[album objectForKey:@"name"] isEqualToString:@"Profile Pictures"]) {
                                       _profilePicturesAlbumId = (NSString *)[album objectForKey:@"id"];
                                       [self get3ProfilePictures];
-                                      
                                       break;
                                   }
                               }
@@ -157,17 +160,17 @@
                                       }
                                       if ([profilePictures count] >= 3) {
                                           [[Profile user] setImages:profilePictures];
-                                          [[Profile user] save];
                                           [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
-                                          [self dismissViewControllerAnimated:YES completion:nil];
+                                          NSLog(@"here");
+                                          self.signUpViewController = [[SignUpViewController alloc] init];
+                                          [self.navigationController pushViewController:self.signUpViewController animated:YES];
                                           break;
                                       }
                                   }
                               }
+                              NSLog(@"here if not there");
                               [[Profile user] setImages:profilePictures];
-                              [[Profile user] save];
                               [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
-                              [self dismissViewControllerAnimated:YES completion:nil];
                           }];
 }
 

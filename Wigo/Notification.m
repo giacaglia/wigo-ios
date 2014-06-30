@@ -73,6 +73,15 @@
     if ([[self type] isEqualToString:@"tap"]) {
         return @"wants to see you out tonight!";
     }
+    else if([[self type] isEqualToString:@"follow"]) {
+        return @"is now following you";
+    }
+    else if ([[self type] isEqualToString:@"joined"]) {
+        return @"joined WiGo";
+    }
+    else if ([[self type] isEqualToString:@"goingOut"]) {
+        return @"is going out tonight";
+    }
     return @"";
 }
 

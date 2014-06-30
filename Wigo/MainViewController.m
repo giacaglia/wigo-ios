@@ -164,7 +164,10 @@ static BOOL pushed;
 
 - (void)initializeFlashScreen {
     self.signViewController = [[SignViewController alloc] init];
-    [self presentViewController:self.signViewController animated:NO completion:nil];
+    self.signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:self.signViewController];
+//    navController.modalPresentationStyle = UIModalPresentationFormSheet;
+
+    [self presentViewController:self.signNavigationViewController animated:NO completion:nil];
 }
 
 - (void) initializeScrollView {

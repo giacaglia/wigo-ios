@@ -8,13 +8,20 @@
 
 #import "EmailConfirmationViewController.h"
 #import "FontProperties.h"
-
-@interface EmailConfirmationViewController ()
-
-@end
+#import "Profile.h"
 
 @implementation EmailConfirmationViewController
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        self.view.backgroundColor = [UIColor whiteColor];
+        self.navigationController.navigationBar.hidden = YES;
+        self.navigationItem.hidesBackButton = YES;
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {
@@ -39,7 +46,7 @@
     UIView *faceAndNameView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 68)];
     faceAndNameView.backgroundColor = [FontProperties getLightOrangeColor];
     
-    UIImageView *faceImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"giu3.jpg"]];
+    UIImageView *faceImageView = [[UIImageView alloc] initWithImage:[[Profile user] coverImage]];
     faceImageView.frame = CGRectMake(15, 10, 47, 47);
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;
@@ -49,7 +56,7 @@
     
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75, 24, 200, 22)];
     nameLabel.textAlignment = NSTextAlignmentLeft;
-    nameLabel.text = @"Giuliano Giacaglia";
+    nameLabel.text = [[Profile user] fullName];
     nameLabel.font = [FontProperties getSmallFont];
     [faceAndNameView addSubview:nameLabel];
     
@@ -71,7 +78,7 @@
     
     UILabel *emailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 285, self.view.frame.size.width, 30)];
     emailLabel.textAlignment = NSTextAlignmentCenter;
-    emailLabel.text = @"ben@g.holycross.edu";
+    emailLabel.text = [[Profile user] email];
     emailLabel.font = [FontProperties getSmallFont];
     emailLabel.textColor = [FontProperties getOrangeColor];
     [self.view addSubview:emailLabel];

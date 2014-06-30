@@ -118,7 +118,16 @@
 
 - (void)setFirstName:(NSString *)name {
     [_proxy setValue:name forKey:@"first_name"];
-    [modifiedKeys addObject:@"first_anme"];
+    [modifiedKeys addObject:@"first_name"];
+}
+
+- (NSString *)lastName {
+    return [_proxy objectForKey:@"last_name"];
+}
+
+- (void)setLastName:(NSString *)lastName {
+    [_proxy setValue:lastName forKey:@"last_name"];
+    [modifiedKeys addObject:@"last_name"];
 }
 
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback {
@@ -150,7 +159,6 @@
     if ([_proxy objectForKey:@"images"] != (id)[NSNull null] && [_proxy objectForKey:@"images"] != nil) {
         return [_proxy objectForKey:@"images"];
     }
-    
     NSDictionary *properties = [_proxy objectForKey:@"properties"];
     NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
     NSMutableArray *imagesMutableArray = [[NSMutableArray alloc] initWithCapacity:3];
@@ -242,28 +250,43 @@
 
 
 #pragma mark - Saving data
-- (void)login {
+- (NSString *)login {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"login"];
     [query setValue:[self objectForKey:@"fbID"] forKey:@"facebook_id"];
     [query setValue:[FBSession activeSession].accessTokenData.accessToken forKey:@"facebook_access_token"];
     [query setValue:self.email forKey:@"email"];
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
-    [_proxy addEntriesFromDictionary:dictionaryUser];
-    modifiedKeys = [[NSMutableArray alloc] init];
+    if ([[dictionaryUser objectForKey:@"code"] isEqualToString:@"invalid_email"]) {
+        return @"invalid_email";
+    }
+    NSLog(@"dictionary user %@", dictionaryUser);
+    [self setKey:[dictionaryUser objectForKey:@"key"]];
+    [modifiedKeys removeObject:@"facebook_access_token"];
+    [modifiedKeys removeObject:@"email"];
+    [modifiedKeys removeObject:@"first_name"];
+    [modifiedKeys removeObject:@"last_name"];
+    [modifiedKeys removeObject:@"fbID"];
+    [modifiedKeys removeObject:@"key"];
+
+    [self save];
+    return @"logged_in";
 }
 
 - (void)save {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"users/me/"];
+    NSLog(@"modified keys %@", modifiedKeys);
     [query setProfileKey:self.key];
     for (NSString *key in modifiedKeys) {
         [query setValue:[_proxy objectForKey:key] forKey:key];
     }
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
-    [_proxy addEntriesFromDictionary:dictionaryUser];
-    modifiedKeys = [[NSMutableArray alloc] init];
-}
+    if  (!(dictionaryUser == nil)) {
+        [_proxy addEntriesFromDictionary:dictionaryUser];
+        modifiedKeys = [[NSMutableArray alloc] init];
+    }
+  }
 
 
 @end

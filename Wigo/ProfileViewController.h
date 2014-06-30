@@ -14,7 +14,7 @@
 #import "MBProgressHUD.h"
 
 
-@interface ProfileViewController : UIViewController <UIScrollViewDelegate, MBProgressHUDDelegate>
+@interface ProfileViewController : UIViewController <UIScrollViewDelegate>
 
 -(id)initWithProfile:(BOOL)isMyProfile;
 -(id)initWithUser:(User *)user;

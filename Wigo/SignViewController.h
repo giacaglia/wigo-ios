@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
-
+#import "EmailConfirmationViewController.h"
+#import "SignUpViewController.h"
 
 @interface SignViewController : UIViewController <FBLoginViewDelegate>
 
+@property SignUpViewController *signUpViewController;
+//@property EmailConfirmationViewController *emailConfirmationViewController;
 //@property MainViewController *mainViewController;
 
 @end

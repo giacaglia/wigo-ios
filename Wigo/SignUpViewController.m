@@ -11,11 +11,20 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface SignUpViewController ()
-
+@property UITextField *studentTextField;
 @end
 
 @implementation SignUpViewController
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        self.view.backgroundColor = [UIColor whiteColor];
+        self.navigationItem.hidesBackButton = YES;
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {
@@ -39,7 +48,7 @@
     UIView *faceAndNameView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 68)];
     faceAndNameView.backgroundColor = [FontProperties getLightOrangeColor];
     
-    UIImageView *faceImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"giu3.jpg"]];
+    UIImageView *faceImageView = [[UIImageView alloc] initWithImage:[[Profile user] coverImage]];
     faceImageView.frame = CGRectMake(15, 10, 47, 47);
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;
@@ -49,7 +58,7 @@
     
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75, 24, 200, 22)];
     nameLabel.textAlignment = NSTextAlignmentLeft;
-    nameLabel.text = @"Giuliano Giacaglia";
+    nameLabel.text = [[Profile user] fullName];
     nameLabel.font = [FontProperties getSmallFont];
     [faceAndNameView addSubview:nameLabel];
     
@@ -63,16 +72,17 @@
     eduAddressLabel.font = [FontProperties getSmallFont];
     [self.view addSubview:eduAddressLabel];
     
-    UITextField *studentTextField = [[UITextField alloc] initWithFrame:CGRectMake(40, 230, self.view.frame.size.width - 80, 47)];
-    studentTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"student@university.edu" attributes:@{NSForegroundColorAttributeName:RGBAlpha(246, 143, 30, 0.3f)}];
-    studentTextField.textAlignment = NSTextAlignmentCenter;
-    studentTextField.tintColor = [FontProperties getOrangeColor];
-    studentTextField.textColor = [FontProperties getOrangeColor];
-    studentTextField.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    studentTextField.layer.borderWidth = 1;
-    studentTextField.layer.cornerRadius = 5;
-    [studentTextField becomeFirstResponder];
-    [self.view addSubview:studentTextField];
+    _studentTextField = [[UITextField alloc] initWithFrame:CGRectMake(40, 230, self.view.frame.size.width - 80, 47)];
+    _studentTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"student@university.edu" attributes:@{NSForegroundColorAttributeName:RGBAlpha(246, 143, 30, 0.3f)}];
+    _studentTextField.textAlignment = NSTextAlignmentCenter;
+    _studentTextField.tintColor = [FontProperties getOrangeColor];
+    _studentTextField.textColor = [FontProperties getOrangeColor];
+    _studentTextField.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    _studentTextField.layer.borderWidth = 1;
+    _studentTextField.layer.cornerRadius = 5;
+    _studentTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    [_studentTextField becomeFirstResponder];
+    [self.view addSubview:_studentTextField];
     
     UIButton *continueButton = [[UIButton alloc] initWithFrame:CGRectMake(37, 290, self.view.frame.size.width - 77, 47)];
     continueButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
@@ -89,7 +99,29 @@
 }
 
 - (void)continuePressed {
-    [self performSegueWithIdentifier:@"emailSegue" sender:self];
+//    NSError *error = NULL;
+//    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:emailRegex options:NSRegularExpressionCaseInsensitive error:&error];
+//    NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:_studentTextField.text options:0 range:NSMakeRange(0, [_studentTextField.text length])];
+//    if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
+//        NSString *substringForFirstMatch = [_studentTextField.text substringWithRange:rangeOfFirstMatch];
+//    }
+    
+    NSString *emailString = _studentTextField.text;
+    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+    BOOL isEmail = [emailTest evaluateWithObject:emailString];
+    if (isEmail) {
+        [[Profile user] setEmail:emailString];
+        [[Profile user] login];
+        self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
+        [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+    }
+    else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email" message:@"Enter a valid email address" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    }
+    
+//    [self performSegueWithIdentifier:@"emailSegue" sender:self];
 }
 
 

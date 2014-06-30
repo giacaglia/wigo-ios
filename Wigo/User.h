@@ -15,17 +15,18 @@
 @property NSString *email;
 @property UIImage *coverImage;
 @property NSString *firstName;
+@property NSString *lastName;
 @property NSArray *images;
 @property NSNumber* eventID;
 @property NSString *groupName;
 @property NSString *bioString;
+@property NSString *key;
 @property BOOL private;
 
 
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
-- (NSString *)key;
-- (void)login;
+- (NSString *)login;
 - (void)save;
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
 - (NSString *)fullName;

@@ -546,16 +546,10 @@
     if (_numberOfFetchedParties == 2*[[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [MBProgressHUD hideHUDForView:self.view animated:YES];
-//            [self reorderEventsSuchThatProfileUserEventIsFirst];
             [self initializeWhereView];
         });
     }
 }
 
-- (void)reorderEventsSuchThatProfileUserEventIsFirst {
-    [_partyUserArray exchangeObjectAtIndex:_indexOfEventProfileUserIsAttending withObjectAtIndex:0];
-    [_summaryArray exchangeObjectAtIndex:_indexOfEventProfileUserIsAttending withObjectAtIndex:0];
-    [_eventsParty exchangeObjectAtIndex:_indexOfEventProfileUserIsAttending withObjectAtIndex:0];
-}
 
 @end

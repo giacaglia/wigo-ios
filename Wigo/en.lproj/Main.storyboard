@@ -140,6 +140,21 @@
             </objects>
             <point key="canvasLocation" x="-120" y="-1176"/>
         </scene>
+        <!--Sign Navigation View Controller-->
+        <scene sceneID="jix-KD-1PN">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="Xd1-pm-3bh" customClass="SignNavigationViewController" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="DbF-1S-ogg">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="zD1-rz-qm8" kind="relationship" relationship="rootViewController" id="fo8-tG-nfT"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7EB-sT-dCN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1455" y="-1583"/>
+        </scene>
         <!--Sign View Controller-->
         <scene sceneID="uJ8-I3-oZO">
             <objects>

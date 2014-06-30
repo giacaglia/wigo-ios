@@ -65,17 +65,6 @@
 }
 
 - (void) initializeTableNotifications {
-//    NSDictionary *notification = @{@"name": @"Alice Banger", @"message": @"What's popping?", @"type": @"chat", @"timeString": @"2 hours ago"};
-//    _notificationArray = [[NSMutableArray alloc] initWithObjects:notification, nil];
-//    notification = @{@"name": @"Lisa Kerry", @"message": @"What are you up to?", @"type": @"chat", @"timeString": @"1 day ago"};
-//    [_notificationArray addObject:notification];
-//    notification = @{@"name": @"Greg Sono", @"message": @"wants to see you out tonight", @"type": @"tap", @"timeString": @"2 days ago"};
-//    [_notificationArray addObject:notification];
-//    notification = @{@"name": @"Lisa Kerry", @"message": @"is now following you", @"type": @"following", @"timeString": @"2 days ago"};
-//    [_notificationArray addObject:notification];
-//    notification = @{@"name": @"Brad Wang", @"message": @"joined WiGo", @"type": @"joined", @"timeString": @"2 days ago"};
-//    [_notificationArray addObject:notification];
-
     _notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     _notificationsTableView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_notificationsTableView];
@@ -151,27 +140,28 @@
     else if ([typeString isEqualToString:@"tap"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapFilled"]];
         iconLabel.frame = CGRectMake(55, 20, 14, 14);
-        [notificationButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchDown];
+        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchDown];
     }
-    else if ([typeString isEqualToString:@"following"]) {
+    else if ([typeString isEqualToString:@"follow"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"addedFilled"]];
         iconLabel.frame = CGRectMake(55, 20, 17, 12);
-        [notificationButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchDown];
+        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchDown];
     }
     else if ([typeString isEqualToString:@"joined"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"joined"]];
         iconLabel.frame = CGRectMake(55, 20, 14, 14);
-        [notificationButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchDown];
+        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchDown];
     }
+    notificationButton.tag = [indexPath row];
     [notificationButton addSubview:iconLabel];
     
 
     UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 11, 200, 18)];
     NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:name ];
-    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@": " attributes:nil]];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:nil]];
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:message attributes:nil]];
     [string addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, name.length)];
-    [string addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(name.length + 1, message.length + 1)];
+    [string addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(name.length , message.length + 1)];
     notificationLabel.attributedText = string;
     notificationLabel.font = [FontProperties getBioFont];
     notificationLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -198,8 +188,12 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
-- (void) profileSegue {
-    self.profileViewController = [[ProfileViewController alloc] initWithProfile:NO];
+- (void) profileSegue:(id)sender {
+    UIButton *notificationButton = (UIButton *)sender;
+    int rowOfButtonSender = notificationButton.tag;
+    Notification *notifcation = [[_notificationsParty getObjectArray] objectAtIndex:rowOfButtonSender];
+    User *user = (User *)[_everyoneParty getObjectWithId:[notifcation fromUserID]];
+    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
 }
