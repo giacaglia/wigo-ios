@@ -34,6 +34,8 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 
 @property ProfileViewController *profileViewController;
 
+@property Party *everyoneParty;
+
 @end
 
 @implementation PeopleViewController
@@ -53,9 +55,9 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     _chosenFilter = 1;
     
     //Search Bar Setup
-    Party *everyoneParty = [Profile everyoneParty];
-    [everyoneParty removeUserFromParty:[Profile user]];
-    _contentList = [everyoneParty getObjectArray];
+    _everyoneParty = [Profile everyoneParty];
+    [_everyoneParty removeUserFromParty:[Profile user]];
+    _contentList = [_everyoneParty getObjectArray];
     _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
     
     // Title setup
@@ -262,6 +264,10 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     UIButton *chosenButton = (UIButton *)sender;
     chosenButton.backgroundColor = [FontProperties getOrangeColor];
     [chosenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    if (chosenButton.tag == 2) {
+        _contentList = [_everyoneParty getObjectArray];
+        [_tableViewOfPeople reloadData];
+    }
     if (chosenButton.tag == 3) {
         [self queryAsynchronousAPI:@"follows/?follow=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
@@ -335,8 +341,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     [cell.contentView addSubview:textLabel];
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-//    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
-    profileImageView.image= [user coverImage];
+    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
     [cell.contentView addSubview:profileImageView];
     
     UIButton *favoriteButton = [[UIButton alloc]initWithFrame:CGRectMake(250, 24, 49, 30)];

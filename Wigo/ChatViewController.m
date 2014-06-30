@@ -117,6 +117,9 @@
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
     textLabel.text = [user fullName];
+//    if (![message wasMessageRead]) {
+    
+//    }
     if (indexPath.row == 0) {
         cell.backgroundColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
     }

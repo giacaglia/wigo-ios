@@ -22,7 +22,8 @@
     self = [super init];
     if (self) {
         self.view.backgroundColor = [UIColor whiteColor];
-        self.navigationItem.hidesBackButton = YES;
+//        self.navigationItem.hidesBackButton = YES;
+        
     }
     return self;
 }

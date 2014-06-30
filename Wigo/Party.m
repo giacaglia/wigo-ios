@@ -85,7 +85,7 @@
 
 - (BOOL)containsObject:(NSMutableDictionary *)otherObjectDictionary {
     for (NSMutableDictionary *object in objectArray) {
-        if ([otherObjectDictionary valueForKey:@"id"] == [object valueForKey:@"id"]) {
+        if ([[otherObjectDictionary valueForKey:@"id"] isEqualToNumber:[object valueForKey:@"id"]]) {
             return YES;
         }
     }

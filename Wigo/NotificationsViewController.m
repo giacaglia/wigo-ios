@@ -157,7 +157,6 @@
     }
     notificationButton.tag = [indexPath row];
     [notificationButton addSubview:iconLabel];
-    
 
     UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 11, 200, 18)];
     NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:name ];

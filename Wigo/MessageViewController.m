@@ -9,6 +9,8 @@
 #import "MessageViewController.h"
 #import "FontProperties.h"
 #import "UIButtonAligned.h"
+#import "Profile.h"
+#import "SDWebImage/UIImageView+WebCache.h"
 
 @interface MessageViewController ()
 
@@ -19,6 +21,7 @@
 
 // Table View
 @property UITableView *tableView;
+@property NSArray *contentList;
 @end
 
 @implementation MessageViewController
@@ -76,6 +79,7 @@
 }
 
 - (void) initializeTableListOfFriends {
+    _contentList = [[Profile everyoneParty] getObjectArray];
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 108, self.view.frame.size.width, self.view.frame.size.height - 108)];
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -89,38 +93,24 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 5;
-    //    if (_isSearching) {
-    //        return [_filteredContentList count];
-    //    }
-    //    else {
-    //        return [_contentList count];
-    //    }
+    return [_contentList count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    User *user = [_contentList objectAtIndex:[indexPath row]];
     static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = (UITableViewCell*)[tableView
-                                               dequeueReusableCellWithIdentifier:CellIdentifier];
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                  reuseIdentifier:CellIdentifier];
+    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    profileImageView.image = [UIImage imageNamed:@"giu2.jpg"];
+    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
+//    profileImageView.image = [UIImage imageNamed:@"giu2.jpg"];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    textLabel.text = @"Alice Banger";
-    
-//    if (_isSearching) {
-//        textLabel.text = [_filteredContentList objectAtIndex:indexPath.row];
-//    }
-//    else {
-//        textLabel.text = [_contentList objectAtIndex:indexPath.row];
-//    }
+    textLabel.text = [user fullName];
     textLabel.font = [FontProperties getSubtitleFont];
     [cell.contentView addSubview:textLabel];
     BOOL isFavorite = NO;
