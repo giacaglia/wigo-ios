@@ -275,11 +275,11 @@ static BOOL pushed;
             _indexOfImage -= 1;
         }
         User *user = [userArray objectAtIndex:i];
-//        UIImageView *imgView = [[UIImageView alloc] initWithImage:[user coverImage]];
         UIImageView *imgView = [[UIImageView alloc] init];
-        [imgView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
+        [imgView setImageWithURL:[[user imagesURL] objectAtIndex:0] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            imgView.image = [UIImageCrop imageByScalingAndCroppingForSize:imgView.frame.size andImage:image];
+        }];
         imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
-        imgView.image = [UIImageCrop imageByScalingAndCroppingForSize:imgView.frame.size andImage:imgView.image];
         imgView.userInteractionEnabled = YES;
         positionX += sizeOfEachImage + distanceOfEachImage;
         if (i%(NImages) == (NImages -1)) { //If it's the last image in the row

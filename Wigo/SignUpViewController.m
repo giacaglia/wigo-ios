@@ -9,6 +9,7 @@
 #import "SignUpViewController.h"
 #import "FontProperties.h"
 #import <QuartzCore/QuartzCore.h>
+#import "SDWebImage/UIImageView+WebCache.h"
 
 @interface SignUpViewController ()
 @property UITextField *studentTextField;
@@ -48,7 +49,9 @@
     UIView *faceAndNameView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 68)];
     faceAndNameView.backgroundColor = [FontProperties getLightOrangeColor];
     
-    UIImageView *faceImageView = [[UIImageView alloc] initWithImage:[[Profile user] coverImage]];
+//    UIImageView *faceImageView = [[UIImageView alloc] initWithImage:[[Profile user] coverImage]];
+    UIImageView *faceImageView = [[UIImageView alloc] init];
+    [faceImageView setImageWithURL:[[[Profile user] imagesURL] objectAtIndex:0]];
     faceImageView.frame = CGRectMake(15, 10, 47, 47);
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;

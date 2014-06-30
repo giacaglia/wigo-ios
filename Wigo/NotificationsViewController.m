@@ -12,6 +12,8 @@
 #import "Network.h"
 #import "Party.h"
 
+#import "SDWebImage/UIImageView+WebCache.h"
+
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
 @property UIScrollView *notificationScrollView;
@@ -123,7 +125,8 @@
     
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
     
-    UIImageView *profileImageView = [[UIImageView alloc] initWithImage:[user coverImage]];
+    UIImageView *profileImageView = [[UIImageView alloc] init];
+    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
     profileImageView.layer.cornerRadius = 3;
     profileImageView.layer.borderWidth = 1;

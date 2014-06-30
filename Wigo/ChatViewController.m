@@ -15,6 +15,8 @@
 #import "Network.h"
 #import "MBProgressHUD.h"
 
+#import "SDWebImage/UIImageView+WebCache.h"
+
 @interface ChatViewController ()
 
 @property UITableView *tableViewOfPeople;
@@ -109,7 +111,8 @@
     
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    profileImageView.image = [user coverImage];
+    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
+//    profileImageView.image = [user coverImage];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];

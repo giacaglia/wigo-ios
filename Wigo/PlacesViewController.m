@@ -22,6 +22,7 @@
 #import "Network.h"
 
 #import "MBProgressHUD.h"
+#import "SDWebImage/UIImageView+WebCache.h"
 @interface PlacesViewController ()
 
 // TextField
@@ -454,8 +455,10 @@
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
         
-        UIImageView *imgView = [[UIImageView alloc] initWithImage:[user coverImage]];
-
+//        UIImageView *imgView = [[UIImageView alloc] initWithImage:[user coverImage]];
+        UIImageView *imgView = [[UIImageView alloc] init];
+        [imgView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
+        
         imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
         [imageButton addSubview:imgView];
         

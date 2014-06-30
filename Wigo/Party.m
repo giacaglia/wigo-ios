@@ -72,6 +72,9 @@
 }
 
 - (NSMutableDictionary *)getObjectWithId:(NSNumber *)objectID {
+    if ([objectID isKindOfClass:[NSDictionary class]]) {
+        return [[User alloc] initWithDictionary:(NSDictionary *)objectID];
+    }
     for (NSMutableDictionary *object in objectArray) {
         if ([objectID isEqualToNumber:[object valueForKey:@"id"]]) {
             return object;

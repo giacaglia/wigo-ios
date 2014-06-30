@@ -12,6 +12,7 @@
 #import "UIButtonAligned.h"
 #import "Profile.h"
 
+#import "SDWebImage/UIImageView+WebCache.h"
 typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 
 @interface PeopleViewController ()
@@ -334,6 +335,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     [cell.contentView addSubview:textLabel];
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
+//    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
     profileImageView.image= [user coverImage];
     [cell.contentView addSubview:profileImageView];
     
