@@ -25,22 +25,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Wigo/ProfileViewController.m"
-            timestampString = "425574758.856551"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
-            landmarkName = "-initializeProfileImage"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Wigo/PlacesViewController.m"
             timestampString = "425573836.568768"
             startingColumnNumber = "9223372036854775807"
@@ -233,13 +217,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Wigo/User.m"
-            timestampString = "425843604.419242"
+            filePath = "Wigo/ProfileViewController.m"
+            timestampString = "425846852.249871"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
-            landmarkName = "-images"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
+            landmarkName = "-initializeProfileImage"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -250,12 +234,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/User.m"
-            timestampString = "425843642.112838"
+            timestampString = "425846884.048583"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "171"
-            endingLineNumber = "171"
-            landmarkName = "-images"
+            startingLineNumber = "193"
+            endingLineNumber = "193"
+            landmarkName = "-imagesURL"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -14,6 +14,9 @@
 #import "Profile.h"
 #import "UIImageCrop.h"
 
+#import "SDWebImage/UIImageView+WebCache.h"
+
+
 
 @interface ProfileViewController ()
 
@@ -212,7 +215,7 @@
     int heightOfProfileImage = self.view.frame.size.width;
     // UIScrollView
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, heightOfProfileImage)];
-    [_scrollView setContentSize:CGSizeMake(self.view.frame.size.width * [[self.user images] count], 320)];
+    [_scrollView setContentSize:CGSizeMake(self.view.frame.size.width * [[self.user imagesURL] count], 320)];
     [_scrollView setShowsHorizontalScrollIndicator:NO];
     _scrollView.layer.borderWidth = 1;
 
@@ -236,7 +239,7 @@
 
     _pageControl = [[UIPageControl alloc] init];
     _pageControl.enabled = NO;
-    _pageControl.numberOfPages = [[self.user images] count];
+    _pageControl.numberOfPages = [[self.user imagesURL] count];
     _pageControl.currentPage = 0;
     _pageControl.currentPageIndicatorTintColor = [FontProperties getOrangeColor];
     _pageControl.pageIndicatorTintColor = [UIColor grayColor];
@@ -247,13 +250,15 @@
     [pageControlView addSubview: _pageControl];
     self.navigationItem.titleView = pageControlView;
     
-    for (int i = 0; i < [[self.user images] count]; i++) {
-        UIImage *photoImage = [[self.user images] objectAtIndex:i];
-        UIImage *croppedImage = [UIImageCrop imageByScalingAndCroppingForSize:CGSizeMake(heightOfProfileImage, heightOfProfileImage) andImage:photoImage];
-        UIImageView *profileImgView = [[UIImageView alloc] initWithImage:croppedImage];
+    for (int i = 0; i < [[self.user imagesURL] count]; i++) {
+//        UIImage *photoImage = [[self.user images] objectAtIndex:i];
+//        UIImage *croppedImage = [UIImageCrop imageByScalingAndCroppingForSize:CGSizeMake(heightOfProfileImage, heightOfProfileImage) andImage:photoImage];
+//        UIImageView *profileImgView = [[UIImageView alloc] initWithImage:croppedImage];
+        UIImageView *profileImgView = [[UIImageView alloc] init];
+        [profileImgView setImageWithURL:[[self.user imagesURL] objectAtIndex:i] placeholderImage:[UIImage imageNamed:@"ben2.jpg"]];
         profileImgView.frame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, heightOfProfileImage);
         [_scrollView addSubview:profileImgView];
-        [self addBlurredImage:photoImage toImageView:profileImgView];
+//        [self addBlurredImage:photoImage toImageView:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
 }

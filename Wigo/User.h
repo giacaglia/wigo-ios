@@ -30,6 +30,7 @@
 - (void)save;
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
 - (NSString *)fullName;
+- (NSArray *)imagesURL;
 
 // NEED TO IMPLEMENT
 @property BOOL *isFavorite;

@@ -189,6 +189,22 @@
     [modifiedKeys addObject:@"properties"];
 }
 
+- (NSArray *)imagesURL {
+    if ([_proxy objectForKey:@"imagesURL"] != (id)[NSNull null] && [_proxy objectForKey:@"imagesURL"] != nil) {
+        return [_proxy objectForKey:@"imagesURL"];
+    }
+    NSDictionary *properties = [_proxy objectForKey:@"properties"];
+    NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
+    NSMutableArray *imagesMutableArray = [[NSMutableArray alloc] initWithCapacity:3];
+    for (NSString *key in [imagesDictionary allKeys]) {
+        NSString *pictureURL = [imagesDictionary objectForKey:key];
+        [imagesMutableArray addObject:pictureURL];
+    }
+    NSArray *imagesURLArray = [NSArray arrayWithArray:imagesMutableArray];
+    [_proxy setObject:imagesURLArray forKey:@"imagesURL"];
+    return imagesURLArray;
+}
+
 - (NSNumber *)eventID {
     return [_proxy objectForKey:@"eventID"] ;
 }
