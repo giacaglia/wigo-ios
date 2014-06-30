@@ -255,7 +255,12 @@
 //        UIImage *croppedImage = [UIImageCrop imageByScalingAndCroppingForSize:CGSizeMake(heightOfProfileImage, heightOfProfileImage) andImage:photoImage];
 //        UIImageView *profileImgView = [[UIImageView alloc] initWithImage:croppedImage];
         UIImageView *profileImgView = [[UIImageView alloc] init];
-        [profileImgView setImageWithURL:[[self.user imagesURL] objectAtIndex:i] placeholderImage:[UIImage imageNamed:@"ben2.jpg"]];
+        [profileImgView setImageWithURL:[[self.user imagesURL] objectAtIndex:i] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            UIImage *croppedImage = [UIImageCrop imageByScalingAndCroppingForSize:CGSizeMake(heightOfProfileImage, heightOfProfileImage) andImage:image];
+            profileImgView.image = croppedImage;
+            [self addBlurredImage:image toImageView:profileImgView];
+        }];
+//        [profileImgView setImageWithURL:[[self.user imagesURL] objectAtIndex:i] placeholderImage:[UIImage imageNamed:@"ben2.jpg"] ];
         profileImgView.frame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, heightOfProfileImage);
         [_scrollView addSubview:profileImgView];
 //        [self addBlurredImage:photoImage toImageView:profileImgView];

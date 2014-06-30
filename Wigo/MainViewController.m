@@ -24,6 +24,7 @@
 //Crop
 #import "UIImageCrop.h"
 
+#import "SDWebImage/UIImageView+WebCache.h"
 
 
 @interface MainViewController ()
@@ -274,7 +275,9 @@ static BOOL pushed;
             _indexOfImage -= 1;
         }
         User *user = [userArray objectAtIndex:i];
-        UIImageView *imgView = [[UIImageView alloc] initWithImage:[user coverImage]];
+//        UIImageView *imgView = [[UIImageView alloc] initWithImage:[user coverImage]];
+        UIImageView *imgView = [[UIImageView alloc] init];
+        [imgView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
         imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
         imgView.image = [UIImageCrop imageByScalingAndCroppingForSize:imgView.frame.size andImage:imgView.image];
         imgView.userInteractionEnabled = YES;
