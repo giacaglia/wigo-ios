@@ -29,7 +29,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self loadMessages];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -39,6 +38,7 @@
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"chatsSelected"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
+    [self loadMessages];
 }
 
 
@@ -82,11 +82,13 @@
 }
 
 - (void)initializeTableOfChats {
-    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    _tableViewOfPeople.delegate = self;
-    _tableViewOfPeople.dataSource = self;
-    _tableViewOfPeople.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:_tableViewOfPeople];
+    if (!_tableViewOfPeople) {
+        _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+        _tableViewOfPeople.delegate = self;
+        _tableViewOfPeople.dataSource = self;
+        _tableViewOfPeople.backgroundColor = [UIColor clearColor];
+        [self.view addSubview:_tableViewOfPeople];
+    }
     [self adjustHeightOfTableview];
 }
 
