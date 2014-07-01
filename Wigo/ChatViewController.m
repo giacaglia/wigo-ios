@@ -87,10 +87,28 @@
     _tableViewOfPeople.dataSource = self;
     _tableViewOfPeople.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_tableViewOfPeople];
+    [self adjustHeightOfTableview];
 }
 
 
 #pragma mark - Tablew View Data Source
+
+- (void)adjustHeightOfTableview
+{
+    [_tableViewOfPeople reloadData];
+    CGFloat height = _tableViewOfPeople.contentSize.height;
+    CGFloat maxHeight = _tableViewOfPeople.superview.frame.size.height - _tableViewOfPeople.frame.origin.y;
+    
+    if (height > maxHeight)
+        height = maxHeight;
+    
+    [UIView animateWithDuration:0.25 animations:^{
+        CGRect frame = _tableViewOfPeople.frame;
+        frame.size.height = height;
+        _tableViewOfPeople.frame = frame;
+    }];
+}
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -121,9 +139,6 @@
     if (![message wasMessageRead]) {
 //        cell.backgroundColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
     }
-//    if (indexPath.row == 0) {
-//        cell.backgroundColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
-//    }
 
     textLabel.font = [FontProperties getSubtitleFont];
     [cell.contentView addSubview:textLabel];
@@ -143,6 +158,8 @@
     timeStampLabel.textColor = RGB(179, 179, 179);
     timeStampLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:timeStampLabel];
+    NSLog(@"Called this function");
+    NSLog(@"Last height: %d", _tableViewOfPeople.contentSize.height);
     return cell;
 }
 
