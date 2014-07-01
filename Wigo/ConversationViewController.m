@@ -143,7 +143,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self.view endEditing:YES];
 }
 
-- (void)addMessageFromSender:(Message *)message {
+- (void)addMessageFromReceiver:(Message *)message {
     UIView *messageWrapper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
     messageWrapper.backgroundColor = RGB(234, 234, 234);
     [messageWrapper.layer setCornerRadius:5];
@@ -173,7 +173,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 
-- (void)addMessageFromReceiver:(Message *)message {
+- (void)addMessageFromSender:(Message *)message {
     UIView *messageWraper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
     messageWraper.backgroundColor = RGB(250, 233, 212);
     [messageWraper.layer setCornerRadius:5];
