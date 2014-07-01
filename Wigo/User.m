@@ -265,6 +265,17 @@
 }
 
 
+- (BOOL)isGoingOut {
+    NSNumber *goingOutNumber = (NSNumber *)[_proxy objectForKey:@"goingout"];
+    return [goingOutNumber boolValue];
+}
+
+- (void)setIsGoingOut:(BOOL)isGoingOut {
+    
+    [_proxy setObject:[NSNumber numberWithBool:isGoingOut] forKey:@"goingout"];
+    [modifiedKeys addObject:@"goingout"];
+}
+
 #pragma mark - Saving data
 - (NSString *)login {
     Query *query = [[Query alloc] init];

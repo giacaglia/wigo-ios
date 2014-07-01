@@ -85,7 +85,6 @@
     _tableViewOfPeople.dataSource = self;
     _tableViewOfPeople.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_tableViewOfPeople];
-
 }
 
 

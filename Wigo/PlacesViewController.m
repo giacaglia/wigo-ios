@@ -84,12 +84,12 @@
         NSArray *events = [jsonRespone objectForKey:@"objects"];
         _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
         [_eventsParty addObjectsFromArray:events];
-        _placesArray = [[NSMutableArray alloc] initWithCapacity:[events count]];
-        for (Event *event in [_eventsParty getObjectArray]) {
-            NSMutableArray *place = [[NSMutableArray alloc] initWithCapacity:3];
-            [place addObject:event];
-            [_placesArray addObject:place];
-        }
+//        _placesArray = [[NSMutableArray alloc] initWithCapacity:[events count]];
+//        for (Event *event in [_eventsParty getObjectArray]) {
+//            NSMutableArray *place = [[NSMutableArray alloc] initWithCapacity:3];
+//            [place addObject:event];
+//            [_placesArray addObject:place];
+//        }
         [self fetchEventAttendeesAsynchronous];
         [self fetchEventSummaryAsynchronous];
         if ([events count] == 0) {
@@ -508,6 +508,10 @@
 
 -(void)fetchEventSummaryAsynchronous {
     _summaryArray = [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
+    // Pre-populate Array
+    for (int j = 0; j < [[_eventsParty getObjectArray] count]; j++) {
+        [_summaryArray addObject:[[NSDictionary alloc] init]];
+    }
     for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
         Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
         NSNumber *eventId = [event eventID];
@@ -532,6 +536,10 @@
 
 - (void)fetchEventAttendeesAsynchronous {
     _partyUserArray =  [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
+    // Pre-populate Array
+    for (int j = 0; j < [[_eventsParty getObjectArray] count]; j++) {
+        [_partyUserArray addObject:[[NSDictionary alloc] init]];
+    }
     for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
         Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
         NSNumber *eventId = [event eventID];

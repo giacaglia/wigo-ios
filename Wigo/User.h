@@ -22,6 +22,7 @@
 @property NSString *bioString;
 @property NSString *key;
 @property BOOL private;
+@property BOOL isGoingOut;
 
 
 - (BOOL)isEqualToUser:(User *)otherUser;
@@ -34,7 +35,6 @@
 
 // NEED TO IMPLEMENT
 @property BOOL *isFavorite;
-@property BOOL isGoingOut;
 @property NSString *placeWhereGoingOut;
 @property NSMutableArray *listOfFollowers;
 @property NSMutableArray *listOfFollowing;

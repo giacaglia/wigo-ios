@@ -259,7 +259,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (BOOL)textFieldShouldReturn:(UITextField *)theTextField {
     [theTextField resignFirstResponder];
-    //    theTextField.text = @"";
     [self sendMessage];
     return YES;
 }

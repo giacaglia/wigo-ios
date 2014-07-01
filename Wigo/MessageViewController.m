@@ -79,7 +79,9 @@
 }
 
 - (void) initializeTableListOfFriends {
-    _contentList = [[Profile everyoneParty] getObjectArray];
+    Party *everyoneParty = [Profile everyoneParty];
+    [everyoneParty removeUserFromParty:[Profile user]];
+    _contentList = [everyoneParty getObjectArray];
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 108, self.view.frame.size.width, self.view.frame.size.height - 108)];
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -106,45 +108,23 @@
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
-//    profileImageView.image = [UIImage imageNamed:@"giu2.jpg"];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
     textLabel.text = [user fullName];
     textLabel.font = [FontProperties getSubtitleFont];
     [cell.contentView addSubview:textLabel];
-    BOOL isFavorite = NO;
-    if (indexPath.row <=2) {
-        isFavorite = YES;
-    }
-    if (isFavorite) {
-        cell.backgroundColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
-    }
-    
     UILabel *lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
     lastMessageLabel.font = [UIFont fontWithName:@"Whitney-Medium" size:13.0f];
     lastMessageLabel.textAlignment = NSTextAlignmentLeft;
 
-    BOOL goingOutBool = [self getYesOrNo];
-    if (goingOutBool) {
+    if ([user isGoingOut]) {
         lastMessageLabel.text = @"Going Out";
         lastMessageLabel.textColor = [FontProperties getOrangeColor];
-    }
-    else {
-        lastMessageLabel.text = @"Not going out";
-        lastMessageLabel.textColor = [UIColor grayColor];
     }
     
     [cell.contentView addSubview:lastMessageLabel];
     return cell;
-}
-
-- (BOOL) getYesOrNo
-{
-    int tmp = (arc4random() % 30)+1;
-    if(tmp % 5 == 0)
-        return YES;
-    return NO;
 }
 
 - (void) followedPerson:(id)sender {
