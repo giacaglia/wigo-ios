@@ -86,6 +86,7 @@ static BOOL pushed;
     self.tabBarController.tabBar.hidden = NO;
     [self initializeTabBar];
     [self initializeNavigationItem];
+    [self showTapButtons];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -97,11 +98,10 @@ static BOOL pushed;
     [super viewDidLoad];
     [self initializeFlashScreen];
     
-
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor clearColor]];
     [self initializeScrollView];
     [self initializeNotificationObservers];
-    [self initializeTapButtons];
+    [self showTapButtons];
 }
 
 - (void)loadViewAfterSigningUser {
@@ -369,7 +369,7 @@ static BOOL pushed;
 }
 
 
-- (void) initializeTapButtons {
+- (void) showTapButtons {
     if ([Profile isGoingOut]) {
         for (int i = 0; i < [_tapArray count]; i++) {
             UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
