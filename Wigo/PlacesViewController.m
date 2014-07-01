@@ -134,9 +134,12 @@
 }
 
 - (void) updateViewNotGoingOut {
+    [[Profile user] setIsGoingOut:NO];
+    [[Profile user] save];
     [_placesTableView reloadData];
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"PLACES";
+
     [self loadEvents];
 }
 
@@ -173,13 +176,13 @@
         [self.view addSubview:_placesTableView];
         _placesTableView.dataSource = self;
         _placesTableView.delegate = self;
+        
         _yPositionOfWhereSubview = 280;
         [self initializeGoingSomewhereElseButton];
     }
     else {
         [_placesTableView reloadData];
     }
-   
 }
 
 

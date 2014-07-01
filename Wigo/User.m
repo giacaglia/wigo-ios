@@ -271,7 +271,6 @@
 }
 
 - (void)setIsGoingOut:(BOOL)isGoingOut {
-    
     [_proxy setObject:[NSNumber numberWithBool:isGoingOut] forKey:@"goingout"];
     [modifiedKeys addObject:@"goingout"];
 }

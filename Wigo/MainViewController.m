@@ -173,7 +173,7 @@ static BOOL pushed;
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 200);
     _scrollView.delegate = self;
     
-    [self addRefreshToSrollView];
+//    [self addRefreshToSrollView];
 }
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -615,33 +615,33 @@ static BOOL pushed;
 
 #pragma mark - Refresh Control
 
-- (void)addRefreshToSrollView {
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(testRefresh:) forControlEvents:UIControlEventValueChanged];
-    [_scrollView addSubview:refreshControl];
-}
-
-- (void)testRefresh:(UIRefreshControl *)refreshControl
-{
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    [self loadViewAfterSigningUser];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"MMM d, h:mm a"];
-            NSString *lastUpdate = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
-            
-            refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdate];
-            
-            [refreshControl endRefreshing];
-            
-            NSLog(@"refresh end");
-        });
-    });
-}
-
+//- (void)addRefreshToSrollView {
+//    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+//    [refreshControl addTarget:self action:@selector(testRefresh:) forControlEvents:UIControlEventValueChanged];
+//    [_scrollView addSubview:refreshControl];
+//}
+//
+//- (void)testRefresh:(UIRefreshControl *)refreshControl
+//{
+//    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
+//    
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//    [self loadViewAfterSigningUser];
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//            [formatter setDateFormat:@"MMM d, h:mm a"];
+//            NSString *lastUpdate = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
+//            
+//            refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdate];
+//            
+//            [refreshControl endRefreshing];
+//            
+//            NSLog(@"refresh end");
+//        });
+//    });
+//}
+//
 
 
 @end

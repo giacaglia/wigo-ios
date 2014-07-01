@@ -29,18 +29,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [Network queryAsynchronousAPI:@"messages/summary/?to_user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
-            _messageParty = [[Party alloc] initWithObjectName:@"Message"];
-            [_messageParty addObjectsFromArray:arrayOfMessages];
-            [self initializeTableOfChats];
-        });
-    }];
+    [self loadMessages];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -72,6 +61,19 @@
     self.navigationItem.leftBarButtonItem = nil;
 }
 
+- (void)loadMessages {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [Network queryAsynchronousAPI:@"messages/summary/?to_user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
+            _messageParty = [[Party alloc] initWithObjectName:@"Message"];
+            [_messageParty addObjectsFromArray:arrayOfMessages];
+            [self initializeTableOfChats];
+        });
+    }];
+
+}
 
 - (void) writeMessage {
     self.messageViewController = [[MessageViewController alloc] init];
@@ -101,7 +103,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
     User *user = [message fromUser];
-    
+    if (!user) {
+        user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
+    }
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
@@ -115,11 +119,11 @@
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
     textLabel.text = [user fullName];
     if (![message wasMessageRead]) {
-    
+//        cell.backgroundColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
     }
-    if (indexPath.row == 0) {
-        cell.backgroundColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
-    }
+//    if (indexPath.row == 0) {
+//        cell.backgroundColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
+//    }
 
     textLabel.font = [FontProperties getSubtitleFont];
     [cell.contentView addSubview:textLabel];
