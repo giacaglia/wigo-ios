@@ -202,9 +202,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     messageWrapper.frame = CGRectMake(messageWrapper.frame.origin.x, messageWrapper.frame.origin.y, messageWrapper.frame.size.width, messageWrapper.frame.size.height + 20);
     
     UILabel *timerLabel = [[UILabel alloc] initWithFrame:CGRectMake(messageWrapper.frame.size.width - 110, messageWrapper.frame.size.height - 28, 100, 20)];
-//    NSDateFormatter *DateFormatter = [[NSDateFormatter alloc] init];
-//    [DateFormatter setDateFormat:@"hh:mm a"];
-//    [DateFormatter stringFromDate:[NSDate date]]
     timerLabel.text = [message timeOfCreation];
     timerLabel.font = [UIFont fontWithName:@"Whitney-Medium" size:13.0f];
     timerLabel.textAlignment = NSTextAlignmentRight;
@@ -267,7 +264,8 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     Message *message = [[Message alloc] init];
     [message setMessageString:_messageTextBox.text];
     NSDateFormatter *DateFormatter = [[NSDateFormatter alloc] init];
-    [DateFormatter setDateFormat:@"hh:mm a"];
+    [DateFormatter setDateFormat:@"yyyy-MM-DD hh:mm a"];
+    
     [message setTimeOfCreation:[DateFormatter stringFromDate:[NSDate date]]];
     
     [self addMessageFromSender:message];

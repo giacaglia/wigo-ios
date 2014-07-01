@@ -108,7 +108,6 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
     
-    
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
     [cell.contentView addSubview:profileImageView];
