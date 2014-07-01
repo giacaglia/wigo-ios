@@ -72,14 +72,14 @@
 
 #pragma mark
 
-- (User *)toUser {
-    if ([[_proxy objectForKey:@"to_user"] isKindOfClass:[NSDictionary class]]) {
-        return [[User alloc] initWithDictionary:[_proxy objectForKey:@"to_user"]];
+- (NSNumber *)toUser {
+    if ([[_proxy objectForKey:@"to_user"] isKindOfClass:[NSNumber class]]) {
+        return [_proxy objectForKey:@"to_user"];
     }
     return nil;
 }
 
-- (void)setToUser:(User *)toUser {
+- (void)setToUser:(NSNumber *)toUser {
     [_proxy setObject:toUser forKey:@"to_user"];
 }
 
@@ -128,7 +128,6 @@
 
 - (void)setTimeOfCreation:(NSString *)timeOfCreation {
     [_proxy setObject:timeOfCreation forKey:@"created"];
-    [modifiedKeys addObject:@"created"];
 }
 
 - (void)save {

@@ -265,10 +265,10 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [message setMessageString:_messageTextBox.text];
     NSDateFormatter *DateFormatter = [[NSDateFormatter alloc] init];
     [DateFormatter setDateFormat:@"yyyy-MM-DD hh:mm a"];
-    
     [message setTimeOfCreation:[DateFormatter stringFromDate:[NSDate date]]];
-    
+    [message setToUser:[self.user objectForKey:@"id"]];
     [self addMessageFromSender:message];
+    [message save];
     _messageTextBox.text = @"";
     [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:YES];
 }
