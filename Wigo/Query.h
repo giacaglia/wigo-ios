@@ -12,6 +12,8 @@
 //#import "Profile.h"
 
 typedef void (^QueryResult)(NSDictionary *jsonResponse, NSError *error);
+typedef void (^QueryResultWithInput)(NSDictionary *input, NSDictionary *jsonResponse, NSError *error);
+
 
 @interface Query : NSObject
 

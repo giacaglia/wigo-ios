@@ -112,23 +112,17 @@
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
-//    profileImageView.image = [user coverImage];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
     textLabel.text = [user fullName];
-//    if (![message wasMessageRead]) {
+    if (![message wasMessageRead]) {
     
-//    }
+    }
     if (indexPath.row == 0) {
         cell.backgroundColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
     }
-//    if (_isSearching) {
-//        textLabel.text = [_filteredContentList objectAtIndex:indexPath.row];
-//    }
-//    else {
-//        textLabel.text = [_contentList objectAtIndex:indexPath.row];
-//    }
+
     textLabel.font = [FontProperties getSubtitleFont];
     [cell.contentView addSubview:textLabel];
     
@@ -162,6 +156,7 @@
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
+    [message setWasMessageRead:YES];
     User *user = [message fromUser];
     [self getChatOfUser:user];
 }

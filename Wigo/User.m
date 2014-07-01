@@ -292,7 +292,6 @@
 - (void)save {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"users/me/"];
-    NSLog(@"modified keys %@", modifiedKeys);
     [query setProfileKey:self.key];
     for (NSString *key in modifiedKeys) {
         [query setValue:[_proxy objectForKey:key] forKey:key];
@@ -302,7 +301,7 @@
         [_proxy addEntriesFromDictionary:dictionaryUser];
         modifiedKeys = [[NSMutableArray alloc] init];
     }
-  }
+}
 
 
 @end

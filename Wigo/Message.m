@@ -7,6 +7,7 @@
 //
 
 #import "Message.h"
+#import "Profile.h"
 
 @implementation Message{
     NSMutableDictionary* _proxy;
@@ -104,16 +105,19 @@
 }
 
 - (BOOL)wasMessageRead {
-    NSString *wasMessageRead = [[_proxy objectForKey:@"properties"] objectForKey:@"wasMessageRead"];
+    if (![[_proxy objectForKey:@"properties"] isKindOfClass:[NSDictionary class]]) {
+        return NO;
+    }
+    NSString *wasMessageRead = [[_proxy objectForKey:@"properties"]  objectForKey:@"wasMessageRead"];
     if (wasMessageRead) {
         return YES;
     }
-    [self setWasMessageRead:YES];
     return NO;
 }
 
 - (void)setWasMessageRead:(BOOL)wasMessageRead {
-    [[_proxy objectForKey:@"properties"] setObject:@"read" forKey:@"wasMessageRead"];
+    NSDictionary *properties = @{@"wasMessageRead": @"read"};
+    [_proxy setObject:properties forKey:@"properties"];
     [modifiedKeys addObject:@"properties"];
 }
 
@@ -125,6 +129,20 @@
 - (void)setTimeOfCreation:(NSString *)timeOfCreation {
     [_proxy setObject:timeOfCreation forKey:@"created"];
     [modifiedKeys addObject:@"created"];
+}
+
+- (void)save {
+    Query *query = [[Query alloc] init];
+    [query queryWithClassName:@"users/messages/"];
+    [query setProfileKey:[Profile user].key];
+    for (NSString *key in modifiedKeys) {
+        [query setValue:[_proxy objectForKey:key] forKey:key];
+    }
+    NSDictionary *dictionaryUser = [query sendPOSTRequest];
+    if  (!(dictionaryUser == nil)) {
+        [_proxy addEntriesFromDictionary:dictionaryUser];
+        modifiedKeys = [[NSMutableArray alloc] init];
+    }
 }
 
 @end

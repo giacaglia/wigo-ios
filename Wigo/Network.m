@@ -19,6 +19,12 @@
     }];
 }
 
++ (void)queryAsynchronousAPI:(NSString *)apiName withInputDictionary:(NSDictionary *)inputDictionary withHandler:(QueryResultWithInput)resultWithInput {
+    [self queryAsynchronousAPI:apiName withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        resultWithInput(inputDictionary, jsonResponse, error);
+    }];
+}
+
 + (void)queryAsynchronousAPI:(NSString *)apiName withHandler:(QueryResult)handler {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:apiName];

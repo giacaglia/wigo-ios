@@ -56,8 +56,9 @@
 @property NSMutableArray *partyUserArray;
 @property NSMutableArray *summaryArray;
 @property Party *everyoneParty;
+@property NSMutableArray *placesArray; // Contains Events, EventsAttendees, Summary
+
 @property int numberOfFetchedParties;
-@property int indexOfEventProfileUserIsAttending;
 
 @end
 
@@ -72,6 +73,10 @@
     [self initializeNotificationObservers];
     [self initializeTapHandler];
 
+    [self loadEvents];
+}
+
+- (void) loadEvents {
     _everyoneParty = [Profile everyoneParty];
     _numberOfFetchedParties = 0;
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -79,13 +84,19 @@
         NSArray *events = [jsonRespone objectForKey:@"objects"];
         _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
         [_eventsParty addObjectsFromArray:events];
+        _placesArray = [[NSMutableArray alloc] initWithCapacity:[events count]];
+        for (Event *event in [_eventsParty getObjectArray]) {
+            NSMutableArray *place = [[NSMutableArray alloc] initWithCapacity:3];
+            [place addObject:event];
+            [_placesArray addObject:place];
+        }
         [self fetchEventAttendeesAsynchronous];
         [self fetchEventSummaryAsynchronous];
-        
-    }];    
+        if ([events count] == 0) {
+            [self fetchedOneParty];
+        }
+    }];
 }
-
-
 
 - (void) viewWillAppear:(BOOL)animated {
     self.tabBarController.tabBar.hidden = NO;
@@ -455,10 +466,8 @@
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
         
-//        UIImageView *imgView = [[UIImageView alloc] initWithImage:[user coverImage]];
         UIImageView *imgView = [[UIImageView alloc] init];
         [imgView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
-        
         imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
         [imageButton addSubview:imgView];
         
@@ -501,13 +510,23 @@
 #pragma mark - Network Asynchronous Functions
 
 -(void)fetchEventSummaryAsynchronous {
-    _summaryArray = [[NSMutableArray alloc] init];
-    for (Event *event in [_eventsParty getObjectArray]) {
+    _summaryArray = [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
+    for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+        Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
         NSNumber *eventId = [event eventID];
         NSString *queryString = [NSString stringWithFormat:@"eventattendees/summary/?event=%@", [eventId stringValue]];
-        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
+        [Network queryAsynchronousAPI:queryString
+                  withInputDictionary:(NSDictionary *)inputDictionary
+                          withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
             if (jsonResponse) {
-                [_summaryArray addObject:jsonResponse];
+                int indexOfEvent = [[resultInputDictionary objectForKey:@"i"] intValue];
+                [_summaryArray insertObject:jsonResponse atIndex:indexOfEvent];
+              
+                // Set Places Array
+                NSMutableArray *place = [_placesArray objectAtIndex:indexOfEvent];
+                [place setObject:jsonResponse atIndexedSubscript:2];
+                [_placesArray setObject:place atIndexedSubscript:indexOfEvent];
             }
             [self fetchedOneParty];
         }];
@@ -515,38 +534,48 @@
 }
 
 - (void)fetchEventAttendeesAsynchronous {
-    _partyUserArray =  [[NSMutableArray alloc] init];
-    for (Event *event in [_eventsParty getObjectArray]) {
+    _partyUserArray =  [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
+    for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+        Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
         NSNumber *eventId = [event eventID];
         NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@", [eventId stringValue]];
-       [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-           NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
-           Party *partyUser = [[Party alloc] init];
-           for (int i = 0; i < [eventAttendeesArray count]; i++) {
-               NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:i];
-               User *user;
-               if ([[eventAttendee objectForKey:@"user"] isKindOfClass:[NSDictionary class]]) {
-                   user = [[User alloc] initWithDictionary:[eventAttendee objectForKey:@"user"]];
-               }
-               else {
-                  user = (User *)[_everyoneParty getObjectWithId:[eventAttendee objectForKey:@"user"]];
-               }
-               if ([user isEqualToUser:[Profile user]]) {
-                   [Profile setIsGoingOut:YES];
-                   [[Profile user] setEventID:eventId];
-                   _indexOfEventProfileUserIsAttending = i;
-               }
-               [partyUser addObject:user];
-           }
-           [_partyUserArray addObject:partyUser];
-           [self fetchedOneParty];
-       }];
+        NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
+        [Network queryAsynchronousAPI:queryString
+                  withInputDictionary:(NSDictionary *)inputDictionary
+                          withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
+                              NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
+                              Party *partyUser = [[Party alloc] init];
+                              for (int i = 0; i < [eventAttendeesArray count]; i++) {
+                                  NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:i];
+                                  User *user;
+                                  if ([[eventAttendee objectForKey:@"user"] isKindOfClass:[NSDictionary class]]) {
+                                      user = [[User alloc] initWithDictionary:[eventAttendee objectForKey:@"user"]];
+                                  }
+                                  else {
+                                      user = (User *)[_everyoneParty getObjectWithId:[eventAttendee objectForKey:@"user"]];
+                                  }
+                                  if ([user isEqualToUser:[Profile user]]) {
+                                      [Profile setIsGoingOut:YES];
+                                      [[Profile user] setEventID:eventId];
+                                  }
+                                  [partyUser addObject:user];
+                              }
+                              int indexOfEvent = [[resultInputDictionary objectForKey:@"i"] intValue];
+                             [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
+                             
+                              // Set Places Array
+                              NSMutableArray *place = [_placesArray objectAtIndex:indexOfEvent];
+                              [place setObject:partyUser atIndexedSubscript:1];
+                              [_placesArray setObject:place atIndexedSubscript:indexOfEvent];
+                              
+                              [self fetchedOneParty];
+        }];
     }
 }
 
 - (void)fetchedOneParty {
     _numberOfFetchedParties += 1;
-    if (_numberOfFetchedParties == 2*[[_eventsParty getObjectArray] count]) {
+    if (_numberOfFetchedParties >= 2*[[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             [self initializeWhereView];
