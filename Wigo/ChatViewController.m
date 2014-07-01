@@ -158,8 +158,7 @@
     timeStampLabel.textColor = RGB(179, 179, 179);
     timeStampLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:timeStampLabel];
-    NSLog(@"Called this function");
-    NSLog(@"Last height: %d", _tableViewOfPeople.contentSize.height);
+    
     return cell;
 }
 
@@ -177,6 +176,9 @@
     Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
     [message setWasMessageRead:YES];
     User *user = [message fromUser];
+    if (!user) {
+        user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
+    }
     [self getChatOfUser:user];
 }
 

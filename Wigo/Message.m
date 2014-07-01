@@ -81,6 +81,7 @@
 
 - (void)setToUser:(NSNumber *)toUser {
     [_proxy setObject:toUser forKey:@"to_user"];
+    [modifiedKeys addObject:@"to_user"];
 }
 
 - (User *)fromUser {
@@ -132,7 +133,7 @@
 
 - (void)save {
     Query *query = [[Query alloc] init];
-    [query queryWithClassName:@"users/messages/"];
+    [query queryWithClassName:@"messages/"];
     [query setProfileKey:[Profile user].key];
     for (NSString *key in modifiedKeys) {
         [query setValue:[_proxy objectForKey:key] forKey:key];

@@ -71,10 +71,13 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     NSString *queryString = [NSString stringWithFormat:@"messages/?conversation=%@",[self.user objectForKey:@"id"]];
+    NSLog(@"query string: %@", queryString);
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
+            // Reorder them by time stamp
+            arrayOfMessages = [[arrayOfMessages reverseObjectEnumerator] allObjects];
             _messageParty = [[Party alloc] initWithObjectName:@"Message"];
             [_messageParty addObjectsFromArray:arrayOfMessages];
             [self addMessages];
@@ -264,7 +267,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     Message *message = [[Message alloc] init];
     [message setMessageString:_messageTextBox.text];
     NSDateFormatter *DateFormatter = [[NSDateFormatter alloc] init];
-    [DateFormatter setDateFormat:@"yyyy-MM-DD hh:mm a"];
+    [DateFormatter setDateFormat:@"yyyy-MM-DDhh:mm a"];
     [message setTimeOfCreation:[DateFormatter stringFromDate:[NSDate date]]];
     [message setToUser:[self.user objectForKey:@"id"]];
     [self addMessageFromSender:message];
