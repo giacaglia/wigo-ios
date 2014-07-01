@@ -35,7 +35,6 @@
 // Properties of the Who View
 @property UIScrollView *scrollView;
 @property int startingYPosition;
-@property NSMutableArray *queueOfImages;
 @property int shownImageNumber;
 
 // Tap Array (First object tag is 2)
@@ -98,7 +97,6 @@ static BOOL pushed;
     [super viewDidLoad];
     [self initializeFlashScreen];
     
-    _queueOfImages = [[NSMutableArray alloc] initWithCapacity:0];
 
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor clearColor]];
     [self initializeScrollView];
@@ -166,16 +164,16 @@ static BOOL pushed;
 - (void)initializeFlashScreen {
     self.signViewController = [[SignViewController alloc] init];
     self.signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:self.signViewController];
-//    navController.modalPresentationStyle = UIModalPresentationFormSheet;
-
     [self presentViewController:self.signNavigationViewController animated:NO completion:nil];
 }
 
 - (void) initializeScrollView {
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:_scrollView];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 200);
     _scrollView.delegate = self;
+    
+    [self addRefreshToSrollView];
 }
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -198,7 +196,7 @@ static BOOL pushed;
         }
         if ( _scrollView.contentOffset.y < 0) {
             [_barAtTopView removeFromSuperview];
-            _barAtTopView.frame = CGRectMake(0, 64, self.view.frame.size.width, 30);
+            _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
             [_scrollView addSubview:_barAtTopView];
             _goingOutIsAttachedToScrollView = YES;
         }
@@ -217,7 +215,7 @@ static BOOL pushed;
     if (!_notGoingOutIsAttachedToScrollView) {
         if (_scrollView.contentOffset.y < _scrollViewPointWhenDeatached.y) {
             [_notGoingOutView removeFromSuperview];
-            _notGoingOutView.frame = CGRectMake(0, _notGoingOutStartingPoint.y, self.view.frame.size.width, 30);
+            _notGoingOutView.frame = CGRectMake(0, _notGoingOutStartingPoint.y - 64, self.view.frame.size.width, 30);
             [_scrollView addSubview:_notGoingOutView];
             _notGoingOutIsAttachedToScrollView = YES;
         }
@@ -243,6 +241,7 @@ static BOOL pushed;
     _startingYPosition = 64;
     [self initializeBarAtTopWithText:@"GOING OUT TONIGHT"];
 
+    _startingYPosition -= 64;
     _tapArray = [[NSMutableArray alloc] initWithCapacity:0];
     _tapButtonArray = [[NSMutableArray alloc] initWithCapacity:0];
     _indexOfImage = 1;
@@ -289,7 +288,6 @@ static BOOL pushed;
         imgView.alpha = 1.0;
         imgView.tag = tag;
         [_scrollView addSubview:imgView];
-        [_queueOfImages addObject:imgView];
         
         UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, imgView.frame.size.height * 0.5, imgView.frame.size.width, imgView.frame.size.height * 0.5)];
         [profileButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
@@ -479,7 +477,6 @@ static BOOL pushed;
     [Profile setIsGoingOut:YES];
     [self setTitleIsOrange:YES];
     [self showTapIcons];
-    
     [Network postGoOut];
 }
 
@@ -609,7 +606,6 @@ static BOOL pushed;
 }
 
 
-
 - (BOOL) isUserTapped:(User *)user {
     if ([_userTappedIDArray containsObject:[user objectForKey:@"id"]]) {
         return YES;
@@ -617,6 +613,34 @@ static BOOL pushed;
     return NO;
 }
 
+#pragma mark - Refresh Control
+
+- (void)addRefreshToSrollView {
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(testRefresh:) forControlEvents:UIControlEventValueChanged];
+    [_scrollView addSubview:refreshControl];
+}
+
+- (void)testRefresh:(UIRefreshControl *)refreshControl
+{
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    [self loadViewAfterSigningUser];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"MMM d, h:mm a"];
+            NSString *lastUpdate = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
+            
+            refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdate];
+            
+            [refreshControl endRefreshing];
+            
+            NSLog(@"refresh end");
+        });
+    });
+}
 
 
 
