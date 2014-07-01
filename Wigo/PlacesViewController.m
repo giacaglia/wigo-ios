@@ -134,8 +134,6 @@
 }
 
 - (void) updateViewNotGoingOut {
-    [[Profile user] setIsGoingOut:NO];
-    [[Profile user] save];
     [_placesTableView reloadData];
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"PLACES";

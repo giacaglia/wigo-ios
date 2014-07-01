@@ -51,8 +51,9 @@
 
 - (void) stayInPressed {
     [Profile setIsGoingOut:NO];
-    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+    [[Profile user] save];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateViewNotGoingOut" object:nil];
+    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void) cancel {

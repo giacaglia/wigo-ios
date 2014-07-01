@@ -303,6 +303,7 @@
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"users/me/"];
     [query setProfileKey:self.key];
+    [modifiedKeys removeObject:@"eventID"];
     for (NSString *key in modifiedKeys) {
         [query setValue:[_proxy objectForKey:key] forKey:key];
     }

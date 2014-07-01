@@ -27,6 +27,7 @@ static Party *everyoneParty;
 }
 
 + (void)setIsGoingOut:(BOOL)varIsGoingOut {
+    [user setIsGoingOut:varIsGoingOut];
     isGoingOut = varIsGoingOut;
 }
 
