@@ -163,7 +163,7 @@
     UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followingButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
     followingLabel.textColor = [FontProperties getOrangeColor];
     followingLabel.textAlignment = NSTextAlignmentCenter;
-    followingLabel.text = @"FOLLOWING (67)";
+    followingLabel.text = [NSString stringWithFormat:@"FOLLOWING\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
     followingLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0f];
     followingLabel.lineBreakMode = NSLineBreakByWordWrapping;
     followingLabel.numberOfLines = 0;
@@ -175,7 +175,7 @@
     UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followersButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
     followersLabel.textColor = [FontProperties getOrangeColor];
     followersLabel.textAlignment = NSTextAlignmentCenter;
-    followersLabel.text = @"FOLLOWERS (45)";
+    followersLabel.text = [NSString stringWithFormat:@"FOLLOWERS\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
     followersLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0f];
 
     followersLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -407,7 +407,7 @@
         UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _leftProfileButton.frame.size.width, 60)];
         followersLabel.textColor = [FontProperties getOrangeColor];
         followersLabel.textAlignment = NSTextAlignmentCenter;
-        followersLabel.text = @"FOLLOWERS\n(1990)";
+        followersLabel.text = [NSString stringWithFormat:@"FOLLOWERS\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
         followersLabel.lineBreakMode = NSLineBreakByWordWrapping;
         followersLabel.numberOfLines = 0;
         [_leftProfileButton addSubview:followersLabel];
@@ -451,7 +451,7 @@
         UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _rightProfileButton.frame.size.width, 60)];
         followingLabel.textColor = [FontProperties getOrangeColor];
         followingLabel.textAlignment = NSTextAlignmentCenter;
-        followingLabel.text = @"FOLLOWING\n(50)";
+        followingLabel.text = [NSString stringWithFormat:@"FOLLOWING\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
         followingLabel.lineBreakMode = NSLineBreakByWordWrapping;
         followingLabel.numberOfLines = 0;
         [_rightProfileButton addSubview:followingLabel];

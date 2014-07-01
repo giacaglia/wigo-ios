@@ -141,7 +141,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 - (void)initializeFollowingButton {
     _followingButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 64, self.view.frame.size.width/3, 60)];
     _followingButton.backgroundColor = [FontProperties getLightOrangeColor];
-    [_followingButton setTitle:[NSString stringWithFormat:@"Followers\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]] forState:UIControlStateNormal];
+    [_followingButton setTitle:[NSString stringWithFormat:@"Following\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]] forState:UIControlStateNormal];
     [_followingButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     _followingButton.titleLabel.font = [FontProperties getTitleFont];
     _followingButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
