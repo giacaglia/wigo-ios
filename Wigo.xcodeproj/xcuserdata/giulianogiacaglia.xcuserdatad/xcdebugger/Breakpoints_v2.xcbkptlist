@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/ProfileViewController.m"
-            timestampString = "425846852.249871"
+            timestampString = "425949968.176614"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "218"
-            endingLineNumber = "218"
+            startingLineNumber = "223"
+            endingLineNumber = "223"
             landmarkName = "-initializeProfileImage"
             landmarkType = "5">
          </BreakpointContent>

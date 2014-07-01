@@ -16,6 +16,7 @@
 
 @property (nonatomic) UIBarButtonItem *sidebarButton;
 @property User *user;
+@property int tabNumber;
 
 
 @end

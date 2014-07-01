@@ -69,7 +69,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
     
     // Title setup
-    self.title = [[Profile user] groupName];
+    self.title = [self.user fullName];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
     [self initializeYourSchoolButton];
@@ -78,6 +78,9 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     [self initializeSearchBar];
     [self initializeTableOfPeople];
     [self initializeTapHandler];
+    if ([[self.user allKeys] containsObject:@"tabNumber"]) {
+        [self loadTableViewForTag:[self.user objectForKey:@"tabNumber"]];
+    }
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -98,9 +101,6 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-//- (void)viewDidAppear:(BOOL)animated {
-////    [[UILabel appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[FontProperties getOrangeColor]];
-//}
 
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -115,7 +115,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 
 - (void)initializeYourSchoolButton {
     _yourSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width/3, 60)];
-    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"Find\n(%d)", [_contentList count]] forState:UIControlStateNormal];
+    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", [_contentList count]] forState:UIControlStateNormal];
     _yourSchoolButton.backgroundColor = [FontProperties getOrangeColor];
     _yourSchoolButton.titleLabel.font = [FontProperties getTitleFont];
     _yourSchoolButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -128,7 +128,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 - (void)initializeFollowersButton {
     _followersButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/3, 64, self.view.frame.size.width/3, 60)];
     _followersButton.backgroundColor = [FontProperties getLightOrangeColor];
-    [_followersButton setTitle:[NSString stringWithFormat:@"Followers\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]] forState:UIControlStateNormal];
+    [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]] forState:UIControlStateNormal];
     [_followersButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     _followersButton.titleLabel.font = [FontProperties getTitleFont];
     _followersButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -141,7 +141,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 - (void)initializeFollowingButton {
     _followingButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 64, self.view.frame.size.width/3, 60)];
     _followingButton.backgroundColor = [FontProperties getLightOrangeColor];
-    [_followingButton setTitle:[NSString stringWithFormat:@"Following\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]] forState:UIControlStateNormal];
+    [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]] forState:UIControlStateNormal];
     [_followingButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     _followingButton.titleLabel.font = [FontProperties getTitleFont];
     _followingButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -272,12 +272,19 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     UIButton *chosenButton = (UIButton *)sender;
     chosenButton.backgroundColor = [FontProperties getOrangeColor];
     [chosenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    if (chosenButton.tag == 2) {
+    if (chosenButton.tag >= 2) {
+        [self loadTableViewForTag:[NSNumber numberWithInt:chosenButton.tag]];
+    }
+}
+
+- (void)loadTableViewForTag:(NSNumber *)tag {
+    if ([tag isEqualToNumber:@2]) {
         _contentList = [_everyoneParty getObjectArray];
         [_tableViewOfPeople reloadData];
     }
-    if (chosenButton.tag == 3) {
-        [self queryAsynchronousAPI:@"follows/?follow=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    else if ([tag isEqualToNumber:@3]) {
+        NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d", [[self.user objectForKey:@"id"] intValue]];
+        [self queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
             NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
             for (NSDictionary *object in arrayOfFollowObjects) {
@@ -288,13 +295,14 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
             _contentList = [party getObjectArray];
             
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                [_followersButton setTitle:[NSString stringWithFormat:@"Followers\n(%d)", [_contentList count]] forState:UIControlStateNormal];
+                [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [_contentList count]] forState:UIControlStateNormal];
                 [_tableViewOfPeople reloadData];
             });
         }];
     }
-    else if (chosenButton.tag == 4) {
-        [self queryAsynchronousAPI:@"follows/?user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    else if ([tag isEqualToNumber:@4]) {
+        NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d", [[self.user objectForKey:@"id"] intValue]];
+        [self queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
             NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
             for (NSDictionary *object in arrayOfFollowObjects) {
@@ -304,7 +312,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
             [party addObjectsFromArray:arrayOfUsers];
             _contentList = [party getObjectArray];
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                [_followingButton setTitle:[NSString stringWithFormat:@"Following\n(%d)", [_contentList count]] forState:UIControlStateNormal];
+                [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [_contentList count]] forState:UIControlStateNormal];
                 [_tableViewOfPeople reloadData];
             });
         }];

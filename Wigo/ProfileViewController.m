@@ -20,6 +20,8 @@
 
 @interface ProfileViewController ()
 
+@property BOOL didImagesLoad;
+
 @property BOOL isPersonFavorite;
 @property int currentPage;
 @property UIPageControl *pageControl;
@@ -89,6 +91,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _didImagesLoad = NO;
     
     _currentPage = 0;
     _isSeingImages = NO;
@@ -108,15 +111,18 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [self.user loadImagesWithCallback:^(
-                                        NSArray *imagesArray
-                                        ) {
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        [self initializeProfileImage];
-        [self initializeNameOfPerson];
-        
-    }];
+
+    if (!_didImagesLoad) {
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [self.user loadImagesWithCallback:^(
+                                            NSArray *imagesArray
+                                            ) {
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [self initializeProfileImage];
+            [self initializeNameOfPerson];
+            _didImagesLoad = YES;
+        }];
+    }
 }
 
 - (void) initializeLeftBarButton {
@@ -158,26 +164,25 @@
 
 
 - (void) initializeFollowingAndFollowers {
-    _followingButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/4, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 50)];
-    [_followingButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchDown];
+    _followingButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/4, 64 + self.view.frame.size.width + 50, self.view.frame.size.width/2, 50)];
+    [_followingButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchDown];
     UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followingButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
     followingLabel.textColor = [FontProperties getOrangeColor];
     followingLabel.textAlignment = NSTextAlignmentCenter;
-    followingLabel.text = [NSString stringWithFormat:@"FOLLOWING\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
+    followingLabel.text = [NSString stringWithFormat:@"FOLLOWING (%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
     followingLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0f];
     followingLabel.lineBreakMode = NSLineBreakByWordWrapping;
     followingLabel.numberOfLines = 0;
     [_followingButton addSubview:followingLabel];
     [self.view addSubview:_followingButton];
     
-    _followersButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/4, 64 + self.view.frame.size.width + 50, self.view.frame.size.width/2, 50)];
-    [_followersButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchDown];
+    _followersButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/4, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 50)];
+    [_followersButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchDown];
     UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followersButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
     followersLabel.textColor = [FontProperties getOrangeColor];
     followersLabel.textAlignment = NSTextAlignmentCenter;
-    followersLabel.text = [NSString stringWithFormat:@"FOLLOWERS\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
+    followersLabel.text = [NSString stringWithFormat:@"FOLLOWERS (%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
     followersLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0f];
-
     followersLabel.lineBreakMode = NSLineBreakByWordWrapping;
     followersLabel.numberOfLines = 0;
     [_followersButton addSubview:followersLabel];
@@ -251,21 +256,19 @@
     self.navigationItem.titleView = pageControlView;
     
     for (int i = 0; i < [[self.user imagesURL] count]; i++) {
-//        UIImage *photoImage = [[self.user images] objectAtIndex:i];
-//        UIImage *croppedImage = [UIImageCrop imageByScalingAndCroppingForSize:CGSizeMake(heightOfProfileImage, heightOfProfileImage) andImage:photoImage];
-//        UIImageView *profileImgView = [[UIImageView alloc] initWithImage:croppedImage];
+
         UIImageView *profileImgView = [[UIImageView alloc] init];
+//        profileImgView.hidden = YES;
         [profileImgView setImageWithURL:[[self.user imagesURL] objectAtIndex:i] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 UIImage *croppedImage = [UIImageCrop imageByScalingAndCroppingForSize:CGSizeMake(heightOfProfileImage, heightOfProfileImage) andImage:image];
                 profileImgView.image = croppedImage;
                 [self addBlurredImage:croppedImage toImageView:profileImgView];
+                profileImgView.hidden = NO;
             });
         }];
-//        [profileImgView setImageWithURL:[[self.user imagesURL] objectAtIndex:i] placeholderImage:[UIImage imageNamed:@"ben2.jpg"] ];
         profileImgView.frame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, heightOfProfileImage);
         [_scrollView addSubview:profileImgView];
-//        [self addBlurredImage:photoImage toImageView:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
 }
@@ -407,7 +410,7 @@
         UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _leftProfileButton.frame.size.width, 60)];
         followersLabel.textColor = [FontProperties getOrangeColor];
         followersLabel.textAlignment = NSTextAlignmentCenter;
-        followersLabel.text = [NSString stringWithFormat:@"FOLLOWERS\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
+        followersLabel.text = [NSString stringWithFormat:@"%d\nFOLLOWERS", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
         followersLabel.lineBreakMode = NSLineBreakByWordWrapping;
         followersLabel.numberOfLines = 0;
         [_leftProfileButton addSubview:followersLabel];
@@ -451,7 +454,7 @@
         UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _rightProfileButton.frame.size.width, 60)];
         followingLabel.textColor = [FontProperties getOrangeColor];
         followingLabel.textAlignment = NSTextAlignmentCenter;
-        followingLabel.text = [NSString stringWithFormat:@"FOLLOWING\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
+        followingLabel.text = [NSString stringWithFormat:@"%d\nFOLLOWING", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
         followingLabel.lineBreakMode = NSLineBreakByWordWrapping;
         followingLabel.numberOfLines = 0;
         [_rightProfileButton addSubview:followingLabel];
@@ -469,9 +472,19 @@
     [self.view addSubview:_rightProfileButton];
 }
 
+- (void)followingButtonPressed {
+    self.peopleViewController = [[PeopleViewController alloc] initWithUser:self.user];
+    [self.navigationController pushViewController:self.peopleViewController animated:YES];
+}
+
+- (void)followersButtonPressed {
+    self.peopleViewController = [[PeopleViewController alloc] initWithUser:self.user];
+    [self.navigationController pushViewController:self.peopleViewController animated:YES];
+}
+
 - (void)rightProfileButtonPressed {
     if (self.isMyProfile) {
-        self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
+        self.peopleViewController = [[PeopleViewController alloc] initWithUser:self.user];
         [self.navigationController pushViewController:self.peopleViewController animated:YES];
     }
     else {
