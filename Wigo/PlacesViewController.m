@@ -167,18 +167,23 @@
 - (void)initializeWhereView {
     _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];
     _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
-    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [self.view addSubview:_placesTableView];
-    _placesTableView.dataSource = self;
-    _placesTableView.delegate = self;
-    _yPositionOfWhereSubview = 280;
-    [self initializeGoingSomewhereElseButton];
+    if (!_placesTableView) {
+        _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+        _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        [self.view addSubview:_placesTableView];
+        _placesTableView.dataSource = self;
+        _placesTableView.delegate = self;
+        _yPositionOfWhereSubview = 280;
+        [self initializeGoingSomewhereElseButton];
+    }
+    else {
+        [_placesTableView reloadData];
+    }
+   
 }
 
 
 - (void) goOutHere:(id)sender {
-
     [Profile setIsGoingOut:YES];
     [self updatedTitleViewForGoingOut];
     UIButton *buttonSender = (UIButton *)sender;
@@ -451,9 +456,9 @@
         goOutButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
         [placeSubView addSubview:goOutButton];
     }
-    NSLog(@"party user array size %d", [_partyUserArray count]);
-    NSLog(@"Get index: %d", [indexPath row]);
-    NSLog(@"class name: %@", [partyUser class]);
+//    NSLog(@"party user array size %d", [_partyUserArray count]);
+//    NSLog(@"Get index: %d", [indexPath row]);
+//    NSLog(@"class name: %@", [partyUser class]);
     for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 55, sizeOfEachImage, sizeOfEachImage)];
@@ -522,7 +527,7 @@
                 int indexOfEvent = [[resultInputDictionary objectForKey:@"i"] intValue];
                 [_summaryArray insertObject:jsonResponse atIndex:indexOfEvent];
             }
-            NSLog(@"+1 of Event Summary fetched");
+//            NSLog(@"+1 of Event Summary fetched");
             [self fetchedOneParty];
         }];
     }
@@ -560,9 +565,9 @@
                                   [partyUser addObject:user];
                               }
                               int indexOfEvent = [[resultInputDictionary objectForKey:@"i"] intValue];
-                              NSLog(@"Set index: %d", indexOfEvent);
+//                              NSLog(@"Set index: %d", indexOfEvent);
                               [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
-                              NSLog(@"+1 of User array fetched");
+//                              NSLog(@"+1 of User array fetched");
                               [self fetchedOneParty];
         }];
     }
@@ -570,10 +575,10 @@
 
 - (void)fetchedOneParty {
     numberOfFetchedParties += 1;
-    NSLog(@"number of fetched one party: %d", numberOfFetchedParties);
-    NSLog(@"total number of events: %d", [[_eventsParty getObjectArray] count]);
+//    NSLog(@"number of fetched one party: %d", numberOfFetchedParties);
+//    NSLog(@"total number of events: %d", [[_eventsParty getObjectArray] count]);
     if (numberOfFetchedParties >= 2*[[_eventsParty getObjectArray] count]) {
-        NSLog(@"Called inside");
+//        NSLog(@"Called inside");
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             [self initializeWhereView];
