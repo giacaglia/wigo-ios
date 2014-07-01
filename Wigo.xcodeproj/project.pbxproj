@@ -912,9 +912,9 @@
 				E9AAAFC7193E357E0069F700 /* UIButtonAligned.h */,
 				E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */,
 				E9681C79195084B700182E0E /* UIButtonUngoOut.h */,
+				E9681C7A195084B700182E0E /* UIButtonUngoOut.m */,
 				E93DE52E195C99F600079074 /* UIImageCrop.h */,
 				E93DE52F195C99F600079074 /* UIImageCrop.m */,
-				E9681C7A195084B700182E0E /* UIButtonUngoOut.m */,
 			);
 			name = ViewExtensions;
 			sourceTree = "<group>";

@@ -56,13 +56,14 @@
 @property NSMutableArray *partyUserArray;
 @property NSMutableArray *summaryArray;
 @property Party *everyoneParty;
-@property NSMutableArray *placesArray; // Contains Events, EventsAttendees, Summary
 
-@property int numberOfFetchedParties;
+//@property ;
 
 @end
 
-@implementation PlacesViewController
+@implementation PlacesViewController {
+    int numberOfFetchedParties;
+}
 
 
 - (void)viewDidLoad
@@ -78,18 +79,13 @@
 
 - (void) loadEvents {
     _everyoneParty = [Profile everyoneParty];
-    _numberOfFetchedParties = 0;
+    numberOfFetchedParties = 0;
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [Network queryAsynchronousAPI:@"events/?date=tonight" withHandler:^(NSDictionary *jsonRespone, NSError *error) {
         NSArray *events = [jsonRespone objectForKey:@"objects"];
         _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
         [_eventsParty addObjectsFromArray:events];
-//        _placesArray = [[NSMutableArray alloc] initWithCapacity:[events count]];
-//        for (Event *event in [_eventsParty getObjectArray]) {
-//            NSMutableArray *place = [[NSMutableArray alloc] initWithCapacity:3];
-//            [place addObject:event];
-//            [_placesArray addObject:place];
-//        }
+
         [self fetchEventAttendeesAsynchronous];
         [self fetchEventSummaryAsynchronous];
         if ([events count] == 0) {
@@ -127,20 +123,21 @@
         [self updatedTitleViewForGoingOut];
     }
     else {
-        [self updateTitleViewNotGoingOut];
+        [self updateViewNotGoingOut];
     }
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
 }
 
 
 - (void)initializeNotificationObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTitleViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
 }
 
-- (void) updateTitleViewNotGoingOut {
+- (void) updateViewNotGoingOut {
     [_placesTableView reloadData];
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"PLACES";
+    [self loadEvents];
 }
 
 - (void) updatedTitleViewForGoingOut {
@@ -312,7 +309,6 @@
 }
 
 - (void)createPressed {
-    NSLog(@"create pressed");
     NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
     [Network postGoingToEventNumber:[eventID intValue]];
     [self loadEvents];
@@ -455,7 +451,9 @@
         goOutButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
         [placeSubView addSubview:goOutButton];
     }
-    
+    NSLog(@"party user array size %d", [_partyUserArray count]);
+    NSLog(@"Get index: %d", [indexPath row]);
+    NSLog(@"class name: %@", [partyUser class]);
     for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 55, sizeOfEachImage, sizeOfEachImage)];
@@ -523,12 +521,8 @@
             if (jsonResponse) {
                 int indexOfEvent = [[resultInputDictionary objectForKey:@"i"] intValue];
                 [_summaryArray insertObject:jsonResponse atIndex:indexOfEvent];
-              
-                // Set Places Array
-//                NSMutableArray *place = [_placesArray objectAtIndex:indexOfEvent];
-//                [place setObject:jsonResponse atIndexedSubscript:2];
-//                [_placesArray setObject:place atIndexedSubscript:indexOfEvent];
             }
+            NSLog(@"+1 of Event Summary fetched");
             [self fetchedOneParty];
         }];
     }
@@ -538,7 +532,7 @@
     _partyUserArray =  [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
     // Pre-populate Array
     for (int j = 0; j < [[_eventsParty getObjectArray] count]; j++) {
-        [_partyUserArray addObject:[[NSDictionary alloc] init]];
+        [_partyUserArray addObject:[[Party alloc] init]];
     }
     for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
         Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
@@ -566,21 +560,20 @@
                                   [partyUser addObject:user];
                               }
                               int indexOfEvent = [[resultInputDictionary objectForKey:@"i"] intValue];
-                             [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
-                             
-                              // Set Places Array
-//                              NSMutableArray *place = [_placesArray objectAtIndex:indexOfEvent];
-//                              [place setObject:partyUser atIndexedSubscript:1];
-//                              [_placesArray setObject:place atIndexedSubscript:indexOfEvent];
-                              
+                              NSLog(@"Set index: %d", indexOfEvent);
+                              [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
+                              NSLog(@"+1 of User array fetched");
                               [self fetchedOneParty];
         }];
     }
 }
 
 - (void)fetchedOneParty {
-    _numberOfFetchedParties += 1;
-    if (_numberOfFetchedParties >= 2*[[_eventsParty getObjectArray] count]) {
+    numberOfFetchedParties += 1;
+    NSLog(@"number of fetched one party: %d", numberOfFetchedParties);
+    NSLog(@"total number of events: %d", [[_eventsParty getObjectArray] count]);
+    if (numberOfFetchedParties >= 2*[[_eventsParty getObjectArray] count]) {
+        NSLog(@"Called inside");
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             [self initializeWhereView];
