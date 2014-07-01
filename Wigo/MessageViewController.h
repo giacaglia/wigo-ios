@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ConversationViewController.h"
 
 @interface MessageViewController : UIViewController <UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
+
+@property ConversationViewController *conversationViewController;
 
 @end

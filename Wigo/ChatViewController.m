@@ -162,7 +162,6 @@
 
 - (void) getChatOfUser:(User *)user {
     self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
-    self.conversationViewController.view.backgroundColor = [UIColor whiteColor];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
 }

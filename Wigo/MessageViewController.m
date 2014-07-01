@@ -104,8 +104,7 @@
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    
+
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
     [cell.contentView addSubview:profileImageView];
@@ -134,6 +133,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 75;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    User *user = [_contentList objectAtIndex:[indexPath row]];
+    self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
+    [self.navigationController pushViewController:self.conversationViewController animated:YES];
 }
 
 
