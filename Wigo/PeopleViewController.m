@@ -40,6 +40,14 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 
 @implementation PeopleViewController
 
+- (id)initWithUser:(User *)user {
+    self = [super init];
+    if (self) {
+        self.user = user;
+        self.view.backgroundColor = [UIColor whiteColor];
+    }
+    return self;
+}
 
 - (id)init {
     self = [super init];
@@ -120,7 +128,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 - (void)initializeFollowersButton {
     _followersButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/3, 64, self.view.frame.size.width/3, 60)];
     _followersButton.backgroundColor = [FontProperties getLightOrangeColor];
-    [_followersButton setTitle:@"Followers\n" forState:UIControlStateNormal];
+    [_followersButton setTitle:[NSString stringWithFormat:@"Followers\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]] forState:UIControlStateNormal];
     [_followersButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     _followersButton.titleLabel.font = [FontProperties getTitleFont];
     _followersButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -133,7 +141,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 - (void)initializeFollowingButton {
     _followingButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 64, self.view.frame.size.width/3, 60)];
     _followingButton.backgroundColor = [FontProperties getLightOrangeColor];
-    [_followingButton setTitle:@"Following\n" forState:UIControlStateNormal];
+    [_followingButton setTitle:[NSString stringWithFormat:@"Followers\n(%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]] forState:UIControlStateNormal];
     [_followingButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     _followingButton.titleLabel.font = [FontProperties getTitleFont];
     _followingButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;

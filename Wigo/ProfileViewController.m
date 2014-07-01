@@ -427,7 +427,7 @@
 
 - (void)leftProfileButtonPressed {
     if (self.isMyProfile) {
-        self.peopleViewController = [[PeopleViewController alloc] init];
+        self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
         [self.navigationController pushViewController:self.peopleViewController animated:YES];
     }
     else {
@@ -471,7 +471,7 @@
 
 - (void)rightProfileButtonPressed {
     if (self.isMyProfile) {
-        self.peopleViewController = [[PeopleViewController alloc] init];
+        self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
         [self.navigationController pushViewController:self.peopleViewController animated:YES];
     }
     else {

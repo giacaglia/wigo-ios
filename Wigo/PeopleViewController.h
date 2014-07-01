@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import "User.h"
 
 @interface PeopleViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
+-(id)initWithUser:(User *)user;
+
 @property (nonatomic) UIBarButtonItem *sidebarButton;
+@property User *user;
 
 
 @end

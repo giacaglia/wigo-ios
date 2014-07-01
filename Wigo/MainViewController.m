@@ -409,7 +409,7 @@ static BOOL pushed;
 }
 
 - (void)followPressed {
-    self.peopleViewController = [[PeopleViewController alloc] init];
+    self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
     [self.navigationController pushViewController:self.peopleViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
 }
