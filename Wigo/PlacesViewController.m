@@ -181,18 +181,13 @@
 
 
 - (void) goOutHere:(id)sender {
+
     [Profile setIsGoingOut:YES];
     [self updatedTitleViewForGoingOut];
     UIButton *buttonSender = (UIButton *)sender;
-    UIView *goingSomewhereView = [buttonSender superview];
-    UILabel *nameOfPlaceSubiew = [goingSomewhereView.subviews objectAtIndex:0];
-    int indexOfObject = [_contentList indexOfObject:nameOfPlaceSubiew.text];
-    [_contentList removeObjectAtIndex:indexOfObject];
-    [_contentList insertObject:nameOfPlaceSubiew.text atIndex:0];
-    [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [_placesTableView reloadData];
     [[Profile user] setEventID:[NSNumber numberWithInt:buttonSender.tag]];
     [Network postGoingToEventNumber:buttonSender.tag];
+    [self loadEvents];
 }
 
 - (void)initializeGoingSomewhereElseButton {
@@ -317,8 +312,10 @@
 }
 
 - (void)createPressed {
+    NSLog(@"create pressed");
     NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
     [Network postGoingToEventNumber:[eventID intValue]];
+    [self loadEvents];
 }
 
 - (void)textFieldDidChange:(UITextField *)textField {
@@ -524,9 +521,9 @@
                 [_summaryArray insertObject:jsonResponse atIndex:indexOfEvent];
               
                 // Set Places Array
-                NSMutableArray *place = [_placesArray objectAtIndex:indexOfEvent];
-                [place setObject:jsonResponse atIndexedSubscript:2];
-                [_placesArray setObject:place atIndexedSubscript:indexOfEvent];
+//                NSMutableArray *place = [_placesArray objectAtIndex:indexOfEvent];
+//                [place setObject:jsonResponse atIndexedSubscript:2];
+//                [_placesArray setObject:place atIndexedSubscript:indexOfEvent];
             }
             [self fetchedOneParty];
         }];
@@ -564,9 +561,9 @@
                              [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
                              
                               // Set Places Array
-                              NSMutableArray *place = [_placesArray objectAtIndex:indexOfEvent];
-                              [place setObject:partyUser atIndexedSubscript:1];
-                              [_placesArray setObject:place atIndexedSubscript:indexOfEvent];
+//                              NSMutableArray *place = [_placesArray objectAtIndex:indexOfEvent];
+//                              [place setObject:partyUser atIndexedSubscript:1];
+//                              [_placesArray setObject:place atIndexedSubscript:indexOfEvent];
                               
                               [self fetchedOneParty];
         }];
