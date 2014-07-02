@@ -40,20 +40,20 @@
 # pragma mark - Synchronous Methods
 
 + (void)unfollowUser:(User *)user {
-    Query *query = [[Query alloc] init];
-    [query queryWithClassName:@"follow/"];
-    User *profileUser = [Profile user];
-    [query setProfileKey:profileUser.key];
-    [query setValue:[user objectForKey:@"id"] forKey:@"follows"];
-    NSDictionary *result = [query sendPOSTRequest];
+//    Query *query = [[Query alloc] init];
+//    [query queryWithClassName:@"follow/"];
+//    User *profileUser = [Profile user];
+//    [query setProfileKey:profileUser.key];
+//    [query setValue:[user objectForKey:@"id"] forKey:@"follows"];
+//    NSDictionary *result = [query sendPOSTRequest];
 }
 
 + (void)followUser:(User *)user {
     Query *query = [[Query alloc] init];
-    [query queryWithClassName:@"follow/"];
+    [query queryWithClassName:@"follows/"];
     User *profileUser = [Profile user];
     [query setProfileKey:profileUser.key];
-    [query setValue:[user objectForKey:@"id"] forKey:@"follows"];
+    [query setValue:[user objectForKey:@"id"] forKey:@"follow"];
     NSDictionary *result = [query sendPOSTRequest];
 }
 

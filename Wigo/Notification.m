@@ -71,7 +71,7 @@
 
 - (NSString *)message {
     if ([[self type] isEqualToString:@"tap"]) {
-        return @"wants to see you out tonight!";
+        return @"wants to see you out";
     }
     else if([[self type] isEqualToString:@"follow"]) {
         return @"is now following you";

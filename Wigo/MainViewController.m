@@ -116,7 +116,7 @@
     
 
 
-    [Network fetchAsynchronousAPI:@"taps/" withResult:^(NSArray *taps, NSError *error) {
+    [Network fetchAsynchronousAPI:@"taps/?user=me" withResult:^(NSArray *taps, NSError *error) {
         _userTappedIDArray = [[NSMutableArray alloc] init];
         for (int i = 0; i < [taps count]; i++) {
             NSDictionary *userTappedDictionary = [[taps objectAtIndex:i] objectForKey:@"tapped"];
@@ -132,6 +132,7 @@
         // Update NOT GOING OUT PARTY
         _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
         for (User *user in [_everyoneParty getObjectArray]) {
+            NSLog(@"user %@", user);
             if (![_whoIsGoingOutParty containsObject:user]) {
                 [_notGoingOutParty addObject:user];
             }

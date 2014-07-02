@@ -384,7 +384,7 @@
     if (senderButton.tag == -100) {
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = 100;
-//        [Network followUser:user];
+        [Network followUser:user];
     }
     else {
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];

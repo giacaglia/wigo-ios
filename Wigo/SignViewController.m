@@ -139,8 +139,8 @@
 - (void) finishLogIn:(NSString *)response {
     BOOL userDidSignUp = [self didUserSignUp:response];
     if (userDidSignUp) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
         [self dismissViewControllerAnimated:YES  completion:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
     }
     else {
         [self fetchProfilePicturesAlbumFacebook];
