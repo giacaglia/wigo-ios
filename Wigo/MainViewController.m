@@ -68,20 +68,6 @@
 
 @implementation MainViewController
 
-static BOOL pushed;
-
-- (id)init {
-    self = [super init];
-    if (self) {
-        pushed = NO;
-    }
-    return self;
-}
-
-+ (void)setPushed:(BOOL)push {
-    pushed = push;
-}
-
 - (void) viewWillAppear:(BOOL)animated {
     self.tabBarController.tabBar.hidden = NO;
     [self initializeTabBar];

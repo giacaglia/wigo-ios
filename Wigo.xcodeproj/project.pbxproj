@@ -158,7 +158,6 @@
 		E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906C419253A1D00E39FC8 /* ChatViewController.m */; };
 		E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906C719255BB000E39FC8 /* SignViewController.m */; };
 		E9D906CB19255CD900E39FC8 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906CA19255CD900E39FC8 /* MBProgressHUD.m */; };
-		E9D906CD19255D1000E39FC8 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906CC19255D1000E39FC8 /* Parse.framework */; };
 		E9D906CF19255D8200E39FC8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906CE19255D8200E39FC8 /* AudioToolbox.framework */; };
 		E9D906D119255D8B00E39FC8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D019255D8B00E39FC8 /* CFNetwork.framework */; };
 		E9D906D319255D9A00E39FC8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D219255D9A00E39FC8 /* CoreLocation.framework */; };
@@ -396,7 +395,6 @@
 		E9D906C719255BB000E39FC8 /* SignViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignViewController.m; sourceTree = "<group>"; };
 		E9D906C919255CD900E39FC8 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		E9D906CA19255CD900E39FC8 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
-		E9D906CC19255D1000E39FC8 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		E9D906CE19255D8200E39FC8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E9D906D019255D8B00E39FC8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		E9D906D219255D9A00E39FC8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -440,7 +438,6 @@
 				E9D7D5311925642B00E1ED10 /* FacebookSDK.framework in Frameworks */,
 				E921D61A1923967D00361247 /* UIKit.framework in Frameworks */,
 				E921D6161923967D00361247 /* Foundation.framework in Frameworks */,
-				E9D906CD19255D1000E39FC8 /* Parse.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -555,7 +552,6 @@
 				E9D906D219255D9A00E39FC8 /* CoreLocation.framework */,
 				E9D906D019255D8B00E39FC8 /* CFNetwork.framework */,
 				E9D906CE19255D8200E39FC8 /* AudioToolbox.framework */,
-				E9D906CC19255D1000E39FC8 /* Parse.framework */,
 				E98C185B1924176500EF60F8 /* MapKit.framework */,
 				E921D6151923967D00361247 /* Foundation.framework */,
 				E921D6171923967D00361247 /* CoreGraphics.framework */,

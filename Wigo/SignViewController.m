@@ -14,6 +14,10 @@
 #import "User.h"
 #import "Query.h"
 
+#if !defined(StringOrEmpty)
+#define StringOrEmpty(A)  ({ __typeof__(A) __a = (A); __a ? __a : @""; })
+#endif
+
 @interface SignViewController ()
 @property BOOL pushed;
 @property FBLoginView *loginView;
@@ -39,9 +43,34 @@
 
     _pushed = NO;
     [self.parentViewController.navigationController setNavigationBarHidden:YES ];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self logInViaApp];
+}
+
+- (void) logInViaApp {
+    NSString *fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"]);
+    NSString *email = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"email"]);
+    NSString *accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
     
-    [self initializeLogo];
-    [self initializeSignButton];
+    User *userProfile = [Profile user];
+    [userProfile setObject:fbID forKey:@"fbID"];
+    [userProfile setEmail:email];
+    [userProfile setAccessToken:accessToken];
+    [Profile setUser:userProfile];
+    
+    NSString *response = [userProfile login];
+    [Profile setUser:userProfile];
+    if ([response isEqualToString:@"logged_in"]) {
+        [self finishLogIn:response];
+    }
+    else {
+        [self initializeLogo];
+        [self initializeSignButton];
+    }
+    
 }
 
 - (void) initializeLogo {
@@ -82,40 +111,53 @@
     [self.view addSubview:dontWorryLabel];
 }
 
+
+#pragma mark - Log In Via FB
+
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
+    NSLog(@"LoginInView Fetched User");
     if (!_pushed) {
         _pushed = YES;
         
-        [MainViewController setPushed:YES];
-
         User *userProfile = [Profile user];
         [userProfile setObject:[fbGraphUser objectID] forKey:@"fbID"];
         [userProfile setEmail:fbGraphUser[@"email"]];
+        [userProfile setAccessToken:[FBSession activeSession].accessTokenData.accessToken];
         [Profile setUser:userProfile];
-       
         NSString *response = [userProfile login];
-        [userProfile setFirstName:fbGraphUser[@"first_name"]];
-        [userProfile setLastName:fbGraphUser[@"last_name"]];
         [Profile setUser:userProfile];
-        BOOL userDidSignUp = [self didUserSignUp:response];
-        if (userDidSignUp) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }
-        else {
-            [self fetchProfilePicturesAlbumFacebook];
-        }
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[fbGraphUser objectID] forKey: @"fbID"];
+        [[NSUserDefaults standardUserDefaults] setObject:fbGraphUser[@"email"] forKey: @"email"];
+        [[NSUserDefaults standardUserDefaults] setObject:[FBSession activeSession].accessTokenData.accessToken forKey: @"accessToken"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        [self finishLogIn:response];
     }
 }
+
+- (void) finishLogIn:(NSString *)response {
+    BOOL userDidSignUp = [self didUserSignUp:response];
+    if (userDidSignUp) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+        [self dismissViewControllerAnimated:YES  completion:nil];
+    }
+    else {
+        [self fetchProfilePicturesAlbumFacebook];
+    }
+}
+
+#pragma mark - Sign Up Process
 
 - (BOOL) didUserSignUp:(NSString *)response {
     if ([response isEqualToString:@"invalid_email"]) {
         NSLog(@"invalid email");
         return NO;
     }
-    else {
-        return YES;
+    else if ([response isEqualToString:@"Error"]) {
+        return NO;
     }
+    return YES;
 }
 
 - (void) fetchProfilePicturesAlbumFacebook {

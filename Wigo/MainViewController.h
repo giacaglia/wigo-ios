@@ -16,6 +16,5 @@
 @property PeopleViewController *peopleViewController;
 @property SignViewController *signViewController;
 @property SignNavigationViewController *signNavigationViewController;
-+ (void)setPushed:(BOOL)push;
 
 @end

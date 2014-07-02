@@ -87,6 +87,15 @@
     [modifiedKeys addObject:@"email"];
 }
 
+- (NSString *)accessToken {
+    return (NSString *)[_proxy objectForKey:@"accessToken"];
+}
+
+- (void)setAccessToken:(NSString *)accessToken {
+    [_proxy setObject:accessToken forKey:@"accessToken"];
+    [modifiedKeys addObject:@"accessToken"];
+}
+
 - (NSString *)key {
     return (NSString *)[_proxy objectForKey:@"key"];
 }
@@ -264,7 +273,6 @@
     return [NSString stringWithFormat:@"%@ %@", [_proxy objectForKey:@"first_name"], [_proxy objectForKey:@"last_name"]];
 }
 
-
 - (BOOL)isGoingOut {
     NSNumber *goingOutNumber = (NSNumber *)[_proxy objectForKey:@"goingout"];
     return [goingOutNumber boolValue];
@@ -280,22 +288,35 @@
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"login"];
     [query setValue:[self objectForKey:@"fbID"] forKey:@"facebook_id"];
-    [query setValue:[FBSession activeSession].accessTokenData.accessToken forKey:@"facebook_access_token"];
+    [query setValue:[self accessToken] forKey:@"facebook_access_token"];
     [query setValue:self.email forKey:@"email"];
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
-    if ([[dictionaryUser objectForKey:@"code"] isEqualToString:@"invalid_email"]) {
-        return @"invalid_email";
+    if ([[dictionaryUser allKeys] containsObject:@"code"]) {
+        if ([[dictionaryUser objectForKey:@"code"] isEqualToString:@"invalid_email"]) {
+            return @"invalid_email";
+        }
+        else if ([[dictionaryUser objectForKey:@"code"] isEqualToString:@"expired_token"]) {
+            return @"expired_token";
+        }
     }
-    NSLog(@"dictionary user %@", dictionaryUser);
-    [self setKey:[dictionaryUser objectForKey:@"key"]];
-    [modifiedKeys removeObject:@"facebook_access_token"];
-    [modifiedKeys removeObject:@"email"];
-    [modifiedKeys removeObject:@"first_name"];
-    [modifiedKeys removeObject:@"last_name"];
-    [modifiedKeys removeObject:@"fbID"];
-    [modifiedKeys removeObject:@"key"];
+    if ([[dictionaryUser allKeys] containsObject:@"status"]) {
+        if ([[dictionaryUser objectForKey:@"status"] isEqualToString:@"error"]) {
+            return @"error";
+        }
+    }
 
-    [self save];
+    NSLog(@"dictionary user %@", dictionaryUser);
+    for (NSString *key in [dictionaryUser allKeys]) {
+        [self setValue:[dictionaryUser objectForKey:key] forKey:key];
+    }
+//    [modifiedKeys removeObject:@"facebook_access_token"];
+//    [modifiedKeys removeObject:@"email"];
+//    [modifiedKeys removeObject:@"first_name"];
+//    [modifiedKeys removeObject:@"last_name"];
+//    [modifiedKeys removeObject:@"fbID"];
+//    [modifiedKeys removeObject:@"key"];
+//
+//    [self save];
     return @"logged_in";
 }
 

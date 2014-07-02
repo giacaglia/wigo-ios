@@ -11,8 +11,11 @@
 
 @interface User : NSMutableDictionary
 
-
+// Necessary Data
 @property NSString *email;
+@property NSString *accessToken;
+
+@property NSString *key;
 @property UIImage *coverImage;
 @property NSString *firstName;
 @property NSString *lastName;
@@ -20,10 +23,8 @@
 @property NSNumber* eventID;
 @property NSString *groupName;
 @property NSString *bioString;
-@property NSString *key;
 @property BOOL private;
 @property BOOL isGoingOut;
-
 
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
