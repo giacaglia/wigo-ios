@@ -8,7 +8,7 @@
 
 #import "Query.h"
 
-static NSString * const BaseURLString = @"http://api.wigo.us%@";
+static NSString * const BaseURLString = @"https://wigo.herokuapp.com%@";
 
 @interface Query ()
 @property NSString *urlSuffix;
