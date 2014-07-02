@@ -62,6 +62,7 @@
 @property NSMutableArray *userTappedIDArray;
 @property int numberOfFetchedParties;
 @property Party *everyoneParty;
+@property Party *followingParty;
 @property Party *whoIsGoingOutParty;
 @property Party *notGoingOutParty;
 @end
@@ -93,19 +94,28 @@
 - (void)loadViewAfterSigningUser {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 
-    _numberOfFetchedParties = 0;
     [Network fetchAsynchronousAPI:@"users/" withResult:^(NSArray *arrayOfUsers, NSError *error) {
         _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         [Profile setEveryoneParty:_everyoneParty];
+    }];
+    
+    _numberOfFetchedParties = 0;
+    [Network queryAsynchronousAPI:@"follows/?user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+        for (NSDictionary *object in arrayOfFollowObjects) {
+            [arrayOfUsers addObject:[object objectForKey:@"follow"]];
+        }
+        _followingParty = [[Party alloc] initWithObjectName:@"User"];
+        [_followingParty addObjectsFromArray:arrayOfUsers];
         [self fetchedOneParty];
         
-        
-        [Network fetchAsynchronousAPI:@"goingouts/" withResult:^(NSArray *arrayOfUsers, NSError *error) {
+        [Network fetchAsynchronousAPI:@"goingouts/?user=friends" withResult:^(NSArray *arrayOfUsers, NSError *error) {
             _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
             for (NSDictionary *object in arrayOfUsers) {
                 NSNumber* userID = [object objectForKey:@"user"];
-                [_whoIsGoingOutParty addObject:[_everyoneParty getObjectWithId:userID]];
+                [_whoIsGoingOutParty addObject:[_followingParty getObjectWithId:userID]];
             }
             [Profile setIsGoingOut:[_whoIsGoingOutParty containsObject:[Profile user]]];
             [_whoIsGoingOutParty removeUserFromParty:[Profile user]];
@@ -113,7 +123,6 @@
         }];
         
     }];
-    
 
 
     [Network fetchAsynchronousAPI:@"taps/?user=me" withResult:^(NSArray *taps, NSError *error) {
@@ -131,8 +140,7 @@
         
         // Update NOT GOING OUT PARTY
         _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-        for (User *user in [_everyoneParty getObjectArray]) {
-            NSLog(@"user %@", user);
+        for (User *user in [_followingParty getObjectArray]) {
             if (![_whoIsGoingOutParty containsObject:user]) {
                 [_notGoingOutParty addObject:user];
             }
@@ -276,10 +284,16 @@
         imgView.tag = tag;
         [_scrollView addSubview:imgView];
         
+        
         UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, imgView.frame.size.height * 0.5, imgView.frame.size.width, imgView.frame.size.height * 0.5)];
         [profileButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
         [imgView bringSubviewToFront:profileButton];
         [imgView addSubview:profileButton];
+        
+        UIButton *buttonAtTop = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imgView.frame.size.width * 0.5, imgView.frame.size.height * 0.5)];
+        [buttonAtTop addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
+        [imgView bringSubviewToFront:buttonAtTop];
+        [imgView addSubview:buttonAtTop];
         
         UILabel *profileName = [[UILabel alloc] init];
         profileName.text = [user firstName];

@@ -22,7 +22,7 @@ static Party *everyoneParty;
     return [user coverImage];
 }
 
-+ (BOOL)isGoingOut {
++ (BOOL)isGoingOut {    
     return isGoingOut;
 }
 
