@@ -202,7 +202,6 @@
     goingSomewhereLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0];
     goingSomewhereLabel.textColor = [FontProperties getBlueColor];
     [_goingSomewhereButton addSubview:goingSomewhereLabel];
-    
     UIImageView *goingSomewhereImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"goingSomewhereElse"]];
     goingSomewhereImageView.frame = CGRectMake(_goingSomewhereButton.frame.size.height/2 - 15, 21, 23, 31);
     [_goingSomewhereButton addSubview:goingSomewhereImageView];
@@ -210,13 +209,10 @@
 
 - (void) goingSomewhereElsePressed {
     [self showWhereAreYouGoingView];
-    [Profile setIsGoingOut:YES];
-    [self updatedTitleViewForGoingOut];
     [_whereAreYouGoingTextField becomeFirstResponder];
 }
 
-
-- (void)profileSegue {    
+- (void)profileSegue {
     self.profileViewController = [[ProfileViewController alloc] initWithProfile:YES];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
@@ -317,6 +313,8 @@
 - (void)createPressed {
     NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
     [Network postGoingToEventNumber:[eventID intValue]];
+    [Profile setIsGoingOut:YES];
+    [self updatedTitleViewForGoingOut];
     [self loadEvents];
 }
 
