@@ -150,23 +150,25 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     messageWrapper.clipsToBounds = YES;
     [_scrollView addSubview:messageWrapper];
     
-    UILabel *messageFromSender = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3 , 50)];
-    messageFromSender.backgroundColor = RGB(234, 234, 234);
-    messageFromSender.text = [message messageString];
-    messageFromSender.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
-    messageFromSender.numberOfLines = 0;
-    messageFromSender.lineBreakMode = NSLineBreakByWordWrapping;
-    [messageFromSender sizeToFit];
+    // Add text to the wrapper
+    UILabel *messageFromReceiver = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3 , 50)];
+    messageFromReceiver.backgroundColor = RGB(234, 234, 234);
+    messageFromReceiver.text = [message messageString];
+    messageFromReceiver.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
+    messageFromReceiver.numberOfLines = 0;
+    messageFromReceiver.lineBreakMode = NSLineBreakByWordWrapping;
+    [messageFromReceiver sizeToFit];
     
-    CGSize sizeOfMessage = messageFromSender.frame.size;
+    // Adjust size of the wrapper
+    CGSize sizeOfMessage = messageFromReceiver.frame.size;
     messageWrapper.frame = CGRectMake(10, _positionOfLastMessage , MAX(sizeOfMessage.width + 20, 100+ 20), sizeOfMessage.height + 20);
-    [messageWrapper addSubview:messageFromSender];
+    [messageWrapper addSubview:messageFromReceiver];
 
     [self addTimerOfMessage:message ToView:messageWrapper];
     
-    // left Image view for the chat
+    // Left Image view for the chat
     UIImageView *leftBarBeforeMessage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"leftBeforeChatIcon"]];
-    leftBarBeforeMessage.frame = CGRectMake(0, _positionOfLastMessage + messageFromSender.frame.size.height + 20 - 5, 10, 15);
+    leftBarBeforeMessage.frame = CGRectMake(0, _positionOfLastMessage + messageFromReceiver.frame.size.height + 20 - 5, 10, 15);
     [_scrollView addSubview:leftBarBeforeMessage];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _scrollView.contentSize.height + messageWrapper.frame.size.height + 10);
     _positionOfLastMessage += messageWrapper.frame.size.height + 10;
@@ -181,21 +183,22 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [_scrollView addSubview:messageWraper];
     
     // Add text to the wrapper
-    UILabel *messageFromReceiver = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3, 50)];
-    messageFromReceiver.text = [message messageString];;
-    messageFromReceiver.textAlignment = NSTextAlignmentRight;
-    messageFromReceiver.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
-    [messageFromReceiver sizeToFit];
+    UILabel *messageFromSender = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3, 50)];
+    messageFromSender.text = [message messageString];;
+    messageFromSender.textAlignment = NSTextAlignmentRight;
+    messageFromSender.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
+    [messageFromSender sizeToFit];
     
     // Adjust the size of the wrapper
-    CGSize sizeOfMessage = messageFromReceiver.frame.size;
-    messageWraper.frame = CGRectMake(self.view.frame.size.width - sizeOfMessage.width - 10 - 20,_positionOfLastMessage , MAX(sizeOfMessage.width + 20, 100 + 20), sizeOfMessage.height + 20);
-    [messageWraper addSubview:messageFromReceiver];
+    CGSize sizeOfMessage = messageFromSender.frame.size;
+    int widthOfMessage = MAX(sizeOfMessage.width + 20, 30 + 20);
+    messageWraper.frame = CGRectMake(self.view.frame.size.width - 10 - widthOfMessage, _positionOfLastMessage , widthOfMessage, sizeOfMessage.height + 20);
+    [messageWraper addSubview:messageFromSender];
     [self addTimerOfMessage:message ToView:messageWraper];
     
     // image at the right of the message
     UIImageView *rightBarAfterMessage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightAfterChatIcon"]];
-    rightBarAfterMessage.frame = CGRectMake(self.view.frame.size.width - 10, _positionOfLastMessage +  messageFromReceiver.frame.size.height + 20 - 5, 10, 15);
+    rightBarAfterMessage.frame = CGRectMake(self.view.frame.size.width - 10, _positionOfLastMessage +  messageFromSender.frame.size.height + 20 - 5, 10, 15);
     [_scrollView addSubview:rightBarAfterMessage];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _scrollView.contentSize.height + messageWraper.frame.size.height + 10);
     _positionOfLastMessage += messageWraper.frame.size.height + 10;
