@@ -16,7 +16,7 @@ static NSString *placeGoingOut;
 static User *user;
 static NSArray *images;
 static Party *everyoneParty;
-
+static Party *followingParty;
 
 + (UIImage *)getProfileImage {
     return [user coverImage];
@@ -51,6 +51,17 @@ static Party *everyoneParty;
 
 + (void)setEveryoneParty:(Party *)newEveryoneParty {
     everyoneParty = newEveryoneParty;
+}
+
++ (Party *)followingParty {
+    if (followingParty == nil) {
+        followingParty = [[Party alloc] init];
+    }
+    return followingParty;
+}
+
++ (void)setFollowingParty:(Party *)newFollowingParty {
+    followingParty = newFollowingParty;
 }
 
 

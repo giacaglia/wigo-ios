@@ -17,6 +17,9 @@
 
 + (Party *)everyoneParty;
 + (void)setEveryoneParty:(Party *)newEveryoneParty;
++ (Party *)followingParty;
++ (void)setFollowingParty:(Party *)newFollowingParty;
+
 
 + (UIImage *)getProfileImage;
 + (BOOL)isGoingOut;

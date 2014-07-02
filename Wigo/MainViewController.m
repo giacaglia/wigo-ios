@@ -109,6 +109,8 @@
         }
         _followingParty = [[Party alloc] initWithObjectName:@"User"];
         [_followingParty addObjectsFromArray:arrayOfUsers];
+        [Profile setFollowingParty:_followingParty];
+
         [self fetchedOneParty];
         
         [Network fetchAsynchronousAPI:@"goingouts/?user=friends" withResult:^(NSArray *arrayOfUsers, NSError *error) {
@@ -283,7 +285,6 @@
         imgView.alpha = 1.0;
         imgView.tag = tag;
         [_scrollView addSubview:imgView];
-        
         
         UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, imgView.frame.size.height * 0.5, imgView.frame.size.width, imgView.frame.size.height * 0.5)];
         [profileButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];

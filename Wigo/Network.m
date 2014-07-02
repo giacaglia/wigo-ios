@@ -40,12 +40,18 @@
 # pragma mark - Synchronous Methods
 
 + (void)unfollowUser:(User *)user {
-//    Query *query = [[Query alloc] init];
-//    [query queryWithClassName:@"follow/"];
-//    User *profileUser = [Profile user];
-//    [query setProfileKey:profileUser.key];
-//    [query setValue:[user objectForKey:@"id"] forKey:@"follows"];
-//    NSDictionary *result = [query sendPOSTRequest];
+    NSString *queryString = [NSString stringWithFormat:@"follows/user=%d", [(NSNumber *)[user objectForKey:@"id"] intValue]];
+    [self queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if ([[jsonResponse allKeys] containsObject:@"id"]) {
+            NSNumber *followObjectNumber = [jsonResponse objectForKey:@"id"];
+            Query *query = [[Query alloc] init];
+            NSString *apiName = [NSString stringWithFormat:@"follows/%d", [followObjectNumber intValue]];
+            [query queryWithClassName:apiName];
+            User *profileUser = [Profile user];
+            [query setProfileKey:profileUser.key];
+            [query sendDELETERequest];
+        }
+    }];
 }
 
 + (void)followUser:(User *)user {

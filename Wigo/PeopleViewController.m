@@ -68,7 +68,7 @@
     [_everyoneParty removeUserFromParty:[Profile user]];
     _contentList = [_everyoneParty getObjectArray];
     _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
-    _followingParty = [[Party alloc] init];
+    _followingParty = [Profile followingParty];
     
     // Title setup
     self.title = [self.user fullName];
@@ -306,21 +306,10 @@
         }];
     }
     else if ([tag isEqualToNumber:@4]) {
-        NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d", [[self.user objectForKey:@"id"] intValue]];
-        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-            NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-            for (NSDictionary *object in arrayOfFollowObjects) {
-                [arrayOfUsers addObject:[object objectForKey:@"follow"]];
-            }
-            _followingParty = [[Party alloc] initWithObjectName:@"User"];
-            [_followingParty addObjectsFromArray:arrayOfUsers];
-            _contentList = [_followingParty getObjectArray];
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [_contentList count]] forState:UIControlStateNormal];
-                [_tableViewOfPeople reloadData];
-            });
-        }];
+        _followingParty = [Profile followingParty];
+        _contentList = [_followingParty getObjectArray];
+        [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [_contentList count]] forState:UIControlStateNormal];
+        [_tableViewOfPeople reloadData];
     }
 }
 
@@ -358,14 +347,15 @@
     [cell.contentView addSubview:profileImageView];
     
     UIButton *favoriteButton = [[UIButton alloc]initWithFrame:CGRectMake(250, 24, 49, 30)];
-    favoriteButton.tag = -100;
     [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+    favoriteButton.tag = -100;
     [favoriteButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
     [cell.contentView addSubview:favoriteButton];
     
     if ([[_followingParty getObjectArray] count] > 0 ) {
         if ([_followingParty containsObject:user]) {
             [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+            favoriteButton.tag = 100;
         }
     }
     
@@ -389,7 +379,7 @@
     else {
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
-//        [Network unfollowUser:user];
+        [Network unfollowUser:user];
     }
 }
 
