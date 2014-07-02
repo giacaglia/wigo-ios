@@ -18,6 +18,8 @@ typedef void (^FetchResult)(NSArray *arrayResponse, NSError *error);
 + (void)fetchAsynchronousAPI:(NSString *)apiName withResult:(FetchResult)fetchResult;
 + (void)queryAsynchronousAPI:(NSString *)apiName withInputDictionary:(NSDictionary *)inputDictionary withHandler:(QueryResultWithInput)resultWithInput;
 + (void)queryAsynchronousAPI:(NSString *)apiName withHandler:(QueryResult)handler;
+// Synchronous methods
++ (void)followUser:(User *)user;
 + (void)sendTapToUserWithIndex:(NSNumber *)indexOfUser;
 + (void)postGoOut;
 + (void) postGoingToEventNumber:(int)indexOfObject;

@@ -430,8 +430,7 @@
 
 - (void)leftProfileButtonPressed {
     if (self.isMyProfile) {
-        self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
-        [self.navigationController pushViewController:self.peopleViewController animated:YES];
+        [self followersButtonPressed];
     }
     else {
         if (_isPersonFavorite) {
@@ -472,20 +471,21 @@
     [self.view addSubview:_rightProfileButton];
 }
 
-- (void)followingButtonPressed {
+- (void)followersButtonPressed {
+    [self.user setObject:@3 forKey:@"tabNumber"];
     self.peopleViewController = [[PeopleViewController alloc] initWithUser:self.user];
     [self.navigationController pushViewController:self.peopleViewController animated:YES];
 }
 
-- (void)followersButtonPressed {
+- (void)followingButtonPressed {
+    [self.user setObject:@4 forKey:@"tabNumber"];
     self.peopleViewController = [[PeopleViewController alloc] initWithUser:self.user];
     [self.navigationController pushViewController:self.peopleViewController animated:YES];
 }
 
 - (void)rightProfileButtonPressed {
     if (self.isMyProfile) {
-        self.peopleViewController = [[PeopleViewController alloc] initWithUser:self.user];
-        [self.navigationController pushViewController:self.peopleViewController animated:YES];
+        [self followingButtonPressed];
     }
     else {
         self.conversationViewController = [[ConversationViewController alloc] init];

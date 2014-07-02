@@ -39,6 +39,16 @@
 
 # pragma mark - Synchronous Methods
 
++ (void)followUser:(User *)user {
+    Query *query = [[Query alloc] init];
+    [query queryWithClassName:@"follow/"];
+    User *profileUser = [Profile user];
+    [query setProfileKey:profileUser.key];
+    [query setValue:[user objectForKey:@"id"] forKey:@"follows"];
+    NSDictionary *result = [query sendPOSTRequest];
+    [result objectForKey:@"objects"];
+}
+
 + (void)sendTapToUserWithIndex:(NSNumber *)indexOfUser {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"taps/"];

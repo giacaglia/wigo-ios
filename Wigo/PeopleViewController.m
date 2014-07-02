@@ -11,9 +11,9 @@
 #import "ProfileViewController.h"
 #import "UIButtonAligned.h"
 #import "Profile.h"
+#import "Network.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
-typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 
 @interface PeopleViewController ()
 
@@ -35,6 +35,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 @property ProfileViewController *profileViewController;
 
 @property Party *everyoneParty;
+@property Party *followingParty;
 
 @end
 
@@ -67,6 +68,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     [_everyoneParty removeUserFromParty:[Profile user]];
     _contentList = [_everyoneParty getObjectArray];
     _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
+    _followingParty = [[Party alloc] init];
     
     // Title setup
     self.title = [self.user fullName];
@@ -263,28 +265,31 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 #pragma mark - Filter handlers
 
 - (void) changeFilter:(id)sender {
+    UIButton *chosenButton = (UIButton *)sender;
+    int tag = chosenButton.tag;
+    if (tag >= 2) {
+        [self loadTableViewForTag:[NSNumber numberWithInt:tag]];
+    }
+}
+
+- (void)loadTableViewForTag:(NSNumber *)tag {
     UIButton *filterButton;
     for (int i = 2; i < 5; i++) {
         filterButton = (UIButton *)[self.view viewWithTag:i];
         filterButton.backgroundColor = [FontProperties getLightOrangeColor];
         [filterButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     }
-    UIButton *chosenButton = (UIButton *)sender;
+    UIButton *chosenButton = (UIButton *)[self.view viewWithTag:[tag intValue]];
     chosenButton.backgroundColor = [FontProperties getOrangeColor];
     [chosenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    if (chosenButton.tag >= 2) {
-        [self loadTableViewForTag:[NSNumber numberWithInt:chosenButton.tag]];
-    }
-}
-
-- (void)loadTableViewForTag:(NSNumber *)tag {
+    
     if ([tag isEqualToNumber:@2]) {
         _contentList = [_everyoneParty getObjectArray];
         [_tableViewOfPeople reloadData];
     }
     else if ([tag isEqualToNumber:@3]) {
         NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d", [[self.user objectForKey:@"id"] intValue]];
-        [self queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
             NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
             for (NSDictionary *object in arrayOfFollowObjects) {
@@ -302,15 +307,15 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     }
     else if ([tag isEqualToNumber:@4]) {
         NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d", [[self.user objectForKey:@"id"] intValue]];
-        [self queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
             NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
             for (NSDictionary *object in arrayOfFollowObjects) {
                 [arrayOfUsers addObject:[object objectForKey:@"follow"]];
             }
-            Party *party = [[Party alloc] initWithObjectName:@"User"];
-            [party addObjectsFromArray:arrayOfUsers];
-            _contentList = [party getObjectArray];
+            _followingParty = [[Party alloc] initWithObjectName:@"User"];
+            [_followingParty addObjectsFromArray:arrayOfUsers];
+            _contentList = [_followingParty getObjectArray];
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [_contentList count]] forState:UIControlStateNormal];
                 [_tableViewOfPeople reloadData];
@@ -318,6 +323,7 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
         }];
     }
 }
+
 
 #pragma mark - Table View Data Source
 
@@ -335,20 +341,11 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    User *user;
-    if (_isSearching) {
-        user = [_contentList objectAtIndex:[indexPath row]];
-    }
-    else {
-        user = [_filteredContentList objectAtIndex:[indexPath row]];
-    }
+    User *user = [self getUserForIndexPath:indexPath];
 
     static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *cell = (UITableViewCell*)[tableView
-                                               dequeueReusableCellWithIdentifier:CellIdentifier];
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:CellIdentifier];
+    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 7, 150, 60)];
@@ -363,21 +360,47 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
     UIButton *favoriteButton = [[UIButton alloc]initWithFrame:CGRectMake(250, 24, 49, 30)];
     favoriteButton.tag = -100;
     [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-    [favoriteButton addTarget:self action:@selector(followedPerson:) forControlEvents:UIControlEventTouchDown];
+    [favoriteButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
     [cell.contentView addSubview:favoriteButton];
+    
+    if ([[_followingParty getObjectArray] count] > 0 ) {
+        if ([_followingParty containsObject:user]) {
+            [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+        }
+    }
+    
     return cell;
 }
 
-- (void) followedPerson:(id)sender {
+
+
+- (void) followedPersonPressed:(id)sender {
+    //Get Index Path
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
+    NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
+    
+    
     UIButton *senderButton = (UIButton*)sender;
     if (senderButton.tag == -100) {
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = 100;
+//        [self followUser:user];
     }
     else {
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
     }
+}
+
+- (User *)getUserForIndexPath:(NSIndexPath *)indexPath {
+    User *user;
+    if (_isSearching) {
+        user = [_contentList objectAtIndex:[indexPath row]];
+    }
+    else {
+        user = [_filteredContentList objectAtIndex:[indexPath row]];
+    }
+    return user;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -394,18 +417,6 @@ typedef void (^FetchResult)(NSDictionary *jsonResponse, NSError *error);
 //    [self.navigationController pushViewController:_profileViewController animated:YES];
 }
 
-#pragma mark - Network function
 
-- (void)queryAsynchronousAPI:(NSString *)apiName withHandler:(FetchResult)fetchResult {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    Query *query = [[Query alloc] init];
-    [query queryWithClassName:apiName];
-    User *user = [Profile user];
-    [query setProfileKey:user.key];
-    [query sendAsynchronousGETRequestHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-        fetchResult(jsonResponse, error);
-    }];
-}
 
 @end
