@@ -378,17 +378,18 @@
     //Get Index Path
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
     NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
-    
+    User *user = [self getUserForIndexPath:indexPath];
     
     UIButton *senderButton = (UIButton*)sender;
     if (senderButton.tag == -100) {
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = 100;
-//        [self followUser:user];
+//        [Network followUser:user];
     }
     else {
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
+//        [Network unfollowUser:user];
     }
 }
 
@@ -407,15 +408,6 @@
     return 80;
 }
 
-
-#pragma mark - Table View Delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    _profileViewController = [[ProfileViewController alloc] init];
-//    _profileViewController.isMyProfile = NO;
-//    _profileViewController.view.backgroundColor = [UIColor whiteColor];
-//    [self.navigationController pushViewController:_profileViewController animated:YES];
-}
 
 
 

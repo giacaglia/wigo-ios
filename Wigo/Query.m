@@ -41,6 +41,8 @@ static NSString * const BaseURLString = @"https://wigo.herokuapp.com%@";
     [_options setValue:value forKey:key];
 }
 
+#pragma mark - Synchronous Calls
+
 - (NSDictionary *)sendGETRequest {
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
@@ -58,29 +60,6 @@ static NSString * const BaseURLString = @"https://wigo.herokuapp.com%@";
     NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
     return json;
 }
-
-
-
-- (void)sendAsynchronousGETRequestHandler:(QueryResult)handler {
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
-    NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
-    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
-    [req setValue:@"oi34u53205ju34ik23" forHTTPHeaderField:@"X-Wigo-API-Key"];
-    [req setValue:_key forHTTPHeaderField:@"X-Wigo-User-Key"];
-    [req setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-    [req setHTTPMethod:@"GET"];
-    if ([_options count] != 0) {
-        [req setHTTPBody:jsonData];
-    }
-    [NSURLConnection sendAsynchronousRequest:req queue:[[NSOperationQueue alloc] init]  completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        NSDictionary* json;
-        if (data) {
-             json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-        }
-        handler(json, error);
-    }];
-}
-
 
 - (NSDictionary *)sendPOSTRequest {
     NSLog(@"options %@", _options);
@@ -100,5 +79,47 @@ static NSString * const BaseURLString = @"https://wigo.herokuapp.com%@";
     NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
     return json;
 }
+
+- (NSDictionary *)sendDELETERequest {
+    NSLog(@"options %@", _options);
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
+    NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
+    [req setValue:@"oi34u53205ju34ik23" forHTTPHeaderField:@"X-Wigo-API-Key"];
+    if (_key) {
+        [req setValue:_key forHTTPHeaderField:@"X-Wigo-User-Key"];
+    }
+    [req setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    [req setHTTPMethod:@"DELETE"];
+    [req setHTTPBody:jsonData];
+    NSURLResponse * response = nil;
+    NSError * error = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:req returningResponse:&response error:&error];
+    NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+    return json;
+}
+
+#pragma mark - Asynchronous calls
+
+- (void)sendAsynchronousGETRequestHandler:(QueryResult)handler {
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
+    NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
+    [req setValue:@"oi34u53205ju34ik23" forHTTPHeaderField:@"X-Wigo-API-Key"];
+    [req setValue:_key forHTTPHeaderField:@"X-Wigo-User-Key"];
+    [req setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    [req setHTTPMethod:@"GET"];
+    if ([_options count] != 0) {
+        [req setHTTPBody:jsonData];
+    }
+    [NSURLConnection sendAsynchronousRequest:req queue:[[NSOperationQueue alloc] init]  completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        NSDictionary* json;
+        if (data) {
+            json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        }
+        handler(json, error);
+    }];
+}
+
 
 @end

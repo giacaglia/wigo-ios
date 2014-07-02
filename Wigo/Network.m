@@ -39,6 +39,15 @@
 
 # pragma mark - Synchronous Methods
 
++ (void)unfollowUser:(User *)user {
+    Query *query = [[Query alloc] init];
+    [query queryWithClassName:@"follow/"];
+    User *profileUser = [Profile user];
+    [query setProfileKey:profileUser.key];
+    [query setValue:[user objectForKey:@"id"] forKey:@"follows"];
+    NSDictionary *result = [query sendPOSTRequest];
+}
+
 + (void)followUser:(User *)user {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"follow/"];
@@ -46,7 +55,6 @@
     [query setProfileKey:profileUser.key];
     [query setValue:[user objectForKey:@"id"] forKey:@"follows"];
     NSDictionary *result = [query sendPOSTRequest];
-    [result objectForKey:@"objects"];
 }
 
 + (void)sendTapToUserWithIndex:(NSNumber *)indexOfUser {
@@ -56,7 +64,6 @@
     [query setProfileKey:user.key];
     [query setValue:indexOfUser forKey:@"tapped"];
     NSDictionary *result = [query sendPOSTRequest];
-    [result objectForKey:@"objects"];
 }
 
 + (void)postGoOut {

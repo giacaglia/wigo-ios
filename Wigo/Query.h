@@ -25,9 +25,10 @@ typedef void (^QueryResultWithInput)(NSDictionary *input, NSDictionary *jsonResp
 - (void)setValue:(id)value forKey:(NSString *)key;
 - (void)setProfileKey:(NSString *)key;
 
-// Get Object
 - (NSDictionary *)sendGETRequest;
 - (NSDictionary *)sendPOSTRequest;
+- (NSDictionary *)sendDELETERequest;
+
 - (void)sendAsynchronousGETRequestHandler:(QueryResult) handler;
 
 @end
