@@ -9,6 +9,7 @@
 #import "EmailConfirmationViewController.h"
 #import "FontProperties.h"
 #import "Profile.h"
+#import "SDWebImage/UIImageView+WebCache.h"
 
 @implementation EmailConfirmationViewController
 
@@ -46,7 +47,8 @@
     UIView *faceAndNameView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 68)];
     faceAndNameView.backgroundColor = [FontProperties getLightOrangeColor];
     
-    UIImageView *faceImageView = [[UIImageView alloc] initWithImage:[[Profile user] coverImage]];
+    UIImageView *faceImageView = [[UIImageView alloc] init];
+    [faceImageView setImageWithURL:[[[Profile user] imagesURL] objectAtIndex:0]];
     faceImageView.frame = CGRectMake(15, 10, 47, 47);
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;

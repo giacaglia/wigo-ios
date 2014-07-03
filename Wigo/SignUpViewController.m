@@ -22,7 +22,7 @@
     self = [super init];
     if (self) {
         self.view.backgroundColor = [UIColor whiteColor];
-//        self.navigationItem.hidesBackButton = YES;
+        self.navigationItem.hidesBackButton = YES;
         
     }
     return self;
@@ -50,7 +50,6 @@
     UIView *faceAndNameView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 68)];
     faceAndNameView.backgroundColor = [FontProperties getLightOrangeColor];
     
-//    UIImageView *faceImageView = [[UIImageView alloc] initWithImage:[[Profile user] coverImage]];
     UIImageView *faceImageView = [[UIImageView alloc] init];
     [faceImageView setImageWithURL:[[[Profile user] imagesURL] objectAtIndex:0]];
     faceImageView.frame = CGRectMake(15, 10, 47, 47);
@@ -103,29 +102,20 @@
 }
 
 - (void)continuePressed {
-//    NSError *error = NULL;
-//    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:emailRegex options:NSRegularExpressionCaseInsensitive error:&error];
-//    NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:_studentTextField.text options:0 range:NSMakeRange(0, [_studentTextField.text length])];
-//    if (!NSEqualRanges(rangeOfFirstMatch, NSMakeRange(NSNotFound, 0))) {
-//        NSString *substringForFirstMatch = [_studentTextField.text substringWithRange:rangeOfFirstMatch];
-//    }
-    
     NSString *emailString = _studentTextField.text;
     NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     BOOL isEmail = [emailTest evaluateWithObject:emailString];
     if (isEmail) {
         [[Profile user] setEmail:emailString];
-        [[Profile user] login];
+        [[Profile user] signUp];
         self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
         [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
     }
     else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email" message:@"Enter a valid email address" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
-    }
-    
-//    [self performSegueWithIdentifier:@"emailSegue" sender:self];
+    }    
 }
 
 
