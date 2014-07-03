@@ -14,7 +14,7 @@
 @interface SignViewController : UIViewController <FBLoginViewDelegate>
 
 @property SignUpViewController *signUpViewController;
-//@property EmailConfirmationViewController *emailConfirmationViewController;
+@property EmailConfirmationViewController *emailConfirmationViewController;
 //@property MainViewController *mainViewController;
 
 @end

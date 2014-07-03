@@ -30,6 +30,7 @@
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
 - (NSString *)login;
+- (NSString *)signUp;
 - (void)save;
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
 - (NSString *)fullName;

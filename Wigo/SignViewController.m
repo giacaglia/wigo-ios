@@ -27,6 +27,7 @@
 @property NSString *accessToken;
 @property NSString *fbID;
 
+@property BOOL userDidntTryToSignUp;
 @end
 
 @implementation SignViewController
@@ -37,6 +38,7 @@
     self = [super init];
     if (self) {
         self.view.backgroundColor = [UIColor whiteColor];
+        _userDidntTryToSignUp = YES;
     }
     return self;
 }
@@ -55,7 +57,7 @@
 }
 
 - (void) getFacebookTokensAndLoginORSignUp {
-    _fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"]);
+    _fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"]);
     _email = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"email"]);
     _accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
     if ([_fbID isEqualToString:@""] || [_email isEqualToString:@""] || [_accessToken isEqualToString:@""]) {
@@ -72,35 +74,57 @@
 }
 
 - (void) loginOrSignUpWithFacebookTokens {
-    [[NSUserDefaults standardUserDefaults] setObject:_fbID forKey: @"fbID"];
-    [[NSUserDefaults standardUserDefaults] setObject:_email forKey: @"email"];
-    [[NSUserDefaults standardUserDefaults] setObject:_accessToken forKey: @"accessToken"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    User *userProfile = [Profile user];
-    [userProfile setObject:_fbID forKey:@"fbID"];
-    [userProfile setAccessToken:_accessToken];
-    [Profile setUser:userProfile];
-    NSString *response = [userProfile login];
-    [Profile setUser:userProfile];
-    
-    BOOL userDidSignUpEver = [self didUserSignUp:response];
-    if (userDidSignUpEver) {
-        [self dismissViewControllerAnimated:YES  completion:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+    if (_userDidntTryToSignUp) {
+        _userDidntTryToSignUp = NO;
+
+        [[NSUserDefaults standardUserDefaults] setObject:_fbID forKey: @"facebook_id"];
+        [[NSUserDefaults standardUserDefaults] setObject:_email forKey: @"email"];
+        [[NSUserDefaults standardUserDefaults] setObject:_accessToken forKey: @"accessToken"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        User *userProfile = [Profile user];
+        [userProfile setObject:_fbID forKey:@"facebook_id"];
+        [userProfile setEmail:_email];
+        [userProfile setAccessToken:_accessToken];
+        [Profile setUser:userProfile];
+        NSString *response = [userProfile login];
+        
+        
+        [Profile setUser:userProfile];
+        
+        if ([response isEqualToString:@"error"]) {
+            [self signUpUser];
+        }
+        else if ([response isEqualToString:@"email_not_valid"]) {
+            self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
+            [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+        }
+        else {
+            [self dismissViewControllerAnimated:YES  completion:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+        }
+       
+    }
+}
+
+- (void)signUpUser {
+    NSString *response = [[Profile user] signUp];
+    BOOL isEmailValidated = [self didUserSignUp:response];
+    // TODO: THERE ARE 3 OPTIONS: FACEBOOK EMAIL IS NOT .EDU, IT's EDU.
+    if (isEmailValidated) {
+       
     }
     else {
         // NEED TO REALLY SIGN UP!! MOVE TO OTHER SCREEN
         [self fetchTokensFromFacebook];
         [self fetchProfilePicturesAlbumFacebook];
     }
+
 }
 
 
 
-
 - (void)initializeLogo {
-
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
     logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 87, 100, 174, 83);
     [self.view addSubview:logoImageView];
@@ -148,15 +172,20 @@
         _fbID = [fbGraphUser objectID];
         _email = fbGraphUser[@"email"];
         _accessToken = [FBSession activeSession].accessTokenData.accessToken;
-        
         [self loginOrSignUpWithFacebookTokens];
     }
 }
 
 #pragma mark - Sign Up Process
 
+- (BOOL) wasUserAbleToSignIn:(NSString *)response {
+    if ([response isEqualToString:@"error"]) {
+        return NO;
+    }
+    return YES;
+}
+
 - (BOOL) didUserSignUp:(NSString *)response {
-     return YES;
     if ([response isEqualToString:@"invalid_email"]) {
         NSLog(@"invalid email");
         return NO;
@@ -168,6 +197,7 @@
     if (![profileUser emailValidated]) {
         return NO;
     }
+    return YES;
 }
 
 - (void) fetchProfilePicturesAlbumFacebook {
@@ -211,22 +241,22 @@
                                           [[Profile user] setValue:[profilePictures objectAtIndex:0] forKey:@"image"];
                                       }
                                       if ([profilePictures count] >= 3) {
-                                          [[Profile user] setImages:profilePictures];
-                                          [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
-                                          NSLog(@"here");
-                                          self.signUpViewController = [[SignUpViewController alloc] init];
-                                          [self.navigationController pushViewController:self.signUpViewController animated:YES];
                                           break;
+//                                          [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+//                                          NSLog(@"here");
+//                                          self.signUpViewController = [[SignUpViewController alloc] init];
+//                                          [self.navigationController pushViewController:self.signUpViewController animated:YES];
+                                         
                                       }
                                   }
                               }
                               NSLog(@"here if not there");
                               User *profileUser = [Profile user];
                               [profileUser setImages:profilePictures];
-                              [profileUser setEmailValidated:YES];
                               [Profile setUser:profileUser];
                               [profileUser save];
-                              [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+                              self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
+                              [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
                           }];
 }
 
