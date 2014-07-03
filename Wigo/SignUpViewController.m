@@ -107,8 +107,12 @@
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     BOOL isEmail = [emailTest evaluateWithObject:emailString];
     if (isEmail) {
+        // NEED TO save the url's before signing up
+        NSArray *imagesUrl = [[Profile user] imagesURL];
         [[Profile user] setEmail:emailString];
         [[Profile user] signUp];
+        [[Profile user] setImages:imagesUrl];
+        [[Profile user] save];
         self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
         [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
     }

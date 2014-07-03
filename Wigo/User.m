@@ -326,6 +326,10 @@
         }
     }
     if ([[dictionaryUser allKeys] containsObject:@"email_validated"] ) {
+        NSLog(@"dictionary user %@", dictionaryUser);
+        for (NSString *key in [dictionaryUser allKeys]) {
+            [self setValue:[dictionaryUser objectForKey:key] forKey:key];
+        }
         NSNumber *emailValidatedNumber = (NSNumber *)[dictionaryUser objectForKey:@"email_validated"];
         if (![emailValidatedNumber boolValue]) {
             return @"email_not_valid";
@@ -336,10 +340,6 @@
     for (NSString *key in [dictionaryUser allKeys]) {
         [self setValue:[dictionaryUser objectForKey:key] forKey:key];
     }
-    [modifiedKeys removeObject:@"facebook_access_token"];
-    [modifiedKeys removeObject:@"facebook_id"];
-    [modifiedKeys removeObject:@"email_validated"];
-    [modifiedKeys removeObject:@"accessToken"];
     return @"logged_in";
 }
 
@@ -369,14 +369,14 @@
     for (NSString *key in [dictionaryUser allKeys]) {
         [self setValue:[dictionaryUser objectForKey:key] forKey:key];
     }
-    [modifiedKeys removeObject:@"facebook_access_token"];
-    [modifiedKeys removeObject:@"facebook_id"];
-    [modifiedKeys removeObject:@"email_validated"];
-    [modifiedKeys removeObject:@"accessToken"];
     return @"signed_up";
 }
 
 - (void)save {
+    [modifiedKeys removeObject:@"facebook_access_token"];
+    [modifiedKeys removeObject:@"facebook_id"];
+    [modifiedKeys removeObject:@"email_validated"];
+    [modifiedKeys removeObject:@"accessToken"];
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"users/me/"];
     [query setProfileKey:self.key];

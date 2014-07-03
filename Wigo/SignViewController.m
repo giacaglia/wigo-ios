@@ -90,15 +90,15 @@
         [userProfile setAccessToken:_accessToken];
         [Profile setUser:userProfile];
         NSString *response = [userProfile login];
-        [userProfile setEmail:@"raulzito234@gmail.com"];
         [Profile setUser:userProfile];
         
         if ([response isEqualToString:@"error"]) {
             [self signUpUser];
         }
         else if ([response isEqualToString:@"email_not_valid"]) {
-            self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-            [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+            _userEmailAlreadySent = YES;
+            [self fetchTokensFromFacebook];
+            [self fetchProfilePicturesAlbumFacebook];
         }
         else {
             [self dismissViewControllerAnimated:YES  completion:nil];
@@ -116,14 +116,10 @@
         [self fetchTokensFromFacebook];
         [self fetchProfilePicturesAlbumFacebook];
     }
-    else if ([profileUser emailValidated]) {
+    else {
         _userEmailAlreadySent = YES;
         [self fetchTokensFromFacebook];
         [self fetchProfilePicturesAlbumFacebook];
-    }
-    else {
-        self.signUpViewController = [[SignUpViewController alloc] init];
-        [self.navigationController pushViewController:self.signUpViewController animated:YES];
     }
 
 }

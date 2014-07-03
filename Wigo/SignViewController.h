@@ -15,6 +15,5 @@
 
 @property SignUpViewController *signUpViewController;
 @property EmailConfirmationViewController *emailConfirmationViewController;
-//@property MainViewController *mainViewController;
 
 @end
