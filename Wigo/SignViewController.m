@@ -23,6 +23,10 @@
 @property FBLoginView *loginView;
 @property NSString * profilePicturesAlbumId;
 
+@property NSString *email;
+@property NSString *accessToken;
+@property NSString *fbID;
+
 @end
 
 @implementation SignViewController
@@ -47,33 +51,56 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self logInViaApp];
+    [self getFacebookTokensAndLoginORSignUp];
 }
 
-- (void) logInViaApp {
-    NSString *fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"]);
-    NSString *email = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"email"]);
-    NSString *accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
-    
-    User *userProfile = [Profile user];
-    [userProfile setObject:fbID forKey:@"fbID"];
-    [userProfile setEmail:email];
-    [userProfile setAccessToken:accessToken];
-    [Profile setUser:userProfile];
-    
-    NSString *response = [userProfile login];
-    [Profile setUser:userProfile];
-    if ([response isEqualToString:@"logged_in"]) {
-        [self finishLogIn:response];
+- (void) getFacebookTokensAndLoginORSignUp {
+    _fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"fbID"]);
+    _email = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"email"]);
+    _accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
+    if ([_fbID isEqualToString:@""] || [_email isEqualToString:@""] || [_accessToken isEqualToString:@""]) {
+        [self fetchTokensFromFacebook];
     }
     else {
-        [self initializeLogo];
-        [self initializeSignButton];
+        [self loginOrSignUpWithFacebookTokens];
     }
-    
 }
 
-- (void) initializeLogo {
+- (void) fetchTokensFromFacebook {
+    [self initializeLogo];
+    [self initializeFacebookSignButton];
+}
+
+- (void) loginOrSignUpWithFacebookTokens {
+    [[NSUserDefaults standardUserDefaults] setObject:_fbID forKey: @"fbID"];
+    [[NSUserDefaults standardUserDefaults] setObject:_email forKey: @"email"];
+    [[NSUserDefaults standardUserDefaults] setObject:_accessToken forKey: @"accessToken"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    User *userProfile = [Profile user];
+    [userProfile setObject:_fbID forKey:@"fbID"];
+    [userProfile setAccessToken:_accessToken];
+    [Profile setUser:userProfile];
+    NSString *response = [userProfile login];
+    [Profile setUser:userProfile];
+    
+    BOOL userDidSignUpEver = [self didUserSignUp:response];
+    if (userDidSignUpEver) {
+        [self dismissViewControllerAnimated:YES  completion:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+    }
+    else {
+        // NEED TO REALLY SIGN UP!! MOVE TO OTHER SCREEN
+        [self fetchTokensFromFacebook];
+        [self fetchProfilePicturesAlbumFacebook];
+    }
+}
+
+
+
+
+- (void)initializeLogo {
+
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
     logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 87, 100, 174, 83);
     [self.view addSubview:logoImageView];
@@ -87,7 +114,7 @@
     [self.view addSubview:bestWayLabel];
 }
 
-- (void)initializeSignButton {
+- (void)initializeFacebookSignButton {
     _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"public_profile", @"email", @"user_friends", @"user_photos"]];
     _loginView.delegate = self;
     _loginView.frame = CGRectMake(0, self.view.frame.size.height/2 + 100, 245, 34);
@@ -115,41 +142,21 @@
 #pragma mark - Log In Via FB
 
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
-    NSLog(@"LoginInView Fetched User");
+    NSLog(@"Fetched Facebook tokens");
     if (!_pushed) {
         _pushed = YES;
+        _fbID = [fbGraphUser objectID];
+        _email = fbGraphUser[@"email"];
+        _accessToken = [FBSession activeSession].accessTokenData.accessToken;
         
-        User *userProfile = [Profile user];
-        [userProfile setObject:[fbGraphUser objectID] forKey:@"fbID"];
-        [userProfile setEmail:fbGraphUser[@"email"]];
-        [userProfile setAccessToken:[FBSession activeSession].accessTokenData.accessToken];
-        [Profile setUser:userProfile];
-        NSString *response = [userProfile login];
-        [Profile setUser:userProfile];
-        
-        [[NSUserDefaults standardUserDefaults] setObject:[fbGraphUser objectID] forKey: @"fbID"];
-        [[NSUserDefaults standardUserDefaults] setObject:fbGraphUser[@"email"] forKey: @"email"];
-        [[NSUserDefaults standardUserDefaults] setObject:[FBSession activeSession].accessTokenData.accessToken forKey: @"accessToken"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        [self finishLogIn:response];
-    }
-}
-
-- (void) finishLogIn:(NSString *)response {
-    BOOL userDidSignUp = [self didUserSignUp:response];
-    if (userDidSignUp) {
-        [self dismissViewControllerAnimated:YES  completion:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
-    }
-    else {
-        [self fetchProfilePicturesAlbumFacebook];
+        [self loginOrSignUpWithFacebookTokens];
     }
 }
 
 #pragma mark - Sign Up Process
 
 - (BOOL) didUserSignUp:(NSString *)response {
+     return YES;
     if ([response isEqualToString:@"invalid_email"]) {
         NSLog(@"invalid email");
         return NO;
@@ -157,7 +164,10 @@
     else if ([response isEqualToString:@"Error"]) {
         return NO;
     }
-    return YES;
+    User *profileUser = [Profile user];
+    if (![profileUser emailValidated]) {
+        return NO;
+    }
 }
 
 - (void) fetchProfilePicturesAlbumFacebook {
@@ -211,7 +221,11 @@
                                   }
                               }
                               NSLog(@"here if not there");
-                              [[Profile user] setImages:profilePictures];
+                              User *profileUser = [Profile user];
+                              [profileUser setImages:profilePictures];
+                              [profileUser setEmailValidated:YES];
+                              [Profile setUser:profileUser];
+                              [profileUser save];
                               [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
                           }];
 }

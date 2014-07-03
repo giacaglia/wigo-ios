@@ -73,7 +73,7 @@
     self.tabBarController.tabBar.hidden = NO;
     [self initializeTabBar];
     [self initializeNavigationItem];
-    [self showTapButtons];
+    [self initializeTapButtons];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -88,7 +88,7 @@
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor clearColor]];
     [self initializeScrollView];
     [self initializeNotificationObservers];
-    [self showTapButtons];
+    [self initializeTapButtons];
 }
 
 - (void)loadViewAfterSigningUser {
@@ -98,6 +98,7 @@
         _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         [Profile setEveryoneParty:_everyoneParty];
+        
     }];
     
     _numberOfFetchedParties = 0;
@@ -371,18 +372,6 @@
 }
 
 
-- (void) showTapButtons {
-    if ([Profile isGoingOut]) {
-        for (int i = 0; i < [_tapArray count]; i++) {
-            UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
-            tappedImageView.hidden = NO;
-            UIButton *tapButton = [_tapButtonArray objectAtIndex:i];
-            tapButton.enabled = YES;
-        }
-    }
-}
-
-
 - (void) initializeTabBar {
     UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"peopleSelected"];
@@ -391,12 +380,19 @@
 }
 
 - (void) initializeNavigationItem {
-    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
-    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
-    [profileButton setBackgroundImage:[Profile getProfileImage] forState:UIControlStateNormal];
-    [profileButton addTarget:self action:@selector(myProfileSegue) forControlEvents:UIControlEventTouchUpInside];
-    [profileButton setShowsTouchWhenHighlighted:YES];
-    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
+//    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
+//    [profileButton setBackgroundImage:[Profile getProfileImage] forState:UIControlStateNormal];
+//    [profileButton addTarget:self action:@selector(myProfileSegue) forControlEvents:UIControlEventTouchUpInside];
+//    [profileButton setShowsTouchWhenHighlighted:YES];
+    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    [profileImageView setImageWithURL:[[Profile user] coverImageURL]] ;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(myProfileSegue)];
+    [tap setNumberOfTapsRequired:1];
+    [tap setNumberOfTouchesRequired:1];
+    [profileImageView setUserInteractionEnabled:YES];
+    [profileImageView addGestureRecognizer:tap];
+    
+    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileImageView];
     self.navigationItem.leftBarButtonItem = profileBarButton;
     
     UIButtonAligned *rightButton = [[UIButtonAligned alloc] initWithFrame: CGRectMake(0, 0, 31, 22) andType:@3];
@@ -408,6 +404,17 @@
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
     [self setTitleIsOrange:YES];
+}
+
+- (void) initializeTapButtons {
+    if ([Profile isGoingOut]) {
+        for (int i = 0; i < [_tapArray count]; i++) {
+            UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
+            tappedImageView.hidden = NO;
+            UIButton *tapButton = [_tapButtonArray objectAtIndex:i];
+            tapButton.enabled = YES;
+        }
+    }
 }
 
 - (void)followPressed {
@@ -513,6 +520,16 @@
 }
 
 
+- (BOOL) isUserTapped:(User *)user {
+    if ([_userTappedIDArray containsObject:[user objectForKey:@"id"]]) {
+        return YES;
+    }
+    return NO;
+}
+
+
+#pragma mark - Animation
+
 - (void) showTapIcons {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     UIImageView *orangeTapImgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeTap"]];
@@ -605,14 +622,6 @@
     }];
     }];
     }];
-}
-
-
-- (BOOL) isUserTapped:(User *)user {
-    if ([_userTappedIDArray containsObject:[user objectForKey:@"id"]]) {
-        return YES;
-    }
-    return NO;
 }
 
 #pragma mark - Refresh Control

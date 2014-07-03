@@ -25,6 +25,7 @@
 @property NSString *bioString;
 @property BOOL private;
 @property BOOL isGoingOut;
+@property BOOL emailValidated;
 
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
@@ -33,6 +34,7 @@
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
 - (NSString *)fullName;
 - (NSArray *)imagesURL;
+- (NSString *)coverImageURL;
 
 // NEED TO IMPLEMENT
 @property BOOL *isFavorite;

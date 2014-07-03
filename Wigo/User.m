@@ -111,7 +111,7 @@
         return [imageArray objectAtIndex:0];
     }
     else {
-        NSString *pictureURL = [_proxy objectForKey:@"image"];
+        NSString *pictureURL = [_proxy objectForKey:@"imagesURL"];
         NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
         return [UIImage imageWithData:imageData];
     }
@@ -119,6 +119,14 @@
 
 - (void)setCoverImage:(UIImage *)coverImage {
     self.coverImage = coverImage;
+}
+
+- (NSString *)coverImageURL {
+    NSArray *imagesURL = [self imagesURL];
+    if ([imagesURL count] > 0) {
+        return [imagesURL objectAtIndex:0];
+    }
+    return @"";
 }
 
 - (NSString *)firstName {
@@ -203,15 +211,18 @@
         return [_proxy objectForKey:@"imagesURL"];
     }
     NSDictionary *properties = [_proxy objectForKey:@"properties"];
-    NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
-    NSMutableArray *imagesMutableArray = [[NSMutableArray alloc] initWithCapacity:3];
-    for (NSString *key in [imagesDictionary allKeys]) {
-        NSString *pictureURL = [imagesDictionary objectForKey:key];
-        [imagesMutableArray addObject:pictureURL];
+    if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
+        NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
+        NSMutableArray *imagesMutableArray = [[NSMutableArray alloc] initWithCapacity:3];
+        for (NSString *key in [imagesDictionary allKeys]) {
+            NSString *pictureURL = [imagesDictionary objectForKey:key];
+            [imagesMutableArray addObject:pictureURL];
+        }
+        NSArray *imagesURLArray = [NSArray arrayWithArray:imagesMutableArray];
+        [_proxy setObject:imagesURLArray forKey:@"imagesURL"];
+        return imagesURLArray;
     }
-    NSArray *imagesURLArray = [NSArray arrayWithArray:imagesMutableArray];
-    [_proxy setObject:imagesURLArray forKey:@"imagesURL"];
-    return imagesURLArray;
+    return [[NSArray alloc] init];
 }
 
 - (NSNumber *)eventID {
@@ -281,6 +292,16 @@
 - (void)setIsGoingOut:(BOOL)isGoingOut {
     [_proxy setObject:[NSNumber numberWithBool:isGoingOut] forKey:@"goingout"];
     [modifiedKeys addObject:@"goingout"];
+}
+
+- (BOOL)emailValidated {
+    NSNumber *emailValidatedNumber = (NSNumber *)[_proxy objectForKey:@"email_validated"];
+    return [emailValidatedNumber boolValue];
+}
+
+- (void)setEmailValidated:(BOOL)emailValidated {
+    [_proxy setObject:[NSNumber numberWithBool:emailValidated] forKey:@"email_validated"];
+    [modifiedKeys addObject:@"email_validated"];
 }
 
 #pragma mark - Saving data

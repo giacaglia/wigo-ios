@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <FacebookSDK/FacebookSDK.h>
-//#import "AFNetworking.h"
-//#import "Profile.h"
 
 typedef void (^QueryResult)(NSDictionary *jsonResponse, NSError *error);
 typedef void (^QueryResultWithInput)(NSDictionary *input, NSDictionary *jsonResponse, NSError *error);
