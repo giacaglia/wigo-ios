@@ -98,8 +98,17 @@
         _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         [Profile setEveryoneParty:_everyoneParty];
-        [Profile setUser:[_everyoneParty getObjectWithId:[[Profile user] objectForKey:@"id"]]];
-        [self loadViewAfterSigningUser];
+    }];
+    
+    
+    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        User *user = [[User alloc] initWithDictionary:jsonResponse];
+        [Profile setIsGoingOut:[user isGoingOut]];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+           [self setTitleIsOrange:YES];
+            [self initializeTapButtons];
+        });
+        
     }];
     
     _numberOfFetchedParties = 0;
