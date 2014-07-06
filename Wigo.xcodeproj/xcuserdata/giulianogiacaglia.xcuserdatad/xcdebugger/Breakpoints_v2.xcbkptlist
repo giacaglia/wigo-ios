@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/PlacesViewController.m"
-            timestampString = "426008074.150031"
+            timestampString = "426357263.274829"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "373"
-            endingLineNumber = "373"
+            startingLineNumber = "379"
+            endingLineNumber = "379"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/PlacesViewController.m"
-            timestampString = "426008074.150031"
+            timestampString = "426357263.274829"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "390"
-            endingLineNumber = "390"
+            startingLineNumber = "396"
+            endingLineNumber = "396"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -106,11 +106,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/PlacesViewController.m"
-            timestampString = "426008074.150031"
+            timestampString = "426357263.274829"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "510"
-            endingLineNumber = "510"
+            startingLineNumber = "516"
+            endingLineNumber = "516"
             landmarkName = "-fetchEventSummaryAsynchronous"
             landmarkType = "5">
          </BreakpointContent>
@@ -154,11 +154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/PlacesViewController.m"
-            timestampString = "426008074.150031"
+            timestampString = "426357263.274829"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "391"
-            endingLineNumber = "391"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -218,27 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/MainViewController.m"
-            timestampString = "426029537.434308"
+            timestampString = "426357907.224638"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "120"
-            endingLineNumber = "120"
-            landmarkName = "-loadViewAfterSigningUser"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/MainViewController.m"
-            timestampString = "426090144.416293"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "519"
-            endingLineNumber = "519"
+            startingLineNumber = "520"
+            endingLineNumber = "520"
             landmarkName = "-selectedProfile:"
             landmarkType = "5">
          </BreakpointContent>
@@ -250,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/MainViewController.m"
-            timestampString = "426029537.434308"
+            timestampString = "426357907.224638"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "311"
-            endingLineNumber = "311"
+            startingLineNumber = "312"
+            endingLineNumber = "312"
             landmarkName = "-addImagesOfParty:"
             landmarkType = "5">
          </BreakpointContent>
@@ -298,123 +282,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/MainViewController.m"
-            timestampString = "426088990.905833"
+            timestampString = "426357907.224638"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
-            landmarkName = "-loadViewAfterSigningUser"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/MainViewController.m"
-            timestampString = "426088992.498554"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
-            landmarkName = "-loadViewAfterSigningUser"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/MainViewController.m"
-            timestampString = "426088993.282062"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "100"
-            endingLineNumber = "100"
-            landmarkName = "-loadViewAfterSigningUser"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/MainViewController.m"
-            timestampString = "426089001.453065"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
-            landmarkName = "-loadViewAfterSigningUser"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/MainViewController.m"
-            timestampString = "426089469.349165"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
-            landmarkName = "-loadViewAfterSigningUser"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/MainViewController.m"
-            timestampString = "426089497.954832"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
-            landmarkName = "-viewDidLoad"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/MainViewController.m"
-            timestampString = "426090809.352018"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
-            landmarkName = "-viewWillAppear:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/MainViewController.m"
-            timestampString = "426090812.82469"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "388"
-            endingLineNumber = "388"
+            startingLineNumber = "389"
+            endingLineNumber = "389"
             landmarkName = "-initializeNavigationItem"
             landmarkType = "5">
          </BreakpointContent>
@@ -448,6 +320,22 @@
             startingLineNumber = "314"
             endingLineNumber = "314"
             landmarkName = "-login"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Wigo/MainViewController.m"
+            timestampString = "426357713.932161"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "-viewDidAppear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

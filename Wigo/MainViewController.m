@@ -98,7 +98,8 @@
         _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         [Profile setEveryoneParty:_everyoneParty];
-        
+        [Profile setUser:[_everyoneParty getObjectWithId:[[Profile user] objectForKey:@"id"]]];
+        [self loadViewAfterSigningUser];
     }];
     
     _numberOfFetchedParties = 0;
@@ -380,10 +381,6 @@
 }
 
 - (void) initializeNavigationItem {
-//    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
-//    [profileButton setBackgroundImage:[Profile getProfileImage] forState:UIControlStateNormal];
-//    [profileButton addTarget:self action:@selector(myProfileSegue) forControlEvents:UIControlEventTouchUpInside];
-//    [profileButton setShowsTouchWhenHighlighted:YES];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     [profileImageView setImageWithURL:[[Profile user] coverImageURL]] ;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(myProfileSegue)];

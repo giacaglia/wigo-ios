@@ -147,11 +147,11 @@
     self.navigationItem.titleView = ungoOutButton;
 }
 
-
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(dismissKeyboard)];
-    tap.cancelsTouchesInView = NO;
+    tap.cancelsTouchesInView = YES;
+    tap.delegate = self;
     [self.view addGestureRecognizer:tap];
 }
 
@@ -162,7 +162,13 @@
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-47);
     }];
     [self clearTextField];
-    
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if (touch.view == _whereAreYouGoingView) {
+        return NO;
+    }
+    return YES;
 }
 
 - (void)initializeWhereView {

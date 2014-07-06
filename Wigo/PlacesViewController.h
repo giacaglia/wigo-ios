@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ProfileViewController.h"
 
-@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 
 @property ProfileViewController *profileViewController;
 
