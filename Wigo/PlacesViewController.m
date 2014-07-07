@@ -527,10 +527,10 @@
                   withInputDictionary:(NSDictionary *)inputDictionary
                           withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
             if (jsonResponse) {
-                int indexOfEvent = [[resultInputDictionary objectForKey:@"i"] intValue];
+                NSInteger indexOfEvent = [[resultInputDictionary objectForKey:@"i"] integerValue];
                 [_summaryArray insertObject:jsonResponse atIndex:indexOfEvent];
+                [_summaryArray removeObjectAtIndex:(indexOfEvent+1)];
             }
-            NSLog(@"+ event summary with id: %d", [eventId intValue]);
             [self fetchedOneParty];
         }];
     }
@@ -538,7 +538,6 @@
 
 - (void)fetchEventAttendeesAsynchronous {
     _partyUserArray =  [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
-    NSLog(@"Events party size: %d" , [[_eventsParty getObjectArray] count]);
     for (int j = 0; j < [[_eventsParty getObjectArray] count]; j++) {
         [_partyUserArray addObject:[[Party alloc] init]];
     }
@@ -567,9 +566,9 @@
                                   }
                                   [partyUser addObject:user];
                               }
-                              int indexOfEvent = [[resultInputDictionary objectForKey:@"i"] intValue];
-                              NSLog(@"+ 1 user array of event: %d", indexOfEvent);
+                              NSInteger indexOfEvent = [[resultInputDictionary objectForKey:@"i"] integerValue];
                               [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
+                              [_partyUserArray removeObjectAtIndex:(indexOfEvent+1)];
                               [self fetchedOneParty];
         }];
     }
@@ -577,10 +576,8 @@
 
 - (void)fetchedOneParty {
     numberOfFetchedParties += 1;
-    NSLog(@"fetched number of Parties %d", numberOfFetchedParties);
     if (numberOfFetchedParties >= 2*[[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            NSLog(@"Done fetching parties %d", numberOfFetchedParties);
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             [self initializeWhereView];
         });

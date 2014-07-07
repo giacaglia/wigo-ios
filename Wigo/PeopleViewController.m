@@ -291,6 +291,7 @@
         NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d", [[self.user objectForKey:@"id"] intValue]];
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+            [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [arrayOfFollowObjects count]] forState:UIControlStateNormal];
             NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
             for (NSDictionary *object in arrayOfFollowObjects) {
                 if ([[object objectForKey:@"follow"] isKindOfClass:[NSDictionary class]]) {

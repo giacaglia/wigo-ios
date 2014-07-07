@@ -63,12 +63,16 @@
     [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getOrangeColor], NSFontAttributeName:[UIFont fontWithName:@"Whitney-MediumSC" size:11.0f] } forState:UIControlStateNormal];
     UITabBarItem *firstTab = [tabBar.items objectAtIndex:0];
     firstTab.image = [[UIImage imageNamed:@"peopleIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
     firstTab = [tabBar.items objectAtIndex:1];
     firstTab.image = [[UIImage imageNamed:@"placesIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
     firstTab = [tabBar.items objectAtIndex:2];
     firstTab.image = [[UIImage imageNamed:@"chatsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
     firstTab = [tabBar.items objectAtIndex:3];
     firstTab.image = [[UIImage imageNamed:@"notificationsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
 }
 
 - (void) changeTabBarToBlue {
@@ -77,11 +81,14 @@
     tabBar.layer.borderWidth = 0.5;
     [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getBlueColor], NSFontAttributeName:[UIFont fontWithName:@"Whitney-MediumSC" size:11.0f] } forState:UIControlStateNormal];
     UITabBarItem *firstTab = [tabBar.items objectAtIndex:0];
-    firstTab.image = [[UIImage imageNamed:@"peopleIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
-        firstTab = [tabBar.items objectAtIndex:2];
-    firstTab.image = [[UIImage imageNamed:@"chatsIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
+    firstTab.image = [[UIImage imageNamed:@"peopleIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
+    firstTab = [tabBar.items objectAtIndex:2];
+    firstTab.image = [[UIImage imageNamed:@"chatsIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
     firstTab = [tabBar.items objectAtIndex:3];
-    firstTab.image = [[UIImage imageNamed:@"notificationsIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];
+    firstTab.image = [[UIImage imageNamed:@"notificationsIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
 }
 
 @end
