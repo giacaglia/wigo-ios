@@ -145,7 +145,7 @@
         iconLabel.frame = CGRectMake(55, 20, 14, 14);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchDown];
     }
-    else if ([typeString isEqualToString:@"follow"]) {
+    else if ([typeString isEqualToString:@"follow"] || [typeString isEqualToString:@"facebook.follow"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"addedFilled"]];
         iconLabel.frame = CGRectMake(55, 20, 17, 12);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchDown];

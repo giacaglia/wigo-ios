@@ -73,7 +73,7 @@
     if ([[self type] isEqualToString:@"tap"]) {
         return @"wants to see you out";
     }
-    else if([[self type] isEqualToString:@"follow"]) {
+    else if( [[self type] isEqualToString:@"follow"] || [[self type] isEqualToString:@"facebook.follow"]) {
         return @"is now following you";
     }
     else if ([[self type] isEqualToString:@"joined"]) {
