@@ -71,7 +71,7 @@
 }
 
 - (BOOL)isEqualToUser:(User *)otherUser {
-    if ([_proxy objectForKey:@"id"] == [otherUser objectForKey:@"id"]) {
+    if ([[_proxy objectForKey:@"id"] isEqualToNumber:[otherUser objectForKey:@"id"]]) {
         return YES;
     }
     return NO;
