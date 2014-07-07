@@ -265,9 +265,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void)sendMessage {
     Message *message = [[Message alloc] init];
     [message setMessageString:_messageTextBox.text];
-    NSDateFormatter *DateFormatter = [[NSDateFormatter alloc] init];
-    [DateFormatter setDateFormat:@"yyyy-MM-DDhh:mm a"];
-    [message setTimeOfCreation:[DateFormatter stringFromDate:[NSDate date]]];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-d hh:mm:ss"];
+    [message setTimeOfCreation:[dateFormatter stringFromDate:[NSDate date]]];
     [message setToUser:[self.user objectForKey:@"id"]];
     [self addMessageFromSender:message];
     [message save];

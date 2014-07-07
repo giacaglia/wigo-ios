@@ -530,6 +530,7 @@
                 int indexOfEvent = [[resultInputDictionary objectForKey:@"i"] intValue];
                 [_summaryArray insertObject:jsonResponse atIndex:indexOfEvent];
             }
+            NSLog(@"+ event summary with id: %d", [eventId intValue]);
             [self fetchedOneParty];
         }];
     }
@@ -537,7 +538,7 @@
 
 - (void)fetchEventAttendeesAsynchronous {
     _partyUserArray =  [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
-    // Pre-populate Array
+    NSLog(@"Events party size: %d" , [[_eventsParty getObjectArray] count]);
     for (int j = 0; j < [[_eventsParty getObjectArray] count]; j++) {
         [_partyUserArray addObject:[[Party alloc] init]];
     }
@@ -567,6 +568,7 @@
                                   [partyUser addObject:user];
                               }
                               int indexOfEvent = [[resultInputDictionary objectForKey:@"i"] intValue];
+                              NSLog(@"+ 1 user array of event: %d", indexOfEvent);
                               [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
                               [self fetchedOneParty];
         }];
@@ -575,8 +577,10 @@
 
 - (void)fetchedOneParty {
     numberOfFetchedParties += 1;
+    NSLog(@"fetched number of Parties %d", numberOfFetchedParties);
     if (numberOfFetchedParties >= 2*[[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            NSLog(@"Done fetching parties %d", numberOfFetchedParties);
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             [self initializeWhereView];
         });
