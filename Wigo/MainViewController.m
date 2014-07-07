@@ -73,7 +73,7 @@
     self.tabBarController.tabBar.hidden = NO;
     [self initializeTabBar];
     [self initializeNavigationItem];
-    [self initializeTapButtons];
+    [self showTapButtons];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -88,7 +88,7 @@
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor clearColor]];
     [self initializeScrollView];
     [self initializeNotificationObservers];
-    [self initializeTapButtons];
+    [self showTapButtons];
 }
 
 - (void)loadViewAfterSigningUser {
@@ -98,17 +98,6 @@
         _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         [Profile setEveryoneParty:_everyoneParty];
-    }];
-    
-    
-    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        User *user = [[User alloc] initWithDictionary:jsonResponse];
-        [Profile setIsGoingOut:[user isGoingOut]];
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-           [self setTitleIsOrange:YES];
-            [self initializeTapButtons];
-        });
-        
     }];
     
     _numberOfFetchedParties = 0;
@@ -180,8 +169,6 @@
     [self.view addSubview:_scrollView];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 200);
     _scrollView.delegate = self;
-    
-//    [self addRefreshToSrollView];
 }
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -236,13 +223,24 @@
 }
 
 - (void) updateViewNotGoingOut {
-    [self setTitleIsOrange:YES];
+    [self updateTitleViewIsOrange:YES];
     for (int i = 0; i < [_tapArray count]; i++) {
         UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
         tappedImageView.hidden = YES;
         UIButton *tapButton = [_tapButtonArray objectAtIndex:i];
         tapButton.enabled = NO;
     }
+}
+
+- (void) updateViewWithUserInfo {
+    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        User *user = [[User alloc] initWithDictionary:jsonResponse];
+        [Profile setIsGoingOut:[user isGoingOut]];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [self updateTitleViewIsOrange:YES];
+            [self showTapButtons];
+        });
+    }];
 }
 
 - (void) newInitializeWhoView {
@@ -263,6 +261,8 @@
     _indexOfImage = -1;
     [self addImagesOfParty:_notGoingOutParty];
     _shownImageNumber = 0;
+    
+    [self updateViewWithUserInfo];
 }
 
 - (void)addImagesOfParty:(Party *)party {
@@ -328,10 +328,7 @@
         UIImageViewShake *tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(imgView.frame.size.width - 30 - 5, 5, 30, 30)];
         tappedImageView.tag = -1;
         tappedImageView.tintColor = [FontProperties getOrangeColor];
-        
-        
-        BOOL isTapped = [self isUserTapped:user];
-        if (isTapped) {
+        if ([self isUserTapped:user]) {
             tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
         }
         else {
@@ -409,10 +406,10 @@
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
-    [self setTitleIsOrange:YES];
+    [self updateTitleViewIsOrange:YES];
 }
 
-- (void) initializeTapButtons {
+- (void) showTapButtons {
     if ([Profile isGoingOut]) {
         for (int i = 0; i < [_tapArray count]; i++) {
             UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
@@ -455,7 +452,7 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
-- (void) setTitleIsOrange:(BOOL)isOrange {
+- (void) updateTitleViewIsOrange:(BOOL)isOrange {
     if ([Profile isGoingOut]) {
         self.navigationItem.titleView = nil;
         UIButtonUngoOut *ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
@@ -490,8 +487,8 @@
 
 - (void) goOutPressed {
     [Profile setIsGoingOut:YES];
-    [self setTitleIsOrange:YES];
-    [self showTapIcons];
+    [self updateTitleViewIsOrange:YES];
+    [self animationShowingTapIcons];
     [Network postGoOut];
 }
 
@@ -507,11 +504,9 @@
             if ([subview isMemberOfClass:[UIImageViewShake class]]) {
                 UIImageView *imageView = (UIImageView *)subview;
                 imageView.image = [UIImage imageNamed:@"tapFilled"];
-                
             }
         }
     }
-    
     User *user;
     if (tag < 0) {
         tag = -tag;
@@ -536,7 +531,7 @@
 
 #pragma mark - Animation
 
-- (void) showTapIcons {
+- (void) animationShowingTapIcons {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     UIImageView *orangeTapImgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeTap"]];
     orangeTapImgView.frame = CGRectMake(0, 0, 30, 30);
