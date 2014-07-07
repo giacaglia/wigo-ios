@@ -14,6 +14,7 @@
 #import "Network.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "UIImageCrop.h"
 
 @interface PeopleViewController ()
 
@@ -100,6 +101,7 @@
 }
 
 - (void) goBack {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -345,7 +347,11 @@
     [cell.contentView addSubview:textLabel];
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
+    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
+    }];
+
     [cell.contentView addSubview:profileImageView];
     
     UIButton *favoriteButton = [[UIButton alloc]initWithFrame:CGRectMake(250, 24, 49, 30)];

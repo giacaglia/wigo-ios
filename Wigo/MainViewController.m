@@ -110,7 +110,6 @@
         _followingParty = [[Party alloc] initWithObjectName:@"User"];
         [_followingParty addObjectsFromArray:arrayOfUsers];
         [Profile setFollowingParty:_followingParty];
-
         [self fetchedOneParty];
         
         [Network fetchAsynchronousAPI:@"goingouts/?user=friends" withResult:^(NSArray *arrayOfUsers, NSError *error) {
@@ -125,7 +124,6 @@
         }];
         
     }];
-
 
     [Network fetchAsynchronousAPI:@"taps/?user=me" withResult:^(NSArray *taps, NSError *error) {
         _userTappedIDArray = [[NSMutableArray alloc] init];
@@ -387,15 +385,13 @@
 }
 
 - (void) initializeNavigationItem {
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    [profileImageView setImageWithURL:[[Profile user] coverImageURL]] ;
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(myProfileSegue)];
-    [tap setNumberOfTapsRequired:1];
-    [tap setNumberOfTouchesRequired:1];
-    [profileImageView setUserInteractionEnabled:YES];
-    [profileImageView addGestureRecognizer:tap];
-    
-    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileImageView];
+    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
+    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
+    [profileButton setBackgroundImage:[Profile getProfileImage] forState:UIControlStateNormal];
+    [profileButton addTarget:self action:@selector(myProfileSegue)
+            forControlEvents:UIControlEventTouchUpInside];
+    [profileButton setShowsTouchWhenHighlighted:YES];
+    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.leftBarButtonItem = profileBarButton;
     
     UIButtonAligned *rightButton = [[UIButtonAligned alloc] initWithFrame: CGRectMake(0, 0, 31, 22) andType:@3];

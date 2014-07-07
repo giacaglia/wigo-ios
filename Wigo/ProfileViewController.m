@@ -488,7 +488,7 @@
         [self followingButtonPressed];
     }
     else {
-        self.conversationViewController = [[ConversationViewController alloc] init];
+        self.conversationViewController = [[ConversationViewController alloc] initWithUser:self.user];
         [self.navigationController pushViewController:self.conversationViewController animated:YES];
     }
 }

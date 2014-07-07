@@ -13,6 +13,7 @@
 #import "Party.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "UIImageCrop.h"
 
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
@@ -126,8 +127,12 @@
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
     
     UIImageView *profileImageView = [[UIImageView alloc] init];
-    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
+    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
+    }];
+
     profileImageView.layer.cornerRadius = 3;
     profileImageView.layer.borderWidth = 1;
     profileImageView.backgroundColor = [UIColor whiteColor];

@@ -16,6 +16,7 @@
 #import "MBProgressHUD.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "UIImageCrop.h"
 
 @interface ChatViewController ()
 
@@ -133,7 +134,10 @@
     cell.backgroundColor = [UIColor clearColor];
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
+    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
+    }];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
