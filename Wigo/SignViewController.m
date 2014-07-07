@@ -117,7 +117,6 @@
         [self fetchProfilePicturesAlbumFacebook];
     }
     else {
-        _userEmailAlreadySent = YES;
         [self fetchTokensFromFacebook];
         [self fetchProfilePicturesAlbumFacebook];
     }

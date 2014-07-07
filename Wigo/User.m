@@ -194,7 +194,7 @@
     }
 }
 
-- (void)setImages:(NSArray *)images{
+- (void)setImages:(NSArray *)images {
     NSMutableDictionary *imagesDictionary = [[NSMutableDictionary alloc] init];
     for (int i = 0; i < [images count]; i++) {
         [imagesDictionary setValue:[images objectAtIndex:i] forKey:[[NSNumber numberWithInt:i] stringValue]];
