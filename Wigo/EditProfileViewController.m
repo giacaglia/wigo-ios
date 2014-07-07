@@ -68,8 +68,6 @@
 
     User *profileUser = [Profile user];
     [profileUser setBioString:_bioTextView.text];
-//    NSDictionary *properties = [profileUser objectForKey:@"properties"];
-//    NSLog(@"properties :%@", properties);
     [profileUser setPrivate:_privacySwitch.on];
     [Profile setUser:profileUser];
     [profileUser save];

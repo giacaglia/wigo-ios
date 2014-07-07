@@ -318,7 +318,6 @@
 
 - (void)createPressed {
     NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
-    NSLog(@"eventID %d", [eventID intValue]);
     [Network postGoingToEventNumber:[eventID intValue]];
     [Profile setIsGoingOut:YES];
     [self updatedTitleViewForGoingOut];

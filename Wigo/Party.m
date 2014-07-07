@@ -63,8 +63,12 @@
 }
 
 - (void)addObject:(NSMutableDictionary *)objectDictionary {
-    NSLog(@"object dictionary: %@", objectDictionary);
-    [objectArray addObject:objectDictionary];
+    if ([objectDictionary isKindOfClass:[NSDictionary class]]) {
+        [objectArray addObject:objectDictionary];
+    }
+    else {
+        NSLog(@"Error adding object: %@", objectDictionary);
+    }
 }
 
 - (void)removeObjectAtIndex:(NSUInteger)index {

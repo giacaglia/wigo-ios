@@ -644,8 +644,6 @@
 //            refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdate];
 //            
 //            [refreshControl endRefreshing];
-//            
-//            NSLog(@"refresh end");
 //        });
 //    });
 //}

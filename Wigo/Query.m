@@ -62,7 +62,7 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
 }
 
 - (NSDictionary *)sendPOSTRequest {
-    NSLog(@"options %@", _options);
+//    NSLog(@"options %@", _options);
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
@@ -81,7 +81,7 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
 }
 
 - (NSDictionary *)sendDELETERequest {
-    NSLog(@"options %@", _options);
+//    NSLog(@"options %@", _options);
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];

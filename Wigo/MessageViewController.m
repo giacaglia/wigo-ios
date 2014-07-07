@@ -174,9 +174,7 @@
     
     // Text when editing becomes orange
     for (UIView *subView in _searchBar.subviews) {
-        NSLog(@"subview %@",  subView);
         for (UIView *secondLevelSubview in subView.subviews){
-            NSLog(@"subview %@ ",secondLevelSubview );
             if ([secondLevelSubview isKindOfClass:[UITextField class]])
             {
                 UITextField *searchBarTextField = (UITextField *)secondLevelSubview;

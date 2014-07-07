@@ -38,7 +38,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 {
     self = [super init];
     if (self) {
-        // Custom initialization
         self.user = user;
         self.view.backgroundColor = [UIColor whiteColor];
     }
@@ -49,7 +48,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 {
     self = [super init];
     if (self) {
-        // Custom initialization
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -61,7 +59,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
     
     // Title setup
-    
     self.title = [self.user fullName];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
@@ -71,7 +68,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     NSString *queryString = [NSString stringWithFormat:@"messages/?conversation=%@",[self.user objectForKey:@"id"]];
-    NSLog(@"query string: %@", queryString);
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [MBProgressHUD hideHUDForView:self.view animated:YES];

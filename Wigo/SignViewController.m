@@ -110,7 +110,6 @@
 
 - (void)signUpUser {
     NSString *response = [[Profile user] signUp];
-    User *profileUser = [Profile user];    
     // TODO: THERE ARE 3 OPTIONS: FACEBOOK EMAIL IS NOT .EDU, IT's EDU or email is invalid!
     if ([response isEqualToString:@"invalid_email"]) {
         [self fetchTokensFromFacebook];
@@ -122,7 +121,6 @@
     }
 
 }
-
 
 
 - (void)initializeLogo {
@@ -167,7 +165,6 @@
 #pragma mark - Log In Via FB
 
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
-    NSLog(@"Fetched Facebook tokens");
     if (!_pushed) {
         _pushed = YES;
         _fbID = [fbGraphUser objectID];
