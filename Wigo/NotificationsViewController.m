@@ -132,7 +132,6 @@
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
     }];
-
     profileImageView.layer.cornerRadius = 3;
     profileImageView.layer.borderWidth = 1;
     profileImageView.backgroundColor = [UIColor whiteColor];
@@ -143,22 +142,22 @@
     if ([typeString isEqualToString:@"chat"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"commentFilled"]];
         iconLabel.frame = CGRectMake(55, 20, 14, 14);
-        [notificationButton addTarget:self action:@selector(chatSegue) forControlEvents:UIControlEventTouchDown];
+        [notificationButton addTarget:self action:@selector(chatSegue) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"tap"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapFilled"]];
         iconLabel.frame = CGRectMake(55, 20, 14, 14);
-        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchDown];
+        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"follow"] || [typeString isEqualToString:@"facebook.follow"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"addedFilled"]];
         iconLabel.frame = CGRectMake(55, 20, 17, 12);
-        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchDown];
+        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"joined"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"joined"]];
         iconLabel.frame = CGRectMake(55, 20, 14, 14);
-        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchDown];
+        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     notificationButton.tag = [indexPath row];
     [notificationButton addSubview:iconLabel];

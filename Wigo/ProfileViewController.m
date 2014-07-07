@@ -258,7 +258,7 @@
     for (int i = 0; i < [[self.user imagesURL] count]; i++) {
 
         UIImageView *profileImgView = [[UIImageView alloc] init];
-//        profileImgView.hidden = YES;
+        profileImgView.frame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, heightOfProfileImage);
         [profileImgView setImageWithURL:[[self.user imagesURL] objectAtIndex:i] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 UIImage *croppedImage = [UIImageCrop imageByScalingAndCroppingForSize:CGSizeMake(heightOfProfileImage, heightOfProfileImage) andImage:image];
@@ -267,7 +267,7 @@
                 profileImgView.hidden = NO;
             });
         }];
-        profileImgView.frame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, heightOfProfileImage);
+       
         [_scrollView addSubview:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
@@ -383,12 +383,7 @@
 
 - (void)initializeNameOfPerson {
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
-    if (self.user) {
-        _nameOfPersonLabel.text = [NSString stringWithFormat: @"%@ %@", [self.user objectForKey:@"first_name"], [self.user objectForKey:@"last_name"]];
-    }
-    else {
-        _nameOfPersonLabel.text = @"Alice Banger";
-    }
+    _nameOfPersonLabel.text = [self.user fullName];
     _nameOfPersonLabel.textColor = [UIColor whiteColor];
     _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
     _nameOfPersonLabel.backgroundColor = [UIColor colorWithRed:23/255.0f green:23/255.0f blue:23/255.0f alpha:0.7f];
@@ -398,9 +393,16 @@
     _lastLineView.backgroundColor = [FontProperties getOrangeColor];
     _lastLineView.hidden = YES;
     [_nameOfPersonLabel addSubview:_lastLineView];
-    
     [self.view addSubview:_nameOfPersonLabel];
     [self.view bringSubviewToFront:_nameOfPersonLabel];
+    
+//    if ([self.user private]) {
+//        UIImageView *privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 11, 16, 22)];
+//        privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
+//        [_nameOfPersonLabel addSubview:privateLogoImageView];
+//        [_nameOfPersonLabel bringSubviewToFront:privateLogoImageView];
+//    }
+
 }
 
 - (void)initializeLeftProfileButton {

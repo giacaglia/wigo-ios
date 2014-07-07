@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "PhotoViewController.h"
+#import "FacebookAlbumTableViewController.h"
 
 @interface EditProfileViewController : UIViewController <UITextViewDelegate>
 
 @property PhotoViewController *photoViewController;
+@property FacebookAlbumTableViewController *facebookAlbumTableViewController;
 
 @end

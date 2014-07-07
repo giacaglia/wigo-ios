@@ -324,12 +324,13 @@
         [_tapButtonArray addObject:tapButton];
         
         UIImageViewShake *tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(imgView.frame.size.width - 30 - 5, 5, 30, 30)];
-        tappedImageView.tag = -1;
         tappedImageView.tintColor = [FontProperties getOrangeColor];
         if ([self isUserTapped:user]) {
+            tappedImageView.tag = -1;
             tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
         }
         else {
+            tappedImageView.tag = 1;
             tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
         }
         
@@ -496,10 +497,18 @@
 
     for (UIView *subview in imageView.subviews)
     {
-        if (subview.tag == -1) {
+        if (subview.tag == 1) {
             if ([subview isMemberOfClass:[UIImageViewShake class]]) {
                 UIImageView *imageView = (UIImageView *)subview;
                 imageView.image = [UIImage imageNamed:@"tapFilled"];
+                subview.tag = -1;
+            }
+        }
+        else if (subview.tag == -1) {
+            if ([subview isMemberOfClass:[UIImageViewShake class]]) {
+                UIImageView *imageView = (UIImageView *)subview;
+                imageView.image = [UIImage imageNamed:@"tapUnfilled"];
+                subview.tag = 1;
             }
         }
     }

@@ -63,6 +63,8 @@
 		E988A0311923B245000C3DDA /* giu.png in Resources */ = {isa = PBXBuildFile; fileRef = E988A0301923B245000C3DDA /* giu.png */; };
 		E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
 		E9902983196B12BE00192FF2 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9902982196B12BE00192FF2 /* Parse.framework */; };
+		E9902985196B2F9A00192FF2 /* privateIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9902984196B2F9A00192FF2 /* privateIcon@2x.png */; };
+		E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */; };
 		E9A17C70195C761E0057C89A /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A17C6F195C761E0057C89A /* Network.m */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
 		E9AAAFB01938F8940069F700 /* orangeSearchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */; };
@@ -284,6 +286,9 @@
 		E988A0301923B245000C3DDA /* giu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = giu.png; sourceTree = "<group>"; };
 		E98C185B1924176500EF60F8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		E9902982196B12BE00192FF2 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		E9902984196B2F9A00192FF2 /* privateIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "privateIcon@2x.png"; sourceTree = "<group>"; };
+		E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookAlbumTableViewController.h; sourceTree = "<group>"; };
+		E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookAlbumTableViewController.m; sourceTree = "<group>"; };
 		E9A17C6E195C761E0057C89A /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
 		E9A17C6F195C761E0057C89A /* Network.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Network.m; sourceTree = "<group>"; };
 		E9A50CFB19350F13009B73EA /* ConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationViewController.h; sourceTree = "<group>"; };
@@ -733,6 +738,7 @@
 		E9681C6E194F882100182E0E /* ProfileViewController */ = {
 			isa = PBXGroup;
 			children = (
+				E9902984196B2F9A00192FF2 /* privateIcon@2x.png */,
 				E93F84FD1942076A00B3B448 /* plusSquare.png */,
 			);
 			name = ProfileViewController;
@@ -769,6 +775,8 @@
 				E9147B6B1925123C00C25C9A /* ProfileViewController.m */,
 				E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */,
 				E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */,
+				E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */,
+				E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */,
 				E9D906BC19252DA900E39FC8 /* PeopleViewController.h */,
 				E9D906BD19252DA900E39FC8 /* PeopleViewController.m */,
 				E9CD4738194B9AD600AEA17D /* PhotoViewController.h */,
@@ -1120,6 +1128,7 @@
 				E9E619051938C74200A224C0 /* searchIcon.png in Resources */,
 				E9D906C2192535BC00E39FC8 /* giu3.jpg in Resources */,
 				E9E618FF1936421A00A224C0 /* backIcon.png in Resources */,
+				E9902985196B2F9A00192FF2 /* privateIcon@2x.png in Resources */,
 				E9CD46F719474CA700AEA17D /* followPersonIcon@2x.png in Resources */,
 				E9CD470319479C6200AEA17D /* peopleSelected@2x.png in Resources */,
 				E9BE8C97192AA29C008BB84C /* Whitney-MediumItalicSC.ttf in Resources */,
@@ -1181,6 +1190,7 @@
 				E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */,
 				E900C2C01961EADE00A01F50 /* UIImage+MultiFormat.m in Sources */,
 				E921D6221923967D00361247 /* main.m in Sources */,
+				E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */,
 				E900C2BA1961EADE00A01F50 /* SDWebImageDownloader.m in Sources */,
 				E93DE52A195C82B900079074 /* MessageViewController.m in Sources */,
 				E900C2C11961EADE00A01F50 /* UIImage+WebP.m in Sources */,

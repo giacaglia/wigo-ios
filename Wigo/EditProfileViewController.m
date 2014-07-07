@@ -12,8 +12,8 @@
 #import "Profile.h"
 #import "RWBlurPopover.h"
 #import "MBProgressHUD.h"
-
-
+#import "SDWebImage/UIImageView+WebCache.h"
+#import "UIImageCrop.h"
 
 @interface EditProfileViewController ()
 
@@ -87,17 +87,22 @@
     UIView *photosView = [[UIView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 110)];
     photosView.backgroundColor = [UIColor whiteColor];
     
-    NSArray *imageArray = [[Profile user] images];
-    NSMutableArray *photosArray = [[NSMutableArray alloc] initWithCapacity:[imageArray count] + 1];
-    for (UIImage *image in imageArray) {
+    NSArray *imageArrayURL = [[Profile user] imagesURL];
+    NSMutableArray *photosArray = [[NSMutableArray alloc] initWithCapacity:[imageArrayURL count] + 1];
+    for (UIImage *imageURL in imageArrayURL) {
         UIButton *imageButton = [[UIButton alloc] init];
-        [imageButton setImage:image forState:UIControlStateNormal];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
+        [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            imageView.image = [UIImageCrop imageByScalingAndCroppingForSize:imageView.frame.size andImage:image];
+        }];
+        [imageButton addSubview:imageView];
         [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchDown];
         [photosArray addObject:imageButton];
     }
     
     UIButton *imageButton = [[UIButton alloc] init];
     [imageButton setImage:[UIImage imageNamed:@"plusSquare"] forState:UIControlStateNormal];
+    imageButton.tag = -1;
     [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchDown];
     [photosArray addObject:imageButton];
 
@@ -120,8 +125,14 @@
 
 - (void)selectedEditImage:(id)sender {
     UIButton*buttonSender = (UIButton *)sender;
-    self.photoViewController = [[PhotoViewController alloc] initWithImage:[buttonSender currentImage]];
-    [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:30 andHeight:450];
+    if (buttonSender.tag == -1) {
+        self.facebookAlbumTableViewController = [[FacebookAlbumTableViewController alloc] init];
+        [self.navigationController pushViewController:self.facebookAlbumTableViewController animated:YES];
+    }
+    else {
+        self.photoViewController = [[PhotoViewController alloc] initWithImage:[buttonSender currentImage]];
+        [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:30 andHeight:450];
+    }
 }
 
 
@@ -164,7 +175,7 @@
     
     UILabel *shoulderTapLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 150, shoulderTapView.frame.size.height)];
     shoulderTapLabel.textAlignment = NSTextAlignmentLeft;
-    shoulderTapLabel.text = @"Shoulder taps";
+    shoulderTapLabel.text = @"Taps";
     shoulderTapLabel.font = [FontProperties getNormalFont];
     [shoulderTapView addSubview:shoulderTapLabel];
     
@@ -247,7 +258,7 @@
     [_scrollView addSubview:publicView];
     
     UILabel *publicDetailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 525, self.view.frame.size.width, 40)];
-    publicDetailLabel.text = @"Turn privacy ON to approve follow requests and restrict your location to only your followers.";
+    publicDetailLabel.text = @"Turn privacy ON to approve follow requests and restrict your Places to only your followers.";
     publicDetailLabel.textAlignment = NSTextAlignmentCenter;
     publicDetailLabel.font = [FontProperties getSmallPhotoFont];
     publicDetailLabel.numberOfLines = 0;
