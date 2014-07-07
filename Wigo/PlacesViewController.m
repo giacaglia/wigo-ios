@@ -73,7 +73,6 @@
     
     [self initializeNotificationObservers];
     [self initializeTapHandler];
-
     [self loadEvents];
 }
 
@@ -214,6 +213,7 @@
 }
 
 - (void) goingSomewhereElsePressed {
+    [self dismissKeyboard];
     [self showWhereAreYouGoingView];
     [_whereAreYouGoingTextField becomeFirstResponder];
 }
