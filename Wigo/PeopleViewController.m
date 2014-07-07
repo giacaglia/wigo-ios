@@ -293,7 +293,9 @@
             NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
             NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
             for (NSDictionary *object in arrayOfFollowObjects) {
-                [arrayOfUsers addObject:[object objectForKey:@"follow"]];
+                if ([[object objectForKey:@"follow"] isKindOfClass:[NSDictionary class]]) {
+                    [arrayOfUsers addObject:[object objectForKey:@"follow"]];
+                }
             }
             Party *party = [[Party alloc] initWithObjectName:@"User"];
             [party addObjectsFromArray:arrayOfUsers];
