@@ -389,7 +389,9 @@
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-    [profileImageView setImageWithURL:[[Profile user] coverImageURL]];
+    [profileImageView setImageWithURL:[[Profile user] coverImageURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
+    }];
     [profileButton addSubview:profileImageView];
     [profileButton addTarget:self action:@selector(myProfileSegue)
             forControlEvents:UIControlEventTouchUpInside];

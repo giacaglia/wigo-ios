@@ -699,6 +699,17 @@
 			name = NotificationsViewController;
 			sourceTree = "<group>";
 		};
+		E94A2850196C6BC50027D3BA /* FacebookIntegration */ = {
+			isa = PBXGroup;
+			children = (
+				E9902989196B4E0700192FF2 /* FacebookImagesViewController.h */,
+				E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */,
+				E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */,
+				E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */,
+			);
+			name = FacebookIntegration;
+			sourceTree = "<group>";
+		};
 		E9681C6A194F7BCD00182E0E /* MBProgressHUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -780,14 +791,11 @@
 				E9147B6B1925123C00C25C9A /* ProfileViewController.m */,
 				E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */,
 				E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */,
-				E9902989196B4E0700192FF2 /* FacebookImagesViewController.h */,
-				E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */,
-				E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */,
-				E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */,
 				E9D906BC19252DA900E39FC8 /* PeopleViewController.h */,
 				E9D906BD19252DA900E39FC8 /* PeopleViewController.m */,
 				E9CD4738194B9AD600AEA17D /* PhotoViewController.h */,
 				E9CD4739194B9AD600AEA17D /* PhotoViewController.m */,
+				E94A2850196C6BC50027D3BA /* FacebookIntegration */,
 			);
 			name = ProfileViews;
 			sourceTree = "<group>";

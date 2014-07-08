@@ -170,19 +170,32 @@
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     [properties setObject:imagesDictionary forKey:@"images"];
     [_proxy setObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
+    [_proxy setObject:images forKey:@"imagesURL"];
     [modifiedKeys addObject:@"properties"];
 }
 
 - (NSArray *)imagesURL {
+    NSArray *imagesURLArray = [_proxy objectForKey:@"imagesURL"];
+    if ([imagesURLArray isKindOfClass:[NSArray class]]) {
+        return imagesURLArray;
+    }
+    
     NSDictionary *properties = [_proxy objectForKey:@"properties"];
+    int indexOfCoverImage = 0;
     if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
         NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
         NSMutableArray *imagesMutableArray = [[NSMutableArray alloc] initWithCapacity:0];
         for (NSString *key in [imagesDictionary allKeys]) {
             NSString *pictureURL = [imagesDictionary objectForKey:key];
             [imagesMutableArray addObject:pictureURL];
+            if ([key isEqualToString:@"0"]) {
+                indexOfCoverImage = [imagesMutableArray count] - 1;
+            }
         }
-        return [NSArray arrayWithArray:imagesMutableArray];
+        [imagesMutableArray exchangeObjectAtIndex:indexOfCoverImage withObjectAtIndex:0];
+        NSArray *imagesURLArray = [NSArray arrayWithArray:imagesMutableArray];
+        [_proxy setObject:imagesURLArray forKey:@"imagesURL"];
+        return imagesURLArray;
     }
     return [[NSArray alloc] init];
 }
@@ -203,6 +216,13 @@
         return @"Deleted";
     }
     return @"Error";
+}
+
+- (void)makeImageURLCover:(NSString *)imageURL {
+    NSMutableArray *imageMutableArrayURL = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
+    int indexOfCover = [imageMutableArrayURL indexOfObject:imageURL];
+    [imageMutableArrayURL exchangeObjectAtIndex:indexOfCover withObjectAtIndex:0];
+    [self setImagesURL:[NSArray arrayWithArray:imageMutableArrayURL]];
 }
 
 - (NSNumber *)eventID {

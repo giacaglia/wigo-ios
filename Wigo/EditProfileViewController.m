@@ -14,6 +14,7 @@
 #import "MBProgressHUD.h"
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "UIImageCrop.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface EditProfileViewController ()
 
@@ -99,6 +100,11 @@
         }];
         [imageButton addSubview:imageView];
         [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchUpInside];
+        // IF its the cover photo
+        if (i == 0) {
+            imageButton.layer.borderWidth = 1;
+            imageButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+        }
         [photosArray addObject:imageButton];
     }
     

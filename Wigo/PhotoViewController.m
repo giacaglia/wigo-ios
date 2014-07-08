@@ -12,6 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "RWBlurPopover.h"
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "UIImageCrop.h"
 
 @interface PhotoViewController ()
 
@@ -36,7 +37,9 @@
     [super viewDidLoad];
     
     UIImageView *photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, 0, 248, 248)];
-    [photoImageView setImageWithURL:_imageURL];
+    [photoImageView setImageWithURL:_imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            photoImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:photoImageView.frame.size andImage:image];
+    }];
     [self.view addSubview:photoImageView];
     
     UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
@@ -69,6 +72,8 @@
 
 
 - (void)makeCoverPressed {
+    [[Profile user] makeImageURLCover:_imageURL];
+    [[Profile user] save];
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
 }
 

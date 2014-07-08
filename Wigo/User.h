@@ -36,6 +36,7 @@
 - (void)addImageURL:(NSString *)imageURL;
 - (NSString *)removeImageURL:(NSString *)imageURL;
 - (NSString *)coverImageURL;
+- (void)makeImageURLCover:(NSString *)imageURL;
 
 // NEED TO IMPLEMENT
 @property BOOL *isFavorite;
