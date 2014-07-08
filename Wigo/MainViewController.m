@@ -164,9 +164,8 @@
 
 - (void) initializeScrollView {
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height)];
-    [self.view addSubview:_scrollView];
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 200);
     _scrollView.delegate = self;
+    [self.view addSubview:_scrollView];
 }
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -343,6 +342,7 @@
         [_tapArray addObject:tappedImageView];
         [imgView addSubview:tappedImageView];
     }
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, MAX(_startingYPosition, self.view.frame.size.height + 200));
 }
 
 - (void) initializeBarAtTopWithText:(NSString *)textAtTop {

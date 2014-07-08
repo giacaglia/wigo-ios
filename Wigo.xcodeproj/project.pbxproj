@@ -170,6 +170,7 @@
 		E9D906D919255DB400E39FC8 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D819255DB400E39FC8 /* QuartzCore.framework */; };
 		E9D906DB19255DBC00E39FC8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DA19255DBC00E39FC8 /* Security.framework */; };
 		E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */; };
+		E9DB7B44196C47D500363656 /* closeButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DB7B43196C47D500363656 /* closeButton@2x.png */; };
 		E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
 		E9E618FF1936421A00A224C0 /* backIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E618FE1936421A00A224C0 /* backIcon.png */; };
 		E9E6190119365AA300A224C0 /* leftBeforeChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E6190019365AA300A224C0 /* leftBeforeChatIcon.png */; };
@@ -413,6 +414,7 @@
 		E9D906D819255DB400E39FC8 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		E9D906DA19255DBC00E39FC8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		E9DB7B43196C47D500363656 /* closeButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "closeButton@2x.png"; sourceTree = "<group>"; };
 		E9E618FB193625BB00A224C0 /* EmailConfirmationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailConfirmationViewController.h; sourceTree = "<group>"; };
 		E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmailConfirmationViewController.m; sourceTree = "<group>"; };
 		E9E618FE1936421A00A224C0 /* backIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backIcon.png; sourceTree = "<group>"; };
@@ -959,6 +961,7 @@
 			isa = PBXGroup;
 			children = (
 				E9F59E13192BDDB700BB8FDD /* favoriteSelected.png */,
+				E9DB7B43196C47D500363656 /* closeButton@2x.png */,
 				E9F59E09192AAE5F00BB8FDD /* favorite.png */,
 			);
 			name = ProfileViewController;
@@ -1157,6 +1160,7 @@
 				E9BE8CA7192AA29C008BB84C /* WhitneyIndexWhite-RoundLt1.ttf in Resources */,
 				E9BE8CA4192AA29C008BB84C /* WhitneyIndexBlack-SquareLt2.ttf in Resources */,
 				E9BE8CA0192AA29C008BB84C /* WhitneyIndexBlack-RoundLt2.ttf in Resources */,
+				E9DB7B44196C47D500363656 /* closeButton@2x.png in Resources */,
 				E9BE8C87192AA29C008BB84C /* Whitney-BlackItalicSC.ttf in Resources */,
 				E9CD46FC1947873F00AEA17D /* tapUnfilled@2x.png in Resources */,
 				E9BE8CA1192AA29C008BB84C /* WhitneyIndexBlack-RoundMd.ttf in Resources */,

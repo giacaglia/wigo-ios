@@ -7,10 +7,14 @@
 //
 
 #import "FacebookImagesViewController.h"
+#import "UIImageCrop.h"
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @interface FacebookImagesViewController ()
 @property NSString *profilePicturesAlbumId;
-
+@property NSMutableArray *profilePicturesURL;
+@property UIScrollView *scrollView;
+@property int startingYPosition;
 @end
 
 @implementation FacebookImagesViewController
@@ -25,17 +29,11 @@
 }
 
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     // Do any additional setup after loading the view.
+    [self initializeScrollView];
     [self loadImages];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
@@ -80,7 +78,7 @@
 }
 
 - (void) getProfilePictures {
-    NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
+    _profilePicturesURL = [[NSMutableArray alloc] initWithCapacity:0];
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
                                  parameters:nil
                                  HTTPMethod:@"GET"
@@ -90,10 +88,48 @@
                                               NSError *error
                                               ) {
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
-                              NSLog(@"result Object %@", resultObject);
-                              NSString *pictureURL = [resultObject objectForKey:@"picture"];
-                              
-                              }];
+                              for (FBGraphObject *imageDictionary in resultObject) {
+                                  NSLog(@"Image %@", imageDictionary);
+                                  NSString *pictureURL = [imageDictionary objectForKey:@"picture"];
+                                  [_profilePicturesURL addObject:pictureURL];
+                                  _startingYPosition = 0;
+                                  [self addImagesFromURLArray];
+                              }
+    }];
+}
+
+
+- (void) initializeScrollView {
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height);
+    [self.view addSubview:_scrollView];
+}
+
+
+- (void)addImagesFromURLArray {
+    int NImages = 3;
+    int distanceOfEachImage = 4;
+    int totalDistanceOfAllImages = distanceOfEachImage * (NImages - 1); // 10 pts is the distance of each image
+    int sizeOfEachImage = self.view.frame.size.width - totalDistanceOfAllImages; // 10 pts on the extreme left and extreme right
+    sizeOfEachImage /= NImages;
+    int positionX = 0;
+    for (int i = 0; i < [_profilePicturesURL count]; i++) {
+        NSString *pictureURL = [_profilePicturesURL objectAtIndex:i];
+        UIImageView *imgView = [[UIImageView alloc] init];
+        [imgView setImageWithURL:pictureURL  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            imgView.image = [UIImageCrop imageByScalingAndCroppingForSize:imgView.frame.size andImage:image];
+        }];
+        imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
+        imgView.userInteractionEnabled = YES;
+        positionX += sizeOfEachImage + distanceOfEachImage;
+        [_scrollView addSubview:imgView];
+        if (i%(NImages) == (NImages -1)) { //If it's the last image in the row
+            _startingYPosition += sizeOfEachImage + 5; // 5 is the distance of the images on the bottom
+            positionX = 0;
+        }
+    }
+    _startingYPosition += sizeOfEachImage + 5;
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _startingYPosition);
 }
 
 /*
