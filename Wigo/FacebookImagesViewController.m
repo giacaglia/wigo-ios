@@ -90,14 +90,37 @@
                                               NSError *error
                                               ) {
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
-                              for (FBGraphObject *imageDictionary in resultObject) {
-                                  NSLog(@"Image %@", imageDictionary);
-                                  NSString *pictureURL = [imageDictionary objectForKey:@"picture"];
-                                  [_profilePicturesURL addObject:pictureURL];
+                              for (FBGraphObject *photoRepresentation in resultObject) {
+                                  NSLog(@"Image %@", photoRepresentation);
+                                  FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
+                                  FBGraphObject *newPhoto = [self getFirstFacebookPhotoGreaterThanSixHundred:images];
+                                  if (newPhoto != nil) {
+                                      [_profilePicturesURL addObject:[newPhoto objectForKey:@"source"]];
+                                  }
                                   _startingYPosition = 0;
                                   [self addImagesFromURLArray];
                               }
     }];
+}
+
+
+- (FBGraphObject *)getFirstFacebookPhotoGreaterThanSixHundred:(FBGraphObject *)photoArray {
+    int minHeight = 0;
+    FBGraphObject *returnedPhoto;
+    for (FBGraphObject *fbPhoto in photoArray) {
+        int heightPhoto = [[fbPhoto objectForKey:@"height"] intValue];
+        if (heightPhoto > 600) {
+            if (minHeight == 0) {
+                returnedPhoto = fbPhoto;
+                minHeight = heightPhoto;
+            }
+            else if (minHeight > heightPhoto) {
+                returnedPhoto = fbPhoto;
+                minHeight = heightPhoto;
+            }
+        }
+    }
+    return returnedPhoto;
 }
 
 

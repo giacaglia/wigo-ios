@@ -34,6 +34,7 @@
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
 - (NSString *)fullName;
 - (void)addImageURL:(NSString *)imageURL;
+- (NSString *)removeImageURL:(NSString *)imageURL;
 - (NSString *)coverImageURL;
 
 // NEED TO IMPLEMENT

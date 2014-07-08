@@ -192,6 +192,16 @@
     }
 }
 
+- (NSString *)removeImageURL:(NSString *)imageURL {
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
+    if ([imagesArray count] > 3) {
+        [imagesArray removeObject:imageURL];
+        [self setImagesURL:[NSArray arrayWithArray:imagesArray]];
+        return @"Deleted";
+    }
+    return @"Error";
+}
+
 - (NSNumber *)eventID {
     return [_proxy objectForKey:@"eventID"] ;
 }
