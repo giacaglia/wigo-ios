@@ -62,7 +62,8 @@
 @property NSMutableArray *userTappedIDArray;
 @property int numberOfFetchedParties;
 @property Party *everyoneParty;
-@property Party *followingParty;
+@property Party *followingAcceptedParty;
+@property Party *followingNotAcceptedParty;
 @property Party *whoIsGoingOutParty;
 @property Party *notGoingOutParty;
 @end
@@ -94,37 +95,61 @@
 - (void)loadViewAfterSigningUser {
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 
+    [self fetchEveryone];
+    
+    _numberOfFetchedParties = 0;
+    [self fetchFollowers];
+    [self fetchTaps];
+}
+
+- (void) fetchEveryone {
     [Network fetchAsynchronousAPI:@"users/" withResult:^(NSArray *arrayOfUsers, NSError *error) {
         _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         [Profile setEveryoneParty:_everyoneParty];
     }];
-    
-    _numberOfFetchedParties = 0;
+}
+
+- (void)fetchFollowers {
     [Network queryAsynchronousAPI:@"follows/?user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+        NSMutableArray *arrayOfAcceptedUsers = [[NSMutableArray alloc] initWithCapacity:0];
+        NSMutableArray *arrayOfNotAcceptedUsers = [[NSMutableArray alloc] initWithCapacity:0];
+        
         for (NSDictionary *object in arrayOfFollowObjects) {
-            [arrayOfUsers addObject:[object objectForKey:@"follow"]];
+            if ([[object objectForKey:@"accepted"] isEqualToNumber:@1]) {
+                [arrayOfAcceptedUsers addObject:[object objectForKey:@"follow"]];
+            }
+            else {
+                [arrayOfNotAcceptedUsers addObject:[object objectForKey:@"follow"]];
+            }
         }
-        _followingParty = [[Party alloc] initWithObjectName:@"User"];
-        [_followingParty addObjectsFromArray:arrayOfUsers];
-        [Profile setFollowingParty:_followingParty];
+        _followingAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
+        [_followingAcceptedParty addObjectsFromArray:arrayOfAcceptedUsers];
+        _followingNotAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
+        [_followingNotAcceptedParty addObjectsFromArray:arrayOfNotAcceptedUsers];
+        [Profile setFollowingParty:_followingAcceptedParty];
+        [Profile setNotAcceptedFollowingParty:_followingNotAcceptedParty];
         [self fetchedOneParty];
         
-        [Network fetchAsynchronousAPI:@"goingouts/?user=friends" withResult:^(NSArray *arrayOfUsers, NSError *error) {
-            _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-            for (NSDictionary *object in arrayOfUsers) {
-                NSNumber* userID = [object objectForKey:@"user"];
-                [_whoIsGoingOutParty addObject:[_followingParty getObjectWithId:userID]];
-            }
-            [Profile setIsGoingOut:[_whoIsGoingOutParty containsObject:[Profile user]]];
-            [_whoIsGoingOutParty removeUserFromParty:[Profile user]];
-            [self fetchedOneParty];
-        }];
-        
+        [self fetchGoingOuts];
     }];
+}
 
+- (void)fetchGoingOuts {
+    [Network fetchAsynchronousAPI:@"goingouts/?user=friends" withResult:^(NSArray *arrayOfUsers, NSError *error) {
+        _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+        for (NSDictionary *object in arrayOfUsers) {
+            NSNumber* userID = [object objectForKey:@"user"];
+            [_whoIsGoingOutParty addObject:[_followingAcceptedParty getObjectWithId:userID]];
+        }
+        [Profile setIsGoingOut:[_whoIsGoingOutParty containsObject:[Profile user]]];
+        [_whoIsGoingOutParty removeUserFromParty:[Profile user]];
+        [self fetchedOneParty];
+    }];
+}
+
+- (void)fetchTaps {
     [Network fetchAsynchronousAPI:@"taps/?user=me" withResult:^(NSArray *taps, NSError *error) {
         _userTappedIDArray = [[NSMutableArray alloc] init];
         for (int i = 0; i < [taps count]; i++) {
@@ -140,7 +165,7 @@
         
         // Update NOT GOING OUT PARTY
         _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-        for (User *user in [_followingParty getObjectArray]) {
+        for (User *user in [_followingAcceptedParty getObjectArray]) {
             if (![_whoIsGoingOutParty containsObject:user]) {
                 [_notGoingOutParty addObject:user];
             }

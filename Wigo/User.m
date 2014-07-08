@@ -336,6 +336,9 @@
         }
     }
 
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    currentInstallation[@"wigo_id"] = [_proxy objectForKey:@"id"];
+    [currentInstallation saveInBackground];
     NSLog(@"dictionary user %@", dictionaryUser);
     for (NSString *key in [dictionaryUser allKeys]) {
         [self setValue:[dictionaryUser objectForKey:key] forKey:key];

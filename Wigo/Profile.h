@@ -19,7 +19,8 @@
 + (void)setEveryoneParty:(Party *)newEveryoneParty;
 + (Party *)followingParty;
 + (void)setFollowingParty:(Party *)newFollowingParty;
-
++ (Party *)notAcceptedFollowingParty;
++ (void)setNotAcceptedFollowingParty:(Party *)notAcceptedFollowingParty;
 
 + (BOOL)isGoingOut;
 + (void)setIsGoingOut:(BOOL)varIsGoingOut;

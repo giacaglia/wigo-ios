@@ -71,8 +71,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    
+
     [self initializeNotificationObservers];
     [self initializeTapHandler];
     [self loadEvents];

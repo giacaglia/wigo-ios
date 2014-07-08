@@ -37,6 +37,7 @@
 
 @property Party *everyoneParty;
 @property Party *followingParty;
+@property Party *followersParty;
 
 @end
 
@@ -288,25 +289,7 @@
         [_tableViewOfPeople reloadData];
     }
     else if ([tag isEqualToNumber:@3]) {
-        NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d", [[self.user objectForKey:@"id"] intValue]];
-        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-            [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [arrayOfFollowObjects count]] forState:UIControlStateNormal];
-            NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-            for (NSDictionary *object in arrayOfFollowObjects) {
-                if ([[object objectForKey:@"follow"] isKindOfClass:[NSDictionary class]]) {
-                    [arrayOfUsers addObject:[object objectForKey:@"follow"]];
-                }
-            }
-            Party *party = [[Party alloc] initWithObjectName:@"User"];
-            [party addObjectsFromArray:arrayOfUsers];
-            _contentList = [party getObjectArray];
-            
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [_contentList count]] forState:UIControlStateNormal];
-                [_tableViewOfPeople reloadData];
-            });
-        }];
+        [self fetchFollowers];
     }
     else if ([tag isEqualToNumber:@4]) {
         _followingParty = [Profile followingParty];
@@ -316,6 +299,28 @@
     }
 }
 
+- (void)fetchFollowers {
+    NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d", [[self.user objectForKey:@"id"] intValue]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+        [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [arrayOfFollowObjects count]] forState:UIControlStateNormal];
+        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+        for (NSDictionary *object in arrayOfFollowObjects) {
+            if ([[object objectForKey:@"user"] isKindOfClass:[NSDictionary class]]) {
+                [arrayOfUsers addObject:[object objectForKey:@"user"]];
+            }
+        }
+        _followersParty = [[Party alloc] initWithObjectName:@"User"];
+        [_followersParty addObjectsFromArray:arrayOfUsers];
+        _contentList = [_followersParty getObjectArray];
+        
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [[_followersParty getObjectArray] count]] forState:UIControlStateNormal];
+            [_tableViewOfPeople reloadData];
+        });
+    }];
+
+}
 
 #pragma mark - Table View Data Source
 

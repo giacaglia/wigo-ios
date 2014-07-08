@@ -17,6 +17,7 @@ static User *user;
 static NSArray *images;
 static Party *everyoneParty;
 static Party *followingParty;
+static Party *notAcceptedFollowingParty;
 
 + (BOOL)isGoingOut {    
     return isGoingOut;
@@ -60,7 +61,16 @@ static Party *followingParty;
     followingParty = newFollowingParty;
 }
 
++ (Party *)notAcceptedFollowingParty {
+    if (notAcceptedFollowingParty == nil) {
+        notAcceptedFollowingParty = [[Party alloc] init];
+    }
+    return notAcceptedFollowingParty;
+}
 
++ (void)setNotAcceptedFollowingParty:(Party *)newFollowingParty {
+    notAcceptedFollowingParty = newFollowingParty;
+}
 
 
 @end
