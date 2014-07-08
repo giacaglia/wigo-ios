@@ -21,7 +21,6 @@
 + (void)setFollowingParty:(Party *)newFollowingParty;
 
 
-+ (UIImage *)getProfileImage;
 + (BOOL)isGoingOut;
 + (void)setIsGoingOut:(BOOL)varIsGoingOut;
 

@@ -234,7 +234,7 @@
                                   }
                               }
                               User *profileUser = [Profile user];
-                              [profileUser setImages:profilePictures];
+                              [profileUser setImagesURL:profilePictures];
                               [Profile setUser:profileUser];
                               [profileUser save];
                               if (_userEmailAlreadySent) {

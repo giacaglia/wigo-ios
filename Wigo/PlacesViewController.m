@@ -110,9 +110,10 @@
 - (void) initializeNavigationBar {
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
-    [profileButton setBackgroundImage:[Profile getProfileImage] forState:UIControlStateNormal];
-    [profileButton addTarget:self action:@selector(profileSegue)
-            forControlEvents:UIControlEventTouchUpInside];
+//    [UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
+//    [profileImageView setImageWithURL:[[Profile user] coverImageURL]];
+//    [profileButton addSubview:profileImageView];
+    [profileButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchUpInside];
     [profileButton setShowsTouchWhenHighlighted:YES];
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.leftBarButtonItem = profileBarButton;

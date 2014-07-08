@@ -18,10 +18,6 @@ static NSArray *images;
 static Party *everyoneParty;
 static Party *followingParty;
 
-+ (UIImage *)getProfileImage {
-    return [user coverImage];
-}
-
 + (BOOL)isGoingOut {    
     return isGoingOut;
 }

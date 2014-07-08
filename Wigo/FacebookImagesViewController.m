@@ -9,6 +9,8 @@
 #import "FacebookImagesViewController.h"
 #import "UIImageCrop.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import "Profile.h"
+#import "User.h"
 
 @interface FacebookImagesViewController ()
 @property NSString *profilePicturesAlbumId;
@@ -121,26 +123,27 @@
         }];
         imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
         imgView.userInteractionEnabled = YES;
+        imgView.tag = i;
         positionX += sizeOfEachImage + distanceOfEachImage;
         [_scrollView addSubview:imgView];
         if (i%(NImages) == (NImages -1)) { //If it's the last image in the row
             _startingYPosition += sizeOfEachImage + 5; // 5 is the distance of the images on the bottom
             positionX = 0;
         }
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(choseImageView:)];
+        [imgView addGestureRecognizer:tap];
     }
     _startingYPosition += sizeOfEachImage + 5;
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _startingYPosition);
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)choseImageView:(UITapGestureRecognizer*)sender {
+    UIImageView *imageViewSender = (UIImageView *)sender.view;
+    NSString *urlOfSelectedImage = [_profilePicturesURL objectAtIndex:imageViewSender.tag];
+    NSLog(@"url of selected image :%@", urlOfSelectedImage);
+    User *profileUser = [Profile user];
+    [profileUser addImageURL:urlOfSelectedImage];
+    [profileUser save];
+    [self.navigationController popViewControllerAnimated:YES];
 }
-*/
-
 @end

@@ -106,21 +106,6 @@
     [modifiedKeys addObject:@"key"];
 }
 
-- (UIImage *)coverImage {
-    NSArray *imageArray = [self images];
-    if ([imageArray count] > 0) {
-        return [imageArray objectAtIndex:0];
-    }
-    else {
-        NSString *pictureURL = [_proxy objectForKey:@"imagesURL"];
-        NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
-        return [UIImage imageWithData:imageData];
-    }
-}
-
-- (void)setCoverImage:(UIImage *)coverImage {
-    self.coverImage = coverImage;
-}
 
 - (NSString *)coverImageURL {
     NSArray *imagesURL = [self imagesURL];
@@ -173,29 +158,8 @@
     });
 }
 
-- (NSArray *)images {
-    if ([_proxy objectForKey:@"images"] != (id)[NSNull null] && [_proxy objectForKey:@"images"] != nil) {
-        return [_proxy objectForKey:@"images"];
-    }
-    NSDictionary *properties = [_proxy objectForKey:@"properties"];
-    NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
-    NSMutableArray *imagesMutableArray = [[NSMutableArray alloc] initWithCapacity:3];
-    for (NSString *key in [imagesDictionary allKeys]) {
-        NSString *pictureURL = [imagesDictionary objectForKey:key];
-        NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
-        [imagesMutableArray addObject:[UIImage imageWithData:imageData]];
-    }
-    NSArray *images = [NSArray arrayWithArray:imagesMutableArray];
-    if (images) {
-        [_proxy setObject:images forKey:@"images"];
-        return images;
-    }
-    else {
-        return @[[self coverImage]];
-    }
-}
 
-- (void)setImages:(NSArray *)images {
+- (void)setImagesURL:(NSArray *)images {
     NSMutableDictionary *imagesDictionary = [[NSMutableDictionary alloc] init];
     for (int i = 0; i < [images count]; i++) {
         [imagesDictionary setValue:[images objectAtIndex:i] forKey:[[NSNumber numberWithInt:i] stringValue]];
@@ -208,10 +172,7 @@
 }
 
 - (NSArray *)imagesURL {
-    if ([_proxy objectForKey:@"imagesURL"] != (id)[NSNull null] && [_proxy objectForKey:@"imagesURL"] != nil) {
-        return [_proxy objectForKey:@"imagesURL"];
-    }
-    NSDictionary *properties = [_proxy objectForKey:@"properties"];
+       NSDictionary *properties = [_proxy objectForKey:@"properties"];
     if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
         NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
         NSMutableArray *imagesMutableArray = [[NSMutableArray alloc] initWithCapacity:3];
@@ -219,11 +180,15 @@
             NSString *pictureURL = [imagesDictionary objectForKey:key];
             [imagesMutableArray addObject:pictureURL];
         }
-        NSArray *imagesURLArray = [NSArray arrayWithArray:imagesMutableArray];
-        [_proxy setObject:imagesURLArray forKey:@"imagesURL"];
-        return imagesURLArray;
+        return [NSArray arrayWithArray:imagesMutableArray];
     }
     return [[NSArray alloc] init];
+}
+
+- (void)addImageURL:(NSString *)imageURL {
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
+    [imagesArray addObject:imageURL];
+    [self setImagesURL:[NSArray arrayWithArray:imagesArray]];
 }
 
 - (NSNumber *)eventID {
@@ -327,7 +292,7 @@
         }
     }
     if ([[dictionaryUser allKeys] containsObject:@"email_validated"] ) {
-//        NSLog(@"dictionary user %@", dictionaryUser);
+        NSLog(@"dictionary user %@", dictionaryUser);
         for (NSString *key in [dictionaryUser allKeys]) {
             [self setValue:[dictionaryUser objectForKey:key] forKey:key];
         }
@@ -337,10 +302,11 @@
         }
     }
 
-//    NSLog(@"dictionary user %@", dictionaryUser);
+    NSLog(@"dictionary user %@", dictionaryUser);
     for (NSString *key in [dictionaryUser allKeys]) {
         [self setValue:[dictionaryUser objectForKey:key] forKey:key];
     }
+    [modifiedKeys removeAllObjects];
     return @"logged_in";
 }
 
@@ -372,6 +338,7 @@
     for (NSString *key in [dictionaryUser allKeys]) {
         [self setValue:[dictionaryUser objectForKey:key] forKey:key];
     }
+    [modifiedKeys removeAllObjects];
     return @"signed_up";
 }
 
@@ -388,7 +355,7 @@
         [query setValue:[_proxy objectForKey:key] forKey:key];
     }
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
-//    NSLog(@"dictionary User %@", dictionaryUser);
+    NSLog(@"dictionary User %@", dictionaryUser);
     if  (!(dictionaryUser == nil)) {
         [_proxy addEntriesFromDictionary:dictionaryUser];
         modifiedKeys = [[NSMutableArray alloc] init];

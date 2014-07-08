@@ -84,8 +84,8 @@
     photosLabel.textAlignment = NSTextAlignmentLeft;
     [_scrollView addSubview:photosLabel];
     
-    UIView *photosView = [[UIView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 110)];
-    photosView.backgroundColor = [UIColor whiteColor];
+    UIScrollView *photosScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 110)];
+    photosScrollView.backgroundColor = [UIColor whiteColor];
     
     NSArray *imageArrayURL = [[Profile user] imagesURL];
     NSMutableArray *photosArray = [[NSMutableArray alloc] initWithCapacity:[imageArrayURL count] + 1];
@@ -96,7 +96,7 @@
             imageView.image = [UIImageCrop imageByScalingAndCroppingForSize:imageView.frame.size andImage:image];
         }];
         [imageButton addSubview:imageView];
-        [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchDown];
+        [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchUpInside];
         [photosArray addObject:imageButton];
     }
     
@@ -109,7 +109,7 @@
     int xPosition = 15;
     for (UIButton *photoButton in photosArray) {
         photoButton.frame = CGRectMake(xPosition, 10, 70, 70);
-        [photosView addSubview:photoButton];
+        [photosScrollView addSubview:photoButton];
         xPosition += 75;
     }
     
@@ -118,9 +118,10 @@
     coverLabel.font = [FontProperties getBioFont];
     coverLabel.textAlignment = NSTextAlignmentCenter;
     coverLabel.textColor = [FontProperties getOrangeColor];
-    [photosView addSubview:coverLabel];
+    [photosScrollView addSubview:coverLabel];
     
-    [_scrollView addSubview:photosView];
+    photosScrollView.contentSize = CGSizeMake(xPosition, photosScrollView.frame.size.height);
+    [_scrollView addSubview:photosScrollView];
 }
 
 - (void)selectedEditImage:(id)sender {

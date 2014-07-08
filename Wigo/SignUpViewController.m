@@ -111,7 +111,7 @@
         NSArray *imagesUrl = [[Profile user] imagesURL];
         [[Profile user] setEmail:emailString];
         [[Profile user] signUp];
-        [[Profile user] setImages:imagesUrl];
+        [[Profile user] setImagesURL:imagesUrl];
         [[Profile user] save];
         self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
         [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];

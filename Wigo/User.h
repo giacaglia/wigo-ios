@@ -16,13 +16,12 @@
 @property NSString *accessToken;
 
 @property NSString *key;
-@property UIImage *coverImage;
 @property NSString *firstName;
 @property NSString *lastName;
-@property NSArray *images;
 @property NSNumber* eventID;
 @property NSString *groupName;
 @property NSString *bioString;
+@property NSArray *imagesURL;
 @property BOOL private;
 @property BOOL isGoingOut;
 @property BOOL emailValidated;
@@ -34,7 +33,7 @@
 - (void)save;
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
 - (NSString *)fullName;
-- (NSArray *)imagesURL;
+- (void)addImageURL:(NSString *)imageURL;
 - (NSString *)coverImageURL;
 
 // NEED TO IMPLEMENT
