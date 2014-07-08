@@ -242,7 +242,7 @@
 
 - (void) newInitializeWhoView {
     _startingYPosition = 64;
-    [self initializeBarAtTopWithText:@"GOING OUT TONIGHT"];
+    [self initializeBarAtTopWithText:@"GOING OUT"];
 
     _startingYPosition -= 64;
     _tapArray = [[NSMutableArray alloc] initWithCapacity:0];

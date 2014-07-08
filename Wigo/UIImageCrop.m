@@ -101,7 +101,12 @@
         }
     }
     
-    UIGraphicsBeginImageContext(targetSize); // this will crop
+    // ENABLE FOR RETINA SIZE
+    if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
+        UIGraphicsBeginImageContextWithOptions(targetSize, NO, 2.0f);
+    } else {
+        UIGraphicsBeginImageContext(targetSize);
+    }
     
     CGRect thumbnailRect = CGRectZero;
     thumbnailRect.origin = thumbnailPoint;

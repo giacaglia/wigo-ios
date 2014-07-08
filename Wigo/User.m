@@ -158,7 +158,6 @@
     });
 }
 
-
 - (void)setImagesURL:(NSArray *)images {
     NSMutableDictionary *imagesDictionary = [[NSMutableDictionary alloc] init];
     for (int i = 0; i < [images count]; i++) {
@@ -187,8 +186,10 @@
 
 - (void)addImageURL:(NSString *)imageURL {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
-    [imagesArray addObject:imageURL];
-    [self setImagesURL:[NSArray arrayWithArray:imagesArray]];
+    if ([imagesArray count] < 5) {
+        [imagesArray addObject:imageURL];
+        [self setImagesURL:[NSArray arrayWithArray:imagesArray]];
+    }
 }
 
 - (NSNumber *)eventID {

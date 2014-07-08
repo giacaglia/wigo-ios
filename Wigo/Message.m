@@ -128,7 +128,7 @@
     [dateformat setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
     NSDate *dateInUTC = [dateformat dateFromString:utcCreationTime];
     
-    NSTimeInterval timeZoneSeconds = [[NSTimeZone localTimeZone] secondsFromGMT];
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone systemTimeZone] secondsFromGMT];
     NSDate *dateInLocalTimezone = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
     NSString *localTimeString = [dateformat stringFromDate:dateInLocalTimezone];
     
