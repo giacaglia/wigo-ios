@@ -106,7 +106,7 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]];
+    [profileImageView setImageWithURL:[user coverImageURL]];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];

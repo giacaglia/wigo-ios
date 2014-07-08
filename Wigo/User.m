@@ -107,13 +107,6 @@
 }
 
 
-- (NSString *)coverImageURL {
-    NSArray *imagesURL = [self imagesURL];
-    if ([imagesURL count] > 0) {
-        return [imagesURL objectAtIndex:0];
-    }
-    return @"";
-}
 
 - (NSString *)firstName {
     return [_proxy objectForKey:@"first_name"];
@@ -158,6 +151,16 @@
     });
 }
 
+- (NSString *)coverImageURL {
+    NSDictionary *properties = [_proxy objectForKey:@"properties"];
+    if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
+        NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
+        return [imagesDictionary objectForKey:@"0"];
+    }
+    return @"";
+
+}
+
 - (void)setImagesURL:(NSArray *)images {
     NSMutableDictionary *imagesDictionary = [[NSMutableDictionary alloc] init];
     for (int i = 0; i < [images count]; i++) {
@@ -171,10 +174,10 @@
 }
 
 - (NSArray *)imagesURL {
-       NSDictionary *properties = [_proxy objectForKey:@"properties"];
+    NSDictionary *properties = [_proxy objectForKey:@"properties"];
     if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
         NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
-        NSMutableArray *imagesMutableArray = [[NSMutableArray alloc] initWithCapacity:3];
+        NSMutableArray *imagesMutableArray = [[NSMutableArray alloc] initWithCapacity:0];
         for (NSString *key in [imagesDictionary allKeys]) {
             NSString *pictureURL = [imagesDictionary objectForKey:key];
             [imagesMutableArray addObject:pictureURL];

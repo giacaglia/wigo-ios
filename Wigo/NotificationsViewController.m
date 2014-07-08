@@ -17,7 +17,6 @@
 
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
-@property UIScrollView *notificationScrollView;
 
 @property UITableView *notificationsTableView;
 
@@ -81,7 +80,7 @@
 - (void)adjustHeightOfTableview
 {
     CGFloat height = _notificationsTableView.contentSize.height;
-    CGFloat maxHeight = _notificationsTableView.superview.frame.size.height - _notificationsTableView.frame.origin.y;
+    CGFloat maxHeight = _notificationsTableView.superview.frame.size.height - _notificationsTableView.frame.origin.y - 64;
 
     
     if (height > maxHeight)
@@ -128,7 +127,7 @@
     
     UIImageView *profileImageView = [[UIImageView alloc] init];
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
-    [profileImageView setImageWithURL:[[user imagesURL] objectAtIndex:0]
+    [profileImageView setImageWithURL:[user coverImageURL]
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
     }];

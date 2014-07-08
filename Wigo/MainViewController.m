@@ -280,7 +280,7 @@
         }
         User *user = [userArray objectAtIndex:i];
         UIImageView *imgView = [[UIImageView alloc] init];
-        [imgView setImageWithURL:[[user imagesURL] objectAtIndex:0] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        [imgView setImageWithURL:[user coverImageURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             imgView.image = [UIImageCrop imageByScalingAndCroppingForSize:imgView.frame.size andImage:image];
         }];
         imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
