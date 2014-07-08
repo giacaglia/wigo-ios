@@ -9,11 +9,18 @@
 #import "AppDelegate.h"
 #import "FontProperties.h"
 #import <QuartzCore/QuartzCore.h>
+#import <Parse/Parse.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Parse setApplicationId:@"Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ"
+                  clientKey:@"kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb"];
+    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
+     UIRemoteNotificationTypeAlert|
+     UIRemoteNotificationTypeSound];
+    
     // Override point for customization after application launch.
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     UITabBar *tabBar = tabBarController.tabBar;
@@ -55,6 +62,30 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+- (void)application:(UIApplication *)application
+didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    // Store the deviceToken in the current installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    [currentInstallation saveInBackground];
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    if (error.code == 3010) {
+        NSLog(@"Push notifications are not supported in the iOS Simulator.");
+    } else {
+        // show some alert or otherwise handle the failure to register.
+        NSLog(@"application:didFailToRegisterForRemoteNotificationsWithError: %@", error);
+    }
+}
+
+- (void)application:(UIApplication *)application
+didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [PFPush handlePush:userInfo];
+}
+
 
 - (void) changeTabBarToOrange {
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;

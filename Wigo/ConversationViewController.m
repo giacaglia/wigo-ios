@@ -103,6 +103,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
             [self addMessageFromReceiver:message];
         }
     }
+    [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:NO];
 }
 
 - (void) initializeScrollView {

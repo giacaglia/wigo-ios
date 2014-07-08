@@ -126,8 +126,8 @@
 - (void)selectedEditImage:(id)sender {
     UIButton*buttonSender = (UIButton *)sender;
     if (buttonSender.tag == -1) {
-        self.facebookAlbumTableViewController = [[FacebookAlbumTableViewController alloc] init];
-        [self.navigationController pushViewController:self.facebookAlbumTableViewController animated:YES];
+        self.facebookImagesViewController = [[FacebookImagesViewController alloc] init];
+        [self.navigationController pushViewController:self.facebookImagesViewController animated:YES];
     }
     else {
         self.photoViewController = [[PhotoViewController alloc] initWithImage:[buttonSender currentImage]];

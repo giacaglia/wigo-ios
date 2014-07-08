@@ -93,17 +93,14 @@
     
     FBGraphObject *albumFBGraphObject = [_albumArray objectAtIndex:[indexPath row]];
     
-    UILabel *albumName = [[UILabel alloc] initWithFrame:CGRectMake(85, 15, 150, 20)];
+    UILabel *albumName = [[UILabel alloc] initWithFrame:CGRectMake(75, 20, self.view.frame.size.width - 75, 20)];
     albumName.text = [albumFBGraphObject objectForKey:@"name"];
     albumName.font = [UIFont fontWithName:@"Whitney-Light" size:18.0f];
     albumName.textColor = [UIColor blackColor];
     albumName.textAlignment = NSTextAlignmentLeft;
-    albumName.numberOfLines = 0;
-    albumName.lineBreakMode = NSLineBreakByWordWrapping;
     [cell.contentView addSubview:albumName];
     
     NSString *imageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=album&access_token=%@", [albumFBGraphObject objectForKey:@"id"], [[Profile user] accessToken]];
-    NSLog(@"image URL %@", imageURL);
     UIImageView *coverImageView = [[UIImageView alloc] init];
     coverImageView.frame = CGRectMake(10, 10, 45, 45);
     [coverImageView setImageWithURL:imageURL

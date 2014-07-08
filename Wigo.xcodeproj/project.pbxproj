@@ -65,6 +65,7 @@
 		E9902983196B12BE00192FF2 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9902982196B12BE00192FF2 /* Parse.framework */; };
 		E9902985196B2F9A00192FF2 /* privateIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9902984196B2F9A00192FF2 /* privateIcon@2x.png */; };
 		E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */; };
+		E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */; };
 		E9A17C70195C761E0057C89A /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A17C6F195C761E0057C89A /* Network.m */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
 		E9AAAFB01938F8940069F700 /* orangeSearchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */; };
@@ -237,7 +238,7 @@
 		E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
 		E9147B6A1925123C00C25C9A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
 		E9147B6B1925123C00C25C9A /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
-		E921D6121923967D00361247 /* Wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E921D6121923967D00361247 /* wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E921D6151923967D00361247 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E921D6171923967D00361247 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		E921D6191923967D00361247 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -289,6 +290,8 @@
 		E9902984196B2F9A00192FF2 /* privateIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "privateIcon@2x.png"; sourceTree = "<group>"; };
 		E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookAlbumTableViewController.h; sourceTree = "<group>"; };
 		E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookAlbumTableViewController.m; sourceTree = "<group>"; };
+		E9902989196B4E0700192FF2 /* FacebookImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookImagesViewController.h; sourceTree = "<group>"; };
+		E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookImagesViewController.m; sourceTree = "<group>"; };
 		E9A17C6E195C761E0057C89A /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
 		E9A17C6F195C761E0057C89A /* Network.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Network.m; sourceTree = "<group>"; };
 		E9A50CFB19350F13009B73EA /* ConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationViewController.h; sourceTree = "<group>"; };
@@ -540,7 +543,7 @@
 		E921D6131923967D00361247 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E921D6121923967D00361247 /* Wigo.app */,
+				E921D6121923967D00361247 /* wigo.app */,
 				E921D6361923967D00361247 /* WigoTests.xctest */,
 			);
 			name = Products;
@@ -775,6 +778,8 @@
 				E9147B6B1925123C00C25C9A /* ProfileViewController.m */,
 				E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */,
 				E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */,
+				E9902989196B4E0700192FF2 /* FacebookImagesViewController.h */,
+				E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */,
 				E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */,
 				E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */,
 				E9D906BC19252DA900E39FC8 /* PeopleViewController.h */,
@@ -973,9 +978,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E921D6111923967D00361247 /* Wigo */ = {
+		E921D6111923967D00361247 /* wigo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E921D6471923967D00361247 /* Build configuration list for PBXNativeTarget "Wigo" */;
+			buildConfigurationList = E921D6471923967D00361247 /* Build configuration list for PBXNativeTarget "wigo" */;
 			buildPhases = (
 				E921D60E1923967D00361247 /* Sources */,
 				E921D60F1923967D00361247 /* Frameworks */,
@@ -985,9 +990,9 @@
 			);
 			dependencies = (
 			);
-			name = Wigo;
+			name = wigo;
 			productName = Wigo;
-			productReference = E921D6121923967D00361247 /* Wigo.app */;
+			productReference = E921D6121923967D00361247 /* wigo.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E921D6351923967D00361247 /* WigoTests */ = {
@@ -1046,7 +1051,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E921D6111923967D00361247 /* Wigo */,
+				E921D6111923967D00361247 /* wigo */,
 				E921D6351923967D00361247 /* WigoTests */,
 			);
 		};
@@ -1213,6 +1218,7 @@
 				E900C2B71961EADE00A01F50 /* SDImageCache.m in Sources */,
 				E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */,
 				E95DC78019538A270012AA20 /* Event.m in Sources */,
+				E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */,
 				E9681CB51950AA3B00182E0E /* Query.m in Sources */,
 				E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */,
 				E900C2BB1961EADE00A01F50 /* SDWebImageDownloaderOperation.m in Sources */,
@@ -1247,7 +1253,7 @@
 /* Begin PBXTargetDependency section */
 		E921D63C1923967D00361247 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E921D6111923967D00361247 /* Wigo */;
+			target = E921D6111923967D00361247 /* wigo */;
 			targetProxy = E921D63B1923967D00361247 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1297,7 +1303,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1315,6 +1322,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "71E53099-869B-44D3-A6FC-1673DA489007";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1335,7 +1343,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1346,6 +1355,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				PROVISIONING_PROFILE = "71E53099-869B-44D3-A6FC-1673DA489007";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1356,8 +1366,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1366,7 +1376,7 @@
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "71E53099-869B-44D3-A6FC-1673DA489007";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1376,8 +1386,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1386,7 +1396,7 @@
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "71E53099-869B-44D3-A6FC-1673DA489007";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1443,7 +1453,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E921D6471923967D00361247 /* Build configuration list for PBXNativeTarget "Wigo" */ = {
+		E921D6471923967D00361247 /* Build configuration list for PBXNativeTarget "wigo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E921D6481923967D00361247 /* Debug */,

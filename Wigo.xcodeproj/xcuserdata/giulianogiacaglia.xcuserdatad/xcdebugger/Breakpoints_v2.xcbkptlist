@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/ConversationViewController.m"
-            timestampString = "426447806.97377"
+            timestampString = "426461855.764105"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "-addTimerOfMessage:ToView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -138,27 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/User.m"
-            timestampString = "426435297.066362"
+            timestampString = "426524142.148296"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "383"
-            endingLineNumber = "383"
-            landmarkName = "-save"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/User.m"
-            timestampString = "426435297.066362"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "389"
-            endingLineNumber = "389"
+            startingLineNumber = "390"
+            endingLineNumber = "390"
             landmarkName = "-save"
             landmarkType = "5">
          </BreakpointContent>
