@@ -92,36 +92,13 @@
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
                               for (FBGraphObject *photoRepresentation in resultObject) {
                                   NSLog(@"Image %@", photoRepresentation);
-                                  FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
-                                  FBGraphObject *newPhoto = [self getFirstFacebookPhotoGreaterThanSixHundred:images];
-                                  if (newPhoto != nil) {
-                                      [_profilePicturesURL addObject:[newPhoto objectForKey:@"source"]];
-                                  }
+                                  [_profilePicturesURL addObject:[photoRepresentation objectForKey:@"source"]];
                                   _startingYPosition = 0;
                                   [self addImagesFromURLArray];
                               }
     }];
 }
 
-
-- (FBGraphObject *)getFirstFacebookPhotoGreaterThanSixHundred:(FBGraphObject *)photoArray {
-    int minHeight = 0;
-    FBGraphObject *returnedPhoto;
-    for (FBGraphObject *fbPhoto in photoArray) {
-        int heightPhoto = [[fbPhoto objectForKey:@"height"] intValue];
-        if (heightPhoto > 600) {
-            if (minHeight == 0) {
-                returnedPhoto = fbPhoto;
-                minHeight = heightPhoto;
-            }
-            else if (minHeight > heightPhoto) {
-                returnedPhoto = fbPhoto;
-                minHeight = heightPhoto;
-            }
-        }
-    }
-    return returnedPhoto;
-}
 
 
 - (void) initializeScrollView {
@@ -141,9 +118,8 @@
     for (int i = 0; i < [_profilePicturesURL count]; i++) {
         NSString *pictureURL = [_profilePicturesURL objectAtIndex:i];
         UIImageView *imgView = [[UIImageView alloc] init];
-        [imgView setImageWithURL:pictureURL  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            imgView.image = [UIImageCrop imageByScalingAndCroppingForSize:imgView.frame.size andImage:image];
-        }];
+        imgView.contentMode = UIViewContentModeScaleAspectFit;
+        [imgView setImageWithURL:[NSURL URLWithString:pictureURL]];
         imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
         imgView.userInteractionEnabled = YES;
         imgView.tag = i;

@@ -311,7 +311,7 @@
     else if ([tag isEqualToNumber:@4]) {
         _followingParty = [Profile followingParty];
         _contentList = [_followingParty getObjectArray];
-        [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [_contentList count]] forState:UIControlStateNormal];
+        [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]] forState:UIControlStateNormal];
         [_tableViewOfPeople reloadData];
     }
 }
