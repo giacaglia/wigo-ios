@@ -218,11 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/FacebookImagesViewController.m"
-            timestampString = "426528245.384898"
+            timestampString = "426533542.348228"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
             landmarkName = "-choseImageView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -234,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/User.m"
-            timestampString = "426532367.987035"
+            timestampString = "426533542.348228"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "354"
-            endingLineNumber = "354"
+            startingLineNumber = "364"
+            endingLineNumber = "364"
             landmarkName = "-save"
             landmarkType = "5">
          </BreakpointContent>
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/User.m"
-            timestampString = "426532367.987035"
+            timestampString = "426533542.348228"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "358"
-            endingLineNumber = "358"
+            startingLineNumber = "368"
+            endingLineNumber = "368"
             landmarkName = "-save"
             landmarkType = "5">
          </BreakpointContent>

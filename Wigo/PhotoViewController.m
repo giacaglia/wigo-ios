@@ -11,20 +11,21 @@
 #import "FontProperties.h"
 #import <QuartzCore/QuartzCore.h>
 #import "RWBlurPopover.h"
+#import "SDWebImage/UIImageView+WebCache.h"
 
 @interface PhotoViewController ()
 
-@property UIImage *image;
+@property NSString *imageURL;
 
 @end
 
 @implementation PhotoViewController
 
-- (id)initWithImage:(UIImage *)image
+- (id)initWithImageURL:(NSString *)imageURL
 {
     self = [super init];
     if (self) {
-        _image = image;
+        _imageURL = imageURL;
         self.view.backgroundColor = [UIColor clearColor];
     }
     return self;
@@ -34,8 +35,8 @@
 {
     [super viewDidLoad];
     
-    UIImageView *photoImageView = [[UIImageView alloc] initWithImage:_image];
-    photoImageView.frame = CGRectMake(35, 0, 248, 248);
+    UIImageView *photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, 0, 248, 248)];
+    [photoImageView setImageWithURL:_imageURL];
     [self.view addSubview:photoImageView];
     
     UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
@@ -72,6 +73,8 @@
 }
 
 - (void)deletePressed {
+    [[Profile user] removeImageURL:_imageURL];
+    [[Profile user] save];
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
 }
 

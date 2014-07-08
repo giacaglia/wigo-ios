@@ -89,8 +89,10 @@
     
     NSArray *imageArrayURL = [[Profile user] imagesURL];
     NSMutableArray *photosArray = [[NSMutableArray alloc] initWithCapacity:[imageArrayURL count] + 1];
-    for (UIImage *imageURL in imageArrayURL) {
+    for (int i = 0; i < [imageArrayURL count]; i++) {
+        UIImage *imageURL = [imageArrayURL objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] init];
+        imageButton.tag = i;
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
         [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             imageView.image = [UIImageCrop imageByScalingAndCroppingForSize:imageView.frame.size andImage:image];
@@ -131,7 +133,8 @@
         [self.navigationController pushViewController:self.facebookImagesViewController animated:YES];
     }
     else {
-        self.photoViewController = [[PhotoViewController alloc] initWithImage:[buttonSender currentImage]];
+        
+        self.photoViewController = [[PhotoViewController alloc] initWithImageURL:[[[Profile user] imagesURL] objectAtIndex:buttonSender.tag]];
         [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:30 andHeight:450];
     }
 }
