@@ -20,6 +20,7 @@
         self.view.backgroundColor = [UIColor whiteColor];
         self.navigationController.navigationBar.hidden = YES;
         self.navigationItem.hidesBackButton = YES;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(login) name:UIApplicationWillEnterForegroundNotification object:nil];
     }
     return self;
 }
@@ -32,6 +33,17 @@
     [self initializeFaceAndNameLabel];
     [self initializeEmailLabel];
     [self initializeNumberOfPeopleLabel];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    NSLog(@"fheahre");
+    [self login];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    NSLog(@"Called here");
 }
 
 - (void) initializeEmailConfirmationLabel {
@@ -95,7 +107,7 @@
 
 - (void) initializeNumberOfPeopleLabel {
     UILabel *numberOfPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 50)];
-    numberOfPeopleLabel.text = @"17 students are going out label";
+    numberOfPeopleLabel.text = @"17 students are going out";
     numberOfPeopleLabel.font = [FontProperties getSmallFont];
     numberOfPeopleLabel.backgroundColor = [FontProperties getLightOrangeColor];
     numberOfPeopleLabel.textColor = [UIColor blackColor];
@@ -111,7 +123,7 @@
     
     
     UILabel *lastWeekLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50)];
-    lastWeekLabel.text = @"253 students are going out label";
+    lastWeekLabel.text = @"253 students are going out";
     lastWeekLabel.font = [FontProperties getSmallFont];
     lastWeekLabel.backgroundColor = [FontProperties getLightOrangeColor];
     lastWeekLabel.textColor = [UIColor blackColor];
@@ -125,6 +137,21 @@
                  range:NSMakeRange(0, 3)];
     [lastWeekLabel setAttributedText: textWeekLabel];
     [self.view addSubview:lastWeekLabel];
+}
+
+#pragma mark - Login
+
+- (void) login {
+    User *userProfile = [Profile user];
+    NSString *response = [userProfile login];
+    [Profile setUser:userProfile];
+    
+    if ([response isEqualToString:@"error"] || [response isEqualToString:@"email_not_validated"]) {
+    }
+    else {
+        [self dismissViewControllerAnimated:YES  completion:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+    }
 }
 
 @end
