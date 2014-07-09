@@ -107,11 +107,13 @@
         [photosArray addObject:imageButton];
     }
     
-    UIButton *imageButton = [[UIButton alloc] init];
-    [imageButton setImage:[UIImage imageNamed:@"plusSquare"] forState:UIControlStateNormal];
-    imageButton.tag = -1;
-    [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchDown];
-    [photosArray addObject:imageButton];
+    if ([imageArrayURL count] < 5) {
+        UIButton *imageButton = [[UIButton alloc] init];
+        [imageButton setImage:[UIImage imageNamed:@"plusSquare"] forState:UIControlStateNormal];
+        imageButton.tag = -1;
+        [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchDown];
+        [photosArray addObject:imageButton];
+    }
 
     int xPosition = 15;
     for (UIButton *photoButton in photosArray) {

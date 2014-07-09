@@ -117,7 +117,8 @@
     for (int i = 0; i < [_profilePicturesURL count]; i++) {
         NSString *pictureURL = [_profilePicturesURL objectAtIndex:i];
         UIImageView *imgView = [[UIImageView alloc] init];
-        imgView.contentMode = UIViewContentModeScaleAspectFit;
+        imgView.contentMode = UIViewContentModeScaleAspectFill;
+        imgView.clipsToBounds = YES;
         [imgView setImageWithURL:[NSURL URLWithString:pictureURL]];
         imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
         imgView.userInteractionEnabled = YES;

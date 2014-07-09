@@ -119,7 +119,6 @@
         [self fetchTokensFromFacebook];
         [self fetchProfilePicturesAlbumFacebook];
     }
-
 }
 
 

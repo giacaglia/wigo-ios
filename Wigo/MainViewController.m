@@ -439,7 +439,6 @@
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
-    
     [profileButton addSubview:profileImageView];
     [profileButton addTarget:self action:@selector(myProfileSegue)
             forControlEvents:UIControlEventTouchUpInside];

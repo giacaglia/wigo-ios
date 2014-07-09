@@ -10,6 +10,7 @@
 #import "FontProperties.h"
 #import "Profile.h"
 #import "SDWebImage/UIImageView+WebCache.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation EmailConfirmationViewController
 
@@ -32,7 +33,7 @@
     [self initializeEmailConfirmationLabel];
     [self initializeFaceAndNameLabel];
     [self initializeEmailLabel];
-    [self initializeNumberOfPeopleLabel];
+//    [self initializeNumberOfPeopleLabel];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -59,9 +60,10 @@
     UIView *faceAndNameView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 68)];
     faceAndNameView.backgroundColor = [FontProperties getLightOrangeColor];
     
-    UIImageView *faceImageView = [[UIImageView alloc] init];
-    [faceImageView setImageWithURL:[NSURL URLWithString:[[[Profile user] imagesURL] objectAtIndex:0]]];
-    faceImageView.frame = CGRectMake(15, 10, 47, 47);
+    UIImageView *faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 47, 47)];
+    faceImageView.contentMode = UIViewContentModeScaleAspectFill;
+    faceImageView.clipsToBounds = YES;
+    [faceImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;
     faceImageView.backgroundColor = [UIColor whiteColor];
@@ -96,13 +98,13 @@
     emailLabel.font = [FontProperties getSmallFont];
     emailLabel.textColor = [FontProperties getOrangeColor];
     [self.view addSubview:emailLabel];
-
-    UILabel *holyCrossLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 430, self.view.frame.size.width, 30)];
-    holyCrossLabel.textAlignment = NSTextAlignmentCenter;
-    holyCrossLabel.text = @"@ Holy Cross";
-    holyCrossLabel.font = [FontProperties getSmallFont];
-    holyCrossLabel.textColor = [UIColor grayColor];
-    [self.view addSubview:holyCrossLabel];
+//
+//    UILabel *holyCrossLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 430, self.view.frame.size.width, 30)];
+//    holyCrossLabel.textAlignment = NSTextAlignmentCenter;
+//    holyCrossLabel.text = @"@ Holy Cross";
+//    holyCrossLabel.font = [FontProperties getSmallFont];
+//    holyCrossLabel.textColor = [UIColor grayColor];
+//    [self.view addSubview:holyCrossLabel];
 }
 
 - (void) initializeNumberOfPeopleLabel {
