@@ -419,7 +419,6 @@
     if (!_notGoingOutView) {
         _notGoingOutView = [[UIView alloc] init];
         _notGoingOutView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
-        [_scrollView addSubview:_notGoingOutView];
         [self.view bringSubviewToFront:_notGoingOutView];
         
         UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
@@ -430,6 +429,8 @@
     }
     
     _notGoingOutView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
+    [_notGoingOutView removeFromSuperview];
+    [_scrollView addSubview:_notGoingOutView];
     _notGoingOutStartingPoint = [_notGoingOutView.superview convertPoint:_notGoingOutView.frame.origin toView:nil];
     _notGoingOutIsAttachedToScrollView = YES;
     _startingYPosition += 30;
