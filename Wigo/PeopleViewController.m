@@ -12,7 +12,7 @@
 #import "UIButtonAligned.h"
 #import "Profile.h"
 #import "Network.h"
-
+#import <QuartzCore/QuartzCore.h>
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "UIImageCrop.h"
 
@@ -37,6 +37,7 @@
 
 @property Party *everyoneParty;
 @property Party *followingParty;
+@property Party *notAcceptedFollowingParty;
 @property Party *followersParty;
 
 @end
@@ -68,9 +69,11 @@
     //Search Bar Setup
     _everyoneParty = [Profile everyoneParty];
     [_everyoneParty removeUserFromParty:[Profile user]];
+    _followingParty = [Profile followingParty];
+    _notAcceptedFollowingParty = [Profile notAcceptedFollowingParty];
+    
     _contentList = [_everyoneParty getObjectArray];
     _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
-    _followingParty = [Profile followingParty];
     
     // Title setup
     self.title = [self.user fullName];
@@ -294,7 +297,6 @@
     else if ([tag isEqualToNumber:@4]) {
         _followingParty = [Profile followingParty];
         _contentList = [_followingParty getObjectArray];
-        [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]] forState:UIControlStateNormal];
         [_tableViewOfPeople reloadData];
     }
 }
@@ -312,10 +314,9 @@
         }
         _followersParty = [[Party alloc] initWithObjectName:@"User"];
         [_followersParty addObjectsFromArray:arrayOfUsers];
-        _contentList = [_followersParty getObjectArray];
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [[_followersParty getObjectArray] count]] forState:UIControlStateNormal];
+            _contentList = [_followersParty getObjectArray];
             [_tableViewOfPeople reloadData];
         });
     }];
@@ -367,6 +368,20 @@
     if ([[_followingParty getObjectArray] count] > 0 ) {
         if ([_followingParty containsObject:user]) {
             [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+            favoriteButton.tag = 100;
+        }
+    }
+    
+    if ([[_notAcceptedFollowingParty getObjectArray] count] > 0 ) {
+        if ([_notAcceptedFollowingParty containsObject:user]) {
+            [favoriteButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [favoriteButton setTitle:@"Pending" forState:UIControlStateNormal];
+            [favoriteButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            favoriteButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
+            favoriteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            favoriteButton.layer.borderWidth = 1;
+            favoriteButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            favoriteButton.layer.cornerRadius = 3;
             favoriteButton.tag = 100;
         }
     }
