@@ -371,33 +371,41 @@
 }
 
 - (void) initializeBarAtTopWithText:(NSString *)textAtTop {
-    _barAtTopView = [[UIView alloc] initWithFrame:CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30)];
-    _barAtTopView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
-    [self.view bringSubviewToFront:_barAtTopView];
-    [self.view addSubview:_barAtTopView];
-    _barAtTopPoint = _barAtTopView.frame.origin;
+    if (!_barAtTopView) {
+        _barAtTopView = [[UIView alloc] init];
+        _barAtTopView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
+        [self.view bringSubviewToFront:_barAtTopView];
+        [self.view addSubview:_barAtTopView];
+        _barAtTopPoint = _barAtTopView.frame.origin;
+        
+        _barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
+        _barAtTopLabel.text = textAtTop;
+        _barAtTopLabel.textAlignment = NSTextAlignmentLeft;
+        _barAtTopLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
+        [_barAtTopView addSubview:_barAtTopLabel];
+    }
     
-    _barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
-    _barAtTopLabel.text = textAtTop;
-    _barAtTopLabel.textAlignment = NSTextAlignmentLeft;
-    _barAtTopLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
-    [_barAtTopView addSubview:_barAtTopLabel];
+    _barAtTopView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
     _goingOutIsAttachedToScrollView = NO;
     _startingYPosition += 30;
 }
 
 - (void) initializeNotGoingOutBar {
-    _notGoingOutView = [[UIView alloc] initWithFrame:CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30)];
-    _notGoingOutView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
-    [_scrollView addSubview:_notGoingOutView];
-    [self.view bringSubviewToFront:_notGoingOutView];
-    _notGoingOutStartingPoint = [_notGoingOutView.superview convertPoint:_notGoingOutView.frame.origin toView:nil];
+    if (!_notGoingOutView) {
+        _notGoingOutView = [[UIView alloc] init];
+        _notGoingOutView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
+        [_scrollView addSubview:_notGoingOutView];
+        [self.view bringSubviewToFront:_notGoingOutView];
+        
+        UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
+        goingOutLabel.text = @"NOT GOING OUT YET";
+        goingOutLabel.textAlignment = NSTextAlignmentLeft;
+        goingOutLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
+        [_notGoingOutView addSubview:goingOutLabel];
+    }
     
-    UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
-    goingOutLabel.text = @"NOT GOING OUT YET";
-    goingOutLabel.textAlignment = NSTextAlignmentLeft;
-    goingOutLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
-    [_notGoingOutView addSubview:goingOutLabel];
+    _notGoingOutView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
+    _notGoingOutStartingPoint = [_notGoingOutView.superview convertPoint:_notGoingOutView.frame.origin toView:nil];
     _notGoingOutIsAttachedToScrollView = YES;
     _startingYPosition += 30;
 }
