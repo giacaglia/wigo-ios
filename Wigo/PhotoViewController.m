@@ -12,7 +12,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "RWBlurPopover.h"
 #import "SDWebImage/UIImageView+WebCache.h"
-#import "UIImageCrop.h"
 
 @interface PhotoViewController ()
 

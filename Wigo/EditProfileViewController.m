@@ -13,7 +13,6 @@
 #import "RWBlurPopover.h"
 #import "MBProgressHUD.h"
 #import "SDWebImage/UIImageView+WebCache.h"
-#import "UIImageCrop.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface EditProfileViewController ()

@@ -14,7 +14,6 @@
 #import "Network.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SDWebImage/UIImageView+WebCache.h"
-#import "UIImageCrop.h"
 
 @interface PeopleViewController ()
 
@@ -423,8 +422,6 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 80;
 }
-
-
 
 
 @end

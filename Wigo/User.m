@@ -324,7 +324,7 @@
         }
     }
     if ([[dictionaryUser allKeys] containsObject:@"email_validated"] ) {
-        NSLog(@"dictionary user %@", dictionaryUser);
+//        NSLog(@"dictionary user %@", dictionaryUser);
         for (NSString *key in [dictionaryUser allKeys]) {
             [self setValue:[dictionaryUser objectForKey:key] forKey:key];
         }
@@ -337,7 +337,7 @@
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     currentInstallation[@"wigo_id"] = [_proxy objectForKey:@"id"];
     [currentInstallation saveInBackground];
-    NSLog(@"dictionary user %@", dictionaryUser);
+//    NSLog(@"dictionary user %@", dictionaryUser);
     for (NSString *key in [dictionaryUser allKeys]) {
         [self setValue:[dictionaryUser objectForKey:key] forKey:key];
     }
@@ -390,7 +390,7 @@
         [query setValue:[_proxy objectForKey:key] forKey:key];
     }
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
-    NSLog(@"dictionary User %@", dictionaryUser);
+//    NSLog(@"dictionary User %@", dictionaryUser);
     if  (!(dictionaryUser == nil)) {
         [_proxy addEntriesFromDictionary:dictionaryUser];
         modifiedKeys = [[NSMutableArray alloc] init];

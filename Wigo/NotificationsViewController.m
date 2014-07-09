@@ -13,7 +13,6 @@
 #import "Party.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
-#import "UIImageCrop.h"
 
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;

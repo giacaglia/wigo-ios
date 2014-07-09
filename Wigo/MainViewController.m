@@ -21,9 +21,6 @@
 #import "Network.h"
 #import "MBProgressHUD.h"
 
-//Crop
-#import "UIImageCrop.h"
-
 #import "SDWebImage/UIImageView+WebCache.h"
 
 
@@ -59,6 +56,7 @@
 @property UIImageView *whoImageView;
 
 // Saving Data
+@property int numberFetchedMyInfoAndEveryoneElse;
 @property NSMutableArray *userTappedIDArray;
 @property int numberOfFetchedParties;
 @property Party *everyoneParty;
@@ -75,7 +73,6 @@
     self.tabBarController.tabBar.hidden = NO;
     [self initializeTabBar];
     [self initializeNavigationItem];
-    [self showTapButtons];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -90,10 +87,10 @@
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor clearColor]];
     [self initializeScrollView];
     [self initializeNotificationObservers];
-    [self showTapButtons];
 }
 
 - (void)loadViewAfterSigningUser {
+    _numberFetchedMyInfoAndEveryoneElse = 0;
     [self fetchUserInfo];
     [self fetchEveryone];
     [self fetchFollowers];
@@ -104,11 +101,12 @@
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         User *user = [[User alloc] initWithDictionary:jsonResponse];
         User *profileUser = [Profile user];
+        NSLog([user isGoingOut] ? @"Is Going out" : @"Not going out");
         [profileUser setIsGoingOut:[user isGoingOut]];
         [Profile setUser:profileUser];
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [self updateTitleViewIsOrange:YES];
-            [self showTapButtons];
+            [self updateTitleView];
+            [self fetchedMyInfoOrPeoplesInfoOrTaps];
         });
     }];
 }
@@ -156,9 +154,6 @@
             NSNumber* userID = [object objectForKey:@"user"];
             [_whoIsGoingOutParty addObject:[_followingAcceptedParty getObjectWithId:userID]];
         }
-        User *profileUser = [Profile user];
-        [profileUser setIsGoingOut:[_whoIsGoingOutParty containsObject:[Profile user]]];
-        [Profile setUser:profileUser];
         [_whoIsGoingOutParty removeUserFromParty:[Profile user]];
         [self fetchedOneParty];
     }];
@@ -170,8 +165,8 @@
         for (int i = 0; i < [taps count]; i++) {
             NSDictionary *userTappedDictionary = [[taps objectAtIndex:i] objectForKey:@"tapped"];
             [_userTappedIDArray addObject:[userTappedDictionary objectForKey:@"id"]];
-            
         }
+        [self fetchedMyInfoOrPeoplesInfoOrTaps];
     }];
 }
 
@@ -191,6 +186,7 @@
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             [self newInitializeWhoView];
+            [self fetchedMyInfoOrPeoplesInfoOrTaps];
         });
     }
 }
@@ -261,7 +257,7 @@
 }
 
 - (void) updateViewNotGoingOut {
-    [self updateTitleViewIsOrange:YES];
+    [self updateTitleView];
     for (int i = 0; i < [_tapArray count]; i++) {
         UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
         tappedImageView.hidden = YES;
@@ -310,7 +306,6 @@
     _indexOfImage = -1;
     [self addImagesOfParty:_notGoingOutParty];
     _shownImageNumber = 0;
-    
 }
 
 - (void)addImagesOfParty:(Party *)party {
@@ -375,15 +370,6 @@
         
         UIImageViewShake *tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(imgView.frame.size.width - 30 - 5, 5, 30, 30)];
         tappedImageView.tintColor = [FontProperties getOrangeColor];
-        if ([self isUserTapped:user]) {
-            tappedImageView.tag = -1;
-            tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
-        }
-        else {
-            tappedImageView.tag = 1;
-            tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
-        }
-        
         if (![[Profile user] isGoingOut]) {
             tappedImageView.hidden = YES;
         }
@@ -469,16 +455,18 @@
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
-    [self updateTitleViewIsOrange:YES];
+    [self updateTitleView];
 }
 
 - (void) showTapButtons {
     if ([[Profile user] isGoingOut]) {
         for (int i = 0; i < [_tapArray count]; i++) {
+            NSLog(@"i: %d", i);
             UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
             tappedImageView.hidden = NO;
             UIButton *tapButton = [_tapButtonArray objectAtIndex:i];
             tapButton.enabled = YES;
+            
         }
     }
 }
@@ -515,7 +503,7 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
-- (void) updateTitleViewIsOrange:(BOOL)isOrange {
+- (void) updateTitleView {
     if ([[Profile user] isGoingOut]) {
         self.navigationItem.titleView = nil;
         UIButtonUngoOut *ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
@@ -523,36 +511,28 @@
         self.navigationItem.titleView = ungoOutButton;
     }
     else {
-        if (isOrange) {
-            UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
-            [goOutButton setTitle:@"GO OUT" forState:UIControlStateNormal];
-            [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            goOutButton.backgroundColor = [FontProperties getOrangeColor];
-            goOutButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            goOutButton.titleLabel.font = [FontProperties getTitleFont];
-            goOutButton.layer.borderWidth = 1;
-            goOutButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            goOutButton.layer.cornerRadius = 7;
-            [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
-            self.navigationItem.title = @"GO OUT";
-            self.navigationItem.titleView = goOutButton;
-        }
+        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
+        [goOutButton setTitle:@"GO OUT" forState:UIControlStateNormal];
+        [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        goOutButton.backgroundColor = [FontProperties getOrangeColor];
+        goOutButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        goOutButton.titleLabel.font = [FontProperties getTitleFont];
+        goOutButton.layer.borderWidth = 1;
+        goOutButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+        goOutButton.layer.cornerRadius = 7;
+        [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
+        self.navigationItem.title = @"GO OUT";
+        self.navigationItem.titleView = goOutButton;
     }
-    if (isOrange) {
-        self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-        [self.navigationItem.leftBarButtonItem setTintColor:[FontProperties getOrangeColor]];
-    }
-    else {
-        self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
-        [self.navigationItem.leftBarButtonItem setTintColor:[FontProperties getBlueColor]];
-    }
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    [self.navigationItem.leftBarButtonItem setTintColor:[FontProperties getOrangeColor]];
 }
 
 - (void) goOutPressed {
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
     [Profile setUser:profileUser];
-    [self updateTitleViewIsOrange:YES];
+    [self updateTitleView];
     [self animationShowingTapIcons];
     [Network postGoOut];
 }
@@ -599,6 +579,14 @@
         return YES;
     }
     return NO;
+}
+
+
+- (void)fetchedMyInfoOrPeoplesInfoOrTaps {
+    _numberFetchedMyInfoAndEveryoneElse += 1;
+    if (_numberFetchedMyInfoAndEveryoneElse == 3) {
+        [self showTapButtons];
+    }
 }
 
 

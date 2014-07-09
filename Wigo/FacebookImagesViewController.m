@@ -7,7 +7,6 @@
 //
 
 #import "FacebookImagesViewController.h"
-#import "UIImageCrop.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "Profile.h"
 #import "User.h"
@@ -139,7 +138,6 @@
 - (void)choseImageView:(UITapGestureRecognizer*)sender {
     UIImageView *imageViewSender = (UIImageView *)sender.view;
     NSString *urlOfSelectedImage = [_profilePicturesURL objectAtIndex:imageViewSender.tag];
-    NSLog(@"url of selected image :%@", urlOfSelectedImage);
     User *profileUser = [Profile user];
     [profileUser addImageURL:urlOfSelectedImage];
     [profileUser save];

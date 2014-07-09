@@ -34,7 +34,6 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
 
 - (void)queryWithClassName:(NSString *)className {
     _urlSuffix = [NSString stringWithFormat:@"/api/%@", className];
-    
 }
 
 - (void)setValue:(id)value forKey:(NSString *)key  {
@@ -62,7 +61,6 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
 }
 
 - (NSDictionary *)sendPOSTRequest {
-//    NSLog(@"options %@", _options);
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
