@@ -103,10 +103,9 @@
     NSString *imageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=album&access_token=%@", [albumFBGraphObject objectForKey:@"id"], [[Profile user] accessToken]];
     UIImageView *coverImageView = [[UIImageView alloc] init];
     coverImageView.frame = CGRectMake(10, 10, 45, 45);
-    [coverImageView setImageWithURL:[NSURL URLWithString:imageURL]
-                          completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                              coverImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:coverImageView.frame.size andImage:image];
-                            }];
+    coverImageView.contentMode = UIViewContentModeScaleAspectFill;
+    coverImageView.clipsToBounds = YES;
+    [coverImageView setImageWithURL:[NSURL URLWithString:imageURL]];
     coverImageView.backgroundColor = [UIColor whiteColor];
     [cell.contentView addSubview:coverImageView];
     

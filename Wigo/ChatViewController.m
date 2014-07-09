@@ -134,10 +134,9 @@
     cell.backgroundColor = [UIColor clearColor];
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]
-                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
-    }];
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
+    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];

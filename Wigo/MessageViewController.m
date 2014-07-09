@@ -106,6 +106,8 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
     [cell.contentView addSubview:profileImageView];
     

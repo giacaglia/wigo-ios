@@ -95,9 +95,9 @@
         UIButton *imageButton = [[UIButton alloc] init];
         imageButton.tag = i;
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
-        [imageView setImageWithURL:[NSURL URLWithString:imageURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            imageView.image = [UIImageCrop imageByScalingAndCroppingForSize:imageView.frame.size andImage:image];
-        }];
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.clipsToBounds = YES;
+        [imageView setImageWithURL:[NSURL URLWithString:imageURL]];
         [imageButton addSubview:imageView];
         [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchUpInside];
         // IF its the cover photo

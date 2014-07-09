@@ -112,9 +112,9 @@
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
-    }];
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
+    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
     [profileButton addSubview:profileImageView];
     [profileButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchUpInside];
     [profileButton setShowsTouchWhenHighlighted:YES];
@@ -474,11 +474,10 @@
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
         
         UIImageView *imgView = [[UIImageView alloc] init];
-        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//            imgView.image = [UIImageCrop imageByScalingAndCroppingForSize:imgView.frame.size andImage:image];
-        }];
-
         imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
+        imgView.contentMode = UIViewContentModeScaleAspectFill;
+        imgView.clipsToBounds = YES;
+        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
         [imageButton addSubview:imgView];
         
         UILabel *profileName = [[UILabel alloc] init];

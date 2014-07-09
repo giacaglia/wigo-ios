@@ -114,10 +114,9 @@
     
     UIImageView *profileImageView = [[UIImageView alloc] init];
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]
-                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
-    }];
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
+    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
     profileImageView.layer.cornerRadius = 3;
     profileImageView.layer.borderWidth = 1;
     profileImageView.backgroundColor = [UIColor whiteColor];

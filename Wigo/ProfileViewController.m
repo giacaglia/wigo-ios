@@ -258,12 +258,12 @@
     for (int i = 0; i < [[self.user imagesURL] count]; i++) {
 
         UIImageView *profileImgView = [[UIImageView alloc] init];
+        profileImgView.contentMode = UIViewContentModeScaleAspectFill;
+        profileImgView.clipsToBounds = YES;
         profileImgView.frame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, heightOfProfileImage);
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                UIImage *croppedImage = [UIImageCrop imageByScalingAndCroppingForSize:CGSizeMake(heightOfProfileImage, heightOfProfileImage) andImage:image];
-                profileImgView.image = croppedImage;
-                [self addBlurredImage:croppedImage toImageView:profileImgView];
+                [self addBlurredImage:image toImageView:profileImgView];
                 profileImgView.hidden = NO;
             });
         }];

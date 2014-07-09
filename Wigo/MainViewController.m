@@ -175,7 +175,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [MBProgressHUD hideHUDForView:self.view animated:YES];
-            [self initializeWhoTableView];
+            [self newInitializeWhoView];
         });
     }
 }
@@ -272,7 +272,7 @@
     [self initializeBarAtTopWithText:@"GOING OUT"];
     
     _startingYPosition -= 64;
-    _whoTableView = [[UITableView alloc] init];
+    _whoTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     [self addImagesOfParty:_whoIsGoingOutParty];
     
     //HACK (May need to fix)
@@ -288,6 +288,8 @@
 }
 
 - (void) newInitializeWhoView {
+    [_scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+
     _startingYPosition = 64;
     [self initializeBarAtTopWithText:@"GOING OUT"];
 
@@ -326,9 +328,9 @@
         }
         User *user = [userArray objectAtIndex:i];
         UIImageView *imgView = [[UIImageView alloc] init];
-        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            imgView.image = [UIImageCrop imageByScalingAndCroppingForSize:imgView.frame.size andImage:image];
-        }];
+        imgView.contentMode = UIViewContentModeScaleAspectFill;
+        imgView.clipsToBounds = YES;
+        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
         imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
         imgView.userInteractionEnabled = YES;
         positionX += sizeOfEachImage + distanceOfEachImage;
@@ -445,9 +447,10 @@
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
-    }];
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
+    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
+    
     [profileButton addSubview:profileImageView];
     [profileButton addTarget:self action:@selector(myProfileSegue)
             forControlEvents:UIControlEventTouchUpInside];

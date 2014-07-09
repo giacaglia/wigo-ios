@@ -37,9 +37,9 @@
     [super viewDidLoad];
     
     UIImageView *photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, 0, 248, 248)];
-    [photoImageView setImageWithURL:[NSURL URLWithString:_imageURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            photoImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:photoImageView.frame.size andImage:image];
-    }];
+    photoImageView.contentMode = UIViewContentModeScaleAspectFill;
+    photoImageView.clipsToBounds = YES;
+    [photoImageView setImageWithURL:[NSURL URLWithString:_imageURL]];
     [self.view addSubview:photoImageView];
     
     UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
