@@ -376,7 +376,7 @@
         _barAtTopView = [[UIView alloc] init];
         _barAtTopView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
         [self.view bringSubviewToFront:_barAtTopView];
-        [self.view addSubview:_barAtTopView];
+       
         
         _barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
         _barAtTopLabel.text = textAtTop;
@@ -386,6 +386,8 @@
     }
     
     _barAtTopView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
+    [_barAtTopView removeFromSuperview];
+     [self.view addSubview:_barAtTopView];
     _barAtTopPoint = _barAtTopView.frame.origin;
     _goingOutIsAttachedToScrollView = NO;
     _startingYPosition += 30;

@@ -19,30 +19,18 @@
 @property int yPositionOfNotification;
 
 @property UITableView *notificationsTableView;
-
 @property NSMutableArray *notificationArray;
 @property Party *notificationsParty;
 @property Party *everyoneParty;
-
 @end
 
 @implementation NotificationsViewController
-
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     _everyoneParty = [Profile everyoneParty];
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    [Network queryAsynchronousAPI:@"notifications/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
-            _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
-            [_notificationsParty addObjectsFromArray:arrayOfNotifications];
-            [self initializeTableNotifications];
-        });
-    }];
+    [self fetchNotifications];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -115,7 +103,6 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
     Notification *notifcation = [[_notificationsParty getObjectArray] objectAtIndex:[indexPath row]];
-//    NSDictionary *notification = [_notificationArray objectAtIndex:[indexPath row]];
     User *user = (User *)[_everyoneParty getObjectWithId:[notifcation fromUserID]];
     
     NSString *name = [user fullName];
@@ -201,6 +188,19 @@
     self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
+}
+
+- (void)fetchNotifications {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [Network queryAsynchronousAPI:@"notifications/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
+            _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
+            [_notificationsParty addObjectsFromArray:arrayOfNotifications];
+            [self initializeTableNotifications];
+        });
+    }];
 }
 
 
