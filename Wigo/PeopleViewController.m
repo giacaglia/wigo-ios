@@ -352,7 +352,7 @@
     [cell.contentView addSubview:textLabel];
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    [profileImageView setImageWithURL:[user coverImageURL]
+    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
     }];

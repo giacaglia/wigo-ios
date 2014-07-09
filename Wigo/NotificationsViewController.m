@@ -114,7 +114,7 @@
     
     UIImageView *profileImageView = [[UIImageView alloc] init];
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
-    [profileImageView setImageWithURL:[user coverImageURL]
+    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
     }];

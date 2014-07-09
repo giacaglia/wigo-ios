@@ -306,7 +306,7 @@
         }
         User *user = [userArray objectAtIndex:i];
         UIImageView *imgView = [[UIImageView alloc] init];
-        [imgView setImageWithURL:[user coverImageURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             imgView.image = [UIImageCrop imageByScalingAndCroppingForSize:imgView.frame.size andImage:image];
         }];
         imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
@@ -425,7 +425,7 @@
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-    [profileImageView setImageWithURL:[[Profile user] coverImageURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             profileImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:profileImageView.frame.size andImage:image];
     }];
     [profileButton addSubview:profileImageView];

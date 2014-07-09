@@ -37,7 +37,7 @@
     [super viewDidLoad];
     
     UIImageView *photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, 0, 248, 248)];
-    [photoImageView setImageWithURL:_imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+    [photoImageView setImageWithURL:[NSURL URLWithString:_imageURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             photoImageView.image = [UIImageCrop imageByScalingAndCroppingForSize:photoImageView.frame.size andImage:image];
     }];
     [self.view addSubview:photoImageView];

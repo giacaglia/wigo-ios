@@ -51,7 +51,7 @@
     faceAndNameView.backgroundColor = [FontProperties getLightOrangeColor];
     
     UIImageView *faceImageView = [[UIImageView alloc] init];
-    [faceImageView setImageWithURL:[[[Profile user] imagesURL] objectAtIndex:0]];
+    [faceImageView setImageWithURL:[NSURL URLWithString:[[[Profile user] imagesURL] objectAtIndex:0]]];
     faceImageView.frame = CGRectMake(15, 10, 47, 47);
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;

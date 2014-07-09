@@ -91,11 +91,11 @@
     NSArray *imageArrayURL = [[Profile user] imagesURL];
     NSMutableArray *photosArray = [[NSMutableArray alloc] initWithCapacity:[imageArrayURL count] + 1];
     for (int i = 0; i < [imageArrayURL count]; i++) {
-        UIImage *imageURL = [imageArrayURL objectAtIndex:i];
+        NSString *imageURL = [imageArrayURL objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] init];
         imageButton.tag = i;
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
-        [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        [imageView setImageWithURL:[NSURL URLWithString:imageURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             imageView.image = [UIImageCrop imageByScalingAndCroppingForSize:imageView.frame.size andImage:image];
         }];
         [imageButton addSubview:imageView];

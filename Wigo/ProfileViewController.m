@@ -259,7 +259,7 @@
 
         UIImageView *profileImgView = [[UIImageView alloc] init];
         profileImgView.frame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, heightOfProfileImage);
-        [profileImgView setImageWithURL:[[self.user imagesURL] objectAtIndex:i] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 UIImage *croppedImage = [UIImageCrop imageByScalingAndCroppingForSize:CGSizeMake(heightOfProfileImage, heightOfProfileImage) andImage:image];
                 profileImgView.image = croppedImage;
