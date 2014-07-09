@@ -154,7 +154,6 @@
 		E9CD4737194B938500AEA17D /* privateLine@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD4736194B938500AEA17D /* privateLine@2x.png */; };
 		E9CD473A194B9AD600AEA17D /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD4739194B9AD600AEA17D /* PhotoViewController.m */; };
 		E9CD473C194E884200AEA17D /* orangeTap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD473B194E884200AEA17D /* orangeTap@2x.png */; };
-		E9D7D5311925642B00E1ED10 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D7D5301925642B00E1ED10 /* FacebookSDK.framework */; };
 		E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E9D7D5321926539C00E1ED10 /* Main.storyboard */; };
 		E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906BD19252DA900E39FC8 /* PeopleViewController.m */; };
 		E9D906C0192535AF00E39FC8 /* giu2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E9D906BF192535AF00E39FC8 /* giu2.jpg */; };
@@ -176,6 +175,7 @@
 		E9E6190119365AA300A224C0 /* leftBeforeChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E6190019365AA300A224C0 /* leftBeforeChatIcon.png */; };
 		E9E6190319365B4000A224C0 /* rightAfterChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E6190219365B4000A224C0 /* rightAfterChatIcon.png */; };
 		E9E619051938C74200A224C0 /* searchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E619041938C74200A224C0 /* searchIcon.png */; };
+		E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		E9F59E0A192AAE5F00BB8FDD /* favorite.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E09192AAE5F00BB8FDD /* favorite.png */; };
 		E9F59E14192BDDB700BB8FDD /* favoriteSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E13192BDDB700BB8FDD /* favoriteSelected.png */; };
 		E9F59E1A192D025100BB8FDD /* wigoLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E19192D025100BB8FDD /* wigoLogo.png */; };
@@ -394,7 +394,6 @@
 		E9CD4738194B9AD600AEA17D /* PhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoViewController.h; sourceTree = "<group>"; };
 		E9CD4739194B9AD600AEA17D /* PhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
 		E9CD473B194E884200AEA17D /* orangeTap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "orangeTap@2x.png"; sourceTree = "<group>"; };
-		E9D7D5301925642B00E1ED10 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		E9D7D5331926539C00E1ED10 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Wigo/en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E9D906BC19252DA900E39FC8 /* PeopleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleViewController.h; sourceTree = "<group>"; };
 		E9D906BD19252DA900E39FC8 /* PeopleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeopleViewController.m; sourceTree = "<group>"; };
@@ -421,6 +420,7 @@
 		E9E6190019365AA300A224C0 /* leftBeforeChatIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leftBeforeChatIcon.png; sourceTree = "<group>"; };
 		E9E6190219365B4000A224C0 /* rightAfterChatIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightAfterChatIcon.png; sourceTree = "<group>"; };
 		E9E619041938C74200A224C0 /* searchIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchIcon.png; sourceTree = "<group>"; };
+		E9ECFF7F196D917F00384252 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		E9F59E09192AAE5F00BB8FDD /* favorite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = favorite.png; sourceTree = "<group>"; };
 		E9F59E13192BDDB700BB8FDD /* favoriteSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = favoriteSelected.png; sourceTree = "<group>"; };
 		E9F59E19192D025100BB8FDD /* wigoLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wigoLogo.png; sourceTree = "<group>"; };
@@ -448,9 +448,9 @@
 				E9D906CF19255D8200E39FC8 /* AudioToolbox.framework in Frameworks */,
 				E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */,
 				E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */,
-				E9D7D5311925642B00E1ED10 /* FacebookSDK.framework in Frameworks */,
 				E921D61A1923967D00361247 /* UIKit.framework in Frameworks */,
 				E921D6161923967D00361247 /* Foundation.framework in Frameworks */,
+				E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -554,10 +554,10 @@
 		E921D6141923967D00361247 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E9ECFF7F196D917F00384252 /* FacebookSDK.framework */,
 				E9902982196B12BE00192FF2 /* Parse.framework */,
 				E900C2901961E0B800A01F50 /* ImageIO.framework */,
 				E9CD472E194B897200AEA17D /* Accelerate.framework */,
-				E9D7D5301925642B00E1ED10 /* FacebookSDK.framework */,
 				E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */,
 				E9D906DA19255DBC00E39FC8 /* Security.framework */,
 				E9D906D819255DB400E39FC8 /* QuartzCore.framework */,
@@ -635,8 +635,8 @@
 				E9CD4722194A0C4100AEA17D /* ProfileViewController */,
 				E9AAAFD0193E70C50069F700 /* EditProfileViewController */,
 				E9AAAFCF193E70B50069F700 /* profilePics */,
-				E9E619041938C74200A224C0 /* searchIcon.png */,
 				E9F59E20192D1D3A00BB8FDD /* rightArrow.png */,
+				E9E619041938C74200A224C0 /* searchIcon.png */,
 				E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */,
 				E9E618FE1936421A00A224C0 /* backIcon.png */,
 				E94FF0DA19633A4600852180 /* iconFlashScreen@2x.png */,

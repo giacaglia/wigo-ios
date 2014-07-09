@@ -27,7 +27,7 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>URL schemes</key>
+			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb661589153895742</string>
 			</array>
@@ -38,7 +38,7 @@
 	<key>FacebookAppID</key>
 	<string>661589153895742</string>
 	<key>FacebookDisplayName</key>
-	<string>Wigo</string>
+	<string>wigo</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
