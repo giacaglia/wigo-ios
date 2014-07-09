@@ -176,9 +176,9 @@
 		E9E6190319365B4000A224C0 /* rightAfterChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E6190219365B4000A224C0 /* rightAfterChatIcon.png */; };
 		E9E619051938C74200A224C0 /* searchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E619041938C74200A224C0 /* searchIcon.png */; };
 		E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
+		E9ECFF82196DEB5A00384252 /* wigoLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9ECFF81196DEB5A00384252 /* wigoLogo@2x.png */; };
 		E9F59E0A192AAE5F00BB8FDD /* favorite.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E09192AAE5F00BB8FDD /* favorite.png */; };
 		E9F59E14192BDDB700BB8FDD /* favoriteSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E13192BDDB700BB8FDD /* favoriteSelected.png */; };
-		E9F59E1A192D025100BB8FDD /* wigoLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E19192D025100BB8FDD /* wigoLogo.png */; };
 		E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
 		E9F59E21192D1D3A00BB8FDD /* rightArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E20192D1D3A00BB8FDD /* rightArrow.png */; };
 		E9F59E25192D514E00BB8FDD /* commentFilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E24192D514E00BB8FDD /* commentFilled.png */; };
@@ -421,9 +421,9 @@
 		E9E6190219365B4000A224C0 /* rightAfterChatIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightAfterChatIcon.png; sourceTree = "<group>"; };
 		E9E619041938C74200A224C0 /* searchIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchIcon.png; sourceTree = "<group>"; };
 		E9ECFF7F196D917F00384252 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		E9ECFF81196DEB5A00384252 /* wigoLogo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wigoLogo@2x.png"; sourceTree = "<group>"; };
 		E9F59E09192AAE5F00BB8FDD /* favorite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = favorite.png; sourceTree = "<group>"; };
 		E9F59E13192BDDB700BB8FDD /* favoriteSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = favoriteSelected.png; sourceTree = "<group>"; };
-		E9F59E19192D025100BB8FDD /* wigoLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wigoLogo.png; sourceTree = "<group>"; };
 		E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
 		E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpViewController.m; sourceTree = "<group>"; };
 		E9F59E20192D1D3A00BB8FDD /* rightArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightArrow.png; sourceTree = "<group>"; };
@@ -764,7 +764,7 @@
 			isa = PBXGroup;
 			children = (
 				E9681C70194F887A00182E0E /* connectFacebook@2x.png */,
-				E9F59E19192D025100BB8FDD /* wigoLogo.png */,
+				E9ECFF81196DEB5A00384252 /* wigoLogo@2x.png */,
 			);
 			name = SignViewController;
 			sourceTree = "<group>";
@@ -1075,6 +1075,7 @@
 			files = (
 				E921D6311923967D00361247 /* Images.xcassets in Resources */,
 				E9CD4724194B75E600AEA17D /* clearButton@2x.png in Resources */,
+				E9ECFF82196DEB5A00384252 /* wigoLogo@2x.png in Resources */,
 				E9E6190319365B4000A224C0 /* rightAfterChatIcon.png in Resources */,
 				E9CD4737194B938500AEA17D /* privateLine@2x.png in Resources */,
 				E93F850C1945FFB400B3B448 /* plusPerson@2x.png in Resources */,
@@ -1100,7 +1101,6 @@
 				E93F85041945FADF00B3B448 /* chatsIcon@2x.png in Resources */,
 				E9BE8CB8192AA29C008BB84C /* WhitneyNumeric-Semibold.ttf in Resources */,
 				E9F59E25192D514E00BB8FDD /* commentFilled.png in Resources */,
-				E9F59E1A192D025100BB8FDD /* wigoLogo.png in Resources */,
 				E9BE8C88192AA29C008BB84C /* Whitney-BlackSC.ttf in Resources */,
 				E9CD470519479CCB00AEA17D /* placesSelected@2x.png in Resources */,
 				E9BE8C8A192AA29C008BB84C /* Whitney-BoldItalic.ttf in Resources */,

@@ -50,11 +50,11 @@
     [super viewDidLoad];
 
     _pushed = NO;
-    [self.parentViewController.navigationController setNavigationBarHidden:YES ];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
     [self getFacebookTokensAndLoginORSignUp];
 }
 
@@ -125,16 +125,8 @@
 
 - (void)initializeLogo {
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
-    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 87, 100, 174, 83);
+    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 91, 100, 182, 104);
     [self.view addSubview:logoImageView];
-    
-    UILabel *bestWayLabel = [[UILabel alloc] init];
-    bestWayLabel.frame = CGRectMake(self.view.frame.size.width/2 - 87, 183, 174, 30);
-    bestWayLabel.text = @"THE BEST WAY TO GO OUT";
-    bestWayLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:13.0f];
-    bestWayLabel.textColor = [UIColor grayColor];
-    bestWayLabel.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:bestWayLabel];
 }
 
 - (void)initializeFacebookSignButton {
