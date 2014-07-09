@@ -100,6 +100,19 @@
     [self fetchTaps];
 }
 
+- (void) fetchUserInfo {
+    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        User *user = [[User alloc] initWithDictionary:jsonResponse];
+        User *profileUser = [Profile user];
+        [profileUser setIsGoingOut:[user isGoingOut]];
+        [Profile setUser:profileUser];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [self updateTitleViewIsOrange:YES];
+            [self showTapButtons];
+        });
+    }];
+}
+
 - (void) fetchEveryone {
     [Network fetchAsynchronousAPI:@"users/" withResult:^(NSArray *arrayOfUsers, NSError *error) {
         _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
@@ -143,7 +156,9 @@
             NSNumber* userID = [object objectForKey:@"user"];
             [_whoIsGoingOutParty addObject:[_followingAcceptedParty getObjectWithId:userID]];
         }
-        [Profile setIsGoingOut:[_whoIsGoingOutParty containsObject:[Profile user]]];
+        User *profileUser = [Profile user];
+        [profileUser setIsGoingOut:[_whoIsGoingOutParty containsObject:[Profile user]]];
+        [Profile setUser:profileUser];
         [_whoIsGoingOutParty removeUserFromParty:[Profile user]];
         [self fetchedOneParty];
     }];
@@ -254,18 +269,6 @@
         tapButton.enabled = NO;
     }
 }
-
-- (void) fetchUserInfo {
-    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        User *user = [[User alloc] initWithDictionary:jsonResponse];
-        [Profile setIsGoingOut:[user isGoingOut]];
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [self updateTitleViewIsOrange:YES];
-            [self showTapButtons];
-        });
-    }];
-}
-
 
 - (void)initializeWhoTableView {
     _startingYPosition = 64;
@@ -381,7 +384,7 @@
             tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
         }
         
-        if (![Profile isGoingOut]) {
+        if (![[Profile user] isGoingOut]) {
             tappedImageView.hidden = YES;
         }
         else {
@@ -399,7 +402,6 @@
         _barAtTopView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
         [self.view bringSubviewToFront:_barAtTopView];
        
-        
         _barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
         _barAtTopLabel.text = textAtTop;
         _barAtTopLabel.textAlignment = NSTextAlignmentLeft;
@@ -471,7 +473,7 @@
 }
 
 - (void) showTapButtons {
-    if ([Profile isGoingOut]) {
+    if ([[Profile user] isGoingOut]) {
         for (int i = 0; i < [_tapArray count]; i++) {
             UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
             tappedImageView.hidden = NO;
@@ -514,7 +516,7 @@
 }
 
 - (void) updateTitleViewIsOrange:(BOOL)isOrange {
-    if ([Profile isGoingOut]) {
+    if ([[Profile user] isGoingOut]) {
         self.navigationItem.titleView = nil;
         UIButtonUngoOut *ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
         [ungoOutButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -547,7 +549,9 @@
 }
 
 - (void) goOutPressed {
-    [Profile setIsGoingOut:YES];
+    User *profileUser = [Profile user];
+    [profileUser setIsGoingOut:YES];
+    [Profile setUser:profileUser];
     [self updateTitleViewIsOrange:YES];
     [self animationShowingTapIcons];
     [Network postGoOut];

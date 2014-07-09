@@ -283,13 +283,13 @@
 }
 
 - (BOOL)isGoingOut {
-    NSNumber *goingOutNumber = (NSNumber *)[_proxy objectForKey:@"goingout"];
+    NSNumber *goingOutNumber = (NSNumber *)[_proxy objectForKey:@"is_goingout"];
     return [goingOutNumber boolValue];
 }
 
 - (void)setIsGoingOut:(BOOL)isGoingOut {
-    [_proxy setObject:[NSNumber numberWithBool:isGoingOut] forKey:@"goingout"];
-    [modifiedKeys addObject:@"goingout"];
+    [_proxy setObject:[NSNumber numberWithBool:isGoingOut] forKey:@"is_goingout"];
+    [modifiedKeys addObject:@"is_goingout"];
 }
 
 - (BOOL)emailValidated {

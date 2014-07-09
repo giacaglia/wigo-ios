@@ -22,8 +22,5 @@
 + (Party *)notAcceptedFollowingParty;
 + (void)setNotAcceptedFollowingParty:(Party *)notAcceptedFollowingParty;
 
-+ (BOOL)isGoingOut;
-+ (void)setIsGoingOut:(BOOL)varIsGoingOut;
-
 
 @end

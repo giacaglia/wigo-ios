@@ -122,7 +122,7 @@
     self.navigationItem.leftBarButtonItem = profileBarButton;
     self.navigationItem.rightBarButtonItem = nil;
     
-    if ([Profile isGoingOut]) {
+    if ([[Profile user] isGoingOut]) {
         [self updatedTitleViewForGoingOut];
     }
     else {
@@ -194,7 +194,9 @@
 
 
 - (void) goOutHere:(id)sender {
-    [Profile setIsGoingOut:YES];
+    User *profileUser = [Profile user];
+    [profileUser setIsGoingOut:YES];
+    [Profile setUser:profileUser];
     [self updatedTitleViewForGoingOut];
     UIButton *buttonSender = (UIButton *)sender;
     [[Profile user] setEventID:[NSNumber numberWithInt:buttonSender.tag]];
@@ -323,7 +325,9 @@
 - (void)createPressed {
     NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
     [Network postGoingToEventNumber:[eventID intValue]];
-    [Profile setIsGoingOut:YES];
+    User *profileUser = [Profile user];
+    [profileUser setIsGoingOut:YES];
+    [Profile setUser:profileUser];
     [self updatedTitleViewForGoingOut];
     [self loadEvents];
 }
@@ -442,7 +446,7 @@
     [placeSubView addSubview:imagesScrollView];
    
 
-    if (indexPath.row == 0 && ([[Profile user] eventID] != nil && [Profile isGoingOut])) {
+    if (indexPath.row == 0 && ([[Profile user] eventID] != nil && [[Profile user] isGoingOut])) {
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
         UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 5, 125, 30)];
         goingHereLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:13.0f];;
@@ -567,7 +571,9 @@
                                       user = (User *)[_everyoneParty getObjectWithId:[eventAttendee objectForKey:@"user"]];
                                   }
                                   if ([user isEqualToUser:[Profile user]]) {
-                                      [Profile setIsGoingOut:YES];
+                                      User *profileUser = [Profile user];
+                                      [profileUser setIsGoingOut:YES];
+                                      [Profile setUser:profileUser];
                                       [[Profile user] setEventID:eventId];
                                   }
                                   [partyUser addObject:user];

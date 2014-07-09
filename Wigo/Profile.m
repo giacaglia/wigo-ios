@@ -19,14 +19,6 @@ static Party *everyoneParty;
 static Party *followingParty;
 static Party *notAcceptedFollowingParty;
 
-+ (BOOL)isGoingOut {    
-    return isGoingOut;
-}
-
-+ (void)setIsGoingOut:(BOOL)varIsGoingOut {
-    [user setIsGoingOut:varIsGoingOut];
-    isGoingOut = varIsGoingOut;
-}
 
 + (User *)user {
     if (user == nil) {
