@@ -152,13 +152,11 @@
 }
 
 - (NSString *)coverImageURL {
-    NSDictionary *properties = [_proxy objectForKey:@"properties"];
-    if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
-        NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
-        return [imagesDictionary objectForKey:@"0"];
+    NSArray *imagesURL = [self imagesURL];
+    if ([imagesURL count] > 0) {
+        return [imagesURL objectAtIndex:0];
     }
     return @"";
-
 }
 
 - (void)setImagesURL:(NSArray *)images {

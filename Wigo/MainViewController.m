@@ -66,6 +66,7 @@
 @property Party *followingNotAcceptedParty;
 @property Party *whoIsGoingOutParty;
 @property Party *notGoingOutParty;
+@property UITableView *whoTableView;
 @end
 
 @implementation MainViewController
@@ -93,11 +94,8 @@
 }
 
 - (void)loadViewAfterSigningUser {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-
+    [self fetchUserInfo];
     [self fetchEveryone];
-    
-    _numberOfFetchedParties = 0;
     [self fetchFollowers];
     [self fetchTaps];
 }
@@ -111,6 +109,8 @@
 }
 
 - (void)fetchFollowers {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    _numberOfFetchedParties = 0;
     [Network queryAsynchronousAPI:@"follows/?user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
         NSMutableArray *arrayOfAcceptedUsers = [[NSMutableArray alloc] initWithCapacity:0];
@@ -175,7 +175,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [MBProgressHUD hideHUDForView:self.view animated:YES];
-            [self newInitializeWhoView];
+            [self initializeWhoTableView];
         });
     }
 }
@@ -255,7 +255,7 @@
     }
 }
 
-- (void) updateViewWithUserInfo {
+- (void) fetchUserInfo {
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         User *user = [[User alloc] initWithDictionary:jsonResponse];
         [Profile setIsGoingOut:[user isGoingOut]];
@@ -264,6 +264,27 @@
             [self showTapButtons];
         });
     }];
+}
+
+
+- (void)initializeWhoTableView {
+    _startingYPosition = 64;
+    [self initializeBarAtTopWithText:@"GOING OUT"];
+    
+    _startingYPosition -= 64;
+    _whoTableView = [[UITableView alloc] init];
+    [self addImagesOfParty:_whoIsGoingOutParty];
+    
+    //HACK (May need to fix)
+    _startingYPosition += 104 + 5;
+    _startingYPosition -= 5;
+    [self initializeNotGoingOutBar];
+    
+    _indexOfImage = -1;
+    [self addImagesOfParty:_notGoingOutParty];
+    _shownImageNumber = 0;
+    
+    [self fetchUserInfo];
 }
 
 - (void) newInitializeWhoView {
@@ -285,7 +306,6 @@
     [self addImagesOfParty:_notGoingOutParty];
     _shownImageNumber = 0;
     
-    [self updateViewWithUserInfo];
 }
 
 - (void)addImagesOfParty:(Party *)party {

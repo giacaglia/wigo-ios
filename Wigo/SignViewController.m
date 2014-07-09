@@ -84,13 +84,13 @@
         [[NSUserDefaults standardUserDefaults] setObject:_accessToken forKey: @"accessToken"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        User *userProfile = [Profile user];
-        [userProfile setObject:_fbID forKey:@"facebook_id"];
-        [userProfile setEmail:_email];
-        [userProfile setAccessToken:_accessToken];
-        [Profile setUser:userProfile];
-        NSString *response = [userProfile login];
-        [Profile setUser:userProfile];
+        User *profileUser = [Profile user];
+        [profileUser setObject:_fbID forKey:@"facebook_id"];
+        [profileUser setEmail:_email];
+        [profileUser setAccessToken:_accessToken];
+        [Profile setUser:profileUser];
+        NSString *response = [profileUser login];
+        [Profile setUser:profileUser];
         
         if ([response isEqualToString:@"error"]) {
             [self signUpUser];
@@ -235,8 +235,12 @@
                               }
                               User *profileUser = [Profile user];
                               [profileUser setImagesURL:profilePictures];
+                              NSString *email = [profileUser email];
+                              [profileUser removeObjectForKey:@"email"];
                               [Profile setUser:profileUser];
                               [profileUser save];
+                              [profileUser setEmail:email];
+                              [Profile setUser:profileUser];
                               if (_userEmailAlreadySent) {
                                   self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
                                   [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
