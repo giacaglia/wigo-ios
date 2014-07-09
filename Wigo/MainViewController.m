@@ -155,6 +155,7 @@
         for (int i = 0; i < [taps count]; i++) {
             NSDictionary *userTappedDictionary = [[taps objectAtIndex:i] objectForKey:@"tapped"];
             [_userTappedIDArray addObject:[userTappedDictionary objectForKey:@"id"]];
+            
         }
     }];
 }
@@ -376,7 +377,6 @@
         _barAtTopView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
         [self.view bringSubviewToFront:_barAtTopView];
         [self.view addSubview:_barAtTopView];
-        _barAtTopPoint = _barAtTopView.frame.origin;
         
         _barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
         _barAtTopLabel.text = textAtTop;
@@ -386,6 +386,7 @@
     }
     
     _barAtTopView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
+    _barAtTopPoint = _barAtTopView.frame.origin;
     _goingOutIsAttachedToScrollView = NO;
     _startingYPosition += 30;
 }
