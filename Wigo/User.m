@@ -332,7 +332,7 @@
         }
         NSNumber *emailValidatedNumber = (NSNumber *)[dictionaryUser objectForKey:@"email_validated"];
         if (![emailValidatedNumber boolValue]) {
-            return @"email_not_valid";
+            return @"email_not_validated";
         }
     }
 
@@ -370,7 +370,7 @@
     }
     
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    currentInstallation[@"wigo_id"] = [_proxy objectForKey:@"id"];
+    currentInstallation[@"wigo_id"] = [dictionaryUser objectForKey:@"id"];
     [currentInstallation saveInBackground];
     for (NSString *key in [dictionaryUser allKeys]) {
         [self setValue:[dictionaryUser objectForKey:key] forKey:key];

@@ -95,7 +95,7 @@
         if ([response isEqualToString:@"error"]) {
             [self signUpUser];
         }
-        else if ([response isEqualToString:@"email_not_valid"]) {
+        else if ([response isEqualToString:@"email_not_validated"]) {
             _userEmailAlreadySent = YES;
             [self fetchTokensFromFacebook];
             [self fetchProfilePicturesAlbumFacebook];
