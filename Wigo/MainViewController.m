@@ -154,7 +154,7 @@
             NSNumber* userID = [object objectForKey:@"user"];
             [_whoIsGoingOutParty addObject:[_followingAcceptedParty getObjectWithId:userID]];
         }
-        [_whoIsGoingOutParty removeUserFromParty:[Profile user]];
+        [_whoIsGoingOutParty removeUser:[Profile user]];
         [self fetchedOneParty];
     }];
 }
@@ -181,7 +181,7 @@
                 [_notGoingOutParty addObject:user];
             }
         }
-        [_notGoingOutParty removeUserFromParty:[Profile user]];
+        [_notGoingOutParty removeUser:[Profile user]];
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [MBProgressHUD hideHUDForView:self.view animated:YES];

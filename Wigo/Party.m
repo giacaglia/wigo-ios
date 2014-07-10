@@ -96,7 +96,7 @@
     return NO;
 }
 
-- (void)removeUserFromParty:(User*)newUser {
+- (void)removeUser:(User*)newUser {
     for (int i = 0; i < [[self getObjectArray] count]; i++) {
         User *user = [[self getObjectArray] objectAtIndex:i];
         if ([user isEqualToUser:newUser]) {

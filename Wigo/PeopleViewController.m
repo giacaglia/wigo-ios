@@ -67,7 +67,7 @@
     
     //Search Bar Setup
     _everyoneParty = [Profile everyoneParty];
-    [_everyoneParty removeUserFromParty:[Profile user]];
+    [_everyoneParty removeUser:[Profile user]];
     _followingParty = [Profile followingParty];
     _notAcceptedFollowingParty = [Profile notAcceptedFollowingParty];
     
@@ -400,12 +400,27 @@
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = 100;
         [Network followUser:user];
+        [_followingParty addObject:user];
+        int num_following = ([(NSNumber*)[self.user objectForKey:@"num_following"] intValue] + 1);
+        [self updateFollowingUIAndCachedData:num_following];
+
     }
     else {
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
         [Network unfollowUser:user];
+        [_followingParty removeUser:user];
+        int num_following = ([(NSNumber*)[self.user objectForKey:@"num_following"] intValue] - 1);
+        [self updateFollowingUIAndCachedData:num_following];
     }
+}
+
+- (void) updateFollowingUIAndCachedData:(int)num_following {
+    [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", num_following]  forState:UIControlStateNormal];
+    User *profileUser = [Profile user];
+    [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
+    [Profile setFollowingParty:_followingParty];
+    [Profile setUser:profileUser];
 }
 
 - (User *)getUserForIndexPath:(NSIndexPath *)indexPath {

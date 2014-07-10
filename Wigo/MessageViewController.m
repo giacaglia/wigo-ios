@@ -80,7 +80,7 @@
 
 - (void) initializeTableListOfFriends {
     Party *everyoneParty = [Profile everyoneParty];
-    [everyoneParty removeUserFromParty:[Profile user]];
+    [everyoneParty removeUser:[Profile user]];
     _contentList = [everyoneParty getObjectArray];
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 108, self.view.frame.size.width, self.view.frame.size.height - 108)];
     _tableView.delegate = self;
