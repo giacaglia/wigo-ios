@@ -40,16 +40,20 @@
 # pragma mark - Synchronous Methods
 
 + (void)unfollowUser:(User *)user {
-    NSString *queryString = [NSString stringWithFormat:@"follows/user=%d", [(NSNumber *)[user objectForKey:@"id"] intValue]];
+    NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d", [(NSNumber *)[user objectForKey:@"id"] intValue]];
     [self queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if ([[jsonResponse allKeys] containsObject:@"id"]) {
-            NSNumber *followObjectNumber = [jsonResponse objectForKey:@"id"];
-            Query *query = [[Query alloc] init];
-            NSString *apiName = [NSString stringWithFormat:@"follows/%d", [followObjectNumber intValue]];
-            [query queryWithClassName:apiName];
-            User *profileUser = [Profile user];
-            [query setProfileKey:profileUser.key];
-            [query sendDELETERequest];
+        if ([[jsonResponse allKeys] containsObject:@"objects"]) {
+            NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+            if ([arrayOfFollowObjects count] > 0) {
+                NSDictionary *followObject = [arrayOfFollowObjects objectAtIndex:0];
+                NSNumber *followObjectNumber = [followObject objectForKey:@"id"];
+                Query *query = [[Query alloc] init];
+                NSString *apiName = [NSString stringWithFormat:@"follows/%d", [followObjectNumber intValue]];
+                [query queryWithClassName:apiName];
+                User *profileUser = [Profile user];
+                [query setProfileKey:profileUser.key];
+                [query sendDELETERequest];
+            }
         }
     }];
 }
