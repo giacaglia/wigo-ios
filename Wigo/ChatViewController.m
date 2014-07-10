@@ -87,30 +87,13 @@
         _tableViewOfPeople.delegate = self;
         _tableViewOfPeople.dataSource = self;
         _tableViewOfPeople.backgroundColor = [UIColor clearColor];
+        _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
         [self.view addSubview:_tableViewOfPeople];
     }
-    [self adjustHeightOfTableview];
 }
 
 
 #pragma mark - Tablew View Data Source
-
-- (void)adjustHeightOfTableview
-{
-    [_tableViewOfPeople reloadData];
-    CGFloat height = _tableViewOfPeople.contentSize.height;
-    CGFloat maxHeight = _tableViewOfPeople.superview.frame.size.height - _tableViewOfPeople.frame.origin.y;
-    
-    if (height > maxHeight)
-        height = maxHeight;
-    
-    [UIView animateWithDuration:0.25 animations:^{
-        CGRect frame = _tableViewOfPeople.frame;
-        frame.size.height = height;
-        _tableViewOfPeople.frame = frame;
-    }];
-}
-
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;

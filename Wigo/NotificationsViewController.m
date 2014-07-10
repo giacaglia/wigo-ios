@@ -59,25 +59,8 @@
     [self.view addSubview:_notificationsTableView];
     _notificationsTableView.dataSource = self;
     _notificationsTableView.delegate = self;
-    
+    _notificationsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [_notificationsTableView reloadData];
-    [self adjustHeightOfTableview];
-}
-
-- (void)adjustHeightOfTableview
-{
-    CGFloat height = _notificationsTableView.contentSize.height;
-    CGFloat maxHeight = _notificationsTableView.superview.frame.size.height - _notificationsTableView.frame.origin.y - 64;
-
-    
-    if (height > maxHeight)
-        height = maxHeight;
-    
-    [UIView animateWithDuration:0.25 animations:^{
-        CGRect frame = _notificationsTableView.frame;
-        frame.size.height = height;
-        _notificationsTableView.frame = frame;
-    }];
 }
 
 

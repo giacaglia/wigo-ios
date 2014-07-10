@@ -173,6 +173,7 @@
     _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 170, self.view.frame.size.width, self.view.frame.size.height - 160)];
     _tableViewOfPeople.delegate = self;
     _tableViewOfPeople.dataSource = self;
+    _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:_tableViewOfPeople];
 }
 

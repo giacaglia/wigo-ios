@@ -85,6 +85,7 @@
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 108, self.view.frame.size.width, self.view.frame.size.height - 108)];
     _tableView.delegate = self;
     _tableView.dataSource = self;
+    _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:_tableView];
 }
 
