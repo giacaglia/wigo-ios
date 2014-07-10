@@ -27,6 +27,7 @@
 
 // Search Bar Content
 @property NSArray *contentList;
+@property Party *contentParty;
 @property NSMutableArray *filteredContentList;
 @property BOOL isSearching;
 @property  UISearchBar *searchBar;
@@ -263,7 +264,7 @@
 - (void)searchTableList {
     NSString *searchString = _searchBar.text;
     
-    for (NSString *tempStr in _contentList) {
+    for (NSString *tempStr in _contentList ) {
         NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
         for (NSString *firstOrLastName in firstAndLastNameArray) {
             NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
@@ -355,8 +356,7 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 7, 150, 60)];
-    textLabel.backgroundColor = [UIColor redColor];
-       textLabel.font = [FontProperties getSmallFont];
+    textLabel.font = [FontProperties getSmallFont];
     textLabel.text = [NSString stringWithFormat:@"%@ %@", [user objectForKey:@"first_name"], [user objectForKey:@"last_name"]];
     textLabel.tag = [indexPath row];
     [cell.contentView addSubview:textLabel];

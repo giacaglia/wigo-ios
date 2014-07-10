@@ -112,11 +112,17 @@
         // NEED TO save the url's before signing up
         NSArray *imagesUrl = [[Profile user] imagesURL];
         [[Profile user] setEmail:emailString];
-        [[Profile user] signUp];
-        [[Profile user] setImagesURL:imagesUrl];
-        [[Profile user] save];
-        self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-        [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+        NSString *response = [[Profile user] signUp];
+        if ([response isEqualToString:@"error"]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email" message:@"Enter a valid email address" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
+        else {
+            [[Profile user] setImagesURL:imagesUrl];
+            [[Profile user] save];
+            self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
+            [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+        }
     }
     else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email" message:@"Enter a valid email address" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];

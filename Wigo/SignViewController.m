@@ -14,6 +14,9 @@
 #import "User.h"
 #import "Query.h"
 
+#import "MBProgressHUD.h"
+
+
 #if !defined(StringOrEmpty)
 #define StringOrEmpty(A)  ({ __typeof__(A) __a = (A); __a ? __a : @""; })
 #endif
@@ -89,11 +92,15 @@
         [profileUser setEmail:_email];
         [profileUser setAccessToken:_accessToken];
         [Profile setUser:profileUser];
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         NSString *response = [profileUser login];
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
         [Profile setUser:profileUser];
         
+        
         if ([response isEqualToString:@"error"]) {
-            [self signUpUser];
+            [self fetchTokensFromFacebook];
+            [self fetchProfilePicturesAlbumFacebook];
         }
         else if ([response isEqualToString:@"email_not_validated"]) {
             _userEmailAlreadySent = YES;
@@ -105,19 +112,6 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
         }
        
-    }
-}
-
-- (void)signUpUser {
-    NSString *response = [[Profile user] signUp];
-    // TODO: THERE ARE 3 OPTIONS: FACEBOOK EMAIL IS NOT .EDU, IT's EDU or email is invalid!
-    if ([response isEqualToString:@"invalid_email"]) {
-        [self fetchTokensFromFacebook];
-        [self fetchProfilePicturesAlbumFacebook];
-    }
-    else {
-        [self fetchTokensFromFacebook];
-        [self fetchProfilePicturesAlbumFacebook];
     }
 }
 
@@ -156,6 +150,7 @@
 #pragma mark - Log In Via FB
 
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
+//    NSLog(@"fetched");
     if (!_pushed) {
         _pushed = YES;
         _fbID = [fbGraphUser objectID];
@@ -180,6 +175,7 @@
 }
 
 - (void) fetchProfilePicturesAlbumFacebook {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [FBRequestConnection startWithGraphPath:@"/me/albums"
                                  parameters:nil
                                  HTTPMethod:@"GET"
@@ -224,13 +220,9 @@
                                       }
                                   }
                               }
+                              [MBProgressHUD hideHUDForView:self.view animated:YES];
                               User *profileUser = [Profile user];
                               [profileUser setImagesURL:profilePictures];
-                              NSString *email = [profileUser email];
-                              [profileUser removeObjectForKey:@"email"];
-                              [Profile setUser:profileUser];
-                              [profileUser save];
-                              [profileUser setEmail:email];
                               [Profile setUser:profileUser];
                               if (_userEmailAlreadySent) {
                                   self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
