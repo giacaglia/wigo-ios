@@ -176,7 +176,7 @@
         
         // Update NOT GOING OUT PARTY
         _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-        for (User *user in [_followingAcceptedParty getObjectArray]) {
+        for (User *user in _followingAcceptedParty.objectArray) {
             if (![_whoIsGoingOutParty containsObject:user]) {
                 [_notGoingOutParty addObject:user];
             }

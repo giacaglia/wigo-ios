@@ -15,12 +15,16 @@
 @interface Party : NSObject
 
 @property NSString *objectName;
+@property NSMutableArray *objectArray;
+
 
 - (id)initWithObjectName:(NSString *)objectName;
 - (NSArray *)getObjectArray;
 - (NSArray *)getNameArray;
+- (NSArray *)getFullNameArray;
 - (void)addObjectsFromArray:(NSArray *)newObjectArray;
 - (void)addObject:(NSMutableDictionary *)objectDictionary;
+- (void)removeAllObjects;
 - (void)removeObjectAtIndex:(NSUInteger)index;
 - (NSMutableDictionary *)getObjectWithId:(NSNumber *)objectID;
 - (BOOL)containsObject:(NSMutableDictionary *)otherObjectDictionary;

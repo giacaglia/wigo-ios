@@ -55,8 +55,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateProfile" object:nil];
 }
 
-
-
 - (void) initializeBarButton {
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 75, 44) andType:@1];
     [barBt setTitle:@"Done" forState:UIControlStateNormal];

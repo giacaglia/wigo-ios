@@ -26,9 +26,9 @@
 @property UITableView *tableViewOfPeople;
 
 // Search Bar Content
-@property NSArray *contentList;
 @property Party *contentParty;
-@property NSMutableArray *filteredContentList;
+@property Party *filteredContentParty;
+
 @property BOOL isSearching;
 @property  UISearchBar *searchBar;
 @property UIImageView *searchIconImageView;
@@ -71,9 +71,14 @@
     [_everyoneParty removeUser:[Profile user]];
     _followingParty = [Profile followingParty];
     _notAcceptedFollowingParty = [Profile notAcceptedFollowingParty];
-    
-    _contentList = [_everyoneParty getObjectArray];
-    _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
+
+    _contentParty = _everyoneParty;
+    _filteredContentParty = [_everyoneParty copy];
+//    [_contentParty addObjectsFromArray:[_everyoneParty getObjectArray]];
+//    _filteredContentParty = [[Party alloc] init];
+//    [_filteredContentParty addObjectsFromArray:[_everyoneParty getObjectArray]];
+//    _contentParty = _everyoneParty;
+//    _filteredContentParty = _everyoneParty;
     
     // Title setup
     self.title = [self.user fullName];
@@ -132,7 +137,7 @@
 
 - (void)initializeYourSchoolButton {
     _yourSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width/3, 60)];
-    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", [_contentList count]] forState:UIControlStateNormal];
+    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", [[_contentParty getObjectArray] count]] forState:UIControlStateNormal];
     _yourSchoolButton.backgroundColor = [FontProperties getOrangeColor];
     _yourSchoolButton.titleLabel.font = [FontProperties getTitleFont];
     _yourSchoolButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -170,7 +175,7 @@
 
 
 - (void)initializeTableOfPeople {
-    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 170, self.view.frame.size.width, self.view.frame.size.height - 160)];
+    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 164, self.view.frame.size.width, self.view.frame.size.height - 160)];
     _tableViewOfPeople.delegate = self;
     _tableViewOfPeople.dataSource = self;
     _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -201,7 +206,6 @@
     _searchIconImageView.frame = CGRectMake(85, 13, 14, 14);
     [_searchBar addSubview:_searchIconImageView];
     [self.view addSubview:_searchBar];
-    
     [self.view bringSubviewToFront:_searchBar];
     
     // Remove Clear Button on the right
@@ -246,7 +250,7 @@
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {    
-    [_filteredContentList removeAllObjects];
+    [_filteredContentParty removeAllObjects];
     
     if([searchText length] != 0) {
         _isSearching = YES;
@@ -265,12 +269,14 @@
 - (void)searchTableList {
     NSString *searchString = _searchBar.text;
     
-    for (NSString *tempStr in _contentList ) {
+    NSArray *contentNameArray = [_contentParty getFullNameArray];
+    for (int i = 0; i < [contentNameArray count]; i++) {
+        NSString *tempStr = [contentNameArray objectAtIndex:i];
         NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
         for (NSString *firstOrLastName in firstAndLastNameArray) {
             NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
-            if (result == NSOrderedSame && ![_filteredContentList containsObject:tempStr]) {
-                [_filteredContentList addObject:tempStr];
+            if (result == NSOrderedSame && ![[_filteredContentParty getFullNameArray] containsObject:tempStr]) {
+                [_filteredContentParty addObject: [[_contentParty getObjectArray] objectAtIndex:i]];
             }
         }
     }
@@ -298,7 +304,7 @@
     [chosenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     if ([tag isEqualToNumber:@2]) {
-        _contentList = [_everyoneParty getObjectArray];
+        _contentParty = _everyoneParty;
         [_tableViewOfPeople reloadData];
     }
     else if ([tag isEqualToNumber:@3]) {
@@ -306,7 +312,7 @@
     }
     else if ([tag isEqualToNumber:@4]) {
         _followingParty = [Profile followingParty];
-        _contentList = [_followingParty getObjectArray];
+        _contentParty = _followingParty;
         [_tableViewOfPeople reloadData];
     }
 }
@@ -326,7 +332,7 @@
         [_followersParty addObjectsFromArray:arrayOfUsers];
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            _contentList = [_followersParty getObjectArray];
+            _contentParty = _followersParty;
             [_tableViewOfPeople reloadData];
         });
     }];
@@ -341,10 +347,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (_isSearching) {
-        return [_filteredContentList count];
+        return [[_filteredContentParty getObjectArray] count];
     }
     else {
-        return [_contentList count];
+        return [[_contentParty getObjectArray] count];
     }
 }
 
@@ -447,10 +453,10 @@
 - (User *)getUserAtIndex:(int)index {
     User *user;
     if (_isSearching) {
-        user = [_contentList objectAtIndex:(unsigned long)index];
+        user = [[_filteredContentParty getObjectArray] objectAtIndex:index];
     }
     else {
-        user = [_filteredContentList objectAtIndex:(unsigned long)index];
+        user = [[_contentParty getObjectArray] objectAtIndex:index];
     }
     return user;
 }
