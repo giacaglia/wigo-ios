@@ -74,11 +74,6 @@
 
     _contentParty = _everyoneParty;
     _filteredContentParty = [_everyoneParty copy];
-//    [_contentParty addObjectsFromArray:[_everyoneParty getObjectArray]];
-//    _filteredContentParty = [[Party alloc] init];
-//    [_filteredContentParty addObjectsFromArray:[_everyoneParty getObjectArray]];
-//    _contentParty = _everyoneParty;
-//    _filteredContentParty = _everyoneParty;
     
     // Title setup
     self.title = [self.user fullName];
@@ -285,6 +280,7 @@
 #pragma mark - Filter handlers
 
 - (void) changeFilter:(id)sender {
+    NSLog(@"lala");
     UIButton *chosenButton = (UIButton *)sender;
     int tag = chosenButton.tag;
     if (tag >= 2) {
@@ -424,21 +420,43 @@
     
     UIButton *senderButton = (UIButton*)sender;
     if (senderButton.tag == -100) {
-        [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-        senderButton.tag = 100;
-        [Network followUser:user];
-        [_followingParty addObject:user];
-        int num_following = ([(NSNumber*)[self.user objectForKey:@"num_following"] intValue] + 1);
-        [self updateFollowingUIAndCachedData:num_following];
+        int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
 
+        if ([user private]) {
+            [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
+            [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            senderButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
+            senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            senderButton.layer.borderWidth = 1;
+            senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            senderButton.layer.cornerRadius = 3;
+            [_notAcceptedFollowingParty addObject:user];
+        }
+        else {
+            [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+            [_followingParty addObject:user];
+            num_following += 1;
+        }
+        senderButton.tag = 100;
+        [self updateFollowingUIAndCachedData:num_following];
+        [Network followUser:user];
     }
     else {
+        [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
-        [Network unfollowUser:user];
-        [_followingParty removeUser:user];
-        int num_following = ([(NSNumber*)[self.user objectForKey:@"num_following"] intValue] - 1);
+        int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+        if ([user private]) {
+            [_notAcceptedFollowingParty removeUser:user];
+        }
+        else {
+            [_followingParty removeUser:user];
+            num_following -= 1;
+        }
         [self updateFollowingUIAndCachedData:num_following];
+        [Network unfollowUser:user];
+
     }
 }
 
@@ -447,6 +465,7 @@
     User *profileUser = [Profile user];
     [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
     [Profile setFollowingParty:_followingParty];
+    [Profile setNotAcceptedFollowingParty:_notAcceptedFollowingParty];
     [Profile setUser:profileUser];
 }
 
