@@ -111,14 +111,23 @@
 
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(dismissKeyboard)];
+                                                                          action:@selector(tappedView:)];
     tap.cancelsTouchesInView = NO;
     [self.view addGestureRecognizer:tap];
 }
 
-- (void)dismissKeyboard {
+- (void)tappedView:(UITapGestureRecognizer*)tapSender {
+    UIView *viewSender = (UIView *)tapSender.view;
     [self.view endEditing:YES];
+    if ([viewSender isKindOfClass:[UIImageView class]]) {
+        int tag = viewSender.tag;
+        User *user = [self getUserAtIndex:tag];
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:self.profileViewController animated:YES];
+    }
 }
+
+
 
 - (void)initializeYourSchoolButton {
     _yourSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width/3, 60)];
@@ -338,7 +347,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    User *user = [self getUserForIndexPath:indexPath];
+    User *user = [self getUserAtIndex:[indexPath row]];
 
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -346,16 +355,25 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 7, 150, 60)];
+    textLabel.backgroundColor = [UIColor redColor];
        textLabel.font = [FontProperties getSmallFont];
     textLabel.text = [NSString stringWithFormat:@"%@ %@", [user objectForKey:@"first_name"], [user objectForKey:@"last_name"]];
+    textLabel.tag = [indexPath row];
     [cell.contentView addSubview:textLabel];
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
-
+    profileImageView.tag = [indexPath row];
+    profileImageView.userInteractionEnabled = YES;
     [cell.contentView addSubview:profileImageView];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
+    [tap setNumberOfTouchesRequired:1];
+    [tap setNumberOfTapsRequired:1];
+    tap.cancelsTouchesInView = NO;
+    [profileImageView addGestureRecognizer:tap];
     
     UIButton *favoriteButton = [[UIButton alloc]initWithFrame:CGRectMake(250, 24, 49, 30)];
     [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
@@ -389,11 +407,13 @@
 
 
 
+
+
 - (void) followedPersonPressed:(id)sender {
     //Get Index Path
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
     NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
-    User *user = [self getUserForIndexPath:indexPath];
+    User *user = [self getUserAtIndex:[indexPath row]];
     
     UIButton *senderButton = (UIButton*)sender;
     if (senderButton.tag == -100) {
@@ -423,13 +443,13 @@
     [Profile setUser:profileUser];
 }
 
-- (User *)getUserForIndexPath:(NSIndexPath *)indexPath {
+- (User *)getUserAtIndex:(int)index {
     User *user;
     if (_isSearching) {
-        user = [_contentList objectAtIndex:[indexPath row]];
+        user = [_contentList objectAtIndex:(unsigned long)index];
     }
     else {
-        user = [_filteredContentList objectAtIndex:[indexPath row]];
+        user = [_filteredContentList objectAtIndex:(unsigned long)index];
     }
     return user;
 }
