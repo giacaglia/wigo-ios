@@ -167,6 +167,7 @@
     [UIView animateWithDuration:0.2 animations:^{
         _placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-47);
+        _goingSomewhereButton.hidden = NO;
     }];
     [self clearTextField];
 }
@@ -225,6 +226,7 @@
 - (void) goingSomewhereElsePressed {
     [self dismissKeyboard];
     [self showWhereAreYouGoingView];
+    _goingSomewhereButton.hidden = YES;
     [_whereAreYouGoingTextField becomeFirstResponder];
 }
 
@@ -378,7 +380,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     if (_isSearching) {
-        return [_filteredContentList count] + 1;
+        return [_filteredContentList count];
     }
     else {
         return [_contentList count] + 1;
