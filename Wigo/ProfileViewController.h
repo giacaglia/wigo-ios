@@ -11,7 +11,6 @@
 #import "ConversationViewController.h"
 #import "PeopleViewController.h"
 #import "User.h"
-#import "MBProgressHUD.h"
 
 
 @interface ProfileViewController : UIViewController <UIScrollViewDelegate>

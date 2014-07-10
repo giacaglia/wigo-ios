@@ -13,7 +13,6 @@
 
 #import "Message.h"
 #import "Network.h"
-#import "MBProgressHUD.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
 
@@ -22,6 +21,7 @@
 @property UITableView *tableViewOfPeople;
 @property Party * messageParty;
 
+@property UIActivityIndicatorView *spinner;
 @end
 
 @implementation ChatViewController
@@ -62,10 +62,15 @@
 }
 
 - (void)loadMessages {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
+    _spinner.center = self.view.center;
+    _spinner.transform = CGAffineTransformMakeScale(2, 2);
+    _spinner.color = [FontProperties getOrangeColor];
+    [_spinner startAnimating];
+    [self.view addSubview:_spinner];
     [Network queryAsynchronousAPI:@"messages/summary/?to_user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [_spinner stopAnimating];
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
             _messageParty = [[Party alloc] initWithObjectName:@"Message"];
             [_messageParty addObjectsFromArray:arrayOfMessages];

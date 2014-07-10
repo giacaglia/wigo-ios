@@ -19,7 +19,6 @@
 #import "User.h"
 #import "Party.h"
 #import "Network.h"
-#import "MBProgressHUD.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
 
@@ -65,6 +64,8 @@
 @property Party *whoIsGoingOutParty;
 @property Party *notGoingOutParty;
 @property UITableView *whoTableView;
+
+@property UIActivityIndicatorView *spinner;
 @end
 
 @implementation MainViewController
@@ -120,7 +121,12 @@
 }
 
 - (void)fetchFollowers {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
+    _spinner.center = self.view.center;
+    _spinner.transform = CGAffineTransformMakeScale(2, 2);
+    _spinner.color = [FontProperties getOrangeColor];
+    [_spinner startAnimating];
+    [self.view addSubview:_spinner];
     _numberOfFetchedParties = 0;
     [Network queryAsynchronousAPI:@"follows/?user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
@@ -184,7 +190,7 @@
         [_notGoingOutParty removeUser:[Profile user]];
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [_spinner stopAnimating];
             [self newInitializeWhoView];
             [self fetchedMyInfoOrPeoplesInfoOrTaps];
         });

@@ -13,6 +13,7 @@
 #import "Party.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "MBProgressHUD.h"
 
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
@@ -21,6 +22,8 @@
 @property NSMutableArray *notificationArray;
 @property Party *notificationsParty;
 @property Party *everyoneParty;
+
+@property UIActivityIndicatorView *spinner;
 @end
 
 @implementation NotificationsViewController
@@ -172,10 +175,15 @@
 }
 
 - (void)fetchNotifications {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
+    _spinner.transform = CGAffineTransformMakeScale(2, 2);
+    _spinner.center = self.view.center;
+    _spinner.color = [FontProperties getOrangeColor];
+    [_spinner startAnimating];
+    [self.view addSubview:_spinner];
     [Network queryAsynchronousAPI:@"notifications/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [_spinner stopAnimating];
             NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
             _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
             [_notificationsParty addObjectsFromArray:arrayOfNotifications];

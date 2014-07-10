@@ -48,6 +48,7 @@
 @property UIButton *followersButton;
 
 @property UIView *lastLineView;
+@property UIActivityIndicatorView *spinner;
 
 @end
 
@@ -113,11 +114,16 @@
     [super viewWillAppear:animated];
 
     if (!_didImagesLoad) {
-        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,150,150)];
+        _spinner.transform = CGAffineTransformMakeScale(2, 2);
+        _spinner.center = self.view.center;
+        _spinner.color = [FontProperties getOrangeColor];
+        [_spinner startAnimating];
+        [self.view addSubview:_spinner];
         [self.user loadImagesWithCallback:^(
                                             NSArray *imagesArray
                                             ) {
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [_spinner stopAnimating];
             [self initializeProfileImage];
             [self initializeNameOfPerson];
             _didImagesLoad = YES;

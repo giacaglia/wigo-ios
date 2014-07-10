@@ -14,8 +14,6 @@
 #import "User.h"
 #import "Query.h"
 
-#import "MBProgressHUD.h"
-
 
 #if !defined(StringOrEmpty)
 #define StringOrEmpty(A)  ({ __typeof__(A) __a = (A); __a ? __a : @""; })
@@ -32,6 +30,8 @@
 
 @property BOOL userDidntTryToSignUp;
 @property BOOL userEmailAlreadySent;
+
+@property UIActivityIndicatorView *spinner;
 @end
 
 @implementation SignViewController
@@ -92,9 +92,14 @@
         [profileUser setEmail:_email];
         [profileUser setAccessToken:_accessToken];
         [Profile setUser:profileUser];
-        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
+        _spinner.center = self.view.center;
+        _spinner.transform = CGAffineTransformMakeScale(2, 2);
+        _spinner.color = [FontProperties getOrangeColor];
+        [_spinner startAnimating];
+        [self.view addSubview:_spinner];
         NSString *response = [profileUser login];
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [_spinner stopAnimating];
         [Profile setUser:profileUser];
         
         
@@ -175,7 +180,12 @@
 }
 
 - (void) fetchProfilePicturesAlbumFacebook {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
+    _spinner.center = self.view.center;
+    _spinner.transform = CGAffineTransformMakeScale(2, 2);
+    _spinner.color = [FontProperties getOrangeColor];
+    [_spinner startAnimating];
+    [self.view addSubview:_spinner];
     [FBRequestConnection startWithGraphPath:@"/me/albums"
                                  parameters:nil
                                  HTTPMethod:@"GET"
@@ -220,7 +230,7 @@
                                       }
                                   }
                               }
-                              [MBProgressHUD hideHUDForView:self.view animated:YES];
+                              [_spinner stopAnimating];
                               User *profileUser = [Profile user];
                               [profileUser setImagesURL:profilePictures];
                               [Profile setUser:profileUser];
