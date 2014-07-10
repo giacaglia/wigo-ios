@@ -35,6 +35,7 @@
 
 // Tap Array (First object tag is 2)
 @property NSMutableArray *tapArray;
+@property NSMutableArray *userTapArray;
 @property NSMutableArray *tapButtonArray;
 @property int indexOfImage;
 @property NSMutableArray *tapFrameArray;
@@ -294,6 +295,7 @@
 
     _startingYPosition -= 64;
     _tapArray = [[NSMutableArray alloc] initWithCapacity:0];
+    _userTapArray = [[NSMutableArray alloc] initWithCapacity:0];
     _tapButtonArray = [[NSMutableArray alloc] initWithCapacity:0];
     _indexOfImage = 1;
     [self addImagesOfParty:_whoIsGoingOutParty];
@@ -370,23 +372,11 @@
         
         UIImageViewShake *tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(imgView.frame.size.width - 30 - 5, 5, 30, 30)];
         tappedImageView.tintColor = [FontProperties getOrangeColor];
-        if ([self isUserTapped:user]) {
-            tappedImageView.tag = -1;
-            tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
-        }
-        else {
-            tappedImageView.tag = 1;
-            tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
-        }
-
-        if (![[Profile user] isGoingOut]) {
-            tappedImageView.hidden = YES;
-        }
-        else {
-            tapButton.enabled = YES;
-        }
-        [_tapArray addObject:tappedImageView];
+        tappedImageView.hidden = YES;
         [imgView addSubview:tappedImageView];
+
+        [_userTapArray addObject:user];
+        [_tapArray addObject:tappedImageView];
     }
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, MAX(_startingYPosition, self.view.frame.size.height + 200));
 }
@@ -469,11 +459,20 @@
 - (void) showTapButtons {
     if ([[Profile user] isGoingOut]) {
         for (int i = 0; i < [_tapArray count]; i++) {
-            NSLog(@"i: %d", i);
             UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
             tappedImageView.hidden = NO;
             UIButton *tapButton = [_tapButtonArray objectAtIndex:i];
             tapButton.enabled = YES;
+            
+            User *user = [_userTapArray objectAtIndex:i];
+            if ([self isUserTapped:user]) {
+                tappedImageView.tag = -1;
+                tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
+            }
+            else {
+                tappedImageView.tag = 1;
+                tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+            }
             
         }
     }
@@ -584,7 +583,6 @@
         user = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:tag];
     }
     if (![self isUserTapped:user]) {
-        NSLog(@"user tapped!");
         [Network sendTapToUserWithIndex:[user objectForKey:@"id"]];
     }
 }
