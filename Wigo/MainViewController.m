@@ -550,7 +550,7 @@
     UIButton *buttonSender = (UIButton *)sender;
     int tag = buttonSender.tag;
     UIImageView *imageView = (UIImageView *)[buttonSender superview];
-    User *user;
+
     for (UIView *subview in imageView.subviews)
     {
         if (subview.tag == 1) {
@@ -558,13 +558,7 @@
                 UIImageView *imageView = (UIImageView *)subview;
                 imageView.image = [UIImage imageNamed:@"tapFilled"];
                 subview.tag = -1;
-                
-                tag = -tag;
-                tag -= 1;
-                user = [[_notGoingOutParty getObjectArray] objectAtIndex:tag];
-                if (![_userTappedIDArray containsObject:user]) {
-                    [Network sendTapToUserWithIndex:[user objectForKey:@"id"]];
-                }
+                [self sendTapToUserWithTag:tag];
             }
         }
         else if (subview.tag == -1) {
@@ -572,11 +566,26 @@
                 UIImageView *imageView = (UIImageView *)subview;
                 imageView.image = [UIImage imageNamed:@"tapUnfilled"];
                 subview.tag = 1;
-                
-                tag -= 1;
-                user = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:tag];
             }
         }
+    }
+
+}
+
+- (void) sendTapToUserWithTag:(int)tag {
+    User *user;
+    if (tag < 0) {
+        tag = -tag;
+        tag -= 1;
+        user = [[_notGoingOutParty getObjectArray] objectAtIndex:tag];
+    }
+    else {
+        tag -= 1;
+        user = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:tag];
+    }
+    if (![self isUserTapped:user]) {
+        NSLog(@"user tapped!");
+        [Network sendTapToUserWithIndex:[user objectForKey:@"id"]];
     }
 }
 
