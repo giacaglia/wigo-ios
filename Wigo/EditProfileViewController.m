@@ -22,6 +22,7 @@
 @property UITextView *bioTextView;
 @property UILabel *totalNumberOfCharactersLabel;
 @property UISwitch *privacySwitch;
+@property UIScrollView *photosScrollView;
 
 @end
 
@@ -32,6 +33,7 @@
 {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhotos) name:@"updatePhotos" object:nil];
     
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 100);
@@ -46,6 +48,11 @@
     [self initializeBioSection];
     [self initializeNotificationsSection];
     [self initializePrivacySection];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateProfile" object:nil];
 }
 
 
@@ -83,9 +90,23 @@
     photosLabel.textAlignment = NSTextAlignmentLeft;
     [_scrollView addSubview:photosLabel];
     
-    UIScrollView *photosScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 110)];
-    photosScrollView.backgroundColor = [UIColor whiteColor];
+    _photosScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 110)];
+    _photosScrollView.backgroundColor = [UIColor whiteColor];
+    [self updatePhotos];
     
+    UILabel *coverLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 90, 70, 15)];
+    coverLabel.text = @"COVER";
+    coverLabel.font = [FontProperties getBioFont];
+    coverLabel.textAlignment = NSTextAlignmentCenter;
+    coverLabel.textColor = [FontProperties getOrangeColor];
+    [_photosScrollView addSubview:coverLabel];
+
+    [_scrollView addSubview:_photosScrollView];
+}
+
+- (void)updatePhotos {
+    [_photosScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+
     NSArray *imageArrayURL = [[Profile user] imagesURL];
     NSMutableArray *photosArray = [[NSMutableArray alloc] initWithCapacity:[imageArrayURL count] + 1];
     for (int i = 0; i < [imageArrayURL count]; i++) {
@@ -113,23 +134,15 @@
         [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchDown];
         [photosArray addObject:imageButton];
     }
-
+    
     int xPosition = 15;
     for (UIButton *photoButton in photosArray) {
         photoButton.frame = CGRectMake(xPosition, 10, 70, 70);
-        [photosScrollView addSubview:photoButton];
+        [_photosScrollView addSubview:photoButton];
         xPosition += 75;
     }
-    
-    UILabel *coverLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 90, 70, 15)];
-    coverLabel.text = @"COVER";
-    coverLabel.font = [FontProperties getBioFont];
-    coverLabel.textAlignment = NSTextAlignmentCenter;
-    coverLabel.textColor = [FontProperties getOrangeColor];
-    [photosScrollView addSubview:coverLabel];
-    
-    photosScrollView.contentSize = CGSizeMake(xPosition, photosScrollView.frame.size.height);
-    [_scrollView addSubview:photosScrollView];
+    _photosScrollView.contentSize = CGSizeMake(xPosition, _photosScrollView.frame.size.height);
+
 }
 
 - (void)selectedEditImage:(id)sender {
@@ -189,13 +202,8 @@
     shoulderTapLabel.font = [FontProperties getNormalFont];
     [shoulderTapView addSubview:shoulderTapLabel];
     
-    UIButton *emailSettingsButton = [[UIButton alloc] initWithFrame:CGRectMake(220, 15, 36, 20)];
-    [emailSettingsButton setImage:[UIImage imageNamed:@"emailUnfilled"] forState:UIControlStateNormal];
-    [emailSettingsButton addTarget:self action:@selector(emailPressed:) forControlEvents:UIControlEventTouchDown];
-    [shoulderTapView addSubview:emailSettingsButton];
-    
-    UIButton *phoneButton = [[UIButton alloc] initWithFrame:CGRectMake(285, 10, 16, 30)
-                              ];
+
+    UIButton *phoneButton = [[UIButton alloc] initWithFrame:CGRectMake(285, 10, 16, 30)];
     [phoneButton addTarget:self action:@selector(phonePressed:) forControlEvents:UIControlEventTouchDown];
 
     [phoneButton setImage:[UIImage imageNamed:@"phoneFilled"] forState:UIControlStateNormal];
@@ -211,29 +219,12 @@
     favoritesLabel.font = [FontProperties getNormalFont];
     [favoritesView addSubview:favoritesLabel];
     
-    UIButton *emailSettingsButton2 = [[UIButton alloc] initWithFrame:CGRectMake(220, 15, 36, 20)];
-    [emailSettingsButton2 setImage:[UIImage imageNamed:@"emailUnfilled"] forState:UIControlStateNormal];
-    [emailSettingsButton2 addTarget:self action:@selector(emailPressed:) forControlEvents:UIControlEventTouchDown];
-    [favoritesView addSubview:emailSettingsButton2];
-    
-    UIButton *phoneButtons2 = [[UIButton alloc] initWithFrame:CGRectMake(285, 10, 16, 30)
-                              ];
+    UIButton *phoneButtons2 = [[UIButton alloc] initWithFrame:CGRectMake(285, 10, 16, 30)];
     [phoneButtons2 setImage:[UIImage imageNamed:@"phoneFilled"] forState:UIControlStateNormal];
     [phoneButtons2 addTarget:self action:@selector(phonePressed:) forControlEvents:UIControlEventTouchDown];
     [favoritesView addSubview:phoneButtons2];
 }
 
-- (void)emailPressed:(id)sender {
-    UIButton *buttonPressed = (UIButton *)sender;
-    if (buttonPressed.tag == -100) {
-        [buttonPressed setImage:[UIImage imageNamed:@"emailFilled"] forState:UIControlStateNormal];
-        buttonPressed.tag = 100;
-    }
-    else {
-        [buttonPressed setImage:[UIImage imageNamed:@"emailUnfilled"] forState:UIControlStateNormal];
-        buttonPressed.tag = -100;
-    }
-}
 
 - (void)phonePressed:(id)sender {
     UIButton *buttonPressed = (UIButton *)sender;

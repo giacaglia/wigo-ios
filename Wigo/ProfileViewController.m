@@ -93,10 +93,11 @@
 {
     [super viewDidLoad];
     _didImagesLoad = NO;
-    
     _currentPage = 0;
     _isSeingImages = NO;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
+    
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
     
@@ -223,10 +224,8 @@
     if (self.isMyProfile) {
         self.user = [Profile user];
     }
-    int heightOfProfileImage = self.view.frame.size.width;
     // UIScrollView
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, heightOfProfileImage)];
-    [_scrollView setContentSize:CGSizeMake(self.view.frame.size.width * [[self.user imagesURL] count], 320)];
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.width)];
     [_scrollView setShowsHorizontalScrollIndicator:NO];
     _scrollView.layer.borderWidth = 1;
 
@@ -235,11 +234,11 @@
     _tapScrollView.cancelsTouchesInView = NO;
     [_scrollView addGestureRecognizer:_tapScrollView];
     _scrollView.delegate = self;
+    
     // DISPLAY CONTENT PROPERLY (Scroll View)
     // IOS 6 and less
     _scrollView.contentOffset = CGPointZero;
     _scrollView.contentInset = UIEdgeInsetsZero;
-    
     // IOS 7+
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view addSubview:_scrollView];
@@ -250,33 +249,42 @@
 
     _pageControl = [[UIPageControl alloc] init];
     _pageControl.enabled = NO;
-    _pageControl.numberOfPages = [[self.user imagesURL] count];
     _pageControl.currentPage = 0;
     _pageControl.currentPageIndicatorTintColor = [FontProperties getOrangeColor];
     _pageControl.pageIndicatorTintColor = [UIColor grayColor];
-    // HACK
-    _pageControl.center = CGPointMake(90, 25);
-    
+
     UIView *pageControlView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 320, 44)];
     [pageControlView addSubview: _pageControl];
     self.navigationItem.titleView = pageControlView;
+    [self updateProfile];
+}
+
+
+- (void) updateProfile {
+    [_scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [_profileImagesArray removeAllObjects];
+    _pageControl.numberOfPages = [[self.user imagesURL] count];
+    // HACK
+    _pageControl.center = CGPointMake(90, 25);
     
     for (int i = 0; i < [[self.user imagesURL] count]; i++) {
-
         UIImageView *profileImgView = [[UIImageView alloc] init];
         profileImgView.contentMode = UIViewContentModeScaleAspectFill;
         profileImgView.clipsToBounds = YES;
-        profileImgView.frame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, heightOfProfileImage);
+        profileImgView.frame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, self.view.frame.size.width);
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 [self addBlurredImage:image toImageView:profileImgView];
                 profileImgView.hidden = NO;
             });
         }];
-       
+        
         [_scrollView addSubview:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
+    [_scrollView setContentSize:CGSizeMake(self.view.frame.size.width * [[self.user imagesURL] count], 320)];
+    
+    _bioLabel.text = [self.user bioString];
 }
 
 - (void) addBlurredImage:(UIImage *)image toImageView:(UIImageView *)imageView {

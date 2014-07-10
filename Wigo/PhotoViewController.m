@@ -73,12 +73,14 @@
 - (void)makeCoverPressed {
     [[Profile user] makeImageURLCover:_imageURL];
     [[Profile user] save];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)deletePressed {
     [[Profile user] removeImageURL:_imageURL];
     [[Profile user] save];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
 }
 

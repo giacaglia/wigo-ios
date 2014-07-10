@@ -142,6 +142,7 @@
     User *profileUser = [Profile user];
     [profileUser addImageURL:urlOfSelectedImage];
     [profileUser save];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
     [self.navigationController popViewControllerAnimated:YES];
 }
 @end

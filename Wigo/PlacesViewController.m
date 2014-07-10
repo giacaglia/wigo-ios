@@ -330,6 +330,7 @@
     [Profile setUser:profileUser];
     [self updatedTitleViewForGoingOut];
     [self loadEvents];
+    [self dismissKeyboard];
 }
 
 - (void)textFieldDidChange:(UITextField *)textField {
