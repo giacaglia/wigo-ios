@@ -98,7 +98,7 @@
     emailLabel.font = [FontProperties getSmallFont];
     emailLabel.textColor = [FontProperties getOrangeColor];
     [self.view addSubview:emailLabel];
-//
+
 //    UILabel *holyCrossLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 430, self.view.frame.size.width, 30)];
 //    holyCrossLabel.textAlignment = NSTextAlignmentCenter;
 //    holyCrossLabel.text = @"@ Holy Cross";

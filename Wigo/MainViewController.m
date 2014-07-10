@@ -101,7 +101,7 @@
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         User *user = [[User alloc] initWithDictionary:jsonResponse];
         User *profileUser = [Profile user];
-        NSLog([user isGoingOut] ? @"Is Going out" : @"Not going out");
+//        NSLog([user isGoingOut] ? @"Is Going out" : @"Not going out");
         [profileUser setIsGoingOut:[user isGoingOut]];
         [Profile setUser:profileUser];
         dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -370,6 +370,15 @@
         
         UIImageViewShake *tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(imgView.frame.size.width - 30 - 5, 5, 30, 30)];
         tappedImageView.tintColor = [FontProperties getOrangeColor];
+        if ([self isUserTapped:user]) {
+            tappedImageView.tag = -1;
+            tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
+        }
+        else {
+            tappedImageView.tag = 1;
+            tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+        }
+
         if (![[Profile user] isGoingOut]) {
             tappedImageView.hidden = YES;
         }
