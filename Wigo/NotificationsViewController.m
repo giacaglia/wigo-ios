@@ -13,7 +13,7 @@
 #import "Party.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
-#import "MBProgressHUD.h"
+#import "WiGoSpinnerView.h"
 
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
@@ -23,7 +23,6 @@
 @property Party *notificationsParty;
 @property Party *everyoneParty;
 
-@property UIActivityIndicatorView *spinner;
 @end
 
 @implementation NotificationsViewController
@@ -175,15 +174,10 @@
 }
 
 - (void)fetchNotifications {
-    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
-    _spinner.transform = CGAffineTransformMakeScale(2, 2);
-    _spinner.center = self.view.center;
-    _spinner.color = [FontProperties getOrangeColor];
-    [_spinner startAnimating];
-    [self.view addSubview:_spinner];
+    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [Network queryAsynchronousAPI:@"notifications/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_spinner stopAnimating];
+            [WiGoSpinnerView hideSpinnerForView:self.view];
             NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
             _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
             [_notificationsParty addObjectsFromArray:arrayOfNotifications];

@@ -22,6 +22,7 @@
 #import "Network.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "WiGoSpinnerView.h"
 
 @interface PlacesViewController ()
 
@@ -57,8 +58,6 @@
 @property NSMutableArray *summaryArray;
 @property Party *everyoneParty;
 
-@property UIActivityIndicatorView *spinner;
-
 @end
 
 @implementation PlacesViewController {
@@ -79,12 +78,7 @@
     _everyoneParty = [Profile everyoneParty];
     numberOfFetchedParties = 0;
 
-    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
-    _spinner.center = self.view.center;
-    _spinner.transform = CGAffineTransformMakeScale(2, 2);
-    _spinner.color = [FontProperties getBlueColor];
-    [_spinner startAnimating];
-    [self.view addSubview:_spinner];
+    [WiGoSpinnerView showBlueSpinnerAddedTo:self.view];
     [Network queryAsynchronousAPI:@"events/?date=tonight" withHandler:^(NSDictionary *jsonRespone, NSError *error) {
         NSArray *events = [jsonRespone objectForKey:@"objects"];
         _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
@@ -596,7 +590,7 @@
     numberOfFetchedParties += 1;
     if (numberOfFetchedParties >= 2*[[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_spinner stopAnimating];
+            [WiGoSpinnerView hideSpinnerForView:self.view];
             [self initializeWhereView];
         });
     }

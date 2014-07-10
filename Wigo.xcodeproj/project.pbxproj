@@ -160,7 +160,6 @@
 		E9D906C2192535BC00E39FC8 /* giu3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E9D906C1192535BC00E39FC8 /* giu3.jpg */; };
 		E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906C419253A1D00E39FC8 /* ChatViewController.m */; };
 		E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906C719255BB000E39FC8 /* SignViewController.m */; };
-		E9D906CB19255CD900E39FC8 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906CA19255CD900E39FC8 /* MBProgressHUD.m */; };
 		E9D906CF19255D8200E39FC8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906CE19255D8200E39FC8 /* AudioToolbox.framework */; };
 		E9D906D119255D8B00E39FC8 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D019255D8B00E39FC8 /* CFNetwork.framework */; };
 		E9D906D319255D9A00E39FC8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D219255D9A00E39FC8 /* CoreLocation.framework */; };
@@ -170,6 +169,7 @@
 		E9D906DB19255DBC00E39FC8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DA19255DBC00E39FC8 /* Security.framework */; };
 		E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */; };
 		E9DB7B44196C47D500363656 /* closeButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DB7B43196C47D500363656 /* closeButton@2x.png */; };
+		E9DE130C196F06B100AFA05A /* WiGoSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */; };
 		E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
 		E9E618FF1936421A00A224C0 /* backIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E618FE1936421A00A224C0 /* backIcon.png */; };
 		E9E6190119365AA300A224C0 /* leftBeforeChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E6190019365AA300A224C0 /* leftBeforeChatIcon.png */; };
@@ -404,8 +404,6 @@
 		E9D906C419253A1D00E39FC8 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		E9D906C619255BB000E39FC8 /* SignViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignViewController.h; sourceTree = "<group>"; };
 		E9D906C719255BB000E39FC8 /* SignViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignViewController.m; sourceTree = "<group>"; };
-		E9D906C919255CD900E39FC8 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
-		E9D906CA19255CD900E39FC8 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		E9D906CE19255D8200E39FC8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E9D906D019255D8B00E39FC8 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		E9D906D219255D9A00E39FC8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -415,6 +413,8 @@
 		E9D906DA19255DBC00E39FC8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E9DB7B43196C47D500363656 /* closeButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "closeButton@2x.png"; sourceTree = "<group>"; };
+		E9DE130A196F06B100AFA05A /* WiGoSpinnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WiGoSpinnerView.h; sourceTree = "<group>"; };
+		E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WiGoSpinnerView.m; sourceTree = "<group>"; };
 		E9E618FB193625BB00A224C0 /* EmailConfirmationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailConfirmationViewController.h; sourceTree = "<group>"; };
 		E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmailConfirmationViewController.m; sourceTree = "<group>"; };
 		E9E618FE1936421A00A224C0 /* backIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backIcon.png; sourceTree = "<group>"; };
@@ -662,7 +662,7 @@
 			children = (
 				E900C2931961EADE00A01F50 /* SDWebImage */,
 				E9CD472D194B88A200AEA17D /* BlurImage */,
-				E9681C6A194F7BCD00182E0E /* MBProgressHUD */,
+				E9681C6A194F7BCD00182E0E /* WigoSpinnerView */,
 				E9681C6D194F7C2B00182E0E /* Font */,
 				E9CD47151948E41A00AEA17D /* ViewExtensions */,
 				E9681C6C194F7C1000182E0E /* Objects */,
@@ -712,13 +712,13 @@
 			name = FacebookIntegration;
 			sourceTree = "<group>";
 		};
-		E9681C6A194F7BCD00182E0E /* MBProgressHUD */ = {
+		E9681C6A194F7BCD00182E0E /* WigoSpinnerView */ = {
 			isa = PBXGroup;
 			children = (
-				E9D906CA19255CD900E39FC8 /* MBProgressHUD.m */,
-				E9D906C919255CD900E39FC8 /* MBProgressHUD.h */,
+				E9DE130A196F06B100AFA05A /* WiGoSpinnerView.h */,
+				E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */,
 			);
-			name = MBProgressHUD;
+			name = WigoSpinnerView;
 			sourceTree = "<group>";
 		};
 		E9681C6C194F7C1000182E0E /* Objects */ = {
@@ -1206,6 +1206,7 @@
 				E9CD47141948E27500AEA17D /* UIImageViewShake.m in Sources */,
 				E921D6261923967D00361247 /* AppDelegate.m in Sources */,
 				E900C2BC1961EADE00A01F50 /* SDWebImageManager.m in Sources */,
+				E9DE130C196F06B100AFA05A /* WiGoSpinnerView.m in Sources */,
 				E93DE530195C99F600079074 /* UIImageCrop.m in Sources */,
 				E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */,
 				E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */,
@@ -1238,7 +1239,6 @@
 				E9681CB51950AA3B00182E0E /* Query.m in Sources */,
 				E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */,
 				E900C2BB1961EADE00A01F50 /* SDWebImageDownloaderOperation.m in Sources */,
-				E9D906CB19255CD900E39FC8 /* MBProgressHUD.m in Sources */,
 				E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */,
 				E900C2B81961EADE00A01F50 /* SDWebImageCompat.m in Sources */,
 				E900C2B61961EADE00A01F50 /* NSData+ImageContentType.m in Sources */,

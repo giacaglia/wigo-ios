@@ -14,6 +14,7 @@
 #import "User.h"
 #import "Query.h"
 
+#import "WiGoSpinnerView.h"
 
 #if !defined(StringOrEmpty)
 #define StringOrEmpty(A)  ({ __typeof__(A) __a = (A); __a ? __a : @""; })
@@ -31,7 +32,6 @@
 @property BOOL userDidntTryToSignUp;
 @property BOOL userEmailAlreadySent;
 
-@property UIActivityIndicatorView *spinner;
 @end
 
 @implementation SignViewController
@@ -92,14 +92,9 @@
         [profileUser setEmail:_email];
         [profileUser setAccessToken:_accessToken];
         [Profile setUser:profileUser];
-        _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
-        _spinner.center = self.view.center;
-        _spinner.transform = CGAffineTransformMakeScale(2, 2);
-        _spinner.color = [FontProperties getOrangeColor];
-        [_spinner startAnimating];
-        [self.view addSubview:_spinner];
+        [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
         NSString *response = [profileUser login];
-        [_spinner stopAnimating];
+        [WiGoSpinnerView hideSpinnerForView:self.view];
         [Profile setUser:profileUser];
         
         
@@ -180,12 +175,6 @@
 }
 
 - (void) fetchProfilePicturesAlbumFacebook {
-    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
-    _spinner.center = self.view.center;
-    _spinner.transform = CGAffineTransformMakeScale(2, 2);
-    _spinner.color = [FontProperties getOrangeColor];
-    [_spinner startAnimating];
-    [self.view addSubview:_spinner];
     [FBRequestConnection startWithGraphPath:@"/me/albums"
                                  parameters:nil
                                  HTTPMethod:@"GET"
@@ -208,6 +197,7 @@
 
 - (void) get3ProfilePictures {
     NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
+    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
                                  parameters:nil
                                  HTTPMethod:@"GET"
@@ -230,7 +220,7 @@
                                       }
                                   }
                               }
-                              [_spinner stopAnimating];
+                              [WiGoSpinnerView hideSpinnerForView:self.view];
                               User *profileUser = [Profile user];
                               [profileUser setImagesURL:profilePictures];
                               [Profile setUser:profileUser];

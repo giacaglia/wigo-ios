@@ -11,7 +11,7 @@
 #import "UIButtonAligned.h"
 #import "Profile.h"
 #import "RWBlurPopover.h"
-#import "MBProgressHUD.h"
+#import "WiGoSpinnerView.h"
 #import "SDWebImage/UIImageView+WebCache.h"
 #import <QuartzCore/QuartzCore.h>
 
@@ -64,15 +64,14 @@
 }
 
 - (void)saveDataAndGoBack {
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-
+    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     User *profileUser = [Profile user];
     [profileUser setBioString:_bioTextView.text];
     [profileUser setPrivate:_privacySwitch.on];
     [Profile setUser:profileUser];
     [profileUser save];
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-
+    [WiGoSpinnerView hideSpinnerForView:self.view];
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 

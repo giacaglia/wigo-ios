@@ -11,7 +11,6 @@
 #import "UIButtonAligned.h"
 #import <QuartzCore/QuartzCore.h>
 #import "Network.h"
-#import "MBProgressHUD.h"
 #import "Party.h"
 
 @interface ConversationViewController ()
@@ -24,6 +23,7 @@
 @property UIButton *sendButton;
 @property User *user;
 @property Party *messageParty;
+@property UIActivityIndicatorView *spinner;
 
 @end
 
@@ -66,11 +66,16 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self initializeScrollView];
     [self initializeTapHandler];
     
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
+    _spinner.center = self.view.center;
+    _spinner.transform = CGAffineTransformMakeScale(2, 2);
+    _spinner.color = [FontProperties getOrangeColor];
+    [_spinner startAnimating];
+    [self.view addSubview:_spinner];
     NSString *queryString = [NSString stringWithFormat:@"messages/?conversation=%@",[self.user objectForKey:@"id"]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [_spinner stopAnimating];
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
             // Reorder them by time stamp
             arrayOfMessages = [[arrayOfMessages reverseObjectEnumerator] allObjects];

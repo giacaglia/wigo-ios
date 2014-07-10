@@ -21,7 +21,7 @@
 #import "Network.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
-
+#import "WiGoSpinnerView.h"
 
 @interface MainViewController ()
 
@@ -65,7 +65,6 @@
 @property Party *notGoingOutParty;
 @property UITableView *whoTableView;
 
-@property UIActivityIndicatorView *spinner;
 @end
 
 @implementation MainViewController
@@ -121,12 +120,7 @@
 }
 
 - (void)fetchFollowers {
-    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
-    _spinner.center = self.view.center;
-    _spinner.transform = CGAffineTransformMakeScale(2, 2);
-    _spinner.color = [FontProperties getOrangeColor];
-    [_spinner startAnimating];
-    [self.view addSubview:_spinner];
+    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     _numberOfFetchedParties = 0;
     [Network queryAsynchronousAPI:@"follows/?user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
@@ -190,7 +184,7 @@
         [_notGoingOutParty removeUser:[Profile user]];
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_spinner stopAnimating];
+            [WiGoSpinnerView hideSpinnerForView:self.view];
             [self newInitializeWhoView];
             [self fetchedMyInfoOrPeoplesInfoOrTaps];
         });

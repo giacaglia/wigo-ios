@@ -15,13 +15,13 @@
 #import "Network.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "WiGoSpinnerView.h"
 
 @interface ChatViewController ()
 
 @property UITableView *tableViewOfPeople;
 @property Party * messageParty;
 
-@property UIActivityIndicatorView *spinner;
 @end
 
 @implementation ChatViewController
@@ -62,15 +62,10 @@
 }
 
 - (void)loadMessages {
-    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
-    _spinner.center = self.view.center;
-    _spinner.transform = CGAffineTransformMakeScale(2, 2);
-    _spinner.color = [FontProperties getOrangeColor];
-    [_spinner startAnimating];
-    [self.view addSubview:_spinner];
+    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [Network queryAsynchronousAPI:@"messages/summary/?to_user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_spinner stopAnimating];
+            [WiGoSpinnerView hideSpinnerForView:self.view];
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
             _messageParty = [[Party alloc] initWithObjectName:@"Message"];
             [_messageParty addObjectsFromArray:arrayOfMessages];
