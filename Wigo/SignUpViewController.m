@@ -10,6 +10,8 @@
 #import "FontProperties.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SDWebImage/UIImageView+WebCache.h"
+#define isiPhone5  ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
+
 
 @interface SignUpViewController ()
 @property UITextField *studentTextField;
@@ -71,13 +73,13 @@
 }
 
 - (void)initializeEDUAddress {
-    UILabel *eduAddressLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 190, self.view.frame.size.width, 40)];
+    UILabel *eduAddressLabel = [[UILabel alloc] init];
     eduAddressLabel.text = @"Enter your .EDU email address";
     eduAddressLabel.textAlignment = NSTextAlignmentCenter;
     eduAddressLabel.font = [FontProperties getSmallFont];
     [self.view addSubview:eduAddressLabel];
     
-    _studentTextField = [[UITextField alloc] initWithFrame:CGRectMake(40, 230, self.view.frame.size.width - 80, 47)];
+    _studentTextField = [[UITextField alloc] init];
     _studentTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"student@university.edu" attributes:@{NSForegroundColorAttributeName:RGBAlpha(246, 143, 30, 0.3f)}];
     _studentTextField.textAlignment = NSTextAlignmentCenter;
     _studentTextField.tintColor = [FontProperties getOrangeColor];
@@ -87,9 +89,10 @@
     _studentTextField.layer.cornerRadius = 5;
     _studentTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     [_studentTextField becomeFirstResponder];
+    [_studentTextField addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventEditingDidEndOnExit];
     [self.view addSubview:_studentTextField];
     
-    UIButton *continueButton = [[UIButton alloc] initWithFrame:CGRectMake(37, 290, self.view.frame.size.width - 77, 47)];
+    UIButton *continueButton = [[UIButton alloc] init];
     continueButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
     [continueButton setTitle:@"Continue" forState:UIControlStateNormal];
     [continueButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -100,6 +103,17 @@
     UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightArrow"]];
     rightArrowImageView.frame = CGRectMake(continueButton.frame.size.width - 35, continueButton.frame.size.height/2 - 9, 11, 18);
     [continueButton addSubview:rightArrowImageView];
+    
+    if (isiPhone5) {
+        eduAddressLabel.frame = CGRectMake(0, 190, self.view.frame.size.width, 40);
+        _studentTextField.frame = CGRectMake(40, 230, self.view.frame.size.width - 80, 47);
+        continueButton.frame = CGRectMake(37, 290, self.view.frame.size.width - 77, 47);
+    }
+    else {
+        eduAddressLabel.frame = CGRectMake(0, 140, self.view.frame.size.width, 30);
+        _studentTextField.frame = CGRectMake(40, 170, self.view.frame.size.width - 80, 37);
+        continueButton.frame = CGRectMake(37, 220, self.view.frame.size.width - 77, 37);
+    }
     [self.view addSubview:continueButton];
 }
 
@@ -129,6 +143,5 @@
         [alert show];
     }    
 }
-
 
 @end
