@@ -327,11 +327,14 @@
         [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [arrayOfFollowObjects count]] forState:UIControlStateNormal];
         NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
         for (NSDictionary *object in arrayOfFollowObjects) {
-            if ([[object objectForKey:@"user"] isKindOfClass:[NSDictionary class]]) {
-                [arrayOfUsers addObject:[object objectForKey:@"user"]];
-            }
-            else if ([[object objectForKey:@"user"] isKindOfClass:[NSNumber class]]) {
-                [arrayOfUsers addObject:[[Profile user] dictionary]];
+            NSDictionary *userDictionary = [object objectForKey:@"user"];
+            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                    [arrayOfUsers addObject:[[Profile user] dictionary]];
+                }
+                else {
+                    [arrayOfUsers addObject:userDictionary];
+                }
             }
         }
         _followersParty = [[Party alloc] initWithObjectName:@"User"];
@@ -350,11 +353,14 @@
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
         NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
         for (NSDictionary *object in arrayOfFollowObjects) {
-            if ([[object objectForKey:@"follow"] isKindOfClass:[NSDictionary class]]) {
-                [arrayOfUsers addObject:[object objectForKey:@"follow"]];
-            }
-            else if ([[object objectForKey:@"follow"] isKindOfClass:[NSNumber class]]) {
-                [arrayOfUsers addObject:[[Profile user] dictionary]];
+            NSDictionary *userDictionary = [object objectForKey:@"follow"];
+            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                    [arrayOfUsers addObject:[[Profile user] dictionary]];
+                }
+                else {
+                    [arrayOfUsers addObject:userDictionary];
+                }
             }
         }
         _followingParty = [[Party alloc] initWithObjectName:@"User"];
@@ -366,6 +372,7 @@
     }];
  
 }
+
 
 #pragma mark - Table View Data Source
 

@@ -64,5 +64,9 @@ static Party *notAcceptedFollowingParty;
     notAcceptedFollowingParty = newFollowingParty;
 }
 
++ (BOOL)isUserDictionaryProfileUser:(NSDictionary *)userDictionary {
+    return [[userDictionary objectForKey:@"id"] isEqualToNumber:[[Profile user] objectForKey:@"id" ]];
+}
+
 
 @end

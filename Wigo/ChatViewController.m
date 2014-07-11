@@ -105,7 +105,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
-    User *user = [message fromUser];
+    User *user = [message otherUser];
     if (!user) {
         user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
     }
@@ -162,7 +162,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
     [message setWasMessageRead:YES];
-    User *user = [message fromUser];
+    User *user = [message otherUser];
     if (!user) {
         user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
     }

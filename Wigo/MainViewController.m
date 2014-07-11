@@ -98,6 +98,8 @@
     [self fetchTaps];
 }
 
+#pragma mark - Fetch Data
+
 - (void) fetchUserInfo {
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         User *user = [[User alloc] initWithDictionary:jsonResponse];
@@ -112,9 +114,12 @@
 }
 
 - (void) fetchEveryone {
-    [Network fetchAsynchronousAPI:@"users/" withResult:^(NSArray *arrayOfUsers, NSError *error) {
+    [Network queryAsynchronousAPI:@"users/?user=friends&ordering=goingout" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_everyoneParty addMetaInfo:metaDictionary];
         [Profile setEveryoneParty:_everyoneParty];
     }];
 }

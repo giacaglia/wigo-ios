@@ -564,12 +564,15 @@
                               Party *partyUser = [[Party alloc] init];
                               for (int i = 0; i < [eventAttendeesArray count]; i++) {
                                   NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:i];
+                                  NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
                                   User *user;
-                                  if ([[eventAttendee objectForKey:@"user"] isKindOfClass:[NSDictionary class]]) {
-                                      user = [[User alloc] initWithDictionary:[eventAttendee objectForKey:@"user"]];
-                                  }
-                                  else {
-                                      user = (User *)[_everyoneParty getObjectWithId:[eventAttendee objectForKey:@"user"]];
+                                  if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                                      if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                                          user = [Profile user];
+                                      }
+                                      else {
+                                          user = [[User alloc] initWithDictionary:userDictionary];
+                                      }
                                   }
                                   if ([user isEqualToUser:[Profile user]]) {
                                       User *profileUser = [Profile user];

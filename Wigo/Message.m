@@ -84,12 +84,23 @@
     [modifiedKeys addObject:@"to_user"];
 }
 
+//
+- (User *)otherUser {
+    NSDictionary *userDictionary = [_proxy objectForKey:@"user"];
+    if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+        return [[User alloc] initWithDictionary:[_proxy objectForKey:@"to_user"]];
+    }
+    else {
+        return [[User alloc] initWithDictionary:userDictionary];
+    }
+}
+
+
 - (User *)fromUser {
     if ([[_proxy objectForKey:@"user"] isKindOfClass:[NSDictionary class]]) {
         return [[User alloc] initWithDictionary:[_proxy objectForKey:@"user"]];
     }
     return nil;
-
 }
 
 - (void)setFromUser:(User *)fromUser {

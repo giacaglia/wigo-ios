@@ -21,6 +21,6 @@
 + (void)setFollowingParty:(Party *)newFollowingParty;
 + (Party *)notAcceptedFollowingParty;
 + (void)setNotAcceptedFollowingParty:(Party *)notAcceptedFollowingParty;
-
++ (BOOL)isUserDictionaryProfileUser:(NSDictionary *)userDictionary;
 
 @end

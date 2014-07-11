@@ -12,10 +12,12 @@
 @interface Message : NSMutableDictionary
 
 @property NSString *messageString;
+
 @property User *fromUser;
 @property NSNumber *toUser;
 @property BOOL wasMessageRead;
 - (NSString *)timeOfCreation;
 - (void)setTimeOfCreation:(NSString *)timeOfCreation;
 - (void)save;
+- (User *)otherUser;
 @end

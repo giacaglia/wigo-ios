@@ -134,4 +134,20 @@
     [self.objectArray exchangeObjectAtIndex:idx1 withObjectAtIndex:idx2];
 }
 
+#pragma mark - Pagination Control
+
+// Pagination control
+- (BOOL)hasNextPage {
+    if (self.metaDictionary) {
+        if ([[self.metaDictionary allKeys] containsObject:@"has_next_page"]) {
+            return [(NSNumber *)[self.metaDictionary objectForKey:@"has_next_page"] boolValue];
+        }
+    }
+    return NO;
+}
+- (void)addMetaInfo:(NSDictionary *)metaDictionary {
+    self.metaDictionary = metaDictionary;
+}
+
+
 @end

@@ -16,6 +16,8 @@
 
 @property NSString *objectName;
 @property NSMutableArray *objectArray;
+@property NSDictionary *metaDictionary;
+
 
 
 - (id)initWithObjectName:(NSString *)objectName;
@@ -30,5 +32,9 @@
 - (BOOL)containsObject:(NSMutableDictionary *)otherObjectDictionary;
 - (void)removeUser:(User*)newUser;
 - (void)exchangeObjectAtIndex:(NSUInteger)idx1 withObjectAtIndex:(NSUInteger)idx2;
+
+// Pagination control
+- (BOOL)hasNextPage;
+- (void)addMetaInfo:(NSDictionary *)metaDictionary;
 
 @end
