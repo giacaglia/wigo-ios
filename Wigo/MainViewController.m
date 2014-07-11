@@ -153,7 +153,8 @@
 }
 
 - (void)fetchGoingOuts {
-    [Network fetchAsynchronousAPI:@"goingouts/?user=friends" withResult:^(NSArray *arrayOfUsers, NSError *error) {
+    [Network queryAsynchronousAPI:@"goingouts/?user=friends" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
         for (NSDictionary *object in arrayOfUsers) {
             NSNumber* userID = [object objectForKey:@"user"];

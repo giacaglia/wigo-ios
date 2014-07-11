@@ -89,22 +89,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Wigo/Message.m"
-            timestampString = "426640450.542189"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "148"
-            endingLineNumber = "148"
-            landmarkName = "-setTimeOfCreation:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Wigo/Network.m"
             timestampString = "426645702.293953"
             startingColumnNumber = "9223372036854775807"
@@ -169,7 +153,7 @@
                   symbolName = "-[ConversationViewController scrollView]"
                   moduleName = "wigo"
                   urlString = "file:///Users/giulianogiacaglia/Documents/wigo-ios/Wigo/ConversationViewController.m"
-                  timestampString = "426799989.017836"
+                  timestampString = "426802576.566542"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "18"
@@ -183,7 +167,7 @@
                   symbolName = "-[ConversationViewController setScrollView:]"
                   moduleName = "wigo"
                   urlString = "file:///Users/giulianogiacaglia/Documents/wigo-ios/Wigo/ConversationViewController.m"
-                  timestampString = "426799989.019016"
+                  timestampString = "426802576.566944"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "18"
@@ -200,11 +184,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/MainViewController.m"
-            timestampString = "426786927.433501"
+            timestampString = "426801535.654885"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "597"
-            endingLineNumber = "597"
+            startingLineNumber = "600"
+            endingLineNumber = "600"
             landmarkName = "-isUserTapped:"
             landmarkType = "5">
          </BreakpointContent>
@@ -344,11 +328,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/ChatViewController.m"
-            timestampString = "426795755.911547"
+            timestampString = "426802016.276987"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -360,11 +344,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Wigo/ChatViewController.m"
-            timestampString = "426795785.315203"
+            timestampString = "426802016.276987"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>

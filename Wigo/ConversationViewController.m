@@ -101,7 +101,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void) addMessages {
     for (Message *message in [_messageParty getObjectArray]) {
         
-        if ([[message fromUser] class] == nil) {
+        if ([[message fromUser] isEqualToUser:[Profile user]]) {
             [self addMessageFromSender:message];
         }
         else {

@@ -90,6 +90,7 @@
         _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
         [self.view addSubview:_tableViewOfPeople];
     }
+    [_tableViewOfPeople reloadData];
 }
 
 

@@ -106,7 +106,7 @@
 - (NSString *)timeString {
     NSString *utcCreationTime = [_proxy objectForKey:@"created"];
     NSDateFormatter *dateformat = [[NSDateFormatter alloc] init];
-    [dateformat setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    [dateformat setDateFormat:@"YYYY-MM-dd h:mm:ss"];
     NSDate *dateInUTC = [dateformat dateFromString:utcCreationTime];
     NSTimeInterval timeZoneSeconds = [[NSTimeZone localTimeZone] secondsFromGMT];
     NSDate *dateInLocalTimezone = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
