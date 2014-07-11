@@ -244,7 +244,7 @@
     if (!_notGoingOutIsAttachedToScrollView) {
         if (_scrollView.contentOffset.y < _scrollViewPointWhenDeatached.y) {
             [_notGoingOutView removeFromSuperview];
-            _notGoingOutView.frame = CGRectMake(0, _notGoingOutStartingPoint.y - 64, self.view.frame.size.width, 30);
+            _notGoingOutView.frame = CGRectMake(0, _notGoingOutStartingPoint.y, self.view.frame.size.width, 30);
             [_scrollView addSubview:_notGoingOutView];
             _notGoingOutIsAttachedToScrollView = YES;
         }
@@ -417,7 +417,7 @@
     _notGoingOutView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
     [_notGoingOutView removeFromSuperview];
     [_scrollView addSubview:_notGoingOutView];
-    _notGoingOutStartingPoint = [_notGoingOutView.superview convertPoint:_notGoingOutView.frame.origin toView:nil];
+    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
     _notGoingOutIsAttachedToScrollView = YES;
     _startingYPosition += 30;
 }
