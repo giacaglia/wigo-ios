@@ -78,6 +78,10 @@
     return NO;
 }
 
+- (NSDictionary *)dictionary {
+    return _proxy;
+}
+
 #pragma mark - Properties shortcuts
 - (NSString *)email {
     return (NSString *)[_proxy objectForKey:@"email"];
@@ -105,7 +109,6 @@
     [_proxy setObject:key forKey:@"key"];
     [modifiedKeys addObject:@"key"];
 }
-
 
 
 - (NSString *)firstName {

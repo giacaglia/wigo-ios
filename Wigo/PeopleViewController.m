@@ -306,11 +306,19 @@
         [self fetchFollowers];
     }
     else if ([tag isEqualToNumber:@4]) {
-        _followingParty = [Profile followingParty];
-        _contentParty = _followingParty;
-        [_tableViewOfPeople reloadData];
+        if ([[Profile user] isEqualToUser:self.user]) {
+            _followingParty = [Profile followingParty];
+            _contentParty = _followingParty;
+            [_tableViewOfPeople reloadData];
+        }
+        else {
+            [self fetchFollowing];
+        }
+        
     }
 }
+
+#pragma mark - Network functions
 
 - (void)fetchFollowers {
     NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d", [[self.user objectForKey:@"id"] intValue]];
@@ -322,6 +330,9 @@
             if ([[object objectForKey:@"user"] isKindOfClass:[NSDictionary class]]) {
                 [arrayOfUsers addObject:[object objectForKey:@"user"]];
             }
+            else if ([[object objectForKey:@"user"] isKindOfClass:[NSNumber class]]) {
+                [arrayOfUsers addObject:[[Profile user] dictionary]];
+            }
         }
         _followersParty = [[Party alloc] initWithObjectName:@"User"];
         [_followersParty addObjectsFromArray:arrayOfUsers];
@@ -331,7 +342,29 @@
             [_tableViewOfPeople reloadData];
         });
     }];
+}
 
+- (void)fetchFollowing {
+    NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d", [[self.user objectForKey:@"id"] intValue]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+        for (NSDictionary *object in arrayOfFollowObjects) {
+            if ([[object objectForKey:@"follow"] isKindOfClass:[NSDictionary class]]) {
+                [arrayOfUsers addObject:[object objectForKey:@"follow"]];
+            }
+            else if ([[object objectForKey:@"follow"] isKindOfClass:[NSNumber class]]) {
+                [arrayOfUsers addObject:[[Profile user] dictionary]];
+            }
+        }
+        _followingParty = [[Party alloc] initWithObjectName:@"User"];
+        [_followingParty addObjectsFromArray:arrayOfUsers];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            _contentParty = _followingParty;
+            [_tableViewOfPeople reloadData];
+        });
+    }];
+ 
 }
 
 #pragma mark - Table View Data Source
