@@ -114,7 +114,7 @@
 }
 
 - (void) fetchEveryone {
-    [Network queryAsynchronousAPI:@"users/?user=friends&ordering=goingout" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+    [Network queryAsynchronousAPI:@"users/?ordering=goingout" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
@@ -191,7 +191,7 @@
         
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView hideSpinnerForView:self.view];
-            [self newInitializeWhoView];
+            [self initializeWhoView];
             [self fetchedMyInfoOrPeoplesInfoOrTaps];
         });
     }
@@ -272,27 +272,7 @@
     }
 }
 
-- (void)initializeWhoTableView {
-    _startingYPosition = 64;
-    [self initializeBarAtTopWithText:@"GOING OUT"];
-    
-    _startingYPosition -= 64;
-    _whoTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    [self addImagesOfParty:_whoIsGoingOutParty];
-    
-    //HACK (May need to fix)
-    _startingYPosition += 104 + 5;
-    _startingYPosition -= 5;
-    [self initializeNotGoingOutBar];
-    
-    _indexOfImage = -1;
-    [self addImagesOfParty:_notGoingOutParty];
-    _shownImageNumber = 0;
-    
-    [self fetchUserInfo];
-}
-
-- (void) newInitializeWhoView {
+- (void) initializeWhoView {
     [_scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
     _startingYPosition = 64;
@@ -306,7 +286,7 @@
     [self addImagesOfParty:_whoIsGoingOutParty];
     
     //HACK (May need to fix)
-    _startingYPosition += 104 + 5;
+    _startingYPosition += 26 + 5; //A quart of a photo image.
     _startingYPosition -= 5;
     [self initializeNotGoingOutBar];
     
