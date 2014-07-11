@@ -40,7 +40,7 @@
 # pragma mark - Synchronous Methods
 
 + (void)unfollowUser:(User *)user {
-    NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d", [(NSNumber *)[user objectForKey:@"id"] intValue]];
+    NSString *queryString = [NSString stringWithFormat:@"follows/?user=me&follow=%d", [(NSNumber *)[user objectForKey:@"id"] intValue]];
     [self queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if ([[jsonResponse allKeys] containsObject:@"objects"]) {
             NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];

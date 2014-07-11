@@ -102,7 +102,6 @@
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         User *user = [[User alloc] initWithDictionary:jsonResponse];
         User *profileUser = [Profile user];
-//        NSLog([user isGoingOut] ? @"Is Going out" : @"Not going out");
         [profileUser setIsGoingOut:[user isGoingOut]];
         [Profile setUser:profileUser];
         dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -540,6 +539,7 @@
     [profileUser setIsGoingOut:YES];
     [Profile setUser:profileUser];
     [self updateTitleView];
+    [self showTapButtons];
     [self animationShowingTapIcons];
     [Network postGoOut];
 }

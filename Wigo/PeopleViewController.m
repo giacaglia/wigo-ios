@@ -280,7 +280,6 @@
 #pragma mark - Filter handlers
 
 - (void) changeFilter:(id)sender {
-    NSLog(@"lala");
     UIButton *chosenButton = (UIButton *)sender;
     int tag = chosenButton.tag;
     if (tag >= 2) {
