@@ -323,6 +323,9 @@
             _startingYPosition += sizeOfEachImage + 5; // 5 is the distance of the images on the bottom
             positionX = 0;
         }
+        else if (i == [userArray count] - 1) {
+            _startingYPosition += sizeOfEachImage + 5;
+        }
         imgView.alpha = 1.0;
         imgView.tag = tag;
         [_scrollView addSubview:imgView];
