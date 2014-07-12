@@ -93,8 +93,9 @@
 - (void)loadViewAfterSigningUser {
     _numberFetchedMyInfoAndEveryoneElse = 0;
     [self fetchUserInfo];
-    [self fetchEveryone];
-    [self fetchFollowers];
+//    [self fetchEveryone];
+//    [self fetchFollowers];
+    [self newFetchFollowers];
     [self fetchTaps];
 }
 
@@ -124,46 +125,82 @@
     }];
 }
 
-- (void)fetchFollowers {
+- (void)newFetchFollowers {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    _numberOfFetchedParties = 0;
-    [Network queryAsynchronousAPI:@"follows/?user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-        NSMutableArray *arrayOfAcceptedUsers = [[NSMutableArray alloc] initWithCapacity:0];
-        NSMutableArray *arrayOfNotAcceptedUsers = [[NSMutableArray alloc] initWithCapacity:0];
+    [Network queryAsynchronousAPI:@"users/?user=friends&ordering=goingout" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+        _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+        [_everyoneParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_everyoneParty addMetaInfo:metaDictionary];
+        [Profile setEveryoneParty:_everyoneParty];
         
-        for (NSDictionary *object in arrayOfFollowObjects) {
-            if ([[object objectForKey:@"accepted"] isEqualToNumber:@1]) {
-                [arrayOfAcceptedUsers addObject:[object objectForKey:@"follow"]];
+        _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+        _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+        User *user;
+        for (int i = 0; i < [arrayOfUsers count]; i++) {
+            NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];
+            user = [[User alloc] initWithDictionary:userDictionary];
+            if ([user isGoingOut]) {
+                [_whoIsGoingOutParty addObject:user];
             }
             else {
-                [arrayOfNotAcceptedUsers addObject:[object objectForKey:@"follow"]];
+                [_notGoingOutParty addObject:user];
             }
         }
-        _followingAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
-        [_followingAcceptedParty addObjectsFromArray:arrayOfAcceptedUsers];
-        _followingNotAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
-        [_followingNotAcceptedParty addObjectsFromArray:arrayOfNotAcceptedUsers];
-        [Profile setFollowingParty:_followingAcceptedParty];
-        [Profile setNotAcceptedFollowingParty:_followingNotAcceptedParty];
-        [self fetchedOneParty];
-        
-        [self fetchGoingOuts];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [WiGoSpinnerView hideSpinnerForView:self.view];
+            [self initializeWhoView];
+            [self fetchedMyInfoOrPeoplesInfoOrTaps];
+        });
+
     }];
 }
 
-- (void)fetchGoingOuts {
-    [Network queryAsynchronousAPI:@"goingouts/?user=friends" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-        for (NSDictionary *object in arrayOfUsers) {
-            NSNumber* userID = [object objectForKey:@"user"];
-            [_whoIsGoingOutParty addObject:[_followingAcceptedParty getObjectWithId:userID]];
-        }
-        [_whoIsGoingOutParty removeUser:[Profile user]];
-        [self fetchedOneParty];
-    }];
+- (void)fetchNextPageEveryone {
+    
 }
+
+//- (void)fetchFollowers {
+//    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+//    _numberOfFetchedParties = 0;
+//    [Network queryAsynchronousAPI:@"follows/?user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+//        NSMutableArray *arrayOfAcceptedUsers = [[NSMutableArray alloc] initWithCapacity:0];
+//        NSMutableArray *arrayOfNotAcceptedUsers = [[NSMutableArray alloc] initWithCapacity:0];
+//        
+//        for (NSDictionary *object in arrayOfFollowObjects) {
+//            if ([[object objectForKey:@"accepted"] isEqualToNumber:@1]) {
+//                [arrayOfAcceptedUsers addObject:[object objectForKey:@"follow"]];
+//            }
+//            else {
+//                [arrayOfNotAcceptedUsers addObject:[object objectForKey:@"follow"]];
+//            }
+//        }
+//        _followingAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
+//        [_followingAcceptedParty addObjectsFromArray:arrayOfAcceptedUsers];
+//        _followingNotAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
+//        [_followingNotAcceptedParty addObjectsFromArray:arrayOfNotAcceptedUsers];
+//        [Profile setFollowingParty:_followingAcceptedParty];
+//        [Profile setNotAcceptedFollowingParty:_followingNotAcceptedParty];
+//        [self fetchedOneParty];
+//        
+//        [self fetchGoingOuts];
+//    }];
+//}
+
+//- (void)fetchGoingOuts {
+//    [Network queryAsynchronousAPI:@"goingouts/?user=friends" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+//        _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+//        for (NSDictionary *object in arrayOfUsers) {
+//            NSNumber* userID = [object objectForKey:@"user"];
+//            [_whoIsGoingOutParty addObject:[_followingAcceptedParty getObjectWithId:userID]];
+//        }
+//        [_whoIsGoingOutParty removeUser:[Profile user]];
+//        [self fetchedOneParty];
+//    }];
+//}
 
 - (void)fetchTaps {
     [Network fetchAsynchronousAPI:@"taps/?user=me" withResult:^(NSArray *taps, NSError *error) {
@@ -176,26 +213,26 @@
     }];
 }
 
-- (void)fetchedOneParty {
-    _numberOfFetchedParties +=1;
-    if (_numberOfFetchedParties == 2) {
-        
-        // Update NOT GOING OUT PARTY
-        _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-        for (User *user in _followingAcceptedParty.objectArray) {
-            if (![_whoIsGoingOutParty containsObject:user]) {
-                [_notGoingOutParty addObject:user];
-            }
-        }
-        [_notGoingOutParty removeUser:[Profile user]];
-        
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView hideSpinnerForView:self.view];
-            [self initializeWhoView];
-            [self fetchedMyInfoOrPeoplesInfoOrTaps];
-        });
-    }
-}
+//- (void)fetchedOneParty {
+//    _numberOfFetchedParties +=1;
+//    if (_numberOfFetchedParties == 2) {
+//        
+//        // Update NOT GOING OUT PARTY
+//        _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+//        for (User *user in _followingAcceptedParty.objectArray) {
+//            if (![_whoIsGoingOutParty containsObject:user]) {
+//                [_notGoingOutParty addObject:user];
+//            }
+//        }
+//        [_notGoingOutParty removeUser:[Profile user]];
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^(void){
+//            [WiGoSpinnerView hideSpinnerForView:self.view];
+//            [self initializeWhoView];
+//            [self fetchedMyInfoOrPeoplesInfoOrTaps];
+//        });
+//    }
+//}
 
 #pragma mark - viewDidLoad initializations
 
