@@ -43,7 +43,7 @@
     
     UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
     makeCoverButton.backgroundColor = RGB(246, 143, 30);
-    [makeCoverButton addTarget:self action:@selector(makeCoverPressed) forControlEvents:UIControlEventTouchDown];
+    [makeCoverButton addTarget:self action:@selector(makeCoverPressed) forControlEvents:UIControlEventTouchUpInside];
     [makeCoverButton setTitle:@"MAKE COVER" forState:UIControlStateNormal];
     [makeCoverButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     makeCoverButton.titleLabel.font = [FontProperties getTitleFont];
@@ -51,7 +51,7 @@
     
     UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12, 248, 42)];
     deleteButton.backgroundColor = RGB(214, 45, 58);
-    [deleteButton addTarget:self action:@selector(deletePressed) forControlEvents:UIControlEventTouchDown];
+    [deleteButton addTarget:self action:@selector(deletePressed) forControlEvents:UIControlEventTouchUpInside];
     [deleteButton setTitle:@"DELETE" forState:UIControlStateNormal];
     [deleteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     deleteButton.titleLabel.font = [FontProperties getTitleFont];
@@ -59,7 +59,7 @@
     
     UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12 + 42 + 12, 248, 42)];
     cancelButton.backgroundColor = [UIColor whiteColor];
-    [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchDown];
+    [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
     [cancelButton setTitleColor:RGB(214, 45, 58) forState:UIControlStateNormal];
     cancelButton.titleLabel.font = [FontProperties getTitleFont];

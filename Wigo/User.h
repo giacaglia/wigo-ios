@@ -38,6 +38,7 @@
 - (NSString *)coverImageURL;
 - (void)makeImageURLCover:(NSString *)imageURL;
 - (NSDictionary *)dictionary;
+- (BOOL)isTapped;
 
 // NEED TO IMPLEMENT
 @property BOOL *isFavorite;

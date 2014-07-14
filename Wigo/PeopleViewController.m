@@ -138,7 +138,7 @@
     _yourSchoolButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _yourSchoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     _yourSchoolButton.tag = 2;
-    [_yourSchoolButton addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchDown];
+    [_yourSchoolButton addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_yourSchoolButton];
 }
 
@@ -151,7 +151,7 @@
     _followersButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _followersButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     _followersButton.tag = 3;
-    [_followersButton addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchDown];
+    [_followersButton addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_followersButton];
 }
 
@@ -164,7 +164,7 @@
     _followingButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _followingButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     _followingButton.tag = 4;
-    [_followingButton addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchDown];
+    [_followingButton addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_followingButton];
 }
 
@@ -420,7 +420,7 @@
     UIButton *favoriteButton = [[UIButton alloc]initWithFrame:CGRectMake(250, 24, 49, 30)];
     [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     favoriteButton.tag = -100;
-    [favoriteButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
+    [favoriteButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [cell.contentView addSubview:favoriteButton];
     
     if ([[_followingParty getObjectArray] count] > 0 ) {

@@ -96,7 +96,6 @@
 //    [self fetchEveryone];
 //    [self fetchFollowers];
     [self newFetchFollowers];
-    [self fetchTaps];
 }
 
 #pragma mark - Fetch Data
@@ -202,16 +201,6 @@
 //    }];
 //}
 
-- (void)fetchTaps {
-    [Network fetchAsynchronousAPI:@"taps/?user=me" withResult:^(NSArray *taps, NSError *error) {
-        _userTappedIDArray = [[NSMutableArray alloc] init];
-        for (int i = 0; i < [taps count]; i++) {
-            NSDictionary *userTappedDictionary = [[taps objectAtIndex:i] objectForKey:@"tapped"];
-            [_userTappedIDArray addObject:[userTappedDictionary objectForKey:@"id"]];
-        }
-        [self fetchedMyInfoOrPeoplesInfoOrTaps];
-    }];
-}
 
 //- (void)fetchedOneParty {
 //    _numberOfFetchedParties +=1;
@@ -245,6 +234,9 @@
 - (void) initializeScrollView {
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height)];
     _scrollView.delegate = self;
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refreshPeople:) forControlEvents:UIControlEventValueChanged];
+    [_scrollView addSubview:refreshControl];
     [self.view addSubview:_scrollView];
 }
 
@@ -403,7 +395,7 @@
         [_userTapArray addObject:user];
         [_tapArray addObject:tappedImageView];
     }
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, MAX(_startingYPosition, self.view.frame.size.height + 200));
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, MAX(_startingYPosition, self.view.frame.size.height + 100) + 26 + 5 + 64);
 }
 
 - (void) initializeBarAtTopWithText:(NSString *)textAtTop {
@@ -490,7 +482,7 @@
             tapButton.enabled = YES;
             
             User *user = [_userTapArray objectAtIndex:i];
-            if ([self isUserTapped:user]) {
+            if ([user isTapped]) {
                 tappedImageView.tag = -1;
                 tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
             }
@@ -608,23 +600,14 @@
         tag -= 1;
         user = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:tag];
     }
-    if (![self isUserTapped:user]) {
+    if (![user isTapped]) {
         [Network sendTapToUserWithIndex:[user objectForKey:@"id"]];
     }
 }
 
-
-- (BOOL) isUserTapped:(User *)user {
-    if ([_userTappedIDArray containsObject:[user objectForKey:@"id"]]) {
-        return YES;
-    }
-    return NO;
-}
-
-
 - (void)fetchedMyInfoOrPeoplesInfoOrTaps {
     _numberFetchedMyInfoAndEveryoneElse += 1;
-    if (_numberFetchedMyInfoAndEveryoneElse == 3) {
+    if (_numberFetchedMyInfoAndEveryoneElse == 2) {
         [self showTapButtons];
     }
 }
@@ -730,16 +713,17 @@
 
 //- (void)addRefreshToSrollView {
 //    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-//    [refreshControl addTarget:self action:@selector(testRefresh:) forControlEvents:UIControlEventValueChanged];
+//    [refreshControl addTarget:self action:@selector(refreshPeople:) forControlEvents:UIControlEventValueChanged];
 //    [_scrollView addSubview:refreshControl];
 //}
-//
-//- (void)testRefresh:(UIRefreshControl *)refreshControl
+
+//- (void)refreshPeople:(UIRefreshControl *)refreshControl
 //{
+//    NSLog(@"Refreshed Data");
 //    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
-//    
 //    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//    [self loadViewAfterSigningUser];
+//        
+//        [NSThread sleepForTimeInterval:3];
 //        
 //        dispatch_async(dispatch_get_main_queue(), ^{
 //            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -749,10 +733,12 @@
 //            refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdate];
 //            
 //            [refreshControl endRefreshing];
+//            
+//            NSLog(@"refresh end");
 //        });
 //    });
 //}
-//
+
 
 
 @end

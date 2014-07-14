@@ -99,7 +99,7 @@
     continueButton.layer.borderColor = [UIColor whiteColor].CGColor;
     continueButton.layer.borderWidth = 3;
     continueButton.layer.cornerRadius = 5;
-    [continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchDown];
+    [continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchUpInside];
     UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightArrow"]];
     rightArrowImageView.frame = CGRectMake(continueButton.frame.size.width - 35, continueButton.frame.size.height/2 - 9, 11, 18);
     [continueButton addSubview:rightArrowImageView];

@@ -58,6 +58,9 @@
 @property NSMutableArray *summaryArray;
 @property Party *everyoneParty;
 
+// Go OUT Button
+@property UIButtonUngoOut *ungoOutButton;
+
 @end
 
 @implementation PlacesViewController {
@@ -143,9 +146,9 @@
 }
 
 - (void) updatedTitleViewForGoingOut {
-    UIButtonUngoOut *ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
-    [ungoOutButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-    self.navigationItem.titleView = ungoOutButton;
+    _ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
+    [_ungoOutButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    self.navigationItem.titleView = _ungoOutButton;
 }
 
 - (void)initializeTapHandler {
@@ -184,6 +187,7 @@
         _placesTableView.delegate = self;
         
         _yPositionOfWhereSubview = 280;
+        [self addRefreshToSrollView];
         [self initializeGoingSomewhereElseButton];
     }
     else {
@@ -208,7 +212,7 @@
     [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
     
     UILabel *goingSomewhereLabel = [[UILabel alloc] initWithFrame:CGRectMake(67, _goingSomewhereButton.frame.size.height/2 - 7, 230, 15)];
-    goingSomewhereLabel.text = @"GOING SOMEWHERE ELSE";
+    goingSomewhereLabel.text = @"GO SOMEWHERE ELSE";
     goingSomewhereLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0];
     goingSomewhereLabel.textColor = [FontProperties getBlueColor];
     [_goingSomewhereButton addSubview:goingSomewhereLabel];
@@ -262,7 +266,7 @@
     gotItButton.backgroundColor = RGB(56, 56, 56);
     gotItButton.layer.cornerRadius = 5;
     gotItButton.layer.borderWidth = 1;
-    [gotItButton addTarget:self action:@selector(gotItPressed) forControlEvents:UIControlEventTouchDown];
+    [gotItButton addTarget:self action:@selector(gotItPressed) forControlEvents:UIControlEventTouchUpInside];
     [newViewController.view addSubview:gotItButton];
     
     [[RWBlurPopover instance] presentViewController:newViewController withOrigin:200 andHeight:250];
@@ -313,7 +317,7 @@
     [_createButton setTitle:@"CREATE" forState:UIControlStateNormal];
     [_createButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _createButton.backgroundColor = [FontProperties getBlueColor];
-    [_createButton addTarget:self action:@selector(createPressed) forControlEvents:UIControlEventTouchDown];
+    [_createButton addTarget:self action:@selector(createPressed) forControlEvents:UIControlEventTouchUpInside];
     _createButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
     _createButton.layer.cornerRadius = 5;
     _createButton.layer.borderWidth = 1;
@@ -463,7 +467,7 @@
         [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         goOutButton.backgroundColor = [FontProperties getBlueColor];
         goOutButton.tag = [(NSNumber *)[event eventID] intValue];
-        [goOutButton addTarget:self action:@selector(goOutHere:) forControlEvents:UIControlEventTouchDown];
+        [goOutButton addTarget:self action:@selector(goOutHere:) forControlEvents:UIControlEventTouchUpInside];
         goOutButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
         goOutButton.layer.cornerRadius = 5;
         goOutButton.layer.borderWidth = 1;
@@ -599,5 +603,33 @@
         });
     }
 }
+
+#pragma mark - Refresh Control
+
+- (void)addRefreshToSrollView {
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refreshEvents:) forControlEvents:UIControlEventValueChanged];
+    [_placesTableView addSubview:refreshControl];
+}
+
+- (void)refreshEvents:(UIRefreshControl *)refreshControl
+{
+    [self loadEvents];
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"MMM d, h:mm a"];
+            NSString *lastUpdate = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
+
+            refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdate];
+
+            [refreshControl endRefreshing];
+            
+        });
+    });
+}
+
+
 
 @end

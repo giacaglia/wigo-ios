@@ -83,7 +83,7 @@
 
 - (void)initializeTableOfChats {
     if (!_tableViewOfPeople) {
-        _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+        _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
         _tableViewOfPeople.delegate = self;
         _tableViewOfPeople.dataSource = self;
         _tableViewOfPeople.backgroundColor = [UIColor clearColor];

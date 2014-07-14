@@ -29,7 +29,7 @@
     
     UIButton *stayInButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 0, 248, 42)];
     stayInButton.backgroundColor = [UIColor whiteColor];
-    [stayInButton addTarget:self action:@selector(stayInPressed) forControlEvents:UIControlEventTouchDown];
+    [stayInButton addTarget:self action:@selector(stayInPressed) forControlEvents:UIControlEventTouchUpInside];
     [stayInButton setTitle:@"STAY IN" forState:UIControlStateNormal];
     [stayInButton setTitleColor:RGB(214, 45, 58) forState:UIControlStateNormal];
     stayInButton.titleLabel.font = [FontProperties getTitleFont];
@@ -39,7 +39,7 @@
     
     UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 0 + 42 + 12, 248, 42)];
     cancelButton.backgroundColor = RGB(214, 45, 58);
-    [cancelButton addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchDown];
+    [cancelButton addTarget:self action:@selector(cancel) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
     [cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     cancelButton.titleLabel.font = [FontProperties getTitleFont];

@@ -240,7 +240,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [_chatTextFieldWrapper bringSubviewToFront:_messageTextBox];
     
     _sendButton = [[UIButton alloc] initWithFrame:CGRectMake(_chatTextFieldWrapper.frame.size.width - 60, 10, 60, 30)];
-    [_sendButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchDown];
+    [_sendButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
     [_sendButton setTitle:@"Send" forState:UIControlStateNormal];
     [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _sendButton.backgroundColor = [UIColor clearColor];

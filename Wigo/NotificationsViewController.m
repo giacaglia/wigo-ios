@@ -23,6 +23,9 @@
 @property Party *notificationsParty;
 @property Party *everyoneParty;
 
+@property UIActivityIndicatorView *spinner;
+@property NSNumber *page;
+
 @end
 
 @implementation NotificationsViewController
@@ -31,6 +34,9 @@
 {
     [super viewDidLoad];
     _everyoneParty = [Profile everyoneParty];
+    _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
+    _page = @0;
+    [self initializeTableNotifications];
     [self fetchNotifications];
 }
 
@@ -56,19 +62,21 @@
 }
 
 - (void) initializeTableNotifications {
-    _notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    _notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
     _notificationsTableView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_notificationsTableView];
     _notificationsTableView.dataSource = self;
     _notificationsTableView.delegate = self;
     _notificationsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [_notificationsTableView reloadData];
 }
 
 
 #pragma mark - Tablew View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([indexPath row] == [[_notificationsParty getObjectArray] count]) {
+        return 30;
+    }
     return 54;
 }
 
@@ -77,7 +85,8 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[_notificationsParty getObjectArray] count];
+    int hasNextPage = ([_notificationsParty hasNextPage] ? 1 : 0);
+    return [[_notificationsParty getObjectArray] count] + hasNextPage;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -86,6 +95,14 @@
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
+    if ([indexPath row] == [[_notificationsParty getObjectArray] count]) {
+        _spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0,0,80,80)];
+        [_spinner startAnimating];
+        [cell.contentView addSubview:_spinner];
+        [self fetchNotifications];
+        return cell;
+    }
+    
     Notification *notifcation = [[_notificationsParty getObjectArray] objectAtIndex:[indexPath row]];
     User *user = (User *)[_everyoneParty getObjectWithId:[notifcation fromUserID]];
     
@@ -175,13 +192,16 @@
 
 - (void)fetchNotifications {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    [Network queryAsynchronousAPI:@"notifications/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    NSString *queryString = [NSString stringWithFormat:@"notifications/?page=%@" ,[_page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView hideSpinnerForView:self.view];
             NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
-            _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
             [_notificationsParty addObjectsFromArray:arrayOfNotifications];
-            [self initializeTableNotifications];
+            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+            [_notificationsParty addMetaInfo:metaDictionary];
+            _page = @([_page intValue] + 1);
+            [_notificationsTableView reloadData];
         });
     }];
 }

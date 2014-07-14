@@ -129,7 +129,7 @@
         UIButton *imageButton = [[UIButton alloc] init];
         [imageButton setImage:[UIImage imageNamed:@"plusSquare"] forState:UIControlStateNormal];
         imageButton.tag = -1;
-        [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchDown];
+        [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchUpInside];
         [photosArray addObject:imageButton];
     }
     

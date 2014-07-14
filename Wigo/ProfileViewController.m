@@ -172,7 +172,7 @@
 
 - (void) initializeFollowingAndFollowers {
     _followingButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/4, 64 + self.view.frame.size.width + 50, self.view.frame.size.width/2, 50)];
-    [_followingButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [_followingButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followingButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
     followingLabel.textColor = [FontProperties getOrangeColor];
     followingLabel.textAlignment = NSTextAlignmentCenter;
@@ -184,7 +184,7 @@
     [self.view addSubview:_followingButton];
     
     _followersButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/4, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 50)];
-    [_followersButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [_followersButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followersButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
     followersLabel.textColor = [FontProperties getOrangeColor];
     followersLabel.textAlignment = NSTextAlignmentCenter;
@@ -305,7 +305,7 @@
 
 - (void) initializeFollowButton {
     _followButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 64 + self.view.frame.size.width + 20, self.view.frame.size.width - 20, 50)];
-    [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchDown];
+    [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
     _followButton.layer.cornerRadius = 15;
     _followButton.layer.borderWidth = 1;
     _followButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
@@ -422,7 +422,7 @@
 - (void)initializeLeftProfileButton {
     if (self.isMyProfile) {
         _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 100)];
-        [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchDown];
+        [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _leftProfileButton.frame.size.width, 60)];
         followersLabel.textColor = [FontProperties getOrangeColor];
         followersLabel.textAlignment = NSTextAlignmentCenter;
@@ -433,7 +433,7 @@
     }
     else {
         _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
-        [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchDown];
+        [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         
         _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite"]];
         _favoriteImageView.frame = CGRectMake(_leftProfileButton.frame.size.width/2 - 12, _leftProfileButton.frame.size.height/2 - 12, 24, 24);
@@ -462,7 +462,7 @@
 - (void)initializeRightProfileButton {
     if (self.isMyProfile) {
         _rightProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 100)];
-        [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchDown];
+        [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         _rightProfileButton.layer.borderWidth = 1;
         _rightProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
 
@@ -476,7 +476,7 @@
     }
     else {
         _rightProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(3*self.view.frame.size.width/4, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
-        [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchDown];
+        [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         _rightProfileButton.layer.borderWidth = 1;
         _rightProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
 

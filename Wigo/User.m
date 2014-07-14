@@ -305,6 +305,10 @@
     [modifiedKeys addObject:@"email_validated"];
 }
 
+- (BOOL)isTapped {
+    return [(NSNumber *)[_proxy objectForKey:@"is_tapped"] boolValue];
+}
+
 #pragma mark - Saving data
 - (NSString *)login {
     Query *query = [[Query alloc] init];
