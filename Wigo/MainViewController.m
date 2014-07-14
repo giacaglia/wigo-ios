@@ -681,12 +681,12 @@ static NSString * const cellIdentifier = @"ContentViewCell";
             [_collectionView addSubview:_barAtTopView];
             _goingOutIsAttachedToScrollView = YES;
         }
-        if ( _collectionView.contentOffset.y > 0) {
+        if ( _collectionView.contentOffset.y < 0) {
             NSLog(@"jere3");
-//            [_barAtTopView removeFromSuperview];
-//            _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
-//            [_collectionView addSubview:_barAtTopView];
-//            _goingOutIsAttachedToScrollView = YES;
+            [_barAtTopView removeFromSuperview];
+            _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
+            [_collectionView addSubview:_barAtTopView];
+            _goingOutIsAttachedToScrollView = YES;
         }
     }
     
