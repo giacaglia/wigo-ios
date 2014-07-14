@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C16D86A819747FF6003EB336 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
 		E900C251195DCC4100A01F50 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C250195DCC4100A01F50 /* Message.m */; };
 		E900C254195E010500A01F50 /* Notification.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C253195E010500A01F50 /* Notification.m */; };
 		E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2581961B96000A01F50 /* SignNavigationViewController.m */; };
@@ -198,6 +199,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C16D86A919747FF6003EB336 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E900C24F195DCC4100A01F50 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
 		E900C250195DCC4100A01F50 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		E900C252195E010500A01F50 /* Notification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notification.h; sourceTree = "<group>"; };
@@ -600,6 +602,7 @@
 				E921D61E1923967D00361247 /* InfoPlist.strings */,
 				E921D6211923967D00361247 /* main.m */,
 				E921D6231923967D00361247 /* Wigo-Prefix.pch */,
+				C16D86AA19747FF6003EB336 /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1121,6 +1124,7 @@
 				E9AAAFC4193E17F40069F700 /* emailFilled.png in Resources */,
 				E9BE8CB1192AA29C008BB84C /* WhitneyNumeric-BoldItalic.ttf in Resources */,
 				E9BE8C8B192AA29C008BB84C /* Whitney-BoldItalicSC.ttf in Resources */,
+				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
 				E9BE8CB7192AA29C008BB84C /* WhitneyNumeric-MediumItalic.ttf in Resources */,
 				E9BE8CB6192AA29C008BB84C /* WhitneyNumeric-Medium.ttf in Resources */,
 				E93F85151946031600B3B448 /* addedFilled@2x.png in Resources */,
@@ -1275,6 +1279,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		C16D86AA19747FF6003EB336 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C16D86A919747FF6003EB336 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		E921D61E1923967D00361247 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

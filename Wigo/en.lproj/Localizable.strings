@@ -1,0 +1,15 @@
+/* 
+  Localizable.strings
+  WiGo
+
+  Created by Dennis Doughty on 7/14/14.
+*/
+
+"MESSAGE" = "%@: %@";
+"FOLLOW" = "%@ is now following you";
+"FOLLOW_REQUEST" = "%@ would like to follow you";
+"FOLLOW_ACCEPTED" = "%@ accepted your follow request";
+"FACEBOOK_FOLLOW" = "%@ just joined WiGo";
+"TAP" = "%@ tapped you";
+"GOINGOUT" = "%@ is going out";
+"GROUP_UNLOCKED" = "%@ was just unlocked";
