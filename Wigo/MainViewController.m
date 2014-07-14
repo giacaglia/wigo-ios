@@ -24,6 +24,7 @@
 #import "WiGoSpinnerView.h"
 
 static NSString * const cellIdentifier = @"ContentViewCell";
+static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 @interface MainViewController ()
 
@@ -179,7 +180,7 @@ static NSString * const cellIdentifier = @"ContentViewCell";
 - (void)initializeWhoView {
     _startingYPosition = 64;
     [self initializeBarAtTopWithText:@"GOING OUT"];
-    
+    [self initializeNotGoingOutBar];
     _startingYPosition -= 64;
     _tapArray = [[NSMutableArray alloc] initWithCapacity:0];
     _userTapArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -541,6 +542,8 @@ static NSString * const cellIdentifier = @"ContentViewCell";
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
+    [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier];
+
     _collectionView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_collectionView];
 }
@@ -665,9 +668,8 @@ static NSString * const cellIdentifier = @"ContentViewCell";
     // Going Out Label
     if (_goingOutIsAttachedToScrollView) {
         if (_collectionView.contentOffset.y > 0) {
-            NSLog(@"jere");
             [_barAtTopView removeFromSuperview];
-            _barAtTopView.frame = CGRectMake(0, 200, self.view.frame.size.width, 30);
+            _barAtTopView.frame = CGRectMake(0, 64, self.view.frame.size.width, 30);
             [self.view addSubview:_barAtTopView];
             [self.view bringSubviewToFront:_barAtTopView];
             _goingOutIsAttachedToScrollView = NO;
@@ -682,14 +684,12 @@ static NSString * const cellIdentifier = @"ContentViewCell";
             _goingOutIsAttachedToScrollView = YES;
         }
         if ( _collectionView.contentOffset.y < 0) {
-            NSLog(@"jere3");
             [_barAtTopView removeFromSuperview];
             _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
             [_collectionView addSubview:_barAtTopView];
             _goingOutIsAttachedToScrollView = YES;
         }
     }
-    
     // Not Going out label
     if (_notGoingOutIsAttachedToScrollView) {
         if (notGoingOutPoint.y <= 64) {
@@ -710,19 +710,26 @@ static NSString * const cellIdentifier = @"ContentViewCell";
     }
 }
 
-//- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-//{
-//    if (kind == UICollectionElementKindSectionHeader) {
-//
-//        UICollectionReusableView *reusableview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
-//
-//        if (reusableview==nil) {
-//            reusableview=[[UICollectionReusableView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-//        }
-//        return reusableview;
-//    }
-//    return nil;
-//}
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionReusableView *reusableView = nil;
+    
+    if (kind == UICollectionElementKindSectionHeader) {
+         reusableView = [_collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier forIndexPath:indexPath];
+        UILabel *lblHeader;
+        if ([indexPath section]== 0) {
+            lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+        }
+        else if ([indexPath section] == 1) {
+            lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, self.view.frame.size.width, 30)];
+        }
+        lblHeader.backgroundColor = [UIColor redColor];
+        lblHeader.textColor = [UIColor redColor];
+        [reusableView addSubview:lblHeader];
+        return reusableView;
+    }
+    return reusableView;
+}
 
 
 @end
