@@ -153,7 +153,7 @@
                   symbolName = "-[ConversationViewController scrollView]"
                   moduleName = "wigo"
                   urlString = "file:///Users/giulianogiacaglia/Documents/wigo-ios/Wigo/ConversationViewController.m"
-                  timestampString = "427047526.961421"
+                  timestampString = "427060785.146705"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "18"
@@ -167,7 +167,7 @@
                   symbolName = "-[ConversationViewController setScrollView:]"
                   moduleName = "wigo"
                   urlString = "file:///Users/giulianogiacaglia/Documents/wigo-ios/Wigo/ConversationViewController.m"
-                  timestampString = "427047526.961853"
+                  timestampString = "427060785.146995"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "18"
@@ -254,38 +254,6 @@
             startingLineNumber = "43"
             endingLineNumber = "43"
             landmarkName = "+unfollowUser:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/MainViewController.m"
-            timestampString = "427047526.928654"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
-            landmarkName = "-fetchUserInfo"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Wigo/MainViewController.m"
-            timestampString = "427047526.928654"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
-            landmarkName = "-fetchUserInfo"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -23,13 +23,15 @@
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"
 
+static NSString * const cellIdentifier = @"ContentViewCell";
+
 @interface MainViewController ()
 
 // Properties shared by Who and Where View
 @property BOOL isGoingOut;
 
 // Properties of the Who View
-@property UIScrollView *scrollView;
+//@property UIScrollView *scrollView;
 @property int startingYPosition;
 @property int shownImageNumber;
 
@@ -42,7 +44,6 @@
 
 // Bar at top
 @property UIView *barAtTopView;
-@property UILabel *barAtTopLabel;
 @property BOOL goingOutIsAttachedToScrollView;
 @property CGPoint barAtTopPoint;
 
@@ -66,6 +67,8 @@
 @property Party *notGoingOutParty;
 @property UITableView *whoTableView;
 
+
+@property NSNumber *page;
 @end
 
 @implementation MainViewController
@@ -86,16 +89,20 @@
     [self initializeFlashScreen];
     
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor clearColor]];
-    [self initializeScrollView];
+    [self initializeWhoView];
     [self initializeNotificationObservers];
 }
 
 - (void)loadViewAfterSigningUser {
     _numberFetchedMyInfoAndEveryoneElse = 0;
+    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+    _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+    _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+    
+    _page = @0;
+    
     [self fetchUserInfo];
-//    [self fetchEveryone];
-//    [self fetchFollowers];
-    [self newFetchFollowers];
+    [self fetchFollowers];
 }
 
 #pragma mark - Fetch Data
@@ -108,34 +115,21 @@
         [Profile setUser:profileUser];
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [self updateTitleView];
-            [self fetchedMyInfoOrPeoplesInfoOrTaps];
+            [self fetchedMyInfoOrPeoplesInfo];
         });
     }];
 }
 
-- (void) fetchEveryone {
-    [Network queryAsynchronousAPI:@"users/?ordering=goingout" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
-        [_everyoneParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_everyoneParty addMetaInfo:metaDictionary];
-        [Profile setEveryoneParty:_everyoneParty];
-    }];
-}
-
-- (void)newFetchFollowers {
+- (void)fetchFollowers {
+    NSString *queryString = [NSString stringWithFormat:@"users/?user=friends&ordering=goingout&page=%@", [_page stringValue]];
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    [Network queryAsynchronousAPI:@"users/?user=friends&ordering=goingout" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [_everyoneParty addMetaInfo:metaDictionary];
         [Profile setEveryoneParty:_everyoneParty];
-        
-        _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-        _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+    
         User *user;
         for (int i = 0; i < [arrayOfUsers count]; i++) {
             NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];
@@ -149,79 +143,13 @@
         }
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView hideSpinnerForView:self.view];
-            [self initializeWhoView];
-            [self fetchedMyInfoOrPeoplesInfoOrTaps];
+            _page = @([_page intValue] + 1);
+            [_collectionView reloadData];
+            [self fetchedMyInfoOrPeoplesInfo];
         });
 
     }];
 }
-
-- (void)fetchNextPageEveryone {
-    
-}
-
-//- (void)fetchFollowers {
-//    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-//    _numberOfFetchedParties = 0;
-//    [Network queryAsynchronousAPI:@"follows/?user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-//        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-//        NSMutableArray *arrayOfAcceptedUsers = [[NSMutableArray alloc] initWithCapacity:0];
-//        NSMutableArray *arrayOfNotAcceptedUsers = [[NSMutableArray alloc] initWithCapacity:0];
-//        
-//        for (NSDictionary *object in arrayOfFollowObjects) {
-//            if ([[object objectForKey:@"accepted"] isEqualToNumber:@1]) {
-//                [arrayOfAcceptedUsers addObject:[object objectForKey:@"follow"]];
-//            }
-//            else {
-//                [arrayOfNotAcceptedUsers addObject:[object objectForKey:@"follow"]];
-//            }
-//        }
-//        _followingAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
-//        [_followingAcceptedParty addObjectsFromArray:arrayOfAcceptedUsers];
-//        _followingNotAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
-//        [_followingNotAcceptedParty addObjectsFromArray:arrayOfNotAcceptedUsers];
-//        [Profile setFollowingParty:_followingAcceptedParty];
-//        [Profile setNotAcceptedFollowingParty:_followingNotAcceptedParty];
-//        [self fetchedOneParty];
-//        
-//        [self fetchGoingOuts];
-//    }];
-//}
-
-//- (void)fetchGoingOuts {
-//    [Network queryAsynchronousAPI:@"goingouts/?user=friends" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-//        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-//        _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-//        for (NSDictionary *object in arrayOfUsers) {
-//            NSNumber* userID = [object objectForKey:@"user"];
-//            [_whoIsGoingOutParty addObject:[_followingAcceptedParty getObjectWithId:userID]];
-//        }
-//        [_whoIsGoingOutParty removeUser:[Profile user]];
-//        [self fetchedOneParty];
-//    }];
-//}
-
-
-//- (void)fetchedOneParty {
-//    _numberOfFetchedParties +=1;
-//    if (_numberOfFetchedParties == 2) {
-//        
-//        // Update NOT GOING OUT PARTY
-//        _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-//        for (User *user in _followingAcceptedParty.objectArray) {
-//            if (![_whoIsGoingOutParty containsObject:user]) {
-//                [_notGoingOutParty addObject:user];
-//            }
-//        }
-//        [_notGoingOutParty removeUser:[Profile user]];
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^(void){
-//            [WiGoSpinnerView hideSpinnerForView:self.view];
-//            [self initializeWhoView];
-//            [self fetchedMyInfoOrPeoplesInfoOrTaps];
-//        });
-//    }
-//}
 
 #pragma mark - viewDidLoad initializations
 
@@ -231,60 +159,7 @@
     [self presentViewController:self.signNavigationViewController animated:NO completion:nil];
 }
 
-- (void) initializeScrollView {
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height)];
-    _scrollView.delegate = self;
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(refreshPeople:) forControlEvents:UIControlEventValueChanged];
-    [_scrollView addSubview:refreshControl];
-    [self.view addSubview:_scrollView];
-}
 
-- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGPoint notGoingOutPoint = [_notGoingOutView.superview convertPoint:_notGoingOutView.frame.origin toView:nil];
-    // Going Out Label
-    if (_goingOutIsAttachedToScrollView) {
-        if (_scrollView.contentOffset.y > 0) {
-            [_barAtTopView removeFromSuperview];
-            _barAtTopView.frame = CGRectMake(0, 64, self.view.frame.size.width, 30);
-            [self.view addSubview:_barAtTopView];
-            _goingOutIsAttachedToScrollView = NO;
-        }
-    }
-    if (!_goingOutIsAttachedToScrollView) {
-        if (notGoingOutPoint.y <= 64 + 30) { // add to the scroll view when
-            [_barAtTopView removeFromSuperview];
-            _barAtTopView.frame = CGRectMake(0, _notGoingOutView.frame.origin.y - 30, self.view.frame.size.width, 30);
-            [_scrollView addSubview:_barAtTopView];
-            _goingOutIsAttachedToScrollView = YES;
-        }
-        if ( _scrollView.contentOffset.y < 0) {
-            [_barAtTopView removeFromSuperview];
-            _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
-            [_scrollView addSubview:_barAtTopView];
-            _goingOutIsAttachedToScrollView = YES;
-        }
-    }
-    
-    // Not Going out label
-    if (_notGoingOutIsAttachedToScrollView) {
-        if (notGoingOutPoint.y <= 64) {
-            [_notGoingOutView removeFromSuperview];
-            _notGoingOutView.frame = CGRectMake(0, 64, self.view.frame.size.width, 30);
-            [self.view addSubview:_notGoingOutView];
-            _scrollViewPointWhenDeatached = _scrollView.contentOffset;
-            _notGoingOutIsAttachedToScrollView = NO;
-        }
-    }
-    if (!_notGoingOutIsAttachedToScrollView) {
-        if (_scrollView.contentOffset.y < _scrollViewPointWhenDeatached.y) {
-            [_notGoingOutView removeFromSuperview];
-            _notGoingOutView.frame = CGRectMake(0, _notGoingOutStartingPoint.y, self.view.frame.size.width, 30);
-            [_scrollView addSubview:_notGoingOutView];
-            _notGoingOutIsAttachedToScrollView = YES;
-        }
-    }
-}
 
 - (void)initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
@@ -301,114 +176,29 @@
     }
 }
 
-- (void) initializeWhoView {
-    [_scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-
+- (void)initializeWhoView {
     _startingYPosition = 64;
     [self initializeBarAtTopWithText:@"GOING OUT"];
-
+    
     _startingYPosition -= 64;
     _tapArray = [[NSMutableArray alloc] initWithCapacity:0];
     _userTapArray = [[NSMutableArray alloc] initWithCapacity:0];
     _tapButtonArray = [[NSMutableArray alloc] initWithCapacity:0];
-    _indexOfImage = 1;
-    [self addImagesOfParty:_whoIsGoingOutParty];
+   
+    [self initializeCollectionView];
     
-    //HACK (May need to fix)
-    _startingYPosition += 26 + 5; //A quart of a photo image.
-    _startingYPosition -= 5;
-    [self initializeNotGoingOutBar];
-    
-    _indexOfImage = -1;
-    [self addImagesOfParty:_notGoingOutParty];
-    _shownImageNumber = 0;
-}
-
-- (void)addImagesOfParty:(Party *)party {
-    int NImages = 3;
-    int distanceOfEachImage = 4;
-    int totalDistanceOfAllImages = distanceOfEachImage * (NImages - 1); // 10 pts is the distance of each image
-    int sizeOfEachImage = self.view.frame.size.width - totalDistanceOfAllImages; // 10 pts on the extreme left and extreme right
-    sizeOfEachImage /= NImages;
-    int positionX = 0;
-    NSArray *userArray = [party getObjectArray];
-    for (int i = 0; i < [userArray count]; i++) {
-        int tag = _indexOfImage;
-        if (_indexOfImage > 0 ) {
-            _indexOfImage += 1;
-        }
-        else {
-            _indexOfImage -= 1;
-        }
-        User *user = [userArray objectAtIndex:i];
-        UIImageView *imgView = [[UIImageView alloc] init];
-        imgView.contentMode = UIViewContentModeScaleAspectFill;
-        imgView.clipsToBounds = YES;
-        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
-        imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
-        imgView.userInteractionEnabled = YES;
-        positionX += sizeOfEachImage + distanceOfEachImage;
-        if (i%(NImages) == (NImages -1)) { //If it's the last image in the row
-            _startingYPosition += sizeOfEachImage + 5; // 5 is the distance of the images on the bottom
-            positionX = 0;
-        }
-        else if (i == [userArray count] - 1) {
-            _startingYPosition += sizeOfEachImage + 5;
-        }
-        imgView.alpha = 1.0;
-        imgView.tag = tag;
-        [_scrollView addSubview:imgView];
-        
-        UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, imgView.frame.size.height * 0.5, imgView.frame.size.width, imgView.frame.size.height * 0.5)];
-        [profileButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
-        [imgView bringSubviewToFront:profileButton];
-        [imgView addSubview:profileButton];
-        
-        UIButton *buttonAtTop = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imgView.frame.size.width * 0.5, imgView.frame.size.height * 0.5)];
-        [buttonAtTop addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
-        [imgView bringSubviewToFront:buttonAtTop];
-        [imgView addSubview:buttonAtTop];
-        
-        UILabel *profileName = [[UILabel alloc] init];
-        profileName.text = [user firstName];
-        profileName.textColor = [UIColor whiteColor];
-        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-        profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 25, sizeOfEachImage, 25);
-        profileName.font = [FontProperties getSmallFont];
-        profileName.tag = -1;
-        [imgView addSubview:profileName];
-        
-        UIButton *tapButton = [[UIButton alloc] initWithFrame:CGRectMake(imgView.frame.size.width/2, 0, imgView.frame.size.width/2, imgView.frame.size.height/2)];
-        [tapButton addTarget:self action:@selector(selectedProfile:) forControlEvents:UIControlEventTouchUpInside];
-        [imgView bringSubviewToFront:tapButton];
-        [imgView addSubview:tapButton];
-        tapButton.enabled = NO;
-        tapButton.tag = tag;
-        [_tapButtonArray addObject:tapButton];
-        
-        UIImageViewShake *tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(imgView.frame.size.width - 30 - 5, 5, 30, 30)];
-        tappedImageView.tintColor = [FontProperties getOrangeColor];
-        tappedImageView.hidden = YES;
-        [imgView addSubview:tappedImageView];
-
-        [_userTapArray addObject:user];
-        [_tapArray addObject:tappedImageView];
-    }
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, MAX(_startingYPosition, self.view.frame.size.height + 100) + 26 + 5 + 64);
 }
 
 - (void) initializeBarAtTopWithText:(NSString *)textAtTop {
     if (!_barAtTopView) {
         _barAtTopView = [[UIView alloc] init];
         _barAtTopView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
-        [self.view bringSubviewToFront:_barAtTopView];
-       
-        _barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
-        _barAtTopLabel.text = textAtTop;
-        _barAtTopLabel.textAlignment = NSTextAlignmentLeft;
-        _barAtTopLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
-        [_barAtTopView addSubview:_barAtTopLabel];
+        
+        UILabel *barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
+        barAtTopLabel.text = textAtTop;
+        barAtTopLabel.textAlignment = NSTextAlignmentLeft;
+        barAtTopLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
+        [_barAtTopView addSubview:barAtTopLabel];
     }
     
     _barAtTopView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
@@ -434,7 +224,7 @@
     
     _notGoingOutView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
     [_notGoingOutView removeFromSuperview];
-    [_scrollView addSubview:_notGoingOutView];
+    [_collectionView addSubview:_notGoingOutView];
     _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
     _notGoingOutIsAttachedToScrollView = YES;
     _startingYPosition += 30;
@@ -605,7 +395,7 @@
     }
 }
 
-- (void)fetchedMyInfoOrPeoplesInfoOrTaps {
+- (void)fetchedMyInfoOrPeoplesInfo {
     _numberFetchedMyInfoAndEveryoneElse += 1;
     if (_numberFetchedMyInfoAndEveryoneElse == 2) {
         [self showTapButtons];
@@ -638,7 +428,8 @@
     for (UIImageViewShake *tappedImageView in _tapArray) {
         CGRect previousFrame = tappedImageView.frame;
         [_tapFrameArray addObject:[NSValue valueWithCGRect:previousFrame]];
-        tappedImageView.center = CGPointMake(self.view.center.x - tappedImageView.superview.frame.origin.x + _scrollView.contentOffset.x, self.view.center.y - tappedImageView.superview.frame.origin.y + _scrollView.contentOffset.y);
+        tappedImageView.center = self.view.center;
+//        tappedImageView.center = CGPointMake(self.view.center.x - tappedImageView.superview.frame.origin.x + _scrollView.contentOffset.x, self.view.center.y - tappedImageView.superview.frame.origin.y + _scrollView.contentOffset.y);
     }
 
     [UIView animateWithDuration:0.3
@@ -711,11 +502,11 @@
 
 #pragma mark - Refresh Control
 
-//- (void)addRefreshToSrollView {
-//    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-//    [refreshControl addTarget:self action:@selector(refreshPeople:) forControlEvents:UIControlEventValueChanged];
-//    [_scrollView addSubview:refreshControl];
-//}
+- (void)addRefreshToCollectonView{
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refreshPeople:) forControlEvents:UIControlEventValueChanged];
+    [_collectionView addSubview:refreshControl];
+}
 
 //- (void)refreshPeople:(UIRefreshControl *)refreshControl
 //{
@@ -739,6 +530,199 @@
 //    });
 //}
 
+#pragma mark - Collection view Data Source
+
+- (void) initializeCollectionView {
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    layout.minimumLineSpacing = 5;
+    layout.minimumInteritemSpacing = 4;
+    layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 30);
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64 + 30, self.view.frame.size.width, self.view.frame.size.height - 64 - 49 - 30) collectionViewLayout:layout];
+    _collectionView.dataSource = self;
+    _collectionView.delegate = self;
+    [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
+    _collectionView.backgroundColor = [UIColor clearColor];
+    [self.view addSubview:_collectionView];
+}
+
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    int hasNextPage = ([_everyoneParty hasNextPage] ? 1 : 0);
+    return 2 + hasNextPage;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return [[_whoIsGoingOutParty getObjectArray] count];
+    }
+    else if (section == 1) {
+        return [[_notGoingOutParty getObjectArray] count];
+    }
+    else {
+        return 1;
+    }
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+
+    NSArray *userArray;
+    if ([indexPath section] == 0) {
+         userArray = [_whoIsGoingOutParty getObjectArray];
+    }
+    else if ([indexPath section] == 1) {
+        userArray = [_notGoingOutParty getObjectArray];
+    }
+    else {
+        [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        [self fetchFollowers];
+        return cell;
+    }
+  
+    int tag = _indexOfImage;
+    if (_indexOfImage > 0 ) {
+        _indexOfImage += 1;
+    }
+    else {
+        _indexOfImage -= 1;
+    }
+    User *user = [userArray objectAtIndex:[indexPath row]];
+    UIImageView *imgView = [[UIImageView alloc] init];
+    imgView.contentMode = UIViewContentModeScaleAspectFill;
+    imgView.clipsToBounds = YES;
+    [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+    imgView.frame = CGRectMake(0, 0, cell.contentView.frame.size.width, cell.contentView.frame.size.height);
+    imgView.userInteractionEnabled = YES;
+    imgView.alpha = 1.0;
+    imgView.tag = tag;
+    [cell.contentView addSubview:imgView];
+    
+    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, imgView.frame.size.height * 0.5, imgView.frame.size.width, imgView.frame.size.height * 0.5)];
+    [profileButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
+    [imgView bringSubviewToFront:profileButton];
+    [imgView addSubview:profileButton];
+    
+    UIButton *buttonAtTop = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imgView.frame.size.width * 0.5, imgView.frame.size.height * 0.5)];
+    [buttonAtTop addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
+    [imgView bringSubviewToFront:buttonAtTop];
+    [imgView addSubview:buttonAtTop];
+    
+    UILabel *profileName = [[UILabel alloc] init];
+    profileName.text = [user firstName];
+    profileName.textColor = [UIColor whiteColor];
+    profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+    profileName.textAlignment = NSTextAlignmentCenter;
+    profileName.frame = CGRectMake(0, cell.contentView.frame.size.width - 25, cell.contentView.frame.size.width, 25);
+    profileName.font = [FontProperties getSmallFont];
+    profileName.tag = -1;
+    [imgView addSubview:profileName];
+    
+    UIButton *tapButton = [[UIButton alloc] initWithFrame:CGRectMake(imgView.frame.size.width/2, 0, imgView.frame.size.width/2, imgView.frame.size.height/2)];
+    [tapButton addTarget:self action:@selector(selectedProfile:) forControlEvents:UIControlEventTouchUpInside];
+    [imgView bringSubviewToFront:tapButton];
+    [imgView addSubview:tapButton];
+    tapButton.enabled = NO;
+    tapButton.tag = tag;
+    [_tapButtonArray addObject:tapButton];
+    
+    UIImageViewShake *tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(imgView.frame.size.width - 30 - 5, 5, 30, 30)];
+    tappedImageView.tintColor = [FontProperties getOrangeColor];
+    tappedImageView.hidden = YES;
+    [imgView addSubview:tappedImageView];
+    
+    [_userTapArray addObject:user];
+    [_tapArray addObject:tappedImageView];
+    
+    return cell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    int NImages = 3;
+    int distanceOfEachImage = 4;
+    int totalDistanceOfAllImages = distanceOfEachImage * (NImages - 1); // 10 pts is the distance of each image
+    int sizeOfEachImage = self.view.frame.size.width - totalDistanceOfAllImages; // 10 pts on the extreme left and extreme right
+    sizeOfEachImage /= NImages;
+    return CGSizeMake(sizeOfEachImage, sizeOfEachImage);
+}
+
+#pragma mark - Header for UICollectionView
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return CGSizeMake(0, 0);
+    } else if (section == 1){
+        return CGSizeMake(collectionView.bounds.size.width, 60);
+    }
+    else return CGSizeMake(0, 0);
+}
+
+
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
+    CGPoint notGoingOutPoint = [_notGoingOutView.superview convertPoint:_notGoingOutView.frame.origin toView:nil];
+    // Going Out Label
+    if (_goingOutIsAttachedToScrollView) {
+        if (_collectionView.contentOffset.y > 0) {
+            NSLog(@"jere");
+            [_barAtTopView removeFromSuperview];
+            _barAtTopView.frame = CGRectMake(0, 200, self.view.frame.size.width, 30);
+            [self.view addSubview:_barAtTopView];
+            [self.view bringSubviewToFront:_barAtTopView];
+            _goingOutIsAttachedToScrollView = NO;
+        }
+    }
+    if (!_goingOutIsAttachedToScrollView) {
+        if (notGoingOutPoint.y >= 64 + 30) { // add to the scroll view when
+            NSLog(@"jere2");
+            [_barAtTopView removeFromSuperview];
+            _barAtTopView.frame = CGRectMake(0, _notGoingOutView.frame.origin.y - 30, self.view.frame.size.width, 30);
+            [_collectionView addSubview:_barAtTopView];
+            _goingOutIsAttachedToScrollView = YES;
+        }
+        if ( _collectionView.contentOffset.y > 0) {
+            NSLog(@"jere3");
+//            [_barAtTopView removeFromSuperview];
+//            _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
+//            [_collectionView addSubview:_barAtTopView];
+//            _goingOutIsAttachedToScrollView = YES;
+        }
+    }
+    
+    // Not Going out label
+    if (_notGoingOutIsAttachedToScrollView) {
+        if (notGoingOutPoint.y <= 64) {
+            [_notGoingOutView removeFromSuperview];
+            _notGoingOutView.frame = CGRectMake(0, 64, self.view.frame.size.width, 30);
+            [self.view addSubview:_notGoingOutView];
+            _scrollViewPointWhenDeatached = _collectionView.contentOffset;
+            _notGoingOutIsAttachedToScrollView = NO;
+        }
+    }
+    if (!_notGoingOutIsAttachedToScrollView) {
+        if (_collectionView.contentOffset.y < _scrollViewPointWhenDeatached.y) {
+            [_notGoingOutView removeFromSuperview];
+            _notGoingOutView.frame = CGRectMake(0, _notGoingOutStartingPoint.y, self.view.frame.size.width, 30);
+            [_collectionView addSubview:_notGoingOutView];
+            _notGoingOutIsAttachedToScrollView = YES;
+        }
+    }
+}
+
+//- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+//{
+//    if (kind == UICollectionElementKindSectionHeader) {
+//
+//        UICollectionReusableView *reusableview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
+//
+//        if (reusableview==nil) {
+//            reusableview=[[UICollectionReusableView alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+//        }
+//        return reusableview;
+//    }
+//    return nil;
+//}
 
 
 @end
