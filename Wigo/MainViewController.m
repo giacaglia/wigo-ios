@@ -70,6 +70,10 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 
 @property NSNumber *page;
+@property UILabel *goingOutLabel;
+@property UILabel *goingOutLabelOnTopOfNotGoingOutLabel;
+@property UILabel *notGoingOutLabel;
+@property BOOL started;
 @end
 
 @implementation MainViewController
@@ -95,6 +99,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 }
 
 - (void)loadViewAfterSigningUser {
+    _started = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
     _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
     _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
@@ -178,10 +183,10 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 }
 
 - (void)initializeWhoView {
-    _startingYPosition = 64;
+    _startingYPosition = 0;
     [self initializeBarAtTopWithText:@"GOING OUT"];
     [self initializeNotGoingOutBar];
-    _startingYPosition -= 64;
+//    _startingYPosition -= 64;
     _tapArray = [[NSMutableArray alloc] initWithCapacity:0];
     _userTapArray = [[NSMutableArray alloc] initWithCapacity:0];
     _tapButtonArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -194,7 +199,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     if (!_barAtTopView) {
         _barAtTopView = [[UIView alloc] init];
         _barAtTopView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
-        
         UILabel *barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
         barAtTopLabel.text = textAtTop;
         barAtTopLabel.textAlignment = NSTextAlignmentLeft;
@@ -213,7 +217,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 - (void) initializeNotGoingOutBar {
     if (!_notGoingOutView) {
         _notGoingOutView = [[UIView alloc] init];
-        _notGoingOutView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
+        _notGoingOutView.backgroundColor = [UIColor whiteColor];
         [self.view bringSubviewToFront:_notGoingOutView];
         
         UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
@@ -223,10 +227,10 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
         [_notGoingOutView addSubview:goingOutLabel];
     }
     
-    _notGoingOutView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
-    [_notGoingOutView removeFromSuperview];
-    [_collectionView addSubview:_notGoingOutView];
-    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+//    _notGoingOutView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
+//    [_notGoingOutView removeFromSuperview];
+//    [_collectionView addSubview:_notGoingOutView];
+//    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
     _notGoingOutIsAttachedToScrollView = YES;
     _startingYPosition += 30;
 }
@@ -503,33 +507,25 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 #pragma mark - Refresh Control
 
-- (void)addRefreshToCollectonView{
+- (void)addRefreshToCollectonView {
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(refreshPeople:) forControlEvents:UIControlEventValueChanged];
     [_collectionView addSubview:refreshControl];
 }
 
-//- (void)refreshPeople:(UIRefreshControl *)refreshControl
-//{
-//    NSLog(@"Refreshed Data");
-//    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        
-//        [NSThread sleepForTimeInterval:3];
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-//            [formatter setDateFormat:@"MMM d, h:mm a"];
-//            NSString *lastUpdate = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
-//            
-//            refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdate];
-//            
-//            [refreshControl endRefreshing];
-//            
-//            NSLog(@"refresh end");
-//        });
-//    });
-//}
+- (void)refreshPeople:(UIRefreshControl *)refreshControl
+{
+    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"MMM d, h:mm a"];
+            NSString *lastUpdate = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
+            refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdate];
+            [refreshControl endRefreshing];
+        });
+    });
+}
 
 #pragma mark - Collection view Data Source
 
@@ -538,13 +534,13 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = 4;
     layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 30);
-    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64 + 30, self.view.frame.size.width, self.view.frame.size.height - 64 - 49 - 30) collectionViewLayout:layout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49) collectionViewLayout:layout];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
     [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier];
-
     _collectionView.backgroundColor = [UIColor clearColor];
+    [self addRefreshToCollectonView];
     [self.view addSubview:_collectionView];
 }
 
@@ -652,22 +648,58 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 }
 
 #pragma mark - Header for UICollectionView
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        return CGSizeMake(0, 0);
+        return CGSizeMake(collectionView.bounds.size.width, 30);
     } else if (section == 1){
-        return CGSizeMake(collectionView.bounds.size.width, 60);
+        return CGSizeMake(collectionView.bounds.size.width, 5 + 26 + 30);
     }
-    else return CGSizeMake(0, 0);
+    else return CGSizeMake(collectionView.bounds.size.width, 10);
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionReusableView *reusableView = nil;
+    
+    if (kind == UICollectionElementKindSectionHeader) {
+        reusableView = [_collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier forIndexPath:indexPath];
+        [[reusableView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        if ([indexPath section] == 0) {
+            _goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width, 30)];
+            _goingOutLabel.text = @"GOING OUT";
+            _goingOutLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
+            [reusableView addSubview:_goingOutLabel];
+        }
+        else if ([indexPath section] == 1) {
+            _goingOutLabelOnTopOfNotGoingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width, 30)];
+            _goingOutLabelOnTopOfNotGoingOutLabel.text = @"GOING OUT";
+            _goingOutLabelOnTopOfNotGoingOutLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
+            _goingOutLabelOnTopOfNotGoingOutLabel.hidden = YES;
+            [reusableView addSubview:_goingOutLabelOnTopOfNotGoingOutLabel];
+            
+            _notGoingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 30, self.view.frame.size.width, 30)];
+            _notGoingOutLabel.text = @"NOT GOING OUT YET";
+            _notGoingOutLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
+            [reusableView addSubview:_notGoingOutLabel];
+            _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 30, reusableView.frame.size.width, reusableView.frame.size.height);
+            _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+
+        }
+        return reusableView;
+    }
+    return reusableView;
 }
 
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
     CGPoint notGoingOutPoint = [_notGoingOutView.superview convertPoint:_notGoingOutView.frame.origin toView:nil];
+    NSLog(@"not going out point: %fson" , notGoingOutPoint.y);
     // Going Out Label
     if (_goingOutIsAttachedToScrollView) {
         if (_collectionView.contentOffset.y > 0) {
+            _goingOutLabelOnTopOfNotGoingOutLabel.hidden = YES;
             [_barAtTopView removeFromSuperview];
             _barAtTopView.frame = CGRectMake(0, 64, self.view.frame.size.width, 30);
             [self.view addSubview:_barAtTopView];
@@ -676,20 +708,24 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
         }
     }
     if (!_goingOutIsAttachedToScrollView) {
-        if (notGoingOutPoint.y >= 64 + 30) { // add to the scroll view when
-            NSLog(@"jere2");
+        if (notGoingOutPoint.y <= 64 + 30) { // add to the scroll view when
+            NSLog(@"allala");
+            _goingOutLabelOnTopOfNotGoingOutLabel.hidden = NO;
             [_barAtTopView removeFromSuperview];
-            _barAtTopView.frame = CGRectMake(0, _notGoingOutView.frame.origin.y - 30, self.view.frame.size.width, 30);
+            _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
             [_collectionView addSubview:_barAtTopView];
             _goingOutIsAttachedToScrollView = YES;
         }
         if ( _collectionView.contentOffset.y < 0) {
+            NSLog(@"jere");
+            _goingOutLabelOnTopOfNotGoingOutLabel.hidden = YES;
             [_barAtTopView removeFromSuperview];
             _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
             [_collectionView addSubview:_barAtTopView];
             _goingOutIsAttachedToScrollView = YES;
         }
     }
+    
     // Not Going out label
     if (_notGoingOutIsAttachedToScrollView) {
         if (notGoingOutPoint.y <= 64) {
@@ -710,26 +746,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     }
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
-    UICollectionReusableView *reusableView = nil;
-    
-    if (kind == UICollectionElementKindSectionHeader) {
-         reusableView = [_collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier forIndexPath:indexPath];
-        UILabel *lblHeader;
-        if ([indexPath section]== 0) {
-            lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
-        }
-        else if ([indexPath section] == 1) {
-            lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, self.view.frame.size.width, 30)];
-        }
-        lblHeader.backgroundColor = [UIColor redColor];
-        lblHeader.textColor = [UIColor redColor];
-        [reusableView addSubview:lblHeader];
-        return reusableView;
-    }
-    return reusableView;
-}
 
 
 @end
