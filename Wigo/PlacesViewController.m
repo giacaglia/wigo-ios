@@ -527,30 +527,6 @@
 
 #pragma mark - Network Asynchronous Functions
 
--(void)fetchEventSummaryAsynchronous {
-    _summaryArray = [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
-    // Pre-populate Array
-    for (int j = 0; j < [[_eventsParty getObjectArray] count]; j++) {
-        [_summaryArray addObject:[[NSDictionary alloc] init]];
-    }
-    for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
-        Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
-        NSNumber *eventId = [event eventID];
-        NSString *queryString = [NSString stringWithFormat:@"eventattendees/summary/?event=%@", [eventId stringValue]];
-        NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
-        [Network queryAsynchronousAPI:queryString
-                  withInputDictionary:(NSDictionary *)inputDictionary
-                          withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
-            if (jsonResponse) {
-                NSInteger indexOfEvent = [[resultInputDictionary objectForKey:@"i"] integerValue];
-                [_summaryArray insertObject:jsonResponse atIndex:indexOfEvent];
-                [_summaryArray removeObjectAtIndex:(indexOfEvent+1)];
-            }
-            [self fetchedOneParty];
-        }];
-    }
-}
-
 - (void)fetchEventAttendeesAsynchronous {
     _partyUserArray =  [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
     for (int j = 0; j < [[_eventsParty getObjectArray] count]; j++) {
@@ -591,6 +567,30 @@
                               [_partyUserArray removeObjectAtIndex:(indexOfEvent+1)];
                               [self fetchedOneParty];
         }];
+    }
+}
+
+-(void)fetchEventSummaryAsynchronous {
+    _summaryArray = [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
+    // Pre-populate Array
+    for (int j = 0; j < [[_eventsParty getObjectArray] count]; j++) {
+        [_summaryArray addObject:[[NSDictionary alloc] init]];
+    }
+    for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+        Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
+        NSNumber *eventId = [event eventID];
+        NSString *queryString = [NSString stringWithFormat:@"eventattendees/summary/?event=%@", [eventId stringValue]];
+        NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
+        [Network queryAsynchronousAPI:queryString
+                  withInputDictionary:(NSDictionary *)inputDictionary
+                          withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
+                              if (jsonResponse) {
+                                  NSInteger indexOfEvent = [[resultInputDictionary objectForKey:@"i"] integerValue];
+                                  [_summaryArray insertObject:jsonResponse atIndex:indexOfEvent];
+                                  [_summaryArray removeObjectAtIndex:(indexOfEvent+1)];
+                              }
+                              [self fetchedOneParty];
+                          }];
     }
 }
 

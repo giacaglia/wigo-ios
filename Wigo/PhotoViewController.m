@@ -66,7 +66,6 @@
     cancelButton.layer.borderColor = RGB(214, 45, 58).CGColor;
     cancelButton.layer.borderWidth = 0.5;
     [self.view addSubview:cancelButton];
-    
 }
 
 

@@ -67,7 +67,8 @@
 {
     [super viewDidLoad];
     _chosenFilter = 1;
-    _page = @0;
+    _page = @1;
+    _currentTab = @2;
     //Search Bar Setup
     _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
     _followersParty = [[Party alloc] initWithObjectName:@"User"];
@@ -306,7 +307,7 @@
         [_tableViewOfPeople reloadData];
     }
     else if ([_currentTab isEqualToNumber:@3]) {
-        _page = @0;
+        _page = @1;
         [self fetchFollowers];
     }
     else if ([_currentTab isEqualToNumber:@4]) {
@@ -316,7 +317,7 @@
             [_tableViewOfPeople reloadData];
         }
         else {
-            _page = @0;
+            _page = @1;
             _followingParty = [[Party alloc] initWithObjectName:@"User"];
             [self fetchFollowing];
         }
@@ -329,7 +330,6 @@
     NSString *queryString = [NSString stringWithFormat:@"users/?ordering=goingout&page=%@" ,[_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [_everyoneParty addMetaInfo:metaDictionary];

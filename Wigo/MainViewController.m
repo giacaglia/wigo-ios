@@ -97,7 +97,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
     _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
     
-    _page = @0;
+    _page = @1;
     
     [self fetchUserInfo];
     [self fetchFollowers];

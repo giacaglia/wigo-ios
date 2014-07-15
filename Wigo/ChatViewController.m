@@ -21,6 +21,7 @@
 
 @property UITableView *tableViewOfPeople;
 @property Party * messageParty;
+@property NSNumber *page;
 
 @end
 
@@ -29,6 +30,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self initializeTableOfChats];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -38,7 +40,10 @@
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"chatsSelected"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
-    [self loadMessages];
+    _page = @1;
+    _messageParty = [[Party alloc] initWithObjectName:@"Message"];
+
+    [self fetchMessages];
 }
 
 
@@ -61,15 +66,17 @@
     self.navigationItem.leftBarButtonItem = nil;
 }
 
-- (void)loadMessages {
+- (void)fetchMessages {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    [Network queryAsynchronousAPI:@"messages/summary/?to_user=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    NSString *queryString = [NSString stringWithFormat:@"messages/summary/?to_user=me&page=%@", [_page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView hideSpinnerForView:self.view];
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
-            _messageParty = [[Party alloc] initWithObjectName:@"Message"];
             [_messageParty addObjectsFromArray:arrayOfMessages];
-            [self initializeTableOfChats];
+            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+            [_messageParty addMetaInfo:metaDictionary];
+            [_tableViewOfPeople reloadData];
         });
     }];
 
@@ -82,15 +89,12 @@
 }
 
 - (void)initializeTableOfChats {
-    if (!_tableViewOfPeople) {
-        _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
-        _tableViewOfPeople.delegate = self;
-        _tableViewOfPeople.dataSource = self;
-        _tableViewOfPeople.backgroundColor = [UIColor clearColor];
-        _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-        [self.view addSubview:_tableViewOfPeople];
-    }
-    [_tableViewOfPeople reloadData];
+    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
+    _tableViewOfPeople.delegate = self;
+    _tableViewOfPeople.dataSource = self;
+    _tableViewOfPeople.backgroundColor = [UIColor clearColor];
+    _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:_tableViewOfPeople];
 }
 
 
@@ -101,20 +105,27 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[_messageParty getObjectArray] count];
+    int hasNextPage = ([_messageParty hasNextPage] ? 1 : 0);
+    return [[_messageParty getObjectArray] count] + hasNextPage;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
-    User *user = [message otherUser];
-    if (!user) {
-        user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
-    }
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
+    if ([indexPath row] == [[_messageParty getObjectArray] count]) {
+        [self fetchMessages];
+        return cell;
+    }
+    
+    Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
+    User *user = [message otherUser];
+    if (!user) {
+        user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
+    }
+
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;

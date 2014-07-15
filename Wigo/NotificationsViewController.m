@@ -35,7 +35,7 @@
     [super viewDidLoad];
     _everyoneParty = [Profile everyoneParty];
     _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
-    _page = @0;
+    _page = @1;
     [self initializeTableNotifications];
     [self fetchNotifications];
 }
