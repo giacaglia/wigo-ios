@@ -564,12 +564,14 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
         return cell;
     }
   
-    int tag = _indexOfImage;
-    if (_indexOfImage > 0 ) {
-        _indexOfImage += 1;
+    int tag;
+    if ([indexPath section] == 0) {
+        tag = [indexPath row];
+        tag += 1;
     }
-    else {
-        _indexOfImage -= 1;
+    else if ([indexPath section] == 1) {
+        tag = - [indexPath row];
+        tag -= 1;
     }
     User *user = [userArray objectAtIndex:[indexPath row]];
     UIImageView *imgView = [[UIImageView alloc] init];
