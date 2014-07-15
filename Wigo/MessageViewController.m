@@ -11,6 +11,7 @@
 #import "UIButtonAligned.h"
 #import "Profile.h"
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "Network.h"
 
 @interface MessageViewController ()
 
@@ -22,6 +23,9 @@
 // Table View
 @property UITableView *tableView;
 @property NSArray *contentList;
+@property NSNumber *page;
+@property Party *everyoneParty;
+
 @end
 
 @implementation MessageViewController
@@ -79,14 +83,35 @@
 }
 
 - (void) initializeTableListOfFriends {
-    Party *everyoneParty = [Profile everyoneParty];
-    [everyoneParty removeUser:[Profile user]];
-    _contentList = [everyoneParty getObjectArray];
+    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+    _page = @1;
+    [self fetchEveryone];
+
+    _contentList = [_everyoneParty getObjectArray];
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 108, self.view.frame.size.width, self.view.frame.size.height - 108)];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:_tableView];
+}
+
+#pragma Network Functions
+
+- (void) fetchEveryone {
+    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=goingout&page=%@" ,[_page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+        [_everyoneParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_everyoneParty addMetaInfo:metaDictionary];
+        [Profile setEveryoneParty:_everyoneParty];
+        [_everyoneParty removeUser:[Profile user]];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            _page = @([_page intValue] + 1);
+            _contentList = [_everyoneParty getObjectArray];
+            [_tableView reloadData];
+        });
+    }];
 }
 
 #pragma mark - Tablew View Data Source
@@ -96,16 +121,22 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_contentList count];
+    int hasNextPage = ([_everyoneParty hasNextPage] ? 1 : 0);
+    return [_contentList count] + hasNextPage;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    User *user = [_contentList objectAtIndex:[indexPath row]];
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
+    if ([indexPath row] == [_contentList count]) {
+        [self fetchEveryone];
+        return cell;
+    }
+    
+    User *user = [_contentList objectAtIndex:[indexPath row]];
+   
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
