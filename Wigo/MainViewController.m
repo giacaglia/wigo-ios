@@ -504,13 +504,8 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 - (void)refreshPeople:(UIRefreshControl *)refreshControl
 {
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"MMM d, h:mm a"];
-            NSString *lastUpdate = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
-            refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdate];
             [refreshControl endRefreshing];
         });
     });

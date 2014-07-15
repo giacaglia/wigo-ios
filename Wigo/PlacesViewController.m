@@ -61,6 +61,8 @@
 // Go OUT Button
 @property UIButtonUngoOut *ungoOutButton;
 
+@property NSNumber *page;
+
 @end
 
 @implementation PlacesViewController {
@@ -74,21 +76,29 @@
 
     [self initializeNotificationObservers];
     [self initializeTapHandler];
-    [self loadEvents];
+    [self fetchEventsFirstPage];
 }
 
-- (void) loadEvents {
+- (void) fetchEventsFirstPage {
+    _page = @1;
+    _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
+    [self fetchEvents];
+}
+
+- (void) fetchEvents {
     _everyoneParty = [Profile everyoneParty];
     numberOfFetchedParties = 0;
-
     [WiGoSpinnerView showBlueSpinnerAddedTo:self.view];
-    [Network queryAsynchronousAPI:@"events/?date=tonight" withHandler:^(NSDictionary *jsonRespone, NSError *error) {
-        NSArray *events = [jsonRespone objectForKey:@"objects"];
-        _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
+    NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@", [_page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *events = [jsonResponse objectForKey:@"objects"];
         [_eventsParty addObjectsFromArray:events];
-
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_eventsParty addMetaInfo:metaDictionary];
+        
         [self fetchEventAttendeesAsynchronous];
         [self fetchEventSummaryAsynchronous];
+        _page = @([_page intValue] + 1);
         if ([events count] == 0) {
             [self fetchedOneParty];
         }
@@ -141,8 +151,7 @@
     [_placesTableView reloadData];
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"PLACES";
-
-    [self loadEvents];
+    [self fetchEventsFirstPage];
 }
 
 - (void) updatedTitleViewForGoingOut {
@@ -204,7 +213,7 @@
     UIButton *buttonSender = (UIButton *)sender;
     [[Profile user] setEventID:[NSNumber numberWithInt:buttonSender.tag]];
     [Network postGoingToEventNumber:buttonSender.tag];
-    [self loadEvents];
+    [self fetchEventsFirstPage];
 }
 
 - (void)initializeGoingSomewhereElseButton {
@@ -333,7 +342,7 @@
     [profileUser setIsGoingOut:YES];
     [Profile setUser:profileUser];
     [self updatedTitleViewForGoingOut];
-    [self loadEvents];
+    [self fetchEventsFirstPage];
     [self dismissKeyboard];
 }
 
@@ -382,7 +391,8 @@
         return [_filteredContentList count];
     }
     else {
-        return [_contentList count] + 1;
+        int hasNextPage = ([_eventsParty hasNextPage] ? 1 : 0);
+        return [_contentList count] + 1 + hasNextPage;
         
     }
 }
@@ -403,6 +413,10 @@
     else {
         if (indexPath.row == [_contentList count]) {
             [cell.contentView addSubview:_goingSomewhereButton];
+            return cell;
+        }
+        else if (indexPath.row == [_contentList count] + 1) {
+            [self fetchEvents];
             return cell;
         }
     }
@@ -614,21 +628,15 @@
 
 - (void)refreshEvents:(UIRefreshControl *)refreshControl
 {
-    [self loadEvents];
-    refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:@"Refreshing data..."];
+    [self fetchEventsFirstPage];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"MMM d, h:mm a"];
-            NSString *lastUpdate = [NSString stringWithFormat:@"Last updated on %@", [formatter stringFromDate:[NSDate date]]];
-
-            refreshControl.attributedTitle = [[NSAttributedString alloc] initWithString:lastUpdate];
-
             [refreshControl endRefreshing];
             
         });
     });
 }
+
 
 
 
