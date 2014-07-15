@@ -7,22 +7,18 @@
 //
 
 #import "PlacesViewController.h"
-#import "FontProperties.h"
-#import "Profile.h"
-#import <QuartzCore/QuartzCore.h>
+#import "Globals.h"
 #import "RWBlurPopover.h"
-#define xSpacing 10
-#define sizeOfEachCell 125
 
 //View Extensions
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
-#import "Party.h"
-#import "Event.h"
-#import "Network.h"
-
+//Image Load
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"
+
+#define xSpacing 10
+#define sizeOfEachCell 125
 
 @interface PlacesViewController ()
 

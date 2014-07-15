@@ -8,8 +8,7 @@
 
 #import "FacebookImagesViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-#import "Profile.h"
-#import "User.h"
+#import "Globals.h"
 
 @interface FacebookImagesViewController ()
 @property NSString *profilePicturesAlbumId;

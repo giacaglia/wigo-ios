@@ -7,12 +7,9 @@
 //
 
 #import "PeopleViewController.h"
-#import "FontProperties.h"
+#import "Globals.h"
 #import "ProfileViewController.h"
 #import "UIButtonAligned.h"
-#import "Profile.h"
-#import "Network.h"
-#import <QuartzCore/QuartzCore.h>
 #import "SDWebImage/UIImageView+WebCache.h"
 
 @interface PeopleViewController ()

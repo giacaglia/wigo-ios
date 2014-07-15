@@ -7,13 +7,12 @@
 //
 
 #import "EditProfileViewController.h"
-#import "FontProperties.h"
+#import "Globals.h"
+
 #import "UIButtonAligned.h"
-#import "Profile.h"
 #import "RWBlurPopover.h"
 #import "WiGoSpinnerView.h"
 #import "SDWebImage/UIImageView+WebCache.h"
-#import <QuartzCore/QuartzCore.h>
 
 @interface EditProfileViewController ()
 

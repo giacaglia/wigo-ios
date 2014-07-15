@@ -7,12 +7,10 @@
 //
 
 #import "ChatViewController.h"
-#import "FontProperties.h"
-#import <QuartzCore/QuartzCore.h>
+#import "Globals.h"
+
 #import "UIButtonAligned.h"
 
-#import "Message.h"
-#import "Network.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"

@@ -7,11 +7,9 @@
 //
 
 #import "ConversationViewController.h"
-#import "FontProperties.h"
+#import "Globals.h"
 #import "UIButtonAligned.h"
-#import <QuartzCore/QuartzCore.h>
-#import "Network.h"
-#import "Party.h"
+
 
 @interface ConversationViewController ()
 

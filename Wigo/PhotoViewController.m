@@ -7,9 +7,7 @@
 //
 
 #import "PhotoViewController.h"
-#import "Profile.h"
-#import "FontProperties.h"
-#import <QuartzCore/QuartzCore.h>
+#import "Globals.h"
 #import "RWBlurPopover.h"
 #import "SDWebImage/UIImageView+WebCache.h"
 

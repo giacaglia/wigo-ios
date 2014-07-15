@@ -7,11 +7,10 @@
 //
 
 #import "ProfileViewController.h"
-#import "FontProperties.h"
-#import <QuartzCore/QuartzCore.h>
+#import "Globals.h"
+
 #import "UIButtonAligned.h"
 #import "UIPageControlAligned.h"
-#import "Profile.h"
 #import "UIImageCrop.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"

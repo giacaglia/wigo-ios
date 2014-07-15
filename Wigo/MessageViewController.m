@@ -7,11 +7,10 @@
 //
 
 #import "MessageViewController.h"
-#import "FontProperties.h"
+#import "Globals.h"
+
 #import "UIButtonAligned.h"
-#import "Profile.h"
 #import "SDWebImage/UIImageView+WebCache.h"
-#import "Network.h"
 
 @interface MessageViewController ()
 

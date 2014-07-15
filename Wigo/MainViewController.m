@@ -4,21 +4,15 @@
 //  Created by Giuliano Giacaglia on 28/6/13.
 
 // Font
-#import "FontProperties.h"
 
 #import "MainViewController.h"
-#import <QuartzCore/QuartzCore.h>
+#import "Globals.h"
 
 #import "UIImageViewShake.h"
 
 // Extensions
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
-
-#import "Profile.h"
-#import "User.h"
-#import "Party.h"
-#import "Network.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"
@@ -31,13 +25,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 // Properties shared by Who and Where View
 @property BOOL isGoingOut;
 
-
-// Tap Array (First object tag is 2)
-@property NSMutableArray *tapArray;
-@property NSMutableArray *userTapArray;
-@property NSMutableArray *tapButtonArray;
-@property int indexOfImage;
-@property NSMutableArray *tapFrameArray;
 
 // Bar at top
 @property UIView *barAtTopView;
@@ -93,14 +80,9 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 - (void)loadViewAfterSigningUser {
     _started = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
-    _followingAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
-    _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-    _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-    
-    _page = @1;
-    
+
+    [self fetchFollowingFirstPage];
     [self fetchUserInfo];
-    [self fetchFollowers];
 }
 
 #pragma mark - Fetch Data
@@ -118,7 +100,15 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     }];
 }
 
-- (void)fetchFollowers {
+- (void)fetchFollowingFirstPage {
+    _page = @1;
+    _followingAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
+    _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+    _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+    [self fetchFollowing];
+}
+
+- (void)fetchFollowing {
     NSString *queryString = [NSString stringWithFormat:@"users/?user=friends&ordering=goingout&page=%@", [_page stringValue]];
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
@@ -127,7 +117,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [_followingAcceptedParty addMetaInfo:metaDictionary];
         [Profile setFollowingParty:_followingAcceptedParty];
-    
+        
         User *user;
         for (int i = 0; i < [arrayOfUsers count]; i++) {
             NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];
@@ -143,9 +133,10 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
             [WiGoSpinnerView hideSpinnerForView:self.view];
             _page = @([_page intValue] + 1);
             [_collectionView reloadData];
+            [self.view bringSubviewToFront:_barAtTopView];
             [self fetchedMyInfoOrPeoplesInfo];
         });
-
+        
     }];
 }
 
@@ -166,24 +157,28 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 - (void) updateViewNotGoingOut {
     [self updateTitleView];
-    for (int i = 0; i < [_tapArray count]; i++) {
-        UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
+    
+    for (int i = 0; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
+        User *user = [self getUserForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+        UIImageViewShake *tappedImageView = [user objectForKey:@"tappedImageView"];
         tappedImageView.hidden = YES;
-        UIButton *tapButton = [_tapButtonArray objectAtIndex:i];
+        UIButton *tapButton = [user objectForKey:@"tapButton"];
         tapButton.enabled = NO;
     }
+    
+    for (int i = 0; i < [[_notGoingOutParty getObjectArray] count]; i++) {
+        User *user = [self getUserForIndexPath:[NSIndexPath indexPathForRow:i inSection:1]];
+        UIImageViewShake *tappedImageView =  [user objectForKey:@"tappedImageView"];
+        tappedImageView.hidden = YES;
+        UIButton *tapButton = [user objectForKey:@"tapButton"];
+        tapButton.enabled = NO;    }
+    
 }
 
 - (void)initializeWhoView {
     [self initializeBarAtTopWithText:@"GOING OUT"];
     [self initializeNotGoingOutBar];
-//    _startingYPosition -= 64;
-    _tapArray = [[NSMutableArray alloc] initWithCapacity:0];
-    _userTapArray = [[NSMutableArray alloc] initWithCapacity:0];
-    _tapButtonArray = [[NSMutableArray alloc] initWithCapacity:0];
-   
     [self initializeCollectionView];
-    
 }
 
 - (void) initializeBarAtTopWithText:(NSString *)textAtTop {
@@ -197,9 +192,9 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
         [_barAtTopView addSubview:barAtTopLabel];
     }
     
-    _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
-    [_barAtTopView removeFromSuperview];
-     [self.view addSubview:_barAtTopView];
+    _barAtTopView.frame = CGRectMake(0, 64, self.view.frame.size.width, 30);
+    [self.view addSubview:_barAtTopView];
+    [self.view bringSubviewToFront:_barAtTopView];
     _barAtTopPoint = _barAtTopView.frame.origin;
     _goingOutIsAttachedToScrollView = NO;
 }
@@ -217,10 +212,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
         [_notGoingOutView addSubview:goingOutLabel];
     }
     
-//    _notGoingOutView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
-//    [_notGoingOutView removeFromSuperview];
-//    [_collectionView addSubview:_notGoingOutView];
-//    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
     _notGoingOutIsAttachedToScrollView = YES;
 }
 
@@ -249,7 +240,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     UIButtonAligned *rightButton = [[UIButtonAligned alloc] initWithFrame: CGRectMake(0, 0, 31, 22) andType:@3];
     [rightButton setBackgroundImage:[UIImage imageNamed:@"plusPerson"] forState:UIControlStateNormal];
     [rightButton addTarget:self action:@selector(followPressed)
-            forControlEvents:UIControlEventTouchUpInside];
+          forControlEvents:UIControlEventTouchUpInside];
     [rightButton setShowsTouchWhenHighlighted:YES];
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     self.navigationItem.rightBarButtonItem = rightBarButton;
@@ -259,13 +250,13 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 - (void) showTapButtons {
     if ([[Profile user] isGoingOut]) {
-        for (int i = 0; i < [_tapArray count]; i++) {
-            UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
+        
+        for (int i = 0; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
+            User *user = [self getUserForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            UIImageViewShake *tappedImageView =  [user objectForKey:@"tappedImageView"];
             tappedImageView.hidden = NO;
-            UIButton *tapButton = [_tapButtonArray objectAtIndex:i];
+            UIButton *tapButton = [user objectForKey:@"tapButton"];
             tapButton.enabled = YES;
-            
-            User *user = [_userTapArray objectAtIndex:i];
             if ([user isTapped]) {
                 tappedImageView.tag = -1;
                 tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
@@ -274,8 +265,43 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
                 tappedImageView.tag = 1;
                 tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
             }
-            
         }
+        
+        for (int i = 0; i < [[_notGoingOutParty getObjectArray] count]; i++) {
+            User *user = [self getUserForIndexPath:[NSIndexPath indexPathForRow:i inSection:1]];
+            UIImageViewShake *tappedImageView =  [user objectForKey:@"tappedImageView"];
+            tappedImageView.hidden = NO;
+            UIButton *tapButton = [user objectForKey:@"tapButton"];
+            tapButton.enabled = YES;
+            if ([user isTapped]) {
+                tappedImageView.tag = -1;
+                tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
+            }
+            else {
+                tappedImageView.tag = 1;
+                tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+            }
+        }
+    }
+}
+
+- (User *)getUserForIndexPath:(NSIndexPath *)indexPath {
+    User *user = [[User alloc] init];
+    if ([indexPath section] == 0) {
+        user = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:[indexPath row]];
+    }
+    else if ([indexPath section] ==1) {
+        user = [[_notGoingOutParty getObjectArray] objectAtIndex:[indexPath row]];
+    }
+    return user;
+}
+
+- (void)setUser:(User *)user ForIndexPath:(NSIndexPath *)indexPath {
+    if ([indexPath section] == 0) {
+        [_whoIsGoingOutParty replaceObjectAtIndex:[indexPath row] withObject:user];
+    }
+    else if ([indexPath section] ==1) {
+        [_notGoingOutParty replaceObjectAtIndex:[indexPath row] withObject:user];
     }
 }
 
@@ -295,7 +321,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     UIImageView* superview = (UIImageView *)[sender superview];
     int tag = superview.tag;
     User *user;
-
+    
     if (tag < 0) {
         tag = -tag;
         tag -= 1;
@@ -342,7 +368,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     [Profile setUser:profileUser];
     [self updateTitleView];
     [self showTapButtons];
-    [self animationShowingTapIcons];
+//    [self animationShowingTapIcons];
     [Network postGoOut];
 }
 
@@ -351,12 +377,13 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     UIButton *buttonSender = (UIButton *)sender;
     int tag = buttonSender.tag;
     UIImageView *imageView = (UIImageView *)[buttonSender superview];
-
+    
     for (UIView *subview in imageView.subviews)
     {
         if (subview.tag == 1) {
             if ([subview isMemberOfClass:[UIImageViewShake class]]) {
-                UIImageView *imageView = (UIImageView *)subview;
+                UIImageViewShake *imageView = (UIImageViewShake *)subview;
+                [imageView newShake];
                 imageView.image = [UIImage imageNamed:@"tapFilled"];
                 subview.tag = -1;
                 [self sendTapToUserWithTag:tag];
@@ -370,7 +397,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
             }
         }
     }
-
+    
 }
 
 - (void) sendTapToUserWithTag:(int)tag {
@@ -399,100 +426,102 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 #pragma mark - Animation
 
-- (void) animationShowingTapIcons {
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-    UIImageView *orangeTapImgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeTap"]];
-    orangeTapImgView.frame = CGRectMake(0, 0, 30, 30);
-    orangeTapImgView.center = self.view.center;
-    orangeTapImgView.alpha = 1.0;
-    [self.view addSubview:orangeTapImgView];
-    
-    UILabel *tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(100 - 70, 100 - 60, 140, 120)];
-    tapLabel.text = @"TAP PEOPLE YOU WANT TO SEE OUT";
-    tapLabel.textAlignment = NSTextAlignmentCenter;
-    tapLabel.numberOfLines = 0;
-    tapLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    tapLabel.font = [FontProperties getBigButtonFont];
-    tapLabel.textColor = [UIColor whiteColor];
-    tapLabel.alpha = 0;
-    [orangeTapImgView addSubview:tapLabel];
-    
-    // Center the Taps in the center.
-    _tapFrameArray = [[NSMutableArray alloc] initWithCapacity:0];
-    for (UIImageViewShake *tappedImageView in _tapArray) {
-        CGRect previousFrame = tappedImageView.frame;
-        [_tapFrameArray addObject:[NSValue valueWithCGRect:previousFrame]];
-        tappedImageView.center = self.view.center;
-//        tappedImageView.center = CGPointMake(self.view.center.x - tappedImageView.superview.frame.origin.x + _scrollView.contentOffset.x, self.view.center.y - tappedImageView.superview.frame.origin.y + _scrollView.contentOffset.y);
-    }
-
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         orangeTapImgView.alpha = 0.7;
-                         orangeTapImgView.frame = CGRectMake(self.view.center.x - 2.5, self.view.center.y - 2.5, 5, 5);
-                     }
-                     completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         orangeTapImgView.alpha = 0.85;
-                         orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y  - 125, 250, 250);
-                     }
-                     completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         orangeTapImgView.frame = CGRectMake(self.view.center.x - 100, self.view.center.y  - 100, 200, 200);
-                     }
-                     completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         orangeTapImgView.alpha = 1.0;
-                         tapLabel.alpha = 1.0;
-                     }
-                     completion:^(BOOL finished) {
-    [UIView animateWithDuration:1.6 delay:0.4 options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-                         orangeTapImgView.alpha = 0.5;
-                         orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y - 125, 250, 250);
-                         tapLabel.frame = CGRectMake(125 - 70, 125 - 60, 140, 120);
-                     }
-                     completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.4
-                     animations:^{
-                         orangeTapImgView.alpha = 0.2;
-                         orangeTapImgView.frame = CGRectMake(self.view.center.x - 10, self.view.center.y - 10, 10, 10);
-                         tapLabel.frame = CGRectMake(10 - 5, 10 - 4, 5, 4);
-                     }
-                     completion:^(BOOL finished){
-    [UIView animateWithDuration:0.1
-                     animations:^{
-                         orangeTapImgView.alpha = 0;
-                         orangeTapImgView.frame = CGRectMake(self.view.center.x - 40, self.view.center.y - 40, 80, 80);
-                     }
-                     completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.3
-                     animations:^{
-                         for (int i = 0; i <[_tapArray count]; i++) {
-                             UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
-                             tappedImageView.hidden = NO;
-                             UIButton *tapButton = [_tapButtonArray objectAtIndex:i];
-                             tapButton.enabled = YES;
-                             
-                             CGRect previousFrame = [[_tapFrameArray objectAtIndex:i] CGRectValue];
-                             tappedImageView.frame = previousFrame;
-                             [tappedImageView newShake];
-                         }
-                     }
-                     completion:^(BOOL finised) {
-                         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-    }];
-    }];
-    }];
-    }];
-    }];
-    }];
-    }];
-    }];
-}
+//- (void) animationShowingTapIcons {
+//    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+//    UIImageView *orangeTapImgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeTap"]];
+//    orangeTapImgView.frame = CGRectMake(0, 0, 30, 30);
+//    orangeTapImgView.center = self.view.center;
+//    orangeTapImgView.alpha = 1.0;
+//    [self.view addSubview:orangeTapImgView];
+//    
+//    UILabel *tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(100 - 70, 100 - 60, 140, 120)];
+//    tapLabel.text = @"TAP PEOPLE YOU WANT TO SEE OUT";
+//    tapLabel.textAlignment = NSTextAlignmentCenter;
+//    tapLabel.numberOfLines = 0;
+//    tapLabel.lineBreakMode = NSLineBreakByWordWrapping;
+//    tapLabel.font = [FontProperties getBigButtonFont];
+//    tapLabel.textColor = [UIColor whiteColor];
+//    tapLabel.alpha = 0;
+//    [orangeTapImgView addSubview:tapLabel];
+//    
+//    // Center the Taps in the center.
+//    _tapFrameArray = [[NSMutableArray alloc] initWithCapacity:0];
+//    
+//    for (UIImageViewShake *tappedImageView in _tapArray) {
+//        CGRect previousFrame = tappedImageView.frame;
+//        [_tapFrameArray addObject:[NSValue valueWithCGRect:previousFrame]];
+//        tappedImageView.center = self.view.center;
+//        //        tappedImageView.center = CGPointMake(self.view.center.x - tappedImageView.superview.frame.origin.x + _scrollView.contentOffset.x, self.view.center.y - tappedImageView.superview.frame.origin.y + _scrollView.contentOffset.y);
+//    }
+//    
+//    
+//    [UIView animateWithDuration:0.3
+//                     animations:^{
+//                         orangeTapImgView.alpha = 0.7;
+//                         orangeTapImgView.frame = CGRectMake(self.view.center.x - 2.5, self.view.center.y - 2.5, 5, 5);
+//                     }
+//                     completion:^(BOOL finished) {
+//                         [UIView animateWithDuration:0.3
+//                                          animations:^{
+//                                              orangeTapImgView.alpha = 0.85;
+//                                              orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y  - 125, 250, 250);
+//                                          }
+//                                          completion:^(BOOL finished) {
+//                                              [UIView animateWithDuration:0.3
+//                                                               animations:^{
+//                                                                   orangeTapImgView.frame = CGRectMake(self.view.center.x - 100, self.view.center.y  - 100, 200, 200);
+//                                                               }
+//                                                               completion:^(BOOL finished) {
+//                                                                   [UIView animateWithDuration:0.3
+//                                                                                    animations:^{
+//                                                                                        orangeTapImgView.alpha = 1.0;
+//                                                                                        tapLabel.alpha = 1.0;
+//                                                                                    }
+//                                                                                    completion:^(BOOL finished) {
+//                                                                                        [UIView animateWithDuration:1.6 delay:0.4 options:UIViewAnimationOptionCurveEaseIn
+//                                                                                                         animations:^{
+//                                                                                                             orangeTapImgView.alpha = 0.5;
+//                                                                                                             orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y - 125, 250, 250);
+//                                                                                                             tapLabel.frame = CGRectMake(125 - 70, 125 - 60, 140, 120);
+//                                                                                                         }
+//                                                                                                         completion:^(BOOL finished) {
+//                                                                                                             [UIView animateWithDuration:0.4
+//                                                                                                                              animations:^{
+//                                                                                                                                  orangeTapImgView.alpha = 0.2;
+//                                                                                                                                  orangeTapImgView.frame = CGRectMake(self.view.center.x - 10, self.view.center.y - 10, 10, 10);
+//                                                                                                                                  tapLabel.frame = CGRectMake(10 - 5, 10 - 4, 5, 4);
+//                                                                                                                              }
+//                                                                                                                              completion:^(BOOL finished){
+//                                                                                                                                  [UIView animateWithDuration:0.1
+//                                                                                                                                                   animations:^{
+//                                                                                                                                                       orangeTapImgView.alpha = 0;
+//                                                                                                                                                       orangeTapImgView.frame = CGRectMake(self.view.center.x - 40, self.view.center.y - 40, 80, 80);
+//                                                                                                                                                   }
+//                                                                                                                                                   completion:^(BOOL finished) {
+//                                                                                                                                                       [UIView animateWithDuration:0.3
+//                                                                                                                                                                        animations:^{
+//                                                                                                                                                                            for (int i = 0; i <[_tapArray count]; i++) {
+//                                                                                                                                                                                UIImageViewShake *tappedImageView = [_tapArray objectAtIndex:i];
+//                                                                                                                                                                                tappedImageView.hidden = NO;
+//                                                                                                                                                                                UIButton *tapButton = [_tapButtonArray objectAtIndex:i];
+//                                                                                                                                                                                tapButton.enabled = YES;
+//                                                                                                                                                                                
+//                                                                                                                                                                                CGRect previousFrame = [[_tapFrameArray objectAtIndex:i] CGRectValue];
+//                                                                                                                                                                                tappedImageView.frame = previousFrame;
+//                                                                                                                                                                                [tappedImageView newShake];
+//                                                                                                                                                                            }
+//                                                                                                                                                                        }
+//                                                                                                                                                                        completion:^(BOOL finised) {
+//                                                                                                                                                                            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+//                                                                                                                                                                        }];
+//                                                                                                                                                   }];
+//                                                                                                                              }];
+//                                                                                                         }];
+//                                                                                    }];
+//                                                               }];
+//                                          }];
+//                     }];
+//}
 
 #pragma mark - Refresh Control
 
@@ -550,20 +579,20 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-
+    
     NSArray *userArray;
     if ([indexPath section] == 0) {
-         userArray = [_whoIsGoingOutParty getObjectArray];
+        userArray = [_whoIsGoingOutParty getObjectArray];
     }
     else if ([indexPath section] == 1) {
         userArray = [_notGoingOutParty getObjectArray];
     }
     else {
         [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        [self fetchFollowers];
+        [self fetchFollowing];
         return cell;
     }
-  
+    
     int tag;
     if ([indexPath section] == 0) {
         tag = [indexPath row];
@@ -574,6 +603,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
         tag -= 1;
     }
     User *user = [userArray objectAtIndex:[indexPath row]];
+    
     UIImageView *imgView = [[UIImageView alloc] init];
     imgView.contentMode = UIViewContentModeScaleAspectFill;
     imgView.clipsToBounds = YES;
@@ -608,17 +638,25 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     [tapButton addTarget:self action:@selector(selectedProfile:) forControlEvents:UIControlEventTouchUpInside];
     [imgView bringSubviewToFront:tapButton];
     [imgView addSubview:tapButton];
-    tapButton.enabled = NO;
+    tapButton.enabled = [[Profile user] isGoingOut] ? YES : NO;
     tapButton.tag = tag;
-    [_tapButtonArray addObject:tapButton];
     
     UIImageViewShake *tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(imgView.frame.size.width - 30 - 5, 5, 30, 30)];
     tappedImageView.tintColor = [FontProperties getOrangeColor];
-    tappedImageView.hidden = YES;
+    tappedImageView.hidden = [[Profile user] isGoingOut] ? NO : YES;
+    if ([user isTapped]) {
+        tappedImageView.tag = -1;
+        tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
+    }
+    else {
+        tappedImageView.tag = 1;
+        tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+    }
     [imgView addSubview:tappedImageView];
     
-    [_userTapArray addObject:user];
-    [_tapArray addObject:tappedImageView];
+    [user setObject:tapButton forKey:@"tapButton"];
+    [user setObject:tappedImageView forKey:@"tappedImageView"];
+    [self setUser:user ForIndexPath:indexPath];
     
     return cell;
 }
@@ -652,26 +690,12 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     if (kind == UICollectionElementKindSectionHeader) {
         reusableView = [_collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier forIndexPath:indexPath];
         [[reusableView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        if ([indexPath section] == 0) {
-            _goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width, 30)];
-            _goingOutLabel.text = @"GOING OUT";
-            _goingOutLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
-            [reusableView addSubview:_goingOutLabel];
-        }
-        else if ([indexPath section] == 1) {
-            _goingOutLabelOnTopOfNotGoingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width, 30)];
-            _goingOutLabelOnTopOfNotGoingOutLabel.text = @"GOING OUT";
-            _goingOutLabelOnTopOfNotGoingOutLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
-            _goingOutLabelOnTopOfNotGoingOutLabel.hidden = YES;
-            [reusableView addSubview:_goingOutLabelOnTopOfNotGoingOutLabel];
-            
-            _notGoingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 30, self.view.frame.size.width, 30)];
-            _notGoingOutLabel.text = @"NOT GOING OUT YET";
-            _notGoingOutLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
-            [reusableView addSubview:_notGoingOutLabel];
-            _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 30, reusableView.frame.size.width, reusableView.frame.size.height);
-            _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
 
+        if ([indexPath section] == 1) {
+            _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 5 + 30, reusableView.frame.size.width, 30);
+            [_collectionView addSubview:_notGoingOutView];
+            _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+            
         }
         return reusableView;
     }
@@ -681,7 +705,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
     CGPoint notGoingOutPoint = [_notGoingOutView.superview convertPoint:_notGoingOutView.frame.origin toView:nil];
-    NSLog(@"not going out point: %fson" , notGoingOutPoint.y);
+    
     // Going Out Label
     if (_goingOutIsAttachedToScrollView) {
         if (_collectionView.contentOffset.y > 0) {
@@ -695,7 +719,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     }
     if (!_goingOutIsAttachedToScrollView) {
         if (notGoingOutPoint.y <= 64 + 30) { // add to the scroll view when
-            NSLog(@"allala");
             _goingOutLabelOnTopOfNotGoingOutLabel.hidden = NO;
             [_barAtTopView removeFromSuperview];
             _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
@@ -703,7 +726,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
             _goingOutIsAttachedToScrollView = YES;
         }
         if ( _collectionView.contentOffset.y < 0) {
-            NSLog(@"jere");
             _goingOutLabelOnTopOfNotGoingOutLabel.hidden = YES;
             [_barAtTopView removeFromSuperview];
             _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);

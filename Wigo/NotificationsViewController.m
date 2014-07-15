@@ -7,10 +7,7 @@
 //
 
 #import "NotificationsViewController.h"
-#import "FontProperties.h"
-#import <QuartzCore/QuartzCore.h>
-#import "Network.h"
-#import "Party.h"
+#import "Globals.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"

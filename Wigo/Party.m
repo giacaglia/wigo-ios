@@ -134,6 +134,10 @@
     [self.objectArray exchangeObjectAtIndex:idx1 withObjectAtIndex:idx2];
 }
 
+- (void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject {
+    [self.objectArray replaceObjectAtIndex:index withObject:anObject];
+}
+
 #pragma mark - Pagination Control
 
 // Pagination control

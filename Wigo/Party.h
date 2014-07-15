@@ -32,6 +32,7 @@
 - (BOOL)containsObject:(NSMutableDictionary *)otherObjectDictionary;
 - (void)removeUser:(User*)newUser;
 - (void)exchangeObjectAtIndex:(NSUInteger)idx1 withObjectAtIndex:(NSUInteger)idx2;
+- (void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject;
 
 // Pagination control
 - (BOOL)hasNextPage;
