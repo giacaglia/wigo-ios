@@ -40,6 +40,8 @@
 @property Party *notAcceptedFollowingParty;
 @property Party *followersParty;
 
+@property NSNumber *page;
+@property NSNumber *currentTab;
 @end
 
 @implementation PeopleViewController
@@ -65,10 +67,10 @@
 {
     [super viewDidLoad];
     _chosenFilter = 1;
-    
+    _page = @0;
     //Search Bar Setup
-    _everyoneParty = [Profile everyoneParty];
-    [_everyoneParty removeUser:[Profile user]];
+    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+    _followersParty = [[Party alloc] initWithObjectName:@"User"];
     _followingParty = [Profile followingParty];
     _notAcceptedFollowingParty = [Profile notAcceptedFollowingParty];
 
@@ -79,6 +81,7 @@
     self.title = [self.user fullName];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
+    [self fetchEveryone];
     [self initializeYourSchoolButton];
     [self initializeFollowingButton];
     [self initializeFollowersButton];
@@ -86,7 +89,8 @@
     [self initializeTableOfPeople];
     [self initializeTapHandler];
     if ([[self.user allKeys] containsObject:@"tabNumber"]) {
-        [self loadTableViewForTag:[self.user objectForKey:@"tabNumber"]];
+        _currentTab = [self.user objectForKey:@"tabNumber"];
+        [self loadTableView];
     }
 }
 
@@ -128,11 +132,9 @@
     }
 }
 
-
-
 - (void)initializeYourSchoolButton {
     _yourSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width/3, 60)];
-    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", [[_contentParty getObjectArray] count]] forState:UIControlStateNormal];
+    [_yourSchoolButton setTitle:@"School" forState:UIControlStateNormal];
     _yourSchoolButton.backgroundColor = [FontProperties getOrangeColor];
     _yourSchoolButton.titleLabel.font = [FontProperties getTitleFont];
     _yourSchoolButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -283,45 +285,66 @@
     UIButton *chosenButton = (UIButton *)sender;
     int tag = chosenButton.tag;
     if (tag >= 2) {
-        [self loadTableViewForTag:[NSNumber numberWithInt:tag]];
+        _currentTab = [NSNumber numberWithInt:tag];
+        [self loadTableView];
     }
 }
 
-- (void)loadTableViewForTag:(NSNumber *)tag {
+- (void)loadTableView {
     UIButton *filterButton;
     for (int i = 2; i < 5; i++) {
         filterButton = (UIButton *)[self.view viewWithTag:i];
         filterButton.backgroundColor = [FontProperties getLightOrangeColor];
         [filterButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     }
-    UIButton *chosenButton = (UIButton *)[self.view viewWithTag:[tag intValue]];
+    UIButton *chosenButton = (UIButton *)[self.view viewWithTag:[_currentTab intValue]];
     chosenButton.backgroundColor = [FontProperties getOrangeColor];
     [chosenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
-    if ([tag isEqualToNumber:@2]) {
+    if ([_currentTab isEqualToNumber:@2]) {
         _contentParty = _everyoneParty;
         [_tableViewOfPeople reloadData];
     }
-    else if ([tag isEqualToNumber:@3]) {
+    else if ([_currentTab isEqualToNumber:@3]) {
+        _page = @0;
         [self fetchFollowers];
     }
-    else if ([tag isEqualToNumber:@4]) {
+    else if ([_currentTab isEqualToNumber:@4]) {
         if ([[Profile user] isEqualToUser:self.user]) {
             _followingParty = [Profile followingParty];
             _contentParty = _followingParty;
             [_tableViewOfPeople reloadData];
         }
         else {
+            _page = @0;
+            _followingParty = [[Party alloc] initWithObjectName:@"User"];
             [self fetchFollowing];
         }
-        
     }
 }
 
 #pragma mark - Network functions
 
+- (void) fetchEveryone {
+    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=goingout&page=%@" ,[_page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+        _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+        [_everyoneParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_everyoneParty addMetaInfo:metaDictionary];
+        [Profile setEveryoneParty:_everyoneParty];
+        [_everyoneParty removeUser:[Profile user]];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            _page = @([_page intValue] + 1);
+            _contentParty = _everyoneParty;
+            [_tableViewOfPeople reloadData];
+        });
+    }];
+}
+
 - (void)fetchFollowers {
-    NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d", [[self.user objectForKey:@"id"] intValue]];
+    NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
         [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [arrayOfFollowObjects count]] forState:UIControlStateNormal];
@@ -337,10 +360,11 @@
                 }
             }
         }
-        _followersParty = [[Party alloc] initWithObjectName:@"User"];
         [_followersParty addObjectsFromArray:arrayOfUsers];
-        
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_followersParty addMetaInfo:metaDictionary];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            _page = @([_page intValue] + 1);
             _contentParty = _followersParty;
             [_tableViewOfPeople reloadData];
         });
@@ -348,7 +372,7 @@
 }
 
 - (void)fetchFollowing {
-    NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d", [[self.user objectForKey:@"id"] intValue]];
+    NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
         NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
@@ -363,16 +387,17 @@
                 }
             }
         }
-        _followingParty = [[Party alloc] initWithObjectName:@"User"];
         [_followingParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_followingParty addMetaInfo:metaDictionary];
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            _page = @([_page intValue] + 1);
             _contentParty = _followingParty;
             [_tableViewOfPeople reloadData];
         });
     }];
  
 }
-
 
 #pragma mark - Table View Data Source
 
@@ -385,17 +410,23 @@
         return [[_filteredContentParty getObjectArray] count];
     }
     else {
-        return [[_contentParty getObjectArray] count];
+        int hasNextPage = ([_contentParty hasNextPage] ? 1 : 0);
+        return [[_contentParty getObjectArray] count] + hasNextPage;
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    User *user = [self getUserAtIndex:[indexPath row]];
-
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+    if ([indexPath row] == [[_contentParty getObjectArray] count]) {
+        [self loadNextPage];
+        return cell;
+    }
+    
+    User *user = [self getUserAtIndex:[indexPath row]];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 7, 150, 60)];
     textLabel.font = [FontProperties getSmallFont];
@@ -447,8 +478,17 @@
     return cell;
 }
 
-
-
+- (void)loadNextPage {
+    if ([_currentTab isEqualToNumber:@2]) {
+        [self fetchEveryone];
+    }
+    else if ([_currentTab isEqualToNumber:@3]) {
+        [self fetchFollowers];
+    }
+    else if ([_currentTab isEqualToNumber:@4]) {
+        [self fetchFollowing];
+    }
+}
 
 
 - (void) followedPersonPressed:(id)sender {
@@ -522,6 +562,5 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 80;
 }
-
 
 @end

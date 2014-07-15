@@ -31,10 +31,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 // Properties shared by Who and Where View
 @property BOOL isGoingOut;
 
-// Properties of the Who View
-//@property UIScrollView *scrollView;
-@property int startingYPosition;
-@property int shownImageNumber;
 
 // Tap Array (First object tag is 2)
 @property NSMutableArray *tapArray;
@@ -61,13 +57,9 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 @property int numberFetchedMyInfoAndEveryoneElse;
 @property NSMutableArray *userTappedIDArray;
 @property int numberOfFetchedParties;
-@property Party *everyoneParty;
 @property Party *followingAcceptedParty;
-@property Party *followingNotAcceptedParty;
 @property Party *whoIsGoingOutParty;
 @property Party *notGoingOutParty;
-@property UITableView *whoTableView;
-
 
 @property NSNumber *page;
 @property UILabel *goingOutLabel;
@@ -101,7 +93,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 - (void)loadViewAfterSigningUser {
     _started = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
-    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+    _followingAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
     _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
     _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
     
@@ -131,10 +123,10 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        [_everyoneParty addObjectsFromArray:arrayOfUsers];
+        [_followingAcceptedParty addObjectsFromArray:arrayOfUsers];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_everyoneParty addMetaInfo:metaDictionary];
-        [Profile setEveryoneParty:_everyoneParty];
+        [_followingAcceptedParty addMetaInfo:metaDictionary];
+        [Profile setFollowingParty:_followingAcceptedParty];
     
         User *user;
         for (int i = 0; i < [arrayOfUsers count]; i++) {
@@ -183,7 +175,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 }
 
 - (void)initializeWhoView {
-    _startingYPosition = 0;
     [self initializeBarAtTopWithText:@"GOING OUT"];
     [self initializeNotGoingOutBar];
 //    _startingYPosition -= 64;
@@ -206,12 +197,11 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
         [_barAtTopView addSubview:barAtTopLabel];
     }
     
-    _barAtTopView.frame = CGRectMake(0, _startingYPosition, self.view.frame.size.width, 30);
+    _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
     [_barAtTopView removeFromSuperview];
      [self.view addSubview:_barAtTopView];
     _barAtTopPoint = _barAtTopView.frame.origin;
     _goingOutIsAttachedToScrollView = NO;
-    _startingYPosition += 30;
 }
 
 - (void) initializeNotGoingOutBar {
@@ -232,7 +222,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 //    [_collectionView addSubview:_notGoingOutView];
 //    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
     _notGoingOutIsAttachedToScrollView = YES;
-    _startingYPosition += 30;
 }
 
 
@@ -546,7 +535,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    int hasNextPage = ([_everyoneParty hasNextPage] ? 1 : 0);
+    int hasNextPage = ([_followingAcceptedParty hasNextPage] ? 1 : 0);
     return 2 + hasNextPage;
 }
 

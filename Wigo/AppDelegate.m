@@ -88,6 +88,10 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void) changeTabBarToOrange {
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+    [tabBarController.view addGestureRecognizer:tap];
+    tap.delegate = self;
+
     UITabBar *tabBar = tabBarController.tabBar;
     tabBar.layer.borderWidth = 0.5;
     [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getOrangeColor], NSFontAttributeName:[UIFont fontWithName:@"Whitney-MediumSC" size:11.0f] } forState:UIControlStateNormal];
@@ -121,6 +125,10 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
 }
 
+
+
+
+
 # pragma mark - Facebook Login
 
 - (BOOL)application:(UIApplication *)application
@@ -136,4 +144,19 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     return wasHandled;
 }
 
+#pragma mark - Tap Gesture
+-(void)handleSingleTap:(UIGestureRecognizer *)gestureRecognizer {
+    NSLog(@"Tab tpped");
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    // Disallow recognition of tap gestures in the TabbarItem control.
+    if ([touch.view isKindOfClass:[UIBarButtonItem class]]) {//change it to your condition
+        if (touch.view.tag != 50) {
+            return NO;
+        }
+        return YES;
+    }
+    return NO;
+}
 @end
