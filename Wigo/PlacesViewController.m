@@ -72,6 +72,7 @@
 
     [self initializeNotificationObservers];
     [self initializeTapHandler];
+    [self initializeWhereView];
     [self fetchEventsFirstPage];
 }
 
@@ -133,7 +134,7 @@
         [self updatedTitleViewForGoingOut];
     }
     else {
-        [self updateViewNotGoingOut];
+        [self updateTitleViewForNotGoingOut];
     }
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
 }
@@ -143,10 +144,12 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
 }
 
-- (void) updateViewNotGoingOut {
-    [_placesTableView reloadData];
+- (void)updateTitleViewForNotGoingOut {
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"PLACES";
+}
+
+- (void) updateViewNotGoingOut {
     [self fetchEventsFirstPage];
 }
 
@@ -182,22 +185,16 @@
 }
 
 - (void)initializeWhereView {
-    _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];
-    _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
-    if (!_placesTableView) {
-        _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-        _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        [self.view addSubview:_placesTableView];
-        _placesTableView.dataSource = self;
-        _placesTableView.delegate = self;
-        
-        _yPositionOfWhereSubview = 280;
-        [self addRefreshToSrollView];
-        [self initializeGoingSomewhereElseButton];
-    }
-    else {
-        [_placesTableView reloadData];
-    }
+    
+    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.view addSubview:_placesTableView];
+    _placesTableView.dataSource = self;
+    _placesTableView.delegate = self;
+    
+    _yPositionOfWhereSubview = 280;
+    [self addRefreshToSrollView];
+    [self initializeGoingSomewhereElseButton];
 }
 
 
@@ -609,7 +606,9 @@
     if (numberOfFetchedParties >= 2*[[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView hideSpinnerForView:self.view];
-            [self initializeWhereView];
+            _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];
+            _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
+            [_placesTableView reloadData];
         });
     }
 }
