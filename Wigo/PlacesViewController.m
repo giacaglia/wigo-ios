@@ -233,6 +233,7 @@
     _goingSomewhereButton.hidden = YES;
     _ungoOutButton.enabled = NO;
     [_whereAreYouGoingTextField becomeFirstResponder];
+    [self textFieldDidChange:_whereAreYouGoingTextField];
 }
 
 - (void)profileSegue {
