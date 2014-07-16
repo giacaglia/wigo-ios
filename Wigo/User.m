@@ -364,6 +364,9 @@
     [query setValue:self.email forKey:@"email"];
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
     NSLog(@"dictionary User %@", dictionaryUser);
+    if (dictionaryUser == nil) {
+        return @"no_network";
+    }
     if ([[dictionaryUser allKeys] containsObject:@"code"]) {
         if ([[dictionaryUser objectForKey:@"code"] isEqualToString:@"invalid_email"]) {
             return @"invalid_email";

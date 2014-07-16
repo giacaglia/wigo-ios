@@ -131,6 +131,10 @@
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email" message:@"Enter a valid email address" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
         }
+        else if ([response isEqualToString:@"no_network"]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network" message:@"No network connection" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
         else {
             [[Profile user] setImagesURL:imagesUrl];
             [[Profile user] save];
