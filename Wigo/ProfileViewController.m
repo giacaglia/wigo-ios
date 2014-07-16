@@ -283,7 +283,10 @@
     }
     [_scrollView setContentSize:CGSizeMake(self.view.frame.size.width * [[self.user imagesURL] count], 320)];
     
-    _bioLabel.text = [self.user bioString];
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Bio "];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:[self.user bioString] attributes:nil]];
+    [string addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(0, 4)];
+    [_bioLabel setAttributedText:string];
 }
 
 - (void) addBlurredImage:(UIImage *)image toImageView:(UIImageView *)imageView {
@@ -375,7 +378,6 @@
             self.view.backgroundColor = [UIColor whiteColor];
             _bioLineView.hidden = NO;
             _followButton.hidden = NO;
-            _bioLabel.textColor = [UIColor blackColor];
             _leftProfileButton.hidden = NO;
             _rightProfileButton.hidden = NO;
             _followingButton.hidden = NO;
@@ -512,12 +514,15 @@
     _bioLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 483, self.view.frame.size.width, 1)];
     _bioLineView.backgroundColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f];
     [self.view addSubview:_bioLineView];
-    _bioLabel = [[UILabel alloc] initWithFrame:CGRectMake(13, 64 + self.view.frame.size.width + 90 + 5, self.view.frame.size.width - 26, 80)];
-    _bioLabel.text = [self.user bioString];
-    _bioLabel.textColor = [UIColor blackColor];
+    _bioLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 64 + self.view.frame.size.width + 90 + 5 + 10, self.view.frame.size.width - 10, 80)];
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Bio "];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:[self.user bioString] attributes:nil]];
+    [string addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(0, 4)];
+    [_bioLabel setAttributedText:string];
     _bioLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _bioLabel.numberOfLines = 0;
     _bioLabel.font = [FontProperties getBioFont];
+    [_bioLabel sizeToFit];
     [self.view addSubview:_bioLabel];
 }
 

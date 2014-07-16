@@ -187,11 +187,12 @@
 - (void)initializeWhereView {
     
     _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
-    
+    [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
+    _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+
     _yPositionOfWhereSubview = 280;
     [self addRefreshToSrollView];
     [self initializeGoingSomewhereElseButton];
@@ -210,7 +211,7 @@
 }
 
 - (void)initializeGoingSomewhereElseButton {
-    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(xSpacing, 10, self.view.frame.size.width, 68)];
+    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(xSpacing, 0, self.view.frame.size.width, 70)];
     [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
     
     UILabel *goingSomewhereLabel = [[UILabel alloc] initWithFrame:CGRectMake(67, _goingSomewhereButton.frame.size.height/2 - 7, 230, 15)];
@@ -371,6 +372,9 @@
 #pragma mark - Tablew View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([indexPath row] == [_contentList count]) {
+        return 70;
+    }
     return sizeOfEachCell;
 }
 
@@ -434,7 +438,7 @@
             labelName.text = [_contentList objectAtIndex:indexPath.row];
         }
     }
-    labelName.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0f];
+    labelName.font = [FontProperties getTitleFont];
     [placeSubView addSubview:labelName];
 
     UILabel *numberOfPeopleGoingOut = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 30, self.view.frame.size.width, 20)];
@@ -460,7 +464,7 @@
 
     if (indexPath.row == 0 && ([[Profile user] eventID] != nil && [[Profile user] isGoingOut])) {
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
-        UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 5, 125, 30)];
+        UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 8, 125, 30)];
         goingHereLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:13.0f];;
         goingHereLabel.textColor = [FontProperties getBlueColor];
         goingHereLabel.textAlignment = NSTextAlignmentRight;
@@ -469,7 +473,7 @@
         [placeSubView addSubview:goingHereLabel];
     }
     else {
-        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 90, 10, 80, 20)];
+        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 90, 10, 80, 17)];
         [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
         [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         goOutButton.backgroundColor = [FontProperties getBlueColor];

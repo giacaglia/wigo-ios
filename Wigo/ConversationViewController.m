@@ -9,6 +9,7 @@
 #import "ConversationViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
+#import "SDWebImage/UIImageView+WebCache.h"
 
 
 @interface ConversationViewController ()
@@ -16,7 +17,7 @@
 @property UIScrollView *scrollView;
 @property int positionOfLastMessage;
 @property UIView *chatTextFieldWrapper;
-@property UITextField *messageTextBox;
+@property UITextField *messageTextField;
 
 @property UIButton *sendButton;
 @property User *user;
@@ -61,6 +62,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
     [self initializeLeftBarButton];
+    [self initializeRightBarButton];
     [self initializeScrollView];
     [self initializeTapHandler];
     
@@ -117,7 +119,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void) initializeLeftBarButton {
-    UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+    UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
     [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -127,6 +129,20 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [barItem setCustomView:barBt];
     self.navigationItem.leftBarButtonItem = barItem;
 }
+
+- (void) initializeRightBarButton {
+    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
+    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
+    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
+    [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]]];
+    [profileButton addSubview:profileImageView];
+    [profileButton setShowsTouchWhenHighlighted:YES];
+    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
+    self.navigationItem.rightBarButtonItem = profileBarButton;
+}
+
 
 - (void) goBack {
     [self.navigationController popViewControllerAnimated:YES];
@@ -220,6 +236,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self.view addSubview:_chatTextFieldWrapper];
     [self.view bringSubviewToFront:_chatTextFieldWrapper];
     [_chatTextFieldWrapper setBackgroundColor:RGB(234, 234, 234)];
+    UIView *firstLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 1)];
+    firstLineView.backgroundColor = [FontProperties getLightOrangeColor];
+    [_chatTextFieldWrapper addSubview:firstLineView];
     
     UILabel *whiteLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, _chatTextFieldWrapper.frame.size.width - 70, _chatTextFieldWrapper.frame.size.height - 20)];
     whiteLabel.backgroundColor = [UIColor whiteColor];
@@ -227,15 +246,17 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     whiteLabel.layer.masksToBounds = YES;
     [_chatTextFieldWrapper addSubview:whiteLabel];
     
-    _messageTextBox.tintColor = [FontProperties getOrangeColor];
-    _messageTextBox = [[UITextField alloc] initWithFrame:CGRectMake(15, 10, _chatTextFieldWrapper.frame.size.width - 80, _chatTextFieldWrapper.frame.size.height - 20)];
-    _messageTextBox.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getTitleFont]}];
-    _messageTextBox.delegate = self;
-    _messageTextBox.returnKeyType = UIReturnKeySend;
-    _messageTextBox.backgroundColor = [UIColor whiteColor];
-    [[UITextField appearance] setTintColor:[FontProperties getOrangeColor]];
-    [_chatTextFieldWrapper addSubview:_messageTextBox];
-    [_chatTextFieldWrapper bringSubviewToFront:_messageTextBox];
+    _messageTextField.tintColor = [FontProperties getOrangeColor];
+    _messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(15, 10, _chatTextFieldWrapper.frame.size.width - 80, _chatTextFieldWrapper.frame.size.height - 20)];
+    _messageTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
+    _messageTextField.delegate = self;
+    _messageTextField.returnKeyType = UIReturnKeySend;
+    _messageTextField.backgroundColor = [UIColor whiteColor];
+    _messageTextField.font = [UIFont fontWithName:@"Whitney-Medium" size:18.0];;
+    [_messageTextField setTextColor:RGB(102, 102, 102)];
+    [[UITextField appearance] setTintColor:RGB(102, 102, 102)];
+    [_chatTextFieldWrapper addSubview:_messageTextField];
+    [_chatTextFieldWrapper bringSubviewToFront:_messageTextField];
     
     _sendButton = [[UIButton alloc] initWithFrame:CGRectMake(_chatTextFieldWrapper.frame.size.width - 60, 10, 60, 30)];
     [_sendButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
@@ -268,7 +289,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void)sendMessage {
     Message *message = [[Message alloc] init];
-    [message setMessageString:_messageTextBox.text];
+    [message setMessageString:_messageTextField.text];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
     [dateFormatter setTimeZone:timeZone];
@@ -277,7 +298,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [message setToUser:[self.user objectForKey:@"id"]];
     [self addMessageFromSender:message];
     [message save];
-    _messageTextBox.text = @"";
+    _messageTextField.text = @"";
     [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:YES];
 }
 

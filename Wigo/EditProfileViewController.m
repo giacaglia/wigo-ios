@@ -119,7 +119,7 @@
         // IF its the cover photo
         if (i == 0) {
             imageButton.layer.borderWidth = 1;
-            imageButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            imageButton.layer.borderColor = [FontProperties getLightOrangeColor].CGColor;
         }
         [photosArray addObject:imageButton];
     }

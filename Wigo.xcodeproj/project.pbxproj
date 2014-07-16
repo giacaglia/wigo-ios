@@ -27,6 +27,7 @@
 		E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B01961EADE00A01F50 /* UIImageView+HighlightedWebCache.m */; };
 		E900C2C31961EADE00A01F50 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */; };
 		E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */; };
+		E90AA8A51975DC6E0055D74B /* transparentShadow.png in Resources */ = {isa = PBXBuildFile; fileRef = E90AA8A41975DC6E0055D74B /* transparentShadow.png */; };
 		E9147B6C1925123C00C25C9A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9147B6B1925123C00C25C9A /* ProfileViewController.m */; };
 		E921D6161923967D00361247 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6151923967D00361247 /* Foundation.framework */; };
 		E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6171923967D00361247 /* CoreGraphics.framework */; };
@@ -240,6 +241,7 @@
 		E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		E900C2B31961EADE00A01F50 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		E90AA8A41975DC6E0055D74B /* transparentShadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = transparentShadow.png; sourceTree = "<group>"; };
 		E9147B6A1925123C00C25C9A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
 		E9147B6B1925123C00C25C9A /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
 		E921D6121923967D00361247 /* wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -524,6 +526,7 @@
 		E91A5032193F56BE00B7725A /* TabBarImages */ = {
 			isa = PBXGroup;
 			children = (
+				E90AA8A41975DC6E0055D74B /* transparentShadow.png */,
 				E93F85031945FADF00B3B448 /* chatsIcon@2x.png */,
 				E9CD470619479D6D00AEA17D /* chatsSelected@2x.png */,
 				E93F85011945F9E700B3B448 /* placesIcon@2x.png */,
@@ -1185,6 +1188,7 @@
 				E9BE8CB4192AA29C008BB84C /* WhitneyNumeric-Light.ttf in Resources */,
 				E9BE8C8C192AA29C008BB84C /* Whitney-BoldSC.ttf in Resources */,
 				E9681C71194F887A00182E0E /* connectFacebook@2x.png in Resources */,
+				E90AA8A51975DC6E0055D74B /* transparentShadow.png in Resources */,
 				E9BE8CA3192AA29C008BB84C /* WhitneyIndexBlack-SquareLt1.ttf in Resources */,
 				E9D906C0192535AF00E39FC8 /* giu2.jpg in Resources */,
 				E9BE8CAF192AA29C008BB84C /* WhitneyNumeric-BlackItalic.ttf in Resources */,

@@ -341,11 +341,10 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     if ([[Profile user] isGoingOut]) {
         self.navigationItem.titleView = nil;
         UIButtonUngoOut *ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
-        [ungoOutButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
         self.navigationItem.titleView = ungoOutButton;
     }
     else {
-        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
+        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 200, 30)];
         [goOutButton setTitle:@"GO OUT" forState:UIControlStateNormal];
         [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         goOutButton.backgroundColor = [FontProperties getOrangeColor];

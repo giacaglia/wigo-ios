@@ -123,6 +123,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     firstTab = [tabBar.items objectAtIndex:3];
     firstTab.image = [[UIImage imageNamed:@"notificationsIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
+
+
 }
 
 

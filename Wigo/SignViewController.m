@@ -118,14 +118,14 @@
 
 - (void)initializeLogo {
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
-    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 91, 100, 182, 104);
+    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 91, self.view.frame.size.height/2 - 52 - 40, 182, 104);
     [self.view addSubview:logoImageView];
 }
 
 - (void)initializeFacebookSignButton {
     _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"public_profile", @"email", @"user_friends", @"user_photos"]];
     _loginView.delegate = self;
-    _loginView.frame = CGRectMake(0, self.view.frame.size.height/2 + 100, 245, 34);
+    _loginView.frame = CGRectMake(0, self.view.frame.size.height - 125, 245, 34);
     _loginView.frame = CGRectOffset(_loginView.frame, (self.view.center.x - (_loginView.frame.size.width / 2)), 5);
     _loginView.backgroundColor = [UIColor whiteColor];
     
@@ -138,7 +138,7 @@
     [self.view addSubview:_loginView];
     
     UILabel *dontWorryLabel = [[UILabel alloc] init];
-    dontWorryLabel.frame = CGRectMake(0, self.view.frame.size.height/2 + 100 + 34, self.view.frame.size.width, 30);
+    dontWorryLabel.frame = CGRectMake(0, self.view.frame.size.height - 125 + 34, self.view.frame.size.width, 30);
     dontWorryLabel.text = @"Don't worry, we'll never post on your behalf.";
     dontWorryLabel.font = [UIFont fontWithName:@"Whitney-Medium" size:13.0f];
     dontWorryLabel.textColor = RGB(51, 102, 154);

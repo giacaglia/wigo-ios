@@ -49,7 +49,7 @@
     self.tabBarController.tabBar.hidden = NO;
     
     self.navigationItem.titleView = nil;
-    self.navigationItem.title = @"CHATS";
+    self.navigationItem.title = @"Chats";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
     CGRect profileFrame = CGRectMake(0, 0, 21, 21);

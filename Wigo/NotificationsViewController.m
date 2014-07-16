@@ -54,8 +54,8 @@
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.rightBarButtonItem = nil;
     self.navigationItem.titleView = nil;
-    self.navigationItem.title = @"NOTIFICATIONS";
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    self.navigationItem.title = @"Notifications";
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
 }
 
 - (void) initializeTableNotifications {
@@ -104,7 +104,7 @@
     User *user = (User *)[_everyoneParty getObjectWithId:[notifcation fromUserID]];
     
     NSString *name = [user fullName];
-    NSString * typeString = [notifcation type];
+    NSString *typeString = [notifcation type];
     NSString *message = [notifcation message];
     NSString *timeString = [notifcation timeString];
     
@@ -115,21 +115,22 @@
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
-    profileImageView.layer.cornerRadius = 3;
-    profileImageView.layer.borderWidth = 1;
-    profileImageView.backgroundColor = [UIColor whiteColor];
+    profileImageView.layer.cornerRadius = 5;
+    profileImageView.layer.borderWidth = 0.5;
+    profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+//    profileImageView.backgroundColor = [UIColor whiteColor];
     profileImageView.layer.masksToBounds = YES;
     [notificationButton addSubview:profileImageView];
     
     UIImageView *iconLabel;
     if ([typeString isEqualToString:@"chat"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"commentFilled"]];
-        iconLabel.frame = CGRectMake(55, 20, 14, 14);
+        iconLabel.frame = CGRectMake(58, 20, 14, 14);
         [notificationButton addTarget:self action:@selector(chatSegue) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"tap"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapFilled"]];
-        iconLabel.frame = CGRectMake(55, 20, 14, 14);
+        iconLabel.frame = CGRectMake(58, 20, 14, 14);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"follow"] || [typeString isEqualToString:@"facebook.follow"]) {
@@ -139,13 +140,13 @@
     }
     else if ([typeString isEqualToString:@"joined"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"joined"]];
-        iconLabel.frame = CGRectMake(55, 20, 14, 14);
+        iconLabel.frame = CGRectMake(58, 20, 14, 14);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     notificationButton.tag = [indexPath row];
     [notificationButton addSubview:iconLabel];
 
-    UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 11, 200, 18)];
+    UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(83, 18, 200, 18)];
     NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:name ];
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:nil]];
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:message attributes:nil]];
@@ -156,11 +157,11 @@
     notificationLabel.lineBreakMode = NSLineBreakByWordWrapping;
     notificationLabel.numberOfLines = 0;
     if (notificationLabel.text.length > 32) {
-        notificationLabel.frame = CGRectMake(80, 11, 200, 36);
+        notificationLabel.frame = CGRectMake(83, 9, 200, 36);
     }
     [notificationButton addSubview:notificationLabel];
     
-    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 158, 37, 140, 12)];
+    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 150, 37, 140, 12)];
     timeLabel.text = timeString;
     timeLabel.textAlignment = NSTextAlignmentRight;
     timeLabel.font = [FontProperties getSmallPhotoFont];
