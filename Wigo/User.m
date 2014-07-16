@@ -317,6 +317,9 @@
     [query setValue:[self accessToken] forKey:@"facebook_access_token"];
     [query setValue:self.email forKey:@"email"];
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
+    if (dictionaryUser == nil) {
+        return @"error";
+    }
     if ([[dictionaryUser allKeys] containsObject:@"code"]) {
         if ([[dictionaryUser objectForKey:@"code"] isEqualToString:@"invalid_email"]) {
             return @"invalid_email";
