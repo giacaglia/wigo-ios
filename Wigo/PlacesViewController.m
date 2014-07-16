@@ -168,6 +168,7 @@
 }
 
 - (void)dismissKeyboard {
+    _ungoOutButton.enabled = YES;
     [self.view endEditing:YES];
     [UIView animateWithDuration:0.2 animations:^{
         _placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
@@ -228,6 +229,7 @@
     [self dismissKeyboard];
     [self showWhereAreYouGoingView];
     _goingSomewhereButton.hidden = YES;
+    _ungoOutButton.enabled = NO;
     [_whereAreYouGoingTextField becomeFirstResponder];
 }
 

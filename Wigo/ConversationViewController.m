@@ -151,7 +151,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void) initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                 action:@selector(dismissKeyboard)];
-    tap.cancelsTouchesInView = NO;
+    tap.cancelsTouchesInView = YES;
     [self.view addGestureRecognizer:tap];
 }
 
