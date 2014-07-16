@@ -122,7 +122,7 @@
 - (void)tappedView:(UITapGestureRecognizer*)tapSender {
     UIView *viewSender = (UIView *)tapSender.view;
     [self.view endEditing:YES];
-    if ([viewSender isKindOfClass:[UIImageView class]]) {
+    if ([viewSender isKindOfClass:[UIImageView class]] || [viewSender isKindOfClass:[UITextView class]]) {
         int tag = viewSender.tag;
         User *user = [self getUserAtIndex:tag];
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
@@ -425,12 +425,6 @@
     
     User *user = [self getUserAtIndex:[indexPath row]];
     
-    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 7, 150, 60)];
-    textLabel.font = [FontProperties getSmallFont];
-    textLabel.text = [NSString stringWithFormat:@"%@ %@", [user objectForKey:@"first_name"], [user objectForKey:@"last_name"]];
-    textLabel.tag = [indexPath row];
-    [cell.contentView addSubview:textLabel];
-    
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
@@ -445,7 +439,16 @@
     tap.cancelsTouchesInView = NO;
     [profileImageView addGestureRecognizer:tap];
     
-    UIButton *favoriteButton = [[UIButton alloc]initWithFrame:CGRectMake(250, 24, 49, 30)];
+    UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(85, 20, 150, 28)];
+    textView.font = [FontProperties getSmallFont];
+    textView.text = [NSString stringWithFormat:@"%@ %@", [user objectForKey:@"first_name"], [user objectForKey:@"last_name"]];
+    textView.tag = [indexPath row];
+    textView.textAlignment = NSTextAlignmentLeft;
+    textView.scrollEnabled = NO;
+    [textView addGestureRecognizer:tap];
+    [cell.contentView addSubview:textView];
+    
+    UIButton *favoriteButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 24, 49, 30)];
     [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     favoriteButton.tag = -100;
     [favoriteButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];

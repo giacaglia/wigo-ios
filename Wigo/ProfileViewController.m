@@ -99,14 +99,14 @@
     
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
-    
+    [self initializeBioLabel];
+
     if (!self.isMyProfile) {
         [self initializeFollowingAndFollowers];
     }
     
     [self initializeLeftProfileButton];
     [self initializeRightProfileButton];
-    [self initializeBioLabel];
 
 }
 
@@ -282,7 +282,7 @@
         [_profileImagesArray addObject:profileImgView];
     }
     [_scrollView setContentSize:CGSizeMake(self.view.frame.size.width * [[self.user imagesURL] count], 320)];
-    _bioLabel.text = [self.user bioString];
+    _bioLabel.text = [NSString stringWithFormat:@"       %@" , [self.user bioString]];
     [_bioLabel sizeToFit];
 }
 
@@ -513,18 +513,18 @@
     _bioLineView.backgroundColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f];
     [self.view addSubview:_bioLineView];
     
-    UILabel *bioPrefix = [[UILabel alloc] initWithFrame:CGRectMake(5, 64 + self.view.frame.size.width + 90 + 5 + 10 - 1, 40, 20)];
+    UILabel *bioPrefix = [[UILabel alloc] initWithFrame:CGRectMake(5, 64 + self.view.frame.size.width + 90 + 5 + 10, 40, 20)];
     bioPrefix.text = @"Bio: ";
     bioPrefix.textColor = [UIColor grayColor];
     bioPrefix.font = [FontProperties getTitleFont];
     [bioPrefix sizeToFit];
     [self.view addSubview:bioPrefix];
     
-    _bioLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 64 + self.view.frame.size.width + 90 + 5 + 10, self.view.frame.size.width - 40, 80)];
-    _bioLabel.text = [self.user bioString];
+    _bioLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 64 + self.view.frame.size.width + 90 + 5 + 10, self.view.frame.size.width, 80)];
+    _bioLabel.font = [FontProperties getSmallFont];
+    _bioLabel.text = [NSString stringWithFormat:@"      %@" , [self.user bioString]];
     _bioLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _bioLabel.numberOfLines = 0;
-    _bioLabel.font = [FontProperties getSmallFont];
     [_bioLabel sizeToFit];
     [self.view addSubview:_bioLabel];
 }
