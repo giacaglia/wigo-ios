@@ -220,6 +220,9 @@
                                       }
                                   }
                               }
+                              if ([profilePictures count] == 0) {
+                                  [profilePictures addObject:@"https://scontent-b.xx.fbcdn.net/hphotos-xfp1/l/t1.0-9/p720x720/1926790_10203026659205208_455535385_n.jpg"];
+                              }
                               [WiGoSpinnerView hideSpinnerForView:self.view];
                               User *profileUser = [Profile user];
                               [profileUser setImagesURL:profilePictures];
@@ -251,7 +254,22 @@
             }
         }
     }
-    return returnedPhoto;
+    
+    // If the photo was fetched then returned it else return biggest res photo
+    if (minHeight > 0) {
+        return returnedPhoto;
+    }
+    else {
+        int maxHeight = 0;
+        for (FBGraphObject *fbPhoto in photoArray) {
+            int heightPhoto = [[fbPhoto objectForKey:@"height"] intValue];
+            if (heightPhoto > maxHeight) {
+                returnedPhoto = fbPhoto;
+                maxHeight = heightPhoto;
+            }
+        }
+        return returnedPhoto;
+    }
 }
 
 @end
