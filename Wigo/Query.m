@@ -74,6 +74,10 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
     NSURLResponse * response = nil;
     NSError * error = nil;
     NSData *data = [NSURLConnection sendSynchronousRequest:req returningResponse:&response error:&error];
+    if (error) {
+        
+        return nil;
+    }
     NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
     return json;
 }

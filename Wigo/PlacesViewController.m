@@ -78,13 +78,15 @@
 
 - (void) fetchEventsFirstPage {
     _page = @1;
+    numberOfFetchedParties = 0;
     _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
+    _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];
+    _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
     [self fetchEvents];
 }
 
 - (void) fetchEvents {
     _everyoneParty = [Profile everyoneParty];
-    numberOfFetchedParties = 0;
     [WiGoSpinnerView showBlueSpinnerAddedTo:self.view];
     NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@", [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
