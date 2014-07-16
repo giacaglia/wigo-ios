@@ -293,7 +293,7 @@
     _whereAreYouGoingView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 47)];
     [self.view addSubview:_whereAreYouGoingView];
     
-    _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 98, 47)];
+    _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 18 - 100 - 10, 47)];
     _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"WHERE ARE YOU GOING?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
     _whereAreYouGoingTextField.font = [UIFont fontWithName:@"Whitney-MediumSC" size:15.0f];
     _whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
@@ -306,7 +306,7 @@
     
     [self addCreateButtonToTextField];
     
-    _clearButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 18 - 90, _whereAreYouGoingView.frame.size.height/2 - 9, 18, 18)];
+    _clearButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 18 - 100, _whereAreYouGoingView.frame.size.height/2 - 9, 18, 18)];
     [_clearButton addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"clearButton"]]];
     [_clearButton addTarget:self action:@selector(clearTextField) forControlEvents:UIControlEventTouchUpInside];
     [_whereAreYouGoingView addSubview:_clearButton];
@@ -318,7 +318,7 @@
 }
 
 - (void) addCreateButtonToTextField {
-    _createButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 80, _whereAreYouGoingView.frame.size.height/2 - 10, 80, 20)];
+    _createButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 90, _whereAreYouGoingView.frame.size.height/2 - 10, 80, 20)];
     [_createButton setTitle:@"CREATE" forState:UIControlStateNormal];
     [_createButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _createButton.backgroundColor = [FontProperties getBlueColor];

@@ -282,11 +282,8 @@
         [_profileImagesArray addObject:profileImgView];
     }
     [_scrollView setContentSize:CGSizeMake(self.view.frame.size.width * [[self.user imagesURL] count], 320)];
-    
-    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Bio "];
-    [string appendAttributedString:[[NSAttributedString alloc] initWithString:[self.user bioString] attributes:nil]];
-    [string addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(0, 4)];
-    [_bioLabel setAttributedText:string];
+    _bioLabel.text = [self.user bioString];
+    [_bioLabel sizeToFit];
 }
 
 - (void) addBlurredImage:(UIImage *)image toImageView:(UIImageView *)imageView {
@@ -376,6 +373,7 @@
         } completion:^(BOOL finished) {
             _nameOfPersonLabel.backgroundColor = RGBAlpha(23, 23, 23, 0.7f);
             self.view.backgroundColor = [UIColor whiteColor];
+            _bioLabel.textColor = [UIColor blackColor];
             _bioLineView.hidden = NO;
             _followButton.hidden = NO;
             _leftProfileButton.hidden = NO;
@@ -514,11 +512,16 @@
     _bioLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 483, self.view.frame.size.width, 1)];
     _bioLineView.backgroundColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f];
     [self.view addSubview:_bioLineView];
-    _bioLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 64 + self.view.frame.size.width + 90 + 5 + 10, self.view.frame.size.width - 10, 80)];
-    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Bio "];
-    [string appendAttributedString:[[NSAttributedString alloc] initWithString:[self.user bioString] attributes:nil]];
-    [string addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(0, 4)];
-    [_bioLabel setAttributedText:string];
+    
+    UILabel *bioPrefix = [[UILabel alloc] initWithFrame:CGRectMake(5, 64 + self.view.frame.size.width + 90 + 5 + 10 - 1, 40, 20)];
+    bioPrefix.text = @"Bio: ";
+    bioPrefix.textColor = [UIColor grayColor];
+    bioPrefix.font = [FontProperties getTitleFont];
+    [bioPrefix sizeToFit];
+    [self.view addSubview:bioPrefix];
+    
+    _bioLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 64 + self.view.frame.size.width + 90 + 5 + 10, self.view.frame.size.width - 40, 80)];
+    _bioLabel.text = [self.user bioString];
     _bioLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _bioLabel.numberOfLines = 0;
     _bioLabel.font = [FontProperties getSmallFont];

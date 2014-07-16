@@ -28,6 +28,7 @@
 		E900C2C31961EADE00A01F50 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */; };
 		E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */; };
 		E90AA8A51975DC6E0055D74B /* transparentShadow.png in Resources */ = {isa = PBXBuildFile; fileRef = E90AA8A41975DC6E0055D74B /* transparentShadow.png */; };
+		E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E90AA8A71976C8B60055D74B /* Crashlytics.framework */; };
 		E9147B6C1925123C00C25C9A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9147B6B1925123C00C25C9A /* ProfileViewController.m */; };
 		E921D6161923967D00361247 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6151923967D00361247 /* Foundation.framework */; };
 		E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6171923967D00361247 /* CoreGraphics.framework */; };
@@ -242,6 +243,7 @@
 		E900C2B31961EADE00A01F50 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
 		E90AA8A41975DC6E0055D74B /* transparentShadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = transparentShadow.png; sourceTree = "<group>"; };
+		E90AA8A71976C8B60055D74B /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		E9147B6A1925123C00C25C9A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
 		E9147B6B1925123C00C25C9A /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
 		E921D6121923967D00361247 /* wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -445,6 +447,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */,
+				E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */,
 				E9D906DB19255DBC00E39FC8 /* Security.framework in Frameworks */,
 				E9D906D919255DB400E39FC8 /* QuartzCore.framework in Frameworks */,
 				E9D906D719255DAB00E39FC8 /* MobileCoreServices.framework in Frameworks */,
@@ -562,6 +565,7 @@
 		E921D6141923967D00361247 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E90AA8A71976C8B60055D74B /* Crashlytics.framework */,
 				E9ECFF7F196D917F00384252 /* FacebookSDK.framework */,
 				E9902982196B12BE00192FF2 /* Parse.framework */,
 				E900C2901961E0B800A01F50 /* ImageIO.framework */,
@@ -1007,6 +1011,7 @@
 				E921D60E1923967D00361247 /* Sources */,
 				E921D60F1923967D00361247 /* Frameworks */,
 				E921D6101923967D00361247 /* Resources */,
+				E90AA8A61976C8640055D74B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1206,6 +1211,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E90AA8A61976C8640055D74B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run c08b20670e125cf177b5a6e7bb70d6b4e9b75c27 52f350418a2dbeb5ce538ff885523386379c5314ce4ac5d1d5d1307a36c872af";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E921D60E1923967D00361247 /* Sources */ = {

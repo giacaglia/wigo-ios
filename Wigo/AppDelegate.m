@@ -10,11 +10,14 @@
 #import "FontProperties.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Parse/Parse.h>
+#import <Crashlytics/Crashlytics.h>
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
+    
     [Parse setApplicationId:@"Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ"
                   clientKey:@"kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb"];
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|

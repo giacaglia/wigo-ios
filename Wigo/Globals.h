@@ -24,6 +24,7 @@
 //#else
 //#define NSLog(...)
 //#endif
+#define MAX_LENGTH_BIO 110
 
 @protocol Globals <NSObject>
 
