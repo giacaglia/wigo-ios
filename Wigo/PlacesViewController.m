@@ -294,7 +294,7 @@
     [self.view addSubview:_whereAreYouGoingView];
     
     _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 98, 47)];
-    _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"WHERE ARE YOU GOING?" attributes:@{NSForegroundColorAttributeName:[FontProperties getLightBlueColor]}];
+    _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"WHERE ARE YOU GOING?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
     _whereAreYouGoingTextField.font = [UIFont fontWithName:@"Whitney-MediumSC" size:15.0f];
     _whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
     [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
@@ -429,7 +429,7 @@
     _tagInteger += 1;
     
     
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width, 30)];
+    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 100, 30)];
     if (_isSearching) {
         if (indexPath.row < [_filteredContentList count]) {
             labelName.text = [_filteredContentList objectAtIndex:indexPath.row];

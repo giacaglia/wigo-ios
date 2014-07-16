@@ -521,7 +521,7 @@
     [_bioLabel setAttributedText:string];
     _bioLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _bioLabel.numberOfLines = 0;
-    _bioLabel.font = [FontProperties getBioFont];
+    _bioLabel.font = [FontProperties getSmallFont];
     [_bioLabel sizeToFit];
     [self.view addSubview:_bioLabel];
 }
