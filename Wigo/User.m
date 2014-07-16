@@ -141,7 +141,9 @@
         for (NSString *key in [imagesDictionary allKeys]) {
             NSString *pictureURL = [imagesDictionary objectForKey:key];
             NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
-            [imagesDataArray addObject:imageData];
+            if (imageData) {
+                [imagesDataArray addObject:imageData];
+            }
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             
