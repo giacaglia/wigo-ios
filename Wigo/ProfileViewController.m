@@ -227,7 +227,6 @@
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.width)];
     [_scrollView setShowsHorizontalScrollIndicator:NO];
     _scrollView.layer.borderWidth = 1;
-
     _scrollView.backgroundColor = RGB(23,23,23);
     _tapScrollView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(chooseImage)];
     _tapScrollView.cancelsTouchesInView = NO;
@@ -270,7 +269,7 @@
         UIImageView *profileImgView = [[UIImageView alloc] init];
         profileImgView.contentMode = UIViewContentModeScaleAspectFill;
         profileImgView.clipsToBounds = YES;
-        profileImgView.frame = CGRectMake(self.view.frame.size.width * i, 0, self.view.frame.size.width, self.view.frame.size.width);
+        profileImgView.frame = CGRectMake((self.view.frame.size.width + 10) * i, 0, self.view.frame.size.width, self.view.frame.size.width);
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 [self addBlurredImage:image toImageView:profileImgView];
@@ -281,7 +280,7 @@
         [_scrollView addSubview:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
-    [_scrollView setContentSize:CGSizeMake(self.view.frame.size.width * [[self.user imagesURL] count], 320)];
+    [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count], 320)];
     _bioLabel.text = [NSString stringWithFormat:@"       %@" , [self.user bioString]];
     [_bioLabel sizeToFit];
 }
@@ -584,7 +583,7 @@
             page = ceil(fractionalPage);
         }
     }
-    [_scrollView setContentOffset:CGPointMake(self.view.frame.size.width * page, 0.0f) animated:YES];
+    [_scrollView setContentOffset:CGPointMake((self.view.frame.size.width + 10) * page, 0.0f) animated:YES];
 }
 
 
