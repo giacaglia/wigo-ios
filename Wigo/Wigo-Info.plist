@@ -28,6 +28,16 @@
 				<string>fb661589153895742</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.whoisgoingout.wigo</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>wigo</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
