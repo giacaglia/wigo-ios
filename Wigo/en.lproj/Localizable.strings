@@ -6,10 +6,18 @@
 */
 
 "MESSAGE" = "%@: %@";
+"M" = "%@: %@";
 "FOLLOW" = "%@ is now following you";
+"F" = "%@ is now following you";
 "FOLLOW_REQUEST" = "%@ would like to follow you";
+"FR" = "%@ would like to follow you";
 "FOLLOW_ACCEPTED" = "%@ accepted your follow request";
+"FA" = "%@ accepted your follow request";
 "FACEBOOK_FOLLOW" = "%@ just joined WiGo";
+"FF" = "%@ just joined WiGo";
 "TAP" = "%@ tapped you";
+"T" = "%@ tapped you";
 "GOINGOUT" = "%@ is going out";
+"GO" = "%@ is going out";
 "GROUP_UNLOCKED" = "%@ was just unlocked";
+"GU" = "%@ was just unlocked";
