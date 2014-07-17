@@ -21,7 +21,6 @@
 
 @property BOOL didImagesLoad;
 
-@property BOOL isPersonFavorite;
 @property int currentPage;
 @property UIPageControl *pageControl;
 @property UIScrollView *scrollView;
@@ -453,7 +452,7 @@
         [self followersButtonPressed];
     }
     else {
-        if (_isPersonFavorite) {
+        if ([self.user isFavorite]) {
             [self.user setIsFavorite:NO];
             [self.user saveKey:@"is_favorite"];
             _favoriteImageView.image = [UIImage imageNamed:@"favorite"];
@@ -463,7 +462,6 @@
             [self.user saveKey:@"is_favorite"];
             _favoriteImageView.image = [UIImage imageNamed:@"favoriteSelected"];
         }
-        _isPersonFavorite = !_isPersonFavorite;
     }
 }
 

@@ -79,8 +79,8 @@
     else if ([[self type] isEqualToString:@"joined"]) {
         return @"joined WiGo";
     }
-    else if ([[self type] isEqualToString:@"goingOut"]) {
-        return @"is going out tonight";
+    else if ([[self type] isEqualToString:@"goingout"]) {
+        return @"is going out!";
     }
     return @"";
 }

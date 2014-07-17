@@ -7,6 +7,7 @@
 //
 
 #import "User.h"
+#import "Profile.h"
 #import <Parse/Parse.h>
 
 @implementation User
@@ -425,9 +426,9 @@
 
 - (void)saveKey:(NSString *)key {
     Query *query = [[Query alloc] init];
-    NSString *queryString = [NSString stringWithFormat:@"users/?user=%@", [_proxy objectForKey:@"id"]];
+    NSString *queryString = [NSString stringWithFormat:@"users/%@/", [_proxy objectForKey:@"id"]];
     [query queryWithClassName:queryString];
-    [query setProfileKey:self.key];
+    [query setProfileKey:[Profile user].key];
     [query setValue:[_proxy objectForKey:key] forKey:key];
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
     [_proxy addEntriesFromDictionary:dictionaryUser];

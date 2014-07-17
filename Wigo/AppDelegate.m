@@ -110,6 +110,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     firstTab = [tabBar.items objectAtIndex:3];
     firstTab.image = [[UIImage imageNamed:@"notificationsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
+//    [self addNotificationNumber:@0];
+
 }
 
 - (void) changeTabBarToBlue {
@@ -126,11 +128,23 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     firstTab = [tabBar.items objectAtIndex:3];
     firstTab.image = [[UIImage imageNamed:@"notificationsIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
+//    [self addNotificationNumber:@0];
 
 
 }
 
+- (void)addNotificationNumber:(NSNumber *)number {
+    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+    UITabBar *tabBar = tabBarController.tabBar;
 
+    UILabel *numberOfNotifications = [[UILabel alloc] initWithFrame:CGRectMake(216, 6, 8, 8)];
+    numberOfNotifications.backgroundColor = [FontProperties getOrangeColor];
+    numberOfNotifications.layer.borderColor = [UIColor clearColor].CGColor;
+    numberOfNotifications.layer.cornerRadius = 5;
+    numberOfNotifications.layer.borderWidth = 1;
+    numberOfNotifications.layer.masksToBounds = YES;
+    [tabBar addSubview:numberOfNotifications];
+}
 
 
 
