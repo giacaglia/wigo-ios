@@ -190,7 +190,7 @@
 
 - (void)initializeWhereView {
     
-    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
@@ -432,7 +432,6 @@
     placeSubView.tag = _tagInteger;
     _tagInteger += 1;
     
-    
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 100, 30)];
     if (_isSearching) {
         if (indexPath.row < [_filteredContentList count]) {
@@ -641,11 +640,11 @@
     }
     __weak UITableView *tempPlacesTableView = _placesTableView;
     [tempPlacesTableView addPullToRefreshWithDrawingImgs:TwitterMusicDrawingImgs andLoadingImgs:TwitterMusicLoadingImgs andActionHandler:^{
-        [self refreshPeople];
+        [self refreshEvents];
     }];
 }
 
-- (void)refreshPeople {
+- (void)refreshEvents {
     [self fetchEventsFirstPage];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         dispatch_async(dispatch_get_main_queue(), ^{

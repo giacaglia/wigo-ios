@@ -93,7 +93,6 @@
         [WiGoSpinnerView hideSpinnerForView:self.view];
         [Profile setUser:profileUser];
         
-        
         if ([response isEqualToString:@"error"]) {
             [self fetchTokensFromFacebook];
             [self fetchProfilePicturesAlbumFacebook];
