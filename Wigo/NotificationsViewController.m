@@ -143,6 +143,12 @@
         iconLabel.frame = CGRectMake(58, 20, 14, 14);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
+    else if ([typeString isEqualToString:@"goingout"]) {
+        iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"goingout"]];
+        iconLabel.frame = CGRectMake(58, 20, 12, 18);
+        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
+    }
+
     notificationButton.tag = [indexPath row];
     [notificationButton addSubview:iconLabel];
 

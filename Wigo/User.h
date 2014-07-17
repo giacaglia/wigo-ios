@@ -26,6 +26,7 @@
 @property BOOL isGoingOut;
 @property BOOL emailValidated;
 @property BOOL isFavorite;
+@property BOOL isFollowing;
 
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
