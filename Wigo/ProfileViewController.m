@@ -284,6 +284,7 @@
     [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count], 320)];
     _bioLabel.text = [NSString stringWithFormat:@"       %@" , [self.user bioString]];
     [_bioLabel sizeToFit];
+
 }
 
 - (void) addBlurredImage:(UIImage *)image toImageView:(UIImageView *)imageView {
@@ -521,7 +522,7 @@
     _bioLineView.backgroundColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f];
     [self.view addSubview:_bioLineView];
     
-    UILabel *bioPrefix = [[UILabel alloc] initWithFrame:CGRectMake(5, 64 + self.view.frame.size.width + 90 + 5 + 10, 40, 20)];
+    UILabel *bioPrefix = [[UILabel alloc] initWithFrame:CGRectMake(5, 64 + self.view.frame.size.width + 90 + 4 + 10, 40, 20)];
     bioPrefix.text = @"Bio: ";
     bioPrefix.textColor = [UIColor grayColor];
     bioPrefix.font = [FontProperties getTitleFont];
@@ -533,7 +534,7 @@
     _bioLabel.text = [NSString stringWithFormat:@"      %@" , [self.user bioString]];
     _bioLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _bioLabel.numberOfLines = 0;
-    [_bioLabel sizeToFit];
+    _bioLabel.textAlignment = NSTextAlignmentLeft;
     [self.view addSubview:_bioLabel];
 }
 
