@@ -631,7 +631,6 @@
     for (NSUInteger i  = 0; i <= 1; i++) {
         int fileNumber = (3*i)%31;
         NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
-        NSLog(@"filename %@", fileName);
         [TwitterMusicDrawingImgs addObject:[UIImage imageNamed:fileName]];
     }
     

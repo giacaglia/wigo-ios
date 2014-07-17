@@ -311,6 +311,16 @@
     return [(NSNumber *)[_proxy objectForKey:@"is_tapped"] boolValue];
 }
 
+- (BOOL)isFavorite {
+    NSNumber *favoriteNumber = (NSNumber *)[_proxy objectForKey:@"is_favorite"];
+    return [favoriteNumber boolValue];
+}
+
+- (void)setIsFavorite:(BOOL)isFavorite {
+    [_proxy setObject:[NSNumber numberWithBool:isFavorite] forKey:@"is_favorite"];
+    [modifiedKeys addObject:@"is_favorite"];
+}
+
 #pragma mark - Saving data
 - (NSString *)login {
     Query *query = [[Query alloc] init];
@@ -336,7 +346,7 @@
         }
     }
     if ([[dictionaryUser allKeys] containsObject:@"email_validated"] ) {
-        NSLog(@"dictionary user %@", dictionaryUser);
+//        NSLog(@"dictionary user %@", dictionaryUser);
         for (NSString *key in [dictionaryUser allKeys]) {
             [self setValue:[dictionaryUser objectForKey:key] forKey:key];
         }
@@ -349,7 +359,7 @@
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     currentInstallation[@"wigo_id"] = [_proxy objectForKey:@"id"];
     [currentInstallation saveInBackground];
-    NSLog(@"dictionary user %@", dictionaryUser);
+//    NSLog(@"dictionary user %@", dictionaryUser);
     for (NSString *key in [dictionaryUser allKeys]) {
         [self setValue:[dictionaryUser objectForKey:key] forKey:key];
     }
@@ -365,7 +375,7 @@
     [query setValue:[self accessToken] forKey:@"facebook_access_token"];
     [query setValue:self.email forKey:@"email"];
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
-    NSLog(@"dictionary User %@", dictionaryUser);
+//    NSLog(@"dictionary User %@", dictionaryUser);
     if (dictionaryUser == nil) {
         return @"no_network";
     }
@@ -406,7 +416,7 @@
         [query setValue:[_proxy objectForKey:key] forKey:key];
     }
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
-    NSLog(@"dictionary User %@", dictionaryUser);
+//    NSLog(@"dictionary User %@", dictionaryUser);
     if  (!(dictionaryUser == nil)) {
         [_proxy addEntriesFromDictionary:dictionaryUser];
         modifiedKeys = [[NSMutableArray alloc] init];

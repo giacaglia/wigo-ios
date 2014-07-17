@@ -15,8 +15,8 @@
 "FA" = "%@ accepted your follow request";
 "FACEBOOK_FOLLOW" = "%@ just joined WiGo";
 "FF" = "%@ just joined WiGo";
-"TAP" = "%@ tapped you";
-"T" = "%@ tapped you";
+"TAP" = "%@ wants to see you out";
+"T" = "%@ wants to see you out";
 "GOINGOUT" = "%@ is going out";
 "G" = "%@ is going out";
 "GROUP_UNLOCKED" = "%@ was just unlocked";

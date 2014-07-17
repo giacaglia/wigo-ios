@@ -204,6 +204,7 @@
 		E9DBB08D1978151F00DDACDE /* dancingG-7.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06E1978151F00DDACDE /* dancingG-7.png */; };
 		E9DBB08E1978151F00DDACDE /* dancingG-8.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06F1978151F00DDACDE /* dancingG-8.png */; };
 		E9DBB08F1978151F00DDACDE /* dancingG-9.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0701978151F00DDACDE /* dancingG-9.png */; };
+		E9DBB0911978190000DDACDE /* favoriteSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0901978190000DDACDE /* favoriteSmall@2x.png */; };
 		E9DE130C196F06B100AFA05A /* WiGoSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */; };
 		E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
 		E9E618FF1936421A00A224C0 /* backIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E618FE1936421A00A224C0 /* backIcon.png */; };
@@ -485,6 +486,7 @@
 		E9DBB06E1978151F00DDACDE /* dancingG-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-7.png"; sourceTree = "<group>"; };
 		E9DBB06F1978151F00DDACDE /* dancingG-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-8.png"; sourceTree = "<group>"; };
 		E9DBB0701978151F00DDACDE /* dancingG-9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-9.png"; sourceTree = "<group>"; };
+		E9DBB0901978190000DDACDE /* favoriteSmall@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "favoriteSmall@2x.png"; sourceTree = "<group>"; };
 		E9DE130A196F06B100AFA05A /* WiGoSpinnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WiGoSpinnerView.h; sourceTree = "<group>"; };
 		E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WiGoSpinnerView.m; sourceTree = "<group>"; };
 		E9E618FB193625BB00A224C0 /* EmailConfirmationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailConfirmationViewController.h; sourceTree = "<group>"; };
@@ -761,6 +763,7 @@
 			isa = PBXGroup;
 			children = (
 				E9F59E2E192E3F0600BB8FDD /* whereIcon.png */,
+				E9DBB0901978190000DDACDE /* favoriteSmall@2x.png */,
 				E9F59E34192FAC7400BB8FDD /* thinkingIcon.png */,
 				E9CD473B194E884200AEA17D /* orangeTap@2x.png */,
 				E9CD46FB1947873F00AEA17D /* tapUnfilled@2x.png */,
@@ -1227,6 +1230,7 @@
 				E9DBB07D1978151F00DDACDE /* dancingG-2.png in Resources */,
 				E9BE8CA5192AA29C008BB84C /* WhitneyIndexBlack-SquareMd.ttf in Resources */,
 				E9CD470719479D6D00AEA17D /* chatsSelected@2x.png in Resources */,
+				E9DBB0911978190000DDACDE /* favoriteSmall@2x.png in Resources */,
 				E9F59E35192FAC7400BB8FDD /* thinkingIcon.png in Resources */,
 				E9AAAFC6193E184D0069F700 /* phoneFilled.png in Resources */,
 				E9DBB0741978151F00DDACDE /* dancingG-11.png in Resources */,

@@ -529,7 +529,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     for (NSUInteger i  = 0; i <= 1; i++) {
         int fileNumber = (3*i)%31;
         NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
-        NSLog(@"filename %@", fileName);
         [TwitterMusicDrawingImgs addObject:[UIImage imageNamed:fileName]];
     }
     
@@ -647,6 +646,12 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     profileName.font = [FontProperties getSmallFont];
     profileName.tag = -1;
     [imgView addSubview:profileName];
+    
+    if ([user isFavorite]) {
+        UIImageView *favoriteSmall = [[UIImageView alloc] initWithFrame:CGRectMake(6, 7, 10, 10)];
+        favoriteSmall.image = [UIImage imageNamed:@"favoriteSmall"];
+        [profileName addSubview:favoriteSmall];
+    }
     
     UIButton *tapButton = [[UIButton alloc] initWithFrame:CGRectMake(imgView.frame.size.width/2, 0, imgView.frame.size.width/2, imgView.frame.size.height/2)];
     [tapButton addTarget:self action:@selector(selectedProfile:) forControlEvents:UIControlEventTouchUpInside];

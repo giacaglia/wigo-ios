@@ -25,6 +25,7 @@
 @property BOOL private;
 @property BOOL isGoingOut;
 @property BOOL emailValidated;
+@property BOOL isFavorite;
 
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
@@ -41,7 +42,6 @@
 - (BOOL)isTapped;
 
 // NEED TO IMPLEMENT
-@property BOOL *isFavorite;
 @property NSString *placeWhereGoingOut;
 @property NSMutableArray *listOfFollowers;
 @property NSMutableArray *listOfFollowing;
