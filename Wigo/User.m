@@ -417,7 +417,6 @@
         [query setValue:[_proxy objectForKey:key] forKey:key];
     }
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
-//    NSLog(@"dictionary User %@", dictionaryUser);
     if  (!(dictionaryUser == nil)) {
         [_proxy addEntriesFromDictionary:dictionaryUser];
         modifiedKeys = [[NSMutableArray alloc] init];
