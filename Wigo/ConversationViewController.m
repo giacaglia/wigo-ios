@@ -318,17 +318,26 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void)moveControls:(NSNotification*)notification up:(BOOL)up
 {
     NSDictionary* userInfo = [notification userInfo];
-    CGRect newFrame = [self getNewControlsFrame:userInfo up:up];
     
+    // SCROLL VIEW resize
+    CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    kbFrame = [self.view convertRect:kbFrame fromView:nil];
+    CGRect frame = _scrollView.frame;
+    frame.size.height += kbFrame.size.height * (up ? -1 : 1);
+    _scrollView.frame = frame;
+    CGPoint bottomOffset = CGPointMake(0, self.scrollView.contentSize.height - self.scrollView.bounds.size.height);
+    [_scrollView setContentOffset:bottomOffset animated:YES];
+    
+    CGRect newFrame = [self getNewControlsFrame:userInfo up:up forView:_chatTextFieldWrapper];
     [self animateControls:userInfo withFrame:newFrame];
 }
 
-- (CGRect)getNewControlsFrame:(NSDictionary*)userInfo up:(BOOL)up
+- (CGRect)getNewControlsFrame:(NSDictionary*)userInfo up:(BOOL)up forView:(UIView *)view
 {
     CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     kbFrame = [self.view convertRect:kbFrame fromView:nil];
     
-    CGRect newFrame = _chatTextFieldWrapper.frame;
+    CGRect newFrame = view.frame;
     newFrame.origin.y += kbFrame.size.height * (up ? -1 : 1);
     
     return newFrame;
