@@ -432,7 +432,8 @@
     profileImageView.tag = [indexPath row];
     profileImageView.userInteractionEnabled = YES;
     [cell.contentView addSubview:profileImageView];
-    
+    cell.contentView.clipsToBounds = YES;
+
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
     [tap setNumberOfTouchesRequired:1];
     [tap setNumberOfTapsRequired:1];
