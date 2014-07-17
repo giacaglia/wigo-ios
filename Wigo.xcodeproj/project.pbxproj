@@ -7,6 +7,217 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */ = {isa = PBXBuildFile; fileRef = C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */; };
+		C12A110819787BE700D53B1C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C61194F745300182E0E /* User.m */; };
+		C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
+		C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6251923967D00361247 /* AppDelegate.m */; };
+		C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A31961EADE00A01F50 /* SDWebImageManager.m */; };
+		C12A110C19787BE700D53B1C /* WiGoSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */; };
+		C12A110D19787BE700D53B1C /* UIImageCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = E93DE52F195C99F600079074 /* UIImageCrop.m */; };
+		C12A110E19787BE700D53B1C /* UIScrollView+GifPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */; };
+		C12A110F19787BE700D53B1C /* UIButtonUngoOut.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C7A195084B700182E0E /* UIButtonUngoOut.m */; };
+		C12A111019787BE700D53B1C /* PeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906BD19252DA900E39FC8 /* PeopleViewController.m */; };
+		C12A111119787BE700D53B1C /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2AC1961EADE00A01F50 /* UIImage+MultiFormat.m */; };
+		C12A111219787BE700D53B1C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6211923967D00361247 /* main.m */; };
+		C12A111319787BE700D53B1C /* FacebookAlbumTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */; };
+		C12A111419787BE700D53B1C /* SDWebImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C29F1961EADE00A01F50 /* SDWebImageDownloader.m */; };
+		C12A111519787BE700D53B1C /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E93DE529195C82B900079074 /* MessageViewController.m */; };
+		C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2AE1961EADE00A01F50 /* UIImage+WebP.m */; };
+		C12A111719787BE700D53B1C /* SignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906C719255BB000E39FC8 /* SignViewController.m */; };
+		C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
+		C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */; };
+		C12A111A19787BE700D53B1C /* Party.m in Sources */ = {isa = PBXBuildFile; fileRef = E95DC77C195329B10012AA20 /* Party.m */; };
+		C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B01961EADE00A01F50 /* UIImageView+HighlightedWebCache.m */; };
+		C12A111C19787BE700D53B1C /* NSMutableURLRequest+Wigo.m in Sources */ = {isa = PBXBuildFile; fileRef = C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */; };
+		C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C29D1961EADE00A01F50 /* SDWebImageDecoder.m */; };
+		C12A111E19787BE700D53B1C /* SDWebImagePrefetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A61961EADE00A01F50 /* SDWebImagePrefetcher.m */; };
+		C12A111F19787BE700D53B1C /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A17C6F195C761E0057C89A /* Network.m */; };
+		C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD4728194B889800AEA17D /* RWBlurImage.m */; };
+		C12A112119787BE700D53B1C /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C250195DCC4100A01F50 /* Message.m */; };
+		C12A112219787BE700D53B1C /* FontProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BE8C48192A48F1008BB84C /* FontProperties.m */; };
+		C12A112319787BE700D53B1C /* Notification.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C253195E010500A01F50 /* Notification.m */; };
+		C12A112419787BE700D53B1C /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD4739194B9AD600AEA17D /* PhotoViewController.m */; };
+		C12A112519787BE700D53B1C /* UIImage+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2AA1961EADE00A01F50 /* UIImage+GIF.m */; };
+		C12A112619787BE700D53B1C /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */; };
+		C12A112719787BE700D53B1C /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9147B6B1925123C00C25C9A /* ProfileViewController.m */; };
+		C12A112819787BE700D53B1C /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2991961EADE00A01F50 /* SDImageCache.m */; };
+		C12A112919787BE700D53B1C /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
+		C12A112A19787BE700D53B1C /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = E95DC77F19538A270012AA20 /* Event.m */; };
+		C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */; };
+		C12A112C19787BE700D53B1C /* Query.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681CB41950AA3B00182E0E /* Query.m */; };
+		C12A112D19787BE700D53B1C /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */; };
+		C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A11961EADE00A01F50 /* SDWebImageDownloaderOperation.m */; };
+		C12A112F19787BE700D53B1C /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
+		C12A113019787BE700D53B1C /* SDWebImageCompat.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C29B1961EADE00A01F50 /* SDWebImageCompat.m */; };
+		C12A113119787BE700D53B1C /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2971961EADE00A01F50 /* NSData+ImageContentType.m */; };
+		C12A113219787BE700D53B1C /* Profile.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BE8C4B192A54F3008BB84C /* Profile.m */; };
+		C12A113319787BE700D53B1C /* RWBlurPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD472A194B889800AEA17D /* RWBlurPopover.m */; };
+		C12A113419787BE700D53B1C /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906C419253A1D00E39FC8 /* ChatViewController.m */; };
+		C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A81961EADE00A01F50 /* UIButton+WebCache.m */; };
+		C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
+		C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2581961B96000A01F50 /* SignNavigationViewController.m */; };
+		C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
+		C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */; };
+		C12A113A19787BE700D53B1C /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2951961EADE00A01F50 /* MKAnnotationView+WebCache.m */; };
+		C12A113B19787BE700D53B1C /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D66119239ED900361247 /* MainViewController.m */; };
+		C12A113C19787BE700D53B1C /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBB193CBE810069F700 /* NotificationsViewController.m */; };
+		C12A113E19787BE700D53B1C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */; };
+		C12A113F19787BE700D53B1C /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E90AA8A71976C8B60055D74B /* Crashlytics.framework */; };
+		C12A114019787BE700D53B1C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DA19255DBC00E39FC8 /* Security.framework */; };
+		C12A114119787BE700D53B1C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D819255DB400E39FC8 /* QuartzCore.framework */; };
+		C12A114219787BE700D53B1C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D619255DAB00E39FC8 /* MobileCoreServices.framework */; };
+		C12A114319787BE700D53B1C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D419255DA200E39FC8 /* libz.dylib */; };
+		C12A114419787BE700D53B1C /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D219255D9A00E39FC8 /* CoreLocation.framework */; };
+		C12A114519787BE700D53B1C /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9902982196B12BE00192FF2 /* Parse.framework */; };
+		C12A114619787BE700D53B1C /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D019255D8B00E39FC8 /* CFNetwork.framework */; };
+		C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906CE19255D8200E39FC8 /* AudioToolbox.framework */; };
+		C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
+		C12A114919787BE700D53B1C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6171923967D00361247 /* CoreGraphics.framework */; };
+		C12A114A19787BE700D53B1C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6191923967D00361247 /* UIKit.framework */; };
+		C12A114B19787BE700D53B1C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6151923967D00361247 /* Foundation.framework */; };
+		C12A114C19787BE700D53B1C /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
+		C12A114E19787BE700D53B1C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E921D6301923967D00361247 /* Images.xcassets */; };
+		C12A114F19787BE700D53B1C /* clearButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD4723194B75E600AEA17D /* clearButton@2x.png */; };
+		C12A115019787BE700D53B1C /* wigoLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9ECFF81196DEB5A00384252 /* wigoLogo@2x.png */; };
+		C12A115119787BE700D53B1C /* rightAfterChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E6190219365B4000A224C0 /* rightAfterChatIcon.png */; };
+		C12A115219787BE700D53B1C /* dancingG-30.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06A1978151F00DDACDE /* dancingG-30.png */; };
+		C12A115319787BE700D53B1C /* privateLine@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD4736194B938500AEA17D /* privateLine@2x.png */; };
+		C12A115419787BE700D53B1C /* plusPerson@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F850B1945FFB400B3B448 /* plusPerson@2x.png */; };
+		C12A115519787BE700D53B1C /* writeIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F85081945FF3B00B3B448 /* writeIcon@2x.png */; };
+		C12A115619787BE700D53B1C /* lockLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD4725194B7E2000AEA17D /* lockLogo@2x.png */; };
+		C12A115719787BE700D53B1C /* orangeTap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD473B194E884200AEA17D /* orangeTap@2x.png */; };
+		C12A115819787BE700D53B1C /* dancingG-19.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05D1978151F00DDACDE /* dancingG-19.png */; };
+		C12A115919787BE700D53B1C /* peopleIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F84FF1945F94900B3B448 /* peopleIcon@2x.png */; };
+		C12A115A19787BE700D53B1C /* ben3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E9CD471D194A0AA700AEA17D /* ben3.jpg */; };
+		C12A115B19787BE700D53B1C /* Whitney2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C68192AA29C008BB84C /* Whitney2.ttf */; };
+		C12A115C19787BE700D53B1C /* notificationsSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470819479DBD00AEA17D /* notificationsSelected@2x.png */; };
+		C12A115D19787BE700D53B1C /* dancingG-15.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0591978151F00DDACDE /* dancingG-15.png */; };
+		C12A115E19787BE700D53B1C /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C54192AA29C008BB84C /* Whitney-Bold.ttf */; };
+		C12A115F19787BE700D53B1C /* WhitneyNumeric-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C80192AA29C008BB84C /* WhitneyNumeric-LightItalic.ttf */; };
+		C12A116019787BE700D53B1C /* WhitneyIndexBlack-SquareBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6D192AA29C008BB84C /* WhitneyIndexBlack-SquareBd.ttf */; };
+		C12A116119787BE700D53B1C /* Whitney-BookItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C59192AA29C008BB84C /* Whitney-BookItalic.ttf */; };
+		C12A116219787BE700D53B1C /* dancingG-2.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05E1978151F00DDACDE /* dancingG-2.png */; };
+		C12A116319787BE700D53B1C /* WhitneyIndexBlack-SquareMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C70192AA29C008BB84C /* WhitneyIndexBlack-SquareMd.ttf */; };
+		C12A116419787BE700D53B1C /* favoriteSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB09419781D1C00DDACDE /* favoriteSelected@2x.png */; };
+		C12A116519787BE700D53B1C /* chatsSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470619479D6D00AEA17D /* chatsSelected@2x.png */; };
+		C12A116619787BE700D53B1C /* favoriteSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0901978190000DDACDE /* favoriteSmall@2x.png */; };
+		C12A116719787BE700D53B1C /* thinkingIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E34192FAC7400BB8FDD /* thinkingIcon.png */; };
+		C12A116819787BE700D53B1C /* phoneFilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFC5193E184D0069F700 /* phoneFilled.png */; };
+		C12A116919787BE700D53B1C /* dancingG-11.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0551978151F00DDACDE /* dancingG-11.png */; };
+		C12A116A19787BE700D53B1C /* dancingG-0.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0521978151F00DDACDE /* dancingG-0.png */; };
+		C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */; };
+		C12A116C19787BE700D53B1C /* dancingG-7.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06E1978151F00DDACDE /* dancingG-7.png */; };
+		C12A116D19787BE700D53B1C /* dancingG-23.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0621978151F00DDACDE /* dancingG-23.png */; };
+		C12A116E19787BE700D53B1C /* Whitney-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C51192AA29C008BB84C /* Whitney-BlackItalic.ttf */; };
+		C12A116F19787BE700D53B1C /* Whitney-SemiboldSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C67192AA29C008BB84C /* Whitney-SemiboldSC.ttf */; };
+		C12A117019787BE700D53B1C /* chatsIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F85031945FADF00B3B448 /* chatsIcon@2x.png */; };
+		C12A117119787BE700D53B1C /* WhitneyNumeric-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C83192AA29C008BB84C /* WhitneyNumeric-Semibold.ttf */; };
+		C12A117219787BE700D53B1C /* commentFilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E24192D514E00BB8FDD /* commentFilled.png */; };
+		C12A117319787BE700D53B1C /* dancingG-10.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0541978151F00DDACDE /* dancingG-10.png */; };
+		C12A117419787BE700D53B1C /* Whitney-BlackSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C53192AA29C008BB84C /* Whitney-BlackSC.ttf */; };
+		C12A117519787BE700D53B1C /* placesSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470419479CCB00AEA17D /* placesSelected@2x.png */; };
+		C12A117619787BE700D53B1C /* Whitney-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C55192AA29C008BB84C /* Whitney-BoldItalic.ttf */; };
+		C12A117719787BE700D53B1C /* notificationsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470F1947A39C00AEA17D /* notificationsIconBlue@2x.png */; };
+		C12A117819787BE700D53B1C /* emailUnfilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFC1193E175C0069F700 /* emailUnfilled.png */; };
+		C12A117919787BE700D53B1C /* rightArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E20192D1D3A00BB8FDD /* rightArrow.png */; };
+		C12A117A19787BE700D53B1C /* orangeSearchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */; };
+		C12A117B19787BE700D53B1C /* dancingG-5.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06C1978151F00DDACDE /* dancingG-5.png */; };
+		C12A117C19787BE700D53B1C /* WhitneyNumeric-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7B192AA29C008BB84C /* WhitneyNumeric-Bold.ttf */; };
+		C12A117D19787BE700D53B1C /* followedPersonIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46F819474D2300AEA17D /* followedPersonIcon@2x.png */; };
+		C12A117E19787BE700D53B1C /* dancingG-3.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0691978151F00DDACDE /* dancingG-3.png */; };
+		C12A117F19787BE700D53B1C /* Whitney-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5D192AA29C008BB84C /* Whitney-LightItalic.ttf */; };
+		C12A118019787BE700D53B1C /* WhitneyNumeric-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7D192AA29C008BB84C /* WhitneyNumeric-Book.ttf */; };
+		C12A118119787BE700D53B1C /* Whitney-LightItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5E192AA29C008BB84C /* Whitney-LightItalicSC.ttf */; };
+		C12A118219787BE700D53B1C /* leftBeforeChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E6190019365AA300A224C0 /* leftBeforeChatIcon.png */; };
+		C12A118319787BE700D53B1C /* dancingG-24.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0631978151F00DDACDE /* dancingG-24.png */; };
+		C12A118419787BE700D53B1C /* dancingG-8.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06F1978151F00DDACDE /* dancingG-8.png */; };
+		C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */; };
+		C12A118619787BE700D53B1C /* emailFilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFC3193E17F40069F700 /* emailFilled.png */; };
+		C12A118719787BE700D53B1C /* WhitneyNumeric-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7C192AA29C008BB84C /* WhitneyNumeric-BoldItalic.ttf */; };
+		C12A118819787BE700D53B1C /* Whitney-BoldItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C56192AA29C008BB84C /* Whitney-BoldItalicSC.ttf */; };
+		C12A118919787BE700D53B1C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
+		C12A118A19787BE700D53B1C /* WhitneyNumeric-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C82192AA29C008BB84C /* WhitneyNumeric-MediumItalic.ttf */; };
+		C12A118B19787BE700D53B1C /* WhitneyNumeric-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C81192AA29C008BB84C /* WhitneyNumeric-Medium.ttf */; };
+		C12A118C19787BE700D53B1C /* addedFilled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F85141946031600B3B448 /* addedFilled@2x.png */; };
+		C12A118D19787BE700D53B1C /* WhitneyIndexWhite-RoundBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C71192AA29C008BB84C /* WhitneyIndexWhite-RoundBd.ttf */; };
+		C12A118E19787BE700D53B1C /* dancingG-25.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0641978151F00DDACDE /* dancingG-25.png */; };
+		C12A118F19787BE700D53B1C /* dancingG-4.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06B1978151F00DDACDE /* dancingG-4.png */; };
+		C12A119019787BE700D53B1C /* WhitneyIndexWhite-SquareMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C78192AA29C008BB84C /* WhitneyIndexWhite-SquareMd.ttf */; };
+		C12A119119787BE700D53B1C /* dancingG-27.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0661978151F00DDACDE /* dancingG-27.png */; };
+		C12A119219787BE700D53B1C /* goingSomewhereElse@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD471A194A083E00AEA17D /* goingSomewhereElse@2x.png */; };
+		C12A119319787BE700D53B1C /* Whitney-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C60192AA29C008BB84C /* Whitney-Medium.ttf */; };
+		C12A119419787BE700D53B1C /* dancingG-6.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06D1978151F00DDACDE /* dancingG-6.png */; };
+		C12A119519787BE700D53B1C /* dancingG-12.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0561978151F00DDACDE /* dancingG-12.png */; };
+		C12A119619787BE700D53B1C /* favorite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB09219781CDB00DDACDE /* favorite@2x.png */; };
+		C12A119719787BE700D53B1C /* placesIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F85011945F9E700B3B448 /* placesIcon@2x.png */; };
+		C12A119819787BE700D53B1C /* Whitney-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C58192AA29C008BB84C /* Whitney-Book.ttf */; };
+		C12A119919787BE700D53B1C /* Whitney-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C65192AA29C008BB84C /* Whitney-SemiboldItalic.ttf */; };
+		C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */; };
+		C12A119B19787BE700D53B1C /* WhitneyNumeric-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C84192AA29C008BB84C /* WhitneyNumeric-SemiboldItalic.ttf */; };
+		C12A119C19787BE700D53B1C /* privacyLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9681C74194FCA2100182E0E /* privacyLogo@2x.png */; };
+		C12A119D19787BE700D53B1C /* Whitney-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C50192AA29C008BB84C /* Whitney-Black.ttf */; };
+		C12A119E19787BE700D53B1C /* WhitneyIndexWhite-SquareBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C75192AA29C008BB84C /* WhitneyIndexWhite-SquareBd.ttf */; };
+		C12A119F19787BE700D53B1C /* dancingG-20.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05F1978151F00DDACDE /* dancingG-20.png */; };
+		C12A11A019787BE700D53B1C /* tapFilled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46FE1947896300AEA17D /* tapFilled@2x.png */; };
+		C12A11A119787BE700D53B1C /* dancingG-21.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0601978151F00DDACDE /* dancingG-21.png */; };
+		C12A11A219787BE700D53B1C /* dancingG-9.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0701978151F00DDACDE /* dancingG-9.png */; };
+		C12A11A319787BE700D53B1C /* Whitney-BookItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5A192AA29C008BB84C /* Whitney-BookItalicSC.ttf */; };
+		C12A11A419787BE700D53B1C /* dancingG-18.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05C1978151F00DDACDE /* dancingG-18.png */; };
+		C12A11A519787BE700D53B1C /* dancingG-29.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0681978151F00DDACDE /* dancingG-29.png */; };
+		C12A11A619787BE700D53B1C /* phoneUnfilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFCD193E705F0069F700 /* phoneUnfilled.png */; };
+		C12A11A719787BE700D53B1C /* Whitney-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C61192AA29C008BB84C /* Whitney-MediumItalic.ttf */; };
+		C12A11A819787BE700D53B1C /* peopleIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470A1947A30400AEA17D /* peopleIconBlue@2x.png */; };
+		C12A11A919787BE700D53B1C /* WhitneyIndexBlack-RoundBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C69192AA29C008BB84C /* WhitneyIndexBlack-RoundBd.ttf */; };
+		C12A11AA19787BE700D53B1C /* dancingG-26.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0651978151F00DDACDE /* dancingG-26.png */; };
+		C12A11AB19787BE700D53B1C /* WhitneyIndexWhite-SquareLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C77192AA29C008BB84C /* WhitneyIndexWhite-SquareLt2.ttf */; };
+		C12A11AC19787BE700D53B1C /* Whitney-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C64192AA29C008BB84C /* Whitney-Semibold.ttf */; };
+		C12A11AD19787BE700D53B1C /* searchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E619041938C74200A224C0 /* searchIcon.png */; };
+		C12A11AE19787BE700D53B1C /* giu3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E9D906C1192535BC00E39FC8 /* giu3.jpg */; };
+		C12A11AF19787BE700D53B1C /* backIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E618FE1936421A00A224C0 /* backIcon.png */; };
+		C12A11B019787BE700D53B1C /* privateIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9902984196B2F9A00192FF2 /* privateIcon@2x.png */; };
+		C12A11B119787BE700D53B1C /* dancingG-1.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0531978151F00DDACDE /* dancingG-1.png */; };
+		C12A11B219787BE700D53B1C /* followPersonIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46F619474CA700AEA17D /* followPersonIcon@2x.png */; };
+		C12A11B319787BE700D53B1C /* peopleSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470219479C6200AEA17D /* peopleSelected@2x.png */; };
+		C12A11B419787BE700D53B1C /* Whitney-MediumItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C62192AA29C008BB84C /* Whitney-MediumItalicSC.ttf */; };
+		C12A11B519787BE700D53B1C /* chatsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470D1947A34800AEA17D /* chatsIconBlue@2x.png */; };
+		C12A11B619787BE700D53B1C /* WhitneyNumeric-BookItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7E192AA29C008BB84C /* WhitneyNumeric-BookItalic.ttf */; };
+		C12A11B719787BE700D53B1C /* ben2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E9CD471E194A0AA700AEA17D /* ben2.jpg */; };
+		C12A11B819787BE700D53B1C /* Whitney-BookSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5B192AA29C008BB84C /* Whitney-BookSC.ttf */; };
+		C12A11B919787BE700D53B1C /* WhitneyIndexWhite-RoundMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C74192AA29C008BB84C /* WhitneyIndexWhite-RoundMd.ttf */; };
+		C12A11BA19787BE700D53B1C /* dancingG-16.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05A1978151F00DDACDE /* dancingG-16.png */; };
+		C12A11BB19787BE700D53B1C /* dancingG-13.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0571978151F00DDACDE /* dancingG-13.png */; };
+		C12A11BC19787BE700D53B1C /* Whitney-SemiboldItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C66192AA29C008BB84C /* Whitney-SemiboldItalicSC.ttf */; };
+		C12A11BD19787BE700D53B1C /* whereIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E2E192E3F0600BB8FDD /* whereIcon.png */; };
+		C12A11BE19787BE700D53B1C /* WhitneyIndexWhite-RoundLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C73192AA29C008BB84C /* WhitneyIndexWhite-RoundLt2.ttf */; };
+		C12A11BF19787BE700D53B1C /* chatImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9ECFF83196E093900384252 /* chatImage@2x.png */; };
+		C12A11C019787BE700D53B1C /* WhitneyIndexBlack-RoundLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6A192AA29C008BB84C /* WhitneyIndexBlack-RoundLt1.ttf */; };
+		C12A11C119787BE700D53B1C /* notificationsIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F85051945FB4400B3B448 /* notificationsIcon@2x.png */; };
+		C12A11C219787BE700D53B1C /* dancingG-14.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0581978151F00DDACDE /* dancingG-14.png */; };
+		C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E921D61E1923967D00361247 /* InfoPlist.strings */; };
+		C12A11C419787BE700D53B1C /* WhitneyIndexWhite-SquareLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C76192AA29C008BB84C /* WhitneyIndexWhite-SquareLt1.ttf */; };
+		C12A11C519787BE700D53B1C /* plusSquare.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F84FD1942076A00B3B448 /* plusSquare.png */; };
+		C12A11C619787BE700D53B1C /* iconFlashScreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E94FF0DA19633A4600852180 /* iconFlashScreen@2x.png */; };
+		C12A11C719787BE700D53B1C /* joined@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F8512194602DB00B3B448 /* joined@2x.png */; };
+		C12A11C819787BE700D53B1C /* dancingG-28.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0671978151F00DDACDE /* dancingG-28.png */; };
+		C12A11C919787BE700D53B1C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E9D7D5321926539C00E1ED10 /* Main.storyboard */; };
+		C12A11CA19787BE700D53B1C /* WhitneyIndexWhite-RoundLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C72192AA29C008BB84C /* WhitneyIndexWhite-RoundLt1.ttf */; };
+		C12A11CB19787BE700D53B1C /* WhitneyIndexBlack-SquareLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6F192AA29C008BB84C /* WhitneyIndexBlack-SquareLt2.ttf */; };
+		C12A11CC19787BE700D53B1C /* WhitneyIndexBlack-RoundLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6B192AA29C008BB84C /* WhitneyIndexBlack-RoundLt2.ttf */; };
+		C12A11CD19787BE700D53B1C /* dancingG-17.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05B1978151F00DDACDE /* dancingG-17.png */; };
+		C12A11CE19787BE700D53B1C /* dancingG-22.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0611978151F00DDACDE /* dancingG-22.png */; };
+		C12A11CF19787BE700D53B1C /* closeButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DB7B43196C47D500363656 /* closeButton@2x.png */; };
+		C12A11D019787BE700D53B1C /* Whitney-BlackItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C52192AA29C008BB84C /* Whitney-BlackItalicSC.ttf */; };
+		C12A11D119787BE700D53B1C /* tapUnfilled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46FB1947873F00AEA17D /* tapUnfilled@2x.png */; };
+		C12A11D219787BE700D53B1C /* WhitneyIndexBlack-RoundMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6C192AA29C008BB84C /* WhitneyIndexBlack-RoundMd.ttf */; };
+		C12A11D319787BE700D53B1C /* WhitneyNumeric-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7F192AA29C008BB84C /* WhitneyNumeric-Light.ttf */; };
+		C12A11D419787BE700D53B1C /* Whitney-BoldSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C57192AA29C008BB84C /* Whitney-BoldSC.ttf */; };
+		C12A11D519787BE700D53B1C /* connectFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9681C70194F887A00182E0E /* connectFacebook@2x.png */; };
+		C12A11D619787BE700D53B1C /* transparentShadow.png in Resources */ = {isa = PBXBuildFile; fileRef = E90AA8A41975DC6E0055D74B /* transparentShadow.png */; };
+		C12A11D719787BE700D53B1C /* WhitneyIndexBlack-SquareLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6E192AA29C008BB84C /* WhitneyIndexBlack-SquareLt1.ttf */; };
+		C12A11D819787BE700D53B1C /* giu2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E9D906BF192535AF00E39FC8 /* giu2.jpg */; };
+		C12A11D919787BE700D53B1C /* WhitneyNumeric-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7A192AA29C008BB84C /* WhitneyNumeric-BlackItalic.ttf */; };
+		C12A11DA19787BE700D53B1C /* giu.png in Resources */ = {isa = PBXBuildFile; fileRef = E988A0301923B245000C3DDA /* giu.png */; };
+		C12A11DB19787BE700D53B1C /* WhitneyNumeric-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C79192AA29C008BB84C /* WhitneyNumeric-Black.ttf */; };
 		C16D86A819747FF6003EB336 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
 		E900C251195DCC4100A01F50 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C250195DCC4100A01F50 /* Message.m */; };
 		E900C254195E010500A01F50 /* Notification.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C253195E010500A01F50 /* Notification.m */; };
@@ -234,6 +445,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Wigo.h"; sourceTree = "<group>"; };
+		C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+Wigo.m"; sourceTree = "<group>"; };
+		C12A11E119787BE700D53B1C /* wigo copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "wigo copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C12A11E219787BE800D53B1C /* wigoBlade.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = wigoBlade.plist; path = "/Users/doughty/Documents/Blade/Projects/wigo/wigo-ios/wigoBlade.plist"; sourceTree = "<absolute>"; };
 		C16D86A919747FF6003EB336 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E900C24F195DCC4100A01F50 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
 		E900C250195DCC4100A01F50 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
@@ -509,6 +724,28 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C12A113D19787BE700D53B1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C12A113E19787BE700D53B1C /* SystemConfiguration.framework in Frameworks */,
+				C12A113F19787BE700D53B1C /* Crashlytics.framework in Frameworks */,
+				C12A114019787BE700D53B1C /* Security.framework in Frameworks */,
+				C12A114119787BE700D53B1C /* QuartzCore.framework in Frameworks */,
+				C12A114219787BE700D53B1C /* MobileCoreServices.framework in Frameworks */,
+				C12A114319787BE700D53B1C /* libz.dylib in Frameworks */,
+				C12A114419787BE700D53B1C /* CoreLocation.framework in Frameworks */,
+				C12A114519787BE700D53B1C /* Parse.framework in Frameworks */,
+				C12A114619787BE700D53B1C /* CFNetwork.framework in Frameworks */,
+				C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */,
+				C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */,
+				C12A114919787BE700D53B1C /* CoreGraphics.framework in Frameworks */,
+				C12A114A19787BE700D53B1C /* UIKit.framework in Frameworks */,
+				C12A114B19787BE700D53B1C /* Foundation.framework in Frameworks */,
+				C12A114C19787BE700D53B1C /* FacebookSDK.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E921D60F1923967D00361247 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -544,6 +781,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C12A11021978788000D53B1C /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */,
+				C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		E900C25A1961B97900A01F50 /* NavigationController */ = {
 			isa = PBXGroup;
 			children = (
@@ -625,6 +871,7 @@
 			children = (
 				E921D6121923967D00361247 /* wigo.app */,
 				E921D6361923967D00361247 /* WigoTests.xctest */,
+				C12A11E119787BE700D53B1C /* wigo copy.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -675,6 +922,7 @@
 				E9BE8C4F192AA29C008BB84C /* Whitney */,
 				E921D6521923972400361247 /* Images */,
 				E921D61D1923967D00361247 /* Wigo-Info.plist */,
+				C12A11E219787BE800D53B1C /* wigoBlade.plist */,
 				E921D61E1923967D00361247 /* InfoPlist.strings */,
 				E921D6211923967D00361247 /* main.m */,
 				E921D6231923967D00361247 /* Wigo-Prefix.pch */,
@@ -746,6 +994,7 @@
 				E9681C6D194F7C2B00182E0E /* Font */,
 				E9CD47151948E41A00AEA17D /* ViewExtensions */,
 				E9681C6C194F7C1000182E0E /* Objects */,
+				C12A11021978788000D53B1C /* Categories */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -1113,6 +1362,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		C12A110619787BE700D53B1C /* wigoBlade */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C12A11DD19787BE700D53B1C /* Build configuration list for PBXNativeTarget "wigoBlade" */;
+			buildPhases = (
+				C12A110719787BE700D53B1C /* Sources */,
+				C12A113D19787BE700D53B1C /* Frameworks */,
+				C12A114D19787BE700D53B1C /* Resources */,
+				C12A11DC19787BE700D53B1C /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = wigoBlade;
+			productName = Wigo;
+			productReference = C12A11E119787BE700D53B1C /* wigo copy.app */;
+			productType = "com.apple.product-type.application";
+		};
 		E921D6111923967D00361247 /* wigo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E921D6471923967D00361247 /* Build configuration list for PBXNativeTarget "wigo" */;
@@ -1189,11 +1456,161 @@
 			targets = (
 				E921D6111923967D00361247 /* wigo */,
 				E921D6351923967D00361247 /* WigoTests */,
+				C12A110619787BE700D53B1C /* wigoBlade */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C12A114D19787BE700D53B1C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C12A114E19787BE700D53B1C /* Images.xcassets in Resources */,
+				C12A114F19787BE700D53B1C /* clearButton@2x.png in Resources */,
+				C12A115019787BE700D53B1C /* wigoLogo@2x.png in Resources */,
+				C12A115119787BE700D53B1C /* rightAfterChatIcon.png in Resources */,
+				C12A115219787BE700D53B1C /* dancingG-30.png in Resources */,
+				C12A115319787BE700D53B1C /* privateLine@2x.png in Resources */,
+				C12A115419787BE700D53B1C /* plusPerson@2x.png in Resources */,
+				C12A115519787BE700D53B1C /* writeIcon@2x.png in Resources */,
+				C12A115619787BE700D53B1C /* lockLogo@2x.png in Resources */,
+				C12A115719787BE700D53B1C /* orangeTap@2x.png in Resources */,
+				C12A115819787BE700D53B1C /* dancingG-19.png in Resources */,
+				C12A115919787BE700D53B1C /* peopleIcon@2x.png in Resources */,
+				C12A115A19787BE700D53B1C /* ben3.jpg in Resources */,
+				C12A115B19787BE700D53B1C /* Whitney2.ttf in Resources */,
+				C12A115C19787BE700D53B1C /* notificationsSelected@2x.png in Resources */,
+				C12A115D19787BE700D53B1C /* dancingG-15.png in Resources */,
+				C12A115E19787BE700D53B1C /* Whitney-Bold.ttf in Resources */,
+				C12A115F19787BE700D53B1C /* WhitneyNumeric-LightItalic.ttf in Resources */,
+				C12A116019787BE700D53B1C /* WhitneyIndexBlack-SquareBd.ttf in Resources */,
+				C12A116119787BE700D53B1C /* Whitney-BookItalic.ttf in Resources */,
+				C12A116219787BE700D53B1C /* dancingG-2.png in Resources */,
+				C12A116319787BE700D53B1C /* WhitneyIndexBlack-SquareMd.ttf in Resources */,
+				C12A116419787BE700D53B1C /* favoriteSelected@2x.png in Resources */,
+				C12A116519787BE700D53B1C /* chatsSelected@2x.png in Resources */,
+				C12A116619787BE700D53B1C /* favoriteSmall@2x.png in Resources */,
+				C12A116719787BE700D53B1C /* thinkingIcon.png in Resources */,
+				C12A116819787BE700D53B1C /* phoneFilled.png in Resources */,
+				C12A116919787BE700D53B1C /* dancingG-11.png in Resources */,
+				C12A116A19787BE700D53B1C /* dancingG-0.png in Resources */,
+				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
+				C12A116C19787BE700D53B1C /* dancingG-7.png in Resources */,
+				C12A116D19787BE700D53B1C /* dancingG-23.png in Resources */,
+				C12A116E19787BE700D53B1C /* Whitney-BlackItalic.ttf in Resources */,
+				C12A116F19787BE700D53B1C /* Whitney-SemiboldSC.ttf in Resources */,
+				C12A117019787BE700D53B1C /* chatsIcon@2x.png in Resources */,
+				C12A117119787BE700D53B1C /* WhitneyNumeric-Semibold.ttf in Resources */,
+				C12A117219787BE700D53B1C /* commentFilled.png in Resources */,
+				C12A117319787BE700D53B1C /* dancingG-10.png in Resources */,
+				C12A117419787BE700D53B1C /* Whitney-BlackSC.ttf in Resources */,
+				C12A117519787BE700D53B1C /* placesSelected@2x.png in Resources */,
+				C12A117619787BE700D53B1C /* Whitney-BoldItalic.ttf in Resources */,
+				C12A117719787BE700D53B1C /* notificationsIconBlue@2x.png in Resources */,
+				C12A117819787BE700D53B1C /* emailUnfilled.png in Resources */,
+				C12A117919787BE700D53B1C /* rightArrow.png in Resources */,
+				C12A117A19787BE700D53B1C /* orangeSearchIcon.png in Resources */,
+				C12A117B19787BE700D53B1C /* dancingG-5.png in Resources */,
+				C12A117C19787BE700D53B1C /* WhitneyNumeric-Bold.ttf in Resources */,
+				C12A117D19787BE700D53B1C /* followedPersonIcon@2x.png in Resources */,
+				C12A117E19787BE700D53B1C /* dancingG-3.png in Resources */,
+				C12A117F19787BE700D53B1C /* Whitney-LightItalic.ttf in Resources */,
+				C12A118019787BE700D53B1C /* WhitneyNumeric-Book.ttf in Resources */,
+				C12A118119787BE700D53B1C /* Whitney-LightItalicSC.ttf in Resources */,
+				C12A118219787BE700D53B1C /* leftBeforeChatIcon.png in Resources */,
+				C12A118319787BE700D53B1C /* dancingG-24.png in Resources */,
+				C12A118419787BE700D53B1C /* dancingG-8.png in Resources */,
+				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
+				C12A118619787BE700D53B1C /* emailFilled.png in Resources */,
+				C12A118719787BE700D53B1C /* WhitneyNumeric-BoldItalic.ttf in Resources */,
+				C12A118819787BE700D53B1C /* Whitney-BoldItalicSC.ttf in Resources */,
+				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
+				C12A118A19787BE700D53B1C /* WhitneyNumeric-MediumItalic.ttf in Resources */,
+				C12A118B19787BE700D53B1C /* WhitneyNumeric-Medium.ttf in Resources */,
+				C12A118C19787BE700D53B1C /* addedFilled@2x.png in Resources */,
+				C12A118D19787BE700D53B1C /* WhitneyIndexWhite-RoundBd.ttf in Resources */,
+				C12A118E19787BE700D53B1C /* dancingG-25.png in Resources */,
+				C12A118F19787BE700D53B1C /* dancingG-4.png in Resources */,
+				C12A119019787BE700D53B1C /* WhitneyIndexWhite-SquareMd.ttf in Resources */,
+				C12A119119787BE700D53B1C /* dancingG-27.png in Resources */,
+				C12A119219787BE700D53B1C /* goingSomewhereElse@2x.png in Resources */,
+				C12A119319787BE700D53B1C /* Whitney-Medium.ttf in Resources */,
+				C12A119419787BE700D53B1C /* dancingG-6.png in Resources */,
+				C12A119519787BE700D53B1C /* dancingG-12.png in Resources */,
+				C12A119619787BE700D53B1C /* favorite@2x.png in Resources */,
+				C12A119719787BE700D53B1C /* placesIcon@2x.png in Resources */,
+				C12A119819787BE700D53B1C /* Whitney-Book.ttf in Resources */,
+				C12A119919787BE700D53B1C /* Whitney-SemiboldItalic.ttf in Resources */,
+				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
+				C12A119B19787BE700D53B1C /* WhitneyNumeric-SemiboldItalic.ttf in Resources */,
+				C12A119C19787BE700D53B1C /* privacyLogo@2x.png in Resources */,
+				C12A119D19787BE700D53B1C /* Whitney-Black.ttf in Resources */,
+				C12A119E19787BE700D53B1C /* WhitneyIndexWhite-SquareBd.ttf in Resources */,
+				C12A119F19787BE700D53B1C /* dancingG-20.png in Resources */,
+				C12A11A019787BE700D53B1C /* tapFilled@2x.png in Resources */,
+				C12A11A119787BE700D53B1C /* dancingG-21.png in Resources */,
+				C12A11A219787BE700D53B1C /* dancingG-9.png in Resources */,
+				C12A11A319787BE700D53B1C /* Whitney-BookItalicSC.ttf in Resources */,
+				C12A11A419787BE700D53B1C /* dancingG-18.png in Resources */,
+				C12A11A519787BE700D53B1C /* dancingG-29.png in Resources */,
+				C12A11A619787BE700D53B1C /* phoneUnfilled.png in Resources */,
+				C12A11A719787BE700D53B1C /* Whitney-MediumItalic.ttf in Resources */,
+				C12A11A819787BE700D53B1C /* peopleIconBlue@2x.png in Resources */,
+				C12A11A919787BE700D53B1C /* WhitneyIndexBlack-RoundBd.ttf in Resources */,
+				C12A11AA19787BE700D53B1C /* dancingG-26.png in Resources */,
+				C12A11AB19787BE700D53B1C /* WhitneyIndexWhite-SquareLt2.ttf in Resources */,
+				C12A11AC19787BE700D53B1C /* Whitney-Semibold.ttf in Resources */,
+				C12A11AD19787BE700D53B1C /* searchIcon.png in Resources */,
+				C12A11AE19787BE700D53B1C /* giu3.jpg in Resources */,
+				C12A11AF19787BE700D53B1C /* backIcon.png in Resources */,
+				C12A11B019787BE700D53B1C /* privateIcon@2x.png in Resources */,
+				C12A11B119787BE700D53B1C /* dancingG-1.png in Resources */,
+				C12A11B219787BE700D53B1C /* followPersonIcon@2x.png in Resources */,
+				C12A11B319787BE700D53B1C /* peopleSelected@2x.png in Resources */,
+				C12A11B419787BE700D53B1C /* Whitney-MediumItalicSC.ttf in Resources */,
+				C12A11B519787BE700D53B1C /* chatsIconBlue@2x.png in Resources */,
+				C12A11B619787BE700D53B1C /* WhitneyNumeric-BookItalic.ttf in Resources */,
+				C12A11B719787BE700D53B1C /* ben2.jpg in Resources */,
+				C12A11B819787BE700D53B1C /* Whitney-BookSC.ttf in Resources */,
+				C12A11B919787BE700D53B1C /* WhitneyIndexWhite-RoundMd.ttf in Resources */,
+				C12A11BA19787BE700D53B1C /* dancingG-16.png in Resources */,
+				C12A11BB19787BE700D53B1C /* dancingG-13.png in Resources */,
+				C12A11BC19787BE700D53B1C /* Whitney-SemiboldItalicSC.ttf in Resources */,
+				C12A11BD19787BE700D53B1C /* whereIcon.png in Resources */,
+				C12A11BE19787BE700D53B1C /* WhitneyIndexWhite-RoundLt2.ttf in Resources */,
+				C12A11BF19787BE700D53B1C /* chatImage@2x.png in Resources */,
+				C12A11C019787BE700D53B1C /* WhitneyIndexBlack-RoundLt1.ttf in Resources */,
+				C12A11C119787BE700D53B1C /* notificationsIcon@2x.png in Resources */,
+				C12A11C219787BE700D53B1C /* dancingG-14.png in Resources */,
+				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
+				C12A11C419787BE700D53B1C /* WhitneyIndexWhite-SquareLt1.ttf in Resources */,
+				C12A11C519787BE700D53B1C /* plusSquare.png in Resources */,
+				C12A11C619787BE700D53B1C /* iconFlashScreen@2x.png in Resources */,
+				C12A11C719787BE700D53B1C /* joined@2x.png in Resources */,
+				C12A11C819787BE700D53B1C /* dancingG-28.png in Resources */,
+				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
+				C12A11CA19787BE700D53B1C /* WhitneyIndexWhite-RoundLt1.ttf in Resources */,
+				C12A11CB19787BE700D53B1C /* WhitneyIndexBlack-SquareLt2.ttf in Resources */,
+				C12A11CC19787BE700D53B1C /* WhitneyIndexBlack-RoundLt2.ttf in Resources */,
+				C12A11CD19787BE700D53B1C /* dancingG-17.png in Resources */,
+				C12A11CE19787BE700D53B1C /* dancingG-22.png in Resources */,
+				C12A11CF19787BE700D53B1C /* closeButton@2x.png in Resources */,
+				C12A11D019787BE700D53B1C /* Whitney-BlackItalicSC.ttf in Resources */,
+				C12A11D119787BE700D53B1C /* tapUnfilled@2x.png in Resources */,
+				C12A11D219787BE700D53B1C /* WhitneyIndexBlack-RoundMd.ttf in Resources */,
+				C12A11D319787BE700D53B1C /* WhitneyNumeric-Light.ttf in Resources */,
+				C12A11D419787BE700D53B1C /* Whitney-BoldSC.ttf in Resources */,
+				C12A11D519787BE700D53B1C /* connectFacebook@2x.png in Resources */,
+				C12A11D619787BE700D53B1C /* transparentShadow.png in Resources */,
+				C12A11D719787BE700D53B1C /* WhitneyIndexBlack-SquareLt1.ttf in Resources */,
+				C12A11D819787BE700D53B1C /* giu2.jpg in Resources */,
+				C12A11D919787BE700D53B1C /* WhitneyNumeric-BlackItalic.ttf in Resources */,
+				C12A11DA19787BE700D53B1C /* giu.png in Resources */,
+				C12A11DB19787BE700D53B1C /* WhitneyNumeric-Black.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E921D6101923967D00361247 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1354,6 +1771,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		C12A11DC19787BE700D53B1C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run c08b20670e125cf177b5a6e7bb70d6b4e9b75c27 52f350418a2dbeb5ce538ff885523386379c5314ce4ac5d1d5d1307a36c872af";
+		};
 		E90AA8A61976C8640055D74B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1370,6 +1800,66 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C12A110719787BE700D53B1C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C12A110819787BE700D53B1C /* User.m in Sources */,
+				C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */,
+				C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */,
+				C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */,
+				C12A110C19787BE700D53B1C /* WiGoSpinnerView.m in Sources */,
+				C12A110D19787BE700D53B1C /* UIImageCrop.m in Sources */,
+				C12A110E19787BE700D53B1C /* UIScrollView+GifPullToRefresh.m in Sources */,
+				C12A110F19787BE700D53B1C /* UIButtonUngoOut.m in Sources */,
+				C12A111019787BE700D53B1C /* PeopleViewController.m in Sources */,
+				C12A111119787BE700D53B1C /* UIImage+MultiFormat.m in Sources */,
+				C12A111219787BE700D53B1C /* main.m in Sources */,
+				C12A111319787BE700D53B1C /* FacebookAlbumTableViewController.m in Sources */,
+				C12A111419787BE700D53B1C /* SDWebImageDownloader.m in Sources */,
+				C12A111519787BE700D53B1C /* MessageViewController.m in Sources */,
+				C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */,
+				C12A111719787BE700D53B1C /* SignViewController.m in Sources */,
+				C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */,
+				C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */,
+				C12A111A19787BE700D53B1C /* Party.m in Sources */,
+				C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */,
+				C12A111C19787BE700D53B1C /* NSMutableURLRequest+Wigo.m in Sources */,
+				C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */,
+				C12A111E19787BE700D53B1C /* SDWebImagePrefetcher.m in Sources */,
+				C12A111F19787BE700D53B1C /* Network.m in Sources */,
+				C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */,
+				C12A112119787BE700D53B1C /* Message.m in Sources */,
+				C12A112219787BE700D53B1C /* FontProperties.m in Sources */,
+				C12A112319787BE700D53B1C /* Notification.m in Sources */,
+				C12A112419787BE700D53B1C /* PhotoViewController.m in Sources */,
+				C12A112519787BE700D53B1C /* UIImage+GIF.m in Sources */,
+				C12A112619787BE700D53B1C /* UIImageView+WebCache.m in Sources */,
+				C12A112719787BE700D53B1C /* ProfileViewController.m in Sources */,
+				C12A112819787BE700D53B1C /* SDImageCache.m in Sources */,
+				C12A112919787BE700D53B1C /* UIButtonAligned.m in Sources */,
+				C12A112A19787BE700D53B1C /* Event.m in Sources */,
+				C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */,
+				C12A112C19787BE700D53B1C /* Query.m in Sources */,
+				C12A112D19787BE700D53B1C /* PlacesViewController.m in Sources */,
+				C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */,
+				C12A112F19787BE700D53B1C /* ConversationViewController.m in Sources */,
+				C12A113019787BE700D53B1C /* SDWebImageCompat.m in Sources */,
+				C12A113119787BE700D53B1C /* NSData+ImageContentType.m in Sources */,
+				C12A113219787BE700D53B1C /* Profile.m in Sources */,
+				C12A113319787BE700D53B1C /* RWBlurPopover.m in Sources */,
+				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
+				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
+				C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */,
+				C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */,
+				C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */,
+				C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */,
+				C12A113A19787BE700D53B1C /* MKAnnotationView+WebCache.m in Sources */,
+				C12A113B19787BE700D53B1C /* MainViewController.m in Sources */,
+				C12A113C19787BE700D53B1C /* NotificationsViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E921D60E1923967D00361247 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1394,6 +1884,7 @@
 				E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */,
 				E95DC77D195329B10012AA20 /* Party.m in Sources */,
 				E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */,
+				C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */,
 				E900C2B91961EADE00A01F50 /* SDWebImageDecoder.m in Sources */,
 				E900C2BD1961EADE00A01F50 /* SDWebImagePrefetcher.m in Sources */,
 				E9A17C70195C761E0057C89A /* Network.m in Sources */,
@@ -1484,6 +1975,99 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		C12A11DE19787BE700D53B1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				FACEBOOK_APPID = 694293940625263;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					"'PARSE_APPLICATIONID=@\"${PARSE_APPLICATIONID_ENTERPRISE}\"'",
+					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY_ENTERPRISE}\"'",
+					"ENTERPRISE=1",
+				);
+				INFOPLIST_FILE = wigoBlade.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
+				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
+				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
+				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
+				PRODUCT_NAME = "WiGo Blade";
+				PROVISIONING_PROFILE = "FE2CCE88-1FAA-4869-8B0A-F5450CA71C84";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C12A11DF19787BE700D53B1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				FACEBOOK_APPID = 694293940625263;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					"'PARSE_APPLICATIONID=@\"${PARSE_APPLICATIONID_ENTERPRISE}\"'",
+					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY_ENTERPRISE}\"'",
+					"ENTERPRISE=1",
+				);
+				INFOPLIST_FILE = wigoBlade.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
+				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
+				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
+				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
+				PRODUCT_NAME = "WiGo Blade";
+				PROVISIONING_PROFILE = "3B891E2B-BA3C-4F15-899D-F472DF73EFA3";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		C12A11E019787BE700D53B1C /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				FACEBOOK_APPID = 694293940625263;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					"'PARSE_APPLICATIONID=@\"${PARSE_APPLICATIONID_ENTERPRISE}\"'",
+					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY_ENTERPRISE}\"'",
+					"ENTERPRISE=1",
+				);
+				INFOPLIST_FILE = wigoBlade.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
+				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
+				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
+				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
+				PRODUCT_NAME = "WiGo Blade";
+				PROVISIONING_PROFILE = "3B891E2B-BA3C-4F15-899D-F472DF73EFA3";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Distribution;
+		};
 		E921D6451923967D00361247 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1563,16 +2147,25 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					"'PARSE_APPLICATIONID=@\"${PARSE_APPLICATIONID}\"'",
+					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY}\"'",
+				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
+				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
+				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
+				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "947BE006-436C-41DF-84BE-1CF952708EC5";
 				WRAPPER_EXTENSION = app;
@@ -1584,18 +2177,27 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Blade LLC";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Blade LLC";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					"'PARSE_APPLICATIONID=@\"${PARSE_APPLICATIONID}\"'",
+					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY}\"'",
+				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
+				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
+				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
+				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "E4957393-3A8F-421A-9272-A53C5401D048";
+				PROVISIONING_PROFILE = "947BE006-436C-41DF-84BE-1CF952708EC5";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1683,18 +2285,27 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: WiGo LLC (BJ73CT9B84)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: WiGo LLC (BJ73CT9B84)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
+					"'PARSE_APPLICATIONID=@\"${PARSE_APPLICATIONID}\"'",
+					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY}\"'",
+				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
+				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
+				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
+				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "685EA1F1-F4B9-4E7D-B674-124A830ADDF8";
+				PROVISIONING_PROFILE = "1D582607-E376-4208-84E3-683BCB178C71";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;
@@ -1722,6 +2333,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C12A11DD19787BE700D53B1C /* Build configuration list for PBXNativeTarget "wigoBlade" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C12A11DE19787BE700D53B1C /* Debug */,
+				C12A11DF19787BE700D53B1C /* Release */,
+				C12A11E019787BE700D53B1C /* Distribution */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E921D60D1923967D00361247 /* Build configuration list for PBXProject "Wigo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

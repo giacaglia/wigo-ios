@@ -17,9 +17,12 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
+    NSString *parseApplicationId = PARSE_APPLICATIONID; // just for ease of debugging
+    NSString *parseClientKey = PARSE_CLIENTKEY;
     
-    [Parse setApplicationId:@"Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ"
-                  clientKey:@"kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb"];
+    
+    [Parse setApplicationId:parseApplicationId
+                  clientKey:parseClientKey];
     [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
      UIRemoteNotificationTypeAlert|
      UIRemoteNotificationTypeSound];
