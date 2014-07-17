@@ -14,8 +14,9 @@
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
 //Image Load
-#import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"
+#import "SDWebImage/UIImageView+WebCache.h"
+#import "UIScrollView+GifPullToRefresh.h"
 
 #define xSpacing 10
 #define sizeOfEachCell 125
@@ -197,7 +198,7 @@
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
     _yPositionOfWhereSubview = 280;
-    [self addRefreshToSrollView];
+    [self addRefreshToScrollView];
     [self initializeGoingSomewhereElseButton];
 }
 
@@ -624,23 +625,35 @@
 
 #pragma mark - Refresh Control
 
-- (void)addRefreshToSrollView {
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(refreshEvents:) forControlEvents:UIControlEventValueChanged];
-    [_placesTableView addSubview:refreshControl];
+- (void)addRefreshToScrollView {
+    NSMutableArray *TwitterMusicDrawingImgs = [NSMutableArray array];
+    NSMutableArray *TwitterMusicLoadingImgs = [NSMutableArray array];
+    for (NSUInteger i  = 0; i <= 1; i++) {
+        int fileNumber = (3*i)%31;
+        NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
+        NSLog(@"filename %@", fileName);
+        [TwitterMusicDrawingImgs addObject:[UIImage imageNamed:fileName]];
+    }
+    
+    for (NSUInteger i  = 0; i <= 30; i++) {
+        int fileNumber = (3*i)%31;
+        NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
+        [TwitterMusicLoadingImgs addObject:[UIImage imageNamed:fileName]];
+    }
+    __weak UITableView *tempPlacesTableView = _placesTableView;
+    [tempPlacesTableView addPullToRefreshWithDrawingImgs:TwitterMusicDrawingImgs andLoadingImgs:TwitterMusicLoadingImgs andActionHandler:^{
+        [self refreshPeople];
+    }];
 }
 
-- (void)refreshEvents:(UIRefreshControl *)refreshControl
-{
+- (void)refreshPeople {
     [self fetchEventsFirstPage];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            [refreshControl endRefreshing];
-            
+            [_placesTableView didFinishPullToRefresh];
         });
     });
 }
-
 
 
 

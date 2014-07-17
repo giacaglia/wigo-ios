@@ -172,6 +172,38 @@
 		E9D906DB19255DBC00E39FC8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DA19255DBC00E39FC8 /* Security.framework */; };
 		E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */; };
 		E9DB7B44196C47D500363656 /* closeButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DB7B43196C47D500363656 /* closeButton@2x.png */; };
+		E9DBB050197813F900DDACDE /* UIScrollView+GifPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */; };
+		E9DBB0711978151F00DDACDE /* dancingG-0.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0521978151F00DDACDE /* dancingG-0.png */; };
+		E9DBB0721978151F00DDACDE /* dancingG-1.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0531978151F00DDACDE /* dancingG-1.png */; };
+		E9DBB0731978151F00DDACDE /* dancingG-10.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0541978151F00DDACDE /* dancingG-10.png */; };
+		E9DBB0741978151F00DDACDE /* dancingG-11.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0551978151F00DDACDE /* dancingG-11.png */; };
+		E9DBB0751978151F00DDACDE /* dancingG-12.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0561978151F00DDACDE /* dancingG-12.png */; };
+		E9DBB0761978151F00DDACDE /* dancingG-13.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0571978151F00DDACDE /* dancingG-13.png */; };
+		E9DBB0771978151F00DDACDE /* dancingG-14.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0581978151F00DDACDE /* dancingG-14.png */; };
+		E9DBB0781978151F00DDACDE /* dancingG-15.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0591978151F00DDACDE /* dancingG-15.png */; };
+		E9DBB0791978151F00DDACDE /* dancingG-16.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05A1978151F00DDACDE /* dancingG-16.png */; };
+		E9DBB07A1978151F00DDACDE /* dancingG-17.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05B1978151F00DDACDE /* dancingG-17.png */; };
+		E9DBB07B1978151F00DDACDE /* dancingG-18.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05C1978151F00DDACDE /* dancingG-18.png */; };
+		E9DBB07C1978151F00DDACDE /* dancingG-19.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05D1978151F00DDACDE /* dancingG-19.png */; };
+		E9DBB07D1978151F00DDACDE /* dancingG-2.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05E1978151F00DDACDE /* dancingG-2.png */; };
+		E9DBB07E1978151F00DDACDE /* dancingG-20.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05F1978151F00DDACDE /* dancingG-20.png */; };
+		E9DBB07F1978151F00DDACDE /* dancingG-21.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0601978151F00DDACDE /* dancingG-21.png */; };
+		E9DBB0801978151F00DDACDE /* dancingG-22.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0611978151F00DDACDE /* dancingG-22.png */; };
+		E9DBB0811978151F00DDACDE /* dancingG-23.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0621978151F00DDACDE /* dancingG-23.png */; };
+		E9DBB0821978151F00DDACDE /* dancingG-24.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0631978151F00DDACDE /* dancingG-24.png */; };
+		E9DBB0831978151F00DDACDE /* dancingG-25.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0641978151F00DDACDE /* dancingG-25.png */; };
+		E9DBB0841978151F00DDACDE /* dancingG-26.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0651978151F00DDACDE /* dancingG-26.png */; };
+		E9DBB0851978151F00DDACDE /* dancingG-27.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0661978151F00DDACDE /* dancingG-27.png */; };
+		E9DBB0861978151F00DDACDE /* dancingG-28.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0671978151F00DDACDE /* dancingG-28.png */; };
+		E9DBB0871978151F00DDACDE /* dancingG-29.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0681978151F00DDACDE /* dancingG-29.png */; };
+		E9DBB0881978151F00DDACDE /* dancingG-3.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0691978151F00DDACDE /* dancingG-3.png */; };
+		E9DBB0891978151F00DDACDE /* dancingG-30.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06A1978151F00DDACDE /* dancingG-30.png */; };
+		E9DBB08A1978151F00DDACDE /* dancingG-4.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06B1978151F00DDACDE /* dancingG-4.png */; };
+		E9DBB08B1978151F00DDACDE /* dancingG-5.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06C1978151F00DDACDE /* dancingG-5.png */; };
+		E9DBB08C1978151F00DDACDE /* dancingG-6.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06D1978151F00DDACDE /* dancingG-6.png */; };
+		E9DBB08D1978151F00DDACDE /* dancingG-7.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06E1978151F00DDACDE /* dancingG-7.png */; };
+		E9DBB08E1978151F00DDACDE /* dancingG-8.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06F1978151F00DDACDE /* dancingG-8.png */; };
+		E9DBB08F1978151F00DDACDE /* dancingG-9.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0701978151F00DDACDE /* dancingG-9.png */; };
 		E9DE130C196F06B100AFA05A /* WiGoSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */; };
 		E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
 		E9E618FF1936421A00A224C0 /* backIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E618FE1936421A00A224C0 /* backIcon.png */; };
@@ -420,6 +452,39 @@
 		E9D906DA19255DBC00E39FC8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E9DB7B43196C47D500363656 /* closeButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "closeButton@2x.png"; sourceTree = "<group>"; };
+		E9DBB04E197813F900DDACDE /* UIScrollView+GifPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+GifPullToRefresh.h"; sourceTree = "<group>"; };
+		E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+GifPullToRefresh.m"; sourceTree = "<group>"; };
+		E9DBB0521978151F00DDACDE /* dancingG-0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-0.png"; sourceTree = "<group>"; };
+		E9DBB0531978151F00DDACDE /* dancingG-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-1.png"; sourceTree = "<group>"; };
+		E9DBB0541978151F00DDACDE /* dancingG-10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-10.png"; sourceTree = "<group>"; };
+		E9DBB0551978151F00DDACDE /* dancingG-11.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-11.png"; sourceTree = "<group>"; };
+		E9DBB0561978151F00DDACDE /* dancingG-12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-12.png"; sourceTree = "<group>"; };
+		E9DBB0571978151F00DDACDE /* dancingG-13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-13.png"; sourceTree = "<group>"; };
+		E9DBB0581978151F00DDACDE /* dancingG-14.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-14.png"; sourceTree = "<group>"; };
+		E9DBB0591978151F00DDACDE /* dancingG-15.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-15.png"; sourceTree = "<group>"; };
+		E9DBB05A1978151F00DDACDE /* dancingG-16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-16.png"; sourceTree = "<group>"; };
+		E9DBB05B1978151F00DDACDE /* dancingG-17.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-17.png"; sourceTree = "<group>"; };
+		E9DBB05C1978151F00DDACDE /* dancingG-18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-18.png"; sourceTree = "<group>"; };
+		E9DBB05D1978151F00DDACDE /* dancingG-19.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-19.png"; sourceTree = "<group>"; };
+		E9DBB05E1978151F00DDACDE /* dancingG-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-2.png"; sourceTree = "<group>"; };
+		E9DBB05F1978151F00DDACDE /* dancingG-20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-20.png"; sourceTree = "<group>"; };
+		E9DBB0601978151F00DDACDE /* dancingG-21.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-21.png"; sourceTree = "<group>"; };
+		E9DBB0611978151F00DDACDE /* dancingG-22.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-22.png"; sourceTree = "<group>"; };
+		E9DBB0621978151F00DDACDE /* dancingG-23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-23.png"; sourceTree = "<group>"; };
+		E9DBB0631978151F00DDACDE /* dancingG-24.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-24.png"; sourceTree = "<group>"; };
+		E9DBB0641978151F00DDACDE /* dancingG-25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-25.png"; sourceTree = "<group>"; };
+		E9DBB0651978151F00DDACDE /* dancingG-26.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-26.png"; sourceTree = "<group>"; };
+		E9DBB0661978151F00DDACDE /* dancingG-27.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-27.png"; sourceTree = "<group>"; };
+		E9DBB0671978151F00DDACDE /* dancingG-28.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-28.png"; sourceTree = "<group>"; };
+		E9DBB0681978151F00DDACDE /* dancingG-29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-29.png"; sourceTree = "<group>"; };
+		E9DBB0691978151F00DDACDE /* dancingG-3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-3.png"; sourceTree = "<group>"; };
+		E9DBB06A1978151F00DDACDE /* dancingG-30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-30.png"; sourceTree = "<group>"; };
+		E9DBB06B1978151F00DDACDE /* dancingG-4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-4.png"; sourceTree = "<group>"; };
+		E9DBB06C1978151F00DDACDE /* dancingG-5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-5.png"; sourceTree = "<group>"; };
+		E9DBB06D1978151F00DDACDE /* dancingG-6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-6.png"; sourceTree = "<group>"; };
+		E9DBB06E1978151F00DDACDE /* dancingG-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-7.png"; sourceTree = "<group>"; };
+		E9DBB06F1978151F00DDACDE /* dancingG-8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-8.png"; sourceTree = "<group>"; };
+		E9DBB0701978151F00DDACDE /* dancingG-9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dancingG-9.png"; sourceTree = "<group>"; };
 		E9DE130A196F06B100AFA05A /* WiGoSpinnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WiGoSpinnerView.h; sourceTree = "<group>"; };
 		E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WiGoSpinnerView.m; sourceTree = "<group>"; };
 		E9E618FB193625BB00A224C0 /* EmailConfirmationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailConfirmationViewController.h; sourceTree = "<group>"; };
@@ -637,6 +702,7 @@
 		E921D6521923972400361247 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E9DBB0511978151F00DDACDE /* dancingG */,
 				E91A5032193F56BE00B7725A /* TabBarImages */,
 				E93F850A1945FF6800B3B448 /* MainViewController */,
 				E9CD471C194A084600AEA17D /* PlacesViewController */,
@@ -672,6 +738,7 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E9DBB04D197813F900DDACDE /* CHGifRefreshControl */,
 				E900C2931961EADE00A01F50 /* SDWebImage */,
 				E9CD472D194B88A200AEA17D /* BlurImage */,
 				E9681C6A194F7BCD00182E0E /* WigoSpinnerView */,
@@ -1001,6 +1068,53 @@
 			name = BlurImage;
 			sourceTree = "<group>";
 		};
+		E9DBB04D197813F900DDACDE /* CHGifRefreshControl */ = {
+			isa = PBXGroup;
+			children = (
+				E9DBB04E197813F900DDACDE /* UIScrollView+GifPullToRefresh.h */,
+				E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */,
+			);
+			path = CHGifRefreshControl;
+			sourceTree = "<group>";
+		};
+		E9DBB0511978151F00DDACDE /* dancingG */ = {
+			isa = PBXGroup;
+			children = (
+				E9DBB0521978151F00DDACDE /* dancingG-0.png */,
+				E9DBB0531978151F00DDACDE /* dancingG-1.png */,
+				E9DBB0541978151F00DDACDE /* dancingG-10.png */,
+				E9DBB0551978151F00DDACDE /* dancingG-11.png */,
+				E9DBB0561978151F00DDACDE /* dancingG-12.png */,
+				E9DBB0571978151F00DDACDE /* dancingG-13.png */,
+				E9DBB0581978151F00DDACDE /* dancingG-14.png */,
+				E9DBB0591978151F00DDACDE /* dancingG-15.png */,
+				E9DBB05A1978151F00DDACDE /* dancingG-16.png */,
+				E9DBB05B1978151F00DDACDE /* dancingG-17.png */,
+				E9DBB05C1978151F00DDACDE /* dancingG-18.png */,
+				E9DBB05D1978151F00DDACDE /* dancingG-19.png */,
+				E9DBB05E1978151F00DDACDE /* dancingG-2.png */,
+				E9DBB05F1978151F00DDACDE /* dancingG-20.png */,
+				E9DBB0601978151F00DDACDE /* dancingG-21.png */,
+				E9DBB0611978151F00DDACDE /* dancingG-22.png */,
+				E9DBB0621978151F00DDACDE /* dancingG-23.png */,
+				E9DBB0631978151F00DDACDE /* dancingG-24.png */,
+				E9DBB0641978151F00DDACDE /* dancingG-25.png */,
+				E9DBB0651978151F00DDACDE /* dancingG-26.png */,
+				E9DBB0661978151F00DDACDE /* dancingG-27.png */,
+				E9DBB0671978151F00DDACDE /* dancingG-28.png */,
+				E9DBB0681978151F00DDACDE /* dancingG-29.png */,
+				E9DBB0691978151F00DDACDE /* dancingG-3.png */,
+				E9DBB06A1978151F00DDACDE /* dancingG-30.png */,
+				E9DBB06B1978151F00DDACDE /* dancingG-4.png */,
+				E9DBB06C1978151F00DDACDE /* dancingG-5.png */,
+				E9DBB06D1978151F00DDACDE /* dancingG-6.png */,
+				E9DBB06E1978151F00DDACDE /* dancingG-7.png */,
+				E9DBB06F1978151F00DDACDE /* dancingG-8.png */,
+				E9DBB0701978151F00DDACDE /* dancingG-9.png */,
+			);
+			path = dancingG;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1093,30 +1207,39 @@
 				E9CD4724194B75E600AEA17D /* clearButton@2x.png in Resources */,
 				E9ECFF82196DEB5A00384252 /* wigoLogo@2x.png in Resources */,
 				E9E6190319365B4000A224C0 /* rightAfterChatIcon.png in Resources */,
+				E9DBB0891978151F00DDACDE /* dancingG-30.png in Resources */,
 				E9CD4737194B938500AEA17D /* privateLine@2x.png in Resources */,
 				E93F850C1945FFB400B3B448 /* plusPerson@2x.png in Resources */,
 				E93F85091945FF3B00B3B448 /* writeIcon@2x.png in Resources */,
 				E9CD4726194B7E2000AEA17D /* lockLogo@2x.png in Resources */,
 				E9F59E14192BDDB700BB8FDD /* favoriteSelected.png in Resources */,
 				E9CD473C194E884200AEA17D /* orangeTap@2x.png in Resources */,
+				E9DBB07C1978151F00DDACDE /* dancingG-19.png in Resources */,
 				E93F85001945F94900B3B448 /* peopleIcon@2x.png in Resources */,
 				E9CD471F194A0AA700AEA17D /* ben3.jpg in Resources */,
 				E9BE8C9D192AA29C008BB84C /* Whitney2.ttf in Resources */,
 				E9CD470919479DBD00AEA17D /* notificationsSelected@2x.png in Resources */,
+				E9DBB0781978151F00DDACDE /* dancingG-15.png in Resources */,
 				E9BE8C89192AA29C008BB84C /* Whitney-Bold.ttf in Resources */,
 				E9BE8CB5192AA29C008BB84C /* WhitneyNumeric-LightItalic.ttf in Resources */,
 				E9BE8CA2192AA29C008BB84C /* WhitneyIndexBlack-SquareBd.ttf in Resources */,
 				E9BE8C8E192AA29C008BB84C /* Whitney-BookItalic.ttf in Resources */,
+				E9DBB07D1978151F00DDACDE /* dancingG-2.png in Resources */,
 				E9BE8CA5192AA29C008BB84C /* WhitneyIndexBlack-SquareMd.ttf in Resources */,
 				E9CD470719479D6D00AEA17D /* chatsSelected@2x.png in Resources */,
 				E9F59E35192FAC7400BB8FDD /* thinkingIcon.png in Resources */,
 				E9AAAFC6193E184D0069F700 /* phoneFilled.png in Resources */,
+				E9DBB0741978151F00DDACDE /* dancingG-11.png in Resources */,
+				E9DBB0711978151F00DDACDE /* dancingG-0.png in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
+				E9DBB08D1978151F00DDACDE /* dancingG-7.png in Resources */,
+				E9DBB0811978151F00DDACDE /* dancingG-23.png in Resources */,
 				E9BE8C86192AA29C008BB84C /* Whitney-BlackItalic.ttf in Resources */,
 				E9BE8C9C192AA29C008BB84C /* Whitney-SemiboldSC.ttf in Resources */,
 				E93F85041945FADF00B3B448 /* chatsIcon@2x.png in Resources */,
 				E9BE8CB8192AA29C008BB84C /* WhitneyNumeric-Semibold.ttf in Resources */,
 				E9F59E25192D514E00BB8FDD /* commentFilled.png in Resources */,
+				E9DBB0731978151F00DDACDE /* dancingG-10.png in Resources */,
 				E9BE8C88192AA29C008BB84C /* Whitney-BlackSC.ttf in Resources */,
 				E9CD470519479CCB00AEA17D /* placesSelected@2x.png in Resources */,
 				E9BE8C8A192AA29C008BB84C /* Whitney-BoldItalic.ttf in Resources */,
@@ -1124,12 +1247,16 @@
 				E9AAAFC2193E175C0069F700 /* emailUnfilled.png in Resources */,
 				E9F59E21192D1D3A00BB8FDD /* rightArrow.png in Resources */,
 				E9AAAFB01938F8940069F700 /* orangeSearchIcon.png in Resources */,
+				E9DBB08B1978151F00DDACDE /* dancingG-5.png in Resources */,
 				E9BE8CB0192AA29C008BB84C /* WhitneyNumeric-Bold.ttf in Resources */,
 				E9CD46F919474D2300AEA17D /* followedPersonIcon@2x.png in Resources */,
+				E9DBB0881978151F00DDACDE /* dancingG-3.png in Resources */,
 				E9BE8C92192AA29C008BB84C /* Whitney-LightItalic.ttf in Resources */,
 				E9BE8CB2192AA29C008BB84C /* WhitneyNumeric-Book.ttf in Resources */,
 				E9BE8C93192AA29C008BB84C /* Whitney-LightItalicSC.ttf in Resources */,
 				E9E6190119365AA300A224C0 /* leftBeforeChatIcon.png in Resources */,
+				E9DBB0821978151F00DDACDE /* dancingG-24.png in Resources */,
+				E9DBB08E1978151F00DDACDE /* dancingG-8.png in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				E9AAAFC4193E17F40069F700 /* emailFilled.png in Resources */,
 				E9BE8CB1192AA29C008BB84C /* WhitneyNumeric-BoldItalic.ttf in Resources */,
@@ -1139,9 +1266,14 @@
 				E9BE8CB6192AA29C008BB84C /* WhitneyNumeric-Medium.ttf in Resources */,
 				E93F85151946031600B3B448 /* addedFilled@2x.png in Resources */,
 				E9BE8CA6192AA29C008BB84C /* WhitneyIndexWhite-RoundBd.ttf in Resources */,
+				E9DBB0831978151F00DDACDE /* dancingG-25.png in Resources */,
+				E9DBB08A1978151F00DDACDE /* dancingG-4.png in Resources */,
 				E9BE8CAD192AA29C008BB84C /* WhitneyIndexWhite-SquareMd.ttf in Resources */,
+				E9DBB0851978151F00DDACDE /* dancingG-27.png in Resources */,
 				E9CD471B194A083E00AEA17D /* goingSomewhereElse@2x.png in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
+				E9DBB08C1978151F00DDACDE /* dancingG-6.png in Resources */,
+				E9DBB0751978151F00DDACDE /* dancingG-12.png in Resources */,
 				E93F85021945F9E700B3B448 /* placesIcon@2x.png in Resources */,
 				E9BE8C8D192AA29C008BB84C /* Whitney-Book.ttf in Resources */,
 				E9BE8C9A192AA29C008BB84C /* Whitney-SemiboldItalic.ttf in Resources */,
@@ -1150,18 +1282,25 @@
 				E9681C75194FCA2100182E0E /* privacyLogo@2x.png in Resources */,
 				E9BE8C85192AA29C008BB84C /* Whitney-Black.ttf in Resources */,
 				E9BE8CAA192AA29C008BB84C /* WhitneyIndexWhite-SquareBd.ttf in Resources */,
+				E9DBB07E1978151F00DDACDE /* dancingG-20.png in Resources */,
 				E9CD46FF1947896300AEA17D /* tapFilled@2x.png in Resources */,
+				E9DBB07F1978151F00DDACDE /* dancingG-21.png in Resources */,
+				E9DBB08F1978151F00DDACDE /* dancingG-9.png in Resources */,
 				E9BE8C8F192AA29C008BB84C /* Whitney-BookItalicSC.ttf in Resources */,
+				E9DBB07B1978151F00DDACDE /* dancingG-18.png in Resources */,
+				E9DBB0871978151F00DDACDE /* dancingG-29.png in Resources */,
 				E9AAAFCE193E705F0069F700 /* phoneUnfilled.png in Resources */,
 				E9BE8C96192AA29C008BB84C /* Whitney-MediumItalic.ttf in Resources */,
 				E9CD470B1947A30400AEA17D /* peopleIconBlue@2x.png in Resources */,
 				E9BE8C9E192AA29C008BB84C /* WhitneyIndexBlack-RoundBd.ttf in Resources */,
+				E9DBB0841978151F00DDACDE /* dancingG-26.png in Resources */,
 				E9BE8CAC192AA29C008BB84C /* WhitneyIndexWhite-SquareLt2.ttf in Resources */,
 				E9BE8C99192AA29C008BB84C /* Whitney-Semibold.ttf in Resources */,
 				E9E619051938C74200A224C0 /* searchIcon.png in Resources */,
 				E9D906C2192535BC00E39FC8 /* giu3.jpg in Resources */,
 				E9E618FF1936421A00A224C0 /* backIcon.png in Resources */,
 				E9902985196B2F9A00192FF2 /* privateIcon@2x.png in Resources */,
+				E9DBB0721978151F00DDACDE /* dancingG-1.png in Resources */,
 				E9CD46F719474CA700AEA17D /* followPersonIcon@2x.png in Resources */,
 				E9CD470319479C6200AEA17D /* peopleSelected@2x.png in Resources */,
 				E9BE8C97192AA29C008BB84C /* Whitney-MediumItalicSC.ttf in Resources */,
@@ -1170,6 +1309,8 @@
 				E9CD4720194A0AA700AEA17D /* ben2.jpg in Resources */,
 				E9BE8C90192AA29C008BB84C /* Whitney-BookSC.ttf in Resources */,
 				E9BE8CA9192AA29C008BB84C /* WhitneyIndexWhite-RoundMd.ttf in Resources */,
+				E9DBB0791978151F00DDACDE /* dancingG-16.png in Resources */,
+				E9DBB0761978151F00DDACDE /* dancingG-13.png in Resources */,
 				E9BE8C9B192AA29C008BB84C /* Whitney-SemiboldItalicSC.ttf in Resources */,
 				E9F59E2F192E3F0600BB8FDD /* whereIcon.png in Resources */,
 				E9BE8CA8192AA29C008BB84C /* WhitneyIndexWhite-RoundLt2.ttf in Resources */,
@@ -1177,15 +1318,19 @@
 				E9ECFF84196E093900384252 /* chatImage@2x.png in Resources */,
 				E9BE8C9F192AA29C008BB84C /* WhitneyIndexBlack-RoundLt1.ttf in Resources */,
 				E93F85061945FB4400B3B448 /* notificationsIcon@2x.png in Resources */,
+				E9DBB0771978151F00DDACDE /* dancingG-14.png in Resources */,
 				E921D6201923967D00361247 /* InfoPlist.strings in Resources */,
 				E9BE8CAB192AA29C008BB84C /* WhitneyIndexWhite-SquareLt1.ttf in Resources */,
 				E93F84FE1942076A00B3B448 /* plusSquare.png in Resources */,
 				E94FF0DB19633A4600852180 /* iconFlashScreen@2x.png in Resources */,
 				E93F8513194602DB00B3B448 /* joined@2x.png in Resources */,
+				E9DBB0861978151F00DDACDE /* dancingG-28.png in Resources */,
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,
 				E9BE8CA7192AA29C008BB84C /* WhitneyIndexWhite-RoundLt1.ttf in Resources */,
 				E9BE8CA4192AA29C008BB84C /* WhitneyIndexBlack-SquareLt2.ttf in Resources */,
 				E9BE8CA0192AA29C008BB84C /* WhitneyIndexBlack-RoundLt2.ttf in Resources */,
+				E9DBB07A1978151F00DDACDE /* dancingG-17.png in Resources */,
+				E9DBB0801978151F00DDACDE /* dancingG-22.png in Resources */,
 				E9DB7B44196C47D500363656 /* closeButton@2x.png in Resources */,
 				E9BE8C87192AA29C008BB84C /* Whitney-BlackItalicSC.ttf in Resources */,
 				E9CD46FC1947873F00AEA17D /* tapUnfilled@2x.png in Resources */,
@@ -1239,6 +1384,7 @@
 				E900C2BC1961EADE00A01F50 /* SDWebImageManager.m in Sources */,
 				E9DE130C196F06B100AFA05A /* WiGoSpinnerView.m in Sources */,
 				E93DE530195C99F600079074 /* UIImageCrop.m in Sources */,
+				E9DBB050197813F900DDACDE /* UIScrollView+GifPullToRefresh.m in Sources */,
 				E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */,
 				E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */,
 				E900C2C01961EADE00A01F50 /* UIImage+MultiFormat.m in Sources */,

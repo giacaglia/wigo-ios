@@ -14,8 +14,9 @@
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
 
-#import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"
+#import "SDWebImage/UIImageView+WebCache.h"
+#import "UIScrollView+GifPullToRefresh.h"
 
 static NSString * const cellIdentifier = @"ContentViewCell";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";
@@ -522,22 +523,36 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 //                     }];
 //}
 
-#pragma mark - Refresh Control
-
 - (void)addRefreshToCollectonView {
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(refreshPeople:) forControlEvents:UIControlEventValueChanged];
-    [_collectionView addSubview:refreshControl];
+    NSMutableArray *TwitterMusicDrawingImgs = [NSMutableArray array];
+    NSMutableArray *TwitterMusicLoadingImgs = [NSMutableArray array];
+    for (NSUInteger i  = 0; i <= 1; i++) {
+        int fileNumber = (3*i)%31;
+        NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
+        NSLog(@"filename %@", fileName);
+        [TwitterMusicDrawingImgs addObject:[UIImage imageNamed:fileName]];
+    }
+    
+    for (NSUInteger i  = 0; i <= 70; i++) {
+        int fileNumber = (3*i)%31;
+        NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
+        [TwitterMusicLoadingImgs addObject:[UIImage imageNamed:fileName]];
+    }
+    __weak UICollectionView *tempCollectionView = _collectionView;
+    [tempCollectionView addPullToRefreshWithDrawingImgs:TwitterMusicDrawingImgs andLoadingImgs:TwitterMusicLoadingImgs andActionHandler:^{
+        [self refreshPeople];
+    }];
 }
 
-- (void)refreshPeople:(UIRefreshControl *)refreshControl
-{
+- (void)refreshPeople {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [NSThread sleepForTimeInterval:1];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [refreshControl endRefreshing];
+            [_collectionView didFinishPullToRefresh];
         });
     });
 }
+
 
 #pragma mark - Collection view Data Source
 
