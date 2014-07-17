@@ -322,6 +322,16 @@
     [modifiedKeys addObject:@"is_favorite"];
 }
 
+- (BOOL)isFollowing {
+    NSNumber *followingNumber = (NSNumber *)[_proxy objectForKey:@"is_following"];
+    return [followingNumber boolValue];
+}
+
+- (void)setIsFollowing:(BOOL)isFollowing {
+    [_proxy setObject:[NSNumber numberWithBool:isFollowing] forKey:@"is_following"];
+    [modifiedKeys addObject:@"is_following"];
+}
+
 #pragma mark - Saving data
 - (NSString *)login {
     Query *query = [[Query alloc] init];

@@ -111,7 +111,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 - (void)fetchFollowing {
     NSString *queryString = [NSString stringWithFormat:@"users/?user=friends&ordering=is_goingout&page=%@", [_page stringValue]];
-    NSLog(@"query string: %@", queryString);
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];

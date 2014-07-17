@@ -100,12 +100,13 @@
     [self initializeRightBarButton];
     [self initializeBioLabel];
 
-    if (!self.isMyProfile) {
-        [self initializeFollowingAndFollowers];
-    }
     
+    if (!self.isMyProfile) {
+        [self.user isFollowing] ? [self initializeFollowingAndFollowers] : [self initializeFollowButton];
+    }
     [self initializeLeftProfileButton];
     [self initializeRightProfileButton];
+    
 
 }
 
@@ -303,19 +304,21 @@
 }
 
 - (void) initializeFollowButton {
-    _followButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 64 + self.view.frame.size.width + 20, self.view.frame.size.width - 20, 50)];
+    _followButton = [[UIButton alloc] initWithFrame:CGRectMake(25, 64 + self.view.frame.size.width + 20, self.view.frame.size.width - 50, 50)];
     [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
     _followButton.layer.cornerRadius = 15;
     _followButton.layer.borderWidth = 1;
     _followButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     
-    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(45, 15, 135, 20)];
-    followLabel.text = @"Follow Alice";
+    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(18, 15, _followButton.frame.size.width - 36, 20)];
+    followLabel.text = [NSString stringWithFormat:@"Follow %@", [self.user firstName]];
+    followLabel.textAlignment = NSTextAlignmentCenter;
     followLabel.textColor = [FontProperties getOrangeColor];
     followLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:24.0f];
     [_followButton addSubview:followLabel];
+    
     UIImageView *plusImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plusPerson"]];
-    plusImageView.frame = CGRectMake(202, _followButton.frame.size.height/2 - 11, 28, 20);
+    plusImageView.frame = CGRectMake(_followButton.frame.size.width - 28 - 30, _followButton.frame.size.height/2 - 11, 28, 20);
     plusImageView.tintColor = [FontProperties getOrangeColor];
     [_followButton addSubview:plusImageView];
     
@@ -431,18 +434,20 @@
         [_leftProfileButton addSubview:followersLabel];
     }
     else {
-        _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
-        [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        if ([self.user isFavorite]) {
-            _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favoriteSelected"]];
+        if ([self.user isFollowing]) {
+            _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
+            [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+            if ([self.user isFavorite]) {
+                _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favoriteSelected"]];
+            }
+            else {
+                _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite"]];
+            }
+            _favoriteImageView.frame = CGRectMake(_leftProfileButton.frame.size.width/2 - 12, _leftProfileButton.frame.size.height/2 - 12, 24, 24);
+            _leftProfileButton.layer.borderWidth = 1;
+            _leftProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
+            [_leftProfileButton addSubview:_favoriteImageView];
         }
-        else {
-            _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite"]];
-        }
-        _favoriteImageView.frame = CGRectMake(_leftProfileButton.frame.size.width/2 - 12, _leftProfileButton.frame.size.height/2 - 12, 24, 24);
-        _leftProfileButton.layer.borderWidth = 1;
-        _leftProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
-        [_leftProfileButton addSubview:_favoriteImageView];
     }
     [self.view addSubview:_leftProfileButton];
 }
@@ -481,14 +486,16 @@
         [_rightProfileButton addSubview:followingLabel];
     }
     else {
-        _rightProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(3*self.view.frame.size.width/4, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
-        [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        _rightProfileButton.layer.borderWidth = 1;
-        _rightProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
+        if ([self.user isFollowing]) {
+            _rightProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(3*self.view.frame.size.width/4, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
+            [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+            _rightProfileButton.layer.borderWidth = 1;
+            _rightProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
 
-        UIImageView *chatImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chatImage"]];
-        chatImageView.frame = CGRectMake(_rightProfileButton.frame.size.width/2 - 12, _rightProfileButton.frame.size.height/2 - 12, 24, 24);
-        [_rightProfileButton addSubview:chatImageView];
+            UIImageView *chatImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chatImage"]];
+            chatImageView.frame = CGRectMake(_rightProfileButton.frame.size.width/2 - 12, _rightProfileButton.frame.size.height/2 - 12, 24, 24);
+            [_rightProfileButton addSubview:chatImageView];
+        }
     }
     [self.view addSubview:_rightProfileButton];
 }
