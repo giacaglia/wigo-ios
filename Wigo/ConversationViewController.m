@@ -288,18 +288,21 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void)sendMessage {
-    Message *message = [[Message alloc] init];
-    [message setMessageString:_messageTextField.text];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-d hh:mm:ss"];
-    [message setTimeOfCreation:[dateFormatter stringFromDate:[NSDate date]]];
-    [message setToUser:[self.user objectForKey:@"id"]];
-    [self addMessageFromSender:message];
-    [message save];
-    _messageTextField.text = @"";
+    if (![_messageTextField.text isEqualToString:@""]) {
+        Message *message = [[Message alloc] init];
+        [message setMessageString:_messageTextField.text];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+        [dateFormatter setTimeZone:timeZone];
+        [dateFormatter setDateFormat:@"yyyy-MM-d hh:mm:ss"];
+        [message setTimeOfCreation:[dateFormatter stringFromDate:[NSDate date]]];
+        [message setToUser:[self.user objectForKey:@"id"]];
+        [self addMessageFromSender:message];
+        [message save];
+        _messageTextField.text = @"";
+    }
     [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:YES];
+    [self dismissKeyboard];
 }
 
 - (void)keyboardWillShow:(NSNotification*)notification

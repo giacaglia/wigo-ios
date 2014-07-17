@@ -7,12 +7,8 @@
 //
 
 #import "SignViewController.h"
-#import "FontProperties.h"
 #import "MainViewController.h"
-
-#import "Profile.h"
-#import "User.h"
-#import "Query.h"
+#import "Globals.h"
 
 #import "WiGoSpinnerView.h"
 

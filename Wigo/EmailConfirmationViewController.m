@@ -7,10 +7,9 @@
 //
 
 #import "EmailConfirmationViewController.h"
-#import "FontProperties.h"
-#import "Profile.h"
+#import "Globals.h"
+
 #import "SDWebImage/UIImageView+WebCache.h"
-#import <QuartzCore/QuartzCore.h>
 
 @implementation EmailConfirmationViewController
 

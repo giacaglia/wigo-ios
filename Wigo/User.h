@@ -32,6 +32,7 @@
 - (NSString *)login;
 - (NSString *)signUp;
 - (void)save;
+- (void)saveKey:(NSString *)key;
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
 - (NSString *)fullName;
 - (void)addImageURL:(NSString *)imageURL;

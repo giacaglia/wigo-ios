@@ -58,7 +58,7 @@ static char UIScrollViewGifPullToRefresh;
     
     CHGifRefreshControl *view = [[CHGifRefreshControl alloc] initWithFrame:CGRectMake(0, -GifRefreshControlHeight, self.bounds.size.width, GifRefreshControlHeight)];
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 7.0) {
-        view.originalContentInsectY = 0;
+        view.originalContentInsectY = 5;
     }
         
     view.scrollView = self;
@@ -203,7 +203,7 @@ static char UIScrollViewGifPullToRefresh;
                               delay:0
                             options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
-                             self.scrollView.contentInset = UIEdgeInsetsMake(self.originalContentInsectY, 0.0f, 0.0f, 0.0f);
+                             self.scrollView.contentInset = UIEdgeInsetsMake(self.originalContentInsectY - 5, 0.0f, 0.0f, 0.0f);
                          }
                          completion:nil];
     }

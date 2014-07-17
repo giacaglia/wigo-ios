@@ -423,5 +423,18 @@
     }
 }
 
+- (void)saveKey:(NSString *)key {
+    Query *query = [[Query alloc] init];
+    NSString *queryString = [NSString stringWithFormat:@"users/?user=%@", [_proxy objectForKey:@"id"]];
+    [query queryWithClassName:queryString];
+    [query setProfileKey:self.key];
+    [query setValue:[_proxy objectForKey:key] forKey:key];
+    NSDictionary *dictionaryUser = [query sendPOSTRequest];
+    [_proxy addEntriesFromDictionary:dictionaryUser];
+    [modifiedKeys removeObject:key];
+
+}
+
+
 
 @end

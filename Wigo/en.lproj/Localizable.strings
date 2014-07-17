@@ -17,7 +17,7 @@
 "FF" = "%@ just joined WiGo";
 "TAP" = "%@ wants to see you out";
 "T" = "%@ wants to see you out";
-"GOINGOUT" = "%@ is going out";
-"G" = "%@ is going out";
+"GOINGOUT" = "%@ is going out!";
+"G" = "%@ is going out!";
 "GROUP_UNLOCKED" = "%@ was just unlocked";
 "GU" = "%@ was just unlocked";

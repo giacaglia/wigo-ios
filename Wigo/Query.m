@@ -7,6 +7,7 @@
 //
 
 #import "Query.h"
+#define WIGO_API_KEY @"oi34u53205ju34ik23"
 
 static NSString * const BaseURLString = @"https://api.wigo.us%@";
 
@@ -46,7 +47,7 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
-    [req setValue:@"oi34u53205ju34ik23" forHTTPHeaderField:@"X-Wigo-API-Key"];
+    [req setValue:WIGO_API_KEY forHTTPHeaderField:@"X-Wigo-API-Key"];
     [req setValue:_key forHTTPHeaderField:@"X-Wigo-User-Key"];
     [req setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
     [req setHTTPMethod:@"GET"];
@@ -64,7 +65,7 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
-    [req setValue:@"oi34u53205ju34ik23" forHTTPHeaderField:@"X-Wigo-API-Key"];
+    [req setValue:WIGO_API_KEY forHTTPHeaderField:@"X-Wigo-API-Key"];
     if (_key) {
         [req setValue:_key forHTTPHeaderField:@"X-Wigo-User-Key"];
     }
@@ -82,11 +83,10 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
 }
 
 - (NSDictionary *)sendDELETERequest {
-//    NSLog(@"options %@", _options);
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
-    [req setValue:@"oi34u53205ju34ik23" forHTTPHeaderField:@"X-Wigo-API-Key"];
+    [req setValue:WIGO_API_KEY forHTTPHeaderField:@"X-Wigo-API-Key"];
     if (_key) {
         [req setValue:_key forHTTPHeaderField:@"X-Wigo-User-Key"];
     }
@@ -106,7 +106,7 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
-    [req setValue:@"oi34u53205ju34ik23" forHTTPHeaderField:@"X-Wigo-API-Key"];
+    [req setValue:WIGO_API_KEY forHTTPHeaderField:@"X-Wigo-API-Key"];
     [req setValue:_key forHTTPHeaderField:@"X-Wigo-User-Key"];
     [req setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
     [req setHTTPMethod:@"GET"];

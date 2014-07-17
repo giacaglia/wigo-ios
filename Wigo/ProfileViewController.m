@@ -433,8 +433,12 @@
     else {
         _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
         [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        
-        _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite"]];
+        if ([self.user isFavorite]) {
+            _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favoriteSelected"]];
+        }
+        else {
+            _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite"]];
+        }
         _favoriteImageView.frame = CGRectMake(_leftProfileButton.frame.size.width/2 - 12, _leftProfileButton.frame.size.height/2 - 12, 24, 24);
         _leftProfileButton.layer.borderWidth = 1;
         _leftProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
@@ -449,9 +453,13 @@
     }
     else {
         if (_isPersonFavorite) {
+            [self.user setIsFavorite:NO];
+            [self.user saveKey:@"is_favorite"];
             _favoriteImageView.image = [UIImage imageNamed:@"favorite"];
         }
         else {
+            [self.user setIsFavorite:YES];
+            [self.user saveKey:@"is_favorite"];
             _favoriteImageView.image = [UIImage imageNamed:@"favoriteSelected"];
         }
         _isPersonFavorite = !_isPersonFavorite;
