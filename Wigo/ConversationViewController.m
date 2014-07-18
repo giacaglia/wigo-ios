@@ -10,7 +10,7 @@
 #import "Globals.h"
 #import "UIButtonAligned.h"
 #import "SDWebImage/UIImageView+WebCache.h"
-
+#import "WiGoSpinnerView.h"
 
 @interface ConversationViewController ()
 
@@ -22,7 +22,7 @@
 @property UIButton *sendButton;
 @property User *user;
 @property Party *messageParty;
-@property UIActivityIndicatorView *spinner;
+@property UIView *viewForEmptyConversation;
 
 @end
 
@@ -38,6 +38,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     self = [super init];
     if (self) {
         self.user = user;
+        [self initializeNotificationObservers];
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -47,6 +48,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 {
     self = [super init];
     if (self) {
+        [self initializeNotificationObservers];
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -65,28 +67,12 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self initializeRightBarButton];
     [self initializeScrollView];
     [self initializeTapHandler];
+    [self initializeTextBox];
     
-    _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,80,80)];
-    _spinner.center = self.view.center;
-    _spinner.transform = CGAffineTransformMakeScale(2, 2);
-    _spinner.color = [FontProperties getOrangeColor];
-    [_spinner startAnimating];
-    [self.view addSubview:_spinner];
-    NSString *queryString = [NSString stringWithFormat:@"messages/?conversation=%@",[self.user objectForKey:@"id"]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [_spinner stopAnimating];
-            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
-            // Reorder them by time stamp
-            arrayOfMessages = [[arrayOfMessages reverseObjectEnumerator] allObjects];
-            _messageParty = [[Party alloc] initWithObjectName:@"Message"];
-            [_messageParty addObjectsFromArray:arrayOfMessages];
-            [self addMessages];
-        });
-    }];
+    [self fetchMessages];
+}
 
-    [self addTextBox];
-    
+- (void) initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
@@ -96,9 +82,16 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                                              selector:@selector(keyboardWillBeHidden:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(initializeMessageForEmptyConversation)
+                                                 name:@"initializeMessageForEmptyConversation"
+                                               object:nil];
+
 }
 
 - (void) addMessages {
+
     for (Message *message in [_messageParty getObjectArray]) {
         
         if ([[message fromUser] isEqualToUser:[Profile user]]) {
@@ -108,6 +101,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
             [self addMessageFromReceiver:message];
         }
     }
+    
     [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:NO];
 }
 
@@ -142,7 +136,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.rightBarButtonItem = profileBarButton;
 }
-
 
 - (void) goBack {
     [self.navigationController popViewControllerAnimated:YES];
@@ -231,7 +224,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [messageWrapper addSubview:timerLabel];
 }
 
-- (void)addTextBox {
+- (void)initializeTextBox {
     _chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50)];
     [self.view addSubview:_chatTextFieldWrapper];
     [self.view bringSubviewToFront:_chatTextFieldWrapper];
@@ -265,10 +258,23 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     _sendButton.backgroundColor = [UIColor clearColor];
     _sendButton.titleLabel.font = [FontProperties getTitleFont];
     [_chatTextFieldWrapper addSubview:_sendButton];
+}
+
+- (void)initializeMessageForEmptyConversation {
+    _viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+    _viewForEmptyConversation.center = self.view.center;
+    [self.view addSubview:_viewForEmptyConversation];
     
+    UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , self.view.frame.size.width, 30)];
+    everyDayLabel.text = @"Every day on WiGo is a new day.";
+    everyDayLabel.textColor = [FontProperties getOrangeColor];
+    everyDayLabel.textAlignment = NSTextAlignmentCenter;
+    everyDayLabel.font = [FontProperties getBigButtonFont];
+    [_viewForEmptyConversation addSubview:everyDayLabel];
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
+    if (_viewForEmptyConversation) _viewForEmptyConversation.hidden = YES;
     [_sendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
 //    [UIView animateWithDuration:0.5 animations:^{
 //        _chatTextFieldWrapper.transform = CGAffineTransformMakeTranslation(0, -216);
@@ -356,6 +362,25 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                      }
                      completion:^(BOOL finished){}];
 }
+        
 
+# pragma mark - Network functions
+
+- (void)fetchMessages {
+    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+    NSString *queryString = [NSString stringWithFormat:@"messages/?conversation=%@",[self.user objectForKey:@"id"]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [WiGoSpinnerView hideSpinnerForView:self.view];
+            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
+            // Reorder them by time stamp
+            arrayOfMessages = [[arrayOfMessages reverseObjectEnumerator] allObjects];
+            _messageParty = [[Party alloc] initWithObjectName:@"Message"];
+            [_messageParty addObjectsFromArray:arrayOfMessages];
+            [self addMessages];
+        });
+    }];
+}
+        
 
 @end

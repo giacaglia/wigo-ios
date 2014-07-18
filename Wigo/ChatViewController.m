@@ -119,6 +119,7 @@
         return cell;
     }
     
+    if ([[_messageParty getObjectArray] count] == 0) return cell;
     Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
     User *user = [message otherUser];
     if (!user) {
@@ -185,11 +186,8 @@
     if (!user) {
         user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
     }
-    [self getChatOfUser:user];
-}
-
-- (void) getChatOfUser:(User *)user {
     self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
+    if ([[message messageString] length] == 0) [[NSNotificationCenter defaultCenter] postNotificationName:@"initializeMessageForEmptyConversation" object:nil];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
 }

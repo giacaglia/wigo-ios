@@ -100,6 +100,7 @@
         return cell;
     }
     
+    if ([[_notificationsParty getObjectArray] count] == 0) return cell;
     Notification *notifcation = [[_notificationsParty getObjectArray] objectAtIndex:[indexPath row]];
     User *user = (User *)[_everyoneParty getObjectWithId:[notifcation fromUserID]];
     
@@ -118,7 +119,6 @@
     profileImageView.layer.cornerRadius = 5;
     profileImageView.layer.borderWidth = 0.5;
     profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
-//    profileImageView.backgroundColor = [UIColor whiteColor];
     profileImageView.layer.masksToBounds = YES;
     [notificationButton addSubview:profileImageView];
     
