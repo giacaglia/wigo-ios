@@ -65,7 +65,7 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     [req setWigoHeadersAndUserKey:_key];
-    [req setHTTPMethod:@"POST"];
+    [req setHTTPMethod:POST];
     [req setHTTPBody:jsonData];
     NSURLResponse * response = nil;
     NSError * error = nil;
@@ -82,7 +82,7 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     [req setWigoHeadersAndUserKey:_key];
-    [req setHTTPMethod:@"DELETE"];
+    [req setHTTPMethod:DELETE];
     [req setHTTPBody:jsonData];
     NSURLResponse * response = nil;
     NSError * error = nil;
@@ -93,12 +93,28 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
 
 #pragma mark - Asynchronous calls
 
+- (void) sendAsynchronousHTTPMethod:(NSString *)httpMethod withHandler:(QueryResult)handler {
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
+    NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
+    [req setWigoHeadersAndUserKey:_key];
+    [req setHTTPMethod:httpMethod];
+    [req setHTTPBody:jsonData];
+    [NSURLConnection sendAsynchronousRequest:req queue:[[NSOperationQueue alloc] init]  completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        NSDictionary* json;
+        if (data) {
+            json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        }
+        handler(json, error);
+    }];
+}
+
 - (void)sendAsynchronousGETRequestHandler:(QueryResult)handler {
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_options options:NSJSONWritingPrettyPrinted error:nil];
     NSURL *url = [NSURL URLWithString: [NSString stringWithFormat:BaseURLString, _urlSuffix]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     [req setWigoHeadersAndUserKey:_key];
-    [req setHTTPMethod:@"GET"];
+    [req setHTTPMethod:GET];
     if ([_options count] != 0) {
         [req setHTTPBody:jsonData];
     }

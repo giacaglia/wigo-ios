@@ -441,7 +441,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
         [self refreshPeople];
     }];
 }
-//[_collectionView didFinishPullToRefresh];
 
 - (void)refreshPeople {
     _spinnerAtCenter = NO;
@@ -491,9 +490,11 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     
     NSArray *userArray;
     if ([indexPath section] == 0) {
+        if ([[_whoIsGoingOutParty getObjectArray] count] == 0) return cell;
         userArray = [_whoIsGoingOutParty getObjectArray];
     }
     else if ([indexPath section] == 1) {
+        if ([[_notGoingOutParty getObjectArray] count] == 0) return cell;
         userArray = [_notGoingOutParty getObjectArray];
     }
     else {

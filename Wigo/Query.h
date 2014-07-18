@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <FacebookSDK/FacebookSDK.h>
 
+#define POST @"POST"
+#define GET @"GET"
+#define DELETE @"DELETE"
+
+
 typedef void (^QueryResult)(NSDictionary *jsonResponse, NSError *error);
 typedef void (^QueryResultWithInput)(NSDictionary *input, NSDictionary *jsonResponse, NSError *error);
 
@@ -27,6 +32,7 @@ typedef void (^QueryResultWithInput)(NSDictionary *input, NSDictionary *jsonResp
 - (NSDictionary *)sendPOSTRequest;
 - (NSDictionary *)sendDELETERequest;
 
+- (void) sendAsynchronousHTTPMethod:(NSString *)httpMethod withHandler:(QueryResult)handler;
 - (void)sendAsynchronousGETRequestHandler:(QueryResult) handler;
 
 @end

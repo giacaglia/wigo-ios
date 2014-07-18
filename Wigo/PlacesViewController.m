@@ -425,6 +425,7 @@
             return cell;
         }
     }
+    if ([[_eventsParty getObjectArray] count] == 0) return cell;
     Event *event = [[_eventsParty getObjectArray] objectAtIndex:[indexPath row]];
     Party *partyUser = [_partyUserArray objectAtIndex:[indexPath row]];
     NSDictionary *summary = [_summaryArray objectAtIndex:[indexPath row]];

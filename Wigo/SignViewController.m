@@ -25,9 +25,10 @@
 @property NSString *accessToken;
 @property NSString *fbID;
 
-@property BOOL userDidntTryToSignUp;
 @property BOOL userEmailAlreadySent;
 
+@property UIAlertView * alert;
+@property BOOL alertShown;
 @end
 
 @implementation SignViewController
@@ -37,7 +38,6 @@
 {
     self = [super init];
     if (self) {
-        _userDidntTryToSignUp = YES;
         _userEmailAlreadySent = NO;
         self.view.backgroundColor = [UIColor whiteColor];
     }
@@ -47,14 +47,20 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlertToNotShown) name:@"changeAlertToNotShown" object:nil];
+    _alertShown = NO;
     _pushed = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    _alertShown = NO;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [self getFacebookTokensAndLoginORSignUp];
+}
+
+- (void) changeAlertToNotShown {
+    _alertShown = NO;
 }
 
 - (void) getFacebookTokensAndLoginORSignUp {
@@ -65,7 +71,7 @@
         [self fetchTokensFromFacebook];
     }
     else {
-        [self logInUser];
+        [self loginUserAsynchronous];
     }
 }
 
@@ -73,43 +79,6 @@
     [self initializeLogo];
     [self initializeFacebookSignButton];
 }
-
-- (void) logInUser {
-    if (_userDidntTryToSignUp) {
-        _userDidntTryToSignUp = NO;
-
-        [[NSUserDefaults standardUserDefaults] setObject:_fbID forKey: @"facebook_id"];
-        [[NSUserDefaults standardUserDefaults] setObject:_email forKey: @"email"];
-        [[NSUserDefaults standardUserDefaults] setObject:_accessToken forKey: @"accessToken"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        User *profileUser = [Profile user];
-        [profileUser setObject:_fbID forKey:@"facebook_id"];
-        [profileUser setEmail:_email];
-        [profileUser setAccessToken:_accessToken];
-        [Profile setUser:profileUser];
-        [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-        NSString *response = [profileUser login];
-        [WiGoSpinnerView hideSpinnerForView:self.view];
-        [Profile setUser:profileUser];
-        
-        if ([response isEqualToString:@"error"]) {
-            [self fetchTokensFromFacebook];
-            [self fetchProfilePicturesAlbumFacebook];
-        }
-        else if ([response isEqualToString:@"email_not_validated"]) {
-            _userEmailAlreadySent = YES;
-            [self fetchTokensFromFacebook];
-            [self fetchProfilePicturesAlbumFacebook];
-        }
-        else {
-            [self dismissViewControllerAnimated:YES  completion:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
-        }
-       
-    }
-}
-
 
 - (void)initializeLogo {
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
@@ -141,24 +110,6 @@
     [self.view addSubview:dontWorryLabel];
 }
 
-
-#pragma mark - Log In Via FB
-
-- (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
-//    NSLog(@"fetched");
-    if (!_pushed) {
-        _pushed = YES;
-        _fbID = [fbGraphUser objectID];
-        _email = fbGraphUser[@"email"];
-        _accessToken = [FBSession activeSession].accessTokenData.accessToken;
-        User *profileUser = [Profile user];
-        [profileUser setFirstName:fbGraphUser[@"first_name"]];
-        [profileUser setLastName:fbGraphUser[@"last_name"]];
-        [Profile setUser:profileUser];
-        
-        [self logInUser];
-    }
-}
 
 #pragma mark - Sign Up Process
 
@@ -266,5 +217,79 @@
         return returnedPhoto;
     }
 }
+
+#pragma mark - Facebook Delegate Methods
+
+- (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
+    NSLog(@"fetched");
+    if (!_pushed) {
+        _fbID = [fbGraphUser objectID];
+        _email = fbGraphUser[@"email"];
+        _accessToken = [FBSession activeSession].accessTokenData.accessToken;
+        User *profileUser = [Profile user];
+        [profileUser setFirstName:fbGraphUser[@"first_name"]];
+        [profileUser setLastName:fbGraphUser[@"last_name"]];
+        [Profile setUser:profileUser];
+        
+        if (!_alertShown) {
+            [self loginUserAsynchronous];
+        }
+    }
+}
+- (void) loginViewShowingLoggedInUser:(FBLoginView *)loginView {
+    NSLog(@"Called here");
+}
+
+#pragma mark - Asynchronous methods
+
+- (void) loginUserAsynchronous {
+    [[NSUserDefaults standardUserDefaults] setObject:_fbID forKey: @"facebook_id"];
+    [[NSUserDefaults standardUserDefaults] setObject:_email forKey: @"email"];
+    [[NSUserDefaults standardUserDefaults] setObject:_accessToken forKey: @"accessToken"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    User *profileUser = [Profile user];
+    [profileUser setObject:_fbID forKey:@"facebook_id"];
+    [profileUser setEmail:_email];
+    [profileUser setAccessToken:_accessToken];
+    [Profile setUser:profileUser];
+    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+    [profileUser loginWithHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [WiGoSpinnerView hideSpinnerForView:self.view];
+            [Profile setUser:profileUser];
+            if ([error domain] == NSURLErrorDomain) {
+                if (!_alertShown) {
+                    _alertShown = YES;
+                    _alert = [[UIAlertView alloc ] initWithTitle:@"Error"
+                                                                     message:[error localizedDescription]
+                                                                    delegate:self
+                                                           cancelButtonTitle:@"Ok"
+                                                           otherButtonTitles: nil];
+                    [_alert show];
+                }
+                [self fetchTokensFromFacebook];
+                [self fetchProfilePicturesAlbumFacebook];
+            }
+            else if ([[error localizedDescription] isEqualToString:@"error"]) {
+                [self fetchTokensFromFacebook];
+                [self fetchProfilePicturesAlbumFacebook];
+            }
+            else if ([[error localizedDescription] isEqualToString:@"email_not_validated"]) {
+                _userEmailAlreadySent = YES;
+                [self fetchTokensFromFacebook];
+                [self fetchProfilePicturesAlbumFacebook];
+            }
+            else {
+                _pushed = YES;
+                [self dismissViewControllerAnimated:YES  completion:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+            }
+        });
+    }];
+
+    
+}
+
 
 @end

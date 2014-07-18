@@ -30,10 +30,6 @@
 
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
-- (NSString *)login;
-- (NSString *)signUp;
-- (void)save;
-- (void)saveKey:(NSString *)key;
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
 - (NSString *)fullName;
 - (void)addImageURL:(NSString *)imageURL;
@@ -48,5 +44,13 @@
 @property NSMutableArray *listOfFollowers;
 @property NSMutableArray *listOfFollowing;
 @property NSDictionary *notificationSettings;
+
+#pragma mark - Saving data
+- (NSString *)login;
+- (NSString *)signUp;
+- (void)save;
+- (void)saveKey:(NSString *)key;
+- (void)loginWithHandler:(QueryResult)handler;
+
 
 @end

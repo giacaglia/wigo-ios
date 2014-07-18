@@ -445,6 +445,56 @@
 
 }
 
+#pragma mark - Refactoring saving data
+
+- (void)loginWithHandler:(QueryResult)handler {
+    Query *query = [[Query alloc] init];
+    [query queryWithClassName:@"login"];
+    [query setValue:[self objectForKey:@"facebook_id"] forKey:@"facebook_id"];
+    [query setValue:[self accessToken] forKey:@"facebook_access_token"];
+    [query setValue:self.email forKey:@"email"];
+    [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (jsonResponse == nil) {
+            handler(nil, error);
+        }
+        else if ([[jsonResponse allKeys] containsObject:@"code"]) {
+            if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"invalid_email"]) {
+                handler(nil, [NSError errorWithDomain:@"Server"
+                                                 code:100
+                                             userInfo:@{NSLocalizedDescriptionKey:@"invalid_email"}
+                              ]);
+            }
+        }
+        else if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"expired_token"]) {
+            handler(nil, [NSError errorWithDomain:@"Server"
+                                             code:100
+                                         userInfo:@{NSLocalizedDescriptionKey:@"expired_token"}
+                          ]);
+
+
+        }
+        else if ([[jsonResponse allKeys] containsObject:@"status"]) {
+            handler(nil, [NSError errorWithDomain:@"Server"
+                                             code:100
+                                         userInfo:@{NSLocalizedDescriptionKey:@"error"}
+                          ]);
+        }
+        else {
+            PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+            currentInstallation[@"wigo_id"] = [jsonResponse objectForKey:@"id"];
+            [currentInstallation saveInBackground];
+            for (NSString *key in [jsonResponse allKeys]) {
+                [self setValue:[jsonResponse objectForKey:key] forKey:key];
+            }
+            [modifiedKeys removeAllObjects];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            handler(jsonResponse, error);
+        }
+    }];
+}
+
+
+
 
 
 @end

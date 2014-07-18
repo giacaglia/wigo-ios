@@ -162,14 +162,12 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     BOOL wasHandled = [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
     
     // You can add your app-specific url handling code here if needed
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlertToNotShown" object:nil];
     
     return wasHandled;
 }
 
 #pragma mark - Tap Gesture
--(void)handleSingleTap:(UIGestureRecognizer *)gestureRecognizer {
-    NSLog(@"Tab tpped");
-}
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     // Disallow recognition of tap gestures in the TabbarItem control.
