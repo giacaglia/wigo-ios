@@ -60,6 +60,8 @@
 
 @property NSNumber *page;
 
+@property BOOL spinnerAtTop;
+
 @end
 
 @implementation PlacesViewController {
@@ -70,7 +72,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    _spinnerAtTop = YES;
     [self initializeNotificationObservers];
     [self initializeTapHandler];
     [self initializeWhereView];
@@ -88,7 +90,7 @@
 
 - (void) fetchEvents {
     _everyoneParty = [Profile everyoneParty];
-    [WiGoSpinnerView showBlueSpinnerAddedTo:self.view];
+    if (_spinnerAtTop) [WiGoSpinnerView showBlueSpinnerAddedTo:self.view];
     NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@", [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *events = [jsonResponse objectForKey:@"objects"];
@@ -614,7 +616,7 @@
     numberOfFetchedParties += 1;
     if (numberOfFetchedParties >= 2*[[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView hideSpinnerForView:self.view];
+            _spinnerAtTop ? [WiGoSpinnerView hideSpinnerForView:self.view] : [_placesTableView didFinishPullToRefresh];
             _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];
             _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
             [_placesTableView reloadData];
@@ -645,12 +647,12 @@
 }
 
 - (void)refreshEvents {
+    _spinnerAtTop = NO;
     [self fetchEventsFirstPage];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [_placesTableView didFinishPullToRefresh];
-        });
-    });
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//        });
+//    });
 }
 
 
