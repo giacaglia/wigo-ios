@@ -64,21 +64,6 @@
     self.navigationItem.leftBarButtonItem = nil;
 }
 
-- (void)fetchMessages {
-    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    NSString *queryString = [NSString stringWithFormat:@"messages/summary/?to_user=me&page=%@", [_page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView hideSpinnerForView:self.view];
-            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
-            [_messageParty addObjectsFromArray:arrayOfMessages];
-            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-            [_messageParty addMetaInfo:metaDictionary];
-            [_tableViewOfPeople reloadData];
-        });
-    }];
-
-}
 
 - (void) writeMessage {
     self.messageViewController = [[MessageViewController alloc] init];
@@ -93,6 +78,22 @@
     _tableViewOfPeople.backgroundColor = [UIColor clearColor];
     _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:_tableViewOfPeople];
+}
+
+- (void)fetchMessages {
+    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+    NSString *queryString = [NSString stringWithFormat:@"messages/summary/?to_user=me&page=%@", [_page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [WiGoSpinnerView hideSpinnerForView:self.view];
+            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
+            [_messageParty addObjectsFromArray:arrayOfMessages];
+            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+            [_messageParty addMetaInfo:metaDictionary];
+            [_tableViewOfPeople reloadData];
+        });
+    }];
+    
 }
 
 
