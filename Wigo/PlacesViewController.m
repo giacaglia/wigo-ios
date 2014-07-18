@@ -627,21 +627,21 @@
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    NSMutableArray *TwitterMusicDrawingImgs = [NSMutableArray array];
-    NSMutableArray *TwitterMusicLoadingImgs = [NSMutableArray array];
+    NSMutableArray *DancingGDrawingImgs = [NSMutableArray array];
+    NSMutableArray *DancingGLoadingImgs = [NSMutableArray array];
     for (NSUInteger i  = 0; i <= 1; i++) {
-        int fileNumber = (3*i)%31;
+        int fileNumber = (4*i)%31;
         NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
-        [TwitterMusicDrawingImgs addObject:[UIImage imageNamed:fileName]];
+        [DancingGDrawingImgs addObject:[UIImage imageNamed:fileName]];
     }
     
-    for (NSUInteger i  = 0; i <= 30; i++) {
-        int fileNumber = (3*i)%31;
+    for (NSUInteger i  = 0; i <= 70; i++) {
+        int fileNumber = (4*i)%31;
         NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
-        [TwitterMusicLoadingImgs addObject:[UIImage imageNamed:fileName]];
+        [DancingGLoadingImgs addObject:[UIImage imageNamed:fileName]];
     }
     __weak UITableView *tempPlacesTableView = _placesTableView;
-    [tempPlacesTableView addPullToRefreshWithDrawingImgs:TwitterMusicDrawingImgs andLoadingImgs:TwitterMusicLoadingImgs andActionHandler:^{
+    [tempPlacesTableView addPullToRefreshWithDrawingImgs:DancingGDrawingImgs andLoadingImgs:DancingGLoadingImgs andActionHandler:^{
         [self refreshEvents];
     }];
 }
@@ -649,10 +649,6 @@
 - (void)refreshEvents {
     _spinnerAtTop = NO;
     [self fetchEventsFirstPage];
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//        });
-//    });
 }
 
 

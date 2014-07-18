@@ -23,10 +23,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 @interface MainViewController ()
 
-// Properties shared by Who and Where View
-@property BOOL isGoingOut;
-
-
 // Bar at top
 @property UIView *barAtTopView;
 @property BOOL goingOutIsAttachedToScrollView;
@@ -53,7 +49,8 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 @property UILabel *goingOutLabel;
 @property UILabel *goingOutLabelOnTopOfNotGoingOutLabel;
 @property UILabel *notGoingOutLabel;
-@property BOOL started;
+@property BOOL spinnerAtCenter;
+
 @end
 
 @implementation MainViewController
@@ -72,6 +69,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 {
     [super viewDidLoad];
     [self initializeFlashScreen];
+    _spinnerAtCenter = YES;
     
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor clearColor]];
     [self initializeWhoView];
@@ -79,7 +77,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 }
 
 - (void)loadViewAfterSigningUser {
-    _started = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
 
     [self fetchFollowingFirstPage];
@@ -111,7 +108,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 - (void)fetchFollowing {
     NSString *queryString = [NSString stringWithFormat:@"users/?user=friends&ordering=is_goingout&page=%@", [_page stringValue]];
-    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+    if (_spinnerAtCenter) [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [_followingAcceptedParty addObjectsFromArray:arrayOfUsers];
@@ -131,7 +128,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
             }
         }
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView hideSpinnerForView:self.view];
+            _spinnerAtCenter ? [WiGoSpinnerView hideSpinnerForView:self.view] : [_collectionView didFinishPullToRefresh];
             _page = @([_page intValue] + 1);
             [_collectionView reloadData];
             [self.view bringSubviewToFront:_barAtTopView];
@@ -426,33 +423,29 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 
 - (void)addRefreshToCollectonView {
-    NSMutableArray *TwitterMusicDrawingImgs = [NSMutableArray array];
-    NSMutableArray *TwitterMusicLoadingImgs = [NSMutableArray array];
+    NSMutableArray *DancingGDrawingImgs = [NSMutableArray array];
+    NSMutableArray *DancingGLoadingImgs = [NSMutableArray array];
     for (NSUInteger i  = 0; i <= 1; i++) {
-        int fileNumber = (3*i)%31;
+        int fileNumber = (4*i)%31;
         NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
-        [TwitterMusicDrawingImgs addObject:[UIImage imageNamed:fileName]];
+        [DancingGDrawingImgs addObject:[UIImage imageNamed:fileName]];
     }
     
     for (NSUInteger i  = 0; i <= 70; i++) {
-        int fileNumber = (3*i)%31;
+        int fileNumber = (4*i)%31;
         NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
-        [TwitterMusicLoadingImgs addObject:[UIImage imageNamed:fileName]];
+        [DancingGLoadingImgs addObject:[UIImage imageNamed:fileName]];
     }
     __weak UICollectionView *tempCollectionView = _collectionView;
-    [tempCollectionView addPullToRefreshWithDrawingImgs:TwitterMusicDrawingImgs andLoadingImgs:TwitterMusicLoadingImgs andActionHandler:^{
+    [tempCollectionView addPullToRefreshWithDrawingImgs:DancingGDrawingImgs andLoadingImgs:DancingGLoadingImgs andActionHandler:^{
         [self refreshPeople];
     }];
 }
+//[_collectionView didFinishPullToRefresh];
 
 - (void)refreshPeople {
+    _spinnerAtCenter = NO;
     [self fetchFollowingFirstPage];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [NSThread sleepForTimeInterval:1];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [_collectionView didFinishPullToRefresh];
-        });
-    });
 }
 
 

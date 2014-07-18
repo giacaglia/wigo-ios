@@ -276,8 +276,6 @@
                 profileImgView.hidden = NO;
             });
         }];
-        
-        [self addParallaxEffectToView:profileImgView];
         [_scrollView addSubview:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
