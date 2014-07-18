@@ -29,6 +29,7 @@
 
 @property UIAlertView * alert;
 @property BOOL alertShown;
+@property BOOL fetchingProfilePictures;
 @end
 
 @implementation SignViewController
@@ -39,6 +40,7 @@
     self = [super init];
     if (self) {
         _userEmailAlreadySent = NO;
+        _fetchingProfilePictures = NO;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -49,18 +51,21 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlertToNotShown) name:@"changeAlertToNotShown" object:nil];
     _alertShown = NO;
+    _fetchingProfilePictures = NO;
     _pushed = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     _alertShown = NO;
+    _fetchingProfilePictures = NO;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [self getFacebookTokensAndLoginORSignUp];
 }
 
 - (void) changeAlertToNotShown {
     _alertShown = NO;
+    _fetchingProfilePictures = NO;
 }
 
 - (void) getFacebookTokensAndLoginORSignUp {
@@ -92,13 +97,11 @@
     _loginView.frame = CGRectMake(0, self.view.frame.size.height - 125, 245, 34);
     _loginView.frame = CGRectOffset(_loginView.frame, (self.view.center.x - (_loginView.frame.size.width / 2)), 5);
     _loginView.backgroundColor = [UIColor whiteColor];
-    
     UIImageView *connectFacebookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"connectFacebook"]];
     connectFacebookImageView.backgroundColor = [UIColor whiteColor];
     connectFacebookImageView.frame = CGRectMake(0, 0, 245, 34);
     [_loginView addSubview:connectFacebookImageView];
     [_loginView bringSubviewToFront:connectFacebookImageView];
-    
     [self.view addSubview:_loginView];
     
     UILabel *dontWorryLabel = [[UILabel alloc] init];
@@ -129,6 +132,9 @@
                                               id result,
                                               NSError *error
                                               ) {
+                              if (error) {
+                                  _fetchingProfilePictures = NO;
+                              }
                               FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
                               for (FBGraphObject *album in resultObject) {
                                   if ([[album objectForKey:@"name"] isEqualToString:@"Profile Pictures"]) {
@@ -152,6 +158,9 @@
                                               id result,
                                               NSError *error
                                               ) {
+                              if (error) {
+                                  _fetchingProfilePictures = NO;
+                              }
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
                               for (FBGraphObject *photoRepresentation in resultObject) {
                                   FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
@@ -174,10 +183,14 @@
                               [profileUser setImagesURL:profilePictures];
                               [Profile setUser:profileUser];
                               if (_userEmailAlreadySent) {
+                                  _pushed = YES;
+                                  _fetchingProfilePictures = NO;
                                   self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
                                   [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
                               }
                               else {
+                                  _pushed = YES;
+                                  _fetchingProfilePictures = NO;
                                   self.signUpViewController = [[SignUpViewController alloc] init];
                                   [self.navigationController pushViewController:self.signUpViewController animated:YES];
                               }
@@ -224,21 +237,18 @@
     NSLog(@"fetched");
     if (!_pushed) {
         _fbID = [fbGraphUser objectID];
-        _email = fbGraphUser[@"email"];
         _accessToken = [FBSession activeSession].accessTokenData.accessToken;
         User *profileUser = [Profile user];
         [profileUser setFirstName:fbGraphUser[@"first_name"]];
         [profileUser setLastName:fbGraphUser[@"last_name"]];
         [Profile setUser:profileUser];
         
-        if (!_alertShown) {
+        if (!_alertShown && !_fetchingProfilePictures) {
             [self loginUserAsynchronous];
         }
     }
 }
-- (void) loginViewShowingLoggedInUser:(FBLoginView *)loginView {
-    NSLog(@"Called here");
-}
+
 
 #pragma mark - Asynchronous methods
 
@@ -269,14 +279,18 @@
                     [_alert show];
                 }
                 [self fetchTokensFromFacebook];
+                _fetchingProfilePictures = YES;
                 [self fetchProfilePicturesAlbumFacebook];
             }
             else if ([[error localizedDescription] isEqualToString:@"error"]) {
+                NSLog(@"here");
                 [self fetchTokensFromFacebook];
+                _fetchingProfilePictures = YES;
                 [self fetchProfilePicturesAlbumFacebook];
             }
             else if ([[error localizedDescription] isEqualToString:@"email_not_validated"]) {
                 _userEmailAlreadySent = YES;
+                _fetchingProfilePictures = YES;
                 [self fetchTokensFromFacebook];
                 [self fetchProfilePicturesAlbumFacebook];
             }

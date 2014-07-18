@@ -1,3 +1,4 @@
+
 //
 //  User.m
 //  Wigo
@@ -464,20 +465,20 @@
                                              userInfo:@{NSLocalizedDescriptionKey:@"invalid_email"}
                               ]);
             }
-        }
-        else if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"expired_token"]) {
-            handler(nil, [NSError errorWithDomain:@"Server"
-                                             code:100
-                                         userInfo:@{NSLocalizedDescriptionKey:@"expired_token"}
-                          ]);
+            else if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"expired_token"]) {
+                handler(nil, [NSError errorWithDomain:@"Server"
+                                                 code:100
+                                             userInfo:@{NSLocalizedDescriptionKey:@"expired_token"}
+                              ]);
 
 
-        }
-        else if ([[jsonResponse allKeys] containsObject:@"status"]) {
-            handler(nil, [NSError errorWithDomain:@"Server"
-                                             code:100
-                                         userInfo:@{NSLocalizedDescriptionKey:@"error"}
-                          ]);
+            }
+            else if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) {
+                handler(nil, [NSError errorWithDomain:@"Server"
+                                                 code:100
+                                             userInfo:@{NSLocalizedDescriptionKey:@"error"}
+                              ]);
+            }
         }
         else {
             PFInstallation *currentInstallation = [PFInstallation currentInstallation];

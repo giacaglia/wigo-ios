@@ -282,6 +282,7 @@
     [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count], 320)];
     _bioLabel.text = [NSString stringWithFormat:@"       %@" , [self.user bioString]];
     [_bioLabel sizeToFit];
+    _bioLabel.hidden = NO;
 
 }
 
@@ -538,6 +539,7 @@
     _bioLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _bioLabel.numberOfLines = 0;
     _bioLabel.textAlignment = NSTextAlignmentLeft;
+    _bioLabel.hidden = YES;
     [self.view addSubview:_bioLabel];
 }
 
