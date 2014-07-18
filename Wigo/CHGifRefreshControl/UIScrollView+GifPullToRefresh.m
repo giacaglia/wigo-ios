@@ -27,7 +27,7 @@
 #import "UIScrollView+GifPullToRefresh.h"
 #import <objc/runtime.h>
 
-#define GifRefreshControlHeight 40.0
+#define GifRefreshControlHeight 50.0
 
 typedef enum
 {

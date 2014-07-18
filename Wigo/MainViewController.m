@@ -614,9 +614,16 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
         [[reusableView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
         if ([indexPath section] == 1) {
-            _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 5 + 30, reusableView.frame.size.width, 30);
-            [_collectionView addSubview:_notGoingOutView];
-            _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+            if ([[_notGoingOutParty getObjectArray] count] == 0) {
+                _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, self.view.frame.size.height, reusableView.frame.size.width, 30);
+                [_collectionView addSubview:_notGoingOutView];
+                _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+            }
+            else {
+                _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 5 + 30, reusableView.frame.size.width, 30);
+                [_collectionView addSubview:_notGoingOutView];
+                _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+            }
             
         }
         return reusableView;

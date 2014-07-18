@@ -448,7 +448,7 @@
 /* Begin PBXFileReference section */
 		C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Wigo.h"; sourceTree = "<group>"; };
 		C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+Wigo.m"; sourceTree = "<group>"; };
-		C12A11E119787BE700D53B1C /* WiGo Blade.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WiGo Blade.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C12A11E119787BE700D53B1C /* WiGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WiGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12A11E219787BE800D53B1C /* wigoBlade.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = wigoBlade.plist; sourceTree = "<group>"; };
 		C16D86A919747FF6003EB336 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		E900C24F195DCC4100A01F50 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
@@ -873,7 +873,7 @@
 			children = (
 				E921D6121923967D00361247 /* wigo.app */,
 				E921D6361923967D00361247 /* WigoTests.xctest */,
-				C12A11E119787BE700D53B1C /* WiGo Blade.app */,
+				C12A11E119787BE700D53B1C /* WiGo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1380,7 +1380,7 @@
 			);
 			name = wigoBlade;
 			productName = Wigo;
-			productReference = C12A11E119787BE700D53B1C /* WiGo Blade.app */;
+			productReference = C12A11E119787BE700D53B1C /* WiGo.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E921D6111923967D00361247 /* wigo */ = {
@@ -1986,7 +1986,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				FACEBOOK_APPID = 694293940625263;
+				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1998,14 +1998,14 @@
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY_ENTERPRISE}\"'",
 					"ENTERPRISE=1",
 				);
-				INFOPLIST_FILE = wigoBlade.plist;
+				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
-				PRODUCT_NAME = "WiGo Blade";
-				PROVISIONING_PROFILE = "FE2CCE88-1FAA-4869-8B0A-F5450CA71C84";
+				PRODUCT_NAME = WiGo;
+				PROVISIONING_PROFILE = "3B891E2B-BA3C-4F15-899D-F472DF73EFA3";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2017,7 +2017,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				FACEBOOK_APPID = 694293940625263;
+				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2029,13 +2029,13 @@
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY_ENTERPRISE}\"'",
 					"ENTERPRISE=1",
 				);
-				INFOPLIST_FILE = wigoBlade.plist;
+				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
-				PRODUCT_NAME = "WiGo Blade";
+				PRODUCT_NAME = WiGo;
 				PROVISIONING_PROFILE = "3B891E2B-BA3C-4F15-899D-F472DF73EFA3";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2048,7 +2048,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				FACEBOOK_APPID = 694293940625263;
+				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2060,13 +2060,13 @@
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY_ENTERPRISE}\"'",
 					"ENTERPRISE=1",
 				);
-				INFOPLIST_FILE = wigoBlade.plist;
+				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
-				PRODUCT_NAME = "WiGo Blade";
+				PRODUCT_NAME = WiGo;
 				PROVISIONING_PROFILE = "3B891E2B-BA3C-4F15-899D-F472DF73EFA3";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2171,7 +2171,7 @@
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "947BE006-436C-41DF-84BE-1CF952708EC5";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2201,7 +2201,7 @@
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "947BE006-436C-41DF-84BE-1CF952708EC5";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2309,7 +2309,7 @@
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "1D582607-E376-4208-84E3-683BCB178C71";
+				PROVISIONING_PROFILE = "E4957393-3A8F-421A-9272-A53C5401D048";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;
