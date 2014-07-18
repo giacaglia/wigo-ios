@@ -20,4 +20,5 @@
 - (void)setTimeOfCreation:(NSString *)timeOfCreation;
 - (void)save;
 - (User *)otherUser;
++ (NSString *)randomStringWithLength:(int)len;
 @end

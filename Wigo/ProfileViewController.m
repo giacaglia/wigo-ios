@@ -599,6 +599,8 @@
     [_scrollView setContentOffset:CGPointMake((self.view.frame.size.width + 10) * page, 0.0f) animated:YES];
 }
 
+#pragma mark - Parallax Effect
+
 - (void)addParallaxEffectToView:(UIView *)view {
     // Set vertical effect
     UIInterpolatingMotionEffect *verticalMotionEffect =

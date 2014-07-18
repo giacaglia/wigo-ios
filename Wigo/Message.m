@@ -148,6 +148,19 @@
     [_proxy setObject:timeOfCreation forKey:@"created"];
 }
 
+
+
++ (NSString *)randomStringWithLength:(int)len {
+    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    NSMutableString *randomString = [[NSMutableString alloc] initWithCapacity:len];
+    
+    for (int i=0; i<len; i++) {
+        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform([letters length]) % [letters length]]];
+    }
+    
+    return randomString;
+}
+
 - (void)save {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"messages/"];

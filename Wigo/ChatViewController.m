@@ -10,7 +10,7 @@
 #import "Globals.h"
 
 #import "UIButtonAligned.h"
-
+#import "UIImageCrop.h"
 
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"
@@ -134,21 +134,29 @@
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
     textLabel.text = [user fullName];
-    if (![message wasMessageRead]) {
-//        cell.backgroundColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
-    }
-
     textLabel.font = [FontProperties getSubtitleFont];
     [cell.contentView addSubview:textLabel];
     
-    UILabel *lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 30, 150, 20)];
+    UIImageView *lastMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(85, 30, 150, 20)];
+    UILabel *lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 20)];
     lastMessageLabel.text = [message messageString];
     lastMessageLabel.font = [UIFont fontWithName:@"Whitney-Light" size:13.0f];
     lastMessageLabel.textColor = [UIColor blackColor];
     lastMessageLabel.textAlignment = NSTextAlignmentLeft;
     lastMessageLabel.numberOfLines = 0;
     lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [cell.contentView addSubview:lastMessageLabel];
+
+    if ([[message messageString] length] == 0) {
+        lastMessageLabel.text = [Message randomStringWithLength:(arc4random_uniform(100))];
+        lastMessageImageView.backgroundColor = RGBAlpha(255, 255, 255, 0.98);
+        [lastMessageImageView addSubview:lastMessageLabel];
+        lastMessageImageView = [UIImageCrop blurImageView:lastMessageImageView];
+    }
+    else {
+        [lastMessageImageView addSubview:lastMessageLabel];
+    }
+    [cell.contentView addSubview:lastMessageImageView];
+
     
     UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, 10, 80, 20)];
     timeStampLabel.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
