@@ -226,7 +226,7 @@
     goingSomewhereLabel.textColor = [FontProperties getBlueColor];
     [_goingSomewhereButton addSubview:goingSomewhereLabel];
     UIImageView *goingSomewhereImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"goingSomewhereElse"]];
-    goingSomewhereImageView.frame = CGRectMake(_goingSomewhereButton.frame.size.height/2 - 15, 21, 23, 31);
+    goingSomewhereImageView.frame = CGRectMake(35, _goingSomewhereButton.frame.size.height/2 - 10, 18, 21);
     [_goingSomewhereButton addSubview:goingSomewhereImageView];
 }
 
