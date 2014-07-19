@@ -12,6 +12,12 @@
 #import "PeopleViewController.h"
 #import "User.h"
 
+typedef enum playerStateTypes
+{
+    PROFILE,
+    FOLLOWING_USER,
+    NOT_FOLLOWING_USER
+} STATE;
 
 @interface ProfileViewController : UIViewController <UIScrollViewDelegate>
 
@@ -19,8 +25,8 @@
 -(id)initWithUser:(User *)user;
 
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;
-@property BOOL isMyProfile;
 @property User *user;
+@property STATE state;
 
 @property EditProfileViewController *editProfileViewController;
 @property ConversationViewController *conversationViewController;

@@ -56,7 +56,10 @@
     self = [super init];
     if (self) {
         self.user = user;
-        self.isMyProfile = NO;
+        if ([self.user isFollowing]) {
+            self.state = FOLLOWING_USER;
+        }
+        else self.state = NOT_FOLLOWING_USER;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -66,10 +69,8 @@
 {
     self = [super init];
     if (self) {
-        self.isMyProfile = isMyProfile;
-        if (self.isMyProfile) {
-            self.user = [Profile user];
-        }
+        self.state = PROFILE;
+        self.user = [Profile user];
         self.view.backgroundColor = [UIColor whiteColor];
 
     }
@@ -99,8 +100,8 @@
     [self initializeRightBarButton];
     [self initializeBioLabel];
    
-    if (!self.isMyProfile) {
-        [self.user isFollowing] ? [self initializeFollowingAndFollowers] : [self initializeFollowButton];
+    if (self.state != PROFILE) {
+        (self.state == FOLLOWING_USER) ? [self initializeFollowingAndFollowers] : [self initializeFollowButton];
     }
     [self initializeLeftProfileButton];
     [self initializeRightProfileButton];
@@ -144,7 +145,7 @@
     UITabBarController *tabController = (UITabBarController *)self.parentViewController;
     tabController.navigationItem.rightBarButtonItem = nil;
     
-    if (self.isMyProfile) {
+    if (self.state == PROFILE) {
         UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
         barBt.titleLabel.font = [FontProperties getSubtitleFont];
         [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -201,7 +202,6 @@
 }
 
 
-
 - (void)followPressed {
     [self.user setIsFollowing:YES];
     [self.user saveKey:@"is_following"];
@@ -221,7 +221,7 @@
 }
 
 - (void)initializeProfileImage {
-    if (self.isMyProfile) {
+    if (self.state == PROFILE) {
         self.user = [Profile user];
     }
     // UIScrollView
@@ -310,11 +310,14 @@
     _followButton.layer.borderWidth = 1;
     _followButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     
-    UIView *followLabelPlusImage = [[UIView alloc] initWithFrame:CGRectMake(18, 15, _followButton.frame.size.width - 36, 20)];
+    NSString *followText = [NSString stringWithFormat:@"Follow %@", [self.user firstName]];
+    UIView *followLabelPlusImage = [[UIView alloc] init];
+    int sizeOfText = [followText length];
+    followLabelPlusImage.frame = CGRectMake((_followButton.frame.size.width - (sizeOfText*13 + 28))/2, 15, sizeOfText*13 + 28, 20);
     [_followButton addSubview:followLabelPlusImage];
     
     UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, followLabelPlusImage.frame.size.width, 20)];
-    followLabel.text = [NSString stringWithFormat:@"Follow %@", [self.user firstName]];
+    followLabel.text = followText;
     followLabel.textAlignment = NSTextAlignmentLeft;
     followLabel.textColor = [FontProperties getOrangeColor];
     followLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:24.0f];
@@ -324,7 +327,8 @@
     plusImageView.frame = CGRectMake(followLabelPlusImage.frame.size.width - 28, followLabelPlusImage.frame.size.height/2 - 11, 28, 20);
     plusImageView.tintColor = [FontProperties getOrangeColor];
     [followLabelPlusImage addSubview:plusImageView];
-    
+   
+
     [self.view addSubview:_followButton];
 }
 
@@ -334,7 +338,7 @@
         _tapScrollView.enabled = NO;
         _isSeingImages = YES;
         _lastLineView.hidden = NO;
-        if (self.isMyProfile) {
+        if (self.state == PROFILE) {
             _pageControl.center = CGPointMake(73, 25);
         }
         else {
@@ -425,7 +429,7 @@
 }
 
 - (void)initializeLeftProfileButton {
-    if (self.isMyProfile) {
+    if (self.state == PROFILE) {
         _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 100)];
         [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _leftProfileButton.frame.size.width, 60)];
@@ -437,7 +441,7 @@
         [_leftProfileButton addSubview:followersLabel];
     }
     else {
-        if ([self.user isFollowing]) {
+        if (self.state == FOLLOWING_USER) {
             _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
             [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             if ([self.user isFavorite]) {
@@ -456,7 +460,7 @@
 }
 
 - (void)leftProfileButtonPressed {
-    if (self.isMyProfile) {
+    if (self.state == PROFILE) {
         [self followersButtonPressed];
     }
     else {
@@ -474,7 +478,7 @@
 }
 
 - (void)initializeRightProfileButton {
-    if (self.isMyProfile) {
+    if (self.state == PROFILE) {
         _rightProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 100)];
         [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         _rightProfileButton.layer.borderWidth = 1;
@@ -516,7 +520,7 @@
 }
 
 - (void)rightProfileButtonPressed {
-    if (self.isMyProfile) {
+    if (self.state == PROFILE) {
         [self followingButtonPressed];
     }
     else {
