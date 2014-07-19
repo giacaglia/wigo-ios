@@ -12,7 +12,7 @@
 #import "UIButtonAligned.h"
 #import "UIPageControlAligned.h"
 #import "UIImageCrop.h"
-
+#import "WiGoSpinnerView.h"
 #import "SDWebImage/UIImageView+WebCache.h"
 
 
@@ -46,7 +46,6 @@
 @property UIButton *followersButton;
 
 @property UIView *lastLineView;
-@property UIActivityIndicatorView *spinner;
 
 @end
 
@@ -99,8 +98,7 @@
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
     [self initializeBioLabel];
-
-    
+   
     if (!self.isMyProfile) {
         [self.user isFollowing] ? [self initializeFollowingAndFollowers] : [self initializeFollowButton];
     }
@@ -114,16 +112,11 @@
     [super viewWillAppear:animated];
 
     if (!_didImagesLoad) {
-        _spinner = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(135,140,150,150)];
-        _spinner.transform = CGAffineTransformMakeScale(2, 2);
-        _spinner.center = self.view.center;
-        _spinner.color = [FontProperties getOrangeColor];
-        [_spinner startAnimating];
-        [self.view addSubview:_spinner];
+        [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
         [self.user loadImagesWithCallback:^(
                                             NSArray *imagesArray
                                             ) {
-            [_spinner stopAnimating];
+            [WiGoSpinnerView hideSpinnerForView:self.view];
             [self initializeProfileImage];
             [self initializeNameOfPerson];
             _didImagesLoad = YES;
@@ -153,19 +146,25 @@
     
     if (self.isMyProfile) {
         UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
-        [barBt setTitle:@"Edit" forState:UIControlStateNormal];
-        [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
         barBt.titleLabel.font = [FontProperties getSubtitleFont];
+        [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+        [barBt setTitle:@"Edit" forState:UIControlStateNormal];
         [barBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
         UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
         [barItem setCustomView:barBt];
         self.navigationItem.rightBarButtonItem = barItem;
     }
     else {
-//        UIBarButtonItem *rightBarButtonFollow = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"plusPerson"] style:UIBarButtonItemStylePlain target:self action:@selector(followPressed)];
-//        rightBarButtonFollow.tintColor = [FontProperties getOrangeColor];
-//        self.navigationItem.rightBarButtonItem = rightBarButtonFollow;
+        UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
+        barBt.titleLabel.font = [FontProperties getSubtitleFont];
+        [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+        [barBt setTitle:@"Unfollow" forState:UIControlStateNormal];
+        [barBt addTarget:self action: @selector(unfollowPressed) forControlEvents:UIControlEventTouchUpInside];
+        UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
+        [barItem setCustomView:barBt];
+        self.navigationItem.rightBarButtonItem = barItem;
     }
+
 }
 
 
@@ -204,10 +203,12 @@
 
 
 - (void)followPressed {
+    [self.user setIsFollowing:YES];
+    [self.user saveKey:@"is_following"];
     _followButton.hidden = YES;
     _leftProfileButton.hidden = NO;
     _rightProfileButton.hidden = NO;
-    UIBarButtonItem *unfollowButton = [[UIBarButtonItem alloc] initWithTitle:@"UNFOLLOW" style:UIBarButtonItemStylePlain target:self action:@selector(unfollowPressed)];
+    UIBarButtonItem *unfollowButton = [[UIBarButtonItem alloc] initWithTitle:@"Unfollow" style:UIBarButtonItemStylePlain target:self action:@selector(unfollowPressed)];
     unfollowButton.tintColor = [FontProperties getOrangeColor];
     self.navigationItem.rightBarButtonItem = unfollowButton;
 }
@@ -309,17 +310,20 @@
     _followButton.layer.borderWidth = 1;
     _followButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     
-    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(18, 15, _followButton.frame.size.width - 36, 20)];
+    UIView *followLabelPlusImage = [[UIView alloc] initWithFrame:CGRectMake(18, 15, _followButton.frame.size.width - 36, 20)];
+    [_followButton addSubview:followLabelPlusImage];
+    
+    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, followLabelPlusImage.frame.size.width, 20)];
     followLabel.text = [NSString stringWithFormat:@"Follow %@", [self.user firstName]];
-    followLabel.textAlignment = NSTextAlignmentCenter;
+    followLabel.textAlignment = NSTextAlignmentLeft;
     followLabel.textColor = [FontProperties getOrangeColor];
     followLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:24.0f];
-    [_followButton addSubview:followLabel];
+    [followLabelPlusImage addSubview:followLabel];
     
     UIImageView *plusImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plusPerson"]];
-    plusImageView.frame = CGRectMake(_followButton.frame.size.width - 28 - 30, _followButton.frame.size.height/2 - 11, 28, 20);
+    plusImageView.frame = CGRectMake(followLabelPlusImage.frame.size.width - 28, followLabelPlusImage.frame.size.height/2 - 11, 28, 20);
     plusImageView.tintColor = [FontProperties getOrangeColor];
-    [_followButton addSubview:plusImageView];
+    [followLabelPlusImage addSubview:plusImageView];
     
     [self.view addSubview:_followButton];
 }

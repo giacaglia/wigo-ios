@@ -614,7 +614,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
                 _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
             }
             else {
-                _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 5 + 30, reusableView.frame.size.width, 30);
+                _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 30, reusableView.frame.size.width, 30);
                 [_collectionView addSubview:_notGoingOutView];
                 _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
             }
