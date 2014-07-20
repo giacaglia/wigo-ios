@@ -101,9 +101,21 @@
     [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
     [barItem setCustomView:barBt];
-
     self.navigationItem.leftBarButtonItem = barItem;
+    [self initializeRightBarButton];
+}
 
+- (void) initializeRightBarButton {
+    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
+    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
+    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
+    [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]]];
+    [profileButton addSubview:profileImageView];
+    [profileButton setShowsTouchWhenHighlighted:YES];
+    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
+    self.navigationItem.rightBarButtonItem = profileBarButton;
 }
 
 - (void) goBack {
@@ -454,11 +466,9 @@
     [favoriteButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [cell.contentView addSubview:favoriteButton];
     
-    if ([[_followingParty getObjectArray] count] > 0 ) {
-        if ([_followingParty containsObject:user]) {
+    if ([user isFollowing]) {
             [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             favoriteButton.tag = 100;
-        }
     }
     
     if ([[_notAcceptedFollowingParty getObjectArray] count] > 0 ) {

@@ -96,17 +96,20 @@
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
     
+    
     [self initializeLeftBarButton];
-    [self initializeRightBarButton];
     [self initializeBioLabel];
    
+    [self reloadView];
+}
+
+- (void)reloadView {
+    [self initializeRightBarButton];
     if (self.state != PROFILE) {
         (self.state == FOLLOWING_USER) ? [self initializeFollowingAndFollowers] : [self initializeFollowButton];
     }
     [self initializeLeftProfileButton];
     [self initializeRightProfileButton];
-    
-
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -155,7 +158,7 @@
         [barItem setCustomView:barBt];
         self.navigationItem.rightBarButtonItem = barItem;
     }
-    else {
+    else if (self.state == FOLLOWING_USER) {
         UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
         barBt.titleLabel.font = [FontProperties getSubtitleFont];
         [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -203,22 +206,27 @@
 
 
 - (void)followPressed {
-    [self.user setIsFollowing:YES];
-    [self.user saveKey:@"is_following"];
+    NSLog(@"here");
+    self.state = FOLLOWING_USER;
     _followButton.hidden = YES;
     _leftProfileButton.hidden = NO;
     _rightProfileButton.hidden = NO;
-    UIBarButtonItem *unfollowButton = [[UIBarButtonItem alloc] initWithTitle:@"Unfollow" style:UIBarButtonItemStylePlain target:self action:@selector(unfollowPressed)];
-    unfollowButton.tintColor = [FontProperties getOrangeColor];
-    self.navigationItem.rightBarButtonItem = unfollowButton;
+    [self reloadView];
+    NSLog(@"here2");
+    [self.user setIsFollowing:YES];
+    [self.user saveKey:@"is_following"];
+
 }
 
 - (void)unfollowPressed {
+    NSLog(@"here");
+    [self setState:FOLLOWING_USER];
     _followButton.hidden = NO;
     _leftProfileButton.hidden = YES;
     _rightProfileButton.hidden = YES;
-    [self initializeRightBarButton];
+    [self reloadView];
 }
+
 
 - (void)initializeProfileImage {
     if (self.state == PROFILE) {

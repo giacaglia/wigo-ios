@@ -16,7 +16,8 @@ typedef enum playerStateTypes
 {
     PROFILE,
     FOLLOWING_USER,
-    NOT_FOLLOWING_USER
+    NOT_FOLLOWING_USER,
+    PRIVATE_USER
 } STATE;
 
 @interface ProfileViewController : UIViewController <UIScrollViewDelegate>
