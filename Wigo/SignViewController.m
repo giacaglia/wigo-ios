@@ -183,16 +183,20 @@
                               [profileUser setImagesURL:profilePictures];
                               [Profile setUser:profileUser];
                               if (_userEmailAlreadySent) {
-                                  _pushed = YES;
-                                  _fetchingProfilePictures = NO;
-                                  self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-                                  [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+                                  if (!_pushed) {
+                                      _pushed = YES;
+                                      _fetchingProfilePictures = NO;
+                                      self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
+                                      [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+                                  }
                               }
                               else {
-                                  _pushed = YES;
-                                  _fetchingProfilePictures = NO;
-                                  self.signUpViewController = [[SignUpViewController alloc] init];
-                                  [self.navigationController pushViewController:self.signUpViewController animated:YES];
+                                  if (!_pushed) {
+                                      _pushed = YES;
+                                      _fetchingProfilePictures = NO;
+                                      self.signUpViewController = [[SignUpViewController alloc] init];
+                                      [self.navigationController pushViewController:self.signUpViewController animated:YES];
+                                  }
                               }
                           }];
 }
@@ -295,9 +299,11 @@
                 [self fetchProfilePicturesAlbumFacebook];
             }
             else {
-                _pushed = YES;
-                [self dismissViewControllerAnimated:YES  completion:nil];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+                if (!_pushed) {
+                    _pushed = YES;
+                    [self dismissViewControllerAnimated:YES  completion:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+                }
             }
         });
     }];
