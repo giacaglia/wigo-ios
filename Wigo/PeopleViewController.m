@@ -106,16 +106,18 @@
 }
 
 - (void) initializeRightBarButton {
-    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
-    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]]];
-    [profileButton addSubview:profileImageView];
-    [profileButton setShowsTouchWhenHighlighted:YES];
-    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
-    self.navigationItem.rightBarButtonItem = profileBarButton;
+    if (![self.user isEqualToUser:[Profile user]]) {
+        CGRect profileFrame = CGRectMake(0, 0, 30, 30);
+        UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
+        UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
+        profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+        profileImageView.clipsToBounds = YES;
+        [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]]];
+        [profileButton addSubview:profileImageView];
+        [profileButton setShowsTouchWhenHighlighted:YES];
+        UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
+        self.navigationItem.rightBarButtonItem = profileBarButton;
+    }
 }
 
 - (void) goBack {
