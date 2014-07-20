@@ -322,6 +322,7 @@
     UIView *followLabelPlusImage = [[UIView alloc] init];
     int sizeOfText = [followText length];
     followLabelPlusImage.frame = CGRectMake((_followButton.frame.size.width - (sizeOfText*13 + 28))/2, 15, sizeOfText*13 + 28, 20);
+    followLabelPlusImage.userInteractionEnabled = NO;
     [_followButton addSubview:followLabelPlusImage];
     
     UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, followLabelPlusImage.frame.size.width, 20)];
