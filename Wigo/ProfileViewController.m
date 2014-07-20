@@ -47,6 +47,8 @@
 
 @property UIView *lastLineView;
 
+@property UIButtonAligned *rightBarBt;
+
 @end
 
 @implementation ProfileViewController
@@ -99,17 +101,52 @@
     
     [self initializeLeftBarButton];
     [self initializeBioLabel];
-   
+    [self initializeRightBarButton];
+
+    [self initializeFollowingAndFollowers];
+    [self initializeFollowButton];
+    [self initializeLeftProfileButton];
+    [self initializeRightProfileButton];
     [self reloadView];
 }
 
 - (void)reloadView {
-    [self initializeRightBarButton];
-    if (self.state != PROFILE) {
-        (self.state == FOLLOWING_USER) ? [self initializeFollowingAndFollowers] : [self initializeFollowButton];
+    if (self.state == FOLLOWING_USER) {
+        _followingButton.enabled = YES;
+        _followingButton.hidden = NO;
+        _followersButton.enabled = YES;
+        _followersButton.hidden = NO;
+        _leftProfileButton.enabled = YES;
+        _leftProfileButton.hidden = NO;
+        _rightProfileButton.enabled = YES;
+        _rightProfileButton.hidden = NO;
+        _rightBarBt.enabled = YES;
+        _rightBarBt.hidden = NO;
+        
+        _followButton.enabled = NO;
+        _followButton.hidden = YES;
     }
-    [self initializeLeftProfileButton];
-    [self initializeRightProfileButton];
+    else if (self.state == NOT_FOLLOWING_USER) {
+        _followingButton.enabled = NO;
+        _followingButton.hidden = YES;
+        _followersButton.enabled = NO;
+        _followersButton.hidden = YES;
+        _leftProfileButton.enabled = NO;
+        _leftProfileButton.hidden = YES;
+        _rightProfileButton.enabled = NO;
+        _rightProfileButton.hidden = YES;
+        _rightBarBt.enabled = NO;
+        _rightBarBt.hidden = YES;
+        
+        _followButton.enabled = YES;
+        _followButton.hidden = NO;
+    }
+    if (self.state != PROFILE) {
+        
+    }
+//    if (self.state != PROFILE) {
+//        (self.state == FOLLOWING_USER) ? [self initializeFollowingAndFollowers] : [self initializeFollowButton];
+//    }
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -149,26 +186,21 @@
     tabController.navigationItem.rightBarButtonItem = nil;
     
     if (self.state == PROFILE) {
-        UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
-        barBt.titleLabel.font = [FontProperties getSubtitleFont];
-        [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-        [barBt setTitle:@"Edit" forState:UIControlStateNormal];
-        [barBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
-        UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
-        [barItem setCustomView:barBt];
-        self.navigationItem.rightBarButtonItem = barItem;
+        _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
+        [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
+        [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
+        
     }
     else if (self.state == FOLLOWING_USER) {
-        UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
-        barBt.titleLabel.font = [FontProperties getSubtitleFont];
-        [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-        [barBt setTitle:@"Unfollow" forState:UIControlStateNormal];
-        [barBt addTarget:self action: @selector(unfollowPressed) forControlEvents:UIControlEventTouchUpInside];
-        UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
-        [barItem setCustomView:barBt];
-        self.navigationItem.rightBarButtonItem = barItem;
+        _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
+        [_rightBarBt setTitle:@"Unfollow" forState:UIControlStateNormal];
+        [_rightBarBt addTarget:self action: @selector(unfollowPressed) forControlEvents:UIControlEventTouchUpInside];
     }
-
+    _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
+    [_rightBarBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
+    [barItem setCustomView:_rightBarBt];
+    self.navigationItem.rightBarButtonItem = barItem;
 }
 
 
@@ -207,9 +239,6 @@
 
 - (void)followPressed {
     self.state = FOLLOWING_USER;
-    _followButton.hidden = YES;
-    _leftProfileButton.hidden = NO;
-    _rightProfileButton.hidden = NO;
     [self reloadView];
     [self.user setIsFollowing:YES];
     [self.user saveKey:@"is_following"];
@@ -217,10 +246,7 @@
 }
 
 - (void)unfollowPressed {
-    [self setState:FOLLOWING_USER];
-    _followButton.hidden = NO;
-    _leftProfileButton.hidden = YES;
-    _rightProfileButton.hidden = YES;
+    [self setState:NOT_FOLLOWING_USER];
     [self reloadView];
 }
 
@@ -348,7 +374,7 @@
             _pageControl.center = CGPointMake(73, 25);
         }
         else {
-            _pageControl.center = CGPointMake(100, 25);
+            _pageControl.center = CGPointMake(65, 25);
         }
 
         self.navigationController.navigationBar.barTintColor = RGB(23, 23, 23);
@@ -391,11 +417,7 @@
             self.view.backgroundColor = [UIColor whiteColor];
             _bioLabel.textColor = [UIColor blackColor];
             _bioLineView.hidden = NO;
-            _followButton.hidden = NO;
-            _leftProfileButton.hidden = NO;
-            _rightProfileButton.hidden = NO;
-            _followingButton.hidden = NO;
-            _followersButton.hidden = NO;
+            [self reloadView];
             self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
             [self initializeLeftBarButton];
             [self initializeRightBarButton];
