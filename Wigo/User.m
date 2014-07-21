@@ -443,7 +443,6 @@
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
     [_proxy addEntriesFromDictionary:dictionaryUser];
     [modifiedKeys removeObject:key];
-
 }
 
 #pragma mark - Refactoring saving data

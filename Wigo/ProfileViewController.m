@@ -149,6 +149,10 @@
         _followButton.enabled = NO;
         _followButton.hidden = YES;
         
+        _leftProfileButton.enabled = YES;
+        _leftProfileButton.hidden = NO;
+        _rightProfileButton.enabled = YES;
+        _rightProfileButton.hidden = NO;
     }
 }
 
@@ -213,8 +217,8 @@
     UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followingButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
     followingLabel.textColor = [FontProperties getOrangeColor];
     followingLabel.textAlignment = NSTextAlignmentCenter;
-    followingLabel.text = [NSString stringWithFormat:@"FOLLOWING (%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
-    followingLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0f];
+    followingLabel.text = [NSString stringWithFormat:@"Following (%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
+    followingLabel.font = [FontProperties getTitleFont];
     followingLabel.lineBreakMode = NSLineBreakByWordWrapping;
     followingLabel.numberOfLines = 0;
     [_followingButton addSubview:followingLabel];
@@ -224,9 +228,9 @@
     [_followersButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followersButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
     followersLabel.textColor = [FontProperties getOrangeColor];
+    followersLabel.font = [FontProperties getTitleFont];
     followersLabel.textAlignment = NSTextAlignmentCenter;
-    followersLabel.text = [NSString stringWithFormat:@"FOLLOWERS (%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
-    followersLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0f];
+    followersLabel.text = [NSString stringWithFormat:@"Followers (%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
     followersLabel.lineBreakMode = NSLineBreakByWordWrapping;
     followersLabel.numberOfLines = 0;
     [_followersButton addSubview:followersLabel];
@@ -465,8 +469,9 @@
         [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _leftProfileButton.frame.size.width, 60)];
         followersLabel.textColor = [FontProperties getOrangeColor];
+        followersLabel.font = [FontProperties getTitleFont];
         followersLabel.textAlignment = NSTextAlignmentCenter;
-        followersLabel.text = [NSString stringWithFormat:@"%d\nFOLLOWERS", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
+        followersLabel.text = [NSString stringWithFormat:@"%d\nFollowers", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
         followersLabel.lineBreakMode = NSLineBreakByWordWrapping;
         followersLabel.numberOfLines = 0;
         [_leftProfileButton addSubview:followersLabel];
@@ -517,8 +522,9 @@
 
         UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _rightProfileButton.frame.size.width, 60)];
         followingLabel.textColor = [FontProperties getOrangeColor];
+        followingLabel.font = [FontProperties getTitleFont];
         followingLabel.textAlignment = NSTextAlignmentCenter;
-        followingLabel.text = [NSString stringWithFormat:@"%d\nFOLLOWING", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
+        followingLabel.text = [NSString stringWithFormat:@"%d\nFollowing", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
         followingLabel.lineBreakMode = NSLineBreakByWordWrapping;
         followingLabel.numberOfLines = 0;
         [_rightProfileButton addSubview:followingLabel];
