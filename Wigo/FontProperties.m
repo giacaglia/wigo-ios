@@ -90,6 +90,34 @@ static UIColor *lightOrangeColor;
     return bigButtonFont;
 }
 
++ (UIFont *)getNumericFont {
+    return [UIFont fontWithName:@"WhitneyNumeric-Medium" size:18.0f];
+}
+
+
++ (NSDictionary *)getDictTitle {
+    NSDictionary *dictTitle = @{NSUnderlineStyleAttributeName:@(NSUnderlineStyleNone),
+                                NSFontAttributeName:[FontProperties getTitleFont],
+                                NSParagraphStyleAttributeName:[FontProperties getStyle]};
+    return dictTitle;
+}
+
++ (NSDictionary *)getDictNumeric {
+    
+    NSDictionary *dictNumeric = @{NSUnderlineStyleAttributeName:@(NSUnderlineStyleNone),
+                                  NSFontAttributeName:[FontProperties getNumericFont],
+                                  NSParagraphStyleAttributeName:[FontProperties getStyle]};
+    return dictNumeric;
+}
+
++ (NSMutableParagraphStyle *)getStyle {
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    [style setAlignment:NSTextAlignmentCenter];
+    [style setLineBreakMode:NSLineBreakByWordWrapping];
+    return style;
+}
+
+
 #pragma mark - Colors
 
 + (UIColor *)getBlueColor {

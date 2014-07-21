@@ -481,9 +481,11 @@
             }
         }
         else {
-            PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-            currentInstallation[@"wigo_id"] = [jsonResponse objectForKey:@"id"];
-            [currentInstallation saveInBackground];
+            if ([[jsonResponse allKeys] containsObject:@"id"]) {
+                PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+                currentInstallation[@"wigo_id"] = [jsonResponse objectForKey:@"id"];
+                [currentInstallation saveInBackground];
+            }
             for (NSString *key in [jsonResponse allKeys]) {
                 [self setValue:[jsonResponse objectForKey:key] forKey:key];
             }

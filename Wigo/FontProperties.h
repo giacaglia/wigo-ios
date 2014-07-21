@@ -20,6 +20,10 @@
 + (UIFont *)getSubtitleFont;
 + (UIFont *)getSmallPhotoFont;
 + (UIFont *)getBigButtonFont;
++ (UIFont *)getNumericFont;
+
++ (NSDictionary *)getDictTitle;
++ (NSDictionary *)getDictNumeric;
 
 + (UIColor *)getOrangeColor;
 + (UIColor *)getLightOrangeColor;

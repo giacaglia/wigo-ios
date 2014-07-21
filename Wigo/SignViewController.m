@@ -11,17 +11,21 @@
 #import "Globals.h"
 
 #import "WiGoSpinnerView.h"
+#import <Crashlytics/Crashlytics.h>
+
 
 #if !defined(StringOrEmpty)
 #define StringOrEmpty(A)  ({ __typeof__(A) __a = (A); __a ? __a : @""; })
 #endif
 
 @interface SignViewController ()
+// UI
+@property UIView *facebookConnectView;
+
 @property BOOL pushed;
 @property FBLoginView *loginView;
 @property NSString * profilePicturesAlbumId;
 
-@property NSString *email;
 @property NSString *accessToken;
 @property NSString *fbID;
 
@@ -53,6 +57,8 @@
     _alertShown = NO;
     _fetchingProfilePictures = NO;
     _pushed = NO;
+    
+    [self initializeLogo];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -70,9 +76,9 @@
 
 - (void) getFacebookTokensAndLoginORSignUp {
     _fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"]);
-    _email = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"email"]);
     _accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
-    if ([_fbID isEqualToString:@""] || [_email isEqualToString:@""] || [_accessToken isEqualToString:@""]) {
+
+    if ([_fbID isEqualToString:@""] || [_accessToken isEqualToString:@""]) {
         [self fetchTokensFromFacebook];
     }
     else {
@@ -81,14 +87,18 @@
 }
 
 - (void) fetchTokensFromFacebook {
-    [self initializeLogo];
+    _facebookConnectView.hidden = NO;
     [self initializeFacebookSignButton];
 }
 
 - (void)initializeLogo {
+    _facebookConnectView = [[UIView alloc] initWithFrame:self.view.frame];
+    _facebookConnectView.hidden = YES;
+    [self.view addSubview:_facebookConnectView];
+    
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
     logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 91, self.view.frame.size.height/2 - 52 - 40, 182, 104);
-    [self.view addSubview:logoImageView];
+    [_facebookConnectView addSubview:logoImageView];
 }
 
 - (void)initializeFacebookSignButton {
@@ -115,13 +125,6 @@
 
 
 #pragma mark - Sign Up Process
-
-- (BOOL) wasUserAbleToSignIn:(NSString *)response {
-    if ([response isEqualToString:@"error"]) {
-        return NO;
-    }
-    return YES;
-}
 
 - (void) fetchProfilePicturesAlbumFacebook {
     [FBRequestConnection startWithGraphPath:@"/me/albums"
@@ -238,7 +241,6 @@
 #pragma mark - Facebook Delegate Methods
 
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
-    NSLog(@"fetched");
     if (!_pushed) {
         _fbID = [fbGraphUser objectID];
         _accessToken = [FBSession activeSession].accessTokenData.accessToken;
@@ -257,14 +259,14 @@
 #pragma mark - Asynchronous methods
 
 - (void) loginUserAsynchronous {
+    // Set object FbID and access token to be saved locally
     [[NSUserDefaults standardUserDefaults] setObject:_fbID forKey: @"facebook_id"];
-    [[NSUserDefaults standardUserDefaults] setObject:_email forKey: @"email"];
     [[NSUserDefaults standardUserDefaults] setObject:_accessToken forKey: @"accessToken"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    [Crashlytics setUserIdentifier:_fbID];
     
     User *profileUser = [Profile user];
     [profileUser setObject:_fbID forKey:@"facebook_id"];
-    [profileUser setEmail:_email];
     [profileUser setAccessToken:_accessToken];
     [Profile setUser:profileUser];
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
@@ -307,7 +309,6 @@
             }
         });
     }];
-
     
 }
 

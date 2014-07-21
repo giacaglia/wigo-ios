@@ -146,7 +146,7 @@
 
 - (void)initializeYourSchoolButton {
     _yourSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width/3, 60)];
-    [_yourSchoolButton setTitle:@"School" forState:UIControlStateNormal];
+    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", 40] forState:UIControlStateNormal];
     _yourSchoolButton.backgroundColor = [FontProperties getOrangeColor];
     _yourSchoolButton.titleLabel.font = [FontProperties getTitleFont];
     _yourSchoolButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -158,9 +158,9 @@
 
 - (void)initializeFollowersButton {
     _followersButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/3, 64, self.view.frame.size.width/3, 60)];
-    _followersButton.backgroundColor = [FontProperties getLightOrangeColor];
     [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]] forState:UIControlStateNormal];
     [_followersButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    _followersButton.backgroundColor = [FontProperties getLightOrangeColor];
     _followersButton.titleLabel.font = [FontProperties getTitleFont];
     _followersButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _followersButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -171,9 +171,9 @@
 
 - (void)initializeFollowingButton {
     _followingButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 64, self.view.frame.size.width/3, 60)];
-    _followingButton.backgroundColor = [FontProperties getLightOrangeColor];
     [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]] forState:UIControlStateNormal];
     [_followingButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    _followingButton.backgroundColor = [FontProperties getLightOrangeColor];
     _followingButton.titleLabel.font = [FontProperties getTitleFont];
     _followingButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _followingButton.titleLabel.textAlignment = NSTextAlignmentCenter;
