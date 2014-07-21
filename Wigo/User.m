@@ -280,7 +280,7 @@
                                @"I'm too busy tapping others to pay mind to my profile",
                                @"I'd fill out my profile but I don't have any fingers",
                                @"I'm a robot",
-                               @"This is my bio, there are many like it, but this one is mine. My bio is my friend. My bio cares for me like no man can. PS: I am hot!"
+                               @"This is my bio, there are many like it, but this one is mine. My bio is my friend. My bio cares for me like no one can."
                                ];
     return [randomStrings objectAtIndex:(arc4random() % [randomStrings count])];
 }

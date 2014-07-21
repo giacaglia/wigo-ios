@@ -85,7 +85,7 @@
     [self initializeFollowersButton];
     [self initializeSearchBar];
     [self initializeTableOfPeople];
-    [self initializeTapHandler];
+//    [self initializeTapHandler];
     if ([[self.user allKeys] containsObject:@"tabNumber"]) {
         _currentTab = [self.user objectForKey:@"tabNumber"];
         [self loadTableView];
@@ -135,13 +135,18 @@
 
 - (void)tappedView:(UITapGestureRecognizer*)tapSender {
     UIView *viewSender = (UIView *)tapSender.view;
-    [self.view endEditing:YES];
-    if ([viewSender isKindOfClass:[UIImageView class]] || [viewSender isKindOfClass:[UITextView class]]) {
-        int tag = viewSender.tag;
-        User *user = [self getUserAtIndex:tag];
-        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-        [self.navigationController pushViewController:self.profileViewController animated:YES];
-    }
+    int tag = viewSender.tag;
+    User *user = [self getUserAtIndex:tag];
+    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+    [self.navigationController pushViewController:self.profileViewController animated:YES];
+}
+
+- (void)tappedButton:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = buttonSender.tag;
+    User *user = [self getUserAtIndex:tag];
+    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+    [self.navigationController pushViewController:self.profileViewController animated:YES];
 }
 
 - (void)initializeYourSchoolButton {
@@ -235,6 +240,7 @@
     
 
 }
+
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     _searchIconImageView.hidden = YES;
@@ -439,19 +445,16 @@
     
     User *user = [self getUserAtIndex:[indexPath row]];
     
-    UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
+    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 7, 60, 60)];
+    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
-    profileImageView.tag = [indexPath row];
-    profileImageView.userInteractionEnabled = YES;
-    [cell.contentView addSubview:profileImageView];
-    
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
-    [tap setNumberOfTouchesRequired:1];
-    [tap setNumberOfTapsRequired:1];
-    tap.cancelsTouchesInView = NO;
-    [profileImageView addGestureRecognizer:tap];
+    [profileButton addSubview:profileImageView];
+    [profileButton setShowsTouchWhenHighlighted:YES];
+    profileButton.tag = [indexPath row];
+    [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.contentView addSubview:profileButton];
     
     UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(85, 20, 150, 28)];
     textView.font = [FontProperties getSmallFont];
@@ -459,6 +462,7 @@
     textView.tag = [indexPath row];
     textView.textAlignment = NSTextAlignmentLeft;
     textView.scrollEnabled = NO;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
     [textView addGestureRecognizer:tap];
     [cell.contentView addSubview:textView];
     
@@ -489,6 +493,11 @@
     
     return cell;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self.view endEditing:YES];
+}
+
 
 - (void)loadNextPage {
     if ([_currentTab isEqualToNumber:@2]) {
@@ -574,5 +583,8 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 80;
 }
+
+//    [self.view endEditing:YES];
+
 
 @end

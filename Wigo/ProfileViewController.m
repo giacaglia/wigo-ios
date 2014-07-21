@@ -198,7 +198,7 @@
         [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
         
     }
-    else if (self.state == FOLLOWING_USER) {
+    else  {
         _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
         [_rightBarBt setTitle:@"Unfollow" forState:UIControlStateNormal];
         [_rightBarBt addTarget:self action: @selector(unfollowPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -255,6 +255,8 @@
 - (void)unfollowPressed {
     [self setState:NOT_FOLLOWING_USER];
     [self reloadView];
+    [self.user setIsFollowing:NO];
+    [self.user saveKey:@"is_following"];
 }
 
 
@@ -476,21 +478,19 @@
         followersLabel.numberOfLines = 0;
         [_leftProfileButton addSubview:followersLabel];
     }
-    else {
-        if (self.state == FOLLOWING_USER) {
-            _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
-            [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-            if ([self.user isFavorite]) {
-                _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favoriteSelected"]];
-            }
-            else {
-                _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite"]];
-            }
-            _favoriteImageView.frame = CGRectMake(_leftProfileButton.frame.size.width/2 - 12, _leftProfileButton.frame.size.height/2 - 12, 24, 24);
-            _leftProfileButton.layer.borderWidth = 1;
-            _leftProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
-            [_leftProfileButton addSubview:_favoriteImageView];
+    else  {
+        _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
+        [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        if ([self.user isFavorite]) {
+            _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favoriteSelected"]];
         }
+        else {
+            _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite"]];
+        }
+        _favoriteImageView.frame = CGRectMake(_leftProfileButton.frame.size.width/2 - 12, _leftProfileButton.frame.size.height/2 - 12, 24, 24);
+        _leftProfileButton.layer.borderWidth = 1;
+        _leftProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
+        [_leftProfileButton addSubview:_favoriteImageView];
     }
     [self.view addSubview:_leftProfileButton];
 }
@@ -529,7 +529,7 @@
         followingLabel.numberOfLines = 0;
         [_rightProfileButton addSubview:followingLabel];
     }
-    else if (self.state == FOLLOWING_USER) {
+    else {
         _rightProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(3*self.view.frame.size.width/4, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
         [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         _rightProfileButton.layer.borderWidth = 1;
