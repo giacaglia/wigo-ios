@@ -58,10 +58,18 @@
     self = [super init];
     if (self) {
         self.user = user;
-        if ([self.user isFollowing]) {
-            self.state = FOLLOWING_USER;
+        if ([self.user isPrivate]) {
+            if ([self.user isFollowing]) {
+                self.state = ACCEPTED_PRIVATE_USER;
+            }
+            else {
+                self.state = NOT_ACCEPTED_PRIVATE_USER;
+            }
         }
-        else self.state = NOT_FOLLOWING_USER;
+        if ([self.user isFollowing]) {
+            self.state = FOLLOWING_PUBLIC_USER;
+        }
+        else self.state = NOT_FOLLOWING_PUBLIC_USER;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -111,7 +119,7 @@
 }
 
 - (void)reloadView {
-    if (self.state == FOLLOWING_USER) {
+    if (self.state == FOLLOWING_PUBLIC_USER) {
         _followingButton.enabled = YES;
         _followingButton.hidden = NO;
         _followersButton.enabled = YES;
@@ -126,7 +134,7 @@
         _followButton.enabled = NO;
         _followButton.hidden = YES;
     }
-    else if (self.state == NOT_FOLLOWING_USER) {
+    else if (self.state == NOT_FOLLOWING_PUBLIC_USER) {
         _followingButton.enabled = NO;
         _followingButton.hidden = YES;
         _followersButton.enabled = NO;
@@ -245,7 +253,7 @@
 
 
 - (void)followPressed {
-    self.state = FOLLOWING_USER;
+    self.state = FOLLOWING_PUBLIC_USER;
     [self reloadView];
     [self.user setIsFollowing:YES];
     [self.user saveKey:@"is_following"];
@@ -253,7 +261,7 @@
 }
 
 - (void)unfollowPressed {
-    [self setState:NOT_FOLLOWING_USER];
+    [self setState:NOT_FOLLOWING_PUBLIC_USER];
     [self reloadView];
     [self.user setIsFollowing:NO];
     [self.user saveKey:@"is_following"];

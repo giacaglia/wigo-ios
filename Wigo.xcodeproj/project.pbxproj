@@ -274,6 +274,10 @@
 		E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C7A195084B700182E0E /* UIButtonUngoOut.m */; };
 		E9681CB51950AA3B00182E0E /* Query.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681CB41950AA3B00182E0E /* Query.m */; };
 		E96EF670197C710600F88A6D /* goingout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E96EF66F197C710600F88A6D /* goingout@2x.png */; };
+		E96EF672197DC70300F88A6D /* orangeRightArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E96EF671197DC70300F88A6D /* orangeRightArrow@2x.png */; };
+		E96EF673197DC70300F88A6D /* orangeRightArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E96EF671197DC70300F88A6D /* orangeRightArrow@2x.png */; };
+		E96EF676197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
+		E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
 		E988A0311923B245000C3DDA /* giu.png in Resources */ = {isa = PBXBuildFile; fileRef = E988A0301923B245000C3DDA /* giu.png */; };
 		E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
 		E9902983196B12BE00192FF2 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9902982196B12BE00192FF2 /* Parse.framework */; };
@@ -542,6 +546,9 @@
 		E9681CB31950AA3B00182E0E /* Query.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Query.h; sourceTree = "<group>"; };
 		E9681CB41950AA3B00182E0E /* Query.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Query.m; sourceTree = "<group>"; };
 		E96EF66F197C710600F88A6D /* goingout@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "goingout@2x.png"; sourceTree = "<group>"; };
+		E96EF671197DC70300F88A6D /* orangeRightArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "orangeRightArrow@2x.png"; sourceTree = "<group>"; };
+		E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowRequestsViewController.h; sourceTree = "<group>"; };
+		E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowRequestsViewController.m; sourceTree = "<group>"; };
 		E97999D019759A2900C617E3 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		E988A0301923B245000C3DDA /* giu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = giu.png; sourceTree = "<group>"; };
 		E98C185B1924176500EF60F8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -982,6 +989,7 @@
 				E9AAAFBD193D0E160069F700 /* 4MainViews */,
 				E9AAAFCA193E3DC40069F700 /* ProfileViews */,
 				E9AAAFCB193E3DCE0069F700 /* ChatViews */,
+				E96EF678197DC94A00F88A6D /* NotifcationViews */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -1029,6 +1037,7 @@
 				E93F8512194602DB00B3B448 /* joined@2x.png */,
 				E96EF66F197C710600F88A6D /* goingout@2x.png */,
 				E93F85141946031600B3B448 /* addedFilled@2x.png */,
+				E96EF671197DC70300F88A6D /* orangeRightArrow@2x.png */,
 				E9F59E24192D514E00BB8FDD /* commentFilled.png */,
 			);
 			name = NotificationsViewController;
@@ -1093,6 +1102,15 @@
 				E9ECFF81196DEB5A00384252 /* wigoLogo@2x.png */,
 			);
 			name = SignViewController;
+			sourceTree = "<group>";
+		};
+		E96EF678197DC94A00F88A6D /* NotifcationViews */ = {
+			isa = PBXGroup;
+			children = (
+				E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */,
+				E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */,
+			);
+			name = NotifcationViews;
 			sourceTree = "<group>";
 		};
 		E9AAAFBD193D0E160069F700 /* 4MainViews */ = {
@@ -1479,6 +1497,7 @@
 				C12A115519787BE700D53B1C /* writeIcon@2x.png in Resources */,
 				C12A115619787BE700D53B1C /* lockLogo@2x.png in Resources */,
 				C12A115719787BE700D53B1C /* orangeTap@2x.png in Resources */,
+				E96EF673197DC70300F88A6D /* orangeRightArrow@2x.png in Resources */,
 				C12A115819787BE700D53B1C /* dancingG-19.png in Resources */,
 				C12A115919787BE700D53B1C /* peopleIcon@2x.png in Resources */,
 				C12A115A19787BE700D53B1C /* ben3.jpg in Resources */,
@@ -1691,6 +1710,7 @@
 				E9DBB0751978151F00DDACDE /* dancingG-12.png in Resources */,
 				E9DBB09319781CDB00DDACDE /* favorite@2x.png in Resources */,
 				E93F85021945F9E700B3B448 /* placesIcon@2x.png in Resources */,
+				E96EF672197DC70300F88A6D /* orangeRightArrow@2x.png in Resources */,
 				E9BE8C8D192AA29C008BB84C /* Whitney-Book.ttf in Resources */,
 				E9BE8C9A192AA29C008BB84C /* Whitney-SemiboldItalic.ttf in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
@@ -1815,6 +1835,7 @@
 				C12A110C19787BE700D53B1C /* WiGoSpinnerView.m in Sources */,
 				C12A110D19787BE700D53B1C /* UIImageCrop.m in Sources */,
 				C12A110E19787BE700D53B1C /* UIScrollView+GifPullToRefresh.m in Sources */,
+				E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */,
 				C12A110F19787BE700D53B1C /* UIButtonUngoOut.m in Sources */,
 				C12A111019787BE700D53B1C /* PeopleViewController.m in Sources */,
 				C12A111119787BE700D53B1C /* UIImage+MultiFormat.m in Sources */,
@@ -1875,6 +1896,7 @@
 				E9DE130C196F06B100AFA05A /* WiGoSpinnerView.m in Sources */,
 				E93DE530195C99F600079074 /* UIImageCrop.m in Sources */,
 				E9DBB050197813F900DDACDE /* UIScrollView+GifPullToRefresh.m in Sources */,
+				E96EF676197DC94100F88A6D /* FollowRequestsViewController.m in Sources */,
 				E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */,
 				E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */,
 				E900C2C01961EADE00A01F50 /* UIImage+MultiFormat.m in Sources */,

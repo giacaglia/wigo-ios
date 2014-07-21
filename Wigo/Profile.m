@@ -11,7 +11,6 @@
 @implementation Profile
 
 static UIImage *profileImage;
-static BOOL isGoingOut;
 static NSString *placeGoingOut;
 static User *user;
 static NSArray *images;

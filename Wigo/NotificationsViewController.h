@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "ProfileViewController.h"
 #import "ConversationViewController.h"
+#import "FollowRequestsViewController.h"
 
 @interface NotificationsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property ProfileViewController *profileViewController;
 @property ConversationViewController *conversationViewController;
+@property FollowRequestsViewController *followRequestsViewController;
 
 @end

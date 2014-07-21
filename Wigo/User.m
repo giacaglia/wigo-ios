@@ -261,12 +261,12 @@
     [modifiedKeys addObject:@"bio"];
 }
 
-- (BOOL)private {
+- (BOOL)isPrivate {
     return [[_proxy objectForKey:@"privacy"] isEqualToString:@"private"];
 }
 
-- (void)setPrivate:(BOOL)private {
-    if (private) {
+- (void)setIsPrivate:(BOOL)isPrivate {
+    if (isPrivate) {
         [_proxy setObject:@"private" forKey:@"privacy"];
     }
     [_proxy setObject:@"public" forKey:@"privacy"];

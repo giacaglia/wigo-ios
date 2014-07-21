@@ -71,7 +71,7 @@
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     User *profileUser = [Profile user];
     [profileUser setBioString:_bioTextView.text];
-    [profileUser setPrivate:_privacySwitch.on];
+    [profileUser setIsPrivate:_privacySwitch.on];
     [Profile setUser:profileUser];
     [profileUser save];
     [WiGoSpinnerView hideSpinnerForView:self.view];
@@ -250,7 +250,7 @@
     publicLabel.font = [FontProperties getNormalFont];
     [publicView addSubview:publicLabel];
     _privacySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 60, 10, 40, 20)];
-    _privacySwitch.on = [[Profile user] private];
+    _privacySwitch.on = [[Profile user] isPrivate];
     
     [publicView addSubview:_privacySwitch];
     [_scrollView addSubview:publicView];

@@ -456,15 +456,15 @@
     [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
     [cell.contentView addSubview:profileButton];
     
-    UITextView *textView = [[UITextView alloc] initWithFrame:CGRectMake(85, 20, 150, 28)];
-    textView.font = [FontProperties getSmallFont];
-    textView.text = [NSString stringWithFormat:@"%@ %@", [user objectForKey:@"first_name"], [user objectForKey:@"last_name"]];
-    textView.tag = [indexPath row];
-    textView.textAlignment = NSTextAlignmentLeft;
-    textView.scrollEnabled = NO;
+    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 20, 150, 28)];
+    labelName.font = [FontProperties getSmallFont];
+    labelName.text = [NSString stringWithFormat:@"%@ %@", [user objectForKey:@"first_name"], [user objectForKey:@"last_name"]];
+    labelName.tag = [indexPath row];
+    labelName.textAlignment = NSTextAlignmentLeft;
+    labelName.userInteractionEnabled = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
-    [textView addGestureRecognizer:tap];
-    [cell.contentView addSubview:textView];
+    [labelName addGestureRecognizer:tap];
+    [cell.contentView addSubview:labelName];
     
     UIButton *favoriteButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 24, 49, 30)];
     [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
@@ -522,7 +522,7 @@
     if (senderButton.tag == -100) {
         int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
 
-        if ([user private]) {
+        if ([user isPrivate]) {
             [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
             [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
             [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -547,7 +547,7 @@
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
         int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
-        if ([user private]) {
+        if ([user isPrivate]) {
             [_notAcceptedFollowingParty removeUser:user];
         }
         else {

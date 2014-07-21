@@ -22,6 +22,7 @@
 
 @property UIActivityIndicatorView *spinner;
 @property NSNumber *page;
+@property NSNumber *followRequestSummary;
 
 @end
 
@@ -30,6 +31,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _followRequestSummary = @0;
     _everyoneParty = [Profile everyoneParty];
     _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
     _page = @1;
@@ -50,7 +52,6 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     self.tabBarController.tabBar.hidden = NO;
-    
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.rightBarButtonItem = nil;
     self.navigationItem.titleView = nil;
@@ -83,7 +84,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     int hasNextPage = ([_notificationsParty hasNextPage] ? 1 : 0);
-    return [[_notificationsParty getObjectArray] count] + hasNextPage;
+    if ([_followRequestSummary isEqualToNumber:@0]) {
+        return [[_notificationsParty getObjectArray] count] + hasNextPage;
+    }
+    else return [[_notificationsParty getObjectArray] count] + hasNextPage + 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -92,7 +96,44 @@
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
-    if ([indexPath row] == [[_notificationsParty getObjectArray] count]) {
+    NSInteger row = [indexPath row];
+    if (![_followRequestSummary isEqualToNumber:@0]) {
+        if (row == 0) {
+            UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
+            [notificationButton addTarget:self action:@selector(folowRequestPressed) forControlEvents:UIControlEventTouchUpInside];
+            [cell.contentView addSubview:notificationButton];
+            
+            UILabel *numberOfRequestsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 35, 35)];
+            numberOfRequestsLabel.layer.cornerRadius = 5;
+            numberOfRequestsLabel.layer.borderWidth = 0.5;
+            numberOfRequestsLabel.layer.borderColor = [UIColor whiteColor].CGColor;
+            numberOfRequestsLabel.layer.masksToBounds = YES;
+            numberOfRequestsLabel.backgroundColor = RGB(254, 242, 229);
+            numberOfRequestsLabel.text = [_followRequestSummary stringValue];
+            numberOfRequestsLabel.textColor = [FontProperties getOrangeColor];
+            numberOfRequestsLabel.textAlignment = NSTextAlignmentCenter;
+            [notificationButton addSubview:numberOfRequestsLabel];
+            
+            UIImageView *iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"addedFilled"]];
+            iconLabel.frame = CGRectMake(55, 20, 17, 12);
+            [notificationButton addSubview:iconLabel];
+        
+            UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(83, 9, 200, 36)];
+            notificationLabel.text = @"Follow requests";
+            notificationLabel.font = [FontProperties getBioFont];
+            [notificationButton addSubview:notificationLabel];
+           
+            UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeRightArrow"]];
+            rightArrowImageView.frame = CGRectMake(cell.contentView.frame.size.width - 35, 27 - 9, 11, 18);
+            [notificationButton addSubview:rightArrowImageView];            
+            
+            return cell;
+        }
+        row = [indexPath row] - 1;
+    }
+    
+    
+    if (row == [[_notificationsParty getObjectArray] count]) {
         _spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0,0,80,80)];
         [_spinner startAnimating];
         [cell.contentView addSubview:_spinner];
@@ -101,7 +142,7 @@
     }
     
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
-    Notification *notifcation = [[_notificationsParty getObjectArray] objectAtIndex:[indexPath row]];
+    Notification *notifcation = [[_notificationsParty getObjectArray] objectAtIndex:row];
     User *user = (User *)[_everyoneParty getObjectWithId:[notifcation fromUserID]];
     
     NSString *name = [user fullName];
@@ -149,7 +190,7 @@
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
 
-    notificationButton.tag = [indexPath row];
+    notificationButton.tag = row;
     [notificationButton addSubview:iconLabel];
 
     UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(83, 18, 200, 18)];
@@ -176,6 +217,11 @@
     
     [cell.contentView addSubview:notificationButton];
     return cell;
+}
+
+- (void)folowRequestPressed {
+    self.followRequestsViewController = [[FollowRequestsViewController alloc] init];
+    [self.navigationController pushViewController:self.followRequestsViewController animated:YES];
 }
 
 - (void) chatSegue {
@@ -210,5 +256,16 @@
     }];
 }
 
+
+- (void)fetchSummaryOfFollowRequests {
+    [Network queryAsynchronousAPI:@"api/notifications/summary/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            if ([[jsonResponse allKeys] containsObject:@"follow.request"]) {
+                _followRequestSummary = (NSNumber *)[jsonResponse objectForKey:@"follow.request"];
+                [_notificationsTableView reloadData];
+            }
+        });
+    }];
+}
 
 @end

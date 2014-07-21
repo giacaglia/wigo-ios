@@ -276,9 +276,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     if (_viewForEmptyConversation) _viewForEmptyConversation.hidden = YES;
     [_sendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-//    [UIView animateWithDuration:0.5 animations:^{
-//        _chatTextFieldWrapper.transform = CGAffineTransformMakeTranslation(0, -216);
-//    }];
+
     [self.view bringSubviewToFront:_chatTextFieldWrapper];
 }
 

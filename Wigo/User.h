@@ -22,7 +22,7 @@
 @property NSString *groupName;
 @property NSString *bioString;
 @property NSArray *imagesURL;
-@property BOOL private;
+@property BOOL isPrivate;
 @property BOOL isGoingOut;
 @property BOOL emailValidated;
 @property BOOL isFavorite;
