@@ -155,6 +155,7 @@
 }
 
 - (void) updateViewNotGoingOut {
+    [self updateTitleViewForNotGoingOut];
     [self fetchEventsFirstPage];
 }
 

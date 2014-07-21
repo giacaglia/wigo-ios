@@ -51,8 +51,10 @@
 }
 
 - (void) stayInPressed {
-    [[Profile user] setIsGoingOut:NO];
-    [[Profile user] save];
+    User *profileUser = [Profile user];
+    [profileUser setIsGoingOut:NO];
+    [Profile setUser:profileUser];
+    [profileUser saveKey:@"is_goingout"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateViewNotGoingOut" object:nil];
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
 }

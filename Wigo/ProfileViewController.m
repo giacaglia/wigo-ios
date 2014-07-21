@@ -141,12 +141,15 @@
         _followButton.enabled = YES;
         _followButton.hidden = NO;
     }
-    if (self.state != PROFILE) {
+    if (self.state == PROFILE) {
+        _followingButton.enabled = NO;
+        _followingButton.hidden = YES;
+        _followersButton.enabled = NO;
+        _followersButton.hidden = YES;
+        _followButton.enabled = NO;
+        _followButton.hidden = YES;
         
     }
-//    if (self.state != PROFILE) {
-//        (self.state == FOLLOWING_USER) ? [self initializeFollowingAndFollowers] : [self initializeFollowButton];
-//    }
 }
 
 - (void) viewWillAppear:(BOOL)animated {

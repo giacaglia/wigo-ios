@@ -469,8 +469,8 @@
     [cell.contentView addSubview:favoriteButton];
     
     if ([user isFollowing]) {
-            [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            favoriteButton.tag = 100;
+        [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+        favoriteButton.tag = 100;
     }
     
     if ([[_notAcceptedFollowingParty getObjectArray] count] > 0 ) {
