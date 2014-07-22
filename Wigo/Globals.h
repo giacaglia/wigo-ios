@@ -15,6 +15,7 @@
 #import "Network.h"
 #import "Event.h"
 #import "Message.h"
+#import "Time.h"
 
 #import "FontProperties.h"
 

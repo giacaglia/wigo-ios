@@ -7,6 +7,7 @@
 //
 
 #import "Notification.h"
+#import "Time.h"
 
 @implementation Notification {
     NSMutableDictionary* _proxy;
@@ -105,18 +106,12 @@
 
 - (NSString *)timeString {
     NSString *utcCreationTime = [_proxy objectForKey:@"created"];
-    NSDateFormatter *dateformat = [[NSDateFormatter alloc] init];
-    [dateformat setDateFormat:@"YYYY-MM-dd h:mm:ss a"];
-    NSDate *dateInUTC = [dateformat dateFromString:utcCreationTime];
-    NSTimeInterval timeZoneSeconds = [[NSTimeZone localTimeZone] secondsFromGMT];
-    NSDate *dateInLocalTimezone = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
-    NSString *localTimeString = [dateformat stringFromDate:dateInLocalTimezone];
-    return [localTimeString substringWithRange:NSMakeRange(11, 5)];
+    return [Time getUTCTimeStringToLocalTimeString:utcCreationTime];
+//    return [localTimeString substringWithRange:NSMakeRange(11, 5)];
 }
 
 - (void)setTimeString:(NSString *)timeString {
     [_proxy setObject:timeString forKey:@"created"];
-    [modifiedKeys addObject:@"created"];
 }
 
 

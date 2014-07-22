@@ -275,12 +275,17 @@
 
 - (NSString *)randomBioGenerator {
     NSArray *randomStrings = @[
-                               @"I'm too drunk to taste this chicken",
+                               @"People know me",
+                               @"I'm addicted to WiGo",
+                               @"My bio is my friend",
+                               @"I'm having a party and you're not invited",
+                               @"Tap me on WiGo",
+                               @"Too lazy to fill out my bio",
+                               @"C.O.L.L.E.G.E.",
+                               @"I'm so college",
+                               @"College - the best place on Earth",
                                @"I'm too busy partying to fill out my bio",
-                               @"I'm too busy tapping others to pay mind to my profile",
-                               @"I'd fill out my profile but I don't have any fingers",
-                               @"I'm a robot",
-                               @"This is my bio, there are many like it, but this one is mine. My bio is my friend. My bio cares for me like no one can."
+                               @"#WiGo #Rulezzzz",
                                ];
     return [randomStrings objectAtIndex:(arc4random() % [randomStrings count])];
 }

@@ -395,7 +395,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
             }
         }
     }
-    
 }
 
 - (void) sendTapToUserWithTag:(int)tag {

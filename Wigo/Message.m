@@ -8,6 +8,7 @@
 
 #import "Message.h"
 #import "Profile.h"
+#import "Time.h"
 
 @implementation Message{
     NSMutableDictionary* _proxy;
@@ -135,13 +136,8 @@
 
 - (NSString *)timeOfCreation {
     NSString *utcCreationTime = [_proxy objectForKey:@"created"];
-    NSDateFormatter *dateformat = [[NSDateFormatter alloc] init];
-    [dateformat setDateFormat:@"YYYY-MM-dd h:mm:ss a"];
-    NSDate *dateInUTC = [dateformat dateFromString:utcCreationTime];
-    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
-    NSDate *dateInLocalTimezone = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
-    NSString *localTimeString = [dateformat stringFromDate:dateInLocalTimezone];
-    return [localTimeString substringWithRange:NSMakeRange(11, 5)];
+    return [Time getUTCTimeStringToLocalTimeString:utcCreationTime];
+//    return [localTimeString substringWithRange:NSMakeRange(11, 5)];
 }
 
 - (void)setTimeOfCreation:(NSString *)timeOfCreation {
