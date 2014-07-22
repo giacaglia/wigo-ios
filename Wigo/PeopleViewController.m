@@ -68,7 +68,6 @@
     _currentTab = @2;
     //Search Bar Setup
     _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
-    _followersParty = [[Party alloc] initWithObjectName:@"User"];
     _followingParty = [Profile followingParty];
     _notAcceptedFollowingParty = [Profile notAcceptedFollowingParty];
 
@@ -151,7 +150,8 @@
 
 - (void)initializeYourSchoolButton {
     _yourSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width/3, 60)];
-    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", 40] forState:UIControlStateNormal];
+    [_yourSchoolButton setTitle:@"School" forState:UIControlStateNormal];
+//    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", 40] forState:UIControlStateNormal];
     _yourSchoolButton.backgroundColor = [FontProperties getOrangeColor];
     _yourSchoolButton.titleLabel.font = [FontProperties getTitleFont];
     _yourSchoolButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -324,8 +324,7 @@
         [_tableViewOfPeople reloadData];
     }
     else if ([_currentTab isEqualToNumber:@3]) {
-        _page = @1;
-        [self fetchFollowers];
+        [self fetchFirstPageFollowers];
     }
     else if ([_currentTab isEqualToNumber:@4]) {
         if ([[Profile user] isEqualToUser:self.user]) {
@@ -334,9 +333,7 @@
             [_tableViewOfPeople reloadData];
         }
         else {
-            _page = @1;
-            _followingParty = [[Party alloc] initWithObjectName:@"User"];
-            [self fetchFollowing];
+            [self fetchFirstPageFollowing];
         }
     }
 }
@@ -351,7 +348,6 @@
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [_everyoneParty addMetaInfo:metaDictionary];
         [Profile setEveryoneParty:_everyoneParty];
-        [_everyoneParty removeUser:[Profile user]];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             _page = @([_page intValue] + 1);
             _contentParty = _everyoneParty;
@@ -360,11 +356,16 @@
     }];
 }
 
+- (void)fetchFirstPageFollowers {
+    _page = @1;
+    _followersParty = [[Party alloc] initWithObjectName:@"User"];
+    [self fetchFollowers];
+}
+
 - (void)fetchFollowers {
-    NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-        [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [arrayOfFollowObjects count]] forState:UIControlStateNormal];
         NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
         for (NSDictionary *object in arrayOfFollowObjects) {
             NSDictionary *userDictionary = [object objectForKey:@"user"];
@@ -388,8 +389,14 @@
     }];
 }
 
+- (void)fetchFirstPageFollowing {
+    _page = @1;
+    _followingParty = [[Party alloc] initWithObjectName:@"User"];
+    [self fetchFollowing];
+}
+
 - (void)fetchFollowing {
-    NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
         NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
@@ -453,7 +460,9 @@
     [profileButton addSubview:profileImageView];
     [profileButton setShowsTouchWhenHighlighted:YES];
     profileButton.tag = [indexPath row];
-    [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
+    if (![user isEqualToUser:[Profile user]]) {
+        [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
+    }
     [cell.contentView addSubview:profileButton];
     
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 20, 150, 28)];
@@ -462,32 +471,36 @@
     labelName.tag = [indexPath row];
     labelName.textAlignment = NSTextAlignmentLeft;
     labelName.userInteractionEnabled = YES;
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
-    [labelName addGestureRecognizer:tap];
+    if (![user isEqualToUser:[Profile user]]) {
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
+        [labelName addGestureRecognizer:tap];
+    }
     [cell.contentView addSubview:labelName];
     
-    UIButton *favoriteButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 24, 49, 30)];
-    [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-    favoriteButton.tag = -100;
-    [favoriteButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [cell.contentView addSubview:favoriteButton];
-    
-    if ([user isFollowing]) {
-        [favoriteButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-        favoriteButton.tag = 100;
-    }
-    
-    if ([[_notAcceptedFollowingParty getObjectArray] count] > 0 ) {
-        if ([_notAcceptedFollowingParty containsObject:user]) {
-            [favoriteButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [favoriteButton setTitle:@"Pending" forState:UIControlStateNormal];
-            [favoriteButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            favoriteButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
-            favoriteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            favoriteButton.layer.borderWidth = 1;
-            favoriteButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            favoriteButton.layer.cornerRadius = 3;
-            favoriteButton.tag = 100;
+    if (![user isEqualToUser:[Profile user]]) {
+        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 24, 49, 30)];
+        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+        followPersonButton.tag = -100;
+        [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.contentView addSubview:followPersonButton];
+        
+        if ([user isFollowing]) {
+            [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+            followPersonButton.tag = 100;
+        }
+        
+        if ([[_notAcceptedFollowingParty getObjectArray] count] > 0 ) {
+            if ([_notAcceptedFollowingParty containsObject:user]) {
+                [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+                [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+                [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+                followPersonButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
+                followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+                followPersonButton.layer.borderWidth = 1;
+                followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                followPersonButton.layer.cornerRadius = 3;
+                followPersonButton.tag = 100;
+            }
         }
     }
     
@@ -561,7 +574,6 @@
 }
 
 - (void) updateFollowingUIAndCachedData:(int)num_following {
-    [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", num_following]  forState:UIControlStateNormal];
     User *profileUser = [Profile user];
     [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
     [Profile setFollowingParty:_followingParty];
@@ -583,8 +595,6 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 80;
 }
-
-//    [self.view endEditing:YES];
 
 
 @end

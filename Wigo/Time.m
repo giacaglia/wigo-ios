@@ -22,7 +22,7 @@
     // If today
     if ([today day] == [otherDay day]) {
         NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
-        [localTimeFormat setDateFormat:@"hh:mm a"];
+        [localTimeFormat setDateFormat:@"h:mm a"];
         return [localTimeFormat stringFromDate:dateInLocalTimezone];
     }
     else {

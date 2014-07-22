@@ -83,7 +83,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     [self fetchUserInfo];
 }
 
-#pragma mark - Fetch Data
+#pragma mark - Network function
 
 - (void) fetchUserInfo {
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
