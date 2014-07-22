@@ -17,12 +17,14 @@
 @property UIScrollView *scrollView;
 @property int positionOfLastMessage;
 @property UIView *chatTextFieldWrapper;
-@property UITextField *messageTextField;
+@property CGRect frameOfChatField;
+@property UITextView *messageTextView;
 
 @property UIButton *sendButton;
 @property User *user;
 @property Party *messageParty;
 @property UIView *viewForEmptyConversation;
+@property UILabel *whiteLabelForTextField;
 
 @end
 
@@ -235,23 +237,23 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     firstLineView.backgroundColor = [FontProperties getLightOrangeColor];
     [_chatTextFieldWrapper addSubview:firstLineView];
     
-    UILabel *whiteLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, _chatTextFieldWrapper.frame.size.width - 70, _chatTextFieldWrapper.frame.size.height - 20)];
-    whiteLabel.backgroundColor = [UIColor whiteColor];
-    whiteLabel.layer.cornerRadius = 5;
-    whiteLabel.layer.masksToBounds = YES;
-    [_chatTextFieldWrapper addSubview:whiteLabel];
+    _whiteLabelForTextField = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, _chatTextFieldWrapper.frame.size.width - 70, _chatTextFieldWrapper.frame.size.height - 20)];
+    _whiteLabelForTextField.backgroundColor = [UIColor whiteColor];
+    _whiteLabelForTextField.layer.cornerRadius = 5;
+    _whiteLabelForTextField.layer.masksToBounds = YES;
+    [_chatTextFieldWrapper addSubview:_whiteLabelForTextField];
     
-    _messageTextField.tintColor = [FontProperties getOrangeColor];
-    _messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(15, 10, _chatTextFieldWrapper.frame.size.width - 80, _chatTextFieldWrapper.frame.size.height - 20)];
-    _messageTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
-    _messageTextField.delegate = self;
-    _messageTextField.returnKeyType = UIReturnKeySend;
-    _messageTextField.backgroundColor = [UIColor whiteColor];
-    _messageTextField.font = [UIFont fontWithName:@"Whitney-Medium" size:18.0];;
-    [_messageTextField setTextColor:RGB(102, 102, 102)];
+    _messageTextView.tintColor = [FontProperties getOrangeColor];
+    _messageTextView = [[UITextView alloc] initWithFrame:CGRectMake(15, 10, _chatTextFieldWrapper.frame.size.width - 80, _chatTextFieldWrapper.frame.size.height - 20)];
+//    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
+    _messageTextView.delegate = self;
+    _messageTextView.returnKeyType = UIReturnKeySend;
+    _messageTextView.backgroundColor = [UIColor whiteColor];
+    _messageTextView.font = [UIFont fontWithName:@"Whitney-Medium" size:18.0];;
+    [_messageTextView setTextColor:RGB(102, 102, 102)];
     [[UITextField appearance] setTintColor:RGB(102, 102, 102)];
-    [_chatTextFieldWrapper addSubview:_messageTextField];
-    [_chatTextFieldWrapper bringSubviewToFront:_messageTextField];
+    [_chatTextFieldWrapper addSubview:_messageTextView];
+    [_chatTextFieldWrapper bringSubviewToFront:_messageTextView];
     
     _sendButton = [[UIButton alloc] initWithFrame:CGRectMake(_chatTextFieldWrapper.frame.size.width - 60, 10, 60, 30)];
     [_sendButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
@@ -294,9 +296,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void)sendMessage {
-    if (![_messageTextField.text isEqualToString:@""]) {
+    if (![_messageTextView.text isEqualToString:@""]) {
         Message *message = [[Message alloc] init];
-        [message setMessageString:_messageTextField.text];
+        [message setMessageString:_messageTextView.text];
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
         [dateFormatter setTimeZone:timeZone];
@@ -305,7 +307,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         [message setToUser:[self.user objectForKey:@"id"]];
         [self addMessageFromSender:message];
         [message save];
-        _messageTextField.text = @"";
+        _messageTextView.text = @"";
+        [self textView:_messageTextView shouldChangeTextInRange:NSMakeRange(0, [_messageTextView.text length]) replacementText:@""];
+
     }
     [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:YES];
     [self dismissKeyboard];
@@ -359,24 +363,20 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                         options:animationOptionsWithCurve(animationCurve)
                      animations:^{
                          _chatTextFieldWrapper.frame = newFrame;
+                         _frameOfChatField = newFrame;
                      }
                      completion:^(BOOL finished){}];
 }
         
-# pragma mark - UITextField Delegate.
+# pragma mark - UITextView Delegate.
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-//    CGSize maximumLabelSize = CGSizeMake(textField.frame.size.width, MAXFLOAT);
-//    
-//    NSStringDrawingOptions options = NSStringDrawingTruncatesLastVisibleLine |
-//    NSStringDrawingUsesLineFragmentOrigin;
-//    
-//    NSDictionary *attr = @{NSFontAttributeName: [UIFont systemFontOfSize:15]};
-//    CGRect labelBounds = [string boundingRectWithSize:maximumLabelSize
-//                                              options:options
-//                                           attributes:attr
-//                                              context:nil];
-//    NSLog(@"label bounds %f", labelBounds.size.width);
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    CGFloat requiredWidth = [textView sizeThatFits:CGSizeMake(HUGE_VALF, HUGE_VALF)].width;
+    int numberOfRows = (int)(requiredWidth/textView.frame.size.width) + 1;
+    _chatTextFieldWrapper.frame = CGRectMake(_chatTextFieldWrapper.frame.origin.x, _frameOfChatField.origin.y - 30*(numberOfRows - 1), _chatTextFieldWrapper.frame.size.width, _frameOfChatField.size.height + 30*(numberOfRows -1));
+    _messageTextView.frame = CGRectMake(15, 10, _chatTextFieldWrapper.frame.size.width - 80, _chatTextFieldWrapper.frame.size.height - 20);
+    _whiteLabelForTextField.frame = CGRectMake(10, 10, _chatTextFieldWrapper.frame.size.width - 70, _chatTextFieldWrapper.frame.size.height - 20);
+    _sendButton.frame = CGRectMake(_chatTextFieldWrapper.frame.size.width - 60, _chatTextFieldWrapper.frame.size.height - 40, 60, 30);
     return YES;
 }
 

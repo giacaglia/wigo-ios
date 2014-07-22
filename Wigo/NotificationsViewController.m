@@ -185,8 +185,8 @@
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"goingout"]) {
-        iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"goingout"]];
-        iconLabel.frame = CGRectMake(58, 20, 12, 18);
+        iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo_tiny_blue"]];
+        iconLabel.frame = CGRectMake(58, 20, 14, 16);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
 
