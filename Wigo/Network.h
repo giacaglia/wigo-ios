@@ -21,6 +21,8 @@ typedef void (^FetchResult)(NSArray *arrayResponse, NSError *error);
 // Synchronous methods
 + (void)unfollowUser:(User *)user;
 + (void)followUser:(User *)user;
++ (void)acceptFollowRequestForUser:(User *)user;
++ (void)rejectFollowRequestForUser:(User *)user;
 + (void)sendTapToUserWithIndex:(NSNumber *)indexOfUser;
 + (void)postGoOut;
 + (void) postGoingToEventNumber:(int)indexOfObject;

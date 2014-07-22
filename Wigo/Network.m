@@ -67,6 +67,26 @@
     NSDictionary *result = [query sendPOSTRequest];
 }
 
++ (void)acceptFollowRequestForUser:(User *)user {
+    Query *query = [[Query alloc] init];
+    [query queryWithClassName:[NSString stringWithFormat:@"follows/accept?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]]];
+    User *profileUser = [Profile user];
+    [query setProfileKey:profileUser.key];
+    [query setValue:[user objectForKey:@"id"] forKey:@"follow"];
+    [query sendPOSTRequest];
+}
+
++ (void)rejectFollowRequestForUser:(User *)user {
+    Query *query = [[Query alloc] init];
+    [query queryWithClassName:[NSString stringWithFormat:@"follows/reject?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]]];
+    User *profileUser = [Profile user];
+    [query setProfileKey:profileUser.key];
+    [query setValue:[user objectForKey:@"id"] forKey:@"follow"];
+    [query sendPOSTRequest];
+}
+
+
+
 + (void)sendTapToUserWithIndex:(NSNumber *)indexOfUser {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"taps/"];

@@ -12,6 +12,8 @@
 #import "UIButtonAligned.h"
 #import "SDWebImage/UIImageView+WebCache.h"
 
+#define PEOPLEVIEW_HEIGHT_OF_CELLS 80
+
 @interface PeopleViewController ()
 
 @property int chosenFilter;
@@ -425,6 +427,10 @@
 
 #pragma mark - Table View Data Source
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return PEOPLEVIEW_HEIGHT_OF_CELLS;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -452,7 +458,7 @@
     
     User *user = [self getUserAtIndex:[indexPath row]];
     
-    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 7, 60, 60)];
+    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
@@ -465,7 +471,7 @@
     }
     [cell.contentView addSubview:profileButton];
     
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 20, 150, 28)];
+    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 14, 150, 28)];
     labelName.font = [FontProperties getSmallFont];
     labelName.text = [NSString stringWithFormat:@"%@ %@", [user objectForKey:@"first_name"], [user objectForKey:@"last_name"]];
     labelName.tag = [indexPath row];
@@ -478,7 +484,7 @@
     [cell.contentView addSubview:labelName];
     
     if (![user isEqualToUser:[Profile user]]) {
-        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 24, 49, 30)];
+        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 15, 49, 30)];
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = -100;
         [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -510,7 +516,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.view endEditing:YES];
 }
-
 
 - (void)loadNextPage {
     if ([_currentTab isEqualToNumber:@2]) {
@@ -569,7 +574,6 @@
         }
         [self updateFollowingUIAndCachedData:num_following];
         [Network unfollowUser:user];
-
     }
 }
 
@@ -590,10 +594,6 @@
         user = [[_contentParty getObjectArray] objectAtIndex:index];
     }
     return user;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 80;
 }
 
 

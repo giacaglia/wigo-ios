@@ -464,7 +464,7 @@
     [self.view addSubview:_nameOfPersonLabel];
     [self.view bringSubviewToFront:_nameOfPersonLabel];
     
-    if (self.state == PRIVATE_USER) {
+    if (self.state == ACCEPTED_PRIVATE_USER || self.state == NOT_ACCEPTED_PRIVATE_USER) {
         UIImageView *privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 11, 16, 22)];
         privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
         [_nameOfPersonLabel addSubview:privateLogoImageView];

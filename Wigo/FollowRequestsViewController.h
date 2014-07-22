@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FollowRequestsViewController : UIViewController
+@interface FollowRequestsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @end

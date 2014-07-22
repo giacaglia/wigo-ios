@@ -37,6 +37,7 @@
     _page = @1;
     [self initializeTableNotifications];
     [self fetchNotifications];
+    [self fetchSummaryOfFollowRequests];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -240,6 +241,8 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
+#pragma mark - Network function
+
 - (void)fetchNotifications {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     NSString *queryString = [NSString stringWithFormat:@"notifications/?page=%@" ,[_page stringValue]];
@@ -258,7 +261,7 @@
 
 
 - (void)fetchSummaryOfFollowRequests {
-    [Network queryAsynchronousAPI:@"api/notifications/summary/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [Network queryAsynchronousAPI:@"notifications/summary/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             if ([[jsonResponse allKeys] containsObject:@"follow.request"]) {
                 _followRequestSummary = (NSNumber *)[jsonResponse objectForKey:@"follow.request"];

@@ -279,6 +279,10 @@
 		E96EF67E197ECA3F00F88A6D /* logo_tiny_orange@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E96EF67C197ECA3F00F88A6D /* logo_tiny_orange@2x.png */; };
 		E96EF681197EE95D00F88A6D /* Time.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF680197EE95D00F88A6D /* Time.m */; };
 		E96EF682197EE95D00F88A6D /* Time.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF680197EE95D00F88A6D /* Time.m */; };
+		E96EF685197F135E00F88A6D /* acceptFollowRequest@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E96EF683197F135E00F88A6D /* acceptFollowRequest@2x.png */; };
+		E96EF686197F135E00F88A6D /* acceptFollowRequest@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E96EF683197F135E00F88A6D /* acceptFollowRequest@2x.png */; };
+		E96EF687197F135E00F88A6D /* rejectFollowRequest@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E96EF684197F135E00F88A6D /* rejectFollowRequest@2x.png */; };
+		E96EF688197F135E00F88A6D /* rejectFollowRequest@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E96EF684197F135E00F88A6D /* rejectFollowRequest@2x.png */; };
 		E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
 		E9902983196B12BE00192FF2 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9902982196B12BE00192FF2 /* Parse.framework */; };
 		E9902985196B2F9A00192FF2 /* privateIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9902984196B2F9A00192FF2 /* privateIcon@2x.png */; };
@@ -549,6 +553,8 @@
 		E96EF67C197ECA3F00F88A6D /* logo_tiny_orange@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_tiny_orange@2x.png"; sourceTree = "<group>"; };
 		E96EF67F197EE95D00F88A6D /* Time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Time.h; sourceTree = "<group>"; };
 		E96EF680197EE95D00F88A6D /* Time.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Time.m; sourceTree = "<group>"; };
+		E96EF683197F135E00F88A6D /* acceptFollowRequest@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "acceptFollowRequest@2x.png"; sourceTree = "<group>"; };
+		E96EF684197F135E00F88A6D /* rejectFollowRequest@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rejectFollowRequest@2x.png"; sourceTree = "<group>"; };
 		E97999D019759A2900C617E3 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		E98C185B1924176500EF60F8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		E9902982196B12BE00192FF2 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
@@ -967,10 +973,10 @@
 				E9681C6F194F884900182E0E /* SignViewController */,
 				E9CD4722194A0C4100AEA17D /* ProfileViewController */,
 				E9AAAFD0193E70C50069F700 /* EditProfileViewController */,
-				E9AAAFCF193E70B50069F700 /* profilePics */,
-				E9F59E20192D1D3A00BB8FDD /* rightArrow.png */,
+				E96EF689197F136F00F88A6D /* FollowRequestViewController */,
 				E9E619041938C74200A224C0 /* searchIcon.png */,
 				E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */,
+				E9F59E20192D1D3A00BB8FDD /* rightArrow.png */,
 				E9E618FE1936421A00A224C0 /* backIcon.png */,
 				E94FF0DA19633A4600852180 /* iconFlashScreen@2x.png */,
 			);
@@ -1112,6 +1118,15 @@
 			name = NotificationViews;
 			sourceTree = "<group>";
 		};
+		E96EF689197F136F00F88A6D /* FollowRequestViewController */ = {
+			isa = PBXGroup;
+			children = (
+				E96EF683197F135E00F88A6D /* acceptFollowRequest@2x.png */,
+				E96EF684197F135E00F88A6D /* rejectFollowRequest@2x.png */,
+			);
+			name = FollowRequestViewController;
+			sourceTree = "<group>";
+		};
 		E9AAAFBD193D0E160069F700 /* 4MainViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -1166,13 +1181,6 @@
 				E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */,
 			);
 			name = OnboardingViews;
-			sourceTree = "<group>";
-		};
-		E9AAAFCF193E70B50069F700 /* profilePics */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = profilePics;
 			sourceTree = "<group>";
 		};
 		E9AAAFD0193E70C50069F700 /* EditProfileViewController */ = {
@@ -1505,6 +1513,7 @@
 				C12A116319787BE700D53B1C /* WhitneyIndexBlack-SquareMd.ttf in Resources */,
 				C12A116419787BE700D53B1C /* favoriteSelected@2x.png in Resources */,
 				C12A116519787BE700D53B1C /* chatsSelected@2x.png in Resources */,
+				E96EF688197F135E00F88A6D /* rejectFollowRequest@2x.png in Resources */,
 				C12A116619787BE700D53B1C /* favoriteSmall@2x.png in Resources */,
 				C12A116719787BE700D53B1C /* thinkingIcon.png in Resources */,
 				C12A116819787BE700D53B1C /* phoneFilled.png in Resources */,
@@ -1544,6 +1553,7 @@
 				C12A118A19787BE700D53B1C /* WhitneyNumeric-MediumItalic.ttf in Resources */,
 				C12A118B19787BE700D53B1C /* WhitneyNumeric-Medium.ttf in Resources */,
 				C12A118C19787BE700D53B1C /* addedFilled@2x.png in Resources */,
+				E96EF686197F135E00F88A6D /* acceptFollowRequest@2x.png in Resources */,
 				C12A118D19787BE700D53B1C /* WhitneyIndexWhite-RoundBd.ttf in Resources */,
 				C12A118E19787BE700D53B1C /* dancingG-25.png in Resources */,
 				C12A118F19787BE700D53B1C /* dancingG-4.png in Resources */,
@@ -1641,6 +1651,7 @@
 				E9DBB07C1978151F00DDACDE /* dancingG-19.png in Resources */,
 				E93F85001945F94900B3B448 /* peopleIcon@2x.png in Resources */,
 				E9BE8C9D192AA29C008BB84C /* Whitney2.ttf in Resources */,
+				E96EF685197F135E00F88A6D /* acceptFollowRequest@2x.png in Resources */,
 				E9CD470919479DBD00AEA17D /* notificationsSelected@2x.png in Resources */,
 				E96EF67A197EC9B700F88A6D /* logo_tiny_blue@2x.png in Resources */,
 				E9DBB0781978151F00DDACDE /* dancingG-15.png in Resources */,
@@ -1767,6 +1778,7 @@
 				E90AA8A51975DC6E0055D74B /* transparentShadow.png in Resources */,
 				E9BE8CA3192AA29C008BB84C /* WhitneyIndexBlack-SquareLt1.ttf in Resources */,
 				E96EF67D197ECA3F00F88A6D /* logo_tiny_orange@2x.png in Resources */,
+				E96EF687197F135E00F88A6D /* rejectFollowRequest@2x.png in Resources */,
 				E9BE8CAF192AA29C008BB84C /* WhitneyNumeric-BlackItalic.ttf in Resources */,
 				E9BE8CAE192AA29C008BB84C /* WhitneyNumeric-Black.ttf in Resources */,
 			);
