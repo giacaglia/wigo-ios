@@ -193,9 +193,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
     // Add text to the wrapper
     UILabel *messageFromSender = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3, 50)];
-    messageFromSender.text = [message messageString];;
+    messageFromSender.text = [message messageString];
     messageFromSender.textAlignment = NSTextAlignmentRight;
     messageFromSender.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
+    messageFromSender.numberOfLines = 0;
+    messageFromSender.lineBreakMode = NSLineBreakByWordWrapping;
     [messageFromSender sizeToFit];
     
     // Adjust the size of the wrapper
