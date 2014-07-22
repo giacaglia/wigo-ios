@@ -125,7 +125,6 @@
     if (!user) {
         user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
     }
-
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;

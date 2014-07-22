@@ -363,6 +363,22 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                      completion:^(BOOL finished){}];
 }
         
+# pragma mark - UITextField Delegate.
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+//    CGSize maximumLabelSize = CGSizeMake(textField.frame.size.width, MAXFLOAT);
+//    
+//    NSStringDrawingOptions options = NSStringDrawingTruncatesLastVisibleLine |
+//    NSStringDrawingUsesLineFragmentOrigin;
+//    
+//    NSDictionary *attr = @{NSFontAttributeName: [UIFont systemFontOfSize:15]};
+//    CGRect labelBounds = [string boundingRectWithSize:maximumLabelSize
+//                                              options:options
+//                                           attributes:attr
+//                                              context:nil];
+//    NSLog(@"label bounds %f", labelBounds.size.width);
+    return YES;
+}
 
 # pragma mark - Network functions
 

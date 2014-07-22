@@ -215,6 +215,7 @@
     [[Profile user] setEventID:[NSNumber numberWithInt:buttonSender.tag]];
     [Network postGoingToEventNumber:buttonSender.tag];
     [self fetchEventsFirstPage];
+    [_placesTableView setContentOffset:CGPointZero animated:YES];
 }
 
 - (void)initializeGoingSomewhereElseButton {

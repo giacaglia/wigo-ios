@@ -80,7 +80,7 @@
         return @"joined WiGo";
     }
     else if ([[self type] isEqualToString:@"goingout"]) {
-        return @"is going out!";
+        return @"is going out";
     }
     return @"";
 }
