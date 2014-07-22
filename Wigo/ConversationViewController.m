@@ -251,7 +251,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     _messageTextView.backgroundColor = [UIColor whiteColor];
     _messageTextView.font = [UIFont fontWithName:@"Whitney-Medium" size:18.0];;
     [_messageTextView setTextColor:RGB(102, 102, 102)];
-    [[UITextField appearance] setTintColor:RGB(102, 102, 102)];
+    [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
     [_chatTextFieldWrapper addSubview:_messageTextView];
     [_chatTextFieldWrapper bringSubviewToFront:_messageTextView];
     
@@ -277,22 +277,16 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [_viewForEmptyConversation addSubview:everyDayLabel];
 }
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
+- (void)textViewDidBeginEditing:(UITextView *)textView {
     if (_viewForEmptyConversation) _viewForEmptyConversation.hidden = YES;
     [_sendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
 
     [self.view bringSubviewToFront:_chatTextFieldWrapper];
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
+- (void)textViewDidEndEditing:(UITextView *)textView {
     [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _chatTextFieldWrapper.transform = CGAffineTransformMakeTranslation(0, 0);
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)theTextField {
-    [theTextField resignFirstResponder];
-    [self sendMessage];
-    return YES;
 }
 
 - (void)sendMessage {
