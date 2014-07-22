@@ -17,9 +17,21 @@
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     NSDate *dateInLocalTimezone = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
     
-    NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
-    [localTimeFormat setDateFormat:@"hh:mm a"];
-    return [localTimeFormat stringFromDate:dateInLocalTimezone];
+    NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:dateInLocalTimezone];
+    NSDateComponents *today = [[NSCalendar currentCalendar] components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
+    // If today
+    if ([today day] == [otherDay day]) {
+        NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
+        [localTimeFormat setDateFormat:@"hh:mm a"];
+        return [localTimeFormat stringFromDate:dateInLocalTimezone];
+    }
+    else {
+        int differenceOfDays = [today day] - [otherDay day];
+        if (differenceOfDays == 1) {
+            return @"1 day ago";
+        }
+        else return [NSString stringWithFormat:@"%d days ago", differenceOfDays];
+    }
 }
 
 

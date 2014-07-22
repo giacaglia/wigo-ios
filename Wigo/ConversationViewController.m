@@ -93,7 +93,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void) addMessages {
-
     for (Message *message in [_messageParty getObjectArray]) {
         
         if ([[message fromUser] isEqualToUser:[Profile user]]) {
@@ -102,6 +101,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         else {
             [self addMessageFromReceiver:message];
         }
+    }
+    if ([[_messageParty getObjectArray] count] == 0) {
+        [self initializeMessageForEmptyConversation];
     }
     
     [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:NO];
