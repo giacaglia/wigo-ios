@@ -214,8 +214,9 @@
     UIButton *buttonSender = (UIButton *)sender;
     [[Profile user] setEventID:[NSNumber numberWithInt:buttonSender.tag]];
     [Network postGoingToEventNumber:buttonSender.tag];
+//    [_placesTableView setContentOffset:CGPointZero animated:YES];
     [self fetchEventsFirstPage];
-    [_placesTableView setContentOffset:CGPointZero animated:YES];
+//    [self refreshEvents];
 }
 
 - (void)initializeGoingSomewhereElseButton {
@@ -623,6 +624,7 @@
             _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];
             _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
             [_placesTableView reloadData];
+            if ([_page isEqualToNumber:@2]) [_placesTableView setContentOffset:CGPointZero animated:YES];
         });
     }
 }

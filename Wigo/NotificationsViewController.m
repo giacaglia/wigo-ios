@@ -203,7 +203,7 @@
     notificationLabel.font = [FontProperties getBioFont];
     notificationLabel.lineBreakMode = NSLineBreakByWordWrapping;
     notificationLabel.numberOfLines = 0;
-    if (notificationLabel.text.length > 32) {
+    if (notificationLabel.attributedText.length > 32) {
         notificationLabel.frame = CGRectMake(83, 9, 200, 36);
     }
     [notificationButton addSubview:notificationLabel];
