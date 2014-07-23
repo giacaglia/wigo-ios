@@ -21,16 +21,12 @@
 
 @property BOOL didImagesLoad;
 
-@property int currentPage;
-@property UIPageControl *pageControl;
-@property UIScrollView *scrollView;
-@property UIButton *followButton;
-@property BOOL isSeingImages;
-@property UILabel *nameOfPersonLabel;
+
 
 // bio
 @property UILabel *bioLabel;
 @property UIView *bioLineView;
+@property UIImageView *privateLogoImageView;
 
 //favorite
 @property UIButton *leftProfileButton;
@@ -39,15 +35,24 @@
 @property UITapGestureRecognizer *tapScrollView;
 
 //UIScrollView
+@property int currentPage;
+
+@property UIPageControl *pageControl;
+@property BOOL isSeingImages;
+@property UIScrollView *scrollView;
 @property CGPoint pointNow;
 @property NSMutableArray *profileImagesArray;
 
+//UI
+@property UIButtonAligned *rightBarBt;
 @property UIButton *followingButton;
 @property UIButton *followersButton;
+@property UILabel *nameOfPersonLabel;
+@property UIButton *followButton;
+@property UILabel *followRequestLabel;
 
 @property UIView *lastLineView;
 
-@property UIButtonAligned *rightBarBt;
 
 @end
 
@@ -69,7 +74,10 @@
     self = [super init];
     if (self) {
         self.user = [Profile user];
-        self.userState = PROFILE;
+        if ([self.user isPrivate]) {
+            self.userState = PRIVATE_PROFILE;
+        }
+        else self.userState = PUBLIC_PROFILE;
         self.view.backgroundColor = [UIColor whiteColor];
 
     }
@@ -102,6 +110,7 @@
 
     [self initializeFollowingAndFollowers];
     [self initializeFollowButton];
+    [self initializeFollowRequestLabel];
     [self initializeLeftProfileButton];
     [self initializeRightProfileButton];
     [self reloadView];
@@ -122,8 +131,11 @@
         
         _followButton.enabled = NO;
         _followButton.hidden = YES;
+        
+        _privateLogoImageView.hidden = YES;
+        _followRequestLabel.hidden = YES;
     }
-    else if (self.userState == NOT_FOLLOWING_PUBLIC_USER) {
+    else if (self.userState == NOT_FOLLOWING_PUBLIC_USER || self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) {
         _followingButton.enabled = NO;
         _followingButton.hidden = YES;
         _followersButton.enabled = NO;
@@ -137,8 +149,29 @@
         
         _followButton.enabled = YES;
         _followButton.hidden = NO;
+        
+        if (self.userState == NOT_FOLLOWING_PUBLIC_USER) _privateLogoImageView.hidden = YES;
+        else _privateLogoImageView.hidden = NO;
+        _followRequestLabel.hidden = YES;
     }
-    if (self.userState == PROFILE) {
+    else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        _followingButton.enabled = NO;
+        _followingButton.hidden = YES;
+        _followersButton.enabled = NO;
+        _followersButton.hidden = YES;
+        _leftProfileButton.enabled = NO;
+        _leftProfileButton.hidden = YES;
+        _rightProfileButton.enabled = NO;
+        _rightProfileButton.hidden = YES;
+        _rightBarBt.enabled = NO;
+        _rightBarBt.hidden = YES;
+        _followButton.enabled = NO;
+        _followButton.hidden = YES;
+        
+        _privateLogoImageView.hidden = YES;
+        _followRequestLabel.hidden = NO;
+    }
+    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
         _followingButton.enabled = NO;
         _followingButton.hidden = YES;
         _followersButton.enabled = NO;
@@ -150,6 +183,9 @@
         _leftProfileButton.hidden = NO;
         _rightProfileButton.enabled = YES;
         _rightProfileButton.hidden = NO;
+        
+        _privateLogoImageView.hidden = NO;
+        _followRequestLabel.hidden = YES;
     }
 }
 
@@ -189,7 +225,7 @@
     UITabBarController *tabController = (UITabBarController *)self.parentViewController;
     tabController.navigationItem.rightBarButtonItem = nil;
     
-    if (self.userState == PROFILE) {
+    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
         [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
         [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -242,7 +278,7 @@
 
 
 - (void)followPressed {
-    self.userState = FOLLOWING_USER;
+    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
     [self reloadView];
     [self.user setIsFollowing:YES];
     [self.user saveKey:@"is_following"];
@@ -258,7 +294,7 @@
 
 
 - (void)initializeProfileImage {
-    if (self.userState == PROFILE) {
+    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
         self.user = [Profile user];
     }
     // UIScrollView
@@ -365,9 +401,20 @@
     plusImageView.frame = CGRectMake(followLabelPlusImage.frame.size.width - 28, followLabelPlusImage.frame.size.height/2 - 11, 28, 20);
     plusImageView.tintColor = [FontProperties getOrangeColor];
     [followLabelPlusImage addSubview:plusImageView];
-   
 
     [self.view addSubview:_followButton];
+}
+
+
+- (void)initializeFollowRequestLabel {
+    _followRequestLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 64 + self.view.frame.size.width + 20, self.view.frame.size.width - 50, 50)];
+    _followRequestLabel.text = @"Your Follow request has been sent";
+    _followRequestLabel.textAlignment = NSTextAlignmentCenter;
+    _followRequestLabel.textColor = [FontProperties getOrangeColor];
+    _followRequestLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:24.0f];
+    if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) _followRequestLabel.hidden = NO;
+    else _followRequestLabel.hidden = YES;
+    [self.view addSubview:_followRequestLabel];
 }
 
 
@@ -376,7 +423,7 @@
         _tapScrollView.enabled = NO;
         _isSeingImages = YES;
         _lastLineView.hidden = NO;
-        if (self.userState == PROFILE) {
+        if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
             _pageControl.center = CGPointMake(73, 25);
         }
         else {
@@ -453,17 +500,21 @@
     [self.view addSubview:_nameOfPersonLabel];
     [self.view bringSubviewToFront:_nameOfPersonLabel];
     
-    if (self.userState  == ACCEPTED_PRIVATE_USER || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) {
-        UIImageView *privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 11, 16, 22)];
-        privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
-        [_nameOfPersonLabel addSubview:privateLogoImageView];
-        [_nameOfPersonLabel bringSubviewToFront:privateLogoImageView];
+   
+    _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 11, 16, 22)];
+    _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
+    if (self.userState  == ACCEPTED_PRIVATE_USER || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER || self.userState == PRIVATE_PROFILE) {
+        _privateLogoImageView.hidden = NO;
     }
+    else _privateLogoImageView.hidden = YES;
+    [_nameOfPersonLabel addSubview:_privateLogoImageView];
+    [_nameOfPersonLabel bringSubviewToFront:_privateLogoImageView];
+    
 
 }
 
 - (void)initializeLeftProfileButton {
-    if (self.userState == PROFILE) {
+    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 100)];
         [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _leftProfileButton.frame.size.width, 60)];
@@ -493,7 +544,7 @@
 }
 
 - (void)leftProfileButtonPressed {
-    if (self.userState == PROFILE) {
+    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         [self followersButtonPressed];
     }
     else {
@@ -511,7 +562,7 @@
 }
 
 - (void)initializeRightProfileButton {
-    if (self.userState == PROFILE) {
+    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         _rightProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 100)];
         [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         _rightProfileButton.layer.borderWidth = 1;
@@ -552,7 +603,7 @@
 }
 
 - (void)rightProfileButtonPressed {
-    if (self.userState == PROFILE) {
+    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         [self followingButtonPressed];
     }
     else {
