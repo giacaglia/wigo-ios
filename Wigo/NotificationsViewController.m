@@ -73,7 +73,7 @@
 #pragma mark - Tablew View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath row] == [[_notificationsParty getObjectArray] count]) {
+    if ([_notificationsParty hasNextPage] && [indexPath row] == [[_notificationsParty getObjectArray] count]) {
         return 30;
     }
     return 54;
@@ -200,11 +200,13 @@
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:message attributes:nil]];
     [string addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, name.length)];
     [string addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(name.length , message.length + 1)];
+    CGSize size = [string size];
+    NSLog(@"string %@ \n width %f",string, size.width);
     notificationLabel.attributedText = string;
     notificationLabel.font = [FontProperties getBioFont];
     notificationLabel.lineBreakMode = NSLineBreakByWordWrapping;
     notificationLabel.numberOfLines = 0;
-    if (notificationLabel.attributedText.length > 32) {
+    if ([string size].width > 175) {
         notificationLabel.frame = CGRectMake(83, 9, 200, 36);
     }
     [notificationButton addSubview:notificationLabel];
@@ -223,6 +225,7 @@
 - (void)folowRequestPressed {
     self.followRequestsViewController = [[FollowRequestsViewController alloc] init];
     [self.navigationController pushViewController:self.followRequestsViewController animated:YES];
+    self.tabBarController.tabBar.hidden = YES;
 }
 
 - (void) chatSegue {
@@ -245,7 +248,7 @@
 
 - (void)fetchNotifications {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    NSString *queryString = [NSString stringWithFormat:@"notifications/?page=%@" ,[_page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView hideSpinnerForView:self.view];
