@@ -132,30 +132,31 @@
 }
 
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback {
-    
     NSDictionary *properties = [_proxy objectForKey:@"properties"];
-    NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
-    NSMutableArray *imagesDataArray = [[NSMutableArray alloc] initWithCapacity:3];
-    NSMutableArray *imagesReturned = [[NSMutableArray alloc] initWithCapacity:3];
-    
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
-    dispatch_async(queue, ^{
-        for (NSString *key in [imagesDictionary allKeys]) {
-            NSString *pictureURL = [imagesDictionary objectForKey:key];
-            NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
-            if (imageData) {
-                [imagesDataArray addObject:imageData];
+    if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
+        NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
+        NSMutableArray *imagesDataArray = [[NSMutableArray alloc] initWithCapacity:3];
+        NSMutableArray *imagesReturned = [[NSMutableArray alloc] initWithCapacity:3];
+        
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+        dispatch_async(queue, ^{
+            for (NSString *key in [imagesDictionary allKeys]) {
+                NSString *pictureURL = [imagesDictionary objectForKey:key];
+                NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
+                if (imageData) {
+                    [imagesDataArray addObject:imageData];
+                }
             }
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            for (NSData *imageData in imagesDataArray) {
-                [imagesReturned addObject:[UIImage imageWithData:imageData]];
-            }
-            [_proxy setObject:imagesReturned forKey:@"images"];
-            callback([NSArray arrayWithArray:imagesReturned]);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                for (NSData *imageData in imagesDataArray) {
+                    [imagesReturned addObject:[UIImage imageWithData:imageData]];
+                }
+                [_proxy setObject:imagesReturned forKey:@"images"];
+                callback([NSArray arrayWithArray:imagesReturned]);
+            });
         });
-    });
+    }
 }
 
 - (NSString *)coverImageURL {
@@ -336,6 +337,24 @@
 - (void)setIsFollowing:(BOOL)isFollowing {
     [_proxy setObject:[NSNumber numberWithBool:isFollowing] forKey:@"is_following"];
     [modifiedKeys addObject:@"is_following"];
+}
+
+- (NSNumber *)lastMessageRead {
+    return (NSNumber *)[_proxy objectForKey:@"last_message_read"];
+}
+
+- (void)setLastMessageRead:(NSNumber *)lastMessageRead {
+    [_proxy setObject:lastMessageRead forKey:@"last_message_read"];
+    [modifiedKeys addObject:@"last_message_read"];
+}
+
+- (NSNumber *)lastNotificationRead {
+    return (NSNumber *)[_proxy objectForKey:@"last_notification_read"];
+}
+
+- (void)setLastNotificationRead:(NSNumber *)lastNotificationRead {
+    [_proxy setObject:lastNotificationRead forKey:@"last_notification_read"];
+    [modifiedKeys addObject:@"last_notification_read"];
 }
 
 #pragma mark - Saving data

@@ -145,5 +145,9 @@ static UIColor *lightOrangeColor;
     return lightOrangeColor;
 }
 
++ (UIColor *)getBackgroundLightOrange {
+    return RGBAlpha(244, 149, 45, 0.1f);
+//    return [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.1f];
+}
 
 @end

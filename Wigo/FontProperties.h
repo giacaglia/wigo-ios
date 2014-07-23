@@ -29,5 +29,6 @@
 + (UIColor *)getLightOrangeColor;
 + (UIColor *)getLightBlueColor;
 + (UIColor *)getBlueColor;
++ (UIColor *)getBackgroundLightOrange;
 
 @end

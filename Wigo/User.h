@@ -27,6 +27,8 @@
 @property BOOL emailValidated;
 @property BOOL isFavorite;
 @property BOOL isFollowing;
+@property NSNumber *lastNotificationRead;
+@property NSNumber *lastMessageRead;
 
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
@@ -41,8 +43,6 @@
 
 // NEED TO IMPLEMENT
 @property NSString *placeWhereGoingOut;
-@property NSMutableArray *listOfFollowers;
-@property NSMutableArray *listOfFollowing;
 @property NSDictionary *notificationSettings;
 
 #pragma mark - Saving data

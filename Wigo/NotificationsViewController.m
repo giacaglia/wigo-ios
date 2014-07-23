@@ -23,6 +23,7 @@
 @property UIActivityIndicatorView *spinner;
 @property NSNumber *page;
 @property NSNumber *followRequestSummary;
+@property int lastNotificationRead;
 
 @end
 
@@ -143,13 +144,13 @@
     }
     
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
-    Notification *notifcation = [[_notificationsParty getObjectArray] objectAtIndex:row];
-    User *user = (User *)[_everyoneParty getObjectWithId:[notifcation fromUserID]];
+    Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:row];
+    User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
     
     NSString *name = [user fullName];
-    NSString *typeString = [notifcation type];
-    NSString *message = [notifcation message];
-    NSString *timeString = [notifcation timeString];
+    NSString *typeString = [notification type];
+    NSString *message = [notification message];
+    NSString *timeString = [notification timeString];
     
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
     
@@ -190,7 +191,6 @@
         iconLabel.frame = CGRectMake(58, 20, 14, 16);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
-
     notificationButton.tag = row;
     [notificationButton addSubview:iconLabel];
 
@@ -200,8 +200,6 @@
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:message attributes:nil]];
     [string addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, name.length)];
     [string addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(name.length , message.length + 1)];
-    CGSize size = [string size];
-    NSLog(@"string %@ \n width %f",string, size.width);
     notificationLabel.attributedText = string;
     notificationLabel.font = [FontProperties getBioFont];
     notificationLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -219,6 +217,12 @@
     [notificationButton addSubview:timeLabel];
     
     [cell.contentView addSubview:notificationButton];
+    if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
+        cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
+    }
+    if([indexPath row] == ((NSIndexPath*)[[tableView indexPathsForVisibleRows] lastObject]).row){
+        [self updateLastNotificationsRead];
+    }
     return cell;
 }
 
@@ -237,14 +241,24 @@
 - (void) profileSegue:(id)sender {
     UIButton *notificationButton = (UIButton *)sender;
     int rowOfButtonSender = notificationButton.tag;
-    Notification *notifcation = [[_notificationsParty getObjectArray] objectAtIndex:rowOfButtonSender];
-    User *user = (User *)[_everyoneParty getObjectWithId:[notifcation fromUserID]];
+    Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:rowOfButtonSender];
+    User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
     self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
 }
 
 #pragma mark - Network function
+
+- (void)updateLastNotificationsRead {
+    User *profileUser = [Profile user];
+    for (Notification *notification in [_notificationsParty getObjectArray]) {
+        if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
+            [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
+            [profileUser saveKey:@"last_notification_read"];
+        }
+    }
+}
 
 - (void)fetchNotifications {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
@@ -272,6 +286,14 @@
             }
         });
     }];
+}
+
+- (void)updateLastNotificationRead:(Notification *)notification {
+    User *profileUser = [Profile user];
+    if ([notification objectForKey:@"id"] > [profileUser lastNotificationRead]) {
+        [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
+        [profileUser saveKey:@"last_notification_read"];
+    }
 }
 
 @end

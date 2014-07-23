@@ -12,5 +12,6 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property NSMutableDictionary *notificationDictionary;
 
 @end

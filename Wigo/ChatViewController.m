@@ -80,6 +80,8 @@
     [self.view addSubview:_tableViewOfPeople];
 }
 
+#pragma mark - Network functions
+
 - (void)fetchMessages {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     NSString *queryString = [NSString stringWithFormat:@"messages/summary/?to_user=me&page=%@", [_page stringValue]];
@@ -94,6 +96,16 @@
         });
     }];
     
+}
+
+- (void)updateLastMessagesRead {
+    User *profileUser = [Profile user];
+    for (Message *message in [_messageParty getObjectArray]) {
+        if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastMessageRead] intValue]) {
+            [profileUser setLastMessageRead:[message objectForKey:@"id"]];
+            [profileUser saveKey:@"last_message_read"];
+        }
+    }
 }
 
 
@@ -165,6 +177,12 @@
     timeStampLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:timeStampLabel];
     
+    if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastMessageRead] intValue]) {
+        cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
+    }
+    if([indexPath row] == ((NSIndexPath*)[[tableView indexPathsForVisibleRows] lastObject]).row){
+        [self updateLastMessagesRead];
+    }
     return cell;
 }
 
