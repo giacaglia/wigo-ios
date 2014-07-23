@@ -72,8 +72,7 @@
     [query queryWithClassName:[NSString stringWithFormat:@"follows/accept?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]]];
     User *profileUser = [Profile user];
     [query setProfileKey:profileUser.key];
-    [query setValue:[user objectForKey:@"id"] forKey:@"follow"];
-    [query sendPOSTRequest];
+    [query sendGETRequest];
 }
 
 + (void)rejectFollowRequestForUser:(User *)user {
@@ -81,8 +80,7 @@
     [query queryWithClassName:[NSString stringWithFormat:@"follows/reject?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]]];
     User *profileUser = [Profile user];
     [query setProfileKey:profileUser.key];
-    [query setValue:[user objectForKey:@"id"] forKey:@"follow"];
-    [query sendPOSTRequest];
+    [query sendGETRequest];
 }
 
 
