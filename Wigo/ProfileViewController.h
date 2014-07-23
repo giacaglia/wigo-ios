@@ -12,15 +12,6 @@
 #import "PeopleViewController.h"
 #import "User.h"
 
-typedef enum playerStateTypes
-{
-    PROFILE,
-    FOLLOWING_PUBLIC_USER,
-    NOT_FOLLOWING_PUBLIC_USER,
-    FOLLOWING_PRIVATE_USER,
-    NOT_ACCEPTED_PRIVATE_USER,
-    ACCEPTED_PRIVATE_USER,
-} STATE;
 
 @interface ProfileViewController : UIViewController <UIScrollViewDelegate>
 
@@ -29,7 +20,7 @@ typedef enum playerStateTypes
 
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;
 @property User *user;
-@property STATE state;
+@property STATE userState;
 
 @property EditProfileViewController *editProfileViewController;
 @property ConversationViewController *conversationViewController;

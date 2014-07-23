@@ -83,6 +83,9 @@
     else if ([[self type] isEqualToString:@"goingout"]) {
         return @"is going out";
     }
+    else if ([[self type] isEqualToString:@"follow.accepted"]) {
+        return @"accepted your follow request";
+    }
     return @"";
 }
 

@@ -17,6 +17,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
+
     NSString *parseApplicationId = PARSE_APPLICATIONID; // just for ease of debugging
     NSString *parseClientKey = PARSE_CLIENTKEY;
     
@@ -33,7 +34,7 @@
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     UITabBar *tabBar = tabBarController.tabBar;
     tabBar.tintColor = [UIColor clearColor];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor clearColor],  } forState:UIControlStateSelected];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor clearColor] } forState:UIControlStateSelected];
     
     [self changeTabBarToOrange];
     [self addNotificationHandlers];

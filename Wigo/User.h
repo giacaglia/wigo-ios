@@ -9,6 +9,17 @@
 #import <Foundation/Foundation.h>
 #import "Query.h"
 
+typedef enum userStates
+{
+    PROFILE,
+    NOT_FOLLOWING_PUBLIC_USER,
+    FOLLOWING_USER,
+    NOT_SENT_FOLLOWING_PRIVATE_USER,
+    NOT_YET_ACCEPTED_PRIVATE_USER,
+    ACCEPTED_PRIVATE_USER,
+} STATE;
+
+
 @interface User : NSMutableDictionary
 
 // Necessary Data
@@ -40,6 +51,8 @@
 - (void)makeImageURLCover:(NSString *)imageURL;
 - (NSDictionary *)dictionary;
 - (BOOL)isTapped;
+- (BOOL)isFollowingRequested;
+- (STATE)getUserState;
 
 // NEED TO IMPLEMENT
 @property NSString *placeWhereGoingOut;

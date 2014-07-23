@@ -68,6 +68,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [FBAppEvents logEvent:FBAppEventNameActivatedApp];
     [self initializeFlashScreen];
     _spinnerAtCenter = YES;
     
@@ -78,7 +79,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 - (void)loadViewAfterSigningUser {
     _numberFetchedMyInfoAndEveryoneElse = 0;
-
     [self fetchFollowingFirstPage];
     [self fetchUserInfo];
 }

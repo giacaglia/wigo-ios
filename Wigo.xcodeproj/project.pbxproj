@@ -2024,6 +2024,10 @@
 				);
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
@@ -2055,6 +2059,10 @@
 				);
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
@@ -2086,6 +2094,10 @@
 				);
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
@@ -2190,6 +2202,10 @@
 				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
@@ -2220,6 +2236,10 @@
 				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
@@ -2328,6 +2348,10 @@
 				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;

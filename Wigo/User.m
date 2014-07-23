@@ -270,7 +270,7 @@
     if (isPrivate) {
         [_proxy setObject:@"private" forKey:@"privacy"];
     }
-    [_proxy setObject:@"public" forKey:@"privacy"];
+    else [_proxy setObject:@"public" forKey:@"privacy"];
     [modifiedKeys addObject:@"privacy"];
 }
 
@@ -355,6 +355,32 @@
 - (void)setLastNotificationRead:(NSNumber *)lastNotificationRead {
     [_proxy setObject:lastNotificationRead forKey:@"last_notification_read"];
     [modifiedKeys addObject:@"last_notification_read"];
+}
+
+- (BOOL)isFollowingRequested {
+    if ([[_proxy allKeys] containsObject:@"is_following_request"]) {
+        NSNumber *isFollowingRequestedNumber = (NSNumber *)[_proxy objectForKey:@"is_following_requested"];
+        return [isFollowingRequestedNumber boolValue];
+    }
+    return NO;
+}
+
+- (STATE)getUserState {
+    if ([self isPrivate]) {
+        if ([self isFollowing]) {
+            return FOLLOWING_USER;
+        }
+        else if ([self isFollowingRequested]) {
+            return NOT_YET_ACCEPTED_PRIVATE_USER;
+        }
+        else {
+            return NOT_SENT_FOLLOWING_PRIVATE_USER;
+        }
+    }
+    if ([self isFollowing]) {
+        return FOLLOWING_USER;
+    }
+    else return NOT_FOLLOWING_PUBLIC_USER;
 }
 
 #pragma mark - Saving data
