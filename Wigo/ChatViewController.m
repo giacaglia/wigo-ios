@@ -159,18 +159,18 @@
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
     [cell.contentView addSubview:profileImageView];
     
-    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 15)];
     textLabel.text = [user fullName];
     textLabel.font = [FontProperties getSubtitleFont];
     [cell.contentView addSubview:textLabel];
     
-    UIImageView *lastMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(85, 30, 150, 20)];
-    UILabel *lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 20)];
+    UIImageView *lastMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(85, 25, 150, 40)];
+    UILabel *lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 40)];
     lastMessageLabel.text = [message messageString];
     lastMessageLabel.font = [UIFont fontWithName:@"Whitney-Light" size:13.0f];
     lastMessageLabel.textColor = [UIColor blackColor];
     lastMessageLabel.textAlignment = NSTextAlignmentLeft;
-    lastMessageLabel.numberOfLines = 0;
+    lastMessageLabel.numberOfLines = 2;
     lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
     if ([[message messageString] length] == 0) {

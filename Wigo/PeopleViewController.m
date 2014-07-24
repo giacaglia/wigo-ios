@@ -65,27 +65,26 @@
 {
     [super viewDidLoad];
     _chosenFilter = 1;
-    _page = @1;
     _currentTab = @2;
     //Search Bar Setup
-    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
     _followingParty = [Profile followingParty];
-    _notAcceptedFollowingParty = [Profile notAcceptedFollowingParty];
-
+    _notAcceptedFollowingParty = [[Party alloc] initWithObjectName:@"User"];
     _contentParty = _everyoneParty;
     _filteredContentParty = [_everyoneParty copy];
     
-    // Title setup
-    self.title = [self.user fullName];
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
-    [self fetchEveryone];
     [self initializeYourSchoolButton];
     [self initializeFollowingButton];
     [self initializeFollowersButton];
     [self initializeSearchBar];
     [self initializeTableOfPeople];
-//    [self initializeTapHandler];
+    
+    // Title setup
+    self.title = [self.user fullName];
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    
+    [self fetchFirstPageEveryone];
+
     if ([[self.user allKeys] containsObject:@"tabNumber"]) {
         _currentTab = [self.user objectForKey:@"tabNumber"];
         [self loadTableView];
@@ -93,6 +92,11 @@
 }
 
 - (void) viewWillAppear:(BOOL)animated {
+    [self initializeBackBarButton];
+    [self initializeRightBarButton];
+}
+
+- (void)initializeBackBarButton {
     UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
@@ -102,7 +106,6 @@
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
     [barItem setCustomView:barBt];
     self.navigationItem.leftBarButtonItem = barItem;
-    [self initializeRightBarButton];
 }
 
 - (void) initializeRightBarButton {
@@ -341,8 +344,14 @@
 
 #pragma mark - Network functions
 
+- (void)fetchFirstPageEveryone {
+    _page = @1;
+    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+    [self fetchEveryone];
+}
+
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=goingout&page=%@" ,[_page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@" ,[_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
@@ -470,9 +479,15 @@
     }
     [cell.contentView addSubview:profileButton];
     
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 14, 150, 28)];
-    labelName.font = [FontProperties getSmallFont];
-    labelName.text = [NSString stringWithFormat:@"%@ %@", [user objectForKey:@"first_name"], [user objectForKey:@"last_name"]];
+    if ([user isFavorite]) {
+        UIImageView *favoriteSmall = [[UIImageView alloc] initWithFrame:CGRectMake(6, profileButton.frame.size.height - 16, 10, 10)];
+        favoriteSmall.image = [UIImage imageNamed:@"favoriteSmall"];
+        [profileButton addSubview:favoriteSmall];
+    }
+    
+    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+    labelName.font = [UIFont fontWithName:@"Whitney-Medium" size:18.0f];
+    labelName.text = [user fullName];
     labelName.tag = [indexPath row];
     labelName.textAlignment = NSTextAlignmentLeft;
     labelName.userInteractionEnabled = YES;
@@ -481,6 +496,16 @@
         [labelName addGestureRecognizer:tap];
     }
     [cell.contentView addSubview:labelName];
+    
+    UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
+    goingOutLabel.font = [UIFont fontWithName:@"Whitney-Medium" size:15.0f];
+    goingOutLabel.textAlignment = NSTextAlignmentLeft;
+    if ([user isGoingOut]) {
+        goingOutLabel.text = @"Going Out";
+        goingOutLabel.textColor = [FontProperties getOrangeColor];
+    }
+    [cell.contentView addSubview:goingOutLabel];
+    
     
     if (![user isEqualToUser:[Profile user]]) {
         UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 15, 49, 30)];

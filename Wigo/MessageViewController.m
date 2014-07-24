@@ -145,16 +145,16 @@
     textLabel.text = [user fullName];
     textLabel.font = [FontProperties getSubtitleFont];
     [cell.contentView addSubview:textLabel];
-    UILabel *lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
-    lastMessageLabel.font = [UIFont fontWithName:@"Whitney-Medium" size:13.0f];
-    lastMessageLabel.textAlignment = NSTextAlignmentLeft;
-
-    if ([user isGoingOut]) {
-        lastMessageLabel.text = @"Going Out";
-        lastMessageLabel.textColor = [FontProperties getOrangeColor];
-    }
     
-    [cell.contentView addSubview:lastMessageLabel];
+    UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
+    goingOutLabel.font = [UIFont fontWithName:@"Whitney-Medium" size:13.0f];
+    goingOutLabel.textAlignment = NSTextAlignmentLeft;
+    if ([user isGoingOut]) {
+        goingOutLabel.text = @"Going Out";
+        goingOutLabel.textColor = [FontProperties getOrangeColor];
+    }
+    [cell.contentView addSubview:goingOutLabel];
+    
     return cell;
 }
 

@@ -239,7 +239,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [_chatTextFieldWrapper addSubview:firstLineView];
     
     _whiteLabelForTextField = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, _chatTextFieldWrapper.frame.size.width - 70, _chatTextFieldWrapper.frame.size.height - 20)];
-    _whiteLabelForTextField.backgroundColor = [UIColor whiteColor];
     _whiteLabelForTextField.layer.cornerRadius = 5;
     _whiteLabelForTextField.layer.masksToBounds = YES;
     [_chatTextFieldWrapper addSubview:_whiteLabelForTextField];
@@ -251,7 +250,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     _messageTextView.returnKeyType = UIReturnKeySend;
     _messageTextView.backgroundColor = [UIColor whiteColor];
     _messageTextView.font = [UIFont fontWithName:@"Whitney-Medium" size:18.0];;
-    [_messageTextView setTextColor:RGB(102, 102, 102)];
+    _messageTextView.textColor = RGB(102, 102, 102);
     [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
     [_chatTextFieldWrapper addSubview:_messageTextView];
     [_chatTextFieldWrapper bringSubviewToFront:_messageTextView];
