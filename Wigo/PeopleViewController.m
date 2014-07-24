@@ -493,7 +493,6 @@
             [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             followPersonButton.tag = 100;
         }
-        NSLog(@"user name %@ and user state %u", [user firstName], [user getUserState]);
         if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];

@@ -13,9 +13,7 @@
 //View Extensions
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
-//Image Load
-#import "WiGoSpinnerView.h"
-#import "UIScrollView+GifPullToRefresh.h"
+
 
 #define xSpacing 10
 #define sizeOfEachCell 125
@@ -213,9 +211,7 @@
     UIButton *buttonSender = (UIButton *)sender;
     [[Profile user] setEventID:[NSNumber numberWithInt:buttonSender.tag]];
     [Network postGoingToEventNumber:buttonSender.tag];
-//    [_placesTableView setContentOffset:CGPointZero animated:YES];
     [self fetchEventsFirstPage];
-//    [self refreshEvents];
 }
 
 - (void)initializeGoingSomewhereElseButton {
@@ -631,30 +627,11 @@
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    NSMutableArray *DancingGDrawingImgs = [NSMutableArray array];
-    NSMutableArray *DancingGLoadingImgs = [NSMutableArray array];
-    for (NSUInteger i  = 0; i <= 1; i++) {
-        int fileNumber = (4*i)%31;
-        NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
-        [DancingGDrawingImgs addObject:[UIImage imageNamed:fileName]];
-    }
-    
-    for (NSUInteger i  = 0; i <= 70; i++) {
-        int fileNumber = (4*i)%31;
-        NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
-        [DancingGLoadingImgs addObject:[UIImage imageNamed:fileName]];
-    }
-    __weak UITableView *tempPlacesTableView = _placesTableView;
-    [tempPlacesTableView addPullToRefreshWithDrawingImgs:DancingGDrawingImgs andLoadingImgs:DancingGLoadingImgs andActionHandler:^{
-        [self refreshEvents];
+    [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView withHandler:^{
+        _spinnerAtTop = NO;
+        [self fetchEventsFirstPage];
     }];
 }
-
-- (void)refreshEvents {
-    _spinnerAtTop = NO;
-    [self fetchEventsFirstPage];
-}
-
 
 
 @end

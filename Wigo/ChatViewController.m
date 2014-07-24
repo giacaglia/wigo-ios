@@ -12,7 +12,6 @@
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
 
-#import "WiGoSpinnerView.h"
 
 @interface ChatViewController ()
 
@@ -37,10 +36,7 @@
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"chatsSelected"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
-    _page = @1;
-    _messageParty = [[Party alloc] initWithObjectName:@"Message"];
-
-    [self fetchMessages];
+    [self fetchFirstPageMessages];
 }
 
 
@@ -51,6 +47,12 @@
     self.navigationItem.title = @"Chats";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
+    [self initializeRightBarButtonItem];
+    
+    self.navigationItem.leftBarButtonItem = nil;
+}
+
+- (void)initializeRightBarButtonItem {
     CGRect profileFrame = CGRectMake(0, 0, 21, 21);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
     [profileButton setBackgroundImage:[UIImage imageNamed:@"writeIcon"] forState:UIControlStateNormal];
@@ -59,10 +61,8 @@
     [profileButton setShowsTouchWhenHighlighted:YES];
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.rightBarButtonItem = profileBarButton;
-    
-    self.navigationItem.leftBarButtonItem = nil;
-}
 
+}
 
 - (void) writeMessage {
     self.messageViewController = [[MessageViewController alloc] init];
@@ -77,9 +77,24 @@
     _tableViewOfPeople.backgroundColor = [UIColor clearColor];
     _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:_tableViewOfPeople];
+    [self addRefreshToTableView];
+}
+
+#pragma mark - RefreshTableView 
+
+- (void)addRefreshToTableView {
+    [WiGoSpinnerView addDancingGToUIScrollView:_tableViewOfPeople withHandler:^{
+        [self fetchFirstPageMessages];
+    }];
 }
 
 #pragma mark - Network functions
+
+- (void)fetchFirstPageMessages {
+    _page = @1;
+    _messageParty = [[Party alloc] initWithObjectName:@"Message"];
+    [self fetchMessages];
+}
 
 - (void)fetchMessages {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
@@ -92,6 +107,7 @@
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_messageParty addMetaInfo:metaDictionary];
             [_tableViewOfPeople reloadData];
+            [_tableViewOfPeople didFinishPullToRefresh];
         });
     }];
     

@@ -7,6 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UIScrollView+GifPullToRefresh.h"
+
+
+typedef enum {
+    TOP,
+    CENTER,
+    BOTTOM
+} POSITION;
 
 @interface WiGoSpinnerView : UIActivityIndicatorView
 
@@ -14,4 +22,8 @@
 + (WiGoSpinnerView *)showBlueSpinnerAddedTo:(UIView *)view;
 + (BOOL)hideSpinnerForView:(UIView *)view;
 
++ (void)addDancingGToUIScrollView:(UIScrollView *)scrollView withHandler:(void (^)(void))handler;
+
++ (void)addDancingGToCenterView:(UIView *)view;
++ (BOOL)removeDancingGFromCenterView:(UIView *)view;
 @end

@@ -19,6 +19,8 @@
 #import "Time.h"
 
 #import "FontProperties.h"
+#import "WiGoSpinnerView.h"
+
 
 
 //#ifdef DEBUG

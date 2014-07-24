@@ -358,11 +358,10 @@
 }
 
 - (BOOL)isFollowingRequested {
-    if ([[_proxy allKeys] containsObject:@"is_following_request"]) {
+    if ([[_proxy allKeys] containsObject:@"is_following_requested"]) {
         NSNumber *isFollowingRequestedNumber = (NSNumber *)[_proxy objectForKey:@"is_following_requested"];
         return [isFollowingRequestedNumber boolValue];
     }
-    NSLog(@"here");
     return NO;
 }
 

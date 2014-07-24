@@ -14,8 +14,6 @@
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
 
-#import "WiGoSpinnerView.h"
-#import "UIScrollView+GifPullToRefresh.h"
 
 static NSString * const cellIdentifier = @"ContentViewCell";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";
@@ -421,28 +419,10 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 
 - (void)addRefreshToCollectonView {
-    NSMutableArray *DancingGDrawingImgs = [NSMutableArray array];
-    NSMutableArray *DancingGLoadingImgs = [NSMutableArray array];
-    for (NSUInteger i  = 0; i <= 1; i++) {
-        int fileNumber = (4*i)%31;
-        NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
-        [DancingGDrawingImgs addObject:[UIImage imageNamed:fileName]];
-    }
-    
-    for (NSUInteger i  = 0; i <= 70; i++) {
-        int fileNumber = (4*i)%31;
-        NSString *fileName = [NSString stringWithFormat:@"dancingG-%d.png",fileNumber];
-        [DancingGLoadingImgs addObject:[UIImage imageNamed:fileName]];
-    }
-    __weak UICollectionView *tempCollectionView = _collectionView;
-    [tempCollectionView addPullToRefreshWithDrawingImgs:DancingGDrawingImgs andLoadingImgs:DancingGLoadingImgs andActionHandler:^{
-        [self refreshPeople];
+    [WiGoSpinnerView addDancingGToUIScrollView:_collectionView withHandler:^{
+        _spinnerAtCenter = NO;
+        [self fetchFollowingFirstPage];
     }];
-}
-
-- (void)refreshPeople {
-    _spinnerAtCenter = NO;
-    [self fetchFollowingFirstPage];
 }
 
 

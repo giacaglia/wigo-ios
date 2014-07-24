@@ -9,8 +9,6 @@
 #import "NotificationsViewController.h"
 #import "Globals.h"
 
-#import "WiGoSpinnerView.h"
-
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
 
@@ -33,10 +31,9 @@
     [super viewDidLoad];
     _followRequestSummary = @0;
     _everyoneParty = [Profile everyoneParty];
-    _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
-    _page = @1;
     [self initializeTableNotifications];
-    [self fetchNotifications];
+
+    [self fetchFirstPageNotifications];
     [self fetchSummaryOfFollowRequests];
 }
 
@@ -67,6 +64,7 @@
     _notificationsTableView.dataSource = self;
     _notificationsTableView.delegate = self;
     _notificationsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self addRefreshToTable];
 }
 
 
@@ -135,9 +133,6 @@
     
     
     if (row == [[_notificationsParty getObjectArray] count]) {
-        _spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0,0,80,80)];
-        [_spinner startAnimating];
-        [cell.contentView addSubview:_spinner];
         [self fetchNotifications];
         return cell;
     }
@@ -247,6 +242,14 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
+#pragma mark - Refresh button 
+
+- (void)addRefreshToTable {
+    [WiGoSpinnerView addDancingGToUIScrollView:_notificationsTableView withHandler:^{
+        [self fetchFirstPageNotifications];
+    }];
+}
+
 #pragma mark - Network function
 
 - (void)updateLastNotificationsRead {
@@ -257,6 +260,12 @@
             [profileUser saveKey:@"last_notification_read"];
         }
     }
+}
+
+- (void)fetchFirstPageNotifications {
+    _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
+    _page = @1;
+    [self fetchNotifications];
 }
 
 - (void)fetchNotifications {
@@ -271,6 +280,7 @@
             [_notificationsParty addMetaInfo:metaDictionary];
             _page = @([_page intValue] + 1);
             [_notificationsTableView reloadData];
+            [_notificationsTableView didFinishPullToRefresh];
         });
     }];
 }
