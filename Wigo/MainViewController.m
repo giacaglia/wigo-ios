@@ -15,7 +15,6 @@
 #import "UIButtonUngoOut.h"
 
 #import "WiGoSpinnerView.h"
-#import "SDWebImage/UIImageView+WebCache.h"
 #import "UIScrollView+GifPullToRefresh.h"
 
 static NSString * const cellIdentifier = @"ContentViewCell";

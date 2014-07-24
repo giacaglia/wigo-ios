@@ -9,7 +9,6 @@
 #import "ConversationViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
-#import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"
 
 @interface ConversationViewController ()

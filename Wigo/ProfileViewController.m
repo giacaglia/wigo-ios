@@ -13,7 +13,6 @@
 #import "UIPageControlAligned.h"
 #import "UIImageCrop.h"
 #import "WiGoSpinnerView.h"
-#import "SDWebImage/UIImageView+WebCache.h"
 
 
 
@@ -184,7 +183,8 @@
         _rightProfileButton.enabled = YES;
         _rightProfileButton.hidden = NO;
         
-        _privateLogoImageView.hidden = NO;
+        if (self.userState == PRIVATE_PROFILE) _privateLogoImageView.hidden = NO;
+        else _privateLogoImageView.hidden = YES;
         _followRequestLabel.hidden = YES;
     }
 }
@@ -411,7 +411,7 @@
     _followRequestLabel.text = @"Your Follow request has been sent";
     _followRequestLabel.textAlignment = NSTextAlignmentCenter;
     _followRequestLabel.textColor = [FontProperties getOrangeColor];
-    _followRequestLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:24.0f];
+    _followRequestLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:16.0f];
     if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) _followRequestLabel.hidden = NO;
     else _followRequestLabel.hidden = YES;
     [self.view addSubview:_followRequestLabel];

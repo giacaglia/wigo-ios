@@ -8,7 +8,6 @@
 
 #import "FollowRequestsViewController.h"
 #import "Globals.h"
-#import "SDWebImage/UIImageView+WebCache.h"
 #import "UIButtonAligned.h"
 
 @interface FollowRequestsViewController ()
@@ -106,9 +105,9 @@
 }
 
 - (void)followedPersonPressed:(id)sender {
-    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_followRequestTableView];
-    NSIndexPath *indexPath = [_followRequestTableView indexPathForRowAtPoint:buttonOriginInTableView];
-    User *user = [Profile user];
+//    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_followRequestTableView];
+//    NSIndexPath *indexPath = [_followRequestTableView indexPathForRowAtPoint:buttonOriginInTableView];
+//    User *user = [Profile user];
     
 //    UIButton *senderButton = (UIButton*)sender;
 //    if (senderButton.tag == -100) {

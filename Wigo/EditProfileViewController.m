@@ -12,7 +12,6 @@
 #import "UIButtonAligned.h"
 #import "RWBlurPopover.h"
 #import "WiGoSpinnerView.h"
-#import "SDWebImage/UIImageView+WebCache.h"
 
 @interface EditProfileViewController ()
 

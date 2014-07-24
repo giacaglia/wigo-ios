@@ -9,7 +9,6 @@
 #import "PhotoViewController.h"
 #import "Globals.h"
 #import "RWBlurPopover.h"
-#import "SDWebImage/UIImageView+WebCache.h"
 
 @interface PhotoViewController ()
 

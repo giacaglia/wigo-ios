@@ -10,7 +10,6 @@
 #import "Globals.h"
 
 #import "UIButtonAligned.h"
-#import "SDWebImage/UIImageView+WebCache.h"
 
 @interface MessageViewController ()
 

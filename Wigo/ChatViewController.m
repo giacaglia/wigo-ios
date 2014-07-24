@@ -12,7 +12,6 @@
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
 
-#import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"
 
 @interface ChatViewController ()

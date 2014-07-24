@@ -7,8 +7,7 @@
 //
 
 #import "FacebookAlbumTableViewController.h"
-#import "Profile.h"
-#import "SDWebImage/UIImageView+WebCache.h"
+#import "Globals.h"
 
 @interface FacebookAlbumTableViewController ()
 

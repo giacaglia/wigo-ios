@@ -7,7 +7,6 @@
 //
 
 #import "FacebookImagesViewController.h"
-#import <SDWebImage/UIImageView+WebCache.h>
 #import "Globals.h"
 
 @interface FacebookImagesViewController ()

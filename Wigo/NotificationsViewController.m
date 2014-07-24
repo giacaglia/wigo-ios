@@ -9,7 +9,6 @@
 #import "NotificationsViewController.h"
 #import "Globals.h"
 
-#import "SDWebImage/UIImageView+WebCache.h"
 #import "WiGoSpinnerView.h"
 
 @interface NotificationsViewController ()

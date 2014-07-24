@@ -64,7 +64,7 @@
     User *profileUser = [Profile user];
     [query setProfileKey:profileUser.key];
     [query setValue:[user objectForKey:@"id"] forKey:@"follow"];
-    NSDictionary *result = [query sendPOSTRequest];
+    [query sendPOSTRequest];
 }
 
 + (void)acceptFollowRequestForUser:(User *)user {
@@ -91,7 +91,7 @@
     User *user = [Profile user];
     [query setProfileKey:user.key];
     [query setValue:indexOfUser forKey:@"tapped"];
-    NSDictionary *result = [query sendPOSTRequest];
+    [query sendPOSTRequest];
 }
 
 + (void)postGoOut {

@@ -8,7 +8,6 @@
 
 #import "SignUpViewController.h"
 #import "Globals.h"
-#import "SDWebImage/UIImageView+WebCache.h"
 #define isiPhone5  ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
 
 

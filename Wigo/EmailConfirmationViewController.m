@@ -9,7 +9,6 @@
 #import "EmailConfirmationViewController.h"
 #import "Globals.h"
 
-#import "SDWebImage/UIImageView+WebCache.h"
 
 @implementation EmailConfirmationViewController
 

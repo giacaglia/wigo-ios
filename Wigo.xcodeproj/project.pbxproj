@@ -289,6 +289,16 @@
 		E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */; };
 		E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */; };
 		E9A17C70195C761E0057C89A /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A17C6F195C761E0057C89A /* Network.m */; };
+		E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
+		E9A31E481980AB9B008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
+		E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
+		E9A31E4A1980ABB5008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
+		E9A31E4F1980AC37008A711B /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E4E1980AC37008A711B /* libLocalyticsAMP_x64.a */; };
+		E9A31E501980AC38008A711B /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E4E1980AC37008A711B /* libLocalyticsAMP_x64.a */; };
+		E9A31E541980AC49008A711B /* libLocalyticsAMP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E531980AC49008A711B /* libLocalyticsAMP.a */; };
+		E9A31E551980AC49008A711B /* libLocalyticsAMP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E531980AC49008A711B /* libLocalyticsAMP.a */; };
+		E9A31E581980ADDF008A711B /* iOSa_2.23.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E9A31E571980ADDF008A711B /* iOSa_2.23.0.version */; };
+		E9A31E591980ADDF008A711B /* iOSa_2.23.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E9A31E571980ADDF008A711B /* iOSa_2.23.0.version */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
 		E9AAAFB01938F8940069F700 /* orangeSearchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */; };
 		E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */; };
@@ -565,6 +575,13 @@
 		E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookImagesViewController.m; sourceTree = "<group>"; };
 		E9A17C6E195C761E0057C89A /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
 		E9A17C6F195C761E0057C89A /* Network.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Network.m; sourceTree = "<group>"; };
+		E9A31E451980AB25008A711B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		E9A31E471980AB9B008A711B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		E9A31E4E1980AC37008A711B /* libLocalyticsAMP_x64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libLocalyticsAMP_x64.a; sourceTree = "<group>"; };
+		E9A31E511980AC42008A711B /* LocalyticsAmpSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsAmpSession.h; sourceTree = "<group>"; };
+		E9A31E521980AC42008A711B /* LocalyticsSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsSession.h; sourceTree = "<group>"; };
+		E9A31E531980AC49008A711B /* libLocalyticsAMP.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libLocalyticsAMP.a; sourceTree = "<group>"; };
+		E9A31E571980ADDF008A711B /* iOSa_2.23.0.version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = iOSa_2.23.0.version; sourceTree = "<group>"; };
 		E9A50CFB19350F13009B73EA /* ConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationViewController.h; sourceTree = "<group>"; };
 		E9A50CFC19350F13009B73EA /* ConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationViewController.m; sourceTree = "<group>"; };
 		E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orangeSearchIcon.png; sourceTree = "<group>"; };
@@ -738,6 +755,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9A31E481980AB9B008A711B /* libsqlite3.dylib in Frameworks */,
+				E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */,
 				C12A113E19787BE700D53B1C /* SystemConfiguration.framework in Frameworks */,
 				C12A113F19787BE700D53B1C /* Crashlytics.framework in Frameworks */,
 				C12A114019787BE700D53B1C /* Security.framework in Frameworks */,
@@ -746,12 +765,14 @@
 				C12A114319787BE700D53B1C /* libz.dylib in Frameworks */,
 				C12A114419787BE700D53B1C /* CoreLocation.framework in Frameworks */,
 				C12A114519787BE700D53B1C /* Parse.framework in Frameworks */,
+				E9A31E551980AC49008A711B /* libLocalyticsAMP.a in Frameworks */,
 				C12A114619787BE700D53B1C /* CFNetwork.framework in Frameworks */,
 				C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */,
 				C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */,
 				C12A114919787BE700D53B1C /* CoreGraphics.framework in Frameworks */,
 				C12A114A19787BE700D53B1C /* UIKit.framework in Frameworks */,
 				C12A114B19787BE700D53B1C /* Foundation.framework in Frameworks */,
+				E9A31E501980AC38008A711B /* libLocalyticsAMP_x64.a in Frameworks */,
 				C12A114C19787BE700D53B1C /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -760,6 +781,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9A31E4A1980ABB5008A711B /* AdSupport.framework in Frameworks */,
+				E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */,
 				E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */,
 				E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */,
 				E9D906DB19255DBC00E39FC8 /* Security.framework in Frameworks */,
@@ -768,12 +791,14 @@
 				E9D906D519255DA200E39FC8 /* libz.dylib in Frameworks */,
 				E9D906D319255D9A00E39FC8 /* CoreLocation.framework in Frameworks */,
 				E9902983196B12BE00192FF2 /* Parse.framework in Frameworks */,
+				E9A31E541980AC49008A711B /* libLocalyticsAMP.a in Frameworks */,
 				E9D906D119255D8B00E39FC8 /* CFNetwork.framework in Frameworks */,
 				E9D906CF19255D8200E39FC8 /* AudioToolbox.framework in Frameworks */,
 				E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */,
 				E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */,
 				E921D61A1923967D00361247 /* UIKit.framework in Frameworks */,
 				E921D6161923967D00361247 /* Foundation.framework in Frameworks */,
+				E9A31E4F1980AC37008A711B /* libLocalyticsAMP_x64.a in Frameworks */,
 				E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -889,6 +914,8 @@
 		E921D6141923967D00361247 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E9A31E471980AB9B008A711B /* libsqlite3.dylib */,
+				E9A31E451980AB25008A711B /* AdSupport.framework */,
 				E90AA8A71976C8B60055D74B /* Crashlytics.framework */,
 				E9ECFF7F196D917F00384252 /* FacebookSDK.framework */,
 				E9902982196B12BE00192FF2 /* Parse.framework */,
@@ -998,6 +1025,7 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E9A31E561980AC4F008A711B /* Localytics */,
 				E9DBB04D197813F900DDACDE /* CHGifRefreshControl */,
 				E900C2931961EADE00A01F50 /* SDWebImage */,
 				E9CD472D194B88A200AEA17D /* BlurImage */,
@@ -1125,6 +1153,18 @@
 				E96EF684197F135E00F88A6D /* rejectFollowRequest@2x.png */,
 			);
 			name = FollowRequestViewController;
+			sourceTree = "<group>";
+		};
+		E9A31E561980AC4F008A711B /* Localytics */ = {
+			isa = PBXGroup;
+			children = (
+				E9A31E571980ADDF008A711B /* iOSa_2.23.0.version */,
+				E9A31E511980AC42008A711B /* LocalyticsAmpSession.h */,
+				E9A31E521980AC42008A711B /* LocalyticsSession.h */,
+				E9A31E531980AC49008A711B /* libLocalyticsAMP.a */,
+				E9A31E4E1980AC37008A711B /* libLocalyticsAMP_x64.a */,
+			);
+			name = Localytics;
 			sourceTree = "<group>";
 		};
 		E9AAAFBD193D0E160069F700 /* 4MainViews */ = {
@@ -1550,6 +1590,7 @@
 				C12A118719787BE700D53B1C /* WhitneyNumeric-BoldItalic.ttf in Resources */,
 				C12A118819787BE700D53B1C /* Whitney-BoldItalicSC.ttf in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
+				E9A31E591980ADDF008A711B /* iOSa_2.23.0.version in Resources */,
 				C12A118A19787BE700D53B1C /* WhitneyNumeric-MediumItalic.ttf in Resources */,
 				C12A118B19787BE700D53B1C /* WhitneyNumeric-Medium.ttf in Resources */,
 				C12A118C19787BE700D53B1C /* addedFilled@2x.png in Resources */,
@@ -1723,6 +1764,7 @@
 				E9DBB07E1978151F00DDACDE /* dancingG-20.png in Resources */,
 				E9CD46FF1947896300AEA17D /* tapFilled@2x.png in Resources */,
 				E9DBB07F1978151F00DDACDE /* dancingG-21.png in Resources */,
+				E9A31E581980ADDF008A711B /* iOSa_2.23.0.version in Resources */,
 				E9DBB08F1978151F00DDACDE /* dancingG-9.png in Resources */,
 				E9BE8C8F192AA29C008BB84C /* Whitney-BookItalicSC.ttf in Resources */,
 				E9DBB07B1978151F00DDACDE /* dancingG-18.png in Resources */,
@@ -2027,6 +2069,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
+					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
@@ -2062,6 +2105,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
+					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
@@ -2097,6 +2141,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
+					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
@@ -2205,6 +2250,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
+					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
@@ -2239,6 +2285,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
+					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
@@ -2351,6 +2398,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
+					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;

@@ -10,7 +10,6 @@
 #import "Globals.h"
 #import "ProfileViewController.h"
 #import "UIButtonAligned.h"
-#import "SDWebImage/UIImageView+WebCache.h"
 
 #define PEOPLEVIEW_HEIGHT_OF_CELLS 80
 
@@ -494,19 +493,17 @@
             [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             followPersonButton.tag = 100;
         }
-        
-        if ([[_notAcceptedFollowingParty getObjectArray] count] > 0 ) {
-            if ([_notAcceptedFollowingParty containsObject:user]) {
-                [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-                [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
-                [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-                followPersonButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
-                followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-                followPersonButton.layer.borderWidth = 1;
-                followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-                followPersonButton.layer.cornerRadius = 3;
-                followPersonButton.tag = 100;
-            }
+        NSLog(@"user name %@ and user state %u", [user firstName], [user getUserState]);
+        if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+            [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+            [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            followPersonButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
+            followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            followPersonButton.layer.borderWidth = 1;
+            followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            followPersonButton.layer.cornerRadius = 3;
+            followPersonButton.tag = 100;
         }
     }
     
