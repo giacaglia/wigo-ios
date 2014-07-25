@@ -15,9 +15,6 @@
 #import "UIButtonUngoOut.h"
 
 
-static NSString * const cellIdentifier = @"ContentViewCell";
-static NSString * const headerCellIdentifier = @"HeaderContentCell";
-
 @interface MainViewController ()
 
 // Bar at top

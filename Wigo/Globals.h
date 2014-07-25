@@ -21,7 +21,8 @@
 #import "FontProperties.h"
 #import "WiGoSpinnerView.h"
 
-
+static NSString * const cellIdentifier = @"ContentViewCell";
+static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 //#ifdef DEBUG
 //#define NSLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);

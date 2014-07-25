@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TapViewController : UIViewController
+@interface TapViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate>
+{
+    UICollectionView *_collectionView;
+}
+
 
 @end

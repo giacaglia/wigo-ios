@@ -10,7 +10,7 @@
 #import "SignViewController.h"
 #import "SignNavigationViewController.h"
 
-@interface MainViewController : UIViewController <UIScrollViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface MainViewController : UIViewController <UIScrollViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 {
     UICollectionView *_collectionView;
 }
