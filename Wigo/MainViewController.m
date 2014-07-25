@@ -465,6 +465,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    cell.contentView.hidden = YES;
     
     NSArray *userArray;
     if ([indexPath section] == 0) {
@@ -551,7 +552,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
     [user setObject:tapButton forKey:@"tapButton"];
     [user setObject:tappedImageView forKey:@"tappedImageView"];
     [self setUser:user ForIndexPath:indexPath];
-    
+    cell.contentView.hidden = NO;
     return cell;
 }
 

@@ -20,9 +20,11 @@
 
 // Table View
 @property UITableView *tableView;
-@property NSArray *contentList;
+//@property NSArray *contentList;
 @property NSNumber *page;
 @property Party *everyoneParty;
+@property Party *contentParty;
+@property Party *filteredContentParty;
 
 @end
 
@@ -40,7 +42,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+    _contentParty = [[Party alloc] initWithObjectName:@"User"];
+    _filteredContentParty = [[Party alloc] initWithObjectName:@"User"];
+//    _contentList = [_everyoneParty getObjectArray];
+
     
     // Title setup
     self.title = @"NEW MESSAGE";
@@ -50,6 +57,8 @@
     [self initializeSearchBar];
     [self initializeTableListOfFriends];
     [self initializeTapHandler];
+    
+    [self fetchFirstPageEveryone];
 }
 
 - (void)initializeTapHandler {
@@ -81,11 +90,6 @@
 }
 
 - (void) initializeTableListOfFriends {
-    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
-    _page = @1;
-    [self fetchEveryone];
-
-    _contentList = [_everyoneParty getObjectArray];
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 108, self.view.frame.size.width, self.view.frame.size.height - 108)];
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -94,6 +98,12 @@
 }
 
 #pragma Network Functions
+
+- (void) fetchFirstPageEveryone {
+    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+    _page = @1;
+    [self fetchEveryone];
+}
 
 - (void) fetchEveryone {
     NSString *queryString = [NSString stringWithFormat:@"users/?ordering=goingout&page=%@" ,[_page stringValue]];
@@ -106,7 +116,7 @@
         [_everyoneParty removeUser:[Profile user]];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             _page = @([_page intValue] + 1);
-            _contentList = [_everyoneParty getObjectArray];
+            _contentParty = _everyoneParty;
             [_tableView reloadData];
         });
     }];
@@ -119,8 +129,11 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (_isSearching) {
+        return [[_filteredContentParty getObjectArray] count];
+    }
     int hasNextPage = ([_everyoneParty hasNextPage] ? 1 : 0);
-    return [_contentList count] + hasNextPage;
+    return [[_contentParty getObjectArray] count] + hasNextPage;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -128,12 +141,19 @@
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    if ([indexPath row] == [_contentList count]) {
+    if ([indexPath row] == [[_contentParty getObjectArray] count]) {
         [self fetchEveryone];
         return cell;
     }
+    User *user;
+    if (_isSearching) {
+        user = [[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
+    }
+    else {
+        user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
+    }
     
-    User *user = [_contentList objectAtIndex:[indexPath row]];
+//    User *user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
    
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -168,13 +188,13 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    User *user = [_contentList objectAtIndex:[indexPath row]];
+    User *user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
     self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
 }
 
 
-#pragma mark - Search Bar
+#pragma mark - UISearchBar
 - (void)initializeSearchBar {
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(11, 70, self.view.frame.size.width - 22, 30)];
     _searchBar.barTintColor = [UIColor whiteColor];
@@ -217,27 +237,41 @@
     }
 }
 
+#pragma mark - UISearchBarDelegate
+
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     _searchIconImageView.hidden = YES;
     _isSearching = YES;
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    _searchIconImageView.hidden = NO;
+    if (![searchBar.text isEqualToString:@""]) {
+        [UIView animateWithDuration:0.01 animations:^{
+            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
+        }  completion:^(BOOL finished){
+            _searchIconImageView.hidden = NO;
+        }];
+    }
+    else {
+        [UIView animateWithDuration:0.01 animations:^{
+            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
+        }  completion:^(BOOL finished){
+            _searchIconImageView.hidden = NO;
+        }];
+    }
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    //Remove all objects first.
-//    [_filteredContentList removeAllObjects];
-//    
-//    if([searchText length] != 0) {
-//        _isSearching = YES;
-//        [self searchTableList];
-//    }
-//    else {
-//        _isSearching = NO;
-//    }
-//    [_tableViewOfPeople reloadData];
+    [_filteredContentParty removeAllObjects];
+    
+    if([searchText length] != 0) {
+        _isSearching = YES;
+        [self searchTableList];
+    }
+    else {
+        _isSearching = NO;
+    }
+    [_tableView reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -245,15 +279,19 @@
 }
 
 - (void)searchTableList {
-//    NSString *searchString = _searchBar.text;
-//    
-//    for (NSString *tempStr in _contentList) {
-//        NSComparisonResult result = [tempStr compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch) range:NSMakeRange(0, [searchString length])];
-//        if (result == NSOrderedSame) {
-//            [_filteredContentList addObject:tempStr];
-//        }
-//    }
+    NSString *searchString = _searchBar.text;
+    
+    NSArray *contentNameArray = [_contentParty getFullNameArray];
+    for (int i = 0; i < [contentNameArray count]; i++) {
+        NSString *tempStr = [contentNameArray objectAtIndex:i];
+        NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
+        for (NSString *firstOrLastName in firstAndLastNameArray) {
+            NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
+            if (result == NSOrderedSame && ![[_filteredContentParty getFullNameArray] containsObject:tempStr]) {
+                [_filteredContentParty addObject: [[_contentParty getObjectArray] objectAtIndex:i]];
+            }
+        }
+    }
 }
-
 
 @end

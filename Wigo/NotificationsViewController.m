@@ -269,11 +269,11 @@
 }
 
 - (void)fetchNotifications {
-    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+//    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     NSString *queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView hideSpinnerForView:self.view];
+//            [WiGoSpinnerView hideSpinnerForView:self.view];
             NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
             [_notificationsParty addObjectsFromArray:arrayOfNotifications];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];

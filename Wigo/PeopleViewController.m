@@ -64,12 +64,17 @@
 {
     [super viewDidLoad];
     _chosenFilter = 1;
-    _currentTab = @2;
-    //Search Bar Setup
-
-    _contentParty = _everyoneParty;
-    _filteredContentParty = [_everyoneParty copy];
+    if ([[self.user allKeys] containsObject:@"tabNumber"]) {
+        _currentTab = [self.user objectForKey:@"tabNumber"];
+    }
+    else _currentTab = @2;
+    _contentParty = [[Party alloc] initWithObjectName:@"User"];
+    _filteredContentParty = [[Party alloc] initWithObjectName:@"User"];
     
+    
+    // Title setup
+    self.title = [self.user fullName];
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
     [self initializeYourSchoolButton];
     [self initializeFollowingButton];
@@ -77,16 +82,8 @@
     [self initializeSearchBar];
     [self initializeTableOfPeople];
     
-    // Title setup
-    self.title = [self.user fullName];
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    
-    [self fetchFirstPageEveryone];
-
-    if ([[self.user allKeys] containsObject:@"tabNumber"]) {
-        _currentTab = [self.user objectForKey:@"tabNumber"];
-        [self loadTableView];
-    }
+    [self fetchSummary];
+    [self loadTableView];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -110,6 +107,7 @@
     if (![self.user isEqualToUser:[Profile user]]) {
         CGRect profileFrame = CGRectMake(0, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
+        profileButton.userInteractionEnabled = NO;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
@@ -199,7 +197,7 @@
 }
 
 
-#pragma mark - Search Bar 
+#pragma mark - UISearchBar 
 
 - (void)initializeSearchBar {
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 124, self.view.frame.size.width, 40)];
@@ -239,65 +237,9 @@
             }
         }
     }
-    
-
 }
 
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    _searchIconImageView.hidden = YES;
-    _isSearching = YES;
-}
-
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    if (![searchBar.text isEqualToString:@""]) {
-        [UIView animateWithDuration:0.01 animations:^{
-            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
-        }  completion:^(BOOL finished){
-            _searchIconImageView.hidden = NO;
-        }];
-    }
-    else {
-        [UIView animateWithDuration:0.01 animations:^{
-            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
-        }  completion:^(BOOL finished){
-            _searchIconImageView.hidden = NO;
-        }];
-    }
-}
-
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {    
-    [_filteredContentParty removeAllObjects];
-    
-    if([searchText length] != 0) {
-        _isSearching = YES;
-        [self searchTableList];
-    }
-    else {
-        _isSearching = NO;
-    }
-    [_tableViewOfPeople reloadData];
-}
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self searchTableList];
-}
-
-- (void)searchTableList {
-    NSString *searchString = _searchBar.text;
-    
-    NSArray *contentNameArray = [_contentParty getFullNameArray];
-    for (int i = 0; i < [contentNameArray count]; i++) {
-        NSString *tempStr = [contentNameArray objectAtIndex:i];
-        NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
-        for (NSString *firstOrLastName in firstAndLastNameArray) {
-            NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
-            if (result == NSOrderedSame && ![[_filteredContentParty getFullNameArray] containsObject:tempStr]) {
-                [_filteredContentParty addObject: [[_contentParty getObjectArray] objectAtIndex:i]];
-            }
-        }
-    }
-}
 
 #pragma mark - Filter handlers
 
@@ -322,8 +264,7 @@
     [chosenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     if ([_currentTab isEqualToNumber:@2]) {
-        _contentParty = _everyoneParty;
-        [_tableViewOfPeople reloadData];
+        [self fetchFirstPageEveryone];
     }
     else if ([_currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
@@ -333,96 +274,6 @@
     }
 }
 
-#pragma mark - Network functions
-
-- (void)fetchFirstPageEveryone {
-    _page = @1;
-    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
-    [self fetchEveryone];
-}
-
-- (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@" ,[_page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        [_everyoneParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_everyoneParty addMetaInfo:metaDictionary];
-        [Profile setEveryoneParty:_everyoneParty];
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            _page = @([_page intValue] + 1);
-            _contentParty = _everyoneParty;
-            [_tableViewOfPeople reloadData];
-        });
-    }];
-}
-
-- (void)fetchFirstPageFollowers {
-    _page = @1;
-    _followersParty = [[Party alloc] initWithObjectName:@"User"];
-    [self fetchFollowers];
-}
-
-- (void)fetchFollowers {
-    NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-        for (NSDictionary *object in arrayOfFollowObjects) {
-            NSDictionary *userDictionary = [object objectForKey:@"user"];
-            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                    [arrayOfUsers addObject:[[Profile user] dictionary]];
-                }
-                else {
-                    [arrayOfUsers addObject:userDictionary];
-                }
-            }
-        }
-        [_followersParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_followersParty addMetaInfo:metaDictionary];
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            _page = @([_page intValue] + 1);
-            _contentParty = _followersParty;
-            [_tableViewOfPeople reloadData];
-        });
-    }];
-}
-
-- (void)fetchFirstPageFollowing {
-    _page = @1;
-    _followingParty = [[Party alloc] initWithObjectName:@"User"];
-    [self fetchFollowing];
-}
-
-- (void)fetchFollowing {
-    NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-        for (NSDictionary *object in arrayOfFollowObjects) {
-            NSDictionary *userDictionary = [object objectForKey:@"follow"];
-            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                    [arrayOfUsers addObject:[[Profile user] dictionary]];
-                }
-                else {
-                    [arrayOfUsers addObject:userDictionary];
-                }
-            }
-        }
-        [_followingParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_followingParty addMetaInfo:metaDictionary];
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            _page = @([_page intValue] + 1);
-            _contentParty = _followingParty;
-            [_tableViewOfPeople reloadData];
-        });
-    }];
- 
-}
 
 #pragma mark - Table View Data Source
 
@@ -603,5 +454,165 @@
     return user;
 }
 
+
+#pragma mark - Network functions
+
+- (void)fetchFirstPageEveryone {
+    _page = @1;
+    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+    [self fetchEveryone];
+}
+
+- (void) fetchEveryone {
+    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@" ,[_page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+        [_everyoneParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_everyoneParty addMetaInfo:metaDictionary];
+        [Profile setEveryoneParty:_everyoneParty];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            _page = @([_page intValue] + 1);
+            _contentParty = _everyoneParty;
+            [_tableViewOfPeople reloadData];
+        });
+    }];
+}
+
+- (void)fetchFirstPageFollowers {
+    _page = @1;
+    _followersParty = [[Party alloc] initWithObjectName:@"User"];
+    [self fetchFollowers];
+}
+
+- (void)fetchFollowers {
+    NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+        for (NSDictionary *object in arrayOfFollowObjects) {
+            NSDictionary *userDictionary = [object objectForKey:@"user"];
+            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                    [arrayOfUsers addObject:[[Profile user] dictionary]];
+                }
+                else {
+                    [arrayOfUsers addObject:userDictionary];
+                }
+            }
+        }
+        [_followersParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_followersParty addMetaInfo:metaDictionary];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            _page = @([_page intValue] + 1);
+            _contentParty = _followersParty;
+            [_tableViewOfPeople reloadData];
+        });
+    }];
+}
+
+- (void)fetchFirstPageFollowing {
+    _page = @1;
+    _followingParty = [[Party alloc] initWithObjectName:@"User"];
+    [self fetchFollowing];
+}
+
+- (void)fetchFollowing {
+    NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+        for (NSDictionary *object in arrayOfFollowObjects) {
+            NSDictionary *userDictionary = [object objectForKey:@"follow"];
+            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                    [arrayOfUsers addObject:[[Profile user] dictionary]];
+                }
+                else {
+                    [arrayOfUsers addObject:userDictionary];
+                }
+            }
+        }
+        [_followingParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_followingParty addMetaInfo:metaDictionary];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            _page = @([_page intValue] + 1);
+            _contentParty = _followingParty;
+            [_tableViewOfPeople reloadData];
+        });
+    }];
+    
+}
+
+
+-(void)fetchSummary {
+    [Network queryAsynchronousAPI:@"groups/summary" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            if ([[jsonResponse allKeys] containsObject:@"total"]) {
+                NSNumber *totalNumberOfPeople = [jsonResponse objectForKey:@"total"];
+                [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", [totalNumberOfPeople intValue]] forState:UIControlStateNormal];
+            }
+        });
+    }];
+}
+
+#pragma mark - UISearchBarDelegate 
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    _searchIconImageView.hidden = YES;
+    _isSearching = YES;
+}
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    if (![searchBar.text isEqualToString:@""]) {
+        [UIView animateWithDuration:0.01 animations:^{
+            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
+        }  completion:^(BOOL finished){
+            _searchIconImageView.hidden = NO;
+        }];
+    }
+    else {
+        [UIView animateWithDuration:0.01 animations:^{
+            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
+        }  completion:^(BOOL finished){
+            _searchIconImageView.hidden = NO;
+        }];
+    }
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    [_filteredContentParty removeAllObjects];
+    
+    if([searchText length] != 0) {
+        _isSearching = YES;
+        [self searchTableList];
+    }
+    else {
+        _isSearching = NO;
+    }
+    [_tableViewOfPeople reloadData];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self searchTableList];
+}
+
+- (void)searchTableList {
+    NSString *searchString = _searchBar.text;
+    
+    NSArray *contentNameArray = [_contentParty getFullNameArray];
+    for (int i = 0; i < [contentNameArray count]; i++) {
+        NSString *tempStr = [contentNameArray objectAtIndex:i];
+        NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
+        for (NSString *firstOrLastName in firstAndLastNameArray) {
+            NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
+            if (result == NSOrderedSame && ![[_filteredContentParty getFullNameArray] containsObject:tempStr]) {
+                [_filteredContentParty addObject: [[_contentParty getObjectArray] objectAtIndex:i]];
+            }
+        }
+    }
+}
 
 @end

@@ -299,6 +299,10 @@
 		E9A31E551980AC49008A711B /* libLocalyticsAMP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E531980AC49008A711B /* libLocalyticsAMP.a */; };
 		E9A31E581980ADDF008A711B /* iOSa_2.23.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E9A31E571980ADDF008A711B /* iOSa_2.23.0.version */; };
 		E9A31E591980ADDF008A711B /* iOSa_2.23.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E9A31E571980ADDF008A711B /* iOSa_2.23.0.version */; };
+		E9A31E5C1982B6E8008A711B /* TapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E5B1982B6E8008A711B /* TapViewController.m */; };
+		E9A31E5D1982B6E8008A711B /* TapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E5B1982B6E8008A711B /* TapViewController.m */; };
+		E9A31E641982B965008A711B /* WigoSearchBarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */; };
+		E9A31E651982B965008A711B /* WigoSearchBarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
 		E9AAAFB01938F8940069F700 /* orangeSearchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */; };
 		E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */; };
@@ -582,6 +586,10 @@
 		E9A31E521980AC42008A711B /* LocalyticsSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsSession.h; sourceTree = "<group>"; };
 		E9A31E531980AC49008A711B /* libLocalyticsAMP.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libLocalyticsAMP.a; sourceTree = "<group>"; };
 		E9A31E571980ADDF008A711B /* iOSa_2.23.0.version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = iOSa_2.23.0.version; sourceTree = "<group>"; };
+		E9A31E5A1982B6E8008A711B /* TapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TapViewController.h; sourceTree = "<group>"; };
+		E9A31E5B1982B6E8008A711B /* TapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TapViewController.m; sourceTree = "<group>"; };
+		E9A31E621982B965008A711B /* WigoSearchBarDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WigoSearchBarDelegate.h; sourceTree = "<group>"; };
+		E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoSearchBarDelegate.m; sourceTree = "<group>"; };
 		E9A50CFB19350F13009B73EA /* ConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationViewController.h; sourceTree = "<group>"; };
 		E9A50CFC19350F13009B73EA /* ConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationViewController.m; sourceTree = "<group>"; };
 		E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orangeSearchIcon.png; sourceTree = "<group>"; };
@@ -1142,6 +1150,8 @@
 			children = (
 				E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */,
 				E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */,
+				E9A31E5A1982B6E8008A711B /* TapViewController.h */,
+				E9A31E5B1982B6E8008A711B /* TapViewController.m */,
 			);
 			name = NotificationViews;
 			sourceTree = "<group>";
@@ -1328,6 +1338,8 @@
 				E9681C7A195084B700182E0E /* UIButtonUngoOut.m */,
 				E93DE52E195C99F600079074 /* UIImageCrop.h */,
 				E93DE52F195C99F600079074 /* UIImageCrop.m */,
+				E9A31E621982B965008A711B /* WigoSearchBarDelegate.h */,
+				E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */,
 			);
 			name = ViewExtensions;
 			sourceTree = "<group>";
@@ -1888,6 +1900,7 @@
 				C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */,
 				C12A111719787BE700D53B1C /* SignViewController.m in Sources */,
 				C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */,
+				E9A31E5D1982B6E8008A711B /* TapViewController.m in Sources */,
 				C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */,
 				C12A111A19787BE700D53B1C /* Party.m in Sources */,
 				C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */,
@@ -1909,6 +1922,7 @@
 				C12A112A19787BE700D53B1C /* Event.m in Sources */,
 				C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */,
 				C12A112C19787BE700D53B1C /* Query.m in Sources */,
+				E9A31E651982B965008A711B /* WigoSearchBarDelegate.m in Sources */,
 				C12A112D19787BE700D53B1C /* PlacesViewController.m in Sources */,
 				C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */,
 				C12A112F19787BE700D53B1C /* ConversationViewController.m in Sources */,
@@ -1950,6 +1964,7 @@
 				E900C2C11961EADE00A01F50 /* UIImage+WebP.m in Sources */,
 				E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */,
 				E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */,
+				E9A31E5C1982B6E8008A711B /* TapViewController.m in Sources */,
 				E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */,
 				E95DC77D195329B10012AA20 /* Party.m in Sources */,
 				E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */,
@@ -1971,6 +1986,7 @@
 				E95DC78019538A270012AA20 /* Event.m in Sources */,
 				E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */,
 				E9681CB51950AA3B00182E0E /* Query.m in Sources */,
+				E9A31E641982B965008A711B /* WigoSearchBarDelegate.m in Sources */,
 				E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */,
 				E900C2BB1961EADE00A01F50 /* SDWebImageDownloaderOperation.m in Sources */,
 				E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */,
