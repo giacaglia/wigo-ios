@@ -27,25 +27,18 @@ static UIColor *lightOrangeColor;
 
 #pragma mark - Font
 
++ (UIFont *)getSmallPhotoFont {
+    if (smallPhotoFont == nil) {
+        smallPhotoFont = [UIFont fontWithName:@"Whitney-Light" size:12.0f];
+    }
+    return smallPhotoFont;
+}
+
 + (UIFont *)getBioFont {
     if (bioFont == nil) {
         bioFont = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
     }
     return bioFont;
-}
-
-+ (UIFont *)getHeaderFont {
-    if (headerFont == nil) {
-        headerFont = [UIFont fontWithName:@"Whitney-Light" size:60.0f];
-    }
-    return headerFont;
-}
-
-+ (UIFont *)getTitleFont {
-    if (titleFont == nil) {
-        titleFont = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0f];
-    }
-    return titleFont;
 }
 
 + (UIFont *)getSubtitleFont {
@@ -55,33 +48,34 @@ static UIColor *lightOrangeColor;
     return subtitleFont;
 }
 
-+ (UIFont *)getSmallPhotoFont {
-    if (smallPhotoFont == nil) {
-        smallPhotoFont = [UIFont fontWithName:@"Whitney-Light" size:12.0f];
-    }
-    return smallPhotoFont;
-}
 
-+ (UIFont *)getSubHeaderFont {
-    if (subHeaderFont == nil) {
-        subHeaderFont =  [UIFont fontWithName:@"Whitney-Light" size:30.0f];
++ (UIFont *)getSmallFont {
+    if (smallFont == nil) {
+        smallFont = [UIFont fontWithName:@"Whitney-Light" size:18.0f];
     }
-    return subHeaderFont;
+    return smallFont;
 }
 
 + (UIFont *)getNormalFont {
     if (normalFont == nil) {
-        normalFont = [UIFont fontWithName:@"Whitney-LightSC" size:18.0];
+        normalFont = [UIFont fontWithName:@"Whitney-LightSC" size:18.0f];
     }
     return normalFont;
 }
 
-+ (UIFont *)getSmallFont {
-    if (smallFont == nil) {
-        smallFont = [UIFont fontWithName:@"Whitney-Light" size:18.0];
+
++ (UIFont *)getTitleFont {
+    if (titleFont == nil) {
+        titleFont = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0f];
     }
-    return smallFont;
+    return titleFont;
 }
+
+
++ (UIFont *)getNumericFont {
+    return [UIFont fontWithName:@"WhitneyNumeric-Medium" size:18.0f];
+}
+
 
 + (UIFont *) getBigButtonFont {
     if (bigButtonFont == nil) {
@@ -90,9 +84,21 @@ static UIColor *lightOrangeColor;
     return bigButtonFont;
 }
 
-+ (UIFont *)getNumericFont {
-    return [UIFont fontWithName:@"WhitneyNumeric-Medium" size:18.0f];
+
++ (UIFont *)getSubHeaderFont {
+    if (subHeaderFont == nil) {
+        subHeaderFont =  [UIFont fontWithName:@"Whitney-Light" size:30.0f];
+    }
+    return subHeaderFont;
 }
+
++ (UIFont *)getHeaderFont {
+    if (headerFont == nil) {
+        headerFont = [UIFont fontWithName:@"Whitney-Light" size:60.0f];
+    }
+    return headerFont;
+}
+
 
 
 + (NSDictionary *)getDictTitle {

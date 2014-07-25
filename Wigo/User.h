@@ -15,9 +15,11 @@ typedef enum states
     PUBLIC_PROFILE,
     NOT_FOLLOWING_PUBLIC_USER,
     FOLLOWING_USER,
+    ATTENDING_EVENT_FOLLOWING_USER,
     NOT_SENT_FOLLOWING_PRIVATE_USER,
     NOT_YET_ACCEPTED_PRIVATE_USER,
     ACCEPTED_PRIVATE_USER,
+    ATTENDING_EVENT_ACCEPTED_PRIVATE_USER
 } STATE;
 
 
@@ -53,6 +55,9 @@ typedef enum states
 - (NSDictionary *)dictionary;
 - (BOOL)isTapped;
 - (BOOL)isFollowingRequested;
+- (BOOL)isAttending;
+- (NSString *)attendingEventName;
+- (NSNumber *)attendingEventID;
 - (STATE)getUserState;
 
 // NEED TO IMPLEMENT

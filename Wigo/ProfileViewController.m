@@ -116,7 +116,10 @@
 }
 
 - (void)reloadView {
-    if (self.userState == FOLLOWING_USER) {
+    if (self.userState == FOLLOWING_USER ||
+        self.userState == ATTENDING_EVENT_FOLLOWING_USER ||
+        self.userState == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
+        
         _followingButton.enabled = YES;
         _followingButton.hidden = NO;
         _followersButton.enabled = YES;

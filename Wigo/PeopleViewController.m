@@ -35,7 +35,6 @@
 
 @property Party *everyoneParty;
 @property Party *followingParty;
-@property Party *notAcceptedFollowingParty;
 @property Party *followersParty;
 
 @property NSNumber *page;
@@ -67,8 +66,7 @@
     _chosenFilter = 1;
     _currentTab = @2;
     //Search Bar Setup
-    _followingParty = [Profile followingParty];
-    _notAcceptedFollowingParty = [[Party alloc] initWithObjectName:@"User"];
+
     _contentParty = _everyoneParty;
     _filteredContentParty = [_everyoneParty copy];
     
@@ -331,14 +329,7 @@
         [self fetchFirstPageFollowers];
     }
     else if ([_currentTab isEqualToNumber:@4]) {
-        if ([[Profile user] isEqualToUser:self.user]) {
-            _followingParty = [Profile followingParty];
-            _contentParty = _followingParty;
-            [_tableViewOfPeople reloadData];
-        }
-        else {
-            [self fetchFirstPageFollowing];
-        }
+        [self fetchFirstPageFollowing];
     }
 }
 
@@ -570,7 +561,6 @@
             senderButton.layer.borderWidth = 1;
             senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             senderButton.layer.cornerRadius = 3;
-            [_notAcceptedFollowingParty addObject:user];
         }
         else {
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
@@ -586,10 +576,7 @@
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
         int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
-        if ([user isPrivate]) {
-            [_notAcceptedFollowingParty removeUser:user];
-        }
-        else {
+        if (![user isPrivate]) {
             [_followingParty removeUser:user];
             num_following -= 1;
         }
@@ -602,7 +589,6 @@
     User *profileUser = [Profile user];
     [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
     [Profile setFollowingParty:_followingParty];
-    [Profile setNotAcceptedFollowingParty:_notAcceptedFollowingParty];
     [Profile setUser:profileUser];
 }
 

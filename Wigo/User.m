@@ -339,6 +339,28 @@
     [modifiedKeys addObject:@"is_following"];
 }
 
+- (BOOL)isAttending {
+    NSDictionary *isAttending = (NSDictionary *)[_proxy objectForKey:@"is_attending"];
+    if ([isAttending isKindOfClass:[NSDictionary class]]) return YES;
+    else return NO;
+}
+
+- (NSString *)attendingEventName {
+    if ([self isAttending]) {
+        NSDictionary *isAttending = (NSDictionary *)[_proxy objectForKey:@"is_attending"];
+        return [isAttending objectForKey:@"name"];
+    }
+    return @"";
+}
+
+- (NSNumber *)attendingEventID {
+    if ([self isAttending]) {
+        NSDictionary *isAttending = (NSDictionary *)[_proxy objectForKey:@"is_attending"];
+        return [isAttending objectForKey:@"id"];
+    }
+    return @0;
+}
+
 - (NSNumber *)lastMessageRead {
     return (NSNumber *)[_proxy objectForKey:@"last_message_read"];
 }
@@ -368,16 +390,16 @@
 - (STATE)getUserState {
     if ([self isPrivate]) {
         if ([self isFollowing]) {
+            if ([self isAttending]) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER;
             return FOLLOWING_USER;
         }
         else if ([self isFollowingRequested]) {
             return NOT_YET_ACCEPTED_PRIVATE_USER;
         }
-        else {
-            return NOT_SENT_FOLLOWING_PRIVATE_USER;
-        }
+        else return NOT_SENT_FOLLOWING_PRIVATE_USER;
     }
     if ([self isFollowing]) {
+        if ([self isAttending]) return ATTENDING_EVENT_FOLLOWING_USER;
         return FOLLOWING_USER;
     }
     else return NOT_FOLLOWING_PUBLIC_USER;

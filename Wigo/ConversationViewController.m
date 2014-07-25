@@ -83,11 +83,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                                              selector:@selector(keyboardWillBeHidden:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(initializeMessageForEmptyConversation)
-                                                 name:@"initializeMessageForEmptyConversation"
-                                               object:nil];
 
 }
 
@@ -141,6 +136,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void) goBack {
+    [[Profile user] saveKey:@"last_message_read"];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -205,7 +201,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
     // Adjust the size of the wrapper
     CGSize sizeOfMessage = messageFromSender.frame.size;
-    int widthOfMessage = MAX(sizeOfMessage.width + 20, 30 + 20);
+    int widthOfMessage = MAX(sizeOfMessage.width + 20, 60 + 20);
     messageWraper.frame = CGRectMake(self.view.frame.size.width - 10 - widthOfMessage, _positionOfLastMessage , widthOfMessage, sizeOfMessage.height + 20);
     [messageWraper addSubview:messageFromSender];
     [self addTimerOfMessage:message ToView:messageWraper];
@@ -296,17 +292,26 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
         [dateFormatter setTimeZone:timeZone];
-        [dateFormatter setDateFormat:@"yyyy-MM-d hh:mm:ss"];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
         [message setTimeOfCreation:[dateFormatter stringFromDate:[NSDate date]]];
         [message setToUser:[self.user objectForKey:@"id"]];
         [self addMessageFromSender:message];
         [message save];
+        [self updateLastMessagesRead:message];
         _messageTextView.text = @"";
         [self textView:_messageTextView shouldChangeTextInRange:NSMakeRange(0, [_messageTextView.text length]) replacementText:@""];
 
     }
     [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:YES];
     [self dismissKeyboard];
+}
+
+- (void)updateLastMessagesRead:(Message *)message {
+    User *profileUser = [Profile user];
+    if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastMessageRead] intValue]) {
+        [profileUser setLastMessageRead:[message objectForKey:@"id"]];
+        [Profile setUser:profileUser];
+    }
 }
 
 - (void)keyboardWillShow:(NSNotification*)notification

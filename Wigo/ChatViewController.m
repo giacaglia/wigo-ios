@@ -97,11 +97,11 @@
 }
 
 - (void)fetchMessages {
-    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+//    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     NSString *queryString = [NSString stringWithFormat:@"messages/summary/?to_user=me&page=%@", [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView hideSpinnerForView:self.view];
+//            [WiGoSpinnerView hideSpinnerForView:self.view];
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
             [_messageParty addObjectsFromArray:arrayOfMessages];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
@@ -219,7 +219,6 @@
         user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
     }
     self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
-    if ([[message messageString] length] == 0) [[NSNotificationCenter defaultCenter] postNotificationName:@"initializeMessageForEmptyConversation" object:nil];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
 }
