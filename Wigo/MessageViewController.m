@@ -147,14 +147,14 @@
     }
     User *user;
     if (_isSearching) {
+        if ([[_filteredContentParty getObjectArray] count] == 0) return cell;
         user = [[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
     }
     else {
+        if ([[_contentParty getObjectArray] count] == 0) return cell;
         user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
     }
-    
-//    User *user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
-   
+       
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;

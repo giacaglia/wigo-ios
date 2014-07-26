@@ -425,7 +425,10 @@
     }
     if ([[_eventsParty getObjectArray] count] == 0) return cell;
     Event *event = [[_eventsParty getObjectArray] objectAtIndex:[indexPath row]];
-    Party *partyUser = [_partyUserArray objectAtIndex:[indexPath row]];
+    Party *partyUser;
+    if ([_partyUserArray count] == 0) partyUser = [[Party alloc] initWithObjectName:@"User"];
+    else partyUser  = [_partyUserArray objectAtIndex:[indexPath row]];
+    
     NSDictionary *summary = [_summaryArray objectAtIndex:[indexPath row]];
     NSNumber *totalUsers = [summary objectForKey:@"total"];
     
@@ -581,7 +584,7 @@
                               }
                               NSInteger indexOfEvent = [[resultInputDictionary objectForKey:@"i"] integerValue];
                               [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
-                              [_partyUserArray removeObjectAtIndex:(indexOfEvent+1)];
+                              if (indexOfEvent < [_partyUserArray count]) [_partyUserArray removeObjectAtIndex:(indexOfEvent+1)];
                               [self fetchedOneParty];
         }];
     }
