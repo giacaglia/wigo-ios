@@ -118,17 +118,24 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     NSString *locKeyString = [alert objectForKey:@"loc-key"];
     if ([locKeyString isEqualToString:@"M"]) {
         tabBarController.selectedIndex = 2;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
+
     }
     else if ([locKeyString isEqualToString:@"F"] ||
         [locKeyString isEqualToString:@"FR"] ||
         [locKeyString isEqualToString:@"FA"]) {
         tabBarController.selectedIndex = 3;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
+
     }
     else if ([locKeyString isEqualToString:@"T"]) {
         tabBarController.selectedIndex = 3;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
     }
     else if ([locKeyString isEqualToString:@"G"]) {
         tabBarController.selectedIndex = 0;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchFollowing" object:nil];
+
     }
 }
 

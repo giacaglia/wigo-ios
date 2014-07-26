@@ -147,6 +147,8 @@
 - (void)initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadViewAfterSigningUser) name:@"loadViewAfterSigningUser" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFollowingFirstPage) name:@"fetchFollowing" object:nil];
+
 }
 
 - (void) updateViewNotGoingOut {

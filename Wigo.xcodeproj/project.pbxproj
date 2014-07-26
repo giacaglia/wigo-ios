@@ -303,6 +303,8 @@
 		E9A31E5D1982B6E8008A711B /* TapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E5B1982B6E8008A711B /* TapViewController.m */; };
 		E9A31E641982B965008A711B /* WigoSearchBarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */; };
 		E9A31E651982B965008A711B /* WigoSearchBarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */; };
+		E9A31E69198412A8008A711B /* FXBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E68198412A8008A711B /* FXBlurView.m */; };
+		E9A31E6A198412A8008A711B /* FXBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E68198412A8008A711B /* FXBlurView.m */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
 		E9AAAFB01938F8940069F700 /* orangeSearchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */; };
 		E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */; };
@@ -590,6 +592,8 @@
 		E9A31E5B1982B6E8008A711B /* TapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TapViewController.m; sourceTree = "<group>"; };
 		E9A31E621982B965008A711B /* WigoSearchBarDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WigoSearchBarDelegate.h; sourceTree = "<group>"; };
 		E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoSearchBarDelegate.m; sourceTree = "<group>"; };
+		E9A31E67198412A8008A711B /* FXBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FXBlurView.h; sourceTree = "<group>"; };
+		E9A31E68198412A8008A711B /* FXBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FXBlurView.m; sourceTree = "<group>"; };
 		E9A50CFB19350F13009B73EA /* ConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationViewController.h; sourceTree = "<group>"; };
 		E9A50CFC19350F13009B73EA /* ConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationViewController.m; sourceTree = "<group>"; };
 		E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orangeSearchIcon.png; sourceTree = "<group>"; };
@@ -1033,6 +1037,7 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E9A31E66198412A8008A711B /* FXBlurView */,
 				E9A31E561980AC4F008A711B /* Localytics */,
 				E9DBB04D197813F900DDACDE /* CHGifRefreshControl */,
 				E900C2931961EADE00A01F50 /* SDWebImage */,
@@ -1175,6 +1180,15 @@
 				E9A31E4E1980AC37008A711B /* libLocalyticsAMP_x64.a */,
 			);
 			name = Localytics;
+			sourceTree = "<group>";
+		};
+		E9A31E66198412A8008A711B /* FXBlurView */ = {
+			isa = PBXGroup;
+			children = (
+				E9A31E67198412A8008A711B /* FXBlurView.h */,
+				E9A31E68198412A8008A711B /* FXBlurView.m */,
+			);
+			path = FXBlurView;
 			sourceTree = "<group>";
 		};
 		E9AAAFBD193D0E160069F700 /* 4MainViews */ = {
@@ -1909,6 +1923,7 @@
 				C12A111E19787BE700D53B1C /* SDWebImagePrefetcher.m in Sources */,
 				C12A111F19787BE700D53B1C /* Network.m in Sources */,
 				C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */,
+				E9A31E6A198412A8008A711B /* FXBlurView.m in Sources */,
 				C12A112119787BE700D53B1C /* Message.m in Sources */,
 				C12A112219787BE700D53B1C /* FontProperties.m in Sources */,
 				C12A112319787BE700D53B1C /* Notification.m in Sources */,
@@ -1973,6 +1988,7 @@
 				E900C2BD1961EADE00A01F50 /* SDWebImagePrefetcher.m in Sources */,
 				E9A17C70195C761E0057C89A /* Network.m in Sources */,
 				E9CD472B194B889800AEA17D /* RWBlurImage.m in Sources */,
+				E9A31E69198412A8008A711B /* FXBlurView.m in Sources */,
 				E900C251195DCC4100A01F50 /* Message.m in Sources */,
 				E9BE8C49192A48F1008BB84C /* FontProperties.m in Sources */,
 				E900C254195E010500A01F50 /* Notification.m in Sources */,

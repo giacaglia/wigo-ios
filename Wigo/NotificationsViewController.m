@@ -32,7 +32,8 @@
     _followRequestSummary = @0;
     _everyoneParty = [Profile everyoneParty];
     [self initializeTableNotifications];
-
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageNotifications) name:@"fetchNotifications" object:nil];
     [self fetchFirstPageNotifications];
     [self fetchSummaryOfFollowRequests];
 }

@@ -12,7 +12,6 @@
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
 
-
 @interface ChatViewController ()
 
 @property UITableView *tableViewOfPeople;
@@ -26,6 +25,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageMessages) name:@"fetchMessages" object:nil];
     [self initializeTableOfChats];
 }
 
@@ -174,15 +174,24 @@
     lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
     if ([[message messageString] length] == 0) {
-        lastMessageLabel.text = [Message randomStringWithLength:(arc4random_uniform(100))];
-        lastMessageImageView.backgroundColor = RGBAlpha(255, 255, 255, 0.98);
-        [lastMessageImageView addSubview:lastMessageLabel];
-        lastMessageImageView = [UIImageCrop blurImageView:lastMessageImageView];
+//        lastMessageLabel.text = [Message randomStringWithLength:(arc4random_uniform(100))];
+//        NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
+//        [attributes setObject:lastMessageLabel.font forKey:NSFontAttributeName];
+//        [attributes setObject:[NSNumber numberWithFloat:4] forKey:NSStrokeWidthAttributeName];
+//        [attributes setObject:[UIColor whiteColor] forKey:NSStrokeColorAttributeName];
+//        [lastMessageLabel.text drawInRect:lastMessageImageView.frame withAttributes:attributes];
+//        
+//        // draw fill
+//        [attributes removeObjectForKey:NSStrokeWidthAttributeName];
+//        [attributes removeObjectForKey:NSStrokeColorAttributeName];
+//        [attributes setObject:[UIColor blackColor] forKey:NSForegroundColorAttributeName];
+//        [lastMessageLabel.text drawInRect:lastMessageImageView.frame withAttributes:attributes];
     }
     else {
         [lastMessageImageView addSubview:lastMessageLabel];
     }
     [cell.contentView addSubview:lastMessageImageView];
+
 
     
     UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, 10, 80, 20)];
