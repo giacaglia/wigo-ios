@@ -109,8 +109,30 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//    [PFPush handlePush:userInfo];
+    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+    UINavigationController *navController = [tabBarController.viewControllers objectAtIndex:tabBarController.selectedIndex];
+    if (navController) [navController popToRootViewControllerAnimated:NO];
+    
+    NSDictionary *aps = [userInfo objectForKey:@"aps"];
+    NSDictionary *alert = [aps objectForKey:@"alert"];
+    NSString *locKeyString = [alert objectForKey:@"loc-key"];
+    if ([locKeyString isEqualToString:@"M"]) {
+        tabBarController.selectedIndex = 2;
+    }
+    else if ([locKeyString isEqualToString:@"F"] ||
+        [locKeyString isEqualToString:@"FR"] ||
+        [locKeyString isEqualToString:@"FA"]) {
+        tabBarController.selectedIndex = 3;
+    }
+    else if ([locKeyString isEqualToString:@"T"]) {
+        tabBarController.selectedIndex = 3;
+    }
+    else if ([locKeyString isEqualToString:@"G"]) {
+        tabBarController.selectedIndex = 0;
+    }
 }
+
+
 
 
 - (void) changeTabBarToOrange {

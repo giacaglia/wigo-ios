@@ -24,6 +24,7 @@
 
 //Not going out View
 @property UIView *notGoingOutView;
+@property BOOL isFirstTimeNotGoingOutIsAttachedToScrollView;
 @property BOOL notGoingOutIsAttachedToScrollView;
 @property CGPoint notGoingOutStartingPoint;
 @property CGPoint scrollViewPointWhenDeatached;
@@ -65,6 +66,7 @@
     [FBAppEvents logEvent:FBAppEventNameActivatedApp];
     [self initializeFlashScreen];
     _spinnerAtCenter = YES;
+    _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
     
     [[UITabBar appearance] setSelectedImageTintColor:[UIColor clearColor]];
     [self initializeWhoView];
@@ -331,8 +333,10 @@
 }
 
 - (void) updateTitleView {
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    [self.navigationItem.leftBarButtonItem setTintColor:[FontProperties getOrangeColor]];
+    self.navigationItem.titleView = nil;
     if ([[Profile user] isGoingOut]) {
-        self.navigationItem.titleView = nil;
         UIButtonUngoOut *ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
         self.navigationItem.titleView = ungoOutButton;
     }
@@ -350,8 +354,7 @@
         self.navigationItem.title = @"GO OUT";
         self.navigationItem.titleView = goOutButton;
     }
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    [self.navigationItem.leftBarButtonItem setTintColor:[FontProperties getOrangeColor]];
+   
 }
 
 - (void) goOutPressed {
@@ -590,9 +593,12 @@
                 _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
             }
             else {
-                _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 30, reusableView.frame.size.width, 30);
-                [_collectionView addSubview:_notGoingOutView];
-                _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+                if (_isFirstTimeNotGoingOutIsAttachedToScrollView) {
+                    _isFirstTimeNotGoingOutIsAttachedToScrollView = NO;
+                    _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 30, reusableView.frame.size.width, 30);
+                    [_collectionView addSubview:_notGoingOutView];
+                    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+                }
             }
             
         }

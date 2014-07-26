@@ -213,7 +213,7 @@
 #pragma mark - Network Functions
 
 - (void)fetchTaps {
-    [Network queryAsynchronousAPI:@"taps/?date=tonight&tapped=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [Network queryAsynchronousAPI:@"taps/?date=tonight&ordering=-id&tapped=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             
             NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
