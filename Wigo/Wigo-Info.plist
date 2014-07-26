@@ -54,6 +54,10 @@
 		<string>Whitney-Light.ttf</string>
 		<string>Whitney-LightSC.ttf</string>
 	</array>
+	<key>GitHash</key>
+	<string>000000</string>
+	<key>GitCount</key>
+	<string>0</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

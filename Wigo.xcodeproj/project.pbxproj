@@ -164,6 +164,8 @@
 		C12A11D519787BE700D53B1C /* connectFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9681C70194F887A00182E0E /* connectFacebook@2x.png */; };
 		C12A11D619787BE700D53B1C /* transparentShadow.png in Resources */ = {isa = PBXBuildFile; fileRef = E90AA8A41975DC6E0055D74B /* transparentShadow.png */; };
 		C16D86A819747FF6003EB336 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
+		C18AC292198451150056957B /* autorevision.sh in Resources */ = {isa = PBXBuildFile; fileRef = C18AC290198451150056957B /* autorevision.sh */; };
+		C18AC293198451150056957B /* process_info_plist.sh in Resources */ = {isa = PBXBuildFile; fileRef = C18AC291198451150056957B /* process_info_plist.sh */; };
 		E900C251195DCC4100A01F50 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C250195DCC4100A01F50 /* Message.m */; };
 		E900C254195E010500A01F50 /* Notification.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C253195E010500A01F50 /* Notification.m */; };
 		E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2581961B96000A01F50 /* SignNavigationViewController.m */; };
@@ -373,6 +375,8 @@
 		C12A11E119787BE700D53B1C /* WiGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WiGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12A11E219787BE800D53B1C /* wigoBlade.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = wigoBlade.plist; sourceTree = "<group>"; };
 		C16D86A919747FF6003EB336 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C18AC290198451150056957B /* autorevision.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = autorevision.sh; sourceTree = "<group>"; };
+		C18AC291198451150056957B /* process_info_plist.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = process_info_plist.sh; sourceTree = "<group>"; };
 		E900C24F195DCC4100A01F50 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
 		E900C250195DCC4100A01F50 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		E900C252195E010500A01F50 /* Notification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notification.h; sourceTree = "<group>"; };
@@ -690,6 +694,15 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
+		C18AC28F198451150056957B /* autorevision */ = {
+			isa = PBXGroup;
+			children = (
+				C18AC290198451150056957B /* autorevision.sh */,
+				C18AC291198451150056957B /* process_info_plist.sh */,
+			);
+			path = autorevision;
+			sourceTree = "<group>";
+		};
 		E900C25A1961B97900A01F50 /* NavigationController */ = {
 			isa = PBXGroup;
 			children = (
@@ -821,6 +834,7 @@
 		E921D61C1923967D00361247 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C18AC28F198451150056957B /* autorevision */,
 				E9BE8C4F192AA29C008BB84C /* Whitney */,
 				E921D6521923972400361247 /* Images */,
 				E921D61D1923967D00361247 /* Wigo-Info.plist */,
@@ -1259,6 +1273,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C12A11DD19787BE700D53B1C /* Build configuration list for PBXNativeTarget "wigoBlade" */;
 			buildPhases = (
+				C18AC2951984516C0056957B /* ShellScript */,
 				C12A110719787BE700D53B1C /* Sources */,
 				C12A113D19787BE700D53B1C /* Frameworks */,
 				C12A114D19787BE700D53B1C /* Resources */,
@@ -1277,6 +1292,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E921D6471923967D00361247 /* Build configuration list for PBXNativeTarget "wigo" */;
 			buildPhases = (
+				C18AC294198451530056957B /* ShellScript */,
 				E921D60E1923967D00361247 /* Sources */,
 				E921D60F1923967D00361247 /* Frameworks */,
 				E921D6101923967D00361247 /* Resources */,
@@ -1483,6 +1499,7 @@
 				E9F59E35192FAC7400BB8FDD /* thinkingIcon.png in Resources */,
 				E9AAAFC6193E184D0069F700 /* phoneFilled.png in Resources */,
 				E9DBB0741978151F00DDACDE /* dancingG-11.png in Resources */,
+				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
 				E9DBB0711978151F00DDACDE /* dancingG-0.png in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9DBB08D1978151F00DDACDE /* dancingG-7.png in Resources */,
@@ -1524,6 +1541,7 @@
 				E9DBB07B1978151F00DDACDE /* dancingG-18.png in Resources */,
 				E9DBB0871978151F00DDACDE /* dancingG-29.png in Resources */,
 				E9AAAFCE193E705F0069F700 /* phoneUnfilled.png in Resources */,
+				C18AC292198451150056957B /* autorevision.sh in Resources */,
 				E9CD470B1947A30400AEA17D /* peopleIconBlue@2x.png in Resources */,
 				E9DBB0841978151F00DDACDE /* dancingG-26.png in Resources */,
 				E9E619051938C74200A224C0 /* searchIcon.png in Resources */,
@@ -1581,6 +1599,32 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "./Crashlytics.framework/run c08b20670e125cf177b5a6e7bb70d6b4e9b75c27 52f350418a2dbeb5ce538ff885523386379c5314ce4ac5d1d5d1307a36c872af";
+		};
+		C18AC294198451530056957B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${SRCROOT}/Wigo/autorevision/process_info_plist.sh";
+		};
+		C18AC2951984516C0056957B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${SRCROOT}/Wigo/autorevision/process_info_plist.sh";
 		};
 		E90AA8A61976C8640055D74B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1803,6 +1847,7 @@
 					"ENTERPRISE=1",
 				);
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1839,6 +1884,7 @@
 					"ENTERPRISE=1",
 				);
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1875,6 +1921,7 @@
 					"ENTERPRISE=1",
 				);
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1984,6 +2031,7 @@
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY}\"'",
 				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2019,6 +2067,7 @@
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY}\"'",
 				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2132,6 +2181,7 @@
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY}\"'",
 				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
+				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
