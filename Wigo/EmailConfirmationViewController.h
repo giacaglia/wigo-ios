@@ -10,4 +10,5 @@
 
 @interface EmailConfirmationViewController : UIViewController
 
+@property UILabel *numberOfPeopleLabel;
 @end

@@ -106,37 +106,37 @@
 }
 
 - (void) initializeNumberOfPeopleLabel {
-    UILabel *numberOfPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 50)];
-    numberOfPeopleLabel.text = @"17 students are going out";
-    numberOfPeopleLabel.font = [FontProperties getSmallFont];
-    numberOfPeopleLabel.backgroundColor = [FontProperties getLightOrangeColor];
-    numberOfPeopleLabel.textColor = [UIColor blackColor];
-    numberOfPeopleLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberOfPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50)];
+    self.numberOfPeopleLabel.hidden = YES;
+    self.numberOfPeopleLabel.font = [FontProperties getSmallFont];
+    self.numberOfPeopleLabel.backgroundColor = [FontProperties getLightOrangeColor];
+    self.numberOfPeopleLabel.textColor = [UIColor blackColor];
+    self.numberOfPeopleLabel.textAlignment = NSTextAlignmentCenter;
     NSMutableAttributedString *text =
     [[NSMutableAttributedString alloc]
-     initWithAttributedString: numberOfPeopleLabel.attributedText];
+     initWithAttributedString: self.numberOfPeopleLabel.attributedText];
     [text addAttribute:NSForegroundColorAttributeName
                  value:[FontProperties getOrangeColor]
                  range:NSMakeRange(0, 2)];
-    [numberOfPeopleLabel setAttributedText: text];
-    [self.view addSubview:numberOfPeopleLabel];
+    [self.numberOfPeopleLabel setAttributedText:text];
+    [self.view addSubview:self.numberOfPeopleLabel];
     
     
-    UILabel *lastWeekLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50)];
-    lastWeekLabel.text = @"253 students are going out";
-    lastWeekLabel.font = [FontProperties getSmallFont];
-    lastWeekLabel.backgroundColor = [FontProperties getLightOrangeColor];
-    lastWeekLabel.textColor = [UIColor blackColor];
-    lastWeekLabel.textAlignment = NSTextAlignmentCenter;
+//    UILabel *lastWeekLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50)];
+//    lastWeekLabel.text = @"253 students are going out";
+//    lastWeekLabel.font = [FontProperties getSmallFont];
+//    lastWeekLabel.backgroundColor = [FontProperties getLightOrangeColor];
+//    lastWeekLabel.textColor = [UIColor blackColor];
+//    lastWeekLabel.textAlignment = NSTextAlignmentCenter;
     
-    NSMutableAttributedString *textWeekLabel =
-    [[NSMutableAttributedString alloc]
-     initWithAttributedString: lastWeekLabel.attributedText];
-    [textWeekLabel addAttribute:NSForegroundColorAttributeName
-                 value:[FontProperties getOrangeColor]
-                 range:NSMakeRange(0, 3)];
-    [lastWeekLabel setAttributedText: textWeekLabel];
-    [self.view addSubview:lastWeekLabel];
+//    NSMutableAttributedString *textWeekLabel =
+//    [[NSMutableAttributedString alloc]
+//     initWithAttributedString: lastWeekLabel.attributedText];
+//    [textWeekLabel addAttribute:NSForegroundColorAttributeName
+//                 value:[FontProperties getOrangeColor]
+//                 range:NSMakeRange(0, 3)];
+//    [lastWeekLabel setAttributedText: textWeekLabel];
+//    [self.view addSubview:lastWeekLabel];
 }
 
 #pragma mark - Login
@@ -152,6 +152,20 @@
         [self dismissViewControllerAnimated:YES  completion:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
     }
+}
+
+#pragma mark - Network functions 
+
+-(void)fetchSummary {
+    [Network queryAsynchronousAPI:@"groups/summary" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            if ([[jsonResponse allKeys] containsObject:@"total"]) {
+                NSNumber *totalNumberOfPeople = [jsonResponse objectForKey:@"total"];
+                self.numberOfPeopleLabel.text  = [NSString stringWithFormat:@"%d students are going out",[totalNumberOfPeople intValue]];
+
+            }
+        });
+    }];
 }
 
 @end

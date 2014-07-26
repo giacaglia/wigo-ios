@@ -72,10 +72,6 @@ static UIColor *lightOrangeColor;
 }
 
 
-+ (UIFont *)getNumericFont {
-    return [UIFont fontWithName:@"WhitneyNumeric-Medium" size:18.0f];
-}
-
 
 + (UIFont *) getBigButtonFont {
     if (bigButtonFont == nil) {
@@ -108,13 +104,6 @@ static UIColor *lightOrangeColor;
     return dictTitle;
 }
 
-+ (NSDictionary *)getDictNumeric {
-    
-    NSDictionary *dictNumeric = @{NSUnderlineStyleAttributeName:@(NSUnderlineStyleNone),
-                                  NSFontAttributeName:[FontProperties getNumericFont],
-                                  NSParagraphStyleAttributeName:[FontProperties getStyle]};
-    return dictNumeric;
-}
 
 + (NSMutableParagraphStyle *)getStyle {
     NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];

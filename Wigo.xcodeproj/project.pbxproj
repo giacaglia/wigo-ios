@@ -88,15 +88,9 @@
 		C12A115719787BE700D53B1C /* orangeTap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD473B194E884200AEA17D /* orangeTap@2x.png */; };
 		C12A115819787BE700D53B1C /* dancingG-19.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05D1978151F00DDACDE /* dancingG-19.png */; };
 		C12A115919787BE700D53B1C /* peopleIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F84FF1945F94900B3B448 /* peopleIcon@2x.png */; };
-		C12A115B19787BE700D53B1C /* Whitney2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C68192AA29C008BB84C /* Whitney2.ttf */; };
 		C12A115C19787BE700D53B1C /* notificationsSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470819479DBD00AEA17D /* notificationsSelected@2x.png */; };
 		C12A115D19787BE700D53B1C /* dancingG-15.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0591978151F00DDACDE /* dancingG-15.png */; };
-		C12A115E19787BE700D53B1C /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C54192AA29C008BB84C /* Whitney-Bold.ttf */; };
-		C12A115F19787BE700D53B1C /* WhitneyNumeric-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C80192AA29C008BB84C /* WhitneyNumeric-LightItalic.ttf */; };
-		C12A116019787BE700D53B1C /* WhitneyIndexBlack-SquareBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6D192AA29C008BB84C /* WhitneyIndexBlack-SquareBd.ttf */; };
-		C12A116119787BE700D53B1C /* Whitney-BookItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C59192AA29C008BB84C /* Whitney-BookItalic.ttf */; };
 		C12A116219787BE700D53B1C /* dancingG-2.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05E1978151F00DDACDE /* dancingG-2.png */; };
-		C12A116319787BE700D53B1C /* WhitneyIndexBlack-SquareMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C70192AA29C008BB84C /* WhitneyIndexBlack-SquareMd.ttf */; };
 		C12A116419787BE700D53B1C /* favoriteSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB09419781D1C00DDACDE /* favoriteSelected@2x.png */; };
 		C12A116519787BE700D53B1C /* chatsSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470619479D6D00AEA17D /* chatsSelected@2x.png */; };
 		C12A116619787BE700D53B1C /* favoriteSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0901978190000DDACDE /* favoriteSmall@2x.png */; };
@@ -107,111 +101,68 @@
 		C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */; };
 		C12A116C19787BE700D53B1C /* dancingG-7.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06E1978151F00DDACDE /* dancingG-7.png */; };
 		C12A116D19787BE700D53B1C /* dancingG-23.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0621978151F00DDACDE /* dancingG-23.png */; };
-		C12A116E19787BE700D53B1C /* Whitney-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C51192AA29C008BB84C /* Whitney-BlackItalic.ttf */; };
-		C12A116F19787BE700D53B1C /* Whitney-SemiboldSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C67192AA29C008BB84C /* Whitney-SemiboldSC.ttf */; };
 		C12A117019787BE700D53B1C /* chatsIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F85031945FADF00B3B448 /* chatsIcon@2x.png */; };
-		C12A117119787BE700D53B1C /* WhitneyNumeric-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C83192AA29C008BB84C /* WhitneyNumeric-Semibold.ttf */; };
 		C12A117219787BE700D53B1C /* commentFilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E24192D514E00BB8FDD /* commentFilled.png */; };
 		C12A117319787BE700D53B1C /* dancingG-10.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0541978151F00DDACDE /* dancingG-10.png */; };
-		C12A117419787BE700D53B1C /* Whitney-BlackSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C53192AA29C008BB84C /* Whitney-BlackSC.ttf */; };
 		C12A117519787BE700D53B1C /* placesSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470419479CCB00AEA17D /* placesSelected@2x.png */; };
-		C12A117619787BE700D53B1C /* Whitney-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C55192AA29C008BB84C /* Whitney-BoldItalic.ttf */; };
 		C12A117719787BE700D53B1C /* notificationsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470F1947A39C00AEA17D /* notificationsIconBlue@2x.png */; };
 		C12A117819787BE700D53B1C /* emailUnfilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFC1193E175C0069F700 /* emailUnfilled.png */; };
 		C12A117919787BE700D53B1C /* rightArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E20192D1D3A00BB8FDD /* rightArrow.png */; };
 		C12A117A19787BE700D53B1C /* orangeSearchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFAF1938F8940069F700 /* orangeSearchIcon.png */; };
 		C12A117B19787BE700D53B1C /* dancingG-5.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06C1978151F00DDACDE /* dancingG-5.png */; };
-		C12A117C19787BE700D53B1C /* WhitneyNumeric-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7B192AA29C008BB84C /* WhitneyNumeric-Bold.ttf */; };
 		C12A117D19787BE700D53B1C /* followedPersonIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46F819474D2300AEA17D /* followedPersonIcon@2x.png */; };
 		C12A117E19787BE700D53B1C /* dancingG-3.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0691978151F00DDACDE /* dancingG-3.png */; };
-		C12A117F19787BE700D53B1C /* Whitney-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5D192AA29C008BB84C /* Whitney-LightItalic.ttf */; };
-		C12A118019787BE700D53B1C /* WhitneyNumeric-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7D192AA29C008BB84C /* WhitneyNumeric-Book.ttf */; };
-		C12A118119787BE700D53B1C /* Whitney-LightItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5E192AA29C008BB84C /* Whitney-LightItalicSC.ttf */; };
 		C12A118219787BE700D53B1C /* leftBeforeChatIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E6190019365AA300A224C0 /* leftBeforeChatIcon.png */; };
 		C12A118319787BE700D53B1C /* dancingG-24.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0631978151F00DDACDE /* dancingG-24.png */; };
 		C12A118419787BE700D53B1C /* dancingG-8.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06F1978151F00DDACDE /* dancingG-8.png */; };
 		C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */; };
 		C12A118619787BE700D53B1C /* emailFilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFC3193E17F40069F700 /* emailFilled.png */; };
-		C12A118719787BE700D53B1C /* WhitneyNumeric-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7C192AA29C008BB84C /* WhitneyNumeric-BoldItalic.ttf */; };
-		C12A118819787BE700D53B1C /* Whitney-BoldItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C56192AA29C008BB84C /* Whitney-BoldItalicSC.ttf */; };
 		C12A118919787BE700D53B1C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
-		C12A118A19787BE700D53B1C /* WhitneyNumeric-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C82192AA29C008BB84C /* WhitneyNumeric-MediumItalic.ttf */; };
-		C12A118B19787BE700D53B1C /* WhitneyNumeric-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C81192AA29C008BB84C /* WhitneyNumeric-Medium.ttf */; };
 		C12A118C19787BE700D53B1C /* addedFilled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F85141946031600B3B448 /* addedFilled@2x.png */; };
-		C12A118D19787BE700D53B1C /* WhitneyIndexWhite-RoundBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C71192AA29C008BB84C /* WhitneyIndexWhite-RoundBd.ttf */; };
 		C12A118E19787BE700D53B1C /* dancingG-25.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0641978151F00DDACDE /* dancingG-25.png */; };
 		C12A118F19787BE700D53B1C /* dancingG-4.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06B1978151F00DDACDE /* dancingG-4.png */; };
-		C12A119019787BE700D53B1C /* WhitneyIndexWhite-SquareMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C78192AA29C008BB84C /* WhitneyIndexWhite-SquareMd.ttf */; };
 		C12A119119787BE700D53B1C /* dancingG-27.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0661978151F00DDACDE /* dancingG-27.png */; };
 		C12A119319787BE700D53B1C /* Whitney-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C60192AA29C008BB84C /* Whitney-Medium.ttf */; };
 		C12A119419787BE700D53B1C /* dancingG-6.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB06D1978151F00DDACDE /* dancingG-6.png */; };
 		C12A119519787BE700D53B1C /* dancingG-12.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0561978151F00DDACDE /* dancingG-12.png */; };
 		C12A119619787BE700D53B1C /* favorite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB09219781CDB00DDACDE /* favorite@2x.png */; };
 		C12A119719787BE700D53B1C /* placesIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F85011945F9E700B3B448 /* placesIcon@2x.png */; };
-		C12A119819787BE700D53B1C /* Whitney-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C58192AA29C008BB84C /* Whitney-Book.ttf */; };
-		C12A119919787BE700D53B1C /* Whitney-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C65192AA29C008BB84C /* Whitney-SemiboldItalic.ttf */; };
 		C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */; };
-		C12A119B19787BE700D53B1C /* WhitneyNumeric-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C84192AA29C008BB84C /* WhitneyNumeric-SemiboldItalic.ttf */; };
 		C12A119C19787BE700D53B1C /* privacyLogo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9681C74194FCA2100182E0E /* privacyLogo@2x.png */; };
-		C12A119D19787BE700D53B1C /* Whitney-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C50192AA29C008BB84C /* Whitney-Black.ttf */; };
-		C12A119E19787BE700D53B1C /* WhitneyIndexWhite-SquareBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C75192AA29C008BB84C /* WhitneyIndexWhite-SquareBd.ttf */; };
 		C12A119F19787BE700D53B1C /* dancingG-20.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05F1978151F00DDACDE /* dancingG-20.png */; };
 		C12A11A019787BE700D53B1C /* tapFilled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46FE1947896300AEA17D /* tapFilled@2x.png */; };
 		C12A11A119787BE700D53B1C /* dancingG-21.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0601978151F00DDACDE /* dancingG-21.png */; };
 		C12A11A219787BE700D53B1C /* dancingG-9.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0701978151F00DDACDE /* dancingG-9.png */; };
-		C12A11A319787BE700D53B1C /* Whitney-BookItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5A192AA29C008BB84C /* Whitney-BookItalicSC.ttf */; };
 		C12A11A419787BE700D53B1C /* dancingG-18.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05C1978151F00DDACDE /* dancingG-18.png */; };
 		C12A11A519787BE700D53B1C /* dancingG-29.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0681978151F00DDACDE /* dancingG-29.png */; };
 		C12A11A619787BE700D53B1C /* phoneUnfilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFCD193E705F0069F700 /* phoneUnfilled.png */; };
-		C12A11A719787BE700D53B1C /* Whitney-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C61192AA29C008BB84C /* Whitney-MediumItalic.ttf */; };
 		C12A11A819787BE700D53B1C /* peopleIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470A1947A30400AEA17D /* peopleIconBlue@2x.png */; };
-		C12A11A919787BE700D53B1C /* WhitneyIndexBlack-RoundBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C69192AA29C008BB84C /* WhitneyIndexBlack-RoundBd.ttf */; };
 		C12A11AA19787BE700D53B1C /* dancingG-26.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0651978151F00DDACDE /* dancingG-26.png */; };
-		C12A11AB19787BE700D53B1C /* WhitneyIndexWhite-SquareLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C77192AA29C008BB84C /* WhitneyIndexWhite-SquareLt2.ttf */; };
-		C12A11AC19787BE700D53B1C /* Whitney-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C64192AA29C008BB84C /* Whitney-Semibold.ttf */; };
 		C12A11AD19787BE700D53B1C /* searchIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E619041938C74200A224C0 /* searchIcon.png */; };
 		C12A11AF19787BE700D53B1C /* backIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9E618FE1936421A00A224C0 /* backIcon.png */; };
 		C12A11B019787BE700D53B1C /* privateIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9902984196B2F9A00192FF2 /* privateIcon@2x.png */; };
 		C12A11B119787BE700D53B1C /* dancingG-1.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0531978151F00DDACDE /* dancingG-1.png */; };
 		C12A11B219787BE700D53B1C /* followPersonIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46F619474CA700AEA17D /* followPersonIcon@2x.png */; };
 		C12A11B319787BE700D53B1C /* peopleSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470219479C6200AEA17D /* peopleSelected@2x.png */; };
-		C12A11B419787BE700D53B1C /* Whitney-MediumItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C62192AA29C008BB84C /* Whitney-MediumItalicSC.ttf */; };
 		C12A11B519787BE700D53B1C /* chatsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470D1947A34800AEA17D /* chatsIconBlue@2x.png */; };
-		C12A11B619787BE700D53B1C /* WhitneyNumeric-BookItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7E192AA29C008BB84C /* WhitneyNumeric-BookItalic.ttf */; };
-		C12A11B819787BE700D53B1C /* Whitney-BookSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5B192AA29C008BB84C /* Whitney-BookSC.ttf */; };
-		C12A11B919787BE700D53B1C /* WhitneyIndexWhite-RoundMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C74192AA29C008BB84C /* WhitneyIndexWhite-RoundMd.ttf */; };
 		C12A11BA19787BE700D53B1C /* dancingG-16.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05A1978151F00DDACDE /* dancingG-16.png */; };
 		C12A11BB19787BE700D53B1C /* dancingG-13.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0571978151F00DDACDE /* dancingG-13.png */; };
-		C12A11BC19787BE700D53B1C /* Whitney-SemiboldItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C66192AA29C008BB84C /* Whitney-SemiboldItalicSC.ttf */; };
 		C12A11BD19787BE700D53B1C /* whereIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E2E192E3F0600BB8FDD /* whereIcon.png */; };
-		C12A11BE19787BE700D53B1C /* WhitneyIndexWhite-RoundLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C73192AA29C008BB84C /* WhitneyIndexWhite-RoundLt2.ttf */; };
 		C12A11BF19787BE700D53B1C /* chatImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9ECFF83196E093900384252 /* chatImage@2x.png */; };
-		C12A11C019787BE700D53B1C /* WhitneyIndexBlack-RoundLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6A192AA29C008BB84C /* WhitneyIndexBlack-RoundLt1.ttf */; };
 		C12A11C119787BE700D53B1C /* notificationsIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F85051945FB4400B3B448 /* notificationsIcon@2x.png */; };
 		C12A11C219787BE700D53B1C /* dancingG-14.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0581978151F00DDACDE /* dancingG-14.png */; };
 		C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E921D61E1923967D00361247 /* InfoPlist.strings */; };
-		C12A11C419787BE700D53B1C /* WhitneyIndexWhite-SquareLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C76192AA29C008BB84C /* WhitneyIndexWhite-SquareLt1.ttf */; };
 		C12A11C519787BE700D53B1C /* plusSquare.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F84FD1942076A00B3B448 /* plusSquare.png */; };
 		C12A11C619787BE700D53B1C /* iconFlashScreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E94FF0DA19633A4600852180 /* iconFlashScreen@2x.png */; };
 		C12A11C719787BE700D53B1C /* joined@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F8512194602DB00B3B448 /* joined@2x.png */; };
 		C12A11C819787BE700D53B1C /* dancingG-28.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0671978151F00DDACDE /* dancingG-28.png */; };
 		C12A11C919787BE700D53B1C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E9D7D5321926539C00E1ED10 /* Main.storyboard */; };
-		C12A11CA19787BE700D53B1C /* WhitneyIndexWhite-RoundLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C72192AA29C008BB84C /* WhitneyIndexWhite-RoundLt1.ttf */; };
-		C12A11CB19787BE700D53B1C /* WhitneyIndexBlack-SquareLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6F192AA29C008BB84C /* WhitneyIndexBlack-SquareLt2.ttf */; };
-		C12A11CC19787BE700D53B1C /* WhitneyIndexBlack-RoundLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6B192AA29C008BB84C /* WhitneyIndexBlack-RoundLt2.ttf */; };
 		C12A11CD19787BE700D53B1C /* dancingG-17.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05B1978151F00DDACDE /* dancingG-17.png */; };
 		C12A11CE19787BE700D53B1C /* dancingG-22.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0611978151F00DDACDE /* dancingG-22.png */; };
 		C12A11CF19787BE700D53B1C /* closeButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DB7B43196C47D500363656 /* closeButton@2x.png */; };
-		C12A11D019787BE700D53B1C /* Whitney-BlackItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C52192AA29C008BB84C /* Whitney-BlackItalicSC.ttf */; };
 		C12A11D119787BE700D53B1C /* tapUnfilled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46FB1947873F00AEA17D /* tapUnfilled@2x.png */; };
-		C12A11D219787BE700D53B1C /* WhitneyIndexBlack-RoundMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6C192AA29C008BB84C /* WhitneyIndexBlack-RoundMd.ttf */; };
-		C12A11D319787BE700D53B1C /* WhitneyNumeric-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7F192AA29C008BB84C /* WhitneyNumeric-Light.ttf */; };
-		C12A11D419787BE700D53B1C /* Whitney-BoldSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C57192AA29C008BB84C /* Whitney-BoldSC.ttf */; };
 		C12A11D519787BE700D53B1C /* connectFacebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9681C70194F887A00182E0E /* connectFacebook@2x.png */; };
 		C12A11D619787BE700D53B1C /* transparentShadow.png in Resources */ = {isa = PBXBuildFile; fileRef = E90AA8A41975DC6E0055D74B /* transparentShadow.png */; };
-		C12A11D719787BE700D53B1C /* WhitneyIndexBlack-SquareLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6E192AA29C008BB84C /* WhitneyIndexBlack-SquareLt1.ttf */; };
-		C12A11D919787BE700D53B1C /* WhitneyNumeric-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7A192AA29C008BB84C /* WhitneyNumeric-BlackItalic.ttf */; };
-		C12A11DB19787BE700D53B1C /* WhitneyNumeric-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C79192AA29C008BB84C /* WhitneyNumeric-Black.ttf */; };
 		C16D86A819747FF6003EB336 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
 		E900C251195DCC4100A01F50 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C250195DCC4100A01F50 /* Message.m */; };
 		E900C254195E010500A01F50 /* Notification.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C253195E010500A01F50 /* Notification.m */; };
@@ -317,59 +268,10 @@
 		E9AAAFCE193E705F0069F700 /* phoneUnfilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFCD193E705F0069F700 /* phoneUnfilled.png */; };
 		E9BE8C49192A48F1008BB84C /* FontProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BE8C48192A48F1008BB84C /* FontProperties.m */; };
 		E9BE8C4C192A54F3008BB84C /* Profile.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BE8C4B192A54F3008BB84C /* Profile.m */; };
-		E9BE8C85192AA29C008BB84C /* Whitney-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C50192AA29C008BB84C /* Whitney-Black.ttf */; };
-		E9BE8C86192AA29C008BB84C /* Whitney-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C51192AA29C008BB84C /* Whitney-BlackItalic.ttf */; };
-		E9BE8C87192AA29C008BB84C /* Whitney-BlackItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C52192AA29C008BB84C /* Whitney-BlackItalicSC.ttf */; };
-		E9BE8C88192AA29C008BB84C /* Whitney-BlackSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C53192AA29C008BB84C /* Whitney-BlackSC.ttf */; };
-		E9BE8C89192AA29C008BB84C /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C54192AA29C008BB84C /* Whitney-Bold.ttf */; };
-		E9BE8C8A192AA29C008BB84C /* Whitney-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C55192AA29C008BB84C /* Whitney-BoldItalic.ttf */; };
-		E9BE8C8B192AA29C008BB84C /* Whitney-BoldItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C56192AA29C008BB84C /* Whitney-BoldItalicSC.ttf */; };
-		E9BE8C8C192AA29C008BB84C /* Whitney-BoldSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C57192AA29C008BB84C /* Whitney-BoldSC.ttf */; };
-		E9BE8C8D192AA29C008BB84C /* Whitney-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C58192AA29C008BB84C /* Whitney-Book.ttf */; };
-		E9BE8C8E192AA29C008BB84C /* Whitney-BookItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C59192AA29C008BB84C /* Whitney-BookItalic.ttf */; };
-		E9BE8C8F192AA29C008BB84C /* Whitney-BookItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5A192AA29C008BB84C /* Whitney-BookItalicSC.ttf */; };
-		E9BE8C90192AA29C008BB84C /* Whitney-BookSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5B192AA29C008BB84C /* Whitney-BookSC.ttf */; };
 		E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */; };
-		E9BE8C92192AA29C008BB84C /* Whitney-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5D192AA29C008BB84C /* Whitney-LightItalic.ttf */; };
-		E9BE8C93192AA29C008BB84C /* Whitney-LightItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5E192AA29C008BB84C /* Whitney-LightItalicSC.ttf */; };
 		E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */; };
 		E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C60192AA29C008BB84C /* Whitney-Medium.ttf */; };
-		E9BE8C96192AA29C008BB84C /* Whitney-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C61192AA29C008BB84C /* Whitney-MediumItalic.ttf */; };
-		E9BE8C97192AA29C008BB84C /* Whitney-MediumItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C62192AA29C008BB84C /* Whitney-MediumItalicSC.ttf */; };
 		E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */; };
-		E9BE8C99192AA29C008BB84C /* Whitney-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C64192AA29C008BB84C /* Whitney-Semibold.ttf */; };
-		E9BE8C9A192AA29C008BB84C /* Whitney-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C65192AA29C008BB84C /* Whitney-SemiboldItalic.ttf */; };
-		E9BE8C9B192AA29C008BB84C /* Whitney-SemiboldItalicSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C66192AA29C008BB84C /* Whitney-SemiboldItalicSC.ttf */; };
-		E9BE8C9C192AA29C008BB84C /* Whitney-SemiboldSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C67192AA29C008BB84C /* Whitney-SemiboldSC.ttf */; };
-		E9BE8C9D192AA29C008BB84C /* Whitney2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C68192AA29C008BB84C /* Whitney2.ttf */; };
-		E9BE8C9E192AA29C008BB84C /* WhitneyIndexBlack-RoundBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C69192AA29C008BB84C /* WhitneyIndexBlack-RoundBd.ttf */; };
-		E9BE8C9F192AA29C008BB84C /* WhitneyIndexBlack-RoundLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6A192AA29C008BB84C /* WhitneyIndexBlack-RoundLt1.ttf */; };
-		E9BE8CA0192AA29C008BB84C /* WhitneyIndexBlack-RoundLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6B192AA29C008BB84C /* WhitneyIndexBlack-RoundLt2.ttf */; };
-		E9BE8CA1192AA29C008BB84C /* WhitneyIndexBlack-RoundMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6C192AA29C008BB84C /* WhitneyIndexBlack-RoundMd.ttf */; };
-		E9BE8CA2192AA29C008BB84C /* WhitneyIndexBlack-SquareBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6D192AA29C008BB84C /* WhitneyIndexBlack-SquareBd.ttf */; };
-		E9BE8CA3192AA29C008BB84C /* WhitneyIndexBlack-SquareLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6E192AA29C008BB84C /* WhitneyIndexBlack-SquareLt1.ttf */; };
-		E9BE8CA4192AA29C008BB84C /* WhitneyIndexBlack-SquareLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C6F192AA29C008BB84C /* WhitneyIndexBlack-SquareLt2.ttf */; };
-		E9BE8CA5192AA29C008BB84C /* WhitneyIndexBlack-SquareMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C70192AA29C008BB84C /* WhitneyIndexBlack-SquareMd.ttf */; };
-		E9BE8CA6192AA29C008BB84C /* WhitneyIndexWhite-RoundBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C71192AA29C008BB84C /* WhitneyIndexWhite-RoundBd.ttf */; };
-		E9BE8CA7192AA29C008BB84C /* WhitneyIndexWhite-RoundLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C72192AA29C008BB84C /* WhitneyIndexWhite-RoundLt1.ttf */; };
-		E9BE8CA8192AA29C008BB84C /* WhitneyIndexWhite-RoundLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C73192AA29C008BB84C /* WhitneyIndexWhite-RoundLt2.ttf */; };
-		E9BE8CA9192AA29C008BB84C /* WhitneyIndexWhite-RoundMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C74192AA29C008BB84C /* WhitneyIndexWhite-RoundMd.ttf */; };
-		E9BE8CAA192AA29C008BB84C /* WhitneyIndexWhite-SquareBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C75192AA29C008BB84C /* WhitneyIndexWhite-SquareBd.ttf */; };
-		E9BE8CAB192AA29C008BB84C /* WhitneyIndexWhite-SquareLt1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C76192AA29C008BB84C /* WhitneyIndexWhite-SquareLt1.ttf */; };
-		E9BE8CAC192AA29C008BB84C /* WhitneyIndexWhite-SquareLt2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C77192AA29C008BB84C /* WhitneyIndexWhite-SquareLt2.ttf */; };
-		E9BE8CAD192AA29C008BB84C /* WhitneyIndexWhite-SquareMd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C78192AA29C008BB84C /* WhitneyIndexWhite-SquareMd.ttf */; };
-		E9BE8CAE192AA29C008BB84C /* WhitneyNumeric-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C79192AA29C008BB84C /* WhitneyNumeric-Black.ttf */; };
-		E9BE8CAF192AA29C008BB84C /* WhitneyNumeric-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7A192AA29C008BB84C /* WhitneyNumeric-BlackItalic.ttf */; };
-		E9BE8CB0192AA29C008BB84C /* WhitneyNumeric-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7B192AA29C008BB84C /* WhitneyNumeric-Bold.ttf */; };
-		E9BE8CB1192AA29C008BB84C /* WhitneyNumeric-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7C192AA29C008BB84C /* WhitneyNumeric-BoldItalic.ttf */; };
-		E9BE8CB2192AA29C008BB84C /* WhitneyNumeric-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7D192AA29C008BB84C /* WhitneyNumeric-Book.ttf */; };
-		E9BE8CB3192AA29C008BB84C /* WhitneyNumeric-BookItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7E192AA29C008BB84C /* WhitneyNumeric-BookItalic.ttf */; };
-		E9BE8CB4192AA29C008BB84C /* WhitneyNumeric-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C7F192AA29C008BB84C /* WhitneyNumeric-Light.ttf */; };
-		E9BE8CB5192AA29C008BB84C /* WhitneyNumeric-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C80192AA29C008BB84C /* WhitneyNumeric-LightItalic.ttf */; };
-		E9BE8CB6192AA29C008BB84C /* WhitneyNumeric-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C81192AA29C008BB84C /* WhitneyNumeric-Medium.ttf */; };
-		E9BE8CB7192AA29C008BB84C /* WhitneyNumeric-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C82192AA29C008BB84C /* WhitneyNumeric-MediumItalic.ttf */; };
-		E9BE8CB8192AA29C008BB84C /* WhitneyNumeric-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C83192AA29C008BB84C /* WhitneyNumeric-Semibold.ttf */; };
-		E9BE8CB9192AA29C008BB84C /* WhitneyNumeric-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C84192AA29C008BB84C /* WhitneyNumeric-SemiboldItalic.ttf */; };
 		E9CD46F719474CA700AEA17D /* followPersonIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46F619474CA700AEA17D /* followPersonIcon@2x.png */; };
 		E9CD46F919474D2300AEA17D /* followedPersonIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46F819474D2300AEA17D /* followedPersonIcon@2x.png */; };
 		E9CD46FC1947873F00AEA17D /* tapUnfilled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46FB1947873F00AEA17D /* tapUnfilled@2x.png */; };
@@ -613,59 +515,10 @@
 		E9BE8C48192A48F1008BB84C /* FontProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontProperties.m; sourceTree = "<group>"; };
 		E9BE8C4A192A54F3008BB84C /* Profile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Profile.h; sourceTree = "<group>"; };
 		E9BE8C4B192A54F3008BB84C /* Profile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Profile.m; sourceTree = "<group>"; };
-		E9BE8C50192AA29C008BB84C /* Whitney-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Black.ttf"; sourceTree = "<group>"; };
-		E9BE8C51192AA29C008BB84C /* Whitney-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-BlackItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C52192AA29C008BB84C /* Whitney-BlackItalicSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-BlackItalicSC.ttf"; sourceTree = "<group>"; };
-		E9BE8C53192AA29C008BB84C /* Whitney-BlackSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-BlackSC.ttf"; sourceTree = "<group>"; };
-		E9BE8C54192AA29C008BB84C /* Whitney-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Bold.ttf"; sourceTree = "<group>"; };
-		E9BE8C55192AA29C008BB84C /* Whitney-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-BoldItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C56192AA29C008BB84C /* Whitney-BoldItalicSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-BoldItalicSC.ttf"; sourceTree = "<group>"; };
-		E9BE8C57192AA29C008BB84C /* Whitney-BoldSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-BoldSC.ttf"; sourceTree = "<group>"; };
-		E9BE8C58192AA29C008BB84C /* Whitney-Book.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Book.ttf"; sourceTree = "<group>"; };
-		E9BE8C59192AA29C008BB84C /* Whitney-BookItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-BookItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C5A192AA29C008BB84C /* Whitney-BookItalicSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-BookItalicSC.ttf"; sourceTree = "<group>"; };
-		E9BE8C5B192AA29C008BB84C /* Whitney-BookSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-BookSC.ttf"; sourceTree = "<group>"; };
 		E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Light.ttf"; sourceTree = "<group>"; };
-		E9BE8C5D192AA29C008BB84C /* Whitney-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-LightItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C5E192AA29C008BB84C /* Whitney-LightItalicSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-LightItalicSC.ttf"; sourceTree = "<group>"; };
 		E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-LightSC.ttf"; sourceTree = "<group>"; };
 		E9BE8C60192AA29C008BB84C /* Whitney-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Medium.ttf"; sourceTree = "<group>"; };
-		E9BE8C61192AA29C008BB84C /* Whitney-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-MediumItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C62192AA29C008BB84C /* Whitney-MediumItalicSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-MediumItalicSC.ttf"; sourceTree = "<group>"; };
 		E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-MediumSC.ttf"; sourceTree = "<group>"; };
-		E9BE8C64192AA29C008BB84C /* Whitney-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Semibold.ttf"; sourceTree = "<group>"; };
-		E9BE8C65192AA29C008BB84C /* Whitney-SemiboldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-SemiboldItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C66192AA29C008BB84C /* Whitney-SemiboldItalicSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-SemiboldItalicSC.ttf"; sourceTree = "<group>"; };
-		E9BE8C67192AA29C008BB84C /* Whitney-SemiboldSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-SemiboldSC.ttf"; sourceTree = "<group>"; };
-		E9BE8C68192AA29C008BB84C /* Whitney2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Whitney2.ttf; sourceTree = "<group>"; };
-		E9BE8C69192AA29C008BB84C /* WhitneyIndexBlack-RoundBd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexBlack-RoundBd.ttf"; sourceTree = "<group>"; };
-		E9BE8C6A192AA29C008BB84C /* WhitneyIndexBlack-RoundLt1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexBlack-RoundLt1.ttf"; sourceTree = "<group>"; };
-		E9BE8C6B192AA29C008BB84C /* WhitneyIndexBlack-RoundLt2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexBlack-RoundLt2.ttf"; sourceTree = "<group>"; };
-		E9BE8C6C192AA29C008BB84C /* WhitneyIndexBlack-RoundMd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexBlack-RoundMd.ttf"; sourceTree = "<group>"; };
-		E9BE8C6D192AA29C008BB84C /* WhitneyIndexBlack-SquareBd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexBlack-SquareBd.ttf"; sourceTree = "<group>"; };
-		E9BE8C6E192AA29C008BB84C /* WhitneyIndexBlack-SquareLt1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexBlack-SquareLt1.ttf"; sourceTree = "<group>"; };
-		E9BE8C6F192AA29C008BB84C /* WhitneyIndexBlack-SquareLt2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexBlack-SquareLt2.ttf"; sourceTree = "<group>"; };
-		E9BE8C70192AA29C008BB84C /* WhitneyIndexBlack-SquareMd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexBlack-SquareMd.ttf"; sourceTree = "<group>"; };
-		E9BE8C71192AA29C008BB84C /* WhitneyIndexWhite-RoundBd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexWhite-RoundBd.ttf"; sourceTree = "<group>"; };
-		E9BE8C72192AA29C008BB84C /* WhitneyIndexWhite-RoundLt1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexWhite-RoundLt1.ttf"; sourceTree = "<group>"; };
-		E9BE8C73192AA29C008BB84C /* WhitneyIndexWhite-RoundLt2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexWhite-RoundLt2.ttf"; sourceTree = "<group>"; };
-		E9BE8C74192AA29C008BB84C /* WhitneyIndexWhite-RoundMd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexWhite-RoundMd.ttf"; sourceTree = "<group>"; };
-		E9BE8C75192AA29C008BB84C /* WhitneyIndexWhite-SquareBd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexWhite-SquareBd.ttf"; sourceTree = "<group>"; };
-		E9BE8C76192AA29C008BB84C /* WhitneyIndexWhite-SquareLt1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexWhite-SquareLt1.ttf"; sourceTree = "<group>"; };
-		E9BE8C77192AA29C008BB84C /* WhitneyIndexWhite-SquareLt2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexWhite-SquareLt2.ttf"; sourceTree = "<group>"; };
-		E9BE8C78192AA29C008BB84C /* WhitneyIndexWhite-SquareMd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyIndexWhite-SquareMd.ttf"; sourceTree = "<group>"; };
-		E9BE8C79192AA29C008BB84C /* WhitneyNumeric-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-Black.ttf"; sourceTree = "<group>"; };
-		E9BE8C7A192AA29C008BB84C /* WhitneyNumeric-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-BlackItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C7B192AA29C008BB84C /* WhitneyNumeric-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-Bold.ttf"; sourceTree = "<group>"; };
-		E9BE8C7C192AA29C008BB84C /* WhitneyNumeric-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-BoldItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C7D192AA29C008BB84C /* WhitneyNumeric-Book.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-Book.ttf"; sourceTree = "<group>"; };
-		E9BE8C7E192AA29C008BB84C /* WhitneyNumeric-BookItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-BookItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C7F192AA29C008BB84C /* WhitneyNumeric-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-Light.ttf"; sourceTree = "<group>"; };
-		E9BE8C80192AA29C008BB84C /* WhitneyNumeric-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-LightItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C81192AA29C008BB84C /* WhitneyNumeric-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-Medium.ttf"; sourceTree = "<group>"; };
-		E9BE8C82192AA29C008BB84C /* WhitneyNumeric-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-MediumItalic.ttf"; sourceTree = "<group>"; };
-		E9BE8C83192AA29C008BB84C /* WhitneyNumeric-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-Semibold.ttf"; sourceTree = "<group>"; };
-		E9BE8C84192AA29C008BB84C /* WhitneyNumeric-SemiboldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-SemiboldItalic.ttf"; sourceTree = "<group>"; };
 		E9CD46F619474CA700AEA17D /* followPersonIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "followPersonIcon@2x.png"; sourceTree = "<group>"; };
 		E9CD46F819474D2300AEA17D /* followedPersonIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "followedPersonIcon@2x.png"; sourceTree = "<group>"; };
 		E9CD46FB1947873F00AEA17D /* tapUnfilled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tapUnfilled@2x.png"; sourceTree = "<group>"; };
@@ -1262,59 +1115,10 @@
 		E9BE8C4F192AA29C008BB84C /* Whitney */ = {
 			isa = PBXGroup;
 			children = (
-				E9BE8C50192AA29C008BB84C /* Whitney-Black.ttf */,
-				E9BE8C51192AA29C008BB84C /* Whitney-BlackItalic.ttf */,
-				E9BE8C52192AA29C008BB84C /* Whitney-BlackItalicSC.ttf */,
-				E9BE8C53192AA29C008BB84C /* Whitney-BlackSC.ttf */,
-				E9BE8C54192AA29C008BB84C /* Whitney-Bold.ttf */,
-				E9BE8C55192AA29C008BB84C /* Whitney-BoldItalic.ttf */,
-				E9BE8C56192AA29C008BB84C /* Whitney-BoldItalicSC.ttf */,
-				E9BE8C57192AA29C008BB84C /* Whitney-BoldSC.ttf */,
-				E9BE8C58192AA29C008BB84C /* Whitney-Book.ttf */,
-				E9BE8C59192AA29C008BB84C /* Whitney-BookItalic.ttf */,
-				E9BE8C5A192AA29C008BB84C /* Whitney-BookItalicSC.ttf */,
-				E9BE8C5B192AA29C008BB84C /* Whitney-BookSC.ttf */,
 				E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */,
-				E9BE8C5D192AA29C008BB84C /* Whitney-LightItalic.ttf */,
-				E9BE8C5E192AA29C008BB84C /* Whitney-LightItalicSC.ttf */,
 				E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */,
 				E9BE8C60192AA29C008BB84C /* Whitney-Medium.ttf */,
-				E9BE8C61192AA29C008BB84C /* Whitney-MediumItalic.ttf */,
-				E9BE8C62192AA29C008BB84C /* Whitney-MediumItalicSC.ttf */,
 				E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */,
-				E9BE8C64192AA29C008BB84C /* Whitney-Semibold.ttf */,
-				E9BE8C65192AA29C008BB84C /* Whitney-SemiboldItalic.ttf */,
-				E9BE8C66192AA29C008BB84C /* Whitney-SemiboldItalicSC.ttf */,
-				E9BE8C67192AA29C008BB84C /* Whitney-SemiboldSC.ttf */,
-				E9BE8C68192AA29C008BB84C /* Whitney2.ttf */,
-				E9BE8C69192AA29C008BB84C /* WhitneyIndexBlack-RoundBd.ttf */,
-				E9BE8C6A192AA29C008BB84C /* WhitneyIndexBlack-RoundLt1.ttf */,
-				E9BE8C6B192AA29C008BB84C /* WhitneyIndexBlack-RoundLt2.ttf */,
-				E9BE8C6C192AA29C008BB84C /* WhitneyIndexBlack-RoundMd.ttf */,
-				E9BE8C6D192AA29C008BB84C /* WhitneyIndexBlack-SquareBd.ttf */,
-				E9BE8C6E192AA29C008BB84C /* WhitneyIndexBlack-SquareLt1.ttf */,
-				E9BE8C6F192AA29C008BB84C /* WhitneyIndexBlack-SquareLt2.ttf */,
-				E9BE8C70192AA29C008BB84C /* WhitneyIndexBlack-SquareMd.ttf */,
-				E9BE8C71192AA29C008BB84C /* WhitneyIndexWhite-RoundBd.ttf */,
-				E9BE8C72192AA29C008BB84C /* WhitneyIndexWhite-RoundLt1.ttf */,
-				E9BE8C73192AA29C008BB84C /* WhitneyIndexWhite-RoundLt2.ttf */,
-				E9BE8C74192AA29C008BB84C /* WhitneyIndexWhite-RoundMd.ttf */,
-				E9BE8C75192AA29C008BB84C /* WhitneyIndexWhite-SquareBd.ttf */,
-				E9BE8C76192AA29C008BB84C /* WhitneyIndexWhite-SquareLt1.ttf */,
-				E9BE8C77192AA29C008BB84C /* WhitneyIndexWhite-SquareLt2.ttf */,
-				E9BE8C78192AA29C008BB84C /* WhitneyIndexWhite-SquareMd.ttf */,
-				E9BE8C79192AA29C008BB84C /* WhitneyNumeric-Black.ttf */,
-				E9BE8C7A192AA29C008BB84C /* WhitneyNumeric-BlackItalic.ttf */,
-				E9BE8C7B192AA29C008BB84C /* WhitneyNumeric-Bold.ttf */,
-				E9BE8C7C192AA29C008BB84C /* WhitneyNumeric-BoldItalic.ttf */,
-				E9BE8C7D192AA29C008BB84C /* WhitneyNumeric-Book.ttf */,
-				E9BE8C7E192AA29C008BB84C /* WhitneyNumeric-BookItalic.ttf */,
-				E9BE8C7F192AA29C008BB84C /* WhitneyNumeric-Light.ttf */,
-				E9BE8C80192AA29C008BB84C /* WhitneyNumeric-LightItalic.ttf */,
-				E9BE8C81192AA29C008BB84C /* WhitneyNumeric-Medium.ttf */,
-				E9BE8C82192AA29C008BB84C /* WhitneyNumeric-MediumItalic.ttf */,
-				E9BE8C83192AA29C008BB84C /* WhitneyNumeric-Semibold.ttf */,
-				E9BE8C84192AA29C008BB84C /* WhitneyNumeric-SemiboldItalic.ttf */,
 			);
 			path = Whitney;
 			sourceTree = "<group>";
@@ -1568,15 +1372,9 @@
 				E96EF673197DC70300F88A6D /* orangeRightArrow@2x.png in Resources */,
 				C12A115819787BE700D53B1C /* dancingG-19.png in Resources */,
 				C12A115919787BE700D53B1C /* peopleIcon@2x.png in Resources */,
-				C12A115B19787BE700D53B1C /* Whitney2.ttf in Resources */,
 				C12A115C19787BE700D53B1C /* notificationsSelected@2x.png in Resources */,
 				C12A115D19787BE700D53B1C /* dancingG-15.png in Resources */,
-				C12A115E19787BE700D53B1C /* Whitney-Bold.ttf in Resources */,
-				C12A115F19787BE700D53B1C /* WhitneyNumeric-LightItalic.ttf in Resources */,
-				C12A116019787BE700D53B1C /* WhitneyIndexBlack-SquareBd.ttf in Resources */,
-				C12A116119787BE700D53B1C /* Whitney-BookItalic.ttf in Resources */,
 				C12A116219787BE700D53B1C /* dancingG-2.png in Resources */,
-				C12A116319787BE700D53B1C /* WhitneyIndexBlack-SquareMd.ttf in Resources */,
 				C12A116419787BE700D53B1C /* favoriteSelected@2x.png in Resources */,
 				C12A116519787BE700D53B1C /* chatsSelected@2x.png in Resources */,
 				E96EF688197F135E00F88A6D /* rejectFollowRequest@2x.png in Resources */,
@@ -1588,70 +1386,45 @@
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
 				C12A116C19787BE700D53B1C /* dancingG-7.png in Resources */,
 				C12A116D19787BE700D53B1C /* dancingG-23.png in Resources */,
-				C12A116E19787BE700D53B1C /* Whitney-BlackItalic.ttf in Resources */,
-				C12A116F19787BE700D53B1C /* Whitney-SemiboldSC.ttf in Resources */,
 				C12A117019787BE700D53B1C /* chatsIcon@2x.png in Resources */,
-				C12A117119787BE700D53B1C /* WhitneyNumeric-Semibold.ttf in Resources */,
 				C12A117219787BE700D53B1C /* commentFilled.png in Resources */,
 				C12A117319787BE700D53B1C /* dancingG-10.png in Resources */,
-				C12A117419787BE700D53B1C /* Whitney-BlackSC.ttf in Resources */,
 				C12A117519787BE700D53B1C /* placesSelected@2x.png in Resources */,
-				C12A117619787BE700D53B1C /* Whitney-BoldItalic.ttf in Resources */,
 				C12A117719787BE700D53B1C /* notificationsIconBlue@2x.png in Resources */,
 				C12A117819787BE700D53B1C /* emailUnfilled.png in Resources */,
 				C12A117919787BE700D53B1C /* rightArrow.png in Resources */,
 				C12A117A19787BE700D53B1C /* orangeSearchIcon.png in Resources */,
 				C12A117B19787BE700D53B1C /* dancingG-5.png in Resources */,
-				C12A117C19787BE700D53B1C /* WhitneyNumeric-Bold.ttf in Resources */,
 				C12A117D19787BE700D53B1C /* followedPersonIcon@2x.png in Resources */,
 				C12A117E19787BE700D53B1C /* dancingG-3.png in Resources */,
-				C12A117F19787BE700D53B1C /* Whitney-LightItalic.ttf in Resources */,
-				C12A118019787BE700D53B1C /* WhitneyNumeric-Book.ttf in Resources */,
-				C12A118119787BE700D53B1C /* Whitney-LightItalicSC.ttf in Resources */,
 				C12A118219787BE700D53B1C /* leftBeforeChatIcon.png in Resources */,
 				C12A118319787BE700D53B1C /* dancingG-24.png in Resources */,
 				C12A118419787BE700D53B1C /* dancingG-8.png in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
 				C12A118619787BE700D53B1C /* emailFilled.png in Resources */,
-				C12A118719787BE700D53B1C /* WhitneyNumeric-BoldItalic.ttf in Resources */,
-				C12A118819787BE700D53B1C /* Whitney-BoldItalicSC.ttf in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
 				E9A31E591980ADDF008A711B /* iOSa_2.23.0.version in Resources */,
-				C12A118A19787BE700D53B1C /* WhitneyNumeric-MediumItalic.ttf in Resources */,
-				C12A118B19787BE700D53B1C /* WhitneyNumeric-Medium.ttf in Resources */,
 				C12A118C19787BE700D53B1C /* addedFilled@2x.png in Resources */,
 				E96EF686197F135E00F88A6D /* acceptFollowRequest@2x.png in Resources */,
-				C12A118D19787BE700D53B1C /* WhitneyIndexWhite-RoundBd.ttf in Resources */,
 				C12A118E19787BE700D53B1C /* dancingG-25.png in Resources */,
 				C12A118F19787BE700D53B1C /* dancingG-4.png in Resources */,
-				C12A119019787BE700D53B1C /* WhitneyIndexWhite-SquareMd.ttf in Resources */,
 				C12A119119787BE700D53B1C /* dancingG-27.png in Resources */,
 				C12A119319787BE700D53B1C /* Whitney-Medium.ttf in Resources */,
 				C12A119419787BE700D53B1C /* dancingG-6.png in Resources */,
 				C12A119519787BE700D53B1C /* dancingG-12.png in Resources */,
 				C12A119619787BE700D53B1C /* favorite@2x.png in Resources */,
 				C12A119719787BE700D53B1C /* placesIcon@2x.png in Resources */,
-				C12A119819787BE700D53B1C /* Whitney-Book.ttf in Resources */,
-				C12A119919787BE700D53B1C /* Whitney-SemiboldItalic.ttf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
-				C12A119B19787BE700D53B1C /* WhitneyNumeric-SemiboldItalic.ttf in Resources */,
 				C12A119C19787BE700D53B1C /* privacyLogo@2x.png in Resources */,
-				C12A119D19787BE700D53B1C /* Whitney-Black.ttf in Resources */,
-				C12A119E19787BE700D53B1C /* WhitneyIndexWhite-SquareBd.ttf in Resources */,
 				C12A119F19787BE700D53B1C /* dancingG-20.png in Resources */,
 				C12A11A019787BE700D53B1C /* tapFilled@2x.png in Resources */,
 				C12A11A119787BE700D53B1C /* dancingG-21.png in Resources */,
 				C12A11A219787BE700D53B1C /* dancingG-9.png in Resources */,
-				C12A11A319787BE700D53B1C /* Whitney-BookItalicSC.ttf in Resources */,
 				C12A11A419787BE700D53B1C /* dancingG-18.png in Resources */,
 				C12A11A519787BE700D53B1C /* dancingG-29.png in Resources */,
 				C12A11A619787BE700D53B1C /* phoneUnfilled.png in Resources */,
-				C12A11A719787BE700D53B1C /* Whitney-MediumItalic.ttf in Resources */,
 				C12A11A819787BE700D53B1C /* peopleIconBlue@2x.png in Resources */,
-				C12A11A919787BE700D53B1C /* WhitneyIndexBlack-RoundBd.ttf in Resources */,
 				C12A11AA19787BE700D53B1C /* dancingG-26.png in Resources */,
-				C12A11AB19787BE700D53B1C /* WhitneyIndexWhite-SquareLt2.ttf in Resources */,
-				C12A11AC19787BE700D53B1C /* Whitney-Semibold.ttf in Resources */,
 				C12A11AD19787BE700D53B1C /* searchIcon.png in Resources */,
 				E96EF67B197EC9B700F88A6D /* logo_tiny_blue@2x.png in Resources */,
 				C12A11AF19787BE700D53B1C /* backIcon.png in Resources */,
@@ -1659,45 +1432,27 @@
 				C12A11B119787BE700D53B1C /* dancingG-1.png in Resources */,
 				C12A11B219787BE700D53B1C /* followPersonIcon@2x.png in Resources */,
 				C12A11B319787BE700D53B1C /* peopleSelected@2x.png in Resources */,
-				C12A11B419787BE700D53B1C /* Whitney-MediumItalicSC.ttf in Resources */,
 				C12A11B519787BE700D53B1C /* chatsIconBlue@2x.png in Resources */,
-				C12A11B619787BE700D53B1C /* WhitneyNumeric-BookItalic.ttf in Resources */,
-				C12A11B819787BE700D53B1C /* Whitney-BookSC.ttf in Resources */,
-				C12A11B919787BE700D53B1C /* WhitneyIndexWhite-RoundMd.ttf in Resources */,
 				C12A11BA19787BE700D53B1C /* dancingG-16.png in Resources */,
 				E9F5F206197B040600856918 /* goingSomewhereElse@2x.png in Resources */,
 				C12A11BB19787BE700D53B1C /* dancingG-13.png in Resources */,
-				C12A11BC19787BE700D53B1C /* Whitney-SemiboldItalicSC.ttf in Resources */,
 				C12A11BD19787BE700D53B1C /* whereIcon.png in Resources */,
-				C12A11BE19787BE700D53B1C /* WhitneyIndexWhite-RoundLt2.ttf in Resources */,
 				C12A11BF19787BE700D53B1C /* chatImage@2x.png in Resources */,
-				C12A11C019787BE700D53B1C /* WhitneyIndexBlack-RoundLt1.ttf in Resources */,
 				C12A11C119787BE700D53B1C /* notificationsIcon@2x.png in Resources */,
 				C12A11C219787BE700D53B1C /* dancingG-14.png in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
-				C12A11C419787BE700D53B1C /* WhitneyIndexWhite-SquareLt1.ttf in Resources */,
 				C12A11C519787BE700D53B1C /* plusSquare.png in Resources */,
 				C12A11C619787BE700D53B1C /* iconFlashScreen@2x.png in Resources */,
 				C12A11C719787BE700D53B1C /* joined@2x.png in Resources */,
 				C12A11C819787BE700D53B1C /* dancingG-28.png in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
-				C12A11CA19787BE700D53B1C /* WhitneyIndexWhite-RoundLt1.ttf in Resources */,
-				C12A11CB19787BE700D53B1C /* WhitneyIndexBlack-SquareLt2.ttf in Resources */,
-				C12A11CC19787BE700D53B1C /* WhitneyIndexBlack-RoundLt2.ttf in Resources */,
 				C12A11CD19787BE700D53B1C /* dancingG-17.png in Resources */,
 				C12A11CE19787BE700D53B1C /* dancingG-22.png in Resources */,
 				E96EF67E197ECA3F00F88A6D /* logo_tiny_orange@2x.png in Resources */,
 				C12A11CF19787BE700D53B1C /* closeButton@2x.png in Resources */,
-				C12A11D019787BE700D53B1C /* Whitney-BlackItalicSC.ttf in Resources */,
 				C12A11D119787BE700D53B1C /* tapUnfilled@2x.png in Resources */,
-				C12A11D219787BE700D53B1C /* WhitneyIndexBlack-RoundMd.ttf in Resources */,
-				C12A11D319787BE700D53B1C /* WhitneyNumeric-Light.ttf in Resources */,
-				C12A11D419787BE700D53B1C /* Whitney-BoldSC.ttf in Resources */,
 				C12A11D519787BE700D53B1C /* connectFacebook@2x.png in Resources */,
 				C12A11D619787BE700D53B1C /* transparentShadow.png in Resources */,
-				C12A11D719787BE700D53B1C /* WhitneyIndexBlack-SquareLt1.ttf in Resources */,
-				C12A11D919787BE700D53B1C /* WhitneyNumeric-BlackItalic.ttf in Resources */,
-				C12A11DB19787BE700D53B1C /* WhitneyNumeric-Black.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1717,17 +1472,11 @@
 				E9CD473C194E884200AEA17D /* orangeTap@2x.png in Resources */,
 				E9DBB07C1978151F00DDACDE /* dancingG-19.png in Resources */,
 				E93F85001945F94900B3B448 /* peopleIcon@2x.png in Resources */,
-				E9BE8C9D192AA29C008BB84C /* Whitney2.ttf in Resources */,
 				E96EF685197F135E00F88A6D /* acceptFollowRequest@2x.png in Resources */,
 				E9CD470919479DBD00AEA17D /* notificationsSelected@2x.png in Resources */,
 				E96EF67A197EC9B700F88A6D /* logo_tiny_blue@2x.png in Resources */,
 				E9DBB0781978151F00DDACDE /* dancingG-15.png in Resources */,
-				E9BE8C89192AA29C008BB84C /* Whitney-Bold.ttf in Resources */,
-				E9BE8CB5192AA29C008BB84C /* WhitneyNumeric-LightItalic.ttf in Resources */,
-				E9BE8CA2192AA29C008BB84C /* WhitneyIndexBlack-SquareBd.ttf in Resources */,
-				E9BE8C8E192AA29C008BB84C /* Whitney-BookItalic.ttf in Resources */,
 				E9DBB07D1978151F00DDACDE /* dancingG-2.png in Resources */,
-				E9BE8CA5192AA29C008BB84C /* WhitneyIndexBlack-SquareMd.ttf in Resources */,
 				E9DBB09519781D1C00DDACDE /* favoriteSelected@2x.png in Resources */,
 				E9CD470719479D6D00AEA17D /* chatsSelected@2x.png in Resources */,
 				E9DBB0911978190000DDACDE /* favoriteSmall@2x.png in Resources */,
@@ -1738,41 +1487,26 @@
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9DBB08D1978151F00DDACDE /* dancingG-7.png in Resources */,
 				E9DBB0811978151F00DDACDE /* dancingG-23.png in Resources */,
-				E9BE8C86192AA29C008BB84C /* Whitney-BlackItalic.ttf in Resources */,
-				E9BE8C9C192AA29C008BB84C /* Whitney-SemiboldSC.ttf in Resources */,
 				E93F85041945FADF00B3B448 /* chatsIcon@2x.png in Resources */,
-				E9BE8CB8192AA29C008BB84C /* WhitneyNumeric-Semibold.ttf in Resources */,
 				E9F59E25192D514E00BB8FDD /* commentFilled.png in Resources */,
 				E9DBB0731978151F00DDACDE /* dancingG-10.png in Resources */,
-				E9BE8C88192AA29C008BB84C /* Whitney-BlackSC.ttf in Resources */,
 				E9CD470519479CCB00AEA17D /* placesSelected@2x.png in Resources */,
-				E9BE8C8A192AA29C008BB84C /* Whitney-BoldItalic.ttf in Resources */,
 				E9CD47101947A39C00AEA17D /* notificationsIconBlue@2x.png in Resources */,
 				E9AAAFC2193E175C0069F700 /* emailUnfilled.png in Resources */,
 				E9F59E21192D1D3A00BB8FDD /* rightArrow.png in Resources */,
 				E9AAAFB01938F8940069F700 /* orangeSearchIcon.png in Resources */,
 				E9DBB08B1978151F00DDACDE /* dancingG-5.png in Resources */,
-				E9BE8CB0192AA29C008BB84C /* WhitneyNumeric-Bold.ttf in Resources */,
 				E9CD46F919474D2300AEA17D /* followedPersonIcon@2x.png in Resources */,
 				E9DBB0881978151F00DDACDE /* dancingG-3.png in Resources */,
-				E9BE8C92192AA29C008BB84C /* Whitney-LightItalic.ttf in Resources */,
-				E9BE8CB2192AA29C008BB84C /* WhitneyNumeric-Book.ttf in Resources */,
-				E9BE8C93192AA29C008BB84C /* Whitney-LightItalicSC.ttf in Resources */,
 				E9E6190119365AA300A224C0 /* leftBeforeChatIcon.png in Resources */,
 				E9DBB0821978151F00DDACDE /* dancingG-24.png in Resources */,
 				E9DBB08E1978151F00DDACDE /* dancingG-8.png in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				E9AAAFC4193E17F40069F700 /* emailFilled.png in Resources */,
-				E9BE8CB1192AA29C008BB84C /* WhitneyNumeric-BoldItalic.ttf in Resources */,
-				E9BE8C8B192AA29C008BB84C /* Whitney-BoldItalicSC.ttf in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
-				E9BE8CB7192AA29C008BB84C /* WhitneyNumeric-MediumItalic.ttf in Resources */,
-				E9BE8CB6192AA29C008BB84C /* WhitneyNumeric-Medium.ttf in Resources */,
 				E93F85151946031600B3B448 /* addedFilled@2x.png in Resources */,
-				E9BE8CA6192AA29C008BB84C /* WhitneyIndexWhite-RoundBd.ttf in Resources */,
 				E9DBB0831978151F00DDACDE /* dancingG-25.png in Resources */,
 				E9DBB08A1978151F00DDACDE /* dancingG-4.png in Resources */,
-				E9BE8CAD192AA29C008BB84C /* WhitneyIndexWhite-SquareMd.ttf in Resources */,
 				E9DBB0851978151F00DDACDE /* dancingG-27.png in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
 				E9DBB08C1978151F00DDACDE /* dancingG-6.png in Resources */,
@@ -1780,75 +1514,47 @@
 				E9DBB09319781CDB00DDACDE /* favorite@2x.png in Resources */,
 				E93F85021945F9E700B3B448 /* placesIcon@2x.png in Resources */,
 				E96EF672197DC70300F88A6D /* orangeRightArrow@2x.png in Resources */,
-				E9BE8C8D192AA29C008BB84C /* Whitney-Book.ttf in Resources */,
-				E9BE8C9A192AA29C008BB84C /* Whitney-SemiboldItalic.ttf in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
-				E9BE8CB9192AA29C008BB84C /* WhitneyNumeric-SemiboldItalic.ttf in Resources */,
 				E9681C75194FCA2100182E0E /* privacyLogo@2x.png in Resources */,
-				E9BE8C85192AA29C008BB84C /* Whitney-Black.ttf in Resources */,
-				E9BE8CAA192AA29C008BB84C /* WhitneyIndexWhite-SquareBd.ttf in Resources */,
 				E9DBB07E1978151F00DDACDE /* dancingG-20.png in Resources */,
 				E9CD46FF1947896300AEA17D /* tapFilled@2x.png in Resources */,
 				E9DBB07F1978151F00DDACDE /* dancingG-21.png in Resources */,
 				E9A31E581980ADDF008A711B /* iOSa_2.23.0.version in Resources */,
 				E9DBB08F1978151F00DDACDE /* dancingG-9.png in Resources */,
-				E9BE8C8F192AA29C008BB84C /* Whitney-BookItalicSC.ttf in Resources */,
 				E9DBB07B1978151F00DDACDE /* dancingG-18.png in Resources */,
 				E9DBB0871978151F00DDACDE /* dancingG-29.png in Resources */,
 				E9AAAFCE193E705F0069F700 /* phoneUnfilled.png in Resources */,
-				E9BE8C96192AA29C008BB84C /* Whitney-MediumItalic.ttf in Resources */,
 				E9CD470B1947A30400AEA17D /* peopleIconBlue@2x.png in Resources */,
-				E9BE8C9E192AA29C008BB84C /* WhitneyIndexBlack-RoundBd.ttf in Resources */,
 				E9DBB0841978151F00DDACDE /* dancingG-26.png in Resources */,
-				E9BE8CAC192AA29C008BB84C /* WhitneyIndexWhite-SquareLt2.ttf in Resources */,
-				E9BE8C99192AA29C008BB84C /* Whitney-Semibold.ttf in Resources */,
 				E9E619051938C74200A224C0 /* searchIcon.png in Resources */,
 				E9E618FF1936421A00A224C0 /* backIcon.png in Resources */,
 				E9902985196B2F9A00192FF2 /* privateIcon@2x.png in Resources */,
 				E9DBB0721978151F00DDACDE /* dancingG-1.png in Resources */,
 				E9CD46F719474CA700AEA17D /* followPersonIcon@2x.png in Resources */,
 				E9CD470319479C6200AEA17D /* peopleSelected@2x.png in Resources */,
-				E9BE8C97192AA29C008BB84C /* Whitney-MediumItalicSC.ttf in Resources */,
 				E9CD470E1947A34800AEA17D /* chatsIconBlue@2x.png in Resources */,
-				E9BE8CB3192AA29C008BB84C /* WhitneyNumeric-BookItalic.ttf in Resources */,
-				E9BE8C90192AA29C008BB84C /* Whitney-BookSC.ttf in Resources */,
-				E9BE8CA9192AA29C008BB84C /* WhitneyIndexWhite-RoundMd.ttf in Resources */,
 				E9DBB0791978151F00DDACDE /* dancingG-16.png in Resources */,
 				E9F5F205197B040600856918 /* goingSomewhereElse@2x.png in Resources */,
 				E9DBB0761978151F00DDACDE /* dancingG-13.png in Resources */,
-				E9BE8C9B192AA29C008BB84C /* Whitney-SemiboldItalicSC.ttf in Resources */,
 				E9F59E2F192E3F0600BB8FDD /* whereIcon.png in Resources */,
-				E9BE8CA8192AA29C008BB84C /* WhitneyIndexWhite-RoundLt2.ttf in Resources */,
 				E9ECFF84196E093900384252 /* chatImage@2x.png in Resources */,
-				E9BE8C9F192AA29C008BB84C /* WhitneyIndexBlack-RoundLt1.ttf in Resources */,
 				E93F85061945FB4400B3B448 /* notificationsIcon@2x.png in Resources */,
 				E96EF670197C710600F88A6D /* goingout@2x.png in Resources */,
 				E9DBB0771978151F00DDACDE /* dancingG-14.png in Resources */,
 				E921D6201923967D00361247 /* InfoPlist.strings in Resources */,
-				E9BE8CAB192AA29C008BB84C /* WhitneyIndexWhite-SquareLt1.ttf in Resources */,
 				E93F84FE1942076A00B3B448 /* plusSquare.png in Resources */,
 				E94FF0DB19633A4600852180 /* iconFlashScreen@2x.png in Resources */,
 				E93F8513194602DB00B3B448 /* joined@2x.png in Resources */,
 				E9DBB0861978151F00DDACDE /* dancingG-28.png in Resources */,
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,
-				E9BE8CA7192AA29C008BB84C /* WhitneyIndexWhite-RoundLt1.ttf in Resources */,
-				E9BE8CA4192AA29C008BB84C /* WhitneyIndexBlack-SquareLt2.ttf in Resources */,
-				E9BE8CA0192AA29C008BB84C /* WhitneyIndexBlack-RoundLt2.ttf in Resources */,
 				E9DBB07A1978151F00DDACDE /* dancingG-17.png in Resources */,
 				E9DBB0801978151F00DDACDE /* dancingG-22.png in Resources */,
 				E9DB7B44196C47D500363656 /* closeButton@2x.png in Resources */,
-				E9BE8C87192AA29C008BB84C /* Whitney-BlackItalicSC.ttf in Resources */,
 				E9CD46FC1947873F00AEA17D /* tapUnfilled@2x.png in Resources */,
-				E9BE8CA1192AA29C008BB84C /* WhitneyIndexBlack-RoundMd.ttf in Resources */,
-				E9BE8CB4192AA29C008BB84C /* WhitneyNumeric-Light.ttf in Resources */,
-				E9BE8C8C192AA29C008BB84C /* Whitney-BoldSC.ttf in Resources */,
 				E9681C71194F887A00182E0E /* connectFacebook@2x.png in Resources */,
 				E90AA8A51975DC6E0055D74B /* transparentShadow.png in Resources */,
-				E9BE8CA3192AA29C008BB84C /* WhitneyIndexBlack-SquareLt1.ttf in Resources */,
 				E96EF67D197ECA3F00F88A6D /* logo_tiny_orange@2x.png in Resources */,
 				E96EF687197F135E00F88A6D /* rejectFollowRequest@2x.png in Resources */,
-				E9BE8CAF192AA29C008BB84C /* WhitneyNumeric-BlackItalic.ttf in Resources */,
-				E9BE8CAE192AA29C008BB84C /* WhitneyNumeric-Black.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
