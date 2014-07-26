@@ -204,6 +204,7 @@
 
 
 - (void) goOutHere:(id)sender {
+    NSLog(@"here");
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
     [Profile setUser:profileUser];
@@ -482,17 +483,21 @@
         [placeSubView addSubview:goingHereLabel];
     }
     else {
-        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 90, 10, 80, 17)];
+        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 90 - 5, 10 - 5, 80 + 10, 17 + 25)];
+        aroundGoOutButton.tag = [(NSNumber *)[event eventID] intValue];
+        [aroundGoOutButton addTarget:self action:@selector(goOutHere:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 80, 17)];
+        goOutButton.enabled = NO;
         [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
         [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         goOutButton.backgroundColor = [FontProperties getBlueColor];
-        goOutButton.tag = [(NSNumber *)[event eventID] intValue];
-        [goOutButton addTarget:self action:@selector(goOutHere:) forControlEvents:UIControlEventTouchUpInside];
         goOutButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
         goOutButton.layer.cornerRadius = 5;
         goOutButton.layer.borderWidth = 1;
         goOutButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-        [placeSubView addSubview:goOutButton];
+        [placeSubView addSubview:aroundGoOutButton];
+        [aroundGoOutButton addSubview:goOutButton];
     }
 
     for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
