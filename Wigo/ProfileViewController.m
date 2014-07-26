@@ -467,23 +467,21 @@
         _lastLineView.hidden = YES;
         [UIView animateWithDuration:0.2
                          animations:^{
-            _nameOfPersonLabel.transform =  CGAffineTransformMakeTranslation(0, 0);
+                             _nameOfPersonLabel.transform =  CGAffineTransformMakeTranslation(0, 0);
+                             _nameOfPersonLabel.backgroundColor = RGBAlpha(23, 23, 23, 0.7f);
+                             self.view.backgroundColor = [UIColor whiteColor];
+                             self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+                             _bioLabel.textColor = [UIColor blackColor];
+                             [self initializeLeftBarButton];
+                             [self initializeRightBarButton];
+                             _pageControl.center = CGPointMake(90, 25);
+                             [self reloadView];
+
         } completion:^(BOOL finished) {
-            _nameOfPersonLabel.backgroundColor = RGBAlpha(23, 23, 23, 0.7f);
-            self.view.backgroundColor = [UIColor whiteColor];
-            _bioLabel.textColor = [UIColor blackColor];
-            _bioLineView.hidden = NO;
-            [self reloadView];
-            self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-            [self initializeLeftBarButton];
-            [self initializeRightBarButton];
-            for (UIImageView *profileImageView in _profileImagesArray) {
-                [self addBlurredImage:profileImageView.image toImageView:profileImageView];
-            }
-
-            _pageControl.center = CGPointMake(90, 25);
-
-            
+                        _bioLineView.hidden = NO;
+                        for (UIImageView *profileImageView in _profileImagesArray) {
+                            [self addBlurredImage:profileImageView.image toImageView:profileImageView];
+                        }
         }];
     }
 }

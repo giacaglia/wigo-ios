@@ -36,7 +36,7 @@
 
 - (void)shake
 {
-    [UIView animateWithDuration:0.3 animations:^{
+    [UIView animateWithDuration:0.15 animations:^{
         int newRatio =  self.originalFrame.size.width/2 + self.direction * self.sizeDifference;
         int oldRatio = self.originalFrame.size.width/2;
         self.frame = CGRectMake(self.originalFrame.origin.x + oldRatio - newRatio, self.originalFrame.origin.y + oldRatio - newRatio, 2*newRatio, 2*newRatio);
