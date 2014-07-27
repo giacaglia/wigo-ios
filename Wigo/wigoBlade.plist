@@ -74,6 +74,10 @@
 			<false/>
 		</dict>
 	</dict>
+	<key>GitCount</key>
+	<string>0</string>
+	<key>GitHash</key>
+	<string>00000000</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
