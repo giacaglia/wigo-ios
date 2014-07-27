@@ -13,7 +13,7 @@
 #import "UIPageControlAligned.h"
 #import "UIImageCrop.h"
 #import "WiGoSpinnerView.h"
-
+#import "Draggable.h"
 
 
 @interface ProfileViewController ()
@@ -23,6 +23,7 @@
 
 
 // bio
+@property UILabel *bioPrefix;
 @property UILabel *bioLabel;
 @property UIView *bioLineView;
 @property UIImageView *privateLogoImageView;
@@ -101,7 +102,8 @@
     _isSeingImages = NO;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseImage) name:@"chooseImage" object:nil];
+
     
     [self initializeLeftBarButton];
     [self initializeBioLabel];
@@ -353,6 +355,11 @@
                 profileImgView.hidden = NO;
             });
         }];
+//        UIImageView *dragger = [[Draggable alloc] initWithFrame:CGRectMake(profileImgView.frame.origin.x, profileImgView.frame.origin.y + 64, profileImgView.frame.size.width, profileImgView.frame.size.height)];
+//        [dragger setImage:profileImgView.image];
+//        [dragger setUserInteractionEnabled:YES];
+//        dragger.exclusiveTouch = YES;
+//        [self.view addSubview:dragger];
         [_scrollView addSubview:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
@@ -423,7 +430,6 @@
 
 - (void)chooseImage {
     if (!_isSeingImages) {
-        _tapScrollView.enabled = NO;
         _isSeingImages = YES;
         _lastLineView.hidden = NO;
         if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
@@ -444,7 +450,9 @@
                             options:UIViewAnimationOptionCurveLinear
                             animations:^{
                                 _nameOfPersonLabel.transform =  CGAffineTransformMakeTranslation(0, _nameOfPersonLabel.frame.size.height);
-                                _bioLabel.textColor = [UIColor whiteColor];
+//                                _bioLabel.textColor = [UIColor whiteColor];
+                                _bioLabel.hidden = YES;
+                                _bioPrefix.hidden = YES;
                                 self.view.backgroundColor = RGB(23, 23, 23);
                                 _nameOfPersonLabel.backgroundColor = RGB(23, 23, 23);
                                 
@@ -465,23 +473,27 @@
         _tapScrollView.enabled = YES;
         _isSeingImages = NO;
         _lastLineView.hidden = YES;
+        [self initializeLeftBarButton];
+        [self initializeRightBarButton];
+        _pageControl.center = CGPointMake(90, 25);
         [UIView animateWithDuration:0.2
                          animations:^{
+                             _bioPrefix.hidden = NO;
+                             _bioLabel.hidden = NO;
                              _nameOfPersonLabel.transform =  CGAffineTransformMakeTranslation(0, 0);
                              _nameOfPersonLabel.backgroundColor = RGBAlpha(23, 23, 23, 0.7f);
+                             [self.view bringSubviewToFront:_nameOfPersonLabel];
                              self.view.backgroundColor = [UIColor whiteColor];
                              self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
                              _bioLabel.textColor = [UIColor blackColor];
-                             [self initializeLeftBarButton];
-                             [self initializeRightBarButton];
-                             _pageControl.center = CGPointMake(90, 25);
                              [self reloadView];
 
         } completion:^(BOOL finished) {
-                        _bioLineView.hidden = NO;
-                        for (UIImageView *profileImageView in _profileImagesArray) {
-                            [self addBlurredImage:profileImageView.image toImageView:profileImageView];
-                        }
+            _bioLineView.hidden = NO;
+
+            for (UIImageView *profileImageView in _profileImagesArray) {
+                [self addBlurredImage:profileImageView.image toImageView:profileImageView];
+            }
         }];
     }
 }
@@ -515,9 +527,14 @@
 }
 
 - (void)initializeLeftProfileButton {
+    _leftProfileButton = [[UIButton alloc] init];
+    [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    _leftProfileButton.layer.borderWidth = 1;
+    _leftProfileButton.layer.borderColor = RGBAlpha(0, 0, 0, 0.05f).CGColor;
+
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 100)];
-        [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        _leftProfileButton.frame = CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 100);
+     
         UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _leftProfileButton.frame.size.width, 60)];
         followersLabel.textColor = [FontProperties getOrangeColor];
         followersLabel.font = [FontProperties getTitleFont];
@@ -528,8 +545,7 @@
         [_leftProfileButton addSubview:followersLabel];
     }
     else  {
-        _leftProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
-        [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        _leftProfileButton.frame = CGRectMake(0, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100);
         if ([self.user isFavorite]) {
             _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favoriteSelected"]];
         }
@@ -537,8 +553,6 @@
             _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite"]];
         }
         _favoriteImageView.frame = CGRectMake(_leftProfileButton.frame.size.width/2 - 12, _leftProfileButton.frame.size.height/2 - 12, 24, 24);
-        _leftProfileButton.layer.borderWidth = 1;
-        _leftProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
         [_leftProfileButton addSubview:_favoriteImageView];
     }
     [self.view addSubview:_leftProfileButton];
@@ -563,12 +577,13 @@
 }
 
 - (void)initializeRightProfileButton {
+    _rightProfileButton = [[UIButton alloc] init];
+    [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    _rightProfileButton.layer.borderWidth = 1;
+    _rightProfileButton.layer.borderColor = RGBAlpha(0, 0, 0, 0.05f).CGColor;
+    
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _rightProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 100)];
-        [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        _rightProfileButton.layer.borderWidth = 1;
-        _rightProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
-
+        _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/2, 64 + self.view.frame.size.width, self.view.frame.size.width/2, 100);
         UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _rightProfileButton.frame.size.width, 60)];
         followingLabel.textColor = [FontProperties getOrangeColor];
         followingLabel.font = [FontProperties getTitleFont];
@@ -579,11 +594,7 @@
         [_rightProfileButton addSubview:followingLabel];
     }
     else {
-        _rightProfileButton = [[UIButton alloc] initWithFrame:CGRectMake(3*self.view.frame.size.width/4, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100)];
-        [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        _rightProfileButton.layer.borderWidth = 1;
-        _rightProfileButton.layer.borderColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f].CGColor;
-
+        _rightProfileButton.frame = CGRectMake(3*self.view.frame.size.width/4, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100);
         UIImageView *chatImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chatImage"]];
         chatImageView.frame = CGRectMake(_rightProfileButton.frame.size.width/2 - 12, _rightProfileButton.frame.size.height/2 - 12, 24, 24);
         [_rightProfileButton addSubview:chatImageView];
@@ -615,15 +626,15 @@
 
 - (void) initializeBioLabel {
     _bioLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 483, self.view.frame.size.width, 1)];
-    _bioLineView.backgroundColor = [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:0.05f];
+    _bioLineView.backgroundColor = RGBAlpha(0, 0, 0, 0.05f);
     [self.view addSubview:_bioLineView];
     
-    UILabel *bioPrefix = [[UILabel alloc] initWithFrame:CGRectMake(7, 64 + self.view.frame.size.width + 90 + 5 + 10, 40, 20)];
-    bioPrefix.text = @"Bio: ";
-    bioPrefix.textColor = [UIColor grayColor];
-    bioPrefix.font = [FontProperties getTitleFont];
-    [bioPrefix sizeToFit];
-    [self.view addSubview:bioPrefix];
+    _bioPrefix = [[UILabel alloc] initWithFrame:CGRectMake(7, 64 + self.view.frame.size.width + 90 + 5 + 10, 40, 20)];
+    _bioPrefix.text = @"Bio: ";
+    _bioPrefix.textColor = [UIColor grayColor];
+    _bioPrefix.font = [FontProperties getTitleFont];
+    [_bioPrefix sizeToFit];
+    [self.view addSubview:_bioPrefix];
     
     _bioLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 64 + self.view.frame.size.width + 90 + 5 + 10, self.view.frame.size.width - 14, 80)];
     _bioLabel.font = [FontProperties getSmallFont];

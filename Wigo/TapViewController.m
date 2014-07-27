@@ -14,6 +14,7 @@
 @interface TapViewController ()
 
 @property Party *tapParty;
+@property NSDictionary *properties;
 @end
 
 @implementation TapViewController

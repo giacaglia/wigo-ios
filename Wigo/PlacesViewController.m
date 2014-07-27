@@ -204,7 +204,6 @@
 
 
 - (void) goOutHere:(id)sender {
-    NSLog(@"here");
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
     [Profile setUser:profileUser];
@@ -244,6 +243,10 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
+- (void)chooseUser:(id)sender {
+    int userID = ((UIButton *)sender).tag;
+//    User *user =
+}
 
 - (void)choseProfile:(id)sender {
     _scrollViewPoint = _scrollViewSender.contentOffset;
@@ -504,6 +507,8 @@
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 55, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage;
+        imageButton.tag = [(NSNumber *)[user objectForKey:@"id"] intValue];
+        [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
         
