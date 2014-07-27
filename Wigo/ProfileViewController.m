@@ -429,6 +429,8 @@
 
 
 - (void)chooseImage {
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
+    [self setNeedsStatusBarAppearanceUpdate];
     if (!_isSeingImages) {
         _isSeingImages = YES;
         _lastLineView.hidden = NO;

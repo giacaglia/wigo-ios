@@ -34,7 +34,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhotos) name:@"updatePhotos" object:nil];
     
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 100);
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 855);
     [self.view addSubview:_scrollView];
     
     self.title = @"Edit Profile";
@@ -46,6 +46,7 @@
     [self initializeBioSection];
     [self initializeNotificationsSection];
     [self initializePrivacySection];
+    [self initializeWiGoSection];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -262,6 +263,67 @@
     publicDetailLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [_scrollView addSubview:publicDetailLabel];
 }
+
+- (void) initializeWiGoSection {
+    UILabel *wiGoLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 555 + 40, 100, 20)];
+    wiGoLabel.text = @"WiGo";
+    wiGoLabel.textAlignment = NSTextAlignmentLeft;
+    wiGoLabel.font = [FontProperties getNormalFont];
+    [_scrollView addSubview:wiGoLabel];
+    
+    UIView *helpView = [[UIView alloc] initWithFrame:CGRectMake(0, 625, self.view.frame.size.width, 50)];
+    helpView.backgroundColor = [UIColor whiteColor];
+    UILabel *helpLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, helpView.frame.size.height)];
+    helpLabel.text = @"Need help? Contact Us";
+    helpLabel.font = [FontProperties getNormalFont];
+    [helpView addSubview:helpLabel];
+    [_scrollView addSubview:helpView];
+    
+    UIView *privacyView = [[UIView alloc] initWithFrame:CGRectMake(0, 675, self.view.frame.size.width, 50)];
+    privacyView.backgroundColor = [UIColor whiteColor];
+    UILabel *privacyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 150, privacyView.frame.size.height)];
+    privacyLabel.text = @"Privacy Policy";
+    privacyLabel.font = [FontProperties getNormalFont];
+    [privacyView addSubview:privacyLabel];
+    [_scrollView addSubview:privacyView];
+    
+    UIView *termsOfServiceView = [[UIView alloc] initWithFrame:CGRectMake(0, 725, self.view.frame.size.width, 50)];
+    termsOfServiceView.backgroundColor = [UIColor whiteColor];
+    UILabel *termsOfServiceLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 150, termsOfServiceView.frame.size.height)];
+    termsOfServiceLabel.text = @"Terms of Service";
+    termsOfServiceLabel.font = [FontProperties getNormalFont];
+    [termsOfServiceView addSubview:termsOfServiceLabel];
+    [_scrollView addSubview:termsOfServiceView];
+    
+    
+    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, 795, 50, 50)];
+    iconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
+    [_scrollView addSubview:iconImageView];
+    
+    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 835, self.view.frame.size.width, 50)];
+    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+    NSString *versionString = [info objectForKey:@"CFBundleShortVersionString"];
+    versionLabel.text = [NSString stringWithFormat:@"Version %@", versionString];
+    versionLabel.font = [FontProperties getSmallFont];
+    versionLabel.textAlignment = NSTextAlignmentCenter;
+    [_scrollView addSubview:versionLabel];
+    
+    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 865, self.view.frame.size.width, 50)];
+    builtInBostonLabel.text = @"Built in Boston";
+    builtInBostonLabel.font = [FontProperties getSmallFont];
+    builtInBostonLabel.textAlignment = NSTextAlignmentCenter;
+    [_scrollView addSubview:builtInBostonLabel];
+    
+    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 895, self.view.frame.size.width, 50)];
+    NSString *gitCount = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitCount"];
+    NSString *gitHash = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitHash"];
+    gitCountLabel.text = [NSString stringWithFormat:@"Git Count %@, Git Hash %@", gitCount, gitHash];
+    gitCountLabel.font = [FontProperties getSmallPhotoFont];
+    gitCountLabel.textAlignment = NSTextAlignmentCenter;
+    [_scrollView addSubview:gitCountLabel];
+
+}
+
 
 #pragma mark - UITextView Delegate methods
 
