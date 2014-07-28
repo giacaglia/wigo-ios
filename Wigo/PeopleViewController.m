@@ -244,6 +244,10 @@
 #pragma mark - Filter handlers
 
 - (void) changeFilter:(id)sender {
+    [self.view endEditing:YES];
+    _isSearching = NO;
+    _searchBar.text = @"";
+    [self searchBarTextDidEndEditing:_searchBar];
     UIButton *chosenButton = (UIButton *)sender;
     int tag = chosenButton.tag;
     if (tag >= 2) {

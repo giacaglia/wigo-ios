@@ -517,6 +517,21 @@
     [modifiedKeys removeObject:key];
 }
 
+- (void)saveKeyAsynchronously:(NSString *)key {
+    Query *query = [[Query alloc] init];
+    NSString *queryString = [NSString stringWithFormat:@"users/%@/", [_proxy objectForKey:@"id"]];
+    [query queryWithClassName:queryString];
+    [query setProfileKey:[Profile user].key];
+    [query setValue:[_proxy objectForKey:key] forKey:key];
+    
+    [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            [_proxy addEntriesFromDictionary:jsonResponse];
+            [modifiedKeys removeObject:key];
+        }
+    }];
+}
+
 #pragma mark - Refactoring saving data
 
 - (void)loginWithHandler:(QueryResult)handler {

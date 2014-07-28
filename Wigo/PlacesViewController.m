@@ -481,9 +481,8 @@
     for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 55, sizeOfEachImage, sizeOfEachImage)];
-        xPosition += sizeOfEachImage;
+        xPosition += sizeOfEachImage + 3;
         imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:[indexPath row]];
-//        objc_setAssociatedObject(imageButton, &indexPathKey, user, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);

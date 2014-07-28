@@ -11,6 +11,7 @@
 
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
+#import "RWBlurImage.h"
 
 @interface ChatViewController ()
 
@@ -118,7 +119,7 @@
     for (Message *message in [_messageParty getObjectArray]) {
         if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastMessageRead] intValue]) {
             [profileUser setLastMessageRead:[message objectForKey:@"id"]];
-            [profileUser saveKey:@"last_message_read"];
+            [profileUser saveKeyAsynchronously:@"last_message_read"];
         }
     }
 }
@@ -174,18 +175,17 @@
     lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
     if ([[message messageString] length] == 0) {
-//        lastMessageLabel.text = [Message randomStringWithLength:(arc4random_uniform(100))];
-//        NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
-//        [attributes setObject:lastMessageLabel.font forKey:NSFontAttributeName];
-//        [attributes setObject:[NSNumber numberWithFloat:4] forKey:NSStrokeWidthAttributeName];
-//        [attributes setObject:[UIColor whiteColor] forKey:NSStrokeColorAttributeName];
-//        [lastMessageLabel.text drawInRect:lastMessageImageView.frame withAttributes:attributes];
-//        
-//        // draw fill
-//        [attributes removeObjectForKey:NSStrokeWidthAttributeName];
-//        [attributes removeObjectForKey:NSStrokeColorAttributeName];
-//        [attributes setObject:[UIColor blackColor] forKey:NSForegroundColorAttributeName];
-//        [lastMessageLabel.text drawInRect:lastMessageImageView.frame withAttributes:attributes];
+//        lastMessageLabel.text = [Message randomStringWithLength:(arc4random_uniform(300))];
+//        [cell.contentView addSubview:lastMessageLabel];
+//        lastMessageLabel.text = @"HUERGYEG";
+//        UIGraphicsBeginImageContext(lastMessageLabel.bounds.size);
+//        [lastMessageLabel.layer renderInContext:UIGraphicsGetCurrentContext()];
+//        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+//        UIGraphicsEndImageContext();
+//        [lastMessageLabel removeFromSuperview];
+//        UIImage *blurredImage = [RWBlurImage blurImage:image withRadius:1000 tintColor:nil saturationDeltaFactor:1 maskImage:nil];
+//        lastMessageImageView.image = blurredImage;
+
     }
     else {
         [lastMessageImageView addSubview:lastMessageLabel];
@@ -230,6 +230,38 @@
     self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
+}
+
+#pragma mark - acessory methods
+
+
+- (UIImage *)imageFromView:(UIView *)v
+{
+    CGSize size = v.bounds.size;
+    
+    CGFloat scale = [UIScreen mainScreen].scale;
+    size.width *= scale;
+    size.height *= scale;
+    
+    UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale);
+    
+    if ([v respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)])
+    {
+        [v drawViewHierarchyInRect:(CGRect){.origin = CGPointZero, .size = size} afterScreenUpdates:YES];
+    }
+    else
+    {
+        CGContextRef ctx = UIGraphicsGetCurrentContext();
+        
+        CGContextScaleCTM(ctx, scale, scale);
+        
+        [v.layer renderInContext:ctx];
+    }
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
 }
 
 @end

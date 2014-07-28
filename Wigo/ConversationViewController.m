@@ -136,7 +136,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void) goBack {
-    [[Profile user] saveKey:@"last_message_read"];
+    [[Profile user] saveKeyAsynchronously:@"last_message_read"];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

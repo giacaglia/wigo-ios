@@ -113,6 +113,9 @@
         [_followingAcceptedParty addMetaInfo:metaDictionary];
         [Profile setFollowingParty:_followingAcceptedParty];
         
+//        if ([[Profile user] isGoingOut]) {
+//            [_whoIsGoingOutParty addObject:[Profile user]];
+//        }
         User *user;
         for (int i = 0; i < [arrayOfUsers count]; i++) {
             NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];

@@ -61,8 +61,14 @@
 - (id)initWithUser:(User *)user {
     self = [super init];
     if (self) {
-        self.user = user;
-        self.userState = [user getUserState];
+        if ([user isEqualToUser:[Profile user]]) {
+            self.user = [Profile user];
+            self.userState = [self.user isPrivate] ? PRIVATE_PROFILE : PUBLIC_PROFILE;
+        }
+        else {
+            self.user = user;
+            self.userState = [user getUserState];
+        }
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -73,10 +79,7 @@
     self = [super init];
     if (self) {
         self.user = [Profile user];
-        if ([self.user isPrivate]) {
-            self.userState = PRIVATE_PROFILE;
-        }
-        else self.userState = PUBLIC_PROFILE;
+        self.userState = [self.user isPrivate] ? PRIVATE_PROFILE : PUBLIC_PROFILE;
         self.view.backgroundColor = [UIColor whiteColor];
 
     }
@@ -284,7 +287,7 @@
     self.userState = NOT_FOLLOWING_PUBLIC_USER;
     [self reloadView];
     [self.user setIsFollowing:NO];
-    [self.user saveKey:@"is_following"];
+    [self.user saveKeyAsynchronously:@"is_following"];
 }
 
 
@@ -293,7 +296,7 @@
     else self.userState = FOLLOWING_USER;
     [self reloadView];
     [self.user setIsFollowing:YES];
-    [self.user saveKey:@"is_following"];
+    [self.user saveKeyAsynchronously:@"is_following"];
 
 }
 
@@ -354,6 +357,7 @@
         profileImgView.contentMode = UIViewContentModeScaleAspectFill;
         profileImgView.clipsToBounds = YES;
         profileImgView.frame = CGRectMake((self.view.frame.size.width + 10) * i, 0, self.view.frame.size.width, self.view.frame.size.width);
+
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 [self addBlurredImage:image toImageView:profileImgView];
@@ -570,12 +574,12 @@
     else {
         if ([self.user isFavorite]) {
             [self.user setIsFavorite:NO];
-            [self.user saveKey:@"is_favorite"];
+            [self.user saveKeyAsynchronously:@"is_favorite"];
             _favoriteImageView.image = [UIImage imageNamed:@"favorite"];
         }
         else {
             [self.user setIsFavorite:YES];
-            [self.user saveKey:@"is_favorite"];
+            [self.user saveKeyAsynchronously:@"is_favorite"];
             _favoriteImageView.image = [UIImage imageNamed:@"favoriteSelected"];
         }
     }

@@ -71,5 +71,5 @@ typedef enum states
 - (void)saveKey:(NSString *)key;
 - (void)loginWithHandler:(QueryResult)handler;
 
-
+- (void)saveKeyAsynchronously:(NSString *)key;
 @end

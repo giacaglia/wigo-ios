@@ -53,7 +53,7 @@
 - (void) stayInPressed {
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:NO];
-    [profileUser saveKey:@"is_goingout"];
+    [profileUser saveKeyAsynchronously:@"is_goingout"];
     [profileUser setIsGoingOut:NO];
     [Profile setUser:profileUser];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateViewNotGoingOut" object:nil];

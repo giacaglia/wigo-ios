@@ -277,7 +277,7 @@
     for (Notification *notification in [_notificationsParty getObjectArray]) {
         if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
             [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
-            [profileUser saveKey:@"last_notification_read"];
+            [profileUser saveKeyAsynchronously:@"last_notification_read"];
         }
     }
 }
@@ -321,7 +321,7 @@
     User *profileUser = [Profile user];
     if ([notification objectForKey:@"id"] > [profileUser lastNotificationRead]) {
         [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
-        [profileUser saveKey:@"last_notification_read"];
+        [profileUser saveKeyAsynchronously:@"last_notification_read"];
     }
 }
 
