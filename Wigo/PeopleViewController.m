@@ -64,14 +64,7 @@
 {
     [super viewDidLoad];
     _chosenFilter = 1;
-    if ([[self.user allKeys] containsObject:@"tabNumber"]) {
-        _currentTab = [self.user objectForKey:@"tabNumber"];
-    }
-    else _currentTab = @2;
-    _contentParty = [[Party alloc] initWithObjectName:@"User"];
-    _filteredContentParty = [[Party alloc] initWithObjectName:@"User"];
-    
-    
+  
     // Title setup
     self.title = [self.user fullName];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
@@ -82,13 +75,22 @@
     [self initializeSearchBar];
     [self initializeTableOfPeople];
     
-    [self fetchSummary];
-    [self loadTableView];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     [self initializeBackBarButton];
     [self initializeRightBarButton];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    if ([[self.user allKeys] containsObject:@"tabNumber"]) {
+        _currentTab = [self.user objectForKey:@"tabNumber"];
+    }
+    else _currentTab = @2;
+    _contentParty = [[Party alloc] initWithObjectName:@"User"];
+    _filteredContentParty = [[Party alloc] initWithObjectName:@"User"];
+    [self loadTableView];
+    [self fetchSummary];
 }
 
 - (void)initializeBackBarButton {
@@ -306,6 +308,7 @@
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
+    if ([[_contentParty getObjectArray] count] == 0) return cell;
     if ([indexPath row] == [[_contentParty getObjectArray] count]) {
         [self loadNextPage];
         return cell;

@@ -45,6 +45,7 @@
 @property UILabel *goingOutLabelOnTopOfNotGoingOutLabel;
 @property UILabel *notGoingOutLabel;
 @property BOOL spinnerAtCenter;
+@property BOOL notFirstTimeOpeningView;
 
 @end
 
@@ -55,10 +56,14 @@
     [self initializeTabBar];
     [self initializeNavigationItem];
     [self showTapButtons];
+   
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     self.tabBarController.tabBar.hidden = NO;
+//    if (_notFirstTimeOpeningView) {
+//        [self fetchFollowingFirstPage];
+//    }
 }
 
 - (void)viewDidLoad
@@ -78,6 +83,7 @@
     _numberFetchedMyInfoAndEveryoneElse = 0;
     [self fetchFollowingFirstPage];
     [self fetchUserInfo];
+    _notFirstTimeOpeningView = YES;
 }
 
 #pragma mark - Network function
