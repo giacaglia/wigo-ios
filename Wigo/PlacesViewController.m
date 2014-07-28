@@ -49,7 +49,6 @@
 // Events Summary
 @property Party *eventsParty;
 @property NSMutableArray *partyUserArray;
-@property NSMutableArray *summaryArray;
 @property Party *everyoneParty;
 
 // Go OUT Button
@@ -76,33 +75,6 @@
     [self fetchEventsFirstPage];
 }
 
-- (void) fetchEventsFirstPage {
-    _page = @1;
-    numberOfFetchedParties = 0;
-    _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
-    _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];
-    _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
-    [self fetchEvents];
-}
-
-- (void) fetchEvents {
-    _everyoneParty = [Profile everyoneParty];
-    if (_spinnerAtTop) [WiGoSpinnerView showBlueSpinnerAddedTo:self.view];
-    NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@", [_page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *events = [jsonResponse objectForKey:@"objects"];
-        [_eventsParty addObjectsFromArray:events];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_eventsParty addMetaInfo:metaDictionary];
-        
-        [self fetchEventAttendeesAsynchronous];
-        [self fetchEventSummaryAsynchronous];
-        _page = @([_page intValue] + 1);
-        if ([events count] == 0) {
-            [self fetchedOneParty];
-        }
-    }];
-}
 
 - (void) viewWillAppear:(BOOL)animated {
     self.tabBarController.tabBar.hidden = NO;
@@ -409,7 +381,6 @@
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
     
     if (_isSearching) {
         if (indexPath.row == [_filteredContentList count]) {
@@ -433,8 +404,7 @@
     if ([_partyUserArray count] == 0) partyUser = [[Party alloc] initWithObjectName:@"User"];
     else partyUser  = [_partyUserArray objectAtIndex:[indexPath row]];
     
-    NSDictionary *summary = [_summaryArray objectAtIndex:[indexPath row]];
-    NSNumber *totalUsers = [summary objectForKey:@"total"];
+    NSNumber *totalUsers = [event numberAttending];
     
     UIView *placeSubView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, sizeOfEachCell)];
     placeSubView.tag = _tagInteger;
@@ -555,7 +525,37 @@
     return cell;
 }
 
+
+
 #pragma mark - Network Asynchronous Functions
+
+
+- (void) fetchEventsFirstPage {
+    _page = @1;
+    numberOfFetchedParties = 0;
+    _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
+    _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];
+    _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
+    [self fetchEvents];
+}
+
+- (void) fetchEvents {
+    _everyoneParty = [Profile everyoneParty];
+    if (_spinnerAtTop) [WiGoSpinnerView showBlueSpinnerAddedTo:self.view];
+    NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@", [_page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *events = [jsonResponse objectForKey:@"objects"];
+        [_eventsParty addObjectsFromArray:events];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_eventsParty addMetaInfo:metaDictionary];
+        
+        [self fetchEventAttendeesAsynchronous];
+        _page = @([_page intValue] + 1);
+        if ([events count] == 0) {
+            [self fetchedOneParty];
+        }
+    }];
+}
 
 - (void)fetchEventAttendeesAsynchronous {
     _partyUserArray =  [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
@@ -600,33 +600,9 @@
     }
 }
 
--(void)fetchEventSummaryAsynchronous {
-    _summaryArray = [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
-    // Pre-populate Array
-    for (int j = 0; j < [[_eventsParty getObjectArray] count]; j++) {
-        [_summaryArray addObject:[[NSDictionary alloc] init]];
-    }
-    for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
-        Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
-        NSNumber *eventId = [event eventID];
-        NSString *queryString = [NSString stringWithFormat:@"eventattendees/summary/?event=%@", [eventId stringValue]];
-        NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
-        [Network queryAsynchronousAPI:queryString
-                  withInputDictionary:(NSDictionary *)inputDictionary
-                          withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
-                              if (jsonResponse) {
-                                  NSInteger indexOfEvent = [[resultInputDictionary objectForKey:@"i"] integerValue];
-                                  [_summaryArray insertObject:jsonResponse atIndex:indexOfEvent];
-                                  [_summaryArray removeObjectAtIndex:(indexOfEvent+1)];
-                              }
-                              [self fetchedOneParty];
-                          }];
-    }
-}
-
 - (void)fetchedOneParty {
     numberOfFetchedParties += 1;
-    if (numberOfFetchedParties >= 2*[[_eventsParty getObjectArray] count]) {
+    if (numberOfFetchedParties >= [[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             _spinnerAtTop ? [WiGoSpinnerView hideSpinnerForView:self.view] : [_placesTableView didFinishPullToRefresh];
             _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];

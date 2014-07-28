@@ -39,6 +39,11 @@
     [_proxy setObject:eventID forKey:@"id"];
 }
 
+- (NSNumber *)numberAttending {
+    if ([[_proxy allKeys] containsObject:@"num_attending"]) return [_proxy objectForKey:@"num_attending"];
+    return @0;
+}
+
 #pragma mark - NSMutableDictionary methods
 
 - (id)initWithDictionary:(NSDictionary *)otherDictionary {
