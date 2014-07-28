@@ -159,7 +159,7 @@
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
     [cell.contentView addSubview:profileImageView];
     
-    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 15)];
+    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
     textLabel.text = [user fullName];
     textLabel.font = [FontProperties getSubtitleFont];
     [cell.contentView addSubview:textLabel];

@@ -17,10 +17,8 @@
 
 #define xSpacing 10
 #define sizeOfEachCell 125
-
 @interface PlacesViewController ()
 
-// TextField
 @property UIView *whereAreYouGoingView;
 @property UITextField *whereAreYouGoingTextField;
 @property UIButton *clearButton;
@@ -216,8 +214,15 @@
 }
 
 - (void)chooseUser:(id)sender {
-    int userID = ((UIButton *)sender).tag;
-//    User *user =
+    int tag = ((UIButton *)sender).tag;
+    NSDictionary *eventAndUserIndex = [self getUserIndexAndEventIndexFromUniqueIndex:tag];
+    int eventIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"eventIndex"] intValue];
+    int userIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"userIndex"] intValue];
+    Party *partyUser  = [_partyUserArray objectAtIndex:eventIndex];
+    User *user = [[partyUser getObjectArray] objectAtIndex:userIndex];
+    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+    [self.navigationController pushViewController:self.profileViewController animated:YES];
+    self.tabBarController.tabBar.hidden = YES;
 }
 
 - (void)choseProfile:(id)sender {
@@ -477,7 +482,8 @@
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 55, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage;
-        imageButton.tag = [(NSNumber *)[user objectForKey:@"id"] intValue];
+        imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:[indexPath row]];
+//        objc_setAssociatedObject(imageButton, &indexPathKey, user, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
@@ -525,7 +531,18 @@
     return cell;
 }
 
+-(int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
+    int numberOfEvents = [[_eventsParty getObjectArray] count];
+    return numberOfEvents * userIndex + eventIndex;
+}
 
+- (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {
+    int userIndex, eventIndex;
+    int numberOfEvents = [[_eventsParty getObjectArray] count];
+    userIndex = uniqueIndex/numberOfEvents;
+    eventIndex = uniqueIndex - userIndex * numberOfEvents;
+    return @{@"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex":[NSNumber numberWithInt:eventIndex]};
+}
 
 #pragma mark - Network Asynchronous Functions
 
