@@ -188,7 +188,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    User *user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
+    User *user;
+    if (_isSearching) user = [[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
+    else user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
     self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
 }
