@@ -10,6 +10,7 @@
 #import "EditProfileViewController.h"
 #import "ConversationViewController.h"
 #import "PeopleViewController.h"
+#import "MoreViewController.h"
 #import "User.h"
 
 
@@ -25,5 +26,6 @@
 @property EditProfileViewController *editProfileViewController;
 @property ConversationViewController *conversationViewController;
 @property PeopleViewController *peopleViewController;
+@property MoreViewController *moreViewController;
 
 @end

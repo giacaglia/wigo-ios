@@ -14,6 +14,7 @@
 #import "UIImageCrop.h"
 #import "WiGoSpinnerView.h"
 #import "Draggable.h"
+#import "RWBlurPopover.h"
 
 
 @interface ProfileViewController ()
@@ -103,7 +104,7 @@
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseImage) name:@"chooseImage" object:nil];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
     
     [self initializeLeftBarButton];
     [self initializeBioLabel];
@@ -237,9 +238,9 @@
         
     }
     else  {
-        _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
-        [_rightBarBt setTitle:@"Unfollow" forState:UIControlStateNormal];
-        [_rightBarBt addTarget:self action: @selector(unfollowPressed) forControlEvents:UIControlEventTouchUpInside];
+        _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
+        [_rightBarBt setTitle:@"More" forState:UIControlStateNormal];
+        [_rightBarBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
     }
     _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
     [_rightBarBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -281,6 +282,13 @@
     [self.navigationController pushViewController:self.editProfileViewController animated:YES];
 }
 
+- (void)unfollowPressed {
+    self.userState = NOT_FOLLOWING_PUBLIC_USER;
+    [self reloadView];
+    [self.user setIsFollowing:NO];
+    [self.user saveKey:@"is_following"];
+}
+
 
 - (void)followPressed {
     if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
@@ -290,11 +298,9 @@
 
 }
 
-- (void)unfollowPressed {
-    self.userState = NOT_FOLLOWING_PUBLIC_USER;
-    [self reloadView];
-    [self.user setIsFollowing:NO];
-    [self.user saveKey:@"is_following"];
+- (void)morePressed {
+    self.moreViewController = [[MoreViewController alloc] init];
+    [[RWBlurPopover instance] presentViewController:self.moreViewController withOrigin:30 andHeight:450];
 }
 
 

@@ -1,5 +1,5 @@
 //
-//  ContactUsViewController.h
+//  MoreViewController.h
 //  Wigo
 //
 //  Created by Giuliano Giacaglia on 7/28/14.
@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ContactUsViewController : UIViewController
-
+@interface MoreViewController : UIViewController
 
 @end

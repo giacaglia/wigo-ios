@@ -465,7 +465,7 @@
         aroundGoOutButton.tag = [(NSNumber *)[event eventID] intValue];
         [aroundGoOutButton addTarget:self action:@selector(goOutHere:) forControlEvents:UIControlEventTouchUpInside];
         
-        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 80, 17)];
+        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 80, 25)];
         goOutButton.enabled = NO;
         [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
         [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
