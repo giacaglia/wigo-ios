@@ -19,7 +19,7 @@
 }
 
 
-+ (UIImageView *)blurImageView:(UIImageView *)profileImgView {
++ (UIImageView *)blurImageView:(UIImageView *)profileImgView withRadius:(float)radius {
     UIGraphicsBeginImageContext(profileImgView.bounds.size);
     [profileImgView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewImg = UIGraphicsGetImageFromCurrentImageContext();
@@ -35,7 +35,7 @@
     
     CIFilter *gaussianBlurFilter = [CIFilter filterWithName: @"CIGaussianBlur"];
     [gaussianBlurFilter setValue:clampFilter.outputImage forKey: @"inputImage"];
-    [gaussianBlurFilter setValue:[NSNumber numberWithFloat:10.0f] forKey:@"inputRadius"];
+    [gaussianBlurFilter setValue:[NSNumber numberWithFloat:radius] forKey:@"inputRadius"];
     
     CIContext *context = [CIContext contextWithOptions:nil];
     CGImageRef cgImg = [context createCGImage:gaussianBlurFilter.outputImage fromRect:[blurImg extent]];
@@ -46,6 +46,10 @@
     imgView.image = outputImg;
     [profileImgView addSubview:imgView];
     return profileImgView;
+}
+
++ (UIImageView *)blurImageView:(UIImageView *)profileImgView {
+    return [UIImageCrop blurImageView:profileImgView withRadius:10.0f];
 }
 
 + (UIImage *)croppingImage:(UIImage *)imageToCrop toRect:(CGRect)rect

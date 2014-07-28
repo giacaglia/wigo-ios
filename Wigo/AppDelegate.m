@@ -178,6 +178,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 - (void) changeTabBarToBlue {
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     UITabBar *tabBar = tabBarController.tabBar;
+//    tabBar.delegate = self;
     tabBar.layer.borderWidth = 0.5;
     [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getBlueColor], NSFontAttributeName:[UIFont fontWithName:@"Whitney-MediumSC" size:11.0f] } forState:UIControlStateNormal];
     UITabBarItem *firstTab = [tabBar.items objectAtIndex:0];
@@ -255,16 +256,28 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     return wasHandled;
 }
 
-#pragma mark - Tap Gesture
+//- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
+//{
+////    [(UINavigationController*)self.tabBarController.selectedViewController popToRootViewControllerAnimated:NO];
+//    NSLog(@"here");
+//    return YES;
+//}
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    // Disallow recognition of tap gestures in the TabbarItem control.
-    if ([touch.view isKindOfClass:[UIBarButtonItem class]]) {//change it to your condition
-        if (touch.view.tag != 50) {
-            return NO;
-        }
-        return YES;
-    }
-    return NO;
-}
+//- (void)handleSingleTap:(id)sender {
+//    NSLog(@"here");
+//
+//}
+//
+//#pragma mark - Tap Gesture
+//
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+//    // Disallow recognition of tap gestures in the TabbarItem control.
+//    if ([touch.view isKindOfClass:[UIBarButtonItem class]]) {//change it to your condition
+////        if (touch.view.tag != 50) {
+////            return NO;
+////        }
+//        return YES;
+//    }
+//    return NO;
+//}
 @end

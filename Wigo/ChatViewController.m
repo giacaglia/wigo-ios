@@ -11,7 +11,6 @@
 
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
-#import "RWBlurImage.h"
 
 @interface ChatViewController ()
 
@@ -176,25 +175,17 @@
     lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
     if ([[message messageString] length] == 0) {
-//        lastMessageLabel.text = [Message randomStringWithLength:(arc4random_uniform(300))];
-//        [cell.contentView addSubview:lastMessageLabel];
-//        lastMessageLabel.text = @"HUERGYEG";
-//        UIGraphicsBeginImageContext(lastMessageLabel.bounds.size);
-//        [lastMessageLabel.layer renderInContext:UIGraphicsGetCurrentContext()];
-//        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-//        UIGraphicsEndImageContext();
-//        [lastMessageLabel removeFromSuperview];
-//        UIImage *blurredImage = [RWBlurImage blurImage:image withRadius:1000 tintColor:nil saturationDeltaFactor:1 maskImage:nil];
-//        lastMessageImageView.image = blurredImage;
-
+        lastMessageLabel.textColor = RGB(150, 150, 150);
+        lastMessageLabel.text = [Message randomStringWithLength:(arc4random_uniform(50))];
+        [lastMessageImageView addSubview:lastMessageLabel];
+        lastMessageImageView = [UIImageCrop blurImageView:lastMessageImageView withRadius:3.0f];
+        [lastMessageLabel removeFromSuperview];
     }
     else {
         [lastMessageImageView addSubview:lastMessageLabel];
     }
     [cell.contentView addSubview:lastMessageImageView];
 
-
-    
     UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, 10, 80, 20)];
     timeStampLabel.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
     timeStampLabel.text = [message timeOfCreation];

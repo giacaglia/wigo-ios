@@ -185,14 +185,18 @@
 }
 
 - (void)initializeGoingSomewhereElseButton {
-    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(xSpacing, 0, self.view.frame.size.width, 70)];
+    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(xSpacing, 35 - 20, self.view.frame.size.width - 2*xSpacing, 40)];
     [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
+    _goingSomewhereButton.layer.cornerRadius = 10;
+    _goingSomewhereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    _goingSomewhereButton.layer.borderWidth = 1;
     
     UILabel *goingSomewhereLabel = [[UILabel alloc] initWithFrame:CGRectMake(67, _goingSomewhereButton.frame.size.height/2 - 7, 230, 15)];
     goingSomewhereLabel.text = @"GO SOMEWHERE ELSE";
     goingSomewhereLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0];
     goingSomewhereLabel.textColor = [FontProperties getBlueColor];
     [_goingSomewhereButton addSubview:goingSomewhereLabel];
+    
     UIImageView *goingSomewhereImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"goingSomewhereElse"]];
     goingSomewhereImageView.frame = CGRectMake(35, _goingSomewhereButton.frame.size.height/2 - 10, 18, 21);
     [_goingSomewhereButton addSubview:goingSomewhereImageView];
