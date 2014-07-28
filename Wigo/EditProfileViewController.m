@@ -34,7 +34,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhotos) name:@"updatePhotos" object:nil];
     
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 855);
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 905);
     [self.view addSubview:_scrollView];
     
     self.title = @"Edit Profile";
@@ -271,36 +271,47 @@
     wiGoLabel.font = [FontProperties getNormalFont];
     [_scrollView addSubview:wiGoLabel];
     
-    UIView *helpView = [[UIView alloc] initWithFrame:CGRectMake(0, 625, self.view.frame.size.width, 50)];
-    helpView.backgroundColor = [UIColor whiteColor];
-    UILabel *helpLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, helpView.frame.size.height)];
+    UIButton *helpButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 625, self.view.frame.size.width, 50)];
+    helpButton.backgroundColor = [UIColor whiteColor];
+    UILabel *helpLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, helpButton.frame.size.height)];
     helpLabel.text = @"Need help? Contact Us";
     helpLabel.font = [FontProperties getNormalFont];
-    [helpView addSubview:helpLabel];
-    [_scrollView addSubview:helpView];
+    [helpButton addSubview:helpLabel];
+    [helpButton addTarget:self action:@selector(sendEmail) forControlEvents:UIControlEventTouchUpInside];
+    [_scrollView addSubview:helpButton];
     
-    UIView *privacyView = [[UIView alloc] initWithFrame:CGRectMake(0, 675, self.view.frame.size.width, 50)];
-    privacyView.backgroundColor = [UIColor whiteColor];
-    UILabel *privacyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 150, privacyView.frame.size.height)];
+    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 675, self.view.frame.size.width, 50)];
+    privacyButton.backgroundColor = [UIColor whiteColor];
+    UILabel *privacyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 150, privacyButton.frame.size.height)];
     privacyLabel.text = @"Privacy Policy";
     privacyLabel.font = [FontProperties getNormalFont];
-    [privacyView addSubview:privacyLabel];
-    [_scrollView addSubview:privacyView];
+    [privacyButton addSubview:privacyLabel];
+    [privacyButton addTarget:self action:@selector(openPrivacy) forControlEvents:UIControlEventTouchUpInside];
+    [_scrollView addSubview:privacyButton];
     
-    UIView *termsOfServiceView = [[UIView alloc] initWithFrame:CGRectMake(0, 725, self.view.frame.size.width, 50)];
-    termsOfServiceView.backgroundColor = [UIColor whiteColor];
-    UILabel *termsOfServiceLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 150, termsOfServiceView.frame.size.height)];
+    UIButton *termsOfServiceButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 725, self.view.frame.size.width, 50)];
+    termsOfServiceButton.backgroundColor = [UIColor whiteColor];
+    UILabel *termsOfServiceLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 150, termsOfServiceButton.frame.size.height)];
     termsOfServiceLabel.text = @"Terms of Service";
     termsOfServiceLabel.font = [FontProperties getNormalFont];
-    [termsOfServiceView addSubview:termsOfServiceLabel];
-    [_scrollView addSubview:termsOfServiceView];
+    [termsOfServiceButton addSubview:termsOfServiceLabel];
+    [termsOfServiceButton addTarget:self action:@selector(openTerms) forControlEvents:UIControlEventTouchUpInside];
+    [_scrollView addSubview:termsOfServiceButton];
     
+    UIButton *communityStandardsButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 775, self.view.frame.size.width, 50)];
+    communityStandardsButton.backgroundColor = [UIColor whiteColor];
+    UILabel *communityStandardsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, termsOfServiceButton.frame.size.height)];
+    communityStandardsLabel.text = @"Community Standards";
+    communityStandardsLabel.font = [FontProperties getNormalFont];
+    [communityStandardsButton addSubview:communityStandardsLabel];
+    [communityStandardsButton addTarget:self action:@selector(openCommunityStandards) forControlEvents:UIControlEventTouchUpInside];
+    [_scrollView addSubview:communityStandardsButton];
     
-    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, 795, 50, 50)];
+    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, 845, 50, 50)];
     iconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
     [_scrollView addSubview:iconImageView];
     
-    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 835, self.view.frame.size.width, 50)];
+    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 885, self.view.frame.size.width, 50)];
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
     NSString *versionString = [info objectForKey:@"CFBundleShortVersionString"];
     versionLabel.text = [NSString stringWithFormat:@"Version %@", versionString];
@@ -308,22 +319,38 @@
     versionLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:versionLabel];
     
-    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 865, self.view.frame.size.width, 50)];
+    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 915, self.view.frame.size.width, 50)];
     builtInBostonLabel.text = @"Built in Boston";
     builtInBostonLabel.font = [FontProperties getSmallFont];
     builtInBostonLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:builtInBostonLabel];
     
-    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 895, self.view.frame.size.width, 50)];
+    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 945, self.view.frame.size.width, 50)];
     NSString *gitCount = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitCount"];
     NSString *gitHash = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitHash"];
     gitCountLabel.text = [NSString stringWithFormat:@"Git Count %@, Git Hash %@", gitCount, gitHash];
     gitCountLabel.font = [FontProperties getSmallPhotoFont];
     gitCountLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:gitCountLabel];
-
 }
 
+- (void)openPrivacy {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.wigo.us/legal/privacy.pdf"]];
+}
+
+- (void)sendEmail {
+    self.contactUsViewController = [[ContactUsViewController alloc] init];
+    [[RWBlurPopover instance] presentViewController:self.contactUsViewController withOrigin:30 andHeight:450];
+}
+
+- (void)openTerms {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.wigo.us/legal/rightsandresponsibilities.pdf"]];
+}
+
+- (void) openCommunityStandards {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.wigo.us/legal/communitystandards.pdf"]];
+
+}
 
 #pragma mark - UITextView Delegate methods
 

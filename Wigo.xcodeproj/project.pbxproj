@@ -201,6 +201,8 @@
 		E921D6421923967D00361247 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E921D6401923967D00361247 /* InfoPlist.strings */; };
 		E921D6441923967D00361247 /* WigoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6431923967D00361247 /* WigoTests.m */; };
 		E921D66819239ED900361247 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D66119239ED900361247 /* MainViewController.m */; };
+		E93030C41986A07F00FFC4F8 /* ContactUsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E93030C31986A07F00FFC4F8 /* ContactUsViewController.m */; };
+		E93030C51986A07F00FFC4F8 /* ContactUsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E93030C31986A07F00FFC4F8 /* ContactUsViewController.m */; };
 		E93DE52A195C82B900079074 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E93DE529195C82B900079074 /* MessageViewController.m */; };
 		E93DE530195C99F600079074 /* UIImageCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = E93DE52F195C99F600079074 /* UIImageCrop.m */; };
 		E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */; };
@@ -441,6 +443,8 @@
 		E921D6431923967D00361247 /* WigoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WigoTests.m; sourceTree = "<group>"; };
 		E921D66019239ED900361247 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		E921D66119239ED900361247 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		E93030C21986A07F00FFC4F8 /* ContactUsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactUsViewController.h; sourceTree = "<group>"; };
+		E93030C31986A07F00FFC4F8 /* ContactUsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactUsViewController.m; sourceTree = "<group>"; };
 		E93DE528195C829E00079074 /* MessageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
 		E93DE529195C82B900079074 /* MessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageViewController.m; sourceTree = "<group>"; };
 		E93DE52E195C99F600079074 /* UIImageCrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageCrop.h; sourceTree = "<group>"; };
@@ -1098,6 +1102,8 @@
 				E9D906BD19252DA900E39FC8 /* PeopleViewController.m */,
 				E9CD4738194B9AD600AEA17D /* PhotoViewController.h */,
 				E9CD4739194B9AD600AEA17D /* PhotoViewController.m */,
+				E93030C21986A07F00FFC4F8 /* ContactUsViewController.h */,
+				E93030C31986A07F00FFC4F8 /* ContactUsViewController.m */,
 				E94A2850196C6BC50027D3BA /* FacebookIntegration */,
 			);
 			name = ProfileViews;
@@ -1675,6 +1681,7 @@
 				C12A111219787BE700D53B1C /* main.m in Sources */,
 				C12A111319787BE700D53B1C /* FacebookAlbumTableViewController.m in Sources */,
 				C12A111419787BE700D53B1C /* SDWebImageDownloader.m in Sources */,
+				E93030C51986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
 				C12A111519787BE700D53B1C /* MessageViewController.m in Sources */,
 				C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */,
 				C12A111719787BE700D53B1C /* SignViewController.m in Sources */,
@@ -1741,6 +1748,7 @@
 				E921D6221923967D00361247 /* main.m in Sources */,
 				E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */,
 				E900C2BA1961EADE00A01F50 /* SDWebImageDownloader.m in Sources */,
+				E93030C41986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
 				E93DE52A195C82B900079074 /* MessageViewController.m in Sources */,
 				E900C2C11961EADE00A01F50 /* UIImage+WebP.m in Sources */,
 				E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */,

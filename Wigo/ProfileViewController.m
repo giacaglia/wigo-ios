@@ -452,9 +452,7 @@
                             options:UIViewAnimationOptionCurveLinear
                             animations:^{
                                 _nameOfPersonLabel.transform =  CGAffineTransformMakeTranslation(0, _nameOfPersonLabel.frame.size.height);
-//                                _bioLabel.textColor = [UIColor whiteColor];
-                                _bioLabel.hidden = YES;
-                                _bioPrefix.hidden = YES;
+                                _bioLabel.textColor = [UIColor whiteColor];
                                 self.view.backgroundColor = RGB(23, 23, 23);
                                 _nameOfPersonLabel.backgroundColor = RGB(23, 23, 23);
                                 

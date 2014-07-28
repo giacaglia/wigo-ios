@@ -199,7 +199,7 @@
 - (void) initializeNotGoingOutBar {
     if (!_notGoingOutView) {
         _notGoingOutView = [[UIView alloc] init];
-        _notGoingOutView.backgroundColor = [UIColor whiteColor];
+        _notGoingOutView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
         [self.view bringSubviewToFront:_notGoingOutView];
         
         UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
