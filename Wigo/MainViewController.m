@@ -497,6 +497,7 @@
         tag = - [indexPath row];
         tag -= 1;
     }
+    if ([userArray count] == 0) return cell;
     User *user = [userArray objectAtIndex:[indexPath row]];
     
     UIImageView *imgView = [[UIImageView alloc] init];
@@ -597,6 +598,7 @@
                 _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, self.view.frame.size.height, reusableView.frame.size.width, 30);
                 [_collectionView addSubview:_notGoingOutView];
                 _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+                if (!_isFirstTimeNotGoingOutIsAttachedToScrollView) _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
             }
             else {
                 if (_isFirstTimeNotGoingOutIsAttachedToScrollView) {
