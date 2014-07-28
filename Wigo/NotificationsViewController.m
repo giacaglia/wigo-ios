@@ -164,7 +164,7 @@
     if ([typeString isEqualToString:@"chat"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"commentFilled"]];
         iconLabel.frame = CGRectMake(58, 20, 14, 14);
-        [notificationButton addTarget:self action:@selector(chatSegue) forControlEvents:UIControlEventTouchUpInside];
+        [notificationButton addTarget:self action:@selector(chatSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"tap"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapFilled"]];
@@ -227,16 +227,19 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
-- (void) chatSegue {
+- (void) chatSegue:(id)sender {
     self.conversationViewController = [[ConversationViewController alloc] init];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
+    [self updateNotificationsRead:((UIButton *)sender).tag];
 }
 
 - (void)tapSegue:(id)sender {
     self.tapViewController = [[TapViewController alloc] init];
     [self.navigationController pushViewController:self.tapViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
+    [self updateNotificationsRead:((UIButton *)sender).tag];
+
 }
 
 - (void) profileSegue:(id)sender {
@@ -247,9 +250,19 @@
     self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
+    [self updateNotificationsRead:rowOfButtonSender];
 }
 
-#pragma mark - Refresh button 
+- (void)updateNotificationsRead:(int)index {
+    Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:index];
+    User *profileUser = [Profile user];
+    if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastNotificationRead] intValue]) {
+        [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
+        [Profile setUser:profileUser];
+    }
+}
+
+#pragma mark - Refresh button
 
 - (void)addRefreshToTable {
     [WiGoSpinnerView addDancingGToUIScrollView:_notificationsTableView withHandler:^{
