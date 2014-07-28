@@ -59,6 +59,9 @@
 }
 
 - (void)blockPressed {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil];
+    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 - (void)cancelPressed {

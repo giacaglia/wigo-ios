@@ -106,6 +106,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseImage) name:@"chooseImage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed) name:@"blockPressed" object:nil];
+
     
     [self initializeLeftBarButton];
     [self initializeBioLabel];
@@ -288,6 +290,15 @@
     [self reloadView];
     [self.user setIsFollowing:NO];
     [self.user saveKeyAsynchronously:@"is_following"];
+}
+
+- (void)blockPressed {
+   UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Block"
+                                                   message: @"Are you sure you want to block this user?"
+                                                  delegate: nil
+                                         cancelButtonTitle:@"Cancel"
+                                         otherButtonTitles:@"Block", nil];
+    [alert show];
 }
 
 
