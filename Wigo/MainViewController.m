@@ -54,6 +54,7 @@
     self.tabBarController.tabBar.hidden = NO;
     [self initializeTabBar];
     [self initializeNavigationItem];
+    [self showTapButtons];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -408,7 +409,7 @@
         user = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:tag];
     }
     if (![user isTapped]) {
-        [Network sendTapToUserWithIndex:[user objectForKey:@"id"]];
+        [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
     }
 }
 

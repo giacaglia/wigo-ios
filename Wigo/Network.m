@@ -37,6 +37,17 @@
     }];
 }
 
+
++ (void)sendAsynchronousTapToUserWithIndex:(NSNumber *)indexOfUser {
+    Query *query = [[Query alloc] init];
+    User *user = [Profile user];
+    [query setProfileKey:user.key];
+    [query queryWithClassName:@"taps/"];
+    [query setValue:indexOfUser forKey:@"tapped"];
+    [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error){}];
+}
+
+
 # pragma mark - Synchronous Methods
 
 + (void)unfollowUser:(User *)user {

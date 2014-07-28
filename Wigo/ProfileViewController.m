@@ -21,8 +21,6 @@
 
 @property BOOL didImagesLoad;
 
-
-
 // bio
 @property UILabel *bioPrefix;
 @property UILabel *bioLabel;
@@ -292,6 +290,7 @@
 
 - (void)followPressed {
     if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
+    else self.userState = FOLLOWING_USER;
     [self reloadView];
     [self.user setIsFollowing:YES];
     [self.user saveKey:@"is_following"];
