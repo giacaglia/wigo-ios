@@ -43,6 +43,7 @@ typedef enum states
 @property BOOL isFollowing;
 @property NSNumber *lastNotificationRead;
 @property NSNumber *lastMessageRead;
+@property NSNumber *lastUserRead;
 
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;

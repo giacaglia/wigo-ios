@@ -374,10 +374,23 @@
     return (NSNumber *)[_proxy objectForKey:@"last_notification_read"];
 }
 
+- (void)setLastUserRead:(NSNumber *)lastUserRead {
+    if ([[_proxy allKeys] containsObject:@"last_user_read"]) {
+        [_proxy setObject:lastUserRead forKey:@"last_user_read"];
+        [modifiedKeys addObject:@"last_user_read"];
+    }
+}
+
+- (NSNumber *)lastUserRead {
+    if ([[_proxy allKeys] containsObject:@"last_user_read"]) return (NSNumber *)[_proxy objectForKey:@"last_user_read"];
+    else return @0;
+}
+
 - (void)setLastNotificationRead:(NSNumber *)lastNotificationRead {
     [_proxy setObject:lastNotificationRead forKey:@"last_notification_read"];
     [modifiedKeys addObject:@"last_notification_read"];
 }
+
 
 - (BOOL)isFollowingRequested {
     if ([[_proxy allKeys] containsObject:@"is_following_requested"]) {

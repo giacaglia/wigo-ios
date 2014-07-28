@@ -120,6 +120,7 @@
 }
 
 - (void) goBack {
+    [self updateLastUserRead];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -377,6 +378,10 @@
         }
     }
     
+    if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastUserRead] intValue]) {
+        cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
+    }
+    
     return cell;
 }
 
@@ -458,6 +463,17 @@
     return user;
 }
 
+#pragma mark - Last User Read 
+- (void)updateLastUserRead {
+    User *profileUser = [Profile user];
+    for (User *user in [_everyoneParty getObjectArray]) {
+        if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastUserRead] intValue]) {
+            [profileUser setLastUserRead:[user objectForKey:@"id"]];
+            [Profile setUser:profileUser];
+            [profileUser saveKeyAsynchronously:@"last_user_read"];
+        }
+    }
+}
 
 #pragma mark - Network functions
 
