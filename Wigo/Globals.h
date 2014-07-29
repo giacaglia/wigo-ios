@@ -21,6 +21,8 @@
 #import "FontProperties.h"
 #import "WiGoSpinnerView.h"
 
+#import "LocalyticsSession.h"
+
 static NSString * const cellIdentifier = @"ContentViewCell";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";
 

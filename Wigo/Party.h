@@ -19,7 +19,6 @@
 @property NSDictionary *metaDictionary;
 
 
-
 - (id)initWithObjectName:(NSString *)objectName;
 - (NSArray *)getObjectArray;
 - (NSArray *)getNameArray;

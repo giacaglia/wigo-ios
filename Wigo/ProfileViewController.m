@@ -98,6 +98,7 @@
 
 - (void)viewDidLoad
 {
+    [[LocalyticsSession shared] tagScreen:@"Profile"];
     [super viewDidLoad];
     _didImagesLoad = NO;
     _currentPage = 0;

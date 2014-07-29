@@ -10,6 +10,8 @@
 #import "User.h"
 #import "Profile.h"
 #import <Parse/Parse.h>
+#import "LocalyticsSession.h"
+
 
 @implementation User
 {
@@ -301,6 +303,10 @@
 }
 
 - (void)setIsGoingOut:(BOOL)isGoingOut {
+    if (isGoingOut) [[LocalyticsSession shared] tagEvent:@"Go Out"];
+    else [[LocalyticsSession shared] tagEvent:@"Ungo Out"];
+
+
     [_proxy setObject:[NSNumber numberWithBool:isGoingOut] forKey:@"is_goingout"];
     [modifiedKeys addObject:@"is_goingout"];
 }

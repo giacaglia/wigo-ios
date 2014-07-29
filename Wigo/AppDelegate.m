@@ -19,7 +19,15 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
-
+    if ([[launchOptions allKeys]
+         containsObject:UIApplicationLaunchOptionsRemoteNotificationKey])
+    {
+        [[LocalyticsSession shared] resume];
+        [[LocalyticsSession shared] handleRemoteNotification:[launchOptions
+                                                              objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]];
+    }
+    
+    
     NSString *parseApplicationId = PARSE_APPLICATIONID; // just for ease of debugging
     NSString *parseClientKey = PARSE_CLIENTKEY;
     
@@ -103,6 +111,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
+    
+    [[LocalyticsSession shared] setPushToken:deviceToken];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
@@ -115,6 +125,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [[LocalyticsSession shared] handleRemoteNotification:userInfo];
+
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     UINavigationController *navController = [tabBarController.viewControllers objectAtIndex:tabBarController.selectedIndex];
     if (navController) [navController popToRootViewControllerAnimated:NO];

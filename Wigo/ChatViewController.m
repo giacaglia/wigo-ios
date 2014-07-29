@@ -41,6 +41,8 @@
 
 
 - (void) viewDidAppear:(BOOL)animated {
+    [[LocalyticsSession shared] tagScreen:@"Chats"];
+
     self.tabBarController.tabBar.hidden = NO;
     
     self.navigationItem.titleView = nil;

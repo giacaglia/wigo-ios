@@ -60,6 +60,7 @@
 }
 
 - (void) viewDidAppear:(BOOL)animated {
+    [[LocalyticsSession shared] tagScreen:@"People"];
     self.tabBarController.tabBar.hidden = NO;
 //    if (_notFirstTimeOpeningView) {
 //        [self fetchFollowingFirstPage];
@@ -407,6 +408,8 @@
 }
 
 - (void) sendTapToUserWithTag:(int)tag {
+    [[LocalyticsSession shared] tagEvent:@"Tap"];
+
     User *user;
     if (tag < 0) {
         tag = -tag;
