@@ -13,6 +13,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import "LocalyticsSession.h"
 
+NSNumber *indexOfSelectedTab;
 
 @implementation AppDelegate
 
@@ -46,6 +47,7 @@
     tabBar.tintColor = [UIColor clearColor];
     [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor clearColor] } forState:UIControlStateSelected];
     
+    [self addTabBarDelegate];
     [self changeTabBarToOrange];
     [self addNotificationHandlers];
 
@@ -135,30 +137,39 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     NSDictionary *alert = [aps objectForKey:@"alert"];
     NSString *locKeyString = [alert objectForKey:@"loc-key"];
     if ([locKeyString isEqualToString:@"M"]) {
-        tabBarController.selectedIndex = 2;
+        [self addOneToTabBar:@2];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
 
     }
     else if ([locKeyString isEqualToString:@"F"] ||
         [locKeyString isEqualToString:@"FR"] ||
         [locKeyString isEqualToString:@"FA"]) {
-        tabBarController.selectedIndex = 3;
+        [self addOneToTabBar:@3];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
 
     }
     else if ([locKeyString isEqualToString:@"T"]) {
-        tabBarController.selectedIndex = 3;
+        [self addOneToTabBar:@3];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
     }
     else if ([locKeyString isEqualToString:@"G"]) {
-        tabBarController.selectedIndex = 0;
+        [self addOneToTabBar:@0];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchFollowing" object:nil];
 
     }
 }
 
+- (void)addTabBarDelegate {
+    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+    tabBarController.delegate = self;
+}
 
-
+- (void)tabBarController:(UITabBarController *)theTabBarController didSelectViewController:(UIViewController *)viewController {
+    indexOfSelectedTab = [NSNumber numberWithUnsignedInteger:[theTabBarController.viewControllers indexOfObject:viewController]];
+    [self clearNotificationAtTabBar:indexOfSelectedTab];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollUp" object:nil];
+}
 
 - (void) changeTabBarToOrange {
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
@@ -178,16 +189,15 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     firstTab = [tabBar.items objectAtIndex:3];
     firstTab.image = [[UIImage imageNamed:@"notificationsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-//    [self addNotificationNumber:@3 toTabBar:@3];
-//    [self addNotificationNumber:@4 toTabBar:@2];
-//    [self clearNotificationAtTabBar:@3];
-
+    for (NSString *key in [self.notificationDictionary allKeys] ) {
+        UILabel *notificationLabel = [self.notificationDictionary objectForKey:key];
+        notificationLabel.backgroundColor = [FontProperties getOrangeColor];
+    }
 }
 
 - (void) changeTabBarToBlue {
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     UITabBar *tabBar = tabBarController.tabBar;
-//    tabBar.delegate = self;
     tabBar.layer.borderWidth = 0.5;
     [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getBlueColor], NSFontAttributeName:[UIFont fontWithName:@"Whitney-MediumSC" size:11.0f] } forState:UIControlStateNormal];
     UITabBarItem *firstTab = [tabBar.items objectAtIndex:0];
@@ -199,9 +209,15 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     firstTab = [tabBar.items objectAtIndex:3];
     firstTab.image = [[UIImage imageNamed:@"notificationsIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-//    [self addNotificationNumber:@0];
+    for (NSString *key in [self.notificationDictionary allKeys] ) {
+        UILabel *notificationLabel = [self.notificationDictionary objectForKey:key];
+        notificationLabel.backgroundColor = [FontProperties getBlueColor];
+    }
 }
 
+- (void)addOneToTabBar:(NSNumber *)tabBarNumber {
+    [self addNotificationNumber:@1 toTabBar:tabBarNumber];
+}
 
 - (void)addNotificationNumber:(NSNumber *)number toTabBar:(NSNumber *)tabBarNumber {
     CGSize origin;
@@ -216,17 +232,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     UITabBar *tabBar = tabBarController.tabBar;
     
     UILabel *numberOfNotificationsLabel = [[UILabel alloc] init];
-    if ([number isEqualToNumber:@1]) {
-        numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 8, 8);
-    }
-    else {
-        numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 16, 12);
-        numberOfNotificationsLabel.text = [number stringValue];
-        numberOfNotificationsLabel.textAlignment = NSTextAlignmentCenter;
-        numberOfNotificationsLabel.textColor = [UIColor whiteColor];
-        numberOfNotificationsLabel.font = [UIFont fontWithName:@"Whitney-Medium" size:10.0];
-    }
-    numberOfNotificationsLabel.backgroundColor = [FontProperties getOrangeColor];
+    numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 8, 8);
+    if ([indexOfSelectedTab isEqualToNumber:@1]) numberOfNotificationsLabel.backgroundColor = [FontProperties getBlueColor];
+    else numberOfNotificationsLabel.backgroundColor = [FontProperties getOrangeColor];
     numberOfNotificationsLabel.layer.borderColor = [UIColor clearColor].CGColor;
     numberOfNotificationsLabel.layer.cornerRadius = 5;
     numberOfNotificationsLabel.layer.borderWidth = 1;

@@ -26,6 +26,8 @@
 {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageMessages) name:@"fetchMessages" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
+
     [self initializeTableOfChats];
 }
 
@@ -52,6 +54,10 @@
     [self initializeRightBarButtonItem];
     
     self.navigationItem.leftBarButtonItem = nil;
+}
+
+- (void)scrollUp {
+    [_tableViewOfPeople setContentOffset:CGPointZero animated:YES];
 }
 
 - (void)initializeRightBarButtonItem {

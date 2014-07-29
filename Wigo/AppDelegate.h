@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIGestureRecognizerDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIGestureRecognizerDelegate, UITabBarControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 @property NSMutableDictionary *notificationDictionary;

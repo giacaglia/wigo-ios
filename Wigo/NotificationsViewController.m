@@ -34,6 +34,8 @@
     [self initializeTableNotifications];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageNotifications) name:@"fetchNotifications" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
+
     [self fetchFirstPageNotifications];
     [self fetchSummaryOfFollowRequests];
 }
@@ -67,6 +69,10 @@
     _notificationsTableView.delegate = self;
     _notificationsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self addRefreshToTable];
+}
+
+- (void)scrollUp {
+    [_notificationsTableView setContentOffset:CGPointZero animated:YES];
 }
 
 

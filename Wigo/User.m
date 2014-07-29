@@ -190,7 +190,8 @@
 - (void)setEventID:(NSNumber *)eventID {
     [_proxy setObject:eventID forKey:@"eventID"];
     [modifiedKeys addObject:@"eventID"];
-
+    [self setIsAttending:YES];
+    [self setAttendingEventID:eventID];
 }
 
 - (NSString *)groupName {
@@ -301,7 +302,6 @@
 - (BOOL)isAttending {
     if (![self isGoingOut]) return NO;
     NSDictionary *isAttending = (NSDictionary *)[_proxy objectForKey:@"is_attending"];
-    NSLog(@"is attending: %@", isAttending);
     if ([isAttending isKindOfClass:[NSDictionary class]]) return YES;
     else return NO;
 }
@@ -310,6 +310,7 @@
     if (isAttending == NO) {
         [_proxy removeObjectForKey:@"is_attending"];
     }
+    else [_proxy setObject:[[NSDictionary alloc] init] forKey:@"is_attending"];
 }
 
 - (NSString *)attendingEventName {

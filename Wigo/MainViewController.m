@@ -159,7 +159,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadViewAfterSigningUser) name:@"loadViewAfterSigningUser" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFollowingFirstPage) name:@"fetchFollowing" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
+}
 
+- (void)scrollUp {
+    [_collectionView setContentOffset:CGPointZero animated:YES];
 }
 
 - (void) updateViewNotGoingOut {
@@ -355,19 +359,37 @@
     }
     else {
         UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 200, 30)];
-        [goOutButton setTitle:@"GO OUT" forState:UIControlStateNormal];
-        [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        goOutButton.backgroundColor = [FontProperties getOrangeColor];
-        goOutButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-        goOutButton.titleLabel.font = [FontProperties getTitleFont];
-        goOutButton.layer.borderWidth = 1;
-        goOutButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-        goOutButton.layer.cornerRadius = 7;
+        UIImageView *gifGoOut = [self gifGoOut];
+        gifGoOut.frame = goOutButton.frame;
+        [goOutButton addSubview:gifGoOut];
         [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.title = @"GO OUT";
         self.navigationItem.titleView = goOutButton;
     }
-   
+}
+
+- (UIImageView *)gifGoOut {
+    NSMutableArray *goOutArray = [[NSMutableArray array] init];
+    for (NSUInteger i  = 0; i <= 59; i++) {
+        NSString *fileName = [NSString stringWithFormat:@"go-out_2-%d.png",i];
+        [goOutArray addObject:[UIImage imageNamed:fileName]];
+    }
+    UIImageView *gifGoOutImageView = [[UIImageView alloc] init];
+    gifGoOutImageView.animationImages = [NSArray arrayWithArray:goOutArray];
+    [gifGoOutImageView startAnimating];
+    return gifGoOutImageView;
+}
+
+- (UIImageView *)gifGlowing {
+    NSMutableArray *goOutArray = [[NSMutableArray array] init];
+    for (NSUInteger i  = 0; i <= 59; i++) {
+        NSString *fileName = [NSString stringWithFormat:@"glowing-%d.png",i];
+        [goOutArray addObject:[UIImage imageNamed:fileName]];
+    }
+    UIImageView *gifGoOutImageView = [[UIImageView alloc] init];
+    gifGoOutImageView.animationImages = [NSArray arrayWithArray:goOutArray];
+    [gifGoOutImageView startAnimating];
+    return gifGoOutImageView;
 }
 
 - (void) goOutPressed {
@@ -528,7 +550,6 @@
     [profileButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     [imgView bringSubviewToFront:profileButton];
     [imgView addSubview:profileButton];
-    
     
     UILabel *profileName = [[UILabel alloc] init];
     profileName.text = [user firstName];

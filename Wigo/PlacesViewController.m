@@ -119,11 +119,16 @@
 
 - (void)initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
 }
 
 - (void)updateTitleViewForNotGoingOut {
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"PLACES";
+}
+
+- (void)scrollUp {
+    [_placesTableView setContentOffset:CGPointZero animated:YES];
 }
 
 - (void) updateViewNotGoingOut {
