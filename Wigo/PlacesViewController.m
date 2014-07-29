@@ -81,7 +81,7 @@
     self.tabBarController.tabBar.hidden = NO;
     
     UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
-    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"whoTabIcon"];
+    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"whereTabIcon"];
     tabController.tabBar.layer.borderColor = [FontProperties getBlueColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToBlue" object:nil];
 }
