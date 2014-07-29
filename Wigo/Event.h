@@ -19,7 +19,7 @@
 - (void)addEventAttendeesWithDictionary:(NSDictionary *)eventAttendeesDictionary;
 - (NSArray *)getEventAttendees;
 - (NSNumber *)numberAttending;
-
+- (NSDictionary *)dictionary;
 
 
 @end

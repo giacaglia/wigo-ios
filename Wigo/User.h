@@ -45,20 +45,28 @@ typedef enum states
 @property NSNumber *lastMessageRead;
 @property NSNumber *lastUserRead;
 
+- (NSString *)fullName;
+
+
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
-- (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
-- (NSString *)fullName;
+
+- (NSDictionary *)dictionary;
+
+// Images
 - (void)addImageURL:(NSString *)imageURL;
 - (NSString *)removeImageURL:(NSString *)imageURL;
 - (NSString *)coverImageURL;
 - (void)makeImageURLCover:(NSString *)imageURL;
-- (NSDictionary *)dictionary;
+
 - (BOOL)isTapped;
 - (BOOL)isFollowingRequested;
 - (BOOL)isAttending;
+//Attending evetn
 - (NSString *)attendingEventName;
-- (NSNumber *)attendingEventID;
+@property NSNumber *attendingEventID;
+
+
 - (STATE)getUserState;
 
 // NEED TO IMPLEMENT

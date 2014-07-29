@@ -485,7 +485,8 @@
         cell = [[UICollectionViewCell alloc] init];
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
+    cell.backgroundColor = [UIColor whiteColor];
+
     NSArray *userArray;
     if ([indexPath section] == 0) {
         if ([[_whoIsGoingOutParty getObjectArray] count] == 0) return cell;

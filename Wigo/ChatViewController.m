@@ -146,6 +146,7 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    cell.backgroundColor = [UIColor whiteColor];
 
     
     cell.backgroundColor = [UIColor clearColor];

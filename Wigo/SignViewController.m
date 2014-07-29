@@ -294,7 +294,7 @@
                 _fetchingProfilePictures = YES;
                 [self fetchProfilePicturesAlbumFacebook];
             }
-            else if ([[error localizedDescription] isEqualToString:@"email_not_validated"]) {
+            else if (![profileUser emailValidated]) {
                 _userEmailAlreadySent = YES;
                 _fetchingProfilePictures = YES;
                 [self fetchTokensFromFacebook];

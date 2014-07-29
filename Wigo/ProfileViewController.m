@@ -19,7 +19,6 @@
 
 @interface ProfileViewController ()
 
-@property BOOL didImagesLoad;
 
 // bio
 @property UILabel *bioPrefix;
@@ -100,7 +99,6 @@
 {
     [[LocalyticsSession shared] tagScreen:@"Profile"];
     [super viewDidLoad];
-    _didImagesLoad = NO;
     _currentPage = 0;
     _isSeingImages = NO;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -201,18 +199,9 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
-    if (!_didImagesLoad) {
-        [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-        [self.user loadImagesWithCallback:^(
-                                            NSArray *imagesArray
-                                            ) {
-            [WiGoSpinnerView hideSpinnerForView:self.view];
-            [self initializeProfileImage];
-            [self initializeNameOfPerson];
-            _didImagesLoad = YES;
-        }];
-    }
+    [self initializeProfileImage];
+    [self initializeNameOfPerson];
+   
 }
 
 - (void) initializeLeftBarButton {

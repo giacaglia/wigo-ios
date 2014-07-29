@@ -29,6 +29,10 @@
     return [_proxy objectForKey:@"userArray"];
 }
 
+- (NSDictionary *)dictionary {
+    return _proxy;
+}
+
 #pragma mark - Property methods
 
 - (NSNumber *)eventID {
@@ -42,6 +46,14 @@
 - (NSNumber *)numberAttending {
     if ([[_proxy allKeys] containsObject:@"num_attending"]) return [_proxy objectForKey:@"num_attending"];
     return @0;
+}
+
+- (NSString *)name {
+    return (NSString *)[_proxy objectForKey:@"name"];
+}
+
+- (void)setName:(NSString *)name {
+    [_proxy setObject:name forKey:@"name"];
 }
 
 #pragma mark - NSMutableDictionary methods
