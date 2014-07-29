@@ -634,8 +634,8 @@
                                   if ([user isEqualToUser:[Profile user]]) {
                                       User *profileUser = [Profile user];
                                       [profileUser setIsGoingOut:YES];
-                                      [Profile setUser:profileUser];
                                       [[Profile user] setEventID:eventId];
+                                      [Profile setUser:profileUser];
                                   }
                                   [partyUser addObject:user];
                               }

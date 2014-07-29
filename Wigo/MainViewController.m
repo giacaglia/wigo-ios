@@ -524,15 +524,11 @@
     imgView.tag = tag;
     [cell.contentView addSubview:imgView];
     
-    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, imgView.frame.size.height * 0.5, imgView.frame.size.width, imgView.frame.size.height * 0.5)];
+    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imgView.frame.size.width, imgView.frame.size.height)];
     [profileButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     [imgView bringSubviewToFront:profileButton];
     [imgView addSubview:profileButton];
     
-    UIButton *buttonAtTop = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imgView.frame.size.width * 0.5, imgView.frame.size.height * 0.5)];
-    [buttonAtTop addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
-    [imgView bringSubviewToFront:buttonAtTop];
-    [imgView addSubview:buttonAtTop];
     
     UILabel *profileName = [[UILabel alloc] init];
     profileName.text = [user firstName];

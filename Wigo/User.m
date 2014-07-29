@@ -248,14 +248,17 @@
 }
 
 - (BOOL)isGoingOut {
-    NSNumber *goingOutNumber = (NSNumber *)[_proxy objectForKey:@"is_goingout"];
-    return [goingOutNumber boolValue];
+    if ([[_proxy allKeys] containsObject:@"is_goingout"]) {
+        NSNumber *goingOutNumber = (NSNumber *)[_proxy objectForKey:@"is_goingout"];
+        return [goingOutNumber boolValue];
+    }
+    return NO;
 }
 
 - (void)setIsGoingOut:(BOOL)isGoingOut {
     if (isGoingOut) [[LocalyticsSession shared] tagEvent:@"Go Out"];
     else [[LocalyticsSession shared] tagEvent:@"Ungo Out"];
-
+    if (!isGoingOut) [self setIsAttending:NO];
 
     [_proxy setObject:[NSNumber numberWithBool:isGoingOut] forKey:@"is_goingout"];
     [modifiedKeys addObject:@"is_goingout"];
@@ -296,9 +299,17 @@
 }
 
 - (BOOL)isAttending {
+    if (![self isGoingOut]) return NO;
     NSDictionary *isAttending = (NSDictionary *)[_proxy objectForKey:@"is_attending"];
+    NSLog(@"is attending: %@", isAttending);
     if ([isAttending isKindOfClass:[NSDictionary class]]) return YES;
     else return NO;
+}
+
+- (void)setIsAttending:(BOOL)isAttending {
+    if (isAttending == NO) {
+        [_proxy removeObjectForKey:@"is_attending"];
+    }
 }
 
 - (NSString *)attendingEventName {
@@ -322,10 +333,6 @@
         NSMutableDictionary *isAttending = [[NSMutableDictionary alloc] initWithDictionary:(NSDictionary *)[_proxy objectForKey:@"is_attending"]];
         [isAttending setObject:attendingEventID forKey:@"id"];
         [_proxy setObject:[NSDictionary dictionaryWithDictionary:isAttending] forKey:@"is_attending"];
-        //        [_proxy setObject:[NSNumber numberWithBool:isFollowing] forKey:@"is_following"];
-//        [modifiedKeys addObject:@"is_following"];
-
-//        return [isAttending objectForKey:@"id"];
     }
 }
 

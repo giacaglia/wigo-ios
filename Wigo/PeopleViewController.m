@@ -86,7 +86,7 @@
     if ([[self.user allKeys] containsObject:@"tabNumber"]) {
         _currentTab = [self.user objectForKey:@"tabNumber"];
     }
-    else _currentTab = @2;
+    else if (!_currentTab) _currentTab = @2;
     _contentParty = [[Party alloc] initWithObjectName:@"User"];
     _filteredContentParty = [[Party alloc] initWithObjectName:@"User"];
     [self loadTableView];
@@ -460,11 +460,13 @@
 }
 
 - (User *)getUserAtIndex:(int)index {
-    User *user;
+    User *user = [[User alloc] init];
     if (_isSearching) {
+        if ([[_filteredContentParty getObjectArray] count] != 0)
         user = [[_filteredContentParty getObjectArray] objectAtIndex:index];
     }
     else {
+        if ([[_contentParty getObjectArray] count] != 0)
         user = [[_contentParty getObjectArray] objectAtIndex:index];
     }
     return user;

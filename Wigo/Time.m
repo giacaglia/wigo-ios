@@ -20,14 +20,14 @@
     NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:dateInLocalTimezone];
     NSDateComponents *today = [[NSCalendar currentCalendar] components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
     // If today
-    if ([today day] == [otherDay day]) {
+    if ([today hour] >= 6 && [today day] == [otherDay day]) {
         NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
         [localTimeFormat setDateFormat:@"h:mm a"];
         return [localTimeFormat stringFromDate:dateInLocalTimezone];
     }
     else {
         int differenceOfDays = [today day] - [otherDay day];
-        if (differenceOfDays == 1) {
+        if (differenceOfDays == 0 || differenceOfDays == 1) {
             return @"1 day ago";
         }
         else return [NSString stringWithFormat:@"%d days ago", differenceOfDays];
