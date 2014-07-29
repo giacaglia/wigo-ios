@@ -19,6 +19,7 @@
 #if ENTERPRISE
     [self setValue:@"true" forHTTPHeaderField:@"X-Wigo-Client-Enterprise"];
 #endif
+    [self setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forHTTPHeaderField:@"X-Wigo-Client-Version"];
     [self setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
 }
 
