@@ -143,30 +143,32 @@
             NSArray *imagesArray = [properties objectForKey:@"images"];
         }
         else {
-            NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
-            NSMutableArray *imagesDataArray = [[NSMutableArray alloc] initWithCapacity:3];
-            NSMutableArray *imagesReturned = [[NSMutableArray alloc] initWithCapacity:3];
-            
-            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
-            dispatch_async(queue, ^{
-                for (NSString *key in [imagesDictionary allKeys]) {
-                    NSString *pictureURL = [imagesDictionary objectForKey:key];
-                    NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
-                    if (imageData) {
-                        [imagesDataArray addObject:imageData];
-                    }
-                }
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    for (NSData *imageData in imagesDataArray) {
-                        [imagesReturned addObject:[UIImage imageWithData:imageData]];
-                    }
-                    [_proxy setObject:imagesReturned forKey:@"images"];
-                    callback([NSArray arrayWithArray:imagesReturned]);
-                });
-            });
+//            NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
+//            NSMutableArray *imagesDataArray = [[NSMutableArray alloc] initWithCapacity:3];
+//            NSMutableArray *imagesReturned = [[NSMutableArray alloc] initWithCapacity:3];
+//            
+//            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+//            dispatch_async(queue, ^{
+//                for (NSString *key in [imagesDictionary allKeys]) {
+//                    NSString *pictureURL = [imagesDictionary objectForKey:key];
+//                    NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
+//                    if (imageData) {
+//                        [imagesDataArray addObject:imageData];
+//                    }
+//                }
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    
+//                    for (NSData *imageData in imagesDataArray) {
+//                        [imagesReturned addObject:[UIImage imageWithData:imageData]];
+//                    }
+//                    [_proxy setObject:imagesReturned forKey:@"images"];
+//                    callback([NSArray arrayWithArray:imagesReturned]);
+//                });
+//            });
         }
     }
+    callback([[NSArray alloc] init]);
+
 }
 
 - (NSString *)coverImageURL {

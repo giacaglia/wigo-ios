@@ -166,6 +166,14 @@
 
     Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:[indexPath row]];
     User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
+    
+    
+    UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width - 100, 54)];
+    notificationButton.tag = [indexPath row];
+    [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.contentView addSubview:notificationButton];
+    
+    [cell.contentView addSubview:notificationButton];
     UIImageView *profileImageView = [[UIImageView alloc] init];
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -175,14 +183,14 @@
     profileImageView.layer.borderWidth = 0.5;
     profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
     profileImageView.layer.masksToBounds = YES;
-    [cell.contentView addSubview:profileImageView];
+    [notificationButton addSubview:profileImageView];
     
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(55, 27 - 12, 150, 24)];
     labelName.font = [FontProperties getSmallFont];
     labelName.text = [NSString stringWithFormat:@"%@ %@", [user objectForKey:@"first_name"], [user objectForKey:@"last_name"]];
     labelName.tag = [indexPath row];
     labelName.textAlignment = NSTextAlignmentLeft;
-    [cell.contentView addSubview:labelName];
+    [notificationButton addSubview:labelName];
     
     UIButton *acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 83, 27 - 10, 20, 20)];
     UIImageView *acceptImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"acceptFollowRequest"]];
@@ -214,6 +222,14 @@
     }
 
     return cell;
+}
+
+- (void)profileSegue:(id)sender {
+    int index = ((UIButton *)sender).tag;
+    Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:index];
+    User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
+    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+    [self.navigationController pushViewController:self.profileViewController animated:YES];
 }
 
 #pragma mark - Network Functions
