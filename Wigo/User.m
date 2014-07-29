@@ -17,6 +17,7 @@
 {
     NSMutableDictionary* _proxy;
     NSMutableArray* modifiedKeys;
+    BOOL newVersion;
 }
 
 #pragma mark - NSMutableDictionary functions
@@ -26,6 +27,7 @@
     if (self) {
         _proxy = [NSMutableDictionary dictionaryWithDictionary:otherDictionary];
         modifiedKeys = [[NSMutableArray alloc] init];
+        newVersion = NO;
     }
     return self;
 }
@@ -34,6 +36,7 @@
     if (self = [super init]) {
         _proxy = [[NSMutableDictionary alloc] init];
         modifiedKeys = [[NSMutableArray alloc] init];
+        newVersion = NO;
     }
     return self;
 }
@@ -136,28 +139,33 @@
 - (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback {
     NSDictionary *properties = [_proxy objectForKey:@"properties"];
     if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
-        NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
-        NSMutableArray *imagesDataArray = [[NSMutableArray alloc] initWithCapacity:3];
-        NSMutableArray *imagesReturned = [[NSMutableArray alloc] initWithCapacity:3];
-        
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
-        dispatch_async(queue, ^{
-            for (NSString *key in [imagesDictionary allKeys]) {
-                NSString *pictureURL = [imagesDictionary objectForKey:key];
-                NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
-                if (imageData) {
-                    [imagesDataArray addObject:imageData];
+        if (newVersion) {
+            NSArray *imagesArray = [properties objectForKey:@"images"];
+        }
+        else {
+            NSDictionary *imagesDictionary = [properties objectForKey:@"images"];
+            NSMutableArray *imagesDataArray = [[NSMutableArray alloc] initWithCapacity:3];
+            NSMutableArray *imagesReturned = [[NSMutableArray alloc] initWithCapacity:3];
+            
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+            dispatch_async(queue, ^{
+                for (NSString *key in [imagesDictionary allKeys]) {
+                    NSString *pictureURL = [imagesDictionary objectForKey:key];
+                    NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString:pictureURL]];
+                    if (imageData) {
+                        [imagesDataArray addObject:imageData];
+                    }
                 }
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                for (NSData *imageData in imagesDataArray) {
-                    [imagesReturned addObject:[UIImage imageWithData:imageData]];
-                }
-                [_proxy setObject:imagesReturned forKey:@"images"];
-                callback([NSArray arrayWithArray:imagesReturned]);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    for (NSData *imageData in imagesDataArray) {
+                        [imagesReturned addObject:[UIImage imageWithData:imageData]];
+                    }
+                    [_proxy setObject:imagesReturned forKey:@"images"];
+                    callback([NSArray arrayWithArray:imagesReturned]);
+                });
             });
-        });
+        }
     }
 }
 
