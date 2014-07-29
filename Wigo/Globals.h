@@ -23,7 +23,7 @@
 
 #import "LocalyticsSession.h"
 
-static NSString * const cellIdentifier = @"ContentViewCell";
+static NSString * const collectionViewCellIdentifier = @"CollectionViewCellIdentifier";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
 //#ifdef DEBUG

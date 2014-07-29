@@ -141,8 +141,13 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+
+    
     cell.backgroundColor = [UIColor clearColor];
     if ([indexPath row] == [[_messageParty getObjectArray] count]) {
         [self fetchMessages];

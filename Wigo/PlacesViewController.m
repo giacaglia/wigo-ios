@@ -26,8 +26,9 @@
 
 
 @property int tagInteger;
-@property NSMutableArray *contentList;
-@property NSMutableArray *filteredContentList;
+@property Party *contentParty;
+@property Party *filteredContentParty;
+//@property NSMutableArray *filteredContentList;
 @property BOOL isSearching;
 @property NSMutableArray *placeSubviewArray;
 @property UIImageView *searchIconImageView;
@@ -297,7 +298,7 @@
     
     [self addCreateButtonToTextField];
     
-    _clearButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 18 - 100, _whereAreYouGoingView.frame.size.height/2 - 9, 18, 18)];
+    _clearButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 25 - 100, _whereAreYouGoingView.frame.size.height/2 - 9, 25, 25)];
     [_clearButton addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"clearButton"]]];
     [_clearButton addTarget:self action:@selector(clearTextField) forControlEvents:UIControlEventTouchUpInside];
     [_whereAreYouGoingView addSubview:_clearButton];
@@ -309,7 +310,7 @@
 }
 
 - (void) addCreateButtonToTextField {
-    _createButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 90, _whereAreYouGoingView.frame.size.height/2 - 10, 80, 20)];
+    _createButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 90, _whereAreYouGoingView.frame.size.height/2 - 12, 80, 25)];
     [_createButton setTitle:@"CREATE" forState:UIControlStateNormal];
     [_createButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _createButton.backgroundColor = [FontProperties getBlueColor];
@@ -334,7 +335,8 @@
 }
 
 - (void)textFieldDidChange:(UITextField *)textField {
-    [_filteredContentList removeAllObjects];
+    _filteredContentParty = [[Party alloc] initWithObjectName:@"Event"];
+//    [_filteredContentList removeAllObjects];
     if([textField.text length] != 0) {
         _isSearching = YES;
         _createButton.hidden = NO;
@@ -351,21 +353,24 @@
 
 
 - (void)searchTableList:(NSString *)searchString {
-    for (NSString *tempStr in _contentList) {
+    NSArray *contentNameArray = [_contentParty getFullNameArray];
+    for (int i = 0; i < [contentNameArray count]; i++) {
+        NSString *tempStr = [contentNameArray objectAtIndex:i];
         NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
         for (NSString *firstOrLastName in firstAndLastNameArray) {
-            NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch) range:NSMakeRange(0, [searchString length])];
-            if (result == NSOrderedSame) {
-                [_filteredContentList addObject:tempStr];
+            NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
+            if (result == NSOrderedSame && ![[_filteredContentParty getFullNameArray] containsObject:tempStr]) {
+                [_filteredContentParty addObject: [[_contentParty getObjectArray] objectAtIndex:i]];
             }
         }
     }
 }
 
+
 #pragma mark - Tablew View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath row] == [_contentList count]) {
+    if ([indexPath row] == [[_contentParty getObjectArray] count]) {
         return 70;
     }
     return sizeOfEachCell;
@@ -378,11 +383,11 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     if (_isSearching) {
-        return [_filteredContentList count];
+        return [[_filteredContentParty getObjectArray] count];
     }
     else {
         int hasNextPage = ([_eventsParty hasNextPage] ? 1 : 0);
-        return [_contentList count] + 1 + hasNextPage;
+        return [[_contentParty getObjectArray] count] + 1 + hasNextPage;
         
     }
 }
@@ -390,21 +395,24 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
     if (_isSearching) {
-        if (indexPath.row == [_filteredContentList count]) {
+        if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
             [cell.contentView addSubview:_goingSomewhereButton];
             return cell;
         }
     }
     else {
-        if (indexPath.row == [_contentList count]) {
+        if (indexPath.row == [[_contentParty getObjectArray] count]) {
             [cell.contentView addSubview:_goingSomewhereButton];
             return cell;
         }
-        else if (indexPath.row == [_contentList count] + 1) {
+        else if (indexPath.row == [[_contentParty getObjectArray] count] + 1) {
             [self fetchEvents];
             return cell;
         }
@@ -423,13 +431,13 @@
     
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 100, 30)];
     if (_isSearching) {
-        if (indexPath.row < [_filteredContentList count]) {
-            labelName.text = [_filteredContentList objectAtIndex:indexPath.row];
+        if (indexPath.row < [[_filteredContentParty getObjectArray] count]) {
+            labelName.text = [[_filteredContentParty getNameArray] objectAtIndex:indexPath.row];
         }
     }
     else {
-        if (indexPath.row < [_contentList count]) {
-            labelName.text = [_contentList objectAtIndex:indexPath.row];
+        if (indexPath.row < [[_contentParty getObjectArray] count]) {
+            labelName.text = [[_contentParty getNameArray] objectAtIndex:indexPath.row];
         }
     }
     labelName.font = [FontProperties getTitleFont];
@@ -556,8 +564,8 @@
     _page = @1;
     numberOfFetchedParties = 0;
     _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
-    _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];
-    _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
+    _contentParty = _eventsParty;
+    _filteredContentParty = [[Party alloc] initWithObjectName:@"Event"];
     [self fetchEvents];
 }
 
@@ -627,8 +635,9 @@
     if (numberOfFetchedParties >= [[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             _spinnerAtTop ? [WiGoSpinnerView hideSpinnerForView:self.view] : [_placesTableView didFinishPullToRefresh];
-            _contentList = [[NSMutableArray alloc] initWithArray:[_eventsParty getNameArray]];
-            _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
+            _contentParty = _eventsParty;
+            _filteredContentParty = [[Party alloc] initWithObjectName:@"Event"];
+//            _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
             [_placesTableView reloadData];
             if ([_page isEqualToNumber:@2]) [_placesTableView setContentOffset:CGPointZero animated:YES];
         });

@@ -451,7 +451,7 @@
     _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49) collectionViewLayout:layout];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
-    [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
+    [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:collectionViewCellIdentifier];
     [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier];
     _collectionView.backgroundColor = [UIColor clearColor];
     [self addRefreshToCollectonView];
@@ -479,8 +479,12 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:collectionViewCellIdentifier forIndexPath:indexPath];
     cell.contentView.hidden = YES;
+    if (cell == nil) {
+        cell = [[UICollectionViewCell alloc] init];
+    }
+    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
     NSArray *userArray;
     if ([indexPath section] == 0) {
