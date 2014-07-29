@@ -375,6 +375,18 @@
     return @0;
 }
 
+- (void)setAttendingEventID:(NSNumber *)attendingEventID {
+    if ([self isAttending]) {
+        NSMutableDictionary *isAttending = [[NSMutableDictionary alloc] initWithDictionary:(NSDictionary *)[_proxy objectForKey:@"is_attending"]];
+        [isAttending setObject:attendingEventID forKey:@"id"];
+        [_proxy setObject:[NSDictionary dictionaryWithDictionary:isAttending] forKey:@"is_attending"];
+        //        [_proxy setObject:[NSNumber numberWithBool:isFollowing] forKey:@"is_following"];
+//        [modifiedKeys addObject:@"is_following"];
+
+//        return [isAttending objectForKey:@"id"];
+    }
+}
+
 - (NSNumber *)lastMessageRead {
     return (NSNumber *)[_proxy objectForKey:@"last_message_read"];
 }

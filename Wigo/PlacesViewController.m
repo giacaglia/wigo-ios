@@ -28,6 +28,8 @@
 @property int tagInteger;
 @property Party *contentParty;
 @property Party *filteredContentParty;
+@property NSMutableArray *filteredPartyUserArray;
+
 //@property NSMutableArray *filteredContentList;
 @property BOOL isSearching;
 @property NSMutableArray *placeSubviewArray;
@@ -177,11 +179,15 @@
 
 
 - (void) goOutHere:(id)sender {
+    _whereAreYouGoingTextField.text = @"";
+    [self.view endEditing:YES];
+    
+    UIButton *buttonSender = (UIButton *)sender;
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
+    [profileUser setAttendingEventID:[NSNumber numberWithInt:buttonSender.tag]];
     [Profile setUser:profileUser];
     [self updatedTitleViewForGoingOut];
-    UIButton *buttonSender = (UIButton *)sender;
     [[Profile user] setEventID:[NSNumber numberWithInt:buttonSender.tag]];
     [Network postGoingToEventNumber:buttonSender.tag];
     [self fetchEventsFirstPage];
@@ -328,15 +334,15 @@
     [Network postGoingToEventNumber:[eventID intValue]];
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
+    [profileUser setAttendingEventID:eventID];
     [Profile setUser:profileUser];
     [self updatedTitleViewForGoingOut];
     [self fetchEventsFirstPage];
-    [self dismissKeyboard];
 }
 
 - (void)textFieldDidChange:(UITextField *)textField {
-    _filteredContentParty = [[Party alloc] initWithObjectName:@"Event"];
-//    [_filteredContentList removeAllObjects];
+    [_filteredContentParty removeAllObjects];
+    _filteredPartyUserArray = [[NSMutableArray alloc] init];
     if([textField.text length] != 0) {
         _isSearching = YES;
         _createButton.hidden = NO;
@@ -353,14 +359,15 @@
 
 
 - (void)searchTableList:(NSString *)searchString {
-    NSArray *contentNameArray = [_contentParty getFullNameArray];
+    NSArray *contentNameArray = [_contentParty getNameArray];
     for (int i = 0; i < [contentNameArray count]; i++) {
         NSString *tempStr = [contentNameArray objectAtIndex:i];
         NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
         for (NSString *firstOrLastName in firstAndLastNameArray) {
             NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
-            if (result == NSOrderedSame && ![[_filteredContentParty getFullNameArray] containsObject:tempStr]) {
-                [_filteredContentParty addObject: [[_contentParty getObjectArray] objectAtIndex:i]];
+            if (result == NSOrderedSame && ![[_filteredContentParty getNameArray] containsObject:tempStr]) {
+                [_filteredContentParty addObject: [[[_contentParty getObjectArray] objectAtIndex:i] dictionary]];
+                [_filteredPartyUserArray addObject:[_partyUserArray objectAtIndex:i]];
             }
         }
     }
@@ -400,7 +407,8 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
+    cell.backgroundColor = [UIColor whiteColor];
+
     if (_isSearching) {
         if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
             [cell.contentView addSubview:_goingSomewhereButton];
@@ -417,11 +425,21 @@
             return cell;
         }
     }
-    if ([[_eventsParty getObjectArray] count] == 0) return cell;
-    Event *event = [[_eventsParty getObjectArray] objectAtIndex:[indexPath row]];
+  
     Party *partyUser;
-    if ([_partyUserArray count] == 0) partyUser = [[Party alloc] initWithObjectName:@"User"];
-    else partyUser  = [_partyUserArray objectAtIndex:[indexPath row]];
+    Event *event;
+    if (_isSearching) {
+        if ([[_filteredContentParty getObjectArray] count] == 0) return cell;
+        event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
+        if ([_filteredPartyUserArray count] == 0) partyUser = [[Party alloc] initWithObjectName:@"User"];
+        else partyUser = [_filteredPartyUserArray objectAtIndex:[indexPath row]];
+    }
+    else {
+        if ([[_contentParty getObjectArray] count] == 0) return cell;
+        event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
+        if ([_partyUserArray count] == 0) partyUser = [[Party alloc] initWithObjectName:@"User"];
+        else partyUser  = [_partyUserArray objectAtIndex:[indexPath row]];
+    }
     
     NSNumber *totalUsers = [event numberAttending];
     
@@ -463,8 +481,7 @@
     imagesScrollView.showsHorizontalScrollIndicator = NO;
     [placeSubView addSubview:imagesScrollView];
    
-
-    if (indexPath.row == 0 && ([[Profile user] eventID] != nil && [[Profile user] isGoingOut])) {
+    if ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]]) {
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
         UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 8, 125, 30)];
         goingHereLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:13.0f];;
@@ -637,8 +654,7 @@
             _spinnerAtTop ? [WiGoSpinnerView hideSpinnerForView:self.view] : [_placesTableView didFinishPullToRefresh];
             _contentParty = _eventsParty;
             _filteredContentParty = [[Party alloc] initWithObjectName:@"Event"];
-//            _filteredContentList = [[NSMutableArray alloc] initWithArray:_contentList];
-            [_placesTableView reloadData];
+            [self dismissKeyboard];
             if ([_page isEqualToNumber:@2]) [_placesTableView setContentOffset:CGPointZero animated:YES];
         });
     }

@@ -58,7 +58,7 @@
 
 - (void) initializeTapsLabel {
     UILabel *tapsLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 64 + 5, self.view.frame.size.width - 14, 15)];
-    tapsLabel.text = @"PEOPLE WHO WANT TO SEE YOU OUT TONIGHT";
+    tapsLabel.text = @"PEOPLE WHO WANT TO SEE YOU OUT";
     tapsLabel.textAlignment = NSTextAlignmentLeft;
     tapsLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:14.0];
     [self.view addSubview:tapsLabel];
