@@ -54,7 +54,6 @@ typedef enum states
 - (NSDictionary *)dictionary;
 
 // Images
-- (void)loadImagesWithCallback:(void (^)(NSArray *imagesReturned))callback;
 - (void)addImageURL:(NSString *)imageURL;
 - (NSString *)removeImageURL:(NSString *)imageURL;
 - (NSString *)coverImageURL;
