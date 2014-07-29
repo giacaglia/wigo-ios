@@ -104,7 +104,6 @@
 		C12A117019787BE700D53B1C /* chatsIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E93F85031945FADF00B3B448 /* chatsIcon@2x.png */; };
 		C12A117219787BE700D53B1C /* commentFilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E24192D514E00BB8FDD /* commentFilled.png */; };
 		C12A117319787BE700D53B1C /* dancingG-10.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0541978151F00DDACDE /* dancingG-10.png */; };
-		C12A117519787BE700D53B1C /* placesSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470419479CCB00AEA17D /* placesSelected@2x.png */; };
 		C12A117719787BE700D53B1C /* notificationsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470F1947A39C00AEA17D /* notificationsIconBlue@2x.png */; };
 		C12A117819787BE700D53B1C /* emailUnfilled.png in Resources */ = {isa = PBXBuildFile; fileRef = E9AAAFC1193E175C0069F700 /* emailUnfilled.png */; };
 		C12A117919787BE700D53B1C /* rightArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = E9F59E20192D1D3A00BB8FDD /* rightArrow.png */; };
@@ -143,7 +142,6 @@
 		C12A11B019787BE700D53B1C /* privateIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9902984196B2F9A00192FF2 /* privateIcon@2x.png */; };
 		C12A11B119787BE700D53B1C /* dancingG-1.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0531978151F00DDACDE /* dancingG-1.png */; };
 		C12A11B219787BE700D53B1C /* followPersonIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46F619474CA700AEA17D /* followPersonIcon@2x.png */; };
-		C12A11B319787BE700D53B1C /* peopleSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470219479C6200AEA17D /* peopleSelected@2x.png */; };
 		C12A11B519787BE700D53B1C /* chatsIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470D1947A34800AEA17D /* chatsIconBlue@2x.png */; };
 		C12A11BA19787BE700D53B1C /* dancingG-16.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB05A1978151F00DDACDE /* dancingG-16.png */; };
 		C12A11BB19787BE700D53B1C /* dancingG-13.png in Resources */ = {isa = PBXBuildFile; fileRef = E9DBB0571978151F00DDACDE /* dancingG-13.png */; };
@@ -245,6 +243,12 @@
 		E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */; };
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
+		E99EC29319881BAA00CBFA59 /* glowing.gif in Resources */ = {isa = PBXBuildFile; fileRef = E99EC29219881BAA00CBFA59 /* glowing.gif */; };
+		E99EC29419881BAA00CBFA59 /* glowing.gif in Resources */ = {isa = PBXBuildFile; fileRef = E99EC29219881BAA00CBFA59 /* glowing.gif */; };
+		E99EC297198824F100CBFA59 /* whereTabIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E99EC295198824F100CBFA59 /* whereTabIcon@2x.png */; };
+		E99EC298198824F100CBFA59 /* whereTabIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E99EC295198824F100CBFA59 /* whereTabIcon@2x.png */; };
+		E99EC299198824F100CBFA59 /* whoTabIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E99EC296198824F100CBFA59 /* whoTabIcon@2x.png */; };
+		E99EC29A198824F100CBFA59 /* whoTabIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E99EC296198824F100CBFA59 /* whoTabIcon@2x.png */; };
 		E9A17C70195C761E0057C89A /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A17C6F195C761E0057C89A /* Network.m */; };
 		E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
 		E9A31E481980AB9B008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
@@ -284,8 +288,6 @@
 		E9CD46F919474D2300AEA17D /* followedPersonIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46F819474D2300AEA17D /* followedPersonIcon@2x.png */; };
 		E9CD46FC1947873F00AEA17D /* tapUnfilled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46FB1947873F00AEA17D /* tapUnfilled@2x.png */; };
 		E9CD46FF1947896300AEA17D /* tapFilled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD46FE1947896300AEA17D /* tapFilled@2x.png */; };
-		E9CD470319479C6200AEA17D /* peopleSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470219479C6200AEA17D /* peopleSelected@2x.png */; };
-		E9CD470519479CCB00AEA17D /* placesSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470419479CCB00AEA17D /* placesSelected@2x.png */; };
 		E9CD470719479D6D00AEA17D /* chatsSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470619479D6D00AEA17D /* chatsSelected@2x.png */; };
 		E9CD470919479DBD00AEA17D /* notificationsSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470819479DBD00AEA17D /* notificationsSelected@2x.png */; };
 		E9CD470B1947A30400AEA17D /* peopleIconBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E9CD470A1947A30400AEA17D /* peopleIconBlue@2x.png */; };
@@ -495,6 +497,9 @@
 		E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookImagesViewController.m; sourceTree = "<group>"; };
 		E99EC2871986B69C00CBFA59 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
+		E99EC29219881BAA00CBFA59 /* glowing.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = glowing.gif; sourceTree = "<group>"; };
+		E99EC295198824F100CBFA59 /* whereTabIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whereTabIcon@2x.png"; sourceTree = "<group>"; };
+		E99EC296198824F100CBFA59 /* whoTabIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "whoTabIcon@2x.png"; sourceTree = "<group>"; };
 		E9A17C6E195C761E0057C89A /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
 		E9A17C6F195C761E0057C89A /* Network.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Network.m; sourceTree = "<group>"; };
 		E9A31E451980AB25008A711B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -539,8 +544,6 @@
 		E9CD46F819474D2300AEA17D /* followedPersonIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "followedPersonIcon@2x.png"; sourceTree = "<group>"; };
 		E9CD46FB1947873F00AEA17D /* tapUnfilled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tapUnfilled@2x.png"; sourceTree = "<group>"; };
 		E9CD46FE1947896300AEA17D /* tapFilled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tapFilled@2x.png"; sourceTree = "<group>"; };
-		E9CD470219479C6200AEA17D /* peopleSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "peopleSelected@2x.png"; sourceTree = "<group>"; };
-		E9CD470419479CCB00AEA17D /* placesSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placesSelected@2x.png"; sourceTree = "<group>"; };
 		E9CD470619479D6D00AEA17D /* chatsSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chatsSelected@2x.png"; sourceTree = "<group>"; };
 		E9CD470819479DBD00AEA17D /* notificationsSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "notificationsSelected@2x.png"; sourceTree = "<group>"; };
 		E9CD470A1947A30400AEA17D /* peopleIconBlue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "peopleIconBlue@2x.png"; sourceTree = "<group>"; };
@@ -767,15 +770,15 @@
 		E91A5032193F56BE00B7725A /* TabBarImages */ = {
 			isa = PBXGroup;
 			children = (
+				E99EC295198824F100CBFA59 /* whereTabIcon@2x.png */,
+				E99EC296198824F100CBFA59 /* whoTabIcon@2x.png */,
 				E90AA8A41975DC6E0055D74B /* transparentShadow.png */,
 				E93F85031945FADF00B3B448 /* chatsIcon@2x.png */,
 				E9CD470619479D6D00AEA17D /* chatsSelected@2x.png */,
 				E93F85011945F9E700B3B448 /* placesIcon@2x.png */,
-				E9CD470419479CCB00AEA17D /* placesSelected@2x.png */,
 				E9CD470819479DBD00AEA17D /* notificationsSelected@2x.png */,
 				E93F85051945FB4400B3B448 /* notificationsIcon@2x.png */,
 				E93F84FF1945F94900B3B448 /* peopleIcon@2x.png */,
-				E9CD470219479C6200AEA17D /* peopleSelected@2x.png */,
 				E9CD470C1947A30900AEA17D /* Blue */,
 			);
 			name = TabBarImages;
@@ -880,6 +883,7 @@
 		E921D6521923972400361247 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				E99EC29119881B9400CBFA59 /* glowingPerson */,
 				E9DBB0511978151F00DDACDE /* dancingG */,
 				E91A5032193F56BE00B7725A /* TabBarImages */,
 				E93F850A1945FF6800B3B448 /* MainViewController */,
@@ -1070,6 +1074,14 @@
 				E99EC2881986B69C00CBFA59 /* MoreViewController.m */,
 			);
 			name = DropUpMenus;
+			sourceTree = "<group>";
+		};
+		E99EC29119881B9400CBFA59 /* glowingPerson */ = {
+			isa = PBXGroup;
+			children = (
+				E99EC29219881BAA00CBFA59 /* glowing.gif */,
+			);
+			name = glowingPerson;
 			sourceTree = "<group>";
 		};
 		E9A31E561980AC4F008A711B /* Localytics */ = {
@@ -1438,8 +1450,8 @@
 				C12A116D19787BE700D53B1C /* dancingG-23.png in Resources */,
 				C12A117019787BE700D53B1C /* chatsIcon@2x.png in Resources */,
 				C12A117219787BE700D53B1C /* commentFilled.png in Resources */,
+				E99EC29A198824F100CBFA59 /* whoTabIcon@2x.png in Resources */,
 				C12A117319787BE700D53B1C /* dancingG-10.png in Resources */,
-				C12A117519787BE700D53B1C /* placesSelected@2x.png in Resources */,
 				C12A117719787BE700D53B1C /* notificationsIconBlue@2x.png in Resources */,
 				C12A117819787BE700D53B1C /* emailUnfilled.png in Resources */,
 				C12A117919787BE700D53B1C /* rightArrow.png in Resources */,
@@ -1452,6 +1464,7 @@
 				C12A118419787BE700D53B1C /* dancingG-8.png in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
 				C12A118619787BE700D53B1C /* emailFilled.png in Resources */,
+				E99EC298198824F100CBFA59 /* whereTabIcon@2x.png in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
 				E9A31E591980ADDF008A711B /* iOSa_2.23.0.version in Resources */,
 				C12A118C19787BE700D53B1C /* addedFilled@2x.png in Resources */,
@@ -1472,6 +1485,7 @@
 				C12A11A219787BE700D53B1C /* dancingG-9.png in Resources */,
 				C12A11A419787BE700D53B1C /* dancingG-18.png in Resources */,
 				C12A11A519787BE700D53B1C /* dancingG-29.png in Resources */,
+				E99EC29419881BAA00CBFA59 /* glowing.gif in Resources */,
 				C12A11A619787BE700D53B1C /* phoneUnfilled.png in Resources */,
 				C12A11A819787BE700D53B1C /* peopleIconBlue@2x.png in Resources */,
 				C12A11AA19787BE700D53B1C /* dancingG-26.png in Resources */,
@@ -1481,7 +1495,6 @@
 				C12A11B019787BE700D53B1C /* privateIcon@2x.png in Resources */,
 				C12A11B119787BE700D53B1C /* dancingG-1.png in Resources */,
 				C12A11B219787BE700D53B1C /* followPersonIcon@2x.png in Resources */,
-				C12A11B319787BE700D53B1C /* peopleSelected@2x.png in Resources */,
 				C12A11B519787BE700D53B1C /* chatsIconBlue@2x.png in Resources */,
 				C12A11BA19787BE700D53B1C /* dancingG-16.png in Resources */,
 				E9F5F206197B040600856918 /* goingSomewhereElse@2x.png in Resources */,
@@ -1541,7 +1554,6 @@
 				E93F85041945FADF00B3B448 /* chatsIcon@2x.png in Resources */,
 				E9F59E25192D514E00BB8FDD /* commentFilled.png in Resources */,
 				E9DBB0731978151F00DDACDE /* dancingG-10.png in Resources */,
-				E9CD470519479CCB00AEA17D /* placesSelected@2x.png in Resources */,
 				E9CD47101947A39C00AEA17D /* notificationsIconBlue@2x.png in Resources */,
 				E9AAAFC2193E175C0069F700 /* emailUnfilled.png in Resources */,
 				E9F59E21192D1D3A00BB8FDD /* rightArrow.png in Resources */,
@@ -1558,7 +1570,9 @@
 				E93F85151946031600B3B448 /* addedFilled@2x.png in Resources */,
 				E9DBB0831978151F00DDACDE /* dancingG-25.png in Resources */,
 				E9DBB08A1978151F00DDACDE /* dancingG-4.png in Resources */,
+				E99EC299198824F100CBFA59 /* whoTabIcon@2x.png in Resources */,
 				E9DBB0851978151F00DDACDE /* dancingG-27.png in Resources */,
+				E99EC297198824F100CBFA59 /* whereTabIcon@2x.png in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
 				E9DBB08C1978151F00DDACDE /* dancingG-6.png in Resources */,
 				E9DBB0751978151F00DDACDE /* dancingG-12.png in Resources */,
@@ -1583,7 +1597,6 @@
 				E9902985196B2F9A00192FF2 /* privateIcon@2x.png in Resources */,
 				E9DBB0721978151F00DDACDE /* dancingG-1.png in Resources */,
 				E9CD46F719474CA700AEA17D /* followPersonIcon@2x.png in Resources */,
-				E9CD470319479C6200AEA17D /* peopleSelected@2x.png in Resources */,
 				E9CD470E1947A34800AEA17D /* chatsIconBlue@2x.png in Resources */,
 				E9DBB0791978151F00DDACDE /* dancingG-16.png in Resources */,
 				E9F5F205197B040600856918 /* goingSomewhereElse@2x.png in Resources */,
@@ -1596,6 +1609,7 @@
 				E921D6201923967D00361247 /* InfoPlist.strings in Resources */,
 				E93F84FE1942076A00B3B448 /* plusSquare.png in Resources */,
 				E94FF0DB19633A4600852180 /* iconFlashScreen@2x.png in Resources */,
+				E99EC29319881BAA00CBFA59 /* glowing.gif in Resources */,
 				E93F8513194602DB00B3B448 /* joined@2x.png in Resources */,
 				E9DBB0861978151F00DDACDE /* dancingG-28.png in Resources */,
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,

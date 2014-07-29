@@ -226,7 +226,7 @@
 
 - (void) initializeTabBar {
     UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
-    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"peopleSelected"];
+    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"whoTabIcon"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
 }

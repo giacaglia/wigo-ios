@@ -162,9 +162,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void) changeTabBarToOrange {
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
-//    [tabBarController.view addGestureRecognizer:tap];
-//    tap.delegate = self;
 
     UITabBar *tabBar = tabBarController.tabBar;
     tabBar.layer.borderWidth = 0.5;

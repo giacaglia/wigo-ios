@@ -221,15 +221,17 @@
 
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
-    [message setWasMessageRead:YES];
-    User *user = [message otherUser];
-    if (!user) {
-        user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
+    if (![[_messageParty getObjectArray] count] == 0) {
+        Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
+        [message setWasMessageRead:YES];
+        User *user = [message otherUser];
+        if (!user) {
+            user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
+        }
+        self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:self.conversationViewController animated:YES];
+        self.tabBarController.tabBar.hidden = YES;
     }
-    self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
-    [self.navigationController pushViewController:self.conversationViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
 }
 
 #pragma mark - acessory methods
