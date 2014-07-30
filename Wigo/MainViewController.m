@@ -370,7 +370,7 @@
 
 - (UIImageView *)gifGoOut {
     NSMutableArray *goOutArray = [[NSMutableArray array] init];
-    for (NSUInteger i  = 0; i <= 59; i++) {
+    for (NSUInteger i  = 1; i <= 60; i++) {
         NSString *fileName = [NSString stringWithFormat:@"go-out_2-%d.png",i];
         [goOutArray addObject:[UIImage imageNamed:fileName]];
     }
@@ -626,9 +626,6 @@
 
         if ([indexPath section] == 1) {
             if ([[_notGoingOutParty getObjectArray] count] == 0) {
-                _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, self.view.frame.size.height, reusableView.frame.size.width, 30);
-                [_collectionView addSubview:_notGoingOutView];
-                _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
                 if (!_isFirstTimeNotGoingOutIsAttachedToScrollView) _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
             }
             else {
