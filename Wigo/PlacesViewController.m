@@ -120,6 +120,8 @@
 - (void)initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseEvent:) name:@"chooseEvent" object:nil];
+
 }
 
 - (void)updateTitleViewForNotGoingOut {
@@ -169,7 +171,6 @@
 }
 
 - (void)initializeWhereView {
-    
     _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
@@ -182,19 +183,27 @@
     [self initializeGoingSomewhereElseButton];
 }
 
+- (void)chooseEvent:(NSNotification *)notification {
+    NSNumber *eventID = [[notification userInfo] valueForKey:@"eventID"];
+    [self goOutToEventNumber:eventID];
+}
+
 
 - (void) goOutHere:(id)sender {
     _whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
-    
     UIButton *buttonSender = (UIButton *)sender;
+    [self goOutToEventNumber:[NSNumber numberWithInt:buttonSender.tag]];
+}
+
+- (void)goOutToEventNumber:(NSNumber*)eventID {
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
-    [profileUser setAttendingEventID:[NSNumber numberWithInt:buttonSender.tag]];
+    [profileUser setAttendingEventID:eventID];
     [Profile setUser:profileUser];
     [self updatedTitleViewForGoingOut];
-    [[Profile user] setEventID:[NSNumber numberWithInt:buttonSender.tag]];
-    [Network postGoingToEventNumber:buttonSender.tag];
+    [[Profile user] setEventID:eventID];
+    [Network postGoingToEventNumber:[eventID intValue]];
     [self fetchEventsFirstPage];
 }
 

@@ -45,11 +45,13 @@
 @property UIButtonAligned *rightBarBt;
 @property UIButton *followingButton;
 @property UIButton *followersButton;
-@property UILabel *nameOfPersonLabel;
 @property UIButton *followButton;
 @property UILabel *followRequestLabel;
 
 @property UIView *lastLineView;
+@property UIView *nameOfPersonBackground;
+@property UILabel *nameOfPersonLabel;
+
 
 
 @end
@@ -329,7 +331,7 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view addSubview:_scrollView];
     
-    UIView *firstLineView = [[UIView alloc] initWithFrame:CGRectMake(0, _scrollView.frame.origin.y, _scrollView.frame.size.width, 1)];
+    UIView *firstLineView = [[UIView alloc] initWithFrame:CGRectMake(0, _scrollView.frame.origin.y, self.view.frame.size.width, 1)];
     firstLineView.backgroundColor = [FontProperties getOrangeColor];
     [self.view addSubview:firstLineView];
 
@@ -461,10 +463,10 @@
                               delay:0
                             options:UIViewAnimationOptionCurveLinear
                             animations:^{
-                                _nameOfPersonLabel.transform =  CGAffineTransformMakeTranslation(0, _nameOfPersonLabel.frame.size.height);
+                                _nameOfPersonBackground.transform =  CGAffineTransformMakeTranslation(0, _nameOfPersonBackground.frame.size.height);
                                 _bioLabel.textColor = [UIColor whiteColor];
                                 self.view.backgroundColor = RGB(23, 23, 23);
-                                _nameOfPersonLabel.backgroundColor = RGB(23, 23, 23);
+                                _nameOfPersonBackground.backgroundColor = RGB(23, 23, 23);
                                 
                                 _bioLineView.hidden = YES;
                                 _followButton.hidden = YES;
@@ -490,9 +492,9 @@
                          animations:^{
                              _bioPrefix.hidden = NO;
                              _bioLabel.hidden = NO;
-                             _nameOfPersonLabel.transform =  CGAffineTransformMakeTranslation(0, 0);
-                             _nameOfPersonLabel.backgroundColor = RGBAlpha(23, 23, 23, 0.7f);
-                             [self.view bringSubviewToFront:_nameOfPersonLabel];
+                             _nameOfPersonBackground.transform =  CGAffineTransformMakeTranslation(0, 0);
+                             _nameOfPersonBackground.backgroundColor = RGBAlpha(23, 23, 23, 0.7f);
+                             [self.view bringSubviewToFront:_nameOfPersonBackground];
                              self.view.backgroundColor = [UIColor whiteColor];
                              self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
                              _bioLabel.textColor = [UIColor blackColor];
@@ -509,30 +511,104 @@
 }
 
 - (void)initializeNameOfPerson {
-    _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
-    _nameOfPersonLabel.text = [self.user fullName];
-    _nameOfPersonLabel.textColor = [UIColor whiteColor];
-    _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-    _nameOfPersonLabel.backgroundColor = [UIColor colorWithRed:23/255.0f green:23/255.0f blue:23/255.0f alpha:0.7f];
-    _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
+    _nameOfPersonBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
+    _nameOfPersonBackground.backgroundColor = RGBAlpha(23, 23, 23, 0.7f);
+    
+    _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
+
+    if ([self.user getUserState] == ATTENDING_EVENT_FOLLOWING_USER ||
+        [self.user getUserState] == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
+        
+        _nameOfPersonLabel.numberOfLines = 0;
+        _nameOfPersonLabel.textAlignment = NSTextAlignmentLeft;
+        
+        
+        
+        if ([[Profile user] isAttending] && [[self.user attendingEventID] isEqualToNumber:[[Profile user] attendingEventID]]) {
+            NSString *textOfLabel = [NSString stringWithFormat:@"%@ is also going out to %@", [self.user fullName], [self.user attendingEventName]];
+            NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
+            [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
+            [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
+            NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+            style.lineSpacing = 5;
+            [string addAttribute:NSParagraphStyleAttributeName
+                           value:style
+                           range:NSMakeRange(0, [string length])];
+            _nameOfPersonLabel.attributedText = string;
+        }
+        else {
+            NSString *textOfLabel = [NSString stringWithFormat:@"%@ is going out to %@", [self.user fullName], [self.user attendingEventName]];
+            
+            NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
+            [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
+            [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
+            NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+            style.lineSpacing = 5;
+            [string addAttribute:NSParagraphStyleAttributeName
+                           value:style
+                           range:NSMakeRange(0, [string length])];
+            _nameOfPersonLabel.attributedText = string;
+            
+            UIButton *goHereTooButton = [[UIButton alloc] init];
+            [goHereTooButton setTitle:@"GO THERE TOO" forState:UIControlStateNormal];
+            [goHereTooButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            goHereTooButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            goHereTooButton.titleLabel.font = [FontProperties getSmallPhotoFont];
+            goHereTooButton.layer.borderColor = RGB(201, 202, 204).CGColor;
+            goHereTooButton.layer.borderWidth = 1;
+            goHereTooButton.layer.cornerRadius = 4;
+            [goHereTooButton addTarget:self action:@selector(goThereTooPressed) forControlEvents:UIControlEventTouchUpInside];
+            
+            CGFloat requiredWidth =  [_nameOfPersonLabel.text sizeWithFont:[FontProperties getSmallFont]].width;
+            if (requiredWidth < self.view.frame.size.width - 14 - 10) {
+                CGRect frame = _nameOfPersonLabel.frame;
+                frame.origin.y -= 10;
+                _nameOfPersonLabel.frame = frame;
+                _nameOfPersonLabel.textAlignment = UITextAlignmentCenter;
+                goHereTooButton.frame = CGRectMake(self.view.frame.size.width/2 - 45, 45, 90, 25);
+                [_nameOfPersonBackground addSubview:goHereTooButton];
+                
+            }
+            else {
+                goHereTooButton.frame = CGRectMake(_nameOfPersonBackground.frame.size.width - 90 - 7, _nameOfPersonLabel.frame.origin.y + _nameOfPersonLabel.frame.size.height - 25, 90, 25);
+                [_nameOfPersonBackground addSubview:goHereTooButton];
+            }
+
+        }
+    }
+    else {
+        _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
+        _nameOfPersonLabel.text = [self.user fullName];
+        _nameOfPersonLabel.textColor = [UIColor whiteColor];
+        _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
+    }
     
     _lastLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _nameOfPersonLabel.frame.size.width, 1)];
     _lastLineView.backgroundColor = [FontProperties getOrangeColor];
     _lastLineView.hidden = YES;
-    [_nameOfPersonLabel addSubview:_lastLineView];
-    [self.view addSubview:_nameOfPersonLabel];
-    [self.view bringSubviewToFront:_nameOfPersonLabel];
+    [_nameOfPersonBackground addSubview:_lastLineView];
+    [_nameOfPersonBackground bringSubviewToFront:_lastLineView];
+    [_nameOfPersonBackground addSubview:_nameOfPersonLabel];
+    [self.view addSubview:_nameOfPersonBackground];
+    [self.view bringSubviewToFront:_nameOfPersonBackground];
     
-   
     _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 11, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
-    if (self.userState  == ACCEPTED_PRIVATE_USER || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER || self.userState == PRIVATE_PROFILE) {
+    if (self.userState == ACCEPTED_PRIVATE_USER || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER || self.userState == PRIVATE_PROFILE) {
         _privateLogoImageView.hidden = NO;
     }
     else _privateLogoImageView.hidden = YES;
-    [_nameOfPersonLabel addSubview:_privateLogoImageView];
-    [_nameOfPersonLabel bringSubviewToFront:_privateLogoImageView];
+    [_nameOfPersonBackground addSubview:_privateLogoImageView];
+    [_nameOfPersonBackground bringSubviewToFront:_privateLogoImageView];
     
+}
+
+- (void)goThereTooPressed {
+    if (_isSeingImages) [self chooseImage];
+    [self.navigationController popToRootViewControllerAnimated:NO];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabs" object:nil];
+    NSDictionary *dictionary = @{@"eventID": [self.user attendingEventID]};
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"chooseEvent" object:nil userInfo:dictionary];
 
 }
 

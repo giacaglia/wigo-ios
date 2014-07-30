@@ -627,6 +627,9 @@
         if ([indexPath section] == 1) {
             if ([[_notGoingOutParty getObjectArray] count] == 0) {
                 if (!_isFirstTimeNotGoingOutIsAttachedToScrollView) _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
+                    _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, self.view.frame.size.height, reusableView.frame.size.width, 30);
+                    [_collectionView addSubview:_notGoingOutView];
+                    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
             }
             else {
                 if (_isFirstTimeNotGoingOutIsAttachedToScrollView) {

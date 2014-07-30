@@ -253,8 +253,13 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 - (void)addNotificationHandlers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabBarToOrange) name:@"changeTabBarToOrange" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabBarToBlue) name:@"changeTabBarToBlue" object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearNotifications) name:@"clearNotifications" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabs) name:@"changeTabs" object:nil];
 
+}
+
+- (void)changeTabs {
+    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+    tabBarController.selectedViewController = [tabBarController.viewControllers objectAtIndex:1];
 }
 
 # pragma mark - Facebook Login
