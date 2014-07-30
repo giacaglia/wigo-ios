@@ -10,10 +10,19 @@
 #import "Globals.h"
 #import "RWBlurPopover.h"
 @interface MoreViewController ()
-
+@property STATE state;
 @end
 
 @implementation MoreViewController
+
+- (id)initWithState:(STATE)state
+{
+    self = [super init];
+    if (self) {
+        _state = state;
+    }
+    return self;
+}
 
 - (id)init
 {
@@ -25,13 +34,18 @@
 {
     [super viewDidLoad];
     
-    UIButton *sendEmailButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
-    sendEmailButton.backgroundColor = RGB(246, 143, 30);
-    [sendEmailButton setTitle:@"UNFOLLOW" forState:UIControlStateNormal];
-    [sendEmailButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    sendEmailButton.titleLabel.font = [FontProperties getTitleFont];
-    [sendEmailButton addTarget:self action:@selector(unfollowPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:sendEmailButton];
+    if (_state == FOLLOWING_USER ||
+        _state == ACCEPTED_PRIVATE_USER ||
+        _state == ATTENDING_EVENT_FOLLOWING_USER ||
+        _state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
+        UIButton *sendEmailButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
+        sendEmailButton.backgroundColor = RGB(246, 143, 30);
+        [sendEmailButton setTitle:@"UNFOLLOW" forState:UIControlStateNormal];
+        [sendEmailButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        sendEmailButton.titleLabel.font = [FontProperties getTitleFont];
+        [sendEmailButton addTarget:self action:@selector(unfollowPressed) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:sendEmailButton];
+    }
     
     UIButton *copyEmailButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12, 248, 42)];
     copyEmailButton.backgroundColor = [UIColor redColor];

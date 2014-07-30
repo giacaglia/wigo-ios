@@ -153,9 +153,7 @@
         _leftProfileButton.hidden = YES;
         _rightProfileButton.enabled = NO;
         _rightProfileButton.hidden = YES;
-        _rightBarBt.enabled = NO;
-        _rightBarBt.hidden = YES;
-        
+
         _followButton.enabled = YES;
         _followButton.hidden = NO;
         
@@ -172,8 +170,7 @@
         _leftProfileButton.hidden = YES;
         _rightProfileButton.enabled = NO;
         _rightProfileButton.hidden = YES;
-        _rightBarBt.enabled = NO;
-        _rightBarBt.hidden = YES;
+
         _followButton.enabled = NO;
         _followButton.hidden = YES;
         
@@ -304,7 +301,7 @@
 }
 
 - (void)morePressed {
-    self.moreViewController = [[MoreViewController alloc] init];
+    self.moreViewController = [[MoreViewController alloc] initWithState:[self.user getUserState]];
     [[RWBlurPopover instance] presentViewController:self.moreViewController withOrigin:30 andHeight:450];
 }
 

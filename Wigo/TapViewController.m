@@ -91,7 +91,6 @@
 {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:collectionViewCellIdentifier forIndexPath:indexPath];
     if (cell == nil) cell = [[UICollectionViewCell alloc] init];
-    cell.contentView.backgroundColor = [UIColor redColor];
     cell.contentView.hidden = YES;
     
     NSArray *userArray;
