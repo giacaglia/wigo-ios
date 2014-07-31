@@ -295,7 +295,7 @@
 }
 
 - (void)fetchFirstPageNotifications {
-    _notificationsParty = [[Party alloc] initWithObjectName:@"Notification"];
+    _notificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
     _page = @1;
     [self fetchNotifications];
 }

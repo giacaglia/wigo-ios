@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Query.h"
 
-typedef enum states
+typedef enum
 {
     PRIVATE_PROFILE,
     PUBLIC_PROFILE,

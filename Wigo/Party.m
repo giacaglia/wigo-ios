@@ -10,6 +10,16 @@
 
 @implementation Party
 
+- (id)initWithObjectType:(OBJECT_TYPE)type {
+    self = [super init];
+    if (self) {
+        self.objectType = type;
+        self.objectArray = [[NSMutableArray alloc] initWithCapacity:0];
+    }
+    return self;
+}
+
+
 - (id)init {
     self = [super init];
     if (self) {
@@ -23,7 +33,7 @@
 {
     // We'll ignore the zone for now
     Party *another = [[Party alloc] init];
-    another.objectName = [self.objectName copyWithZone:zone];
+    another.objectType = self.objectType;
     another.objectArray = [self.objectArray copyWithZone:zone];
     return another;
 }
@@ -32,14 +42,7 @@
     return [NSArray arrayWithArray:self.objectArray];
 }
 
-- (id)initWithObjectName:(NSString *)objectName {
-    self = [super init];
-    if (self) {
-        self.objectName = objectName;
-        self.objectArray = [[NSMutableArray alloc] initWithCapacity:0];
-    }
-    return self;
-}
+
 
 - (NSArray *)getNameArray {
     NSMutableArray *nameArray = [[NSMutableArray alloc] initWithCapacity:[self.objectArray count]];
@@ -63,19 +66,19 @@
 
 - (void)addObjectsFromArray:(NSArray *)newObjectArray{
     for (int i = 0; i < [newObjectArray count]; i++) {
-        if ([self.objectName isEqualToString:@"User"]) {
+        if (self.objectType == USER_TYPE) {
             User *newUser = [[User alloc] initWithDictionary:newObjectArray[i]];
             [self.objectArray addObject:newUser];
         }
-        else if ([self.objectName isEqualToString:@"Event"]) {
+        else if (self.objectType == EVENT_TYPE) {
             Event *newEvent = [[Event alloc] initWithDictionary:newObjectArray[i]];
             [self.objectArray addObject:newEvent];
         }
-        else if ([self.objectName isEqualToString:@"Message"]) {
+        else if (self.objectType == MESSAGE_TYPE) {
             Message *newMessage = [[Message alloc] initWithDictionary:newObjectArray[i]];
             [self.objectArray addObject:newMessage];
         }
-        else if ([self.objectName isEqualToString:@"Notification"]) {
+        else if (self.objectType == NOTIFICATION_TYPE) {
             Notification *newNotification = [[Notification alloc] initWithDictionary:newObjectArray[i]];
             [self.objectArray addObject:newNotification];
         }

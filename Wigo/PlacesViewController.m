@@ -445,13 +445,13 @@
     if (_isSearching) {
         if ([[_filteredContentParty getObjectArray] count] == 0) return cell;
         event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
-        if ([_filteredPartyUserArray count] == 0) partyUser = [[Party alloc] initWithObjectName:@"User"];
+        if ([_filteredPartyUserArray count] == 0) partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
         else partyUser = [_filteredPartyUserArray objectAtIndex:[indexPath row]];
     }
     else {
         if ([[_contentParty getObjectArray] count] == 0) return cell;
         event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
-        if ([_partyUserArray count] == 0) partyUser = [[Party alloc] initWithObjectName:@"User"];
+        if ([_partyUserArray count] == 0) partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
         else partyUser  = [_partyUserArray objectAtIndex:[indexPath row]];
     }
     
@@ -593,9 +593,9 @@
 - (void) fetchEventsFirstPage {
     _page = @1;
     numberOfFetchedParties = 0;
-    _eventsParty = [[Party alloc] initWithObjectName:@"Event"];
+    _eventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
     _contentParty = _eventsParty;
-    _filteredContentParty = [[Party alloc] initWithObjectName:@"Event"];
+    _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
     [self fetchEvents];
 }
 
@@ -666,7 +666,7 @@
         dispatch_async(dispatch_get_main_queue(), ^(void){
             _spinnerAtTop ? [WiGoSpinnerView hideSpinnerForView:self.view] : [_placesTableView didFinishPullToRefresh];
             _contentParty = _eventsParty;
-            _filteredContentParty = [[Party alloc] initWithObjectName:@"Event"];
+            _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
             [self dismissKeyboard];
             if ([_page isEqualToNumber:@2]) [_placesTableView setContentOffset:CGPointZero animated:YES];
         });

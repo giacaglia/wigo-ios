@@ -106,9 +106,9 @@
 - (void)fetchFollowingFirstPage {
     _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
     _page = @1;
-    _followingAcceptedParty = [[Party alloc] initWithObjectName:@"User"];
-    _whoIsGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
-    _notGoingOutParty = [[Party alloc] initWithObjectName:@"User"];
+    _followingAcceptedParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    _whoIsGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    _notGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self fetchFollowing];
 }
 

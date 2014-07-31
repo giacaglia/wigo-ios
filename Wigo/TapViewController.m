@@ -31,7 +31,7 @@
 {
     [super viewDidLoad];
     
-    _tapParty = [[Party alloc] initWithObjectName:@"User"];
+    _tapParty = [[Party alloc] initWithObjectType:USER_TYPE];
     
     [self initializeLeftBarButton];
     [self initializeTitle];

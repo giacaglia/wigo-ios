@@ -100,7 +100,7 @@
 
 - (void)fetchFirstPageMessages {
     _page = @1;
-    _messageParty = [[Party alloc] initWithObjectName:@"Message"];
+    _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
     [self fetchMessages];
 }
 
@@ -225,6 +225,10 @@
     return 75;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (![[_messageParty getObjectArray] count] == 0) {
@@ -237,6 +241,17 @@
         self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.conversationViewController animated:YES];
         self.tabBarController.tabBar.hidden = YES;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        NSMutableArray *messageObjectArray = [_messageParty getObjectArray];
+        [messageObjectArray removeObjectAtIndex:[indexPath row]];
+        _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
+        
+//        [ removeObjectAtIndex:indexPath.row];
+        [tableView reloadData]; // tell table to refresh now
     }
 }
 

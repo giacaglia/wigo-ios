@@ -36,7 +36,7 @@
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     [self initializeLeftBarButton];
     [self initializeFollowRequestTable];
-    _followRequestsParty = [[Party alloc] initWithObjectName:@"Notification"];
+    _followRequestsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
     [self fetchFollowRequests];
 }
 

@@ -390,7 +390,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
             // Reorder them by time stamp
             arrayOfMessages = [[arrayOfMessages reverseObjectEnumerator] allObjects];
-            _messageParty = [[Party alloc] initWithObjectName:@"Message"];
+            _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
             [_messageParty addObjectsFromArray:arrayOfMessages];
             [self addMessages];
         });

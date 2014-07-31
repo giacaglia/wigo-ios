@@ -43,9 +43,9 @@
 {
     [super viewDidLoad];
     
-    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
-    _contentParty = [[Party alloc] initWithObjectName:@"User"];
-    _filteredContentParty = [[Party alloc] initWithObjectName:@"User"];
+    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    _contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
 //    _contentList = [_everyoneParty getObjectArray];
 
     
@@ -100,7 +100,7 @@
 #pragma Network Functions
 
 - (void) fetchFirstPageEveryone {
-    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
     _page = @1;
     [self fetchEveryone];
 }

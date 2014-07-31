@@ -12,14 +12,21 @@
 #import "Message.h"
 #import "Notification.h"
 
+typedef enum
+{
+    USER_TYPE,
+    MESSAGE_TYPE,
+    NOTIFICATION_TYPE,
+    EVENT_TYPE
+} OBJECT_TYPE;
+
 @interface Party : NSObject
 
-@property NSString *objectName;
+@property OBJECT_TYPE objectType;
 @property NSMutableArray *objectArray;
 @property NSDictionary *metaDictionary;
 
-
-- (id)initWithObjectName:(NSString *)objectName;
+- (id)initWithObjectType:(OBJECT_TYPE)type;
 - (NSArray *)getObjectArray;
 - (NSArray *)getNameArray;
 - (NSArray *)getFullNameArray;

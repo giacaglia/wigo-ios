@@ -87,8 +87,8 @@
         _currentTab = [self.user objectForKey:@"tabNumber"];
     }
     else if (!_currentTab) _currentTab = @2;
-    _contentParty = [[Party alloc] initWithObjectName:@"User"];
-    _filteredContentParty = [[Party alloc] initWithObjectName:@"User"];
+    _contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self loadTableView];
     [self fetchSummary];
 }
@@ -488,7 +488,7 @@
 
 - (void)fetchFirstPageEveryone {
     _page = @1;
-    _everyoneParty = [[Party alloc] initWithObjectName:@"User"];
+    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self fetchEveryone];
 }
 
@@ -510,7 +510,7 @@
 
 - (void)fetchFirstPageFollowers {
     _page = @1;
-    _followersParty = [[Party alloc] initWithObjectName:@"User"];
+    _followersParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self fetchFollowers];
 }
 
@@ -543,7 +543,7 @@
 
 - (void)fetchFirstPageFollowing {
     _page = @1;
-    _followingParty = [[Party alloc] initWithObjectName:@"User"];
+    _followingParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self fetchFollowing];
 }
 
