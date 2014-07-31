@@ -124,7 +124,6 @@ static char UIScrollViewGifPullToRefresh;
                                     options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState
                                  animations:^{
                                      self.scrollView.contentOffset = CGPointMake(0, -GifRefreshControlHeight - self.originalContentInsectY + 5);
-                                     NSLog(@"scroll view offset %f", self.scrollView.contentOffset.y);
                                      self.scrollView.contentInset = UIEdgeInsetsMake(GifRefreshControlHeight + self.originalContentInsectY + 5, 0.0f, 0.0f, 0.0f);
  
                                  }

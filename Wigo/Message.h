@@ -21,4 +21,5 @@
 - (void)save;
 - (User *)otherUser;
 + (NSString *)randomStringWithLength:(int)len;
+- (BOOL)isEqualToMessage:(Message *)otherMessage;
 @end

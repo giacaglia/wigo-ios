@@ -99,7 +99,9 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     [req setWigoHeadersAndUserKey:_key];
     [req setHTTPMethod:httpMethod];
-    [req setHTTPBody:jsonData];
+    if ([_options count] != 0) {
+        [req setHTTPBody:jsonData];
+    }
     [NSURLConnection sendAsynchronousRequest:req queue:[[NSOperationQueue alloc] init]  completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         NSDictionary* json;
         if (data) {

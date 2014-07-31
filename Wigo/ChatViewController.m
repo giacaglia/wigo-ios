@@ -121,6 +121,12 @@
     
 }
 
+- (void)deleteConversationAsynchronusly:(Message *)message {
+    NSString *idString = [(NSNumber*)[message objectForKey:@"id"] stringValue];
+    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", idString];
+    [Network sendAsynchronousHTTPMethod:DELETE withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
+}
+
 - (void)updateLastMessagesRead {
     User *profileUser = [Profile user];
     for (Message *message in [_messageParty getObjectArray]) {
@@ -246,12 +252,10 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSMutableArray *messageObjectArray = [_messageParty getObjectArray];
-        [messageObjectArray removeObjectAtIndex:[indexPath row]];
-        _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
-        
-//        [ removeObjectAtIndex:indexPath.row];
-        [tableView reloadData]; // tell table to refresh now
+        Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
+        [self deleteConversationAsynchronusly:message];
+        [_messageParty removeObjectAtIndex:[indexPath row]];
+        [tableView reloadData];
     }
 }
 

@@ -157,6 +157,14 @@
     return randomString;
 }
 
+- (BOOL)isEqualToMessage:(Message *)otherMessage {
+    if ([[_proxy objectForKey:@"id"] isEqualToNumber:[otherMessage objectForKey:@"id"]]) {
+        return YES;
+    }
+    return NO;
+}
+
+
 - (void)save {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"messages/"];

@@ -26,12 +26,18 @@
 }
 
 + (void)queryAsynchronousAPI:(NSString *)apiName withHandler:(QueryResult)handler {
+    [Network sendAsynchronousHTTPMethod:GET withAPIName:apiName withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(jsonResponse, error);
+    }];
+}
+
++ (void)sendAsynchronousHTTPMethod:(NSString *)httpMethod withAPIName:(NSString *)apiName withHandler:(QueryResult)handler {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:apiName];
     User *user = [Profile user];
     [query setProfileKey:user.key];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [query sendAsynchronousGETRequestHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [query sendAsynchronousHTTPMethod:(NSString *)httpMethod withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         handler(jsonResponse, error);
     }];
