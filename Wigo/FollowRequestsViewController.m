@@ -116,7 +116,7 @@
 //            [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
 //            [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
 //            [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-//            senderButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
+//            senderButton.titleLabel.font = SC_MEDIUM_FONT(12.0f);
 //            senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
 //            senderButton.layer.borderWidth = 1;
 //            senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;

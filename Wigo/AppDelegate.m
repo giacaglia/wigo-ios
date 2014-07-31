@@ -12,6 +12,7 @@
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
 #import "LocalyticsSession.h"
+#import "FontProperties.h"
 
 NSNumber *indexOfSelectedTab;
 
@@ -176,19 +177,20 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
     UITabBar *tabBar = tabBarController.tabBar;
     tabBar.layer.borderWidth = 0.5;
-    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getOrangeColor], NSFontAttributeName:[UIFont fontWithName:@"Whitney-MediumSC" size:11.0f] } forState:UIControlStateNormal];
-    UITabBarItem *firstTab = [tabBar.items objectAtIndex:0];
-    firstTab.image = [[UIImage imageNamed:@"peopleIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-    firstTab = [tabBar.items objectAtIndex:1];
-    firstTab.image = [[UIImage imageNamed:@"placesIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-    firstTab = [tabBar.items objectAtIndex:2];
-    firstTab.image = [[UIImage imageNamed:@"chatsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-    firstTab = [tabBar.items objectAtIndex:3];
-    firstTab.image = [[UIImage imageNamed:@"notificationsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
+    UIFont *smallFont = SC_MEDIUM_FONT(11.0f);
+    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getOrangeColor], NSFontAttributeName:smallFont } forState:UIControlStateNormal];
+    UITabBarItem *tabItem = [tabBar.items objectAtIndex:0];
+    tabItem.image = [[UIImage imageNamed:@"peopleIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [tabItem setTitlePositionAdjustment:UIOffsetMake(0, -2)];
+    tabItem = [tabBar.items objectAtIndex:1];
+    tabItem.image = [[UIImage imageNamed:@"placesIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [tabItem setTitlePositionAdjustment:UIOffsetMake(0, -2)];
+    tabItem = [tabBar.items objectAtIndex:2];
+    tabItem.image = [[UIImage imageNamed:@"chatsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [tabItem setTitlePositionAdjustment:UIOffsetMake(0, -2)];
+    tabItem = [tabBar.items objectAtIndex:3];
+    tabItem.image = [[UIImage imageNamed:@"notificationsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    [tabItem setTitlePositionAdjustment:UIOffsetMake(0, -2)];
     for (NSString *key in [self.notificationDictionary allKeys] ) {
         UILabel *notificationLabel = [self.notificationDictionary objectForKey:key];
         notificationLabel.backgroundColor = [FontProperties getOrangeColor];
@@ -199,7 +201,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     UITabBar *tabBar = tabBarController.tabBar;
     tabBar.layer.borderWidth = 0.5;
-    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getBlueColor], NSFontAttributeName:[UIFont fontWithName:@"Whitney-MediumSC" size:11.0f] } forState:UIControlStateNormal];
+    UIFont *smallFont = SC_MEDIUM_FONT(11.0f);
+    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getBlueColor], NSFontAttributeName:smallFont } forState:UIControlStateNormal];
     UITabBarItem *firstTab = [tabBar.items objectAtIndex:0];
     firstTab.image = [[UIImage imageNamed:@"peopleIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];

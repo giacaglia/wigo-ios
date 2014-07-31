@@ -26,7 +26,7 @@
 
 #import "UIScrollView+GifPullToRefresh.h"
 #import <objc/runtime.h>
-
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 #define GifRefreshControlHeight 40.0
 
 typedef enum
@@ -124,6 +124,7 @@ static char UIScrollViewGifPullToRefresh;
                                     options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState
                                  animations:^{
                                      self.scrollView.contentOffset = CGPointMake(0, -GifRefreshControlHeight - self.originalContentInsectY + 5);
+                                     NSLog(@"scroll view offset %f", self.scrollView.contentOffset.y);
                                      self.scrollView.contentInset = UIEdgeInsetsMake(GifRefreshControlHeight + self.originalContentInsectY + 5, 0.0f, 0.0f, 0.0f);
  
                                  }
@@ -144,6 +145,11 @@ static char UIScrollViewGifPullToRefresh;
 
 - (void)scrollViewContentOffsetChanged
 {
+    // HACK FOR IOS 8
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
+        NSLog(@"here");
+        if (self.scrollView.contentOffset.y == -64) [self.scrollView setContentOffset:CGPointZero animated:YES];
+    }
     if (_state != GifPullToRefreshStateLoading) {
         if (self.scrollView.isDragging && self.scrollView.contentOffset.y + self.originalContentInsectY < -GifRefreshControlHeight && !_isTrigged) {
             _isTrigged = YES;

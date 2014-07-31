@@ -70,6 +70,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
     [FBAppEvents logEvent:FBAppEventNameActivatedApp];
     [self initializeFlashScreen];
     _spinnerAtCenter = YES;
@@ -201,7 +202,7 @@
         UILabel *barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
         barAtTopLabel.text = textAtTop;
         barAtTopLabel.textAlignment = NSTextAlignmentLeft;
-        barAtTopLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
+        barAtTopLabel.font = SC_LIGHT_FONT(15.0f);
         [_barAtTopView addSubview:barAtTopLabel];
     }
     
@@ -221,7 +222,7 @@
         UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
         goingOutLabel.text = @"NOT GOING OUT YET";
         goingOutLabel.textAlignment = NSTextAlignmentLeft;
-        goingOutLabel.font = [UIFont fontWithName:@"Whitney-LightSC" size:15.0];
+        goingOutLabel.font = SC_LIGHT_FONT(15.0f);
         [_notGoingOutView addSubview:goingOutLabel];
     }
     
@@ -364,7 +365,7 @@
         gifGoOut.frame = goOutButton.frame;
         [goOutButton addSubview:gifGoOut];
         [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
-        self.navigationItem.title = @"GO OUT";
+//        self.navigationItem.title = @"GO OUT";
         self.navigationItem.titleView = goOutButton;
     }
 }

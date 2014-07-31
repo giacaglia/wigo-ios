@@ -340,7 +340,7 @@
     }
     
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    labelName.font = [UIFont fontWithName:@"Whitney-Medium" size:18.0f];
+    labelName.font = MEDIUM_FONT(18.0f);
     labelName.text = [user fullName];
     labelName.tag = [indexPath row];
     labelName.textAlignment = NSTextAlignmentLeft;
@@ -352,7 +352,7 @@
     [cell.contentView addSubview:labelName];
     
     UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
-    goingOutLabel.font = [UIFont fontWithName:@"Whitney-Medium" size:15.0f];
+    goingOutLabel.font = MEDIUM_FONT(15.0f);
     goingOutLabel.textAlignment = NSTextAlignmentLeft;
     if ([user isGoingOut]) {
         goingOutLabel.text = @"Going Out";
@@ -376,7 +376,7 @@
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
             [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            followPersonButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
+            followPersonButton.titleLabel.font = SC_MEDIUM_FONT(12.0f);
             followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
             followPersonButton.layer.borderWidth = 1;
             followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
@@ -423,7 +423,7 @@
             [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
             [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
             [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            senderButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
+            senderButton.titleLabel.font = SC_MEDIUM_FONT(12.0f);
             senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
             senderButton.layer.borderWidth = 1;
             senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;

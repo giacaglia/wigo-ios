@@ -182,7 +182,7 @@
     UIImageView *lastMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(85, 25, 150, 40)];
     UILabel *lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 40)];
     lastMessageLabel.text = [message messageString];
-    lastMessageLabel.font = [UIFont fontWithName:@"Whitney-Light" size:13.0f];
+    lastMessageLabel.font = LIGHT_FONT(13.0f);
     lastMessageLabel.textColor = [UIColor blackColor];
     lastMessageLabel.textAlignment = NSTextAlignmentLeft;
     lastMessageLabel.numberOfLines = 2;
@@ -201,7 +201,7 @@
     [cell.contentView addSubview:lastMessageImageView];
 
     UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, 10, 80, 20)];
-    timeStampLabel.font = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
+    timeStampLabel.font = LIGHT_FONT(15.0f);
     timeStampLabel.text = [message timeOfCreation];
     timeStampLabel.textColor = RGB(179, 179, 179);
     timeStampLabel.textAlignment = NSTextAlignmentRight;

@@ -8,100 +8,55 @@
 
 #import "FontProperties.h"
 
-static UIFont *bioFont;
-static UIFont *headerFont;
-static UIFont *subHeaderFont;
-static UIFont *normalFont;
-static UIFont *smallFont;
-static UIFont *titleFont;
-static UIFont *subtitleFont;
-static UIFont *smallPhotoFont;
-static UIFont *bigButtonFont;
-
-static UIColor *blueColor;
-static UIColor *orangeColor;
-static UIColor *lightOrangeColor;
-
 @implementation FontProperties
-
 
 #pragma mark - Font
 
 + (UIFont *)getSmallPhotoFont {
-    if (smallPhotoFont == nil) {
-        smallPhotoFont = [UIFont fontWithName:@"Whitney-Light" size:12.0f];
-    }
-    return smallPhotoFont;
+    return LIGHT_FONT(12.0f);
 }
 
 + (UIFont *)getBioFont {
-    if (bioFont == nil) {
-        bioFont = [UIFont fontWithName:@"Whitney-Light" size:15.0f];
-    }
-    return bioFont;
+    return LIGHT_FONT(15.0f);
 }
 
 + (UIFont *)getSubtitleFont {
-    if (subtitleFont == nil) {
-        subtitleFont = [UIFont fontWithName:@"Whitney-Medium" size:15.0f];
-    }
-    return subtitleFont;
+    return MEDIUM_FONT(15.0f);
 }
 
-
 + (UIFont *)getSmallFont {
-    if (smallFont == nil) {
-        smallFont = [UIFont fontWithName:@"Whitney-Light" size:18.0f];
-    }
-    return smallFont;
+    return LIGHT_FONT(18.0f);
 }
 
 + (UIFont *)getNormalFont {
-    if (normalFont == nil) {
-        normalFont = [UIFont fontWithName:@"Whitney-LightSC" size:18.0f];
-    }
-    return normalFont;
+    return SC_LIGHT_FONT(18.0f);
 }
 
 
 + (UIFont *)getTitleFont {
-    if (titleFont == nil) {
-        titleFont = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0f];
-    }
-    return titleFont;
+    return SC_MEDIUM_FONT(18.0f);
 }
 
 
-
 + (UIFont *) getBigButtonFont {
-    if (bigButtonFont == nil) {
-        bigButtonFont = [UIFont fontWithName:@"Whitney-MediumSC" size:20.0f];
-    }
-    return bigButtonFont;
+    return SC_MEDIUM_FONT(20.0f);
 }
 
 
 + (UIFont *)getSubHeaderFont {
-    if (subHeaderFont == nil) {
-        subHeaderFont =  [UIFont fontWithName:@"Whitney-Light" size:30.0f];
-    }
-    return subHeaderFont;
+    return LIGHT_FONT(30.0f);
 }
 
 + (UIFont *)getHeaderFont {
-    if (headerFont == nil) {
-        headerFont = [UIFont fontWithName:@"Whitney-Light" size:60.0f];
-    }
-    return headerFont;
+    return LIGHT_FONT(60.0f);
 }
 
 
 
 + (NSDictionary *)getDictTitle {
-    NSDictionary *dictTitle = @{NSUnderlineStyleAttributeName:@(NSUnderlineStyleNone),
+    return @{NSUnderlineStyleAttributeName:@(NSUnderlineStyleNone),
                                 NSFontAttributeName:[FontProperties getTitleFont],
                                 NSParagraphStyleAttributeName:[FontProperties getStyle]};
-    return dictTitle;
 }
 
 
@@ -116,28 +71,19 @@ static UIColor *lightOrangeColor;
 #pragma mark - Colors
 
 + (UIColor *)getBlueColor {
-    if (blueColor == nil) {
-        blueColor = RGB(122,193,226);
-    }
-    return blueColor;
+    return RGB(122,193,226);
 }
 
 + (UIColor *)getLightBlueColor {
-    return [UIColor colorWithRed:122/255.0f green:193/255.0f blue:226/255.0f alpha:0.3f];
+    return RGBAlpha(122, 193, 226, 0.3f);
 }
 
 + (UIColor *)getOrangeColor {
-    if (orangeColor == nil) {
-        orangeColor = RGB(244,149,45);
-    }
-    return orangeColor;
+    return RGB(244,149,45);
 }
 
 + (UIColor *) getLightOrangeColor {
-    if (lightOrangeColor == nil) {
-        lightOrangeColor = [UIColor colorWithRed:244/255.0f green:149/255.0f blue:45/255.0f alpha:0.3f];
-    }
-    return lightOrangeColor;
+    return RGBAlpha(244, 149, 45, 0.3f);
 }
 
 + (UIColor *)getBackgroundLightOrange {

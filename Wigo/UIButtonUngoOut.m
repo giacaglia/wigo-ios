@@ -18,7 +18,7 @@
     if (self) {
         [self setTitle:@"YOU ARE GOING OUT!" forState:UIControlStateNormal];
         [self setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-        self.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:15.0f];
+        self.titleLabel.font = SC_MEDIUM_FONT(15.0f);
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addTarget:self action:@selector(ungoOutPressed) forControlEvents:UIControlEventTouchUpInside];
     }

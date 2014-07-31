@@ -413,7 +413,7 @@
     followLabel.text = followText;
     followLabel.textAlignment = NSTextAlignmentLeft;
     followLabel.textColor = [FontProperties getOrangeColor];
-    followLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:24.0f];
+    followLabel.font = SC_MEDIUM_FONT(24.0f);
     [followLabelPlusImage addSubview:followLabel];
     
     UIImageView *plusImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plusPerson"]];
@@ -430,7 +430,7 @@
     _followRequestLabel.text = @"Your Follow request has been sent";
     _followRequestLabel.textAlignment = NSTextAlignmentCenter;
     _followRequestLabel.textColor = [FontProperties getOrangeColor];
-    _followRequestLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:16.0f];
+    _followRequestLabel.font = SC_MEDIUM_FONT(16.0);
     if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) _followRequestLabel.hidden = NO;
     else _followRequestLabel.hidden = YES;
     [self.view addSubview:_followRequestLabel];
@@ -562,12 +562,12 @@
                 frame.origin.y -= 10;
                 _nameOfPersonLabel.frame = frame;
                 _nameOfPersonLabel.textAlignment = UITextAlignmentCenter;
-                goHereTooButton.frame = CGRectMake(self.view.frame.size.width/2 - 45, 45, 90, 25);
+                goHereTooButton.frame = CGRectMake(self.view.frame.size.width/2 - 48, 45, 95, 25);
                 [_nameOfPersonBackground addSubview:goHereTooButton];
                 
             }
             else {
-                goHereTooButton.frame = CGRectMake(_nameOfPersonBackground.frame.size.width - 90 - 7, _nameOfPersonLabel.frame.origin.y + _nameOfPersonLabel.frame.size.height - 25, 90, 25);
+                goHereTooButton.frame = CGRectMake(_nameOfPersonBackground.frame.size.width - 95 - 7, _nameOfPersonLabel.frame.origin.y + _nameOfPersonLabel.frame.size.height - 25, 95, 25);
                 [_nameOfPersonBackground addSubview:goHereTooButton];
             }
 

@@ -216,7 +216,7 @@
     
     UILabel *goingSomewhereLabel = [[UILabel alloc] initWithFrame:CGRectMake(67, _goingSomewhereButton.frame.size.height/2 - 7, 230, 15)];
     goingSomewhereLabel.text = @"GO SOMEWHERE ELSE";
-    goingSomewhereLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:18.0];
+    goingSomewhereLabel.font = SC_MEDIUM_FONT(18.0f);
     goingSomewhereLabel.textColor = [FontProperties getBlueColor];
     [_goingSomewhereButton addSubview:goingSomewhereLabel];
     
@@ -307,7 +307,7 @@
     
     _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 18 - 100 - 10, 47)];
     _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"WHERE ARE YOU GOING?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
-    _whereAreYouGoingTextField.font = [UIFont fontWithName:@"Whitney-MediumSC" size:15.0f];
+    _whereAreYouGoingTextField.font = SC_MEDIUM_FONT(15.0f);
     _whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
     [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
     _whereAreYouGoingTextField.delegate = self;
@@ -335,7 +335,7 @@
     [_createButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _createButton.backgroundColor = [FontProperties getBlueColor];
     [_createButton addTarget:self action:@selector(createPressed) forControlEvents:UIControlEventTouchUpInside];
-    _createButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
+    _createButton.titleLabel.font = SC_MEDIUM_FONT(12.0f);
     _createButton.layer.cornerRadius = 5;
     _createButton.layer.borderWidth = 1;
     _createButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
@@ -498,10 +498,9 @@
     if ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]]) {
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
         UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 8, 125, 30)];
-        goingHereLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:13.0f];;
         goingHereLabel.textColor = [FontProperties getBlueColor];
         goingHereLabel.textAlignment = NSTextAlignmentRight;
-        goingHereLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
+        goingHereLabel.font = SC_MEDIUM_FONT(12.0f);
         goingHereLabel.text = @"GOING HERE";
         [placeSubView addSubview:goingHereLabel];
     }
@@ -515,7 +514,7 @@
         [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
         [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         goOutButton.backgroundColor = [FontProperties getBlueColor];
-        goOutButton.titleLabel.font = [UIFont fontWithName:@"Whitney-MediumSC" size:12.0f];
+        goOutButton.titleLabel.font = SC_MEDIUM_FONT(12.0f);
         goOutButton.layer.cornerRadius = 5;
         goOutButton.layer.borderWidth = 1;
         goOutButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
