@@ -231,7 +231,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 #pragma mark - Notification Tab Bar
 
-- (void)addNotificationNumber:(NSNumber *)number toTabBar:(NSNumber *)tabBarNumber {
+- (void)addNotificationNumber:(NSNumber *)number toTabBar:(NSNumber *)tabBarNumber containNumber:(BOOL)itDoes {
     CGSize origin;
     if ([tabBarNumber isEqualToNumber:@2]) { // Chats notification
         origin = CGSizeMake(216, 6);
@@ -249,11 +249,16 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     }
     else numberOfNotificationsLabel = [[UILabel alloc] init];
     
-    numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 16, 12);
-    numberOfNotificationsLabel.text = [number stringValue];
-    numberOfNotificationsLabel.textAlignment = NSTextAlignmentCenter;
-    numberOfNotificationsLabel.textColor = [UIColor whiteColor];
-    numberOfNotificationsLabel.font = MEDIUM_FONT(10.0f);
+    if (itDoes) {
+        numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 16, 12);
+        numberOfNotificationsLabel.text = [number stringValue];
+        numberOfNotificationsLabel.textAlignment = NSTextAlignmentCenter;
+        numberOfNotificationsLabel.textColor = [UIColor whiteColor];
+        numberOfNotificationsLabel.font = MEDIUM_FONT(10.0f);
+    }
+    else numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 8, 8);
+
+  
     if ([indexOfSelectedTab isEqualToNumber:@1]) numberOfNotificationsLabel.backgroundColor = [FontProperties getBlueColor];
     else numberOfNotificationsLabel.backgroundColor = [FontProperties getOrangeColor];
     numberOfNotificationsLabel.layer.borderColor = [UIColor clearColor].CGColor;
@@ -273,11 +278,11 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 - (void)reloadTabBarNotifications {
     [self areThereNotificationsWithHandler:^(NSNumber *numberOFNewMessages, NSNumber *numberOfNewNotifications) {
         if ([numberOFNewMessages intValue] > 0) {
-            [self addNotificationNumber:numberOFNewMessages toTabBar:@2];
+            [self addNotificationNumber:numberOFNewMessages toTabBar:@2 containNumber:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
         }
         if ([numberOfNewNotifications intValue] > 0) {
-            [self addNotificationNumber:numberOFNewMessages toTabBar:@3];
+            [self addNotificationNumber:numberOfNewNotifications toTabBar:@3 containNumber:NO];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
         }
     }];
