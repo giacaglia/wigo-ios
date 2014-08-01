@@ -122,8 +122,14 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[LocalyticsSession shared] handleRemoteNotification:userInfo];
-//    NSDictionary *aps = [userInfo objectForKey:@"aps"];
-    
+    NSDictionary *aps = [userInfo objectForKey:@"aps"];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:[NSString stringWithFormat:@"notification %@", aps]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    [alertView show];
+
     [self reloadTabBarNotifications];
 }
 
