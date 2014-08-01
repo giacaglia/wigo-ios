@@ -57,7 +57,7 @@
 }
 
 - (void) initializeTapsLabel {
-    UILabel *tapsLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 64 + 5, self.view.frame.size.width - 14, 15)];
+    UILabel *tapsLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 10 + 64 + 5, self.view.frame.size.width - 14, 15)];
     tapsLabel.text = @"PEOPLE WHO WANT TO SEE YOU OUT";
     tapsLabel.textAlignment = NSTextAlignmentCenter;
     tapsLabel.font = SC_LIGHT_FONT(14.0f);
@@ -75,8 +75,8 @@
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = 4;
     layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 30);
-    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0
-                                                                         , self.view.frame.size.width, self.view.frame.size.height - 64 - 49) collectionViewLayout:layout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 20
+                                                                         , self.view.frame.size.width, self.view.frame.size.height - 64 - 49 - 20) collectionViewLayout:layout];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:collectionViewCellIdentifier];

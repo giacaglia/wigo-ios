@@ -167,6 +167,8 @@
 		E9AAAFBC193CBE810069F700 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBB193CBE810069F700 /* NotificationsViewController.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
+		E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE4999198C402500F9AF74 /* girlVoice.caf */; };
+		E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE4999198C402500F9AF74 /* girlVoice.caf */; };
 		E9BE8C49192A48F1008BB84C /* FontProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BE8C48192A48F1008BB84C /* FontProperties.m */; };
 		E9BE8C4C192A54F3008BB84C /* Profile.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BE8C4B192A54F3008BB84C /* Profile.m */; };
 		E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */; };
@@ -335,6 +337,7 @@
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
 		E9AAAFC7193E357E0069F700 /* UIButtonAligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonAligned.h; sourceTree = "<group>"; };
 		E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonAligned.m; sourceTree = "<group>"; };
+		E9BE4999198C402500F9AF74 /* girlVoice.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = girlVoice.caf; sourceTree = "<group>"; };
 		E9BE8C47192A48F1008BB84C /* FontProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontProperties.h; sourceTree = "<group>"; };
 		E9BE8C48192A48F1008BB84C /* FontProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontProperties.m; sourceTree = "<group>"; };
 		E9BE8C4A192A54F3008BB84C /* Profile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Profile.h; sourceTree = "<group>"; };
@@ -514,6 +517,7 @@
 		E921D6091923967D00361247 = {
 			isa = PBXGroup;
 			children = (
+				E9BE4999198C402500F9AF74 /* girlVoice.caf */,
 				E921D61B1923967D00361247 /* Wigo */,
 				E921D63D1923967D00361247 /* WigoTests */,
 				E921D6141923967D00361247 /* Frameworks */,
@@ -969,6 +973,7 @@
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
+				E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -977,6 +982,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E921D6311923967D00361247 /* Images.xcassets in Resources */,
+				E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */,
 				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
