@@ -10,6 +10,7 @@
 
 @interface Time : NSObject
 
++ (BOOL) isUTCtimeStringFromLastDay:(NSString *)utcTimeString;
 + (NSString *)getUTCTimeStringToLocalTimeString:(NSString *)utcTimeString;
 
 @end

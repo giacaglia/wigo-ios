@@ -192,9 +192,9 @@
     lastMessageLabel.numberOfLines = 2;
     lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
-    if ([[message messageString] length] == 0) {
+    if ([message isMessageFromLastDay]) {
         lastMessageLabel.textColor = RGB(150, 150, 150);
-        lastMessageLabel.text = [Message randomStringWithLength:(arc4random_uniform(50))];
+        lastMessageLabel.text = [message messageString];
         [lastMessageImageView addSubview:lastMessageLabel];
         lastMessageImageView = [UIImageCrop blurImageView:lastMessageImageView withRadius:3.0f];
         [lastMessageLabel removeFromSuperview];

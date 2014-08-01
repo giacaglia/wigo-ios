@@ -80,13 +80,6 @@ NSNumber *indexOfSelectedTab;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
         }
     }];
-    [self areThereNewNotificationsWithBoolReturned:^(BOOL boolResult) {
-        if (boolResult) {
-            [self addOneToTabBar:@3];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
-
-        }
-    }];
 
     [[LocalyticsSession shared] resume];
     [[LocalyticsSession shared] upload];
@@ -295,42 +288,12 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)areThereNewMessagesWithBoolReturned:(IsThereResult)handler {
-    NSString *queryString = @"messages/summary/?to_user=me";
+    NSString *queryString = @"unread/summary";
     [Network sendAsynchronousHTTPMethod:GET withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
-            Message *message = [[Message alloc] initWithDictionary:arrayOfMessages[0]];
-            User *profileUser = [Profile user];
-            if (profileUser) {
-                if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastMessageRead] intValue]) {
-                    handler(YES);
-                }
-                else {
-                    handler(NO);
-                }
-            }
-            else handler(NO);
-        }
-        );
-    }];
-
-}
-
-- (void)areThereNewNotificationsWithBoolReturned:(IsThereResult)handler {
-    NSString *queryString = @"notifications/?page=%@";
-    [Network sendAsynchronousHTTPMethod:GET withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
-            Notification *notification = [[Notification alloc] initWithDictionary:arrayOfNotifications[0]];
-            User *profileUser = [Profile user];
-            if (profileUser) {
-                if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastMessageRead] intValue]) {
-                    handler(YES);
-                }
-                else {
-                    handler(NO);
-                }
-            }
+            NSNumber *numberOfNewMessages = [jsonResponse objectForKey:@"messages"];
+            NSNumber *numberOfNewNotifications = [jsonResponse objectForKey:@"notifications"];
+            if ([numberOfNewMessages intValue] > 0) handler(YES);
             else handler(NO);
         });
     }];

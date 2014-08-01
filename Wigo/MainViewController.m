@@ -46,6 +46,7 @@
 @property UILabel *notGoingOutLabel;
 @property BOOL spinnerAtCenter;
 @property BOOL fetchingFirstPage;
+@property BOOL fetchinfUserInfo;
 
 @end
 
@@ -62,9 +63,8 @@
 - (void) viewDidAppear:(BOOL)animated {
     [[LocalyticsSession shared] tagScreen:@"People"];
     self.tabBarController.tabBar.hidden = NO;
-    if (!_fetchingFirstPage) {
-        [self fetchFirstPageFollowing];
-    }
+    if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
+    if (!_fetchinfUserInfo) [self fetchUserInfo];
 }
 
 - (void)viewDidLoad
@@ -83,6 +83,7 @@
 
 - (void)loadViewAfterSigningUser {
     _fetchingFirstPage = NO;
+    _fetchinfUserInfo = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
     [self fetchFirstPageFollowing];
     [self fetchUserInfo];
@@ -91,12 +92,14 @@
 #pragma mark - Network function
 
 - (void) fetchUserInfo {
+    _fetchinfUserInfo = YES;
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         User *user = [[User alloc] initWithDictionary:jsonResponse];
         User *profileUser = [Profile user];
         [profileUser setIsGoingOut:[user isGoingOut]];
         [Profile setUser:profileUser];
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            _fetchinfUserInfo = NO;
             [self updateTitleView];
             [self fetchedMyInfoOrPeoplesInfo];
         });

@@ -10,6 +10,22 @@
 
 @implementation Time
 
++ (BOOL) isUTCtimeStringFromLastDay:(NSString *)utcTimeString {
+    NSDateFormatter *utcDateFormat = [[NSDateFormatter alloc] init];
+    [utcDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *dateInUTC = [utcDateFormat dateFromString:utcTimeString];
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    NSDate *dateInLocalTimezone = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
+    
+    NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:dateInLocalTimezone];
+    NSDateComponents *today = [[NSCalendar currentCalendar] components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
+    // If today
+    if ([today hour] >= 6 && [today day] == [otherDay day]) {
+        return NO;
+    }
+    return YES;
+}
+
 + (NSString *)getUTCTimeStringToLocalTimeString:(NSString *)utcTimeString {
     NSDateFormatter *utcDateFormat = [[NSDateFormatter alloc] init];
     [utcDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];

@@ -16,6 +16,7 @@
 @property User *fromUser;
 @property NSNumber *toUser;
 @property BOOL wasMessageRead;
+- (BOOL)isMessageFromLastDay;
 - (NSString *)timeOfCreation;
 - (void)setTimeOfCreation:(NSString *)timeOfCreation;
 - (void)save;

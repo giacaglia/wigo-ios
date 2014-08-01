@@ -134,10 +134,14 @@
     [modifiedKeys addObject:@"properties"];
 }
 
+- (BOOL)isMessageFromLastDay {
+    NSString *utcCreationTime = [_proxy objectForKey:@"created"];
+    return [Time isUTCtimeStringFromLastDay:utcCreationTime];
+}
+
 - (NSString *)timeOfCreation {
     NSString *utcCreationTime = [_proxy objectForKey:@"created"];
     return [Time getUTCTimeStringToLocalTimeString:utcCreationTime];
-//    return [localTimeString substringWithRange:NSMakeRange(11, 5)];
 }
 
 - (void)setTimeOfCreation:(NSString *)timeOfCreation {
