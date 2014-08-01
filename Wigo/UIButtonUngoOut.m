@@ -54,8 +54,6 @@
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:NO];
     [profileUser saveKeyAsynchronously:@"is_goingout"];
-    [profileUser setIsGoingOut:NO];
-    [Profile setUser:profileUser];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateViewNotGoingOut" object:nil];
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
 }

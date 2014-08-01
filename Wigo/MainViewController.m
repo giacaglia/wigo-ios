@@ -97,7 +97,6 @@
         User *user = [[User alloc] initWithDictionary:jsonResponse];
         User *profileUser = [Profile user];
         [profileUser setIsGoingOut:[user isGoingOut]];
-        [Profile setUser:profileUser];
         dispatch_async(dispatch_get_main_queue(), ^(void){
             _fetchinfUserInfo = NO;
             [self updateTitleView];
@@ -406,7 +405,6 @@
 - (void) goOutPressed {
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
-    [Profile setUser:profileUser];
     [self updateTitleView];
     [self showTapButtons];
     [self animationShowingTapIcons];

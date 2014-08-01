@@ -130,7 +130,6 @@
     for (Message *message in [_messageParty getObjectArray]) {
         if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastMessageRead] intValue]) {
             [profileUser setLastMessageRead:[message objectForKey:@"id"]];
-            [Profile setUser:profileUser];
             [profileUser saveKeyAsynchronously:@"last_message_read"];
         }
     }

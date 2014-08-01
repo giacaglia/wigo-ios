@@ -456,7 +456,6 @@
     User *profileUser = [Profile user];
     [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
     [Profile setFollowingParty:_followingParty];
-    [Profile setUser:profileUser];
 }
 
 - (User *)getUserAtIndex:(int)index {
@@ -478,7 +477,6 @@
     for (User *user in [_everyoneParty getObjectArray]) {
         if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastUserRead] intValue]) {
             [profileUser setLastUserRead:[user objectForKey:@"id"]];
-            [Profile setUser:profileUser];
             [profileUser saveKeyAsynchronously:@"last_user_read"];
         }
     }

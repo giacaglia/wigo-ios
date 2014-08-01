@@ -310,7 +310,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     User *profileUser = [Profile user];
     if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastMessageRead] intValue]) {
         [profileUser setLastMessageRead:[message objectForKey:@"id"]];
-        [Profile setUser:profileUser];
     }
 }
 

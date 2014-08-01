@@ -184,7 +184,6 @@
                               [WiGoSpinnerView hideSpinnerForView:self.view];
                               User *profileUser = [Profile user];
                               [profileUser setImagesURL:profilePictures];
-                              [Profile setUser:profileUser];
                               if (_userEmailAlreadySent) {
                                   if (!_pushed) {
                                       _pushed = YES;
@@ -247,7 +246,6 @@
         User *profileUser = [Profile user];
         [profileUser setFirstName:fbGraphUser[@"first_name"]];
         [profileUser setLastName:fbGraphUser[@"last_name"]];
-        [Profile setUser:profileUser];
         
         if (!_alertShown && !_fetchingProfilePictures) {
             [self loginUserAsynchronous];
@@ -268,12 +266,10 @@
     User *profileUser = [Profile user];
     [profileUser setObject:_fbID forKey:@"facebook_id"];
     [profileUser setAccessToken:_accessToken];
-    [Profile setUser:profileUser];
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [profileUser loginWithHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView hideSpinnerForView:self.view];
-            [Profile setUser:profileUser];
             if ([error domain] == NSURLErrorDomain) {
                 if (!_alertShown) {
                     _alertShown = YES;

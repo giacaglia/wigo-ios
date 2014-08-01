@@ -72,7 +72,6 @@
     User *profileUser = [Profile user];
     [profileUser setBioString:_bioTextView.text];
     [profileUser setIsPrivate:_privacySwitch.on];
-    [Profile setUser:profileUser];
     [profileUser save];
     [WiGoSpinnerView hideSpinnerForView:self.view];
     

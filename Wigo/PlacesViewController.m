@@ -200,7 +200,6 @@
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
     [profileUser setAttendingEventID:eventID];
-    [Profile setUser:profileUser];
     [self updatedTitleViewForGoingOut];
     [[Profile user] setEventID:eventID];
     [Network postGoingToEventNumber:[eventID intValue]];
@@ -349,7 +348,6 @@
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
     [profileUser setAttendingEventID:eventID];
-    [Profile setUser:profileUser];
     [self updatedTitleViewForGoingOut];
     [self fetchEventsFirstPage];
 }
@@ -648,7 +646,6 @@
                                       User *profileUser = [Profile user];
                                       [profileUser setIsGoingOut:YES];
                                       [[Profile user] setEventID:eventId];
-                                      [Profile setUser:profileUser];
                                   }
                                   [partyUser addObject:user];
                               }

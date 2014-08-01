@@ -36,17 +36,21 @@
     NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:dateInLocalTimezone];
     NSDateComponents *today = [[NSCalendar currentCalendar] components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
     // If today
-    if ([today hour] >= 6 && [today day] == [otherDay day]) {
+    
+    NSInteger hour= [today hour];
+    
+    if ( [today day] == [otherDay day]) {
         NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
         [localTimeFormat setDateFormat:@"h:mm a"];
         return [localTimeFormat stringFromDate:dateInLocalTimezone];
     }
     else {
-        int differenceOfDays = [today day] - [otherDay day];
-        if (differenceOfDays == 0 || differenceOfDays == 1) {
+        NSTimeInterval secondsBetween = [[NSDate date] timeIntervalSinceDate:dateInLocalTimezone];
+        int numberOfDays = secondsBetween / 86400;
+        if (numberOfDays == 0 || numberOfDays == 1) {
             return @"1 day ago";
         }
-        else return [NSString stringWithFormat:@"%d days ago", differenceOfDays];
+        else return [NSString stringWithFormat:@"%d days ago", numberOfDays];
     }
 }
 

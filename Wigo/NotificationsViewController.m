@@ -270,7 +270,6 @@
     User *profileUser = [Profile user];
     if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastNotificationRead] intValue]) {
         [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
-        [Profile setUser:profileUser];
     }
 }
 
