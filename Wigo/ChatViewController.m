@@ -120,7 +120,7 @@
 }
 
 - (void)deleteConversationAsynchronusly:(Message *)message {
-    NSString *idString = [(NSNumber*)[message objectForKey:@"id"] stringValue];
+    NSString *idString = [(NSNumber*)[[message otherUser] objectForKey:@"id"] stringValue];
     NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", idString];
     [Network sendAsynchronousHTTPMethod:DELETE withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
 }

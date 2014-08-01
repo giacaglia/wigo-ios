@@ -33,24 +33,42 @@
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     NSDate *dateInLocalTimezone = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
     
-    NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:dateInLocalTimezone];
-    NSDateComponents *today = [[NSCalendar currentCalendar] components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
-    // If today
+    NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit fromDate:dateInLocalTimezone];
+    NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit |NSHourCalendarUnit fromDate:[NSDate date]];
     
-    NSInteger hour= [today hour];
-    
-    if ( [today day] == [otherDay day]) {
+    if ([otherDay hour] >= 6 && [today day] == [otherDay day]) {
         NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
         [localTimeFormat setDateFormat:@"h:mm a"];
         return [localTimeFormat stringFromDate:dateInLocalTimezone];
     }
-    else {
-        NSTimeInterval secondsBetween = [[NSDate date] timeIntervalSinceDate:dateInLocalTimezone];
-        int numberOfDays = secondsBetween / 86400;
-        if (numberOfDays == 0 || numberOfDays == 1) {
-            return @"1 day ago";
+    else { // Get the difference between the dates
+        NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        NSDateComponents *differenceDateComponents = [gregorianCalendar
+                                                      components:NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSDayCalendarUnit
+                                                      fromDate:dateInLocalTimezone
+                                                      toDate:[NSDate date]
+                                                      options:0];
+        if ([differenceDateComponents week] == 0) {
+            if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
+                return @"1 day ago";
+            }
+            return [NSString stringWithFormat:@"%d days ago", [differenceDateComponents day]];
         }
-        else return [NSString stringWithFormat:@"%d days ago", numberOfDays];
+        else {
+            if ([differenceDateComponents month] == 0) {
+                if ([differenceDateComponents week] == 1) {
+                    return @"1 week ago";
+                }
+                return [NSString stringWithFormat:@"%d weeks ago", [differenceDateComponents week]];
+            }
+            else {
+                if ([differenceDateComponents month] == 1) {
+                    return @"1 month ago";
+                }
+                return [NSString stringWithFormat:@"%d months ago", [differenceDateComponents month]];
+            }
+            
+        }
     }
 }
 
