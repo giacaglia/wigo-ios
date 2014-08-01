@@ -13,6 +13,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import "LocalyticsSession.h"
 #import "FontProperties.h"
+#import "Network.h"
 
 NSNumber *indexOfSelectedTab;
 
@@ -32,7 +33,6 @@ NSNumber *indexOfSelectedTab;
     
     NSString *parseApplicationId = PARSE_APPLICATIONID; // just for ease of debugging
     NSString *parseClientKey = PARSE_CLIENTKEY;
-    
     
     [Parse setApplicationId:parseApplicationId
                   clientKey:parseClientKey];
@@ -74,8 +74,20 @@ NSNumber *indexOfSelectedTab;
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
-    
+    [self areThereNewMessagesWithBoolReturned:^(BOOL boolResult) {
+        if (boolResult) {
+            [self addOneToTabBar:@2];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
+        }
+    }];
+    [self areThereNewNotificationsWithBoolReturned:^(BOOL boolResult) {
+        if (boolResult) {
+            [self addOneToTabBar:@3];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
+
+        }
+    }];
+
     [[LocalyticsSession shared] resume];
     [[LocalyticsSession shared] upload];
 }
@@ -87,9 +99,9 @@ NSNumber *indexOfSelectedTab;
     if (currentInstallation.badge != 0) {
         currentInstallation.badge = 0;
         [currentInstallation saveEventually];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
     }
-//    NSString *gitCount = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitCount"];
-//    NSString *gitHash = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitHash"];
+
 #if DEBUG
     [[LocalyticsSession shared] LocalyticsSession:@"b6cd95cf2fdb16d4a9c6442-0646de50-12de-11e4-224f-004a77f8b47f"];
 #else
@@ -159,6 +171,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
     }
 }
+
 
 - (void)addTabBarDelegate {
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
@@ -279,6 +292,49 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeAlertToNotShown" object:nil];
     
     return wasHandled;
+}
+
+- (void)areThereNewMessagesWithBoolReturned:(IsThereResult)handler {
+    NSString *queryString = @"messages/summary/?to_user=me";
+    [Network sendAsynchronousHTTPMethod:GET withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
+            Message *message = [[Message alloc] initWithDictionary:arrayOfMessages[0]];
+            User *profileUser = [Profile user];
+            if (profileUser) {
+                if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastMessageRead] intValue]) {
+                    handler(YES);
+                }
+                else {
+                    handler(NO);
+                }
+            }
+            else handler(NO);
+        }
+        );
+    }];
+
+}
+
+- (void)areThereNewNotificationsWithBoolReturned:(IsThereResult)handler {
+    NSString *queryString = @"notifications/?page=%@";
+    [Network sendAsynchronousHTTPMethod:GET withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
+            Notification *notification = [[Notification alloc] initWithDictionary:arrayOfNotifications[0]];
+            User *profileUser = [Profile user];
+            if (profileUser) {
+                if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastMessageRead] intValue]) {
+                    handler(YES);
+                }
+                else {
+                    handler(NO);
+                }
+            }
+            else handler(NO);
+        });
+    }];
+
 }
 
 //- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController

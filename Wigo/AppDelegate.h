@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
 
+typedef void (^IsThereResult)(BOOL boolResult);
+
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UIGestureRecognizerDelegate, UITabBarControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;

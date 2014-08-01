@@ -36,9 +36,7 @@
     [query queryWithClassName:apiName];
     User *user = [Profile user];
     [query setProfileKey:user.key];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [query sendAsynchronousHTTPMethod:(NSString *)httpMethod withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         handler(jsonResponse, error);
     }];
 }

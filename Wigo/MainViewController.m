@@ -45,7 +45,7 @@
 @property UILabel *goingOutLabelOnTopOfNotGoingOutLabel;
 @property UILabel *notGoingOutLabel;
 @property BOOL spinnerAtCenter;
-@property BOOL notFirstTimeOpeningView;
+@property BOOL fetchingFirstPage;
 
 @end
 
@@ -62,9 +62,9 @@
 - (void) viewDidAppear:(BOOL)animated {
     [[LocalyticsSession shared] tagScreen:@"People"];
     self.tabBarController.tabBar.hidden = NO;
-//    if (_notFirstTimeOpeningView) {
-//        [self fetchFollowingFirstPage];
-//    }
+    if (!_fetchingFirstPage) {
+        [self fetchFirstPageFollowing];
+    }
 }
 
 - (void)viewDidLoad
@@ -82,10 +82,10 @@
 }
 
 - (void)loadViewAfterSigningUser {
+    _fetchingFirstPage = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
-    [self fetchFollowingFirstPage];
+    [self fetchFirstPageFollowing];
     [self fetchUserInfo];
-    _notFirstTimeOpeningView = YES;
 }
 
 #pragma mark - Network function
@@ -103,47 +103,53 @@
     }];
 }
 
-- (void)fetchFollowingFirstPage {
+- (void)fetchFirstPageFollowing {
+    _fetchingFirstPage = YES;
     _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
     _page = @1;
-    _followingAcceptedParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    _whoIsGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    _notGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self fetchFollowing];
 }
 
 - (void)fetchFollowing {
     NSString *queryString = [NSString stringWithFormat:@"users/?user=friends&ordering=is_goingout&page=%@", [_page stringValue]];
-    if (_spinnerAtCenter) [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        [_followingAcceptedParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_followingAcceptedParty addMetaInfo:metaDictionary];
-        [Profile setFollowingParty:_followingAcceptedParty];
-        
-//        if ([[Profile user] isGoingOut]) {
-//            [_whoIsGoingOutParty addObject:[Profile user]];
-//        }
-        User *user;
-        for (int i = 0; i < [arrayOfUsers count]; i++) {
-            NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];
-            user = [[User alloc] initWithDictionary:userDictionary];
-            if ([user isGoingOut]) {
-                [_whoIsGoingOutParty addObject:user];
-            }
-            else {
-                [_notGoingOutParty addObject:user];
-            }
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([_page isEqualToNumber:@1]) _fetchingFirstPage = NO;
+            });
         }
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            _spinnerAtCenter ? [WiGoSpinnerView hideSpinnerForView:self.view] : [_collectionView didFinishPullToRefresh];
-            _page = @([_page intValue] + 1);
-            [_collectionView reloadData];
-            [self.view bringSubviewToFront:_barAtTopView];
-            [self fetchedMyInfoOrPeoplesInfo];
-        });
-        
+        else {
+            if ([_page isEqualToNumber:@1]) {
+                _followingAcceptedParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                _whoIsGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                _notGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
+            }
+            NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+            [_followingAcceptedParty addObjectsFromArray:arrayOfUsers];
+            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+            [_followingAcceptedParty addMetaInfo:metaDictionary];
+            [Profile setFollowingParty:_followingAcceptedParty];
+            
+            User *user;
+            for (int i = 0; i < [arrayOfUsers count]; i++) {
+                NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];
+                user = [[User alloc] initWithDictionary:userDictionary];
+                if ([user isGoingOut]) {
+                    [_whoIsGoingOutParty addObject:user];
+                }
+                else {
+                    [_notGoingOutParty addObject:user];
+                }
+            }
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([_page isEqualToNumber:@1]) _fetchingFirstPage = NO;
+                if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
+                _page = @([_page intValue] + 1);
+                [_collectionView reloadData];
+                [self.view bringSubviewToFront:_barAtTopView];
+                [self fetchedMyInfoOrPeoplesInfo];
+            });
+        }
     }];
 }
 
@@ -460,7 +466,7 @@
 - (void)addRefreshToCollectonView {
     [WiGoSpinnerView addDancingGToUIScrollView:_collectionView withHandler:^{
         _spinnerAtCenter = NO;
-        [self fetchFollowingFirstPage];
+        [self fetchFirstPageFollowing];
     }];
 }
 

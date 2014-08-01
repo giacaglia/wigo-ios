@@ -105,11 +105,9 @@
 }
 
 - (void)fetchMessages {
-//    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    NSString *queryString = [NSString stringWithFormat:@"messages/summary/?to_user=me&page=%@", [_page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"messages/summary/?to_user=me&page=%@@limit=1", [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-//            [WiGoSpinnerVie'w hideSpinnerForView:self.view];
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
             [_messageParty addObjectsFromArray:arrayOfMessages];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
