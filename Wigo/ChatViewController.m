@@ -38,6 +38,7 @@
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"chatsSelected"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
     [self fetchFirstPageMessages];
 }
 
@@ -54,6 +55,11 @@
     [self initializeRightBarButtonItem];
     
     self.navigationItem.leftBarButtonItem = nil;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
 }
 
 - (void)scrollUp {
@@ -135,6 +141,7 @@
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
                             withOptions:options];
 }
+
 
 #pragma mark - Tablew View Data Source
 

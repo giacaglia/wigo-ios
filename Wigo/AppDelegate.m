@@ -128,6 +128,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[LocalyticsSession shared] handleRemoteNotification:userInfo];
+//    NSDictionary *aps = [userInfo objectForKey:@"aps"];
+    
     [self reloadTabBarNotifications];
 }
 
@@ -139,7 +141,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)tabBarController:(UITabBarController *)theTabBarController didSelectViewController:(UIViewController *)viewController {
     indexOfSelectedTab = [NSNumber numberWithUnsignedInteger:[theTabBarController.viewControllers indexOfObject:viewController]];
-    [self clearNotificationAtTabBar:indexOfSelectedTab];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollUp" object:nil];
 }
@@ -166,6 +167,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     for (NSString *key in [self.notificationDictionary allKeys] ) {
         UILabel *notificationLabel = [self.notificationDictionary objectForKey:key];
         notificationLabel.backgroundColor = [FontProperties getOrangeColor];
+        notificationLabel.textColor = [UIColor whiteColor];
     }
 }
 
@@ -187,6 +189,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     for (NSString *key in [self.notificationDictionary allKeys] ) {
         UILabel *notificationLabel = [self.notificationDictionary objectForKey:key];
         notificationLabel.backgroundColor = [FontProperties getBlueColor];
+        notificationLabel.textColor = [UIColor whiteColor];
     }
 }
 
@@ -194,7 +197,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabBarToOrange) name:@"changeTabBarToOrange" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabBarToBlue) name:@"changeTabBarToBlue" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabs) name:@"changeTabs" object:nil];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTabBarNotifications) name:@"reloadTabBarNotifications" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadColorWhenTabBarIsMessage) name:@"reloadColorWhenTabBarIsMessage" object:nil];
 }
 
 - (void)changeTabs {
@@ -281,11 +285,30 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
             [self addNotificationNumber:numberOFNewMessages toTabBar:@2 containNumber:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
         }
+        else [self clearNotificationAtTabBar:@2];
+       
         if ([numberOfNewNotifications intValue] > 0) {
             [self addNotificationNumber:numberOfNewNotifications toTabBar:@3 containNumber:NO];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
         }
+        else [self clearNotificationAtTabBar:@3];
+
+        
     }];
 }
+
+
+- (void)reloadColorWhenTabBarIsMessage {
+    if ([[self.notificationDictionary allKeys] containsObject:@"2"]) {
+        UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+        UITabBar *tabBar = tabBarController.tabBar;
+        UILabel *numberOfNotificationsLabel = [self.notificationDictionary objectForKey:@"2"];
+        numberOfNotificationsLabel.backgroundColor = [UIColor whiteColor];
+        numberOfNotificationsLabel.textColor = [FontProperties getOrangeColor];
+        [tabBar addSubview:numberOfNotificationsLabel];
+    }
+}
+
+
 
 @end

@@ -36,8 +36,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageNotifications) name:@"fetchNotifications" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
 
-    [self fetchFirstPageNotifications];
-    [self fetchSummaryOfFollowRequests];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -47,6 +45,8 @@
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"notificationsSelected"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
+    [self fetchSummaryOfFollowRequests];
+    [self fetchFirstPageNotifications];
 }
 
 
@@ -59,6 +59,11 @@
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"Notifications";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
 }
 
 - (void) initializeTableNotifications {
@@ -293,17 +298,15 @@
 }
 
 - (void)fetchFirstPageNotifications {
-    _notificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
     _page = @1;
     [self fetchNotifications];
 }
 
 - (void)fetchNotifications {
-//    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     NSString *queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-//            [WiGoSpinnerView hideSpinnerForView:self.view];
+            if ([_page isEqualToNumber:@1]) _notificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
             NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
             [_notificationsParty addObjectsFromArray:arrayOfNotifications];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
