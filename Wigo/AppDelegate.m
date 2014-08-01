@@ -82,13 +82,7 @@ NSNumber *indexOfSelectedTab;
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    if (currentInstallation.badge != 0) {
-        currentInstallation.badge = 0;
-        [currentInstallation saveEventually];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
-    }
-
+   
 #if DEBUG
     [[LocalyticsSession shared] LocalyticsSession:@"b6cd95cf2fdb16d4a9c6442-0646de50-12de-11e4-224f-004a77f8b47f"];
 #else
@@ -250,6 +244,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     UILabel *numberOfNotificationsLabel;
     if ([[self.notificationDictionary allKeys] containsObject:[tabBarNumber stringValue]]) {
         numberOfNotificationsLabel = [self.notificationDictionary objectForKey:[tabBarNumber stringValue]];
+        [self updateBadgeUsingTabBar:tabBarNumber withNewNumber:number withOldTabBarString:numberOfNotificationsLabel.text];
     }
     else numberOfNotificationsLabel = [[UILabel alloc] init];
     
@@ -275,8 +270,27 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)clearNotificationAtTabBar:(NSNumber *)tabBarNumber {
+    if ([[self.notificationDictionary allKeys] containsObject:[tabBarNumber stringValue]]) {
+        UILabel *numberOfNotificationLabel = [self.notificationDictionary valueForKey:[tabBarNumber stringValue]];
+        [self updateBadgeUsingTabBar:tabBarNumber withNewNumber:@0 withOldTabBarString:numberOfNotificationLabel.text];
+        [numberOfNotificationLabel removeFromSuperview];
+    }
+}
+
+- (void)updateBadgeUsingTabBar:(NSNumber *)tabBarNumber withNewNumber:(NSNumber *)newNumber withOldTabBarString:(NSString *)oldTabBarString {
     UILabel *numberOfNotificationLabel = [self.notificationDictionary valueForKey:[tabBarNumber stringValue]];
-    [numberOfNotificationLabel removeFromSuperview];
+    NSString *numberOfNotificationString = numberOfNotificationLabel.text;
+    NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
+    [f setNumberStyle:NSNumberFormatterDecimalStyle];
+    NSNumber *oldNumber = [f numberFromString:numberOfNotificationString];
+    int difference = [oldNumber intValue] - [newNumber intValue];
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    if (currentInstallation.badge != 0) {
+        currentInstallation.badge = currentInstallation.badge - difference;
+        [currentInstallation saveEventually];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: currentInstallation.badge];
+    }
+
 }
 
 - (void)reloadTabBarNotifications {

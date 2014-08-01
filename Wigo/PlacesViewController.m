@@ -126,7 +126,7 @@
 
 - (void)updateTitleViewForNotGoingOut {
     self.navigationItem.titleView = nil;
-    self.navigationItem.title = @"PLACES";
+    self.navigationItem.title = @"Where";
 }
 
 - (void)scrollUp {

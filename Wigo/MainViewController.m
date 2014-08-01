@@ -87,6 +87,7 @@
     _numberFetchedMyInfoAndEveryoneElse = 0;
     [self fetchFirstPageFollowing];
     [self fetchUserInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
 }
 
 #pragma mark - Network function
