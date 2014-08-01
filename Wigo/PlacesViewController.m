@@ -87,7 +87,7 @@
 }
 
 - (void) viewDidAppear:(BOOL)animated {
-    [[LocalyticsSession shared] tagScreen:@"Places"];
+    [EventAnalytics tagEvent:@"Places View"];
 
     self.tabBarController.tabBar.hidden = NO;
     [self initializeNavigationBar];

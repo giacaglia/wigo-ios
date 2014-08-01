@@ -61,7 +61,7 @@
 }
 
 - (void) viewDidAppear:(BOOL)animated {
-    [[LocalyticsSession shared] tagScreen:@"People"];
+    [EventAnalytics tagEvent:@"People View"];
     self.tabBarController.tabBar.hidden = NO;
     if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
     if (!_fetchinfUserInfo) [self fetchUserInfo];
@@ -439,7 +439,7 @@
 }
 
 - (void) sendTapToUserWithTag:(int)tag {
-    [[LocalyticsSession shared] tagEvent:@"Tap"];
+    [EventAnalytics tagEvent:@"Tap"];
 
     User *user;
     if (tag < 0) {

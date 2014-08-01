@@ -22,6 +22,7 @@
 #import "WiGoSpinnerView.h"
 
 #import "LocalyticsSession.h"
+#import "EventAnalytics.h"
 
 static NSString * const collectionViewCellIdentifier = @"CollectionViewCellIdentifier";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";
