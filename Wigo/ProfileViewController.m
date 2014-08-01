@@ -99,7 +99,7 @@
 
 - (void)viewDidLoad
 {
-    [[LocalyticsSession shared] tagScreen:@"Profile"];
+    [EventAnalytics tagEvent:@"Profile View"];
     [super viewDidLoad];
     _currentPage = 0;
     _isSeingImages = NO;

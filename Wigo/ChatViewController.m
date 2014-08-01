@@ -44,7 +44,7 @@
 
 
 - (void) viewDidAppear:(BOOL)animated {
-    [[LocalyticsSession shared] tagScreen:@"Chats"];
+    [EventAnalytics tagEvent:@"Chat View"];
 
     self.tabBarController.tabBar.hidden = NO;
     

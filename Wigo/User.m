@@ -11,6 +11,7 @@
 #import "Profile.h"
 #import <Parse/Parse.h>
 #import "LocalyticsSession.h"
+#import "EventAnalytics.h"
 
 
 @implementation User
@@ -257,10 +258,13 @@
 }
 
 - (void)setIsGoingOut:(BOOL)isGoingOut {
-    if (isGoingOut) [[LocalyticsSession shared] tagEvent:@"Go Out"];
-    else [[LocalyticsSession shared] tagEvent:@"Ungo Out"];
-    if (!isGoingOut) [self setIsAttending:NO];
+    if ([[_proxy allKeys] containsObject:@"is_goingout"]) {
+        BOOL existing = self.isGoingOut;
+        if (isGoingOut & !existing) [EventAnalytics tagEvent:@"Go Out"];
+        else if (! isGoingOut & existing) [EventAnalytics tagEvent:@"Ungo Out"];
+    }
 
+    if (!isGoingOut) [self setIsAttending:NO];
     [_proxy setObject:[NSNumber numberWithBool:isGoingOut] forKey:@"is_goingout"];
     [modifiedKeys addObject:@"is_goingout"];
 }

@@ -51,7 +51,7 @@
 
 
 - (void) viewDidAppear:(BOOL)animated {
-    [[LocalyticsSession shared] tagScreen:@"Notifications"];
+    [EventAnalytics tagEvent:@"Notifications View"];
 
     self.tabBarController.tabBar.hidden = NO;
     self.navigationItem.leftBarButtonItem = nil;
