@@ -9,6 +9,7 @@
 #import "NSMutableURLRequest+Wigo.h"
 #define WIGO_API_KEY @"oi34u53205ju34ik23"
 #define API_VERSION @"1.0"
+#define DEVICE_TYPE @"iphone"
 
 @implementation NSMutableURLRequest (Wigo)
 
@@ -21,7 +22,8 @@
     [self setValue:@"true" forHTTPHeaderField:@"X-Wigo-Client-Enterprise"];
 #endif
     [self setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forHTTPHeaderField:@"X-Wigo-Client-Version"];
-     [self setValue:API_VERSION forHTTPHeaderField:@"X-Wigo-API-Version"];
+    [self setValue:API_VERSION forHTTPHeaderField:@"X-Wigo-API-Version"];
+    [self setValue:DEVICE_TYPE forHTTPHeaderField:@"X-Wigo-Device"];
     [self setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
 }
 
