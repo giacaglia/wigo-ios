@@ -41,6 +41,23 @@
     }];
 }
 
++ (void)sendAsynchronousHTTPMethod:(NSString *)httpMethod
+                       withAPIName:(NSString *)apiName
+                       withHandler:(QueryResult)handler
+                       withOptions:(NSDictionary *)options
+{
+    Query *query = [[Query alloc] init];
+    [query queryWithClassName:apiName];
+    User *user = [Profile user];
+    [query setProfileKey:user.key];
+    for (NSString *key in [options allKeys]) {
+        [query setValue:[options objectForKey:key] forKey:key];
+    }
+    [query sendAsynchronousHTTPMethod:(NSString *)httpMethod withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(jsonResponse, error);
+    }];
+}
+
 
 + (void)sendAsynchronousTapToUserWithIndex:(NSNumber *)indexOfUser {
     Query *query = [[Query alloc] init];

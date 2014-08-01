@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
 
-typedef void (^IsThereResult)(BOOL boolResult);
+typedef void (^IsThereResult)(NSNumber *numberOfNewMessages, NSNumber *numberOfNewNotifications);
 
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, UIGestureRecognizerDelegate, UITabBarControllerDelegate>

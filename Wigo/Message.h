@@ -15,11 +15,13 @@
 
 @property User *fromUser;
 @property NSNumber *toUser;
-@property BOOL wasMessageRead;
+@property BOOL isRead;
 - (BOOL)isMessageFromLastDay;
 - (NSString *)timeOfCreation;
 - (void)setTimeOfCreation:(NSString *)timeOfCreation;
 - (void)save;
+- (void)saveKeyAsynchronously:(NSString *)key;
+
 - (User *)otherUser;
 + (NSString *)randomStringWithLength:(int)len;
 - (BOOL)isEqualToMessage:(Message *)otherMessage;

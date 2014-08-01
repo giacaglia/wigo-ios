@@ -117,21 +117,14 @@
     [modifiedKeys addObject:@"message"];
 }
 
-- (BOOL)wasMessageRead {
-    if (![[_proxy objectForKey:@"properties"] isKindOfClass:[NSDictionary class]]) {
-        return NO;
-    }
-    NSString *wasMessageRead = [[_proxy objectForKey:@"properties"]  objectForKey:@"wasMessageRead"];
-    if (wasMessageRead) {
-        return YES;
-    }
-    return NO;
+- (BOOL)isRead {
+    NSNumber *isRead = (NSNumber *)[_proxy objectForKey:@"is_read"];
+    return [isRead boolValue];
 }
 
-- (void)setWasMessageRead:(BOOL)wasMessageRead {
-    NSDictionary *properties = @{@"wasMessageRead": @"read"};
-    [_proxy setObject:properties forKey:@"properties"];
-    [modifiedKeys addObject:@"properties"];
+- (void)setIsRead:(BOOL)isRead {
+    [_proxy setObject:[NSNumber numberWithBool:isRead] forKey:@"is_read"];
+    [modifiedKeys addObject:@"is_read"];
 }
 
 - (BOOL)isMessageFromLastDay {
@@ -168,19 +161,5 @@
     return NO;
 }
 
-
-- (void)save {
-    Query *query = [[Query alloc] init];
-    [query queryWithClassName:@"messages/"];
-    [query setProfileKey:[Profile user].key];
-    for (NSString *key in modifiedKeys) {
-        [query setValue:[_proxy objectForKey:key] forKey:key];
-    }
-    NSDictionary *dictionaryUser = [query sendPOSTRequest];
-    if  (!(dictionaryUser == nil)) {
-        [_proxy addEntriesFromDictionary:dictionaryUser];
-        modifiedKeys = [[NSMutableArray alloc] init];
-    }
-}
 
 @end

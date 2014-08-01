@@ -100,13 +100,13 @@
 
 - (void)fetchFirstPageMessages {
     _page = @1;
-    _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
     [self fetchMessages];
 }
 
 - (void)fetchMessages {
-    NSString *queryString = [NSString stringWithFormat:@"messages/summary/?to_user=me&page=%@@limit=1", [_page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"conversations/?to_user=me&page=%@", [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if ([_page isEqualToNumber:@1])  _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
         dispatch_async(dispatch_get_main_queue(), ^(void){
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
             [_messageParty addObjectsFromArray:arrayOfMessages];
@@ -125,16 +125,15 @@
     [Network sendAsynchronousHTTPMethod:DELETE withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
 }
 
-- (void)updateLastMessagesRead {
-    User *profileUser = [Profile user];
-    for (Message *message in [_messageParty getObjectArray]) {
-        if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastMessageRead] intValue]) {
-            [profileUser setLastMessageRead:[message objectForKey:@"id"]];
-            [profileUser saveKeyAsynchronously:@"last_message_read"];
-        }
-    }
+- (void)markMessageAsRead:(Message *)message {
+    NSString *idString = [(NSNumber*)[[message otherUser] objectForKey:@"id"] stringValue];
+    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", idString];
+    NSDictionary *options = @{@"read": [NSNumber numberWithBool:YES]};
+    [Network sendAsynchronousHTTPMethod:POST
+                            withAPIName:queryString
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:options];
 }
-
 
 #pragma mark - Tablew View Data Source
 
@@ -210,11 +209,8 @@
     timeStampLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:timeStampLabel];
     
-    if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastMessageRead] intValue]) {
+    if (![message isRead]) {
         cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
-    }
-    if([indexPath row] == ((NSIndexPath*)[[tableView indexPathsForVisibleRows] lastObject]).row){
-        [self updateLastMessagesRead];
     }
     return cell;
 }
@@ -236,7 +232,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (![[_messageParty getObjectArray] count] == 0) {
         Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
-        [message setWasMessageRead:YES];
+        [message setIsRead:YES];
+        [self markMessageAsRead:message];
         User *user = [message otherUser];
         if (!user) {
             user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];

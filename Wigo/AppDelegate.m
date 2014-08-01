@@ -74,13 +74,7 @@ NSNumber *indexOfSelectedTab;
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [self areThereNewMessagesWithBoolReturned:^(BOOL boolResult) {
-        if (boolResult) {
-            [self addOneToTabBar:@2];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
-        }
-    }];
-
+    [self reloadTabBarNotifications];
     [[LocalyticsSession shared] resume];
     [[LocalyticsSession shared] upload];
 }
@@ -134,35 +128,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[LocalyticsSession shared] handleRemoteNotification:userInfo];
-
-    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-    UINavigationController *navController = [tabBarController.viewControllers objectAtIndex:tabBarController.selectedIndex];
-    if (navController) [navController popToRootViewControllerAnimated:NO];
-    
-    NSDictionary *aps = [userInfo objectForKey:@"aps"];
-    NSDictionary *alert = [aps objectForKey:@"alert"];
-    NSString *locKeyString = [alert objectForKey:@"loc-key"];
-    if ([locKeyString isEqualToString:@"M"]) {
-        [self addOneToTabBar:@2];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
-
-    }
-    else if ([locKeyString isEqualToString:@"F"] ||
-        [locKeyString isEqualToString:@"FR"] ||
-        [locKeyString isEqualToString:@"FA"]) {
-        [self addOneToTabBar:@3];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
-
-    }
-    else if ([locKeyString isEqualToString:@"T"]) {
-        [self addOneToTabBar:@3];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
-    }
-    else if ([locKeyString isEqualToString:@"G"]) {
-        [self addOneToTabBar:@0];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchFollowing" object:nil];
-
-    }
+    [self reloadTabBarNotifications];
 }
 
 
@@ -224,41 +190,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     }
 }
 
-- (void)addOneToTabBar:(NSNumber *)tabBarNumber {
-    [self addNotificationNumber:@1 toTabBar:tabBarNumber];
-}
-
-- (void)addNotificationNumber:(NSNumber *)number toTabBar:(NSNumber *)tabBarNumber {
-    CGSize origin;
-    if ([tabBarNumber isEqualToNumber:@2]) { // Chats notification
-        origin = CGSizeMake(216, 6);
-    }
-    else { //Other notifications
-        origin = CGSizeMake(295, 6);
-    }
-    
-    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-    UITabBar *tabBar = tabBarController.tabBar;
-    
-    UILabel *numberOfNotificationsLabel = [[UILabel alloc] init];
-    numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 8, 8);
-    if ([indexOfSelectedTab isEqualToNumber:@1]) numberOfNotificationsLabel.backgroundColor = [FontProperties getBlueColor];
-    else numberOfNotificationsLabel.backgroundColor = [FontProperties getOrangeColor];
-    numberOfNotificationsLabel.layer.borderColor = [UIColor clearColor].CGColor;
-    numberOfNotificationsLabel.layer.cornerRadius = 5;
-    numberOfNotificationsLabel.layer.borderWidth = 1;
-    numberOfNotificationsLabel.layer.masksToBounds = YES;
-    
-    [tabBar addSubview:numberOfNotificationsLabel];
-    [self.notificationDictionary setValue:numberOfNotificationsLabel forKey:[tabBarNumber stringValue]];
-}
-
-
-- (void)clearNotificationAtTabBar:(NSNumber *)tabBarNumber {
-    UILabel *numberOfNotificationLabel = [self.notificationDictionary valueForKey:[tabBarNumber stringValue]];
-    [numberOfNotificationLabel removeFromSuperview];
-}
-
 - (void)addNotificationHandlers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabBarToOrange) name:@"changeTabBarToOrange" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabBarToBlue) name:@"changeTabBarToBlue" object:nil];
@@ -287,41 +218,69 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     return wasHandled;
 }
 
-- (void)areThereNewMessagesWithBoolReturned:(IsThereResult)handler {
+- (void)areThereNotificationsWithHandler:(IsThereResult)handler {
     NSString *queryString = @"unread/summary";
     [Network sendAsynchronousHTTPMethod:GET withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             NSNumber *numberOfNewMessages = [jsonResponse objectForKey:@"messages"];
             NSNumber *numberOfNewNotifications = [jsonResponse objectForKey:@"notifications"];
-            if ([numberOfNewMessages intValue] > 0) handler(YES);
-            else handler(NO);
+            handler(numberOfNewMessages, numberOfNewNotifications);
         });
     }];
-
 }
 
-//- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
-//{
-////    [(UINavigationController*)self.tabBarController.selectedViewController popToRootViewControllerAnimated:NO];
-//    NSLog(@"here");
-//    return YES;
-//}
+#pragma mark - Notification Tab Bar
 
-//- (void)handleSingleTap:(id)sender {
-//    NSLog(@"here");
-//
-//}
-//
-//#pragma mark - Tap Gesture
-//
-//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-//    // Disallow recognition of tap gestures in the TabbarItem control.
-//    if ([touch.view isKindOfClass:[UIBarButtonItem class]]) {//change it to your condition
-////        if (touch.view.tag != 50) {
-////            return NO;
-////        }
-//        return YES;
-//    }
-//    return NO;
-//}
+- (void)addNotificationNumber:(NSNumber *)number toTabBar:(NSNumber *)tabBarNumber {
+    CGSize origin;
+    if ([tabBarNumber isEqualToNumber:@2]) { // Chats notification
+        origin = CGSizeMake(216, 6);
+    }
+    else { //Other notifications
+        origin = CGSizeMake(295, 6);
+    }
+    
+    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+    UITabBar *tabBar = tabBarController.tabBar;
+    
+    UILabel *numberOfNotificationsLabel;
+    if ([[self.notificationDictionary allKeys] containsObject:[tabBarNumber stringValue]]) {
+        numberOfNotificationsLabel = [self.notificationDictionary objectForKey:[tabBarNumber stringValue]];
+    }
+    else numberOfNotificationsLabel = [[UILabel alloc] init];
+    
+    numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 16, 12);
+    numberOfNotificationsLabel.text = [number stringValue];
+    numberOfNotificationsLabel.textAlignment = NSTextAlignmentCenter;
+    numberOfNotificationsLabel.textColor = [UIColor whiteColor];
+    numberOfNotificationsLabel.font = MEDIUM_FONT(10.0f);
+    if ([indexOfSelectedTab isEqualToNumber:@1]) numberOfNotificationsLabel.backgroundColor = [FontProperties getBlueColor];
+    else numberOfNotificationsLabel.backgroundColor = [FontProperties getOrangeColor];
+    numberOfNotificationsLabel.layer.borderColor = [UIColor clearColor].CGColor;
+    numberOfNotificationsLabel.layer.cornerRadius = 5;
+    numberOfNotificationsLabel.layer.borderWidth = 1;
+    numberOfNotificationsLabel.layer.masksToBounds = YES;
+    
+    [tabBar addSubview:numberOfNotificationsLabel];
+    [self.notificationDictionary setValue:numberOfNotificationsLabel forKey:[tabBarNumber stringValue]];
+}
+
+- (void)clearNotificationAtTabBar:(NSNumber *)tabBarNumber {
+    UILabel *numberOfNotificationLabel = [self.notificationDictionary valueForKey:[tabBarNumber stringValue]];
+    [numberOfNotificationLabel removeFromSuperview];
+}
+
+- (void)reloadTabBarNotifications {
+    [self areThereNotificationsWithHandler:^(NSNumber *numberOFNewMessages, NSNumber *numberOfNewNotifications) {
+        if ([numberOFNewMessages intValue] > 0) {
+            [self addNotificationNumber:numberOFNewMessages toTabBar:@2];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
+        }
+        if ([numberOfNewNotifications intValue] > 0) {
+            [self addNotificationNumber:numberOFNewMessages toTabBar:@3];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
+        }
+    }];
+}
+
 @end

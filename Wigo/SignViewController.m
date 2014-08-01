@@ -270,6 +270,18 @@
     [profileUser loginWithHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView hideSpinnerForView:self.view];
+            if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]){
+                    _alertShown = YES;
+                    _alert = [[UIAlertView alloc ] initWithTitle:@"Error"
+                                                         message:@"An unexpected error happened. Please try again later"
+                                                        delegate:self
+                                               cancelButtonTitle:@"Ok"
+                                               otherButtonTitles: nil];
+                    [_alert show];
+                }
+            }
+            
             if ([error domain] == NSURLErrorDomain) {
                 if (!_alertShown) {
                     _alertShown = YES;
