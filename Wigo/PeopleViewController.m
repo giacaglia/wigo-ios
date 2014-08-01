@@ -310,7 +310,7 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    cell.backgroundColor = [UIColor whiteColor];
+    cell.contentView.backgroundColor = [UIColor whiteColor];
     
     if ([[_contentParty getObjectArray] count] == 0) return cell;
     if ([indexPath row] == [[_contentParty getObjectArray] count]) {

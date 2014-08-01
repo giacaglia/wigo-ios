@@ -105,9 +105,8 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    cell.backgroundColor = [UIColor whiteColor];
+    cell.contentView.backgroundColor = [UIColor whiteColor];
     
-    cell.backgroundColor = [UIColor clearColor];
     NSInteger row = [indexPath row];
     if (![_followRequestSummary isEqualToNumber:@0]) {
         if (row == 0) {

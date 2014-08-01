@@ -106,12 +106,13 @@
 - (void)fetchMessages {
     NSString *queryString = [NSString stringWithFormat:@"conversations/?to_user=me&page=%@", [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if ([_page isEqualToNumber:@1])  _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            if ([_page isEqualToNumber:@1])  _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
             [_messageParty addObjectsFromArray:arrayOfMessages];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_messageParty addMetaInfo:metaDictionary];
+            _page = @([_page intValue] + 1);
             [_tableViewOfPeople reloadData];
             [_tableViewOfPeople didFinishPullToRefresh];
         });
@@ -154,10 +155,8 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    cell.backgroundColor = [UIColor whiteColor];
+    cell.contentView.backgroundColor = [UIColor whiteColor];
 
-    
-    cell.backgroundColor = [UIColor clearColor];
     if ([indexPath row] == [[_messageParty getObjectArray] count]) {
         [self fetchMessages];
         return cell;
@@ -208,10 +207,9 @@
     timeStampLabel.textColor = RGB(179, 179, 179);
     timeStampLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:timeStampLabel];
+
+    if (![message isRead]) cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
     
-    if (![message isRead]) {
-        cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
-    }
     return cell;
 }
 

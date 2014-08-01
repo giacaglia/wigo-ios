@@ -516,7 +516,7 @@
         cell = [[UICollectionViewCell alloc] init];
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    cell.backgroundColor = [UIColor whiteColor];
+    cell.contentView.backgroundColor = [UIColor whiteColor];
 
     NSArray *userArray;
     if ([indexPath section] == 0) {
