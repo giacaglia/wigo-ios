@@ -161,5 +161,19 @@
     return NO;
 }
 
+- (void)save {
+    Query *query = [[Query alloc] init];
+    [query queryWithClassName:@"messages/"];
+    [query setProfileKey:[Profile user].key];
+    for (NSString *key in modifiedKeys) {
+        [query setValue:[_proxy objectForKey:key] forKey:key];
+    }
+    NSDictionary *dictionaryUser = [query sendPOSTRequest];
+    if  (!(dictionaryUser == nil)) {
+        [_proxy addEntriesFromDictionary:dictionaryUser];
+        modifiedKeys = [[NSMutableArray alloc] init];
+    }
+}
+
 
 @end
