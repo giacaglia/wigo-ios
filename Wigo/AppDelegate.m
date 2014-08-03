@@ -16,6 +16,8 @@
 #import "Network.h"
 
 NSNumber *indexOfSelectedTab;
+NSNumber *numberOfNewMessages;
+NSNumber *numberOfNewNotifications;
 
 @implementation AppDelegate
 
@@ -219,8 +221,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     NSString *queryString = @"unread/summary";
     [Network sendAsynchronousHTTPMethod:GET withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            NSNumber *numberOfNewMessages = [jsonResponse objectForKey:@"messages"];
-            NSNumber *numberOfNewNotifications = [jsonResponse objectForKey:@"notifications"];
+            numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"messages"];
+            numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
             handler(numberOfNewMessages, numberOfNewNotifications);
         });
     }];
@@ -243,7 +245,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     UILabel *numberOfNotificationsLabel;
     if ([[self.notificationDictionary allKeys] containsObject:[tabBarNumber stringValue]]) {
         numberOfNotificationsLabel = [self.notificationDictionary objectForKey:[tabBarNumber stringValue]];
-        [self updateBadgeUsingTabBar:tabBarNumber withNewNumber:number withOldTabBarString:numberOfNotificationsLabel.text];
+        [self updateBadgeUsingTabBar:tabBarNumber];
     }
     else numberOfNotificationsLabel = [[UILabel alloc] init];
     
@@ -271,21 +273,16 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 - (void)clearNotificationAtTabBar:(NSNumber *)tabBarNumber {
     if ([[self.notificationDictionary allKeys] containsObject:[tabBarNumber stringValue]]) {
         UILabel *numberOfNotificationLabel = [self.notificationDictionary valueForKey:[tabBarNumber stringValue]];
-        [self updateBadgeUsingTabBar:tabBarNumber withNewNumber:@0 withOldTabBarString:numberOfNotificationLabel.text];
+        [self updateBadgeUsingTabBar:tabBarNumber];
         [numberOfNotificationLabel removeFromSuperview];
     }
 }
 
-- (void)updateBadgeUsingTabBar:(NSNumber *)tabBarNumber withNewNumber:(NSNumber *)newNumber withOldTabBarString:(NSString *)oldTabBarString {
-    UILabel *numberOfNotificationLabel = [self.notificationDictionary valueForKey:[tabBarNumber stringValue]];
-    NSString *numberOfNotificationString = numberOfNotificationLabel.text;
-    NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
-    [f setNumberStyle:NSNumberFormatterDecimalStyle];
-    NSNumber *oldNumber = [f numberFromString:numberOfNotificationString];
-    int difference = [oldNumber intValue] - [newNumber intValue];
+- (void)updateBadgeUsingTabBar:(NSNumber *)tabBarNumber {
+    int total = [numberOfNewMessages intValue] + [numberOfNewNotifications intValue];
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     if (currentInstallation.badge != 0) {
-        currentInstallation.badge = currentInstallation.badge - difference;
+        currentInstallation.badge = total;
         [currentInstallation saveEventually];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber: currentInstallation.badge];
     }
