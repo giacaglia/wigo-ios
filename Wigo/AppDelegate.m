@@ -221,9 +221,21 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     NSString *queryString = @"unread/summary";
     [Network sendAsynchronousHTTPMethod:GET withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"messages"];
-            numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
-            handler(numberOfNewMessages, numberOfNewNotifications);
+            if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                    
+                }
+                else {
+                    numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"messages"];
+                    numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
+                    handler(numberOfNewMessages, numberOfNewNotifications);
+                }
+            }
+            else {
+                numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"messages"];
+                numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
+                handler(numberOfNewMessages, numberOfNewNotifications);
+            }
         });
     }];
 }
@@ -284,7 +296,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     if (currentInstallation.badge != 0) {
         currentInstallation.badge = total;
         [currentInstallation saveEventually];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber: currentInstallation.badge];
+        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:total];
     }
 
 }
