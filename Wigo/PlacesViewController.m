@@ -343,13 +343,15 @@
 }
 
 - (void)createPressed {
-    NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
-    [Network postGoingToEventNumber:[eventID intValue]];
-    User *profileUser = [Profile user];
-    [profileUser setIsGoingOut:YES];
-    [profileUser setAttendingEventID:eventID];
-    [self updatedTitleViewForGoingOut];
-    [self fetchEventsFirstPage];
+    if ([_whereAreYouGoingTextField.text length] != 0) {
+        NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
+        [Network postGoingToEventNumber:[eventID intValue]];
+        User *profileUser = [Profile user];
+        [profileUser setIsGoingOut:YES];
+        [profileUser setAttendingEventID:eventID];
+        [self updatedTitleViewForGoingOut];
+        [self fetchEventsFirstPage];
+    }
 }
 
 - (void)textFieldDidChange:(UITextField *)textField {
