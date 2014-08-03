@@ -63,6 +63,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [self updateLastNotificationsRead];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
 }
 
@@ -230,9 +231,6 @@
     [cell.contentView addSubview:notificationButton];
     if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
         cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
-    }
-    if([indexPath row] == ((NSIndexPath*)[[tableView indexPathsForVisibleRows] lastObject]).row){
-        [self updateLastNotificationsRead];
     }
     return cell;
 }
