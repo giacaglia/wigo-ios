@@ -158,7 +158,7 @@
 
 - (void) selectedProfile:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
+    int tag = (int)buttonSender.tag;
     UIImageView *imageView = (UIImageView *)[buttonSender superview];
     
     for (UIView *subview in imageView.subviews)

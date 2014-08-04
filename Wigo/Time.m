@@ -52,20 +52,20 @@
             if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
                 return @"1 day ago";
             }
-            return [NSString stringWithFormat:@"%d days ago", [differenceDateComponents day]];
+            return [NSString stringWithFormat:@"%ld days ago", (long)[differenceDateComponents day]];
         }
         else {
             if ([differenceDateComponents month] == 0) {
                 if ([differenceDateComponents week] == 1) {
                     return @"1 week ago";
                 }
-                return [NSString stringWithFormat:@"%d weeks ago", [differenceDateComponents week]];
+                return [NSString stringWithFormat:@"%ld weeks ago", (long)[differenceDateComponents week]];
             }
             else {
                 if ([differenceDateComponents month] == 1) {
                     return @"1 month ago";
                 }
-                return [NSString stringWithFormat:@"%d months ago", [differenceDateComponents month]];
+                return [NSString stringWithFormat:@"%ld months ago", (long)[differenceDateComponents month]];
             }
             
         }
