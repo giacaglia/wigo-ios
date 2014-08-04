@@ -404,7 +404,7 @@
     
     NSString *followText = [NSString stringWithFormat:@"Follow %@", [self.user firstName]];
     UIView *followLabelPlusImage = [[UIView alloc] init];
-    int sizeOfText = [followText length];
+    int sizeOfText = (int)[followText length];
     followLabelPlusImage.frame = CGRectMake((_followButton.frame.size.width - (sizeOfText*13 + 28))/2, 15, sizeOfText*13 + 28, 20);
     followLabelPlusImage.userInteractionEnabled = NO;
     [_followButton addSubview:followLabelPlusImage];
@@ -561,7 +561,7 @@
                 CGRect frame = _nameOfPersonLabel.frame;
                 frame.origin.y -= 10;
                 _nameOfPersonLabel.frame = frame;
-                _nameOfPersonLabel.textAlignment = UITextAlignmentCenter;
+                _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
                 goHereTooButton.frame = CGRectMake(self.view.frame.size.width/2 - 48, 45, 95, 25);
                 [_nameOfPersonBackground addSubview:goHereTooButton];
                 

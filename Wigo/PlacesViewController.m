@@ -193,7 +193,7 @@
     _whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
-    [self goOutToEventNumber:[NSNumber numberWithInt:buttonSender.tag]];
+    [self goOutToEventNumber:[NSNumber numberWithInt:(int)buttonSender.tag]];
 }
 
 - (void)goOutToEventNumber:(NSNumber*)eventID {
@@ -240,7 +240,7 @@
 }
 
 - (void)chooseUser:(id)sender {
-    int tag = ((UIButton *)sender).tag;
+    int tag = (int)((UIButton *)sender).tag;
     NSDictionary *eventAndUserIndex = [self getUserIndexAndEventIndexFromUniqueIndex:tag];
     int eventIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"eventIndex"] intValue];
     int userIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"userIndex"] intValue];
@@ -526,7 +526,7 @@
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 55, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage + 3;
-        imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:[indexPath row]];
+        imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
@@ -548,7 +548,7 @@
         [imgView addSubview:profileName];
     }
     
-    int usersCantSee = [totalUsers intValue] - [[partyUser getObjectArray] count];
+    int usersCantSee = (int)[totalUsers intValue] - (int)[[partyUser getObjectArray] count];
     if (usersCantSee  > 0) {
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 55, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage;
@@ -575,13 +575,13 @@
 }
 
 -(int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
-    int numberOfEvents = [[_eventsParty getObjectArray] count];
+    int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
     return numberOfEvents * userIndex + eventIndex;
 }
 
 - (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {
     int userIndex, eventIndex;
-    int numberOfEvents = [[_eventsParty getObjectArray] count];
+    int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
     userIndex = uniqueIndex/numberOfEvents;
     eventIndex = uniqueIndex - userIndex * numberOfEvents;
     return @{@"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex":[NSNumber numberWithInt:eventIndex]};

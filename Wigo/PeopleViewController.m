@@ -137,7 +137,7 @@
 
 - (void)tappedView:(UITapGestureRecognizer*)tapSender {
     UIView *viewSender = (UIView *)tapSender.view;
-    int tag = viewSender.tag;
+    int tag = (int)viewSender.tag;
     User *user = [self getUserAtIndex:tag];
     self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
@@ -145,7 +145,7 @@
 
 - (void)tappedButton:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
+    int tag = (int)buttonSender.tag;
     User *user = [self getUserAtIndex:tag];
     self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
@@ -252,7 +252,7 @@
     _searchBar.text = @"";
     [self searchBarTextDidEndEditing:_searchBar];
     UIButton *chosenButton = (UIButton *)sender;
-    int tag = chosenButton.tag;
+    int tag = (int)chosenButton.tag;
     if (tag >= 2) {
         _currentTab = [NSNumber numberWithInt:tag];
         [self loadTableView];
@@ -318,7 +318,7 @@
         return cell;
     }
     
-    User *user = [self getUserAtIndex:[indexPath row]];
+    User *user = [self getUserAtIndex:(int)[indexPath row]];
     
     UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
@@ -413,7 +413,7 @@
     //Get Index Path
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
     NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
-    User *user = [self getUserAtIndex:[indexPath row]];
+    User *user = [self getUserAtIndex:(int)[indexPath row]];
     
     UIButton *senderButton = (UIButton*)sender;
     if (senderButton.tag == -100) {

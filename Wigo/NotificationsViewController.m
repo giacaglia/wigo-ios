@@ -245,20 +245,20 @@
     self.conversationViewController = [[ConversationViewController alloc] init];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
-    [self updateNotificationsRead:((UIButton *)sender).tag];
+    [self updateNotificationsRead:(int)((UIButton *)sender).tag];
 }
 
 - (void)tapSegue:(id)sender {
     self.tapViewController = [[TapViewController alloc] init];
     [self.navigationController pushViewController:self.tapViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
-    [self updateNotificationsRead:((UIButton *)sender).tag];
+    [self updateNotificationsRead:(int)((UIButton *)sender).tag];
 
 }
 
 - (void) profileSegue:(id)sender {
     UIButton *notificationButton = (UIButton *)sender;
-    int rowOfButtonSender = notificationButton.tag;
+    int rowOfButtonSender = (int)notificationButton.tag;
     Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:rowOfButtonSender];
     User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
     self.profileViewController = [[ProfileViewController alloc] initWithUser:user];

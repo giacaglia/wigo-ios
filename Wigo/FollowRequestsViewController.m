@@ -225,7 +225,7 @@
 }
 
 - (void)profileSegue:(id)sender {
-    int index = ((UIButton *)sender).tag;
+    int index = (int)((UIButton *)sender).tag;
     Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:index];
     User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
     self.profileViewController = [[ProfileViewController alloc] initWithUser:user];

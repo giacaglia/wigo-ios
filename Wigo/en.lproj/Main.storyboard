@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6185.11" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="r0s-iy-1wR">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="r0s-iy-1wR">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6190.4"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Chats-->
+        <!--Navigation Controller - Chats-->
         <scene sceneID="owI-yM-UlA">
             <objects>
                 <navigationController definesPresentationContext="YES" id="gjq-FW-yKe" sceneMemberID="viewController">
@@ -20,7 +20,7 @@
             </objects>
             <point key="canvasLocation" x="585" y="-1176"/>
         </scene>
-        <!--Notifications-->
+        <!--Navigation Controller - Notifications-->
         <scene sceneID="bjY-mo-xrt">
             <objects>
                 <navigationController definesPresentationContext="YES" id="Vs2-nt-5Un" sceneMemberID="viewController">
@@ -36,7 +36,7 @@
             </objects>
             <point key="canvasLocation" x="578" y="-431"/>
         </scene>
-        <!--Notifications-->
+        <!--Notifications View Controller - Notifications-->
         <scene sceneID="h7d-KN-F87">
             <objects>
                 <viewController id="pty-5U-I3A" customClass="NotificationsViewController" sceneMemberID="viewController">
@@ -56,7 +56,7 @@
             </objects>
             <point key="canvasLocation" x="1036" y="-431"/>
         </scene>
-        <!--Chats-->
+        <!--Chat View Controller - Chats-->
         <scene sceneID="vTy-9t-Fy4">
             <objects>
                 <viewController id="7gV-bv-Wd8" customClass="ChatViewController" sceneMemberID="viewController">
@@ -76,7 +76,7 @@
             </objects>
             <point key="canvasLocation" x="1020" y="-1176"/>
         </scene>
-        <!--Main View Controller-->
+        <!--Main View Controller - Main View Controller-->
         <scene sceneID="5">
             <objects>
                 <viewController title="Main View Controller" id="2" customClass="MainViewController" sceneMemberID="viewController">
@@ -96,7 +96,7 @@
             </objects>
             <point key="canvasLocation" x="1064" y="-2699"/>
         </scene>
-        <!--Who-->
+        <!--Navigation Controller - Who-->
         <scene sceneID="5Z6-ag-ZQ1">
             <objects>
                 <navigationController id="5D7-fp-3iF" sceneMemberID="viewController">
@@ -138,21 +138,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LRu-pX-2Ob" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-120" y="-1176"/>
-        </scene>
-        <!--Sign Navigation View Controller-->
-        <scene sceneID="jix-KD-1PN">
-            <objects>
-                <navigationController definesPresentationContext="YES" id="Xd1-pm-3bh" customClass="SignNavigationViewController" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="DbF-1S-ogg">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="zD1-rz-qm8" kind="relationship" relationship="rootViewController" id="fo8-tG-nfT"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="7EB-sT-dCN" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1455" y="-1583"/>
         </scene>
         <!--Sign View Controller-->
         <scene sceneID="uJ8-I3-oZO">
@@ -237,7 +222,7 @@
             </objects>
             <point key="canvasLocation" x="1020" y="-1944"/>
         </scene>
-        <!--Where-->
+        <!--Navigation Controller - Where-->
         <scene sceneID="CUn-1Q-ll3">
             <objects>
                 <navigationController definesPresentationContext="YES" id="gcK-hO-ozh" sceneMemberID="viewController">
@@ -260,13 +245,10 @@
         <image name="peopleIcon.png" width="19" height="21"/>
         <image name="placesIcon.png" width="15" height="21"/>
     </resources>
+    <color key="tintColor" red="0.95686280729999995" green="0.58431375029999999" blue="0.1764705926" alpha="1" colorSpace="deviceRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4">
-            <size key="portraitSize" width="320" height="568"/>
-            <size key="landscapeSize" width="568" height="320"/>
-        </simulatedScreenMetrics>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
-    <color key="tintColor" red="0.95686280729999995" green="0.58431375029999999" blue="0.1764705926" alpha="1" colorSpace="deviceRGB"/>
 </document>

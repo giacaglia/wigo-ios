@@ -179,7 +179,7 @@
 
 - (void)makeImageURLCover:(NSString *)imageURL {
     NSMutableArray *imageMutableArrayURL = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
-    int indexOfCover = [imageMutableArrayURL indexOfObject:imageURL];
+    int indexOfCover = (int)[imageMutableArrayURL indexOfObject:imageURL];
     [imageMutableArrayURL exchangeObjectAtIndex:indexOfCover withObjectAtIndex:0];
     [self setImagesURL:[NSArray arrayWithArray:imageMutableArrayURL]];
 }

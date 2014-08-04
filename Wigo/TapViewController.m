@@ -96,7 +96,7 @@
     if ([[_tapParty getObjectArray] count] == 0) return cell;
     userArray = [_tapParty getObjectArray];
 
-    int tag = [indexPath row];
+    int tag = (int)[indexPath row];
    
     User *user = [userArray objectAtIndex:[indexPath row]];
     

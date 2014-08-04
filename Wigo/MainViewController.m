@@ -345,7 +345,7 @@
 
 - (void)profileSegue:(id)sender {
     UIImageView* superview = (UIImageView *)[sender superview];
-    int tag = superview.tag;
+    int tag = (int)superview.tag;
     User *user;
     
     if (tag < 0) {
@@ -418,7 +418,7 @@
 
 - (void) selectedProfile:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
+    int tag = (int)buttonSender.tag;
     UIImageView *imageView = (UIImageView *)[buttonSender superview];
     
     for (UIView *subview in imageView.subviews)
@@ -539,11 +539,11 @@
     
     int tag;
     if ([indexPath section] == 0) {
-        tag = [indexPath row];
+        tag = (int)[indexPath row];
         tag += 1;
     }
     else if ([indexPath section] == 1) {
-        tag = - [indexPath row];
+        tag = - (int)[indexPath row];
         tag -= 1;
     }
     if ([userArray count] == 0) return cell;
