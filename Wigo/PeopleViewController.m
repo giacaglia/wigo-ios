@@ -154,7 +154,6 @@
 - (void)initializeYourSchoolButton {
     _yourSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width/3, 60)];
     [_yourSchoolButton setTitle:@"School" forState:UIControlStateNormal];
-//    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", 40] forState:UIControlStateNormal];
     _yourSchoolButton.backgroundColor = [FontProperties getOrangeColor];
     _yourSchoolButton.titleLabel.font = [FontProperties getTitleFont];
     _yourSchoolButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;

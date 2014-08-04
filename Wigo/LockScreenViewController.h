@@ -8,6 +8,5 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LockScreenUIViewController : UIViewController
-
+@interface LockScreenViewController : UIViewController
 @end
