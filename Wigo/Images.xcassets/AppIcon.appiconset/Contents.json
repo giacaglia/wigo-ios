@@ -3,6 +3,12 @@
     {
       "size" : "29x29",
       "idiom" : "iphone",
+      "filename" : "wigo_v8.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "29x29",
+      "idiom" : "iphone",
       "filename" : "wigo_v8-62.png",
       "scale" : "2x"
     },
@@ -10,6 +16,18 @@
       "size" : "40x40",
       "idiom" : "iphone",
       "filename" : "wigo_v8-61.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "57x57",
+      "idiom" : "iphone",
+      "filename" : "wigo_v8-68-1.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "57x57",
+      "idiom" : "iphone",
+      "filename" : "wigo_v8-68.png",
       "scale" : "2x"
     },
     {
