@@ -142,6 +142,7 @@
         <!--Sign View Controller-->
         <scene sceneID="uJ8-I3-oZO">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IOT-XE-d2S" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="zD1-rz-qm8" customClass="SignViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="UWW-z2-I5w"/>
@@ -158,13 +159,13 @@
                         <segue destination="n6g-H7-Suc" kind="push" identifier="signUpSegue" id="nlX-5f-FyG"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="IOT-XE-d2S" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1964" y="-1583"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="NzK-n8-rUh">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QIE-3I-w4T" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="n6g-H7-Suc" customClass="SignUpViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ffo-09-6Gl"/>
@@ -180,13 +181,13 @@
                         <segue destination="hrB-gW-T5c" kind="push" identifier="emailSegue" id="v7T-TG-KvY"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="QIE-3I-w4T" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2383" y="-1583"/>
         </scene>
         <!--Email Confirmation View Controller-->
         <scene sceneID="I1M-cK-0gU">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dDA-qI-KPx" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController id="hrB-gW-T5c" customClass="EmailConfirmationViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Vr9-ba-B5v"/>
@@ -199,7 +200,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="voB-9N-zHP"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dDA-qI-KPx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2785" y="-1583"/>
         </scene>

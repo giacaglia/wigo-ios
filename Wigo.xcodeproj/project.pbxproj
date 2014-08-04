@@ -143,6 +143,9 @@
 		E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */; };
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
+		E99F46AF199012F0007408C1 /* LockScreenUIViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenUIViewController.m */; };
+		E99F46B11990154B007408C1 /* boyVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E99F46B01990154B007408C1 /* boyVoice.caf */; };
+		E99F46B21990154B007408C1 /* boyVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E99F46B01990154B007408C1 /* boyVoice.caf */; };
 		E9A17C70195C761E0057C89A /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A17C6F195C761E0057C89A /* Network.m */; };
 		E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
 		E9A31E481980AB9B008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
@@ -310,6 +313,9 @@
 		E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookImagesViewController.m; sourceTree = "<group>"; };
 		E99EC2871986B69C00CBFA59 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
+		E99F46AD199012F0007408C1 /* LockScreenUIViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockScreenUIViewController.h; sourceTree = "<group>"; };
+		E99F46AE199012F0007408C1 /* LockScreenUIViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LockScreenUIViewController.m; sourceTree = "<group>"; };
+		E99F46B01990154B007408C1 /* boyVoice.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = boyVoice.caf; path = ../boyVoice.caf; sourceTree = "<group>"; };
 		E9A17C6E195C761E0057C89A /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
 		E9A17C6F195C761E0057C89A /* Network.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Network.m; sourceTree = "<group>"; };
 		E9A31E451980AB25008A711B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -337,7 +343,7 @@
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
 		E9AAAFC7193E357E0069F700 /* UIButtonAligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonAligned.h; sourceTree = "<group>"; };
 		E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonAligned.m; sourceTree = "<group>"; };
-		E9BE4999198C402500F9AF74 /* girlVoice.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = girlVoice.caf; sourceTree = "<group>"; };
+		E9BE4999198C402500F9AF74 /* girlVoice.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = girlVoice.caf; path = ../girlVoice.caf; sourceTree = "<group>"; };
 		E9BE8C47192A48F1008BB84C /* FontProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontProperties.h; sourceTree = "<group>"; };
 		E9BE8C48192A48F1008BB84C /* FontProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontProperties.m; sourceTree = "<group>"; };
 		E9BE8C4A192A54F3008BB84C /* Profile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Profile.h; sourceTree = "<group>"; };
@@ -517,7 +523,6 @@
 		E921D6091923967D00361247 = {
 			isa = PBXGroup;
 			children = (
-				E9BE4999198C402500F9AF74 /* girlVoice.caf */,
 				E921D61B1923967D00361247 /* Wigo */,
 				E921D63D1923967D00361247 /* WigoTests */,
 				E921D6141923967D00361247 /* Frameworks */,
@@ -582,6 +587,8 @@
 		E921D61C1923967D00361247 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E99F46B01990154B007408C1 /* boyVoice.caf */,
+				E9BE4999198C402500F9AF74 /* girlVoice.caf */,
 				C18AC28F198451150056957B /* autorevision */,
 				E9BE8C4F192AA29C008BB84C /* Whitney */,
 				E921D61D1923967D00361247 /* Wigo-Info.plist */,
@@ -801,6 +808,8 @@
 				E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */,
 				E9E618FB193625BB00A224C0 /* EmailConfirmationViewController.h */,
 				E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */,
+				E99F46AD199012F0007408C1 /* LockScreenUIViewController.h */,
+				E99F46AE199012F0007408C1 /* LockScreenUIViewController.m */,
 			);
 			name = OnboardingViews;
 			sourceTree = "<group>";
@@ -977,6 +986,7 @@
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
 				E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */,
+				E99F46B21990154B007408C1 /* boyVoice.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -991,6 +1001,7 @@
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
+				E99F46B11990154B007408C1 /* boyVoice.caf in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
 				E9A31E581980ADDF008A711B /* iOSa_2.23.0.version in Resources */,
 				C18AC292198451150056957B /* autorevision.sh in Resources */,
@@ -1185,6 +1196,7 @@
 				E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */,
 				E9681CB51950AA3B00182E0E /* Query.m in Sources */,
 				E9A31E641982B965008A711B /* WigoSearchBarDelegate.m in Sources */,
+				E99F46AF199012F0007408C1 /* LockScreenUIViewController.m in Sources */,
 				E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */,
 				E900C2BB1961EADE00A01F50 /* SDWebImageDownloaderOperation.m in Sources */,
 				E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */,
