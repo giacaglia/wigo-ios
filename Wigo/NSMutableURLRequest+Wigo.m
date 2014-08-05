@@ -22,6 +22,7 @@
     [self setValue:@"true" forHTTPHeaderField:@"X-Wigo-Client-Enterprise"];
 #endif
     [self setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forHTTPHeaderField:@"X-Wigo-Client-Version"];
+    [self setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
     [self setValue:API_VERSION forHTTPHeaderField:@"X-Wigo-API-Version"];
     [self setValue:DEVICE_TYPE forHTTPHeaderField:@"X-Wigo-Device"];
     [self setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];

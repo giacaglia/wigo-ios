@@ -145,7 +145,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void)profileSegue {
-    profileViewController = [[ProfileViewController alloc] init];
+    profileViewController = [[ProfileViewController alloc] initWithUser:self.user];
     [self.navigationController pushViewController:profileViewController animated:YES];
 }
 
