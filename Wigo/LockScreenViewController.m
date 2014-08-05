@@ -124,6 +124,11 @@ NSMutableArray *alreadyGeneratedNumbers;
                     int TOTAL_NUMBER = [[everyoneParty getObjectArray] count];
                     User *user = [[everyoneParty getObjectArray] objectAtIndex:[self generateRandomNumber:TOTAL_NUMBER]];
                     [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+                    imageView.backgroundColor = [FontProperties getOrangeColor];
+                    imageView.layer.borderWidth = 1;
+                    imageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                    imageView.layer.cornerRadius = 7;
+                    imageView.layer.masksToBounds = YES;
                 }
             }
             
