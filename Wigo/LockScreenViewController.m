@@ -13,6 +13,8 @@
 
 SLComposeViewController *mySLComposerSheet;
 NSNumber *numberOfPeopleSignedUp;
+Party *everyoneParty;
+NSMutableArray *alreadyGeneratedNumbers;
 
 @implementation LockScreenViewController
 
@@ -24,8 +26,6 @@ NSNumber *numberOfPeopleSignedUp;
         self.view.backgroundColor = [UIColor whiteColor];
         self.navigationController.navigationBar.hidden = YES;
         self.navigationItem.hidesBackButton = YES;
-//        [[self navigationController] setNavigationBarHidden:YES animated:NO];
-
         
     }
     return self;
@@ -35,11 +35,13 @@ NSNumber *numberOfPeopleSignedUp;
 {
     [super viewDidLoad];
     numberOfPeopleSignedUp = @0;
+    everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    alreadyGeneratedNumbers = [[NSMutableArray alloc] init];
     [self fetchSummary];
     // Do any additional setup after loading the view.
     [self initializeTopLabel];
-    [self initializeBottomLabel];
     [self initializeShareButton];
+    [self fetchEveryone];
 }
 
 
@@ -60,24 +62,24 @@ NSNumber *numberOfPeopleSignedUp;
 - (void)initializeLockPeopleButtons {
     CGSize origin = CGSizeMake(25, 150);
     for (int i = 1 ; i <= 100; i++) {
-        if (i == 43) {
-            UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width - 2, origin.height - 2, 15 + 4, 15 + 4)];
-            UIImageViewShake *lockPersonIcon = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15 + 4, 15 + 4)];
+        if (i == [numberOfPeopleSignedUp intValue]) {
+            UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width - 10, origin.height - 10, 15 + 20, 15 + 20)];
+            UIImageViewShake *lockPersonIcon = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15 + 20, 15 + 20)];
+            lockPersonIcon.tag = i;
             [lockPersonIcon setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
             lockPersonIcon.layer.borderWidth = 1;
             lockPersonIcon.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            lockPersonIcon.layer.cornerRadius = 10;
+            lockPersonIcon.layer.cornerRadius = 20;
             lockPersonIcon.layer.masksToBounds = YES;
-            [lockPersonIconButton addTarget:self action:@selector(imagePressed:) forControlEvents:UIControlEventTouchDown | UIControlEventTouchDragExit];
             [lockPersonIconButton addSubview:lockPersonIcon];
             [self.view addSubview:lockPersonIconButton];
         }
         else {
             UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width, origin.height, 15 + 4, 15 + 4)];
             UIImageViewShake *lockPersonIcon = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15, 15)];
-            if (i < 43) lockPersonIcon.image = [UIImage imageNamed:@"lockPersonIcon"];
+            lockPersonIcon.tag = i;
+            if (i < [numberOfPeopleSignedUp intValue]) lockPersonIcon.image = [UIImage imageNamed:@"lockPersonIcon"];
             else lockPersonIcon.image = [UIImage imageNamed:@"grayLockSelectedIcon"];
-            [lockPersonIconButton addTarget:self action:@selector(imagePressed:) forControlEvents:UIControlEventTouchDown | UIControlEventTouchDragExit];
             [lockPersonIconButton addSubview:lockPersonIcon];
             [self.view addSubview:lockPersonIconButton];
         }
@@ -106,7 +108,7 @@ NSNumber *numberOfPeopleSignedUp;
     shareButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     shareButton.layer.borderColor = [UIColor whiteColor].CGColor;
     shareButton.layer.borderWidth = 1;
-    shareButton.layer.cornerRadius = 5;
+    shareButton.layer.cornerRadius = 20;
     [shareButton addTarget:self action:@selector(sharedPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:shareButton];
 }
@@ -117,7 +119,17 @@ NSNumber *numberOfPeopleSignedUp;
     {
         if ([subview isMemberOfClass:[UIImageViewShake class]]) {
             UIImageViewShake *imageView = (UIImageViewShake *)subview;
+            if (imageView.tag < [numberOfPeopleSignedUp intValue]) {
+                if ([[everyoneParty getObjectArray] count] != 0) {
+                    int TOTAL_NUMBER = [[everyoneParty getObjectArray] count];
+                    User *user = [[everyoneParty getObjectArray] objectAtIndex:[self generateRandomNumber:TOTAL_NUMBER]];
+                    [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+                }
+            }
+            
             [imageView newShake];
+           
+            
         }
     }
 }
@@ -145,10 +157,71 @@ NSNumber *numberOfPeopleSignedUp;
             if ([[jsonResponse allKeys] containsObject:@"total"]) {
                 numberOfPeopleSignedUp = (NSNumber *)[jsonResponse objectForKey:@"total"];
                 [self initializeLockPeopleButtons];
+                [self initializeBottomLabel];
             }
         });
     }];
 }
 
+- (void)fetchEveryone {
+    [Network queryAsynchronousAPI:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+        }
+        else {
+            NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+            [everyoneParty addObjectsFromArray:arrayOfUsers];
+        }
+    }];
+}
+
+- (int)generateRandomNumber:(int)TOTAL_NUMBER{
+    
+    
+    int low_bound = 0;
+    int high_bound = TOTAL_NUMBER;
+    int width = high_bound - low_bound;
+    int randomNumber = low_bound + arc4random() % width;
+    
+    return randomNumber;
+}
+
+
+- (void)randomNumbers
+{
+    int TOTAL_NUMBER = [[everyoneParty getObjectArray] count] - 1;
+
+    NSMutableArray *shuffle = [[NSMutableArray alloc] initWithCapacity:5];
+    
+    BOOL contains = YES;
+    while ([shuffle count] < 5) {
+        NSNumber *generatedNumber=[NSNumber numberWithInt:[self generateRandomNumber:TOTAL_NUMBER]];
+        if (![alreadyGeneratedNumbers containsObject:generatedNumber]) {
+            [shuffle addObject:generatedNumber];
+            contains=NO;
+            [alreadyGeneratedNumbers addObject:generatedNumber];
+        }
+    }
+    
+    if ([alreadyGeneratedNumbers count] >= TOTAL_NUMBER) {
+        [alreadyGeneratedNumbers removeAllObjects];
+    }
+}
+
+#pragma mark - Delegate Function 
+- (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UIView* view = [self.view hitTest: [[touches anyObject] locationInView: self.view] withEvent: nil];
+	if (view != nil && view != self.view ) {
+        [self imagePressed:view];
+	}
+}
+
+- (void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UIView* view = [self.view hitTest: [[touches anyObject] locationInView: self.view] withEvent: nil];
+	if (view != nil && view != self.view) {
+        [self imagePressed:view];
+	}
+}
 
 @end

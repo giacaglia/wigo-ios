@@ -20,13 +20,12 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code
+        self.originalFrame = frame;
     }
     return self;
 }
 
 - (void)newShake {
-    self.originalFrame = self.frame;
     self.sizeDifference = self.originalFrame.size.width/8;
     self.frame = CGRectMake(self.frame.origin.x + self.originalFrame.size.width/2, self.frame.origin.y + self.originalFrame.size.height/2, 0, 0);
     _direction = 1;
