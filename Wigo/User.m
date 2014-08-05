@@ -585,6 +585,15 @@
             for (NSString *key in [jsonResponse allKeys]) {
                 [self setValue:[jsonResponse objectForKey:key] forKey:key];
             }
+
+            NSString *groupName = self.groupName;
+            if (groupName != nil) {
+                [EventAnalytics tagGroup:groupName];
+            }
+            
+            NSString *objId = [NSString stringWithFormat:@"%@", [self objectForKey:@"id"]];
+            [EventAnalytics tagUser:objId];
+            
             [modifiedKeys removeAllObjects];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             handler(jsonResponse, error);
