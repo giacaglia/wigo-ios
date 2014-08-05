@@ -17,7 +17,7 @@
 @property UITableView *tableViewOfPeople;
 @property Party * messageParty;
 @property NSNumber *page;
-
+@property BOOL fetchingFirstPage;
 @end
 
 @implementation ChatViewController
@@ -25,6 +25,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageMessages) name:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
 
@@ -33,7 +34,7 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     self.tabBarController.tabBar.hidden = NO;
-    
+    _fetchingFirstPage = NO;
     UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"chatsSelected"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
@@ -106,8 +107,11 @@
 #pragma mark - Network functions
 
 - (void)fetchFirstPageMessages {
-    _page = @1;
-    [self fetchMessages];
+    if (!_fetchingFirstPage) {
+        _fetchingFirstPage = YES;
+        _page = @1;
+        [self fetchMessages];
+    }
 }
 
 - (void)fetchMessages {
@@ -119,6 +123,7 @@
             [_messageParty addObjectsFromArray:arrayOfMessages];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_messageParty addMetaInfo:metaDictionary];
+            if ([_page isEqualToNumber:@1]) _fetchingFirstPage = NO;
             _page = @([_page intValue] + 1);
             [_tableViewOfPeople reloadData];
             [_tableViewOfPeople didFinishPullToRefresh];

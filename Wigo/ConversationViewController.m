@@ -10,6 +10,7 @@
 #import "Globals.h"
 #import "UIButtonAligned.h"
 #import "WiGoSpinnerView.h"
+#import "ProfileViewController.h"
 
 @interface ConversationViewController ()
 
@@ -26,6 +27,8 @@
 @property UILabel *whiteLabelForTextField;
 
 @end
+
+ProfileViewController *profileViewController;
 
 @implementation ConversationViewController
 
@@ -125,13 +128,13 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void) initializeRightBarButton {
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
-    profileButton.userInteractionEnabled = NO;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]]];
     [profileButton addSubview:profileImageView];
     [profileButton setShowsTouchWhenHighlighted:YES];
+    [profileButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.rightBarButtonItem = profileBarButton;
 }
@@ -139,6 +142,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void) goBack {
     [[Profile user] saveKeyAsynchronously:@"last_message_read"];
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)profileSegue {
+    profileViewController = [[ProfileViewController alloc] init];
+    [self.navigationController pushViewController:profileViewController animated:YES];
 }
 
 - (void) initializeTapHandler {
