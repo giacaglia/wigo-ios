@@ -75,7 +75,7 @@
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = 4;
     layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 30);
-    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 20 , self.view.frame.size.width, self.view.frame.size.height - 20) collectionViewLayout:layout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 30 , self.view.frame.size.width, self.view.frame.size.height - 30) collectionViewLayout:layout];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:collectionViewCellIdentifier];
