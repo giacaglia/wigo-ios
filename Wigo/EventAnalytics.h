@@ -13,5 +13,7 @@
 + (void) tagEvent:(NSString *)name;
 + (void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details;
 + (void) tagScreen:(NSString *)name;
++ (void) tagGroup:(NSString *)name;
++ (void) tagUser:(NSString *)user;
 
 @end

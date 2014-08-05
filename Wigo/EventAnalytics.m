@@ -37,4 +37,16 @@
     [[LocalyticsSession shared] tagScreen:name];
 }
 
++(void) tagGroup:(NSString *)name {
+    // We are currently using custom dimension 0 to represent the name of the school
+    // Note that this is vulnerable to Ben renaming schools via the admin dashboard, but the
+    // alternative of having us have all the reports be by school ID as a string seems far too
+    // painful to contemplate.
+    [[LocalyticsSession shared] setCustomDimension:0 value:name];
+}
+
++(void) tagUser:(NSString *)user {
+    [[LocalyticsSession shared] setCustomerId:user];
+}
+
 @end

@@ -468,6 +468,15 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
+		C14378D119915D6300D29264 /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				C10BFB52198C24E6003CA59A /* EventAnalytics.h */,
+				C10BFB53198C24E6003CA59A /* EventAnalytics.m */,
+			);
+			name = Analytics;
+			sourceTree = "<group>";
+		};
 		C18AC28F198451150056957B /* autorevision */ = {
 			isa = PBXGroup;
 			children = (
@@ -577,8 +586,6 @@
 		E921D61B1923967D00361247 /* Wigo */ = {
 			isa = PBXGroup;
 			children = (
-				C10BFB52198C24E6003CA59A /* EventAnalytics.h */,
-				C10BFB53198C24E6003CA59A /* EventAnalytics.m */,
 				E9D7D5321926539C00E1ED10 /* Main.storyboard */,
 				E97999D019759A2900C617E3 /* Globals.h */,
 				E921D6241923967D00361247 /* AppDelegate.h */,
@@ -641,6 +648,7 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				C14378D119915D6300D29264 /* Analytics */,
 				E9A31E66198412A8008A711B /* FXBlurView */,
 				E9A31E561980AC4F008A711B /* Localytics */,
 				E9DBB04D197813F900DDACDE /* CHGifRefreshControl */,
