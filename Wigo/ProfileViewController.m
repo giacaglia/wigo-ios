@@ -12,7 +12,6 @@
 #import "UIButtonAligned.h"
 #import "UIPageControlAligned.h"
 #import "UIImageCrop.h"
-#import "WiGoSpinnerView.h"
 #import "Draggable.h"
 #import "RWBlurPopover.h"
 

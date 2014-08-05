@@ -10,7 +10,6 @@
 #import "MainViewController.h"
 #import "Globals.h"
 
-#import "WiGoSpinnerView.h"
 #import <Crashlytics/Crashlytics.h>
 
 
@@ -266,10 +265,12 @@
     User *profileUser = [Profile user];
     [profileUser setObject:_fbID forKey:@"facebook_id"];
     [profileUser setAccessToken:_accessToken];
-    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
+//    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [profileUser loginWithHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView hideSpinnerForView:self.view];
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+//            [WiGoSpinnerView hideSpinnerForView:self.view];
             if ([[jsonResponse allKeys] containsObject:@"status"]) {
                 if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]){
                     _alertShown = YES;

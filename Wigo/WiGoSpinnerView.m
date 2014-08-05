@@ -74,7 +74,7 @@
 #pragma mark - Dancing G at Center of view
 
 + (void)addDancingGToCenterView:(UIView *)view {
-    UIImageView *centeredImageView =[[UIImageView alloc] initWithFrame:CGRectMake(view.frame.size.width/2 - 25, view.frame.size.height/2 - 25, 50, 50)];
+    UIImageView *centeredImageView =[[UIImageView alloc] initWithFrame:CGRectMake(view.frame.size.width/2 - 35, view.frame.size.height/2 - 35, 70, 70)];
     NSArray *loadingImages = [WiGoSpinnerView getLoadingImgs];
     centeredImageView.animationImages = loadingImages;
     centeredImageView.animationDuration = (CGFloat)loadingImages.count/20.0;

@@ -11,7 +11,6 @@
 
 #import "UIButtonAligned.h"
 #import "RWBlurPopover.h"
-#import "WiGoSpinnerView.h"
 
 @interface EditProfileViewController ()
 

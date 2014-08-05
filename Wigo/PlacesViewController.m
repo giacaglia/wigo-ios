@@ -607,7 +607,7 @@
 
 - (void) fetchEvents {
     _everyoneParty = [Profile everyoneParty];
-    if (_spinnerAtTop) [WiGoSpinnerView showBlueSpinnerAddedTo:self.view];
+    if (_spinnerAtTop) [WiGoSpinnerView addDancingGToCenterView:self.view];
     NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@", [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *events = [jsonResponse objectForKey:@"objects"];
@@ -669,7 +669,7 @@
     numberOfFetchedParties += 1;
     if (numberOfFetchedParties >= [[_eventsParty getObjectArray] count]) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            _spinnerAtTop ? [WiGoSpinnerView hideSpinnerForView:self.view] : [_placesTableView didFinishPullToRefresh];
+            _spinnerAtTop ? [WiGoSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
             _contentParty = _eventsParty;
             _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
             [self dismissKeyboard];
