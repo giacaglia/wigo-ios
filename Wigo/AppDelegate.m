@@ -131,7 +131,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         [self reloadTabBarNotifications];
     }
     else {
-
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil];
     }
 }

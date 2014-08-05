@@ -371,7 +371,7 @@
         [_scrollView addSubview:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
-    [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count], 320)];
+    [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count] - 10, 320)];
     _bioLabel.text = [NSString stringWithFormat:@"        %@" , [self.user bioString]];
     [_bioLabel sizeToFit];
     _bioLabel.hidden = NO;
@@ -731,10 +731,10 @@
 #pragma mark UIScrollView delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat pageWidth = scrollView.frame.size.width; // you need to have a **iVar** with getter for scrollView
+    CGFloat pageWidth = scrollView.frame.size.width; 
     float fractionalPage = scrollView.contentOffset.x / pageWidth;
     NSInteger page = lround(fractionalPage);
-    _pageControl.currentPage = page; // you need to have a **iVar** with getter for pageControl
+    _pageControl.currentPage = page;
 }
 
 

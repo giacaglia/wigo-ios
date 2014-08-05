@@ -86,6 +86,7 @@
     _studentTextField.layer.borderWidth = 1;
     _studentTextField.layer.cornerRadius = 5;
     _studentTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    _studentTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     [_studentTextField becomeFirstResponder];
     [_studentTextField addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventEditingDidEndOnExit];
     [self.view addSubview:_studentTextField];
