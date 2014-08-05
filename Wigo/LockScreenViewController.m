@@ -16,6 +16,7 @@ NSNumber *numberOfPeopleSignedUp;
 Party *everyoneParty;
 NSMutableArray *alreadyGeneratedNumbers;
 BOOL pushed;
+
 @implementation LockScreenViewController
 
 

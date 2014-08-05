@@ -117,14 +117,18 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     if (error.code == 3010) {
         NSLog(@"Push notifications are not supported in the iOS Simulator.");
     } else {
-        // show some alert or otherwise handle the failure to register.
         NSLog(@"application:didFailToRegisterForRemoteNotificationsWithError: %@", error);
     }
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[LocalyticsSession shared] handleRemoteNotification:userInfo];
-
+//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+//                                                        message:[NSString stringWithFormat:@"user info: %@", userInfo]
+//                                                       delegate:nil
+//                                              cancelButtonTitle:@"OK"
+//                                              otherButtonTitles:nil];
+//    [alertView show];
     [self reloadTabBarNotifications];
 }
 
