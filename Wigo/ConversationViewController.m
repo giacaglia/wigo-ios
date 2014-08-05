@@ -86,6 +86,12 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                                              selector:@selector(keyboardWillBeHidden:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fetchMessages)
+                                                 name:@"updateConversation"
+                                               object:nil];
+
 
 }
 
@@ -390,6 +396,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 # pragma mark - Network functions
 
 - (void)fetchMessages {
+    [[_scrollView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     NSString *queryString = [NSString stringWithFormat:@"messages/?conversation=%@",[self.user objectForKey:@"id"]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
