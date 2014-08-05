@@ -330,7 +330,7 @@
 - (BOOL)isGroupLocked {
     if ([[_proxy allKeys] containsObject:@"group"]) {
         NSNumber *isGroupLocked = (NSNumber *)[[_proxy objectForKey:@"group"]  objectForKey:@"locked"];
-        return ![isGroupLocked boolValue];
+        return [isGroupLocked boolValue];
     }
     return NO;
 
