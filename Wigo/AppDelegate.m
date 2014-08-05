@@ -79,6 +79,7 @@ BOOL wasAtBackground;
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     wasAtBackground = YES;
+    NSLog(@"she");
     [self reloadTabBarNotifications];
     [[LocalyticsSession shared] resume];
     [[LocalyticsSession shared] upload];
@@ -126,11 +127,21 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[LocalyticsSession shared] handleRemoteNotification:userInfo];
+    NSLog(@"here");
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:[NSString stringWithFormat:@"user info %@", userInfo]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    [alertView show];
     if (!wasAtBackground) {
         wasAtBackground = NO;
         [self reloadTabBarNotifications];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil];
+    else {
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil];
+    }
 }
 
 

@@ -18,7 +18,6 @@
     return newImage;
 }
 
-
 + (UIImageView *)blurImageView:(UIImageView *)profileImgView withRadius:(float)radius {
     UIGraphicsBeginImageContext(profileImgView.bounds.size);
     [profileImgView.layer renderInContext:UIGraphicsGetCurrentContext()];
