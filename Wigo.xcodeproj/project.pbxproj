@@ -201,6 +201,7 @@
 		E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
 		E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
+		E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1095,6 +1096,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */,
 				C12A110819787BE700D53B1C /* User.m in Sources */,
 				C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */,
 				E9A31E6E19854AC5008A711B /* Draggable.m in Sources */,
@@ -1290,8 +1292,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
 				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1317,7 +1319,7 @@
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = WiGo;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "5D489863-B364-475E-8BD1-DDD16BF5DCB6";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1327,8 +1329,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: WiGo LLC (BJ73CT9B84)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: WiGo LLC (BJ73CT9B84)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Blade LLC";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Blade LLC";
 				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1354,7 +1356,7 @@
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = WiGo;
-				PROVISIONING_PROFILE = "685EA1F1-F4B9-4E7D-B674-124A830ADDF8";
+				PROVISIONING_PROFILE = "E4957393-3A8F-421A-9272-A53C5401D048";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1391,7 +1393,7 @@
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = WiGo;
-				PROVISIONING_PROFILE = "685EA1F1-F4B9-4E7D-B674-124A830ADDF8";
+				PROVISIONING_PROFILE = "AD1C5A91-9567-4EA6-ABC4-81E12EA4D7D6";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;

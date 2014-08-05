@@ -18,11 +18,13 @@
 NSNumber *indexOfSelectedTab;
 NSNumber *numberOfNewMessages;
 NSNumber *numberOfNewNotifications;
+BOOL wasAtBackground;
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    wasAtBackground = NO;
     [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
     if ([[launchOptions allKeys]
          containsObject:UIApplicationLaunchOptionsRemoteNotificationKey])
@@ -76,6 +78,7 @@ NSNumber *numberOfNewNotifications;
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    wasAtBackground = YES;
     [self reloadTabBarNotifications];
     [[LocalyticsSession shared] resume];
     [[LocalyticsSession shared] upload];
@@ -117,15 +120,13 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     if (error.code == 3010) {
         NSLog(@"Push notifications are not supported in the iOS Simulator.");
     } else {
-        // show some alert or otherwise handle the failure to register.
         NSLog(@"application:didFailToRegisterForRemoteNotificationsWithError: %@", error);
     }
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[LocalyticsSession shared] handleRemoteNotification:userInfo];
-
-    [self reloadTabBarNotifications];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil];
 }
 
 
@@ -228,12 +229,14 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                 else {
                     numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"messages"];
                     numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
+                    [self updateBadge];
                     handler(numberOfNewMessages, numberOfNewNotifications);
                 }
             }
             else {
                 numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"messages"];
                 numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
+                [self updateBadge];
                 handler(numberOfNewMessages, numberOfNewNotifications);
             }
         });
@@ -257,7 +260,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     UILabel *numberOfNotificationsLabel;
     if ([[self.notificationDictionary allKeys] containsObject:[tabBarNumber stringValue]]) {
         numberOfNotificationsLabel = [self.notificationDictionary objectForKey:[tabBarNumber stringValue]];
-        [self updateBadgeUsingTabBar:tabBarNumber];
     }
     else numberOfNotificationsLabel = [[UILabel alloc] init];
     
@@ -285,13 +287,12 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 - (void)clearNotificationAtTabBar:(NSNumber *)tabBarNumber {
     if ([[self.notificationDictionary allKeys] containsObject:[tabBarNumber stringValue]]) {
         UILabel *numberOfNotificationLabel = [self.notificationDictionary valueForKey:[tabBarNumber stringValue]];
-        [self updateBadgeUsingTabBar:tabBarNumber];
         [numberOfNotificationLabel removeFromSuperview];
         [self.notificationDictionary removeObjectForKey:[tabBarNumber stringValue]];
     }
 }
 
-- (void)updateBadgeUsingTabBar:(NSNumber *)tabBarNumber {
+- (void)updateBadge {
     int total = [numberOfNewMessages intValue] + [numberOfNewNotifications intValue];
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     if (currentInstallation.badge != 0) {
