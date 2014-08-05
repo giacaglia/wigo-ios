@@ -126,6 +126,10 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[LocalyticsSession shared] handleRemoteNotification:userInfo];
+    if (!wasAtBackground) {
+        wasAtBackground = NO;
+        [self reloadTabBarNotifications];
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil];
 }
 
