@@ -9,7 +9,6 @@
 #import "PeopleViewController.h"
 #import "SignViewController.h"
 #import "SignNavigationViewController.h"
-#import "LockScreenViewController.h"
 
 @interface MainViewController : UIViewController <UIScrollViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 {
@@ -20,6 +19,5 @@
 @property PeopleViewController *peopleViewController;
 @property SignViewController *signViewController;
 @property SignNavigationViewController *signNavigationViewController;
-@property LockScreenViewController *lockScreenViewController;
 
 @end

@@ -311,8 +311,15 @@
             else {
                 if (!_pushed) {
                     _pushed = YES;
-                    [self dismissViewControllerAnimated:YES  completion:nil];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+                    if ([[Profile user] isGroupLocked]) {
+                        self.lockScreenViewController = [[LockScreenViewController alloc] init];
+                        [self.navigationController pushViewController:self.lockScreenViewController animated:NO];
+                    }
+                    else {
+                        [self dismissViewControllerAnimated:YES  completion:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+                    }
+
                 }
             }
         });

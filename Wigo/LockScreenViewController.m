@@ -15,7 +15,7 @@ SLComposeViewController *mySLComposerSheet;
 NSNumber *numberOfPeopleSignedUp;
 Party *everyoneParty;
 NSMutableArray *alreadyGeneratedNumbers;
-
+BOOL pushed;
 @implementation LockScreenViewController
 
 
@@ -26,7 +26,8 @@ NSMutableArray *alreadyGeneratedNumbers;
         self.view.backgroundColor = [UIColor whiteColor];
         self.navigationController.navigationBar.hidden = YES;
         self.navigationItem.hidesBackButton = YES;
-        
+        [self.navigationController setNavigationBarHidden: YES animated:YES];
+        pushed = NO;
     }
     return self;
 }
@@ -34,24 +35,36 @@ NSMutableArray *alreadyGeneratedNumbers;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    numberOfPeopleSignedUp = @0;
+    numberOfPeopleSignedUp = [[Profile user] numberOfGroupMembers];
     everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
     alreadyGeneratedNumbers = [[NSMutableArray alloc] init];
-    [self fetchSummary];
-    // Do any additional setup after loading the view.
     [self initializeTopLabel];
     [self initializeShareButton];
+    [self initializeLockPeopleButtons];
+    [self initializeBottomLabel];
     [self fetchEveryone];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self fetchUserInfo];
+}
+
+- (void)dismissIfGroupUnlocked {
+    if (![[Profile user] isGroupLocked] && !pushed) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+    }
 }
 
 
 - (void)initializeTopLabel {
-    UILabel *topLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 64 + 10, self.view.frame.size.width, 20)];
+    UILabel *topLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, self.view.frame.size.width, 20)];
     topLabel.text = @"WiGo is better with friends.";
     [self setPropertiesofLabel:topLabel];
     [self.view addSubview:topLabel];
     
-    UILabel *spreadLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 64 + 20, self.view.frame.size.width, 60)];
+    UILabel *spreadLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 60)];
     spreadLabel.numberOfLines = 0;
     spreadLabel.lineBreakMode = NSLineBreakByWordWrapping;
     spreadLabel.text = [NSString stringWithFormat:@"Spread the word to unlock WiGo\n at %@!", [[Profile user] groupName]];
@@ -60,7 +73,7 @@ NSMutableArray *alreadyGeneratedNumbers;
 }
 
 - (void)initializeLockPeopleButtons {
-    CGSize origin = CGSizeMake(25, 150);
+    CGSize origin = CGSizeMake(25, 120);
     for (int i = 1 ; i <= 100; i++) {
         if (i == [numberOfPeopleSignedUp intValue]) {
             UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width - 10, origin.height - 10, 15 + 20, 15 + 20)];
@@ -69,7 +82,7 @@ NSMutableArray *alreadyGeneratedNumbers;
             [lockPersonIcon setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
             lockPersonIcon.layer.borderWidth = 1;
             lockPersonIcon.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            lockPersonIcon.layer.cornerRadius = 20;
+            lockPersonIcon.layer.cornerRadius = 17;
             lockPersonIcon.layer.masksToBounds = YES;
             [lockPersonIconButton addSubview:lockPersonIcon];
             [self.view addSubview:lockPersonIconButton];
@@ -90,7 +103,7 @@ NSMutableArray *alreadyGeneratedNumbers;
 }
 
 - (void)initializeBottomLabel {
-    UILabel *unlockLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 70 - 55, self.view.frame.size.width - 40, 65)];
+    UILabel *unlockLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 145, self.view.frame.size.width - 40, 65)];
     unlockLabel.numberOfLines = 0;
     unlockLabel.lineBreakMode = NSLineBreakByWordWrapping;
     unlockLabel.text = [NSString stringWithFormat:@"WiGo will unlock when %d more people from %@ sign up.", 100 - [numberOfPeopleSignedUp intValue] ,[Profile user].groupName];
@@ -100,7 +113,7 @@ NSMutableArray *alreadyGeneratedNumbers;
 }
 
 - (void)initializeShareButton {
-    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 125, self.view.frame.size.height - 60, 250, 48)];
+    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 125, self.view.frame.size.height - 70, 250, 48)];
     shareButton.backgroundColor = [FontProperties getOrangeColor];
     [shareButton setTitle:@"Share WiGo" forState:UIControlStateNormal];
     [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -108,7 +121,7 @@ NSMutableArray *alreadyGeneratedNumbers;
     shareButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     shareButton.layer.borderColor = [UIColor whiteColor].CGColor;
     shareButton.layer.borderWidth = 1;
-    shareButton.layer.cornerRadius = 20;
+    shareButton.layer.cornerRadius = 15;
     [shareButton addTarget:self action:@selector(sharedPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:shareButton];
 }
@@ -156,18 +169,6 @@ NSMutableArray *alreadyGeneratedNumbers;
     label.font = [FontProperties getSmallFont];
 }
 
--(void)fetchSummary {
-    [Network queryAsynchronousAPI:@"groups/summary" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([[jsonResponse allKeys] containsObject:@"total"]) {
-                numberOfPeopleSignedUp = (NSNumber *)[jsonResponse objectForKey:@"total"];
-                [self initializeLockPeopleButtons];
-                [self initializeBottomLabel];
-            }
-        });
-    }];
-}
-
 - (void)fetchEveryone {
     [Network queryAsynchronousAPI:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
@@ -179,10 +180,19 @@ NSMutableArray *alreadyGeneratedNumbers;
     }];
 }
 
+
+- (void) fetchUserInfo {
+    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        User *user = [[User alloc] initWithDictionary:jsonResponse];
+        [Profile setUser:user];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [self dismissIfGroupUnlocked];
+        });
+    }];
+}
+
 - (int)generateRandomNumber:(int)TOTAL_NUMBER{
-    
-    
-    int low_bound = 0;
+    int low_bound = 1;
     int high_bound = TOTAL_NUMBER;
     int width = high_bound - low_bound;
     int randomNumber = low_bound + arc4random() % width;

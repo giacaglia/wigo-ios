@@ -332,9 +332,8 @@
 }
 
 - (void)followPressed {
-//    self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
-    self.lockScreenViewController = [[LockScreenViewController alloc] init];
-    [self.navigationController pushViewController:self.lockScreenViewController animated:YES];
+    self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
+    [self.navigationController pushViewController:self.peopleViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
 }
 

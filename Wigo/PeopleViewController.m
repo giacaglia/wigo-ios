@@ -90,7 +90,6 @@
     _contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
     _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self loadTableView];
-    [self fetchSummary];
 }
 
 - (void)initializeBackBarButton {
@@ -153,7 +152,8 @@
 
 - (void)initializeYourSchoolButton {
     _yourSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width/3, 60)];
-    [_yourSchoolButton setTitle:@"School" forState:UIControlStateNormal];
+//    [_yourSchoolButton setTitle:@"School" forState:UIControlStateNormal];
+    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", [[[Profile user] numberOfGroupMembers] intValue]] forState:UIControlStateNormal];
     _yourSchoolButton.backgroundColor = [FontProperties getOrangeColor];
     _yourSchoolButton.titleLabel.font = [FontProperties getTitleFont];
     _yourSchoolButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -573,16 +573,6 @@
 }
 
 
--(void)fetchSummary {
-    [Network queryAsynchronousAPI:@"groups/summary" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([[jsonResponse allKeys] containsObject:@"total"]) {
-                NSNumber *totalNumberOfPeople = [jsonResponse objectForKey:@"total"];
-                [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", [totalNumberOfPeople intValue]] forState:UIControlStateNormal];
-            }
-        });
-    }];
-}
 
 #pragma mark - UISearchBarDelegate 
 

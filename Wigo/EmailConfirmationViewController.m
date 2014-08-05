@@ -36,13 +36,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    NSLog(@"fheahre");
     [self login];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    NSLog(@"Called here");
 }
 
 - (void) initializeEmailConfirmationLabel {
@@ -120,23 +114,6 @@
                  range:NSMakeRange(0, 2)];
     [self.numberOfPeopleLabel setAttributedText:text];
     [self.view addSubview:self.numberOfPeopleLabel];
-    
-    
-//    UILabel *lastWeekLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50)];
-//    lastWeekLabel.text = @"253 students are going out";
-//    lastWeekLabel.font = [FontProperties getSmallFont];
-//    lastWeekLabel.backgroundColor = [FontProperties getLightOrangeColor];
-//    lastWeekLabel.textColor = [UIColor blackColor];
-//    lastWeekLabel.textAlignment = NSTextAlignmentCenter;
-    
-//    NSMutableAttributedString *textWeekLabel =
-//    [[NSMutableAttributedString alloc]
-//     initWithAttributedString: lastWeekLabel.attributedText];
-//    [textWeekLabel addAttribute:NSForegroundColorAttributeName
-//                 value:[FontProperties getOrangeColor]
-//                 range:NSMakeRange(0, 3)];
-//    [lastWeekLabel setAttributedText: textWeekLabel];
-//    [self.view addSubview:lastWeekLabel];
 }
 
 #pragma mark - Login
@@ -149,23 +126,18 @@
     if ([response isEqualToString:@"error"] || [response isEqualToString:@"email_not_validated"]) {
     }
     else {
-        [self dismissViewControllerAnimated:YES  completion:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+        if ([[Profile user] isGroupLocked]) {
+            self.lockScreenViewController = [[LockScreenViewController alloc] init];
+            [self.navigationController pushViewController:self.lockScreenViewController animated:NO];
+        }
+        else {
+            [self dismissViewControllerAnimated:YES  completion:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+        }
     }
 }
 
-#pragma mark - Network functions 
 
--(void)fetchSummary {
-    [Network queryAsynchronousAPI:@"groups/summary" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([[jsonResponse allKeys] containsObject:@"total"]) {
-                NSNumber *totalNumberOfPeople = [jsonResponse objectForKey:@"total"];
-                self.numberOfPeopleLabel.text  = [NSString stringWithFormat:@"%d students are going out",[totalNumberOfPeople intValue]];
 
-            }
-        });
-    }];
-}
 
 @end

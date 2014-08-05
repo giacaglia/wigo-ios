@@ -287,6 +287,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         UILabel *numberOfNotificationLabel = [self.notificationDictionary valueForKey:[tabBarNumber stringValue]];
         [self updateBadgeUsingTabBar:tabBarNumber];
         [numberOfNotificationLabel removeFromSuperview];
+        [self.notificationDictionary removeObjectForKey:[tabBarNumber stringValue]];
     }
 }
 

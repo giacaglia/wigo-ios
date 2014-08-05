@@ -34,6 +34,7 @@ typedef enum
 @property NSString *lastName;
 @property NSNumber* eventID;
 @property NSString *groupName;
+@property NSNumber *numberOfGroupMembers;
 @property NSString *bioString;
 @property NSArray *imagesURL;
 @property BOOL isPrivate;
@@ -62,9 +63,10 @@ typedef enum
 - (BOOL)isTapped;
 - (BOOL)isFollowingRequested;
 - (BOOL)isAttending;
-//Attending evetn
+//Attending event
 - (NSString *)attendingEventName;
 @property NSNumber *attendingEventID;
+- (BOOL)isGroupLocked;
 
 
 - (STATE)getUserState;

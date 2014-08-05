@@ -204,6 +204,16 @@
     [modifiedKeys addObject:@"group"];
 }
 
+- (NSNumber *)numberOfGroupMembers {
+    return [[_proxy objectForKey:@"group"] objectForKey:@"num_members"];
+}
+
+- (void)setNumberOfGroupMembers:(NSNumber *)numberOfGroupMembers {
+    [[_proxy objectForKey:@"group"] setObject:numberOfGroupMembers forKey:@"num_members"];
+    [modifiedKeys addObject:@"group"];
+}
+
+
 - (NSString *)bioString {
     if ([_proxy objectForKey:@"bio"] != (id)[NSNull null]) {
         return [_proxy objectForKey:@"bio"];
@@ -317,6 +327,15 @@
     else [_proxy setObject:[[NSDictionary alloc] init] forKey:@"is_attending"];
 }
 
+- (BOOL)isGroupLocked {
+    if ([[_proxy allKeys] containsObject:@"group"]) {
+        NSNumber *isGroupLocked = (NSNumber *)[[_proxy objectForKey:@"group"]  objectForKey:@"locked"];
+        return ![isGroupLocked boolValue];
+    }
+    return NO;
+
+}
+
 - (NSString *)attendingEventName {
     if ([self isAttending]) {
         NSDictionary *isAttending = (NSDictionary *)[_proxy objectForKey:@"is_attending"];
@@ -423,7 +442,6 @@
         }
     }
     if ([[dictionaryUser allKeys] containsObject:@"email_validated"] ) {
-//        NSLog(@"dictionary user %@", dictionaryUser);
         for (NSString *key in [dictionaryUser allKeys]) {
             [self setValue:[dictionaryUser objectForKey:key] forKey:key];
         }
@@ -436,7 +454,6 @@
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     currentInstallation[@"wigo_id"] = [_proxy objectForKey:@"id"];
     [currentInstallation saveInBackground];
-//    NSLog(@"dictionary user %@", dictionaryUser);
     for (NSString *key in [dictionaryUser allKeys]) {
         [self setValue:[dictionaryUser objectForKey:key] forKey:key];
     }

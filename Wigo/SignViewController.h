@@ -10,10 +10,11 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import "EmailConfirmationViewController.h"
 #import "SignUpViewController.h"
+#import "LockScreenViewController.h"
 
 @interface SignViewController : UIViewController <FBLoginViewDelegate>
 
 @property SignUpViewController *signUpViewController;
 @property EmailConfirmationViewController *emailConfirmationViewController;
-
+@property LockScreenViewController *lockScreenViewController;
 @end
