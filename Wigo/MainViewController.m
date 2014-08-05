@@ -90,6 +90,7 @@
     [self fetchFirstPageFollowing];
     [self fetchUserInfo];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
     [self logFirstTimeLoading];
 }
 
