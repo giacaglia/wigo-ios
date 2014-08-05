@@ -204,7 +204,7 @@ BOOL pushed;
 
 - (void)randomNumbers
 {
-    int TOTAL_NUMBER = [[everyoneParty getObjectArray] count] - 1;
+    int TOTAL_NUMBER = (int)[[everyoneParty getObjectArray] count] - 1;
 
     NSMutableArray *shuffle = [[NSMutableArray alloc] initWithCapacity:5];
     

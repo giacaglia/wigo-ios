@@ -114,7 +114,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void) initializeScrollView {
     _positionOfLastMessage = 10;
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 50)];
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:_scrollView];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
 }
@@ -342,17 +342,28 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 {
     NSDictionary* userInfo = [notification userInfo];
     
-    // SCROLL VIEW resize
+    [self animateScrollViewUp:up withInfo:userInfo];
+   
+    CGRect newFrame = [self getNewControlsFrame:userInfo up:up forView:_chatTextFieldWrapper];
+    [self animateControls:userInfo withFrame:newFrame];
+}
+
+- (void)animateScrollViewUp:(BOOL)up withInfo:(NSDictionary *)userInfo {
     CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     kbFrame = [self.view convertRect:kbFrame fromView:nil];
     CGRect frame = _scrollView.frame;
     frame.size.height += kbFrame.size.height * (up ? -1 : 1);
-    _scrollView.frame = frame;
-    CGPoint bottomOffset = CGPointMake(0, self.scrollView.contentSize.height - self.scrollView.bounds.size.height);
-    [_scrollView setContentOffset:bottomOffset animated:YES];
-    
-    CGRect newFrame = [self getNewControlsFrame:userInfo up:up forView:_chatTextFieldWrapper];
-    [self animateControls:userInfo withFrame:newFrame];
+    NSTimeInterval duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    UIViewAnimationCurve animationCurve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    [UIView animateWithDuration:duration
+                          delay:0
+                        options:animationOptionsWithCurve(animationCurve)
+                     animations:^{
+                         _scrollView.frame = frame;
+                         CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
+                         [_scrollView setContentOffset:bottomOffset animated:NO];
+                     }
+                     completion:^(BOOL finished){}];
 }
 
 - (CGRect)getNewControlsFrame:(NSDictionary*)userInfo up:(BOOL)up forView:(UIView *)view
