@@ -148,8 +148,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void) changeTabBarToOrange {
+    [[UITabBar appearance] setBackgroundImage:[[UIImage alloc] init]];
+    [[UITabBar appearance] setShadowImage:[[UIImage alloc] init]];
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-
     UITabBar *tabBar = tabBarController.tabBar;
     tabBar.layer.borderWidth = 0.5;
     UIFont *smallFont = SC_MEDIUM_FONT(11.0f);
@@ -174,6 +175,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void) changeTabBarToBlue {
+    [[UITabBar appearance] setBackgroundImage:[[UIImage alloc] init]];
+    [[UITabBar appearance] setShadowImage:[[UIImage alloc] init]];
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     UITabBar *tabBar = tabBarController.tabBar;
     tabBar.layer.borderWidth = 0.5;
