@@ -12,7 +12,6 @@
 #import "UIButtonAligned.h"
 #import "UIPageControlAligned.h"
 #import "UIImageCrop.h"
-#import "Draggable.h"
 #import "RWBlurPopover.h"
 
 
@@ -363,11 +362,6 @@
                 profileImgView.hidden = NO;
             });
         }];
-//        UIImageView *dragger = [[Draggable alloc] initWithFrame:CGRectMake(profileImgView.frame.origin.x, profileImgView.frame.origin.y + 64, profileImgView.frame.size.width, profileImgView.frame.size.height)];
-//        [dragger setImage:profileImgView.image];
-//        [dragger setUserInteractionEnabled:YES];
-//        dragger.exclusiveTouch = YES;
-//        [self.view addSubview:dragger];
         [_scrollView addSubview:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
@@ -384,7 +378,7 @@
     UIImage *croppedImage = [UIImageCrop croppingImage:imageRightSize toRect:CGRectMake(0, imageView.frame.size.height - 80, self.view.frame.size.width, 80)];
     UIImageView *croppedImageView = [[UIImageView alloc] initWithImage:croppedImage];
     croppedImageView.frame = CGRectMake(0, imageView.frame.size.height - 80, imageView.frame.size.width, 80);
-    croppedImageView = [UIImageCrop blurImageView:croppedImageView];
+    [UIImageCrop blurImageView:croppedImageView];
     [imageView addSubview:croppedImageView];
 }
 

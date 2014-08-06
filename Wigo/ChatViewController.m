@@ -206,7 +206,7 @@
         lastMessageLabel.textColor = RGB(150, 150, 150);
         lastMessageLabel.text = [message messageString];
         [lastMessageImageView addSubview:lastMessageLabel];
-        lastMessageImageView = [UIImageCrop blurImageView:lastMessageImageView withRadius:3.0f];
+        [UIImageCrop blurImageView:lastMessageImageView withRadius:3.0f];
         [lastMessageLabel removeFromSuperview];
     }
     else {

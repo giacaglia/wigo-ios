@@ -165,8 +165,6 @@
 		E9A31E651982B965008A711B /* WigoSearchBarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */; };
 		E9A31E69198412A8008A711B /* FXBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E68198412A8008A711B /* FXBlurView.m */; };
 		E9A31E6A198412A8008A711B /* FXBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E68198412A8008A711B /* FXBlurView.m */; };
-		E9A31E6D19854AC5008A711B /* Draggable.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E6C19854AC5008A711B /* Draggable.m */; };
-		E9A31E6E19854AC5008A711B /* Draggable.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E6C19854AC5008A711B /* Draggable.m */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
 		E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */; };
 		E9AAAFBC193CBE810069F700 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBB193CBE810069F700 /* NotificationsViewController.m */; };
@@ -335,8 +333,6 @@
 		E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoSearchBarDelegate.m; sourceTree = "<group>"; };
 		E9A31E67198412A8008A711B /* FXBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FXBlurView.h; sourceTree = "<group>"; };
 		E9A31E68198412A8008A711B /* FXBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FXBlurView.m; sourceTree = "<group>"; };
-		E9A31E6B19854AC5008A711B /* Draggable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Draggable.h; sourceTree = "<group>"; };
-		E9A31E6C19854AC5008A711B /* Draggable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Draggable.m; sourceTree = "<group>"; };
 		E9A50CFB19350F13009B73EA /* ConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationViewController.h; sourceTree = "<group>"; };
 		E9A50CFC19350F13009B73EA /* ConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationViewController.m; sourceTree = "<group>"; };
 		E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
@@ -659,18 +655,8 @@
 				E9CD47151948E41A00AEA17D /* ViewExtensions */,
 				E9681C6C194F7C1000182E0E /* Objects */,
 				C12A11021978788000D53B1C /* Categories */,
-				E93030C119855AEE00FFC4F8 /* Draggable */,
 			);
 			name = Library;
-			sourceTree = "<group>";
-		};
-		E93030C119855AEE00FFC4F8 /* Draggable */ = {
-			isa = PBXGroup;
-			children = (
-				E9A31E6B19854AC5008A711B /* Draggable.h */,
-				E9A31E6C19854AC5008A711B /* Draggable.m */,
-			);
-			name = Draggable;
 			sourceTree = "<group>";
 		};
 		E94A2850196C6BC50027D3BA /* FacebookIntegration */ = {
@@ -1099,7 +1085,6 @@
 				E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */,
 				C12A110819787BE700D53B1C /* User.m in Sources */,
 				C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */,
-				E9A31E6E19854AC5008A711B /* Draggable.m in Sources */,
 				C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */,
 				C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */,
 				C12A110C19787BE700D53B1C /* WiGoSpinnerView.m in Sources */,
@@ -1168,7 +1153,6 @@
 			files = (
 				E9681C62194F745300182E0E /* User.m in Sources */,
 				E9CD47141948E27500AEA17D /* UIImageViewShake.m in Sources */,
-				E9A31E6D19854AC5008A711B /* Draggable.m in Sources */,
 				E921D6261923967D00361247 /* AppDelegate.m in Sources */,
 				E900C2BC1961EADE00A01F50 /* SDWebImageManager.m in Sources */,
 				E9DE130C196F06B100AFA05A /* WiGoSpinnerView.m in Sources */,

@@ -10,8 +10,8 @@
 
 @interface UIImageCrop : UIImage
 
-+ (UIImageView *)blurImageView:(UIImageView *)profileImgView withRadius:(float)radius;
-+ (UIImageView *)blurImageView:(UIImageView *)profileImgView;
++ (void)blurImageView:(UIImageView *)profileImgView withRadius:(float)radius;
++ (void)blurImageView:(UIImageView *)profileImgView;
 + (UIImage *)croppingImage:(UIImage *)imageToCrop toRect:(CGRect)rect;
 + (UIImage*)image:(UIImage*)image scaledToSize:(CGSize)newSize;
 + (UIImage*)imageByScalingAndCroppingForSize:(CGSize)targetSize andImage:(UIImage *)sourceImage;

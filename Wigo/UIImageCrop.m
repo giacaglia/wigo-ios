@@ -18,7 +18,7 @@
     return newImage;
 }
 
-+ (UIImageView *)blurImageView:(UIImageView *)profileImgView withRadius:(float)radius {
++ (void)blurImageView:(UIImageView *)profileImgView withRadius:(float)radius {
     UIGraphicsBeginImageContext(profileImgView.bounds.size);
     [profileImgView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewImg = UIGraphicsGetImageFromCurrentImageContext();
@@ -44,11 +44,10 @@
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:profileImgView.bounds];
     imgView.image = outputImg;
     [profileImgView addSubview:imgView];
-    return profileImgView;
 }
 
-+ (UIImageView *)blurImageView:(UIImageView *)profileImgView {
-    return [UIImageCrop blurImageView:profileImgView withRadius:10.0f];
++ (void)blurImageView:(UIImageView *)profileImgView {
+    [UIImageCrop blurImageView:profileImgView withRadius:10.0f];
 }
 
 + (UIImage *)croppingImage:(UIImage *)imageToCrop toRect:(CGRect)rect
