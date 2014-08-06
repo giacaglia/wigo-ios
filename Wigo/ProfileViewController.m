@@ -440,7 +440,7 @@
             _pageControl.center = CGPointMake(73, 25);
         }
         else {
-            _pageControl.center = CGPointMake(65, 25);
+            _pageControl.center = CGPointMake(73, 25);
         }
 
         self.navigationController.navigationBar.barTintColor = RGB(23, 23, 23);
