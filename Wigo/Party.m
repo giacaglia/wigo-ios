@@ -94,6 +94,15 @@
     }
 }
 
+- (void)insertObject:(NSDictionary *)object inObjectArrayAtIndex:(NSUInteger)index {
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        [self.objectArray insertObject:object atIndex:index];
+    }
+    else {
+        NSLog(@"Error adding object: %@", object);
+    }
+}
+
 - (void)removeObjectAtIndex:(NSUInteger)index {
     [self.objectArray removeObjectAtIndex:index];
 }

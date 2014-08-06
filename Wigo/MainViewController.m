@@ -72,13 +72,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
 
     [FBAppEvents logEvent:FBAppEventNameActivatedApp];
     [self initializeFlashScreen];
     _spinnerAtCenter = YES;
     _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
     
-    [[UITabBar appearance] setSelectedImageTintColor:[UIColor clearColor]];
+//    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+//                             forBarMetrics:UIBarMetricsDefault];
+//    self.navigationController.navigationBar.shadowImage = [UIImage new];
+//    
+//    UIView *transparentView = [[UIView alloc] initWithFrame: CGRectMake(0, -20, 320, 64)];
+//    transparentView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent: 0.95f];
+//    [self.navigationController.navigationBar.layer addSublayer: transparentView.layer];
+    
+//    [[UITabBar appearance] setSelectedImageTintColor:[FontProperties getOrangeColor]];
     [self initializeWhoView];
     [self initializeNotificationObservers];
 }
@@ -378,7 +387,6 @@
         gifGoOut.frame = goOutButton.frame;
         [goOutButton addSubview:gifGoOut];
         [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
-//        self.navigationItem.title = @"GO OUT";
         self.navigationItem.titleView = goOutButton;
     }
 }

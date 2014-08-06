@@ -354,11 +354,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     frame.size.height += kbFrame.size.height * (up ? -1 : 1);
     NSTimeInterval duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationCurve animationCurve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    _scrollView.frame = frame;
     [UIView animateWithDuration:duration
                           delay:0
                         options:animationOptionsWithCurve(animationCurve)
                      animations:^{
-                         _scrollView.frame = frame;
                          CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
                          [_scrollView setContentOffset:bottomOffset animated:NO];
                      }

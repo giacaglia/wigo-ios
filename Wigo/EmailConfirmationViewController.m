@@ -9,6 +9,7 @@
 #import "EmailConfirmationViewController.h"
 #import "Globals.h"
 
+UITextField *emailTextField;
 
 @implementation EmailConfirmationViewController
 
@@ -31,6 +32,7 @@
     [self initializeEmailConfirmationLabel];
     [self initializeFaceAndNameLabel];
     [self initializeEmailLabel];
+    [self initializeOtherButtons];
 //    [self initializeNumberOfPeopleLabel];
 }
 
@@ -58,6 +60,7 @@
     [faceImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;
+    faceImageView.layer.borderColor = [UIColor clearColor].CGColor;
     faceImageView.backgroundColor = [UIColor whiteColor];
     faceImageView.layer.masksToBounds = YES;
     [faceAndNameView addSubview:faceImageView];
@@ -84,12 +87,20 @@
     justSentLabel.font = [FontProperties getSmallFont];
     [self.view addSubview:justSentLabel];
     
-    UILabel *emailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 285, self.view.frame.size.width, 30)];
-    emailLabel.textAlignment = NSTextAlignmentCenter;
-    emailLabel.text = [[Profile user] email];
-    emailLabel.font = [FontProperties getSmallFont];
-    emailLabel.textColor = [FontProperties getOrangeColor];
-    [self.view addSubview:emailLabel];
+    emailTextField = [[UITextField alloc] initWithFrame:CGRectMake(40, 285, self.view.frame.size.width - 80, 30)];
+    emailTextField.textAlignment = NSTextAlignmentCenter;
+    emailTextField.text = [[Profile user] email];
+    emailTextField.font = [FontProperties getSmallFont];
+    emailTextField.textColor = [FontProperties getOrangeColor];
+    emailTextField.enabled = NO;
+    emailTextField.layer.borderColor = [UIColor clearColor].CGColor;
+    emailTextField.layer.borderWidth = 1;
+    emailTextField.layer.cornerRadius = 5;
+    emailTextField.tintColor = [FontProperties getOrangeColor];
+    emailTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    emailTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    emailTextField.delegate = self;
+    [self.view addSubview:emailTextField];
 
 //    UILabel *holyCrossLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 430, self.view.frame.size.width, 30)];
 //    holyCrossLabel.textAlignment = NSTextAlignmentCenter;
@@ -97,6 +108,31 @@
 //    holyCrossLabel.font = [FontProperties getSmallFont];
 //    holyCrossLabel.textColor = [UIColor grayColor];
 //    [self.view addSubview:holyCrossLabel];
+}
+
+- (void)initializeOtherButtons {
+    UIButton *resendButton = [[UIButton alloc] init];
+    resendButton.frame = CGRectMake(22, 350, self.view.frame.size.width*0.4, 47);
+    resendButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
+    [resendButton setTitle:@"Resend" forState:UIControlStateNormal];
+    [resendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    resendButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    resendButton.layer.borderWidth = 3;
+    resendButton.layer.cornerRadius = 5;
+    [resendButton addTarget:self action:@selector(resendEmail) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:resendButton];
+
+    
+    UIButton *changeButton = [[UIButton alloc] init];
+    changeButton.frame = CGRectMake(22 + self.view.frame.size.width*0.4 + 20, 350, self.view.frame.size.width*0.4, 47);
+    changeButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
+    [changeButton setTitle:@"Change Email" forState:UIControlStateNormal];
+    [changeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    changeButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    changeButton.layer.borderWidth = 3;
+    changeButton.layer.cornerRadius = 5;
+    [changeButton addTarget:self action:@selector(changeEmailPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:changeButton];
 }
 
 - (void) initializeNumberOfPeopleLabel {
@@ -135,6 +171,45 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
         }
     }
+}
+
+- (void)resendEmail {
+//    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+//    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [Network sendAsynchronousHTTPMethod:GET
+                            withAPIName:@"verification/resend"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//                                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+//                                [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+                                if (!error) {
+                                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Resent"
+                                                                                        message:@"We just resent you a new email."
+                                                                                       delegate:nil
+                                                                              cancelButtonTitle:@"OK"
+                                                                              otherButtonTitles:nil];
+                                    [alertView show];
+                                }
+    }];
+}
+
+- (void)changeEmailPressed {
+    emailTextField.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    emailTextField.enabled = YES;
+    [emailTextField becomeFirstResponder];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    emailTextField.layer.borderColor = [UIColor clearColor].CGColor;
+    emailTextField.enabled = NO;
+    [textField resignFirstResponder];
+    [self changeEmail:textField.text];
+    return YES;
+}
+
+- (void)changeEmail:(NSString *)emailString {
+    User *profileUser = [Profile user];
+    [profileUser setEmail:emailString];
+    [profileUser saveKeyAsynchronously:@"email"];
 }
 
 

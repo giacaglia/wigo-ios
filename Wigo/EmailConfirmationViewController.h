@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "LockScreenViewController.h"
 
-@interface EmailConfirmationViewController : UIViewController
+@interface EmailConfirmationViewController : UIViewController <UITextFieldDelegate>
 
 @property UILabel *numberOfPeopleLabel;
 @property LockScreenViewController *lockScreenViewController;
