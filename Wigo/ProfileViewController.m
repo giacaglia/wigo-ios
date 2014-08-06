@@ -574,7 +574,7 @@
         _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
     }
     
-    _lastLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _nameOfPersonLabel.frame.size.width, 1)];
+    _lastLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 1)];
     _lastLineView.backgroundColor = [FontProperties getOrangeColor];
     _lastLineView.hidden = YES;
     [_nameOfPersonBackground addSubview:_lastLineView];
