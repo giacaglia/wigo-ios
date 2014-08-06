@@ -174,21 +174,23 @@ UITextField *emailTextField;
 }
 
 - (void)resendEmail {
-//    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-//    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [Network sendAsynchronousHTTPMethod:GET
                             withAPIName:@"verification/resend"
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-//                                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-//                                [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-                                if (!error) {
-                                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Resent"
-                                                                                        message:@"We just resent you a new email."
-                                                                                       delegate:nil
-                                                                              cancelButtonTitle:@"OK"
-                                                                              otherButtonTitles:nil];
-                                    [alertView show];
-                                }
+                                dispatch_async(dispatch_get_main_queue(), ^(void){
+                                    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                                    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+                                    if (!error) {
+                                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Resent"
+                                                                                            message:@"We just resent you a new email."
+                                                                                           delegate:nil
+                                                                                  cancelButtonTitle:@"OK"
+                                                                                  otherButtonTitles:nil];
+                                        [alertView show];
+                                    }
+                                });
     }];
 }
 

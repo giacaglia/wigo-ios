@@ -20,6 +20,7 @@
 - (NSString *)timeOfCreation;
 - (void)setTimeOfCreation:(NSString *)timeOfCreation;
 - (void)save;
+- (void)saveAsynchronously;
 
 - (User *)otherUser;
 + (NSString *)randomStringWithLength:(int)len;

@@ -181,8 +181,8 @@
 
 
 - (void) initializeNotificationsSection {
-    UILabel *notificationsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 280 + 15, 150, 20)];
-    notificationsLabel.text = @"NOTIFICATIONS";
+    UILabel *notificationsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 280 + 15, 250, 20)];
+    notificationsLabel.text = @"PUSH NOTIFICATIONS";
     notificationsLabel.textAlignment = NSTextAlignmentLeft;
     notificationsLabel.font = [FontProperties getNormalFont];
     [_scrollView addSubview:notificationsLabel];
@@ -197,12 +197,9 @@
     shoulderTapLabel.font = [FontProperties getNormalFont];
     [shoulderTapView addSubview:shoulderTapLabel];
     
-
-    UIButton *phoneButton = [[UIButton alloc] initWithFrame:CGRectMake(285, 10, 16, 30)];
-    [phoneButton addTarget:self action:@selector(phonePressed:) forControlEvents:UIControlEventTouchDown];
-
-    [phoneButton setImage:[UIImage imageNamed:@"phoneFilled"] forState:UIControlStateNormal];
-    [shoulderTapView addSubview:phoneButton];
+    UISwitch *tapsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(265, 10, 16, 30)];
+    tapsSwitch.on = YES;
+    [shoulderTapView addSubview:tapsSwitch];
     
     UIView *favoritesView = [[UIView alloc] initWithFrame:CGRectMake(0, 375, self.view.frame.size.width, 50)];
     favoritesView.backgroundColor = [UIColor whiteColor];
@@ -214,25 +211,12 @@
     favoritesLabel.font = [FontProperties getNormalFont];
     [favoritesView addSubview:favoritesLabel];
     
-    UIButton *phoneButtons2 = [[UIButton alloc] initWithFrame:CGRectMake(285, 10, 16, 30)];
-    [phoneButtons2 setImage:[UIImage imageNamed:@"phoneFilled"] forState:UIControlStateNormal];
-    [phoneButtons2 addTarget:self action:@selector(phonePressed:) forControlEvents:UIControlEventTouchDown];
-    [favoritesView addSubview:phoneButtons2];
+    UISwitch *favoritesSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(265, 10, 16, 30)];
+    favoritesSwitch.on = YES;
+    [favoritesView addSubview:favoritesSwitch];
 }
 
 
-- (void)phonePressed:(id)sender {
-    UIButton *buttonPressed = (UIButton *)sender;
-    if (buttonPressed.tag == -100) {
-        [buttonPressed setImage:[UIImage imageNamed:@"phoneFilled"] forState:UIControlStateNormal];
-        buttonPressed.tag = 100;
-    }
-    else {
-        buttonPressed.tintColor = [UIColor grayColor];
-        [buttonPressed setImage:[UIImage imageNamed:@"phoneUnfilled"] forState:UIControlStateNormal];
-        buttonPressed.tag = -100;
-    }
-}
 
 - (void) initializePrivacySection {
     UILabel *privacyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 400 + 40, 100, 20)];

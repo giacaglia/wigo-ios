@@ -310,14 +310,15 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         [message setTimeOfCreation:[dateFormatter stringFromDate:[NSDate date]]];
         [message setToUser:[self.user objectForKey:@"id"]];
         [self addMessageFromSender:message];
-        [message save];
-        [self updateLastMessagesRead:message];
+        [message saveAsynchronously];
+//        [self updateLastMessagesRead:message];
         _messageTextView.text = @"";
+        [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [self textView:_messageTextView shouldChangeTextInRange:NSMakeRange(0, [_messageTextView.text length]) replacementText:@""];
 
     }
-    [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:YES];
-    [self dismissKeyboard];
+    CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
+    [_scrollView setContentOffset:bottomOffset animated:YES];
 }
 
 - (void)updateLastMessagesRead:(Message *)message {
@@ -394,6 +395,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 # pragma mark - UITextView Delegate.
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if ([text length] != 0)
+        [_sendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    else
+        [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+
     CGFloat requiredWidth = [textView sizeThatFits:CGSizeMake(HUGE_VALF, HUGE_VALF)].width;
     int numberOfRows = (int)(requiredWidth/textView.frame.size.width) + 1;
     _chatTextFieldWrapper.frame = CGRectMake(_chatTextFieldWrapper.frame.origin.x, _frameOfChatField.origin.y - 30*(numberOfRows - 1), _chatTextFieldWrapper.frame.size.width, _frameOfChatField.size.height + 30*(numberOfRows -1));

@@ -9,6 +9,7 @@
 #import "Message.h"
 #import "Profile.h"
 #import "Time.h"
+#import "Network.h"
 
 @implementation Message{
     NSMutableDictionary* _proxy;
@@ -175,5 +176,15 @@
     }
 }
 
+- (void)saveAsynchronously {
+    
+    [Network sendAsynchronousHTTPMethod:POST
+                            withAPIName:@"messages/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:_proxy
+     ];
+    
+                       
+}
 
 @end
