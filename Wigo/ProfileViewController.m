@@ -431,9 +431,9 @@
 
 
 - (void)chooseImage {
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:YES];
     [self setNeedsStatusBarAppearanceUpdate];
     if (!_isSeingImages) {
+        self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
         _isSeingImages = YES;
         _lastLineView.hidden = NO;
         if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
@@ -472,6 +472,7 @@
          ];
     }
     else {
+        self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
         _tapScrollView.enabled = YES;
         _isSeingImages = NO;
         _lastLineView.hidden = YES;
