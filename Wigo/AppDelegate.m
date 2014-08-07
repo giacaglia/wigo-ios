@@ -19,6 +19,8 @@ NSNumber *indexOfSelectedTab;
 NSNumber *numberOfNewMessages;
 NSNumber *numberOfNewNotifications;
 BOOL wasAtBackground;
+NSDate *firstLoggedTime;
+
 
 @implementation AppDelegate
 
@@ -55,6 +57,7 @@ BOOL wasAtBackground;
     [self addTabBarDelegate];
     [self changeTabBarToOrange];
     [self addNotificationHandlers];
+    [self logFirstTimeLoading];
 
     return YES;
 }
@@ -80,6 +83,7 @@ BOOL wasAtBackground;
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     wasAtBackground = YES;
     [self reloadTabBarNotifications];
+    [self updateGoingOutIfItsAnotherDay];
     [[LocalyticsSession shared] resume];
     [[LocalyticsSession shared] upload];
 }
@@ -342,6 +346,44 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     }
 }
 
+#pragma mark - Save the time
+
+
+- (void) logFirstTimeLoading {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *utcTimeString = [dateFormatter stringFromDate:[NSDate date]];
+    
+    NSDateFormatter *utcDateFormat = [[NSDateFormatter alloc] init];
+    [utcDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *dateInUTC = [utcDateFormat dateFromString:utcTimeString];
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    firstLoggedTime = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
+}
+
+- (void)updateGoingOutIfItsAnotherDay {
+    if (firstLoggedTime) {
+        NSDateComponents *firstLoggedDay = [[NSCalendar currentCalendar] components:NSDayCalendarUnit|NSHourCalendarUnit fromDate:firstLoggedTime];
+        NSDateComponents *nowTime = [[NSCalendar currentCalendar] components: NSDayCalendarUnit|NSHourCalendarUnit fromDate:[NSDate date]];
+        if ([nowTime day] == [firstLoggedDay day]) {
+            if ([firstLoggedDay hour] < 6 && [nowTime hour] >= 6) [self reloadAllData];
+        }
+        else {
+            [self reloadAllData];
+        }
+    }
+    
+}
+
+- (void)reloadAllData {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchFollowing" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
+    [self logFirstTimeLoading];
+}
 
 
 @end

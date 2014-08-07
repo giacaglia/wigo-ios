@@ -48,7 +48,6 @@
 @property BOOL fetchingFirstPage;
 @property BOOL fetchinfUserInfo;
 
-@property NSDate *firstLoggedTime;
 @end
 
 @implementation MainViewController
@@ -66,7 +65,6 @@
     self.tabBarController.tabBar.hidden = NO;
     if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
     if (!_fetchinfUserInfo) [self fetchUserInfo];
-    [self updateGoingOutIfItsAnotherDay];
 }
 
 - (void)viewDidLoad
@@ -100,7 +98,6 @@
     [self fetchUserInfo];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
-    [self logFirstTimeLoading];
 }
 
 #pragma mark - Network function
@@ -169,6 +166,20 @@
     }];
 }
 
+
+- (void) fetchIsThereNewPerson {
+    Party *everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    [Network queryAsynchronousAPI:@"users/?ordering=-id&limit=1" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+        [everyoneParty addObjectsFromArray:arrayOfUsers];
+        [Profile setEveryoneParty:everyoneParty];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+//            _contentParty = _everyoneParty;
+//            [_tableViewOfPeople reloadData];
+        });
+    }];
+}
+
 #pragma mark - viewDidLoad initializations
 
 - (void)initializeFlashScreen {
@@ -180,10 +191,30 @@
 
 
 - (void)initializeNotificationObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadViewAfterSigningUser) name:@"loadViewAfterSigningUser" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageFollowing) name:@"fetchFollowing" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateViewNotGoingOut)
+                                                 name:@"updateViewNotGoingOut"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(loadViewAfterSigningUser)
+                                                 name:@"loadViewAfterSigningUser"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fetchFirstPageFollowing)
+                                                 name:@"fetchFollowing"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(scrollUp)
+                                                 name:@"scrollUp"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fetchUserInfo)
+                                                 name:@"fetchUserInfo"
+                                               object:nil];
 }
 
 - (void)scrollUp {
@@ -733,35 +764,8 @@
 
 #pragma mark - Logging time
 
-- (void) logFirstTimeLoading {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSString *utcTimeString = [dateFormatter stringFromDate:[NSDate date]];
-                                 
-    NSDateFormatter *utcDateFormat = [[NSDateFormatter alloc] init];
-    [utcDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *dateInUTC = [utcDateFormat dateFromString:utcTimeString];
-    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
-    _firstLoggedTime = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
-}
 
-- (void)updateGoingOutIfItsAnotherDay {
-    if (_firstLoggedTime) {
-        NSDateComponents *firstLoggedDay = [[NSCalendar currentCalendar] components:NSDayCalendarUnit|NSHourCalendarUnit fromDate:_firstLoggedTime];
-        NSDateComponents *nowTime = [[NSCalendar currentCalendar] components: NSDayCalendarUnit|NSHourCalendarUnit fromDate:[NSDate date]];
-        if ([nowTime day] == [firstLoggedDay day]) {
-            if ([firstLoggedDay hour] < 6 && [nowTime hour] >= 6) {
-                [self fetchUserInfo];
-            }
-        }
-        else {
-            [self fetchUserInfo];
-        }
-    }
 
-}
 
 
 

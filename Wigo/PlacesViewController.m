@@ -113,12 +113,7 @@
     self.navigationItem.leftBarButtonItem = profileBarButton;
     self.navigationItem.rightBarButtonItem = nil;
     
-    if ([[Profile user] isGoingOut]) {
-        [self updatedTitleViewForGoingOut];
-    }
-    else {
-        [self updateTitleViewForNotGoingOut];
-    }
+    [self updatedTitleView];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
 }
 
@@ -127,6 +122,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseEvent:) name:@"chooseEvent" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchEventsFirstPage) name:@"fetchEvents" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchUserInfo) name:@"fetchUserInfo" object:nil];
 
 }
 
@@ -140,14 +137,21 @@
 }
 
 - (void) updateViewNotGoingOut {
-    [self updateTitleViewForNotGoingOut];
+    [[Profile user] setIsGoingOut:NO];
+    [self updatedTitleView];
     [self fetchEventsFirstPage];
 }
 
-- (void) updatedTitleViewForGoingOut {
-    _ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
-    [_ungoOutButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-    self.navigationItem.titleView = _ungoOutButton;
+- (void) updatedTitleView {
+    if ([[Profile user] isGoingOut]) {
+        _ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
+        [_ungoOutButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+        self.navigationItem.titleView = _ungoOutButton;
+    }
+    else {
+        self.navigationItem.titleView = nil;
+        self.navigationItem.title = @"Where";
+    }
 }
 
 - (void)initializeTapHandler {
@@ -206,7 +210,7 @@
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
     [profileUser setAttendingEventID:eventID];
-    [self updatedTitleViewForGoingOut];
+    [self updatedTitleView];
     [[Profile user] setEventID:eventID];
     [Network postGoingToEventNumber:[eventID intValue]];
     [self fetchEventsFirstPage];
@@ -355,7 +359,7 @@
         User *profileUser = [Profile user];
         [profileUser setIsGoingOut:YES];
         [profileUser setAttendingEventID:eventID];
-        [self updatedTitleViewForGoingOut];
+        [self updatedTitleView];
         [self fetchEventsFirstPage];
     }
 }
@@ -677,6 +681,18 @@
         });
     }
 }
+
+- (void) fetchUserInfo {
+    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        User *user = [[User alloc] initWithDictionary:jsonResponse];
+        User *profileUser = [Profile user];
+        [profileUser setIsGoingOut:[user isGoingOut]];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [self updatedTitleView];
+        });
+    }];
+}
+
 
 #pragma mark - Refresh Control
 
