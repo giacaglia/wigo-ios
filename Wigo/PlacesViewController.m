@@ -255,10 +255,12 @@
     int eventIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"eventIndex"] intValue];
     int userIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"userIndex"] intValue];
     Party *partyUser  = [_partyUserArray objectAtIndex:eventIndex];
-    User *user = [[partyUser getObjectArray] objectAtIndex:userIndex];
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-    [self.navigationController pushViewController:self.profileViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
+    if ([[partyUser getObjectArray] count] != 0 ){
+        User *user = [[partyUser getObjectArray] objectAtIndex:userIndex];
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:self.profileViewController animated:YES];
+        self.tabBarController.tabBar.hidden = YES;
+    }
 }
 
 - (void)choseProfile:(id)sender {

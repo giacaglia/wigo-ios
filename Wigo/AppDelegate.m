@@ -334,7 +334,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     }];
 }
 
-
 - (void)reloadColorWhenTabBarIsMessage {
     if ([[self.notificationDictionary allKeys] containsObject:@"2"]) {
         UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
