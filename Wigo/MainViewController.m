@@ -278,8 +278,12 @@
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.leftBarButtonItem = profileBarButton;
     
-    UIButtonAligned *rightButton = [[UIButtonAligned alloc] initWithFrame: CGRectMake(0, 0, 31, 22) andType:@3];
-    [rightButton setBackgroundImage:[UIImage imageNamed:@"plusPerson"] forState:UIControlStateNormal];
+    UIButtonAligned *rightButton = [[UIButtonAligned alloc] initWithFrame: CGRectMake(0, 0, 30, 30) andType:@3];
+    NSURL *url = [[NSBundle mainBundle] URLForResource:@"glowing" withExtension:@"gif"];
+    FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
+    FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
+    imageView.animatedImage = image;
+    [rightButton addSubview:imageView];
     [rightButton addTarget:self action:@selector(followPressed)
           forControlEvents:UIControlEventTouchUpInside];
     [rightButton setShowsTouchWhenHighlighted:YES];
@@ -388,9 +392,11 @@
     }
     else {
         UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 200, 30)];
-        UIImageView *gifGoOut = [self gifGoOut];
-        gifGoOut.frame = goOutButton.frame;
-        [goOutButton addSubview:gifGoOut];
+        NSURL *url = [[NSBundle mainBundle] URLForResource:@"go-out" withExtension:@"gif"];
+        FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
+        FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 200, 30)];
+        imageView.animatedImage = image;
+        [goOutButton addSubview:imageView];
         [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.titleView = goOutButton;
     }

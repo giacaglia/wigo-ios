@@ -10,6 +10,7 @@
 #import "Globals.h"
 #import "UIImageViewShake.h"
 #import "UIButtonAligned.h"
+#import "ProfileViewController.h"
 
 @interface TapViewController ()
 
@@ -74,12 +75,10 @@
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = 4;
-    layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 30);
-    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 30 , self.view.frame.size.width, self.view.frame.size.height - 30) collectionViewLayout:layout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64) collectionViewLayout:layout];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:collectionViewCellIdentifier];
-    [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier];
     _collectionView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_collectionView];
 }
@@ -95,11 +94,9 @@
     NSArray *userArray;
     if ([[_tapParty getObjectArray] count] == 0) return cell;
     userArray = [_tapParty getObjectArray];
-
-    int tag = (int)[indexPath row];
-   
-    User *user = [userArray objectAtIndex:[indexPath row]];
     
+    User *user = [userArray objectAtIndex:[indexPath row]];
+
     UIImageView *imgView = [[UIImageView alloc] init];
     imgView.contentMode = UIViewContentModeScaleAspectFill;
     imgView.clipsToBounds = YES;
@@ -107,11 +104,13 @@
     imgView.frame = CGRectMake(0, 0, cell.contentView.frame.size.width, cell.contentView.frame.size.height);
     imgView.userInteractionEnabled = YES;
     imgView.alpha = 1.0;
-    imgView.tag = tag;
+    imgView.tag = [indexPath row];
     [cell.contentView addSubview:imgView];
     
     UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, imgView.frame.size.height * 0.5, imgView.frame.size.width, imgView.frame.size.height * 0.5)];
     [imgView bringSubviewToFront:profileButton];
+    profileButton.tag = [indexPath row];
+    [profileButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     [imgView addSubview:profileButton];
     
     UILabel *profileName = [[UILabel alloc] init];
@@ -135,7 +134,7 @@
     [imgView bringSubviewToFront:tapButton];
     [imgView addSubview:tapButton];
     tapButton.enabled = [[Profile user] isGoingOut] ? YES : NO;
-    tapButton.tag = tag;
+    tapButton.tag = [indexPath row];
     
     UIImageViewShake *tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(imgView.frame.size.width - 30 - 5, 5, 30, 30)];
     tappedImageView.tintColor = [FontProperties getOrangeColor];
@@ -154,6 +153,12 @@
     [user setObject:tappedImageView forKey:@"tappedImageView"];
     cell.contentView.hidden = NO;
     return cell;
+}
+
+- (void)profileSegue:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    User *user = [[_tapParty getObjectArray] objectAtIndex:buttonSender.tag];
+    [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
 }
 
 - (void) selectedProfile:(id)sender {
@@ -231,10 +236,6 @@
             }
             [_tapParty addObjectsFromArray:arrayOfUsers];
             [_collectionView reloadData];
-//            if ([[jsonResponse allKeys] containsObject:@"total"]) {
-//                NSNumber *totalNumberOfPeople = [jsonResponse objectForKey:@"total"];
-//                [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", [totalNumberOfPeople intValue]] forState:UIControlStateNormal];
-//            }
         });
     }];
 }

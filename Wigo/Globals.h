@@ -19,10 +19,14 @@
 #import "Time.h"
 
 #import "FontProperties.h"
-#import "WiGoSpinnerView.h"
+
 
 #import "LocalyticsSession.h"
 #import "EventAnalytics.h"
+
+#import "WiGoSpinnerView.h"
+#import "FLAnimatedImage.h"
+#import "FLAnimatedImageView.h"
 
 static NSString * const collectionViewCellIdentifier = @"CollectionViewCellIdentifier";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";
