@@ -773,7 +773,12 @@
     [self.view addSubview:orangeTapImgView];
 
     UILabel *tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(100 - 70, 100 - 60, 140, 120)];
-    tapLabel.text = @"TAP PEOPLE YOU WANT TO SEE OUT";
+    NSString *text = @"TAP PEOPLE YOU WANT TO SEE OUT";
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
+    NSMutableParagraphStyle *paragrahStyle = [[NSMutableParagraphStyle alloc] init];
+    [paragrahStyle setLineSpacing:20];
+    [attributedString addAttribute:NSParagraphStyleAttributeName value:paragrahStyle range:NSMakeRange(0, [text length])];
+    tapLabel.attributedText = attributedString;
     tapLabel.textAlignment = NSTextAlignmentCenter;
     tapLabel.numberOfLines = 0;
     tapLabel.lineBreakMode = NSLineBreakByWordWrapping;
