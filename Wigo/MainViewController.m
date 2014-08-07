@@ -762,13 +762,6 @@
     }
 }
 
-#pragma mark - Logging time
-
-
-
-
-
-
 #pragma mark - Animation
 
 - (void) animationShowingTapIcons {
@@ -816,76 +809,77 @@
     for (UIImageViewShake *tappedImageView in tapArray) {
         CGRect previousFrame = tappedImageView.frame;
         [tapFrameArray addObject:[NSValue valueWithCGRect:previousFrame]];
-        tappedImageView.center = CGPointMake(self.view.center.x - tappedImageView.superview.frame.origin.x + _collectionView.contentOffset.x, self.view.center.y - tappedImageView.superview.frame.origin.y + _collectionView.contentOffset.y);
+        CGPoint centerFrame = [self.view convertPoint:self.view.center toView:tappedImageView.superview];
+        tappedImageView.center = centerFrame;
+        tappedImageView.hidden = YES;
     }
 
 
     [UIView animateWithDuration:0.3
-                     animations:^{
-                         orangeTapImgView.alpha = 0.7;
-                         orangeTapImgView.frame = CGRectMake(self.view.center.x - 2.5, self.view.center.y - 2.5, 5, 5);
-                     }
-                     completion:^(BOOL finished) {
-                         [UIView animateWithDuration:0.3
-                                          animations:^{
-                                              orangeTapImgView.alpha = 0.85;
-                                              orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y  - 125, 250, 250);
-                                          }
-                                          completion:^(BOOL finished) {
-                                              [UIView animateWithDuration:0.3
-                                                               animations:^{
-                                                                   orangeTapImgView.frame = CGRectMake(self.view.center.x - 100, self.view.center.y  - 100, 200, 200);
-                                                               }
-                                                               completion:^(BOOL finished) {
-                                                                   [UIView animateWithDuration:0.3
-                                                                                    animations:^{
-                                                                                        orangeTapImgView.alpha = 1.0;
-                                                                                        tapLabel.alpha = 1.0;
-                                                                                    }
-                                                                                    completion:^(BOOL finished) {
-                                                                                        [UIView animateWithDuration:1.6 delay:0.4 options:UIViewAnimationOptionCurveEaseIn
-                                                                                                         animations:^{
-                                                                                                             orangeTapImgView.alpha = 0.5;
-                                                                                                             orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y - 125, 250, 250);
-                                                                                                             tapLabel.frame = CGRectMake(125 - 70, 125 - 60, 140, 120);
-                                                                                                         }
-                                                                                                         completion:^(BOOL finished) {
-                                                                                                             [UIView animateWithDuration:0.4
-                                                                                                                              animations:^{
-                                                                                                                                  orangeTapImgView.alpha = 0.2;
-                                                                                                                                  orangeTapImgView.frame = CGRectMake(self.view.center.x - 10, self.view.center.y - 10, 10, 10);
-                                                                                                                                  tapLabel.frame = CGRectMake(10 - 5, 10 - 4, 5, 4);
-                                                                                                                              }
-                                                                                                                              completion:^(BOOL finished){
-                                                                                                                                  [UIView animateWithDuration:0.1
-                                                                                                                                                   animations:^{
-                                                                                                                                                       orangeTapImgView.alpha = 0;
-                                                                                                                                                       orangeTapImgView.frame = CGRectMake(self.view.center.x - 40, self.view.center.y - 40, 80, 80);
-                                                                                                                                                   }
-                                                                                                                                                   completion:^(BOOL finished) {
-                                                                                                                                                       [UIView animateWithDuration:0.3
-                                                                                                                                                                        animations:^{
-                                                                                                                                                                            for (int i = 0; i <[tapArray count]; i++) {
-                                                                                                                                                                                UIImageViewShake *tappedImageView = [tapArray objectAtIndex:i];
-                                                                                                                                                                                tappedImageView.hidden = NO;
-                                                                                                                                                                                UIButton *tapButton = [tapButtonArray objectAtIndex:i];
-                                                                                                                                                                                tapButton.enabled = YES;
-
-                                                                                                                                                                                CGRect previousFrame = [[tapFrameArray objectAtIndex:i] CGRectValue];
-                                                                                                                                                                                tappedImageView.frame = previousFrame;
-                                                                                                                                                                                [tappedImageView newShake];
-                                                                                                                                                                            }
-                                                                                                                                                                        }
-                                                                                                                                                                        completion:^(BOOL finised) {
-                                                                                                                                                                            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-                                                                                                                                                                        }];
-                                                                                                                                                   }];
-                                                                                                                              }];
-                                                                                                         }];
-                                                                                    }];
-                                                               }];
-                                          }];
-                     }];
+    animations:^{
+        orangeTapImgView.alpha = 0.7;
+        orangeTapImgView.frame = CGRectMake(self.view.center.x - 2.5, self.view.center.y - 2.5, 5, 5);
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.3
+    animations:^{
+        orangeTapImgView.alpha = 0.85;
+        orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y  - 125, 250, 250);
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.3
+    animations:^{
+        orangeTapImgView.frame = CGRectMake(self.view.center.x - 100, self.view.center.y  - 100, 200, 200);
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.1
+    animations:^{
+        orangeTapImgView.alpha = 1.0;
+        tapLabel.alpha = 1.0;
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.5 delay:0.2 options:UIViewAnimationOptionCurveLinear
+    animations:^{
+        orangeTapImgView.alpha = 0.5;
+        orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y - 125, 250, 250);
+        tapLabel.frame = CGRectMake(125 - 70, 125 - 60, 140, 120);
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.1
+    animations:^{
+        orangeTapImgView.alpha = 0.2;
+        orangeTapImgView.frame = CGRectMake(self.view.center.x - 10, self.view.center.y - 10, 10, 10);
+        tapLabel.frame = CGRectMake(10 - 5, 10 - 4, 5, 4);
+    }
+    completion:^(BOOL finished){
+    [UIView animateWithDuration:0.1
+    animations:^{
+        orangeTapImgView.alpha = 0;
+        orangeTapImgView.frame = CGRectMake(self.view.center.x - 40, self.view.center.y - 40, 80, 80);
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.2
+    animations:^{
+        for (int i = 0; i <[tapArray count]; i++) {
+            UIImageViewShake *tappedImageView = [tapArray objectAtIndex:i];
+            tappedImageView.hidden = NO;
+            UIButton *tapButton = [tapButtonArray objectAtIndex:i];
+            tapButton.enabled = YES;
+            CGRect previousFrame = [[tapFrameArray objectAtIndex:i] CGRectValue];
+            tappedImageView.frame = previousFrame;
+            [tappedImageView newShake];
+       }
+    }
+    completion:^(BOOL finised) {
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    }];
+    }];
+    }];
+    }];
+    }];
+    }];
+    }];
+    }];
 }
 
 
