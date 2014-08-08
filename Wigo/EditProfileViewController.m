@@ -23,6 +23,8 @@
 
 @end
 
+UIViewController *webViewController;
+
 @implementation EditProfileViewController
 
 
@@ -317,7 +319,8 @@
 }
 
 - (void)openPrivacy {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.wigo.us/legal/privacy.pdf"]];
+    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/privacy.pdf"];
+    [self openViewControllerWithURL:currentURL];
 }
 
 - (void)sendEmail {
@@ -326,12 +329,23 @@
 }
 
 - (void)openTerms {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.wigo.us/legal/rightsandresponsibilities.pdf"]];
+    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/rightsandresponsibilities.pdf"];
+    [self openViewControllerWithURL:currentURL];
 }
 
-- (void) openCommunityStandards {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.wigo.us/legal/communitystandards.pdf"]];
 
+- (void) openCommunityStandards {
+    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/communitystandards.pdf"];
+    [self openViewControllerWithURL:currentURL];
+}
+
+- (void)openViewControllerWithURL:(NSURL*)url {
+    webViewController = [[UIViewController alloc] init];
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:self.view.frame];
+    [webView loadRequest:[NSURLRequest requestWithURL:url]];
+    webView.backgroundColor = [UIColor whiteColor];
+    webViewController.view = webView;
+    [self.navigationController pushViewController:webViewController animated:NO];
 }
 
 #pragma mark - UITextView Delegate methods

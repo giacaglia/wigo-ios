@@ -246,6 +246,7 @@
     [self initializeBarAtTopWithText:@"GOING OUT"];
     [self initializeNotGoingOutBar];
     [self initializeCollectionView];
+    [self initializeSeeSchoolButton];
 }
 
 - (void) initializeBarAtTopWithText:(NSString *)textAtTop {
@@ -282,6 +283,15 @@
     _notGoingOutIsAttachedToScrollView = YES;
 }
 
+- (void)initializeSeeSchoolButton {
+    UIButton *seeSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(25, 64 + self.view.frame.size.width + 20, self.view.frame.size.width - 50, 50)];
+    [seeSchoolButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
+    [seeSchoolButton setTitle:[NSString stringWithFormat:@"See school (%d)", 100] forState:UIControlStateNormal];
+    [seeSchoolButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    seeSchoolButton.layer.cornerRadius = 15;
+    seeSchoolButton.layer.borderWidth = 1;
+    seeSchoolButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+}
 
 - (void) initializeTabBar {
     UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
@@ -843,7 +853,7 @@
         tapLabel.alpha = 1.0;
     }
     completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.5 delay:0.2 options:UIViewAnimationOptionCurveLinear
+    [UIView animateWithDuration:1.5 delay:0.2 options:UIViewAnimationOptionCurveLinear
     animations:^{
         orangeTapImgView.alpha = 0.5;
         orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y - 125, 250, 250);
