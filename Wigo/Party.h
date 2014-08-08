@@ -17,7 +17,8 @@ typedef enum
     USER_TYPE,
     MESSAGE_TYPE,
     NOTIFICATION_TYPE,
-    EVENT_TYPE
+    EVENT_TYPE,
+    FOLLOW_TYPE
 } OBJECT_TYPE;
 
 @interface Party : NSObject

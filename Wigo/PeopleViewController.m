@@ -15,7 +15,6 @@
 
 @interface PeopleViewController ()
 
-@property int chosenFilter;
 @property(atomic) UIButton *yourSchoolButton;
 @property(atomic) UIButton *followersButton;
 @property(atomic) UIButton *followingButton;
@@ -63,7 +62,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _chosenFilter = 1;
   
     // Title setup
     self.title = [self.user fullName];
@@ -615,20 +613,59 @@
     [self searchTableList];
 }
 
+
 - (void)searchTableList {
     NSString *searchString = _searchBar.text;
-    
-    NSArray *contentNameArray = [_contentParty getFullNameArray];
-    for (int i = 0; i < [contentNameArray count]; i++) {
-        NSString *tempStr = [contentNameArray objectAtIndex:i];
-        NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
-        for (NSString *firstOrLastName in firstAndLastNameArray) {
-            NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
-            if (result == NSOrderedSame && ![[_filteredContentParty getFullNameArray] containsObject:tempStr]) {
-                [_filteredContentParty addObject: [[_contentParty getObjectArray] objectAtIndex:i]];
+    _page = @1;
+    if ([_currentTab isEqualToNumber:@2]) {
+        NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@&text=%@" ,[_page stringValue], searchString];
+        [self searchUsersWithString:queryString andObjectType:USER_TYPE];
+    }
+    else if ([_currentTab isEqualToNumber:@3]) {
+        NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&ordering=-id&page=%@&text=%@" ,[[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
+        [self searchUsersWithString:queryString andObjectType:FOLLOW_TYPE];
+    }
+    else {
+        NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@&text=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
+        [self searchUsersWithString:queryString andObjectType:FOLLOW_TYPE];
+    }
+
+}
+
+- (void)searchUsersWithString:(NSString *)queryString andObjectType:(OBJECT_TYPE)type {
+    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        if ([_page isEqualToNumber:@1]) _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+        NSMutableArray *arrayOfUsers;
+        if (type == FOLLOW_TYPE) {
+            NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+            arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+            for (NSDictionary *object in arrayOfFollowObjects) {
+                NSDictionary *userDictionary;
+                if ([_currentTab isEqualToNumber:@3]) userDictionary = [object objectForKey:@"user"];
+                else userDictionary = [object objectForKey:@"follow"];
+                if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                    if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                        [arrayOfUsers addObject:[[Profile user] dictionary]];
+                    }
+                    else {
+                        [arrayOfUsers addObject:userDictionary];
+                    }
+                }
             }
         }
-    }
+        else {
+            arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+        }
+        
+        [_filteredContentParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_filteredContentParty addMetaInfo:metaDictionary];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            _page = @([_page intValue] + 1);
+            [_tableViewOfPeople reloadData];
+        });
+    }];
 }
+
 
 @end
