@@ -358,7 +358,7 @@
 
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                [self addBlurredImage:image toImageView:profileImgView];
+                [self addBlurredImageToImageView:profileImgView forIndex:i];
                 profileImgView.hidden = NO;
             });
         }];
@@ -372,13 +372,18 @@
 
 }
 
-- (void) addBlurredImage:(UIImage *)image toImageView:(UIImageView *)imageView {
-    UIImage *imageRightSize = [UIImageCrop image:image scaledToSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.width)];
-    // Add Blurred Image
+- (void) addBlurredImageToImageView:(UIImageView *)imageView forIndex:(int)i {
+    UIImage *imageRightSize = [UIImageCrop imageFromImageView:imageView];
     UIImage *croppedImage = [UIImageCrop croppingImage:imageRightSize toRect:CGRectMake(0, imageView.frame.size.height - 80, self.view.frame.size.width, 80)];
     UIImageView *croppedImageView = [[UIImageView alloc] initWithImage:croppedImage];
     croppedImageView.frame = CGRectMake(0, imageView.frame.size.height - 80, imageView.frame.size.width, 80);
-    [UIImageCrop blurImageView:croppedImageView];
+//    NSString *cachedString = [NSString stringWithFormat:@"%@-%d", [self.user objectForKey:@"id" ], i];
+//    UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:cachedString];
+//    if (!blurredImage) {
+        UIImage *blurredImage = [UIImageCrop blurredImageFromImageView:croppedImageView withRadius:10.0f];
+//        [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:cachedString];
+//    }
+    croppedImageView.image = blurredImage;
     [imageView addSubview:croppedImageView];
 }
 
@@ -494,8 +499,9 @@
         } completion:^(BOOL finished) {
             _bioLineView.hidden = NO;
 
-            for (UIImageView *profileImageView in _profileImagesArray) {
-                [self addBlurredImage:profileImageView.image toImageView:profileImageView];
+            for (int i = 0; i < [_profileImagesArray count]; i++) {
+                UIImageView *profileImageView = [_profileImagesArray objectAtIndex:i];
+                [self addBlurredImageToImageView:profileImageView forIndex:i];
             }
         }];
     }

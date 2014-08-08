@@ -10,15 +10,20 @@
 
 @implementation UIImageCrop
 
-+ (UIImage*)image:(UIImage*)image scaledToSize:(CGSize)newSize {
-    UIGraphicsBeginImageContext(newSize);
-    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
++ (UIImage*)imageFromImageView:(UIImageView*)imageView
+{
+    UIGraphicsBeginImageContext(imageView.frame.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextRotateCTM(context, 2*M_PI);
+    
+    [imageView.layer renderInContext:context];
+    UIImage *image =  UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    return newImage;
+    
+    return image;
 }
 
-+(UIImage *)returnBlurImageFromImageView:(UIImageView *)imageView withRadius:(float)radius {
++(UIImage *)blurredImageFromImageView:(UIImageView *)imageView withRadius:(float)radius {
     UIGraphicsBeginImageContext(imageView.bounds.size);
     [imageView.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *viewImg = UIGraphicsGetImageFromCurrentImageContext();
@@ -67,10 +72,6 @@
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:profileImgView.bounds];
     imgView.image = outputImg;
     [profileImgView addSubview:imgView];
-}
-
-+ (void)blurImageView:(UIImageView *)profileImgView {
-    [UIImageCrop blurImageView:profileImgView withRadius:10.0f];
 }
 
 + (UIImage *)croppingImage:(UIImage *)imageToCrop toRect:(CGRect)rect

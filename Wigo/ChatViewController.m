@@ -208,7 +208,7 @@
         [lastMessageImageView addSubview:lastMessageLabel];
         UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[message messageString]];
         if (!blurredImage) {
-            blurredImage = [UIImageCrop returnBlurImageFromImageView:lastMessageImageView withRadius:3.0f];
+            blurredImage = [UIImageCrop blurredImageFromImageView:lastMessageImageView withRadius:3.0f];
             [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:[message messageString]];
         }
         lastMessageImageView.image = blurredImage;
