@@ -206,7 +206,12 @@
         lastMessageLabel.textColor = RGB(150, 150, 150);
         lastMessageLabel.text = [message messageString];
         [lastMessageImageView addSubview:lastMessageLabel];
-        [UIImageCrop blurImageView:lastMessageImageView withRadius:3.0f];
+        UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[message messageString]];
+        if (!blurredImage) {
+            blurredImage = [UIImageCrop returnBlurImageFromImageView:lastMessageImageView withRadius:3.0f];
+            [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:[message messageString]];
+        }
+        lastMessageImageView.image = blurredImage;
         [lastMessageLabel removeFromSuperview];
     }
     else {

@@ -106,7 +106,7 @@
 }
 
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=goingout&page=%@" ,[_page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=is_goingout&page=%@" ,[_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];

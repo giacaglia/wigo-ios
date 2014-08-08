@@ -18,6 +18,29 @@
     return newImage;
 }
 
++(UIImage *)returnBlurImageFromImageView:(UIImageView *)imageView withRadius:(float)radius {
+    UIGraphicsBeginImageContext(imageView.bounds.size);
+    [imageView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *viewImg = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    //Blur the image
+    CIImage *blurImg = [CIImage imageWithCGImage:viewImg.CGImage];
+    
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    CIFilter *clampFilter = [CIFilter filterWithName:@"CIAffineClamp"];
+    [clampFilter setValue:blurImg forKey:@"inputImage"];
+    [clampFilter setValue:[NSValue valueWithBytes:&transform objCType:@encode(CGAffineTransform)] forKey:@"inputTransform"];
+    
+    CIFilter *gaussianBlurFilter = [CIFilter filterWithName: @"CIGaussianBlur"];
+    [gaussianBlurFilter setValue:clampFilter.outputImage forKey: @"inputImage"];
+    [gaussianBlurFilter setValue:[NSNumber numberWithFloat:radius] forKey:@"inputRadius"];
+    
+    CIContext *context = [CIContext contextWithOptions:nil];
+    CGImageRef cgImg = [context createCGImage:gaussianBlurFilter.outputImage fromRect:[blurImg extent]];
+    return [UIImage imageWithCGImage:cgImg];
+}
+
 + (void)blurImageView:(UIImageView *)profileImgView withRadius:(float)radius {
     UIGraphicsBeginImageContext(profileImgView.bounds.size);
     [profileImgView.layer renderInContext:UIGraphicsGetCurrentContext()];
