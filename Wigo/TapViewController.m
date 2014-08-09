@@ -75,11 +75,13 @@
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = 4;
-    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64) collectionViewLayout:layout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64 + 40, self.view.frame.size.width, self.view.frame.size.height - 64 - 40) collectionViewLayout:layout];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:collectionViewCellIdentifier];
     _collectionView.backgroundColor = [UIColor clearColor];
+    // IOS 7+
+    self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view addSubview:_collectionView];
 }
 
@@ -218,9 +220,10 @@
 #pragma mark - Network Functions
 
 - (void)fetchTaps {
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [Network queryAsynchronousAPI:@"taps/?date=tonight&ordering=-id&tapped=me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
             NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
             NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
             for (NSDictionary *object in arrayOfFollowObjects) {
