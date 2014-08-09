@@ -176,7 +176,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     UILabel *messageFromReceiver = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3 , 50)];
     messageFromReceiver.backgroundColor = RGB(234, 234, 234);
     messageFromReceiver.text = [message messageString];
-    messageFromReceiver.font = LIGHT_FONT(15.0f);
+    messageFromReceiver.font = [FontProperties lightFont:15.0f];
     messageFromReceiver.numberOfLines = 0;
     messageFromReceiver.lineBreakMode = NSLineBreakByWordWrapping;
     [messageFromReceiver sizeToFit];
@@ -208,7 +208,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     UILabel *messageFromSender = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3, 50)];
     messageFromSender.text = [message messageString];
     messageFromSender.textAlignment = NSTextAlignmentRight;
-    messageFromSender.font = LIGHT_FONT(15.0f);
+    messageFromSender.font = [FontProperties lightFont:15.0f];
     messageFromSender.numberOfLines = 0;
     messageFromSender.lineBreakMode = NSLineBreakByWordWrapping;
     [messageFromSender sizeToFit];
@@ -233,7 +233,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
     UILabel *timerLabel = [[UILabel alloc] initWithFrame:CGRectMake(messageWrapper.frame.size.width - 110, messageWrapper.frame.size.height - 28, 100, 20)];
     timerLabel.text = [message timeOfCreation];
-    timerLabel.font = MEDIUM_FONT(13.0f);
+    timerLabel.font = [FontProperties mediumFont:15.0f];
     timerLabel.textAlignment = NSTextAlignmentRight;
     timerLabel.textColor = RGB(179, 179, 179);
     [messageWrapper addSubview:timerLabel];
@@ -259,7 +259,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     _messageTextView.delegate = self;
     _messageTextView.returnKeyType = UIReturnKeySend;
     _messageTextView.backgroundColor = [UIColor whiteColor];
-    _messageTextView.font = MEDIUM_FONT(18.0f);
+    _messageTextView.font = [FontProperties mediumFont:18.0f];
     _messageTextView.textColor = RGB(102, 102, 102);
     [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
     [_chatTextFieldWrapper addSubview:_messageTextView];

@@ -12,43 +12,69 @@
 
 #pragma mark - Font
 
+//#else
+//    #define MEDIUM_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
+//    #define SC_MEDIUM_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
+//#endif
+
++ (UIFont *)lightFont:(float)fontSize {
+    if (IS_IOS_8) return [UIFont fontWithName:@"HelveticaNeue-Light" size:fontSize];
+    else return [UIFont fontWithName:@"Whitney-Light" size:fontSize];
+}
+
++ (UIFont *)scLightFont:(float)fontSize {
+     if (IS_IOS_8) return [UIFont fontWithName:@"HelveticaNeue-Light" size:fontSize];
+    return [UIFont fontWithName:@"Whitney-LightSC" size:fontSize];
+}
+
++ (UIFont *)mediumFont:(float)fontSize {
+    if (IS_IOS_8) return [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
+    return [UIFont fontWithName:@"Whitney-Medium" size:fontSize];
+}
+
++ (UIFont *)scMediumFont:(float)fontSize {
+    if (IS_IOS_8) return [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
+    return [UIFont fontWithName:@"Whitney-MediumSC" size:fontSize];
+}
+
 + (UIFont *)getSmallPhotoFont {
-    return LIGHT_FONT(12.0f);
+    return [FontProperties lightFont:12.0f];
 }
 
 + (UIFont *)getBioFont {
-    return LIGHT_FONT(15.0f);
+    return [FontProperties lightFont:15.0f];
 }
 
 + (UIFont *)getSubtitleFont {
-    return MEDIUM_FONT(15.0f);
+    return [FontProperties mediumFont:15.0f];
+
 }
 
 + (UIFont *)getSmallFont {
-    return LIGHT_FONT(18.0f);
+    return [FontProperties lightFont:18.0f];
 }
 
 + (UIFont *)getNormalFont {
-    return SC_LIGHT_FONT(18.0f);
+    return [FontProperties scLightFont:18.0f];
 }
 
 
 + (UIFont *)getTitleFont {
-    return SC_MEDIUM_FONT(18.0f);
+    return [FontProperties scMediumFont:18.0f];
 }
 
 
 + (UIFont *) getBigButtonFont {
-    return SC_MEDIUM_FONT(20.0f);
+    return [FontProperties scMediumFont:20.0f];
 }
 
 
 + (UIFont *)getSubHeaderFont {
-    return LIGHT_FONT(30.0f);
+    return [FontProperties lightFont:30.0f];
 }
 
 + (UIFont *)getHeaderFont {
-    return LIGHT_FONT(60.0f);
+    return [FontProperties lightFont:60.0f];
 }
 
 

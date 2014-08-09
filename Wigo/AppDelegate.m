@@ -157,7 +157,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     UITabBar *tabBar = tabBarController.tabBar;
     tabBar.layer.borderWidth = 0.5;
-    UIFont *smallFont = SC_MEDIUM_FONT(11.0f);
+    UIFont *smallFont = [FontProperties scMediumFont:11.0f];
     [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getOrangeColor], NSFontAttributeName:smallFont } forState:UIControlStateNormal];
     UITabBarItem *tabItem = [tabBar.items objectAtIndex:0];
     tabItem.image = [[UIImage imageNamed:@"peopleIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -184,7 +184,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     UITabBar *tabBar = tabBarController.tabBar;
     tabBar.layer.borderWidth = 0.5;
-    UIFont *smallFont = SC_MEDIUM_FONT(11.0f);
+    UIFont *smallFont = [FontProperties scMediumFont:11.0f];
     [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getBlueColor], NSFontAttributeName:smallFont } forState:UIControlStateNormal];
     UITabBarItem *firstTab = [tabBar.items objectAtIndex:0];
     firstTab.image = [[UIImage imageNamed:@"peopleIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
@@ -281,7 +281,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         numberOfNotificationsLabel.text = [number stringValue];
         numberOfNotificationsLabel.textAlignment = NSTextAlignmentCenter;
         numberOfNotificationsLabel.textColor = [UIColor whiteColor];
-        numberOfNotificationsLabel.font = MEDIUM_FONT(10.0f);
+        numberOfNotificationsLabel.font = [FontProperties mediumFont:10.0f];
     }
     else numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 8, 8);
 

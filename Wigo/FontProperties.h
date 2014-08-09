@@ -19,10 +19,6 @@
 //#endif
 
 //#if YES
-    #define LIGHT_FONT(fontSize) [UIFont fontWithName:@"Whitney-Light" size:fontSize];
-    #define SC_LIGHT_FONT(fontSize) [UIFont fontWithName:@"Whitney-LightSC" size:fontSize];
-    #define MEDIUM_FONT(fontSize) [UIFont fontWithName:@"Whitney-Medium" size:fontSize];
-    #define SC_MEDIUM_FONT(fontSize) [UIFont fontWithName:@"Whitney-MediumSC" size:fontSize];
 //#else
 //    #define LIGHT_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Light" size:fontSize];
 //    #define SC_LIGHT_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Light" size:fontSize];
@@ -30,8 +26,16 @@
 //    #define SC_MEDIUM_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
 //#endif
 
-
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define IS_IOS_8 SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")
 @interface FontProperties : NSObject
+
+
++ (UIFont *)lightFont:(float)fontSize;
++ (UIFont *)scLightFont:(float)fontSize;
++ (UIFont *)mediumFont:(float)fontSize;
++ (UIFont *)scMediumFont:(float)fontSize;
+
 
 + (UIFont *)getBioFont;
 + (UIFont *)getSubHeaderFont;

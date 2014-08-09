@@ -61,7 +61,7 @@
     UILabel *tapsLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 10 + 64 + 5, self.view.frame.size.width - 14, 15)];
     tapsLabel.text = @"PEOPLE WHO WANT TO SEE YOU OUT";
     tapsLabel.textAlignment = NSTextAlignmentCenter;
-    tapsLabel.font = SC_LIGHT_FONT(14.0f);
+    tapsLabel.font = [FontProperties scLightFont:14.0f];
     [self.view addSubview:tapsLabel];
 }
 

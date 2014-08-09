@@ -256,7 +256,7 @@
         UILabel *barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
         barAtTopLabel.text = textAtTop;
         barAtTopLabel.textAlignment = NSTextAlignmentLeft;
-        barAtTopLabel.font = SC_LIGHT_FONT(15.0f);
+        barAtTopLabel.font = [FontProperties scLightFont:18.0f];
         [_barAtTopView addSubview:barAtTopLabel];
     }
     
@@ -276,7 +276,7 @@
         UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
         goingOutLabel.text = @"NOT GOING OUT YET";
         goingOutLabel.textAlignment = NSTextAlignmentLeft;
-        goingOutLabel.font = SC_LIGHT_FONT(15.0f);
+        goingOutLabel.font = [FontProperties scLightFont:15.0f];
         [_notGoingOutView addSubview:goingOutLabel];
     }
     

@@ -93,7 +93,7 @@
     
     UILabel *albumName = [[UILabel alloc] initWithFrame:CGRectMake(75, 20, self.view.frame.size.width - 75, 20)];
     albumName.text = [albumFBGraphObject objectForKey:@"name"];
-    albumName.font = LIGHT_FONT(18.0f);
+    albumName.font = [FontProperties lightFont:18.0f];
     albumName.textColor = [UIColor blackColor];
     albumName.textAlignment = NSTextAlignmentLeft;
     [cell.contentView addSubview:albumName];

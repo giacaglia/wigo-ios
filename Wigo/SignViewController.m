@@ -116,7 +116,7 @@
     UILabel *dontWorryLabel = [[UILabel alloc] init];
     dontWorryLabel.frame = CGRectMake(0, self.view.frame.size.height - 125 + 34, self.view.frame.size.width, 30);
     dontWorryLabel.text = @"Don't worry, we'll never post on your behalf.";
-    dontWorryLabel.font = MEDIUM_FONT(13.0f);
+    dontWorryLabel.font = [FontProperties mediumFont:13.0f];
     dontWorryLabel.textColor = RGB(51, 102, 154);
     dontWorryLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:dontWorryLabel];

@@ -167,7 +167,7 @@
     [cell.contentView addSubview:textLabel];
     
     UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
-    goingOutLabel.font = MEDIUM_FONT(13.0f);
+    goingOutLabel.font = [FontProperties mediumFont:13.0f];
     goingOutLabel.textAlignment = NSTextAlignmentLeft;
     if ([user isGoingOut]) {
         goingOutLabel.text = @"Going Out";
