@@ -380,7 +380,7 @@
         _createButton.hidden = YES;
         _clearButton.hidden = YES;
     }
-    [_placesTableView reloadData];
+    [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 

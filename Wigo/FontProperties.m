@@ -12,11 +12,6 @@
 
 #pragma mark - Font
 
-//#else
-//    #define MEDIUM_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
-//    #define SC_MEDIUM_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
-//#endif
-
 + (UIFont *)lightFont:(float)fontSize {
     if (IS_IOS_8) return [UIFont fontWithName:@"HelveticaNeue-Light" size:fontSize];
     else return [UIFont fontWithName:@"Whitney-Light" size:fontSize];

@@ -12,22 +12,9 @@
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 
-//#if __IPHONE_8_0
-//    #define IS_IOS_8 YES
-//#else
-//    #define IS_IOS_8 NO
-//#endif
-
-//#if YES
-//#else
-//    #define LIGHT_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Light" size:fontSize];
-//    #define SC_LIGHT_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Light" size:fontSize];
-//    #define MEDIUM_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
-//    #define SC_MEDIUM_FONT(fontSize) [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
-//#endif
-
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 #define IS_IOS_8 SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")
+
 @interface FontProperties : NSObject
 
 
