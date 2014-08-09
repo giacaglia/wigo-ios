@@ -265,7 +265,6 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     [_filteredContentParty removeAllObjects];
-    
     if([searchText length] != 0) {
         _isSearching = YES;
         [self searchTableList];
@@ -282,18 +281,27 @@
 
 - (void)searchTableList {
     NSString *searchString = _searchBar.text;
+    _page = @1;
+    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@&text=%@" ,[_page stringValue], searchString];
+    [self searchUsersWithString:queryString ];
     
-    NSArray *contentNameArray = [_contentParty getFullNameArray];
-    for (int i = 0; i < [contentNameArray count]; i++) {
-        NSString *tempStr = [contentNameArray objectAtIndex:i];
-        NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
-        for (NSString *firstOrLastName in firstAndLastNameArray) {
-            NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
-            if (result == NSOrderedSame && ![[_filteredContentParty getFullNameArray] containsObject:tempStr]) {
-                [_filteredContentParty addObject: [[_contentParty getObjectArray] objectAtIndex:i]];
-            }
-        }
-    }
+}
+
+
+- (void)searchUsersWithString:(NSString *)queryString {
+    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        if ([_page isEqualToNumber:@1]) _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+        NSMutableArray *arrayOfUsers;
+        arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+        
+        [_filteredContentParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [_filteredContentParty addMetaInfo:metaDictionary];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            _page = @([_page intValue] + 1);
+            [_tableView reloadData];
+        });
+    }];
 }
 
 @end

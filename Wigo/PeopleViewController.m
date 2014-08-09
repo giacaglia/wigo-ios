@@ -629,7 +629,6 @@
         NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@&text=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
         [self searchUsersWithString:queryString andObjectType:FOLLOW_TYPE];
     }
-
 }
 
 - (void)searchUsersWithString:(NSString *)queryString andObjectType:(OBJECT_TYPE)type {
