@@ -301,11 +301,13 @@
 }
 
 - (void) initializeNavigationItem {
-//    [[UINavigationBar appearance] setShadowImage:[[UIImage alloc] init]];
-//    [[UINavigationBar appearance] setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
-//    [[UINavigationBar appearance] setBackgroundColor:[UIColor whiteColor]];
-
-    
+    for (UIView *view in self.navigationController.navigationBar.subviews) {
+        for (UIView *view2 in view.subviews) {
+            if ([view2 isKindOfClass:[UIImageView class]]) {
+                [view2 removeFromSuperview];
+            }
+        }
+    }
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];

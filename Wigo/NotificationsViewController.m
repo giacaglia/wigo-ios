@@ -33,6 +33,14 @@
     _everyoneParty = [Profile everyoneParty];
     [self initializeTableNotifications];
     
+    for (UIView *view in self.navigationController.navigationBar.subviews) {
+        for (UIView *view2 in view.subviews) {
+            if ([view2 isKindOfClass:[UIImageView class]]) {
+                [view2 removeFromSuperview];
+            }
+        }
+    }
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageNotifications) name:@"fetchNotifications" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
 

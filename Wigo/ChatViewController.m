@@ -29,6 +29,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageMessages) name:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
 
+    for (UIView *view in self.navigationController.navigationBar.subviews) {
+        for (UIView *view2 in view.subviews) {
+            if ([view2 isKindOfClass:[UIImageView class]]) {
+                [view2 removeFromSuperview];
+            }
+        }
+    }
     [self initializeTableOfChats];
 }
 
@@ -49,6 +56,7 @@
     [EventAnalytics tagEvent:@"Chat View"];
 
     self.tabBarController.tabBar.hidden = NO;
+    
     
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"Chats";
