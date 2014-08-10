@@ -136,21 +136,24 @@
     UIView *viewSender = (UIView *)tapSender.view;
     int tag = (int)viewSender.tag;
     User *user = [self getUserAtIndex:tag];
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-    [self.navigationController pushViewController:self.profileViewController animated:YES];
+    if (user) {
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:self.profileViewController animated:YES];
+    }
 }
 
 - (void)tappedButton:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
     User *user = [self getUserAtIndex:tag];
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-    [self.navigationController pushViewController:self.profileViewController animated:YES];
+    if (user) {
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:self.profileViewController animated:YES];
+    }
 }
 
 - (void)initializeYourSchoolButton {
     _yourSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width/3, 60)];
-//    [_yourSchoolButton setTitle:@"School" forState:UIControlStateNormal];
     [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", [[[Profile user] numberOfGroupMembers] intValue]] forState:UIControlStateNormal];
     _yourSchoolButton.backgroundColor = [FontProperties getOrangeColor];
     _yourSchoolButton.titleLabel.font = [FontProperties getTitleFont];
@@ -244,16 +247,20 @@
 #pragma mark - Filter handlers
 
 - (void) changeFilter:(id)sender {
-    [self.view endEditing:YES];
-    _isSearching = NO;
-    _searchBar.text = @"";
-    [self searchBarTextDidEndEditing:_searchBar];
+    [self clearSearchBar];
     UIButton *chosenButton = (UIButton *)sender;
     int tag = (int)chosenButton.tag;
     if (tag >= 2) {
         _currentTab = [NSNumber numberWithInt:tag];
         [self loadTableView];
     }
+}
+
+- (void)clearSearchBar {
+    [self.view endEditing:YES];
+    _isSearching = NO;
+    _searchBar.text = @"";
+    [self searchBarTextDidEndEditing:_searchBar];
 }
 
 - (void)loadTableView {
@@ -456,7 +463,7 @@
 }
 
 - (User *)getUserAtIndex:(int)index {
-    User *user = [[User alloc] init];
+    User *user;
     if (_isSearching) {
         if ([[_filteredContentParty getObjectArray] count] != 0)
         user = [[_filteredContentParty getObjectArray] objectAtIndex:index];
