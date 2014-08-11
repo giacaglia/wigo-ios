@@ -107,6 +107,11 @@
             }
         }
     }
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
+    lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
+    [self.navigationController.navigationBar addSubview:lineView];
+
+    
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];

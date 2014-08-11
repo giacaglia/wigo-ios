@@ -135,7 +135,12 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         [self reloadTabBarNotifications];
     }
     else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil];
+        NSDictionary *aps = [userInfo objectForKey:@"aps"];
+        NSDictionary *alert = [aps objectForKey:@"alert"];
+        NSString *locKeyString = [alert objectForKey:@"loc-key"];
+        if ([locKeyString isEqualToString:@"M"]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil];
+        }
     }
 }
 

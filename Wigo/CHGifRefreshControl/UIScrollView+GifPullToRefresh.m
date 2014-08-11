@@ -146,7 +146,6 @@ static char UIScrollViewGifPullToRefresh;
 {
     // HACK FOR IOS 8
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
-        NSLog(@"here");
         if (self.scrollView.contentOffset.y == -64) [self.scrollView setContentOffset:CGPointZero animated:YES];
     }
     if (_state != GifPullToRefreshStateLoading) {

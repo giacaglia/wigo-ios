@@ -85,7 +85,6 @@
 //    transparentView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent: 0.95f];
 //    [self.navigationController.navigationBar.layer addSublayer: transparentView.layer];
     
-//    [[UITabBar appearance] setSelectedImageTintColor:[FontProperties getOrangeColor]];
     [self initializeWhoView];
     [self initializeNotificationObservers];
 }
@@ -308,6 +307,10 @@
             }
         }
     }
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
+    lineView.backgroundColor = RGBAlpha(244, 149, 45, 0.1f);
+    [self.navigationController.navigationBar addSubview:lineView];
+    
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];

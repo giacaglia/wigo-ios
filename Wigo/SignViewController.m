@@ -298,7 +298,6 @@
                 [self fetchProfilePicturesAlbumFacebook];
             }
             else if ([[error localizedDescription] isEqualToString:@"error"]) {
-                NSLog(@"here");
                 [self fetchTokensFromFacebook];
                 _fetchingProfilePictures = YES;
                 [self fetchProfilePicturesAlbumFacebook];

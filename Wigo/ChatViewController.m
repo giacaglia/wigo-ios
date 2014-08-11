@@ -36,6 +36,10 @@
             }
         }
     }
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
+    lineView.backgroundColor = RGBAlpha(244, 149, 45, 0.1f);
+    [self.navigationController.navigationBar addSubview:lineView];
+    
     [self initializeTableOfChats];
 }
 
