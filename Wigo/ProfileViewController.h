@@ -14,7 +14,7 @@
 #import "User.h"
 
 
-@interface ProfileViewController : UIViewController <UIScrollViewDelegate>
+@interface ProfileViewController : UIViewController <UIScrollViewDelegate, UIAlertViewDelegate>
 
 -(id)initWithProfile:(BOOL)isMyProfile;
 -(id)initWithUser:(User *)user;

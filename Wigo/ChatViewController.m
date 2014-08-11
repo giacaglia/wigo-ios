@@ -108,9 +108,6 @@ UIButton *newChatButton;
     newChatButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
     [newChatButton setTitle:@"Start a New Chat" forState:UIControlStateNormal];
     [newChatButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-//    newChatButton.layer.cornerRadius = 10;
-//    newChatButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-//    newChatButton.layer.borderWidth = 1;
     newChatButton.hidden = YES;
     [self.view addSubview:newChatButton];
 }

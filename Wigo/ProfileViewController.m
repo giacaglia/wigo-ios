@@ -285,7 +285,21 @@
                                                   delegate: nil
                                          cancelButtonTitle:@"Cancel"
                                          otherButtonTitles:@"Block", nil];
+    alert.delegate = self;
     [alert show];
+    
+   
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        NSString *queryString = @"blocks/";
+        NSDictionary *options = @{@"block": [self.user objectForKey:@"id"]};
+        [Network sendAsynchronousHTTPMethod:POST
+                                withAPIName:queryString
+                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                                withOptions:options];
+    }
 }
 
 
