@@ -858,7 +858,7 @@
         tapLabel.alpha = 1.0;
     }
     completion:^(BOOL finished) {
-    [UIView animateWithDuration:1.5 delay:0.2 options:UIViewAnimationOptionCurveLinear
+    [UIView animateWithDuration:1.5 delay:0.5 options:UIViewAnimationOptionCurveLinear
     animations:^{
         orangeTapImgView.alpha = 0.5;
         orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y - 125, 250, 250);
