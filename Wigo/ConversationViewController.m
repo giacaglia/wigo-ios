@@ -87,7 +87,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(fetchMessages)
+                                             selector:@selector(addMessage:)
                                                  name:@"updateConversation"
                                                object:nil];
 
@@ -407,6 +407,20 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     _whiteLabelForTextField.frame = CGRectMake(10, 10, _chatTextFieldWrapper.frame.size.width - 70, _chatTextFieldWrapper.frame.size.height - 20);
     _sendButton.frame = CGRectMake(_chatTextFieldWrapper.frame.size.width - 60, _chatTextFieldWrapper.frame.size.height - 40, 60, 30);
     return YES;
+}
+
+- (void)addMessage:(NSNotification *)notification {
+    NSString *messageString = [[notification userInfo] valueForKey:@"message"];
+    Message *message = [[Message alloc] init];
+    [message setMessageString:messageString];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [message setTimeOfCreation:[dateFormatter stringFromDate:[NSDate date]]];
+    [self addMessageFromReceiver:message];
+    CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
+    [_scrollView setContentOffset:bottomOffset animated:YES];
 }
 
 # pragma mark - Network functions
