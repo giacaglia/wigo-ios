@@ -37,6 +37,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 //#define NSLog(...)
 //#endif
 #define MAX_LENGTH_BIO 110
+#define PEOPLEVIEW_HEIGHT_OF_CELLS 80
 
 @protocol Globals <NSObject>
 

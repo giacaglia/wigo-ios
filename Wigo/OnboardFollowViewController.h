@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface OnboardFollowViewController : UIViewController <UISearchBarDelegate>
+@interface OnboardFollowViewController : UIViewController <UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end

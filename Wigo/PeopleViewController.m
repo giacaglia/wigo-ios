@@ -11,7 +11,6 @@
 #import "ProfileViewController.h"
 #import "UIButtonAligned.h"
 
-#define PEOPLEVIEW_HEIGHT_OF_CELLS 80
 
 @interface PeopleViewController ()
 
