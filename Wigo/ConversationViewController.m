@@ -145,7 +145,12 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void) goBack {
-    [[Profile user] saveKeyAsynchronously:@"last_message_read"];
+    NSString *queryString = [NSString stringWithFormat:@"conversations/?user=%@/", [self.user objectForKey:@"id"]];
+    NSDictionary *options = @{@"read": [NSNumber numberWithBool:YES]};
+    [Network sendAsynchronousHTTPMethod:POST
+                            withAPIName:queryString
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:options];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

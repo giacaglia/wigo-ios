@@ -240,7 +240,7 @@ UIViewController *webViewController;
     [_scrollView addSubview:publicView];
     
     UILabel *publicDetailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 525, self.view.frame.size.width, 40)];
-    publicDetailLabel.text = @"Turn privacy ON to approve follow requests and restrict your Places to only your followers.";
+    publicDetailLabel.text = @"Turn privacy ON to approve follow requests and restrict your plans to only your followers.";
     publicDetailLabel.textAlignment = NSTextAlignmentCenter;
     publicDetailLabel.font = [FontProperties getSmallPhotoFont];
     publicDetailLabel.numberOfLines = 0;
