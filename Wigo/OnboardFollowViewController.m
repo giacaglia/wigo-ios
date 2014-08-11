@@ -9,7 +9,6 @@
 #import "OnboardFollowViewController.h"
 #import "Globals.h"
 
-BOOL pushed;
 UISearchBar *searchBar;
 UITableView *tableViewOfPeople;
 NSNumber *page;
@@ -27,8 +26,7 @@ UIImageView *searchIconImageView;
         self.view.backgroundColor = [UIColor whiteColor];
         self.navigationController.navigationBar.hidden = YES;
         self.navigationItem.hidesBackButton = YES;
-        [self.navigationController setNavigationBarHidden: YES animated:YES];
-        pushed = NO;
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
     }
     return self;
 }
@@ -37,13 +35,21 @@ UIImageView *searchIconImageView;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.navigationItem.titleView = nil;
-    self.navigationItem.title = @"Follow Your Classmates";
+    [self initializeTitle];
     [self initializeTapHandler];
     [self initializeSearchBar];
     [self initializeTableOfPeople];
     [self initializeContinueButton];
     [self fetchFirstPageEveryone];
+}
+
+- (void)initializeTitle {
+    UILabel *emailConfirmationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, self.view.frame.size.width, 28)];
+    emailConfirmationLabel.text = @"Follow Your Classmates";
+    emailConfirmationLabel.textColor = [FontProperties getOrangeColor];
+    emailConfirmationLabel.font = [FontProperties getTitleFont];
+    emailConfirmationLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:emailConfirmationLabel];
 }
 
 - (void)initializeTapHandler {
@@ -55,10 +61,7 @@ UIImageView *searchIconImageView;
 
 - (void)tappedView:(UITapGestureRecognizer*)tapSender {
     [self.view endEditing:YES];
-//    if (user) {
-//        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-//        [self.navigationController pushViewController:self.profileViewController animated:YES];
-//    }
+    [self searchBarTextDidEndEditing:searchBar];
 }
 
 
@@ -164,20 +167,16 @@ UIImageView *searchIconImageView;
     
     User *user = [self getUserAtIndex:(int)[indexPath row]];
     
-    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
+    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
-    [profileButton addSubview:profileImageView];
-    [profileButton setShowsTouchWhenHighlighted:YES];
-    profileButton.tag = [indexPath row];
-    [cell.contentView addSubview:profileButton];
+    [cell.contentView addSubview:profileImageView];
     
     if ([user isFavorite]) {
-        UIImageView *favoriteSmall = [[UIImageView alloc] initWithFrame:CGRectMake(6, profileButton.frame.size.height - 16, 10, 10)];
+        UIImageView *favoriteSmall = [[UIImageView alloc] initWithFrame:CGRectMake(6, profileImageView.frame.size.height - 16, 10, 10)];
         favoriteSmall.image = [UIImage imageNamed:@"favoriteSmall"];
-        [profileButton addSubview:favoriteSmall];
+        [profileImageView addSubview:favoriteSmall];
     }
     
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
@@ -284,13 +283,77 @@ UIImageView *searchIconImageView;
 }
 
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@" ,[page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"users/?user__ne=%@&ordering=-id&page=%@",[[Profile user] objectForKey:@"id" ] ,[page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [contentParty addObjectsFromArray:arrayOfUsers];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [contentParty addMetaInfo:metaDictionary];
         [Profile setEveryoneParty:contentParty];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            page = @([page intValue] + 1);
+            [tableViewOfPeople reloadData];
+        });
+    }];
+}
+
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    searchIconImageView.hidden = YES;
+    isSearching = YES;
+}
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    if (![searchBar.text isEqualToString:@""]) {
+        [UIView animateWithDuration:0.01 animations:^{
+            searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
+        }  completion:^(BOOL finished){
+            searchIconImageView.hidden = NO;
+        }];
+    }
+    else {
+        [UIView animateWithDuration:0.01 animations:^{
+            searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
+        }  completion:^(BOOL finished){
+            searchIconImageView.hidden = NO;
+        }];
+    }
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    [filteredContentParty removeAllObjects];
+    
+    if([searchText length] != 0) {
+        isSearching = YES;
+        [self searchTableList];
+    }
+    else {
+        isSearching = NO;
+    }
+    [tableViewOfPeople reloadData];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self searchTableList];
+}
+
+
+- (void)searchTableList {
+    NSString *searchString = searchBar.text;
+    page = @1;
+    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@&text=%@" ,[page stringValue], searchString];
+    [self searchUsersWithString:queryString andObjectType:USER_TYPE];
+}
+
+- (void)searchUsersWithString:(NSString *)queryString andObjectType:(OBJECT_TYPE)type {
+    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        if ([page isEqualToNumber:@1]) filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+        NSMutableArray *arrayOfUsers;
+        arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+        [filteredContentParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [filteredContentParty addMetaInfo:metaDictionary];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             page = @([page intValue] + 1);
             [tableViewOfPeople reloadData];

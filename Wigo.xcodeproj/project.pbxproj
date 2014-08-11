@@ -188,8 +188,6 @@
 		E9CD53891993C2DD00206B75 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E900C2901961E0B800A01F50 /* ImageIO.framework */; };
 		E9CD538B1993C42600206B75 /* go-out.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9CD538A1993C42600206B75 /* go-out.gif */; };
 		E9CD538C1993C42600206B75 /* go-out.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9CD538A1993C42600206B75 /* go-out.gif */; };
-		E9CD538E1993C47E00206B75 /* glowing.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9CD538D1993C47E00206B75 /* glowing.gif */; };
-		E9CD538F1993C47E00206B75 /* glowing.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9CD538D1993C47E00206B75 /* glowing.gif */; };
 		E9CD53931993C73900206B75 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9CD53921993C73900206B75 /* Images.xcassets */; };
 		E9CD53941993C73900206B75 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9CD53921993C73900206B75 /* Images.xcassets */; };
 		E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E9D7D5321926539C00E1ED10 /* Main.storyboard */; };
@@ -209,6 +207,8 @@
 		E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
 		E9E6A568199917BE003B590C /* OnboardFollowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E6A567199917BE003B590C /* OnboardFollowViewController.m */; };
 		E9E6A569199917BE003B590C /* OnboardFollowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E6A567199917BE003B590C /* OnboardFollowViewController.m */; };
+		E9E6A56E19994B41003B590C /* glowing.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9E6A56D19994B41003B590C /* glowing.gif */; };
+		E9E6A56F19994B41003B590C /* glowing.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9E6A56D19994B41003B590C /* glowing.gif */; };
 		E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
 		E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
@@ -377,7 +377,6 @@
 		E9CD53821993C29800206B75 /* FLAnimatedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLAnimatedImageView.h; sourceTree = "<group>"; };
 		E9CD53831993C29800206B75 /* FLAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLAnimatedImageView.m; sourceTree = "<group>"; };
 		E9CD538A1993C42600206B75 /* go-out.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "go-out.gif"; sourceTree = "<group>"; };
-		E9CD538D1993C47E00206B75 /* glowing.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = glowing.gif; sourceTree = "<group>"; };
 		E9CD53921993C73900206B75 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		E9D7D5331926539C00E1ED10 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Wigo/en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E9D906BC19252DA900E39FC8 /* PeopleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleViewController.h; sourceTree = "<group>"; };
@@ -402,6 +401,7 @@
 		E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmailConfirmationViewController.m; sourceTree = "<group>"; };
 		E9E6A566199917BE003B590C /* OnboardFollowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardFollowViewController.h; sourceTree = "<group>"; };
 		E9E6A567199917BE003B590C /* OnboardFollowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardFollowViewController.m; sourceTree = "<group>"; };
+		E9E6A56D19994B41003B590C /* glowing.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = glowing.gif; sourceTree = "<group>"; };
 		E9ECFF7F196D917F00384252 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
 		E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpViewController.m; sourceTree = "<group>"; };
@@ -895,8 +895,8 @@
 		E9CD53901993C48400206B75 /* Gifs */ = {
 			isa = PBXGroup;
 			children = (
+				E9E6A56D19994B41003B590C /* glowing.gif */,
 				E9CD538A1993C42600206B75 /* go-out.gif */,
-				E9CD538D1993C47E00206B75 /* glowing.gif */,
 			);
 			name = Gifs;
 			sourceTree = "<group>";
@@ -1042,7 +1042,7 @@
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
 				E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */,
-				E9CD538F1993C47E00206B75 /* glowing.gif in Resources */,
+				E9E6A56F19994B41003B590C /* glowing.gif in Resources */,
 				E99F46B21990154B007408C1 /* boyVoice.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1053,8 +1053,8 @@
 			files = (
 				E9CD538B1993C42600206B75 /* go-out.gif in Resources */,
 				E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */,
-				E9CD538E1993C47E00206B75 /* glowing.gif in Resources */,
 				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
+				E9E6A56E19994B41003B590C /* glowing.gif in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
