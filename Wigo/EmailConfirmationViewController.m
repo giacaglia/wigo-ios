@@ -8,8 +8,10 @@
 
 #import "EmailConfirmationViewController.h"
 #import "Globals.h"
+#import "OnboardFollowViewController.h"
 
 UITextField *emailTextField;
+OnboardFollowViewController *onboardFollowViewController;
 
 @implementation EmailConfirmationViewController
 
@@ -167,8 +169,10 @@ UITextField *emailTextField;
             [self.navigationController pushViewController:self.lockScreenViewController animated:NO];
         }
         else {
-            [self dismissViewControllerAnimated:YES  completion:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+//            [self dismissViewControllerAnimated:YES  completion:nil];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+            onboardFollowViewController = [OnboardFollowViewController new];
+            [self.navigationController pushViewController:onboardFollowViewController animated:YES];
         }
     }
 }

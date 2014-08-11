@@ -16,6 +16,7 @@ NSNumber *page;
 Party *contentParty;
 Party *filteredContentParty;
 BOOL isSearching;
+UIImageView *searchIconImageView;
 
 @implementation OnboardFollowViewController
 
@@ -38,12 +39,28 @@ BOOL isSearching;
     [super viewDidLoad];
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"Follow Your Classmates";
+    [self initializeTapHandler];
     [self initializeSearchBar];
     [self initializeTableOfPeople];
+    [self initializeContinueButton];
     [self fetchFirstPageEveryone];
 }
 
-#pragma mark - UISearchBar
+- (void)initializeTapHandler {
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(tappedView:)];
+    tap.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:tap];
+}
+
+- (void)tappedView:(UITapGestureRecognizer*)tapSender {
+    [self.view endEditing:YES];
+//    if (user) {
+//        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+//        [self.navigationController pushViewController:self.profileViewController animated:YES];
+//    }
+}
+
 
 - (void)initializeSearchBar {
     searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
@@ -62,9 +79,9 @@ BOOL isSearching;
     [txfSearchField setLeftViewMode:UITextFieldViewModeNever];
     
     // Add Custom Search Icon
-//    _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeSearchIcon"]];
-//    _searchIconImageView.frame = CGRectMake(85, 13, 14, 14);
-//    [searchBar addSubview:_searchIconImageView];
+    searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeSearchIcon"]];
+    searchIconImageView.frame = CGRectMake(85, 13, 14, 14);
+    [searchBar addSubview:searchIconImageView];
     [self.view addSubview:searchBar];
     [self.view bringSubviewToFront:searchBar];
     
@@ -86,12 +103,30 @@ BOOL isSearching;
 }
 
 - (void)initializeTableOfPeople {
-    tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 160)];
+    tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 158)];
     tableViewOfPeople.delegate = self;
     tableViewOfPeople.dataSource = self;
     tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:tableViewOfPeople];
 }
+
+- (void)initializeContinueButton {
+    UIButton *continueButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 54, self.view.frame.size.width, 54)];
+    [continueButton setTitle:@"Continue" forState:UIControlStateNormal];
+    [continueButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    continueButton.titleLabel.font = [FontProperties getBigButtonFont];
+    continueButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    continueButton.layer.borderWidth = 1.0f;
+    [continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchDown];
+    
+    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeRightArrow"]];
+    rightArrowImageView.frame = CGRectMake(continueButton.frame.size.width - 35, 27 - 9, 11, 18);
+    [continueButton addSubview:rightArrowImageView];
+    [self.view addSubview:continueButton];
+}
+
+
+
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return PEOPLEVIEW_HEIGHT_OF_CELLS;
@@ -123,7 +158,7 @@ BOOL isSearching;
     
     if ([[contentParty getObjectArray] count] == 0) return cell;
     if ([indexPath row] == [[contentParty getObjectArray] count]) {
-//        [self loadNextPage];
+        [self fetchEveryone];
         return cell;
     }
     
@@ -137,9 +172,6 @@ BOOL isSearching;
     [profileButton addSubview:profileImageView];
     [profileButton setShowsTouchWhenHighlighted:YES];
     profileButton.tag = [indexPath row];
-    if (![user isEqualToUser:[Profile user]]) {
-        [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
-    }
     [cell.contentView addSubview:profileButton];
     
     if ([user isFavorite]) {
@@ -154,10 +186,6 @@ BOOL isSearching;
     labelName.tag = [indexPath row];
     labelName.textAlignment = NSTextAlignmentLeft;
     labelName.userInteractionEnabled = YES;
-    if (![user isEqualToUser:[Profile user]]) {
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
-        [labelName addGestureRecognizer:tap];
-    }
     [cell.contentView addSubview:labelName];
     
     UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
@@ -194,10 +222,6 @@ BOOL isSearching;
         }
     }
     
-    if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastUserRead] intValue]) {
-        cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
-    }
-    
     return cell;
 }
 
@@ -212,6 +236,43 @@ BOOL isSearching;
             user = [[contentParty getObjectArray] objectAtIndex:index];
     }
     return user;
+}
+
+- (void) followedPersonPressed:(id)sender {
+    //Get Index Path
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:tableViewOfPeople];
+    NSIndexPath *indexPath = [tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
+    User *user = [self getUserAtIndex:(int)[indexPath row]];
+    
+    UIButton *senderButton = (UIButton*)sender;
+    if (senderButton.tag == -100) {
+        if ([user isPrivate]) {
+            [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
+            [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            senderButton.layer.borderWidth = 1;
+            senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            senderButton.layer.cornerRadius = 3;
+        }
+        else {
+            [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+        }
+        senderButton.tag = 100;
+        [Network followUser:user];
+    }
+    else {
+        [senderButton setTitle:nil forState:UIControlStateNormal];
+        [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+        senderButton.tag = -100;
+        [Network unfollowUser:user];
+    }
+}
+
+- (void)continuePressed {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
 }
 
 #pragma mark - Network functions

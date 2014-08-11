@@ -10,12 +10,14 @@
 #import "Globals.h"
 #import <Social/Social.h>
 #import "UIImageViewShake.h"
+#import "OnboardFollowViewController.h"
 
 SLComposeViewController *mySLComposerSheet;
 NSNumber *numberOfPeopleSignedUp;
 Party *everyoneParty;
 NSMutableArray *alreadyGeneratedNumbers;
 BOOL pushed;
+OnboardFollowViewController *onboardFollowViewController;
 
 @implementation LockScreenViewController
 
@@ -53,8 +55,10 @@ BOOL pushed;
 
 - (void)dismissIfGroupUnlocked {
     if (![[Profile user] isGroupLocked] && !pushed) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+        onboardFollowViewController = [OnboardFollowViewController new];
+        [self.navigationController pushViewController:onboardFollowViewController animated:YES];
+//        [self dismissViewControllerAnimated:YES completion:nil];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
     }
 }
 
