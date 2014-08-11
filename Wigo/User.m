@@ -140,7 +140,7 @@
     if ([imagesURL count] > 0) {
         return [imagesURL objectAtIndex:0];
     }
-    return @"";
+    return @"https://api.wigo.us/static/img/wigo_profile_gray.png";
 }
 
 - (void)setImagesURL:(NSArray *)images {
