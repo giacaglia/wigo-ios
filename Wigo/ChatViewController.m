@@ -20,6 +20,8 @@
 @property BOOL fetchingFirstPage;
 @end
 
+UIButton *newChatButton;
+
 @implementation ChatViewController
 
 - (void)viewDidLoad
@@ -40,6 +42,7 @@
     lineView.backgroundColor = RGBAlpha(244, 149, 45, 0.1f);
     [self.navigationController.navigationBar addSubview:lineView];
     
+    [self initializeNewChatButton];
     [self initializeTableOfChats];
 }
 
@@ -98,6 +101,20 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
+
+- (void)initializeNewChatButton {
+    newChatButton = [[UIButton alloc] initWithFrame:CGRectMake(40, self.view.frame.size.height/2 - 20, self.view.frame.size.width - 2*40, 40)];
+    [newChatButton addTarget:self action:@selector(writeMessage) forControlEvents:UIControlEventTouchUpInside];
+    newChatButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
+    [newChatButton setTitle:@"Start a New Chat" forState:UIControlStateNormal];
+    [newChatButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+//    newChatButton.layer.cornerRadius = 10;
+//    newChatButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+//    newChatButton.layer.borderWidth = 1;
+    newChatButton.hidden = YES;
+    [self.view addSubview:newChatButton];
+}
+
 - (void)initializeTableOfChats {
     _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
     _tableViewOfPeople.delegate = self;
@@ -137,6 +154,14 @@
             [_messageParty addMetaInfo:metaDictionary];
             if ([_page isEqualToNumber:@1]) _fetchingFirstPage = NO;
             _page = @([_page intValue] + 1);
+            if ([[_messageParty getObjectArray] count] == 0) {
+                _tableViewOfPeople.hidden = YES;
+                newChatButton.hidden = NO;
+            }
+            else {
+                _tableViewOfPeople.hidden = NO;
+                newChatButton.hidden = YES;
+            }
             [_tableViewOfPeople reloadData];
             [_tableViewOfPeople didFinishPullToRefresh];
         });

@@ -178,7 +178,7 @@
                                   }
                               }
                               if ([profilePictures count] == 0) {
-                                  [profilePictures addObject:@"https://scontent-b.xx.fbcdn.net/hphotos-xfp1/l/t1.0-9/p720x720/1926790_10203026659205208_455535385_n.jpg"];
+                                  [profilePictures addObject:@"https://api.wigo.us/static/img/wigo_profile_gray.png"];
                               }
                               [WiGoSpinnerView hideSpinnerForView:self.view];
                               User *profileUser = [Profile user];

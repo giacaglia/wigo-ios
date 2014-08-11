@@ -14,7 +14,7 @@
 "FOLLOW_ACCEPTED" = "%@ accepted your follow request";
 "FA" = "%@ accepted your follow request";
 "FACEBOOK_FOLLOW" = "%@ just joined WiGo";
-"FF" = "%@ just joined WiGo";
+"FF" = "%@ is now following you";
 "TAP" = "%@ wants to see you out";
 "T" = "%@ wants to see you out";
 "GOINGOUT" = "%@ is going out";
