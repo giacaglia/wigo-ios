@@ -145,7 +145,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void) goBack {
-    NSString *queryString = [NSString stringWithFormat:@"conversations/?user=%@/", [self.user objectForKey:@"id"]];
+    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", [self.user objectForKey:@"id"]];
     NSDictionary *options = @{@"read": [NSNumber numberWithBool:YES]};
     [Network sendAsynchronousHTTPMethod:POST
                             withAPIName:queryString
@@ -316,7 +316,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         [message setToUser:[self.user objectForKey:@"id"]];
         [self addMessageFromSender:message];
         [message saveAsynchronously];
-//        [self updateLastMessagesRead:message];
         _messageTextView.text = @"";
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [self textView:_messageTextView shouldChangeTextInRange:NSMakeRange(0, [_messageTextView.text length]) replacementText:@""];
