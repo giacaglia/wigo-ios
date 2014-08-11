@@ -400,7 +400,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 # pragma mark - UITextView Delegate.
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if ([text length] != 0)
+    if ([text isEqual:@"\n"]) {
+        [self sendMessage];
+        return NO;
+    }
+    if ([_messageTextView.text length] != 0)
         [_sendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
     else
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
