@@ -138,9 +138,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         NSDictionary *alert = [aps objectForKey:@"alert"];
         NSString *locKeyString = [alert objectForKey:@"loc-key"];
-        NSArray *locArgs = [alert objectForKey:@"loc-args"];
-        NSString *messageString = locArgs[1];
         if ([locKeyString isEqualToString:@"M"]) {
+            NSArray *locArgs = [alert objectForKey:@"loc-args"];
+            NSString *messageString = locArgs[1];
             NSDictionary *dictionary = [NSDictionary dictionaryWithObject:messageString forKey:@"message"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:dictionary];
         }
