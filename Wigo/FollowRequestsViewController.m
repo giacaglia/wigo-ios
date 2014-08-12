@@ -40,6 +40,11 @@
     [self fetchFollowRequests];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Follow Requests View"];
+}
+
 - (void) initializeFollowRequestTable {
     _followRequestTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 49)];
     _followRequestTableView.backgroundColor = [UIColor clearColor];
@@ -62,6 +67,7 @@
 }
 
 - (void)acceptUser:(id)sender {
+    [EventAnalytics tagEvent:@"Follow Request Accepted"];
     UIButton *buttonSender = (UIButton *)sender;
     UITableViewCell *cell = [_followRequestTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
     for (UIView *subview in [cell.contentView subviews]) {
@@ -90,6 +96,7 @@
 }
 
 - (void)rejectUser:(id)sender {
+    [EventAnalytics tagEvent:@"Follow Request Rejected"];
     UIButton *buttonSender = (UIButton *)sender;
     UITableViewCell *cell = [_followRequestTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
     for (UIView *subview in [cell.contentView subviews]) {

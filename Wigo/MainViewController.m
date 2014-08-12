@@ -61,7 +61,7 @@
 }
 
 - (void) viewDidAppear:(BOOL)animated {
-    [EventAnalytics tagEvent:@"People View"];
+    [EventAnalytics tagEvent:@"Who View"];
     self.tabBarController.tabBar.hidden = NO;
     if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
     if (!_fetchinfUserInfo) [self fetchUserInfo];
@@ -516,7 +516,7 @@
 }
 
 - (void) sendTapToUserAtIndex:(int)tag {
-    [EventAnalytics tagEvent:@"Tap"];
+    [EventAnalytics tagEvent:@"Tap User"];
 
     User *user;
     if (tag < 0) {

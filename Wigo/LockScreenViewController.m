@@ -51,6 +51,7 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self fetchUserInfo];
+    [EventAnalytics tagEvent:@"Lock Screen View"];
 }
 
 - (void)dismissIfGroupUnlocked {

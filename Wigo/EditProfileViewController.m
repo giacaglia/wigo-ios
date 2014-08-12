@@ -50,6 +50,12 @@ UIViewController *webViewController;
     [self initializeWiGoSection];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Edit Profile View"];
+}
+
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateProfile" object:nil];

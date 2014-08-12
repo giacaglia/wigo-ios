@@ -87,7 +87,7 @@
 }
 
 - (void) viewDidAppear:(BOOL)animated {
-    [EventAnalytics tagEvent:@"Places View"];
+    [EventAnalytics tagEvent:@"Where View"];
 
     self.tabBarController.tabBar.hidden = NO;
     [self initializeNavigationBar];

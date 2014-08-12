@@ -75,6 +75,12 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self fetchMessages];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Conversation View"];
+}
+
+
 - (void) initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)

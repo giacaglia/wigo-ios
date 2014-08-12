@@ -97,8 +97,13 @@
 
 - (void)viewDidLoad
 {
-    [EventAnalytics tagEvent:@"Profile View"];
     [super viewDidLoad];
+   
+    NSString *isCurrentUser = (self.user == [Profile user]) ? @"Yes" : @"No";
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", nil];
+    
+    [EventAnalytics tagEvent:@"Profile View" withDetails:options];
+
     _currentPage = 0;
     _isSeingImages = NO;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];

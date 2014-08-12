@@ -97,7 +97,7 @@ NSDate *firstLoggedTime;
 #else
     [[LocalyticsSession shared] LocalyticsSession:@"708a99db734a53dbd326638-47f80b0a-12dc-11e4-9e90-005cf8cbabd8"];
 #endif
-    
+//    [[LocalyticsSession shared] setLoggingEnabled:YES];
     [[LocalyticsSession shared] resume];
     [[LocalyticsSession shared] upload];
 }

@@ -40,6 +40,7 @@ OnboardFollowViewController *onboardFollowViewController;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Email Confirmation View"];
     [self login];
 }
 
