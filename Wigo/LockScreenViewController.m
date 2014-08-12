@@ -159,6 +159,7 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void)sharedPressed {
     NSArray *activityItems = @[@"Who is going out tonight? http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
+    activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityVC animated:YES completion:nil];
 }
 
