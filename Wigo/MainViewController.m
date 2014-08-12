@@ -631,7 +631,7 @@
         tag = (int)[indexPath row];
         tag += 1;
     }
-    else if ([indexPath section] == 1) {
+    else {
         tag = - (int)[indexPath row];
         tag -= 1;
     }

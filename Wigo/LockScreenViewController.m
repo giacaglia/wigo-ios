@@ -212,12 +212,10 @@ OnboardFollowViewController *onboardFollowViewController;
 
     NSMutableArray *shuffle = [[NSMutableArray alloc] initWithCapacity:5];
     
-    BOOL contains = YES;
     while ([shuffle count] < 5) {
         NSNumber *generatedNumber=[NSNumber numberWithInt:[self generateRandomNumber:TOTAL_NUMBER]];
         if (![alreadyGeneratedNumbers containsObject:generatedNumber]) {
             [shuffle addObject:generatedNumber];
-            contains=NO;
             [alreadyGeneratedNumbers addObject:generatedNumber];
         }
     }

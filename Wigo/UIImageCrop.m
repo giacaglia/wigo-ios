@@ -43,7 +43,9 @@
     
     CIContext *context = [CIContext contextWithOptions:nil];
     CGImageRef cgImg = [context createCGImage:gaussianBlurFilter.outputImage fromRect:[blurImg extent]];
-    return [UIImage imageWithCGImage:cgImg];
+    UIImage *newImage = [UIImage imageWithCGImage:cgImg];
+    CGImageRelease(cgImg);
+    return newImage;
 }
 
 + (void)blurImageView:(UIImageView *)profileImgView withRadius:(float)radius {
@@ -67,7 +69,8 @@
     CIContext *context = [CIContext contextWithOptions:nil];
     CGImageRef cgImg = [context createCGImage:gaussianBlurFilter.outputImage fromRect:[blurImg extent]];
     UIImage *outputImg = [UIImage imageWithCGImage:cgImg];
-    
+    CGImageRelease(cgImg);
+
     //Add UIImageView to current view.
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:profileImgView.bounds];
     imgView.image = outputImg;
