@@ -151,7 +151,7 @@
 
 - (void) get3ProfilePictures {
     NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
-    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
                                  parameters:nil
                                  HTTPMethod:@"GET"
@@ -180,7 +180,7 @@
                               if ([profilePictures count] == 0) {
                                   [profilePictures addObject:@"https://api.wigo.us/static/img/wigo_profile_gray.png"];
                               }
-                              [WiGoSpinnerView hideSpinnerForView:self.view];
+                              [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                               User *profileUser = [Profile user];
                               [profileUser setImagesURL:profilePictures];
                               if (_userEmailAlreadySent) {
@@ -266,11 +266,9 @@
     [profileUser setObject:_fbID forKey:@"facebook_id"];
     [profileUser setAccessToken:_accessToken];
     [WiGoSpinnerView addDancingGToCenterView:self.view];
-//    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
     [profileUser loginWithHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-//            [WiGoSpinnerView hideSpinnerForView:self.view];
             if ([[jsonResponse allKeys] containsObject:@"status"]) {
                 if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]){
                     _alertShown = YES;

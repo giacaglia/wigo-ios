@@ -157,14 +157,9 @@ OnboardFollowViewController *onboardFollowViewController;
     }
 }
 - (void)sharedPressed {
-    if([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook])
-    {
-        mySLComposerSheet = [[SLComposeViewController alloc] init];
-        mySLComposerSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
-        [mySLComposerSheet setInitialText:@"Want to know who is going out tonight at your school? http://blade.net/_wigo"];
-        [mySLComposerSheet addImage:[UIImage imageNamed:@"wigoApp" ]]; //an image you could post
-        [self presentViewController:mySLComposerSheet animated:YES completion:nil];
-    }
+    NSArray *activityItems = @[@"Who is going out tonight? http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
+    [self presentViewController:activityVC animated:YES completion:nil];
 }
 
 #pragma mark - Helper functions
