@@ -1359,7 +1359,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Flurry",
 					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
@@ -1396,7 +1395,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Flurry",
 					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
@@ -1433,7 +1431,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Flurry",
 					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
@@ -1543,7 +1540,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Flurry",
 					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
@@ -1579,7 +1575,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Flurry",
 					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
@@ -1695,7 +1690,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Flurry",
 					"$(PROJECT_DIR)/Wigo",
 				);
 				PARSE_APPLICATIONID = Du0NRMjx3mxXSSqGNTnCrM8Wh7LcMTbG4sIn1leZ;
