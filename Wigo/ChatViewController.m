@@ -48,7 +48,6 @@ UIButton *newChatButton;
 
 - (void) viewWillAppear:(BOOL)animated {
     self.tabBarController.tabBar.hidden = NO;
-    _fetchingFirstPage = NO;
     UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"chatsSelected"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
