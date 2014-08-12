@@ -142,30 +142,32 @@
             });
         }
         else {
-            if ([_page isEqualToNumber:@1]) {
-                _isFirstTimeNotGoingOutIsAttachedToScrollView =YES;
-                _followingAcceptedParty = [[Party alloc] initWithObjectType:USER_TYPE];
-                _whoIsGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
-                _notGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
-            }
-            NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-            [_followingAcceptedParty addObjectsFromArray:arrayOfUsers];
-            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-            [_followingAcceptedParty addMetaInfo:metaDictionary];
-            [Profile setFollowingParty:_followingAcceptedParty];
-            
-            User *user;
-            for (int i = 0; i < [arrayOfUsers count]; i++) {
-                NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];
-                user = [[User alloc] initWithDictionary:userDictionary];
-                if ([user isGoingOut]) {
-                    [_whoIsGoingOutParty addObject:user];
-                }
-                else {
-                    [_notGoingOutParty addObject:user];
-                }
-            }
             dispatch_async(dispatch_get_main_queue(), ^(void){
+
+                if ([_page isEqualToNumber:@1]) {
+                    _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
+                    _notGoingOutView.hidden = YES;
+                    _followingAcceptedParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                    _whoIsGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                    _notGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                }
+                NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+                [_followingAcceptedParty addObjectsFromArray:arrayOfUsers];
+                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+                [_followingAcceptedParty addMetaInfo:metaDictionary];
+                [Profile setFollowingParty:_followingAcceptedParty];
+                
+                User *user;
+                for (int i = 0; i < [arrayOfUsers count]; i++) {
+                    NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];
+                    user = [[User alloc] initWithDictionary:userDictionary];
+                    if ([user isGoingOut]) {
+                        [_whoIsGoingOutParty addObject:user];
+                    }
+                    else {
+                        [_notGoingOutParty addObject:user];
+                    }
+                }
                 if ([_page isEqualToNumber:@1]) _fetchingFirstPage = NO;
                 if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
                 _page = @([_page intValue] + 1);
@@ -282,6 +284,7 @@
     if (!_notGoingOutView) {
         _notGoingOutView = [[UIView alloc] init];
         _notGoingOutView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
+        _notGoingOutView.hidden = YES;
         [self.view bringSubviewToFront:_notGoingOutView];
         
         UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
@@ -727,6 +730,7 @@
         [[reusableView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
         if ([indexPath section] == 1) {
+            _notGoingOutView.hidden = NO;
             if ([[_notGoingOutParty getObjectArray] count] == 0) {
                 if (!_isFirstTimeNotGoingOutIsAttachedToScrollView) _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
                     _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, self.view.frame.size.height, reusableView.frame.size.width, 30);
