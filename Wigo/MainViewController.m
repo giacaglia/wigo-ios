@@ -143,6 +143,7 @@
         }
         else {
             if ([_page isEqualToNumber:@1]) {
+                _isFirstTimeNotGoingOutIsAttachedToScrollView =YES;
                 _followingAcceptedParty = [[Party alloc] initWithObjectType:USER_TYPE];
                 _whoIsGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
                 _notGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];

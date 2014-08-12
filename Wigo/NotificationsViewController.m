@@ -290,7 +290,9 @@
         if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
             [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
             [profileUser saveKeyAsynchronously:@"last_notification_read" withHandler:^() {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
+                });
             }];
         }
     }
