@@ -134,7 +134,7 @@
     [query queryWithClassName:@"goingouts/"];
     User *user = [Profile user];
     [query setProfileKey:user.key];
-    [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
+    [query sendPOSTRequest];
 }
 
 + (void) postGoingToEventNumber:(int)indexOfObject {
@@ -143,7 +143,7 @@
     User *user = [Profile user];
     [query setProfileKey:user.key];
     [query setValue:[NSNumber numberWithInt:indexOfObject] forKey:@"event"];
-    [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
+    [query sendPOSTRequest];
 }
 
 + (NSNumber *)createEventWithName:(NSString *)nameString {
