@@ -341,6 +341,7 @@
     return [blockedNumber boolValue];
 }
 
+
 - (NSString *)attendingEventName {
     if ([self isAttending]) {
         NSDictionary *isAttending = (NSDictionary *)[_proxy objectForKey:@"is_attending"];

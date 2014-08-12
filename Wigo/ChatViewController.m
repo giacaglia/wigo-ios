@@ -236,7 +236,7 @@ UIButton *newChatButton;
     lastMessageLabel.numberOfLines = 2;
     lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
 
-    if ([message isMessageFromLastDay]) {
+    if ([message expired]) {
         lastMessageLabel.textColor = RGB(150, 150, 150);
         lastMessageLabel.text = [message messageString];
         [lastMessageImageView addSubview:lastMessageLabel];

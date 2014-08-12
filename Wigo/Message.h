@@ -21,6 +21,7 @@
 - (void)setTimeOfCreation:(NSString *)timeOfCreation;
 - (void)save;
 - (void)saveAsynchronously;
+- (BOOL)expired;
 
 - (User *)otherUser;
 + (NSString *)randomStringWithLength:(int)len;

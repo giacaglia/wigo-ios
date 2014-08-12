@@ -162,6 +162,11 @@
     return NO;
 }
 
+- (BOOL)expired {
+    NSNumber *blockedNumber = (NSNumber *)[_proxy objectForKey:@"expired"];
+    return [blockedNumber boolValue];
+}
+
 - (void)save {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"messages/"];
