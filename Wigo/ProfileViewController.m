@@ -379,10 +379,11 @@
         profileImgView.clipsToBounds = YES;
         profileImgView.frame = CGRectMake((self.view.frame.size.width + 10) * i, 0, self.view.frame.size.width, self.view.frame.size.width);
 
+        __weak UIImageView *weakProfileImgView = profileImgView;
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                [self addBlurredImageToImageView:profileImgView forIndex:i];
-                profileImgView.hidden = NO;
+                [self addBlurredImageToImageView:weakProfileImgView forIndex:i];
+                weakProfileImgView.hidden = NO;
             });
         }];
         [_scrollView addSubview:profileImgView];
