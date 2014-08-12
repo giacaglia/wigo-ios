@@ -254,18 +254,24 @@ UIImageView *searchIconImageView;
             senderButton.layer.borderWidth = 1;
             senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             senderButton.layer.cornerRadius = 3;
+            [user setIsFollowingRequested:YES];
         }
         else {
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+            [user setIsFollowing:YES];
         }
         senderButton.tag = 100;
         [Network followUser:user];
+        [contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
     }
     else {
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
         [Network unfollowUser:user];
+        [user setIsFollowing:NO];
+        [user setIsFollowingRequested:NO];
+        [contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
     }
 }
 
