@@ -428,11 +428,13 @@
             senderButton.layer.borderWidth = 1;
             senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             senderButton.layer.cornerRadius = 3;
+            [user setIsFollowingRequested:YES];
         }
         else {
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             [_followingParty addObject:user];
             num_following += 1;
+            [user setIsFollowing:YES];
         }
         senderButton.tag = 100;
         [self updateFollowingUIAndCachedData:num_following];
@@ -443,6 +445,8 @@
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
         int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+        [user setIsFollowing:NO];
+        [user setIsFollowingRequested:NO];
         if (![user isPrivate]) {
             [_followingParty removeUser:user];
             num_following -= 1;
@@ -450,11 +454,13 @@
         [self updateFollowingUIAndCachedData:num_following];
         [Network unfollowUser:user];
     }
+    [_contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
 }
 
 - (void) updateFollowingUIAndCachedData:(int)num_following {
     User *profileUser = [Profile user];
     [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
+    [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [[NSNumber numberWithInt:num_following] intValue]] forState:UIControlStateNormal];
     [Profile setFollowingParty:_followingParty];
 }
 

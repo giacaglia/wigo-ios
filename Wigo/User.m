@@ -405,6 +405,11 @@
     return NO;
 }
 
+- (void)setIsFollowingRequested:(BOOL)isFollowingRequested {
+    NSNumber *numberIsFollowingRequested = [NSNumber numberWithBool:isFollowingRequested];
+    [_proxy setObject:numberIsFollowingRequested forKey:@"is_following_requested"];
+}
+
 - (STATE)getUserState {
     if ([self isPrivate]) {
         if ([self isFollowing]) {

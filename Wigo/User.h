@@ -47,6 +47,7 @@ typedef enum
 @property NSNumber *lastNotificationRead;
 @property NSNumber *lastMessageRead;
 @property NSNumber *lastUserRead;
+@property BOOL isFollowingRequested;
 
 - (NSString *)fullName;
 
@@ -63,7 +64,6 @@ typedef enum
 - (void)makeImageURLCover:(NSString *)imageURL;
 
 - (BOOL)isTapped;
-- (BOOL)isFollowingRequested;
 - (BOOL)isAttending;
 //Attending event
 - (NSString *)attendingEventName;
