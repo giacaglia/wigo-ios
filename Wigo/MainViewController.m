@@ -71,6 +71,17 @@
 {
     [super viewDidLoad];
     
+    for (UIView *view in self.navigationController.navigationBar.subviews) {
+        for (UIView *view2 in view.subviews) {
+            if ([view2 isKindOfClass:[UIImageView class]]) {
+                [view2 removeFromSuperview];
+            }
+        }
+    }
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
+    lineView.backgroundColor = RGBAlpha(244, 149, 45, 0.1f);
+    [self.navigationController.navigationBar addSubview:lineView];
+    
 
     [FBAppEvents logEvent:FBAppEventNameActivatedApp];
     [self initializeFlashScreen];
@@ -300,16 +311,7 @@
 }
 
 - (void) initializeNavigationItem {
-    for (UIView *view in self.navigationController.navigationBar.subviews) {
-        for (UIView *view2 in view.subviews) {
-            if ([view2 isKindOfClass:[UIImageView class]]) {
-                [view2 removeFromSuperview];
-            }
-        }
-    }
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
-    lineView.backgroundColor = RGBAlpha(244, 149, 45, 0.1f);
-    [self.navigationController.navigationBar addSubview:lineView];
+
     
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
@@ -791,7 +793,7 @@
     NSString *text = @"TAP PEOPLE YOU WANT TO SEE OUT";
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
     NSMutableParagraphStyle *paragrahStyle = [[NSMutableParagraphStyle alloc] init];
-    [paragrahStyle setLineSpacing:20];
+    [paragrahStyle setLineSpacing:5];
     [attributedString addAttribute:NSParagraphStyleAttributeName value:paragrahStyle range:NSMakeRange(0, [text length])];
     tapLabel.attributedText = attributedString;
     tapLabel.textAlignment = NSTextAlignmentCenter;
@@ -858,7 +860,7 @@
         tapLabel.alpha = 1.0;
     }
     completion:^(BOOL finished) {
-    [UIView animateWithDuration:1.5 delay:0.5 options:UIViewAnimationOptionCurveLinear
+    [UIView animateWithDuration:2.1 delay:0.5 options:UIViewAnimationOptionCurveLinear
     animations:^{
         orangeTapImgView.alpha = 0.5;
         orangeTapImgView.frame = CGRectMake(self.view.center.x - 125, self.view.center.y - 125, 250, 250);

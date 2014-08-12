@@ -322,6 +322,13 @@
     }
     
     User *user = [self getUserAtIndex:(int)[indexPath row]];
+   
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
+    UIView *clickableView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 15 - 79, PEOPLEVIEW_HEIGHT_OF_CELLS - 5)];
+    if (![user isEqualToUser:[Profile user]]) [clickableView addGestureRecognizer:tap];
+    clickableView.userInteractionEnabled = YES;
+    clickableView.tag = [indexPath row];
+    [cell.contentView addSubview:clickableView];
     
     UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
@@ -329,11 +336,6 @@
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
     [profileButton addSubview:profileImageView];
-    [profileButton setShowsTouchWhenHighlighted:YES];
-    profileButton.tag = [indexPath row];
-    if (![user isEqualToUser:[Profile user]]) {
-        [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
-    }
     [cell.contentView addSubview:profileButton];
     
     if ([user isFavorite]) {
@@ -345,14 +347,9 @@
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
     labelName.font = [FontProperties mediumFont:18.0f];
     labelName.text = [user fullName];
-    labelName.tag = [indexPath row];
     labelName.textAlignment = NSTextAlignmentLeft;
     labelName.userInteractionEnabled = YES;
-    if (![user isEqualToUser:[Profile user]]) {
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
-        [labelName addGestureRecognizer:tap];
-    }
-    [cell.contentView addSubview:labelName];
+    [clickableView addSubview:labelName];
     
     UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
     goingOutLabel.font =  [FontProperties mediumFont:15.0f];
@@ -361,7 +358,7 @@
         goingOutLabel.text = @"Going Out";
         goingOutLabel.textColor = [FontProperties getOrangeColor];
     }
-    [cell.contentView addSubview:goingOutLabel];
+    [clickableView addSubview:goingOutLabel];
     
     
     if (![user isEqualToUser:[Profile user]]) {
