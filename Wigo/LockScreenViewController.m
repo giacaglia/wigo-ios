@@ -139,7 +139,7 @@ OnboardFollowViewController *onboardFollowViewController;
             UIImageViewShake *imageView = (UIImageViewShake *)subview;
             if (imageView.tag < [numberOfPeopleSignedUp intValue]) {
                 if ([[everyoneParty getObjectArray] count] != 0) {
-                    int TOTAL_NUMBER = [[everyoneParty getObjectArray] count];
+                    int TOTAL_NUMBER = (int)[[everyoneParty getObjectArray] count];
                     User *user = [[everyoneParty getObjectArray] objectAtIndex:[self generateRandomNumber:TOTAL_NUMBER]];
                     [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
                     imageView.backgroundColor = [FontProperties getOrangeColor];

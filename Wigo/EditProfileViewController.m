@@ -175,7 +175,7 @@ UIViewController *webViewController;
     
     _totalNumberOfCharactersLabel = [[UILabel alloc] initWithFrame:CGRectMake(_bioTextView.frame.size.width - 85, _bioTextView.frame.size.height - 20, 80, 20)];
     _totalNumberOfCharactersLabel.textAlignment = NSTextAlignmentRight;
-    _totalNumberOfCharactersLabel.text = [NSString stringWithFormat:@"%u", (MAX_LENGTH_BIO - [_bioTextView.text length])];
+    _totalNumberOfCharactersLabel.text = [NSString stringWithFormat:@"%d", (MAX_LENGTH_BIO - (int)[_bioTextView.text length])];
     _totalNumberOfCharactersLabel.font = [FontProperties getSubtitleFont];
     _totalNumberOfCharactersLabel.textColor = RGB(153, 153, 153);
     [_bioTextView addSubview:_totalNumberOfCharactersLabel];
@@ -352,7 +352,7 @@ UIViewController *webViewController;
 #pragma mark - UITextView Delegate methods
 
 - (void)textViewDidChange:(UITextView *)textView {
-    _totalNumberOfCharactersLabel.text = [NSString stringWithFormat:@"%u", (MAX_LENGTH_BIO - [textView.text length])];
+    _totalNumberOfCharactersLabel.text = [NSString stringWithFormat:@"%d", (MAX_LENGTH_BIO - (int)[textView.text length])];
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
