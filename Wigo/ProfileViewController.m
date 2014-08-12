@@ -580,7 +580,7 @@
             goHereTooButton.layer.cornerRadius = 4;
             [goHereTooButton addTarget:self action:@selector(goThereTooPressed) forControlEvents:UIControlEventTouchUpInside];
             
-            CGFloat requiredWidth =  [_nameOfPersonLabel.text sizeWithFont:[FontProperties getSmallFont]].width;
+            CGFloat requiredWidth =  [_nameOfPersonLabel.text sizeWithAttributes:@{NSFontAttributeName:[FontProperties getSmallFont]}].width;
             if (requiredWidth < self.view.frame.size.width - 14 - 10) {
                 CGRect frame = _nameOfPersonLabel.frame;
                 frame.origin.y -= 10;
