@@ -65,6 +65,9 @@ typedef enum
 
 
 - (BOOL)isAttending;
+- (NSNumber *)numberOfFollowing;
+- (NSNumber *)numberOfFollowers;
+
 //Attending event
 - (NSString *)attendingEventName;
 @property NSNumber *attendingEventID;

@@ -213,6 +213,24 @@
     [modifiedKeys addObject:@"group"];
 }
 
+- (NSNumber *)numberOfFollowing {
+    NSNumber *following = (NSNumber *)[_proxy objectForKey:@"num_following"];
+    if (following == nil) {
+        return @-1;
+    } else {
+        return following;
+    }
+}
+
+- (NSNumber *)numberOfFollowers {
+    NSNumber *followers = (NSNumber *)[_proxy objectForKey:@"num_followers"];
+    if (followers == nil) {
+        return @-1;
+    } else {
+        return followers;
+    }
+}
+
 
 - (NSString *)bioString {
     if ([_proxy objectForKey:@"bio"] != (id)[NSNull null]) {

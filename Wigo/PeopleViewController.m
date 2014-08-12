@@ -80,6 +80,9 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"People View"];
+
     if ([[self.user allKeys] containsObject:@"tabNumber"]) {
         _currentTab = [self.user objectForKey:@"tabNumber"];
     }

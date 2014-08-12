@@ -61,6 +61,11 @@
     [self fetchFirstPageEveryone];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"New Chat View"];
+}
+
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(dismissKeyboard)];

@@ -37,6 +37,11 @@
     [self initializeEDUAddress];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Sign Up View"];
+}
+
 - (void) initializeSignUpLabel {
     UILabel *signUpLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 37, self.view.frame.size.width, 28)];
     signUpLabel.text = @"SIGN UP";

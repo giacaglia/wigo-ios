@@ -43,6 +43,11 @@ UIImageView *searchIconImageView;
     [self fetchFirstPageEveryone];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Onboard Follow View"];
+}
+
 - (void)initializeTitle {
     UILabel *emailConfirmationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, self.view.frame.size.width, 28)];
     emailConfirmationLabel.text = @"Follow Your Classmates";

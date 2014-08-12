@@ -35,6 +35,10 @@
     [self loadImages];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Facebook Images View"];
+}
 
 - (void)loadImages {
     [FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"email", @"user_friends", @"user_photos"]

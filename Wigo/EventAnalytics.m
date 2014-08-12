@@ -27,6 +27,27 @@
         }
         NSString *goingOut = profileUser.isGoingOut ? @"Yes" : @"No";
         [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:goingOut forKey:@"Going Out"]];
+        
+        // number of following
+        NSString *followingBucket;
+        int following = [[profileUser numberOfFollowing] intValue];
+        
+        if (following < 0) {
+            followingBucket = @"Unknown";
+        } else if (following == 0) {
+            followingBucket = @"0";
+        } else if (following < 5) {
+            followingBucket = @"<5";
+        } else if (following < 10) {
+            followingBucket = @"<10";
+        } else if (following < 30) {
+            followingBucket = @"<30";
+        } else if (following < 100) {
+            followingBucket = @"30-100";
+        } else {
+            followingBucket = @"100+";
+        }
+        [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:followingBucket forKey:@"Following"]];
     }
     
     [data addEntriesFromDictionary:details];

@@ -56,6 +56,10 @@
     [self.view addSubview:cancelButton];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Contact Us View"];
+}
 
 - (void)sendEmail {
     NSString *path;
