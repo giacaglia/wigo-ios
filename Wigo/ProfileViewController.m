@@ -279,6 +279,15 @@
     [self.user saveKeyAsynchronously:@"is_following"];
 }
 
+- (void)unblockPressed {
+    NSString *queryString = @"blocks/";
+    NSDictionary *options = @{@"block": [self.user objectForKey:@"id"]};
+    [Network sendAsynchronousHTTPMethod:DELETE
+                            withAPIName:queryString
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:options];
+}
+
 - (void)blockPressed {
    UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Block"
                                                    message: @"Are you sure you want to block this user?"

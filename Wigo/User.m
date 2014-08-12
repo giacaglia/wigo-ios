@@ -238,6 +238,7 @@
     [modifiedKeys addObject:@"privacy"];
 }
 
+
 - (NSString *)randomBioGenerator {
     NSArray *randomStrings = @[
                                @"People know me",
@@ -333,7 +334,11 @@
         return [isGroupLocked boolValue];
     }
     return NO;
+}
 
+- (BOOL)isBlocked {
+    NSNumber *blockedNumber = (NSNumber *)[_proxy objectForKey:@"is_blocked"];
+    return [blockedNumber boolValue];
 }
 
 - (NSString *)attendingEventName {
