@@ -497,7 +497,7 @@
                 [imageView newShake];
                 imageView.image = [UIImage imageNamed:@"tapFilled"];
                 subview.tag = -1;
-                [self sendTapToUserWithTag:tag];
+                [self sendTapToUserAtIndex:tag];
             }
         }
         else if (subview.tag == -1) {
@@ -505,12 +505,13 @@
                 UIImageView *imageView = (UIImageView *)subview;
                 imageView.image = [UIImage imageNamed:@"tapUnfilled"];
                 subview.tag = 1;
+                [self updateUserAtIndex:tag];
             }
         }
     }
 }
 
-- (void) sendTapToUserWithTag:(int)tag {
+- (void) sendTapToUserAtIndex:(int)tag {
     [EventAnalytics tagEvent:@"Tap"];
 
     User *user;
@@ -518,13 +519,33 @@
         tag = -tag;
         tag -= 1;
         user = [[_notGoingOutParty getObjectArray] objectAtIndex:tag];
+        [user setIsTapped:YES];
+        [_notGoingOutParty replaceObjectAtIndex:tag withObject:user];
     }
     else {
         tag -= 1;
         user = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:tag];
+        [user setIsTapped:YES];
+        [_whoIsGoingOutParty replaceObjectAtIndex:tag withObject:user];
     }
-    if (![user isTapped]) {
-        [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
+    [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
+    
+}
+
+- (void) updateUserAtIndex:(int)tag {
+    User *user;
+    if (tag < 0) {
+        tag = -tag;
+        tag -= 1;
+        user = [[_notGoingOutParty getObjectArray] objectAtIndex:tag];
+        [user setIsTapped:NO];
+        [_notGoingOutParty replaceObjectAtIndex:tag withObject:user];
+    }
+    else {
+        tag -= 1;
+        user = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:tag];
+        [user setIsTapped:NO];
+        [_whoIsGoingOutParty replaceObjectAtIndex:tag withObject:user];
     }
 }
 

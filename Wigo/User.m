@@ -294,6 +294,11 @@
     return [(NSNumber *)[_proxy objectForKey:@"is_tapped"] boolValue];
 }
 
+- (void)setIsTapped:(BOOL)isTapped {
+    NSNumber *numberIsFollowingRequested = [NSNumber numberWithBool:isTapped];
+    [_proxy setObject:numberIsFollowingRequested forKey:@"is_tapped"];
+}
+
 - (BOOL)isFavorite {
     NSNumber *favoriteNumber = (NSNumber *)[_proxy objectForKey:@"is_favorite"];
     return [favoriteNumber boolValue];

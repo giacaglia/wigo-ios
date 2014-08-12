@@ -48,9 +48,9 @@ typedef enum
 @property NSNumber *lastMessageRead;
 @property NSNumber *lastUserRead;
 @property BOOL isFollowingRequested;
+@property BOOL isTapped;
 
 - (NSString *)fullName;
-
 
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
@@ -63,13 +63,12 @@ typedef enum
 - (NSString *)coverImageURL;
 - (void)makeImageURLCover:(NSString *)imageURL;
 
-- (BOOL)isTapped;
+
 - (BOOL)isAttending;
 //Attending event
 - (NSString *)attendingEventName;
 @property NSNumber *attendingEventID;
 - (BOOL)isGroupLocked;
-
 
 - (STATE)getUserState;
 
