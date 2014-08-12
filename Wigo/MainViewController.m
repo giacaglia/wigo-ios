@@ -600,7 +600,6 @@
         userArray = [_notGoingOutParty getObjectArray];
     }
     else {
-        [cell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         [self fetchFollowing];
         return cell;
     }

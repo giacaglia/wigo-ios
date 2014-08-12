@@ -75,7 +75,6 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self updateLastNotificationsRead];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
 }
 
 - (void) initializeTableNotifications {
@@ -256,14 +255,12 @@
     self.conversationViewController = [[ConversationViewController alloc] init];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
-    [self updateNotificationsRead:(int)((UIButton *)sender).tag];
 }
 
 - (void)tapSegue:(id)sender {
     self.tapViewController = [[TapViewController alloc] init];
     [self.navigationController pushViewController:self.tapViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
-    [self updateNotificationsRead:(int)((UIButton *)sender).tag];
 
 }
 
@@ -275,16 +272,6 @@
     self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
-    [self updateNotificationsRead:rowOfButtonSender];
-}
-
-- (void)updateNotificationsRead:(int)index {
-    Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:index];
-    User *profileUser = [Profile user];
-    if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastNotificationRead] intValue]) {
-        [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
-        [profileUser saveKeyAsynchronously:@"last_notification_read"];
-    }
 }
 
 #pragma mark - Refresh button
@@ -302,7 +289,9 @@
     for (Notification *notification in [_notificationsParty getObjectArray]) {
         if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
             [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
-            [profileUser saveKeyAsynchronously:@"last_notification_read"];
+            [profileUser saveKeyAsynchronously:@"last_notification_read" withHandler:^() {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
+            }];
         }
     }
 }
@@ -340,12 +329,5 @@
     }];
 }
 
-- (void)updateLastNotificationRead:(Notification *)notification {
-    User *profileUser = [Profile user];
-    if ([notification objectForKey:@"id"] > [profileUser lastNotificationRead]) {
-        [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
-        [profileUser saveKeyAsynchronously:@"last_notification_read"];
-    }
-}
 
 @end

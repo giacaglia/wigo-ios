@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Query.h"
 
+typedef void (^Handler)();
 typedef enum
 {
     PRIVATE_PROFILE,
@@ -84,4 +85,5 @@ typedef enum
 - (void)loginWithHandler:(QueryResult)handler;
 
 - (void)saveKeyAsynchronously:(NSString *)key;
+- (void)saveKeyAsynchronously:(NSString *)key withHandler:(Handler)handler;
 @end

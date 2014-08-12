@@ -534,6 +534,11 @@
 }
 
 - (void)saveKeyAsynchronously:(NSString *)key {
+    [self saveKeyAsynchronously:key withHandler:^() {}];
+}
+
+
+- (void)saveKeyAsynchronously:(NSString *)key withHandler:(Handler)handler {
     Query *query = [[Query alloc] init];
     NSString *queryString = [NSString stringWithFormat:@"users/%@/", [_proxy objectForKey:@"id"]];
     [query queryWithClassName:queryString];
@@ -545,9 +550,9 @@
             [_proxy addEntriesFromDictionary:jsonResponse];
             [modifiedKeys removeObject:key];
         }
+        handler();
     }];
 }
-
 #pragma mark - Refactoring saving data
 
 - (void)loginWithHandler:(QueryResult)handler {
