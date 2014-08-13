@@ -466,9 +466,11 @@
 
 - (void) updateFollowingUIAndCachedData:(int)num_following {
     User *profileUser = [Profile user];
-    [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
-    [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [[NSNumber numberWithInt:num_following] intValue]] forState:UIControlStateNormal];
-    [Profile setFollowingParty:_followingParty];
+    if (profileUser == self.user) {
+        [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
+        [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [[NSNumber numberWithInt:num_following] intValue]] forState:UIControlStateNormal];
+        [Profile setFollowingParty:_followingParty];
+    }
 }
 
 - (User *)getUserAtIndex:(int)index {
