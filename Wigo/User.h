@@ -49,6 +49,8 @@ typedef enum
 @property NSNumber *lastUserRead;
 @property BOOL isFollowingRequested;
 @property BOOL isTapped;
+@property BOOL isTapPushNotificationEnabled;
+@property BOOL isFavoritesGoingOutNotificationEnabled;
 
 - (NSString *)fullName;
 
@@ -75,17 +77,12 @@ typedef enum
 
 - (STATE)getUserState;
 
-// NEED TO IMPLEMENT
-@property NSString *placeWhereGoingOut;
-@property NSDictionary *notificationSettings;
-
 #pragma mark - Saving data
 - (NSString *)login;
 - (NSString *)signUp;
 - (void)save;
 - (void)saveKey:(NSString *)key;
 - (void)loginWithHandler:(QueryResult)handler;
-
 - (void)saveKeyAsynchronously:(NSString *)key;
 - (void)saveKeyAsynchronously:(NSString *)key withHandler:(Handler)handler;
 @end

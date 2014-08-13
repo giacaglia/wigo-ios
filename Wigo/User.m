@@ -317,6 +317,64 @@
     [_proxy setObject:numberIsFollowingRequested forKey:@"is_tapped"];
 }
 
+- (BOOL)isTapPushNotificationEnabled {
+    NSDictionary *properties = [_proxy objectForKey:@"properties"];
+    if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"notifications"]) {
+        NSMutableDictionary *notifications = [properties objectForKey:@"notifications"];
+        if ([[notifications allKeys] containsObject:@"taps"]) {
+            return [(NSNumber *)[notifications objectForKey:@"taps"] boolValue];
+        }
+    }
+    return YES;
+}
+
+- (void)setIsTapPushNotificationEnabled:(BOOL)isTapPushNotificationEnabled {
+    NSMutableDictionary *properties = [_proxy objectForKey:@"properties"];
+    if ([properties isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *notifications;
+        if ([[properties allKeys] containsObject:@"notifications"]) {
+            notifications = [properties objectForKey:@"notifications"];
+            [notifications setObject:[NSNumber numberWithBool:isTapPushNotificationEnabled ] forKey:@"taps"];
+        }
+        else {
+            notifications = [[NSMutableDictionary alloc] initWithCapacity:1];
+            [notifications setObject:[NSNumber numberWithBool:isTapPushNotificationEnabled ] forKey:@"taps"];
+        }
+        [properties setObject:notifications forKey:@"notifications"];
+        [_proxy setObject:properties forKey:@"properties"];
+        [modifiedKeys addObject:@"properties"];
+    }
+}
+
+- (BOOL)isFavoritesGoingOutNotificationEnabled {
+    NSDictionary *properties = [_proxy objectForKey:@"properties"];
+    if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"notifications"]) {
+        NSMutableDictionary *notifications = [properties objectForKey:@"notifications"];
+        if ([[notifications allKeys] containsObject:@"favorites_going_out"]) {
+            return [(NSNumber *)[notifications objectForKey:@"favorites_going_out"] boolValue];
+        }
+    }
+    return YES;
+}
+
+- (void)setIsFavoritesGoingOutNotificationEnabled:(BOOL)isFavoritesGoingOutNotificationEnabled {
+    NSMutableDictionary *properties = [_proxy objectForKey:@"properties"];
+    if ([properties isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *notifications;
+        if ([[properties allKeys] containsObject:@"notifications"]) {
+            notifications = [properties objectForKey:@"notifications"];
+            [notifications setObject:[NSNumber numberWithBool:isFavoritesGoingOutNotificationEnabled ] forKey:@"favorites_going_out"];
+        }
+        else {
+            notifications = [[NSMutableDictionary alloc] initWithCapacity:1];
+            [notifications setObject:[NSNumber numberWithBool:isFavoritesGoingOutNotificationEnabled ] forKey:@"favorites_going_out"];
+        }
+        [properties setObject:notifications forKey:@"notifications"];
+        [_proxy setObject:properties forKey:@"properties"];
+        [modifiedKeys addObject:@"properties"];
+    }
+}
+
 - (BOOL)isFavorite {
     NSNumber *favoriteNumber = (NSNumber *)[_proxy objectForKey:@"is_favorite"];
     return [favoriteNumber boolValue];
