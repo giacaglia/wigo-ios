@@ -440,10 +440,12 @@
 }
 
 - (void)setAttendingEventID:(NSNumber *)attendingEventID {
-    if ([self isAttending]) {
-        NSMutableDictionary *isAttending = [[NSMutableDictionary alloc] initWithDictionary:(NSDictionary *)[_proxy objectForKey:@"is_attending"]];
-        [isAttending setObject:attendingEventID forKey:@"id"];
-        [_proxy setObject:[NSDictionary dictionaryWithDictionary:isAttending] forKey:@"is_attending"];
+    if (attendingEventID != nil) {
+        if ([self isAttending]) {
+            NSMutableDictionary *isAttending = [[NSMutableDictionary alloc] initWithDictionary:(NSDictionary *)[_proxy objectForKey:@"is_attending"]];
+            [isAttending setObject:attendingEventID forKey:@"id"];
+            [_proxy setObject:[NSDictionary dictionaryWithDictionary:isAttending] forKey:@"is_attending"];
+        }
     }
 }
 
