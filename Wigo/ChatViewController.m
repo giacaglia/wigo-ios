@@ -140,11 +140,11 @@ UIButton *newChatButton;
 }
 
 - (void)fetchMessages {
-    NSString *queryString = [NSString stringWithFormat:@"conversations/?to_user=me&page=%@", [_page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"conversations/?page=%@", [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             if ([_page isEqualToNumber:@1])  _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
-            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"latest"];
+            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
             [_messageParty addObjectsFromArray:arrayOfMessages];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_messageParty addMetaInfo:metaDictionary];

@@ -8,7 +8,7 @@
 
 #import "NSMutableURLRequest+Wigo.h"
 #define WIGO_API_KEY @"oi34u53205ju34ik23"
-#define API_VERSION @"1.0"
+#define API_VERSION @"1.02"
 #define DEVICE_TYPE @"iphone"
 
 @implementation NSMutableURLRequest (Wigo)

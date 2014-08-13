@@ -248,7 +248,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                     
                 }
                 else {
-                    numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"messages"];
+                    numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"conversations"];
                     numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
                     [self updateBadge];
                     handler(numberOfNewMessages, numberOfNewNotifications);
