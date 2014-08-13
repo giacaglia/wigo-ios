@@ -101,7 +101,7 @@
 }
 
 - (void)initializeFacebookSignButton {
-    _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"public_profile", @"email", @"user_friends", @"user_photos"]];
+    _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"public_profile", @"user_friends", @"user_photos"]];
     _loginView.delegate = self;
     _loginView.frame = CGRectMake(0, self.view.frame.size.height - 125, 245, 34);
     _loginView.frame = CGRectOffset(_loginView.frame, (self.view.center.x - (_loginView.frame.size.width / 2)), 5);
@@ -137,13 +137,22 @@
                               if (error) {
                                   _fetchingProfilePictures = NO;
                               }
+                              BOOL foundProfilePicturesAlbum = NO;
                               FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
                               for (FBGraphObject *album in resultObject) {
                                   if ([[album objectForKey:@"name"] isEqualToString:@"Profile Pictures"]) {
+                                      foundProfilePicturesAlbum = YES;
                                       _profilePicturesAlbumId = (NSString *)[album objectForKey:@"id"];
                                       [self get3ProfilePictures];
                                       break;
                                   }
+                              }
+                              if (!foundProfilePicturesAlbum) {
+                                  _fetchingProfilePictures = NO;
+                                  NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
+                                  [profilePictures addObject:@"https://api.wigo.us/static/img/wigo_profile_gray.png"];
+                                  [self saveProfilePictures:profilePictures];
+
                               }
                           }];
 
@@ -180,26 +189,30 @@
                               if ([profilePictures count] == 0) {
                                   [profilePictures addObject:@"https://api.wigo.us/static/img/wigo_profile_gray.png"];
                               }
-                              [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-                              User *profileUser = [Profile user];
-                              [profileUser setImagesURL:profilePictures];
-                              if (_userEmailAlreadySent) {
-                                  if (!_pushed) {
-                                      _pushed = YES;
-                                      _fetchingProfilePictures = NO;
-                                      self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-                                      [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
-                                  }
-                              }
-                              else {
-                                  if (!_pushed) {
-                                      _pushed = YES;
-                                      _fetchingProfilePictures = NO;
-                                      self.signUpViewController = [[SignUpViewController alloc] init];
-                                      [self.navigationController pushViewController:self.signUpViewController animated:YES];
-                                  }
-                              }
+                              [self saveProfilePictures:profilePictures];
                           }];
+}
+
+- (void)saveProfilePictures:(NSMutableArray *)profilePictures {
+    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+    User *profileUser = [Profile user];
+    [profileUser setImagesURL:profilePictures];
+    if (_userEmailAlreadySent) {
+        if (!_pushed) {
+            _pushed = YES;
+            _fetchingProfilePictures = NO;
+            self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
+            [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+        }
+    }
+    else {
+        if (!_pushed) {
+            _pushed = YES;
+            _fetchingProfilePictures = NO;
+            self.signUpViewController = [[SignUpViewController alloc] init];
+            [self.navigationController pushViewController:self.signUpViewController animated:YES];
+        }
+    }
 }
 
 - (FBGraphObject *)getFirstFacebookPhotoGreaterThanSixHundred:(FBGraphObject *)photoArray {

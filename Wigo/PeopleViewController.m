@@ -476,11 +476,11 @@
 - (User *)getUserAtIndex:(int)index {
     User *user;
     if (_isSearching) {
-        if ([[_filteredContentParty getObjectArray] count] != 0)
+        if ([[_filteredContentParty getObjectArray] count] > 0)
         user = [[_filteredContentParty getObjectArray] objectAtIndex:index];
     }
     else {
-        if ([[_contentParty getObjectArray] count] != 0)
+        if ([[_contentParty getObjectArray] count] > 0)
         user = [[_contentParty getObjectArray] objectAtIndex:index];
     }
     return user;
