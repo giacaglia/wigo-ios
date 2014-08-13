@@ -151,7 +151,7 @@ int queryQueueInt;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
-    if ([indexPath row] == [[_contentParty getObjectArray] count]) {
+    if ([indexPath row] == [[_contentParty getObjectArray] count] && [[_contentParty getObjectArray] count] != 0) {
         [self fetchEveryone];
         return cell;
     }
