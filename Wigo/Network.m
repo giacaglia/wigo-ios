@@ -19,7 +19,9 @@
     }];
 }
 
-+ (void)queryAsynchronousAPI:(NSString *)apiName withInputDictionary:(NSDictionary *)inputDictionary withHandler:(QueryResultWithInput)resultWithInput {
++ (void)queryAsynchronousAPI:(NSString *)apiName
+         withInputDictionary:(NSDictionary *)inputDictionary
+                 withHandler:(QueryResultWithInput)resultWithInput {
     [self queryAsynchronousAPI:apiName withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         resultWithInput(inputDictionary, jsonResponse, error);
     }];

@@ -28,6 +28,8 @@
 
 @end
 
+int queryQueueInt;
+
 @implementation MessageViewController
 
 - (id)init
@@ -42,11 +44,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    queryQueueInt = 0;
     _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
     _contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
     _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-//    _contentList = [_everyoneParty getObjectArray];
 
     
     // Title setup
@@ -298,18 +299,24 @@
 
 
 - (void)searchUsersWithString:(NSString *)queryString {
-    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        if ([_page isEqualToNumber:@1]) _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-        NSMutableArray *arrayOfUsers;
-        arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        
-        [_filteredContentParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_filteredContentParty addMetaInfo:metaDictionary];
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            _page = @([_page intValue] + 1);
-            [_tableView reloadData];
-        });
+    queryQueueInt += 1;
+    NSDictionary *inputDictionary = @{@"queryInt": [NSNumber numberWithInt:queryQueueInt]};
+    [Network queryAsynchronousAPI:queryString
+              withInputDictionary:inputDictionary
+                      withHandler:^(NSDictionary *input, NSDictionary *jsonResponse, NSError *error) {
+                          if ([[input objectForKey:@"queryInt"] intValue] == queryQueueInt) {
+                                if ([_page isEqualToNumber:@1]) _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                                NSMutableArray *arrayOfUsers;
+                                arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+                                
+                                [_filteredContentParty addObjectsFromArray:arrayOfUsers];
+                                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+                                [_filteredContentParty addMetaInfo:metaDictionary];
+                                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                                    _page = @([_page intValue] + 1);
+                                    [_tableView reloadData];
+                                });
+                          }
     }];
 }
 

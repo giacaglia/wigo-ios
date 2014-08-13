@@ -292,6 +292,7 @@
                                                cancelButtonTitle:@"Ok"
                                                otherButtonTitles: nil];
                     [_alert show];
+                    _alert.delegate = self;
                 }
             }
             
@@ -306,9 +307,6 @@
                     [_alert show];
                     _alert.delegate = self;
                 }
-//                [self fetchTokensFromFacebook];
-//                _fetchingProfilePictures = YES;
-//                [self fetchProfilePicturesAlbumFacebook];
             }
             else if ([[error localizedDescription] isEqualToString:@"error"]) {
                 [self fetchTokensFromFacebook];
