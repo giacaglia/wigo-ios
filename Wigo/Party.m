@@ -148,7 +148,7 @@
 }
 
 - (void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject {
-    [self.objectArray replaceObjectAtIndex:index withObject:anObject];
+    if ([self.objectArray count] > 0) [self.objectArray replaceObjectAtIndex:index withObject:anObject];
 }
 
 #pragma mark - Pagination Control

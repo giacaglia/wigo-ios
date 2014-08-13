@@ -141,13 +141,16 @@ OnboardFollowViewController *onboardFollowViewController;
             if (imageView.tag < [numberOfPeopleSignedUp intValue]) {
                 if ([[everyoneParty getObjectArray] count] != 0) {
                     int TOTAL_NUMBER = (int)[[everyoneParty getObjectArray] count];
-                    User *user = [[everyoneParty getObjectArray] objectAtIndex:[self generateRandomNumber:TOTAL_NUMBER]];
-                    [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
-                    imageView.backgroundColor = [FontProperties getOrangeColor];
-                    imageView.layer.borderWidth = 1;
-                    imageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-                    imageView.layer.cornerRadius = 7;
-                    imageView.layer.masksToBounds = YES;
+                    if ([[everyoneParty getObjectArray] count] > 0) {
+                        User *user = [[everyoneParty getObjectArray] objectAtIndex:[self generateRandomNumber:TOTAL_NUMBER]];
+                        [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+                        imageView.backgroundColor = [FontProperties getOrangeColor];
+                        imageView.layer.borderWidth = 1;
+                        imageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                        imageView.layer.cornerRadius = 7;
+                        imageView.layer.masksToBounds = YES;
+
+                    }
                 }
             }
             
