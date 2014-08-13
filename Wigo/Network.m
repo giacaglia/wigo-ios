@@ -81,7 +81,7 @@
                     NSDictionary *followObject = [arrayOfFollowObjects objectAtIndex:0];
                     NSNumber *followObjectNumber = [followObject objectForKey:@"id"];
                     Query *query = [[Query alloc] init];
-                    NSString *apiName = [NSString stringWithFormat:@"follows/%d", [followObjectNumber intValue]];
+                    NSString *apiName = [NSString stringWithFormat:@"follows/%d/", [followObjectNumber intValue]];
                     [query queryWithClassName:apiName];
                     User *profileUser = [Profile user];
                     [query setProfileKey:profileUser.key];
