@@ -24,6 +24,7 @@
 @property BOOL pushed;
 @property FBLoginView *loginView;
 @property NSString * profilePicturesAlbumId;
+@property NSString *profilePic;
 
 @property NSString *accessToken;
 @property NSString *fbID;
@@ -150,9 +151,8 @@
                               if (!foundProfilePicturesAlbum) {
                                   _fetchingProfilePictures = NO;
                                   NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
-                                  [profilePictures addObject:@"https://api.wigo.us/static/img/wigo_profile_gray.png"];
+                                  [profilePictures addObject:_profilePic];
                                   [self saveProfilePictures:profilePictures];
-
                               }
                           }];
 
@@ -254,6 +254,7 @@
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
     if (!_pushed) {
         _fbID = [fbGraphUser objectID];
+        _profilePic = [fbGraphUser link];
         _accessToken = [FBSession activeSession].accessTokenData.accessToken;
         User *profileUser = [Profile user];
         [profileUser setFirstName:fbGraphUser[@"first_name"]];
