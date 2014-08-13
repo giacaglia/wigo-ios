@@ -254,7 +254,7 @@
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
     if (!_pushed) {
         _fbID = [fbGraphUser objectID];
-        _profilePic = [fbGraphUser link];
+        _profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", [fbGraphUser objectForKey:@"id"]];
         _accessToken = [FBSession activeSession].accessTokenData.accessToken;
         User *profileUser = [Profile user];
         [profileUser setFirstName:fbGraphUser[@"first_name"]];
