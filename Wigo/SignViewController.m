@@ -304,10 +304,11 @@
                                                            cancelButtonTitle:@"Ok"
                                                            otherButtonTitles: nil];
                     [_alert show];
+                    _alert.delegate = self;
                 }
-                [self fetchTokensFromFacebook];
-                _fetchingProfilePictures = YES;
-                [self fetchProfilePicturesAlbumFacebook];
+//                [self fetchTokensFromFacebook];
+//                _fetchingProfilePictures = YES;
+//                [self fetchProfilePicturesAlbumFacebook];
             }
             else if ([[error localizedDescription] isEqualToString:@"error"]) {
                 [self fetchTokensFromFacebook];
@@ -337,6 +338,10 @@
         });
     }];
     
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    [self fetchTokensFromFacebook];
 }
 
 

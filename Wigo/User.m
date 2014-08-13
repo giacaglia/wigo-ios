@@ -649,7 +649,7 @@
     [query setValue:[self accessToken] forKey:@"facebook_access_token"];
     [query setValue:self.email forKey:@"email"];
     [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (jsonResponse == nil) {
+        if (jsonResponse == nil || error != nil) {
             handler(nil, error);
         }
         else if ([[jsonResponse allKeys] containsObject:@"code"]) {

@@ -12,7 +12,7 @@
 #import "SignUpViewController.h"
 #import "LockScreenViewController.h"
 
-@interface SignViewController : UIViewController <FBLoginViewDelegate>
+@interface SignViewController : UIViewController <FBLoginViewDelegate, UIAlertViewDelegate>
 
 @property SignUpViewController *signUpViewController;
 @property EmailConfirmationViewController *emailConfirmationViewController;
