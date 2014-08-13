@@ -339,6 +339,10 @@
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
     [profileButton addSubview:profileImageView];
+    profileButton.tag = [indexPath row];
+    if (![user isEqualToUser:[Profile user]]) {
+        [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchDown];
+    }
     [cell.contentView addSubview:profileButton];
     
     if ([user isFavorite]) {
