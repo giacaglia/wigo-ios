@@ -39,6 +39,8 @@
 @property NSNumber *currentTab;
 @end
 
+int queryQueueInt;
+
 @implementation PeopleViewController
 
 - (id)initWithUser:(User *)user {
@@ -60,6 +62,7 @@
 
 - (void)viewDidLoad
 {
+    queryQueueInt = 0;
     [super viewDidLoad];
   
     // Title setup
@@ -650,37 +653,45 @@
 }
 
 - (void)searchUsersWithString:(NSString *)queryString andObjectType:(OBJECT_TYPE)type {
-    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        if ([_page isEqualToNumber:@1]) _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-        NSMutableArray *arrayOfUsers;
-        if (type == FOLLOW_TYPE) {
-            NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-            arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-            for (NSDictionary *object in arrayOfFollowObjects) {
-                NSDictionary *userDictionary;
-                if ([_currentTab isEqualToNumber:@3]) userDictionary = [object objectForKey:@"user"];
-                else userDictionary = [object objectForKey:@"follow"];
-                if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                    if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                        [arrayOfUsers addObject:[[Profile user] dictionary]];
-                    }
-                    else {
-                        [arrayOfUsers addObject:userDictionary];
-                    }
-                }
-            }
-        }
-        else {
-            arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        }
-        
-        [_filteredContentParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_filteredContentParty addMetaInfo:metaDictionary];
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            _page = @([_page intValue] + 1);
-            [_tableViewOfPeople reloadData];
-        });
+    queryQueueInt += 1;
+    NSDictionary *inputDictionary = @{@"queryInt": [NSNumber numberWithInt:queryQueueInt]};
+    [Network queryAsynchronousAPI:queryString
+              withInputDictionary:inputDictionary
+                      withHandler: ^(NSDictionary *input, NSDictionary *jsonResponse, NSError *error) {
+                          // If it's last query
+                          if ([[input objectForKey:@"queryInt"] intValue] == queryQueueInt) {
+                              if ([_page isEqualToNumber:@1]) _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                              NSMutableArray *arrayOfUsers;
+                              if (type == FOLLOW_TYPE) {
+                                  NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+                                  arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+                                  for (NSDictionary *object in arrayOfFollowObjects) {
+                                      NSDictionary *userDictionary;
+                                      if ([_currentTab isEqualToNumber:@3]) userDictionary = [object objectForKey:@"user"];
+                                      else userDictionary = [object objectForKey:@"follow"];
+                                      if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                                          if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                                              [arrayOfUsers addObject:[[Profile user] dictionary]];
+                                          }
+                                          else {
+                                              [arrayOfUsers addObject:userDictionary];
+                                          }
+                                      }
+                                  }
+                              }
+                              else {
+                                  arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+                              }
+                              
+                              [_filteredContentParty addObjectsFromArray:arrayOfUsers];
+                              NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+                              [_filteredContentParty addMetaInfo:metaDictionary];
+                              dispatch_async(dispatch_get_main_queue(), ^(void) {
+                                  _page = @([_page intValue] + 1);
+                                  [_tableViewOfPeople reloadData];
+                              });
+                          }
+       
     }];
 }
 
