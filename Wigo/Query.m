@@ -102,7 +102,7 @@ static NSString * const BaseURLString = @"https://api.wigo.us%@";
     if ([_options count] != 0) {
         [req setHTTPBody:jsonData];
     }
-    [NSURLConnection sendAsynchronousRequest:req queue:[[NSOperationQueue alloc] init]  completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+    [NSURLConnection sendAsynchronousRequest:req queue:[[NSOperationQueue alloc] init] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         NSDictionary* json;
         if (data) {
             json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];

@@ -68,6 +68,14 @@
     [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error){}];
 }
 
++ (void)sendUntapToUserWithId:(NSNumber*)idOfUser {
+    NSString *queryString = [NSString stringWithFormat:@"users/%@/", [idOfUser stringValue]];
+    NSDictionary *options = @{@"is_tapped": @NO};
+    [Network sendAsynchronousHTTPMethod:POST
+                            withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:options];
+}
+
 
 # pragma mark - Synchronous Methods
 

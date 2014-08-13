@@ -531,7 +531,6 @@
         [_whoIsGoingOutParty replaceObjectAtIndex:tag withObject:user];
     }
     [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
-    
 }
 
 - (void) updateUserAtIndex:(int)tag {
@@ -549,6 +548,7 @@
         [user setIsTapped:NO];
         [_whoIsGoingOutParty replaceObjectAtIndex:tag withObject:user];
     }
+    [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
 }
 
 - (void)fetchedMyInfoOrPeoplesInfo {

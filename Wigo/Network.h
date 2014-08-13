@@ -31,6 +31,7 @@ typedef void (^FetchResult)(NSArray *arrayResponse, NSError *error);
 + (void)acceptFollowRequestForUser:(User *)user;
 + (void)rejectFollowRequestForUser:(User *)user;
 + (void)sendTapToUserWithIndex:(NSNumber *)indexOfUser;
++ (void)sendUntapToUserWithId:(NSNumber*)idOfUser;
 + (void)postGoOut;
 + (void) postGoingToEventNumber:(int)indexOfObject;
 + (NSNumber *)createEventWithName:(NSString *)nameString;
