@@ -281,6 +281,7 @@
 - (void)addRefreshToTable {
     [WiGoSpinnerView addDancingGToUIScrollView:_notificationsTableView withHandler:^{
         [self fetchFirstPageNotifications];
+        [self updateLastNotificationsRead];
     }];
 }
 
@@ -317,7 +318,6 @@
             _page = @([_page intValue] + 1);
             [_notificationsTableView reloadData];
             [_notificationsTableView didFinishPullToRefresh];
-            [self updateLastNotificationsRead];
         });
     }];
 }
