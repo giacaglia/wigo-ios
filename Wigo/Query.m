@@ -11,6 +11,9 @@
 #define WIGO_API_KEY @"oi34u53205ju34ik23"
 
 static NSString * const BaseURLString = @"https://api.wigo.us%@";
+static NSString * const StageURLString = @"https://stage-api.wigo.us%@";
+static NSString * const DevelopmentURLString = @"https://dev-api.wigo.us%@";
+
 
 @interface Query ()
 @property NSString *urlSuffix;

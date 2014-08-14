@@ -2,12 +2,13 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "wigoLogo@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "wigoLogo@2x.png"
+      "filename" : "wigo_v8-64.png"
     }
   ],
   "info" : {

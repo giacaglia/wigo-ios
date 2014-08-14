@@ -145,7 +145,6 @@
         }
         else {
             dispatch_async(dispatch_get_main_queue(), ^(void){
-
                 if ([_page isEqualToNumber:@1]) {
                     _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
                     _notGoingOutView.hidden = YES;

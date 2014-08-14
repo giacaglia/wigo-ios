@@ -295,7 +295,7 @@ UIImageView *searchIconImageView;
 }
 
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?user__ne=%@&ordering=-id&page=%@",[[Profile user] objectForKey:@"id" ] ,[page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"users/?user__ne=%@&ordering=onboarding&page=%@",[[Profile user] objectForKey:@"id" ] ,[page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [contentParty addObjectsFromArray:arrayOfUsers];
@@ -354,7 +354,7 @@ UIImageView *searchIconImageView;
 - (void)searchTableList {
     NSString *searchString = searchBar.text;
     page = @1;
-    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@&text=%@" ,[page stringValue], searchString];
+    NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[page stringValue], searchString];
     [self searchUsersWithString:queryString andObjectType:USER_TYPE];
 }
 
