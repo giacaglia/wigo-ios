@@ -343,7 +343,7 @@ int queryQueueInt;
     [profileButton addSubview:profileImageView];
     profileButton.tag = [indexPath row];
     if (![user isEqualToUser:[Profile user]]) {
-        [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchDown];
+        [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
     }
     [cell.contentView addSubview:profileButton];
     
