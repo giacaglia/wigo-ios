@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "FontProperties.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
@@ -18,7 +17,6 @@
 NSNumber *indexOfSelectedTab;
 NSNumber *numberOfNewMessages;
 NSNumber *numberOfNewNotifications;
-BOOL wasAtBackground;
 NSDate *firstLoggedTime;
 
 
@@ -26,7 +24,6 @@ NSDate *firstLoggedTime;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    wasAtBackground = NO;
     [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
     if ([[launchOptions allKeys]
          containsObject:UIApplicationLaunchOptionsRemoteNotificationKey])
@@ -81,7 +78,6 @@ NSDate *firstLoggedTime;
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    wasAtBackground = YES;
     [self reloadTabBarNotifications];
     [self updateGoingOutIfItsAnotherDay];
     [[LocalyticsSession shared] resume];
@@ -130,11 +126,13 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[LocalyticsSession shared] handleRemoteNotification:userInfo];
-    if (!wasAtBackground) {
-        wasAtBackground = NO;
+    if (application.applicationState == UIApplicationStateActive) {
         [self reloadTabBarNotifications];
     }
-    else {
+    else { // If it's was at the background or inactive
+        UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+        UINavigationController *navController = (UINavigationController*)tabBarController.selectedViewController;
+        
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         NSDictionary *alert = [aps objectForKey:@"alert"];
         NSString *locKeyString = [alert objectForKey:@"loc-key"];
@@ -143,6 +141,19 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
             NSString *messageString = locArgs[1];
             NSDictionary *dictionary = [NSDictionary dictionaryWithObject:messageString forKey:@"message"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:dictionary];
+        }
+        else if ([locKeyString isEqualToString:@"T"]) {
+            [navController popToRootViewControllerAnimated:NO];
+            tabBarController.selectedIndex = 3;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"tapSegue" object:nil];
+        }
+        else if ([locKeyString isEqualToString:@"F"] || [locKeyString isEqualToString:@"FR"]) {
+            [navController popToRootViewControllerAnimated:NO];
+            tabBarController.selectedIndex = 3;
+        }
+        else if ([locKeyString isEqualToString:@"G"]) {
+            [navController popToRootViewControllerAnimated:NO];
+            tabBarController.selectedIndex = 0;
         }
     }
 }

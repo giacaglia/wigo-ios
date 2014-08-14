@@ -46,6 +46,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageNotifications) name:@"fetchNotifications" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapSegue) name:@"tapSegue" object:nil];
+    
 
 }
 
@@ -196,7 +198,7 @@
     else if ([typeString isEqualToString:@"tap"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapFilled"]];
         iconLabel.frame = CGRectMake(58, 20, 14, 14);
-        [notificationButton addTarget:self action:@selector(tapSegue:) forControlEvents:UIControlEventTouchUpInside];
+        [notificationButton addTarget:self action:@selector(tapSegue) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"follow"] || [typeString isEqualToString:@"facebook.follow"] || [typeString isEqualToString:@"follow.accepted"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"addedFilled"]];
@@ -251,13 +253,13 @@
     self.tabBarController.tabBar.hidden = YES;
 }
 
-- (void) chatSegue:(id)sender {
+- (void)chatSegue:(id)sender {
     self.conversationViewController = [[ConversationViewController alloc] init];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
 }
 
-- (void)tapSegue:(id)sender {
+- (void)tapSegue {
     self.tapViewController = [[TapViewController alloc] init];
     [self.navigationController pushViewController:self.tapViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
