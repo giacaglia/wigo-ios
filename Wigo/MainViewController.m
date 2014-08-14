@@ -53,6 +53,7 @@
 @implementation MainViewController
 
 - (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     self.tabBarController.tabBar.hidden = NO;
     [self initializeTabBar];
     [self initializeNavigationItem];
@@ -61,6 +62,7 @@
 }
 
 - (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [EventAnalytics tagEvent:@"Who View"];
     self.tabBarController.tabBar.hidden = NO;
     if (!_fetchingFirstPage) [self fetchFirstPageFollowing];

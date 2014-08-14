@@ -125,7 +125,6 @@ int queryQueueInt;
 
 - (void) goBack {
     [self updateLastUserRead];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
