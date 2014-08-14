@@ -317,6 +317,7 @@
             _page = @([_page intValue] + 1);
             [_notificationsTableView reloadData];
             [_notificationsTableView didFinishPullToRefresh];
+            [self updateLastNotificationsRead];
         });
     }];
 }
