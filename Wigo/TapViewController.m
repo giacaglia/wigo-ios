@@ -182,6 +182,7 @@
                 imageView.image = [UIImage imageNamed:@"tapFilled"];
                 subview.tag = -1;
                 [self sendTapToUserWithTag:tag];
+               
             }
         }
         else if (subview.tag == -1) {
@@ -189,6 +190,7 @@
                 UIImageView *imageView = (UIImageView *)subview;
                 imageView.image = [UIImage imageNamed:@"tapUnfilled"];
                 subview.tag = 1;
+                [self sendTapToUserWithTag:tag];
             }
         }
     }
@@ -196,10 +198,18 @@
 
 - (void) sendTapToUserWithTag:(int)tag {
     User *user = [[_tapParty getObjectArray] objectAtIndex:tag];
-    if (![user isTapped]) {
-        [Network sendTapToUserWithIndex:[user objectForKey:@"id"]];
-    }
+    [Network sendTapToUserWithIndex:[user objectForKey:@"id"]];
+    [user setIsTapped:YES];
+    [_tapParty replaceObjectAtIndex:tag withObject:user];
 }
+
+- (void) sendUntapToUserWithTag:(int)tag {
+    User *user;
+    [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
+    [user setIsTapped:NO];
+    [_tapParty replaceObjectAtIndex:tag withObject:user];
+}
+
 
 #pragma mark - UICollectionViewDelegate
 

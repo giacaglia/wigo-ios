@@ -77,9 +77,11 @@
 
 - (void)initializeEDUAddress {
     UILabel *eduAddressLabel = [[UILabel alloc] init];
-    eduAddressLabel.text = @"Enter your .EDU email address";
+    eduAddressLabel.text = @"Enter your .EDU email to verify you're a college student:";
     eduAddressLabel.textAlignment = NSTextAlignmentCenter;
     eduAddressLabel.font = [FontProperties getSmallFont];
+    eduAddressLabel.numberOfLines = 0;
+    eduAddressLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.view addSubview:eduAddressLabel];
     
     _studentTextField = [[UITextField alloc] init];
@@ -104,20 +106,21 @@
     continueButton.layer.borderWidth = 3;
     continueButton.layer.cornerRadius = 5;
     [continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchUpInside];
+    
+    if (isiPhone5) {
+        eduAddressLabel.frame = CGRectMake(40, 150, self.view.frame.size.width - 80, 50);
+        _studentTextField.frame = CGRectMake(40, 210, self.view.frame.size.width - 80, 47);
+        continueButton.frame = CGRectMake(37, 270, self.view.frame.size.width - 77, 47);
+    }
+    else {
+        eduAddressLabel.frame = CGRectMake(40, 130, self.view.frame.size.width - 80, 50);
+        _studentTextField.frame = CGRectMake(40, 180, self.view.frame.size.width - 80, 37);
+        continueButton.frame = CGRectMake(37, 225, self.view.frame.size.width - 77, 37);
+    }
+    
     UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightArrow"]];
     rightArrowImageView.frame = CGRectMake(continueButton.frame.size.width - 35, continueButton.frame.size.height/2 - 9, 11, 18);
     [continueButton addSubview:rightArrowImageView];
-    
-    if (isiPhone5) {
-        eduAddressLabel.frame = CGRectMake(0, 190, self.view.frame.size.width, 40);
-        _studentTextField.frame = CGRectMake(40, 230, self.view.frame.size.width - 80, 47);
-        continueButton.frame = CGRectMake(37, 290, self.view.frame.size.width - 77, 47);
-    }
-    else {
-        eduAddressLabel.frame = CGRectMake(0, 140, self.view.frame.size.width, 30);
-        _studentTextField.frame = CGRectMake(40, 170, self.view.frame.size.width - 80, 37);
-        continueButton.frame = CGRectMake(37, 220, self.view.frame.size.width - 77, 37);
-    }
     [self.view addSubview:continueButton];
 }
 

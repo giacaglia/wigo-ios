@@ -81,19 +81,19 @@ OnboardFollowViewController *onboardFollowViewController;
     UILabel *openLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 225, self.view.frame.size.width, 30)];
     openLabel.textAlignment = NSTextAlignmentCenter;
     openLabel.text = @"Please open the link in the email";
-    openLabel.font = [FontProperties getSmallFont];
+    openLabel.font = [FontProperties lightFont:22.0f];
     [self.view addSubview:openLabel];
     
     UILabel *justSentLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 255, self.view.frame.size.width, 30)];
     justSentLabel.textAlignment = NSTextAlignmentCenter;
     justSentLabel.text = @"that we just sent to";
-    justSentLabel.font = [FontProperties getSmallFont];
+    justSentLabel.font = [FontProperties lightFont:22.0f];
     [self.view addSubview:justSentLabel];
     
     emailTextField = [[UITextField alloc] initWithFrame:CGRectMake(40, 285, self.view.frame.size.width - 80, 30)];
     emailTextField.textAlignment = NSTextAlignmentCenter;
     emailTextField.text = [[Profile user] email];
-    emailTextField.font = [FontProperties getSmallFont];
+    emailTextField.font = [FontProperties lightFont:22.0f];
     emailTextField.textColor = [FontProperties getOrangeColor];
     emailTextField.enabled = NO;
     emailTextField.layer.borderColor = [UIColor clearColor].CGColor;
@@ -115,7 +115,7 @@ OnboardFollowViewController *onboardFollowViewController;
 
 - (void)initializeOtherButtons {
     UIButton *resendButton = [[UIButton alloc] init];
-    resendButton.frame = CGRectMake(22, 350, self.view.frame.size.width*0.4, 47);
+    resendButton.frame = CGRectMake(22, self.view.frame.size.height - 60, self.view.frame.size.width*0.4, 47);
     resendButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
     [resendButton setTitle:@"Resend" forState:UIControlStateNormal];
     [resendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -127,7 +127,7 @@ OnboardFollowViewController *onboardFollowViewController;
 
     
     UIButton *changeButton = [[UIButton alloc] init];
-    changeButton.frame = CGRectMake(22 + self.view.frame.size.width*0.4 + 20, 350, self.view.frame.size.width*0.4, 47);
+    changeButton.frame = CGRectMake(22 + self.view.frame.size.width*0.4 + 20, self.view.frame.size.height - 60, self.view.frame.size.width*0.4, 47);
     changeButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
     [changeButton setTitle:@"Change Email" forState:UIControlStateNormal];
     [changeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

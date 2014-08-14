@@ -342,7 +342,7 @@ UIViewController *webViewController;
 
 
 - (void) openCommunityStandards {
-    NSURL *currentURL = [NSURL URLWithString:@"Anythi"];
+    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/communitystandards.pdf"];
     [self openViewControllerWithURL:currentURL];
 }
 

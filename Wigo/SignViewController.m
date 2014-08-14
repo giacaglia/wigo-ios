@@ -116,7 +116,7 @@
     
     UILabel *dontWorryLabel = [[UILabel alloc] init];
     dontWorryLabel.frame = CGRectMake(0, self.view.frame.size.height - 125 + 34, self.view.frame.size.width, 30);
-    dontWorryLabel.text = @"Don't worry, we'll never post on your behalf.";
+    dontWorryLabel.text = @"Don't worry, we'll NEVER post on your behalf.";
     dontWorryLabel.font = [FontProperties mediumFont:13.0f];
     dontWorryLabel.textColor = RGB(51, 102, 154);
     dontWorryLabel.textAlignment = NSTextAlignmentCenter;
@@ -286,8 +286,8 @@
             if ([[jsonResponse allKeys] containsObject:@"status"]) {
                 if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]){
                     _alertShown = YES;
-                    _alert = [[UIAlertView alloc ] initWithTitle:@"Error"
-                                                         message:@"An unexpected error happened. Please try again later"
+                    _alert = [[UIAlertView alloc ] initWithTitle:@"Bummer"
+                                                         message:@"We fudged something up. Please try again later."
                                                         delegate:self
                                                cancelButtonTitle:@"Ok"
                                                otherButtonTitles: nil];
@@ -299,8 +299,8 @@
             if ([error domain] == NSURLErrorDomain) {
                 if (!_alertShown) {
                     _alertShown = YES;
-                    _alert = [[UIAlertView alloc ] initWithTitle:@"Error"
-                                                                     message:[error localizedDescription]
+                    _alert = [[UIAlertView alloc ] initWithTitle:@"No Connection"
+                                                                     message:@"Please check your network connection and try again."
                                                                     delegate:self
                                                            cancelButtonTitle:@"Ok"
                                                            otherButtonTitles: nil];

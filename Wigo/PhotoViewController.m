@@ -77,7 +77,7 @@
     NSString *message = [[Profile user] removeImageURL:_imageURL];
     if ([message isEqualToString:@"Error"]) {
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bummer"
                                                             message:@"You need a minimum of 3 profile pictures"
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
