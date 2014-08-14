@@ -137,6 +137,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         NSDictionary *alert = [aps objectForKey:@"alert"];
         NSString *locKeyString = [alert objectForKey:@"loc-key"];
         if ([locKeyString isEqualToString:@"M"]) {
+            [navController popToRootViewControllerAnimated:NO];
+            tabBarController.selectedIndex = 2;
+            
             NSArray *locArgs = [alert objectForKey:@"loc-args"];
             NSString *messageString = locArgs[1];
             NSDictionary *dictionary = [NSDictionary dictionaryWithObject:messageString forKey:@"message"];
