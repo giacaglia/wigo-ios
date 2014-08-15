@@ -188,11 +188,12 @@ OnboardFollowViewController *onboardFollowViewController;
                                     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                                     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
                                     if (!error) {
-                                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Resent"
-                                                                                            message:@"We just resent you a new email."
-                                                                                           delegate:nil
-                                                                                  cancelButtonTitle:@"OK"
-                                                                                  otherButtonTitles:nil];
+                                        UIAlertView *alertView = [[UIAlertView alloc]
+                                            initWithTitle:@"Resent"
+                                                  message:@"We just resent you a new email."
+                                                 delegate:nil
+                                        cancelButtonTitle:@"OK"
+                                        otherButtonTitles:nil];
                                         [alertView show];
                                     }
                                 });
