@@ -295,7 +295,7 @@ UIImageView *searchIconImageView;
 }
 
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?user__ne=%@&ordering=onboarding&page=%@",[[Profile user] objectForKey:@"id" ] ,[page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"users/?query=onboarding&page=%@",[[Profile user] objectForKey:@"id" ] ,[page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [contentParty addObjectsFromArray:arrayOfUsers];
