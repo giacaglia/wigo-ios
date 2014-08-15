@@ -116,24 +116,24 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void)initializeOtherButtons {
     UIButton *resendButton = [[UIButton alloc] init];
     resendButton.frame = CGRectMake(22, self.view.frame.size.height - 60, self.view.frame.size.width*0.4, 47);
-    resendButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
     [resendButton setTitle:@"Resend" forState:UIControlStateNormal];
-    [resendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    resendButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    resendButton.layer.borderWidth = 3;
+    [resendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    resendButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    resendButton.layer.borderWidth = 1;
     resendButton.layer.cornerRadius = 5;
+    resendButton.titleLabel.font = [FontProperties getSmallFont];
     [resendButton addTarget:self action:@selector(resendEmail) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:resendButton];
 
     
     UIButton *changeButton = [[UIButton alloc] init];
     changeButton.frame = CGRectMake(22 + self.view.frame.size.width*0.4 + 20, self.view.frame.size.height - 60, self.view.frame.size.width*0.4, 47);
-    changeButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
     [changeButton setTitle:@"Change Email" forState:UIControlStateNormal];
-    [changeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    changeButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    changeButton.layer.borderWidth = 3;
+    [changeButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    changeButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    changeButton.layer.borderWidth = 1;
     changeButton.layer.cornerRadius = 5;
+    changeButton.titleLabel.font = [FontProperties getSmallFont];
     [changeButton addTarget:self action:@selector(changeEmailPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:changeButton];
 }
