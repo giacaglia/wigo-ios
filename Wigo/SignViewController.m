@@ -286,7 +286,7 @@
             if ([[jsonResponse allKeys] containsObject:@"status"]) {
                 if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]){
                     _alertShown = YES;
-                                       _alert = [[UIAlertView alloc ] initWithTitle:@"Bummer"
+                    _alert = [[UIAlertView alloc ] initWithTitle:@"Bummer"
                                                          message:@"We fudged something up. Please try again later."
                                                         delegate:self
                                                cancelButtonTitle:@"Ok"

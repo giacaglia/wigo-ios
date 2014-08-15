@@ -12,5 +12,5 @@
 
 + (BOOL) isUTCtimeStringFromLastDay:(NSString *)utcTimeString;
 + (NSString *)getUTCTimeStringToLocalTimeString:(NSString *)utcTimeString;
-
++ (NSString *)getLocalDateJoinedFromUTCTimeString:(NSString *)utcTimeString;
 @end

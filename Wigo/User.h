@@ -53,7 +53,7 @@ typedef enum
 @property BOOL isFavoritesGoingOutNotificationEnabled;
 
 - (NSString *)fullName;
-
+- (NSString  *)joinedDate;
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
 

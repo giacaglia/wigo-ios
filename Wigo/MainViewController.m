@@ -90,14 +90,6 @@
     _spinnerAtCenter = YES;
     _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
     
-//    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-//                             forBarMetrics:UIBarMetricsDefault];
-//    self.navigationController.navigationBar.shadowImage = [UIImage new];
-//    
-//    UIView *transparentView = [[UIView alloc] initWithFrame: CGRectMake(0, -20, 320, 64)];
-//    transparentView.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent: 0.95f];
-//    [self.navigationController.navigationBar.layer addSublayer: transparentView.layer];
-    
     [self initializeWhoView];
     [self initializeNotificationObservers];
 }

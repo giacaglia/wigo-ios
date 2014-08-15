@@ -11,6 +11,7 @@
 #import "Profile.h"
 #import <Parse/Parse.h>
 #import "LocalyticsSession.h"
+#import "Time.h"
 #import "EventAnalytics.h"
 
 
@@ -509,6 +510,11 @@
         return FOLLOWING_USER;
     }
     else return NOT_FOLLOWING_PUBLIC_USER;
+}
+
+- (NSString *)joinedDate {
+    NSString *utcCreation = [_proxy objectForKey:@"created"];
+    return [Time getLocalDateJoinedFromUTCTimeString:utcCreation];
 }
 
 #pragma mark - Saving data

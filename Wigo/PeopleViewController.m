@@ -369,6 +369,14 @@ int queryQueueInt;
     }
     [clickableView addSubview:goingOutLabel];
     
+    if ([_currentTab isEqualToNumber:@2]) {
+        UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140 - 15, PEOPLEVIEW_HEIGHT_OF_CELLS - 15, 140, 12)];
+        timeLabel.text = [user joinedDate];
+        timeLabel.textAlignment = NSTextAlignmentRight;
+        timeLabel.font = [FontProperties getSmallPhotoFont];
+        timeLabel.textColor = RGB(201, 202, 204);
+        [cell.contentView addSubview:timeLabel];
+    }
     
     if (![user isEqualToUser:[Profile user]]) {
         UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 15, 49, 30)];

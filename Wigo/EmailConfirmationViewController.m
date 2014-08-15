@@ -189,8 +189,8 @@ OnboardFollowViewController *onboardFollowViewController;
                                     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
                                     if (!error) {
                                         UIAlertView *alertView = [[UIAlertView alloc]
-                                            initWithTitle:@"Resent"
-                                                  message:@"We just resent you a new email."
+                                            initWithTitle:@"You're good"
+                                                  message:@"We just resent you a new verification email."
                                                  delegate:nil
                                         cancelButtonTitle:@"OK"
                                         otherButtonTitles:nil];

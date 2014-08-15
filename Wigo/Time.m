@@ -72,5 +72,18 @@
     }
 }
 
++ (NSString *)getLocalDateJoinedFromUTCTimeString:(NSString *)utcTimeString {
+    NSDateFormatter *utcDateFormat = [[NSDateFormatter alloc] init];
+    [utcDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *dateInUTC = [utcDateFormat dateFromString:utcTimeString];
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    NSDate *dateInLocalTimezone = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
+    
+    NSDateComponents *dayJoined = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:dateInLocalTimezone];
+    NSArray *monthsArray = @[@"Jan", @"Feb", @"Mar", @"Apr", @"May", @"Jun", @"Jul", @"Aug", @"Sep", @"Oct", @"Nov", @"Dec"];
+    NSString *month = monthsArray[[dayJoined month] - 1];
+    return  [NSString stringWithFormat:@"Joined %@ %ld, %ld", month, (long)[dayJoined day], (long)[dayJoined year]];
+}
+
 
 @end
