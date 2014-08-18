@@ -60,7 +60,7 @@ BOOL initializedPopScreen;
     popViewController.view.frame = self.view.frame;
     popViewController.view.backgroundColor = [FontProperties getOrangeColor];
     UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height/2 - 60, popViewController.view.frame.size.width - 40, 120)];
-    followLabel.text = @"Follow people\n you know.";
+    followLabel.text = @"Follow people\n≥ you know.";
     followLabel.textColor = [UIColor whiteColor];
     followLabel.numberOfLines = 0;
     followLabel.lineBreakMode = NSLineBreakByWordWrapping;

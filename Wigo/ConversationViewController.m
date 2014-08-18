@@ -102,9 +102,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 }
 
-- (void) addMessages {
-    _positionOfLastMessage = 10;
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
+- (void) addFirstPageMessages {
+    _positionOfLastMessage = 0;
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage + 50);
     [[_scrollView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     for (Message *message in [_messageParty getObjectArray]) {
         
@@ -118,11 +118,26 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     if ([[_messageParty getObjectArray] count] == 0) {
         [self initializeMessageForEmptyConversation];
     }
-    if ([page isEqualToNumber:@2]) // If it's the first page to load.
-        [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:NO];
+    [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:NO];
+}
+
+- (void) addMessages:(Party *)messageParty {
+    int oldContentSize = _scrollView.contentSize.height;
+    _positionOfLastMessage = 0;
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
+    for (Message *message in [messageParty getObjectArray]) {
+        _positionOfLastMessage = 0;
+        if ([[message fromUser] isEqualToUser:[Profile user]])
+            [self addMessageFromSender:message];
+        else
+            [self addMessageFromReceiver:message];
+    }
+    _scrollView.contentOffset = CGPointMake(0, _scrollView.contentSize.height);
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _scrollView.contentSize.height + oldContentSize);
 }
 
 - (void) initializeScrollView {
+    self.automaticallyAdjustsScrollViewInsets = NO;
     _positionOfLastMessage = 10;
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
@@ -211,15 +226,20 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [_scrollView addSubview:leftBarBeforeMessage];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _scrollView.contentSize.height + messageWrapper.frame.size.height + 10);
     _positionOfLastMessage += messageWrapper.frame.size.height + 10;
+    if ([page intValue] > 2) {
+        for (UIView *messageView in [_scrollView subviews]) {
+            messageView.frame = CGRectMake(messageView.frame.origin.x, messageView.frame.origin.y + messageWrapper.frame.size.height + 10, messageView.frame.size.width, messageView.frame.size.height);
+        }
+    }
 }
 
 
 - (void)addMessageFromSender:(Message *)message {
-    UIView *messageWraper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
-    messageWraper.backgroundColor = RGB(250, 233, 212);
-    [messageWraper.layer setCornerRadius:5];
-    messageWraper.clipsToBounds = YES;
-    [_scrollView addSubview:messageWraper];
+    UIView *messageWrapper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
+    messageWrapper.backgroundColor = RGB(250, 233, 212);
+    [messageWrapper.layer setCornerRadius:5];
+    messageWrapper.clipsToBounds = YES;
+    [_scrollView addSubview:messageWrapper];
     
     // Add text to the wrapper
     UILabel *messageFromSender = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3, 50)];
@@ -233,17 +253,23 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     // Adjust the size of the wrapper
     CGSize sizeOfMessage = messageFromSender.frame.size;
     int widthOfMessage = MAX(sizeOfMessage.width + 20, 60 + 20);
-    messageWraper.frame = CGRectMake(self.view.frame.size.width - 10 - widthOfMessage, _positionOfLastMessage , widthOfMessage, sizeOfMessage.height + 20);
-    [messageWraper addSubview:messageFromSender];
-    [self addTimerOfMessage:message ToView:messageWraper];
+    messageWrapper.frame = CGRectMake(self.view.frame.size.width - 10 - widthOfMessage, _positionOfLastMessage , widthOfMessage, sizeOfMessage.height + 20);
+    [messageWrapper addSubview:messageFromSender];
+    [self addTimerOfMessage:message ToView:messageWrapper];
     
     // image at the right of the message
     UIImageView *rightBarAfterMessage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightAfterChatIcon"]];
     rightBarAfterMessage.frame = CGRectMake(self.view.frame.size.width - 10, _positionOfLastMessage +  messageFromSender.frame.size.height + 20 - 5, 10, 15);
     [_scrollView addSubview:rightBarAfterMessage];
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _scrollView.contentSize.height + messageWraper.frame.size.height + 10);
-    _positionOfLastMessage += messageWraper.frame.size.height + 10;
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _scrollView.contentSize.height + messageWrapper.frame.size.height + 10);
+    _positionOfLastMessage += messageWrapper.frame.size.height + 10;
+    if ([page intValue] > 2) {
+        for (UIView *messageView in [_scrollView subviews]) {
+            messageView.frame = CGRectMake(messageView.frame.origin.x, messageView.frame.origin.y + messageWrapper.frame.size.height + 10, messageView.frame.size.width, messageView.frame.size.height);
+        }
+    }
 }
+
 
 - (void) addTimerOfMessage:(Message *)message ToView:(UIView *)messageWrapper {
     messageWrapper.frame = CGRectMake(messageWrapper.frame.origin.x, messageWrapper.frame.origin.y, messageWrapper.frame.size.width, messageWrapper.frame.size.height + 20);
@@ -446,8 +472,8 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 # pragma mark - UIScrollView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView.contentOffset.y == -64)
-        if ([[_messageParty getObjectArray] count] >0 && [_messageParty hasNextPage]) {
+    if (scrollView.contentOffset.y == 0)
+        if ([[_messageParty getObjectArray] count] > 0 && [_messageParty hasNextPage]) {
             [self fetchMessages];
         }
 }
@@ -473,10 +499,13 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                 [WiGoSpinnerView hideSpinnerForView:self.view];
                 NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
                 [_messageParty insertObjectsFromArrayAtBeginning:arrayOfMessages];
+                Party *newMessageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
+                [newMessageParty addObjectsFromArray:arrayOfMessages];
                 NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                 [_messageParty addMetaInfo:metaDictionary];
                 fetching = NO;
-                [self addMessages];
+                if ([page isEqualToNumber:@2]) [self addFirstPageMessages];
+                else [self addMessages:newMessageParty];
             });
         }];
 
