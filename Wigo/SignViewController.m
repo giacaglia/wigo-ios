@@ -97,19 +97,19 @@
     [self.view addSubview:_facebookConnectView];
     
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
-    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 91, self.view.frame.size.height/2 - 52 - 40, 182, 104);
+    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 132, self.view.frame.size.height/2 - 75 - 40, 265, 151);
     [_facebookConnectView addSubview:logoImageView];
 }
 
 - (void)initializeFacebookSignButton {
     _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"public_profile", @"user_friends", @"user_photos"]];
     _loginView.delegate = self;
-    _loginView.frame = CGRectMake(0, self.view.frame.size.height - 125, 245, 34);
+    _loginView.frame = CGRectMake(0, self.view.frame.size.height - 127, 253, 36);
     _loginView.frame = CGRectOffset(_loginView.frame, (self.view.center.x - (_loginView.frame.size.width / 2)), 5);
     _loginView.backgroundColor = [UIColor whiteColor];
     UIImageView *connectFacebookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"connectFacebook"]];
     connectFacebookImageView.backgroundColor = [UIColor whiteColor];
-    connectFacebookImageView.frame = CGRectMake(0, 0, 245, 34);
+    connectFacebookImageView.frame = CGRectMake(0, 0, 253, 36);
     [_loginView addSubview:connectFacebookImageView];
     [_loginView bringSubviewToFront:connectFacebookImageView];
     [self.view addSubview:_loginView];
