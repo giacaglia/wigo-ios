@@ -41,7 +41,7 @@ typedef enum
 - (void)removeUser:(User*)newUser;
 - (void)exchangeObjectAtIndex:(NSUInteger)idx1 withObjectAtIndex:(NSUInteger)idx2;
 - (void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject;
-
+- (void)insertObjectsFromArrayAtBeginning:(NSArray *)newObjectArray;
 // Pagination control
 - (BOOL)hasNextPage;
 - (void)addMetaInfo:(NSDictionary *)metaDictionary;

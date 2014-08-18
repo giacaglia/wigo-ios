@@ -27,6 +27,8 @@
 
 @end
 
+NSNumber *page;
+BOOL fetching;
 ProfileViewController *profileViewController;
 
 @implementation ConversationViewController
@@ -72,7 +74,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self initializeTapHandler];
     [self initializeTextBox];
     
-    [self fetchMessages];
+    [self fetchFirstPageMessages];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -101,6 +103,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void) addMessages {
+    _positionOfLastMessage = 10;
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
+    [[_scrollView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     for (Message *message in [_messageParty getObjectArray]) {
         
         if ([[message fromUser] isEqualToUser:[Profile user]]) {
@@ -113,15 +118,16 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     if ([[_messageParty getObjectArray] count] == 0) {
         [self initializeMessageForEmptyConversation];
     }
-    
-    [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:NO];
+    if ([page isEqualToNumber:@2]) // If it's the first page to load.
+        [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:NO];
 }
 
 - (void) initializeScrollView {
     _positionOfLastMessage = 10;
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    [self.view addSubview:_scrollView];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
+    _scrollView.delegate = self;
+    [self.view addSubview:_scrollView];
 }
 
 - (void) initializeLeftBarButton {
@@ -437,23 +443,45 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [_scrollView setContentOffset:bottomOffset animated:YES];
 }
 
+# pragma mark - UIScrollView Delegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView.contentOffset.y == -64)
+        if ([[_messageParty getObjectArray] count] >0 && [_messageParty hasNextPage]) {
+            [self fetchMessages];
+        }
+}
+
+
 # pragma mark - Network functions
 
+- (void)fetchFirstPageMessages {
+    page = @1;
+    fetching = NO;
+    _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
+    [self fetchMessages];
+}
+
 - (void)fetchMessages {
-    [[_scrollView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    NSString *queryString = [NSString stringWithFormat:@"messages/?conversation=%@",[self.user objectForKey:@"id"]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView hideSpinnerForView:self.view];
-            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
-            // Reorder them by time stamp
-            arrayOfMessages = [[arrayOfMessages reverseObjectEnumerator] allObjects];
-            _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
-            [_messageParty addObjectsFromArray:arrayOfMessages];
-            [self addMessages];
-        });
-    }];
+    if (!fetching) {
+        fetching = YES;
+        [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+        NSString *queryString = [NSString stringWithFormat:@"messages/?conversation=%@&page=%@", [self.user objectForKey:@"id"], [page stringValue]];
+        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                page = @([page intValue] + 1);
+                [WiGoSpinnerView hideSpinnerForView:self.view];
+                NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
+//                arrayOfMessages = [[arrayOfMessages reverseObjectEnumerator] allObjects];
+                [_messageParty insertObjectsFromArrayAtBeginning:arrayOfMessages]; 
+                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+                [_messageParty addMetaInfo:metaDictionary];
+                fetching = NO;
+                [self addMessages];
+            });
+        }];
+
+    }
 }
         
 

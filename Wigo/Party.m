@@ -103,6 +103,27 @@
     }
 }
 
+- (void)insertObjectsFromArrayAtBeginning:(NSArray *)newObjectArray {
+    for (int i = 0; i < [newObjectArray count]; i++) {
+        if (self.objectType == USER_TYPE) {
+            User *newUser = [[User alloc] initWithDictionary:newObjectArray[i]];
+            [self.objectArray insertObject:newUser atIndex:0];
+        }
+        else if (self.objectType == EVENT_TYPE) {
+            Event *newEvent = [[Event alloc] initWithDictionary:newObjectArray[i]];
+            [self.objectArray insertObject:newEvent atIndex:0];
+        }
+        else if (self.objectType == MESSAGE_TYPE) {
+            Message *newMessage = [[Message alloc] initWithDictionary:newObjectArray[i]];
+            [self.objectArray insertObject:newMessage atIndex:0];
+        }
+        else if (self.objectType == NOTIFICATION_TYPE) {
+            Notification *newNotification = [[Notification alloc] initWithDictionary:newObjectArray[i]];
+            [self.objectArray insertObject:newNotification atIndex:0];
+        }
+    }
+}
+
 - (void)removeObjectAtIndex:(NSUInteger)index {
     [self.objectArray removeObjectAtIndex:index];
 }
