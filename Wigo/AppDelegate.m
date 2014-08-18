@@ -128,6 +128,15 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [[LocalyticsSession shared] handleRemoteNotification:userInfo];
     if (application.applicationState == UIApplicationStateActive) {
         [self reloadTabBarNotifications];
+        NSDictionary *aps = [userInfo objectForKey:@"aps"];
+        NSDictionary *alert = [aps objectForKey:@"alert"];
+        NSString *locKeyString = [alert objectForKey:@"loc-key"];
+        if ([locKeyString isEqualToString:@"M"]) {
+            NSArray *locArgs = [alert objectForKey:@"loc-args"];
+            NSString *messageString = locArgs[1];
+            NSDictionary *dictionary = [NSDictionary dictionaryWithObject:messageString forKey:@"message"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:dictionary];
+        }
     }
     else { // If it's was at the background or inactive
         UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
@@ -139,11 +148,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         if ([locKeyString isEqualToString:@"M"]) {
             [navController popToRootViewControllerAnimated:NO];
             tabBarController.selectedIndex = 2;
-            
-            NSArray *locArgs = [alert objectForKey:@"loc-args"];
-            NSString *messageString = locArgs[1];
-            NSDictionary *dictionary = [NSDictionary dictionaryWithObject:messageString forKey:@"message"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:dictionary];
+            indexOfSelectedTab = @2;
         }
         else if ([locKeyString isEqualToString:@"T"]) {
             [navController popToRootViewControllerAnimated:NO];
@@ -169,7 +174,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)tabBarController:(UITabBarController *)theTabBarController didSelectViewController:(UIViewController *)viewController {
     indexOfSelectedTab = [NSNumber numberWithUnsignedInteger:[theTabBarController.viewControllers indexOfObject:viewController]];
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollUp" object:nil];
 }
 
@@ -207,7 +211,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     UITabBar *tabBar = tabBarController.tabBar;
     tabBar.layer.borderWidth = 0.5;
     UIFont *smallFont = [FontProperties scMediumFont:11.0f];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getBlueColor], NSFontAttributeName:smallFont } forState:UIControlStateNormal];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName:[FontProperties getBlueColor], NSFontAttributeName:smallFont } forState:UIControlStateNormal];
     UITabBarItem *firstTab = [tabBar.items objectAtIndex:0];
     firstTab.image = [[UIImage imageNamed:@"peopleIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
@@ -221,6 +225,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         UILabel *notificationLabel = [self.notificationDictionary objectForKey:key];
         notificationLabel.backgroundColor = [FontProperties getBlueColor];
         notificationLabel.textColor = [UIColor whiteColor];
+
     }
 }
 
