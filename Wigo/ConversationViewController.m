@@ -139,7 +139,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void) initializeScrollView {
     self.automaticallyAdjustsScrollViewInsets = NO;
     _positionOfLastMessage = 10;
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
     _scrollView.delegate = self;
     [self.view addSubview:_scrollView];
@@ -359,7 +359,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         [self textView:_messageTextView shouldChangeTextInRange:NSMakeRange(0, [_messageTextView.text length]) replacementText:@""];
 
     }
-    CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
+    CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height);
     [_scrollView setContentOffset:bottomOffset animated:YES];
 }
 
@@ -402,7 +402,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                           delay:0
                         options:animationOptionsWithCurve(animationCurve)
                      animations:^{
-                         CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
+                         CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height);
                          [_scrollView setContentOffset:bottomOffset animated:NO];
                      }
                      completion:^(BOOL finished){}];
