@@ -8,6 +8,7 @@
 
 #import "OnboardFollowViewController.h"
 #import "Globals.h"
+#import "RWBlurPopover.h"
 
 UISearchBar *searchBar;
 UITableView *tableViewOfPeople;
@@ -16,6 +17,8 @@ Party *contentParty;
 Party *filteredContentParty;
 BOOL isSearching;
 UIImageView *searchIconImageView;
+UIViewController *popViewController;
+BOOL initializedPopScreen;
 
 @implementation OnboardFollowViewController
 
@@ -23,6 +26,7 @@ UIImageView *searchIconImageView;
 {
     self = [super init];
     if (self) {
+        initializedPopScreen = NO;
         self.view.backgroundColor = [UIColor whiteColor];
         self.navigationController.navigationBar.hidden = YES;
         self.navigationItem.hidesBackButton = YES;
@@ -35,6 +39,7 @@ UIImageView *searchIconImageView;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [self initializeTitle];
     [self initializeTapHandler];
     [self initializeSearchBar];
@@ -45,7 +50,43 @@ UIImageView *searchIconImageView;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    if (!initializedPopScreen) [self initializePopScreen];
     [EventAnalytics tagEvent:@"Onboard Follow View"];
+}
+
+- (void)initializePopScreen {
+    initializedPopScreen = YES;
+    popViewController = [[UIViewController alloc] init];
+    popViewController.view.frame = self.view.frame;
+    popViewController.view.backgroundColor = [FontProperties getOrangeColor];
+    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height/2 - 60, popViewController.view.frame.size.width - 40, 120)];
+    followLabel.text = @"Follow people\n you know.";
+    followLabel.textColor = [UIColor whiteColor];
+    followLabel.numberOfLines = 0;
+    followLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    followLabel.font = [FontProperties getSubHeaderFont];
+    followLabel.textAlignment = NSTextAlignmentCenter;
+    [popViewController.view addSubview:followLabel];
+    popViewController.view.backgroundColor = [FontProperties getOrangeColor];
+
+    [self presentViewController:popViewController animated:NO completion:^(void) {}];
+    [NSTimer scheduledTimerWithTimeInterval:2.0
+                                     target:self
+                                   selector:@selector(dismissPopViewController)
+                                   userInfo:nil
+                                    repeats:NO];
+}
+
+- (void)dismissPopViewController {
+    [UIView animateWithDuration:0.2
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseOut
+                     animations:^{
+                         popViewController.view.alpha = 0;
+                     } completion:^(BOOL b){
+                         [popViewController dismissViewControllerAnimated:NO completion:nil];
+                         popViewController.view.alpha = 1;
+                     }];
 }
 
 - (void)initializeTitle {

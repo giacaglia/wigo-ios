@@ -472,8 +472,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                 page = @([page intValue] + 1);
                 [WiGoSpinnerView hideSpinnerForView:self.view];
                 NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
-//                arrayOfMessages = [[arrayOfMessages reverseObjectEnumerator] allObjects];
-                [_messageParty insertObjectsFromArrayAtBeginning:arrayOfMessages]; 
+                [_messageParty insertObjectsFromArrayAtBeginning:arrayOfMessages];
                 NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                 [_messageParty addMetaInfo:metaDictionary];
                 fetching = NO;
