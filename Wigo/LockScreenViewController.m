@@ -83,23 +83,25 @@ OnboardFollowViewController *onboardFollowViewController;
     for (int i = 1 ; i <= 100; i++) {
         if (i == [numberOfPeopleSignedUp intValue]) {
             UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width - 10, origin.height - 10, 15 + 20, 15 + 20)];
-            UIImageViewShake *lockPersonIcon = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15 + 20, 15 + 20)];
-            lockPersonIcon.tag = i;
-            [lockPersonIcon setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
-            lockPersonIcon.layer.borderWidth = 1;
-            lockPersonIcon.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            lockPersonIcon.layer.cornerRadius = 17;
-            lockPersonIcon.layer.masksToBounds = YES;
-            [lockPersonIconButton addSubview:lockPersonIcon];
+            UIImageViewShake *lockPersonImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15 + 20, 15 + 20)];
+            lockPersonImageView.tag = i;
+            [lockPersonImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
+            lockPersonImageView.layer.borderWidth = 1;
+            lockPersonImageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            lockPersonImageView.layer.cornerRadius = 17;
+            lockPersonImageView.layer.masksToBounds = YES;
+            lockPersonImageView.contentMode = UIViewContentModeScaleAspectFill;
+            lockPersonImageView.clipsToBounds = YES;
+            [lockPersonIconButton addSubview:lockPersonImageView];
             [self.view addSubview:lockPersonIconButton];
         }
         else {
             UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width, origin.height, 15 + 4, 15 + 4)];
-            UIImageViewShake *lockPersonIcon = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15, 15)];
-            lockPersonIcon.tag = i;
-            if (i < [numberOfPeopleSignedUp intValue]) lockPersonIcon.image = [UIImage imageNamed:@"lockPersonIcon"];
-            else lockPersonIcon.image = [UIImage imageNamed:@"grayLockSelectedIcon"];
-            [lockPersonIconButton addSubview:lockPersonIcon];
+            UIImageViewShake *lockPersonImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15, 15)];
+            lockPersonImageView.tag = i;
+            if (i < [numberOfPeopleSignedUp intValue]) lockPersonImageView.image = [UIImage imageNamed:@"lockPersonIcon"];
+            else lockPersonImageView.image = [UIImage imageNamed:@"grayLockSelectedIcon"];
+            [lockPersonIconButton addSubview:lockPersonImageView];
             [self.view addSubview:lockPersonIconButton];
         }
         if (i %10 == 0) origin = CGSizeMake(25, origin.height + 31);
