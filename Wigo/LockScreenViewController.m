@@ -44,7 +44,7 @@ OnboardFollowViewController *onboardFollowViewController;
     [self initializeTopLabel];
     [self initializeShareButton];
     [self initializeLockPeopleButtons];
-    [self initializeBottomLabel];
+    if (isiPhone5) [self initializeBottomLabel];
     [self fetchEveryone];
 }
 
@@ -79,7 +79,7 @@ OnboardFollowViewController *onboardFollowViewController;
 }
 
 - (void)initializeLockPeopleButtons {
-    CGSize origin = CGSizeMake(25, 120);
+    CGSize origin = CGSizeMake(25, 110);
     for (int i = 1 ; i <= 100; i++) {
         if (i == [numberOfPeopleSignedUp intValue]) {
             UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width - 10, origin.height - 10, 15 + 20, 15 + 20)];
@@ -121,7 +121,7 @@ OnboardFollowViewController *onboardFollowViewController;
 }
 
 - (void)initializeShareButton {
-    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 125, self.view.frame.size.height - 70, 250, 48)];
+    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 125, self.view.frame.size.height - 65, 250, 48)];
     shareButton.backgroundColor = [FontProperties getOrangeColor];
     [shareButton setTitle:@"Share WiGo" forState:UIControlStateNormal];
     [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
