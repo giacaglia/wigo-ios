@@ -103,6 +103,7 @@
 
 - (void)initializeFacebookSignButton {
     _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"public_profile", @"user_friends", @"user_photos"]];
+    _loginView.loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
     _loginView.delegate = self;
     _loginView.frame = CGRectMake(0, self.view.frame.size.height - 127, 253, 36);
     _loginView.frame = CGRectOffset(_loginView.frame, (self.view.center.x - (_loginView.frame.size.width / 2)), 5);
@@ -249,6 +250,31 @@
     }
 }
 
+#pragma mark - UIAlertView Methods
+
+- (void)showErrorLoginFailed {
+    _alert = [[UIAlertView alloc] initWithTitle:@"Not so fast!"
+                                        message:@"WiGo requires Facebook login. Open Settings > Facebook and make sure WiGo is turned on."
+                                       delegate:self
+                              cancelButtonTitle:@"Ok"
+                              otherButtonTitles: nil];
+    [_alert show];
+}
+
+- (void)showErrorNoConnection {
+    if (!_alertShown) {
+        _alertShown = YES;
+        _alert = [[UIAlertView alloc] initWithTitle:@"No Connection"
+                                            message:@"Please check your network connection and try again."
+                                           delegate:self
+                                  cancelButtonTitle:@"Ok"
+                                  otherButtonTitles: nil];
+        [_alert show];
+        _alert.delegate = self;
+    }
+    
+}
+
 #pragma mark - Facebook Delegate Methods
 
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
@@ -263,6 +289,39 @@
         if (!_alertShown && !_fetchingProfilePictures) {
             [self loginUserAsynchronous];
         }
+    }
+}
+
+- (void) loginView:(FBLoginView *)loginView handleError:(NSError *)error {
+    if ([[[error userInfo] allKeys] containsObject:@"com.facebook.sdk:ErrorInnerErrorKey"]) {
+        NSError *innerError = [[error userInfo] objectForKey:@"com.facebook.sdk:ErrorInnerErrorKey"];
+        if ([innerError domain] == NSURLErrorDomain) {
+            [self showErrorNoConnection];
+            [self logout];
+        }
+
+    }
+    else if ([[[error userInfo] allKeys] containsObject:@"NSLocalizedFailureReason"]) {
+        if ([[[error userInfo] objectForKey:@"NSLocalizedFailureReason"] isEqualToString:@"com.facebook.sdk:SystemLoginDisallowedWithoutError"])
+            [self showErrorLoginFailed];
+    }
+}
+
+- (void) loginViewShowingLoggedOutUser:(FBLoginView *)loginView {
+    _alertShown = NO;
+}
+
+- (void)logout {
+    FBSession* session = [FBSession activeSession];
+    [session closeAndClearTokenInformation];
+    [session close];
+    [FBSession setActiveSession:nil];
+    
+    NSHTTPCookieStorage* cookies = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray* facebookCookies = [cookies cookiesForURL:[NSURL URLWithString:@"https://facebook.com/"]];
+    
+    for (NSHTTPCookie* cookie in facebookCookies) {
+        [cookies deleteCookie:cookie];
     }
 }
 
@@ -286,27 +345,18 @@
             if ([[jsonResponse allKeys] containsObject:@"status"]) {
                 if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]){
                     _alertShown = YES;
-                    _alert = [[UIAlertView alloc ] initWithTitle:@"Bummer"
-                                                         message:@"We fudged something up. Please try again later."
-                                                        delegate:self
-                                               cancelButtonTitle:@"Ok"
-                                               otherButtonTitles: nil];
+                    _alert = [[UIAlertView alloc] initWithTitle:@"Bummer"
+                                                        message:@"We fudged something up. Please try again later."
+                                                       delegate:self
+                                              cancelButtonTitle:@"Ok"
+                                              otherButtonTitles: nil];
                     [_alert show];
                     _alert.delegate = self;
                 }
             }
             
             if ([error domain] == NSURLErrorDomain) {
-                if (!_alertShown) {
-                    _alertShown = YES;
-                    _alert = [[UIAlertView alloc ] initWithTitle:@"No Connection"
-                                                                     message:@"Please check your network connection and try again."
-                                                                    delegate:self
-                                                           cancelButtonTitle:@"Ok"
-                                                           otherButtonTitles: nil];
-                    [_alert show];
-                    _alert.delegate = self;
-                }
+                [self showErrorNoConnection];
             }
             else if ([[error localizedDescription] isEqualToString:@"error"]) {
                 [self fetchTokensFromFacebook];
