@@ -298,9 +298,8 @@ UIViewController *popViewController;
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
                             withOptions:options];
     [self.user setIsBlocked:NO];
-    [self dismissViewControllerAnimated:YES completion:^(void){}];
+    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){}];
     self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-
 }
 
 - (void)blockPressed {
@@ -829,7 +828,7 @@ UIViewController *popViewController;
 - (void)presentBlockPopView {
     popViewController = [[UIViewController alloc] init];
     popViewController.view.frame = self.view.frame;
-    popViewController.view.backgroundColor = [FontProperties getOrangeColor];
+    popViewController.view.backgroundColor = RGBAlpha(244,149,45, 0.8f);
     
     UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 10, 65, 55)];
     [backButton setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
@@ -847,7 +846,6 @@ UIViewController *popViewController;
     blockedLabel.font = [FontProperties getSubHeaderFont];
     blockedLabel.textAlignment = NSTextAlignmentCenter;
     [popViewController.view addSubview:blockedLabel];
-    popViewController.view.backgroundColor = [FontProperties getOrangeColor];
     
     UIButton *unblockButton = [[UIButton alloc] initWithFrame:CGRectMake(25, 64 + self.view.frame.size.width + 20, self.view.frame.size.width - 50, 50)];
     [unblockButton addTarget:self action:@selector(unblockPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -858,14 +856,13 @@ UIViewController *popViewController;
     [unblockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     unblockButton.titleLabel.font = [FontProperties scMediumFont:24.0f];
     [popViewController.view addSubview:unblockButton];
-
-    [self presentViewController:popViewController animated:NO completion:^(void) {}];
+    [[RWBlurPopover instance] presentViewController:popViewController withOrigin:0 andHeight:popViewController.view.frame.size.height];
 }
 
 - (void)dismissAndGoBack {
     [self.user setIsBlocked:NO];
-    [self dismissViewControllerAnimated:NO completion:^(void) {}];
     [self goBack];
+    [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){}];
 }
 
 @end
