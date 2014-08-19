@@ -146,16 +146,20 @@
     UIImageViewShake *tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(imgView.frame.size.width - 30 - 5, 5, 30, 30)];
     tappedImageView.tintColor = [FontProperties getOrangeColor];
     tappedImageView.hidden = [[Profile user] isGoingOut] ? NO : YES;
-    if ([user isTapped]) {
-        tappedImageView.tag = -1;
-        tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
+    STATE userState = [user getUserState];
+    if (userState != NOT_FOLLOWING_PUBLIC_USER && userState != NOT_SENT_FOLLOWING_PRIVATE_USER
+        && userState != NOT_YET_ACCEPTED_PRIVATE_USER) {
+        if ([user isTapped]) {
+            tappedImageView.tag = -1;
+            tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
+        }
+        else {
+            tappedImageView.tag = 1;
+            tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+        }
+        [imgView addSubview:tappedImageView];
     }
-    else {
-        tappedImageView.tag = 1;
-        tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
-    }
-    [imgView addSubview:tappedImageView];
-    
+   
     [user setObject:tapButton forKey:@"tapButton"];
     [user setObject:tappedImageView forKey:@"tappedImageView"];
     cell.contentView.hidden = NO;
