@@ -38,8 +38,7 @@
         _state == ACCEPTED_PRIVATE_USER ||
         _state == ATTENDING_EVENT_FOLLOWING_USER ||
         _state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
-//        UIButton *sendEmailButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
-        UIButton *unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 54, 248, 42)];
+        UIButton *unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
         unfollowButton.backgroundColor = RGB(246, 143, 30);
         [unfollowButton setTitle:@"UNFOLLOW" forState:UIControlStateNormal];
         [unfollowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -48,15 +47,14 @@
         [self.view addSubview:unfollowButton];
     }
     
-//    UIButton *blockButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12, 248, 42)];
-//    blockButton.backgroundColor = [UIColor redColor];
-//    [blockButton addTarget:self action:@selector(blockPressed) forControlEvents:UIControlEventTouchUpInside];
-//    [blockButton setTitle:@"BLOCK" forState:UIControlStateNormal];
-//    [blockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//    blockButton.titleLabel.font = [FontProperties getTitleFont];
-//    [self.view addSubview:blockButton];
-    
-//    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12 + 42 + 12, 248, 42)];
+    UIButton *blockButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12, 248, 42)];
+    blockButton.backgroundColor = [UIColor redColor];
+    [blockButton addTarget:self action:@selector(blockPressed) forControlEvents:UIControlEventTouchUpInside];
+    [blockButton setTitle:@"BLOCK" forState:UIControlStateNormal];
+    [blockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    blockButton.titleLabel.font = [FontProperties getTitleFont];
+    [self.view addSubview:blockButton];
+
     UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12 + 42 + 12, 248, 42)];
     cancelButton.backgroundColor = [UIColor whiteColor];
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];

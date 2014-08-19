@@ -51,6 +51,7 @@ typedef enum
 @property BOOL isTapped;
 @property BOOL isTapPushNotificationEnabled;
 @property BOOL isFavoritesGoingOutNotificationEnabled;
+@property BOOL isBlocked;
 
 - (NSString *)fullName;
 - (NSString  *)joinedDate;

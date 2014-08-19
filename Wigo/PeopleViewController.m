@@ -10,6 +10,7 @@
 #import "Globals.h"
 #import "ProfileViewController.h"
 #import "UIButtonAligned.h"
+#import "UIImageCrop.h"
 
 
 @interface PeopleViewController ()
@@ -384,21 +385,34 @@ int queryQueueInt;
         followPersonButton.tag = -100;
         [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:followPersonButton];
-        
-        if ([user isFollowing]) {
-            [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            followPersonButton.tag = 100;
-        }
-        if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        if ([user getUserState] == BLOCKED_USER) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+            [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
             [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
             followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
             followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
             followPersonButton.layer.borderWidth = 1;
             followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             followPersonButton.layer.cornerRadius = 3;
-            followPersonButton.tag = 100;
+            followPersonButton.tag = 50;
+        }
+        else {
+            if ([user isFollowing]) {
+                [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+                followPersonButton.tag = 100;
+            }
+            if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+                [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+                [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+                [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+                followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+                followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+                followPersonButton.layer.borderWidth = 1;
+                followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                followPersonButton.layer.cornerRadius = 3;
+                followPersonButton.tag = 100;
+            }
+
         }
     }
     
@@ -433,7 +447,20 @@ int queryQueueInt;
     User *user = [self getUserAtIndex:(int)[indexPath row]];
     
     UIButton *senderButton = (UIButton*)sender;
-    if (senderButton.tag == -100) {
+    if (senderButton.tag == 50) {
+        [senderButton setTitle:nil forState:UIControlStateNormal];
+        [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+        senderButton.tag = -100;
+        [user setIsBlocked:NO];
+
+        NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
+        NSDictionary *options = @{@"is_blocked": @NO};
+        [Network sendAsynchronousHTTPMethod:POST
+                                withAPIName:queryString
+                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                                withOptions:options];
+    }
+    else if (senderButton.tag == -100) {
         int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
 
         if ([user isPrivate]) {

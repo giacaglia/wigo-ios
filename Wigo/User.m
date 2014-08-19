@@ -423,6 +423,10 @@
     return [blockedNumber boolValue];
 }
 
+- (void)setIsBlocked:(BOOL)isBlocked {
+    [_proxy setObject:[NSNumber numberWithBool:isBlocked] forKey:@"is_blocked"];
+    [modifiedKeys addObject:@"is_following"];
+}
 
 - (NSString *)attendingEventName {
     if ([self isAttending]) {
@@ -495,6 +499,9 @@
 }
 
 - (STATE)getUserState {
+    if ([self isBlocked]) {
+        return BLOCKED_USER;
+    }
     if ([self isPrivate]) {
         if ([self isFollowing]) {
             if ([self isAttending]) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER;

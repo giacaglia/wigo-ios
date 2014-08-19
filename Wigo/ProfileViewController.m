@@ -50,9 +50,10 @@
 @property UIView *nameOfPersonBackground;
 @property UILabel *nameOfPersonLabel;
 
-
-
 @end
+
+UIViewController *popViewController;
+
 
 @implementation ProfileViewController
 
@@ -92,6 +93,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     _pageControl.hidden = NO;
+    if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView];
 }
 
 
@@ -107,22 +109,24 @@
     _currentPage = 0;
     _isSeingImages = NO;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseImage) name:@"chooseImage" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed) name:@"blockPressed" object:nil];
-
     
+    [self initializeNotificationHandlers];
     [self initializeLeftBarButton];
     [self initializeBioLabel];
     [self initializeRightBarButton];
-
     [self initializeFollowingAndFollowers];
     [self initializeFollowButton];
     [self initializeFollowRequestLabel];
     [self initializeLeftProfileButton];
     [self initializeRightProfileButton];
     [self reloadView];
+}
+
+- (void) initializeNotificationHandlers {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseImage) name:@"chooseImage" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed) name:@"blockPressed" object:nil];
 }
 
 - (void)reloadView {
@@ -147,7 +151,9 @@
         _privateLogoImageView.hidden = YES;
         _followRequestLabel.hidden = YES;
     }
-    else if (self.userState == NOT_FOLLOWING_PUBLIC_USER || self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) {
+    else if (self.userState == NOT_FOLLOWING_PUBLIC_USER ||
+             self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER ||
+             self.userState == BLOCKED_USER) {
         _followingButton.enabled = NO;
         _followingButton.hidden = YES;
         _followersButton.enabled = NO;
@@ -285,24 +291,26 @@
 }
 
 - (void)unblockPressed {
-    NSString *queryString = @"blocks/";
-    NSDictionary *options = @{@"block": [self.user objectForKey:@"id"]};
-    [Network sendAsynchronousHTTPMethod:DELETE
+    NSString *queryString = [NSString stringWithFormat:@"users/%@", [self.user objectForKey:@"id"]];
+    NSDictionary *options = @{@"is_blocked": @NO};
+    [Network sendAsynchronousHTTPMethod:POST
                             withAPIName:queryString
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
                             withOptions:options];
+    [self.user setIsBlocked:NO];
+    [self dismissViewControllerAnimated:YES completion:^(void){}];
+    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+
 }
 
 - (void)blockPressed {
-   UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Block"
-                                                   message: @"Are you sure you want to block this user?"
-                                                  delegate: nil
+   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Block"
+                                                   message:@"Are you sure you want to block this user?"
+                                                  delegate:nil
                                          cancelButtonTitle:@"Cancel"
                                          otherButtonTitles:@"Block", nil];
     alert.delegate = self;
     [alert show];
-    
-   
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -313,6 +321,8 @@
                                 withAPIName:queryString
                                 withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
                                 withOptions:options];
+        [self.user setIsBlocked:YES];
+        [self presentBlockPopView];
     }
 }
 
@@ -386,7 +396,8 @@
 
         __weak UIImageView *weakProfileImgView = profileImgView;
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
+            dispatch_queue_t taskQ = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_async(taskQ, ^(void){
                 [self addBlurredImageToImageView:weakProfileImgView forIndex:i];
                 weakProfileImgView.hidden = NO;
             });
@@ -406,12 +417,8 @@
     UIImage *croppedImage = [UIImageCrop croppingImage:imageRightSize toRect:CGRectMake(0, imageView.frame.size.height - 80, self.view.frame.size.width, 80)];
     UIImageView *croppedImageView = [[UIImageView alloc] initWithImage:croppedImage];
     croppedImageView.frame = CGRectMake(0, imageView.frame.size.height - 80, imageView.frame.size.width, 80);
-//    NSString *cachedString = [NSString stringWithFormat:@"%@-%d", [self.user objectForKey:@"id" ], i];
-//    UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:cachedString];
-//    if (!blurredImage) {
-        UIImage *blurredImage = [UIImageCrop blurredImageFromImageView:croppedImageView withRadius:10.0f];
-//        [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:cachedString];
-//    }
+
+    UIImage *blurredImage = [UIImageCrop blurredImageFromImageView:croppedImageView withRadius:10.0f];
     croppedImageView.image = blurredImage;
     [imageView addSubview:croppedImageView];
 }
@@ -817,33 +824,48 @@
     [_scrollView setContentOffset:CGPointMake((self.view.frame.size.width + 10) * page, 0.0f) animated:YES];
 }
 
-#pragma mark - Parallax Effect
+#pragma mark - Block View
 
-- (void)addParallaxEffectToView:(UIView *)view {
-    // Set vertical effect
-    UIInterpolatingMotionEffect *verticalMotionEffect =
-    [[UIInterpolatingMotionEffect alloc]
-     initWithKeyPath:@"center.y"
-     type:UIInterpolatingMotionEffectTypeTiltAlongVerticalAxis];
-    verticalMotionEffect.minimumRelativeValue = @(-20);
-    verticalMotionEffect.maximumRelativeValue = @(20);
+- (void)presentBlockPopView {
+    popViewController = [[UIViewController alloc] init];
+    popViewController.view.frame = self.view.frame;
+    popViewController.view.backgroundColor = [FontProperties getOrangeColor];
     
-    // Set horizontal effect
-    UIInterpolatingMotionEffect *horizontalMotionEffect =
-    [[UIInterpolatingMotionEffect alloc]
-     initWithKeyPath:@"center.x"
-     type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
-    horizontalMotionEffect.minimumRelativeValue = @(-20);
-    horizontalMotionEffect.maximumRelativeValue = @(20);
+    UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 10, 65, 55)];
+    [backButton setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
+    [backButton setTitle:@" Back" forState:UIControlStateNormal];
+    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    backButton.titleLabel.font = [FontProperties getSubtitleFont];
+    [backButton addTarget:self action: @selector(dismissAndGoBack) forControlEvents:UIControlEventTouchUpInside];
+    [popViewController.view addSubview:backButton];
     
-    // Create group to combine both
-    UIMotionEffectGroup *group = [UIMotionEffectGroup new];
-    group.motionEffects = @[horizontalMotionEffect, verticalMotionEffect];
+    UILabel *blockedLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height/2 - 60 - 40, popViewController.view.frame.size.width - 40, 120)];
+    blockedLabel.text = [NSString stringWithFormat:@"%@ can't follow you or see any of your activity.", [self.user fullName]];
+    blockedLabel.textColor = [UIColor whiteColor];
+    blockedLabel.numberOfLines = 0;
+    blockedLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    blockedLabel.font = [FontProperties getSubHeaderFont];
+    blockedLabel.textAlignment = NSTextAlignmentCenter;
+    [popViewController.view addSubview:blockedLabel];
+    popViewController.view.backgroundColor = [FontProperties getOrangeColor];
     
-    // Add both effects to your view
-    [view addMotionEffect:group];
+    UIButton *unblockButton = [[UIButton alloc] initWithFrame:CGRectMake(25, 64 + self.view.frame.size.width + 20, self.view.frame.size.width - 50, 50)];
+    [unblockButton addTarget:self action:@selector(unblockPressed) forControlEvents:UIControlEventTouchUpInside];
+    unblockButton.layer.cornerRadius = 15;
+    unblockButton.layer.borderWidth = 1;
+    unblockButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    [unblockButton setTitle:[NSString stringWithFormat:@"Unblock %@", [self.user firstName]] forState:UIControlStateNormal];
+    [unblockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    unblockButton.titleLabel.font = [FontProperties scMediumFont:24.0f];
+    [popViewController.view addSubview:unblockButton];
+
+    [self presentViewController:popViewController animated:NO completion:^(void) {}];
 }
 
-
+- (void)dismissAndGoBack {
+    [self.user setIsBlocked:NO];
+    [self dismissViewControllerAnimated:NO completion:^(void) {}];
+    [self goBack];
+}
 
 @end
