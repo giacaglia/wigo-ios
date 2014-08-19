@@ -395,8 +395,7 @@ UIViewController *popViewController;
 
         __weak UIImageView *weakProfileImgView = profileImgView;
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            dispatch_queue_t taskQ = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            dispatch_async(taskQ, ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^(void){
                 [self addBlurredImageToImageView:weakProfileImgView forIndex:i];
                 weakProfileImgView.hidden = NO;
             });
