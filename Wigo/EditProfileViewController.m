@@ -206,7 +206,8 @@ UIViewController *webViewController;
     [shoulderTapView addSubview:shoulderTapLabel];
     
     UISwitch *tapsSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(265, 10, 16, 30)];
-    tapsSwitch.on = YES;
+    tapsSwitch.on = [[Profile user] isTapPushNotificationEnabled];
+    [tapsSwitch addTarget:self action:@selector(tapsSwitchPressed:) forControlEvents:UIControlEventValueChanged];
     [shoulderTapView addSubview:tapsSwitch];
     
     UIView *favoritesView = [[UIView alloc] initWithFrame:CGRectMake(0, 375, self.view.frame.size.width, 50)];
@@ -220,7 +221,8 @@ UIViewController *webViewController;
     [favoritesView addSubview:favoritesLabel];
     
     UISwitch *favoritesSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(265, 10, 16, 30)];
-    favoritesSwitch.on = YES;
+    favoritesSwitch.on = [[Profile user] isFavoritesGoingOutNotificationEnabled];
+    [favoritesSwitch addTarget:self action:@selector(favoritesSwitchPressed:) forControlEvents:UIControlEventValueChanged];
     [favoritesView addSubview:favoritesSwitch];
 }
 
@@ -353,6 +355,20 @@ UIViewController *webViewController;
     webView.backgroundColor = [UIColor whiteColor];
     webViewController.view = webView;
     [self.navigationController pushViewController:webViewController animated:NO];
+}
+
+- (void)tapsSwitchPressed:(id)sender {
+    BOOL state = [sender isOn];
+    User *profileUser = [Profile user];
+    [profileUser setIsTapPushNotificationEnabled:state];
+    [profileUser saveKeyAsynchronously:@"properties"];
+}
+
+- (void)favoritesSwitchPressed:(id)sender {
+    BOOL state = [sender isOn];
+    User *profileUser = [Profile user];
+    [profileUser setIsFavoritesGoingOutNotificationEnabled:state];
+    [profileUser saveKeyAsynchronously:@"properties"];
 }
 
 #pragma mark - UITextView Delegate methods

@@ -330,11 +330,11 @@
 }
 
 - (void)setIsTapPushNotificationEnabled:(BOOL)isTapPushNotificationEnabled {
-    NSMutableDictionary *properties = [_proxy objectForKey:@"properties"];
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:[_proxy objectForKey:@"properties"]];
     if ([properties isKindOfClass:[NSDictionary class]]) {
         NSMutableDictionary *notifications;
         if ([[properties allKeys] containsObject:@"notifications"]) {
-            notifications = [properties objectForKey:@"notifications"];
+            notifications = [[NSMutableDictionary alloc] initWithDictionary:[properties objectForKey:@"notifications"]];
             [notifications setObject:[NSNumber numberWithBool:isTapPushNotificationEnabled ] forKey:@"taps"];
         }
         else {
@@ -343,7 +343,6 @@
         }
         [properties setObject:notifications forKey:@"notifications"];
         [_proxy setObject:properties forKey:@"properties"];
-        [modifiedKeys addObject:@"properties"];
     }
 }
 
@@ -359,11 +358,11 @@
 }
 
 - (void)setIsFavoritesGoingOutNotificationEnabled:(BOOL)isFavoritesGoingOutNotificationEnabled {
-    NSMutableDictionary *properties = [_proxy objectForKey:@"properties"];
+    NSMutableDictionary *properties =  [[NSMutableDictionary alloc] initWithDictionary:[_proxy objectForKey:@"properties"]];
     if ([properties isKindOfClass:[NSDictionary class]]) {
         NSMutableDictionary *notifications;
         if ([[properties allKeys] containsObject:@"notifications"]) {
-            notifications = [properties objectForKey:@"notifications"];
+            notifications = [[NSMutableDictionary alloc] initWithDictionary:[properties objectForKey:@"notifications"]];
             [notifications setObject:[NSNumber numberWithBool:isFavoritesGoingOutNotificationEnabled ] forKey:@"favorites_going_out"];
         }
         else {
@@ -372,7 +371,6 @@
         }
         [properties setObject:notifications forKey:@"notifications"];
         [_proxy setObject:properties forKey:@"properties"];
-        [modifiedKeys addObject:@"properties"];
     }
 }
 
