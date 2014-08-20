@@ -190,7 +190,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                 action:@selector(dismissKeyboard)];
     tap.cancelsTouchesInView = YES;
-    [self.view addGestureRecognizer:tap];
+    [_scrollView addGestureRecognizer:tap];
 }
 
 -(void)dismissKeyboard {
@@ -330,17 +330,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [_viewForEmptyConversation addSubview:everyDayLabel];
 }
 
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    if (_viewForEmptyConversation) _viewForEmptyConversation.hidden = YES;
-    [_sendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-
-    [self.view bringSubviewToFront:_chatTextFieldWrapper];
-}
-
-- (void)textViewDidEndEditing:(UITextView *)textView {
-    [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    _chatTextFieldWrapper.transform = CGAffineTransformMakeTranslation(0, 0);
-}
 
 - (void)sendMessage {
     if (![_messageTextView.text isEqualToString:@""]) {
@@ -433,27 +422,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                      }
                      completion:^(BOOL finished){}];
 }
-        
-# pragma mark - UITextView Delegate.
-
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if ([text isEqual:@"\n"]) {
-        [self sendMessage];
-        return NO;
-    }
-    if ([_messageTextView.text length] != 0)
-        [_sendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    else
-        [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-
-    CGFloat requiredWidth = [textView sizeThatFits:CGSizeMake(HUGE_VALF, HUGE_VALF)].width;
-    int numberOfRows = (int)(requiredWidth/textView.frame.size.width) + 1;
-    _chatTextFieldWrapper.frame = CGRectMake(_chatTextFieldWrapper.frame.origin.x, _frameOfChatField.origin.y - 30*(numberOfRows - 1), _chatTextFieldWrapper.frame.size.width, _frameOfChatField.size.height + 30*(numberOfRows -1));
-    _messageTextView.frame = CGRectMake(15, 10, _chatTextFieldWrapper.frame.size.width - 80, _chatTextFieldWrapper.frame.size.height - 20);
-    _whiteLabelForTextField.frame = CGRectMake(10, 10, _chatTextFieldWrapper.frame.size.width - 70, _chatTextFieldWrapper.frame.size.height - 20);
-    _sendButton.frame = CGRectMake(_chatTextFieldWrapper.frame.size.width - 60, _chatTextFieldWrapper.frame.size.height - 40, 60, 30);
-    return YES;
-}
 
 - (void)addMessage:(NSNotification *)notification {
     NSString *messageString = [[notification userInfo] valueForKey:@"message"];
@@ -468,6 +436,40 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
     [_scrollView setContentOffset:bottomOffset animated:YES];
 }
+        
+# pragma mark - UITextView Delegate.
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if ([text isEqual:@"\n"]) {
+        [self sendMessage];
+        return NO;
+    }
+   
+    if (([text isEqualToString:@""] && range.location == 0 && range.length == 1))
+        [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    else if ([text length] != 0  || [textView.text length] != 0)
+        [_sendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+
+    CGFloat requiredWidth = [textView sizeThatFits:CGSizeMake(HUGE_VALF, HUGE_VALF)].width;
+    int numberOfRows = (int)(requiredWidth/textView.frame.size.width) + 1;
+    _chatTextFieldWrapper.frame = CGRectMake(_chatTextFieldWrapper.frame.origin.x, _frameOfChatField.origin.y - 30*(numberOfRows - 1), _chatTextFieldWrapper.frame.size.width, _frameOfChatField.size.height + 30*(numberOfRows -1));
+    _messageTextView.frame = CGRectMake(15, 10, _chatTextFieldWrapper.frame.size.width - 80, _chatTextFieldWrapper.frame.size.height - 20);
+    _whiteLabelForTextField.frame = CGRectMake(10, 10, _chatTextFieldWrapper.frame.size.width - 70, _chatTextFieldWrapper.frame.size.height - 20);
+    _sendButton.frame = CGRectMake(_chatTextFieldWrapper.frame.size.width - 60, _chatTextFieldWrapper.frame.size.height - 40, 60, 30);
+    return YES;
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    _chatTextFieldWrapper.transform = CGAffineTransformMakeTranslation(0, 0);
+}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    if (_viewForEmptyConversation) _viewForEmptyConversation.hidden = YES;
+    [self.view bringSubviewToFront:_chatTextFieldWrapper];
+}
+
+
 
 # pragma mark - UIScrollView Delegate
 
