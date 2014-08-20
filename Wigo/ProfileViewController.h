@@ -16,7 +16,6 @@
 
 @interface ProfileViewController : UIViewController <UIScrollViewDelegate, UIAlertViewDelegate>
 
--(id)initWithProfile:(BOOL)isMyProfile;
 -(id)initWithUser:(User *)user;
 
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;

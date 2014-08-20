@@ -26,7 +26,7 @@
 }
 
 -(NSArray *)getEventAttendees {
-    return [_proxy objectForKey:@"userArray"];
+    return [_proxy objectForKey:@"attendees"];
 }
 
 - (NSDictionary *)dictionary {

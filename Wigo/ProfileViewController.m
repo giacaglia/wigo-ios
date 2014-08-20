@@ -74,18 +74,6 @@ UIViewController *popViewController;
     return self;
 }
 
-- (id)initWithProfile:(BOOL)isMyProfile
-{
-    self = [super init];
-    if (self) {
-        self.user = [Profile user];
-        self.userState = [self.user isPrivate] ? PRIVATE_PROFILE : PUBLIC_PROFILE;
-        self.view.backgroundColor = [UIColor whiteColor];
-
-    }
-    return self;
-}
-
 - (void)viewDidDisappear:(BOOL)animated {
     _pageControl.hidden = YES;
 }
