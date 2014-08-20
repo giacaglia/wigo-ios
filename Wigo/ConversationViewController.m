@@ -103,7 +103,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void) addFirstPageMessages {
-    _positionOfLastMessage = 0;
+    _positionOfLastMessage = 5;
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage + 50);
     [[_scrollView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     for (Message *message in [_messageParty getObjectArray]) {
@@ -123,7 +123,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void) addMessages:(Party *)messageParty {
     int oldContentSize = _scrollView.contentSize.height;
-    _positionOfLastMessage = 0;
+    _positionOfLastMessage = 5;
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
     for (Message *message in [messageParty getObjectArray]) {
         _positionOfLastMessage = 0;
@@ -349,7 +349,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
     }
     CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height);
-    [_scrollView setContentOffset:bottomOffset animated:YES];
+    if (bottomOffset.y < 0) [_scrollView setContentOffset:CGPointZero animated:YES];
+    else [_scrollView setContentOffset:bottomOffset animated:YES];
+    
 }
 
 - (void)updateLastMessagesRead:(Message *)message {
@@ -447,7 +449,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
    
     if (([text isEqualToString:@""] && range.location == 0 && range.length == 1))
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    else if ([text length] != 0  || [textView.text length] != 0)
+    else if ([text length] != 0 || [textView.text length] != 0)
         [_sendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
 
     CGFloat requiredWidth = [textView sizeThatFits:CGSizeMake(HUGE_VALF, HUGE_VALF)].width;
