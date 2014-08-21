@@ -10,9 +10,14 @@
 #import "NSMutableURLRequest+Wigo.h"
 #define WIGO_API_KEY @"oi34u53205ju34ik23"
 
-static NSString * const BaseURLString = @"https://api.wigo.us%@";
-static NSString * const StageURLString = @"https://stage-api.wigo.us%@";
+#if DEBUG
+static NSString * const BaseURLString = @"https://stage-api.wigo.us%@";
+//#else if 
+#elif DISTRIBUTION
 static NSString * const DevelopmentURLString = @"https://dev-api.wigo.us%@";
+#else
+static NSString * const BaseURLString = @"https://api.wigo.us%@";
+#endif
 
 
 @interface Query ()
