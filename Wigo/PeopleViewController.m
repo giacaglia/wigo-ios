@@ -498,7 +498,9 @@ int queryQueueInt;
         [self updateFollowingUIAndCachedData:num_following];
         [Network unfollowUser:user];
     }
-    [_contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
+    if (user) {
+        [_contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
+    }
 }
 
 - (void) updateFollowingUIAndCachedData:(int)num_following {

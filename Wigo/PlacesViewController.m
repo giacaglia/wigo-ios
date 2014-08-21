@@ -656,8 +656,8 @@
                           withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
                               NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
                               Party *partyUser = [[Party alloc] init];
-                              for (int i = 0; i < [eventAttendeesArray count]; i++) {
-                                  NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:i];
+                              for (int j = 0; j < [eventAttendeesArray count]; j++) {
+                                  NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
                                   NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
                                   User *user;
                                   if ([userDictionary isKindOfClass:[NSDictionary class]]) {
@@ -677,7 +677,7 @@
                               }
                               NSInteger indexOfEvent = [[resultInputDictionary objectForKey:@"i"] integerValue];
                               [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
-                              if (indexOfEvent < [_partyUserArray count]) [_partyUserArray removeObjectAtIndex:(indexOfEvent+1)];
+                              if (indexOfEvent + 1 < [_partyUserArray count]) [_partyUserArray removeObjectAtIndex:(indexOfEvent+1)];
                               [self fetchedOneParty];
         }];
     }
