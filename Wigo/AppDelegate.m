@@ -259,12 +259,20 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)areThereNotificationsWithHandler:(IsThereResult)handler {
-    NSString *queryString = @"unread/summary";
-    [Network sendAsynchronousHTTPMethod:GET withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                    
+    if ([Profile user].key) {
+        NSString *queryString = @"unread/summary";
+        [Network sendAsynchronousHTTPMethod:GET withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                    if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                        
+                    }
+                    else {
+                        numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"conversations"];
+                        numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
+                        [self updateBadge];
+                        handler(numberOfNewMessages, numberOfNewNotifications);
+                    }
                 }
                 else {
                     numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"conversations"];
@@ -272,15 +280,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                     [self updateBadge];
                     handler(numberOfNewMessages, numberOfNewNotifications);
                 }
-            }
-            else {
-                numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"conversations"];
-                numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
-                [self updateBadge];
-                handler(numberOfNewMessages, numberOfNewNotifications);
-            }
-        });
-    }];
+            });
+        }];
+    }
 }
 
 #pragma mark - Notification Tab Bar
