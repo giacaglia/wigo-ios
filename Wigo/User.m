@@ -622,6 +622,7 @@
     [modifiedKeys removeObject:@"facebook_id"];
     [modifiedKeys removeObject:@"email_validated"];
     [modifiedKeys removeObject:@"accessToken"];
+    [modifiedKeys removeObject:@"tabNumber"];
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"users/me/"];
     [query setProfileKey:self.key];
