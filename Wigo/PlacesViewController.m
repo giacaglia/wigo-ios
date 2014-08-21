@@ -55,13 +55,11 @@
 // Go OUT Button
 @property UIButtonUngoOut *ungoOutButton;
 
+@property NSNumber *page;
 
 @property BOOL spinnerAtTop;
 
 @end
-
-NSNumber *page;
-
 
 @implementation PlacesViewController {
     int numberOfFetchedParties;
@@ -269,10 +267,8 @@ NSNumber *page;
     int eventIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"eventIndex"] intValue];
     int userIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"userIndex"] intValue];
     Party *partyUser  = [_partyUserArray objectAtIndex:eventIndex];
-    Event *event = [[_eventsParty getObjectArray] objectAtIndex:eventIndex];
     if ([[partyUser getObjectArray] count] != 0 ){
         User *user = [[partyUser getObjectArray] objectAtIndex:userIndex];
-        [user setAttendingEventName:[event name]];
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
         self.tabBarController.tabBar.hidden = YES;
@@ -490,7 +486,16 @@ NSNumber *page;
     _tagInteger += 1;
     
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 100, 30)];
-    labelName.text = [event name];
+    if (_isSearching) {
+        if (indexPath.row < [[_filteredContentParty getObjectArray] count]) {
+            labelName.text = [[_filteredContentParty getNameArray] objectAtIndex:indexPath.row];
+        }
+    }
+    else {
+        if (indexPath.row < [[_contentParty getObjectArray] count]) {
+            labelName.text = [[_contentParty getNameArray] objectAtIndex:indexPath.row];
+        }
+    }
     labelName.font = [FontProperties getTitleFont];
     [placeSubView addSubview:labelName];
 
@@ -512,7 +517,6 @@ NSNumber *page;
     UIScrollView *imagesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, placeSubView.frame.size.width, placeSubView.frame.size.height)];
     imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
     imagesScrollView.showsHorizontalScrollIndicator = NO;
-    imagesScrollView.delegate = self;
     [placeSubView addSubview:imagesScrollView];
    
     if ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]]) {
@@ -607,20 +611,11 @@ NSNumber *page;
     return @{@"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex":[NSNumber numberWithInt:eventIndex]};
 }
 
-#pragma mark - UIScrollView Delegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView != _placesTableView)
-        if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - 60) {
-//            NSLog(@"Load more");
-        }
-//        NSLog(@"Offset: %f, horizontal size: %f", scrollView.contentOffset.x + 320, scrollView.contentSize.width);
-}
-
 #pragma mark - Network Asynchronous Functions
 
+
 - (void) fetchEventsFirstPage {
-    page = @1;
+    _page = @1;
     numberOfFetchedParties = 0;
     _eventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
     _contentParty = _eventsParty;
@@ -631,90 +626,74 @@ NSNumber *page;
 - (void) fetchEvents {
     _everyoneParty = [Profile everyoneParty];
     if (_spinnerAtTop) [WiGoSpinnerView addDancingGToCenterView:self.view];
-    NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@", [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *events = [jsonResponse objectForKey:@"objects"];
         [_eventsParty addObjectsFromArray:events];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [_eventsParty addMetaInfo:metaDictionary];
-        [self fillEventAttendees];
-        page = @([page intValue] + 1);
-        [self fetchedOneParty];
-
-    }];
-}
-
-- (void)fillEventAttendees {
-    _partyUserArray =  [[NSMutableArray alloc] init];
-    for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
-        Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
-        NSArray *eventAttendeesArray = [event getEventAttendees];
-        Party *partyUser = [[Party alloc] init];
-        for (int j = 0; j < [eventAttendeesArray count]; j++) {
-            NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
-            NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
-            User *user;
-            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                    user = [Profile user];
-                }
-                else {
-                    user = [[User alloc] initWithDictionary:userDictionary];
-                }
-            }
-            [partyUser addObject:user];
+        
+        [self fetchEventAttendeesAsynchronous];
+        _page = @([_page intValue] + 1);
+        if ([events count] == 0) {
+            [self fetchedOneParty];
         }
-        [_partyUserArray addObject:partyUser];
-    }
-   
+    }];
 }
 
 - (void)fetchEventAttendeesAsynchronous {
+    _partyUserArray =  [[NSMutableArray alloc] initWithCapacity:[[_eventsParty getObjectArray] count]];
+    for (int j = 0; j < [[_eventsParty getObjectArray] count]; j++) {
+        [_partyUserArray addObject:[[Party alloc] init]];
+    }
     for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
-    Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
-    NSNumber *eventId = [event eventID];
-    NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@limit=10&page=2", [eventId stringValue]];
-    NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
-    [Network queryAsynchronousAPI:queryString
-              withInputDictionary:(NSDictionary *)inputDictionary
-                      withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
-                          NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
-                          Party *partyUser = [[Party alloc] init];
-                          for (int j = 0; j < [eventAttendeesArray count]; j++) {
-                              NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
-                              NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
-                              User *user;
-                              if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                                  if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                                      user = [Profile user];
+        Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
+        NSNumber *eventId = [event eventID];
+        NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@", [eventId stringValue]];
+        NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
+        [Network queryAsynchronousAPI:queryString
+                  withInputDictionary:(NSDictionary *)inputDictionary
+                          withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
+                              NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
+                              Party *partyUser = [[Party alloc] init];
+                              for (int i = 0; i < [eventAttendeesArray count]; i++) {
+                                  NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:i];
+                                  NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
+                                  User *user;
+                                  if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                                      if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                                          user = [Profile user];
+                                      }
+                                      else {
+                                          user = [[User alloc] initWithDictionary:userDictionary];
+                                      }
                                   }
-                                  else {
-                                      user = [[User alloc] initWithDictionary:userDictionary];
+                                  if ([user isEqualToUser:[Profile user]]) {
+                                      User *profileUser = [Profile user];
+                                      [profileUser setIsGoingOut:YES];
+                                      [[Profile user] setEventID:eventId];
                                   }
+                                  [partyUser addObject:user];
                               }
-                              if ([user isEqualToUser:[Profile user]]) {
-                                  User *profileUser = [Profile user];
-                                  [profileUser setIsGoingOut:YES];
-                                  [[Profile user] setEventID:eventId];
-                              }
-                              [partyUser addObject:user];
-                          }
-                          NSInteger indexOfEvent = [[resultInputDictionary objectForKey:@"i"] integerValue];
-                          [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
-                          if (indexOfEvent < [_partyUserArray count]) [_partyUserArray removeObjectAtIndex:(indexOfEvent+1)];
-                          [self fetchedOneParty];
-    }];
+                              NSInteger indexOfEvent = [[resultInputDictionary objectForKey:@"i"] integerValue];
+                              [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
+                              if (indexOfEvent < [_partyUserArray count]) [_partyUserArray removeObjectAtIndex:(indexOfEvent+1)];
+                              [self fetchedOneParty];
+        }];
     }
 }
 
 - (void)fetchedOneParty {
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-        _spinnerAtTop ? [WiGoSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
-        _contentParty = _eventsParty;
-        _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
-        [self dismissKeyboard];
-        if ([page isEqualToNumber:@2]) [_placesTableView setContentOffset:CGPointZero animated:YES];
-    });
+    numberOfFetchedParties += 1;
+    if (numberOfFetchedParties >= [[_eventsParty getObjectArray] count]) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            _spinnerAtTop ? [WiGoSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
+            _contentParty = _eventsParty;
+            _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
+            [self dismissKeyboard];
+            if ([_page isEqualToNumber:@2]) [_placesTableView setContentOffset:CGPointZero animated:YES];
+        });
+    }
 }
 
 - (void) fetchUserInfo {
