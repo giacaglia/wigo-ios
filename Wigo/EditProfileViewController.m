@@ -324,6 +324,22 @@ UIViewController *webViewController;
     gitCountLabel.font = [FontProperties getSmallPhotoFont];
     gitCountLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:gitCountLabel];
+    
+    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 995, self.view.frame.size.width, 50)];
+    NSString *debugString = @"";
+    if (DEBUG) {
+       debugString = @"Debug";
+    }
+//    else if (DISTRIBUTION) {
+//        debugString = @"Release";
+//    }
+    else {
+        debugString = @"Release";
+    }
+    debugLabel.text = debugString;
+    debugLabel.font = [FontProperties getSmallPhotoFont];
+    debugLabel.textAlignment = NSTextAlignmentCenter;
+    [_scrollView addSubview:debugLabel];
 }
 
 - (void)openPrivacy {
