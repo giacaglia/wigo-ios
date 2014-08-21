@@ -37,10 +37,12 @@
     Query *query = [[Query alloc] init];
     [query queryWithClassName:apiName];
     User *user = [Profile user];
-    [query setProfileKey:user.key];
-    [query sendAsynchronousHTTPMethod:(NSString *)httpMethod withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        handler(jsonResponse, error);
-    }];
+    if (user.key) {
+        [query setProfileKey:user.key];
+        [query sendAsynchronousHTTPMethod:(NSString *)httpMethod withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            handler(jsonResponse, error);
+        }];
+    }
 }
 
 + (void)sendAsynchronousHTTPMethod:(NSString *)httpMethod

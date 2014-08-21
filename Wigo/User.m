@@ -118,7 +118,10 @@
 
 
 - (NSString *)firstName {
-    return [_proxy objectForKey:@"first_name"];
+    if ([[_proxy allKeys] containsObject:@"first_name"]) {
+        return [_proxy objectForKey:@"first_name"];
+    }
+    else return @"";
 }
 
 - (void)setFirstName:(NSString *)name {
@@ -127,7 +130,10 @@
 }
 
 - (NSString *)lastName {
-    return [_proxy objectForKey:@"last_name"];
+    if ([[_proxy allKeys] containsObject:@"last_name"]) {
+        return [_proxy objectForKey:@"last_name"];
+    }
+    else return @"";
 }
 
 - (void)setLastName:(NSString *)lastName {
@@ -276,7 +282,7 @@
 }
 
 - (NSString *)fullName {
-    return [NSString stringWithFormat:@"%@ %@", [_proxy objectForKey:@"first_name"], [_proxy objectForKey:@"last_name"]];
+    return [NSString stringWithFormat:@"%@ %@", [self firstName], [self lastName]];
 }
 
 - (BOOL)isGoingOut {
