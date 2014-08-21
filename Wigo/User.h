@@ -52,7 +52,7 @@ typedef enum
 @property BOOL isTapPushNotificationEnabled;
 @property BOOL isFavoritesGoingOutNotificationEnabled;
 @property BOOL isBlocked;
-
+@property NSString *attendingEventName;
 - (NSString *)fullName;
 - (NSString  *)joinedDate;
 - (BOOL)isEqualToUser:(User *)otherUser;
@@ -72,7 +72,6 @@ typedef enum
 - (NSNumber *)numberOfFollowers;
 
 //Attending event
-- (NSString *)attendingEventName;
 @property NSNumber *attendingEventID;
 - (BOOL)isGroupLocked;
 

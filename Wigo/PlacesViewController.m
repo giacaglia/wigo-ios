@@ -269,8 +269,10 @@ NSNumber *page;
     int eventIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"eventIndex"] intValue];
     int userIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"userIndex"] intValue];
     Party *partyUser  = [_partyUserArray objectAtIndex:eventIndex];
+    Event *event = [[_eventsParty getObjectArray] objectAtIndex:eventIndex];
     if ([[partyUser getObjectArray] count] != 0 ){
         User *user = [[partyUser getObjectArray] objectAtIndex:userIndex];
+        [user setAttendingEventName:[event name]];
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
         self.tabBarController.tabBar.hidden = YES;
@@ -488,16 +490,7 @@ NSNumber *page;
     _tagInteger += 1;
     
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 100, 30)];
-    if (_isSearching) {
-        if (indexPath.row < [[_filteredContentParty getObjectArray] count]) {
-            labelName.text = [[_filteredContentParty getNameArray] objectAtIndex:indexPath.row];
-        }
-    }
-    else {
-        if (indexPath.row < [[_contentParty getObjectArray] count]) {
-            labelName.text = [[_contentParty getNameArray] objectAtIndex:indexPath.row];
-        }
-    }
+    labelName.text = [event name];
     labelName.font = [FontProperties getTitleFont];
     [placeSubView addSubview:labelName];
 
@@ -519,6 +512,7 @@ NSNumber *page;
     UIScrollView *imagesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, placeSubView.frame.size.width, placeSubView.frame.size.height)];
     imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
     imagesScrollView.showsHorizontalScrollIndicator = NO;
+    imagesScrollView.delegate = self;
     [placeSubView addSubview:imagesScrollView];
    
     if ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]]) {
@@ -613,8 +607,17 @@ NSNumber *page;
     return @{@"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex":[NSNumber numberWithInt:eventIndex]};
 }
 
-#pragma mark - Network Asynchronous Functions
+#pragma mark - UIScrollView Delegate
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView != _placesTableView)
+        if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - 60) {
+//            NSLog(@"Load more");
+        }
+//        NSLog(@"Offset: %f, horizontal size: %f", scrollView.contentOffset.x + 320, scrollView.contentSize.width);
+}
+
+#pragma mark - Network Asynchronous Functions
 
 - (void) fetchEventsFirstPage {
     page = @1;

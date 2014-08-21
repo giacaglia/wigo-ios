@@ -50,7 +50,7 @@ BOOL initializedPopScreen;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if (!initializedPopScreen) [self initializePopScreen];
+//    if (!initializedPopScreen) [self initializePopScreen];
     [EventAnalytics tagEvent:@"Onboard Follow View"];
 }
 

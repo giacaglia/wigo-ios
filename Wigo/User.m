@@ -434,6 +434,16 @@
     return @"";
 }
 
+- (void)setAttendingEventName:(NSString *)attendingEventName {
+    if (attendingEventName != nil) {
+        if ([self isAttending]) {
+            NSMutableDictionary *isAttending = [[NSMutableDictionary alloc] initWithDictionary:(NSDictionary *)[_proxy objectForKey:@"is_attending"]];
+            [isAttending setObject:attendingEventName forKey:@"name"];
+            [_proxy setObject:[NSDictionary dictionaryWithDictionary:isAttending] forKey:@"is_attending"];
+        }
+    }
+}
+
 - (NSNumber *)attendingEventID {
     if ([self isAttending]) {
         NSDictionary *isAttending = (NSDictionary *)[_proxy objectForKey:@"is_attending"];
