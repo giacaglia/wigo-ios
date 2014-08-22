@@ -342,20 +342,18 @@
     [profileUser loginWithHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]){
-                    _alertShown = YES;
-                    _alert = [[UIAlertView alloc] initWithTitle:@"Bummer"
-                                                        message:@"We fudged something up. Please try again later."
-                                                       delegate:self
-                                              cancelButtonTitle:@"Ok"
-                                              otherButtonTitles: nil];
-                    [_alert show];
-                    _alert.delegate = self;
-                }
+            if ([[jsonResponse allKeys] containsObject:@"status"] &&
+                [[jsonResponse objectForKey:@"status"] isEqualToString:@"error"] ) {
+                _alertShown = YES;
+                _alert = [[UIAlertView alloc] initWithTitle:@"Bummer"
+                                                    message:@"We fudged something up. Please try again later."
+                                                   delegate:self
+                                          cancelButtonTitle:@"Ok"
+                                          otherButtonTitles: nil];
+                [_alert show];
+                _alert.delegate = self;
             }
-            
-            if ([error domain] == NSURLErrorDomain) {
+            else if ([error domain] == NSURLErrorDomain) {
                 [self showErrorNoConnection];
             }
             else if ([[error localizedDescription] isEqualToString:@"error"]) {

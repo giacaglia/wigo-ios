@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6205" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="r0s-iy-1wR">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="r0s-iy-1wR">
     <dependencies>
         <deployment defaultVersion="1792" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6198"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
-        <!--Chats-->
+        <!--Navigation Controller - Chats-->
         <scene sceneID="owI-yM-UlA">
             <objects>
                 <navigationController definesPresentationContext="YES" id="gjq-FW-yKe" sceneMemberID="viewController">
@@ -21,7 +21,7 @@
             </objects>
             <point key="canvasLocation" x="585" y="-1176"/>
         </scene>
-        <!--Notifications-->
+        <!--Navigation Controller - Notifications-->
         <scene sceneID="bjY-mo-xrt">
             <objects>
                 <navigationController definesPresentationContext="YES" id="Vs2-nt-5Un" sceneMemberID="viewController">
@@ -37,7 +37,7 @@
             </objects>
             <point key="canvasLocation" x="578" y="-431"/>
         </scene>
-        <!--Notifications-->
+        <!--Notifications View Controller - Notifications-->
         <scene sceneID="h7d-KN-F87">
             <objects>
                 <viewController id="pty-5U-I3A" customClass="NotificationsViewController" sceneMemberID="viewController">
@@ -46,7 +46,7 @@
                         <viewControllerLayoutGuide type="bottom" id="EaN-NX-f15"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Mh6-Rq-kJC">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -57,7 +57,7 @@
             </objects>
             <point key="canvasLocation" x="1036" y="-431"/>
         </scene>
-        <!--Chats-->
+        <!--Chat View Controller - Chats-->
         <scene sceneID="vTy-9t-Fy4">
             <objects>
                 <viewController id="7gV-bv-Wd8" customClass="ChatViewController" sceneMemberID="viewController">
@@ -66,7 +66,7 @@
                         <viewControllerLayoutGuide type="bottom" id="YPi-dt-MIK"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="tno-zV-rjE">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -77,7 +77,7 @@
             </objects>
             <point key="canvasLocation" x="1020" y="-1176"/>
         </scene>
-        <!--Main View Controller-->
+        <!--Main View Controller - Main View Controller-->
         <scene sceneID="5">
             <objects>
                 <viewController title="Main View Controller" id="2" customClass="MainViewController" sceneMemberID="viewController">
@@ -86,7 +86,7 @@
                         <viewControllerLayoutGuide type="bottom" id="t6C-kY-ppQ"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="3">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -97,7 +97,7 @@
             </objects>
             <point key="canvasLocation" x="1064" y="-2699"/>
         </scene>
-        <!--Who-->
+        <!--Navigation Controller - Who-->
         <scene sceneID="5Z6-ag-ZQ1">
             <objects>
                 <navigationController id="5D7-fp-3iF" sceneMemberID="viewController">
@@ -149,7 +149,7 @@
                         <viewControllerLayoutGuide type="bottom" id="gfx-aA-O9p"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="aP7-QS-yj6">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -159,7 +159,7 @@
             </objects>
             <point key="canvasLocation" x="1020" y="-1944"/>
         </scene>
-        <!--Where-->
+        <!--Navigation Controller - Where-->
         <scene sceneID="CUn-1Q-ll3">
             <objects>
                 <navigationController definesPresentationContext="YES" id="gcK-hO-ozh" sceneMemberID="viewController">
@@ -182,13 +182,10 @@
         <image name="peopleIcon.png" width="19" height="21"/>
         <image name="placesIcon.png" width="15" height="21"/>
     </resources>
+    <color key="tintColor" red="0.95686280729999995" green="0.58431375029999999" blue="0.1764705926" alpha="1" colorSpace="deviceRGB"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4">
-            <size key="portraitSize" width="320" height="568"/>
-            <size key="landscapeSize" width="568" height="320"/>
-        </simulatedScreenMetrics>
+        <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
-    <color key="tintColor" red="0.95686280729999995" green="0.58431375029999999" blue="0.1764705926" alpha="1" colorSpace="deviceRGB"/>
 </document>
