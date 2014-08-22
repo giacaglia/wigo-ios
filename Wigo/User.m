@@ -681,7 +681,24 @@
             handler(jsonResponse, error);
         }
         else if ([[jsonResponse allKeys] containsObject:@"code"]) {
-            handler(jsonResponse, error);
+            if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"invalid_email"]) {
+                handler(nil, [NSError errorWithDomain:@"Server"
+                                                 code:100
+                                             userInfo:@{NSLocalizedDescriptionKey:@"invalid_email"}
+                              ]);
+            }
+            else if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"expired_token"]) {
+                handler(nil, [NSError errorWithDomain:@"Server"
+                                                 code:100
+                                             userInfo:@{NSLocalizedDescriptionKey:@"expired_token"}
+                              ]);
+
+
+            }
+            else if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) {
+                handler(jsonResponse, error);
+            }
+
         }
         else {
             if ([[jsonResponse allKeys] containsObject:@"id"]) {

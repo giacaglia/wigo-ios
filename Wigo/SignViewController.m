@@ -343,7 +343,8 @@
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView removeDancingGFromCenterView:self.view];
             if ([[jsonResponse allKeys] containsObject:@"status"] &&
-                [[jsonResponse objectForKey:@"status"] isEqualToString:@"error"] ) {
+                [[jsonResponse objectForKey:@"status"] isEqualToString:@"error"] &&
+                ![[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"] ) {
                 _alertShown = YES;
                 _alert = [[UIAlertView alloc] initWithTitle:@"Bummer"
                                                     message:@"We fudged something up. Please try again later."
@@ -353,13 +354,14 @@
                 [_alert show];
                 _alert.delegate = self;
             }
-            else if ([error domain] == NSURLErrorDomain) {
-                [self showErrorNoConnection];
-            }
-            else if ([[error localizedDescription] isEqualToString:@"error"]) {
+            else if ([[jsonResponse allKeys] containsObject:@"status"] &&
+                     [[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) {
                 [self fetchTokensFromFacebook];
                 _fetchingProfilePictures = YES;
                 [self fetchProfilePicturesAlbumFacebook];
+            }
+            else if ([error domain] == NSURLErrorDomain) {
+                [self showErrorNoConnection];
             }
             else if (![profileUser emailValidated]) {
                 _userEmailAlreadySent = YES;
