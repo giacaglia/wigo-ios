@@ -678,29 +678,10 @@
     [query setValue:self.email forKey:@"email"];
     [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (jsonResponse == nil || error != nil) {
-            handler(nil, error);
+            handler(jsonResponse, error);
         }
         else if ([[jsonResponse allKeys] containsObject:@"code"]) {
-            if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"invalid_email"]) {
-                handler(nil, [NSError errorWithDomain:@"Server"
-                                                 code:100
-                                             userInfo:@{NSLocalizedDescriptionKey:@"invalid_email"}
-                              ]);
-            }
-            else if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"expired_token"]) {
-                handler(nil, [NSError errorWithDomain:@"Server"
-                                                 code:100
-                                             userInfo:@{NSLocalizedDescriptionKey:@"expired_token"}
-                              ]);
-
-
-            }
-            else if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) {
-                handler(nil, [NSError errorWithDomain:@"Server"
-                                                 code:100
-                                             userInfo:@{NSLocalizedDescriptionKey:@"error"}
-                              ]);
-            }
+            handler(jsonResponse, error);
         }
         else {
             if ([[jsonResponse allKeys] containsObject:@"id"]) {
