@@ -8,4 +8,3 @@ plistBuddy="/usr/libexec/PlistBuddy"
 infoPlist=${TEMP_DIR}"/Preprocessed-Info.plist"
 $plistBuddy -c "Set GitHash $githash" $infoPlist
 $plistBuddy -c "Set GitCount $gitcount" $infoPlist
-$plistBuddy -c "Set CFBundleDisplayName WiGo β" $infoPlist
