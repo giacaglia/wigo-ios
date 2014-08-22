@@ -327,15 +327,15 @@ UIViewController *webViewController;
     
     UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 995, self.view.frame.size.width, 50)];
     NSString *debugString = @"";
-    if (DEBUG) {
-       debugString = @"Debug";
-    }
-//    else if (DISTRIBUTION) {
-//        debugString = @"Release";
-//    }
-    else {
-        debugString = @"Release";
-    }
+    
+#if defined(DEBUG)
+    debugString = @"Debug";
+#elif defined(DISTRIBUTION)
+    debugString = @"Release";
+#else
+    debugString = @"Release";
+#endif
+    
     debugLabel.text = debugString;
     debugLabel.font = [FontProperties getSmallPhotoFont];
     debugLabel.textAlignment = NSTextAlignmentCenter;
