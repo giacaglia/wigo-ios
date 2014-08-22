@@ -12,9 +12,12 @@
 #import "UIImageViewShake.h"
 #import "OnboardFollowViewController.h"
 
+@interface LockScreenViewController ()
+@property Party *everyoneParty;
+@end
+
 SLComposeViewController *mySLComposerSheet;
 NSNumber *numberOfPeopleSignedUp;
-Party *everyoneParty;
 NSMutableArray *alreadyGeneratedNumbers;
 BOOL pushed;
 OnboardFollowViewController *onboardFollowViewController;
@@ -39,7 +42,7 @@ OnboardFollowViewController *onboardFollowViewController;
 {
     [super viewDidLoad];
     numberOfPeopleSignedUp = [[Profile user] numberOfGroupMembers];
-    everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
     alreadyGeneratedNumbers = [[NSMutableArray alloc] init];
     [self initializeTopLabel];
     [self initializeShareButton];
@@ -56,10 +59,8 @@ OnboardFollowViewController *onboardFollowViewController;
 
 - (void)dismissIfGroupUnlocked {
     if (![[Profile user] isGroupLocked] && !pushed) {
-        onboardFollowViewController = [OnboardFollowViewController new];
-        [self.navigationController pushViewController:onboardFollowViewController animated:YES];
-//        [self dismissViewControllerAnimated:YES completion:nil];
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+//        onboardFollowViewController = [OnboardFollowViewController new];
+//        [self.navigationController pushViewController:onboardFollowViewController animated:YES];
     }
 }
 
@@ -140,25 +141,20 @@ OnboardFollowViewController *onboardFollowViewController;
     {
         if ([subview isMemberOfClass:[UIImageViewShake class]]) {
             UIImageViewShake *imageView = (UIImageViewShake *)subview;
-            if (imageView.tag < [numberOfPeopleSignedUp intValue]) {
-                if ([[everyoneParty getObjectArray] count] != 0) {
-                    int TOTAL_NUMBER = (int)[[everyoneParty getObjectArray] count];
-                    if ([[everyoneParty getObjectArray] count] > 0) {
-                        User *user = [[everyoneParty getObjectArray] objectAtIndex:[self generateRandomNumber:TOTAL_NUMBER]];
-                        [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
-                        imageView.backgroundColor = [FontProperties getOrangeColor];
-                        imageView.layer.borderWidth = 1;
-                        imageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-                        imageView.layer.cornerRadius = 7;
-                        imageView.layer.masksToBounds = YES;
-
-                    }
+            int i = imageView.tag - 1;
+            int numberOfPeopleInParty = [[_everyoneParty getObjectArray] count];
+            if (i < numberOfPeopleInParty) {
+                if (numberOfPeopleInParty != 0 && numberOfPeopleSignedUp > 0 && [_everyoneParty getObjectArray]) {
+                    User *user = [[_everyoneParty getObjectArray] objectAtIndex:i];
+                    [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+                    imageView.backgroundColor = [FontProperties getOrangeColor];
+                    imageView.layer.borderWidth = 1;
+                    imageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                    imageView.layer.cornerRadius = 7;
+                    imageView.layer.masksToBounds = YES;
                 }
             }
-            
             [imageView newShake];
-           
-            
         }
     }
 }
@@ -177,12 +173,16 @@ OnboardFollowViewController *onboardFollowViewController;
 }
 
 - (void)fetchEveryone {
-    [Network queryAsynchronousAPI:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    NSString *queryString = [NSString stringWithFormat:@"users/?limit=%@",numberOfPeopleSignedUp];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
         }
         else {
             NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-            [everyoneParty addObjectsFromArray:arrayOfUsers];
+            [_everyoneParty addObjectsFromArray:arrayOfUsers];
+            [_everyoneParty removeUser:[Profile user]];
+            [self initializeRandomArray];
         }
     }];
 }
@@ -208,23 +208,15 @@ OnboardFollowViewController *onboardFollowViewController;
 }
 
 
-- (void)randomNumbers
+- (void)initializeRandomArray
 {
-    int TOTAL_NUMBER = (int)[[everyoneParty getObjectArray] count] - 1;
-
-    NSMutableArray *shuffle = [[NSMutableArray alloc] initWithCapacity:5];
-    
-    while ([shuffle count] < 5) {
-        NSNumber *generatedNumber=[NSNumber numberWithInt:[self generateRandomNumber:TOTAL_NUMBER]];
+    int TOTAL_NUMBER = (int)[[_everyoneParty getObjectArray] count];
+    while ([alreadyGeneratedNumbers count] < TOTAL_NUMBER) {
+        NSNumber *generatedNumber = [NSNumber numberWithInt:[self generateRandomNumber:TOTAL_NUMBER]];
         if (![alreadyGeneratedNumbers containsObject:generatedNumber]) {
-            [shuffle addObject:generatedNumber];
             [alreadyGeneratedNumbers addObject:generatedNumber];
         }
-    }
-    
-    if ([alreadyGeneratedNumbers count] >= TOTAL_NUMBER) {
-        [alreadyGeneratedNumbers removeAllObjects];
-    }
+    }    
 }
 
 #pragma mark - Delegate Function 
