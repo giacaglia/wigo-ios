@@ -515,12 +515,14 @@ int queryQueueInt;
 - (User *)getUserAtIndex:(int)index {
     User *user;
     if (_isSearching) {
-        if ([[_filteredContentParty getObjectArray] count] > 0)
-        user = [[_filteredContentParty getObjectArray] objectAtIndex:index];
+        int sizeOfArray = [[_filteredContentParty getObjectArray] count];
+        if (sizeOfArray > 0 && sizeOfArray > index)
+            user = [[_filteredContentParty getObjectArray] objectAtIndex:index];
     }
     else {
-        if ([[_contentParty getObjectArray] count] > 0)
-        user = [[_contentParty getObjectArray] objectAtIndex:index];
+        int sizeOfArray = [[_contentParty getObjectArray] count];
+        if (sizeOfArray > 0 && sizeOfArray > index)
+            user = [[_contentParty getObjectArray] objectAtIndex:index];
     }
     return user;
 }

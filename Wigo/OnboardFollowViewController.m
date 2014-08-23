@@ -274,11 +274,13 @@ BOOL initializedPopScreen;
 - (User *)getUserAtIndex:(int)index {
     User *user;
     if (isSearching) {
-        if ([[filteredContentParty getObjectArray] count] != 0)
+        int sizeOfArray = [[filteredContentParty getObjectArray] count];
+        if (sizeOfArray > 0 && sizeOfArray > index)
             user = [[filteredContentParty getObjectArray] objectAtIndex:index];
     }
     else {
-        if ([[contentParty getObjectArray] count] != 0)
+        int sizeOfArray = [[contentParty getObjectArray] count];
+        if (sizeOfArray > 0 && sizeOfArray > index)
             user = [[contentParty getObjectArray] objectAtIndex:index];
     }
     return user;
