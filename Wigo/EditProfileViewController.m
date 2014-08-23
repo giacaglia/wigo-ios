@@ -331,7 +331,7 @@ UIViewController *webViewController;
 #if defined(DEBUG)
     debugString = @"Debug";
 #elif defined(DISTRIBUTION)
-    debugString = @"Release";
+    debugString = @"Distribution";
 #else
     debugString = @"Release";
 #endif
