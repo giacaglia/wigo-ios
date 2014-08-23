@@ -467,20 +467,20 @@
     Party *partyUser;
     Event *event;
     if (_isSearching) {
-        int sizeOfArray = [[_filteredContentParty getObjectArray] count];
+        int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
         if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
         event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
-        sizeOfArray = [_filteredPartyUserArray count];
+        sizeOfArray = (int)[_filteredPartyUserArray count];
         if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) {
             partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
         }
         else partyUser = [_filteredPartyUserArray objectAtIndex:[indexPath row]];
     }
     else {
-        int sizeOfArray = [[_contentParty getObjectArray] count];
+        int sizeOfArray = (int)[[_contentParty getObjectArray] count];
         if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
         event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
-        sizeOfArray = [_partyUserArray count];
+        sizeOfArray = (int)[_partyUserArray count];
         if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
         else partyUser  = [_partyUserArray objectAtIndex:[indexPath row]];
     }

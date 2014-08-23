@@ -157,7 +157,7 @@
 - (void)removeUser:(User*)newUser {
     for (int i = 0; i < [self.objectArray count]; i++) {
         User *user = [self.objectArray objectAtIndex:i];
-        if ([user isEqualToUser:newUser]) {
+        if (user && [user isEqualToUser:newUser]) {
             [self removeObjectAtIndex:i];
             break;
         }

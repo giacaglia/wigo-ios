@@ -491,7 +491,7 @@ int queryQueueInt;
             int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
             [user setIsFollowing:NO];
             [user setIsFollowingRequested:NO];
-            if (![user isPrivate]) {
+            if (![user isPrivate] && user) {
                 [_followingParty removeUser:user];
                 num_following -= 1;
             }
