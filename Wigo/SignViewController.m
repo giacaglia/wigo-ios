@@ -29,8 +29,6 @@
 @property NSString *accessToken;
 @property NSString *fbID;
 
-@property BOOL userEmailAlreadySent;
-
 @property UIAlertView * alert;
 @property BOOL alertShown;
 @property BOOL fetchingProfilePictures;
@@ -43,7 +41,6 @@
 {
     self = [super init];
     if (self) {
-        _userEmailAlreadySent = NO;
         _fetchingProfilePictures = NO;
         self.view.backgroundColor = [UIColor whiteColor];
     }
@@ -196,23 +193,11 @@
 
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-    User *profileUser = [Profile user];
-    [profileUser setImagesURL:profilePictures];
-    if (_userEmailAlreadySent) {
-        if (!_pushed) {
-            _pushed = YES;
-            _fetchingProfilePictures = NO;
-            self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-            [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
-        }
-    }
-    else {
-        if (!_pushed) {
-            _pushed = YES;
-            _fetchingProfilePictures = NO;
-            self.signUpViewController = [[SignUpViewController alloc] init];
-            [self.navigationController pushViewController:self.signUpViewController animated:YES];
-        }
+    if (!_pushed) {
+        _pushed = YES;
+        _fetchingProfilePictures = NO;
+        self.signUpViewController = [[SignUpViewController alloc] init];
+        [self.navigationController pushViewController:self.signUpViewController animated:YES];
     }
 }
 
