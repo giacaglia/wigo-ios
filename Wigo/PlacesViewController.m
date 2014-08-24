@@ -398,17 +398,31 @@
 
 - (void)searchTableList:(NSString *)searchString {
     NSArray *contentNameArray = [_contentParty getNameArray];
-    for (int i = 0; i < [contentNameArray count]; i++) {
-        NSString *tempStr = [contentNameArray objectAtIndex:i];
-        NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
-        for (NSString *firstOrLastName in firstAndLastNameArray) {
-            NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
+    NSArray *searchArray = [searchString componentsSeparatedByString:@" "];
+    if ([searchArray count] > 1) {
+        for (int i = 0; i < [contentNameArray count]; i++) {
+            NSString *tempStr = [contentNameArray objectAtIndex:i];
+            NSComparisonResult result = [tempStr compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
             if (result == NSOrderedSame && ![[_filteredContentParty getNameArray] containsObject:tempStr]) {
                 [_filteredContentParty addObject: [[[_contentParty getObjectArray] objectAtIndex:i] dictionary]];
                 [_filteredPartyUserArray addObject:[_partyUserArray objectAtIndex:i]];
             }
         }
     }
+    else {
+        for (int i = 0; i < [contentNameArray count]; i++) {
+            NSString *tempStr = [contentNameArray objectAtIndex:i];
+            NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
+            for (NSString *firstOrLastName in firstAndLastNameArray) {
+                NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
+                if (result == NSOrderedSame && ![[_filteredContentParty getNameArray] containsObject:tempStr]) {
+                    [_filteredContentParty addObject: [[[_contentParty getObjectArray] objectAtIndex:i] dictionary]];
+                    [_filteredPartyUserArray addObject:[_partyUserArray objectAtIndex:i]];
+                }
+            }
+        }
+    }
+
 }
 
 
