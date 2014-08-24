@@ -112,7 +112,7 @@ int queryQueueInt;
 }
 
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=is_goingout&page=%@" ,[_page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&ordering=is_goingout&page=%@" , [[Profile user] objectForKey:@"id"], [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
@@ -303,7 +303,7 @@ int queryQueueInt;
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     _page = @1;
-    NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[_page stringValue], searchString];
+    NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&page=%@&text=%@", [[Profile user] objectForKey:@"id"], [_page stringValue], searchString];
     [self searchUsersWithString:queryString ];
     
 }
