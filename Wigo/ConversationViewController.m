@@ -426,17 +426,20 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void)addMessage:(NSNotification *)notification {
-    NSString *messageString = [[notification userInfo] valueForKey:@"message"];
-    Message *message = [[Message alloc] init];
-    [message setMessageString:messageString];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    [message setTimeOfCreation:[dateFormatter stringFromDate:[NSDate date]]];
-    [self addMessageFromReceiver:message];
-    CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
-    [_scrollView setContentOffset:bottomOffset animated:YES];
+    NSString *fullName = [[notification userInfo] valueForKey:@"fullName"];
+    if ([fullName isEqualToString:[self.user fullName]]) {
+        NSString *messageString = [[notification userInfo] valueForKey:@"message"];
+        Message *message = [[Message alloc] init];
+        [message setMessageString:messageString];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+        [dateFormatter setTimeZone:timeZone];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        [message setTimeOfCreation:[dateFormatter stringFromDate:[NSDate date]]];
+        [self addMessageFromReceiver:message];
+        CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
+        [_scrollView setContentOffset:bottomOffset animated:YES];
+    }
 }
         
 # pragma mark - UITextView Delegate.

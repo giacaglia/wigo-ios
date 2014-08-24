@@ -134,8 +134,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         if ([locKeyString isEqualToString:@"M"]) {
             NSArray *locArgs = [alert objectForKey:@"loc-args"];
             NSString *messageString = locArgs[1];
-            NSDictionary *dictionary = [NSDictionary dictionaryWithObject:messageString forKey:@"message"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:dictionary];
+            NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObject:messageString forKey:@"message"];
+            [dictionary setObject:locArgs[0] forKey:@"fullName"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:[NSDictionary dictionaryWithDictionary:dictionary]];
         }
     }
     else { // If it's was at the background or inactive
