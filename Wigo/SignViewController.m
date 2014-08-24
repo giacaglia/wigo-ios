@@ -275,6 +275,21 @@
     
 }
 
+- (void)showBummerError {
+    _alertShown = YES;
+    _alert = [[UIAlertView alloc] initWithTitle:@"Bummer"
+                                        message:@"We fudged something up. Please try again later."
+                                       delegate:self
+                              cancelButtonTitle:@"Ok"
+                              otherButtonTitles: nil];
+    [_alert show];
+    _alert.delegate = self;
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    [self fetchTokensFromFacebook];
+}
+
 #pragma mark - Facebook Delegate Methods
 
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
@@ -344,20 +359,13 @@
             [WiGoSpinnerView removeDancingGFromCenterView:self.view];
             if ([[jsonResponse allKeys] containsObject:@"status"] &&
                 [[jsonResponse objectForKey:@"status"] isEqualToString:@"error"] &&
-                ![[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"] ) {
-                _alertShown = YES;
-                _alert = [[UIAlertView alloc] initWithTitle:@"Bummer"
-                                                    message:@"We fudged something up. Please try again later."
-                                                   delegate:self
-                                          cancelButtonTitle:@"Ok"
-                                          otherButtonTitles: nil];
-                [_alert show];
-                _alert.delegate = self;
+                ![[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"] ) { //If it exists but other error shows up.
+                [self showBummerError];
             }
             else if ([[jsonResponse allKeys] containsObject:@"status"] &&
                      [[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) {
-                [self fetchTokensFromFacebook];
                 _fetchingProfilePictures = YES;
+                [self fetchTokensFromFacebook];
                 [self fetchProfilePicturesAlbumFacebook];
             }
             else if ([error domain] == NSURLErrorDomain) {
@@ -385,12 +393,9 @@
             }
         });
     }];
-    
 }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    [self fetchTokensFromFacebook];
-}
+
 
 
 @end
