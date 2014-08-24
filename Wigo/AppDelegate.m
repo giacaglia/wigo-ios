@@ -259,24 +259,24 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)areThereNotificationsWithHandler:(IsThereResult)handler {
-    if ([Profile user].key) {
-        NSString *queryString = @"unread/summary";
-        [Network sendAsynchronousHTTPMethod:GET withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    if ([Profile user] && [[Profile user] key]) {
+        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                    if ([[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                        
-                    }
-                    else {
-                        numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"conversations"];
-                        numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
+                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                        User *user = [[User alloc] initWithDictionary:jsonResponse];
+                        [Profile setUser:user];
+                        numberOfNewMessages = (NSNumber *)[user objectForKey:@"num_unread_conversations"];
+                        numberOfNewNotifications = (NSNumber *)[user objectForKey:@"num_unread_notifications"];
                         [self updateBadge];
                         handler(numberOfNewMessages, numberOfNewNotifications);
                     }
                 }
                 else {
-                    numberOfNewMessages = (NSNumber *)[jsonResponse objectForKey:@"conversations"];
-                    numberOfNewNotifications =  (NSNumber *)[jsonResponse objectForKey:@"notifications"];
+                    User *user = [[User alloc] initWithDictionary:jsonResponse];
+                    [Profile setUser:user];
+                    numberOfNewMessages = (NSNumber *)[user objectForKey:@"num_unread_conversations"];
+                    numberOfNewNotifications =  (NSNumber *)[user objectForKey:@"num_unread_notifications"];
                     [self updateBadge];
                     handler(numberOfNewMessages, numberOfNewNotifications);
                 }
