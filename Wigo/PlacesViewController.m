@@ -641,7 +641,7 @@
         
         [self fetchEventAttendeesAsynchronous];
         _page = @([_page intValue] + 1);
-        if ([events count] == 0) {
+        if ([events count] == 0) { //If there are no events.
             [self fetchedOneParty];
         }
     }];

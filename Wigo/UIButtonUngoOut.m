@@ -53,9 +53,13 @@
 - (void) stayInPressed {
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:NO];
-    [profileUser saveKeyAsynchronously:@"is_goingout"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateViewNotGoingOut" object:nil];
-    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+    [profileUser saveKeyAsynchronously:@"is_goingout" withHandler:^(void) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateViewNotGoingOut" object:nil];
+            [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+        });
+    }];
+
 }
 
 - (void) cancel {
