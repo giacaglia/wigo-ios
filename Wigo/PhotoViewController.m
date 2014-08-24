@@ -78,7 +78,7 @@
     if ([message isEqualToString:@"Error"]) {
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bummer"
-                                                            message:@"You need a minimum of 3 profile pictures"
+                                                            message:@"You need a minimum of 3 photos"
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];

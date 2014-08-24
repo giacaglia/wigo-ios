@@ -46,7 +46,10 @@
 @property UILabel *notGoingOutLabel;
 @property BOOL spinnerAtCenter;
 @property BOOL fetchingFirstPage;
-@property BOOL fetchinfUserInfo;
+@property BOOL fetchingUserInfo;
+@property BOOL fetchingIsThereNewPerson;
+
+@property UIButtonAligned *rightButton;
 
 @end
 
@@ -66,7 +69,8 @@
     [EventAnalytics tagEvent:@"Who View"];
     self.tabBarController.tabBar.hidden = NO;
     if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
-    if (!_fetchinfUserInfo) [self fetchUserInfo];
+    if (!_fetchingUserInfo) [self fetchUserInfo];
+    if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
 }
 
 - (void)viewDidLoad
@@ -96,10 +100,12 @@
 
 - (void)loadViewAfterSigningUser {
     _fetchingFirstPage = NO;
-    _fetchinfUserInfo = NO;
+    _fetchingUserInfo = NO;
+    _fetchingIsThereNewPerson = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
-    [self fetchFirstPageFollowing];
-    [self fetchUserInfo];
+    if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
+    if (!_fetchingUserInfo) [self fetchUserInfo];
+    if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
 }
@@ -107,13 +113,13 @@
 #pragma mark - Network function
 
 - (void) fetchUserInfo {
-    _fetchinfUserInfo = YES;
+    _fetchingUserInfo = YES;
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         User *user = [[User alloc] initWithDictionary:jsonResponse];
         User *profileUser = [Profile user];
         [profileUser setIsGoingOut:[user isGoingOut]];
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            _fetchinfUserInfo = NO;
+            _fetchingUserInfo = NO;
             [self updateTitleView];
             [self fetchedMyInfoOrPeoplesInfo];
         });
@@ -174,15 +180,34 @@
 
 
 - (void) fetchIsThereNewPerson {
-    Party *everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    _fetchingIsThereNewPerson = YES;
     [Network queryAsynchronousAPI:@"users/?ordering=-id&limit=1" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        [everyoneParty addObjectsFromArray:arrayOfUsers];
-        [Profile setEveryoneParty:everyoneParty];
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-//            _contentParty = _everyoneParty;
-//            [_tableViewOfPeople reloadData];
-        });
+        NSArray *objects = [jsonResponse objectForKey:@"objects"];
+        _fetchingIsThereNewPerson = NO;
+        if ([objects isKindOfClass:[NSArray class]]) {
+            User *lastUserJoined = [[User alloc] initWithDictionary:[objects objectAtIndex:0]];
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                User *profileUser = [Profile user];
+                if (profileUser) {
+                    NSNumber *lastUserRead = [profileUser lastUserRead];
+                    NSNumber *lastUserJoinedNumber = (NSNumber *)[lastUserJoined objectForKey:@"id"];
+                    [_rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+                    if ([lastUserRead intValue] < [lastUserJoinedNumber intValue]) {
+                        NSURL *url = [[NSBundle mainBundle] URLForResource:@"glowing" withExtension:@"gif"];
+                        FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
+                        FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
+                        imageView.animatedImage = image;
+                        [_rightButton addSubview:imageView];
+                    }
+                    else {
+                        UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 31, 22)];
+                        imageView.image = [UIImage imageNamed:@"plusPerson"];
+                        [_rightButton addSubview:imageView];
+                    }
+                }
+            });
+        }
+
     }];
 }
 
@@ -311,16 +336,14 @@
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.leftBarButtonItem = profileBarButton;
     
-    UIButtonAligned *rightButton = [[UIButtonAligned alloc] initWithFrame: CGRectMake(0, 0, 30, 30) andType:@3];
-    NSURL *url = [[NSBundle mainBundle] URLForResource:@"glowing" withExtension:@"gif"];
-    FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
-    FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
-    imageView.animatedImage = image;
-    [rightButton addSubview:imageView];
-    [rightButton addTarget:self action:@selector(followPressed)
+    _rightButton = [[UIButtonAligned alloc] initWithFrame: CGRectMake(0, 0, 31, 22) andType:@3];
+    UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 31, 22)];
+    imageView.image = [UIImage imageNamed:@"plusPerson"];
+    [_rightButton addSubview:imageView];
+    [_rightButton addTarget:self action:@selector(followPressed)
           forControlEvents:UIControlEventTouchUpInside];
-    [rightButton setShowsTouchWhenHighlighted:YES];
-    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    [_rightButton setShowsTouchWhenHighlighted:YES];
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:_rightButton];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
     [self updateTitleView];
