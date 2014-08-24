@@ -545,7 +545,7 @@ UIViewController *popViewController;
         
         
         if ([[Profile user] isAttending] && [[self.user attendingEventID] isEqualToNumber:[[Profile user] attendingEventID]]) {
-            NSString *textOfLabel = [NSString stringWithFormat:@"%@ is also going to %@", [self.user fullName], [self.user attendingEventName]];
+            NSString *textOfLabel = [NSString stringWithFormat:@"%@ is also going to: %@", [self.user fullName], [self.user attendingEventName]];
             NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
             [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
             [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
@@ -557,7 +557,7 @@ UIViewController *popViewController;
             _nameOfPersonLabel.attributedText = string;
         }
         else {
-            NSString *textOfLabel = [NSString stringWithFormat:@"%@ is going to %@", [self.user fullName], [self.user attendingEventName]];
+            NSString *textOfLabel = [NSString stringWithFormat:@"%@ is going to: %@", [self.user fullName], [self.user attendingEventName]];
             
             NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
             [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
