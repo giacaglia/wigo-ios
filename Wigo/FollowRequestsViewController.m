@@ -75,22 +75,20 @@
             [subview removeFromSuperview];
         }
     }
-
     
     Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:buttonSender.tag];
     User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
     [Network acceptFollowRequestForUser:user];
-    
     
     UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
     [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     followPersonButton.tag = -100;
     [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [cell.contentView addSubview:followPersonButton];
-//    if ([user isFollowing]) {
-//        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-//        followPersonButton.tag = 100;
-//    }
+    if ([user isFollowing]) {
+        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+        followPersonButton.tag = 100;
+    }
 
 
 }
@@ -203,17 +201,17 @@
     labelName.textAlignment = NSTextAlignmentLeft;
     [notificationButton addSubview:labelName];
     
-    UIButton *acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 83, 27 - 10, 20, 20)];
+    UIButton *acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 86, 27 - 13, 20, 20)];
     UIImageView *acceptImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"acceptFollowRequest"]];
-    acceptImageView.frame = CGRectMake(0, 0, 18, 18);
+    acceptImageView.frame = CGRectMake(0, 0, 24, 24);
     [acceptButton addSubview:acceptImageView];
     acceptButton.tag = [indexPath row];
     [acceptButton addTarget:self action:@selector(acceptUser:) forControlEvents:UIControlEventTouchUpInside];
     [cell.contentView addSubview:acceptButton];
     
-    UIButton *rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 40 , 27 - 10, 20, 20)];
+    UIButton *rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 43 , 27 - 13, 20, 20)];
     UIImageView *rejectImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rejectFollowRequest"]];
-    rejectImageView.frame = CGRectMake(0, 0, 18, 18);
+    rejectImageView.frame = CGRectMake(0, 0, 24, 24);
     [rejectButton addSubview:rejectImageView];
     rejectButton.tag = [indexPath row];
     [rejectButton addTarget:self action:@selector(rejectUser:) forControlEvents:UIControlEventTouchUpInside];

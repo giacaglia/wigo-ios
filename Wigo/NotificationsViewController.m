@@ -44,7 +44,7 @@
     lineView.backgroundColor = RGBAlpha(244, 149, 45, 0.1f);
     [self.navigationController.navigationBar addSubview:lineView];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageNotifications) name:@"fetchNotifications" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchEverything) name:@"fetchNotifications" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapSegue) name:@"tapSegue" object:nil];
     
@@ -171,9 +171,8 @@
     Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:row];
     if ([notification fromUserID] == (id)[NSNull null]) return cell;
     // When group is unlocked
-    if ([[notification type] isEqualToString:@"group.unlocked"]) {
-        return cell;
-    }
+    if ([[notification type] isEqualToString:@"group.unlocked"]) return cell;
+    
     User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
     
     NSString *name = [user fullName];
@@ -285,6 +284,7 @@
 
 - (void)addRefreshToTable {
     [WiGoSpinnerView addDancingGToUIScrollView:_notificationsTableView withHandler:^{
+        [self fetchSummaryOfFollowRequests];
         [self fetchFirstPageNotifications];
         [self updateLastNotificationsRead];
     }];
@@ -304,6 +304,11 @@
             }];
         }
     }
+}
+
+-(void)fetchEverything {
+    [self fetchSummaryOfFollowRequests];
+    [self fetchFirstPageNotifications];
 }
 
 - (void)fetchFirstPageNotifications {
