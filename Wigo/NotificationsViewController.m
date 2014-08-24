@@ -170,6 +170,10 @@
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
     Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:row];
     if ([notification fromUserID] == (id)[NSNull null]) return cell;
+    // When group is unlocked
+    if ([[notification type] isEqualToString:@"group.unlocked"]) {
+        return cell;
+    }
     User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
     
     NSString *name = [user fullName];
