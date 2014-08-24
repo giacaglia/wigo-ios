@@ -59,8 +59,8 @@ OnboardFollowViewController *onboardFollowViewController;
 
 - (void)dismissIfGroupUnlocked {
     if (![[Profile user] isGroupLocked] && !pushed) {
-//        onboardFollowViewController = [OnboardFollowViewController new];
-//        [self.navigationController pushViewController:onboardFollowViewController animated:YES];
+        onboardFollowViewController = [OnboardFollowViewController new];
+        [self.navigationController pushViewController:onboardFollowViewController animated:YES];
     }
 }
 
