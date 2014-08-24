@@ -674,7 +674,9 @@ int queryQueueInt;
 
 
 - (void)searchTableList {
-    NSString *searchString = _searchBar.text;
+    NSString *oldString = _searchBar.text;
+    NSString *searchString = [oldString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
     _page = @1;
     if ([_currentTab isEqualToNumber:@2]) {
         NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[_page stringValue], searchString];
