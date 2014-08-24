@@ -677,15 +677,15 @@ int queryQueueInt;
     NSString *searchString = _searchBar.text;
     _page = @1;
     if ([_currentTab isEqualToNumber:@2]) {
-        NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@&text=%@" ,[_page stringValue], searchString];
+        NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[_page stringValue], searchString];
         [self searchUsersWithString:queryString andObjectType:USER_TYPE];
     }
     else if ([_currentTab isEqualToNumber:@3]) {
-        NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&ordering=-id&page=%@&text=%@" ,[[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
+        NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&page=%@&text=%@" ,[[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
         [self searchUsersWithString:queryString andObjectType:FOLLOW_TYPE];
     }
     else {
-        NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@&text=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
+        NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&page=%@&text=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
         [self searchUsersWithString:queryString andObjectType:FOLLOW_TYPE];
     }
 }

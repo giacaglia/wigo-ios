@@ -302,7 +302,7 @@ int queryQueueInt;
 - (void)searchTableList {
     NSString *searchString = _searchBar.text;
     _page = @1;
-    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@&text=%@" ,[_page stringValue], searchString];
+    NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[_page stringValue], searchString];
     [self searchUsersWithString:queryString ];
     
 }
