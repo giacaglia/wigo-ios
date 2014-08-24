@@ -372,10 +372,11 @@
                 [self showErrorNoConnection];
             }
             else if (![profileUser emailValidated]) {
-                _userEmailAlreadySent = YES;
-                _fetchingProfilePictures = YES;
-                [self fetchTokensFromFacebook];
-                [self fetchProfilePicturesAlbumFacebook];
+                if (!_pushed) {
+                    _pushed = YES;
+                    self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
+                    [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+                }
             }
             else {
                 if (!_pushed) {
