@@ -162,7 +162,7 @@
     }
     
     
-    if (row == [[_notificationsParty getObjectArray] count]) {
+    if (row == [[_notificationsParty getObjectArray] count] && [_page intValue] < 5) {
         [self fetchNotifications];
         return cell;
     }
