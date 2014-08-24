@@ -27,6 +27,8 @@
 #import "WiGoSpinnerView.h"
 #import "FLAnimatedImage.h"
 #import "FLAnimatedImageView.h"
+#import "NSString+URLEncoding.h"
+
 
 static NSString * const collectionViewCellIdentifier = @"CollectionViewCellIdentifier";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";

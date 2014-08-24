@@ -396,7 +396,7 @@ BOOL initializedPopScreen;
 
 - (void)searchTableList {
     NSString *oldString = searchBar.text;
-    NSString *searchString = [oldString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     page = @1;
     NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[page stringValue], searchString];
     [self searchUsersWithString:queryString andObjectType:USER_TYPE];

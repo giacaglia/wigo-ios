@@ -12,7 +12,6 @@
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
 
-
 @interface PeopleViewController ()
 
 @property(atomic) UIButton *yourSchoolButton;
@@ -675,8 +674,7 @@ int queryQueueInt;
 
 - (void)searchTableList {
     NSString *oldString = _searchBar.text;
-    NSString *searchString = [oldString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-
+    NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     _page = @1;
     if ([_currentTab isEqualToNumber:@2]) {
         NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[_page stringValue], searchString];
