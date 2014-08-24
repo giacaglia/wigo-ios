@@ -70,15 +70,35 @@
     [EventAnalytics tagEvent:@"Follow Request Accepted"];
     UIButton *buttonSender = (UIButton *)sender;
     UITableViewCell *cell = [_followRequestTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
-    for (UIView *subview in [cell.contentView subviews]) {
-        if ([subview isKindOfClass:[UIButton class]]) {
-            [subview removeFromSuperview];
-        }
-    }
-    
+    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+
     Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:buttonSender.tag];
     User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
     [Network acceptFollowRequestForUser:user];
+    
+    UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width - 100, 54)];
+    notificationButton.tag = buttonSender.tag;
+    [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.contentView addSubview:notificationButton];
+    
+    [cell.contentView addSubview:notificationButton];
+    UIImageView *profileImageView = [[UIImageView alloc] init];
+    profileImageView.frame = CGRectMake(10, 10, 35, 35);
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
+    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+    profileImageView.layer.cornerRadius = 5;
+    profileImageView.layer.borderWidth = 0.5;
+    profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    profileImageView.layer.masksToBounds = YES;
+    [notificationButton addSubview:profileImageView];
+    
+    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(55, 27 - 12, 150, 24)];
+    labelName.font = [FontProperties getSmallFont];
+    labelName.text = [user fullName];
+    labelName.tag = buttonSender.tag;
+    labelName.textAlignment = NSTextAlignmentLeft;
+    [notificationButton addSubview:labelName];
     
     UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
     [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
@@ -110,36 +130,63 @@
 }
 
 - (void)followedPersonPressed:(id)sender {
-//    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_followRequestTableView];
-//    NSIndexPath *indexPath = [_followRequestTableView indexPathForRowAtPoint:buttonOriginInTableView];
-//    User *user = [Profile user];
-    
-//    UIButton *senderButton = (UIButton*)sender;
-//    if (senderButton.tag == -100) {
-//        
-//        if ([user isPrivate]) {
-//            [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
-//            [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
-//            [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-//            senderButton.titleLabel.font = SC_MEDIUM_FONT(12.0f);
-//            senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-//            senderButton.layer.borderWidth = 1;
-//            senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-//            senderButton.layer.cornerRadius = 3;
+//    UIButton *buttonSender = (UIButton *)sender;
+//    User *user = [self getUserAtIndex:buttonSender.tag];
+//    if (user) {
+//        UIButton *senderButton = (UIButton*)sender;
+//        if (senderButton.tag == 50) {
+//            [senderButton setTitle:nil forState:UIControlStateNormal];
+//            [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+//            senderButton.tag = -100;
+//            [user setIsBlocked:NO];
+//            
+//            NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
+//            NSDictionary *options = @{@"is_blocked": @NO};
+//            [Network sendAsynchronousHTTPMethod:POST
+//                                    withAPIName:queryString
+//                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+//                                    withOptions:options];
+//        }
+//        else if (senderButton.tag == -100) {
+//            int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+//            
+//            if ([user isPrivate]) {
+//                [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
+//                [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
+//                [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+//                senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+//                senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+//                senderButton.layer.borderWidth = 1;
+//                senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+//                senderButton.layer.cornerRadius = 3;
+//                [user setIsFollowingRequested:YES];
+//            }
+//            else {
+//                [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+//                [_followingParty addObject:user];
+//                num_following += 1;
+//                [user setIsFollowing:YES];
+//            }
+//            senderButton.tag = 100;
+//            [self updateFollowingUIAndCachedData:num_following];
+//            [Network followUser:user];
 //        }
 //        else {
-//            [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+//            [senderButton setTitle:nil forState:UIControlStateNormal];
+//            [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+//            senderButton.tag = -100;
+//            int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+//            [user setIsFollowing:NO];
+//            [user setIsFollowingRequested:NO];
+//            if (![user isPrivate] && user) {
+//                [_followingParty removeUser:user];
+//                num_following -= 1;
+//            }
+//            [self updateFollowingUIAndCachedData:num_following];
+//            [Network unfollowUser:user];
 //        }
-//        senderButton.tag = 100;
-//        [self updateFollowingUIAndCachedData:num_following];
-//        [Network followUser:user];
-//    }
-//    else {
-//        [senderButton setTitle:nil forState:UIControlStateNormal];
-//        [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-//        senderButton.tag = -100;
-//        [self updateFollowingUIAndCachedData:num_following];
-//        [Network unfollowUser:user];
+//        [_contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
+//        
 //    }
 }
 
@@ -176,7 +223,6 @@
     Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:[indexPath row]];
     User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
     
-    
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width - 100, 54)];
     notificationButton.tag = [indexPath row];
     [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
@@ -196,7 +242,7 @@
     
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(55, 27 - 12, 150, 24)];
     labelName.font = [FontProperties getSmallFont];
-    labelName.text = [NSString stringWithFormat:@"%@ %@", [user objectForKey:@"first_name"], [user objectForKey:@"last_name"]];
+    labelName.text = [user fullName];
     labelName.tag = [indexPath row];
     labelName.textAlignment = NSTextAlignmentLeft;
     [notificationButton addSubview:labelName];
@@ -216,20 +262,6 @@
     rejectButton.tag = [indexPath row];
     [rejectButton addTarget:self action:@selector(rejectUser:) forControlEvents:UIControlEventTouchUpInside];
     [cell.contentView addSubview:rejectButton];
-    
-    if (NO) {
-        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 24, 49, 30)];
-        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-        followPersonButton.tag = -100;
-        [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:followPersonButton];
-        
-        if ([user isFollowing]) {
-            [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            followPersonButton.tag = 100;
-        }
-    }
-
     return cell;
 }
 
