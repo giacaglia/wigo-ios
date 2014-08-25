@@ -52,6 +52,8 @@
 
 @end
 
+BOOL isUserBlocked;
+
 UIViewController *popViewController;
 
 
@@ -213,7 +215,8 @@ UIViewController *popViewController;
 }
 
 - (void) goBack {
-    NSDictionary *userInfo = [self.user dictionary];
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[self.user dictionary]];
+    if (isUserBlocked) [userInfo setObject:[NSNumber numberWithBool:isUserBlocked] forKey:@"is_blocked"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -317,11 +320,19 @@ UIViewController *popViewController;
 
 
 - (void)followPressed {
-    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
-    else self.userState = FOLLOWING_USER;
-    [self reloadView];
+//    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
+//    else self.userState = FOLLOWING_USER;
     [self.user setIsFollowing:YES];
     [self.user saveKeyAsynchronously:@"is_following"];
+    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) {
+        self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
+        [self.user setIsFollowingRequested:YES];
+    }
+    else {
+        self.userState = FOLLOWING_USER;
+        [self.user setIsFollowing:YES];
+    }
+    [self reloadView];
 
 }
 
@@ -850,6 +861,7 @@ UIViewController *popViewController;
 }
 
 - (void)dismissAndGoBack {
+    isUserBlocked = [self.user isBlocked];
     [self.user setIsBlocked:NO];
     [self goBack];
     [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){}];
