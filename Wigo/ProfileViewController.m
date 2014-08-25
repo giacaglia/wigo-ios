@@ -314,14 +314,16 @@ UIViewController *popViewController;
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     blockShown = NO;
     if (buttonIndex == 1) {
-        NSString *queryString = @"blocks/";
-        NSDictionary *options = @{@"block": [self.user objectForKey:@"id"]};
-        [Network sendAsynchronousHTTPMethod:POST
-                                withAPIName:queryString
-                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                                withOptions:options];
-        [self.user setIsBlocked:YES];
-        [self presentBlockPopView];
+        if (![self.user isEqualToUser:[Profile user]]) {
+            NSString *queryString = @"blocks/";
+            NSDictionary *options = @{@"block": [self.user objectForKey:@"id"]};
+            [Network sendAsynchronousHTTPMethod:POST
+                                    withAPIName:queryString
+                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                                    withOptions:options];
+            [self.user setIsBlocked:YES];
+            [self presentBlockPopView];
+        }
     }
 }
 
