@@ -448,7 +448,7 @@ UIViewController *popViewController;
 
 - (void)initializeFollowRequestLabel {
     _followRequestLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 64 + self.view.frame.size.width + 20, self.view.frame.size.width - 50, 50)];
-    _followRequestLabel.text = @"Your Follow request has been sent";
+    _followRequestLabel.text = @"Your follow request has been sent";
     _followRequestLabel.textAlignment = NSTextAlignmentCenter;
     _followRequestLabel.textColor = [FontProperties getOrangeColor];
     _followRequestLabel.font = [FontProperties scMediumFont:16.0f];
