@@ -81,7 +81,6 @@ BOOL once;
 - (void)blockPressed {
     if (once) {
         once = NO;
-        NSLog(@"Block Pressed");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil];
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
     }
