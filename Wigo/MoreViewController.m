@@ -13,6 +13,8 @@
 @property STATE state;
 @end
 
+BOOL once;
+
 @implementation MoreViewController
 
 - (id)initWithState:(STATE)state
@@ -32,6 +34,7 @@
 
 - (void)viewDidLoad
 {
+    once = YES;
     [super viewDidLoad];
     
     if (_state == FOLLOWING_USER ||
@@ -68,18 +71,23 @@
 
 
 - (void)unfollowPressed {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"unfollowPressed" object:nil];
-    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+    if (once) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"unfollowPressed" object:nil];
+        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)blockPressed {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil];
-    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
-
+    if (once) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil];
+        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)cancelPressed {
-    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+    if (once) {
+        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 

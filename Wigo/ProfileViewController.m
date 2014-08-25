@@ -392,6 +392,7 @@ UIViewController *popViewController;
         [_profileImagesArray addObject:profileImgView];
     }
     [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count] - 10, 320)];
+    _bioLabel.frame = CGRectMake(7, 64 + self.view.frame.size.width + 90 + 5 + 10, self.view.frame.size.width - 14, 80);
     _bioLabel.text = [NSString stringWithFormat:@"        %@" , [self.user bioString]];
     [_bioLabel sizeToFit];
     _bioLabel.hidden = NO;
