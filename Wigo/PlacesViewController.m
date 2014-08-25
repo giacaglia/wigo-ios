@@ -69,6 +69,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    for (UIView *view in self.navigationController.navigationBar.subviews) {
+        for (UIView *view2 in view.subviews) {
+            if ([view2 isKindOfClass:[UIImageView class]]) {
+                [view2 removeFromSuperview];
+            }
+        }
+    }
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
+    lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
+    [self.navigationController.navigationBar addSubview:lineView];
+    
     _spinnerAtTop = YES;
     [self initializeNotificationObservers];
     [self initializeTapHandler];
@@ -100,16 +112,7 @@
 }
 
 - (void) initializeNavigationBar {
-    for (UIView *view in self.navigationController.navigationBar.subviews) {
-        for (UIView *view2 in view.subviews) {
-            if ([view2 isKindOfClass:[UIImageView class]]) {
-                [view2 removeFromSuperview];
-            }
-        }
-    }
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
-    lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
-    [self.navigationController.navigationBar addSubview:lineView];
+
 
     
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
