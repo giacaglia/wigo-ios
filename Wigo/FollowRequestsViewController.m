@@ -130,64 +130,60 @@
 }
 
 - (void)followedPersonPressed:(id)sender {
-//    UIButton *buttonSender = (UIButton *)sender;
-//    User *user = [self getUserAtIndex:buttonSender.tag];
-//    if (user) {
-//        UIButton *senderButton = (UIButton*)sender;
-//        if (senderButton.tag == 50) {
-//            [senderButton setTitle:nil forState:UIControlStateNormal];
-//            [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-//            senderButton.tag = -100;
-//            [user setIsBlocked:NO];
-//            
-//            NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
-//            NSDictionary *options = @{@"is_blocked": @NO};
-//            [Network sendAsynchronousHTTPMethod:POST
-//                                    withAPIName:queryString
-//                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-//                                    withOptions:options];
-//        }
-//        else if (senderButton.tag == -100) {
-//            int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
-//            
-//            if ([user isPrivate]) {
-//                [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
-//                [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
-//                [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-//                senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-//                senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-//                senderButton.layer.borderWidth = 1;
-//                senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-//                senderButton.layer.cornerRadius = 3;
-//                [user setIsFollowingRequested:YES];
-//            }
-//            else {
-//                [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-//                [_followingParty addObject:user];
-//                num_following += 1;
-//                [user setIsFollowing:YES];
-//            }
-//            senderButton.tag = 100;
-//            [self updateFollowingUIAndCachedData:num_following];
-//            [Network followUser:user];
-//        }
-//        else {
-//            [senderButton setTitle:nil forState:UIControlStateNormal];
-//            [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-//            senderButton.tag = -100;
-//            int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
-//            [user setIsFollowing:NO];
-//            [user setIsFollowingRequested:NO];
-//            if (![user isPrivate] && user) {
-//                [_followingParty removeUser:user];
-//                num_following -= 1;
-//            }
-//            [self updateFollowingUIAndCachedData:num_following];
-//            [Network unfollowUser:user];
-//        }
-//        [_contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
-//        
-//    }
+    UIButton *buttonSender = (UIButton *)sender;
+    User *user = [self getUserAtIndex:buttonSender.tag];
+    if (user) {
+        UIButton *senderButton = (UIButton*)sender;
+        if (senderButton.tag == 50) {
+            [senderButton setTitle:nil forState:UIControlStateNormal];
+            [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+            senderButton.tag = -100;
+            [user setIsBlocked:NO];
+            NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
+            NSDictionary *options = @{@"is_blocked": @NO};
+            [Network sendAsynchronousHTTPMethod:POST
+                                    withAPIName:queryString
+                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                                    withOptions:options];
+        }
+        else if (senderButton.tag == -100) {
+            if ([user isPrivate]) {
+                [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
+                [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
+                [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+                senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+                senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+                senderButton.layer.borderWidth = 1;
+                senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                senderButton.layer.cornerRadius = 3;
+                [user setIsFollowingRequested:YES];
+            }
+            else {
+                [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+                [user setIsFollowing:YES];
+            }
+            senderButton.tag = 100;
+            [Network followUser:user];
+        }
+        else {
+            [senderButton setTitle:nil forState:UIControlStateNormal];
+            [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+            senderButton.tag = -100;
+            [user setIsFollowing:NO];
+            [user setIsFollowingRequested:NO];
+            [Network unfollowUser:user];
+        }
+    }
+}
+
+
+- (User *)getUserAtIndex:(int)index {
+    User *user;
+    if (index > 0 && index < [[_followRequestsParty getObjectArray] count]) {
+        Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:index];
+        user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
+    }
+    return user;
 }
 
 - (void) goBack {
