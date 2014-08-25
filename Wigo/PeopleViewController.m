@@ -40,6 +40,7 @@
 @end
 
 BOOL didProfileSegue;
+int userInt;
 
 int queryQueueInt;
 
@@ -48,7 +49,6 @@ int queryQueueInt;
 - (id)initWithUser:(User *)user {
     self = [super init];
     if (self) {
-        didProfileSegue = NO;
         self.user = user;
         self.view.backgroundColor = [UIColor whiteColor];
     }
@@ -58,7 +58,6 @@ int queryQueueInt;
 - (id)init {
     self = [super init];
     if (self) {
-        didProfileSegue = NO;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -69,10 +68,13 @@ int queryQueueInt;
     queryQueueInt = 0;
     [super viewDidLoad];
     didProfileSegue = NO;
+    userInt = -1;
     // Title setup
     self.title = [self.user fullName];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
+
     [self initializeYourSchoolButton];
     [self initializeFollowingButton];
     [self initializeFollowersButton];
@@ -100,6 +102,7 @@ int queryQueueInt;
         [self loadTableView];
     }
     didProfileSegue = NO;
+    userInt = -1;
 }
 
 - (void)initializeBackBarButton {
@@ -149,6 +152,7 @@ int queryQueueInt;
     User *user = [self getUserAtIndex:tag];
     if (user) {
         didProfileSegue = YES;
+        userInt = tag;
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -160,6 +164,7 @@ int queryQueueInt;
     User *user = [self getUserAtIndex:tag];
     if (user) {
         didProfileSegue = YES;
+        userInt = tag;
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -521,12 +526,12 @@ int queryQueueInt;
 - (User *)getUserAtIndex:(int)index {
     User *user;
     if (_isSearching) {
-        int sizeOfArray = [[_filteredContentParty getObjectArray] count];
+        int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = [[_filteredContentParty getObjectArray] objectAtIndex:index];
     }
     else {
-        int sizeOfArray = [[_contentParty getObjectArray] count];
+        int sizeOfArray = (int)[[_contentParty getObjectArray] count];
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = [[_contentParty getObjectArray] objectAtIndex:index];
     }
@@ -541,6 +546,30 @@ int queryQueueInt;
             [profileUser setLastUserRead:[user objectForKey:@"id"]];
             [profileUser saveKeyAsynchronously:@"last_user_read"];
         }
+    }
+}
+
+#pragma mark - Update User Info
+- (void)updateUserAtTable:(NSNotification*)notification {
+    NSDictionary* userInfo = [notification userInfo];
+    User *user = [[User alloc] initWithDictionary:userInfo];
+    if (user) {
+        if (_isSearching) {
+            int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
+            if (sizeOfArray > 0 && sizeOfArray > userInt && userInt >= 0) {
+                [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
+                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+            
+        }
+        else {
+            int sizeOfArray = (int)[[_contentParty getObjectArray] count];
+            if (sizeOfArray > 0 && sizeOfArray > userInt  && userInt >= 0) {
+                [_contentParty replaceObjectAtIndex:userInt withObject:user];
+                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+        }
+
     }
 }
 
@@ -684,7 +713,6 @@ int queryQueueInt;
 
 
 - (void)searchTableList {
-    NSLog(@"here");
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     _page = @1;
@@ -744,6 +772,8 @@ int queryQueueInt;
        
     }];
 }
+
+
 
 
 @end

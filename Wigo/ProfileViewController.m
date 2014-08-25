@@ -213,6 +213,8 @@ UIViewController *popViewController;
 }
 
 - (void) goBack {
+    NSDictionary *userInfo = [self.user dictionary];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

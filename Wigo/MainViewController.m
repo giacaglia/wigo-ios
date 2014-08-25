@@ -54,6 +54,7 @@
 @end
 
 BOOL didProfileSegue;
+int userInt;
 
 @implementation MainViewController
 
@@ -76,12 +77,14 @@ BOOL didProfileSegue;
         if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
     }
     didProfileSegue = NO;
+    userInt = -1;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     didProfileSegue = NO;
+    userInt = -1;
     
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
@@ -217,6 +220,37 @@ BOOL didProfileSegue;
     }];
 }
 
+- (void)updateUserAtTable:(NSNotification*)notification {
+    NSDictionary* userInfo = [notification userInfo];
+    User *user = [[User alloc] initWithDictionary:userInfo];
+    if (user) {
+        int section;
+        int tag = userInt;
+        if (tag < 0) {
+            tag = -tag;
+            tag -= 1;
+            section = 1;
+            int sizeOfArray = (int)[[_notGoingOutParty getObjectArray] count];
+            if (sizeOfArray > 0 && sizeOfArray > tag  && tag >= 0) {
+                [_notGoingOutParty replaceObjectAtIndex:tag withObject:user];
+                [_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:section]]];
+            }
+        }
+        else {
+            tag -= 1;
+            section = 0;
+            int sizeOfArray = (int)[[_whoIsGoingOutParty getObjectArray] count];
+            if (sizeOfArray > 0 && sizeOfArray > tag  && tag >= 0) {
+                [_whoIsGoingOutParty replaceObjectAtIndex:tag withObject:user];
+                [_collectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:section]]];
+            }
+        }
+        
+    }
+    
+        
+}
+
 #pragma mark - viewDidLoad initializations
 
 - (void)initializeFlashScreen {
@@ -252,6 +286,11 @@ BOOL didProfileSegue;
                                              selector:@selector(fetchUserInfo)
                                                  name:@"fetchUserInfo"
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateUserAtTable:) name:@"updateUserAtTable"
+                                               object:nil];
+
 }
 
 - (void)scrollUp {
@@ -429,6 +468,7 @@ BOOL didProfileSegue;
     int tag = (int)superview.tag;
     User *user;
     
+    userInt = tag;
     if (tag < 0) {
         tag = -tag;
         tag -= 1;
