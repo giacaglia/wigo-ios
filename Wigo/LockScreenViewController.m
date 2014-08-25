@@ -174,7 +174,7 @@ OnboardFollowViewController *onboardFollowViewController;
 
 - (void)fetchEveryone {
     _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    NSString *queryString = [NSString stringWithFormat:@"users/?limit=%@",numberOfPeopleSignedUp];
+    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=id&limit=%@",numberOfPeopleSignedUp];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
         }
