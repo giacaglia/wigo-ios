@@ -72,6 +72,7 @@ BOOL once;
 
 - (void)unfollowPressed {
     if (once) {
+        once = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"unfollowPressed" object:nil];
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
     }
@@ -79,6 +80,7 @@ BOOL once;
 
 - (void)blockPressed {
     if (once) {
+        once = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil];
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
     }
@@ -86,6 +88,7 @@ BOOL once;
 
 - (void)cancelPressed {
     if (once) {
+        once = NO;
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
     }
 }
