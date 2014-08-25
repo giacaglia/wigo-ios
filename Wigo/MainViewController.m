@@ -202,12 +202,12 @@ int userInt;
                     NSNumber *lastUserJoinedNumber = (NSNumber *)[lastUserJoined objectForKey:@"id"];
                     [_rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
                     if ([lastUserRead intValue] < [lastUserJoinedNumber intValue]) {
-                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 40, 40)];
+                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
                         imageView.image = [UIImage imageNamed:@"orangeFollowPlus"];
                         [_rightButton addSubview:imageView];
                     }
                     else {
-                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 40, 40)];
+                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
                         imageView.image = [UIImage imageNamed:@"followPlus"];
                         [_rightButton addSubview:imageView];
                     }
@@ -379,8 +379,8 @@ int userInt;
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.leftBarButtonItem = profileBarButton;
     
-    _rightButton = [[UIButtonAligned alloc] initWithFrame: CGRectMake(0, 0, 40, 40) andType:@3];
-    UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 40, 40)];
+    _rightButton = [[UIButtonAligned alloc] initWithFrame: CGRectMake(0, 0, 30, 30) andType:@3];
+    UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
     imageView.image = [UIImage imageNamed:@"followPlus"];
     [_rightButton addSubview:imageView];
     [_rightButton addTarget:self action:@selector(followPressed)

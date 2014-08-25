@@ -361,6 +361,9 @@
             else if ([error domain] == NSURLErrorDomain) {
                 [self showErrorNoConnection];
             }
+            else if (!jsonResponse && [error domain] == NSCocoaErrorDomain) {
+                [self showBummerError];
+            }
             else if (![profileUser emailValidated]) {
                 if (!_pushed) {
                     _pushed = YES;
