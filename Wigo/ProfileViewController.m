@@ -53,6 +53,7 @@
 @end
 
 BOOL isUserBlocked;
+BOOL blockShown;
 
 UIViewController *popViewController;
 
@@ -90,6 +91,7 @@ UIViewController *popViewController;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    blockShown = NO;
    
     NSString *isCurrentUser = (self.user == [Profile user]) ? @"Yes" : @"No";
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", nil];
@@ -296,16 +298,20 @@ UIViewController *popViewController;
 }
 
 - (void)blockPressed {
-   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Block"
-                                                   message:@"Are you sure you want to block this user?"
-                                                  delegate:nil
-                                         cancelButtonTitle:@"Cancel"
-                                         otherButtonTitles:@"Block", nil];
-    alert.delegate = self;
-    [alert show];
-}
+    if (!blockShown) {
+        blockShown = YES;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Block"
+                                                        message:@"Are you sure you want to block this user?"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"Cancel"
+                                              otherButtonTitles:@"Block", nil];
+        alert.delegate = self;
+        [alert show];
+    }
+ }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    blockShown = NO;
     if (buttonIndex == 1) {
         NSString *queryString = @"blocks/";
         NSDictionary *options = @{@"block": [self.user objectForKey:@"id"]};
