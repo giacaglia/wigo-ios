@@ -39,6 +39,8 @@
 @property NSNumber *currentTab;
 @end
 
+BOOL didProfileSegue;
+
 int queryQueueInt;
 
 @implementation PeopleViewController
@@ -46,6 +48,7 @@ int queryQueueInt;
 - (id)initWithUser:(User *)user {
     self = [super init];
     if (self) {
+        didProfileSegue = NO;
         self.user = user;
         self.view.backgroundColor = [UIColor whiteColor];
     }
@@ -55,6 +58,7 @@ int queryQueueInt;
 - (id)init {
     self = [super init];
     if (self) {
+        didProfileSegue = NO;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -64,7 +68,7 @@ int queryQueueInt;
 {
     queryQueueInt = 0;
     [super viewDidLoad];
-  
+    didProfileSegue = NO;
     // Title setup
     self.title = [self.user fullName];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
@@ -86,13 +90,16 @@ int queryQueueInt;
     [super viewDidAppear:animated];
     [EventAnalytics tagEvent:@"People View"];
 
-    if ([[self.user allKeys] containsObject:@"tabNumber"]) {
-        _currentTab = [self.user objectForKey:@"tabNumber"];
+    if (!didProfileSegue) {
+        if ([[self.user allKeys] containsObject:@"tabNumber"]) {
+            _currentTab = [self.user objectForKey:@"tabNumber"];
+        }
+        else if (!_currentTab) _currentTab = @2;
+        _contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+        _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+        [self loadTableView];
     }
-    else if (!_currentTab) _currentTab = @2;
-    _contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    [self loadTableView];
+    didProfileSegue = NO;
 }
 
 - (void)initializeBackBarButton {
@@ -141,6 +148,7 @@ int queryQueueInt;
     int tag = (int)viewSender.tag;
     User *user = [self getUserAtIndex:tag];
     if (user) {
+        didProfileSegue = YES;
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -151,6 +159,7 @@ int queryQueueInt;
     int tag = (int)buttonSender.tag;
     User *user = [self getUserAtIndex:tag];
     if (user) {
+        didProfileSegue = YES;
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -411,10 +420,8 @@ int queryQueueInt;
                 followPersonButton.layer.cornerRadius = 3;
                 followPersonButton.tag = 100;
             }
-
         }
     }
-    
     if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastUserRead] intValue]) {
         cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
     }

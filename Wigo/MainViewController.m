@@ -53,6 +53,8 @@
 
 @end
 
+BOOL didProfileSegue;
+
 @implementation MainViewController
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -68,14 +70,18 @@
     [super viewDidAppear:animated];
     [EventAnalytics tagEvent:@"Who View"];
     self.tabBarController.tabBar.hidden = NO;
-    if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
-    if (!_fetchingUserInfo) [self fetchUserInfo];
-    if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
+    if (!didProfileSegue) {
+        if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
+        if (!_fetchingUserInfo) [self fetchUserInfo];
+        if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
+    }
+    didProfileSegue = NO;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    didProfileSegue = NO;
     
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
@@ -433,9 +439,12 @@
         user = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:tag];
     }
     
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-    [self.navigationController pushViewController:self.profileViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
+    if (user) {
+        didProfileSegue = YES;
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:self.profileViewController animated:YES];
+        self.tabBarController.tabBar.hidden = YES;
+    }
 }
 
 - (void) updateTitleView {
