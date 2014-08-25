@@ -63,9 +63,6 @@
         self.isSearching = NO;
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTableView" object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableView) name:@"reloadTableView" object:nil];
-
-//    [_tableViewOfPeople reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {

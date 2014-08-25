@@ -168,6 +168,8 @@
 		E9AAAFBC193CBE810069F700 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBB193CBE810069F700 /* NotificationsViewController.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
+		E9ACDC6919AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACDC6819AB7559004B0349 /* NSObject-CancelableScheduledBlock.m */; };
+		E9ACDC6A19AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACDC6819AB7559004B0349 /* NSObject-CancelableScheduledBlock.m */; };
 		E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE4999198C402500F9AF74 /* girlVoice.caf */; };
 		E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE4999198C402500F9AF74 /* girlVoice.caf */; };
 		E9BE8C49192A48F1008BB84C /* FontProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BE8C48192A48F1008BB84C /* FontProperties.m */; };
@@ -355,6 +357,8 @@
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
 		E9AAAFC7193E357E0069F700 /* UIButtonAligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonAligned.h; sourceTree = "<group>"; };
 		E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonAligned.m; sourceTree = "<group>"; };
+		E9ACDC6719AB7559004B0349 /* NSObject-CancelableScheduledBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject-CancelableScheduledBlock.h"; sourceTree = "<group>"; };
+		E9ACDC6819AB7559004B0349 /* NSObject-CancelableScheduledBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject-CancelableScheduledBlock.m"; sourceTree = "<group>"; };
 		E9BE4999198C402500F9AF74 /* girlVoice.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = girlVoice.caf; path = ../girlVoice.caf; sourceTree = "<group>"; };
 		E9BE8C47192A48F1008BB84C /* FontProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontProperties.h; sourceTree = "<group>"; };
 		E9BE8C48192A48F1008BB84C /* FontProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontProperties.m; sourceTree = "<group>"; };
@@ -483,6 +487,8 @@
 				C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */,
 				E994111019AA8D9200D76379 /* NSString+URLEncoding.h */,
 				E994111119AA8D9200D76379 /* NSString+URLEncoding.m */,
+				E9ACDC6719AB7559004B0349 /* NSObject-CancelableScheduledBlock.h */,
+				E9ACDC6819AB7559004B0349 /* NSObject-CancelableScheduledBlock.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -1203,6 +1209,7 @@
 				C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */,
 				C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */,
 				C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */,
+				E9ACDC6A19AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
 				C12A113A19787BE700D53B1C /* MKAnnotationView+WebCache.m in Sources */,
 				C12A113B19787BE700D53B1C /* MainViewController.m in Sources */,
 				C12A113C19787BE700D53B1C /* NotificationsViewController.m in Sources */,
@@ -1276,6 +1283,7 @@
 				E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */,
 				E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */,
 				E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */,
+				E9ACDC6919AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
 				E900C2B51961EADE00A01F50 /* MKAnnotationView+WebCache.m in Sources */,
 				E921D66819239ED900361247 /* MainViewController.m in Sources */,
 				E9AAAFBC193CBE810069F700 /* NotificationsViewController.m in Sources */,

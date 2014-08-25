@@ -8,9 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "User.h"
-#import "WigoSearchBarDelegate.h"
 
-@interface PeopleViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, WigoSearchBarDelegate>
+@interface PeopleViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
 -(id)initWithUser:(User *)user;
 

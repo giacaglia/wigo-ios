@@ -381,7 +381,9 @@ BOOL initializedPopScreen;
     
     if([searchText length] != 0) {
         isSearching = YES;
-        [self searchTableList];
+        [self performBlock:^(void){[self searchTableList];}
+                afterDelay:0.25
+     cancelPreviousRequest:YES];
     }
     else {
         isSearching = NO;
@@ -390,7 +392,9 @@ BOOL initializedPopScreen;
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self searchTableList];
+    [self performBlock:^(void){[self searchTableList];}
+            afterDelay:0.25
+ cancelPreviousRequest:YES];
 }
 
 

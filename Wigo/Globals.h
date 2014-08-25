@@ -28,6 +28,7 @@
 #import "FLAnimatedImage.h"
 #import "FLAnimatedImageView.h"
 #import "NSString+URLEncoding.h"
+#import "NSObject-CancelableScheduledBlock.h"
 
 
 static NSString * const collectionViewCellIdentifier = @"CollectionViewCellIdentifier";

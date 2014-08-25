@@ -666,7 +666,9 @@ int queryQueueInt;
     
     if([searchText length] != 0) {
         _isSearching = YES;
-        [self searchTableList];
+        [self performBlock:^(void){[self searchTableList];}
+                afterDelay:0.25
+     cancelPreviousRequest:YES];
     }
     else {
         _isSearching = NO;
@@ -675,11 +677,14 @@ int queryQueueInt;
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self searchTableList];
+    [self performBlock:^(void){[self searchTableList];}
+            afterDelay:0.25
+ cancelPreviousRequest:YES];
 }
 
 
 - (void)searchTableList {
+    NSLog(@"here");
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     _page = @1;
