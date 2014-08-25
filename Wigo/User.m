@@ -587,13 +587,22 @@
     [query setValue:[self objectForKey:@"facebook_id"] forKey:@"facebook_id"];
     [query setValue:[self accessToken] forKey:@"facebook_access_token"];
     [query setValue:self.email forKey:@"email"];
+    if ([[_proxy allKeys] containsObject:@"first_name"]) {
+        [query setValue:[self firstName] forKey:@"first_name"];
+    }
+    if ([[_proxy allKeys] containsObject:@"last_name"]) {
+        [query setValue:[self lastName] forKey:@"last_name"];
+    }
+    if ([[_proxy allKeys] containsObject:@"gender"]) {
+        [query setValue:[_proxy objectForKey:@"gender"] forKey:@"gender"];
+    }
     NSDictionary *dictionaryUser = [query sendPOSTRequest];
     if (dictionaryUser == nil) {
         return @"no_network";
     }
     if ([[dictionaryUser allKeys] containsObject:@"code"]) {
         if ([[dictionaryUser objectForKey:@"code"] isEqualToString:@"invalid_email"]) {
-            return @"invalid_email";
+            return @"invalidpo _email";
         }
         else if ([[dictionaryUser objectForKey:@"code"] isEqualToString:@"expired_token"]) {
             return @"expired_token";

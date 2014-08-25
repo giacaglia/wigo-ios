@@ -192,6 +192,7 @@
 }
 
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
+    [[Profile user] setImagesURL:profilePictures];
     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
     if (!_pushed) {
         _pushed = YES;
@@ -285,6 +286,10 @@
         User *profileUser = [Profile user];
         [profileUser setFirstName:fbGraphUser[@"first_name"]];
         [profileUser setLastName:fbGraphUser[@"last_name"]];
+        NSDictionary *userResponse = (NSDictionary *)fbGraphUser;
+        if ([[userResponse allKeys] containsObject:@"gender"]) {
+            [profileUser setObject:[userResponse objectForKey:@"gender"] forKey:@"gender"];
+        }
         
         if (!_alertShown && !_fetchingProfilePictures) {
             [self loginUserAsynchronous];
