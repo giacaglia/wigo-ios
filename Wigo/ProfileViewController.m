@@ -217,10 +217,12 @@ UIViewController *popViewController;
 }
 
 - (void) goBack {
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[self.user dictionary]];
-    if (isUserBlocked) [userInfo setObject:[NSNumber numberWithBool:isUserBlocked] forKey:@"is_blocked"];
-    isUserBlocked = NO;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
+    if (![self.user isEqualToUser:[Profile user]]) {
+        NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[self.user dictionary]];
+        if (isUserBlocked) [userInfo setObject:[NSNumber numberWithBool:isUserBlocked] forKey:@"is_blocked"];
+        isUserBlocked = NO;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
+    }
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -315,6 +317,7 @@ UIViewController *popViewController;
     blockShown = NO;
     if (buttonIndex == 1) {
         if (![self.user isEqualToUser:[Profile user]]) {
+            NSLog(@"self.user: %@", self.user);
             NSString *queryString = @"blocks/";
             NSDictionary *options = @{@"block": [self.user objectForKey:@"id"]};
             [Network sendAsynchronousHTTPMethod:POST
