@@ -200,12 +200,12 @@ int queryQueueInt;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     User *user;
     if (_isSearching) {
-        int sizeOfArray = [[_filteredContentParty getObjectArray] count];
+        int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
         if (sizeOfArray > 0 && sizeOfArray > [indexPath row])
             user = [[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
     }
     else {
-        int sizeOfArray = [[_contentParty getObjectArray] count];
+        int sizeOfArray = (int)[[_contentParty getObjectArray] count];
         if (sizeOfArray > 0 && sizeOfArray > [indexPath row])
             user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
     }

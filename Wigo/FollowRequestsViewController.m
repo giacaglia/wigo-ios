@@ -131,7 +131,7 @@
 
 - (void)followedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    User *user = [self getUserAtIndex:buttonSender.tag];
+    User *user = [self getUserAtIndex:(int)buttonSender.tag];
     if (user) {
         UIButton *senderButton = (UIButton*)sender;
         if (senderButton.tag == 50) {

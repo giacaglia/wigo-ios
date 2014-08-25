@@ -141,8 +141,8 @@ OnboardFollowViewController *onboardFollowViewController;
     {
         if ([subview isMemberOfClass:[UIImageViewShake class]]) {
             UIImageViewShake *imageView = (UIImageViewShake *)subview;
-            int i = imageView.tag - 1;
-            int numberOfPeopleInParty = [[_everyoneParty getObjectArray] count];
+            int i = (int)imageView.tag - 1;
+            int numberOfPeopleInParty = (int)[[_everyoneParty getObjectArray] count];
             if (i < numberOfPeopleInParty) {
                 if (numberOfPeopleInParty != 0 && numberOfPeopleSignedUp > 0 && [_everyoneParty getObjectArray]) {
                     User *user = [[_everyoneParty getObjectArray] objectAtIndex:i];
