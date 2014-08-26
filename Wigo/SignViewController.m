@@ -300,7 +300,7 @@
 - (void) loginView:(FBLoginView *)loginView handleError:(NSError *)error {
     if ([[[error userInfo] allKeys] containsObject:@"com.facebook.sdk:ErrorInnerErrorKey"]) {
         NSError *innerError = [[error userInfo] objectForKey:@"com.facebook.sdk:ErrorInnerErrorKey"];
-        if ([innerError domain] == NSURLErrorDomain) {
+        if ([[innerError domain] isEqualToString:NSURLErrorDomain]) {
             [self showErrorNoConnection];
             [self logout];
         }
@@ -358,10 +358,10 @@
                 [self fetchTokensFromFacebook];
                 [self fetchProfilePicturesAlbumFacebook];
             }
-            else if ([error domain] == NSURLErrorDomain) {
+            else if ([[error domain] isEqualToString:NSURLErrorDomain]) {
                 [self showErrorNoConnection];
             }
-            else if (!jsonResponse && [error domain] == NSCocoaErrorDomain) {
+            else if (!jsonResponse && [[error domain] isEqualToString:NSCocoaErrorDomain]) {
                 [self showBummerError];
             }
             else if (![profileUser emailValidated]) {
