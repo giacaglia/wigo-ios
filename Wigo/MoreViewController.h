@@ -12,5 +12,6 @@
 @interface MoreViewController : UIViewController
 
 - (id)initWithState:(STATE)state;
+- (id)initWithUser:(User *)newUser;
 
 @end

@@ -9,19 +9,28 @@
 #import "MoreViewController.h"
 #import "Globals.h"
 #import "RWBlurPopover.h"
-@interface MoreViewController ()
-@property STATE state;
-@end
+
 
 BOOL once;
+User *user;
+STATE state;
 
 @implementation MoreViewController
 
-- (id)initWithState:(STATE)state
+- (id)initWithState:(STATE)newState
 {
     self = [super init];
     if (self) {
-        _state = state;
+        state = newState;
+    }
+    return self;
+}
+
+- (id)initWithUser:(User *)newUser {
+    self = [super init];
+    if (self) {
+        user = newUser;
+        state = [user getUserState];
     }
     return self;
 }
@@ -37,10 +46,10 @@ BOOL once;
     once = YES;
     [super viewDidLoad];
     
-    if (_state == FOLLOWING_USER ||
-        _state == ACCEPTED_PRIVATE_USER ||
-        _state == ATTENDING_EVENT_FOLLOWING_USER ||
-        _state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
+    if (state == FOLLOWING_USER ||
+        state == ACCEPTED_PRIVATE_USER ||
+        state == ATTENDING_EVENT_FOLLOWING_USER ||
+        state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
         UIButton *unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
         unfollowButton.backgroundColor = RGB(246, 143, 30);
         [unfollowButton setTitle:@"UNFOLLOW" forState:UIControlStateNormal];
@@ -52,7 +61,7 @@ BOOL once;
     
     UIButton *blockButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12, 248, 42)];
     blockButton.backgroundColor = [UIColor redColor];
-    [blockButton addTarget:self action:@selector(blockPressed) forControlEvents:UIControlEventTouchUpInside];
+    [blockButton addTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [blockButton setTitle:@"BLOCK" forState:UIControlStateNormal];
     [blockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     blockButton.titleLabel.font = [FontProperties getTitleFont];
@@ -73,16 +82,20 @@ BOOL once;
 - (void)unfollowPressed {
     if (once) {
         once = NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"unfollowPressed" object:nil];
-        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"unfollowPressed" object:nil];
+
+        }];
     }
 }
 
-- (void)blockPressed {
+- (void)blockButtonPressed {
     if (once) {
         once = NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil];
-        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void) {
+            NSDictionary *userInfo = [user dictionary];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil userInfo:userInfo];
+        }];
     }
 }
 

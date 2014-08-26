@@ -118,7 +118,7 @@ UIViewController *popViewController;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseImage) name:@"chooseImage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed) name:@"blockPressed" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed:) name:@"blockPressed" object:nil];
 }
 
 - (void)reloadView {
@@ -300,23 +300,12 @@ UIViewController *popViewController;
     self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
 }
 
-- (void)blockPressed {
+- (void)blockPressed:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    User *sentUser = [[User alloc] initWithDictionary:userInfo];
     if (!blockShown) {
         blockShown = YES;
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Block"
-                                                        message:@"Are you sure you want to block this user?"
-                                                       delegate:nil
-                                              cancelButtonTitle:@"Cancel"
-                                              otherButtonTitles:@"Block", nil];
-        alert.delegate = self;
-        [alert show];
-    }
- }
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    blockShown = NO;
-    if (buttonIndex == 1) {
-        if (![self.user isEqualToUser:[Profile user]]) {
+        if (![sentUser isEqualToUser:[Profile user]]) {
             NSLog(@"self.user: %@", self.user);
             NSString *queryString = @"blocks/";
             NSDictionary *options = @{@"block": [self.user objectForKey:@"id"]};
@@ -327,13 +316,11 @@ UIViewController *popViewController;
             [self.user setIsBlocked:YES];
             [self presentBlockPopView];
         }
-    }
-}
 
+    }
+ }
 
 - (void)followPressed {
-//    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
-//    else self.userState = FOLLOWING_USER;
     [self.user setIsFollowing:YES];
     [self.user saveKeyAsynchronously:@"is_following"];
     if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) {
@@ -349,7 +336,7 @@ UIViewController *popViewController;
 }
 
 - (void)morePressed {
-    self.moreViewController = [[MoreViewController alloc] initWithState:[self.user getUserState]];
+    self.moreViewController = [[MoreViewController alloc] initWithUser:self.user];
     [[RWBlurPopover instance] presentViewController:self.moreViewController withOrigin:30 andHeight:450];
 }
 
