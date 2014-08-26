@@ -55,8 +55,6 @@
 BOOL isUserBlocked;
 BOOL blockShown;
 
-UIViewController *popViewController;
-
 
 @implementation ProfileViewController
 
@@ -84,7 +82,7 @@ UIViewController *popViewController;
 
 - (void)viewDidAppear:(BOOL)animated {
     _pageControl.hidden = NO;
-    if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView];
+    if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
 }
 
 
@@ -307,13 +305,15 @@ UIViewController *popViewController;
         blockShown = YES;
         if (![sentUser isEqualToUser:[Profile user]]) {
             NSString *queryString = @"blocks/";
-            NSDictionary *options = @{@"block": [self.user objectForKey:@"id"]};
+            NSDictionary *options = @{@"block": [sentUser objectForKey:@"id"]};
+            NSLog(@"self.user %@", [self.user firstName]);
+            NSLog(@"sent user: %@", [sentUser firstName]);
             [Network sendAsynchronousHTTPMethod:POST
                                     withAPIName:queryString
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
                                     withOptions:options];
-            [self.user setIsBlocked:YES];
-            [self presentBlockPopView];
+            [sentUser setIsBlocked:YES];
+            [self presentBlockPopView:sentUser];
         }
 
     }
@@ -824,8 +824,8 @@ UIViewController *popViewController;
 
 #pragma mark - Block View
 
-- (void)presentBlockPopView {
-    popViewController = [[UIViewController alloc] init];
+- (void)presentBlockPopView:(User *)user {
+    UIViewController *popViewController = [[UIViewController alloc] init];
     popViewController.view.frame = self.view.frame;
     popViewController.view.backgroundColor = RGBAlpha(244,149,45, 0.8f);
     
@@ -838,7 +838,7 @@ UIViewController *popViewController;
     [popViewController.view addSubview:backButton];
     
     UILabel *blockedLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height/2 - 60 - 40, popViewController.view.frame.size.width - 40, 120)];
-    blockedLabel.text = [NSString stringWithFormat:@"%@ can't follow you or see any of your activity.", [self.user fullName]];
+    blockedLabel.text = [NSString stringWithFormat:@"%@ can't follow you or see any of your activity.", [user fullName]];
     blockedLabel.textColor = [UIColor whiteColor];
     blockedLabel.numberOfLines = 0;
     blockedLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -851,7 +851,7 @@ UIViewController *popViewController;
     unblockButton.layer.cornerRadius = 15;
     unblockButton.layer.borderWidth = 1;
     unblockButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    [unblockButton setTitle:[NSString stringWithFormat:@"Unblock %@", [self.user firstName]] forState:UIControlStateNormal];
+    [unblockButton setTitle:[NSString stringWithFormat:@"Unblock %@", [user firstName]] forState:UIControlStateNormal];
     [unblockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     unblockButton.titleLabel.font = [FontProperties scMediumFont:24.0f];
     [popViewController.view addSubview:unblockButton];
