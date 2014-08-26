@@ -256,6 +256,7 @@
                                   cancelButtonTitle:@"Ok"
                                   otherButtonTitles: nil];
         [_alert show];
+        [self logout];
         _alert.delegate = self;
     }
     
@@ -269,6 +270,7 @@
                               cancelButtonTitle:@"Ok"
                               otherButtonTitles: nil];
     [_alert show];
+    [self logout];
     _alert.delegate = self;
 }
 
@@ -302,7 +304,6 @@
         NSError *innerError = [[error userInfo] objectForKey:@"com.facebook.sdk:ErrorInnerErrorKey"];
         if ([[innerError domain] isEqualToString:NSURLErrorDomain]) {
             [self showErrorNoConnection];
-            [self logout];
         }
 
     }
