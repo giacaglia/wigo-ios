@@ -699,8 +699,10 @@
                                   [partyUser addObject:user];
                               }
                               NSInteger indexOfEvent = [[resultInputDictionary objectForKey:@"i"] integerValue];
-                              [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
-                              if (indexOfEvent + 1 < [_partyUserArray count]) [_partyUserArray removeObjectAtIndex:(indexOfEvent+1)];
+                              if (partyUser) {
+                                  [_partyUserArray insertObject:partyUser atIndex:indexOfEvent];
+                                  if (indexOfEvent + 1 < [_partyUserArray count]) [_partyUserArray removeObjectAtIndex:(indexOfEvent+1)];
+                              }
                               [self fetchedOneParty];
         }];
     }
