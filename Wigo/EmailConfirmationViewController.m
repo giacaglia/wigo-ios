@@ -158,24 +158,40 @@ OnboardFollowViewController *onboardFollowViewController;
 #pragma mark - Login
 
 - (void) login {
-    User *userProfile = [Profile user];
-    NSString *response = [userProfile login];
-    [Profile setUser:userProfile];
+    User *profileUser = [Profile user];
     
-    if ([response isEqualToString:@"error"] || [response isEqualToString:@"email_not_validated"]) {
+    if (profileUser && [profileUser key]) {
+        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                        [self transitionProfileUser:(NSDictionary *)jsonResponse];
+                    }
+                }
+                else {
+                    [self transitionProfileUser:(NSDictionary *)jsonResponse];
+                }
+            });
+        }];
     }
-    else {
+        
+}
+
+
+- (void)transitionProfileUser:(NSDictionary *)jsonResponse {
+    User *user = [[User alloc] initWithDictionary:jsonResponse];
+    [Profile setUser:user];
+    if ([[Profile user] emailValidated]) {
         if ([[Profile user] isGroupLocked]) {
             self.lockScreenViewController = [[LockScreenViewController alloc] init];
             [self.navigationController pushViewController:self.lockScreenViewController animated:NO];
         }
         else {
-//            [self dismissViewControllerAnimated:YES  completion:nil];
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
             onboardFollowViewController = [OnboardFollowViewController new];
             [self.navigationController pushViewController:onboardFollowViewController animated:YES];
         }
     }
+   
 }
 
 - (void)resendEmail {
