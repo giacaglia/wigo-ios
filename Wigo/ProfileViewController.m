@@ -306,7 +306,6 @@ UIViewController *popViewController;
     if (!blockShown) {
         blockShown = YES;
         if (![sentUser isEqualToUser:[Profile user]]) {
-            NSLog(@"self.user: %@", self.user);
             NSString *queryString = @"blocks/";
             NSDictionary *options = @{@"block": [self.user objectForKey:@"id"]};
             [Network sendAsynchronousHTTPMethod:POST
