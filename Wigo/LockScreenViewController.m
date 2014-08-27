@@ -18,7 +18,6 @@
 
 SLComposeViewController *mySLComposerSheet;
 NSNumber *numberOfPeopleSignedUp;
-NSMutableArray *alreadyGeneratedNumbers;
 BOOL pushed;
 OnboardFollowViewController *onboardFollowViewController;
 
@@ -43,7 +42,6 @@ OnboardFollowViewController *onboardFollowViewController;
     [super viewDidLoad];
     numberOfPeopleSignedUp = [[Profile user] numberOfGroupMembers];
     _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    alreadyGeneratedNumbers = [[NSMutableArray alloc] init];
     [self initializeTopLabel];
     [self initializeShareButton];
     [self initializeLockPeopleButtons];
@@ -182,7 +180,6 @@ OnboardFollowViewController *onboardFollowViewController;
             NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
             [_everyoneParty addObjectsFromArray:arrayOfUsers];
             [_everyoneParty removeUser:[Profile user]];
-            [self initializeRandomArray];
         }
     }];
 }
@@ -207,17 +204,6 @@ OnboardFollowViewController *onboardFollowViewController;
     return randomNumber;
 }
 
-
-- (void)initializeRandomArray
-{
-    int TOTAL_NUMBER = (int)[[_everyoneParty getObjectArray] count];
-    while ([[alreadyGeneratedNumbers copy] count] < TOTAL_NUMBER) {
-        NSNumber *generatedNumber = [NSNumber numberWithInt:[self generateRandomNumber:TOTAL_NUMBER]];
-        if (![alreadyGeneratedNumbers containsObject:generatedNumber]) {
-            [alreadyGeneratedNumbers addObject:generatedNumber];
-        }
-    }    
-}
 
 #pragma mark - Delegate Function 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
