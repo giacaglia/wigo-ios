@@ -689,7 +689,7 @@ int userInt;
         tag = - (int)[indexPath row];
         tag -= 1;
     }
-    if ([userArray count] == 0 || (int)[indexPath row] > [userArray count]) return cell;
+    if ([userArray count] == 0 || (int)[indexPath row] >= [userArray count]) return cell;
     User *user = [userArray objectAtIndex:[indexPath row]];
     
     UIImageView *imgView = [[UIImageView alloc] init];
