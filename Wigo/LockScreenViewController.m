@@ -211,7 +211,7 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void)initializeRandomArray
 {
     int TOTAL_NUMBER = (int)[[_everyoneParty getObjectArray] count];
-    while ([alreadyGeneratedNumbers count] < TOTAL_NUMBER) {
+    while ([[alreadyGeneratedNumbers copy] count] < TOTAL_NUMBER) {
         NSNumber *generatedNumber = [NSNumber numberWithInt:[self generateRandomNumber:TOTAL_NUMBER]];
         if (![alreadyGeneratedNumbers containsObject:generatedNumber]) {
             [alreadyGeneratedNumbers addObject:generatedNumber];
