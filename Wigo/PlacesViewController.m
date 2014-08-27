@@ -273,9 +273,11 @@
         Party *partyUser  = [_partyUserArray objectAtIndex:eventIndex];
         if ([[partyUser getObjectArray] count] != 0 && userIndex < [[partyUser getObjectArray] count]){
             User *user = [[partyUser getObjectArray] objectAtIndex:userIndex];
-            self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-            [self.navigationController pushViewController:self.profileViewController animated:YES];
-            self.tabBarController.tabBar.hidden = YES;
+            if (user) {
+                self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+                [self.navigationController pushViewController:self.profileViewController animated:YES];
+                self.tabBarController.tabBar.hidden = YES;
+            }
         }
     }
 

@@ -558,7 +558,9 @@ int queryQueueInt;
             int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
             if (sizeOfArray > 0 && sizeOfArray > userInt && userInt >= 0) {
                 [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
+                [_tableViewOfPeople beginUpdates];
                 [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [_tableViewOfPeople endUpdates];
             }
             
         }
@@ -566,7 +568,9 @@ int queryQueueInt;
             int sizeOfArray = (int)[[_contentParty getObjectArray] count];
             if (sizeOfArray > 0 && sizeOfArray > userInt  && userInt >= 0) {
                 [_contentParty replaceObjectAtIndex:userInt withObject:user];
+                [_tableViewOfPeople beginUpdates];
                 [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [_tableViewOfPeople endUpdates];
             }
         }
 
