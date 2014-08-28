@@ -273,11 +273,13 @@
 - (void) profileSegue:(id)sender {
     UIButton *notificationButton = (UIButton *)sender;
     int rowOfButtonSender = (int)notificationButton.tag;
-    Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:rowOfButtonSender];
-    User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-    [self.navigationController pushViewController:self.profileViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
+    if (rowOfButtonSender < [[_notificationsParty getObjectArray] count]) {
+        Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:rowOfButtonSender];
+        User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:self.profileViewController animated:YES];
+        self.tabBarController.tabBar.hidden = YES;
+    }
 }
 
 #pragma mark - Refresh button
