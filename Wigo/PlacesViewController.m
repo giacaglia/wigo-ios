@@ -58,7 +58,7 @@
 
 @end
 
-
+BOOL fetchingEventAttendees;
 NSNumber *page;
 
 
@@ -70,6 +70,8 @@ NSNumber *page;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    fetchingEventAttendees = NO;
+    
     
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
@@ -635,9 +637,8 @@ NSNumber *page;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView != _placesTableView)
         if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - 60) {
-            NSLog(@"Load more");
-                    }
-//        NSLog(@"Offset: %f, horizontal size: %f", scrollView.contentOffset.x + 320, scrollView.contentSize.width);
+            [self fetchEventAttendeesAsynchronous];
+        }
 }
 
 #pragma mark - Network Asynchronous Functions
@@ -652,18 +653,23 @@ NSNumber *page;
 }
 
 - (void) fetchEvents {
-    _everyoneParty = [Profile everyoneParty];
-    if (_spinnerAtTop) [WiGoSpinnerView addDancingGToCenterView:self.view];
-    NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *events = [jsonResponse objectForKey:@"objects"];
-        [_eventsParty addObjectsFromArray:events];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_eventsParty addMetaInfo:metaDictionary];
-        [self fillEventAttendees];
+    if (!fetchingEventAttendees) {
+        fetchingEventAttendees = YES;
+        _everyoneParty = [Profile everyoneParty];
+        if (_spinnerAtTop) [WiGoSpinnerView addDancingGToCenterView:self.view];
+        NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
+        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            NSArray *events = [jsonResponse objectForKey:@"objects"];
+            [_eventsParty addObjectsFromArray:events];
+            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+            [_eventsParty addMetaInfo:metaDictionary];
+            [self fillEventAttendees];
             page = @([page intValue] + 1);
+            fetchingEventAttendees = NO;
             [self fetchedOneParty];
-    }];
+        }];
+
+    }
 }
 
 - (void)fillEventAttendees {
@@ -691,36 +697,41 @@ NSNumber *page;
 }
 
 - (void)fetchEventAttendeesAsynchronous {
-      for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
-          Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
-          NSNumber *eventId = [event eventID];
-          NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@limit=10&page=2", [eventId stringValue]];
-          NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
-          [Network queryAsynchronousAPI:queryString
-                    withInputDictionary:(NSDictionary *)inputDictionary
-                            withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
-                                NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
-                                Party *partyUser = [[Party alloc] init];
-                                for (int j = 0; j < [eventAttendeesArray count]; j++) {
-                                    NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
-                                    NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
-                                    User *user;
-                                    if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                                        if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                                            user = [Profile user];
+    NSLog(@"here");
+    if (!fetchingEventAttendees) {
+        fetchingEventAttendees = YES;
+          for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+              Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
+              NSNumber *eventId = [event eventID];
+              NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@limit=10&page=%@", [eventId stringValue], [page stringValue]];
+              NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
+              [Network queryAsynchronousAPI:queryString
+                        withInputDictionary:(NSDictionary *)inputDictionary
+                                withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
+                                    NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
+                                    Party *partyUser = [[Party alloc] init];
+                                    for (int j = 0; j < [eventAttendeesArray count]; j++) {
+                                        NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
+                                        NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
+                                        User *user;
+                                        if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                                            if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                                                user = [Profile user];
+                                            }
                                         }
+                                        else {
+                                            user = [[User alloc] initWithDictionary:userDictionary];
+                                        }
+                                        if ([user isEqualToUser:[Profile user]]) {
+                                            User *profileUser = [Profile user];
+                                            [profileUser setIsGoingOut:YES];
+                                            [[Profile user] setEventID:eventId];
+                                        }
+                                        [partyUser addObject:user];
                                     }
-                                    else {
-                                        user = [[User alloc] initWithDictionary:userDictionary];
-                                    }
-                                    if ([user isEqualToUser:[Profile user]]) {
-                                        User *profileUser = [Profile user];
-                                        [profileUser setIsGoingOut:YES];
-                                        [[Profile user] setEventID:eventId];
-                                    }
-                                    [partyUser addObject:user];
-                                }
-        }];
+                                    fetchingEventAttendees = NO;
+            }];
+        }
     }
 }
 
