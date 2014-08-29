@@ -604,7 +604,7 @@
     }
     if ([[dictionaryUser allKeys] containsObject:@"code"]) {
         if ([[dictionaryUser objectForKey:@"code"] isEqualToString:@"invalid_email"]) {
-            return @"invalidpo _email";
+            return @"invalid _email";
         }
         else if ([[dictionaryUser objectForKey:@"code"] isEqualToString:@"expired_token"]) {
             return @"expired_token";

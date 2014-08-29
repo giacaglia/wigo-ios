@@ -59,6 +59,7 @@ OnboardFollowViewController *onboardFollowViewController;
     if (![[Profile user] isGroupLocked] && !pushed) {
         onboardFollowViewController = [OnboardFollowViewController new];
         [self.navigationController pushViewController:onboardFollowViewController animated:YES];
+        pushed = YES;
     }
 }
 
