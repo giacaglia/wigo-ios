@@ -144,7 +144,7 @@
 
 - (NSString *)coverImageURL {
     NSArray *imagesURL = [self imagesURL];
-    if ([imagesURL count] > 0) {
+    if ([imagesURL count] > 0 && [imagesURL isKindOfClass:[NSArray class]]) {
         return [imagesURL objectAtIndex:0];
     }
     return @"";

@@ -13,6 +13,7 @@
 #import "LocalyticsSession.h"
 #import "FontProperties.h"
 #import "Network.h"
+#import "GAI.h"
 
 NSNumber *indexOfSelectedTab;
 NSNumber *numberOfNewMessages;
@@ -32,6 +33,10 @@ NSDate *firstLoggedTime;
         [[LocalyticsSession shared] handleRemoteNotification:[launchOptions
                                                               objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]];
     }
+    [GAI sharedInstance].trackUncaughtExceptions = YES;
+    [GAI sharedInstance].dispatchInterval = 20;
+    [[[GAI sharedInstance] logger] setLogLevel:kGAILogLevelVerbose];
+    [[GAI sharedInstance] trackerWithTrackingId:@"UA-54234727-1"];
     
     
     NSString *parseApplicationId = PARSE_APPLICATIONID; // just for ease of debugging
