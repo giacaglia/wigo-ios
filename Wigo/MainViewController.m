@@ -190,7 +190,7 @@ int userInt;
 
 - (void) fetchIsThereNewPerson {
     _fetchingIsThereNewPerson = YES;
-    [Network queryAsynchronousAPI:@"users/?ordering=-id&limit=1" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+    [Network queryAsynchronousAPI:@"users/?limit=1" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *objects = [jsonResponse objectForKey:@"objects"];
         _fetchingIsThereNewPerson = NO;
         if ([objects isKindOfClass:[NSArray class]]) {
