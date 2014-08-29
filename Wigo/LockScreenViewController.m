@@ -47,6 +47,8 @@ OnboardFollowViewController *onboardFollowViewController;
     [self initializeLockPeopleButtons];
     if (isiPhone5) [self initializeBottomLabel];
     [self fetchEveryone];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchUserInfo) name:UIApplicationDidBecomeActiveNotification object:nil];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -60,6 +62,7 @@ OnboardFollowViewController *onboardFollowViewController;
         onboardFollowViewController = [OnboardFollowViewController new];
         [self.navigationController pushViewController:onboardFollowViewController animated:YES];
         pushed = YES;
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     }
 }
 

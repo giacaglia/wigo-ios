@@ -581,7 +581,7 @@ int queryQueueInt;
 }
 
 - (void)sharedPressed {
-    NSArray *activityItems = @[@"Who is going out tonight? #WiGo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+    NSArray *activityItems = @[@"Still staying in tonight??? #WiGo http://wigo.us/app",[UIImage imageNamed:@"stayInNoMore" ]];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityVC animated:YES completion:nil];
