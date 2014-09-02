@@ -314,7 +314,8 @@ int queryQueueInt;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    if (_currentTab && [_currentTab isEqualToNumber:@2]) return 2;
+    else return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -327,11 +328,11 @@ int queryQueueInt;
 
 - (int)numberOfRowsWithNoShare {
     if (_isSearching) {
-        return [[_filteredContentParty getObjectArray] count];
+        return (int)[[_filteredContentParty getObjectArray] count];
     }
     else {
         int hasNextPage = ([_contentParty hasNextPage] ? 1 : 0);
-        return [[_contentParty getObjectArray] count] + hasNextPage;
+        return (int)[[_contentParty getObjectArray] count] + hasNextPage;
     }
 }
 
@@ -818,6 +819,7 @@ int queryQueueInt;
                               NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                               [_filteredContentParty addMetaInfo:metaDictionary];
                               dispatch_async(dispatch_get_main_queue(), ^(void) {
+                                  NSLog(@"page number %d", [_page intValue]);
                                   _page = @([_page intValue] + 1);
                                   [_tableViewOfPeople reloadData];
                               });
