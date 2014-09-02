@@ -75,6 +75,7 @@ int userInt;
         if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
         if (!_fetchingUserInfo) [self fetchUserInfo];
         if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
+        [self fetchSummaryGoingOut];
     }
     didProfileSegue = NO;
     userInt = -1;
@@ -115,6 +116,7 @@ int userInt;
     if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
     if (!_fetchingUserInfo) [self fetchUserInfo];
     if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
+    [self fetchSummaryGoingOut];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
 }
@@ -245,8 +247,22 @@ int userInt;
         }
         
     }
-    
-        
+}
+
+- (void) fetchSummaryGoingOut {
+    [Network queryAsynchronousAPI:@"goingouts/summary/" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        if ([[jsonResponse allKeys] containsObject:@"friends"]) {
+            NSNumber *friendsGoingOut = [jsonResponse objectForKey:@"friends"];
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                for (UIView *subview in [_barAtTopView subviews]) {
+                    if ([subview isKindOfClass:[UILabel class]]) {
+                        UILabel *label = (UILabel *)subview;
+                        label.text = [NSString stringWithFormat:@"GOING OUT - %@", friendsGoingOut];
+                    }
+                }
+            });
+        }
+    }];
 }
 
 #pragma mark - viewDidLoad initializations
