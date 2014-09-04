@@ -819,7 +819,6 @@ int queryQueueInt;
                               NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                               [_filteredContentParty addMetaInfo:metaDictionary];
                               dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                  NSLog(@"page number %d", [_page intValue]);
                                   _page = @([_page intValue] + 1);
                                   [_tableViewOfPeople reloadData];
                               });
