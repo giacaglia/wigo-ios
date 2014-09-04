@@ -259,6 +259,13 @@ int userInt;
                         label.text = [NSString stringWithFormat:@"GOING OUT - %@", friendsGoingOut];
                     }
                 }
+                for (UIView *subview in [_notGoingOutView subviews]) {
+                    if ([subview isKindOfClass:[UILabel class]]) {
+                        UILabel *label = (UILabel *)subview;
+                        label.text = [NSString stringWithFormat:@"NOT GOING OUT YET - %d", [[[Profile user] numberOfFollowing] intValue] - [friendsGoingOut intValue]];
+                    }
+                }
+                
             });
         }
     }];
