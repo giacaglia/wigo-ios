@@ -300,14 +300,16 @@ BOOL blockShown;
 
 - (void)blockPressed:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
-    User *sentUser = [[User alloc] initWithDictionary:userInfo];
+    
+    User *sentUser = [[User alloc] initWithDictionary:[userInfo objectForKey:@"user"]];
+    NSNumber *typeNumber = (NSNumber *)[userInfo objectForKey:@"type"];
+    NSArray *blockTypeArray = @[@"annoying", @"not_student", @"abusive"];
+    NSString *blockType = [blockTypeArray objectAtIndex:[typeNumber intValue]];
     if (!blockShown) {
         blockShown = YES;
         if (![sentUser isEqualToUser:[Profile user]]) {
             NSString *queryString = @"blocks/";
-            NSDictionary *options = @{@"block": [sentUser objectForKey:@"id"]};
-            NSLog(@"self.user %@", [self.user firstName]);
-            NSLog(@"sent user: %@", [sentUser firstName]);
+            NSDictionary *options = @{@"block": [sentUser objectForKey:@"id"], @"type": blockType};
             [Network sendAsynchronousHTTPMethod:POST
                                     withAPIName:queryString
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
@@ -336,7 +338,7 @@ BOOL blockShown;
 
 - (void)morePressed {
     self.moreViewController = [[MoreViewController alloc] initWithUser:self.user];
-    [[RWBlurPopover instance] presentViewController:self.moreViewController withOrigin:30 andHeight:450];
+    [[RWBlurPopover instance] presentViewController:self.moreViewController withOrigin:0 andHeight:self.view.frame.size.height];
 }
 
 

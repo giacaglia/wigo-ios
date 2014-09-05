@@ -103,7 +103,8 @@ UIButton *cancelButton;
     if (once) {
         once = NO;
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void) {
-            NSDictionary *userInfo = [user dictionary];
+            int type = (blockButton.tag / 10)  - 1;
+            NSDictionary *userInfo = @{@"user": [user dictionary], @"type":[NSNumber numberWithInt:type]};
             [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil userInfo:userInfo];
         }];
     }
@@ -152,6 +153,7 @@ UIButton *cancelButton;
     
     [blockButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
     blockButton.backgroundColor = [FontProperties getOrangeColor];
+    blockButton.tag = 10;
     [blockButton removeTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [blockButton addTarget:self action:@selector(submitBlockPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -209,6 +211,7 @@ UIButton *cancelButton;
 - (void)checkedBox:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = buttonSender.tag;
+    blockButton.tag = (tag + 1)/2 * 10; // 10 for the first button, 20 for the second, 30 for the third button
     for (int i = 1; i < 4; i++) {
         int index = 2*i - 1;
         if (index != tag) {

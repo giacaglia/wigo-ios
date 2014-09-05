@@ -8,16 +8,21 @@
 
 #import "FacebookImagesViewController.h"
 #import "Globals.h"
+#import "GKImagePicker.h"
+#import "GKImageCropViewController.h"
+#import "ErrorViewController.h"
 
-@interface FacebookImagesViewController ()
+@interface FacebookImagesViewController ()<GKImageCropControllerDelegate>
 @property NSString *profilePicturesAlbumId;
 @property NSMutableArray *profilePicturesURL;
 @property UIScrollView *scrollView;
 @property int startingYPosition;
 @end
 
-@implementation FacebookImagesViewController
+NSString *urlOfSelectedImage;
 
+
+@implementation FacebookImagesViewController
 
 - (id)init {
     self = [super init];
@@ -28,17 +33,14 @@
 }
 
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    // Do any additional setup after loading the view.
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Facebook Images View"];
     [self initializeScrollView];
     [self loadImages];
 }
 
-- (void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"Facebook Images View"];
-}
+
 
 - (void)loadImages {
     [FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"email", @"user_friends", @"user_photos"]
@@ -47,13 +49,10 @@
                                                       FBSessionState state,
                                                       NSError *error) {
                                       if (error) {
-                                          UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                                              message:error.localizedDescription
-                                                                                             delegate:nil
-                                                                                    cancelButtonTitle:@"OK"
-                                                                                    otherButtonTitles:nil];
-                                          [alertView show];
-                                      } else if (session.isOpen) {
+                                          ErrorViewController *errorViewController = [[ErrorViewController alloc] init];
+                                          [self.view addSubview:errorViewController.view];
+                                      }
+                                      else if (session.isOpen) {
                                           [self fetchProfilePicturesAlbumFacebook];
                                       }
                                   }];
@@ -68,6 +67,9 @@
                                               id result,
                                               NSError *error
                                               ) {
+                              if (error) {
+                                  [self showErrorNotAccess];
+                              }
                               FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
                               for (FBGraphObject *album in resultObject) {
                                   if ([[album objectForKey:@"name"] isEqualToString:@"Profile Pictures"]) {
@@ -78,6 +80,18 @@
                               }
                           }];
     
+}
+
+- (void)showErrorNotAccess {
+    ErrorViewController *errorViewController = [[ErrorViewController alloc] init];
+    [self presentViewController:errorViewController animated:YES completion:^(void){}];
+//    self per
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:@"Could not load your Facebook Photos"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    [alertView show];
 }
 
 - (void) getProfilePictures {
@@ -92,7 +106,6 @@
                                               ) {
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
                               for (FBGraphObject *photoRepresentation in resultObject) {
-                                  NSLog(@"Image %@", photoRepresentation);
                                   [_profilePicturesURL addObject:[photoRepresentation objectForKey:@"source"]];
                                   _startingYPosition = 0;
                                   [self addImagesFromURLArray];
@@ -140,11 +153,42 @@
 
 - (void)choseImageView:(UITapGestureRecognizer*)sender {
     UIImageView *imageViewSender = (UIImageView *)sender.view;
-    NSString *urlOfSelectedImage = [_profilePicturesURL objectAtIndex:imageViewSender.tag];
+    urlOfSelectedImage = [_profilePicturesURL objectAtIndex:imageViewSender.tag];
+   
+
+    GKImageCropViewController *cropController = [[GKImageCropViewController alloc] init];
+    cropController.sourceImage = imageViewSender.image;
+    cropController.delegate = self;
+    cropController.resizeableCropArea = NO;
+    cropController.cropSize = CGSizeMake(280, 280);
+    [self presentViewController:cropController animated:YES completion:^(void){}];
+
+    
+
+}
+
+#pragma GKImagePickerDelegate
+
+- (void)imageCropController:(GKImageCropViewController *)imageCropController didFinishWithCroppedImage:(UIImage *)croppedImage{
+    
+    [self dismissViewControllerAnimated:YES completion:^(void) {}];
+    if ([self respondsToSelector:@selector(imagePicker:pickedImage:)]) {
+        
+//        [self imagePicker:self pickedImage:croppedImage];
+    }
+}
+
+- (void)didFinishWithCroppedArea:(CGRect)croppedArea {
+    
+    NSLog(@"width %f, height %f", croppedArea.origin.x, croppedArea.origin.y);
     User *profileUser = [Profile user];
-    [profileUser addImageURL:urlOfSelectedImage];
-    [profileUser save];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
+    NSArray *imagesArea = [NSMutableArray arrayWithArray:[profileUser imagesArea]];
+//    profileUser addImageURL:
+//    imagesArea addImageWithURL andArea
+//    [profileUser addImageURL:urlOfSelectedImage];
+//    [profileUser save];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
     [self.navigationController popViewControllerAnimated:YES];
 }
+
 @end

@@ -703,7 +703,7 @@ NSNumber *page;
           for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
               Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
               NSNumber *eventId = [event eventID];
-              NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@limit=10&page=%@", [eventId stringValue], [page stringValue]];
+              NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [page stringValue]];
               NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
               [Network queryAsynchronousAPI:queryString
                         withInputDictionary:(NSDictionary *)inputDictionary

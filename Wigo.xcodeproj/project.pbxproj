@@ -131,10 +131,24 @@
 		E9681C62194F745300182E0E /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C61194F745300182E0E /* User.m */; };
 		E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C7A195084B700182E0E /* UIButtonUngoOut.m */; };
 		E9681CB51950AA3B00182E0E /* Query.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681CB41950AA3B00182E0E /* Query.m */; };
+		E96E0C2219B61735001E6E37 /* GKCropBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C1719B61735001E6E37 /* GKCropBorderView.m */; };
+		E96E0C2319B61735001E6E37 /* GKCropBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C1719B61735001E6E37 /* GKCropBorderView.m */; };
+		E96E0C2419B61735001E6E37 /* GKImageCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C1919B61735001E6E37 /* GKImageCropOverlayView.m */; };
+		E96E0C2519B61735001E6E37 /* GKImageCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C1919B61735001E6E37 /* GKImageCropOverlayView.m */; };
+		E96E0C2619B61735001E6E37 /* GKImageCropView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C1B19B61735001E6E37 /* GKImageCropView.m */; };
+		E96E0C2719B61735001E6E37 /* GKImageCropView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C1B19B61735001E6E37 /* GKImageCropView.m */; };
+		E96E0C2819B61735001E6E37 /* GKImageCropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C1D19B61735001E6E37 /* GKImageCropViewController.m */; };
+		E96E0C2919B61735001E6E37 /* GKImageCropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C1D19B61735001E6E37 /* GKImageCropViewController.m */; };
+		E96E0C2A19B61735001E6E37 /* GKImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C1F19B61735001E6E37 /* GKImagePicker.m */; };
+		E96E0C2B19B61735001E6E37 /* GKImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C1F19B61735001E6E37 /* GKImagePicker.m */; };
+		E96E0C2C19B61735001E6E37 /* GKResizeableCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C2119B61735001E6E37 /* GKResizeableCropOverlayView.m */; };
+		E96E0C2D19B61735001E6E37 /* GKResizeableCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96E0C2119B61735001E6E37 /* GKResizeableCropOverlayView.m */; };
 		E96EF676197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
 		E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
 		E96EF681197EE95D00F88A6D /* Time.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF680197EE95D00F88A6D /* Time.m */; };
 		E96EF682197EE95D00F88A6D /* Time.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF680197EE95D00F88A6D /* Time.m */; };
+		E96F07AC19B8F65900E858D7 /* ErrorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07AB19B8F65900E858D7 /* ErrorViewController.m */; };
+		E96F07AD19B8F65900E858D7 /* ErrorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07AB19B8F65900E858D7 /* ErrorViewController.m */; };
 		E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
@@ -312,10 +326,24 @@
 		E9681C7A195084B700182E0E /* UIButtonUngoOut.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonUngoOut.m; sourceTree = "<group>"; };
 		E9681CB31950AA3B00182E0E /* Query.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Query.h; sourceTree = "<group>"; };
 		E9681CB41950AA3B00182E0E /* Query.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Query.m; sourceTree = "<group>"; };
+		E96E0C1619B61735001E6E37 /* GKCropBorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKCropBorderView.h; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKCropBorderView.h"; sourceTree = "<group>"; };
+		E96E0C1719B61735001E6E37 /* GKCropBorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GKCropBorderView.m; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKCropBorderView.m"; sourceTree = "<group>"; };
+		E96E0C1819B61735001E6E37 /* GKImageCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKImageCropOverlayView.h; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKImageCropOverlayView.h"; sourceTree = "<group>"; };
+		E96E0C1919B61735001E6E37 /* GKImageCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GKImageCropOverlayView.m; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKImageCropOverlayView.m"; sourceTree = "<group>"; };
+		E96E0C1A19B61735001E6E37 /* GKImageCropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKImageCropView.h; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKImageCropView.h"; sourceTree = "<group>"; };
+		E96E0C1B19B61735001E6E37 /* GKImageCropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GKImageCropView.m; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKImageCropView.m"; sourceTree = "<group>"; };
+		E96E0C1C19B61735001E6E37 /* GKImageCropViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKImageCropViewController.h; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKImageCropViewController.h"; sourceTree = "<group>"; };
+		E96E0C1D19B61735001E6E37 /* GKImageCropViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GKImageCropViewController.m; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKImageCropViewController.m"; sourceTree = "<group>"; };
+		E96E0C1E19B61735001E6E37 /* GKImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKImagePicker.h; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKImagePicker.h"; sourceTree = "<group>"; };
+		E96E0C1F19B61735001E6E37 /* GKImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GKImagePicker.m; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKImagePicker.m"; sourceTree = "<group>"; };
+		E96E0C2019B61735001E6E37 /* GKResizeableCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GKResizeableCropOverlayView.h; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKResizeableCropOverlayView.h"; sourceTree = "<group>"; };
+		E96E0C2119B61735001E6E37 /* GKResizeableCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GKResizeableCropOverlayView.m; path = "../../../Downloads/GKImagePicker-master/GKClasses/GKResizeableCropOverlayView.m"; sourceTree = "<group>"; };
 		E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowRequestsViewController.h; sourceTree = "<group>"; };
 		E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowRequestsViewController.m; sourceTree = "<group>"; };
 		E96EF67F197EE95D00F88A6D /* Time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Time.h; sourceTree = "<group>"; };
 		E96EF680197EE95D00F88A6D /* Time.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Time.m; sourceTree = "<group>"; };
+		E96F07AA19B8F65900E858D7 /* ErrorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorViewController.h; sourceTree = "<group>"; };
+		E96F07AB19B8F65900E858D7 /* ErrorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ErrorViewController.m; sourceTree = "<group>"; };
 		E9798F9819901EC100A97AE9 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		E97999D019759A2900C617E3 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		E98C185B1924176500EF60F8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -671,6 +699,7 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E96E0C1519B6171D001E6E37 /* GKImagePicker */,
 				E9CD537F1993C29800206B75 /* FLAnimatedImage */,
 				C14378D119915D6300D29264 /* Analytics */,
 				E9A31E561980AC4F008A711B /* Localytics */,
@@ -693,6 +722,8 @@
 				E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */,
 				E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */,
 				E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */,
+				E96F07AA19B8F65900E858D7 /* ErrorViewController.h */,
+				E96F07AB19B8F65900E858D7 /* ErrorViewController.m */,
 			);
 			name = FacebookIntegration;
 			sourceTree = "<group>";
@@ -738,6 +769,25 @@
 				E9BE8C48192A48F1008BB84C /* FontProperties.m */,
 			);
 			name = Font;
+			sourceTree = "<group>";
+		};
+		E96E0C1519B6171D001E6E37 /* GKImagePicker */ = {
+			isa = PBXGroup;
+			children = (
+				E96E0C1619B61735001E6E37 /* GKCropBorderView.h */,
+				E96E0C1719B61735001E6E37 /* GKCropBorderView.m */,
+				E96E0C1819B61735001E6E37 /* GKImageCropOverlayView.h */,
+				E96E0C1919B61735001E6E37 /* GKImageCropOverlayView.m */,
+				E96E0C1A19B61735001E6E37 /* GKImageCropView.h */,
+				E96E0C1B19B61735001E6E37 /* GKImageCropView.m */,
+				E96E0C1C19B61735001E6E37 /* GKImageCropViewController.h */,
+				E96E0C1D19B61735001E6E37 /* GKImageCropViewController.m */,
+				E96E0C1E19B61735001E6E37 /* GKImagePicker.h */,
+				E96E0C1F19B61735001E6E37 /* GKImagePicker.m */,
+				E96E0C2019B61735001E6E37 /* GKResizeableCropOverlayView.h */,
+				E96E0C2119B61735001E6E37 /* GKResizeableCropOverlayView.m */,
+			);
+			name = GKImagePicker;
 			sourceTree = "<group>";
 		};
 		E96EF678197DC94A00F88A6D /* NotificationViews */ = {
@@ -1134,6 +1184,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E96E0C2719B61735001E6E37 /* GKImageCropView.m in Sources */,
+				E96E0C2D19B61735001E6E37 /* GKResizeableCropOverlayView.m in Sources */,
 				E994111319AA8D9200D76379 /* NSString+URLEncoding.m in Sources */,
 				E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */,
 				C12A110819787BE700D53B1C /* User.m in Sources */,
@@ -1147,11 +1199,13 @@
 				E9CD53851993C29800206B75 /* FLAnimatedImage.m in Sources */,
 				E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */,
 				C12A110F19787BE700D53B1C /* UIButtonUngoOut.m in Sources */,
+				E96E0C2519B61735001E6E37 /* GKImageCropOverlayView.m in Sources */,
 				C12A111019787BE700D53B1C /* PeopleViewController.m in Sources */,
 				C12A111119787BE700D53B1C /* UIImage+MultiFormat.m in Sources */,
 				C12A111219787BE700D53B1C /* main.m in Sources */,
 				C12A111319787BE700D53B1C /* FacebookAlbumTableViewController.m in Sources */,
 				C12A111419787BE700D53B1C /* SDWebImageDownloader.m in Sources */,
+				E96E0C2919B61735001E6E37 /* GKImageCropViewController.m in Sources */,
 				E93030C51986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
 				C12A111519787BE700D53B1C /* MessageViewController.m in Sources */,
 				C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */,
@@ -1163,6 +1217,7 @@
 				C12A111A19787BE700D53B1C /* Party.m in Sources */,
 				C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */,
 				C12A111C19787BE700D53B1C /* NSMutableURLRequest+Wigo.m in Sources */,
+				E96E0C2B19B61735001E6E37 /* GKImagePicker.m in Sources */,
 				C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */,
 				C12A111E19787BE700D53B1C /* SDWebImagePrefetcher.m in Sources */,
 				C12A111F19787BE700D53B1C /* Network.m in Sources */,
@@ -1175,6 +1230,7 @@
 				C12A112419787BE700D53B1C /* PhotoViewController.m in Sources */,
 				E96EF682197EE95D00F88A6D /* Time.m in Sources */,
 				C12A112519787BE700D53B1C /* UIImage+GIF.m in Sources */,
+				E96E0C2319B61735001E6E37 /* GKCropBorderView.m in Sources */,
 				C12A112619787BE700D53B1C /* UIImageView+WebCache.m in Sources */,
 				C12A112719787BE700D53B1C /* ProfileViewController.m in Sources */,
 				C12A112819787BE700D53B1C /* SDImageCache.m in Sources */,
@@ -1190,6 +1246,7 @@
 				C12A113119787BE700D53B1C /* NSData+ImageContentType.m in Sources */,
 				C12A113219787BE700D53B1C /* Profile.m in Sources */,
 				C12A113319787BE700D53B1C /* RWBlurPopover.m in Sources */,
+				E96F07AD19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
 				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
 				C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */,
@@ -1207,6 +1264,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E96E0C2619B61735001E6E37 /* GKImageCropView.m in Sources */,
+				E96E0C2C19B61735001E6E37 /* GKResizeableCropOverlayView.m in Sources */,
 				E994111219AA8D9200D76379 /* NSString+URLEncoding.m in Sources */,
 				E9681C62194F745300182E0E /* User.m in Sources */,
 				E9CD47141948E27500AEA17D /* UIImageViewShake.m in Sources */,
@@ -1220,11 +1279,13 @@
 				E9CD53841993C29800206B75 /* FLAnimatedImage.m in Sources */,
 				E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */,
 				E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */,
+				E96E0C2419B61735001E6E37 /* GKImageCropOverlayView.m in Sources */,
 				E900C2C01961EADE00A01F50 /* UIImage+MultiFormat.m in Sources */,
 				E921D6221923967D00361247 /* main.m in Sources */,
 				E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */,
 				E900C2BA1961EADE00A01F50 /* SDWebImageDownloader.m in Sources */,
 				E93030C41986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
+				E96E0C2819B61735001E6E37 /* GKImageCropViewController.m in Sources */,
 				E93DE52A195C82B900079074 /* MessageViewController.m in Sources */,
 				E900C2C11961EADE00A01F50 /* UIImage+WebP.m in Sources */,
 				E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */,
@@ -1236,6 +1297,7 @@
 				E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */,
 				C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */,
 				E900C2B91961EADE00A01F50 /* SDWebImageDecoder.m in Sources */,
+				E96E0C2A19B61735001E6E37 /* GKImagePicker.m in Sources */,
 				E900C2BD1961EADE00A01F50 /* SDWebImagePrefetcher.m in Sources */,
 				E9A17C70195C761E0057C89A /* Network.m in Sources */,
 				E9CD472B194B889800AEA17D /* RWBlurImage.m in Sources */,
@@ -1248,6 +1310,7 @@
 				E96EF681197EE95D00F88A6D /* Time.m in Sources */,
 				E900C2BF1961EADE00A01F50 /* UIImage+GIF.m in Sources */,
 				E900C2C31961EADE00A01F50 /* UIImageView+WebCache.m in Sources */,
+				E96E0C2219B61735001E6E37 /* GKCropBorderView.m in Sources */,
 				E9147B6C1925123C00C25C9A /* ProfileViewController.m in Sources */,
 				E900C2B71961EADE00A01F50 /* SDImageCache.m in Sources */,
 				E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */,
@@ -1263,6 +1326,7 @@
 				E900C2B61961EADE00A01F50 /* NSData+ImageContentType.m in Sources */,
 				E9BE8C4C192A54F3008BB84C /* Profile.m in Sources */,
 				E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */,
+				E96F07AC19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */,
 				E900C2BE1961EADE00A01F50 /* UIButton+WebCache.m in Sources */,
 				E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */,
