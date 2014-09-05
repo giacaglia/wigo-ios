@@ -39,6 +39,7 @@ typedef enum
 @property NSNumber *numberOfGroupMembers;
 @property NSString *bioString;
 @property NSArray *imagesURL;
+@property NSArray *imagesArea;
 @property BOOL isPrivate;
 @property BOOL isGoingOut;
 @property BOOL emailValidated;
@@ -62,6 +63,7 @@ typedef enum
 
 // Images
 - (void)addImageURL:(NSString *)imageURL;
+- (void)addImageWithURL:(NSString *)imageURL andArea:(CGRect)area;
 - (NSString *)removeImageURL:(NSString *)imageURL;
 - (NSString *)coverImageURL;
 - (void)makeImageURLCover:(NSString *)imageURL;

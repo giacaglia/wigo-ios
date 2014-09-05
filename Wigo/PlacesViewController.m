@@ -60,6 +60,8 @@
 
 BOOL fetchingEventAttendees;
 NSNumber *page;
+NSMutableArray *eventPage;
+int eventOffset;
 
 
 @implementation PlacesViewController {
@@ -71,8 +73,7 @@ NSNumber *page;
 {
     [super viewDidLoad];
     fetchingEventAttendees = NO;
-    
-    
+    eventOffset = 0;
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
             if ([view2 isKindOfClass:[UIImageView class]]) {
@@ -471,12 +472,22 @@ NSNumber *page;
 
     if (_isSearching) {
         if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
+//            if (indexPath.row == 0)
+//                [_goingSomewhereButton setTitle:@"GO SOMEWHERE ELSE" forState:UIControlStateNormal];
+//            else
+//                [_goingSomewhereButton setTitle:@"GO SOMEWHERE ELSE" forState:UIControlStateNormal];
+
             [cell.contentView addSubview:_goingSomewhereButton];
             return cell;
         }
     }
     else {
         if (indexPath.row == [[_contentParty getObjectArray] count]) {
+//            if (indexPath.row == 0)
+//                [_goingSomewhereButton setTitle:@"GO SOMEWHERE ELSE" forState:UIControlStateNormal];
+//            else
+//                [_goingSomewhereButton setTitle:@"GO SOMEWHERE ELSE" forState:UIControlStateNormal];
+            
             [cell.contentView addSubview:_goingSomewhereButton];
             return cell;
         }
@@ -615,7 +626,7 @@ NSNumber *page;
         [imgView addSubview:profileName];
     }
     [cell.contentView addSubview:placeSubView];
-    
+    imagesScrollView.contentOffset = CGPointMake(eventOffset, 0);
     return cell;
 }
 
@@ -636,8 +647,9 @@ NSNumber *page;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView != _placesTableView)
-        if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - 60) {
-            [self fetchEventAttendeesAsynchronous];
+        if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - 60 && !fetchingEventAttendees) {
+            fetchingEventAttendees = YES;
+            [self fetchEventAttendeesAsynchronousForEvent:0];
         }
 }
 
@@ -696,43 +708,58 @@ NSNumber *page;
     }
 }
 
-- (void)fetchEventAttendeesAsynchronous {
+- (void)fetchEventAttendeesAsynchronousForEvent:(int)eventNumber {
     NSLog(@"here");
-    if (!fetchingEventAttendees) {
-        fetchingEventAttendees = YES;
-          for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
-              Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
-              NSNumber *eventId = [event eventID];
-              NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [page stringValue]];
-              NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:i]};
-              [Network queryAsynchronousAPI:queryString
-                        withInputDictionary:(NSDictionary *)inputDictionary
-                                withHandler:^(NSDictionary *resultInputDictionary ,NSDictionary *jsonResponse, NSError *error) {
-                                    NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
-                                    Party *partyUser = [[Party alloc] init];
-                                    for (int j = 0; j < [eventAttendeesArray count]; j++) {
-                                        NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
-                                        NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
-                                        User *user;
-                                        if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                                            if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                                                user = [Profile user];
-                                            }
-                                        }
-                                        else {
-                                            user = [[User alloc] initWithDictionary:userDictionary];
-                                        }
-                                        if ([user isEqualToUser:[Profile user]]) {
-                                            User *profileUser = [Profile user];
-                                            [profileUser setIsGoingOut:YES];
-                                            [[Profile user] setEventID:eventId];
-                                        }
-                                        [partyUser addObject:user];
+    Event *event = [[_eventsParty getObjectArray] objectAtIndex:eventNumber];
+    NSNumber *eventId = [event eventID];
+    NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [page stringValue]];
+    NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:eventNumber]};
+    [Network queryAsynchronousAPI:queryString
+            withInputDictionary:(NSDictionary *)inputDictionary
+                    withHandler:^(NSDictionary *resultInputDictionary, NSDictionary *jsonResponse, NSError *error) {
+                        dispatch_async(dispatch_get_main_queue(), ^(void){
+                            NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
+                            Party *partyUser = [_partyUserArray objectAtIndex:eventNumber];
+                            for (int j = 0; j < [eventAttendeesArray count]; j++) {
+                                NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
+                                NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
+                                User *user;
+                                if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                                    if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                                        user = [Profile user];
                                     }
-                                    fetchingEventAttendees = NO;
-            }];
-        }
-    }
+                                    else {
+                                        user = [[User alloc] initWithDictionary:userDictionary];
+                                    }
+                                }
+                                if ([user isEqualToUser:[Profile user]]) {
+                                    User *profileUser = [Profile user];
+                                    [profileUser setIsGoingOut:YES];
+                                    [[Profile user] setEventID:eventId];
+                                }
+                                [partyUser addObject:user];
+                            }
+
+                            if ([eventAttendeesArray count] > 0) {
+                                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:eventNumber inSection:0];
+                                UITableViewCell *cell = [_placesTableView cellForRowAtIndexPath:indexPath];
+                                for (UIView *view in [[[cell.contentView subviews] objectAtIndex:0] subviews]) {
+                                    if ([view isKindOfClass:[UIScrollView class]]) {
+                                        UIScrollView *scrollView = (UIScrollView *)view;
+                                        eventOffset = scrollView.contentOffset.x;
+                                    }
+                                }
+                                [_placesTableView beginUpdates];
+                                [_placesTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:eventNumber inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+                                [_placesTableView endUpdates];
+                                eventOffset = 0;
+                            }
+                            page = @([page intValue] + 1);
+                            fetchingEventAttendees = NO;
+                        
+                        });
+    }];
+    
 }
 
 - (void)fetchedOneParty {

@@ -166,6 +166,7 @@
     return [[NSArray alloc] init];
 }
 
+
 - (void)addImageURL:(NSString *)imageURL {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
     if ([imagesArray count] < 5) {
@@ -189,6 +190,39 @@
     int indexOfCover = (int)[imageMutableArrayURL indexOfObject:imageURL];
     [imageMutableArrayURL exchangeObjectAtIndex:indexOfCover withObjectAtIndex:0];
     [self setImagesURL:[NSArray arrayWithArray:imageMutableArrayURL]];
+}
+
+- (void)setImagesArea:(NSArray *)imagesArea {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+    [properties setObject:imagesArea forKey:@"imagesArea"];
+    [_proxy setObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
+    [modifiedKeys addObject:@"properties"];
+}
+
+- (BOOL)addImageArea:(CGRect)imageArea {
+    NSMutableArray *imagesAreaArray = [[NSMutableArray alloc] initWithArray:[self imagesArea]];
+    if ([imagesAreaArray count] < 5) {
+        [imagesAreaArray addObject:[NSValue valueWithCGRect:imageArea]];
+
+    }
+    return NO;
+}
+
+- (NSArray *)imagesArea {
+    NSDictionary *properties = [_proxy objectForKey:@"properties"];
+    if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"imagesArea"]) {
+        NSArray *imagesArea = [properties objectForKey:@"imagesArea"];
+        return imagesArea;
+    }
+    return [[NSArray alloc] init];
+}
+
+- (void)addImageWithURL:(NSString *)imageURL andArea:(CGRect)area {
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
+    if ([imagesArray count] < 5) {
+        [imagesArray addObject:imageURL];
+        [self setImagesURL:[NSArray arrayWithArray:imagesArray]];
+    }
 }
 
 - (NSNumber *)eventID {

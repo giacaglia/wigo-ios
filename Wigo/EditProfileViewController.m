@@ -343,7 +343,7 @@ UIViewController *webViewController;
 }
 
 - (void)openPrivacy {
-    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/privacy.pdf"];
+    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/privacy.html"];
     [self openViewControllerWithURL:currentURL];
 }
 
@@ -354,13 +354,13 @@ UIViewController *webViewController;
 }
 
 - (void)openTerms {
-    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/rightsandresponsibilities.pdf"];
+    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/rightsandresponsibilities.html"];
     [self openViewControllerWithURL:currentURL];
 }
 
 
 - (void) openCommunityStandards {
-    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/communitystandards.pdf"];
+    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/communitystandards.html"];
     [self openViewControllerWithURL:currentURL];
 }
 
