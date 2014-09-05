@@ -472,15 +472,19 @@ int userInt;
 }
 
 - (void)followPressed {
-    self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
-    [self.navigationController pushViewController:self.peopleViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
+    if ([Profile user]) {
+        self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
+        [self.navigationController pushViewController:self.peopleViewController animated:YES];
+        self.tabBarController.tabBar.hidden = YES;
+    }
 }
 
 - (void)myProfileSegue {
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:[Profile user]];
-    [self.navigationController pushViewController:self.profileViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
+    if ([Profile user]) {
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:[Profile user]];
+        [self.navigationController pushViewController:self.profileViewController animated:YES];
+        self.tabBarController.tabBar.hidden = YES;
+    }
 }
 
 - (void)profileSegue:(id)sender {
