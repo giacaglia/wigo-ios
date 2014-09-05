@@ -557,6 +557,7 @@ int eventOffset;
     imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
     imagesScrollView.showsHorizontalScrollIndicator = NO;
     imagesScrollView.delegate = self;
+    imagesScrollView.tag = (int)[indexPath row];
     [placeSubView addSubview:imagesScrollView];
    
     if ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]]) {
@@ -657,7 +658,7 @@ int eventOffset;
     if (scrollView != _placesTableView)
         if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - 60 && !fetchingEventAttendees) {
             fetchingEventAttendees = YES;
-            [self fetchEventAttendeesAsynchronousForEvent:0];
+            [self fetchEventAttendeesAsynchronousForEvent:scrollView.tag];
         }
 }
 
