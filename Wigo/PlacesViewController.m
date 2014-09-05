@@ -60,7 +60,7 @@
 
 BOOL fetchingEventAttendees;
 NSNumber *page;
-NSMutableArray *eventPage;
+NSMutableArray *eventPageArray;
 int eventOffset;
 
 
@@ -72,6 +72,7 @@ int eventOffset;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    eventPageArray = [[NSMutableArray alloc] init];
     fetchingEventAttendees = NO;
     eventOffset = 0;
     for (UIView *view in self.navigationController.navigationBar.subviews) {
@@ -238,9 +239,20 @@ int eventOffset;
     _goingSomewhereButton.layer.cornerRadius = 10;
     _goingSomewhereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
     _goingSomewhereButton.layer.borderWidth = 1;
-    
-    UILabel *goingSomewhereLabel = [[UILabel alloc] initWithFrame:CGRectMake(67, _goingSomewhereButton.frame.size.height/2 - 7, 230, 15)];
-    goingSomewhereLabel.text = @"GO SOMEWHERE ELSE";
+   
+}
+
+- (void)updateGoingSomewhereSubviewsWithTitle:(NSString *)title {
+    [[_goingSomewhereButton subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+
+    UILabel *goingSomewhereLabel = [[UILabel alloc] init];
+    if ([title isEqualToString:@"GO SOMEWHERE"]) {
+        goingSomewhereLabel.frame = CGRectMake(100, _goingSomewhereButton.frame.size.height/2 - 7, 150, 15);
+    }
+    else {
+        goingSomewhereLabel.frame = CGRectMake(67, _goingSomewhereButton.frame.size.height/2 - 7, 230, 15);
+    }
+    goingSomewhereLabel.text = title;
     goingSomewhereLabel.font = [FontProperties scMediumFont:18.0f];
     goingSomewhereLabel.textColor = [FontProperties getBlueColor];
     [_goingSomewhereButton addSubview:goingSomewhereLabel];
@@ -472,10 +484,6 @@ int eventOffset;
 
     if (_isSearching) {
         if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
-//            if (indexPath.row == 0)
-//                [_goingSomewhereButton setTitle:@"GO SOMEWHERE ELSE" forState:UIControlStateNormal];
-//            else
-//                [_goingSomewhereButton setTitle:@"GO SOMEWHERE ELSE" forState:UIControlStateNormal];
 
             [cell.contentView addSubview:_goingSomewhereButton];
             return cell;
@@ -483,11 +491,11 @@ int eventOffset;
     }
     else {
         if (indexPath.row == [[_contentParty getObjectArray] count]) {
-//            if (indexPath.row == 0)
-//                [_goingSomewhereButton setTitle:@"GO SOMEWHERE ELSE" forState:UIControlStateNormal];
-//            else
-//                [_goingSomewhereButton setTitle:@"GO SOMEWHERE ELSE" forState:UIControlStateNormal];
-            
+            if (indexPath.row == 0)
+                [self updateGoingSomewhereSubviewsWithTitle:@"GO SOMEWHERE"];
+            else
+                [self updateGoingSomewhereSubviewsWithTitle:@"GO SOMEWHERE ELSE"];
+                
             [cell.contentView addSubview:_goingSomewhereButton];
             return cell;
         }
@@ -678,6 +686,9 @@ int eventOffset;
             [self fillEventAttendees];
             page = @([page intValue] + 1);
             fetchingEventAttendees = NO;
+            for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+                [eventPageArray addObject:@2];
+            }
             [self fetchedOneParty];
         }];
 
@@ -709,56 +720,68 @@ int eventOffset;
 }
 
 - (void)fetchEventAttendeesAsynchronousForEvent:(int)eventNumber {
-    NSLog(@"here");
     Event *event = [[_eventsParty getObjectArray] objectAtIndex:eventNumber];
     NSNumber *eventId = [event eventID];
-    NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [page stringValue]];
-    NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:eventNumber]};
-    [Network queryAsynchronousAPI:queryString
-            withInputDictionary:(NSDictionary *)inputDictionary
-                    withHandler:^(NSDictionary *resultInputDictionary, NSDictionary *jsonResponse, NSError *error) {
-                        dispatch_async(dispatch_get_main_queue(), ^(void){
-                            NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
-                            Party *partyUser = [_partyUserArray objectAtIndex:eventNumber];
-                            for (int j = 0; j < [eventAttendeesArray count]; j++) {
-                                NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
-                                NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
-                                User *user;
-                                if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                                    if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                                        user = [Profile user];
-                                    }
-                                    else {
-                                        user = [[User alloc] initWithDictionary:userDictionary];
-                                    }
-                                }
-                                if ([user isEqualToUser:[Profile user]]) {
-                                    User *profileUser = [Profile user];
-                                    [profileUser setIsGoingOut:YES];
-                                    [[Profile user] setEventID:eventId];
-                                }
-                                [partyUser addObject:user];
-                            }
 
-                            if ([eventAttendeesArray count] > 0) {
-                                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:eventNumber inSection:0];
-                                UITableViewCell *cell = [_placesTableView cellForRowAtIndexPath:indexPath];
-                                for (UIView *view in [[[cell.contentView subviews] objectAtIndex:0] subviews]) {
-                                    if ([view isKindOfClass:[UIScrollView class]]) {
-                                        UIScrollView *scrollView = (UIScrollView *)view;
-                                        eventOffset = scrollView.contentOffset.x;
-                                    }
-                                }
-                                [_placesTableView beginUpdates];
-                                [_placesTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:eventNumber inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-                                [_placesTableView endUpdates];
-                                eventOffset = 0;
-                            }
-                            page = @([page intValue] + 1);
-                            fetchingEventAttendees = NO;
-                        
-                        });
-    }];
+    if (eventNumber < [eventPageArray count]) {
+        NSNumber *pageNumberForEvent = [eventPageArray objectAtIndex:eventNumber];
+        if ([pageNumberForEvent intValue] > 0) {
+            NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [pageNumberForEvent stringValue]];
+            NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:eventNumber], @"page": pageNumberForEvent};
+            [Network queryAsynchronousAPI:queryString
+                      withInputDictionary:(NSDictionary *)inputDictionary
+                              withHandler:^(NSDictionary *resultInputDictionary, NSDictionary *jsonResponse, NSError *error) {
+                                  dispatch_async(dispatch_get_main_queue(), ^(void){
+                                      NSNumber *pageNumberForEvent = [resultInputDictionary objectForKey:@"page"];
+                                      NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
+                                      Party *partyUser = [_partyUserArray objectAtIndex:eventNumber];
+                                      for (int j = 0; j < [eventAttendeesArray count]; j++) {
+                                          NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
+                                          NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
+                                          User *user;
+                                          if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                                              if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                                                  user = [Profile user];
+                                              }
+                                              else {
+                                                  user = [[User alloc] initWithDictionary:userDictionary];
+                                              }
+                                          }
+                                          if ([user isEqualToUser:[Profile user]]) {
+                                              User *profileUser = [Profile user];
+                                              [profileUser setIsGoingOut:YES];
+                                              [[Profile user] setEventID:eventId];
+                                          }
+                                          [partyUser addObject:user];
+                                      }
+                                      
+                                      if ([eventAttendeesArray count] > 0) {
+                                          pageNumberForEvent = @([pageNumberForEvent intValue] + 1);
+                                          NSIndexPath *indexPath = [NSIndexPath indexPathForRow:eventNumber inSection:0];
+                                          UITableViewCell *cell = [_placesTableView cellForRowAtIndexPath:indexPath];
+                                          for (UIView *view in [[[cell.contentView subviews] objectAtIndex:0] subviews]) {
+                                              if ([view isKindOfClass:[UIScrollView class]]) {
+                                                  UIScrollView *scrollView = (UIScrollView *)view;
+                                                  eventOffset = scrollView.contentOffset.x;
+                                              }
+                                          }
+                                          [_placesTableView beginUpdates];
+                                          [_placesTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:eventNumber inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+                                          [_placesTableView endUpdates];
+                                          eventOffset = 0;
+                                      }
+                                      else {
+                                          pageNumberForEvent = @-1;
+                                      }
+                                      [eventPageArray replaceObjectAtIndex:eventNumber withObject:pageNumberForEvent];
+                                      fetchingEventAttendees = NO;
+                                      
+                                  });
+                              }];
+        }
+     
+
+    }
     
 }
 
