@@ -686,6 +686,7 @@ int eventOffset;
             [self fillEventAttendees];
             page = @([page intValue] + 1);
             fetchingEventAttendees = NO;
+            [eventPageArray removeAllObjects];
             for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
                 [eventPageArray addObject:@2];
             }
@@ -775,14 +776,12 @@ int eventOffset;
                                       }
                                       [eventPageArray replaceObjectAtIndex:eventNumber withObject:pageNumberForEvent];
                                       fetchingEventAttendees = NO;
-                                      
                                   });
                               }];
         }
-     
-
+        else  fetchingEventAttendees = NO;
     }
-    
+    else fetchingEventAttendees = NO;
 }
 
 - (void)fetchedOneParty {

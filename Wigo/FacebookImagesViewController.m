@@ -184,9 +184,9 @@ NSString *urlOfSelectedImage;
 
 - (void)didFinishWithCroppedArea:(CGRect)croppedArea {
     
-    NSLog(@"width %f, height %f", croppedArea.origin.x, croppedArea.origin.y);
-    User *profileUser = [Profile user];
-    NSArray *imagesArea = [NSMutableArray arrayWithArray:[profileUser imagesArea]];
+//    NSLog(@"width %f, height %f", croppedArea.origin.x, croppedArea.origin.y);
+//    User *profileUser = [Profile user];
+//    NSArray *imagesArea = [NSMutableArray arrayWithArray:[profileUser imagesArea]];
 //    profileUser addImageURL:
 //    imagesArea addImageWithURL andArea
 //    [profileUser addImageURL:urlOfSelectedImage];
