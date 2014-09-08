@@ -16,7 +16,7 @@
 
 
 #define xSpacing 10
-#define sizeOfEachCell 125
+#define sizeOfEachCell 145
 @interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
@@ -62,7 +62,7 @@ BOOL fetchingEventAttendees;
 NSNumber *page;
 NSMutableArray *eventPageArray;
 int eventOffset;
-
+int sizeOfEachImage;
 
 @implementation PlacesViewController {
     int numberOfFetchedParties;
@@ -551,7 +551,7 @@ int eventOffset;
     
     // Variables to add images
     int xPosition = xSpacing;
-    int sizeOfEachImage = 60;
+    sizeOfEachImage = 80;
     
     UIScrollView *imagesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, placeSubView.frame.size.width, placeSubView.frame.size.height)];
     imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
@@ -656,7 +656,7 @@ int eventOffset;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView != _placesTableView)
-        if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - 60 && !fetchingEventAttendees) {
+        if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - sizeOfEachImage && !fetchingEventAttendees) {
             fetchingEventAttendees = YES;
             [self fetchEventAttendeesAsynchronousForEvent:scrollView.tag];
         }
@@ -728,6 +728,7 @@ int eventOffset;
     if (eventNumber < [eventPageArray count]) {
         NSNumber *pageNumberForEvent = [eventPageArray objectAtIndex:eventNumber];
         if ([pageNumberForEvent intValue] > 0) {
+            NSLog(@"here");
             NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [pageNumberForEvent stringValue]];
             NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:eventNumber], @"page": pageNumberForEvent};
             [Network queryAsynchronousAPI:queryString
@@ -797,12 +798,24 @@ int eventOffset;
 
 - (void) fetchUserInfo {
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        User *user = [[User alloc] initWithDictionary:jsonResponse];
-        User *profileUser = [Profile user];
-        [profileUser setIsGoingOut:[user isGoingOut]];
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [self updatedTitleView];
-        });
+        if ([[jsonResponse allKeys] containsObject:@"status"]) {
+            if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                User *user = [[User alloc] initWithDictionary:jsonResponse];
+                User *profileUser = [Profile user];
+                [profileUser setIsGoingOut:[user isGoingOut]];
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [self updatedTitleView];
+                });
+            }
+        }
+        else {
+            User *user = [[User alloc] initWithDictionary:jsonResponse];
+            User *profileUser = [Profile user];
+            [profileUser setIsGoingOut:[user isGoingOut]];
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [self updatedTitleView];
+            });
+        }
     }];
 }
 

@@ -61,7 +61,7 @@ BOOL blockShown;
 
 - (id)initWithUser:(User *)user {
     self = [super init];
-    if (self) {
+    if (self && user && [Profile user]) {
         if ([user isEqualToUser:[Profile user]]) {
             self.user = [Profile user];
             self.userState = [self.user isPrivate] ? PRIVATE_PROFILE : PUBLIC_PROFILE;
@@ -420,7 +420,10 @@ BOOL blockShown;
 
     UIImage *blurredImage = [UIImageCrop blurredImageFromImageView:croppedImageView withRadius:10.0f];
     croppedImageView.image = blurredImage;
-    [imageView addSubview:croppedImageView];
+    // IF THE USER IS NOT SEEING THEIR PHOTOS FULL SCREEN then add blur
+    if (!_isSeingImages) {
+        [imageView addSubview:croppedImageView];
+    }
 }
 
 - (void)deleteBlurredImageFromImageView:(UIImageView *)imageView {

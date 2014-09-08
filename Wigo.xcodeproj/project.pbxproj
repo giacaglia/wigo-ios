@@ -70,7 +70,6 @@
 		C12A114219787BE700D53B1C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D619255DAB00E39FC8 /* MobileCoreServices.framework */; };
 		C12A114319787BE700D53B1C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D419255DA200E39FC8 /* libz.dylib */; };
 		C12A114419787BE700D53B1C /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D219255D9A00E39FC8 /* CoreLocation.framework */; };
-		C12A114519787BE700D53B1C /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9902982196B12BE00192FF2 /* Parse.framework */; };
 		C12A114619787BE700D53B1C /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906D019255D8B00E39FC8 /* CFNetwork.framework */; };
 		C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906CE19255D8200E39FC8 /* AudioToolbox.framework */; };
 		C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
@@ -149,10 +148,17 @@
 		E96F07C619BA654600E858D7 /* GKImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07BA19BA654600E858D7 /* GKImagePicker.m */; };
 		E96F07C719BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07BC19BA654600E858D7 /* GKResizeableCropOverlayView.m */; };
 		E96F07C819BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07BC19BA654600E858D7 /* GKResizeableCropOverlayView.m */; };
+		E96F07CD19BE030700E858D7 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E96F07CA19BE030700E858D7 /* Bolts.framework */; };
+		E96F07CE19BE030700E858D7 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E96F07CA19BE030700E858D7 /* Bolts.framework */; };
+		E96F07CF19BE030800E858D7 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E96F07CB19BE030700E858D7 /* Parse.framework */; };
+		E96F07D019BE030800E858D7 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E96F07CB19BE030700E858D7 /* Parse.framework */; };
+		E96F07D119BE030800E858D7 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E96F07CC19BE030700E858D7 /* ParseFacebookUtils.framework */; };
+		E96F07D219BE030800E858D7 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E96F07CC19BE030700E858D7 /* ParseFacebookUtils.framework */; };
+		E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */; };
+		E96F07D719BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */; };
 		E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
-		E9902983196B12BE00192FF2 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9902982196B12BE00192FF2 /* Parse.framework */; };
 		E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */; };
 		E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */; };
 		E994111219AA8D9200D76379 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = E994111119AA8D9200D76379 /* NSString+URLEncoding.m */; };
@@ -344,10 +350,13 @@
 		E96F07BA19BA654600E858D7 /* GKImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKImagePicker.m; sourceTree = "<group>"; };
 		E96F07BB19BA654600E858D7 /* GKResizeableCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKResizeableCropOverlayView.h; sourceTree = "<group>"; };
 		E96F07BC19BA654600E858D7 /* GKResizeableCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKResizeableCropOverlayView.m; sourceTree = "<group>"; };
+		E96F07CA19BE030700E858D7 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = "parse-library-1.2.21 3/Bolts.framework"; sourceTree = "<group>"; };
+		E96F07CB19BE030700E858D7 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Parse.framework; path = "parse-library-1.2.21 3/Parse.framework"; sourceTree = "<group>"; };
+		E96F07CC19BE030700E858D7 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseFacebookUtils.framework; path = "parse-library-1.2.21 3/ParseFacebookUtils.framework"; sourceTree = "<group>"; };
+		E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-Light.ttf"; sourceTree = "<group>"; };
 		E9798F9819901EC100A97AE9 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		E97999D019759A2900C617E3 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		E98C185B1924176500EF60F8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		E9902982196B12BE00192FF2 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookAlbumTableViewController.h; sourceTree = "<group>"; };
 		E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookAlbumTableViewController.m; sourceTree = "<group>"; };
 		E9902989196B4E0700192FF2 /* FacebookImagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookImagesViewController.h; sourceTree = "<group>"; };
@@ -452,13 +461,15 @@
 				C12A114119787BE700D53B1C /* QuartzCore.framework in Frameworks */,
 				C12A114219787BE700D53B1C /* MobileCoreServices.framework in Frameworks */,
 				C12A114319787BE700D53B1C /* libz.dylib in Frameworks */,
+				E96F07D019BE030800E858D7 /* Parse.framework in Frameworks */,
 				C12A114419787BE700D53B1C /* CoreLocation.framework in Frameworks */,
-				C12A114519787BE700D53B1C /* Parse.framework in Frameworks */,
 				C12A114619787BE700D53B1C /* CFNetwork.framework in Frameworks */,
 				C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */,
 				C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */,
 				C12A114919787BE700D53B1C /* CoreGraphics.framework in Frameworks */,
+				E96F07CE19BE030700E858D7 /* Bolts.framework in Frameworks */,
 				C12A114A19787BE700D53B1C /* UIKit.framework in Frameworks */,
+				E96F07D219BE030800E858D7 /* ParseFacebookUtils.framework in Frameworks */,
 				C12A114B19787BE700D53B1C /* Foundation.framework in Frameworks */,
 				E9A31E501980AC38008A711B /* libLocalyticsAMP_x64.a in Frameworks */,
 				C12A114C19787BE700D53B1C /* FacebookSDK.framework in Frameworks */,
@@ -479,13 +490,15 @@
 				E9D906D919255DB400E39FC8 /* QuartzCore.framework in Frameworks */,
 				E9D906D719255DAB00E39FC8 /* MobileCoreServices.framework in Frameworks */,
 				E9D906D519255DA200E39FC8 /* libz.dylib in Frameworks */,
+				E96F07CF19BE030800E858D7 /* Parse.framework in Frameworks */,
 				E9D906D319255D9A00E39FC8 /* CoreLocation.framework in Frameworks */,
-				E9902983196B12BE00192FF2 /* Parse.framework in Frameworks */,
 				E9D906D119255D8B00E39FC8 /* CFNetwork.framework in Frameworks */,
 				E9D906CF19255D8200E39FC8 /* AudioToolbox.framework in Frameworks */,
 				E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */,
 				E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */,
+				E96F07CD19BE030700E858D7 /* Bolts.framework in Frameworks */,
 				E921D61A1923967D00361247 /* UIKit.framework in Frameworks */,
+				E96F07D119BE030800E858D7 /* ParseFacebookUtils.framework in Frameworks */,
 				E921D6161923967D00361247 /* Foundation.framework in Frameworks */,
 				E9A31E4F1980AC37008A711B /* libLocalyticsAMP_x64.a in Frameworks */,
 				E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */,
@@ -608,13 +621,15 @@
 		E921D6141923967D00361247 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E96F07CA19BE030700E858D7 /* Bolts.framework */,
+				E96F07CB19BE030700E858D7 /* Parse.framework */,
+				E96F07CC19BE030700E858D7 /* ParseFacebookUtils.framework */,
 				E9A695C619B0C7840071067B /* CoreData.framework */,
 				E9798F9819901EC100A97AE9 /* Social.framework */,
 				E9A31E471980AB9B008A711B /* libsqlite3.dylib */,
 				E9A31E451980AB25008A711B /* AdSupport.framework */,
 				E90AA8A71976C8B60055D74B /* Crashlytics.framework */,
 				E9ECFF7F196D917F00384252 /* FacebookSDK.framework */,
-				E9902982196B12BE00192FF2 /* Parse.framework */,
 				E900C2901961E0B800A01F50 /* ImageIO.framework */,
 				E9CD472E194B897200AEA17D /* Accelerate.framework */,
 				E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */,
@@ -887,6 +902,7 @@
 		E9BE8C4F192AA29C008BB84C /* Whitney */ = {
 			isa = PBXGroup;
 			children = (
+				E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */,
 				E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */,
 				E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */,
 				E9BE8C60192AA29C008BB84C /* Whitney-Medium.ttf */,
@@ -1081,6 +1097,7 @@
 				E9CD53941993C73900206B75 /* Images.xcassets in Resources */,
 				E9A31E591980ADDF008A711B /* iOSa_2.23.0.version in Resources */,
 				C12A119319787BE700D53B1C /* Whitney-Medium.ttf in Resources */,
+				E96F07D719BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				E9CD538C1993C42600206B75 /* go-out.gif in Resources */,
 				E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
@@ -1099,6 +1116,7 @@
 				E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */,
 				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
 				E9E6A56E19994B41003B590C /* glowing.gif in Resources */,
+				E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				E9A1EAAF199CFD25003A744C /* boyVoice.caf in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
@@ -1406,6 +1424,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/parse-library-1.2.21",
+					3,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
@@ -1443,6 +1463,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/parse-library-1.2.21",
+					3,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
@@ -1481,6 +1503,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/parse-library-1.2.21",
+					3,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
@@ -1594,6 +1618,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/parse-library-1.2.21",
+					3,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
@@ -1634,6 +1660,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/parse-library-1.2.21",
+					3,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
@@ -1752,6 +1780,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/parse-library-1.2.21",
+					3,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";

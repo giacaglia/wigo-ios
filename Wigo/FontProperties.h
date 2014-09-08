@@ -17,7 +17,7 @@
 
 @interface FontProperties : NSObject
 
-
++ (UIFont *)numericLightFont:(float)fontSize;
 + (UIFont *)lightFont:(float)fontSize;
 + (UIFont *)scLightFont:(float)fontSize;
 + (UIFont *)mediumFont:(float)fontSize;

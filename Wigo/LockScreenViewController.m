@@ -192,11 +192,23 @@ OnboardFollowViewController *onboardFollowViewController;
 
 - (void) fetchUserInfo {
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        User *user = [[User alloc] initWithDictionary:jsonResponse];
-        [Profile setUser:user];
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [self dismissIfGroupUnlocked];
-        });
+        if ([[jsonResponse allKeys] containsObject:@"status"]) {
+            if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                User *user = [[User alloc] initWithDictionary:jsonResponse];
+                [Profile setUser:user];
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    [self dismissIfGroupUnlocked];
+                });
+            }
+        }
+        else {
+            User *user = [[User alloc] initWithDictionary:jsonResponse];
+            [Profile setUser:user];
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [self dismissIfGroupUnlocked];
+            });
+        }
+       
     }];
 }
 

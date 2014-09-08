@@ -605,8 +605,8 @@ int queryQueueInt;
     User *user = [[User alloc] initWithDictionary:userInfo];
     if (user) {
         if (_isSearching) {
-            int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
-            if (sizeOfArray > 0 && sizeOfArray > userInt && userInt >= 0) {
+            int numberOfRows = [_tableViewOfPeople numberOfRowsInSection:[self sectionOfUsers]];
+            if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0) {
                 [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
                 [_tableViewOfPeople beginUpdates];
                 [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:[self sectionOfUsers]]] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -615,8 +615,8 @@ int queryQueueInt;
             
         }
         else {
-            int sizeOfArray = (int)[[_contentParty getObjectArray] count];
-            if (sizeOfArray > 0 && sizeOfArray > userInt  && userInt >= 0) {
+            int numberOfRows = [_tableViewOfPeople numberOfRowsInSection:[self sectionOfUsers]];
+            if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0) {
                 [_contentParty replaceObjectAtIndex:userInt withObject:user];
                 [_tableViewOfPeople beginUpdates];
                 [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:[self sectionOfUsers]]] withRowAnimation:UITableViewRowAnimationAutomatic];

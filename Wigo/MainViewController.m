@@ -126,14 +126,29 @@ int userInt;
 - (void) fetchUserInfo {
     _fetchingUserInfo = YES;
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        User *user = [[User alloc] initWithDictionary:jsonResponse];
-        User *profileUser = [Profile user];
-        [profileUser setIsGoingOut:[user isGoingOut]];
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            _fetchingUserInfo = NO;
-            [self updateTitleView];
-            [self fetchedMyInfoOrPeoplesInfo];
-        });
+        if ([[jsonResponse allKeys] containsObject:@"status"]) {
+            if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                User *user = [[User alloc] initWithDictionary:jsonResponse];
+                User *profileUser = [Profile user];
+                [profileUser setIsGoingOut:[user isGoingOut]];
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    _fetchingUserInfo = NO;
+                    [self updateTitleView];
+                    [self fetchedMyInfoOrPeoplesInfo];
+                });
+            }
+        }
+        else {
+            User *user = [[User alloc] initWithDictionary:jsonResponse];
+            User *profileUser = [Profile user];
+            [profileUser setIsGoingOut:[user isGoingOut]];
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                _fetchingUserInfo = NO;
+                [self updateTitleView];
+                [self fetchedMyInfoOrPeoplesInfo];
+            });
+        }
+       
     }];
 }
 
@@ -255,14 +270,25 @@ int userInt;
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 for (UIView *subview in [_barAtTopView subviews]) {
                     if ([subview isKindOfClass:[UILabel class]]) {
+                        NSString *newString = [NSString stringWithFormat:@"GOING OUT: %@", friendsGoingOut];
                         UILabel *label = (UILabel *)subview;
-                        label.text = [NSString stringWithFormat:@"GOING OUT - %@", friendsGoingOut];
+                        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:newString];
+                        [attributedString addAttribute:NSFontAttributeName
+                                     value:[FontProperties numericLightFont:15.0f]
+                                     range:NSMakeRange(11, [friendsGoingOut stringValue].length)];
+                        label.attributedText = attributedString;
                     }
                 }
                 for (UIView *subview in [_notGoingOutView subviews]) {
                     if ([subview isKindOfClass:[UILabel class]]) {
+                        NSNumber *notGoingOutNumber = @([[[Profile user] numberOfFollowing] intValue] - [friendsGoingOut intValue]);
+                        NSString *newString = [NSString stringWithFormat:@"NOT GOING OUT YET: %@", notGoingOutNumber];
                         UILabel *label = (UILabel *)subview;
-                        label.text = [NSString stringWithFormat:@"NOT GOING OUT YET - %d", [[[Profile user] numberOfFollowing] intValue] - [friendsGoingOut intValue]];
+                        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:newString];
+                        [attributedString addAttribute:NSFontAttributeName
+                                                 value:[FontProperties numericLightFont:15.0f]
+                                                 range:NSMakeRange(19, [notGoingOutNumber stringValue].length)];
+                        label.attributedText = attributedString;
                     }
                 }
                 

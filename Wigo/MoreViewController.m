@@ -158,12 +158,12 @@ UIButton *cancelButton;
     [blockButton addTarget:self action:@selector(submitBlockPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
     [self addCheckBoxWithTag:1 atYPosition:150];
-    [self addLabelWithText:[NSString stringWithFormat:@"%@ is just annoying to me.", [user firstName]]
+    [self addLabelWithText:[NSString stringWithFormat:@"%@ is just annoying to me", [user firstName]]
                     andTag:1
                atYPosition:150 - 15];
     
     [self addCheckBoxWithTag:3 atYPosition:220];
-    [self addLabelWithText:[NSString stringWithFormat:@"%@ is not a student at my school.", [user firstName]]
+    [self addLabelWithText:[NSString stringWithFormat:@"%@ is not a student at my school", [user firstName]]
                     andTag:3
                atYPosition:220 - 15];
     
