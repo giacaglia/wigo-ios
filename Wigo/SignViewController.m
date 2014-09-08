@@ -99,7 +99,7 @@
 }
 
 - (void)initializeFacebookSignButton {
-    _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"user_photos"]];
+    _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"user_friends", @"user_photos"]];
     _loginView.loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
     _loginView.delegate = self;
     _loginView.frame = CGRectMake(0, self.view.frame.size.height - 127, 253, 36);

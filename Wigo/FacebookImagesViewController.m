@@ -10,6 +10,7 @@
 #import "Globals.h"
 #import "GKImagePicker.h"
 #import "GKImageCropViewController.h"
+#import "ErrorViewController.h"
 
 @interface FacebookImagesViewController ()<GKImageCropControllerDelegate>
 @property NSString *profilePicturesAlbumId;
@@ -41,16 +42,15 @@ NSString *urlOfSelectedImage;
 
 
 
-
 - (void)loadImages {
-    [FBSession openActiveSessionWithReadPermissions:@[@"user_photos"]
+    [FBSession openActiveSessionWithReadPermissions:@[ @"user_photos"]
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
                                                       FBSessionState state,
                                                       NSError *error) {
-                                      if ([error userInfo]) {
-                                          if (![self gaveAccess:[error userInfo]]) [self requestUserPhotosPermission];
-                                          else [self showErrorNotAccess];
+                                      if (error) {
+                                          ErrorViewController *errorViewController = [[ErrorViewController alloc] init];
+                                          [self.view addSubview:errorViewController.view];
                                       }
                                       else if (session.isOpen) {
                                           [self fetchProfilePicturesAlbumFacebook];
@@ -68,8 +68,7 @@ NSString *urlOfSelectedImage;
                                               NSError *error
                                               ) {
                               if (error) {
-                                  if (![self gaveAccess:[error userInfo]]) [self requestUserPhotosPermission];
-                                  else [self showErrorNotAccess];
+                                  [self showErrorNotAccess];
                               }
                               FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
                               for (FBGraphObject *album in resultObject) {
@@ -83,31 +82,10 @@ NSString *urlOfSelectedImage;
     
 }
 
-- (void) requestUserPhotosPermission {
-    [FBSession.activeSession requestNewReadPermissions:@[@"user_photos"]
-                                     completionHandler:^(FBSession *session, NSError *error) {
-                                         if (error) {
-                                             [self showErrorNotAccess];
-                                         }
-                                         else {
-                                             [self loadImages];
-                                         }
-                                     }];
-}
-
-- (BOOL)gaveAccess:(NSDictionary *)userInfo {
-    if ([[userInfo allKeys] containsObject:@"com.facebook.sdk:HTTPStatusCode"] &&
-        [[userInfo allKeys] containsObject:@"com.facebook.sdk:ParsedJSONResponseKey"]) {
-        if ([[userInfo objectForKey:@"com.facebook.sdk:HTTPStatusCode"] isEqualToNumber:@403] &&
-            [[[userInfo objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"] objectForKey:@"code"] isEqualToNumber:@403]) {
-            return NO;
-        }
-        else return YES;
-    }
-    return YES;
-}
-
 - (void)showErrorNotAccess {
+    ErrorViewController *errorViewController = [[ErrorViewController alloc] init];
+    [self presentViewController:errorViewController animated:YES completion:^(void){}];
+//    self per
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
                                                         message:@"Could not load your Facebook Photos"
                                                        delegate:nil
@@ -138,7 +116,7 @@ NSString *urlOfSelectedImage;
 
 
 - (void) initializeScrollView {
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 6)];
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height);
     [self.view addSubview:_scrollView];
 }
