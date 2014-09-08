@@ -377,7 +377,8 @@ int userInt;
         UILabel *barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
         barAtTopLabel.text = textAtTop;
         barAtTopLabel.textAlignment = NSTextAlignmentLeft;
-        barAtTopLabel.font = [FontProperties scLightFont:15.0f];
+        UIFont *font = [FontProperties scLightFont:15.0f];
+        barAtTopLabel.font = font;
         [_barAtTopView addSubview:barAtTopLabel];
     }
     
@@ -767,7 +768,6 @@ int userInt;
     profileName.frame = CGRectMake(0, cell.contentView.frame.size.width - 25, cell.contentView.frame.size.width, 25);
     profileName.font = [FontProperties getSmallFont];
     profileName.tag = -1;
-    profileName.translatesAutoresizingMaskIntoConstraints = YES;
     [imgView addSubview:profileName];
     
     if ([user isFavorite]) {

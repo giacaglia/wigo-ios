@@ -1,6 +1,6 @@
 //
 //  FontProperties.m
-//  PicBill
+//  WiGo
 //
 //  Created by Giuliano Giacaglia on 2/7/14.
 //  Copyright (c) 2014 Giuliano Giacaglia. All rights reserved.
@@ -13,27 +13,22 @@
 #pragma mark - Font
 
 + (UIFont *)numericLightFont:(float)fontSize {
-//    if (IS_IOS_8) return [UIFont fontWithName:@"HelveticaNeue-Light" size:fontSize];
     return [UIFont fontWithName:@"WhitneyNumeric-Light" size:fontSize];
 }
 
 + (UIFont *)lightFont:(float)fontSize {
-//    if (IS_IOS_8) return [UIFont fontWithName:@"HelveticaNeue-Light" size:fontSize];
     return [UIFont fontWithName:@"Whitney-Light" size:fontSize];
 }
 
 + (UIFont *)scLightFont:(float)fontSize {
-//    if (IS_IOS_8) return [UIFont fontWithName:@"HelveticaNeue-Light" size:fontSize];
     return [UIFont fontWithName:@"Whitney-LightSC" size:fontSize];
 }
 
 + (UIFont *)mediumFont:(float)fontSize {
-//    if (IS_IOS_8) return [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
     return [UIFont fontWithName:@"Whitney-Medium" size:fontSize];
 }
 
 + (UIFont *)scMediumFont:(float)fontSize {
-//    if (IS_IOS_8) return [UIFont fontWithName:@"HelveticaNeue-Medium" size:fontSize];
     return [UIFont fontWithName:@"Whitney-MediumSC" size:fontSize];
 }
 
