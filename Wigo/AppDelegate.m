@@ -49,7 +49,7 @@ NSDate *firstLoggedTime;
     }
 #else
     [application registerForRemoteNotificationTypes:
-     (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
     
     self.notificationDictionary = [[NSMutableDictionary alloc] init];
