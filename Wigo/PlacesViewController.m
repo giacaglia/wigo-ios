@@ -72,6 +72,7 @@ int sizeOfEachImage;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
     fetchingEventAttendees = NO;
     eventOffset = 0;
@@ -658,7 +659,7 @@ int sizeOfEachImage;
     if (scrollView != _placesTableView)
         if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - sizeOfEachImage && !fetchingEventAttendees) {
             fetchingEventAttendees = YES;
-            [self fetchEventAttendeesAsynchronousForEvent:scrollView.tag];
+            [self fetchEventAttendeesAsynchronousForEvent:(int)scrollView.tag];
         }
 }
 

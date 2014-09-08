@@ -676,6 +676,7 @@ int userInt;
 #pragma mark - Collection view Data Source
 
 - (void) initializeCollectionView {
+    self.automaticallyAdjustsScrollViewInsets = NO;
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = 4;

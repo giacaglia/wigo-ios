@@ -80,6 +80,7 @@
 }
 
 - (void) initializeTableNotifications {
+    self.automaticallyAdjustsScrollViewInsets = NO;
     _notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
     _notificationsTableView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_notificationsTableView];

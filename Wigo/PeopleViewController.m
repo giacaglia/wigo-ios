@@ -605,7 +605,7 @@ int queryQueueInt;
     User *user = [[User alloc] initWithDictionary:userInfo];
     if (user) {
         if (_isSearching) {
-            int numberOfRows = [_tableViewOfPeople numberOfRowsInSection:[self sectionOfUsers]];
+            int numberOfRows = [_tableViewOfPeople numberOfRowsInSection:(int)[self sectionOfUsers]];
             if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0) {
                 [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
                 [_tableViewOfPeople beginUpdates];
@@ -615,7 +615,7 @@ int queryQueueInt;
             
         }
         else {
-            int numberOfRows = [_tableViewOfPeople numberOfRowsInSection:[self sectionOfUsers]];
+            int numberOfRows = [_tableViewOfPeople numberOfRowsInSection:(int)[self sectionOfUsers]];
             if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0) {
                 [_contentParty replaceObjectAtIndex:userInt withObject:user];
                 [_tableViewOfPeople beginUpdates];

@@ -103,7 +103,7 @@ UIButton *cancelButton;
     if (once) {
         once = NO;
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void) {
-            int type = (blockButton.tag / 10)  - 1;
+            int type = (int)((int)blockButton.tag / 10)  - 1;
             NSDictionary *userInfo = @{@"user": [user dictionary], @"type":[NSNumber numberWithInt:type]};
             [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil userInfo:userInfo];
         }];
@@ -203,14 +203,14 @@ UIButton *cancelButton;
 }
 
 - (void)pressedCheckBox:(id)sender {
-    int tag = ((UIButton *)sender).tag;
+    int tag = (int)((UIButton *)sender).tag;
     UIButton *checkedBoxSender = (UIButton *)[self.view viewWithTag:tag];
     [self checkedBox:checkedBoxSender];
 }
 
 - (void)checkedBox:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
+    int tag = (int)buttonSender.tag;
     blockButton.tag = (tag + 1)/2 * 10; // 10 for the first button, 20 for the second, 30 for the third button
     for (int i = 1; i < 4; i++) {
         int index = 2*i - 1;
