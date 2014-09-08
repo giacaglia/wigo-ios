@@ -68,7 +68,7 @@ UIButton *cancelButton;
     blockButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 100 + 248 + 50 + 42 + 12, 248, 42)];
     blockButton.backgroundColor = [UIColor redColor];
     [blockButton addTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    [blockButton setTitle:@"BLOCK OR REPORT" forState:UIControlStateNormal];
+    [blockButton setTitle:@"BLOCK/REPORT" forState:UIControlStateNormal];
     [blockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     blockButton.titleLabel.font = [FontProperties getTitleFont];
     blockButton.layer.borderWidth = 0.5;
