@@ -91,7 +91,6 @@
 }
 
 - (void)didFinishWithCroppedArea:(CGRect)croppedArea {
-    NSLog(@"here");
 //    if ([self.delegate respondsToSelector:@selector(imagePicker:pickedArea:)]) {
 //        [self.delegate imagePicker:self pickedArea:croppedArea];
 //    }

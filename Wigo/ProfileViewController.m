@@ -675,7 +675,13 @@ BOOL blockShown;
         else {
             _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite"]];
         }
-        _favoriteImageView.frame = CGRectMake(_leftProfileButton.frame.size.width/2 - 12, _leftProfileButton.frame.size.height/2 - 12, 24, 24);
+        _favoriteImageView.frame = CGRectMake(_leftProfileButton.frame.size.width/2 - 12, _leftProfileButton.frame.size.height/2 - 12 - 11, 24, 24);
+        UILabel *favoriteLabel = [[UILabel alloc] initWithFrame:CGRectMake(_leftProfileButton.frame.size.width/2 - 30, _leftProfileButton.frame.size.height/2 + 12 - 3, 60, 15)];
+        favoriteLabel.textAlignment = NSTextAlignmentCenter;
+        favoriteLabel.text = @"Favorite";
+        favoriteLabel.textColor = [FontProperties getOrangeColor];
+        favoriteLabel.font = [FontProperties getSubtitleFont];
+        [_leftProfileButton addSubview:favoriteLabel];
         [_leftProfileButton addSubview:_favoriteImageView];
     }
     [self.view addSubview:_leftProfileButton];
@@ -719,7 +725,13 @@ BOOL blockShown;
     else {
         _rightProfileButton.frame = CGRectMake(3*self.view.frame.size.width/4, 64 + self.view.frame.size.width, self.view.frame.size.width/4, 100);
         UIImageView *chatImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chatImage"]];
-        chatImageView.frame = CGRectMake(_rightProfileButton.frame.size.width/2 - 12, _rightProfileButton.frame.size.height/2 - 12, 24, 24);
+        chatImageView.frame = CGRectMake(_rightProfileButton.frame.size.width/2 - 12, _rightProfileButton.frame.size.height/2 - 12 - 11, 24, 24);
+        UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(_rightProfileButton.frame.size.width/2 - 20, _rightProfileButton.frame.size.height/2 + 12 - 3, 40, 15)];
+        chatLabel.textAlignment = NSTextAlignmentCenter;
+        chatLabel.text = @"Chat";
+        chatLabel.textColor = [FontProperties getOrangeColor];
+        chatLabel.font = [FontProperties getSubtitleFont];
+        [_rightProfileButton addSubview:chatLabel];
         [_rightProfileButton addSubview:chatImageView];
     }
     [self.view addSubview:_rightProfileButton];
