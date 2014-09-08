@@ -285,9 +285,12 @@ int sizeOfEachImage;
     int userIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"userIndex"] intValue];
     if (eventIndex < [_partyUserArray count]) {
         Party *partyUser  = [_partyUserArray objectAtIndex:eventIndex];
+        Event *event = [[_eventsParty getObjectArray] objectAtIndex:eventIndex];
         if ([[partyUser getObjectArray] count] != 0 && userIndex < [[partyUser getObjectArray] count]){
             User *user = [[partyUser getObjectArray] objectAtIndex:userIndex];
-            if (user) {
+            if (user && event) {
+                [user setAttendingEventID:[event eventID]];
+                [user setAttendingEventName:[event name]];
                 self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
                 [self.navigationController pushViewController:self.profileViewController animated:YES];
                 self.tabBarController.tabBar.hidden = YES;
