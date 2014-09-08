@@ -767,6 +767,7 @@ int userInt;
     profileName.frame = CGRectMake(0, cell.contentView.frame.size.width - 25, cell.contentView.frame.size.width, 25);
     profileName.font = [FontProperties getSmallFont];
     profileName.tag = -1;
+    profileName.translatesAutoresizingMaskIntoConstraints = YES;
     [imgView addSubview:profileName];
     
     if ([user isFavorite]) {

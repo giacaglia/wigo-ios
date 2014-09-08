@@ -48,7 +48,7 @@
                                                       fromDate:dateInLocalTimezone
                                                       toDate:[NSDate date]
                                                       options:0];
-        if ([differenceDateComponents week] == 0) {
+        if ([differenceDateComponents weekOfMonth] == 0) {
             if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
                 return @"1 day ago";
             }
@@ -56,10 +56,10 @@
         }
         else {
             if ([differenceDateComponents month] == 0) {
-                if ([differenceDateComponents week] == 1) {
+                if ([differenceDateComponents weekOfMonth] == 1) {
                     return @"1 week ago";
                 }
-                return [NSString stringWithFormat:@"%ld weeks ago", (long)[differenceDateComponents week]];
+                return [NSString stringWithFormat:@"%ld weeks ago", (long)[differenceDateComponents weekOfMonth]];
             }
             else {
                 if ([differenceDateComponents month] == 1) {

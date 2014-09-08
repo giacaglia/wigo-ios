@@ -39,9 +39,18 @@ NSDate *firstLoggedTime;
     
     [Parse setApplicationId:parseApplicationId
                   clientKey:parseClientKey];
-    [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge|
-     UIRemoteNotificationTypeAlert|
-     UIRemoteNotificationTypeSound];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        [application registerForRemoteNotifications];
+    } else {
+        [application registerForRemoteNotificationTypes:
+        (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+    }
+#else
+    [application registerForRemoteNotificationTypes:
+     (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+#endif
     
     self.notificationDictionary = [[NSMutableDictionary alloc] init];
     
