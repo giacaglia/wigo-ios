@@ -43,14 +43,14 @@ NSString *urlOfSelectedImage;
 
 
 - (void)loadImages {
-    [FBSession openActiveSessionWithReadPermissions:@[ @"user_photos"]
+    [FBSession openActiveSessionWithReadPermissions:@[@"user_photos"]
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
                                                       FBSessionState state,
                                                       NSError *error) {
                                       if (error) {
-                                          ErrorViewController *errorViewController = [[ErrorViewController alloc] init];
-                                          [self.view addSubview:errorViewController.view];
+                                          if (![self gaveUserPermission:[error userInfo]]) [self requestReadPermissions];
+                                          else [self showErrorNotAccess];
                                       }
                                       else if (session.isOpen) {
                                           [self fetchProfilePicturesAlbumFacebook];
@@ -68,7 +68,8 @@ NSString *urlOfSelectedImage;
                                               NSError *error
                                               ) {
                               if (error) {
-                                  [self showErrorNotAccess];
+                                  if (![self gaveUserPermission:[error userInfo]]) [self requestReadPermissions];
+                                  else [self showErrorNotAccess];
                               }
                               FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
                               for (FBGraphObject *album in resultObject) {
@@ -82,10 +83,36 @@ NSString *urlOfSelectedImage;
     
 }
 
+- (void)requestReadPermissions {
+    [FBSession.activeSession requestNewReadPermissions:@[@"user_photos"]
+                                     completionHandler:^(FBSession *session, NSError *error) {
+                                        if (!error) {
+                                            if ([FBSession.activeSession.permissions
+                                                 indexOfObject:@"user_photos"] == NSNotFound){
+                                                [self showErrorNotAccess];
+                                            } else {
+                                                [self loadImages];
+                                            }
+                                            
+                                        } else {
+                                            [self showErrorNotAccess];
+                                        }
+    }];
+}
+
+- (BOOL)gaveUserPermission:(NSDictionary *)userInfo {
+    if ([[userInfo allKeys] containsObject:@"com.facebook.sdk:HTTPStatusCode"] && [[userInfo allKeys] containsObject:@"com.facebook.sdk:ParsedJSONResponseKey"]) {
+        if ([[userInfo objectForKey:@"com.facebook.sdk:HTTPStatusCode"] isEqualToNumber:@403] &&
+            [[[userInfo objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"] objectForKey:@"code"] isEqualToNumber:@403]) {
+            return NO;
+        }
+        return YES;
+        
+    }
+    return YES;
+}
+
 - (void)showErrorNotAccess {
-    ErrorViewController *errorViewController = [[ErrorViewController alloc] init];
-    [self presentViewController:errorViewController animated:YES completion:^(void){}];
-//    self per
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
                                                         message:@"Could not load your Facebook Photos"
                                                        delegate:nil
