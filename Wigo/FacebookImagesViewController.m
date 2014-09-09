@@ -181,19 +181,19 @@ NSString *urlOfSelectedImage;
 
 - (void)choseImageView:(UITapGestureRecognizer*)sender {
     UIImageView *imageViewSender = (UIImageView *)sender.view;
-    urlOfSelectedImage = [_profilePicturesURL objectAtIndex:imageViewSender.tag];
-    User *profileUser = [Profile user];
-    [profileUser addImageURL:urlOfSelectedImage];
-    [profileUser save];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
-    [self.navigationController popViewControllerAnimated:YES];
+//    urlOfSelectedImage = [_profilePicturesURL objectAtIndex:imageViewSender.tag];
+//    User *profileUser = [Profile user];
+//    [profileUser addImageURL:urlOfSelectedImage];
+//    [profileUser save];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
+//    [self.navigationController popViewControllerAnimated:YES];
 
-//    GKImageCropViewController *cropController = [[GKImageCropViewController alloc] init];
-//    cropController.sourceImage = imageViewSender.image;
-//    cropController.delegate = self;
-//    cropController.resizeableCropArea = NO;
-//    cropController.cropSize = CGSizeMake(280, 280);
-//    [self presentViewController:cropController animated:YES completion:^(void){}];
+    GKImageCropViewController *cropViewController = [[GKImageCropViewController alloc] init];
+    cropViewController.sourceImage = imageViewSender.image;
+    cropViewController.delegate = self;
+    cropViewController.resizeableCropArea = NO;
+    cropViewController.cropSize = CGSizeMake(280, 280);
+    [self presentViewController:cropViewController animated:YES completion:^(void){}];
 
     
 

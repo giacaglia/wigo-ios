@@ -72,6 +72,10 @@
 
 - (NSString *)message {
     if ([[self type] isEqualToString:@"tap"]) {
+        User *fromUser = [[User alloc] initWithDictionary:[self fromUser]];
+        if ([fromUser isAttending] && [fromUser attendingEventName]) {
+            return [NSString stringWithFormat:@"wants to see you out at %@", [fromUser attendingEventName]];
+        }
         return @"wants to see you out";
     }
     else if( [[self type] isEqualToString:@"follow"] || [[self type] isEqualToString:@"facebook.follow"]) {
@@ -106,6 +110,15 @@
 - (void)setFromUserID:(NSNumber *)fromUserID {
     [_proxy setObject:fromUserID forKey:@"from_user"];
 }
+
+- (NSDictionary *)fromUser {
+    return [_proxy objectForKey:@"from_user"];
+}
+
+- (void)setFromUser:(NSDictionary *)fromUser {
+    [_proxy setObject:fromUser forKey:@"from_user"];
+}
+
 
 - (NSString *)timeString {
     NSString *utcCreationTime = [_proxy objectForKey:@"created"];

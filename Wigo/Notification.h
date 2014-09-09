@@ -13,6 +13,7 @@
 
 @property NSString *type;
 @property NSNumber *fromUserID;
+@property NSDictionary *fromUser;
 @property NSString *timeString;
 
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
