@@ -39,18 +39,32 @@ NSDate *firstLoggedTime;
     
     [Parse setApplicationId:parseApplicationId
                   clientKey:parseClientKey];
+    BOOL triedToRegister =  [[NSUserDefaults standardUserDefaults] boolForKey: @"triedToRegister"];
+    if (!triedToRegister) {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"FYI"
+                                  message:@"WiGo only sends notifications from your closest friends."
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles: nil];
+        [alertView show];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
-        [application registerForRemoteNotifications];
-    } else {
-        [application registerForRemoteNotificationTypes:
-        (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
-    }
+        if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+            [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+            [application registerForRemoteNotifications];
+        } else {
+            [application registerForRemoteNotificationTypes:
+             (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+        }
 #else
-    [application registerForRemoteNotificationTypes:
-     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+        [application registerForRemoteNotificationTypes:
+         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"triedToRegister"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
     
     self.notificationDictionary = [[NSMutableDictionary alloc] init];
     
