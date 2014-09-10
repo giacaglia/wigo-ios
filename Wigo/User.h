@@ -87,4 +87,7 @@ typedef enum
 - (void)loginWithHandler:(QueryResult)handler;
 - (void)saveKeyAsynchronously:(NSString *)key;
 - (void)saveKeyAsynchronously:(NSString *)key withHandler:(Handler)handler;
+
+#pragma mark - analytics
+- (void) updateUserAnalytics;
 @end

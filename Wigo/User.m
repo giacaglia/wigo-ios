@@ -752,20 +752,24 @@
             for (NSString *key in [jsonResponse allKeys]) {
                 [self setValue:[jsonResponse objectForKey:key] forKey:key];
             }
-
-            NSString *groupName = self.groupName;
-            if (groupName != nil) {
-                [EventAnalytics tagGroup:groupName];
-            }
             
-            NSString *objId = [NSString stringWithFormat:@"%@", [self objectForKey:@"id"]];
-            [EventAnalytics tagUser:objId];
+            [self updateUserAnalytics];
             
             [modifiedKeys removeAllObjects];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
             handler(jsonResponse, error);
         }
     }];
+}
+
+- (void) updateUserAnalytics {
+    NSString *groupName = self.groupName;
+    if (groupName != nil) {
+        [EventAnalytics tagGroup:groupName];
+    }
+    
+    NSString *objId = [NSString stringWithFormat:@"%@", [self objectForKey:@"id"]];
+    [EventAnalytics tagUser:objId];
 }
 
 

@@ -28,6 +28,7 @@ static Party *notAcceptedFollowingParty;
 
 + (void)setUser:(User *)newUser {
     user = newUser;
+    [newUser updateUserAnalytics];
 }
 
 + (Party *)everyoneParty {
