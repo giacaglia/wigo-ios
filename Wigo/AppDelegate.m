@@ -462,10 +462,10 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     if ([datesAccessed count] == 3) {
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"Love WiGo?"
-                                  message:@"Rate us in the App Store"
+                                  message:@"Looks like you love WiGo. The feeling is mutual. Share your love on the App Store."
                                   delegate:self
                                   cancelButtonTitle:@"Not now"
-                                  otherButtonTitles:@"Rate", nil];
+                                  otherButtonTitles:@"Rate WiGo", nil];
         [alertView show];
         NSMutableArray *mutableDatesAccessed = [[NSMutableArray alloc] initWithArray:datesAccessed];
         [mutableDatesAccessed addObject:firstLoggedTime];
