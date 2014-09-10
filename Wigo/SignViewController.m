@@ -13,10 +13,6 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-#if !defined(StringOrEmpty)
-#define StringOrEmpty(A)  ({ __typeof__(A) __a = (A); __a ? __a : @""; })
-#endif
-
 @interface SignViewController ()
 // UI
 @property UIView *facebookConnectView;

@@ -245,6 +245,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabs) name:@"changeTabs" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTabBarNotifications) name:@"reloadTabBarNotifications" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadColorWhenTabBarIsMessage) name:@"reloadColorWhenTabBarIsMessage" object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goingOutForRateApp) name:@"goingOutForRateApp" object:nil];
 }
 
 - (void)changeTabs {
@@ -399,6 +400,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     NSDate *dateInUTC = [utcDateFormat dateFromString:utcTimeString];
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     firstLoggedTime = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
+    [self saveDatesAccessed];
 }
 
 - (void)updateGoingOutIfItsAnotherDay {
@@ -423,5 +425,59 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [self logFirstTimeLoading];
 }
 
+#pragma mark - Save Info for showing rate app
+
+- (void)saveDatesAccessed {
+    NSArray *datesAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"datesAccessed"];
+    if (!datesAccessed) {
+        NSDate *firstSaveDate = [NSDate date];
+        datesAccessed = @[firstSaveDate];
+        [[NSUserDefaults standardUserDefaults] setObject:datesAccessed forKey: @"datesAccessed"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    else if ([datesAccessed count] < 3){
+        NSDate *lastDateAccessed = (NSDate *)[datesAccessed lastObject];
+        NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        NSDateComponents *differenceDateComponents = [gregorianCalendar
+                                                      components:NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekOfYearCalendarUnit|NSDayCalendarUnit |NSMinuteCalendarUnit
+                                                      fromDate:lastDateAccessed
+                                                      toDate:firstLoggedTime
+                                                      options:0];
+        if ([differenceDateComponents day] == 1) {
+            NSMutableArray *mutableDatesAccessed = [[NSMutableArray alloc] initWithArray:datesAccessed];
+            [mutableDatesAccessed addObject:firstLoggedTime];
+            [[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithArray:mutableDatesAccessed] forKey: @"datesAccessed"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        else if ([differenceDateComponents day] > 1) {
+            [[NSUserDefaults standardUserDefaults] setObject:@[firstLoggedTime] forKey: @"datesAccessed"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+        }
+    }
+}
+
+-(void)goingOutForRateApp {
+    NSArray *datesAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"datesAccessed"];
+    if ([datesAccessed count] == 3) {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Love WiGo?"
+                                  message:@"Rate us in the App Store"
+                                  delegate:self
+                                  cancelButtonTitle:@"Not now"
+                                  otherButtonTitles:@"Rate", nil];
+        [alertView show];
+        NSMutableArray *mutableDatesAccessed = [[NSMutableArray alloc] initWithArray:datesAccessed];
+        [mutableDatesAccessed addObject:firstLoggedTime];
+        [[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithArray:mutableDatesAccessed] forKey: @"datesAccessed"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if ((int)buttonIndex == 1) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/wigo-who-is-going-out/id689401759?mt=8"]];
+    }
+}
 
 @end

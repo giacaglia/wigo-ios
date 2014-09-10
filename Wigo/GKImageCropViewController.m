@@ -43,7 +43,7 @@
 
 
 - (void)_actionUse{
-    NSLog(@"width = %f, height = %f", [self.imageCropView cropSize].width, [self.imageCropView cropSize].height);
+//    NSLog(@"width = %f, height = %f", [self.imageCropView cropSize].width, [self.imageCropView cropSize].height);
     _croppedImage = [self.imageCropView croppedImage];
     [self.delegate imageCropController:self didFinishWithCroppedImage:_croppedImage];
     [self.delegate didFinishWithCroppedArea:[self.imageCropView croppedArea]];
@@ -219,7 +219,6 @@
 
 - (void)viewDidUnload{
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
 }
 
 - (void)viewWillLayoutSubviews{

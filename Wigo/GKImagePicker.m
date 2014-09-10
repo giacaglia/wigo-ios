@@ -91,8 +91,8 @@
 }
 
 - (void)didFinishWithCroppedArea:(CGRect)croppedArea {
-//    if ([self.delegate respondsToSelector:@selector(imagePicker:pickedArea:)]) {
-//        [self.delegate imagePicker:self pickedArea:croppedArea];
+//    if ([self.delegate respondsToSelector:@selector(didFinishWithCroppedArea:)]) {
+//        [self.delegate didFinishWithCroppedArea:croppedArea];
 //    }
 }
 

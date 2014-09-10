@@ -8,6 +8,8 @@
 
 #import "NotificationsViewController.h"
 #import "Globals.h"
+#import "UIButtonAligned.h"
+#import "LeaderboardViewController.h"
 
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
@@ -66,17 +68,37 @@
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Notifications View"];
 
-    self.tabBarController.tabBar.hidden = NO;
-    self.navigationItem.leftBarButtonItem = nil;
-    self.navigationItem.rightBarButtonItem = nil;
-    self.navigationItem.titleView = nil;
-    self.navigationItem.title = @"Notifications";
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    [self initializeNavigationItem];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self updateLastNotificationsRead];
+}
+
+- (void)initializeNavigationItem {
+    self.tabBarController.tabBar.hidden = NO;
+    self.navigationItem.leftBarButtonItem = nil;
+    self.navigationItem.titleView = nil;
+    self.navigationItem.title = @"Notifications";
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    
+    UIButtonAligned *leaderboardButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 50, 30) andType:@3];
+    [leaderboardButton addTarget:self action:@selector(leaderboardSegue)
+            forControlEvents:UIControlEventTouchUpInside];
+    [leaderboardButton setShowsTouchWhenHighlighted:YES];
+    [leaderboardButton setTitle:@"100" forState:UIControlStateNormal];
+    [leaderboardButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    leaderboardButton.titleLabel.textAlignment = NSTextAlignmentRight;
+    leaderboardButton.titleLabel.font = [FontProperties getSubtitleFont];
+    UIBarButtonItem *leaderboardBarButton =[[UIBarButtonItem alloc] initWithCustomView:leaderboardButton];
+    self.navigationItem.rightBarButtonItem = leaderboardBarButton;
+}
+
+- (void)leaderboardSegue {
+    LeaderboardViewController *leaderboardViewController = [LeaderboardViewController new];
+    [self.navigationController pushViewController:leaderboardViewController animated:YES];
+    self.tabBarController.tabBar.hidden = YES;
 }
 
 - (void) initializeTableNotifications {

@@ -193,7 +193,9 @@
 }
 
 - (void)setImagesArea:(NSArray *)imagesArea {
-    NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *properties;
+    if ([_proxy objectForKey:@"properties"]) properties = [[NSMutableDictionary alloc] initWithDictionary:[_proxy objectForKey:@"properties"]];
+//    else properties = [[NSMutableDictionary alloc] init];
     [properties setObject:imagesArea forKey:@"imagesArea"];
     [_proxy setObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
     [modifiedKeys addObject:@"properties"];
@@ -201,9 +203,16 @@
 
 - (BOOL)addImageArea:(CGRect)imageArea {
     NSMutableArray *imagesAreaArray = [[NSMutableArray alloc] initWithArray:[self imagesArea]];
+    if ([imagesAreaArray count] == 0) {
+        for (int i = 0; i < [[self imagesURL] count] - 1; i++) {
+            [imagesAreaArray addObject:@[@0, @0, @320, @320]];
+        }
+    }
     if ([imagesAreaArray count] < 5) {
-        [imagesAreaArray addObject:[NSValue valueWithCGRect:imageArea]];
-
+        NSArray *areaArray = @[@((int)roundf(imageArea.origin.x)),@((int)roundf(imageArea.origin.y)), @((int)roundf(imageArea.size.width)), @((int)roundf(imageArea.size.width))];
+        [imagesAreaArray addObject:areaArray];
+        [self setImagesArea:imagesAreaArray];
+        return YES;
     }
     return NO;
 }
@@ -214,15 +223,12 @@
         NSArray *imagesArea = [properties objectForKey:@"imagesArea"];
         return imagesArea;
     }
-    return [[NSArray alloc] init];
+    else return [[NSArray alloc] init];
 }
 
 - (void)addImageWithURL:(NSString *)imageURL andArea:(CGRect)area {
-    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
-    if ([imagesArray count] < 5) {
-        [imagesArray addObject:imageURL];
-        [self setImagesURL:[NSArray arrayWithArray:imagesArray]];
-    }
+    [self addImageURL:imageURL];
+    [self addImageArea:area];
 }
 
 - (NSNumber *)eventID {
@@ -330,7 +336,10 @@
 - (void)setIsGoingOut:(BOOL)isGoingOut {
     if ([[_proxy allKeys] containsObject:@"is_goingout"]) {
         BOOL existing = self.isGoingOut;
-        if (isGoingOut & !existing) [EventAnalytics tagEvent:@"Go Out"];
+        if (isGoingOut & !existing) {
+            [EventAnalytics tagEvent:@"Go Out"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"goingOutForRateApp" object:nil];
+        }
         else if (! isGoingOut & existing) [EventAnalytics tagEvent:@"Ungo Out"];
     }
 

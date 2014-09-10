@@ -131,12 +131,15 @@ NSString *urlOfSelectedImage;
                                               id result,
                                               NSError *error
                                               ) {
-                              FBGraphObject *resultObject = [result objectForKey:@"data"];
-                              for (FBGraphObject *photoRepresentation in resultObject) {
-                                  [_profilePicturesURL addObject:[photoRepresentation objectForKey:@"source"]];
-                                  _startingYPosition = 0;
+                              if (!error) {
+                                  FBGraphObject *resultObject = [result objectForKey:@"data"];
+                                  for (FBGraphObject *photoRepresentation in resultObject) {
+                                      [_profilePicturesURL addObject:[photoRepresentation objectForKey:@"source"]];
+                                      _startingYPosition = 0;
+                                  }
                                   [self addImagesFromURLArray];
                               }
+
     }];
 }
 
@@ -159,10 +162,17 @@ NSString *urlOfSelectedImage;
     int positionX = 0;
     for (int i = 0; i < [_profilePicturesURL count]; i++) {
         NSString *pictureURL = [_profilePicturesURL objectAtIndex:i];
+
         UIImageView *imgView = [[UIImageView alloc] init];
         imgView.contentMode = UIViewContentModeScaleAspectFill;
         imgView.clipsToBounds = YES;
-        [imgView setImageWithURL:[NSURL URLWithString:pictureURL]];
+        __weak UIImageView *weakProfileImgView = imgView;
+        [imgView setImageWithURL:[NSURL URLWithString:pictureURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(choseImageView:)];
+                [weakProfileImgView addGestureRecognizer:tap];
+            });
+        }];
         imgView.frame = CGRectMake(positionX, _startingYPosition, sizeOfEachImage, sizeOfEachImage);
         imgView.userInteractionEnabled = YES;
         imgView.tag = i;
@@ -172,8 +182,7 @@ NSString *urlOfSelectedImage;
             _startingYPosition += sizeOfEachImage + 5; // 5 is the distance of the images on the bottom
             positionX = 0;
         }
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(choseImageView:)];
-        [imgView addGestureRecognizer:tap];
+       
     }
     _startingYPosition += sizeOfEachImage + 5;
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _startingYPosition);
@@ -181,7 +190,7 @@ NSString *urlOfSelectedImage;
 
 - (void)choseImageView:(UITapGestureRecognizer*)sender {
     UIImageView *imageViewSender = (UIImageView *)sender.view;
-//    urlOfSelectedImage = [_profilePicturesURL objectAtIndex:imageViewSender.tag];
+    urlOfSelectedImage = [_profilePicturesURL objectAtIndex:imageViewSender.tag];
 //    User *profileUser = [Profile user];
 //    [profileUser addImageURL:urlOfSelectedImage];
 //    [profileUser save];
@@ -195,31 +204,22 @@ NSString *urlOfSelectedImage;
     cropViewController.cropSize = CGSizeMake(280, 280);
     [self presentViewController:cropViewController animated:YES completion:^(void){}];
 
-    
-
 }
 
 #pragma GKImagePickerDelegate
 
 - (void)imageCropController:(GKImageCropViewController *)imageCropController didFinishWithCroppedImage:(UIImage *)croppedImage{
-    
-    [self dismissViewControllerAnimated:YES completion:^(void) {}];
-    if ([self respondsToSelector:@selector(imagePicker:pickedImage:)]) {
-        
-//        [self imagePicker:self pickedImage:croppedImage];
-    }
+//    [self dismissViewControllerAnimated:YES completion:^(void) {}];
 }
 
 - (void)didFinishWithCroppedArea:(CGRect)croppedArea {
     
-//    NSLog(@"width %f, height %f", croppedArea.origin.x, croppedArea.origin.y);
-//    User *profileUser = [Profile user];
+    User *profileUser = [Profile user];
 //    NSArray *imagesArea = [NSMutableArray arrayWithArray:[profileUser imagesArea]];
-//    profileUser addImageURL:
-//    imagesArea addImageWithURL andArea
-//    [profileUser addImageURL:urlOfSelectedImage];
-//    [profileUser save];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
+//    [profileUser addImageWithURL:urlOfSelectedImage andArea:croppedArea];
+    [profileUser addImageURL:urlOfSelectedImage];
+    [profileUser save];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
     [self.navigationController popViewControllerAnimated:YES];
 }
 

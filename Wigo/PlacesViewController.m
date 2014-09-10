@@ -107,6 +107,7 @@ int sizeOfEachImage;
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Where View"];
 
+    [self.view endEditing:YES];
     self.tabBarController.tabBar.hidden = NO;
     [self initializeNavigationBar];
 }
@@ -728,11 +729,9 @@ int sizeOfEachImage;
 - (void)fetchEventAttendeesAsynchronousForEvent:(int)eventNumber {
     Event *event = [[_eventsParty getObjectArray] objectAtIndex:eventNumber];
     NSNumber *eventId = [event eventID];
-
     if (eventNumber < [eventPageArray count]) {
         NSNumber *pageNumberForEvent = [eventPageArray objectAtIndex:eventNumber];
         if ([pageNumberForEvent intValue] > 0) {
-            NSLog(@"here");
             NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [pageNumberForEvent stringValue]];
             NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:eventNumber], @"page": pageNumberForEvent};
             [Network queryAsynchronousAPI:queryString

@@ -30,6 +30,9 @@
 #import "NSString+URLEncoding.h"
 #import "NSObject-CancelableScheduledBlock.h"
 
+#if !defined(StringOrEmpty)
+#define StringOrEmpty(A)  ({ __typeof__(A) __a = (A); __a ? __a : @""; })
+#endif
 
 static NSString * const collectionViewCellIdentifier = @"CollectionViewCellIdentifier";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";
