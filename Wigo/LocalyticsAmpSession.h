@@ -33,6 +33,12 @@
  */
 @property (nonatomic, assign) id<LocalyticsAmpSessionDelegate>ampDelegate;
 
+/*!
+ @property dismissButtonImage
+ @abstract Image to use for the dismiss button (instead of the default).
+ */
+@property (nonatomic, readonly) UIImage* dismissButtonImage;
+
 #pragma mark Public Methods
 /*!
  @method shared
@@ -50,6 +56,8 @@
 - (void)ampTrigger:(NSString *)event attributes:(NSDictionary *)attributes;
 - (void)ampTrigger:(NSString *)event attributes:(NSDictionary *)attributes reportAttributes:(NSDictionary *)reportAttributes;
 
+- (void)setDismissButtonImageWithName:(NSString *)imageName;
+- (void)setDismissButtonImageWithImage:(UIImage *)image;
 @end
 
 @protocol LocalyticsAmpSessionDelegate <NSObject>
