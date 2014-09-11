@@ -155,6 +155,10 @@
 		E9706E0919C1E66A00A21DE0 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9706E0719C1E66A00A21DE0 /* libLocalyticsAMP_x64.a */; };
 		E9706E0B19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E9706E0A19C1E67100A21DE0 /* iOSa_2.60.0.version */; };
 		E9706E0C19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E9706E0A19C1E67100A21DE0 /* iOSa_2.60.0.version */; };
+		E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */; };
+		E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */; };
+		E9706E1819C20EAE00A21DE0 /* WigoCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */; };
+		E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */; };
 		E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
@@ -357,6 +361,9 @@
 		E9706E0A19C1E67100A21DE0 /* iOSa_2.60.0.version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = iOSa_2.60.0.version; sourceTree = "<group>"; };
 		E9706E0D19C1E69A00A21DE0 /* LocalyticsAmpSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsAmpSession.h; sourceTree = "<group>"; };
 		E9706E0E19C1E69A00A21DE0 /* LocalyticsSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsSession.h; sourceTree = "<group>"; };
+		E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WigoCustomCell.xib; sourceTree = "<group>"; };
+		E9706E1619C20EAE00A21DE0 /* WigoCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WigoCustomCell.h; sourceTree = "<group>"; };
+		E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoCustomCell.m; sourceTree = "<group>"; };
 		E9798F9819901EC100A97AE9 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		E97999D019759A2900C617E3 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		E98C185B1924176500EF60F8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -522,6 +529,7 @@
 		C12A11021978788000D53B1C /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				E9706E1A19C22B1400A21DE0 /* WigoCustomCell */,
 				C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */,
 				C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */,
 				E994111019AA8D9200D76379 /* NSString+URLEncoding.h */,
@@ -818,6 +826,16 @@
 			name = NotificationViews;
 			sourceTree = "<group>";
 		};
+		E9706E1A19C22B1400A21DE0 /* WigoCustomCell */ = {
+			isa = PBXGroup;
+			children = (
+				E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */,
+				E9706E1619C20EAE00A21DE0 /* WigoCustomCell.h */,
+				E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */,
+			);
+			name = WigoCustomCell;
+			sourceTree = "<group>";
+		};
 		E99EC28B1986B6A400CBFA59 /* DropUpMenus */ = {
 			isa = PBXGroup;
 			children = (
@@ -1094,6 +1112,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9706E0C19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */,
+				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
@@ -1122,6 +1141,7 @@
 				E9A1EAAF199CFD25003A744C /* boyVoice.caf in Resources */,
 				E9706E0B19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
+				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
@@ -1231,6 +1251,7 @@
 				C12A111719787BE700D53B1C /* SignViewController.m in Sources */,
 				C10BFB55198C24E6003CA59A /* EventAnalytics.m in Sources */,
 				C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */,
+				E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
 				E96F07C819BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */,
 				E9A31E5D1982B6E8008A711B /* TapViewController.m in Sources */,
 				C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */,
@@ -1312,6 +1333,7 @@
 				C10BFB54198C24E6003CA59A /* EventAnalytics.m in Sources */,
 				E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */,
 				E9A31E5C1982B6E8008A711B /* TapViewController.m in Sources */,
+				E9706E1819C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
 				E96F07C719BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */,
 				E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */,
 				E95DC77D195329B10012AA20 /* Party.m in Sources */,

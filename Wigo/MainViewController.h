@@ -9,8 +9,9 @@
 #import "PeopleViewController.h"
 #import "SignViewController.h"
 #import "SignNavigationViewController.h"
+#import "WigoCustomCell.h"
 
-@interface MainViewController : UIViewController <UIScrollViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
+@interface MainViewController : UIViewController <UIScrollViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, WigoCustomCellDelegate>
 {
     UICollectionView *_collectionView;
 }

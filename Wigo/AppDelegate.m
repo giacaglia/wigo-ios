@@ -43,7 +43,7 @@ NSDate *firstLoggedTime;
     if (!triedToRegister) {
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"FYI"
-                                  message:@"WiGo only sends notifications from your closest friends."
+                                  message:@"WiGo only sends notifications from your closest friends at your school."
                                   delegate:self
                                   cancelButtonTitle:@"OK"
                                   otherButtonTitles: nil];
