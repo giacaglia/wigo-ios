@@ -17,6 +17,7 @@
     self.profileName.font = [FontProperties getSmallFont];
     [self.profileButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     [self.profileButton2 addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
+    [self.profileButton3 addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     [self.tapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self bringSubviewToFront:self.tapButton];
     

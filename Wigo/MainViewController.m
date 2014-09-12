@@ -755,6 +755,7 @@ int userInt;
     cell.delegate = self;
     cell.profileButton.tag = tag;
     cell.profileButton2.tag = tag;
+    cell.profileButton3.tag = tag;
     [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init]];
     cell.userCoverImageView.tag = tag;
     cell.profileName.text = [user firstName];
@@ -764,7 +765,14 @@ int userInt;
     else cell.favoriteSmall.image = nil;
     cell.tapButton.enabled = [[Profile user] isGoingOut] ? YES : NO;
     cell.tapButton.tag = tag;
-    cell.tappedImageView.hidden = [[Profile user] isGoingOut] ? NO : YES;
+    if ([[Profile user] isGoingOut]) {
+        cell.tappedImageView.hidden = NO;
+        cell.profileButton3.enabled = NO;
+    }
+    else {
+        cell.tappedImageView.hidden = YES;
+        cell.profileButton3.enabled = YES;
+    }
     if ([user isTapped]) {
         cell.tappedImageView.tag = -1;
         cell.tappedImageView.image = [UIImage imageNamed:@"tapFilled"];

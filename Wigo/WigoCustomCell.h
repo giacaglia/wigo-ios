@@ -19,6 +19,7 @@
 @property (nonatomic, strong) IBOutlet UIImageView *userCoverImageView;
 @property (nonatomic, strong) IBOutlet UIButton *profileButton;
 @property (nonatomic, strong) IBOutlet UIButton *profileButton2;
+@property (nonatomic, strong) IBOutlet UIButton *profileButton3;
 @property (nonatomic, strong) IBOutlet UILabel *profileName;
 @property (nonatomic, strong) IBOutlet UIButton *tapButton;
 @property (nonatomic, strong) IBOutlet UIImageViewShake *tappedImageView;
