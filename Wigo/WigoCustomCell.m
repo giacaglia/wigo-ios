@@ -9,6 +9,7 @@
 #import "WigoCustomCell.h"
 #import "UIImageView+WebCache.h"
 #import "FontProperties.h"
+#import "UIImageViewShake.h"
 @implementation WigoCustomCell
 
 
@@ -18,6 +19,9 @@
     [self.profileButton2 addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     [self.tapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self bringSubviewToFront:self.tapButton];
+    
+    self.tappedImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(69, 5, 30, 30)];
+    [self addSubview:self.tappedImageView];
 }
 
 - (void)profileSegue:(id)sender {

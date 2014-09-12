@@ -606,7 +606,7 @@ int userInt;
         [self updateUserAtIndex:tag];
     }
     else {
-//        [cell.tappedImageView newShake];
+        [cell.tappedImageView newShake];
         cell.tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
         [self sendTapToUserAtIndex:tag];
     }
@@ -689,7 +689,7 @@ int userInt;
     _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49) collectionViewLayout:layout];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
-//    [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier];
+    [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier];
     [_collectionView registerNib:[UINib nibWithNibName:@"WigoCustomCell" bundle:[NSBundle mainBundle]] forCellWithReuseIdentifier:@"WigoCustomCell"];
     _collectionView.backgroundColor = [UIColor clearColor];
     [self addRefreshToCollectonView];
@@ -753,6 +753,7 @@ int userInt;
     }
     cell.delegate = self;
     cell.profileButton.tag = tag;
+    cell.profileButton2.tag = tag;
     [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init]];
     cell.userCoverImageView.tag = tag;
     cell.profileName.text = [user firstName];
@@ -791,46 +792,46 @@ int userInt;
 
 //#pragma mark - Header for UICollectionView
 //
-//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
-//{
-//    if (section == 0) {
-//        return CGSizeMake(collectionView.bounds.size.width, 30);
-//    } else if (section == 1){
-//        return CGSizeMake(collectionView.bounds.size.width, 5 + 26 + 30);
-//    }
-//    else return CGSizeMake(collectionView.bounds.size.width, 10);
-//}
-//
-//- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-//{
-//    UICollectionReusableView *reusableView = nil;
-//    
-//    if (kind == UICollectionElementKindSectionHeader) {
-//        reusableView = [_collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier forIndexPath:indexPath];
-//        [[reusableView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-//
-//        if ([indexPath section] == 1) {
-//            _notGoingOutView.hidden = NO;
-//            if ([[_notGoingOutParty getObjectArray] count] == 0) {
-//                if (!_isFirstTimeNotGoingOutIsAttachedToScrollView) _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
-//                    _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, self.view.frame.size.height, reusableView.frame.size.width, 30);
-//                    [_collectionView addSubview:_notGoingOutView];
-//                    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
-//            }
-//            else {
-//                if (_isFirstTimeNotGoingOutIsAttachedToScrollView) {
-//                    _isFirstTimeNotGoingOutIsAttachedToScrollView = NO;
-//                    _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 30, reusableView.frame.size.width, 30);
-//                    [_collectionView addSubview:_notGoingOutView];
-//                    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
-//                }
-//            }
-//            
-//        }
-//        return reusableView;
-//    }
-//    return reusableView;
-//}
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return CGSizeMake(collectionView.bounds.size.width, 30);
+    } else if (section == 1){
+        return CGSizeMake(collectionView.bounds.size.width, 5 + 26 + 30);
+    }
+    else return CGSizeMake(collectionView.bounds.size.width, 10);
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionReusableView *reusableView = nil;
+    
+    if (kind == UICollectionElementKindSectionHeader) {
+        reusableView = [_collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier forIndexPath:indexPath];
+        [[reusableView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+
+        if ([indexPath section] == 1) {
+            _notGoingOutView.hidden = NO;
+            if ([[_notGoingOutParty getObjectArray] count] == 0) {
+                if (!_isFirstTimeNotGoingOutIsAttachedToScrollView) _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
+                    _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, self.view.frame.size.height, reusableView.frame.size.width, 30);
+                    [_collectionView addSubview:_notGoingOutView];
+                    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+            }
+            else {
+                if (_isFirstTimeNotGoingOutIsAttachedToScrollView) {
+                    _isFirstTimeNotGoingOutIsAttachedToScrollView = NO;
+                    _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 30, reusableView.frame.size.width, 30);
+                    [_collectionView addSubview:_notGoingOutView];
+                    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
+                }
+            }
+            
+        }
+        return reusableView;
+    }
+    return reusableView;
+}
 
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
