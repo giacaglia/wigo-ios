@@ -245,7 +245,8 @@
     notificationButton.tag = row;
     [notificationButton addSubview:iconLabel];
 
-    UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(83, 18, 200, 18)];
+    UILabel *notificationLabel = [[UILabel alloc] init];
+//    UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(83, 18, 200, 18)];
     NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:name ];
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:nil]];
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:message attributes:nil]];
@@ -255,9 +256,9 @@
     notificationLabel.font = [FontProperties getBioFont];
     notificationLabel.lineBreakMode = NSLineBreakByWordWrapping;
     notificationLabel.numberOfLines = 0;
-    if ([string size].width > 175) {
+//    if ([string size].width > 175) {
         notificationLabel.frame = CGRectMake(83, 9, 200, 36);
-    }
+//    }
     [notificationButton addSubview:notificationLabel];
     
     UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 150, 37, 140, 12)];
