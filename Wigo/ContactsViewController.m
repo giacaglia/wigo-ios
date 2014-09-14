@@ -11,6 +11,7 @@
 #import "Globals.h"
 
 NSArray *peopleContactList;
+NSMutableArray *choosenPeople;
 UITableView *contactsTableView;
 NSMutableArray *selectedPeopleIndexes;
 
@@ -27,6 +28,7 @@ NSMutableArray *selectedPeopleIndexes;
 - (void)viewDidLoad {
     [super viewDidLoad];
     peopleContactList = [[NSArray alloc] init];
+    choosenPeople = [[NSMutableArray alloc] init];
     selectedPeopleIndexes = [[NSMutableArray alloc] init];
     self.title = @"TAP 5 OR MORE FRIENDS";
 
@@ -51,7 +53,9 @@ NSMutableArray *selectedPeopleIndexes;
     ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
         if (granted && addressBookRef) {
             peopleContactList = (__bridge NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBookRef);
-//            CFMutableArrayRef
+            for (int i = 0; i < [peopleContactList count]; i++) {
+                [choosenPeople addObject:@NO];
+            }
             [contactsTableView reloadData];
             CFRelease(addressBookRef);
         }
@@ -75,7 +79,11 @@ NSMutableArray *selectedPeopleIndexes;
     [cell.contentView addSubview:selectedPersonButton];
     
     UIImageView *selectedPersonImageView = [[UIImageView alloc] initWithFrame:selectedPersonButton.frame];
-    selectedPersonImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+    selectedPersonImageView.tag = (int)[indexPath row];
+    if ([(NSNumber *)[choosenPeople objectAtIndex:[indexPath row]] boolValue])
+        selectedPersonImageView.image = [UIImage imageNamed:@"tapFilled"];
+    else
+        selectedPersonImageView.image = [UIImage imageNamed:@"tapUnfilled"];
     selectedPersonImageView.tintColor = [FontProperties getOrangeColor];
     [cell.contentView addSubview:selectedPersonImageView];
     
@@ -84,6 +92,7 @@ NSMutableArray *selectedPeopleIndexes;
     NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
     NSString *fullName = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
     nameOfPersonLabel.text = fullName;
+    nameOfPersonLabel.font = [FontProperties mediumFont:20];
     [cell.contentView addSubview:nameOfPersonLabel];
     
     return cell;
@@ -104,11 +113,19 @@ NSMutableArray *selectedPeopleIndexes;
 - (void)selectedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = buttonSender.tag;
+    
     [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
     for (UIView *subview in buttonSender.superview.subviews) {
         if (subview.tag == tag && [subview isKindOfClass:[UIImageView class]]) {
             UIImageView *selectedImageView = (UIImageView *)subview;
-            selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
+            if ([(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
+                [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
+                selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
+            }
+            else {
+                [choosenPeople replaceObjectAtIndex:tag withObject:@NO];
+                selectedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+            }
         }
     }
 }

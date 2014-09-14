@@ -13,7 +13,7 @@
 // Extensions
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
-
+#import "WigoConfirmationViewController.h"
 
 @interface MainViewController ()
 
@@ -500,8 +500,9 @@ int userInt;
 
 - (void)followPressed {
     if ([Profile user]) {
-        self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
-        [self.navigationController pushViewController:self.peopleViewController animated:YES];
+//        self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
+//        [self.navigationController pushViewController:self.peopleViewController animated:YES];
+        [self.navigationController pushViewController:[WigoConfirmationViewController new] animated:YES];
         self.tabBarController.tabBar.hidden = YES;
     }
 }
