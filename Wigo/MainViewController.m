@@ -662,6 +662,7 @@ int userInt;
     [WiGoSpinnerView addDancingGToUIScrollView:_collectionView withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchFirstPageFollowing];
+        if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
     }];
 }
 
