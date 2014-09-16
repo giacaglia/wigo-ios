@@ -91,7 +91,6 @@ int sizeOfEachImage;
     [self initializeNotificationObservers];
     [self initializeTapHandler];
     [self initializeWhereView];
-    [self fetchEventsFirstPage];
 }
 
 
@@ -110,6 +109,7 @@ int sizeOfEachImage;
     [self.view endEditing:YES];
     self.tabBarController.tabBar.hidden = NO;
     [self initializeNavigationBar];
+    [self fetchEventsFirstPage];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
