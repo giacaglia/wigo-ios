@@ -16,7 +16,7 @@
 
 
 #define xSpacing 10
-#define sizeOfEachCell 145
+#define sizeOfEachCell 175
 @interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
@@ -537,13 +537,14 @@ int sizeOfEachImage;
     placeSubView.tag = _tagInteger;
     _tagInteger += 1;
     
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 100, 30)];
-   
+    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 100, 50)];
+    labelName.numberOfLines = 0;
+    labelName.lineBreakMode = NSLineBreakByWordWrapping;
     labelName.text = [event name];
     labelName.font = [FontProperties getTitleFont];
     [placeSubView addSubview:labelName];
 
-    UILabel *numberOfPeopleGoingOut = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 30, self.view.frame.size.width, 20)];
+    UILabel *numberOfPeopleGoingOut = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 50, self.view.frame.size.width, 20)];
     if ([totalUsers intValue] == 1) {
         numberOfPeopleGoingOut.text = [NSString stringWithFormat: @"%@%@",[totalUsers stringValue], @" is going"];
     }
@@ -567,7 +568,7 @@ int sizeOfEachImage;
    
     if ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]]) {
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
-        UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 8, 125, 30)];
+        UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 18, 125, 30)];
         goingHereLabel.textColor = [FontProperties getBlueColor];
         goingHereLabel.textAlignment = NSTextAlignmentRight;
         goingHereLabel.font = [FontProperties scMediumFont:12.0f];
@@ -579,7 +580,7 @@ int sizeOfEachImage;
         aroundGoOutButton.tag = [(NSNumber *)[event eventID] intValue];
         [aroundGoOutButton addTarget:self action:@selector(goOutHere:) forControlEvents:UIControlEventTouchUpInside];
         
-        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 80, 25)];
+        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 15, 80, 25)];
         goOutButton.enabled = NO;
         [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
         [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -594,7 +595,7 @@ int sizeOfEachImage;
 
     for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 55, sizeOfEachImage, sizeOfEachImage)];
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 75, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage + 3;
         imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
@@ -620,7 +621,7 @@ int sizeOfEachImage;
     
     int usersCantSee = (int)[totalUsers intValue] - (int)[[partyUser getObjectArray] count];
     if (usersCantSee  > 0) {
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 55, sizeOfEachImage, sizeOfEachImage)];
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 75, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage;
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);

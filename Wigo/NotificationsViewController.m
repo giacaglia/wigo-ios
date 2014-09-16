@@ -10,7 +10,7 @@
 #import "Globals.h"
 #import "UIButtonAligned.h"
 #import "LeaderboardViewController.h"
-
+#define HEIGHT_NOTIFICATION_CELL 70
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
 
@@ -123,7 +123,8 @@
     if ([_notificationsParty hasNextPage] && [indexPath row] == [[_notificationsParty getObjectArray] count]) {
         return 30;
     }
-    return 54;
+    return HEIGHT_NOTIFICATION_CELL;
+    //    return 54;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -206,7 +207,7 @@
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
     
     UIImageView *profileImageView = [[UIImageView alloc] init];
-    profileImageView.frame = CGRectMake(10, 10, 35, 35);
+    profileImageView.frame = CGRectMake(HEIGHT_NOTIFICATION_CELL/2 - 22, HEIGHT_NOTIFICATION_CELL/2 - 22, 45, 45);
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
@@ -219,27 +220,27 @@
     UIImageView *iconLabel;
     if ([typeString isEqualToString:@"chat"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"commentFilled"]];
-        iconLabel.frame = CGRectMake(58, 20, 14, 14);
+        iconLabel.frame = CGRectMake(68, HEIGHT_NOTIFICATION_CELL/2 - 7, 14, 14);
         [notificationButton addTarget:self action:@selector(chatSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"tap"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapFilled"]];
-        iconLabel.frame = CGRectMake(58, 20, 14, 14);
+        iconLabel.frame = CGRectMake(68, HEIGHT_NOTIFICATION_CELL/2 - 7, 14, 14);
         [notificationButton addTarget:self action:@selector(tapSegue) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"follow"] || [typeString isEqualToString:@"facebook.follow"] || [typeString isEqualToString:@"follow.accepted"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"addedFilled"]];
-        iconLabel.frame = CGRectMake(55, 20, 17, 12);
+        iconLabel.frame = CGRectMake(65, HEIGHT_NOTIFICATION_CELL/2 - 6, 17, 12);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"joined"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"joined"]];
-        iconLabel.frame = CGRectMake(58, 20, 14, 14);
+        iconLabel.frame = CGRectMake(68, HEIGHT_NOTIFICATION_CELL/2 - 7, 14, 14);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"goingout"]) {
         iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo_tiny_blue"]];
-        iconLabel.frame = CGRectMake(58, 20, 14, 16);
+        iconLabel.frame = CGRectMake(68, HEIGHT_NOTIFICATION_CELL/2 - 8, 14, 16);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     notificationButton.tag = row;
@@ -257,11 +258,11 @@
     notificationLabel.lineBreakMode = NSLineBreakByWordWrapping;
     notificationLabel.numberOfLines = 0;
 //    if ([string size].width > 175) {
-        notificationLabel.frame = CGRectMake(83, 9, 200, 36);
+        notificationLabel.frame = CGRectMake(93, HEIGHT_NOTIFICATION_CELL/2 - 30, 200, 60);
 //    }
     [notificationButton addSubview:notificationLabel];
     
-    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 150, 37, 140, 12)];
+    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 150, HEIGHT_NOTIFICATION_CELL - 17, 140, 12)];
     timeLabel.text = timeString;
     timeLabel.textAlignment = NSTextAlignmentRight;
     timeLabel.font = [FontProperties getSmallPhotoFont];
