@@ -182,6 +182,41 @@
     }
 }
 
+- (void)presentViewController:(UIViewController *)viewController withFrame:(CGRect)frame {
+    [self prepareBlurredImage];
+    [self presentBlurredViewAnimated:YES];
+    
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    self.contentViewController = viewController;
+    
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        self.contentViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+        [rootViewController presentViewController:self.contentViewController animated:YES completion:^{}];
+    }
+    else
+    {
+        self.contentViewController.view.frame = frame;
+        
+        [rootViewController addChildViewController:self.contentViewController];
+        [rootViewController.view addSubview:self.contentViewController.view];
+        
+        [UIView animateWithDuration:0.4 animations:^{
+            CGRect newRect = CGRectMake(10,
+            rootViewController.view.bounds.size.height,
+            rootViewController.view.bounds.size.width - 20,
+            frame.size.height
+            );
+            newRect.origin.y -= (frame.origin.y + frame.size.height);
+            self.contentViewController.view.frame = newRect;
+        } completion:^(BOOL finished) {
+            [self.contentViewController didMoveToParentViewController:rootViewController];
+        }];
+    }
+    
+}
+
 - (void)presentViewController:(UIViewController *)viewController withOrigin:(CGFloat)origin andHeight:(CGFloat)height
 {
     [self prepareBlurredImage];

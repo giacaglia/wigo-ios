@@ -9,7 +9,10 @@
 #import "WigoConfirmationViewController.h"
 #import "Globals.h"
 #import "ContactsViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
+#import "ContactsViewController.h"
+#import "RWBlurPopover.h"
 @implementation WigoConfirmationViewController
 
 
@@ -27,21 +30,21 @@
 }
 
 - (void) initializeTitle {
-    UIImageView *wigoIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 70 , 75, 140, 140)];
+    UIImageView *wigoIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 90 - 10 , 15, 180, 180)];
     wigoIconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
     [self.view addSubview:wigoIconImageView];
     
-    UILabel *wigoLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 230, self.view.frame.size.width - 40, 60)];
+    UILabel *wigoLabel = [[UILabel alloc] initWithFrame:CGRectMake(20 - 10, 190, self.view.frame.size.width - 40, 60)];
     wigoLabel.text = @"WiGo is better with friends";
     wigoLabel.textAlignment = NSTextAlignmentCenter;
     wigoLabel.font = [FontProperties mediumFont:23.0f];
     [self.view addSubview:wigoLabel];
     
-    UIImageView *evenMoreImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 145, 220 , 62, 31)];
+    UIImageView *evenMoreImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 145 - 10, 180, 62, 31)];
     evenMoreImageView.image = [UIImage imageNamed:@"evenMore"];
     [self.view addSubview:evenMoreImageView];
     
-    UILabel *tapFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 280, self.view.frame.size.width - 20, 50)];
+    UILabel *tapFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10 -  10, 250, self.view.frame.size.width - 20, 50)];
     tapFriendsLabel.text = @"Tap some friends from your contacts \n to get them going on WiGo";
     tapFriendsLabel.textAlignment = NSTextAlignmentCenter;
     tapFriendsLabel.font = [FontProperties mediumFont:18.0f];
@@ -50,7 +53,7 @@
     tapFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.view addSubview:tapFriendsLabel];
     
-    UIButton *allowButton = [[UIButton alloc] initWithFrame:CGRectMake(20, 400, self.view.frame.size.width - 40, 70)];
+    UIButton *allowButton = [[UIButton alloc] initWithFrame:CGRectMake(30 - 10, 330, self.view.frame.size.width - 60, 70)];
     allowButton.backgroundColor = [FontProperties getOrangeColor];
     [allowButton setTitle:@"Allow one time access\n to contacts" forState:UIControlStateNormal];
     [allowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -64,10 +67,10 @@
     [allowButton addTarget:self action:@selector(giveOneTimeAccess) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:allowButton];
  
-    UIButton *notRightNowButton = [[UIButton alloc] initWithFrame:CGRectMake(30, 480, self.view.frame.size.width - 60, 20)];
+    UIButton *notRightNowButton = [[UIButton alloc] initWithFrame:CGRectMake(30 - 10, self.view.frame.size.height - 130, self.view.frame.size.width - 60, 20)];
     [notRightNowButton setTitle:@"NOT RIGHT NOW" forState:UIControlStateNormal];
     [notRightNowButton setTitleColor:RGB(185, 185, 185) forState:UIControlStateNormal];
-    notRightNowButton.titleLabel.font = [FontProperties scMediumFont:10];
+    notRightNowButton.titleLabel.font = [FontProperties scMediumFont:15];
     [notRightNowButton addTarget:self action:@selector(notRightNowPressed) forControlEvents:UIControlEventTouchUpInside];
 //    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"NOT RIGHT NOW"];
 //    NSDictionary *attrs = @{ NSFontAttributeName : [FontProperties scMediumFont:12],
@@ -79,14 +82,13 @@
 }
 
 - (void)giveOneTimeAccess {
-//    NSLog(@"here");
-    [self.navigationController pushViewController:[ContactsViewController new] animated:YES];
-//    [self presentViewController:[ContactsViewController new] animated:yes completion:^{}];
+    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"presentContactsView" object:nil];
+    }];
 }
 
 - (void)notRightNowPressed {
-//    NSLog(@"here");
-//    [self.navigationController dismissViewControllerAnimated:YES completion:^{}];
+    [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:nil];
 }
 
 

@@ -10,10 +10,12 @@
 #import <AddressBook/AddressBook.h>
 #import "Globals.h"
 
-NSArray *peopleContactList;
+NSMutableArray *peopleContactList;
 NSMutableArray *choosenPeople;
 UITableView *contactsTableView;
 NSMutableArray *selectedPeopleIndexes;
+CFArrayRef all;
+CFIndex n;
 
 @implementation ContactsViewController
 
@@ -27,13 +29,21 @@ NSMutableArray *selectedPeopleIndexes;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    peopleContactList = [[NSArray alloc] init];
+    peopleContactList = [[NSMutableArray alloc] init];
     choosenPeople = [[NSMutableArray alloc] init];
     selectedPeopleIndexes = [[NSMutableArray alloc] init];
-    self.title = @"TAP 5 OR MORE FRIENDS";
 
+    [self initializeTitle];
     [self initializeTableViewWithPeople];
     [self initializeButtonIAmDone];
+}
+
+- (void)initializeTitle {
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 30, self.view.frame.size.width - 30, 25)];
+    titleLabel.text = @"TAP 5 OR MORE FRIENDS";
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.font = [FontProperties mediumFont:16];
+    [self.view addSubview:titleLabel];
 }
 
 - (void)initializeTableViewWithPeople {
@@ -52,12 +62,31 @@ NSMutableArray *selectedPeopleIndexes;
     ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, &error);
     ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
         if (granted && addressBookRef) {
-            peopleContactList = (__bridge NSArray *)ABAddressBookCopyArrayOfAllPeople(addressBookRef);
-            for (int i = 0; i < [peopleContactList count]; i++) {
+            
+            all = ABAddressBookCopyArrayOfAllPeople(addressBookRef);
+            n = ABAddressBookGetPersonCount(addressBookRef);
+            
+            for (int i = 0; i < n; i++) {
                 [choosenPeople addObject:@NO];
+            }
+
+            for( int i = 0 ; i < n ; i++ )
+            {
+                ABRecordRef ref = CFArrayGetValueAtIndex(all, i);
+                NSString *firstName = (__bridge NSString *)ABRecordCopyValue(ref, kABPersonFirstNameProperty);
+                NSLog(@"Name %@", firstName);
+                if ([firstName isEqualToString:@"Bianca"]) {
+                    NSLog(@"here");
+                }
+                ABMultiValueRef phones = ABRecordCopyValue(ref, kABPersonPhoneProperty);
+                if (ABMultiValueGetCount(phones) > 0) {
+                    [peopleContactList addObject:(__bridge id)(ref)];
+                }
             }
             [contactsTableView reloadData];
             CFRelease(addressBookRef);
+            
+            
         }
     });
 }
@@ -71,7 +100,8 @@ NSMutableArray *selectedPeopleIndexes;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
-    ABRecordRef contactPerson = (__bridge ABRecordRef)peopleContactList[[indexPath row]];
+//    ABRecordRef contactPerson = CFArrayGetValueAtIndex(all, [indexPath row]);
+    ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:[indexPath row]]);
     
     UIButton *selectedPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
     selectedPersonButton.tag = (int)[indexPath row];
@@ -83,7 +113,7 @@ NSMutableArray *selectedPeopleIndexes;
     if ([(NSNumber *)[choosenPeople objectAtIndex:[indexPath row]] boolValue])
         selectedPersonImageView.image = [UIImage imageNamed:@"tapFilled"];
     else
-        selectedPersonImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+        selectedPersonImageView.image = [UIImage imageNamed:@"tapUnselected"];
     selectedPersonImageView.tintColor = [FontProperties getOrangeColor];
     [cell.contentView addSubview:selectedPersonImageView];
     
@@ -93,8 +123,8 @@ NSMutableArray *selectedPeopleIndexes;
     NSString *fullName = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
     nameOfPersonLabel.text = fullName;
     nameOfPersonLabel.font = [FontProperties mediumFont:20];
+    nameOfPersonLabel.textColor = RGB(100, 100, 100);
     [cell.contentView addSubview:nameOfPersonLabel];
-    
     return cell;
 }
 
@@ -118,13 +148,13 @@ NSMutableArray *selectedPeopleIndexes;
     for (UIView *subview in buttonSender.superview.subviews) {
         if (subview.tag == tag && [subview isKindOfClass:[UIImageView class]]) {
             UIImageView *selectedImageView = (UIImageView *)subview;
-            if ([(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
+            if (![(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
                 [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
                 selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
             }
             else {
                 [choosenPeople replaceObjectAtIndex:tag withObject:@NO];
-                selectedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+                selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
             }
         }
     }
@@ -143,19 +173,46 @@ NSMutableArray *selectedPeopleIndexes;
 
 
 - (void)donePressed {
-    
+    NSMutableArray *numbers = [[NSMutableArray alloc] init];
+    for(CFIndex i = 0; i < [choosenPeople count]; i++) {
+        if ([[choosenPeople objectAtIndex:i] boolValue]) {
+            ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:i]);
+            ABMultiValueRef multiPhones = ABRecordCopyValue(contactPerson, kABPersonPhoneProperty);
+            for(CFIndex i = 0; i < ABMultiValueGetCount(multiPhones); i++) {
+                
+                NSString* phoneLabel = (__bridge NSString*) ABMultiValueCopyLabelAtIndex(multiPhones, i);
+                NSString* phoneNumber = (__bridge NSString*) ABMultiValueCopyValueAtIndex(multiPhones, i);
+                //for example
+                if([phoneLabel isEqualToString:(NSString *)kABPersonPhoneIPhoneLabel]) {
+                    [numbers addObject:phoneNumber];
+                    break;
+                }
+                else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMobileLabel])) {
+                    [numbers addObject:phoneNumber];
+                    break;
+                }
+                else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMainLabel])) {
+                    [numbers addObject:phoneNumber];
+                    break;
+                }
+                else {
+                    [numbers addObject:phoneNumber];
+                    break;
+                }
+            }
+        }
+    }
+    NSLog(@"numbers %@", numbers);
+//    NSDictionary *options = @{@"phone": @"6179813206"};
+//    [Network sendAsynchronousHTTPMethod:POST
+//                            withAPIName:@"invites/"
+//                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+//                            withOptions:options];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
-//    ABMultiValueRef emails = ABRecordCopyValue(contactPerson, kABPersonPhoneProperty);
-//    
-//    NSUInteger j = 0;
-//    for (j = 0; j < ABMultiValueGetCount(emails); j++) {
-//        NSString *email = (__bridge_transfer NSString *)ABMultiValueCopyValueAtIndex(emails, j);
-//        if (j == 0) {
-//            NSLog(@"person's phone = %@ ", email);
-//        }
-//    }
+
 
 
 @end
