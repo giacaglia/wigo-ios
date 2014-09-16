@@ -184,25 +184,25 @@ CFIndex n;
                 NSString* phoneNumber = (__bridge NSString*) ABMultiValueCopyValueAtIndex(multiPhones, i);
                 //for example
                 if([phoneLabel isEqualToString:(NSString *)kABPersonPhoneIPhoneLabel]) {
-                    [numbers addObject:phoneNumber];
+                    [numbers addObject:@{@"phone":phoneNumber}];
                     break;
                 }
                 else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMobileLabel])) {
-                    [numbers addObject:phoneNumber];
+                    [numbers addObject:@{@"phone":phoneNumber}];
                     break;
                 }
                 else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMainLabel])) {
-                    [numbers addObject:phoneNumber];
+                    [numbers addObject:@{@"phone":phoneNumber}];
                     break;
                 }
                 else {
-                    [numbers addObject:phoneNumber];
+                    [numbers addObject:@{@"phone":phoneNumber}];
                     break;
                 }
             }
         }
     }
-    NSLog(@"numbers %@", numbers);
+//    NSLog(@"numbers %@", numbers);
 //    NSDictionary *options = @{@"phone": @"6179813206"};
 //    [Network sendAsynchronousHTTPMethod:POST
 //                            withAPIName:@"invites/"
