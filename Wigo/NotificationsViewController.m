@@ -10,7 +10,7 @@
 #import "Globals.h"
 #import "UIButtonAligned.h"
 #import "LeaderboardViewController.h"
-#define HEIGHT_NOTIFICATION_CELL 70
+#define HEIGHT_NOTIFICATION_CELL 80
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
 
@@ -199,15 +199,15 @@
     
     User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
     
-    NSString *name = [user fullName];
+    NSString *name = [user firstName];
     NSString *typeString = [notification type];
     NSString *message = [notification message];
     NSString *timeString = [notification timeString];
     
-    UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
+    UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 60, 54)];
     
     UIImageView *profileImageView = [[UIImageView alloc] init];
-    profileImageView.frame = CGRectMake(HEIGHT_NOTIFICATION_CELL/2 - 22, HEIGHT_NOTIFICATION_CELL/2 - 22, 45, 45);
+    profileImageView.frame = CGRectMake(15, HEIGHT_NOTIFICATION_CELL/2 - 22, 45, 45);
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
@@ -217,63 +217,98 @@
     profileImageView.layer.masksToBounds = YES;
     [notificationButton addSubview:profileImageView];
     
-    UIImageView *iconLabel;
+    UIButton *buttonCallback;
     if ([typeString isEqualToString:@"chat"]) {
-        iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"commentFilled"]];
-        iconLabel.frame = CGRectMake(68, HEIGHT_NOTIFICATION_CELL/2 - 7, 14, 14);
+        buttonCallback = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 50, HEIGHT_NOTIFICATION_CELL/2 - 20, 40, 40)];
         [notificationButton addTarget:self action:@selector(chatSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"tap"]) {
-        iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapFilled"]];
-        iconLabel.frame = CGRectMake(68, HEIGHT_NOTIFICATION_CELL/2 - 7, 14, 14);
+        buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_NOTIFICATION_CELL/2 - 15, 30, 30)];
+        if ([user isTapped]) {
+            [buttonCallback setBackgroundImage:[UIImage imageNamed:@"tapSelectedNotification"] forState:UIControlStateNormal];
+        }
+        else {
+            [buttonCallback setBackgroundImage:[UIImage imageNamed:@"tapUnselectedNotification"] forState:UIControlStateNormal];
+        }
+        buttonCallback.tag = row;
+        [buttonCallback addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
         [notificationButton addTarget:self action:@selector(tapSegue) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"follow"] || [typeString isEqualToString:@"facebook.follow"] || [typeString isEqualToString:@"follow.accepted"]) {
-        iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"addedFilled"]];
-        iconLabel.frame = CGRectMake(65, HEIGHT_NOTIFICATION_CELL/2 - 6, 17, 12);
+         buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, HEIGHT_NOTIFICATION_CELL/2 - 15, 49, 30)];
+        if ([user isFollowing]) {
+            [buttonCallback setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+        }
+        else {
+            [buttonCallback setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+        }
+        buttonCallback.layer.borderColor = [UIColor clearColor].CGColor;
+        buttonCallback.layer.borderWidth = 1.0f;
+        buttonCallback.layer.cornerRadius = 7.0f;
+        buttonCallback.tag = row;
+        [buttonCallback addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"joined"]) {
-        iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"joined"]];
-        iconLabel.frame = CGRectMake(68, HEIGHT_NOTIFICATION_CELL/2 - 7, 14, 14);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"goingout"]) {
-        iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"logo_tiny_blue"]];
-        iconLabel.frame = CGRectMake(68, HEIGHT_NOTIFICATION_CELL/2 - 8, 14, 16);
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     notificationButton.tag = row;
-    [notificationButton addSubview:iconLabel];
-
+    [cell.contentView addSubview:buttonCallback];
+    
     UILabel *notificationLabel = [[UILabel alloc] init];
-//    UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(83, 18, 200, 18)];
     NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:name ];
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:nil]];
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:message attributes:nil]];
     [string addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, name.length)];
     [string addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(name.length , message.length + 1)];
+    [string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@",timeString ] attributes:nil]];
+    [string addAttribute:NSFontAttributeName value:[FontProperties getSmallPhotoFont] range:NSMakeRange(string.length - timeString.length, timeString.length)];
+    [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange(string.length - timeString.length, timeString.length)];
     notificationLabel.attributedText = string;
     notificationLabel.font = [FontProperties getBioFont];
     notificationLabel.lineBreakMode = NSLineBreakByWordWrapping;
     notificationLabel.numberOfLines = 0;
-//    if ([string size].width > 175) {
-        notificationLabel.frame = CGRectMake(93, HEIGHT_NOTIFICATION_CELL/2 - 30, 200, 60);
-//    }
+    notificationLabel.frame = CGRectMake(70, HEIGHT_NOTIFICATION_CELL/2 - 35, 175, 70);
     [notificationButton addSubview:notificationLabel];
     
-    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 150, HEIGHT_NOTIFICATION_CELL - 17, 140, 12)];
-    timeLabel.text = timeString;
-    timeLabel.textAlignment = NSTextAlignmentRight;
-    timeLabel.font = [FontProperties getSmallPhotoFont];
-    timeLabel.textColor = RGB(201, 202, 204);
-    [notificationButton addSubview:timeLabel];
-    
+//    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 150, HEIGHT_NOTIFICATION_CELL - 17, 140, 12)];
+//    timeLabel.text = timeString;
+//    timeLabel.textAlignment = NSTextAlignmentRight;
+//    timeLabel.font = [FontProperties getSmallPhotoFont];
+//    timeLabel.textColor = RGB(201, 202, 204);
+//    [notificationButton addSubview:timeLabel];
+//    
     [cell.contentView addSubview:notificationButton];
     if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
         cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
     }
     return cell;
+}
+
+- (void)tapPressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = buttonSender.tag;
+    if (tag < [[_notificationsParty getObjectArray] count]) {
+        Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:tag];
+        User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
+        if ([user isTapped]) {
+            [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapUnselectedNotification"] forState:UIControlStateNormal];
+            [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
+        }
+        else {
+            [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapSelectedNotification"] forState:UIControlStateNormal];
+            [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
+        }
+
+    }
+
+}
+
+- (void)followedPersonPressed:(id)sender {
+    
 }
 
 - (void)folowRequestPressed {

@@ -644,10 +644,10 @@ UIButton *tapButton;
 - (void) initializeTapButton {
     tapButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 20, 64 + 20, 40, 40)];
     if ([self.user isTapped]) {
-        [tapButton.imageView setImage:[UIImage imageNamed:@"tapSelectedProfile"]];
+        [tapButton setBackgroundImage:[UIImage imageNamed:@"tapSelectedProfile"] forState:UIControlStateNormal];
     }
     else {
-        [tapButton.imageView setImage:[UIImage imageNamed:@"tapUnselectedProfile"]];
+        [tapButton setBackgroundImage:[UIImage imageNamed:@"tapUnselectedProfile"] forState:UIControlStateNormal];
     }
     [tapButton addTarget:self action:@selector(tapPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view bringSubviewToFront:tapButton];
@@ -656,11 +656,11 @@ UIButton *tapButton;
 
 - (void)tapPressed {
     if ([self.user isTapped]) {
-        [tapButton.imageView setImage:[UIImage imageNamed:@"tapUnselectedProfile"]];
+        [tapButton setBackgroundImage:[UIImage imageNamed:@"tapUnselectedProfile"] forState:UIControlStateNormal];
         [Network sendUntapToUserWithId:[self.user objectForKey:@"id"]];
     }
     else {
-        [tapButton.imageView setImage:[UIImage imageNamed:@"tapSelectedProfile"]];
+        [tapButton setBackgroundImage:[UIImage imageNamed:@"tapSelectedProfile"] forState:UIControlStateNormal];
         [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
     }
 }
@@ -671,7 +671,6 @@ UIButton *tapButton;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabs" object:nil];
     NSDictionary *dictionary = @{@"eventID": [self.user attendingEventID]};
     [[NSNotificationCenter defaultCenter] postNotificationName:@"chooseEvent" object:nil userInfo:dictionary];
-
 }
 
 - (void)initializeLeftProfileButton {
