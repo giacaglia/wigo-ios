@@ -106,6 +106,7 @@ int userInt;
     
     [self initializeWhoView];
     [self initializeNotificationObservers];
+    [self fetchAreThereMoreThan3Events];
 }
 
 - (void)loadViewAfterSigningUser {
@@ -298,13 +299,11 @@ int userInt;
 }
 
 - (void) fetchAreThereMoreThan3Events {
-
         NSString *queryString = @"events/?date=tonight&page=1&attendees_limit=0";
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *events = [jsonResponse objectForKey:@"objects"];
-            if ([events count] >= 3) {
-                
-            }
+            if ([events count] >= 3)
+                NSLog(@"here");
         }];
 }
 

@@ -108,6 +108,7 @@ int sizeOfEachImage;
     [self.view endEditing:YES];
     self.tabBarController.tabBar.hidden = NO;
     [self initializeNavigationBar];
+    _spinnerAtTop = NO;
     [self fetchEventsFirstPage];
 }
 
