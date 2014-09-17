@@ -297,6 +297,17 @@ int userInt;
     }];
 }
 
+- (void) fetchAreThereMoreThan3Events {
+
+        NSString *queryString = @"events/?date=tonight&page=1&attendees_limit=0";
+        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            NSArray *events = [jsonResponse objectForKey:@"objects"];
+            if ([events count] >= 3) {
+                
+            }
+        }];
+}
+
 #pragma mark - viewDidLoad initializations
 
 - (void)initializeFlashScreen {

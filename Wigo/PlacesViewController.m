@@ -16,7 +16,7 @@
 
 
 #define xSpacing 10
-#define sizeOfEachCell 175
+#define sizeOfEachCell 165
 @interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
@@ -50,7 +50,6 @@
 // Events Summary
 @property Party *eventsParty;
 @property NSMutableArray *partyUserArray;
-@property Party *everyoneParty;
 
 // Go OUT Button
 @property UIButtonUngoOut *ungoOutButton;
@@ -537,24 +536,24 @@ int sizeOfEachImage;
     placeSubView.tag = _tagInteger;
     _tagInteger += 1;
     
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 100, 50)];
+    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 100, 60)];
     labelName.numberOfLines = 0;
     labelName.lineBreakMode = NSLineBreakByWordWrapping;
-    labelName.text = [event name];
-    labelName.font = [FontProperties getTitleFont];
-    [placeSubView addSubview:labelName];
-
-    UILabel *numberOfPeopleGoingOut = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 50, self.view.frame.size.width, 20)];
+    NSString *text;
     if ([totalUsers intValue] == 1) {
-        numberOfPeopleGoingOut.text = [NSString stringWithFormat: @"%@%@",[totalUsers stringValue], @" is going"];
+        text = [NSString stringWithFormat: @"%@ \n%@ is going out", [event name], [totalUsers stringValue]];
     }
     else {
-        numberOfPeopleGoingOut.text = [NSString stringWithFormat: @"%@%@",[totalUsers stringValue], @" are going"];
+        text = [NSString stringWithFormat: @"%@ \n%@ are going out", [event name], [totalUsers stringValue]];
     }
-    numberOfPeopleGoingOut.font = [FontProperties getSubtitleFont];
-    numberOfPeopleGoingOut.textColor = RGB(204, 204, 204);
-    [placeSubView addSubview:numberOfPeopleGoingOut];
-    
+    NSMutableAttributedString * attributedString = [[NSMutableAttributedString alloc] initWithString:text];
+    [attributedString addAttribute:NSFontAttributeName value:[FontProperties getTitleFont] range:NSMakeRange(0,[[event name] length])];
+    [attributedString addAttribute:NSFontAttributeName value:[FontProperties getSubtitleFont] range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
+    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(204, 204, 204) range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
+    labelName.attributedText = attributedString;
+    [labelName sizeToFit];
+    [placeSubView addSubview:labelName];
+
     // Variables to add images
     int xPosition = xSpacing;
     sizeOfEachImage = 80;
@@ -568,7 +567,7 @@ int sizeOfEachImage;
    
     if ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]]) {
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
-        UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 18, 125, 30)];
+        UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 5, 125, 25)];
         goingHereLabel.textColor = [FontProperties getBlueColor];
         goingHereLabel.textAlignment = NSTextAlignmentRight;
         goingHereLabel.font = [FontProperties scMediumFont:12.0f];
@@ -580,7 +579,7 @@ int sizeOfEachImage;
         aroundGoOutButton.tag = [(NSNumber *)[event eventID] intValue];
         [aroundGoOutButton addTarget:self action:@selector(goOutHere:) forControlEvents:UIControlEventTouchUpInside];
         
-        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 15, 80, 25)];
+        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 80, 25)];
         goOutButton.enabled = NO;
         [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
         [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -595,7 +594,7 @@ int sizeOfEachImage;
 
     for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 75, sizeOfEachImage, sizeOfEachImage)];
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 70, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage + 3;
         imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
@@ -682,7 +681,6 @@ int sizeOfEachImage;
 - (void) fetchEvents {
     if (!fetchingEventAttendees) {
         fetchingEventAttendees = YES;
-        _everyoneParty = [Profile everyoneParty];
         if (_spinnerAtTop) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
@@ -699,7 +697,6 @@ int sizeOfEachImage;
             }
             [self fetchedOneParty];
         }];
-
     }
 }
 
