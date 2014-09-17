@@ -54,7 +54,7 @@
 
 BOOL isUserBlocked;
 BOOL blockShown;
-
+UIButton *tapButton;
 
 @implementation ProfileViewController
 
@@ -199,7 +199,7 @@ BOOL blockShown;
     [super viewWillAppear:animated];
     [self initializeProfileImage];
     [self initializeNameOfPerson];
-   
+    [self initializeTapButton];
 }
 
 - (void) initializeLeftBarButton {
@@ -346,7 +346,7 @@ BOOL blockShown;
     if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
         self.user = [Profile user];
     }
-    // UIScrollView
+
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.width)];
     [_scrollView setShowsHorizontalScrollIndicator:NO];
     _scrollView.layer.borderWidth = 1;
@@ -363,6 +363,7 @@ BOOL blockShown;
     // IOS 7+
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view addSubview:_scrollView];
+    
     
     UIView *firstLineView = [[UIView alloc] initWithFrame:CGRectMake(0, _scrollView.frame.origin.y, self.view.frame.size.width, 1)];
     firstLineView.backgroundColor = [FontProperties getOrangeColor];
@@ -638,6 +639,30 @@ BOOL blockShown;
     [_nameOfPersonBackground addSubview:_privateLogoImageView];
     [_nameOfPersonBackground bringSubviewToFront:_privateLogoImageView];
     
+}
+
+- (void) initializeTapButton {
+    tapButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 20, 64 + 20, 40, 40)];
+    if ([self.user isTapped]) {
+        [tapButton.imageView setImage:[UIImage imageNamed:@"tapSelectedProfile"]];
+    }
+    else {
+        [tapButton.imageView setImage:[UIImage imageNamed:@"tapUnselectedProfile"]];
+    }
+    [tapButton addTarget:self action:@selector(tapPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view bringSubviewToFront:tapButton];
+    [self.view addSubview:tapButton];
+}
+
+- (void)tapPressed {
+    if ([self.user isTapped]) {
+        [tapButton.imageView setImage:[UIImage imageNamed:@"tapUnselectedProfile"]];
+        [Network sendUntapToUserWithId:[self.user objectForKey:@"id"]];
+    }
+    else {
+        [tapButton.imageView setImage:[UIImage imageNamed:@"tapSelectedProfile"]];
+        [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
+    }
 }
 
 - (void)goThereTooPressed {

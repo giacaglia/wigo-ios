@@ -627,7 +627,6 @@ int sizeOfEachImage;
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
         
         UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"privacyLogo"]];
-        
         imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
         [imageButton addSubview:imgView];
         
