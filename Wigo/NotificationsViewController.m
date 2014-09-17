@@ -232,7 +232,7 @@
         }
         buttonCallback.tag = row;
         [buttonCallback addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [notificationButton addTarget:self action:@selector(tapSegue) forControlEvents:UIControlEventTouchUpInside];
+        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"follow"] || [typeString isEqualToString:@"facebook.follow"] || [typeString isEqualToString:@"follow.accepted"]) {
          buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, HEIGHT_NOTIFICATION_CELL/2 - 15, 49, 30)];
@@ -321,13 +321,6 @@
     self.conversationViewController = [[ConversationViewController alloc] init];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
     self.tabBarController.tabBar.hidden = YES;
-}
-
-- (void)tapSegue {
-    self.tapViewController = [[TapViewController alloc] init];
-    [self.navigationController pushViewController:self.tapViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
-
 }
 
 - (void) profileSegue:(id)sender {

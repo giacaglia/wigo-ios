@@ -182,8 +182,6 @@
 		E9A31E481980AB9B008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
 		E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
 		E9A31E4A1980ABB5008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
-		E9A31E5C1982B6E8008A711B /* TapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E5B1982B6E8008A711B /* TapViewController.m */; };
-		E9A31E5D1982B6E8008A711B /* TapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E5B1982B6E8008A711B /* TapViewController.m */; };
 		E9A31E641982B965008A711B /* WigoSearchBarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */; };
 		E9A31E651982B965008A711B /* WigoSearchBarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
@@ -391,8 +389,6 @@
 		E9A1EAAE199CFD25003A744C /* boyVoice.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = boyVoice.caf; sourceTree = "<group>"; };
 		E9A31E451980AB25008A711B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		E9A31E471980AB9B008A711B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		E9A31E5A1982B6E8008A711B /* TapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TapViewController.h; sourceTree = "<group>"; };
-		E9A31E5B1982B6E8008A711B /* TapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TapViewController.m; sourceTree = "<group>"; };
 		E9A31E621982B965008A711B /* WigoSearchBarDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WigoSearchBarDelegate.h; sourceTree = "<group>"; };
 		E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoSearchBarDelegate.m; sourceTree = "<group>"; };
 		E9A50CFB19350F13009B73EA /* ConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationViewController.h; sourceTree = "<group>"; };
@@ -833,8 +829,6 @@
 			children = (
 				E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */,
 				E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */,
-				E9A31E5A1982B6E8008A711B /* TapViewController.h */,
-				E9A31E5B1982B6E8008A711B /* TapViewController.m */,
 				E903C63919BF89FA003BCF90 /* LeaderboardViewController.h */,
 				E903C63A19BF89FA003BCF90 /* LeaderboardViewController.m */,
 			);
@@ -1279,7 +1273,6 @@
 				C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */,
 				E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
 				E96F07C819BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */,
-				E9A31E5D1982B6E8008A711B /* TapViewController.m in Sources */,
 				C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */,
 				C12A111A19787BE700D53B1C /* Party.m in Sources */,
 				C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */,
@@ -1360,7 +1353,6 @@
 				E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */,
 				C10BFB54198C24E6003CA59A /* EventAnalytics.m in Sources */,
 				E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */,
-				E9A31E5C1982B6E8008A711B /* TapViewController.m in Sources */,
 				E9706E1819C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
 				E96F07C719BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */,
 				E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */,
