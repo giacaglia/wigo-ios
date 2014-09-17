@@ -314,16 +314,11 @@ int queryQueueInt;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (_currentTab && [_currentTab isEqualToNumber:@2]) return 2;
-    else return 1;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (_currentTab && [_currentTab isEqualToNumber:@2]) {
-        if (section == 0) return 1;
-        else return [self numberOfRowsWithNoShare];
-    }
-    else return [self numberOfRowsWithNoShare];
+    return [self numberOfRowsWithNoShare];
 }
 
 - (int)numberOfRowsWithNoShare {
@@ -336,11 +331,6 @@ int queryQueueInt;
     }
 }
 
-- (int)sectionOfUsers {
-    if (_currentTab && [_currentTab isEqualToNumber:@2]) return 1;
-    else return 0;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -349,29 +339,6 @@ int queryQueueInt;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-
-    if (_currentTab && [_currentTab isEqualToNumber:@2] && [indexPath section] == 0) {
-        UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 5, self.view.frame.size.width - 30, 30)];
-        shareLabel.text = @"Some of your friends are late to the party";
-        shareLabel.font = [FontProperties mediumFont:16.0f];
-        shareLabel.textColor = RGB(102, 102, 102);
-        shareLabel.textAlignment = NSTextAlignmentCenter;
-        [cell.contentView  addSubview:shareLabel];
-        
-        UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 70, 40, 140, 40)];
-        shareButton.backgroundColor = [FontProperties getOrangeColor];
-        [cell.contentView addSubview:shareButton];
-        [shareButton setTitle:@"Share WiGo" forState:UIControlStateNormal];
-        [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        shareButton.titleLabel.font = [FontProperties scMediumFont:16.0f];
-        shareButton.layer.borderColor = [UIColor whiteColor].CGColor;
-        shareButton.layer.borderWidth = 1.0f;
-        shareButton.layer.cornerRadius = 10;
-        [shareButton addTarget:self action:@selector(sharedPressed) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:shareButton];
-        return cell;
-    }
-    //else
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
     if ([[_contentParty getObjectArray] count] == 0) return cell;
@@ -579,13 +546,6 @@ int queryQueueInt;
     return user;
 }
 
-- (void)sharedPressed {
-    NSArray *activityItems = @[@"Still staying in tonight??? #WiGo http://wigo.us/app",[UIImage imageNamed:@"stayInNoMore" ]];
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
-    activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
-    [self presentViewController:activityVC animated:YES completion:nil];
-}
-
 #pragma mark - Last User Read 
 - (void)updateLastUserRead {
     User *profileUser = [Profile user];
@@ -603,21 +563,21 @@ int queryQueueInt;
     User *user = [[User alloc] initWithDictionary:userInfo];
     if (user) {
         if (_isSearching) {
-            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:(int)[self sectionOfUsers]];
+            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:0];
             if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0) {
                 [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
                 [_tableViewOfPeople beginUpdates];
-                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:[self sectionOfUsers]]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
                 [_tableViewOfPeople endUpdates];
             }
             
         }
         else {
-            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:(int)[self sectionOfUsers]];
+            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:0];
             if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0) {
                 [_contentParty replaceObjectAtIndex:userInt withObject:user];
                 [_tableViewOfPeople beginUpdates];
-                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:[self sectionOfUsers]]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
                 [_tableViewOfPeople endUpdates];
             }
         }
