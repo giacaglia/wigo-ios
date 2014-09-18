@@ -150,6 +150,20 @@
     return @"";
 }
 
+- (CGRect)coverImageArea {
+    NSArray *imagesArea = [self imagesArea];
+    if ([imagesArea count] > 0 && [imagesArea isKindOfClass:[NSArray class]]) {
+        NSDictionary *imageArea = [imagesArea objectAtIndex:0];
+        if (![imageArea isKindOfClass:[NSNull class]]) {
+            CGRect rect = CGRectMake([[imageArea objectForKey:@"x"] intValue], [[imageArea objectForKey:@"y"] intValue], [[imageArea objectForKey:@"width"] intValue], [[imageArea objectForKey:@"height"] intValue]);
+            return rect;
+        }
+        else return CGRectZero;
+
+    }
+    return CGRectZero;
+}
+
 - (void)setImagesURL:(NSArray *)images {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     [properties setObject:images forKey:@"images"];

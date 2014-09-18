@@ -430,7 +430,15 @@ int userInt;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
+    __weak UIImageView *weakProfileImgView = profileImageView;
+    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        CGRect rect = [[Profile user] coverImageArea];
+        if (!CGRectEqualToRect(CGRectZero, rect)) {
+            CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
+            [weakProfileImgView setImage:[UIImage imageWithCGImage:imageRef]];
+            CGImageRelease(imageRef);
+        }
+    }];
     [profileButton addSubview:profileImageView];
     [profileButton addTarget:self action:@selector(myProfileSegue)
             forControlEvents:UIControlEventTouchUpInside];
@@ -767,7 +775,18 @@ int userInt;
     cell.profileButton.tag = tag;
     cell.profileButton2.tag = tag;
     cell.profileButton3.tag = tag;
-    [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init]];
+    __weak UIImageView *weakProfileImgView = cell.userCoverImageView;
+    [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]
+                            placeholderImage:[[UIImage alloc] init]
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                                CGRect rect = [user coverImageArea];
+                                if (!CGRectEqualToRect(CGRectZero, rect)) {
+                                    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
+                                    [weakProfileImgView setImage:[UIImage imageWithCGImage:imageRef]];
+                                    CGImageRelease(imageRef);
+                                }
+                            }
+     ];
     cell.userCoverImageView.tag = tag;
     cell.profileName.text = [user firstName];
     cell.profileName.tag = tag;
