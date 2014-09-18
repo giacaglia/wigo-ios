@@ -176,8 +176,6 @@
 }
 
 
-
-
 - (void)addImageURL:(NSString *)imageURL {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
     if ([imagesArray count] < 5) {

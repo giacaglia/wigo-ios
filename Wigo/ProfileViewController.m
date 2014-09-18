@@ -399,7 +399,17 @@ UIButton *tapButton;
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 [self addBlurredImageToImageView:weakProfileImgView forIndex:i];
+                NSDictionary *imageArea = [[self.user imagesArea] objectAtIndex:i];
+                if (![imageArea isKindOfClass:[NSNull class]]) {
+                    CGRect rect = CGRectMake([[imageArea objectForKey:@"x"] intValue], [[imageArea objectForKey:@"y"] intValue], [[imageArea objectForKey:@"width"] intValue], [[imageArea objectForKey:@"height"] intValue]);
+                    if (!CGRectEqualToRect(CGRectZero, rect)) {
+                        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
+                        [weakProfileImgView setImage:[UIImage imageWithCGImage:imageRef]];
+                        CGImageRelease(imageRef);
+                    }
+                }
                 weakProfileImgView.hidden = NO;
+                
             });
         }];
         [_scrollView addSubview:profileImgView];
