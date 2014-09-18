@@ -172,6 +172,8 @@
 		E998C25C19C9F7FB0012BF51 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C25719C9F7FB0012BF51 /* Parse.framework */; };
 		E998C25D19C9F7FB0012BF51 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C25819C9F7FB0012BF51 /* ParseFacebookUtils.framework */; };
 		E998C25E19C9F7FB0012BF51 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C25819C9F7FB0012BF51 /* ParseFacebookUtils.framework */; };
+		E998C26519CB80240012BF51 /* UIImageView+ImageArea.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */; };
+		E998C26619CB80240012BF51 /* UIImageView+ImageArea.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */; };
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
@@ -380,6 +382,8 @@
 		E998C25619C9F7FB0012BF51 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		E998C25719C9F7FB0012BF51 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		E998C25819C9F7FB0012BF51 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
+		E998C26319CB80240012BF51 /* UIImageView+ImageArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+ImageArea.h"; sourceTree = "<group>"; };
+		E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+ImageArea.m"; sourceTree = "<group>"; };
 		E99EC2871986B69C00CBFA59 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
 		E99F46AD199012F0007408C1 /* LockScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockScreenViewController.h; sourceTree = "<group>"; };
@@ -545,6 +549,8 @@
 				E994111119AA8D9200D76379 /* NSString+URLEncoding.m */,
 				E9ACDC6719AB7559004B0349 /* NSObject-CancelableScheduledBlock.h */,
 				E9ACDC6819AB7559004B0349 /* NSObject-CancelableScheduledBlock.m */,
+				E998C26319CB80240012BF51 /* UIImageView+ImageArea.h */,
+				E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -1284,6 +1290,7 @@
 				C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */,
 				E96F07C619BA654600E858D7 /* GKImagePicker.m in Sources */,
 				C12A112119787BE700D53B1C /* Message.m in Sources */,
+				E998C26619CB80240012BF51 /* UIImageView+ImageArea.m in Sources */,
 				E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */,
 				C12A112219787BE700D53B1C /* FontProperties.m in Sources */,
 				E9CD53871993C29800206B75 /* FLAnimatedImageView.m in Sources */,
@@ -1367,6 +1374,7 @@
 				E900C251195DCC4100A01F50 /* Message.m in Sources */,
 				E96F07C519BA654600E858D7 /* GKImagePicker.m in Sources */,
 				E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */,
+				E998C26519CB80240012BF51 /* UIImageView+ImageArea.m in Sources */,
 				E9BE8C49192A48F1008BB84C /* FontProperties.m in Sources */,
 				E900C254195E010500A01F50 /* Notification.m in Sources */,
 				E9CD53861993C29800206B75 /* FLAnimatedImageView.m in Sources */,

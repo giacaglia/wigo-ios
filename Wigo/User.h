@@ -66,7 +66,7 @@ typedef enum
 - (void)addImageWithURL:(NSString *)imageURL andArea:(CGRect)area;
 - (NSString *)removeImageURL:(NSString *)imageURL;
 - (NSString *)coverImageURL;
-- (CGRect)coverImageArea;
+- (NSDictionary *)coverImageArea;
 - (void)makeImageURLCover:(NSString *)imageURL;
 
 

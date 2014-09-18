@@ -395,22 +395,11 @@ UIButton *tapButton;
         profileImgView.clipsToBounds = YES;
         profileImgView.frame = CGRectMake((self.view.frame.size.width + 10) * i, 0, self.view.frame.size.width, self.view.frame.size.width);
 
+        NSDictionary *area = [[self.user imagesArea] objectAtIndex:i];
+
         __weak UIImageView *weakProfileImgView = profileImgView;
-        [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [self addBlurredImageToImageView:weakProfileImgView forIndex:i];
-                NSDictionary *imageArea = [[self.user imagesArea] objectAtIndex:i];
-                if (![imageArea isKindOfClass:[NSNull class]]) {
-                    CGRect rect = CGRectMake([[imageArea objectForKey:@"x"] intValue], [[imageArea objectForKey:@"y"] intValue], [[imageArea objectForKey:@"width"] intValue], [[imageArea objectForKey:@"height"] intValue]);
-                    if (!CGRectEqualToRect(CGRectZero, rect)) {
-                        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
-                        [weakProfileImgView setImage:[UIImage imageWithCGImage:imageRef]];
-                        CGImageRelease(imageRef);
-                    }
-                }
-                weakProfileImgView.hidden = NO;
-                
-            });
+        [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] imageArea:area completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            [self addBlurredImageToImageView:weakProfileImgView forIndex:i];
         }];
         [_scrollView addSubview:profileImgView];
         [_profileImagesArray addObject:profileImgView];
