@@ -161,7 +161,7 @@
     NSDictionary *properties = [_proxy objectForKey:@"properties"];
     if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
         NSArray *images = [properties objectForKey:@"images"];
-        return images;
+        return [images valueForKey:@"url"];
     }
     return [[NSArray alloc] init];
 }

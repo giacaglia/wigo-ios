@@ -124,7 +124,6 @@
         return 30;
     }
     return HEIGHT_NOTIFICATION_CELL;
-    //    return 54;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -230,6 +229,9 @@
         else {
             [buttonCallback setBackgroundImage:[UIImage imageNamed:@"tapUnselectedNotification"] forState:UIControlStateNormal];
         }
+        buttonCallback.layer.borderColor = [UIColor clearColor].CGColor;
+        buttonCallback.layer.borderWidth = 1.0f;
+        buttonCallback.layer.cornerRadius = 7.0f;
         buttonCallback.tag = row;
         [buttonCallback addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
@@ -242,9 +244,6 @@
         else {
             [buttonCallback setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         }
-        buttonCallback.layer.borderColor = [UIColor clearColor].CGColor;
-        buttonCallback.layer.borderWidth = 1.0f;
-        buttonCallback.layer.cornerRadius = 7.0f;
         buttonCallback.tag = row;
         [buttonCallback addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
@@ -274,13 +273,6 @@
     notificationLabel.frame = CGRectMake(70, HEIGHT_NOTIFICATION_CELL/2 - 35, 175, 70);
     [notificationButton addSubview:notificationLabel];
     
-//    UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 150, HEIGHT_NOTIFICATION_CELL - 17, 140, 12)];
-//    timeLabel.text = timeString;
-//    timeLabel.textAlignment = NSTextAlignmentRight;
-//    timeLabel.font = [FontProperties getSmallPhotoFont];
-//    timeLabel.textColor = RGB(201, 202, 204);
-//    [notificationButton addSubview:timeLabel];
-//    
     [cell.contentView addSubview:notificationButton];
     if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
         cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
@@ -302,9 +294,7 @@
             [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapSelectedNotification"] forState:UIControlStateNormal];
             [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
         }
-
     }
-
 }
 
 - (void)followedPersonPressed:(id)sender {
