@@ -11,6 +11,11 @@
 
 @implementation UIImageView (ImageArea)
 
+- (void)setImageWithURL:(NSURL *)url imageArea:(NSDictionary *)area {
+    [self setImageWithURL:url placeholderImage:nil options:0 progress:nil imageArea:area completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {}];
+
+}
+
 - (void)setImageWithURL:(NSURL *)url imageArea:(NSDictionary*)area completed:(SDWebImageCompletedBlock)completedBlock {
     [self setImageWithURL:url placeholderImage:nil options:0 progress:nil imageArea:area completed:completedBlock];
 }

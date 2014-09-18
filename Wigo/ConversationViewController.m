@@ -163,7 +163,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]]];
+    [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]] imageArea:[self.user imagesArea]];
     [profileButton addSubview:profileImageView];
     [profileButton setShowsTouchWhenHighlighted:YES];
     [profileButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchUpInside];

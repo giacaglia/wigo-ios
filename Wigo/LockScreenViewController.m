@@ -88,7 +88,7 @@ OnboardFollowViewController *onboardFollowViewController;
             UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width - 10, origin.height - 10, 15 + 20, 15 + 20)];
             UIImageViewShake *lockPersonImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15 + 20, 15 + 20)];
             lockPersonImageView.tag = i;
-            [lockPersonImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
+            [lockPersonImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] imageArea:[[Profile user] coverImageArea]];
             lockPersonImageView.layer.borderWidth = 1;
             lockPersonImageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             lockPersonImageView.layer.cornerRadius = 17;
@@ -148,7 +148,7 @@ OnboardFollowViewController *onboardFollowViewController;
             if (i < numberOfPeopleInParty) {
                 if (numberOfPeopleInParty != 0 && numberOfPeopleSignedUp > 0 && [_everyoneParty getObjectArray]) {
                     User *user = [[_everyoneParty getObjectArray] objectAtIndex:i];
-                    [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+                    [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
                     imageView.backgroundColor = [FontProperties getOrangeColor];
                     imageView.layer.borderWidth = 1;
                     imageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
