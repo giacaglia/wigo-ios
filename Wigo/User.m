@@ -166,11 +166,22 @@
     return [[NSArray alloc] init];
 }
 
+- (NSArray *)images {
+    NSDictionary *properties = [_proxy objectForKey:@"properties"];
+    if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
+        NSArray *images = [properties objectForKey:@"images"];
+        return images;
+    }
+    return [[NSArray alloc] init];
+}
+
+
+
 
 - (void)addImageURL:(NSString *)imageURL {
-    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
     if ([imagesArray count] < 5) {
-        [imagesArray addObject:imageURL];
+        [imagesArray addObject:@{@"url": imageURL}];
         [self setImagesURL:[NSArray arrayWithArray:imagesArray]];
     }
 }
@@ -193,35 +204,38 @@
 }
 
 - (void)setImagesArea:(NSArray *)imagesArea {
-    NSMutableDictionary *properties;
-    if ([_proxy objectForKey:@"properties"]) properties = [[NSMutableDictionary alloc] initWithDictionary:[_proxy objectForKey:@"properties"]];
-//    else properties = [[NSMutableDictionary alloc] init];
-    [properties setObject:imagesArea forKey:@"imagesArea"];
+    NSMutableArray *imagesMutableArray = [[NSMutableArray alloc] initWithArray:[self images]];
+
+    for (int j = 0; j < [[self images] count]; j++ ) {
+        NSDictionary *imageArea = [imagesArea objectAtIndex:j];
+        NSMutableDictionary *imageMutableDictionary = [NSMutableDictionary dictionaryWithDictionary:[imagesMutableArray objectAtIndex:j]];
+        [imageMutableDictionary setObject:imageArea forKey:@"crop"];
+        [imagesMutableArray setObject:imageMutableDictionary atIndexedSubscript:j];
+    }
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+    [properties setObject:[NSArray arrayWithArray:imagesMutableArray] forKey:@"images"];
     [_proxy setObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
     [modifiedKeys addObject:@"properties"];
 }
 
 - (BOOL)addImageArea:(CGRect)imageArea {
     NSMutableArray *imagesAreaArray = [[NSMutableArray alloc] initWithArray:[self imagesArea]];
-    if ([imagesAreaArray count] == 0) {
-        for (int i = 0; i < [[self imagesURL] count] - 1; i++) {
-            [imagesAreaArray addObject:@[@0, @0, @320, @320]];
-        }
+    for (int i = 0 ; i < [[self imagesArea] count]; i++) {
+        NSDictionary *imagesArea = [imagesAreaArray objectAtIndex:i];
+        if ([imagesArea isKindOfClass:[NSNull class]])
+            [imagesAreaArray setObject: @{@"x": @0, @"y": @0 ,@"width": @0, @"height": @0} atIndexedSubscript:i];
     }
-    if ([imagesAreaArray count] < 5) {
-        NSArray *areaArray = @[@((int)roundf(imageArea.origin.x)),@((int)roundf(imageArea.origin.y)), @((int)roundf(imageArea.size.width)), @((int)roundf(imageArea.size.width))];
-        [imagesAreaArray addObject:areaArray];
-        [self setImagesArea:imagesAreaArray];
-        return YES;
-    }
-    return NO;
+    NSDictionary *areaDictionary = @{@"x": @((int)roundf(imageArea.origin.x)), @"y": @((int)roundf(imageArea.origin.y)) ,@"width": @((int)roundf(imageArea.size.width)), @"height": @((int)roundf(imageArea.size.height))};
+    [imagesAreaArray setObject:areaDictionary atIndexedSubscript:([imagesAreaArray count] - 1)];
+    [self setImagesArea:imagesAreaArray];
+    return YES;
 }
 
 - (NSArray *)imagesArea {
     NSDictionary *properties = [_proxy objectForKey:@"properties"];
-    if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"imagesArea"]) {
-        NSArray *imagesArea = [properties objectForKey:@"imagesArea"];
-        return imagesArea;
+    if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
+        NSArray *images = [properties objectForKey:@"images"];
+        return [images valueForKey:@"crop"];
     }
     else return [[NSArray alloc] init];
 }

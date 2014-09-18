@@ -213,12 +213,13 @@ NSString *urlOfSelectedImage;
 }
 
 - (void)didFinishWithCroppedArea:(CGRect)croppedArea {
-    
+
     User *profileUser = [Profile user];
 //    NSArray *imagesArea = [NSMutableArray arrayWithArray:[profileUser imagesArea]];
-//    [profileUser addImageWithURL:urlOfSelectedImage andArea:croppedArea];
-    [profileUser addImageURL:urlOfSelectedImage];
+    [profileUser addImageWithURL:urlOfSelectedImage andArea:croppedArea];
+//    [profileUser addImageURL:urlOfSelectedImage];
     [profileUser save];
+    [self dismissViewControllerAnimated:YES completion:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
     [self.navigationController popViewControllerAnimated:YES];
 }
