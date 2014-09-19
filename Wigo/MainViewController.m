@@ -770,20 +770,6 @@ int userInt;
     
     [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea]];
     
-//    __weak UIImageView *weakProfileImgView = cell.userCoverImageView;
-//    weakProfileImgView.hidden = YES;
-//    [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]
-//                            placeholderImage:[[UIImage alloc] init]
-//                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//                                CGRect rect = [user coverImageArea];
-//                                if (!CGRectEqualToRect(CGRectZero, rect)) {
-//                                    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
-//                                    [weakProfileImgView setImage:[UIImage imageWithCGImage:imageRef]];
-//                                    CGImageRelease(imageRef);
-//                                }
-//                                weakProfileImgView.hidden = NO;
-//                            }
-//     ];
     cell.userCoverImageView.tag = tag;
     cell.profileName.text = [user firstName];
     cell.profileName.tag = tag;

@@ -111,6 +111,7 @@ UIViewController *webViewController;
     [_photosScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
     NSArray *imageArrayURL = [[Profile user] imagesURL];
+    NSArray *imageAreaArray = [[Profile user] imagesArea];
     NSMutableArray *photosArray = [[NSMutableArray alloc] initWithCapacity:[imageArrayURL count] + 1];
     for (int i = 0; i < [imageArrayURL count]; i++) {
         NSString *imageURL = [imageArrayURL objectAtIndex:i];
@@ -119,7 +120,7 @@ UIViewController *webViewController;
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
         imageView.contentMode = UIViewContentModeScaleAspectFill;
         imageView.clipsToBounds = YES;
-        [imageView setImageWithURL:[NSURL URLWithString:imageURL]];
+        [imageView setImageWithURL:[NSURL URLWithString:imageURL] imageArea:[imageAreaArray objectAtIndex:i]];
         [imageButton addSubview:imageView];
         [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchUpInside];
         // IF its the cover photo

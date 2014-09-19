@@ -125,7 +125,7 @@ int queryQueueInt;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
-        [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]]];
+        [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]] imageArea:[self.user coverImageArea]];
         [profileButton addSubview:profileImageView];
         [profileButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
@@ -360,7 +360,7 @@ int queryQueueInt;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
     [profileButton addSubview:profileImageView];
     profileButton.tag = [indexPath row];
     if (![user isEqualToUser:[Profile user]]) {

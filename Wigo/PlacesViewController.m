@@ -124,7 +124,7 @@ int sizeOfEachImage;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
+    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] imageArea:[[Profile user] coverImageArea]];
     [profileButton addSubview:profileImageView];
     [profileButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchUpInside];
     [profileButton setShowsTouchWhenHighlighted:YES];
@@ -606,7 +606,7 @@ int sizeOfEachImage;
         imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
         imgView.contentMode = UIViewContentModeScaleAspectFill;
         imgView.clipsToBounds = YES;
-        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
         
         UILabel *profileName = [[UILabel alloc] init];

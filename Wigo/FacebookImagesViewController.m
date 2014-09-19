@@ -167,7 +167,8 @@ NSString *urlOfSelectedImage;
         imgView.contentMode = UIViewContentModeScaleAspectFill;
         imgView.clipsToBounds = YES;
         __weak UIImageView *weakProfileImgView = imgView;
-        [imgView setImageWithURL:[NSURL URLWithString:pictureURL] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        [imgView setImageWithURL:[NSURL URLWithString:pictureURL]
+                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(choseImageView:)];
                 [weakProfileImgView addGestureRecognizer:tap];

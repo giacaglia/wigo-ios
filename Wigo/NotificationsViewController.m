@@ -209,7 +209,7 @@
     profileImageView.frame = CGRectMake(15, HEIGHT_NOTIFICATION_CELL/2 - 22, 45, 45);
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
     profileImageView.layer.cornerRadius = 5;
     profileImageView.layer.borderWidth = 0.5;
     profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
