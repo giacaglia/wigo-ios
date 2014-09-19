@@ -58,6 +58,7 @@
 @end
 
 BOOL fetchingEventAttendees;
+BOOL shouldAnimate;
 NSNumber *page;
 NSMutableArray *eventPageArray;
 int eventOffset;
@@ -74,6 +75,7 @@ int sizeOfEachImage;
     self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
     fetchingEventAttendees = NO;
+    shouldAnimate = NO;
     eventOffset = 0;
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
@@ -219,6 +221,7 @@ int sizeOfEachImage;
 
 
 - (void) goOutHere:(id)sender {
+    shouldAnimate = YES;
     _whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
@@ -418,7 +421,13 @@ int sizeOfEachImage;
         _createButton.hidden = YES;
         _clearButton.hidden = YES;
     }
-    [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    if (shouldAnimate) {
+        [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+        shouldAnimate = NO;
+    }
+    else {
+        [_placesTableView reloadData];
+    }
 }
 
 

@@ -1032,5 +1032,9 @@ int userInt;
     }];
 }
 
+- (void)presentGrowthHack {
+    [self presentViewController:[UIViewController new] animated:YES completion:nil];
+}
+
 
 @end
