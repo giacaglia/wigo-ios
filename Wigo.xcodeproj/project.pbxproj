@@ -174,6 +174,12 @@
 		E998C25E19C9F7FB0012BF51 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C25819C9F7FB0012BF51 /* ParseFacebookUtils.framework */; };
 		E998C26519CB80240012BF51 /* UIImageView+ImageArea.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */; };
 		E998C26619CB80240012BF51 /* UIImageView+ImageArea.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */; };
+		E998C26819CCB6BF0012BF51 /* Harvard.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C26719CCB6BF0012BF51 /* Harvard.gpx */; };
+		E998C26919CCB6BF0012BF51 /* Harvard.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C26719CCB6BF0012BF51 /* Harvard.gpx */; };
+		E998C26E19CCCA890012BF51 /* blade.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C26D19CCCA890012BF51 /* blade.gpx */; };
+		E998C26F19CCCA890012BF51 /* blade.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C26D19CCCA890012BF51 /* blade.gpx */; };
+		E998C27119CCD40A0012BF51 /* Clemson.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C27019CCD40A0012BF51 /* Clemson.gpx */; };
+		E998C27219CCD40A0012BF51 /* Clemson.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C27019CCD40A0012BF51 /* Clemson.gpx */; };
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
@@ -193,8 +199,8 @@
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		E9ACCA2019C3A12500F3EB20 /* WigoConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA1F19C3A12500F3EB20 /* WigoConfirmationViewController.m */; };
 		E9ACCA2119C3A12500F3EB20 /* WigoConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA1F19C3A12500F3EB20 /* WigoConfirmationViewController.m */; };
-		E9ACCA2419C4CBFB00F3EB20 /* ContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* ContactsViewController.m */; };
-		E9ACCA2519C4CBFB00F3EB20 /* ContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* ContactsViewController.m */; };
+		E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */; };
+		E9ACCA2519C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */; };
 		E9ACCA2819C4CD0F00F3EB20 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ACCA2719C4CD0F00F3EB20 /* AddressBook.framework */; };
 		E9ACCA2919C4CD1700F3EB20 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ACCA2719C4CD0F00F3EB20 /* AddressBook.framework */; };
 		E9ACDC6919AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACDC6819AB7559004B0349 /* NSObject-CancelableScheduledBlock.m */; };
@@ -384,6 +390,9 @@
 		E998C25819C9F7FB0012BF51 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
 		E998C26319CB80240012BF51 /* UIImageView+ImageArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+ImageArea.h"; sourceTree = "<group>"; };
 		E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+ImageArea.m"; sourceTree = "<group>"; };
+		E998C26719CCB6BF0012BF51 /* Harvard.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Harvard.gpx; sourceTree = "<group>"; };
+		E998C26D19CCCA890012BF51 /* blade.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = blade.gpx; sourceTree = "<group>"; };
+		E998C27019CCD40A0012BF51 /* Clemson.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Clemson.gpx; sourceTree = "<group>"; };
 		E99EC2871986B69C00CBFA59 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
 		E99F46AD199012F0007408C1 /* LockScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockScreenViewController.h; sourceTree = "<group>"; };
@@ -408,8 +417,8 @@
 		E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonAligned.m; sourceTree = "<group>"; };
 		E9ACCA1E19C3A12500F3EB20 /* WigoConfirmationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WigoConfirmationViewController.h; sourceTree = "<group>"; };
 		E9ACCA1F19C3A12500F3EB20 /* WigoConfirmationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoConfirmationViewController.m; sourceTree = "<group>"; };
-		E9ACCA2219C4CBFB00F3EB20 /* ContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsViewController.h; sourceTree = "<group>"; };
-		E9ACCA2319C4CBFB00F3EB20 /* ContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsViewController.m; sourceTree = "<group>"; };
+		E9ACCA2219C4CBFB00F3EB20 /* MobileContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileContactsViewController.h; sourceTree = "<group>"; };
+		E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileContactsViewController.m; sourceTree = "<group>"; };
 		E9ACCA2719C4CD0F00F3EB20 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		E9ACDC6719AB7559004B0349 /* NSObject-CancelableScheduledBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject-CancelableScheduledBlock.h"; sourceTree = "<group>"; };
 		E9ACDC6819AB7559004B0349 /* NSObject-CancelableScheduledBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject-CancelableScheduledBlock.m"; sourceTree = "<group>"; };
@@ -625,6 +634,9 @@
 		E921D6091923967D00361247 = {
 			isa = PBXGroup;
 			children = (
+				E998C27019CCD40A0012BF51 /* Clemson.gpx */,
+				E998C26D19CCCA890012BF51 /* blade.gpx */,
+				E998C26719CCB6BF0012BF51 /* Harvard.gpx */,
 				E921D61B1923967D00361247 /* Wigo */,
 				E921D63D1923967D00361247 /* WigoTests */,
 				E921D6141923967D00361247 /* Frameworks */,
@@ -731,7 +743,7 @@
 				E9AAAFCA193E3DC40069F700 /* ProfileViews */,
 				E9AAAFCB193E3DCE0069F700 /* ChatViews */,
 				E96EF678197DC94A00F88A6D /* NotificationViews */,
-				E9ACCA2619C4CC0600F3EB20 /* ContactsViews */,
+				E9ACCA2619C4CC0600F3EB20 /* GrowthHackViews */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -934,15 +946,15 @@
 			name = OnboardingViews;
 			sourceTree = "<group>";
 		};
-		E9ACCA2619C4CC0600F3EB20 /* ContactsViews */ = {
+		E9ACCA2619C4CC0600F3EB20 /* GrowthHackViews */ = {
 			isa = PBXGroup;
 			children = (
 				E9ACCA1E19C3A12500F3EB20 /* WigoConfirmationViewController.h */,
 				E9ACCA1F19C3A12500F3EB20 /* WigoConfirmationViewController.m */,
-				E9ACCA2219C4CBFB00F3EB20 /* ContactsViewController.h */,
-				E9ACCA2319C4CBFB00F3EB20 /* ContactsViewController.m */,
+				E9ACCA2219C4CBFB00F3EB20 /* MobileContactsViewController.h */,
+				E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */,
 			);
-			name = ContactsViews;
+			name = GrowthHackViews;
 			sourceTree = "<group>";
 		};
 		E9BE8C4F192AA29C008BB84C /* Whitney */ = {
@@ -1137,6 +1149,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E998C26919CCB6BF0012BF51 /* Harvard.gpx in Resources */,
 				E9706E0C19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */,
 				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
@@ -1148,10 +1161,12 @@
 				E9CD538C1993C42600206B75 /* go-out.gif in Resources */,
 				E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
+				E998C26F19CCCA890012BF51 /* blade.gpx in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
 				E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */,
 				E9E6A56F19994B41003B590C /* glowing.gif in Resources */,
+				E998C27219CCD40A0012BF51 /* Clemson.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1160,17 +1175,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9CD538B1993C42600206B75 /* go-out.gif in Resources */,
+				E998C27119CCD40A0012BF51 /* Clemson.gpx in Resources */,
 				E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */,
 				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
 				E9E6A56E19994B41003B590C /* glowing.gif in Resources */,
 				E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				E9A1EAAF199CFD25003A744C /* boyVoice.caf in Resources */,
+				E998C26819CCB6BF0012BF51 /* Harvard.gpx in Resources */,
 				E9706E0B19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
+				E998C26E19CCCA890012BF51 /* blade.gpx in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
 				C18AC292198451150056957B /* autorevision.sh in Resources */,
@@ -1316,7 +1334,7 @@
 				C12A113319787BE700D53B1C /* RWBlurPopover.m in Sources */,
 				E96F07AD19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
-				E9ACCA2519C4CBFB00F3EB20 /* ContactsViewController.m in Sources */,
+				E9ACCA2519C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
 				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
 				C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */,
 				C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */,
@@ -1400,7 +1418,7 @@
 				E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */,
 				E96F07AC19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */,
-				E9ACCA2419C4CBFB00F3EB20 /* ContactsViewController.m in Sources */,
+				E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
 				E900C2BE1961EADE00A01F50 /* UIButton+WebCache.m in Sources */,
 				E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */,
 				E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */,

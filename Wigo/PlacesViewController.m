@@ -460,6 +460,11 @@ int sizeOfEachImage;
 
 }
 
+#pragma mark - Growth Hack
+
+- (void)presentGrowthHack {
+    [self presentViewController:[UIViewController new] animated:YES completion:nil];
+}
 
 #pragma mark - Tablew View Data Source
 

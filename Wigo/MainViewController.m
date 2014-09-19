@@ -13,7 +13,9 @@
 // Extensions
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
-
+#import "WigoConfirmationViewController.h"
+#import "RWBlurPopover.h"
+#import "MobileContactsViewController.h"
 
 @interface MainViewController ()
 
@@ -346,6 +348,12 @@ int userInt;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateUserAtTable:) name:@"updateUserAtTable"
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(presentContactsView)
+                                                 name:@"presentContactsView"
+                                               object:nil];
+    
 
 }
 
@@ -600,6 +608,7 @@ int userInt;
     [self showTapButtons];
     [self animationShowingTapIcons];
     [Network postGoOut];
+    [self presentGrowthHack];
 }
 
 
@@ -673,6 +682,7 @@ int userInt;
         _spinnerAtCenter = NO;
         [self fetchFirstPageFollowing];
         if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
+        [self fetchSummaryGoingOut];
     }];
 }
 
@@ -1033,7 +1043,13 @@ int userInt;
 }
 
 - (void)presentGrowthHack {
-    [self presentViewController:[UIViewController new] animated:YES completion:nil];
+    [[RWBlurPopover instance] presentViewController:[WigoConfirmationViewController new] withFrame:CGRectMake(20, 20, self.view.frame.size.width - 40, self.view.frame.size.height - 40)];
+    
+}
+
+- (void)presentContactsView {
+//     [[RWBlurPopover instance] presentViewController:[MobileContactsViewController new] withFrame:CGRectMake(20, 20, self.view.frame.size.width - 40, self.view.frame.size.height - 40)];
+        [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
 }
 
 

@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Giuliano Giacaglia. All rights reserved.
 //
 
-#import "ContactsViewController.h"
+#import "MobileContactsViewController.h"
 #import <AddressBook/AddressBook.h>
 #import "Globals.h"
 
@@ -17,7 +17,7 @@ NSMutableArray *selectedPeopleIndexes;
 CFArrayRef all;
 CFIndex n;
 
-@implementation ContactsViewController
+@implementation MobileContactsViewController
 
 - (id)init {
     self = [super init];
@@ -73,20 +73,15 @@ CFIndex n;
             for( int i = 0 ; i < n ; i++ )
             {
                 ABRecordRef ref = CFArrayGetValueAtIndex(all, i);
-                NSString *firstName = (__bridge NSString *)ABRecordCopyValue(ref, kABPersonFirstNameProperty);
-                NSLog(@"Name %@", firstName);
-                if ([firstName isEqualToString:@"Bianca"]) {
-                    NSLog(@"here");
-                }
                 ABMultiValueRef phones = ABRecordCopyValue(ref, kABPersonPhoneProperty);
                 if (ABMultiValueGetCount(phones) > 0) {
                     [peopleContactList addObject:(__bridge id)(ref)];
                 }
             }
-            [contactsTableView reloadData];
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [contactsTableView reloadData];
+            });
             CFRelease(addressBookRef);
-            
-            
         }
     });
 }
@@ -100,7 +95,6 @@ CFIndex n;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
-//    ABRecordRef contactPerson = CFArrayGetValueAtIndex(all, [indexPath row]);
     ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:[indexPath row]]);
     
     UIButton *selectedPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
@@ -202,12 +196,12 @@ CFIndex n;
             }
         }
     }
-//    NSLog(@"numbers %@", numbers);
-//    NSDictionary *options = @{@"phone": @"6179813206"};
-//    [Network sendAsynchronousHTTPMethod:POST
-//                            withAPIName:@"invites/"
-//                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-//                            withOptions:options];
+    NSLog(@"numbers %@", numbers);
+    NSDictionary *options = @{@"phone": @"6179813206"};
+    [Network sendAsynchronousHTTPMethod:POST
+                            withAPIName:@"invites/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:options];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

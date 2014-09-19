@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ContactsViewController : UIViewController  <UITableViewDataSource, UITableViewDelegate>
+@interface MobileContactsViewController : UIViewController  <UITableViewDataSource, UITableViewDelegate>
 
 @end
