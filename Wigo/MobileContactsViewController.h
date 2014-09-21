@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MobileContactsViewController : UIViewController  <UITableViewDataSource, UITableViewDelegate>
+@interface MobileContactsViewController : UIViewController  <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
 @end

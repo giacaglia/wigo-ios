@@ -8,10 +8,8 @@
 
 #import "WigoConfirmationViewController.h"
 #import "Globals.h"
-#import "ContactsViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
-#import "ContactsViewController.h"
 #import "RWBlurPopover.h"
 @implementation WigoConfirmationViewController
 
@@ -82,6 +80,7 @@
 }
 
 - (void)giveOneTimeAccess {
+    NSLog(@"here");
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"presentContactsView" object:nil];
     }];

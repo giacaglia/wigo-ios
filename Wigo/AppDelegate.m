@@ -190,6 +190,16 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     }
 }
 
+#pragma mark - Custom actions
+
+- (void)application:(UIApplication *)application
+handleActionWithIdentifier:(NSString *)identifier
+forRemoteNotification:(NSDictionary *)userInfo
+  completionHandler:(void (^)())completionHandler {
+    NSLog(@"here");
+    completionHandler();
+}
+
 
 - (void)addTabBarDelegate {
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;

@@ -52,9 +52,15 @@
     [query queryWithClassName:apiName];
     User *user = [Profile user];
     [query setProfileKey:user.key];
-    for (NSString *key in [options allKeys]) {
-        [query setValue:[options objectForKey:key] forKey:key];
+    if ([options isKindOfClass:[NSDictionary class]]) {
+        for (NSString *key in [options allKeys]) {
+            [query setValue:[options objectForKey:key] forKey:key];
+        }
     }
+    else if ([options isKindOfClass:[NSArray class]]){
+        [query setArray:(NSArray *)options];
+    }
+
     [query sendAsynchronousHTTPMethod:(NSString *)httpMethod withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(jsonResponse, error);
     }];

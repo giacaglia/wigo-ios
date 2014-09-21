@@ -43,6 +43,10 @@ static NSString * const BaseURLString = @"https://dev-api.wigo.us%@";
     [_options setValue:value forKey:key];
 }
 
+- (void)setArray:(NSArray *)array {
+    _options = array;
+}
+
 #pragma mark - Synchronous Calls
 
 - (NSDictionary *)sendGETRequest {

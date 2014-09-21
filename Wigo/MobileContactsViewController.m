@@ -16,6 +16,9 @@ UITableView *contactsTableView;
 NSMutableArray *selectedPeopleIndexes;
 CFArrayRef all;
 CFIndex n;
+UISearchBar *searchBar;
+BOOL isFiltered;
+NSMutableArray *filteredPeopleContactList;
 
 @implementation MobileContactsViewController
 
@@ -34,6 +37,8 @@ CFIndex n;
     selectedPeopleIndexes = [[NSMutableArray alloc] init];
 
     [self initializeTitle];
+    [self initializeSearchBar];
+    [self initializeTapHandler];
     [self initializeTableViewWithPeople];
     [self initializeButtonIAmDone];
 }
@@ -48,7 +53,7 @@ CFIndex n;
 
 - (void)initializeTableViewWithPeople {
     self.automaticallyAdjustsScrollViewInsets = NO;
-    contactsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 70)];
+    contactsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - 70)];
     contactsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     contactsTableView.dataSource = self;
     contactsTableView.delegate = self;
@@ -66,15 +71,34 @@ CFIndex n;
             all = ABAddressBookCopyArrayOfAllPeople(addressBookRef);
             n = ABAddressBookGetPersonCount(addressBookRef);
             
+            
+            // SORT
+            CFMutableArrayRef peopleMutable = CFArrayCreateMutableCopy(
+                                                                       kCFAllocatorDefault,
+                                                                       CFArrayGetCount(all),
+                                                                       all
+                                                                       );
+            
+            CFArraySortValues(
+                              peopleMutable,
+                              CFRangeMake(0, CFArrayGetCount(peopleMutable)),
+                              (CFComparatorFunction) ABPersonComparePeopleByName,
+                              (void*) ABPersonGetSortOrdering()
+                              );
+            NSMutableArray* data = [NSMutableArray arrayWithArray: (__bridge NSArray*) peopleMutable];
+            
             for (int i = 0; i < n; i++) {
                 [choosenPeople addObject:@NO];
             }
 
             for( int i = 0 ; i < n ; i++ )
             {
-                ABRecordRef ref = CFArrayGetValueAtIndex(all, i);
+                ABRecordRef ref = (__bridge ABRecordRef)([data objectAtIndex:i]);
+                NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(ref, kABPersonFirstNameProperty));
+                NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(ref, kABPersonLastNameProperty));
                 ABMultiValueRef phones = ABRecordCopyValue(ref, kABPersonPhoneProperty);
-                if (ABMultiValueGetCount(phones) > 0) {
+                if ( ABMultiValueGetCount(phones) > 0 &&
+                    (![firstName isEqualToString:@""] || ![lastName isEqualToString:@""]) ) {
                     [peopleContactList addObject:(__bridge id)(ref)];
                 }
             }
@@ -94,8 +118,12 @@ CFIndex n;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:[indexPath row]]);
+
+    ABRecordRef contactPerson;
+    if (isFiltered)
+       contactPerson  = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:[indexPath row]]);
+    else
+        contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:[indexPath row]]);
     
     UIButton *selectedPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
     selectedPersonButton.tag = (int)[indexPath row];
@@ -127,7 +155,11 @@ CFIndex n;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [peopleContactList count];
+    if (isFiltered)
+        return [filteredPeopleContactList count];
+    else
+        return [peopleContactList count];
+    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -196,8 +228,7 @@ CFIndex n;
             }
         }
     }
-    NSLog(@"numbers %@", numbers);
-    NSDictionary *options = @{@"phone": @"6179813206"};
+    NSDictionary *options = (NSDictionary *)numbers;
     [Network sendAsynchronousHTTPMethod:POST
                             withAPIName:@"invites/"
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
@@ -205,7 +236,56 @@ CFIndex n;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)initializeSearchBar {
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
+    searchBar.barTintColor = [FontProperties getOrangeColor];
+    searchBar.tintColor = [FontProperties getOrangeColor];
+    searchBar.placeholder = @"Search By Name";
+    searchBar.delegate = self;
+    searchBar.layer.borderWidth = 1.0f;
+    searchBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    [self.view addSubview:searchBar];
+}
 
+- (void)searchBar:(UISearchBar *)searchBar
+    textDidChange:(NSString *)searchText {
+    if(searchText.length == 0)
+    {
+        isFiltered = FALSE;
+    }
+    else
+    {
+        isFiltered = true;
+        filteredPeopleContactList = [[NSMutableArray alloc] init];
+        
+        for (int i = 0 ; i < [peopleContactList count]; i++) {
+            ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:i]);
+            NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
+            NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
+
+            NSRange nameRange = [firstName rangeOfString:searchText options:NSCaseInsensitiveSearch];
+            NSRange descriptionRange = [lastName rangeOfString:searchText options:NSCaseInsensitiveSearch];
+            if(nameRange.location != NSNotFound || descriptionRange.location != NSNotFound)
+            {
+                [filteredPeopleContactList addObject:(__bridge id)(contactPerson)];
+            }
+        }
+      
+    }
+    
+    [contactsTableView reloadData];
+}
+
+- (void) initializeTapHandler {
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(dismissKeyboard)];
+    tap.cancelsTouchesInView = YES;
+    [self.view addGestureRecognizer:tap];
+}
+
+-(void)dismissKeyboard {
+    [self.view endEditing:YES];
+}
 
 
 
