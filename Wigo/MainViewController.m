@@ -606,9 +606,9 @@ int userInt;
     [profileUser setIsGoingOut:YES];
     [self updateTitleView];
     [self showTapButtons];
-    [self animationShowingTapIcons];
     [Network postGoOut];
-    [self presentGrowthHack];
+    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
+    else [self animationShowingTapIcons];
 }
 
 
@@ -1040,6 +1040,21 @@ int userInt;
     }];
     }];
     }];
+}
+
+- (BOOL)shouldPresentGrowthHack {
+    int numberOfTimesWentOut = [[NSUserDefaults standardUserDefaults] integerForKey:@"numberOfTimesWentOut"];
+    if (numberOfTimesWentOut == 0) {
+        [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"numberOfTimesWentOut"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return NO;
+    }
+    else if (numberOfTimesWentOut == 1) {
+        [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"numberOfTimesWentOut"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return YES;
+    }
+    return NO;
 }
 
 - (void)presentGrowthHack {
