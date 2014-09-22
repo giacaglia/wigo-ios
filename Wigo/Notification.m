@@ -72,11 +72,20 @@
 
 - (NSString *)message {
     if ([[self type] isEqualToString:@"tap"]) {
+
         User *fromUser = [[User alloc] initWithDictionary:[self fromUser]];
-        if ([fromUser isAttending] && [fromUser attendingEventName]) {
-            return [NSString stringWithFormat:@"wants to see you out at %@", [fromUser attendingEventName]];
+        if (![self expired]) {
+            if ([fromUser isAttending] && [fromUser attendingEventName]) {
+                return [NSString stringWithFormat:@"wants to see you out at %@", [fromUser attendingEventName]];
+            }
+            return @"wants to see you out";
         }
-        return @"wants to see you out";
+        else {
+            if ([fromUser isAttending] && [fromUser attendingEventName]) {
+                return [NSString stringWithFormat:@"wanted to see you out at %@", [fromUser attendingEventName]];
+            }
+            return @"wanted to see you out";
+        }
     }
     else if( [[self type] isEqualToString:@"follow"] || [[self type] isEqualToString:@"facebook.follow"]) {
         return @"is now following you";
@@ -103,8 +112,9 @@
     [modifiedKeys addObject:@"type"];
 }
 
+
 - (NSNumber *)fromUserID {
-    return  [_proxy objectForKey:@"from_user"];
+    return [_proxy objectForKey:@"from_user"];
 }
 
 - (void)setFromUserID:(NSNumber *)fromUserID {
@@ -119,6 +129,11 @@
     [_proxy setObject:fromUser forKey:@"from_user"];
 }
 
+- (BOOL)expired {
+    NSString *utcCreationTime = [_proxy objectForKey:@"created"];
+    return [Time isUTCtimeStringFromLastDay:utcCreationTime];
+//    return NO;
+}
 
 - (NSString *)timeString {
     NSString *utcCreationTime = [_proxy objectForKey:@"created"];

@@ -17,7 +17,6 @@
 @property UITableView *notificationsTableView;
 @property NSMutableArray *notificationArray;
 @property Party *notificationsParty;
-@property Party *everyoneParty;
 
 @property UIActivityIndicatorView *spinner;
 @property NSNumber *page;
@@ -32,7 +31,6 @@
 {
     [super viewDidLoad];
     _followRequestSummary = @0;
-    _everyoneParty = [Profile everyoneParty];
     [self initializeTableNotifications];
     
     for (UIView *view in self.navigationController.navigationBar.subviews) {
@@ -48,9 +46,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchEverything) name:@"fetchNotifications" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tapSegue) name:@"tapSegue" object:nil];
-    
-
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -127,7 +122,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -196,7 +191,7 @@
     // When group is unlocked
     if ([[notification type] isEqualToString:@"group.unlocked"]) return cell;
     
-    User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
+    User *user = [[User alloc] initWithDictionary:[notification fromUser]];
     
     NSString *name = [user firstName];
     NSString *typeString = [notification type];
@@ -221,7 +216,7 @@
         buttonCallback = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 50, HEIGHT_NOTIFICATION_CELL/2 - 20, 40, 40)];
         [notificationButton addTarget:self action:@selector(chatSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
-    else if ([typeString isEqualToString:@"tap"]) {
+    else if ([typeString isEqualToString:@"tap"] && ![notification expired]) {
         buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_NOTIFICATION_CELL/2 - 15, 30, 30)];
         if ([user isTapped]) {
             [buttonCallback setBackgroundImage:[UIImage imageNamed:@"tapSelectedNotification"] forState:UIControlStateNormal];
@@ -285,7 +280,7 @@
     int tag = buttonSender.tag;
     if (tag < [[_notificationsParty getObjectArray] count]) {
         Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:tag];
-        User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
+        User *user = [[User alloc] initWithDictionary:[notification fromUser]];
         if ([user isTapped]) {
             [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapUnselectedNotification"] forState:UIControlStateNormal];
             [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
@@ -318,7 +313,7 @@
     int rowOfButtonSender = (int)notificationButton.tag;
     if (rowOfButtonSender < [[_notificationsParty getObjectArray] count]) {
         Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:rowOfButtonSender];
-        User *user = (User *)[_everyoneParty getObjectWithId:[notification fromUserID]];
+        User *user = [[User alloc] initWithDictionary:[notification fromUser]];
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
         self.tabBarController.tabBar.hidden = YES;

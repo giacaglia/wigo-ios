@@ -177,7 +177,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         else if ([locKeyString isEqualToString:@"T"]) {
             [navController popToRootViewControllerAnimated:NO];
             tabBarController.selectedIndex = 3;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"tapSegue" object:nil];
         }
         else if ([locKeyString isEqualToString:@"F"] || [locKeyString isEqualToString:@"FR"]) {
             [navController popToRootViewControllerAnimated:NO];

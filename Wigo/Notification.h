@@ -18,5 +18,6 @@
 
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
 - (NSString *)message;
+- (BOOL)expired;
 
 @end
