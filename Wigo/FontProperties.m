@@ -32,6 +32,9 @@
     return [UIFont fontWithName:@"Whitney-MediumSC" size:fontSize];
 }
 
++ (UIFont *)boldFont:(float)fontSize {
+    return [UIFont fontWithName:@"Whitney-Bold" size:fontSize];
+}
 
 + (UIFont *)getSmallPhotoFont {
     return [FontProperties lightFont:12.0f];

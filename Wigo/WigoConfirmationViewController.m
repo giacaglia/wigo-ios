@@ -23,26 +23,27 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initializeTitle];
-
+    dispatch_async(dispatch_get_main_queue(), ^(void){
+        [self initializeTitle];
+    });
 }
 
 - (void) initializeTitle {
-    UIImageView *wigoIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 90 - 10 , 15, 180, 180)];
+    UIImageView *wigoIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 90 - 10 , 40, 180, 180)];
     wigoIconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
     [self.view addSubview:wigoIconImageView];
     
-    UILabel *wigoLabel = [[UILabel alloc] initWithFrame:CGRectMake(20 - 10, 190, self.view.frame.size.width - 40, 60)];
+    UILabel *wigoLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 60 + 190, self.view.frame.size.width - 40, 60)];
     wigoLabel.text = @"WiGo is better with friends";
     wigoLabel.textAlignment = NSTextAlignmentCenter;
     wigoLabel.font = [FontProperties mediumFont:23.0f];
     [self.view addSubview:wigoLabel];
     
-    UIImageView *evenMoreImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 145 - 10, 180, 62, 31)];
+    UIImageView *evenMoreImageView = [[UIImageView alloc] initWithFrame:CGRectMake(180, 60 + 180, 62, 31)];
     evenMoreImageView.image = [UIImage imageNamed:@"evenMore"];
     [self.view addSubview:evenMoreImageView];
     
-    UILabel *tapFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10 -  10, 250, self.view.frame.size.width - 20, 50)];
+    UILabel *tapFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 60 + 250, self.view.frame.size.width - 20, 50)];
     tapFriendsLabel.text = @"Tap some friends from your contacts \n to get them going on WiGo";
     tapFriendsLabel.textAlignment = NSTextAlignmentCenter;
     tapFriendsLabel.font = [FontProperties mediumFont:18.0f];
@@ -51,7 +52,7 @@
     tapFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.view addSubview:tapFriendsLabel];
     
-    UIButton *allowButton = [[UIButton alloc] initWithFrame:CGRectMake(30 - 10, 330, self.view.frame.size.width - 60, 70)];
+    UIButton *allowButton = [[UIButton alloc] initWithFrame:CGRectMake(30, 60 + 330, self.view.frame.size.width - 60, 70)];
     allowButton.backgroundColor = [FontProperties getOrangeColor];
     [allowButton setTitle:@"Allow one time access\n to contacts" forState:UIControlStateNormal];
     [allowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -62,10 +63,10 @@
     allowButton.layer.cornerRadius = 14.0f;
     allowButton.layer.borderColor = [UIColor clearColor].CGColor;
     allowButton.layer.borderWidth = 1;
-    [allowButton addTarget:self action:@selector(giveOneTimeAccess) forControlEvents:UIControlEventTouchUpInside];
+    [allowButton addTarget:self action:@selector(giveOneTimeAccess) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:allowButton];
  
-    UIButton *notRightNowButton = [[UIButton alloc] initWithFrame:CGRectMake(30 - 10, self.view.frame.size.height - 130, self.view.frame.size.width - 60, 20)];
+    UIButton *notRightNowButton = [[UIButton alloc] initWithFrame:CGRectMake(30, 60 + 430, self.view.frame.size.width - 60, 20)];
     [notRightNowButton setTitle:@"NOT RIGHT NOW" forState:UIControlStateNormal];
     [notRightNowButton setTitleColor:RGB(185, 185, 185) forState:UIControlStateNormal];
     notRightNowButton.titleLabel.font = [FontProperties scMediumFont:15];
@@ -80,14 +81,14 @@
 }
 
 - (void)giveOneTimeAccess {
-    NSLog(@"here");
-    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^{
+    [self dismissViewControllerAnimated:YES completion:^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"presentContactsView" object:nil];
     }];
+
 }
 
 - (void)notRightNowPressed {
-    [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

@@ -54,6 +54,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>WhitneyNumeric-Light.ttf</string>
+		<string>Whitney-Bold.ttf</string>
 		<string>Whitney-MediumSC.ttf</string>
 		<string>Whitney-Medium.ttf</string>
 		<string>Whitney-Light.ttf</string>

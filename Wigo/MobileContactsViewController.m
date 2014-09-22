@@ -139,13 +139,28 @@ NSMutableArray *filteredPeopleContactList;
     selectedPersonImageView.tintColor = [FontProperties getOrangeColor];
     [cell.contentView addSubview:selectedPersonImageView];
     
-    UILabel *nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 10, self.view.frame.size.width - 110, 30)];
+    UILabel *nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 10, self.view.frame.size.width - 55 - 15, 30)];
     NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
     NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
     NSString *fullName = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
-    nameOfPersonLabel.text = fullName;
-    nameOfPersonLabel.font = [FontProperties mediumFont:20];
-    nameOfPersonLabel.textColor = RGB(100, 100, 100);
+    [fullName capitalizedString];
+
+    NSMutableAttributedString * attString = [[NSMutableAttributedString alloc] initWithString:fullName];
+    [attString addAttribute:NSFontAttributeName
+                      value:[FontProperties mediumFont:20.0f]
+                      range:NSMakeRange(0, fullName.length)];
+    [attString addAttribute:NSForegroundColorAttributeName
+                      value:RGB(120, 120, 120)
+                      range:NSMakeRange(0, fullName.length)];
+    if ([lastName isEqualToString:@""])
+        [attString addAttribute:NSForegroundColorAttributeName
+                          value:RGB(20, 20, 20)
+                          range:NSMakeRange(0, [firstName length])];
+    else
+        [attString addAttribute:NSForegroundColorAttributeName
+                          value:RGB(20, 20, 20)
+                          range:NSMakeRange([firstName length] + 1, [lastName length])];
+    nameOfPersonLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:attString];
     [cell.contentView addSubview:nameOfPersonLabel];
     return cell;
 }

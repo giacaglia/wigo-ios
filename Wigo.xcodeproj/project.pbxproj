@@ -180,6 +180,8 @@
 		E998C26F19CCCA890012BF51 /* blade.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C26D19CCCA890012BF51 /* blade.gpx */; };
 		E998C27119CCD40A0012BF51 /* Clemson.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C27019CCD40A0012BF51 /* Clemson.gpx */; };
 		E998C27219CCD40A0012BF51 /* Clemson.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C27019CCD40A0012BF51 /* Clemson.gpx */; };
+		E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E998C27319D068880012BF51 /* Whitney-Bold.ttf */; };
+		E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E998C27319D068880012BF51 /* Whitney-Bold.ttf */; };
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
@@ -393,6 +395,7 @@
 		E998C26719CCB6BF0012BF51 /* Harvard.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Harvard.gpx; sourceTree = "<group>"; };
 		E998C26D19CCCA890012BF51 /* blade.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = blade.gpx; sourceTree = "<group>"; };
 		E998C27019CCD40A0012BF51 /* Clemson.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Clemson.gpx; sourceTree = "<group>"; };
+		E998C27319D068880012BF51 /* Whitney-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Bold.ttf"; sourceTree = "<group>"; };
 		E99EC2871986B69C00CBFA59 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
 		E99F46AD199012F0007408C1 /* LockScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockScreenViewController.h; sourceTree = "<group>"; };
@@ -960,6 +963,7 @@
 		E9BE8C4F192AA29C008BB84C /* Whitney */ = {
 			isa = PBXGroup;
 			children = (
+				E998C27319D068880012BF51 /* Whitney-Bold.ttf */,
 				E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */,
 				E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */,
 				E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */,
@@ -1153,6 +1157,7 @@
 				E9706E0C19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */,
 				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
+				E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
 				E9CD53941993C73900206B75 /* Images.xcassets in Resources */,
@@ -1186,6 +1191,7 @@
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
+				E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
 				E998C26E19CCCA890012BF51 /* blade.gpx in Resources */,
