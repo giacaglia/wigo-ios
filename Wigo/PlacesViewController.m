@@ -141,11 +141,35 @@ int sizeOfEachImage;
 
 
 - (void)initializeNotificationObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateViewNotGoingOut) name:@"updateViewNotGoingOut" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseEvent:) name:@"chooseEvent" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchEventsFirstPage) name:@"fetchEvents" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchUserInfo) name:@"fetchUserInfo" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateViewNotGoingOut)
+                                                 name:@"updateViewNotGoingOut"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(scrollUp)
+                                                 name:@"scrollUp"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(chooseEvent:)
+                                                 name:@"chooseEvent"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fetchEventsFirstPage)
+                                                 name:@"fetchEvents"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fetchUserInfo)
+                                                 name:@"fetchUserInfo"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(presentContactsView)
+                                                 name:@"presentContactsView"
+                                               object:nil];
 
 }
 
