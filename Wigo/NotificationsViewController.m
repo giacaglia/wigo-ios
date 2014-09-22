@@ -16,7 +16,10 @@
 
 @property UITableView *notificationsTableView;
 @property NSMutableArray *notificationArray;
+
 @property Party *notificationsParty;
+@property Party *expiredNotificationsParty;
+@property Party *nonExpiredNotificationsParty;
 
 @property UIActivityIndicatorView *spinner;
 @property NSNumber *page;
@@ -77,17 +80,6 @@
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"Notifications";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    
-//    UIButtonAligned *leaderboardButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 50, 30) andType:@3];
-//    [leaderboardButton addTarget:self action:@selector(leaderboardSegue)
-//            forControlEvents:UIControlEventTouchUpInside];
-//    [leaderboardButton setShowsTouchWhenHighlighted:YES];
-//    [leaderboardButton setTitle:@"100" forState:UIControlStateNormal];
-//    [leaderboardButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-//    leaderboardButton.titleLabel.textAlignment = NSTextAlignmentRight;
-//    leaderboardButton.titleLabel.font = [FontProperties getSubtitleFont];
-//    UIBarButtonItem *leaderboardBarButton =[[UIBarButtonItem alloc] initWithCustomView:leaderboardButton];
-//    self.navigationItem.rightBarButtonItem = leaderboardBarButton;
 }
 
 - (void)leaderboardSegue {
@@ -118,6 +110,9 @@
     if ([_notificationsParty hasNextPage] && [indexPath row] == [[_notificationsParty getObjectArray] count]) {
         return 30;
     }
+    else if ([indexPath section] == 0 && [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
+        return 20;
+    }
     return HEIGHT_NOTIFICATION_CELL;
 }
 
@@ -126,11 +121,17 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    int hasNextPage = ([_notificationsParty hasNextPage] ? 1 : 0);
-    if ([_followRequestSummary isEqualToNumber:@0]) {
-        return [[_notificationsParty getObjectArray] count] + hasNextPage;
+    if (section == 0) {
+        return [[_nonExpiredNotificationsParty getObjectArray] count] + 1;
     }
-    else return [[_notificationsParty getObjectArray] count] + hasNextPage + 1;
+    else {
+        int hasNextPage = ([_notificationsParty hasNextPage] ? 1 : 0);
+        if ([_followRequestSummary isEqualToNumber:@0]) {
+            return [[_expiredNotificationsParty getObjectArray] count] + hasNextPage;
+        }
+        else return [[_expiredNotificationsParty getObjectArray] count] + hasNextPage + 1;
+    }
+   
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -184,9 +185,18 @@
         if ([_page intValue] < 5) [self fetchNotifications];
         return cell;
     }
+    else if ([indexPath section] == 0 && [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
+        return cell;
+    }
     
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
-    Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:row];
+    Notification *notification;
+    if ([indexPath section] == 0) {
+        notification =  [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:row];
+    }
+    else {
+        notification =  [[_expiredNotificationsParty getObjectArray] objectAtIndex:row];
+    }
     if ([notification fromUserID] == (id)[NSNull null]) return cell;
     // When group is unlocked
     if ([[notification type] isEqualToString:@"group.unlocked"]) return cell;
@@ -360,8 +370,23 @@
     NSString *queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([_page isEqualToNumber:@1]) _notificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
+            if ([_page isEqualToNumber:@1]) {
+                _notificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
+                _expiredNotificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
+                _nonExpiredNotificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
+            }
             NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
+            Notification *notification;
+            for (int i = 0; i < [arrayOfNotifications count]; i++) {
+                NSDictionary *notiificationDictionary = [arrayOfNotifications objectAtIndex:i];
+                notification = [[Notification alloc] initWithDictionary:notiificationDictionary];
+                if ([notification expired]) {
+                    [_expiredNotificationsParty addObject:notification];
+                }
+                else {
+                    [_nonExpiredNotificationsParty addObject:notification];
+                }
+            }
             [_notificationsParty addObjectsFromArray:arrayOfNotifications];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_notificationsParty addMetaInfo:metaDictionary];

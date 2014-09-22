@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-#define CLIENT_VERSION              @"2.60.0"
+#define CLIENT_VERSION              @"2.61.0"
 #define MARKETING_PLATFORM
 
 /*!
@@ -78,8 +78,10 @@
  @method integratePushNotifications
  @abstract Lets the Localytics SDK handle registering for and handling push notifications
  @param remoteNotificationType The types of notifications for which to register
+ @deprecated This method is deprecated. Use 'registerForRemoteNotificationTypes:' instead.
  */
-- (void)integratePushNotifications:(UIRemoteNotificationType)remoteNotificationType;
+- (void)integratePushNotifications:(UIRemoteNotificationType)remoteNotificationType  __attribute__((unavailable("'integratePushNotifications' has been deprecated. Use 'registerForRemoteNotificationTypes:' directly.")));
+
 //************************************************************************************************//
 
 

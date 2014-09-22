@@ -151,10 +151,6 @@
 		E96F07C819BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07BC19BA654600E858D7 /* GKResizeableCropOverlayView.m */; };
 		E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */; };
 		E96F07D719BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */; };
-		E9706E0819C1E66A00A21DE0 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9706E0719C1E66A00A21DE0 /* libLocalyticsAMP_x64.a */; };
-		E9706E0919C1E66A00A21DE0 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9706E0719C1E66A00A21DE0 /* libLocalyticsAMP_x64.a */; };
-		E9706E0B19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E9706E0A19C1E67100A21DE0 /* iOSa_2.60.0.version */; };
-		E9706E0C19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E9706E0A19C1E67100A21DE0 /* iOSa_2.60.0.version */; };
 		E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */; };
 		E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */; };
 		E9706E1819C20EAE00A21DE0 /* WigoCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */; };
@@ -182,6 +178,10 @@
 		E998C27219CCD40A0012BF51 /* Clemson.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C27019CCD40A0012BF51 /* Clemson.gpx */; };
 		E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E998C27319D068880012BF51 /* Whitney-Bold.ttf */; };
 		E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E998C27319D068880012BF51 /* Whitney-Bold.ttf */; };
+		E998C27A19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */; };
+		E998C27B19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */; };
+		E998C27C19D0B8000012BF51 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */; };
+		E998C27D19D0B8000012BF51 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */; };
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
@@ -371,10 +371,6 @@
 		E96F07BB19BA654600E858D7 /* GKResizeableCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKResizeableCropOverlayView.h; sourceTree = "<group>"; };
 		E96F07BC19BA654600E858D7 /* GKResizeableCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKResizeableCropOverlayView.m; sourceTree = "<group>"; };
 		E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-Light.ttf"; sourceTree = "<group>"; };
-		E9706E0719C1E66A00A21DE0 /* libLocalyticsAMP_x64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libLocalyticsAMP_x64.a; sourceTree = "<group>"; };
-		E9706E0A19C1E67100A21DE0 /* iOSa_2.60.0.version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = iOSa_2.60.0.version; sourceTree = "<group>"; };
-		E9706E0D19C1E69A00A21DE0 /* LocalyticsAmpSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsAmpSession.h; sourceTree = "<group>"; };
-		E9706E0E19C1E69A00A21DE0 /* LocalyticsSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsSession.h; sourceTree = "<group>"; };
 		E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WigoCustomCell.xib; sourceTree = "<group>"; };
 		E9706E1619C20EAE00A21DE0 /* WigoCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WigoCustomCell.h; sourceTree = "<group>"; };
 		E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoCustomCell.m; sourceTree = "<group>"; };
@@ -396,6 +392,10 @@
 		E998C26D19CCCA890012BF51 /* blade.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = blade.gpx; sourceTree = "<group>"; };
 		E998C27019CCD40A0012BF51 /* Clemson.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Clemson.gpx; sourceTree = "<group>"; };
 		E998C27319D068880012BF51 /* Whitney-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Bold.ttf"; sourceTree = "<group>"; };
+		E998C27619D0B7F80012BF51 /* LocalyticsAmpSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsAmpSession.h; sourceTree = "<group>"; };
+		E998C27719D0B7F80012BF51 /* LocalyticsSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsSession.h; sourceTree = "<group>"; };
+		E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = iOSa_2.61.0.version; sourceTree = "<group>"; };
+		E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libLocalyticsAMP_x64.a; sourceTree = "<group>"; };
 		E99EC2871986B69C00CBFA59 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
 		E99F46AD199012F0007408C1 /* LockScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockScreenViewController.h; sourceTree = "<group>"; };
@@ -489,7 +489,6 @@
 				E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */,
 				E9A31E481980AB9B008A711B /* libsqlite3.dylib in Frameworks */,
 				E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */,
-				E9706E0919C1E66A00A21DE0 /* libLocalyticsAMP_x64.a in Frameworks */,
 				E998C25C19C9F7FB0012BF51 /* Parse.framework in Frameworks */,
 				E998C25A19C9F7FB0012BF51 /* Bolts.framework in Frameworks */,
 				C12A113E19787BE700D53B1C /* SystemConfiguration.framework in Frameworks */,
@@ -503,6 +502,7 @@
 				C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */,
 				C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */,
 				C12A114919787BE700D53B1C /* CoreGraphics.framework in Frameworks */,
+				E998C27D19D0B8000012BF51 /* libLocalyticsAMP_x64.a in Frameworks */,
 				C12A114A19787BE700D53B1C /* UIKit.framework in Frameworks */,
 				C12A114B19787BE700D53B1C /* Foundation.framework in Frameworks */,
 				C12A114C19787BE700D53B1C /* FacebookSDK.framework in Frameworks */,
@@ -519,7 +519,6 @@
 				E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */,
 				E9A31E4A1980ABB5008A711B /* AdSupport.framework in Frameworks */,
 				E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */,
-				E9706E0819C1E66A00A21DE0 /* libLocalyticsAMP_x64.a in Frameworks */,
 				E998C25B19C9F7FB0012BF51 /* Parse.framework in Frameworks */,
 				E998C25919C9F7FB0012BF51 /* Bolts.framework in Frameworks */,
 				E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */,
@@ -533,6 +532,7 @@
 				E9D906CF19255D8200E39FC8 /* AudioToolbox.framework in Frameworks */,
 				E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */,
 				E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */,
+				E998C27C19D0B8000012BF51 /* libLocalyticsAMP_x64.a in Frameworks */,
 				E921D61A1923967D00361247 /* UIKit.framework in Frameworks */,
 				E921D6161923967D00361247 /* Foundation.framework in Frameworks */,
 				E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */,
@@ -882,10 +882,10 @@
 		E9A31E561980AC4F008A711B /* Localytics */ = {
 			isa = PBXGroup;
 			children = (
-				E9706E0D19C1E69A00A21DE0 /* LocalyticsAmpSession.h */,
-				E9706E0E19C1E69A00A21DE0 /* LocalyticsSession.h */,
-				E9706E0A19C1E67100A21DE0 /* iOSa_2.60.0.version */,
-				E9706E0719C1E66A00A21DE0 /* libLocalyticsAMP_x64.a */,
+				E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */,
+				E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */,
+				E998C27619D0B7F80012BF51 /* LocalyticsAmpSession.h */,
+				E998C27719D0B7F80012BF51 /* LocalyticsSession.h */,
 			);
 			name = Localytics;
 			sourceTree = "<group>";
@@ -1154,7 +1154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E998C26919CCB6BF0012BF51 /* Harvard.gpx in Resources */,
-				E9706E0C19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */,
+				E998C27B19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */,
 				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
 				E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */,
@@ -1187,7 +1187,6 @@
 				E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				E9A1EAAF199CFD25003A744C /* boyVoice.caf in Resources */,
 				E998C26819CCB6BF0012BF51 /* Harvard.gpx in Resources */,
-				E9706E0B19C1E67100A21DE0 /* iOSa_2.60.0.version in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
@@ -1197,6 +1196,7 @@
 				E998C26E19CCCA890012BF51 /* blade.gpx in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
+				E998C27A19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */,
 				C18AC292198451150056957B /* autorevision.sh in Resources */,
 				E921D6201923967D00361247 /* InfoPlist.strings in Resources */,
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,
