@@ -1064,12 +1064,10 @@ int userInt;
     transition.subtype = kCATransitionFromBottom;
     [self.view.window.layer addAnimation:transition forKey:kCATransition];
     [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
-//    [[RWBlurPopover instance] presentViewController:[WigoConfirmationViewController new] withFrame:CGRectMake(20, 20, self.view.frame.size.width - 40, self.view.frame.size.height - 40)];
     
 }
 
 - (void)presentContactsView {
-//     [[RWBlurPopover instance] presentViewController:[MobileContactsViewController new] withFrame:CGRectMake(20, 20, self.view.frame.size.width - 40, self.view.frame.size.height - 40)];
     [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
 }
 

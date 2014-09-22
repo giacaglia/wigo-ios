@@ -54,6 +54,7 @@ typedef enum
 @property BOOL isFavoritesGoingOutNotificationEnabled;
 @property BOOL isBlocked;
 @property NSString *attendingEventName;
+@property BOOL isAttending;
 - (NSString *)fullName;
 - (NSString  *)joinedDate;
 - (BOOL)isEqualToUser:(User *)otherUser;
@@ -70,7 +71,6 @@ typedef enum
 - (void)makeImageURLCover:(NSString *)imageURL;
 
 
-- (BOOL)isAttending;
 - (NSNumber *)numberOfFollowing;
 - (NSNumber *)numberOfFollowers;
 

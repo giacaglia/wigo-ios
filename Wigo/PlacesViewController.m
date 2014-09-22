@@ -13,7 +13,8 @@
 //View Extensions
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
-
+#import "WigoConfirmationViewController.h"
+#import "MobileContactsViewController.h"
 
 #define xSpacing 10
 #define sizeOfEachCell 165
@@ -221,6 +222,7 @@ int sizeOfEachImage;
 
 
 - (void) goOutHere:(id)sender {
+    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
     shouldAnimate = YES;
     _whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
@@ -397,9 +399,11 @@ int sizeOfEachImage;
 
 - (void)createPressed {
     if ([_whereAreYouGoingTextField.text length] != 0) {
+        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
         NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
         [Network postGoingToEventNumber:[eventID intValue]];
         User *profileUser = [Profile user];
+        [profileUser setIsAttending:YES];
         [profileUser setIsGoingOut:YES];
         [profileUser setAttendingEventID:eventID];
         [self updatedTitleView];
@@ -460,11 +464,6 @@ int sizeOfEachImage;
 
 }
 
-#pragma mark - Growth Hack
-
-- (void)presentGrowthHack {
-    [self presentViewController:[UIViewController new] animated:YES completion:nil];
-}
 
 #pragma mark - Tablew View Data Source
 
@@ -844,5 +843,34 @@ int sizeOfEachImage;
     }];
 }
 
+#pragma mark - Growth Hack
+- (BOOL)shouldPresentGrowthHack {
+    int numberOfTimesWentOut = [[NSUserDefaults standardUserDefaults] integerForKey:@"numberOfTimesWentOut"];
+    if (numberOfTimesWentOut == 0) {
+        [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"numberOfTimesWentOut"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return NO;
+    }
+    else if (numberOfTimesWentOut == 1) {
+        [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"numberOfTimesWentOut"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return YES;
+    }
+    return NO;
+}
+
+- (void)presentGrowthHack {
+    CATransition* transition = [CATransition animation];
+    transition.duration = 1;
+    transition.type = kCATransitionFade;
+    transition.subtype = kCATransitionFromBottom;
+    [self.view.window.layer addAnimation:transition forKey:kCATransition];
+    [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
+    
+}
+
+- (void)presentContactsView {
+    [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
+}
 
 @end
