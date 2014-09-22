@@ -11,6 +11,8 @@
 #import "UIButtonAligned.h"
 #import "LeaderboardViewController.h"
 #define HEIGHT_NOTIFICATION_CELL 80
+#define HEADER_HEIGHT_CELL 20
+
 @interface NotificationsViewController ()
 @property int yPositionOfNotification;
 
@@ -28,12 +30,15 @@
 
 @end
 
+BOOL isFetchingNotifications;
+
 @implementation NotificationsViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     _followRequestSummary = @0;
+    isFetchingNotifications = NO;
     [self initializeTableNotifications];
     
     for (UIView *view in self.navigationController.navigationBar.subviews) {
@@ -122,7 +127,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        return [[_nonExpiredNotificationsParty getObjectArray] count] + 1;
+        return [[_nonExpiredNotificationsParty getObjectArray] count];
     }
     else {
         int hasNextPage = ([_notificationsParty hasNextPage] ? 1 : 0);
@@ -143,6 +148,8 @@
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
+    
+    
     
     NSInteger row = [indexPath row];
     if (![_followRequestSummary isEqualToNumber:@0]) {
@@ -181,13 +188,14 @@
     }
     
     
-    if (row == [[_notificationsParty getObjectArray] count] ) {
+    if ([indexPath section] == 1 && [indexPath row] == [[_expiredNotificationsParty getObjectArray] count] ) {
         if ([_page intValue] < 5) [self fetchNotifications];
         return cell;
     }
     else if ([indexPath section] == 0 && [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
         return cell;
     }
+
     
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
     Notification *notification;
@@ -285,9 +293,59 @@
     return cell;
 }
 
+-(CGFloat) tableView:(UITableView *)tableView
+heightForFooterInSection:(NSInteger)section
+{
+    if (section == 0 && [[_nonExpiredNotificationsParty getObjectArray] count] > 0)
+        return HEADER_HEIGHT_CELL;
+    else return 0;
+}
+
+-(UIView *) tableView:(UITableView *)tableView
+viewForFooterInSection:(NSInteger)section
+{
+    if (section == 1) {
+        return [[UIView alloc] init];
+    }
+    else {
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HEADER_HEIGHT_CELL)];
+        headerView.backgroundColor = [UIColor whiteColor];
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, HEADER_HEIGHT_CELL/2 - 2, self.view.frame.size.width, 1)];
+        lineView.backgroundColor = RGBAlpha(201, 202, 204, 0.6f);
+        [headerView addSubview:lineView];
+        
+        
+        UIView *lineView2 = [[UIView alloc] initWithFrame:CGRectMake(0, HEADER_HEIGHT_CELL/2 + 2, self.view.frame.size.width, 1)];
+        lineView2.backgroundColor = RGBAlpha(201, 202, 204, 0.6f);
+        [headerView addSubview:lineView2];
+        
+        UILabel *todayLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, HEADER_HEIGHT_CELL/2 - 15, 100, 30)];
+        todayLabel.text = @"TODAY";
+        todayLabel.backgroundColor = [UIColor whiteColor];
+        todayLabel.textColor = RGBAlpha(201, 202, 204, 0.6f);
+        todayLabel.font = [FontProperties mediumFont:15];
+        todayLabel.textAlignment = NSTextAlignmentCenter;
+        todayLabel.layer.borderWidth = 2.0f;
+        todayLabel.layer.borderColor = RGBAlpha(201, 202, 204, 0.6f).CGColor;
+        todayLabel.layer.cornerRadius = 10.0f;
+        [headerView addSubview:todayLabel];
+        
+        UIImageView *upArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, todayLabel.frame.size.height/2 - 5, 8, 10)];
+        upArrowImageView.image = [UIImage imageNamed:@"upArrow"];
+        [todayLabel addSubview:upArrowImageView];
+        
+        UIImageView *upArrowImageView2 = [[UIImageView alloc] initWithFrame:CGRectMake(todayLabel.frame.size.width - 8 - 10, todayLabel.frame.size.height/2 - 5, 8, 10)];
+        upArrowImageView2.image = [UIImage imageNamed:@"upArrow"];
+        [todayLabel addSubview:upArrowImageView2];
+        
+        return headerView;
+    }
+
+}
+
 - (void)tapPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
+    int tag = (int)buttonSender.tag;
     if (tag < [[_notificationsParty getObjectArray] count]) {
         Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:tag];
         User *user = [[User alloc] initWithDictionary:[notification fromUser]];
@@ -367,34 +425,39 @@
 }
 
 - (void)fetchNotifications {
-    NSString *queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([_page isEqualToNumber:@1]) {
-                _notificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
-                _expiredNotificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
-                _nonExpiredNotificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
-            }
-            NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
-            Notification *notification;
-            for (int i = 0; i < [arrayOfNotifications count]; i++) {
-                NSDictionary *notiificationDictionary = [arrayOfNotifications objectAtIndex:i];
-                notification = [[Notification alloc] initWithDictionary:notiificationDictionary];
-                if ([notification expired]) {
-                    [_expiredNotificationsParty addObject:notification];
+    if (!isFetchingNotifications) {
+        isFetchingNotifications = YES;
+        NSString *queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
+        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([_page isEqualToNumber:@1]) {
+                    _notificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
+                    _expiredNotificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
+                    _nonExpiredNotificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
                 }
-                else {
-                    [_nonExpiredNotificationsParty addObject:notification];
+                NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
+                Notification *notification;
+                for (int i = 0; i < [arrayOfNotifications count]; i++) {
+                    NSDictionary *notificationDictionary = [arrayOfNotifications objectAtIndex:i];
+                    notification = [[Notification alloc] initWithDictionary:notificationDictionary];
+                    if ([notification expired]) {
+                        [_expiredNotificationsParty addObject:(NSMutableDictionary *)notification];
+                    }
+                    else {
+                        [_nonExpiredNotificationsParty addObject:(NSMutableDictionary *)notification];
+                    }
                 }
-            }
-            [_notificationsParty addObjectsFromArray:arrayOfNotifications];
-            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-            [_notificationsParty addMetaInfo:metaDictionary];
-            _page = @([_page intValue] + 1);
-            [_notificationsTableView reloadData];
-            [_notificationsTableView didFinishPullToRefresh];
-        });
-    }];
+                [_notificationsParty addObjectsFromArray:arrayOfNotifications];
+                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+                [_notificationsParty addMetaInfo:metaDictionary];
+                _page = @([_page intValue] + 1);
+                [_notificationsTableView reloadData];
+                [_notificationsTableView didFinishPullToRefresh];
+                isFetchingNotifications = NO;
+            });
+        }];
+
+    }
 }
 
 
