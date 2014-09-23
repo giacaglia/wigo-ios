@@ -640,6 +640,7 @@
 
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     currentInstallation[@"wigo_id"] = [_proxy objectForKey:@"id"];
+    currentInstallation[@"api_version"] = API_VERSION;
     [currentInstallation saveInBackground];
     for (NSString *key in [dictionaryUser allKeys]) {
         [self notNillsetValue:[dictionaryUser objectForKey:key] forKey:key];
@@ -684,6 +685,7 @@
     
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     currentInstallation[@"wigo_id"] = [dictionaryUser objectForKey:@"id"];
+    currentInstallation[@"api_version"] = API_VERSION;
     [currentInstallation saveInBackground];
     for (NSString *key in [dictionaryUser allKeys]) {
         [self notNillsetValue:[dictionaryUser objectForKey:key] forKey:key];
@@ -769,6 +771,7 @@
         else {
             if ([[jsonResponse allKeys] containsObject:@"id"]) {
                 PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+                currentInstallation[@"api_version"] = API_VERSION;
                 currentInstallation[@"wigo_id"] = [jsonResponse objectForKey:@"id"];
                 [currentInstallation saveInBackground];
             }

@@ -1494,6 +1494,7 @@
 		C12A11DE19787BE700D53B1C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				API_VERSION = 1.0.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
@@ -1510,6 +1511,7 @@
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY_ENTERPRISE}\"'",
 					"ENTERPRISE=1",
 					"DEBUG=1",
+					"'API_VERSION=@\"${API_VERSION}\"'",
 				);
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				INFOPLIST_PREPROCESS = YES;
@@ -1531,6 +1533,7 @@
 		C12A11DF19787BE700D53B1C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				API_VERSION = 1.0.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Blade LLC";
@@ -1548,6 +1551,7 @@
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY_ENTERPRISE}\"'",
 					"ENTERPRISE=1",
 					"RELEASE=1",
+					"'API_VERSION=@\"${API_VERSION}\"'",
 				);
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				INFOPLIST_PREPROCESS = YES;
@@ -1569,6 +1573,7 @@
 		C12A11E019787BE700D53B1C /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				API_VERSION = 1.0.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: WiGo LLC (BJ73CT9B84)";
@@ -1586,6 +1591,7 @@
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY_ENTERPRISE}\"'",
 					"ENTERPRISE=1",
 					"DISTRIBUTION=1",
+					"'API_VERSION=@\"${API_VERSION}\"'",
 				);
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				INFOPLIST_PREPROCESS = YES;
@@ -1682,6 +1688,7 @@
 		E921D6481923967D00361247 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				API_VERSION = 1.0.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1701,6 +1708,7 @@
 					"'PARSE_APPLICATIONID=@\"${PARSE_APPLICATIONID}\"'",
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY}\"'",
 					"DEBUG=1",
+					"'API_VERSION=@\"${API_VERSION}\"'",
 				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				INFOPLIST_PREPROCESS = YES;
@@ -1722,6 +1730,7 @@
 		E921D6491923967D00361247 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				API_VERSION = 1.0.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1738,6 +1747,7 @@
 					"'PARSE_APPLICATIONID=@\"${PARSE_APPLICATIONID}\"'",
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY}\"'",
 					"RELEASE=1",
+					"'API_VERSION=@\"${API_VERSION}\"'",
 				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				INFOPLIST_PREPROCESS = YES;
@@ -1840,6 +1850,7 @@
 		E94A2852196D830F0027D3BA /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				API_VERSION = 1.0.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1856,6 +1867,7 @@
 					"'PARSE_APPLICATIONID=@\"${PARSE_APPLICATIONID}\"'",
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY}\"'",
 					"DISTRIBUTION=1",
+					"'API_VERSION=@\"${API_VERSION}\"'",
 				);
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				INFOPLIST_PREPROCESS = YES;

@@ -133,6 +133,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
     // Store the deviceToken in the current installation and save it to Parse.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    currentInstallation[@"api_version"] = API_VERSION;
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
     
@@ -373,6 +374,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     if (currentInstallation.badge != 0) {
         currentInstallation.badge = total;
+        currentInstallation[@"api_version"] = API_VERSION;
         [currentInstallation saveEventually];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber:total];
     }
