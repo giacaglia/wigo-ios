@@ -28,7 +28,7 @@ NSString *eventName;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self fetchFirstPageFollowing];
+    [self fetchFirstPageEveryone];
     [self initializeTitle];
     [self initializeTapPeopleTitle];
     [self initializeTableInvite];
@@ -117,7 +117,7 @@ NSString *eventName;
     cell.contentView.backgroundColor = [UIColor whiteColor];
 
     if ([indexPath row] == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
-        [self fetchFollowing];
+        [self fetchEveryone];
         return cell;
     }
     User *user;
@@ -184,38 +184,29 @@ NSString *eventName;
 
 #pragma mark - Network requests
 
-- (void)fetchFirstPageFollowing {
-    page = @1;
+
+- (void) fetchFirstPageEveryone {
     everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    [self fetchFollowing];
+    page = @1;
+    [self fetchEveryone];
 }
 
-- (void)fetchFollowing {
-    NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@", [[[Profile user] objectForKey:@"id"] intValue], [page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-        for (NSDictionary *object in arrayOfFollowObjects) {
-            NSDictionary *userDictionary = [object objectForKey:@"follow"];
-            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                    [arrayOfUsers addObject:[[Profile user] dictionary]];
-                }
-                else {
-                    [arrayOfUsers addObject:userDictionary];
-                }
-            }
-        }
+- (void) fetchEveryone {
+    NSString *queryString = [NSString stringWithFormat:@"users/?following=true&ordering=invite&page=%@", [page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [everyoneParty addObjectsFromArray:arrayOfUsers];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [everyoneParty addMetaInfo:metaDictionary];
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+        [Profile setEveryoneParty:everyoneParty];
+        [everyoneParty removeUser:[Profile user]];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
             page = @([page intValue] + 1);
             [invitePeopleTableView reloadData];
         });
     }];
-    
 }
+
 
 
 
