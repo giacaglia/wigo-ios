@@ -132,6 +132,20 @@ int userInt;
         if ([[jsonResponse allKeys] containsObject:@"status"]) {
             if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
                 User *user = [[User alloc] initWithDictionary:jsonResponse];
+                if ([user key]) {
+                    User *profileUser = [Profile user];
+                    [profileUser setIsGoingOut:[user isGoingOut]];
+                    dispatch_async(dispatch_get_main_queue(), ^(void){
+                        _fetchingUserInfo = NO;
+                        [self updateTitleView];
+                        [self fetchedMyInfoOrPeoplesInfo];
+                    });
+                }
+            }
+        }
+        else {
+            User *user = [[User alloc] initWithDictionary:jsonResponse];
+            if ([user key]) {
                 User *profileUser = [Profile user];
                 [profileUser setIsGoingOut:[user isGoingOut]];
                 dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -139,19 +153,9 @@ int userInt;
                     [self updateTitleView];
                     [self fetchedMyInfoOrPeoplesInfo];
                 });
+
             }
         }
-        else {
-            User *user = [[User alloc] initWithDictionary:jsonResponse];
-            User *profileUser = [Profile user];
-            [profileUser setIsGoingOut:[user isGoingOut]];
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                _fetchingUserInfo = NO;
-                [self updateTitleView];
-                [self fetchedMyInfoOrPeoplesInfo];
-            });
-        }
-       
     }];
 }
 

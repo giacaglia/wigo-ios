@@ -28,7 +28,11 @@ static Party *notAcceptedFollowingParty;
 
 + (void)setUser:(User *)newUser {
     if (newUser) {
+        User *oldUser = [self user];
         user = newUser;
+        if ([oldUser key]) {
+            [user setKey:[oldUser key]];
+        }
         [newUser updateUserAnalytics];
     }
 }
