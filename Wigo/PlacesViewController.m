@@ -15,6 +15,7 @@
 #import "UIButtonUngoOut.h"
 #import "WigoConfirmationViewController.h"
 #import "MobileContactsViewController.h"
+#import "InviteViewController.h"
 
 #define xSpacing 10
 #define sizeOfEachCell 165
@@ -244,8 +245,11 @@ int sizeOfEachImage;
     [self goOutToEventNumber:eventID];
 }
 
+- (void)invitePressed {
+    [self presentViewController:[InviteViewController new] animated:YES completion:nil];
+}
 
-- (void) goOutHere:(id)sender {
+- (void) goHerePressed:(id)sender {
     if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
     shouldAnimate = YES;
     _whereAreYouGoingTextField.text = @"";
@@ -605,17 +609,27 @@ int sizeOfEachImage;
    
     if ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]]) {
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
-        UILabel *goingHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(183, 5, 125, 25)];
-        goingHereLabel.textColor = [FontProperties getBlueColor];
-        goingHereLabel.textAlignment = NSTextAlignmentRight;
-        goingHereLabel.font = [FontProperties scMediumFont:12.0f];
-        goingHereLabel.text = @"GOING HERE";
-        [placeSubView addSubview:goingHereLabel];
+        
+        UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 105 - 5, 10 - 5, 90 + 10, 17 + 25)];
+        aroundInviteButton.tag = [(NSNumber *)[event eventID] intValue];
+        [aroundInviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 95, 25)];
+        inviteButton.enabled = NO;
+        [inviteButton setTitle:@"INVITE PEOPLE" forState:UIControlStateNormal];
+        [inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+        inviteButton.backgroundColor = [UIColor whiteColor];
+        inviteButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
+        inviteButton.layer.cornerRadius = 5;
+        inviteButton.layer.borderWidth = 1;
+        inviteButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+        [placeSubView addSubview:aroundInviteButton];
+        [aroundInviteButton addSubview:inviteButton];
     }
     else {
         UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 90 - 5, 10 - 5, 80 + 10, 17 + 25)];
         aroundGoOutButton.tag = [(NSNumber *)[event eventID] intValue];
-        [aroundGoOutButton addTarget:self action:@selector(goOutHere:) forControlEvents:UIControlEventTouchUpInside];
+        [aroundGoOutButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
         
         UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 80, 25)];
         goOutButton.enabled = NO;

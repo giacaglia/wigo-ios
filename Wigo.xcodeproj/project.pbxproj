@@ -182,6 +182,8 @@
 		E998C27B19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */; };
 		E998C27C19D0B8000012BF51 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */; };
 		E998C27D19D0B8000012BF51 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */; };
+		E998C28019D1BF7D0012BF51 /* InviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C27F19D1BF7D0012BF51 /* InviteViewController.m */; };
+		E998C28119D1BF7D0012BF51 /* InviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C27F19D1BF7D0012BF51 /* InviteViewController.m */; };
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
@@ -396,6 +398,8 @@
 		E998C27719D0B7F80012BF51 /* LocalyticsSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsSession.h; sourceTree = "<group>"; };
 		E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = iOSa_2.61.0.version; sourceTree = "<group>"; };
 		E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libLocalyticsAMP_x64.a; sourceTree = "<group>"; };
+		E998C27E19D1BF7D0012BF51 /* InviteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteViewController.h; sourceTree = "<group>"; };
+		E998C27F19D1BF7D0012BF51 /* InviteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteViewController.m; sourceTree = "<group>"; };
 		E99EC2871986B69C00CBFA59 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
 		E99F46AD199012F0007408C1 /* LockScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockScreenViewController.h; sourceTree = "<group>"; };
@@ -956,6 +960,8 @@
 				E9ACCA1F19C3A12500F3EB20 /* WigoConfirmationViewController.m */,
 				E9ACCA2219C4CBFB00F3EB20 /* MobileContactsViewController.h */,
 				E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */,
+				E998C27E19D1BF7D0012BF51 /* InviteViewController.h */,
+				E998C27F19D1BF7D0012BF51 /* InviteViewController.m */,
 			);
 			name = GrowthHackViews;
 			sourceTree = "<group>";
@@ -1311,6 +1317,7 @@
 				C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */,
 				C12A111E19787BE700D53B1C /* SDWebImagePrefetcher.m in Sources */,
 				C12A111F19787BE700D53B1C /* Network.m in Sources */,
+				E998C28119D1BF7D0012BF51 /* InviteViewController.m in Sources */,
 				C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */,
 				E96F07C619BA654600E858D7 /* GKImagePicker.m in Sources */,
 				C12A112119787BE700D53B1C /* Message.m in Sources */,
@@ -1395,6 +1402,7 @@
 				E900C2BD1961EADE00A01F50 /* SDWebImagePrefetcher.m in Sources */,
 				E9A17C70195C761E0057C89A /* Network.m in Sources */,
 				E9CD472B194B889800AEA17D /* RWBlurImage.m in Sources */,
+				E998C28019D1BF7D0012BF51 /* InviteViewController.m in Sources */,
 				E900C251195DCC4100A01F50 /* Message.m in Sources */,
 				E96F07C519BA654600E858D7 /* GKImagePicker.m in Sources */,
 				E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */,

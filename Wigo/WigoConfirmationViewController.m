@@ -66,18 +66,18 @@
     [allowButton addTarget:self action:@selector(giveOneTimeAccess) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:allowButton];
  
-    UIButton *notRightNowButton = [[UIButton alloc] initWithFrame:CGRectMake(30, 60 + 430, self.view.frame.size.width - 60, 20)];
-    [notRightNowButton setTitle:@"NOT RIGHT NOW" forState:UIControlStateNormal];
-    [notRightNowButton setTitleColor:RGB(185, 185, 185) forState:UIControlStateNormal];
-    notRightNowButton.titleLabel.font = [FontProperties scMediumFont:15];
-    [notRightNowButton addTarget:self action:@selector(notRightNowPressed) forControlEvents:UIControlEventTouchUpInside];
+//    UIButton *notRightNowButton = [[UIButton alloc] initWithFrame:CGRectMake(30, 60 + 430, self.view.frame.size.width - 60, 20)];
+//    [notRightNowButton setTitle:@"NOT RIGHT NOW" forState:UIControlStateNormal];
+//    [notRightNowButton setTitleColor:RGB(185, 185, 185) forState:UIControlStateNormal];
+//    notRightNowButton.titleLabel.font = [FontProperties scMediumFont:15];
+//    [notRightNowButton addTarget:self action:@selector(notRightNowPressed) forControlEvents:UIControlEventTouchUpInside];
 //    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"NOT RIGHT NOW"];
 //    NSDictionary *attrs = @{ NSFontAttributeName : [FontProperties scMediumFont:12],
 //                             NSForegroundColorAttributeName : RGB(185, 185, 185),
 //                             NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle) };
 //    [string addAttributes:attrs range:NSRangeFromString(string.string)];
 //    notRightNowButton.titleLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:string];
-    [self.view addSubview:notRightNowButton];
+//    [self.view addSubview:notRightNowButton];
 }
 
 - (void)giveOneTimeAccess {
