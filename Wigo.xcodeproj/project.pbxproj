@@ -170,12 +170,6 @@
 		E998C25E19C9F7FB0012BF51 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C25819C9F7FB0012BF51 /* ParseFacebookUtils.framework */; };
 		E998C26519CB80240012BF51 /* UIImageView+ImageArea.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */; };
 		E998C26619CB80240012BF51 /* UIImageView+ImageArea.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */; };
-		E998C26819CCB6BF0012BF51 /* Harvard.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C26719CCB6BF0012BF51 /* Harvard.gpx */; };
-		E998C26919CCB6BF0012BF51 /* Harvard.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C26719CCB6BF0012BF51 /* Harvard.gpx */; };
-		E998C26E19CCCA890012BF51 /* blade.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C26D19CCCA890012BF51 /* blade.gpx */; };
-		E998C26F19CCCA890012BF51 /* blade.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C26D19CCCA890012BF51 /* blade.gpx */; };
-		E998C27119CCD40A0012BF51 /* Clemson.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C27019CCD40A0012BF51 /* Clemson.gpx */; };
-		E998C27219CCD40A0012BF51 /* Clemson.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E998C27019CCD40A0012BF51 /* Clemson.gpx */; };
 		E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E998C27319D068880012BF51 /* Whitney-Bold.ttf */; };
 		E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E998C27319D068880012BF51 /* Whitney-Bold.ttf */; };
 		E998C27A19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */; };
@@ -392,9 +386,6 @@
 		E998C25819C9F7FB0012BF51 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
 		E998C26319CB80240012BF51 /* UIImageView+ImageArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+ImageArea.h"; sourceTree = "<group>"; };
 		E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+ImageArea.m"; sourceTree = "<group>"; };
-		E998C26719CCB6BF0012BF51 /* Harvard.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Harvard.gpx; sourceTree = "<group>"; };
-		E998C26D19CCCA890012BF51 /* blade.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = blade.gpx; sourceTree = "<group>"; };
-		E998C27019CCD40A0012BF51 /* Clemson.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Clemson.gpx; sourceTree = "<group>"; };
 		E998C27319D068880012BF51 /* Whitney-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Bold.ttf"; sourceTree = "<group>"; };
 		E998C27619D0B7F80012BF51 /* LocalyticsAmpSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsAmpSession.h; sourceTree = "<group>"; };
 		E998C27719D0B7F80012BF51 /* LocalyticsSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsSession.h; sourceTree = "<group>"; };
@@ -647,9 +638,6 @@
 		E921D6091923967D00361247 = {
 			isa = PBXGroup;
 			children = (
-				E998C27019CCD40A0012BF51 /* Clemson.gpx */,
-				E998C26D19CCCA890012BF51 /* blade.gpx */,
-				E998C26719CCB6BF0012BF51 /* Harvard.gpx */,
 				E921D61B1923967D00361247 /* Wigo */,
 				E921D63D1923967D00361247 /* WigoTests */,
 				E921D6141923967D00361247 /* Frameworks */,
@@ -1165,7 +1153,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E998C26919CCB6BF0012BF51 /* Harvard.gpx in Resources */,
 				E998C27B19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */,
 				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
@@ -1178,12 +1165,10 @@
 				E9CD538C1993C42600206B75 /* go-out.gif in Resources */,
 				E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
-				E998C26F19CCCA890012BF51 /* blade.gpx in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
 				E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */,
 				E9E6A56F19994B41003B590C /* glowing.gif in Resources */,
-				E998C27219CCD40A0012BF51 /* Clemson.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1192,20 +1177,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9CD538B1993C42600206B75 /* go-out.gif in Resources */,
-				E998C27119CCD40A0012BF51 /* Clemson.gpx in Resources */,
 				E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */,
 				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
 				E9E6A56E19994B41003B590C /* glowing.gif in Resources */,
 				E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				E9A1EAAF199CFD25003A744C /* boyVoice.caf in Resources */,
-				E998C26819CCB6BF0012BF51 /* Harvard.gpx in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
-				E998C26E19CCCA890012BF51 /* blade.gpx in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
 				E998C27A19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */,
