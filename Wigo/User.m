@@ -13,6 +13,7 @@
 #import "LocalyticsSession.h"
 #import "Time.h"
 #import "EventAnalytics.h"
+#import "NSMutableDictionary+NotOverwrite.h"
 
 
 @implementation User
@@ -42,7 +43,7 @@
 
 - (void) setObject:(id)obj forKey:(id)key {
     if (obj) {
-        [_proxy setObject:obj forKey:key];
+        [_proxy notNillsetObject:obj forKey:key];
         [modifiedKeys addObject:key];
     } else {
         [_proxy removeObjectForKey:key];
@@ -94,7 +95,7 @@
 }
 
 - (void)setEmail:(NSString *)email {
-    [_proxy setObject:email forKey:@"email"];
+    [_proxy notNillsetObject:email forKey:@"email"];
     [modifiedKeys addObject:@"email"];
 }
 
@@ -103,7 +104,7 @@
 }
 
 - (void)setAccessToken:(NSString *)accessToken {
-    [_proxy setObject:accessToken forKey:@"accessToken"];
+    [_proxy notNillsetObject:accessToken forKey:@"accessToken"];
     [modifiedKeys addObject:@"accessToken"];
 }
 
@@ -112,7 +113,7 @@
 }
 
 - (void)setKey:(NSString *)key {
-    [_proxy setObject:key forKey:@"key"];
+    [_proxy notNillsetObject:key forKey:@"key"];
     [modifiedKeys addObject:@"key"];
 }
 
@@ -125,7 +126,7 @@
 }
 
 - (void)setFirstName:(NSString *)name {
-    [_proxy setValue:name forKey:@"first_name"];
+    [_proxy notNillsetValue:name forKey:@"first_name"];
     [modifiedKeys addObject:@"first_name"];
 }
 
@@ -137,7 +138,7 @@
 }
 
 - (void)setLastName:(NSString *)lastName {
-    [_proxy setValue:lastName forKey:@"last_name"];
+    [_proxy notNillsetValue:lastName forKey:@"last_name"];
     [modifiedKeys addObject:@"last_name"];
 }
 
@@ -162,8 +163,8 @@
 
 - (void)setImagesURL:(NSArray *)images {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-    [properties setObject:images forKey:@"images"];
-    [_proxy setObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
+    [properties notNillsetObject:images forKey:@"images"];
+    [_proxy notNillsetObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
     [modifiedKeys addObject:@"properties"];
 }
 
@@ -217,12 +218,12 @@
     for (int j = 0; j < [[self images] count]; j++ ) {
         NSDictionary *imageArea = [imagesArea objectAtIndex:j];
         NSMutableDictionary *imageMutableDictionary = [NSMutableDictionary dictionaryWithDictionary:[imagesMutableArray objectAtIndex:j]];
-        [imageMutableDictionary setObject:imageArea forKey:@"crop"];
+        [imageMutableDictionary notNillsetObject:imageArea forKey:@"crop"];
         [imagesMutableArray setObject:imageMutableDictionary atIndexedSubscript:j];
     }
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-    [properties setObject:[NSArray arrayWithArray:imagesMutableArray] forKey:@"images"];
-    [_proxy setObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
+    [properties notNillsetObject:[NSArray arrayWithArray:imagesMutableArray] forKey:@"images"];
+    [_proxy notNillsetObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
     [modifiedKeys addObject:@"properties"];
 }
 
@@ -258,7 +259,7 @@
 }
 
 - (void)setEventID:(NSNumber *)eventID {
-    [_proxy setObject:eventID forKey:@"eventID"];
+    [_proxy notNillsetObject:eventID forKey:@"eventID"];
     [modifiedKeys addObject:@"eventID"];
     [self setIsAttending:YES];
     [self setAttendingEventID:eventID];
@@ -269,7 +270,7 @@
 }
 
 - (void)setGroupName:(NSString *)groupName {
-    [[_proxy objectForKey:@"group"] setObject:groupName forKey:@"name"];
+    [[_proxy objectForKey:@"group"] notNillsetObject:groupName forKey:@"name"];
     [modifiedKeys addObject:@"group"];
 }
 
@@ -278,7 +279,7 @@
 }
 
 - (void)setNumberOfGroupMembers:(NSNumber *)numberOfGroupMembers {
-    [[_proxy objectForKey:@"group"] setObject:numberOfGroupMembers forKey:@"num_members"];
+    [[_proxy objectForKey:@"group"] notNillsetObject:numberOfGroupMembers forKey:@"num_members"];
     [modifiedKeys addObject:@"group"];
 }
 
@@ -309,7 +310,7 @@
 }
 
 - (void)setBioString:(NSString *)bioString {
-    [_proxy setObject:bioString forKey:@"bio"];
+    [_proxy notNillsetObject:bioString forKey:@"bio"];
     [modifiedKeys addObject:@"bio"];
 }
 
@@ -319,9 +320,9 @@
 
 - (void)setIsPrivate:(BOOL)isPrivate {
     if (isPrivate) {
-        [_proxy setObject:@"private" forKey:@"privacy"];
+        [_proxy notNillsetObject:@"private" forKey:@"privacy"];
     }
-    else [_proxy setObject:@"public" forKey:@"privacy"];
+    else [_proxy notNillsetObject:@"public" forKey:@"privacy"];
     [modifiedKeys addObject:@"privacy"];
 }
 
@@ -366,7 +367,7 @@
     }
 
     if (!isGoingOut) [self setIsAttending:NO];
-    [_proxy setObject:[NSNumber numberWithBool:isGoingOut] forKey:@"is_goingout"];
+    [_proxy notNillsetObject:[NSNumber numberWithBool:isGoingOut] forKey:@"is_goingout"];
     [modifiedKeys addObject:@"is_goingout"];
 }
 
@@ -376,7 +377,7 @@
 }
 
 - (void)setEmailValidated:(BOOL)emailValidated {
-    [_proxy setObject:[NSNumber numberWithBool:emailValidated] forKey:@"email_validated"];
+    [_proxy notNillsetObject:[NSNumber numberWithBool:emailValidated] forKey:@"email_validated"];
     [modifiedKeys addObject:@"email_validated"];
 }
 
@@ -386,7 +387,7 @@
 
 - (void)setIsTapped:(BOOL)isTapped {
     NSNumber *numberIsFollowingRequested = [NSNumber numberWithBool:isTapped];
-    [_proxy setObject:numberIsFollowingRequested forKey:@"is_tapped"];
+    [_proxy notNillsetObject:numberIsFollowingRequested forKey:@"is_tapped"];
 }
 
 - (BOOL)isTapPushNotificationEnabled {
@@ -406,14 +407,14 @@
         NSMutableDictionary *notifications;
         if ([[properties allKeys] containsObject:@"notifications"]) {
             notifications = [[NSMutableDictionary alloc] initWithDictionary:[properties objectForKey:@"notifications"]];
-            [notifications setObject:[NSNumber numberWithBool:isTapPushNotificationEnabled ] forKey:@"taps"];
+            [notifications notNillsetObject:[NSNumber numberWithBool:isTapPushNotificationEnabled ] forKey:@"taps"];
         }
         else {
             notifications = [[NSMutableDictionary alloc] initWithCapacity:1];
-            [notifications setObject:[NSNumber numberWithBool:isTapPushNotificationEnabled ] forKey:@"taps"];
+            [notifications notNillsetObject:[NSNumber numberWithBool:isTapPushNotificationEnabled ] forKey:@"taps"];
         }
-        [properties setObject:notifications forKey:@"notifications"];
-        [_proxy setObject:properties forKey:@"properties"];
+        [properties notNillsetObject:notifications forKey:@"notifications"];
+        [_proxy notNillsetObject:properties forKey:@"properties"];
     }
 }
 
@@ -434,14 +435,14 @@
         NSMutableDictionary *notifications;
         if ([[properties allKeys] containsObject:@"notifications"]) {
             notifications = [[NSMutableDictionary alloc] initWithDictionary:[properties objectForKey:@"notifications"]];
-            [notifications setObject:[NSNumber numberWithBool:isFavoritesGoingOutNotificationEnabled ] forKey:@"favorites_going_out"];
+            [notifications notNillsetObject:[NSNumber numberWithBool:isFavoritesGoingOutNotificationEnabled ] forKey:@"favorites_going_out"];
         }
         else {
             notifications = [[NSMutableDictionary alloc] initWithCapacity:1];
-            [notifications setObject:[NSNumber numberWithBool:isFavoritesGoingOutNotificationEnabled ] forKey:@"favorites_going_out"];
+            [notifications notNillsetObject:[NSNumber numberWithBool:isFavoritesGoingOutNotificationEnabled ] forKey:@"favorites_going_out"];
         }
-        [properties setObject:notifications forKey:@"notifications"];
-        [_proxy setObject:properties forKey:@"properties"];
+        [properties notNillsetObject:notifications forKey:@"notifications"];
+        [_proxy notNillsetObject:properties forKey:@"properties"];
     }
 }
 
@@ -451,7 +452,7 @@
 }
 
 - (void)setIsFavorite:(BOOL)isFavorite {
-    [_proxy setObject:[NSNumber numberWithBool:isFavorite] forKey:@"is_favorite"];
+    [_proxy notNillsetObject:[NSNumber numberWithBool:isFavorite] forKey:@"is_favorite"];
     [modifiedKeys addObject:@"is_favorite"];
 }
 
@@ -461,7 +462,7 @@
 }
 
 - (void)setIsFollowing:(BOOL)isFollowing {
-    [_proxy setObject:[NSNumber numberWithBool:isFollowing] forKey:@"is_following"];
+    [_proxy notNillsetObject:[NSNumber numberWithBool:isFollowing] forKey:@"is_following"];
     [modifiedKeys addObject:@"is_following"];
 }
 
@@ -476,7 +477,7 @@
     if (isAttending == NO) {
         [_proxy removeObjectForKey:@"is_attending"];
     }
-    else [_proxy setObject:[[NSDictionary alloc] init] forKey:@"is_attending"];
+    else [_proxy notNillsetObject:[[NSDictionary alloc] init] forKey:@"is_attending"];
 }
 
 - (BOOL)isGroupLocked {
@@ -493,7 +494,7 @@
 }
 
 - (void)setIsBlocked:(BOOL)isBlocked {
-    [_proxy setObject:[NSNumber numberWithBool:isBlocked] forKey:@"is_blocked"];
+    [_proxy notNillsetObject:[NSNumber numberWithBool:isBlocked] forKey:@"is_blocked"];
     [modifiedKeys addObject:@"is_following"];
 }
 
@@ -509,8 +510,8 @@
     if (attendingEventName != nil) {
         if ([self isAttending]) {
             NSMutableDictionary *isAttending = [[NSMutableDictionary alloc] initWithDictionary:(NSDictionary *)[_proxy objectForKey:@"is_attending"]];
-            [isAttending setObject:attendingEventName forKey:@"name"];
-            [_proxy setObject:[NSDictionary dictionaryWithDictionary:isAttending] forKey:@"is_attending"];
+            [isAttending notNillsetObject:attendingEventName forKey:@"name"];
+            [_proxy notNillsetObject:[NSDictionary dictionaryWithDictionary:isAttending] forKey:@"is_attending"];
         }
     }
 }
@@ -527,8 +528,8 @@
     if (attendingEventID != nil) {
         if ([self isAttending]) {
             NSMutableDictionary *isAttending = [[NSMutableDictionary alloc] initWithDictionary:(NSDictionary *)[_proxy objectForKey:@"is_attending"]];
-            [isAttending setObject:attendingEventID forKey:@"id"];
-            [_proxy setObject:[NSDictionary dictionaryWithDictionary:isAttending] forKey:@"is_attending"];
+            [isAttending notNillsetObject:attendingEventID forKey:@"id"];
+            [_proxy notNillsetObject:[NSDictionary dictionaryWithDictionary:isAttending] forKey:@"is_attending"];
         }
     }
 }
@@ -538,7 +539,7 @@
 }
 
 - (void)setLastMessageRead:(NSNumber *)lastMessageRead {
-    [_proxy setObject:lastMessageRead forKey:@"last_message_read"];
+    [_proxy notNillsetObject:lastMessageRead forKey:@"last_message_read"];
     [modifiedKeys addObject:@"last_message_read"];
 }
 
@@ -548,7 +549,7 @@
 
 - (void)setLastUserRead:(NSNumber *)lastUserRead {
     if ([[_proxy allKeys] containsObject:@"last_user_read"]) {
-        [_proxy setObject:lastUserRead forKey:@"last_user_read"];
+        [_proxy notNillsetObject:lastUserRead forKey:@"last_user_read"];
         [modifiedKeys addObject:@"last_user_read"];
     }
 }
@@ -559,7 +560,7 @@
 }
 
 - (void)setLastNotificationRead:(NSNumber *)lastNotificationRead {
-    [_proxy setObject:lastNotificationRead forKey:@"last_notification_read"];
+    [_proxy notNillsetObject:lastNotificationRead forKey:@"last_notification_read"];
     [modifiedKeys addObject:@"last_notification_read"];
 }
 
@@ -574,7 +575,7 @@
 
 - (void)setIsFollowingRequested:(BOOL)isFollowingRequested {
     NSNumber *numberIsFollowingRequested = [NSNumber numberWithBool:isFollowingRequested];
-    [_proxy setObject:numberIsFollowingRequested forKey:@"is_following_requested"];
+    [_proxy notNillsetObject:numberIsFollowingRequested forKey:@"is_following_requested"];
 }
 
 - (STATE)getUserState {
@@ -629,7 +630,7 @@
     }
     if ([[dictionaryUser allKeys] containsObject:@"email_validated"] ) {
         for (NSString *key in [dictionaryUser allKeys]) {
-            [self setValue:[dictionaryUser objectForKey:key] forKey:key];
+            [self notNillsetValue:[dictionaryUser objectForKey:key] forKey:key];
         }
         NSNumber *emailValidatedNumber = (NSNumber *)[dictionaryUser objectForKey:@"email_validated"];
         if (![emailValidatedNumber boolValue]) {
@@ -641,7 +642,7 @@
     currentInstallation[@"wigo_id"] = [_proxy objectForKey:@"id"];
     [currentInstallation saveInBackground];
     for (NSString *key in [dictionaryUser allKeys]) {
-        [self setValue:[dictionaryUser objectForKey:key] forKey:key];
+        [self notNillsetValue:[dictionaryUser objectForKey:key] forKey:key];
     }
     [modifiedKeys removeAllObjects];
     return @"logged_in";
@@ -685,7 +686,7 @@
     currentInstallation[@"wigo_id"] = [dictionaryUser objectForKey:@"id"];
     [currentInstallation saveInBackground];
     for (NSString *key in [dictionaryUser allKeys]) {
-        [self setValue:[dictionaryUser objectForKey:key] forKey:key];
+        [self notNillsetValue:[dictionaryUser objectForKey:key] forKey:key];
     }
     [modifiedKeys removeAllObjects];
     return @"signed_up";
@@ -772,7 +773,7 @@
                 [currentInstallation saveInBackground];
             }
             for (NSString *key in [jsonResponse allKeys]) {
-                [self setValue:[jsonResponse objectForKey:key] forKey:key];
+                [self notNillsetValue:[jsonResponse objectForKey:key] forKey:key];
             }
             
             [self updateUserAnalytics];
