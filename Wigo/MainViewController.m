@@ -308,8 +308,12 @@ int userInt;
         NSString *queryString = @"events/?date=tonight&page=1&attendees_limit=0";
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *events = [jsonResponse objectForKey:@"objects"];
-            if ([events count] >= 3)
-                NSLog(@"here");
+            if ([events count] >= 3) {
+                UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
+                tabController.selectedViewController
+                = [tabController.viewControllers objectAtIndex:0];
+            }
+            
         }];
 }
 
