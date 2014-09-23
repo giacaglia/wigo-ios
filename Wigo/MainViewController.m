@@ -311,7 +311,7 @@ int userInt;
             if ([events count] >= 3) {
                 UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
                 tabController.selectedViewController
-                = [tabController.viewControllers objectAtIndex:0];
+                = [tabController.viewControllers objectAtIndex:1];
             }
             
         }];
