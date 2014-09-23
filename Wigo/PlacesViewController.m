@@ -241,8 +241,10 @@ int sizeOfEachImage;
 }
 
 - (void)chooseEvent:(NSNotification *)notification {
-    NSNumber *eventID = [[notification userInfo] valueForKey:@"eventID"];
-    [self goOutToEventNumber:eventID];
+    if ([[Profile user] key]) {
+        NSNumber *eventID = [[notification userInfo] valueForKey:@"eventID"];
+        [self goOutToEventNumber:eventID];
+    }
 }
 
 - (void)invitePressed {

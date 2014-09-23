@@ -50,7 +50,9 @@ NSDate *firstLoggedTime;
         [alertView show];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-            [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+            UIUserNotificationCategory *category;
+            NSSet *categories = [NSSet setWithObjects:category, nil];
+            [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:categories]];
             [application registerForRemoteNotifications];
         } else {
             [application registerForRemoteNotificationTypes:
@@ -81,6 +83,21 @@ NSDate *firstLoggedTime;
 
     return YES;
 }
+
+- (UIMutableUserNotificationCategory*)registerActions {
+    UIMutableUserNotificationAction* acceptLeadAction = [[UIMutableUserNotificationAction alloc] init];
+    acceptLeadAction.identifier = @"tap_with_event";
+    acceptLeadAction.title = @"Go there too";
+    acceptLeadAction.activationMode = UIUserNotificationActivationModeForeground;
+    acceptLeadAction.destructive = false;
+    acceptLeadAction.authenticationRequired = false;
+    
+    UIMutableUserNotificationCategory* category = [[UIMutableUserNotificationCategory alloc] init];
+    category.identifier = @"tap_with_event";
+    [category setActions:@[acceptLeadAction] forContext: UIUserNotificationActionContextDefault];
+    return category;
+}
+
 							
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -165,8 +182,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:[NSDictionary dictionaryWithDictionary:dictionary]];
                 }
             }
-           
-
         }
     }
     else { // If it's was at the background or inactive
@@ -209,7 +224,27 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 handleActionWithIdentifier:(NSString *)identifier
 forRemoteNotification:(NSDictionary *)userInfo
   completionHandler:(void (^)())completionHandler {
-    NSLog(@"here");
+    
+    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
+    UINavigationController *navController = (UINavigationController*)tabBarController.selectedViewController;
+
+    if ([identifier isEqualToString: @"tap_with_event"]) {
+        NSNumber *eventID = [userInfo objectForKey:@"event_id"];
+        NSDictionary *aps = [userInfo objectForKey:@"aps"];
+        if (eventID  && [aps isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *alert = [aps objectForKey:@"alert"];
+            if ([alert isKindOfClass:[NSDictionary class]]) {
+                NSString *locKeyString = [alert objectForKey:@"loc-key"];
+                if ([locKeyString isKindOfClass:[NSDictionary class]] && [locKeyString isEqualToString:@"T"]) {
+                    [navController popToRootViewControllerAnimated:NO];
+                    tabBarController.selectedIndex = 1;
+                    indexOfSelectedTab = @2;
+                    NSDictionary *dictionary = @{@"eventID": eventID};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"chooseEvent" object:nil userInfo:dictionary];
+                }
+            }
+        }
+    }
     completionHandler();
 }
 
