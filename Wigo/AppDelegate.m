@@ -153,14 +153,20 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     if (application.applicationState == UIApplicationStateActive) {
         [self reloadTabBarNotifications];
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
-        NSDictionary *alert = [aps objectForKey:@"alert"];
-        NSString *locKeyString = [alert objectForKey:@"loc-key"];
-        if ([locKeyString isEqualToString:@"M"]) {
-            NSArray *locArgs = [alert objectForKey:@"loc-args"];
-            NSString *messageString = locArgs[1];
-            NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObject:messageString forKey:@"message"];
-            [dictionary setObject:locArgs[0] forKey:@"fullName"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:[NSDictionary dictionaryWithDictionary:dictionary]];
+        if ([aps isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *alert = [aps objectForKey:@"alert"];
+            if ([alert isKindOfClass:[NSDictionary class]]) {
+                NSString *locKeyString = [alert objectForKey:@"loc-key"];
+                if ([locKeyString isKindOfClass:[NSDictionary class]] && [locKeyString isEqualToString:@"M"]) {
+                    NSArray *locArgs = [alert objectForKey:@"loc-args"];
+                    NSString *messageString = locArgs[1];
+                    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObject:messageString forKey:@"message"];
+                    [dictionary setObject:locArgs[0] forKey:@"fullName"];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:[NSDictionary dictionaryWithDictionary:dictionary]];
+                }
+            }
+           
+
         }
     }
     else { // If it's was at the background or inactive
@@ -168,24 +174,31 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         UINavigationController *navController = (UINavigationController*)tabBarController.selectedViewController;
         
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
-        NSDictionary *alert = [aps objectForKey:@"alert"];
-        NSString *locKeyString = [alert objectForKey:@"loc-key"];
-        if ([locKeyString isEqualToString:@"M"]) {
-            [navController popToRootViewControllerAnimated:NO];
-            tabBarController.selectedIndex = 2;
-            indexOfSelectedTab = @2;
-        }
-        else if ([locKeyString isEqualToString:@"T"]) {
-            [navController popToRootViewControllerAnimated:NO];
-            tabBarController.selectedIndex = 3;
-        }
-        else if ([locKeyString isEqualToString:@"F"] || [locKeyString isEqualToString:@"FR"]) {
-            [navController popToRootViewControllerAnimated:NO];
-            tabBarController.selectedIndex = 3;
-        }
-        else if ([locKeyString isEqualToString:@"G"]) {
-            [navController popToRootViewControllerAnimated:NO];
-            tabBarController.selectedIndex = 0;
+        if ([aps isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *alert = [aps objectForKey:@"alert"];
+            if ([alert isKindOfClass:[NSDictionary class]]) {
+                NSString *locKeyString = [alert objectForKey:@"loc-key"];
+                if ([locKeyString isEqualToString:@"M"]) {
+                    if ([locKeyString isEqualToString:@"M"]) {
+                        [navController popToRootViewControllerAnimated:NO];
+                        tabBarController.selectedIndex = 2;
+                        indexOfSelectedTab = @2;
+                    }
+                    else if ([locKeyString isEqualToString:@"T"]) {
+                        [navController popToRootViewControllerAnimated:NO];
+                        tabBarController.selectedIndex = 3;
+                    }
+                    else if ([locKeyString isEqualToString:@"F"] || [locKeyString isEqualToString:@"FR"]) {
+                        [navController popToRootViewControllerAnimated:NO];
+                        tabBarController.selectedIndex = 3;
+                    }
+                    else if ([locKeyString isEqualToString:@"G"]) {
+                        [navController popToRootViewControllerAnimated:NO];
+                        tabBarController.selectedIndex = 0;
+                    }
+
+                }
+            }
         }
     }
 }
