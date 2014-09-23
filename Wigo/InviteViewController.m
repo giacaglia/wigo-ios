@@ -13,12 +13,14 @@
 UITableView *invitePeopleTableView;
 Party *everyoneParty;
 NSNumber *page;
+NSString *eventName;
 
 @implementation InviteViewController
 
-- (id)init {
+- (id)initWithEventName:(NSString *)newEventName {
     self = [super init];
     if (self) {
+        eventName = newEventName;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -58,13 +60,13 @@ NSNumber *page;
     tapPeopleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     tapPeopleLabel.textAlignment = NSTextAlignmentCenter;
     NSMutableAttributedString * attString = [[NSMutableAttributedString alloc]
-                                             initWithString:[NSString stringWithFormat:@"Tap people you want to see out \nat %@", @"Sup bitches!"]];
+                                             initWithString:[NSString stringWithFormat:@"Tap people you want to see out \nat %@", eventName]];
     [attString addAttribute:NSFontAttributeName
                       value:[FontProperties lightFont:20.0f]
-                      range:NSMakeRange(0, 35)];
+                      range:NSMakeRange(0, 35 + eventName.length)];
     [attString addAttribute:NSForegroundColorAttributeName
                       value:[FontProperties getBlueColor]
-                      range:NSMakeRange(35, 12)];
+                      range:NSMakeRange(35, eventName.length)];
     tapPeopleLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:attString];
     [self.view addSubview:tapPeopleLabel];
 }

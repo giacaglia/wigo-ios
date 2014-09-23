@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Event.h"
 
 @interface InviteViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+
+- (id)initWithEventName:(NSString *)newEventName;
 
 @end
