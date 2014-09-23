@@ -34,7 +34,7 @@
     weakProfileImgView.hidden = YES;
     [self setImageWithURL:url placeholderImage:nil options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                if (![weakArea isKindOfClass:[NSNull class]] && !weakArea) {
+                if (![weakArea isKindOfClass:[NSNull class]] && weakArea) {
                     CGRect rect = CGRectMake([[weakArea objectForKey:@"x"] intValue], [[weakArea objectForKey:@"y"] intValue], [[weakArea objectForKey:@"width"] intValue], [[weakArea objectForKey:@"height"] intValue]);
                     if (!CGRectEqualToRect(CGRectZero, rect)) {
                         CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
