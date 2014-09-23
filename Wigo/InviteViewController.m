@@ -28,7 +28,7 @@ NSString *eventName;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self fetchFirstPageEveryone];
+    [self fetchFirstPageFollowing];
     [self initializeTitle];
     [self initializeTapPeopleTitle];
     [self initializeTableInvite];
@@ -51,9 +51,9 @@ NSString *eventName;
     [aroundInviteButton setShowsTouchWhenHighlighted:YES];
     [self.view addSubview:aroundInviteButton];
     
-    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 15, 15)];
-    [doneButton setBackgroundImage:[UIImage imageNamed:@"doneButton"] forState:UIControlStateNormal];
-    [aroundInviteButton addSubview:doneButton];
+    UIImageView *doneImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 15, 15)];
+    doneImageView.image = [UIImage imageNamed:@"doneButton"];
+    [aroundInviteButton addSubview:doneImageView];
 }
 
 - (void)initializeTapPeopleTitle {
@@ -64,13 +64,18 @@ NSString *eventName;
     NSMutableAttributedString * attString = [[NSMutableAttributedString alloc]
                                              initWithString:[NSString stringWithFormat:@"Tap people you want to see out \nat %@", eventName]];
     [attString addAttribute:NSFontAttributeName
-                      value:[FontProperties lightFont:20.0f]
+                      value:[FontProperties lightFont:18.0f]
                       range:NSMakeRange(0, 35 + eventName.length)];
     [attString addAttribute:NSForegroundColorAttributeName
                       value:[FontProperties getBlueColor]
                       range:NSMakeRange(35, eventName.length)];
     tapPeopleLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:attString];
     [self.view addSubview:tapPeopleLabel];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 64 + 75 - 1, self.view.frame.size.width - 15, 1)];
+    lineView.backgroundColor = [FontProperties getLightBlueColor];
+    [self.view addSubview:lineView];
+
 }
 
 - (void)donePressed {
@@ -112,7 +117,7 @@ NSString *eventName;
     cell.contentView.backgroundColor = [UIColor whiteColor];
 
     if ([indexPath row] == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
-        [self fetchEveryone];
+        [self fetchFollowing];
         return cell;
     }
     User *user;
@@ -125,7 +130,7 @@ NSString *eventName;
         user = [[everyoneParty getObjectArray] objectAtIndex:[indexPath row]];
 //    }
     
-    UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
+    UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
@@ -179,27 +184,39 @@ NSString *eventName;
 
 #pragma mark - Network requests
 
-- (void) fetchFirstPageEveryone {
-    everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
+- (void)fetchFirstPageFollowing {
     page = @1;
-    [self fetchEveryone];
+    everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    [self fetchFollowing];
 }
 
-- (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&ordering=is_goingout&page=%@" , [[Profile user] objectForKey:@"id"], [page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+- (void)fetchFollowing {
+    NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@", [[[Profile user] objectForKey:@"id"] intValue], [page stringValue]];
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+        for (NSDictionary *object in arrayOfFollowObjects) {
+            NSDictionary *userDictionary = [object objectForKey:@"follow"];
+            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                    [arrayOfUsers addObject:[[Profile user] dictionary]];
+                }
+                else {
+                    [arrayOfUsers addObject:userDictionary];
+                }
+            }
+        }
         [everyoneParty addObjectsFromArray:arrayOfUsers];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [everyoneParty addMetaInfo:metaDictionary];
-        [Profile setEveryoneParty:everyoneParty];
-        [everyoneParty removeUser:[Profile user]];
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
             page = @([page intValue] + 1);
             [invitePeopleTableView reloadData];
         });
     }];
+    
 }
+
 
 
 @end
