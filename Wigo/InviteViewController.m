@@ -46,12 +46,14 @@ NSString *eventName;
     lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
     [self.view addSubview:lineView];
 
-    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 40, 15, 15)];
+    UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(15 - 5, 40 - 5, 15 + 10, 15 + 10)];
+    [aroundInviteButton addTarget:self action:@selector(donePressed) forControlEvents:UIControlEventTouchUpInside];
+    [aroundInviteButton setShowsTouchWhenHighlighted:YES];
+    [self.view addSubview:aroundInviteButton];
+    
+    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 15, 15)];
     [doneButton setBackgroundImage:[UIImage imageNamed:@"doneButton"] forState:UIControlStateNormal];
-    [doneButton addTarget:self action:@selector(donePressed)
-            forControlEvents:UIControlEventTouchUpInside];
-    [doneButton setShowsTouchWhenHighlighted:YES];
-    [self.view addSubview:doneButton];
+    [aroundInviteButton addSubview:doneButton];
 }
 
 - (void)initializeTapPeopleTitle {
