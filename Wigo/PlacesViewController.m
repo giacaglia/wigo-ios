@@ -94,16 +94,6 @@ int sizeOfEachImage;
     [self initializeNotificationObservers];
     [self initializeTapHandler];
     [self initializeWhereView];
-    FBRequest* friendsRequest = [FBRequest requestForMyFriends];
-    [friendsRequest startWithCompletionHandler: ^(FBRequestConnection *connection,
-                                                  NSDictionary* result,
-                                                  NSError *error) {
-        NSArray* friends = [result objectForKey:@"data"];
-        NSLog(@"Found: %i friends", friends.count);
-        for (NSDictionary<FBGraphUser>* friend in friends) {
-            NSLog(@"I have a friend named %@ with id %@", friend.name, friend.id);
-        }
-    }];
 }
 
 
