@@ -100,6 +100,7 @@ int userInt;
     lineView.backgroundColor = RGBAlpha(244, 149, 45, 0.1f);
     [self.navigationController.navigationBar addSubview:lineView];
     
+    
 
     [FBAppEvents logEvent:FBAppEventNameActivatedApp];
     [self initializeFlashScreen];

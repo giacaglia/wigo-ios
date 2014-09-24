@@ -12,7 +12,7 @@
 typedef void (^IsThereResult)(NSNumber *numberOfNewMessages, NSNumber *numberOfNewNotifications);
 
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIGestureRecognizerDelegate, UITabBarControllerDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIGestureRecognizerDelegate, UITabBarControllerDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 @property NSMutableDictionary *notificationDictionary;

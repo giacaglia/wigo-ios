@@ -48,23 +48,7 @@ NSDate *firstLoggedTime;
                                   cancelButtonTitle:@"OK"
                                   otherButtonTitles: nil];
         [alertView show];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-        if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-            UIUserNotificationCategory *category;
-            NSSet *categories = [NSSet setWithObjects:category, nil];
-            [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:categories]];
-            [application registerForRemoteNotifications];
-        } else {
-            [application registerForRemoteNotificationTypes:
-             (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
-        }
-#else
-        [application registerForRemoteNotificationTypes:
-         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-#endif
-        
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"triedToRegister"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        alertView.delegate = self;
     }
     
     
@@ -83,6 +67,10 @@ NSDate *firstLoggedTime;
 
     return YES;
 }
+
+//- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+//
+//}
 
 - (UIMutableUserNotificationCategory*)registerActions {
     UIMutableUserNotificationAction* acceptLeadAction = [[UIMutableUserNotificationAction alloc] init];
@@ -548,8 +536,28 @@ forRemoteNotification:(NSDictionary *)userInfo
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if ((int)buttonIndex == 1) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/wigo-who-is-going-out/id689401759?mt=8"]];
+    if ([alertView.title isEqualToString:@"FYI"]) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+        if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+            UIUserNotificationCategory *category;
+            NSSet *categories = [NSSet setWithObjects:category, nil];
+            [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:categories]];
+            [[UIApplication sharedApplication] registerForRemoteNotifications];
+        } else {
+            [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+             (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+        }
+#else
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+#endif
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"triedToRegister"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    else {
+        if ((int)buttonIndex == 1) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/wigo-who-is-going-out/id689401759?mt=8"]];
+        }
     }
 }
 

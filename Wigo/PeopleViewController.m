@@ -564,7 +564,8 @@ int queryQueueInt;
     if (user) {
         if (_isSearching) {
             int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:0];
-            if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0) {
+            int sizeOfArray = [[_filteredContentParty getObjectArray] count];
+            if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
                 [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
                 [_tableViewOfPeople beginUpdates];
                 [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -574,7 +575,8 @@ int queryQueueInt;
         }
         else {
             int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:0];
-            if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0) {
+            int sizeOfArray = [[_contentParty getObjectArray] count];
+            if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
                 [_contentParty replaceObjectAtIndex:userInt withObject:user];
                 [_tableViewOfPeople beginUpdates];
                 [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
