@@ -728,8 +728,8 @@ int userInt;
 
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    int hasNextPage = ([_followingAcceptedParty hasNextPage] ? 1 : 0);
-    return 2 + hasNextPage;
+//    int hasNextPage = ([_followingAcceptedParty hasNextPage] ? 1 : 0);
+    return 2;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -737,11 +737,9 @@ int userInt;
     if (section == 0) {
         return [[_whoIsGoingOutParty getObjectArray] count];
     }
-    else if (section == 1) {
-        return [[_notGoingOutParty getObjectArray] count];
-    }
     else {
-        return 1;
+        int hasNextPage = ([_followingAcceptedParty hasNextPage] ? 1 : 0);
+        return [[_notGoingOutParty getObjectArray] count] + hasNextPage;
     }
 }
 
@@ -759,11 +757,22 @@ int userInt;
     else if ([indexPath section] == 1) {
         if ([[_notGoingOutParty getObjectArray] count] == 0) return cell;
         userArray = [_notGoingOutParty getObjectArray];
+        if ([_followingAcceptedParty hasNextPage] && [[_notGoingOutParty getObjectArray] count] > 7) {
+            if ([indexPath row] == [[_notGoingOutParty getObjectArray] count] - 7) {
+                [self fetchFollowing];
+            }
+        }
+        else {
+            if ([indexPath row] == [[_notGoingOutParty getObjectArray] count]) {
+                [self fetchFollowing];
+                return cell;
+            }
+        }
     }
-    else {
-        [self fetchFollowing];
-        return cell;
-    }
+//    else {
+//        [self fetchFollowing];
+//        return cell;
+//    }
     if ([userArray count] == 0 || (int)[indexPath row] >= [userArray count]) return cell;
     User *user = [userArray objectAtIndex:[indexPath row]];
     

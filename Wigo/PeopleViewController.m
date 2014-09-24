@@ -342,10 +342,18 @@ int queryQueueInt;
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
     if ([[_contentParty getObjectArray] count] == 0) return cell;
-    if ([indexPath row] == [[_contentParty getObjectArray] count]) {
-        [self loadNextPage];
-        return cell;
+    if ([[_contentParty getObjectArray] count] > 5) {
+        if ([_contentParty hasNextPage] && [indexPath row] == [[_contentParty getObjectArray] count] - 5) {
+            [self loadNextPage];
+        }
     }
+    else {
+        if ([indexPath row] == [[_contentParty getObjectArray] count]) {
+            [self loadNextPage];
+            return cell;
+        }
+    }
+   
     
     User *user = [self getUserAtIndex:(int)[indexPath row]];
     

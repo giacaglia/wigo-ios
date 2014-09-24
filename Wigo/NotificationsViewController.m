@@ -187,14 +187,26 @@ BOOL isFetchingNotifications;
         row = [indexPath row] - 1;
     }
     
+    // If the section is the first one
+    if ([indexPath section] == 0 && [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
+        return cell;
+    }
     
-    if ([indexPath section] == 1 && [indexPath row] == [[_expiredNotificationsParty getObjectArray] count] ) {
-        if ([_page intValue] < 5) [self fetchNotifications];
-        return cell;
+    // Else we are
+    if ([indexPath section] == 1) {
+        if ([_expiredNotificationsParty hasNextPage] && [[_expiredNotificationsParty getObjectArray] count] > 5) {
+            if ([indexPath row] == [[_expiredNotificationsParty getObjectArray] count] - 5) {
+                if ([_page intValue] < 5) [self fetchNotifications];
+            }
+        }
+        else {
+            if ([indexPath row] == [[_expiredNotificationsParty getObjectArray] count]) {
+                if ([_page intValue] < 5) [self fetchNotifications];
+                return cell;
+            }
+        }
     }
-    else if ([indexPath section] == 0 && [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
-        return cell;
-    }
+  
 
     
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
