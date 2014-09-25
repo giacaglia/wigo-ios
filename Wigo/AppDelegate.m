@@ -74,14 +74,14 @@ NSDate *firstLoggedTime;
 
 - (UIMutableUserNotificationCategory*)registerActions {
     UIMutableUserNotificationAction* acceptLeadAction = [[UIMutableUserNotificationAction alloc] init];
-    acceptLeadAction.identifier = @"tap_with_event";
+    acceptLeadAction.identifier = @"tap_with_diff_event";
     acceptLeadAction.title = @"Go there too";
     acceptLeadAction.activationMode = UIUserNotificationActivationModeForeground;
     acceptLeadAction.destructive = false;
     acceptLeadAction.authenticationRequired = false;
     
     UIMutableUserNotificationCategory* category = [[UIMutableUserNotificationCategory alloc] init];
-    category.identifier = @"tap_with_event";
+    category.identifier = @"tap_with_diff_event";
     [category setActions:@[acceptLeadAction] forContext: UIUserNotificationActionContextDefault];
     return category;
 }
@@ -216,7 +216,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     UINavigationController *navController = (UINavigationController*)tabBarController.selectedViewController;
 
-    if ([identifier isEqualToString: @"tap_with_event"]) {
+    if ([identifier isEqualToString: @"tap_with_diff_event"]) {
         NSNumber *eventID = [userInfo objectForKey:@"event_id"];
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if (eventID  && [aps isKindOfClass:[NSDictionary class]]) {

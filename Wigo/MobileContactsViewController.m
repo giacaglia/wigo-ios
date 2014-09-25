@@ -96,6 +96,7 @@ NSMutableArray *filteredPeopleContactList;
                 ABRecordRef ref = (__bridge ABRecordRef)([data objectAtIndex:i]);
                 NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(ref, kABPersonFirstNameProperty));
                 NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(ref, kABPersonLastNameProperty));
+                // BUG: EXC_BAD_ACCESS
                 ABMultiValueRef phones = ABRecordCopyValue(ref, kABPersonPhoneProperty);
                 if ( ABMultiValueGetCount(phones) > 0 &&
                     (![firstName isEqualToString:@""] || ![lastName isEqualToString:@""]) ) {

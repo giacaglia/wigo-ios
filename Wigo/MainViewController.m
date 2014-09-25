@@ -114,7 +114,7 @@ int userInt;
 }
 
 - (void)loadViewAfterSigningUser {
-    [self presentViewController:[PopViewController new] animated:YES completion:nil];
+//    [self presentViewController:[PopViewController new] animated:YES completion:nil];
     _fetchingFirstPage = NO;
     _fetchingUserInfo = NO;
     _fetchingIsThereNewPerson = NO;

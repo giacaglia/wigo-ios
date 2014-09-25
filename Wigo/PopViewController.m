@@ -83,13 +83,23 @@
     acceptButton.backgroundColor = [FontProperties getOrangeColor];
     [acceptButton setTitle:@"Yes, I am going out" forState:UIControlStateNormal];
     [acceptButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [acceptButton addTarget:self action:@selector(acceptGoingOut) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:acceptButton];
     
     UIButton *notSureYetButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 30 - 40, self.view.frame.size.width - 30, 30)];
     [notSureYetButton setTitle:@"Not sure yet" forState:UIControlStateNormal];
     [notSureYetButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     notSureYetButton.titleLabel.font = [FontProperties lightFont:20.0f];
+    [notSureYetButton addTarget:self action:@selector(dimissView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:notSureYetButton];
+}
+
+- (void)acceptGoingOut {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)dimissView {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
