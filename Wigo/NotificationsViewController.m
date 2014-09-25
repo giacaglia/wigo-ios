@@ -154,11 +154,11 @@ BOOL isFetchingNotifications;
     NSInteger row = [indexPath row];
     if (![_followRequestSummary isEqualToNumber:@0]) {
         if (row == 0) {
-            UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
+            UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HEIGHT_NOTIFICATION_CELL)];
             [notificationButton addTarget:self action:@selector(folowRequestPressed) forControlEvents:UIControlEventTouchUpInside];
             [cell.contentView addSubview:notificationButton];
             
-            UILabel *numberOfRequestsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 35, 35)];
+            UILabel *numberOfRequestsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, HEIGHT_NOTIFICATION_CELL/2 - 17, 35, 35)];
             numberOfRequestsLabel.layer.cornerRadius = 5;
             numberOfRequestsLabel.layer.borderWidth = 0.5;
             numberOfRequestsLabel.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -173,13 +173,13 @@ BOOL isFetchingNotifications;
             iconLabel.frame = CGRectMake(55, 20, 17, 12);
             [notificationButton addSubview:iconLabel];
         
-            UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(83, 9, 200, 36)];
+            UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, HEIGHT_NOTIFICATION_CELL/2 - 18, 200, 36)];
             notificationLabel.text = @"Follow requests";
             notificationLabel.font = [FontProperties getBioFont];
             [notificationButton addSubview:notificationLabel];
            
             UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeRightArrow"]];
-            rightArrowImageView.frame = CGRectMake(cell.contentView.frame.size.width - 35, 27 - 9, 11, 18);
+            rightArrowImageView.frame = CGRectMake(cell.contentView.frame.size.width - 35, HEIGHT_NOTIFICATION_CELL/2 - 9, 11, 18);
             [notificationButton addSubview:rightArrowImageView];            
             
             return cell;

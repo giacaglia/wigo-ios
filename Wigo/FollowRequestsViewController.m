@@ -69,6 +69,7 @@
 - (void)acceptUser:(id)sender {
     [EventAnalytics tagEvent:@"Follow Request Accepted"];
     UIButton *buttonSender = (UIButton *)sender;
+    int tag = (int)buttonSender.tag;
     UITableViewCell *cell = [_followRequestTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
@@ -77,7 +78,7 @@
     [Network acceptFollowRequestForUser:user];
     
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width - 100, 54)];
-    notificationButton.tag = buttonSender.tag;
+    notificationButton.tag = tag;
     [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     [cell.contentView addSubview:notificationButton];
     
@@ -96,21 +97,22 @@
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(55, 27 - 12, 150, 24)];
     labelName.font = [FontProperties getSmallFont];
     labelName.text = [user fullName];
-    labelName.tag = buttonSender.tag;
+    labelName.tag = tag;
     labelName.textAlignment = NSTextAlignmentLeft;
     [notificationButton addSubview:labelName];
     
-    [buttonSender removeFromSuperview];
-    
-    UIButton *followPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
-    [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-    followPersonButton.tag = -100;
-    [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    UIButton *followBackPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
     if ([user isFollowing]) {
-        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-        followPersonButton.tag = 100;
+        followBackPersonButton.tag = -100;
+        [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
     }
-    [cell.contentView addSubview:followPersonButton];
+    else {
+        followBackPersonButton.tag = 100;
+        [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+    }
+    [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
+    [cell.contentView addSubview:followBackPersonButton];
+
 }
 
 - (void)rejectUser:(id)sender {
@@ -130,14 +132,15 @@
 }
 
 - (void)followedPersonPressed:(id)sender {
-    UIButton *buttonSender = (UIButton *)sender;
-    User *user = [self getUserAtIndex:(int)buttonSender.tag];
+    UIButton *buttonSender = (UIButton*)sender;
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_followRequestTableView];
+    NSIndexPath *indexPath = [_followRequestTableView indexPathForRowAtPoint:buttonOriginInTableView];
+    User *user = [self getUserAtIndex:(int)[indexPath row]];
     if (user) {
-        UIButton *senderButton = (UIButton*)sender;
-        if (senderButton.tag == 50) {
-            [senderButton setTitle:nil forState:UIControlStateNormal];
-            [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-            senderButton.tag = -100;
+        if (buttonSender.tag == 50) {
+            [buttonSender setTitle:nil forState:UIControlStateNormal];
+            [buttonSender setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+            buttonSender.tag = -100;
             [user setIsBlocked:NO];
             NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
             NSDictionary *options = @{@"is_blocked": @NO};
@@ -146,29 +149,29 @@
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
                                     withOptions:options];
         }
-        else if (senderButton.tag == -100) {
+        else if (buttonSender.tag == -100) {
             if ([user isPrivate]) {
-                [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
-                [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
-                [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-                senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-                senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-                senderButton.layer.borderWidth = 1;
-                senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-                senderButton.layer.cornerRadius = 3;
+                [buttonSender setBackgroundImage:nil forState:UIControlStateNormal];
+                [buttonSender setTitle:@"Pending" forState:UIControlStateNormal];
+                [buttonSender setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+                buttonSender.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+                buttonSender.titleLabel.textAlignment = NSTextAlignmentCenter;
+                buttonSender.layer.borderWidth = 1;
+                buttonSender.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                buttonSender.layer.cornerRadius = 3;
                 [user setIsFollowingRequested:YES];
             }
             else {
-                [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+                [buttonSender setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 [user setIsFollowing:YES];
             }
-            senderButton.tag = 100;
+            buttonSender.tag = 100;
             [Network followUser:user];
         }
         else {
-            [senderButton setTitle:nil forState:UIControlStateNormal];
-            [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-            senderButton.tag = -100;
+            [buttonSender setTitle:nil forState:UIControlStateNormal];
+            [buttonSender setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+            buttonSender.tag = -100;
             [user setIsFollowing:NO];
             [user setIsFollowingRequested:NO];
             [Network unfollowUser:user];
@@ -179,7 +182,7 @@
 
 - (User *)getUserAtIndex:(int)index {
     User *user;
-    if (index > 0 && index < [[_followRequestsParty getObjectArray] count]) {
+    if (index >= 0 && index < [[_followRequestsParty getObjectArray] count]) {
         Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:index];
         user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
     }
