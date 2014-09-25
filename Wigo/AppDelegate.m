@@ -72,19 +72,7 @@ NSDate *firstLoggedTime;
 //
 //}
 
-- (UIMutableUserNotificationCategory*)registerActions {
-    UIMutableUserNotificationAction* acceptLeadAction = [[UIMutableUserNotificationAction alloc] init];
-    acceptLeadAction.identifier = @"tap_with_diff_event";
-    acceptLeadAction.title = @"Go there too";
-    acceptLeadAction.activationMode = UIUserNotificationActivationModeForeground;
-    acceptLeadAction.destructive = false;
-    acceptLeadAction.authenticationRequired = false;
-    
-    UIMutableUserNotificationCategory* category = [[UIMutableUserNotificationCategory alloc] init];
-    category.identifier = @"tap_with_diff_event";
-    [category setActions:@[acceptLeadAction] forContext: UIUserNotificationActionContextDefault];
-    return category;
-}
+
 
 							
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -217,16 +205,17 @@ forRemoteNotification:(NSDictionary *)userInfo
     UINavigationController *navController = (UINavigationController*)tabBarController.selectedViewController;
 
     if ([identifier isEqualToString: @"tap_with_diff_event"]) {
-        NSNumber *eventID = [userInfo objectForKey:@"event_id"];
+        NSDictionary *event = [userInfo objectForKey:@"event"];
+        NSNumber *eventID = [event objectForKey:@"id"];
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if (eventID  && [aps isKindOfClass:[NSDictionary class]]) {
             NSDictionary *alert = [aps objectForKey:@"alert"];
             if ([alert isKindOfClass:[NSDictionary class]]) {
                 NSString *locKeyString = [alert objectForKey:@"loc-key"];
-                if ([locKeyString isKindOfClass:[NSDictionary class]] && [locKeyString isEqualToString:@"T"]) {
+                if ([locKeyString isEqualToString:@"T"]) {
                     [navController popToRootViewControllerAnimated:NO];
                     tabBarController.selectedIndex = 1;
-                    indexOfSelectedTab = @2;
+                    indexOfSelectedTab = @1;
                     NSDictionary *dictionary = @{@"eventID": eventID};
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"chooseEvent" object:nil userInfo:dictionary];
                 }
@@ -539,7 +528,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     if ([alertView.title isEqualToString:@"FYI"]) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-            UIUserNotificationCategory *category;
+            UIUserNotificationCategory *category = [self registerActions];
             NSSet *categories = [NSSet setWithObjects:category, nil];
             [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:categories]];
             [[UIApplication sharedApplication] registerForRemoteNotifications];
@@ -561,6 +550,19 @@ forRemoteNotification:(NSDictionary *)userInfo
     }
 }
 
+- (UIMutableUserNotificationCategory*)registerActions {
+    UIMutableUserNotificationAction* acceptLeadAction = [[UIMutableUserNotificationAction alloc] init];
+    acceptLeadAction.identifier = @"tap_with_diff_event";
+    acceptLeadAction.title = @"Go Here";
+    acceptLeadAction.activationMode = UIUserNotificationActivationModeForeground;
+    acceptLeadAction.destructive = false;
+    acceptLeadAction.authenticationRequired = false;
+    
+    UIMutableUserNotificationCategory* category = [[UIMutableUserNotificationCategory alloc] init];
+    category.identifier = @"tap_with_diff_event";
+    [category setActions:@[acceptLeadAction] forContext: UIUserNotificationActionContextDefault];
+    return category;
+}
 
 
 @end
