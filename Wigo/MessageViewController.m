@@ -150,11 +150,18 @@ int queryQueueInt;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-
-    if ([indexPath row] == [[_contentParty getObjectArray] count] && [[_contentParty getObjectArray] count] != 0) {
-        [self fetchEveryone];
-        return cell;
+    if ([[_contentParty getObjectArray] count] > 5) {
+        if ([_contentParty hasNextPage] && [indexPath row] == [[_contentParty getObjectArray] count] - 5) {
+            [self fetchEveryone];
+        }
     }
+    else {
+        if ([indexPath row] == [[_contentParty getObjectArray] count] && [[_contentParty getObjectArray] count] != 0) {
+            [self fetchEveryone];
+            return cell;
+        }
+    }
+    
     User *user;
     if (_isSearching) {
         if ([[_filteredContentParty getObjectArray] count] == 0) return cell;
@@ -219,8 +226,8 @@ int queryQueueInt;
 #pragma mark - UISearchBar
 - (void)initializeSearchBar {
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(11, 70, self.view.frame.size.width - 22, 30)];
-    _searchBar.barTintColor = [UIColor whiteColor];
-    _searchBar.tintColor = [FontProperties getOrangeColor];
+//    _searchBar.barTintColor = [UIColor whiteColor];
+//    _searchBar.tintColor = [FontProperties getOrangeColor];
     _searchBar.placeholder = @"SEARCH BY NAME";
     _searchBar.delegate = self;
     UITextField *searchField = [_searchBar valueForKey:@"_searchField"];

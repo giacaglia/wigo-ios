@@ -16,6 +16,7 @@
 #import "WigoConfirmationViewController.h"
 #import "RWBlurPopover.h"
 #import "MobileContactsViewController.h"
+#import "PopViewController.h"
 
 @interface MainViewController ()
 
@@ -113,6 +114,7 @@ int userInt;
 }
 
 - (void)loadViewAfterSigningUser {
+    [self presentViewController:[PopViewController new] animated:YES completion:nil];
     _fetchingFirstPage = NO;
     _fetchingUserInfo = NO;
     _fetchingIsThereNewPerson = NO;

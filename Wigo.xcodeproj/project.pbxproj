@@ -180,6 +180,8 @@
 		E998C28119D1BF7D0012BF51 /* InviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C27F19D1BF7D0012BF51 /* InviteViewController.m */; };
 		E998C28419D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C28319D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m */; };
 		E998C28519D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C28319D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m */; };
+		E998C28819D342C50012BF51 /* PopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C28719D342C50012BF51 /* PopViewController.m */; };
+		E998C28919D342C50012BF51 /* PopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C28719D342C50012BF51 /* PopViewController.m */; };
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
@@ -395,6 +397,8 @@
 		E998C27F19D1BF7D0012BF51 /* InviteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteViewController.m; sourceTree = "<group>"; };
 		E998C28219D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+NotOverwrite.h"; sourceTree = "<group>"; };
 		E998C28319D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+NotOverwrite.m"; sourceTree = "<group>"; };
+		E998C28619D342C50012BF51 /* PopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopViewController.h; sourceTree = "<group>"; };
+		E998C28719D342C50012BF51 /* PopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopViewController.m; sourceTree = "<group>"; };
 		E99EC2871986B69C00CBFA59 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
 		E99F46AD199012F0007408C1 /* LockScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockScreenViewController.h; sourceTree = "<group>"; };
@@ -956,6 +960,8 @@
 				E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */,
 				E998C27E19D1BF7D0012BF51 /* InviteViewController.h */,
 				E998C27F19D1BF7D0012BF51 /* InviteViewController.m */,
+				E998C28619D342C50012BF51 /* PopViewController.h */,
+				E998C28719D342C50012BF51 /* PopViewController.m */,
 			);
 			name = GrowthHackViews;
 			sourceTree = "<group>";
@@ -1344,6 +1350,7 @@
 				C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */,
 				E9ACDC6A19AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
 				C12A113A19787BE700D53B1C /* MKAnnotationView+WebCache.m in Sources */,
+				E998C28919D342C50012BF51 /* PopViewController.m in Sources */,
 				C12A113B19787BE700D53B1C /* MainViewController.m in Sources */,
 				E903C63D19BF8C2E003BCF90 /* LeaderboardViewController.m in Sources */,
 				C12A113C19787BE700D53B1C /* NotificationsViewController.m in Sources */,
@@ -1430,6 +1437,7 @@
 				E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */,
 				E9ACDC6919AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
 				E900C2B51961EADE00A01F50 /* MKAnnotationView+WebCache.m in Sources */,
+				E998C28819D342C50012BF51 /* PopViewController.m in Sources */,
 				E921D66819239ED900361247 /* MainViewController.m in Sources */,
 				E903C63B19BF89FA003BCF90 /* LeaderboardViewController.m in Sources */,
 				E9AAAFBC193CBE810069F700 /* NotificationsViewController.m in Sources */,

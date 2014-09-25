@@ -94,6 +94,7 @@ int sizeOfEachImage;
     [self initializeNotificationObservers];
     [self initializeTapHandler];
     [self initializeWhereView];
+
 }
 
 
