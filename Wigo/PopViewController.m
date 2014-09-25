@@ -41,7 +41,6 @@ NSDictionary *dailyDictionary;
 - (void)initializeTitleLabel {
     NSString *originalString = [dailyDictionary objectForKey:@"heading"];
     NSRange initialRange = [originalString rangeOfString:@"<b>"];
-//    NSRange finishRange = [originalString rangeOfString:@"</b>"];
     NSString *strippedString = [self stringByStrippingHTML:originalString];
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 220, self.view.frame.size.width - 30, 40)];
     NSMutableAttributedString * attString = [[NSMutableAttributedString alloc]

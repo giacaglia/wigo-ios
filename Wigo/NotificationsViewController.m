@@ -476,10 +476,11 @@ viewForFooterInSection:(NSInteger)section
 - (void)fetchSummaryOfFollowRequests {
     [Network queryAsynchronousAPI:@"notifications/summary/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([[jsonResponse allKeys] containsObject:@"follow.request"]) {
+            if ([[jsonResponse allKeys] containsObject:@"follow.request"])
                 _followRequestSummary = (NSNumber *)[jsonResponse objectForKey:@"follow.request"];
-                [_notificationsTableView reloadData];
-            }
+            else
+                _followRequestSummary = @0;
+            [_notificationsTableView reloadData];
         });
     }];
 }
