@@ -61,6 +61,7 @@
 
 BOOL fetchingEventAttendees;
 BOOL shouldAnimate;
+BOOL presentedMobileContacts;
 NSNumber *page;
 NSMutableArray *eventPageArray;
 int eventOffset;
@@ -77,6 +78,7 @@ int sizeOfEachImage;
     eventPageArray = [[NSMutableArray alloc] init];
     fetchingEventAttendees = NO;
     shouldAnimate = NO;
+    presentedMobileContacts = NO;
     eventOffset = 0;
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
@@ -879,7 +881,6 @@ int sizeOfEachImage;
 
 #pragma mark - Growth Hack
 - (BOOL)shouldPresentGrowthHack {
-    return YES;
     int numberOfTimesWentOut = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"numberOfTimesWentOut"];
     if (numberOfTimesWentOut == 0) {
         [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"numberOfTimesWentOut"];
@@ -907,7 +908,10 @@ int sizeOfEachImage;
 }
 
 - (void)presentContactsView {
-    [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
+    if (!presentedMobileContacts) {
+        presentedMobileContacts = YES;
+        [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
+    }
 }
 
 @end
