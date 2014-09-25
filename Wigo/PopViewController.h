@@ -10,4 +10,6 @@
 
 @interface PopViewController : UIViewController
 
+- (id)initWithDictionary:(NSDictionary *)dict;
+
 @end

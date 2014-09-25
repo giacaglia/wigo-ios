@@ -9,42 +9,32 @@
 #import "PopViewController.h"
 #import "Globals.h"
 
-@interface PopViewController ()
 
-@end
+NSDictionary *dailyDictionary;
 
 @implementation PopViewController
 
-- (id)init {
+- (id)initWithDictionary:(NSDictionary *)dict {
     self = [super init];
     if (self) {
+        dailyDictionary = dict;
         self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
-//        self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initializeEmojiLabel];
-    [self initializeTitleLabel];
-    [self initializeButton];
-    // Do any additional setup after loading the view.
+    if ([[dailyDictionary allKeys] containsObject:@"emoji"]) [self initializeEmojiLabel];
+    if ([[dailyDictionary allKeys] containsObject:@"heading"]) [self initializeTitleLabel];
+    if ([[dailyDictionary allKeys] containsObject:@"action"]) [self initializeButton];
 }
 
 - (void)initializeEmojiLabel {
     UILabel *emojiLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 60, self.view.frame.size.width - 30, 140)];
-//    NSString *str = @"It's Monday \U0001F60F";
-//    NSString *str = @"Its Tuesday Boozeday \U0001F37A";
-//    NSString *str = @"It's Hump Day \U0001F42B";
-//    NSString *str = @"It's Thirsty Thursday \U0001F378";
-//    NSString *str = @"It's Finally Friday \U0001F389";
-//    NSString *str = @"It's Saturday \U0001F380";
-//    NSString *str = @"It's Sunday Funday \U0001F60E";
-    NSString *str = @"\U0001F60E";
+    NSString *str = [dailyDictionary objectForKey:@"emoji"];
     NSData *data = [str dataUsingEncoding:NSNonLossyASCIIStringEncoding];
     NSString *valueUnicode = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    
     
     NSData *dataa = [valueUnicode dataUsingEncoding:NSUTF8StringEncoding];
     NSString *valueEmoj = [[NSString alloc] initWithData:dataa encoding:NSNonLossyASCIIStringEncoding];
@@ -57,7 +47,7 @@
 - (void)initializeTitleLabel {
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 220, self.view.frame.size.width - 30, 40)];
     NSMutableAttributedString * attString = [[NSMutableAttributedString alloc]
-                                             initWithString:[NSString stringWithFormat:@"It's Sunday Funday!"]];
+                                             initWithString:(NSString *)[dailyDictionary objectForKey:@"heading"]];
     [attString addAttribute:NSFontAttributeName
                       value:[FontProperties mediumFont:30.0f]
                       range:NSMakeRange(0, attString.string.length)];
@@ -70,7 +60,7 @@
     
     UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 280, self.view.frame.size.width - 30, 40)];
     subtitleLabel.textAlignment = NSTextAlignmentCenter;
-    subtitleLabel.text = @"The weekend's not over yet!";
+    subtitleLabel.text = [dailyDictionary objectForKey:@"sub_heading"];
     subtitleLabel.font = [FontProperties mediumFont:22.0f];
     [self.view addSubview:subtitleLabel];
 }
@@ -81,13 +71,13 @@
     acceptButton.layer.borderWidth = 2.0f;
     acceptButton.layer.cornerRadius = 15.0f;
     acceptButton.backgroundColor = [FontProperties getOrangeColor];
-    [acceptButton setTitle:@"Yes, I am going out" forState:UIControlStateNormal];
+    [acceptButton setTitle:[[dailyDictionary objectForKey:@"action"] objectForKey:@"text"] forState:UIControlStateNormal];
     [acceptButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [acceptButton addTarget:self action:@selector(acceptGoingOut) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:acceptButton];
     
     UIButton *notSureYetButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 30 - 40, self.view.frame.size.width - 30, 30)];
-    [notSureYetButton setTitle:@"Not sure yet" forState:UIControlStateNormal];
+    [notSureYetButton setTitle:[dailyDictionary objectForKey:@"close_text"] forState:UIControlStateNormal];
     [notSureYetButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     notSureYetButton.titleLabel.font = [FontProperties lightFont:20.0f];
     [notSureYetButton addTarget:self action:@selector(dimissView) forControlEvents:UIControlEventTouchUpInside];

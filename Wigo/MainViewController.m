@@ -114,7 +114,8 @@ int userInt;
 }
 
 - (void)loadViewAfterSigningUser {
-//    [self presentViewController:[PopViewController new] animated:YES completion:nil];
+    [self fetchAppStart];
+
     _fetchingFirstPage = NO;
     _fetchingUserInfo = NO;
     _fetchingIsThereNewPerson = NO;
@@ -128,6 +129,18 @@ int userInt;
 }
 
 #pragma mark - Network function
+
+- (void)fetchAppStart {
+    [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            if ([[jsonResponse allKeys] containsObject:@"daily_prompt"]) {
+                NSDictionary *dailyPrompt = [jsonResponse objectForKey:@"daily_prompt"];
+                if (dailyPrompt) [self presentViewController:[[PopViewController alloc] initWithDictionary:dailyPrompt] animated:YES completion:nil];
+            }
+                 
+        }
+     }];
+}
 
 - (void) fetchUserInfo {
     _fetchingUserInfo = YES;

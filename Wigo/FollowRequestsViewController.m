@@ -100,6 +100,8 @@
     labelName.textAlignment = NSTextAlignmentLeft;
     [notificationButton addSubview:labelName];
     
+    [buttonSender removeFromSuperview];
+    
     UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
     [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     followPersonButton.tag = -100;
