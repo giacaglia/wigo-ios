@@ -40,6 +40,8 @@ NSDictionary *dailyDictionary;
 
 - (void)initializeTitleLabel {
     NSString *originalString = [dailyDictionary objectForKey:@"heading"];
+    NSRange initialRange = [originalString rangeOfString:@"<b>"];
+//    NSRange finishRange = [originalString rangeOfString:@"</b>"];
     NSString *strippedString = [self stringByStrippingHTML:originalString];
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 220, self.view.frame.size.width - 30, 40)];
     NSMutableAttributedString * attString = [[NSMutableAttributedString alloc]
@@ -49,10 +51,10 @@ NSDictionary *dailyDictionary;
                       range:NSMakeRange(0, attString.string.length)];
     [attString addAttribute:NSForegroundColorAttributeName
                       value:RGB(201, 202, 204)
-                      range:NSMakeRange(0, attString.string.length - 4)];
+                      range:NSMakeRange(0, attString.string.length - initialRange.location)];
     [attString addAttribute:NSForegroundColorAttributeName
                       value:[FontProperties getOrangeColor]
-                      range:NSMakeRange(4, attString.string.length - 4)];
+                      range:NSMakeRange(initialRange.location, attString.string.length - initialRange.location)];
     titleLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:attString];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:titleLabel];
