@@ -61,8 +61,15 @@ NSString *eventName;
     tapPeopleLabel.numberOfLines = 0;
     tapPeopleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     tapPeopleLabel.textAlignment = NSTextAlignmentCenter;
+    NSString *string;
+    if (eventName.length > 0 ) {
+        string = [NSString stringWithFormat:@"Tap people you want to see out \nat %@", eventName];
+    }
+    else {
+        string = @"Tap people you want to see out";
+    }
     NSMutableAttributedString * attString = [[NSMutableAttributedString alloc]
-                                             initWithString:[NSString stringWithFormat:@"Tap people you want to see out \nat %@", eventName]];
+                                             initWithString:string];
     [attString addAttribute:NSFontAttributeName
                       value:[FontProperties lightFont:18.0f]
                       range:NSMakeRange(0, 35 + eventName.length)];

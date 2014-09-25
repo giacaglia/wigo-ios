@@ -879,7 +879,7 @@ int sizeOfEachImage;
 
 #pragma mark - Growth Hack
 - (BOOL)shouldPresentGrowthHack {
-    int numberOfTimesWentOut = [[NSUserDefaults standardUserDefaults] integerForKey:@"numberOfTimesWentOut"];
+    int numberOfTimesWentOut = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"numberOfTimesWentOut"];
     if (numberOfTimesWentOut == 0) {
         [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"numberOfTimesWentOut"];
         [[NSUserDefaults standardUserDefaults] synchronize];

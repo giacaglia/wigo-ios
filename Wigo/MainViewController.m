@@ -13,9 +13,7 @@
 // Extensions
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
-#import "WigoConfirmationViewController.h"
 #import "RWBlurPopover.h"
-#import "MobileContactsViewController.h"
 #import "PopViewController.h"
 
 @interface MainViewController ()
@@ -376,11 +374,6 @@ int userInt;
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(presentContactsView)
-                                                 name:@"presentContactsView"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(goOutPressed)
                                                  name:@"goOutPressed"
                                                object:nil];
@@ -637,8 +630,7 @@ int userInt;
     [self updateTitleView];
     [self showTapButtons];
     [Network postGoOut];
-    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
-    else [self animationShowingTapIcons];
+    [self animationShowingTapIcons];
 }
 
 
@@ -1081,34 +1073,7 @@ int userInt;
     }];
 }
 
-- (BOOL)shouldPresentGrowthHack {
-    int numberOfTimesWentOut = [[NSUserDefaults standardUserDefaults] integerForKey:@"numberOfTimesWentOut"];
-    if (numberOfTimesWentOut == 0) {
-        [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"numberOfTimesWentOut"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return NO;
-    }
-    else if (numberOfTimesWentOut == 1) {
-        [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"numberOfTimesWentOut"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return YES;
-    }
-    return NO;
-}
 
-- (void)presentGrowthHack {
-    CATransition* transition = [CATransition animation];
-    transition.duration = 1;
-    transition.type = kCATransitionFade;
-    transition.subtype = kCATransitionFromBottom;
-    [self.view.window.layer addAnimation:transition forKey:kCATransition];
-    [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
-    
-}
-
-- (void)presentContactsView {
-    [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
-}
 
 
 @end
