@@ -485,7 +485,7 @@
         NSNumber *isGroupLocked = (NSNumber *)[[_proxy objectForKey:@"group"]  objectForKey:@"locked"];
         return [isGroupLocked boolValue];
     }
-    return NO;
+    return YES;
 }
 
 - (BOOL)isBlocked {
