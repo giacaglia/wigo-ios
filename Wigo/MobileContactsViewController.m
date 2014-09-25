@@ -102,11 +102,14 @@ NSMutableArray *filteredPeopleContactList;
                     (![firstName isEqualToString:@""] || ![lastName isEqualToString:@""]) ) {
                     [peopleContactList addObject:(__bridge id)(ref)];
                 }
+//                CFRelease(ref);
             }
+//            CFRelease(peopleMutable);
+//            CFRelease(addressBookRef);
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 [contactsTableView reloadData];
             });
-            CFRelease(addressBookRef);
+       
         }
     });
 }
