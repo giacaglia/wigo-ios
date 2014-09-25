@@ -246,12 +246,12 @@ int sizeOfEachImage;
 }
 
 - (void) goHerePressed:(id)sender {
-    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
     shouldAnimate = YES;
     _whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
     [self goOutToEventNumber:[NSNumber numberWithInt:(int)buttonSender.tag]];
+    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
 }
 
 - (void)goOutToEventNumber:(NSNumber*)eventID {
@@ -423,7 +423,6 @@ int sizeOfEachImage;
 
 - (void)createPressed {
     if ([_whereAreYouGoingTextField.text length] != 0) {
-        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
         NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
         [Network postGoingToEventNumber:[eventID intValue]];
         User *profileUser = [Profile user];
@@ -432,6 +431,7 @@ int sizeOfEachImage;
         [profileUser setAttendingEventID:eventID];
         [self updatedTitleView];
         [self fetchEventsFirstPage];
+        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
     }
 }
 
@@ -879,6 +879,7 @@ int sizeOfEachImage;
 
 #pragma mark - Growth Hack
 - (BOOL)shouldPresentGrowthHack {
+    return YES;
     int numberOfTimesWentOut = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"numberOfTimesWentOut"];
     if (numberOfTimesWentOut == 0) {
         [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"numberOfTimesWentOut"];
@@ -894,6 +895,8 @@ int sizeOfEachImage;
 }
 
 - (void)presentGrowthHack {
+    [[Profile user] setGrowthHackPresented];
+    [[Profile user] saveKeyAsynchronously:@"properties"];
     CATransition* transition = [CATransition animation];
     transition.duration = 1;
     transition.type = kCATransitionFade;

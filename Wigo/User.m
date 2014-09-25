@@ -168,6 +168,16 @@
     [modifiedKeys addObject:@"properties"];
 }
 
+- (void)setGrowthHackPresented {
+    NSMutableDictionary *properties = [NSMutableDictionary dictionaryWithDictionary:[_proxy objectForKey:@"properties"]];
+    if ([properties isKindOfClass:[NSDictionary class]]) {
+        [properties notNillsetObject:@1 forKey:@"presentedGrowthHack"];
+        [_proxy notNillsetObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
+        [modifiedKeys addObject:@"properties"];
+    }
+        
+}
+
 - (NSArray *)imagesURL {
     NSDictionary *properties = [_proxy objectForKey:@"properties"];
     if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {
