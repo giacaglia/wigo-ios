@@ -32,25 +32,24 @@ NSDictionary *dailyDictionary;
 
 - (void)initializeEmojiLabel {
     UILabel *emojiLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 60, self.view.frame.size.width - 30, 140)];
-    NSString *str = [dailyDictionary objectForKey:@"emoji"];
-    NSData *data = [str dataUsingEncoding:NSNonLossyASCIIStringEncoding];
-    NSString *valueUnicode = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    
-    NSData *dataa = [valueUnicode dataUsingEncoding:NSUTF8StringEncoding];
-    NSString *valueEmoj = [[NSString alloc] initWithData:dataa encoding:NSNonLossyASCIIStringEncoding];
-    emojiLabel.text = valueEmoj;
+    emojiLabel.text = [dailyDictionary objectForKey:@"emoji"];
     emojiLabel.textAlignment = NSTextAlignmentCenter;
     emojiLabel.font = [FontProperties mediumFont:120.0f];
     [self.view addSubview:emojiLabel];
 }
 
 - (void)initializeTitleLabel {
+    NSString *originalString = [dailyDictionary objectForKey:@"heading"];
+    NSString *strippedString = [self stringByStrippingHTML:originalString];
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 220, self.view.frame.size.width - 30, 40)];
     NSMutableAttributedString * attString = [[NSMutableAttributedString alloc]
-                                             initWithString:(NSString *)[dailyDictionary objectForKey:@"heading"]];
+                                             initWithString:strippedString];
     [attString addAttribute:NSFontAttributeName
                       value:[FontProperties mediumFont:30.0f]
                       range:NSMakeRange(0, attString.string.length)];
+    [attString addAttribute:NSForegroundColorAttributeName
+                      value:RGB(201, 202, 204)
+                      range:NSMakeRange(0, attString.string.length - 4)];
     [attString addAttribute:NSForegroundColorAttributeName
                       value:[FontProperties getOrangeColor]
                       range:NSMakeRange(4, attString.string.length - 4)];
@@ -58,11 +57,22 @@ NSDictionary *dailyDictionary;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:titleLabel];
     
-    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 280, self.view.frame.size.width - 30, 40)];
+    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 280, self.view.frame.size.width - 30, 70)];
+    subtitleLabel.textColor = RGB(201, 202, 204);
     subtitleLabel.textAlignment = NSTextAlignmentCenter;
+    subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    subtitleLabel.numberOfLines = 0;
     subtitleLabel.text = [dailyDictionary objectForKey:@"sub_heading"];
     subtitleLabel.font = [FontProperties mediumFont:22.0f];
     [self.view addSubview:subtitleLabel];
+}
+
+-(NSString *) stringByStrippingHTML:(NSString *)originalString {
+    NSRange r;
+    NSString *s = [originalString copy] ;
+    while ((r = [s rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound)
+        s = [s stringByReplacingCharactersInRange:r withString:@""];
+    return s;
 }
 
 - (void)initializeButton {
@@ -73,19 +83,22 @@ NSDictionary *dailyDictionary;
     acceptButton.backgroundColor = [FontProperties getOrangeColor];
     [acceptButton setTitle:[[dailyDictionary objectForKey:@"action"] objectForKey:@"text"] forState:UIControlStateNormal];
     [acceptButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    acceptButton.titleLabel.font = [FontProperties scMediumFont:25];
     [acceptButton addTarget:self action:@selector(acceptGoingOut) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:acceptButton];
     
-    UIButton *notSureYetButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 30 - 40, self.view.frame.size.width - 30, 30)];
+    UIButton *notSureYetButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 30 - 30, self.view.frame.size.width - 30, 30)];
     [notSureYetButton setTitle:[dailyDictionary objectForKey:@"close_text"] forState:UIControlStateNormal];
-    [notSureYetButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    notSureYetButton.titleLabel.font = [FontProperties lightFont:20.0f];
+    [notSureYetButton setTitleColor: RGB(201, 202, 204) forState:UIControlStateNormal];
+    notSureYetButton.titleLabel.font = [FontProperties mediumFont:18.0f];
     [notSureYetButton addTarget:self action:@selector(dimissView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:notSureYetButton];
 }
 
 - (void)acceptGoingOut {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"goOutPressed" object:nil];
+    }];
 }
 
 - (void)dimissView {

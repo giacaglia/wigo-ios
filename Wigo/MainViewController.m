@@ -132,13 +132,14 @@ int userInt;
 
 - (void)fetchAppStart {
     [Network queryAsynchronousAPI:@"app/startup?force=true" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (!error) {
-            if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
-                NSDictionary *prompt = [jsonResponse objectForKey:@"prompt"];
-                if (prompt) [self presentViewController:[[PopViewController alloc] initWithDictionary:prompt] animated:YES completion:nil];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            if (!error) {
+                if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
+                    NSDictionary *prompt = [jsonResponse objectForKey:@"prompt"];
+                    if (prompt) [self presentViewController:[[PopViewController alloc] initWithDictionary:prompt] animated:YES completion:nil];
+                }
             }
-                 
-        }
+        });
      }];
 }
 
@@ -370,7 +371,8 @@ int userInt;
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateUserAtTable:) name:@"updateUserAtTable"
+                                             selector:@selector(updateUserAtTable:)
+                                                 name:@"updateUserAtTable"
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -378,6 +380,10 @@ int userInt;
                                                  name:@"presentContactsView"
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(goOutPressed)
+                                                 name:@"goOutPressed"
+                                               object:nil];
 
 }
 
