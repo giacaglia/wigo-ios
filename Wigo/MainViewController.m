@@ -111,6 +111,8 @@ int userInt;
     [self fetchAreThereMoreThan3Events];
 }
 
+
+// BEING CALLED TWICE
 - (void)loadViewAfterSigningUser {
     [self fetchAppStart];
 
@@ -128,17 +130,44 @@ int userInt;
 
 #pragma mark - Network function
 
+- (BOOL)shouldFetchAppStartup {
+    NSDate *dateAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastTimeAccessed"];
+    if (!dateAccessed) {
+        NSDate *firstSaveDate = [NSDate date];
+        [[NSUserDefaults standardUserDefaults] setObject:firstSaveDate forKey: @"lastTimeAccessed"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return YES;
+    }
+    else {
+        NSDate *newDate = [NSDate date];
+        NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        NSDateComponents *differenceDateComponents = [gregorianCalendar
+                                                      components: NSHourCalendarUnit
+                                                      fromDate:newDate
+                                                      toDate:dateAccessed
+                                                      options:0];
+        if ([differenceDateComponents hour] >= 1) {
+            [[NSUserDefaults standardUserDefaults] setObject:newDate forKey: @"lastTimeAccessed"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            return YES;
+        }
+    }
+    return NO;
+}
+
 - (void)fetchAppStart {
-    [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if (!error) {
-                if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
-                    NSDictionary *prompt = [jsonResponse objectForKey:@"prompt"];
-                    if (prompt) [self presentViewController:[[PopViewController alloc] initWithDictionary:prompt] animated:YES completion:nil];
+    if ([self shouldFetchAppStartup]) {
+        [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if (!error) {
+                    if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
+                        NSDictionary *prompt = [jsonResponse objectForKey:@"prompt"];
+                        if (prompt) [self presentViewController:[[PopViewController alloc] initWithDictionary:prompt] animated:YES completion:nil];
+                    }
                 }
-            }
-        });
-     }];
+            });
+        }];
+    }
 }
 
 - (void) fetchUserInfo {
@@ -741,7 +770,6 @@ int userInt;
 
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-//    int hasNextPage = ([_followingAcceptedParty hasNextPage] ? 1 : 0);
     return 2;
 }
 
