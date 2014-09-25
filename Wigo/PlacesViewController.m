@@ -70,7 +70,6 @@ int sizeOfEachImage;
     int numberOfFetchedParties;
 }
 
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -91,7 +90,6 @@ int sizeOfEachImage;
     [self.navigationController.navigationBar addSubview:lineView];
     
     _spinnerAtTop = YES;
-    [self initializeNotificationObservers];
     [self initializeTapHandler];
     [self initializeWhereView];
 
@@ -99,7 +97,10 @@ int sizeOfEachImage;
 
 
 - (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self initializeNotificationObservers];
     self.tabBarController.tabBar.hidden = NO;
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
     UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"whereTabIcon"];
@@ -138,7 +139,6 @@ int sizeOfEachImage;
     self.navigationItem.rightBarButtonItem = nil;
     
     [self updatedTitleView];
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
 }
 
 
@@ -177,7 +177,7 @@ int sizeOfEachImage;
 
 - (void)updateTitleViewForNotGoingOut {
     self.navigationItem.titleView = nil;
-    self.navigationItem.title = @"Where";
+    self.navigationItem.title = @"Where are you going?";
 }
 
 - (void)scrollUp {
@@ -191,15 +191,8 @@ int sizeOfEachImage;
 }
 
 - (void) updatedTitleView {
-    if ([[Profile user] isGoingOut]) {
-        _ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
-        [_ungoOutButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-        self.navigationItem.titleView = _ungoOutButton;
-    }
-    else {
-        self.navigationItem.titleView = nil;
-        self.navigationItem.title = @"Where";
-    }
+    self.navigationItem.titleView = nil;
+    self.navigationItem.title = @"Where are you going?";
 }
 
 - (void)initializeTapHandler {
@@ -675,7 +668,7 @@ int sizeOfEachImage;
     
     int usersCantSee = (int)[totalUsers intValue] - (int)[[partyUser getObjectArray] count];
     if (usersCantSee  > 0) {
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 75, sizeOfEachImage, sizeOfEachImage)];
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 70, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage;
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);

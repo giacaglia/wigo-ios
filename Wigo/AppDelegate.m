@@ -141,6 +141,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     }
 }
 
+
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[LocalyticsSession shared] handleRemoteNotification:userInfo];
     if (application.applicationState == UIApplicationStateActive) {
@@ -213,11 +214,16 @@ forRemoteNotification:(NSDictionary *)userInfo
             if ([alert isKindOfClass:[NSDictionary class]]) {
                 NSString *locKeyString = [alert objectForKey:@"loc-key"];
                 if ([locKeyString isEqualToString:@"T"]) {
+                    if ([Profile user] && [Profile user].key) {
+                        [[Profile user] setIsGoingOut:YES];
+                        [[Profile user] setEventID:eventID];
+                        [[Profile user] setIsAttending:YES];
+                        [[Profile user] setAttendingEventID:eventID];
+                        [Network postGoingToEventNumber:[eventID intValue]];
+                    }
                     [navController popToRootViewControllerAnimated:NO];
                     tabBarController.selectedIndex = 1;
                     indexOfSelectedTab = @1;
-                    NSDictionary *dictionary = @{@"eventID": eventID};
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"chooseEvent" object:nil userInfo:dictionary];
                 }
             }
         }

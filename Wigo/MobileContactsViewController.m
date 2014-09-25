@@ -244,11 +244,14 @@ NSMutableArray *filteredPeopleContactList;
             }
         }
     }
-    NSDictionary *options = (NSDictionary *)numbers;
-    [Network sendAsynchronousHTTPMethod:POST
-                            withAPIName:@"invites/"
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                            withOptions:options];
+    if ([numbers count] > 0) {
+        NSDictionary *options = (NSDictionary *)numbers;
+        [Network sendAsynchronousHTTPMethod:POST
+                                withAPIName:@"invites/"
+                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                                withOptions:options];
+
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
