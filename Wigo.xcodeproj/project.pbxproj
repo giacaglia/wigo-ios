@@ -250,6 +250,8 @@
 		E9E6A56F19994B41003B590C /* glowing.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9E6A56D19994B41003B590C /* glowing.gif */; };
 		E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
+		E9F7994519D4A467001D5BFC /* tap.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9F7994419D4A467001D5BFC /* tap.gif */; };
+		E9F7994619D4A46F001D5BFC /* tap.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9F7994419D4A467001D5BFC /* tap.gif */; };
 		E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -479,6 +481,7 @@
 		E9ECFF7F196D917F00384252 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
 		E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpViewController.m; sourceTree = "<group>"; };
+		E9F7994419D4A467001D5BFC /* tap.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = tap.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1024,6 +1027,7 @@
 			isa = PBXGroup;
 			children = (
 				E9E6A56D19994B41003B590C /* glowing.gif */,
+				E9F7994419D4A467001D5BFC /* tap.gif */,
 				E9CD538A1993C42600206B75 /* go-out.gif */,
 			);
 			name = Gifs;
@@ -1168,6 +1172,7 @@
 				E9CD53941993C73900206B75 /* Images.xcassets in Resources */,
 				C12A119319787BE700D53B1C /* Whitney-Medium.ttf in Resources */,
 				E96F07D719BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
+				E9F7994619D4A46F001D5BFC /* tap.gif in Resources */,
 				E9CD538C1993C42600206B75 /* go-out.gif in Resources */,
 				E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
@@ -1191,6 +1196,7 @@
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
+				E9F7994519D4A467001D5BFC /* tap.gif in Resources */,
 				E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,

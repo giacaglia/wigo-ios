@@ -247,12 +247,18 @@ BOOL isFetchingNotifications;
         [notificationButton addTarget:self action:@selector(chatSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"tap"] && ![notification expired]) {
-        buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_NOTIFICATION_CELL/2 - 15, 30, 30)];
+        buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 20 - 25, HEIGHT_NOTIFICATION_CELL/2 - 20, 40, 40)];
         if ([user isTapped]) {
-            [buttonCallback setBackgroundImage:[UIImage imageNamed:@"tapSelectedNotification"] forState:UIControlStateNormal];
+            UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapSelectedNotification"]];
+            imageView.frame = CGRectMake(20 - 15, 20 -15, 30, 30);
+            [buttonCallback addSubview:imageView];
         }
         else {
-            [buttonCallback setBackgroundImage:[UIImage imageNamed:@"tapUnselectedNotification"] forState:UIControlStateNormal];
+            NSURL *url = [[NSBundle mainBundle] URLForResource:@"tap" withExtension:@"gif"];
+            FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
+            FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 40, 40)];
+            imageView.animatedImage = image;
+            [buttonCallback addSubview:imageView];
         }
         buttonCallback.layer.borderColor = [UIColor clearColor].CGColor;
         buttonCallback.layer.borderWidth = 1.0f;
@@ -357,17 +363,22 @@ viewForFooterInSection:(NSInteger)section
 
 - (void)tapPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
+    [buttonSender.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     int tag = (int)buttonSender.tag;
     if (tag < [[_notificationsParty getObjectArray] count]) {
         Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:tag];
         User *user = [[User alloc] initWithDictionary:[notification fromUser]];
         if ([user isTapped]) {
-            [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapUnselectedNotification"] forState:UIControlStateNormal];
-            [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
+            UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapSelectedNotification"]];
+            imageView.frame = CGRectMake(20 - 15, 20 -15, 30, 30);
+            [buttonSender addSubview:imageView];
         }
         else {
-            [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapSelectedNotification"] forState:UIControlStateNormal];
-            [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
+            NSURL *url = [[NSBundle mainBundle] URLForResource:@"tap" withExtension:@"gif"];
+            FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
+            FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 40, 40)];
+            imageView.animatedImage = image;
+            [buttonSender addSubview:imageView];
         }
     }
 }
