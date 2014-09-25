@@ -102,17 +102,15 @@
     
     [buttonSender removeFromSuperview];
     
-    UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
+    UIButton *followPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
     [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     followPersonButton.tag = -100;
     [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [cell.contentView addSubview:followPersonButton];
     if ([user isFollowing]) {
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = 100;
     }
-
-
+    [cell.contentView addSubview:followPersonButton];
 }
 
 - (void)rejectUser:(id)sender {
