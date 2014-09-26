@@ -263,13 +263,26 @@ BOOL isFetchingNotifications;
     }
     else if ([typeString isEqualToString:@"follow"] || [typeString isEqualToString:@"facebook.follow"] || [typeString isEqualToString:@"follow.accepted"]) {
          buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, HEIGHT_NOTIFICATION_CELL/2 - 15, 49, 30)];
-        if ([user isFollowing]) {
-            [buttonCallback setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            buttonCallback.tag = 100;
+        if ([user getUserState] == BLOCKED_USER) {
+            [buttonCallback setBackgroundImage:nil forState:UIControlStateNormal];
+            [buttonCallback setTitle:@"Blocked" forState:UIControlStateNormal];
+            [buttonCallback setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            buttonCallback.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            buttonCallback.titleLabel.textAlignment = NSTextAlignmentCenter;
+            buttonCallback.layer.borderWidth = 1;
+            buttonCallback.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            buttonCallback.layer.cornerRadius = 3;
+            buttonCallback.tag = 50;
         }
         else {
-            [buttonCallback setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-            buttonCallback.tag = - 100;
+            if ([user isFollowing]) {
+                [buttonCallback setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+                buttonCallback.tag = 100;
+            }
+            else {
+                [buttonCallback setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+                buttonCallback.tag = - 100;
+            }
         }
         [buttonCallback addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
@@ -359,23 +372,29 @@ viewForFooterInSection:(NSInteger)section
 - (void)tapPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     [buttonSender.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    int tag = (int)buttonSender.tag;
-    if (tag < [[_notificationsParty getObjectArray] count]) {
-        Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:tag];
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_notificationsTableView];
+    NSIndexPath *indexPath = [_notificationsTableView indexPathForRowAtPoint:buttonOriginInTableView];
+    Notification *notification = [self getNotificationAtIndex:indexPath];
+    if (notification) {
         User *user = [[User alloc] initWithDictionary:[notification fromUser]];
-        if ([user isTapped]) {
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapSelectedNotification"]];
-            imageView.frame = CGRectMake(20 - 15, 20 -15, 30, 30);
-            [buttonSender addSubview:imageView];
-        }
-        else {
-            NSURL *url = [[NSBundle mainBundle] URLForResource:@"tap" withExtension:@"gif"];
-            FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
-            FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 40, 40)];
-            imageView.animatedImage = image;
-            [buttonSender addSubview:imageView];
+        if (user) {
+            if ([user isTapped]) {
+                NSURL *url = [[NSBundle mainBundle] URLForResource:@"tap" withExtension:@"gif"];
+                FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
+                FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 40, 40)];
+                imageView.animatedImage = image;
+                [buttonSender addSubview:imageView];
+                [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
+            }
+            else {
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapSelectedNotification"]];
+                imageView.frame = CGRectMake(20 - 15, 20 -15, 30, 30);
+                [buttonSender addSubview:imageView];
+                [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
+            }
         }
     }
+    
 }
 
 - (void)followedPersonPressed:(id)sender {

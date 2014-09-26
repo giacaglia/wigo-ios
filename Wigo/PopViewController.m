@@ -11,6 +11,7 @@
 
 
 NSDictionary *dailyDictionary;
+UILabel *emojiLabel;
 
 @implementation PopViewController
 
@@ -31,7 +32,7 @@ NSDictionary *dailyDictionary;
 }
 
 - (void)initializeEmojiLabel {
-    UILabel *emojiLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 60, self.view.frame.size.width - 30, 140)];
+    emojiLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 60, self.view.frame.size.width - 30, 140)];
     emojiLabel.text = [dailyDictionary objectForKey:@"emoji"];
     emojiLabel.textAlignment = NSTextAlignmentCenter;
     emojiLabel.font = [FontProperties mediumFont:120.0f];
@@ -41,6 +42,7 @@ NSDictionary *dailyDictionary;
 - (void)initializeTitleLabel {
     NSString *originalString = [dailyDictionary objectForKey:@"heading"];
     NSRange initialRange = [originalString rangeOfString:@"<b>"];
+    NSRange finalRange = [originalString rangeOfString:@"</b>"];
     NSString *strippedString = [self stringByStrippingHTML:originalString];
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 220, self.view.frame.size.width - 30, 40)];
     NSMutableAttributedString * attString = [[NSMutableAttributedString alloc]
@@ -53,12 +55,12 @@ NSDictionary *dailyDictionary;
                       range:NSMakeRange(0, attString.string.length - initialRange.location)];
     [attString addAttribute:NSForegroundColorAttributeName
                       value:[FontProperties getOrangeColor]
-                      range:NSMakeRange(initialRange.location, attString.string.length - initialRange.location)];
+                      range:NSMakeRange(initialRange.location, finalRange.location - initialRange.location - initialRange.length)];
     titleLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:attString];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:titleLabel];
     
-    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 280, self.view.frame.size.width - 30, 70)];
+    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 260, self.view.frame.size.width - 30, 70)];
     subtitleLabel.textColor = RGB(201, 202, 204);
     subtitleLabel.textAlignment = NSTextAlignmentCenter;
     subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -88,15 +90,16 @@ NSDictionary *dailyDictionary;
     [acceptButton addTarget:self action:@selector(acceptGoingOut) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:acceptButton];
     
-    UIButton *notSureYetButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 30 - 30, self.view.frame.size.width - 30, 30)];
+    UIButton *notSureYetButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 30 - 60, self.view.frame.size.width - 30, 30)];
     [notSureYetButton setTitle:[dailyDictionary objectForKey:@"close_text"] forState:UIControlStateNormal];
     [notSureYetButton setTitleColor: RGB(201, 202, 204) forState:UIControlStateNormal];
-    notSureYetButton.titleLabel.font = [FontProperties mediumFont:18.0f];
+    notSureYetButton.titleLabel.font = [FontProperties mediumFont:20.0f];
     [notSureYetButton addTarget:self action:@selector(dimissView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:notSureYetButton];
 }
 
 - (void)acceptGoingOut {
+//    [self animateEmoji];
     [self dismissViewControllerAnimated:YES completion:^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"goOutPressed" object:nil];
     }];
@@ -105,6 +108,58 @@ NSDictionary *dailyDictionary;
 - (void)dimissView {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+- (void)animateEmoji {
+    CGPoint centerPoint = emojiLabel.center;
+    [UIView animateWithDuration:0.3
+                     animations:^{
+        emojiLabel.alpha = 0.7;
+        emojiLabel.frame = CGRectMake(centerPoint.x - 2.5, centerPoint.y - 2.5, 5, 5);
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.3
+    animations:^{
+        emojiLabel.alpha = 0.85;
+        emojiLabel.frame = CGRectMake(centerPoint.x - 125, centerPoint.y  - 125, 250, 250);
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.3
+    animations:^{
+        emojiLabel.frame = CGRectMake(centerPoint.x - 100, centerPoint.y  - 100, 200, 200);
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.1
+    animations:^{
+        emojiLabel.alpha = 1.0;
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:2.1 delay:0.5 options:UIViewAnimationOptionCurveLinear
+    animations:^{
+        emojiLabel.alpha = 0.5;
+        emojiLabel.frame = CGRectMake(centerPoint.x - 125, centerPoint.y - 125, 250, 250);
+    }
+    completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.1
+    animations:^{
+        emojiLabel.alpha = 0.2;
+        emojiLabel.frame = CGRectMake(centerPoint.x - 10, centerPoint.y - 10, 10, 10);
+    }
+    completion:^(BOOL finished){
+    [UIView animateWithDuration:0.1
+    animations:^{
+        emojiLabel.alpha = 1;
+        emojiLabel.frame = CGRectMake(centerPoint.x, centerPoint.y, 80, 80);
+    }
+    completion:^(BOOL finished) {
+    }];
+    }];
+    }];
+    }];
+    }];
+    }];
+    }];
+}
+
 
 
 @end

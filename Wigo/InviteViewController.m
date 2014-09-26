@@ -184,11 +184,17 @@ NSNumber *eventID;
     if ([user isTapped]) {
         [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapUnselectedInvite"] forState:UIControlStateNormal];
         [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
+        [user setIsTapped:NO];
     }
     else {
         [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapSelectedInvite"] forState:UIControlStateNormal];
         [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
+        [user setIsTapped:YES];
     }
+    [everyoneParty replaceObjectAtIndex:tag withObject:user];
+    [invitePeopleTableView beginUpdates];
+    [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
+    [invitePeopleTableView endUpdates];
 }
 
 #pragma mark - Network requests
@@ -201,7 +207,7 @@ NSNumber *eventID;
 }
 
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?is_attending__ne=%@&following=true&ordering=invite&page=%@",[eventID stringValue], [page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"users/?is_attending__ne=%@&following=true&ordering=invite&page=%@&is_tapped=%@",[eventID stringValue], [page stringValue], @"false"];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [everyoneParty addObjectsFromArray:arrayOfUsers];
