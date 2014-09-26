@@ -66,6 +66,7 @@ NSNumber *page;
 NSMutableArray *eventPageArray;
 int eventOffset;
 int sizeOfEachImage;
+BOOL shouldReloadEvents;
 
 @implementation PlacesViewController {
     int numberOfFetchedParties;
@@ -79,6 +80,7 @@ int sizeOfEachImage;
     fetchingEventAttendees = NO;
     shouldAnimate = NO;
     presentedMobileContacts = NO;
+    shouldReloadEvents = YES;
     eventOffset = 0;
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
@@ -116,8 +118,13 @@ int sizeOfEachImage;
     [self.view endEditing:YES];
     self.tabBarController.tabBar.hidden = NO;
     [self initializeNavigationBar];
-    _spinnerAtTop = NO;
-    [self fetchEventsFirstPage];
+    if (shouldReloadEvents) {
+        _spinnerAtTop = NO;
+        [self fetchEventsFirstPage];
+    }
+    else {
+        shouldReloadEvents = YES;
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -326,6 +333,7 @@ int sizeOfEachImage;
             if (user && event) {
                 [user setAttendingEventID:[event eventID]];
                 [user setAttendingEventName:[event name]];
+                shouldReloadEvents = NO;
                 self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
                 [self.navigationController pushViewController:self.profileViewController animated:YES];
                 self.tabBarController.tabBar.hidden = YES;
