@@ -240,26 +240,20 @@ BOOL isFetchingNotifications;
         buttonCallback = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 50, HEIGHT_NOTIFICATION_CELL/2 - 20, 40, 40)];
         [notificationButton addTarget:self action:@selector(chatSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
-    else if ([typeString isEqualToString:@"tap"] && ![notification expired]) {
-        buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 20 - 25, HEIGHT_NOTIFICATION_CELL/2 - 20, 40, 40)];
-        if ([user isTapped]) {
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapSelectedNotification"]];
-            imageView.frame = CGRectMake(20 - 15, 20 -15, 30, 30);
-            [buttonCallback addSubview:imageView];
+    else if ([typeString isEqualToString:@"tap"] && ![notification expired] &&
+             [user isAttending] ) {
+        if (![[Profile user] isGoingOut] || ([[Profile user] isAttending] && ![[[Profile user] attendingEventID] isEqualToNumber:[user attendingEventID]] )) {
+            buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 20 - 25, HEIGHT_NOTIFICATION_CELL/2 - 15, 55, 30)];
+            [buttonCallback setTitle:@"GO HERE" forState:UIControlStateNormal];
+            [buttonCallback setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            buttonCallback.titleLabel.font = [FontProperties getSmallPhotoFont];
+            buttonCallback.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            buttonCallback.layer.borderWidth = 1.0f;
+            buttonCallback.layer.cornerRadius = 7.0f;
+            buttonCallback.tag = row;
+            [buttonCallback addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+            [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
         }
-        else {
-            NSURL *url = [[NSBundle mainBundle] URLForResource:@"tap" withExtension:@"gif"];
-            FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
-            FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 40, 40)];
-            imageView.animatedImage = image;
-            [buttonCallback addSubview:imageView];
-        }
-        buttonCallback.layer.borderColor = [UIColor clearColor].CGColor;
-        buttonCallback.layer.borderWidth = 1.0f;
-        buttonCallback.layer.cornerRadius = 7.0f;
-        buttonCallback.tag = row;
-        [buttonCallback addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     else if ([typeString isEqualToString:@"follow"] || [typeString isEqualToString:@"facebook.follow"] || [typeString isEqualToString:@"follow.accepted"]) {
          buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, HEIGHT_NOTIFICATION_CELL/2 - 15, 49, 30)];
