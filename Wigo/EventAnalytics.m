@@ -8,6 +8,8 @@
 
 #import "EventAnalytics.h"
 #import "Globals.h"
+#import "GAI.h"
+#import "GAIDictionaryBuilder.h"
 
 @implementation EventAnalytics
 
@@ -52,6 +54,12 @@
     
     [data addEntriesFromDictionary:details];
     [[LocalyticsSession shared] tagEvent:name attributes:data];
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"ui_action"     // Event category (required)
+                                                          action:name  // Event action (required)
+                                                           label:nil          // Event label
+                                                           value:nil] build]];
 }
 
 +(void) tagScreen:(NSString *)name {
