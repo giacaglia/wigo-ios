@@ -265,11 +265,12 @@ BOOL isFetchingNotifications;
          buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, HEIGHT_NOTIFICATION_CELL/2 - 15, 49, 30)];
         if ([user isFollowing]) {
             [buttonCallback setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+            buttonCallback.tag = 100;
         }
         else {
             [buttonCallback setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+            buttonCallback.tag = - 100;
         }
-        buttonCallback.tag = row;
         [buttonCallback addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
