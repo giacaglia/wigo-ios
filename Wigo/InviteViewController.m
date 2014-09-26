@@ -14,12 +14,14 @@ UITableView *invitePeopleTableView;
 Party *everyoneParty;
 NSNumber *page;
 NSString *eventName;
+NSNumber *eventID;
 
 @implementation InviteViewController
 
-- (id)initWithEventName:(NSString *)newEventName {
+- (id)initWithEventName:(NSString *)newEventName andID:(NSNumber *)newEventID {
     self = [super init];
     if (self) {
+        eventID = newEventID;
         eventName = newEventName;
         self.view.backgroundColor = [UIColor whiteColor];
     }
@@ -199,7 +201,7 @@ NSString *eventName;
 }
 
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?following=true&ordering=invite&page=%@", [page stringValue]];
+    NSString *queryString = [NSString stringWithFormat:@"users/?is_attending__ne=%@&following=true&ordering=invite&page=%@",[eventID stringValue], [page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [everyoneParty addObjectsFromArray:arrayOfUsers];

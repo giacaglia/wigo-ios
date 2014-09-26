@@ -210,13 +210,7 @@ BOOL isFetchingNotifications;
 
     
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
-    Notification *notification;
-    if ([indexPath section] == 0) {
-        notification =  [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:row];
-    }
-    else {
-        notification =  [[_expiredNotificationsParty getObjectArray] objectAtIndex:row];
-    }
+    Notification *notification = [self getNotificationAtIndex:indexPath];
     if ([notification fromUserID] == (id)[NSNull null]) return cell;
     // When group is unlocked
     if ([[notification type] isEqualToString:@"group.unlocked"]) return cell;
@@ -384,7 +378,85 @@ viewForFooterInSection:(NSInteger)section
 }
 
 - (void)followedPersonPressed:(id)sender {
+    //Get Index Path
     
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_notificationsTableView];
+    NSIndexPath *indexPath = [_notificationsTableView indexPathForRowAtPoint:buttonOriginInTableView];
+    Notification *notification = [self getNotificationAtIndex:indexPath];
+    if (notification) {
+        User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+        if (user) {
+            UIButton *senderButton = (UIButton*)sender;
+            if (senderButton.tag == 50) {
+                [senderButton setTitle:nil forState:UIControlStateNormal];
+                [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+                senderButton.tag = -100;
+                [user setIsBlocked:NO];
+                
+                NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
+                NSDictionary *options = @{@"is_blocked": @NO};
+                [Network sendAsynchronousHTTPMethod:POST
+                                        withAPIName:queryString
+                                        withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                                        withOptions:options];
+            }
+            else if (senderButton.tag == -100) {
+                
+                if ([user isPrivate]) {
+                    [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
+                    [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
+                    [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+                    senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+                    senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+                    senderButton.layer.borderWidth = 1;
+                    senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                    senderButton.layer.cornerRadius = 3;
+                    [user setIsFollowingRequested:YES];
+                }
+                else {
+                    [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+                    [user setIsFollowing:YES];
+                }
+                senderButton.tag = 100;
+                [Network followUser:user];
+            }
+            else {
+                [senderButton setTitle:nil forState:UIControlStateNormal];
+                [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+                senderButton.tag = -100;
+                [user setIsFollowing:NO];
+                [user setIsFollowingRequested:NO];
+                [Network unfollowUser:user];
+            }
+            [notification setFromUser:user];
+            if ([indexPath section] == 0) {
+                if ([indexPath row] < [[_nonExpiredNotificationsParty getObjectArray] count]) {
+                    [_nonExpiredNotificationsParty replaceObjectAtIndex:[indexPath row] withObject:notification];
+                }
+            }
+            else {
+                if ([indexPath row] < [[_expiredNotificationsParty getObjectArray] count]) {
+                    [_expiredNotificationsParty replaceObjectAtIndex:[indexPath row] withObject:notification];
+                }
+            }
+        }
+
+    }
+}
+
+- (Notification *)getNotificationAtIndex:(NSIndexPath *)indexPath {
+    Notification *notification;
+    if ([indexPath section] == 0) {
+        int sizeOfArray = (int)[[_nonExpiredNotificationsParty getObjectArray] count];
+        if (sizeOfArray > 0 && sizeOfArray > [indexPath row])
+            notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
+    }
+    else {
+        int sizeOfArray = (int)[[_expiredNotificationsParty getObjectArray] count];
+        if (sizeOfArray > 0 && sizeOfArray > [indexPath row])
+            notification = [[_expiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
+    }
+    return notification;
 }
 
 - (void)folowRequestPressed {

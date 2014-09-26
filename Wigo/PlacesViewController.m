@@ -244,7 +244,10 @@ int sizeOfEachImage;
 }
 
 - (void)invitePressed {
-    [self presentViewController:[[InviteViewController alloc] initWithEventName:[[Profile user] attendingEventName]] animated:YES completion:nil];
+    if ([[Profile user] attendingEventID]) {
+            [self presentViewController:[[InviteViewController alloc] initWithEventName:[[Profile user] attendingEventName] andID:[[Profile user] attendingEventID]] animated:YES completion:nil];
+    }
+
 }
 
 - (void) goHerePressed:(id)sender {

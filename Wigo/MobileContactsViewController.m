@@ -110,6 +110,9 @@ NSMutableArray *filteredPeopleContactList;
             });
        
         }
+        else {
+            [self dismissViewControllerAnimated:NO completion:nil];
+        }
     });
 }
 

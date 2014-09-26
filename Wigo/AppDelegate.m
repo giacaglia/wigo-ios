@@ -35,7 +35,6 @@ NSDate *firstLoggedTime;
     }
     [GAI sharedInstance].trackUncaughtExceptions = YES;
     [GAI sharedInstance].dispatchInterval = 20;
-    [[[GAI sharedInstance] logger] setLogLevel:kGAILogLevelVerbose];
     [[GAI sharedInstance] trackerWithTrackingId:@"UA-54234727-1"];
     
     NSString *parseApplicationId = PARSE_APPLICATIONID; // just for ease of debugging

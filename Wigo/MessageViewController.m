@@ -226,8 +226,8 @@ int queryQueueInt;
 #pragma mark - UISearchBar
 - (void)initializeSearchBar {
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(11, 70, self.view.frame.size.width - 22, 30)];
-//    _searchBar.barTintColor = [UIColor whiteColor];
-//    _searchBar.tintColor = [FontProperties getOrangeColor];
+    _searchBar.barTintColor = [UIColor whiteColor];
+    _searchBar.tintColor = [FontProperties getOrangeColor];
     _searchBar.placeholder = @"SEARCH BY NAME";
     _searchBar.delegate = self;
     UITextField *searchField = [_searchBar valueForKey:@"_searchField"];
@@ -235,8 +235,8 @@ int queryQueueInt;
     [self.view addSubview:_searchBar];
     
     // Search Icon Clear
-    UITextField *txfSearchField = [_searchBar valueForKey:@"_searchField"];
-    [txfSearchField setLeftViewMode:UITextFieldViewModeNever];
+    UITextField *txtSearchField = [_searchBar valueForKey:@"_searchField"];
+    [txtSearchField setLeftViewMode:UITextFieldViewModeNever];
     
     // Add Custom Search Icon
     _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeSearchIcon"]];

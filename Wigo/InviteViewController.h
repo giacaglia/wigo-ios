@@ -11,6 +11,6 @@
 
 @interface InviteViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
-- (id)initWithEventName:(NSString *)newEventName;
+- (id)initWithEventName:(NSString *)eventName andID:(NSNumber *)eventID;
 
 @end
