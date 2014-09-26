@@ -641,16 +641,18 @@ UIButton *tapButton;
 }
 
 - (void) initializeTapButton {
-    tapButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 20, 64 + 20, 40, 40)];
-    if ([self.user isTapped]) {
-        [tapButton setBackgroundImage:[UIImage imageNamed:@"tapSelectedProfile"] forState:UIControlStateNormal];
+    if ([[Profile user] isGoingOut]) {
+        tapButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 20, 64 + 20, 40, 40)];
+        if ([self.user isTapped]) {
+            [tapButton setBackgroundImage:[UIImage imageNamed:@"tapSelectedProfile"] forState:UIControlStateNormal];
+        }
+        else {
+            [tapButton setBackgroundImage:[UIImage imageNamed:@"tapUnselectedProfile"] forState:UIControlStateNormal];
+        }
+        [tapButton addTarget:self action:@selector(tapPressed) forControlEvents:UIControlEventTouchUpInside];
+        [self.view bringSubviewToFront:tapButton];
+        [self.view addSubview:tapButton];
     }
-    else {
-        [tapButton setBackgroundImage:[UIImage imageNamed:@"tapUnselectedProfile"] forState:UIControlStateNormal];
-    }
-    [tapButton addTarget:self action:@selector(tapPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view bringSubviewToFront:tapButton];
-    [self.view addSubview:tapButton];
 }
 
 - (void)tapPressed {
