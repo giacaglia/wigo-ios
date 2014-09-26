@@ -99,7 +99,6 @@ UILabel *emojiLabel;
 }
 
 - (void)acceptGoingOut {
-//    [self animateEmoji];
     [self dismissViewControllerAnimated:YES completion:^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"goOutPressed" object:nil];
     }];
@@ -107,57 +106,6 @@ UILabel *emojiLabel;
 
 - (void)dimissView {
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)animateEmoji {
-    CGPoint centerPoint = emojiLabel.center;
-    [UIView animateWithDuration:0.3
-                     animations:^{
-        emojiLabel.alpha = 0.7;
-        emojiLabel.frame = CGRectMake(centerPoint.x - 2.5, centerPoint.y - 2.5, 5, 5);
-    }
-    completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.3
-    animations:^{
-        emojiLabel.alpha = 0.85;
-        emojiLabel.frame = CGRectMake(centerPoint.x - 125, centerPoint.y  - 125, 250, 250);
-    }
-    completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.3
-    animations:^{
-        emojiLabel.frame = CGRectMake(centerPoint.x - 100, centerPoint.y  - 100, 200, 200);
-    }
-    completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.1
-    animations:^{
-        emojiLabel.alpha = 1.0;
-    }
-    completion:^(BOOL finished) {
-    [UIView animateWithDuration:2.1 delay:0.5 options:UIViewAnimationOptionCurveLinear
-    animations:^{
-        emojiLabel.alpha = 0.5;
-        emojiLabel.frame = CGRectMake(centerPoint.x - 125, centerPoint.y - 125, 250, 250);
-    }
-    completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.1
-    animations:^{
-        emojiLabel.alpha = 0.2;
-        emojiLabel.frame = CGRectMake(centerPoint.x - 10, centerPoint.y - 10, 10, 10);
-    }
-    completion:^(BOOL finished){
-    [UIView animateWithDuration:0.1
-    animations:^{
-        emojiLabel.alpha = 1;
-        emojiLabel.frame = CGRectMake(centerPoint.x, centerPoint.y, 80, 80);
-    }
-    completion:^(BOOL finished) {
-    }];
-    }];
-    }];
-    }];
-    }];
-    }];
-    }];
 }
 
 

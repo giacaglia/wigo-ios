@@ -164,6 +164,12 @@ int userInt;
                         NSDictionary *prompt = [jsonResponse objectForKey:@"prompt"];
                         if (prompt) [self presentViewController:[[PopViewController alloc] initWithDictionary:prompt] animated:YES completion:nil];
                     }
+                    if ([[jsonResponse allKeys] containsObject:@"analytics"]) {
+                        NSDictionary *analytics = [jsonResponse objectForKey:@"analytics"];
+                        if (analytics) {
+                            BOOL gAnalytics = [analytics objectForKey:@"gAnalytics"];
+                        }
+                    }
                 }
             });
         }];
