@@ -370,31 +370,42 @@ viewForFooterInSection:(NSInteger)section
 }
 
 - (void)tapPressed:(id)sender {
-    UIButton *buttonSender = (UIButton *)sender;
-    [buttonSender.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_notificationsTableView];
-    NSIndexPath *indexPath = [_notificationsTableView indexPathForRowAtPoint:buttonOriginInTableView];
-    Notification *notification = [self getNotificationAtIndex:indexPath];
-    if (notification) {
-        User *user = [[User alloc] initWithDictionary:[notification fromUser]];
-        if (user) {
-            if ([user isTapped]) {
-                NSURL *url = [[NSBundle mainBundle] URLForResource:@"tap" withExtension:@"gif"];
-                FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
-                FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 40, 40)];
-                imageView.animatedImage = image;
-                [buttonSender addSubview:imageView];
-                [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
-            }
-            else {
-                UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapSelectedNotification"]];
-                imageView.frame = CGRectMake(20 - 15, 20 -15, 30, 30);
-                [buttonSender addSubview:imageView];
-                [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
+    if ([[Profile user] isGoingOut]) {
+        UIButton *buttonSender = (UIButton *)sender;
+        [buttonSender.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_notificationsTableView];
+        NSIndexPath *indexPath = [_notificationsTableView indexPathForRowAtPoint:buttonOriginInTableView];
+        Notification *notification = [self getNotificationAtIndex:indexPath];
+        if (notification) {
+            User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+            if (user) {
+                if ([user isTapped]) {
+                    NSURL *url = [[NSBundle mainBundle] URLForResource:@"tap" withExtension:@"gif"];
+                    FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
+                    FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 40, 40)];
+                    imageView.animatedImage = image;
+                    [buttonSender addSubview:imageView];
+                    [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
+                }
+                else {
+                    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"tapSelectedNotification"]];
+                    imageView.frame = CGRectMake(20 - 15, 20 -15, 30, 30);
+                    [buttonSender addSubview:imageView];
+                    [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
+                }
             }
         }
     }
-    
+    else {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"Not to fast."
+                                  message:@"You need to go out before tapping anyone."
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles: nil];
+        [alertView show];
+
+    }
 }
 
 - (void)followedPersonPressed:(id)sender {
