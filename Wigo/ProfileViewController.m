@@ -587,7 +587,7 @@ UIButton *tapButton;
             _nameOfPersonLabel.attributedText = string;
             
             UIButton *goHereTooButton = [[UIButton alloc] init];
-            [goHereTooButton setTitle:@"GO THERE TOO" forState:UIControlStateNormal];
+            [goHereTooButton setTitle:@"GO HERE" forState:UIControlStateNormal];
             [goHereTooButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             goHereTooButton.titleLabel.textAlignment = NSTextAlignmentCenter;
             goHereTooButton.titleLabel.font = [FontProperties getSmallPhotoFont];

@@ -35,7 +35,7 @@ NSDate *firstLoggedTime;
     }
     [GAI sharedInstance].trackUncaughtExceptions = YES;
     [GAI sharedInstance].dispatchInterval = 20;
-    [[GAI sharedInstance] trackerWithTrackingId:@"UA-54234727-1"];
+    [[GAI sharedInstance] trackerWithTrackingId:@"UA-54234727-2"];
     
     NSString *parseApplicationId = PARSE_APPLICATIONID; // just for ease of debugging
     NSString *parseClientKey = PARSE_CLIENTKEY;
@@ -46,7 +46,7 @@ NSDate *firstLoggedTime;
     if (!triedToRegister) {
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"FYI"
-                                  message:@"WiGo only sends notifications from your closest friends at your school."
+                                  message:@"WiGo only sends notifications from your closest friends at your school and important updates."
                                   delegate:self
                                   cancelButtonTitle:@"OK"
                                   otherButtonTitles: nil];
