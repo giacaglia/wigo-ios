@@ -15,6 +15,7 @@
 #import "UIButtonUngoOut.h"
 #import "RWBlurPopover.h"
 #import "PopViewController.h"
+#import "AppDelegate.h"
 
 @interface MainViewController ()
 
@@ -184,6 +185,9 @@ int userInt;
                             [Profile setLocalyticsEnabled:localytics];
                             [[NSUserDefaults standardUserDefaults] setBool:localytics forKey:@"localyticsEnabled"];
                             [[NSUserDefaults standardUserDefaults] synchronize];
+                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                            [appDelegate initializeGoogleAnalytics];
+                            [appDelegate initializeLocalytics];
                         }
                     }
                 }

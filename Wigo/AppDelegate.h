@@ -17,5 +17,7 @@ typedef void (^IsThereResult)(NSNumber *numberOfNewMessages, NSNumber *numberOfN
 @property (strong, nonatomic) UIWindow *window;
 @property NSMutableDictionary *notificationDictionary;
 - (void)reloadTabBarNotifications;
+- (void) initializeLocalytics;
+- (void) initializeGoogleAnalytics;
 
 @end
