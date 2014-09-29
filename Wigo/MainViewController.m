@@ -167,8 +167,23 @@ int userInt;
                     if ([[jsonResponse allKeys] containsObject:@"analytics"]) {
                         NSDictionary *analytics = [jsonResponse objectForKey:@"analytics"];
                         if (analytics) {
-                            BOOL gAnalytics = [(NSNumber *)[analytics objectForKey:@"gAnalytics"] boolValue];
-                            BOOL localytics = [(NSNumber *)[analytics objectForKey:@"localytics"] boolValue];
+                            BOOL gAnalytics = YES;
+                            NSNumber *gval = [analytics objectForKey:@"gAnalytics"];
+                            if (gval) {
+                                gAnalytics = [gval boolValue];
+                            }
+                            
+                            [Profile setGoogleAnalyticsEnabled:gAnalytics];
+                            [[NSUserDefaults standardUserDefaults] setBool:gAnalytics forKey:@"googleAnalyticsEnabled"];
+                            
+                            BOOL localytics = YES;
+                            NSNumber *lval = [analytics objectForKey:@"localytics"];
+                            if (lval) {
+                                localytics = [lval boolValue];
+                            }
+                            [Profile setLocalyticsEnabled:localytics];
+                            [[NSUserDefaults standardUserDefaults] setBool:localytics forKey:@"localyticsEnabled"];
+                            [[NSUserDefaults standardUserDefaults] synchronize];
                         }
                     }
                 }

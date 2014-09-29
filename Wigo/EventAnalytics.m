@@ -10,6 +10,7 @@
 #import "Globals.h"
 #import "GAI.h"
 #import "GAIDictionaryBuilder.h"
+#import "GAIFields.h"
 
 @implementation EventAnalytics
 
@@ -19,6 +20,11 @@
 
 +(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details {
     NSMutableDictionary *data = [NSMutableDictionary dictionaryWithObjectsAndKeys:nil];
+
+    id<GAITracker> tracker;
+    if ([Profile googleAnalyticsEnabled]) {
+        tracker = [[GAI sharedInstance] defaultTracker];
+    }
     
     User *profileUser = [Profile user];
     
@@ -26,6 +32,7 @@
         NSString *groupName = profileUser.groupName;
         if (groupName != nil) {
             [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:groupName forKey:@"School"]];
+            [tracker set:[GAIFields customDimensionForIndex:5] value:groupName];
         }
         NSString *goingOut = profileUser.isGoingOut ? @"Yes" : @"No";
         [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:goingOut forKey:@"Going Out"]];
@@ -50,12 +57,22 @@
             followingBucket = @"100+";
         }
         [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:followingBucket forKey:@"Following"]];
+        
+        [tracker set:[GAIFields customDimensionForIndex:2] value:[NSString stringWithFormat:@"%i", following]];
+        
+        int followers = [[profileUser numberOfFollowers] intValue];
+        [tracker set:[GAIFields customDimensionForIndex:3] value:[NSString stringWithFormat:@"%i", followers]];
+        
+        [tracker set:[GAIFields customDimensionForIndex:4] value:goingOut];
+        
+        [tracker set:[GAIFields customDimensionForIndex:1] value:profileUser.gender];
     }
     
     [data addEntriesFromDictionary:details];
-    [[LocalyticsSession shared] tagEvent:name attributes:data];
-    
-    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    if ([Profile localyticsEnabled]) {
+        [[LocalyticsSession shared] tagEvent:name attributes:data];
+    }
+
     [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"ui_action"     // Event category (required)
                                                           action:name  // Event action (required)
                                                            label:nil          // Event label
@@ -63,7 +80,9 @@
 }
 
 +(void) tagScreen:(NSString *)name {
-    [[LocalyticsSession shared] tagScreen:name];
+    if ([Profile localyticsEnabled]) {
+        [[LocalyticsSession shared] tagScreen:name];
+    }
 }
 
 +(void) tagGroup:(NSString *)name {
@@ -71,11 +90,21 @@
     // Note that this is vulnerable to Ben renaming schools via the admin dashboard, but the
     // alternative of having us have all the reports be by school ID as a string seems far too
     // painful to contemplate.
-    [[LocalyticsSession shared] setCustomDimension:0 value:name];
+    if ([Profile localyticsEnabled]) {
+        [[LocalyticsSession shared] setCustomDimension:0 value:name];
+    }
+    
+    id<GAITracker> tracker;
+    if ([Profile googleAnalyticsEnabled]) {
+        tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:[GAIFields customDimensionForIndex:5] value:name];
+    }
 }
 
 +(void) tagUser:(NSString *)user {
-    [[LocalyticsSession shared] setCustomerId:user];
+    if ([Profile localyticsEnabled]) {
+        [[LocalyticsSession shared] setCustomerId:user];
+    }
 }
 
 @end

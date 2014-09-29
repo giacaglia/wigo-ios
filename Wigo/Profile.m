@@ -17,6 +17,8 @@ static NSArray *images;
 static Party *everyoneParty;
 static Party *followingParty;
 static Party *notAcceptedFollowingParty;
+static BOOL googleAnalyticsEnabled;
+static BOOL localyticsEnabled;
 
 
 + (User *)user {
@@ -68,6 +70,22 @@ static Party *notAcceptedFollowingParty;
 
 + (void)setNotAcceptedFollowingParty:(Party *)newFollowingParty {
     notAcceptedFollowingParty = newFollowingParty;
+}
+
++ (BOOL) localyticsEnabled {
+    return localyticsEnabled;
+}
+
++ (void) setLocalyticsEnabled:(BOOL)enabled {
+    localyticsEnabled = enabled;
+}
+
++ (BOOL) googleAnalyticsEnabled {
+    return googleAnalyticsEnabled;
+}
+
++ (void) setGoogleAnalyticsEnabled:(BOOL)enabled {
+    googleAnalyticsEnabled = enabled;
 }
 
 + (BOOL)isUserDictionaryProfileUser:(NSDictionary *)userDictionary {

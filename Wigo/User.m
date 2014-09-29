@@ -143,6 +143,18 @@
 }
 
 
+- (NSString *)gender {
+    if ([[_proxy allKeys] containsObject:@"gender"]) {
+        return [_proxy objectForKey:@"gender"];
+    }
+    else return @"unknown";
+}
+
+- (void)setGender:(NSString *)gender {
+    [_proxy notNillsetValue:gender forKey:@"gender"];
+    [modifiedKeys addObject:@"gender"];
+}
+
 - (NSString *)coverImageURL {
     NSArray *imagesURL = [self imagesURL];
     if ([imagesURL count] > 0 && [imagesURL isKindOfClass:[NSArray class]]) {
