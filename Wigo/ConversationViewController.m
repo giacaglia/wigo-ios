@@ -74,12 +74,12 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self initializeTapHandler];
     [self initializeTextBox];
     
-    [self fetchFirstPageMessages];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [EventAnalytics tagEvent:@"Conversation View"];
+    [self fetchFirstPageMessages];
 }
 
 
