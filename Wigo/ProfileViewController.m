@@ -658,10 +658,12 @@ UIButton *tapButton;
 - (void)tapPressed {
     if ([self.user isTapped]) {
         [tapButton setBackgroundImage:[UIImage imageNamed:@"tapUnselectedProfile"] forState:UIControlStateNormal];
+        [self.user setIsTapped:YES];
         [Network sendUntapToUserWithId:[self.user objectForKey:@"id"]];
     }
     else {
         [tapButton setBackgroundImage:[UIImage imageNamed:@"tapSelectedProfile"] forState:UIControlStateNormal];
+        [self.user setIsTapped:YES];
         [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
     }
 }
