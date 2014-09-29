@@ -333,7 +333,17 @@ int queryQueueInt;
     
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
-                                                              NSLog(@"here");
+                                                              UITextField *textField = alert.textFields[0];
+                                                              NSString *text = textField.text;
+                                                              if ([text isEqualToString:@"dev"] || [text isEqualToString:@"dev-api.wigo.us"]) {
+                                                                  [Query setBaseURLString:@"https://dev-api.wigo.us%@"];
+                                                              }
+                                                              else if ([text isEqualToString:@"stage"] || [text isEqualToString:@"stage-api.wigo.us"]) {
+                                                                  [Query setBaseURLString:@"https://stage-api.wigo.us%@"];
+                                                              }
+                                                              else if ([text isEqualToString:@"prod"] || [text isEqualToString:@"api.wigo.us"]) {
+                                                                  [Query setBaseURLString:@"https://api.wigo.us%@"];
+                                                              }
                                                           }];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];

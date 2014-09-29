@@ -31,7 +31,7 @@ static NSString * BaseURLString = @"https://api.wigo.us%@";
     return self;
 }
 
-- (void)setBaseURLString:(NSString *)newBaseURL {
++ (void)setBaseURLString:(NSString *)newBaseURL {
     BaseURLString = newBaseURL;
 }
 
