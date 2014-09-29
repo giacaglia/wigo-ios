@@ -73,7 +73,7 @@ int userInt;
     [EventAnalytics tagEvent:@"Who View"];
     self.tabBarController.tabBar.hidden = NO;
     if (!didProfileSegue) {
-        if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
+        [self fetchFirstPageFollowing];
         if (!_fetchingUserInfo) [self fetchUserInfo];
         if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
         [self fetchSummaryGoingOut];
@@ -120,7 +120,7 @@ int userInt;
     _fetchingUserInfo = NO;
     _fetchingIsThereNewPerson = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
-    if (!_fetchingFirstPage) [self fetchFirstPageFollowing];
+    [self fetchFirstPageFollowing];
     if (!_fetchingUserInfo) [self fetchUserInfo];
     if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
     [self fetchSummaryGoingOut];
@@ -143,8 +143,8 @@ int userInt;
         NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
         NSDateComponents *differenceDateComponents = [gregorianCalendar
                                                       components: NSHourCalendarUnit
-                                                      fromDate:newDate
-                                                      toDate:dateAccessed
+                                                      fromDate:dateAccessed
+                                                      toDate:newDate
                                                       options:0];
         if ([differenceDateComponents hour] >= 1) {
             [[NSUserDefaults standardUserDefaults] setObject:newDate forKey: @"lastTimeAccessed"];
@@ -210,10 +210,12 @@ int userInt;
 }
 
 - (void)fetchFirstPageFollowing {
-    _fetchingFirstPage = YES;
-    _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
-    _page = @1;
-    [self fetchFollowing];
+    if (!_fetchingFirstPage) {
+        _fetchingFirstPage = YES;
+        _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
+        _page = @1;
+        [self fetchFollowing];
+    }
 }
 
 - (void)fetchFollowing {

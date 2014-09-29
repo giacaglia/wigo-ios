@@ -40,7 +40,8 @@ UILabel *emojiLabel;
 }
 
 - (void)initializeTitleLabel {
-    NSString *originalString = [dailyDictionary objectForKey:@"heading"];
+    NSArray *headingArray = [dailyDictionary objectForKey:@"heading"];
+    NSString *originalString = [headingArray objectAtIndex:0];
     NSRange initialRange = [originalString rangeOfString:@"<b>"];
     NSRange finalRange = [originalString rangeOfString:@"</b>"];
     NSString *strippedString = [self stringByStrippingHTML:originalString];
