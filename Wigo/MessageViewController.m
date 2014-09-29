@@ -313,6 +313,9 @@ int queryQueueInt;
 - (void)searchTableList {
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
+    if ([searchString isEqualToString:@"Initiate Meltdown"]) {
+        NSLog(@"here");
+    }
     _page = @1;
     NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&page=%@&text=%@", [[Profile user] objectForKey:@"id"], [_page stringValue], searchString];
     [self searchUsersWithString:queryString ];

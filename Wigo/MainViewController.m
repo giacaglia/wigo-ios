@@ -167,7 +167,8 @@ int userInt;
                     if ([[jsonResponse allKeys] containsObject:@"analytics"]) {
                         NSDictionary *analytics = [jsonResponse objectForKey:@"analytics"];
                         if (analytics) {
-                            BOOL gAnalytics = [analytics objectForKey:@"gAnalytics"];
+                            BOOL gAnalytics = [(NSNumber *)[analytics objectForKey:@"gAnalytics"] boolValue];
+                            BOOL localytics = [(NSNumber *)[analytics objectForKey:@"localytics"] boolValue];
                         }
                     }
                 }

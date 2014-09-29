@@ -40,8 +40,7 @@ UILabel *emojiLabel;
 }
 
 - (void)initializeTitleLabel {
-    NSArray *headingArray = [dailyDictionary objectForKey:@"heading"];
-    NSString *originalString = [headingArray objectAtIndex:0];
+    NSString *originalString = [dailyDictionary objectForKey:@"heading"];
     NSRange initialRange = [originalString rangeOfString:@"<b>"];
     NSRange finalRange = [originalString rangeOfString:@"</b>"];
     NSString *strippedString = [self stringByStrippingHTML:originalString];
@@ -80,14 +79,14 @@ UILabel *emojiLabel;
 }
 
 - (void)initializeButton {
-    UIButton *acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(30, 380, self.view.frame.size.width - 60, 60)];
+    UIButton *acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(25, 380, self.view.frame.size.width - 50, 60)];
     acceptButton.layer.borderColor = [UIColor clearColor].CGColor;
     acceptButton.layer.borderWidth = 2.0f;
     acceptButton.layer.cornerRadius = 15.0f;
     acceptButton.backgroundColor = [FontProperties getOrangeColor];
     [acceptButton setTitle:[[dailyDictionary objectForKey:@"action"] objectForKey:@"text"] forState:UIControlStateNormal];
     [acceptButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    acceptButton.titleLabel.font = [FontProperties scMediumFont:25];
+    acceptButton.titleLabel.font = [FontProperties scMediumFont:23];
     [acceptButton addTarget:self action:@selector(acceptGoingOut) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:acceptButton];
     
