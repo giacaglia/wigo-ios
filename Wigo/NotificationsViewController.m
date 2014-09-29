@@ -367,25 +367,24 @@ viewForFooterInSection:(NSInteger)section
 }
 
 - (void)tapPressed:(id)sender {
-    if (![[Profile user] isAttending]) {
-        UIButton *buttonSender = (UIButton *)sender;
-        [buttonSender.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_notificationsTableView];
-        NSIndexPath *indexPath = [_notificationsTableView indexPathForRowAtPoint:buttonOriginInTableView];
-        Notification *notification = [self getNotificationAtIndex:indexPath];
-        if (notification) {
-            User *user = [[User alloc] initWithDictionary:[notification fromUser]];
-            if (user) {
-                [[Profile user] setIsGoingOut:YES];
-                [[Profile user] setAttendingEventID:[user eventID]];
-                [[Profile user] setEventID:[user eventID]];
-                [Network postGoingToEventNumber:[[user eventID] intValue]];
-                UITabBarController *tabBarController = (UITabBarController *)self.parentViewController.parentViewController;
-                tabBarController.selectedViewController
-                = [tabBarController.viewControllers objectAtIndex:1];
-            }
+    UIButton *buttonSender = (UIButton *)sender;
+    [buttonSender.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_notificationsTableView];
+    NSIndexPath *indexPath = [_notificationsTableView indexPathForRowAtPoint:buttonOriginInTableView];
+    Notification *notification = [self getNotificationAtIndex:indexPath];
+    if (notification) {
+        User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+        if (user) {
+            [Network postGoingToEventNumber:[[user attendingEventID] intValue]];
+            [[Profile user] setIsAttending:YES];
+            [[Profile user] setIsGoingOut:YES];
+            [[Profile user] setAttendingEventID:[user attendingEventID]];
+            UITabBarController *tabBarController = (UITabBarController *)self.parentViewController.parentViewController;
+            tabBarController.selectedViewController
+            = [tabBarController.viewControllers objectAtIndex:1];
         }
     }
+
 }
 
 - (void)followedPersonPressed:(id)sender {
