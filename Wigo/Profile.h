@@ -23,4 +23,9 @@
 + (void)setNotAcceptedFollowingParty:(Party *)notAcceptedFollowingParty;
 + (BOOL)isUserDictionaryProfileUser:(NSDictionary *)userDictionary;
 
++ (BOOL) googleAnalyticsEnabled;
++ (void) setGoogleAnalyticsEnabled:(BOOL)enabled;
++ (BOOL) localyticsEnabled;
++ (void) setLocalyticsEnabled:(BOOL)enabled;
+
 @end
