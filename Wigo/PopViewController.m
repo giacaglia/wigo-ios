@@ -29,6 +29,11 @@ UILabel *emojiLabel;
     if ([[dailyDictionary allKeys] containsObject:@"emoji"]) [self initializeEmojiLabel];
     if ([[dailyDictionary allKeys] containsObject:@"heading"]) [self initializeTitleLabel];
     if ([[dailyDictionary allKeys] containsObject:@"action"]) [self initializeButton];
+    
+}
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self animateEmoji];
 }
 
 - (void)initializeEmojiLabel {
@@ -36,6 +41,7 @@ UILabel *emojiLabel;
     emojiLabel.text = [dailyDictionary objectForKey:@"emoji"];
     emojiLabel.textAlignment = NSTextAlignmentCenter;
     emojiLabel.font = [FontProperties mediumFont:120.0f];
+    emojiLabel.hidden = YES;
     [self.view addSubview:emojiLabel];
 }
 
@@ -106,6 +112,38 @@ UILabel *emojiLabel;
 
 - (void)dimissView {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)animateEmoji {
+    [UIView animateWithDuration:0.2 delay:3 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        emojiLabel.hidden = NO;
+        emojiLabel.transform = CGAffineTransformMakeScale(1.8, 1.8);
+    } completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.2 animations:^{
+        emojiLabel.transform = CGAffineTransformMakeScale(0.4, 0.4);
+    } completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.2 animations:^{
+        emojiLabel.transform = CGAffineTransformMakeScale(1.5, 1.5);
+    } completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.2 animations:^{
+        emojiLabel.transform = CGAffineTransformMakeScale(0.8, 0.8);
+    } completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.2 animations:^{
+        emojiLabel.transform = CGAffineTransformMakeScale(1.3, 1.3);
+    } completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.2 animations:^{
+        emojiLabel.transform = CGAffineTransformMakeScale(0.9, 0.9);
+    } completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.2 animations:^{
+        emojiLabel.transform = CGAffineTransformIdentity;
+    } completion:^(BOOL finished) {
+    }];
+    }];
+    }];
+    }];
+    }];
+    }];
+    }];
 }
 
 
