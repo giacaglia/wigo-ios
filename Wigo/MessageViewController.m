@@ -313,13 +313,30 @@ int queryQueueInt;
 - (void)searchTableList {
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
-    if ([searchString isEqualToString:@"Initiate Meltdown"]) {
-        NSLog(@"here");
+    if ([oldString isEqualToString:@"Initiate meltdown"]) {
+        [self showMeltdown];
     }
     _page = @1;
     NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&page=%@&text=%@", [[Profile user] objectForKey:@"id"], [_page stringValue], searchString];
     [self searchUsersWithString:queryString ];
     
+}
+
+- (void)showMeltdown {
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Meltdown"
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = @"api.wigo.us";
+    }];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              NSLog(@"here");
+                                                          }];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 

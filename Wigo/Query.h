@@ -24,6 +24,7 @@ typedef void (^QueryResultWithInput)(NSDictionary *input, NSDictionary *jsonResp
 
 
 // Settings
+- (void)setBaseURLString:(NSString *)newBaseURL;
 - (void)queryWithClassName:(NSString *)className;
 - (void)setValue:(id)value forKey:(NSString *)key;
 - (void)setArray:(NSArray *)array;

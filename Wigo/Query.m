@@ -10,7 +10,7 @@
 #import "NSMutableURLRequest+Wigo.h"
 #define WIGO_API_KEY @"oi34u53205ju34ik23"
 
-static NSString * const BaseURLString = @"https://dev-api.wigo.us%@";
+static NSString * BaseURLString = @"https://api.wigo.us%@";
 
 
 @interface Query ()
@@ -29,6 +29,10 @@ static NSString * const BaseURLString = @"https://dev-api.wigo.us%@";
         _options = [[NSMutableDictionary alloc] init];
     }
     return self;
+}
+
+- (void)setBaseURLString:(NSString *)newBaseURL {
+    BaseURLString = newBaseURL;
 }
 
 - (void)setProfileKey:(NSString *)key {

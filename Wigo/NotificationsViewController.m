@@ -243,8 +243,8 @@ BOOL isFetchingNotifications;
     else if ([typeString isEqualToString:@"tap"] && ![notification expired] &&
              [user isAttending] ) {
         if (![[Profile user] isGoingOut] || ([[Profile user] isAttending] && ![[[Profile user] attendingEventID] isEqualToNumber:[user attendingEventID]] )) {
-            buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 20 - 25, HEIGHT_NOTIFICATION_CELL/2 - 15, 55, 30)];
-            [buttonCallback setTitle:@"GO HERE" forState:UIControlStateNormal];
+            buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, HEIGHT_NOTIFICATION_CELL/2 - 20, 49, 40)];
+            [buttonCallback setTitle:@"GO\nHERE" forState:UIControlStateNormal];
             [buttonCallback setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
             buttonCallback.titleLabel.font = [FontProperties getSmallPhotoFont];
             buttonCallback.layer.borderColor = [FontProperties getOrangeColor].CGColor;
