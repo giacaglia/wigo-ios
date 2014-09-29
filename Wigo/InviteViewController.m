@@ -139,16 +139,21 @@ NSNumber *eventID;
         user = [[everyoneParty getObjectArray] objectAtIndex:[indexPath row]];
 //    }
     
+    UIButton *aroundTapButton = [[UIButton alloc] initWithFrame:cell.contentView.frame];
+    [aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+    aroundTapButton.tag = [indexPath row];
+    [cell.contentView addSubview:aroundTapButton];
+    
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
-    [cell.contentView addSubview:profileImageView];
+    [aroundTapButton addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
     textLabel.text = [user fullName];
     textLabel.font = [FontProperties getSubtitleFont];
-    [cell.contentView addSubview:textLabel];
+    [aroundTapButton addSubview:textLabel];
     
     UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
     goingOutLabel.font = [FontProperties mediumFont:13.0f];
@@ -157,7 +162,7 @@ NSNumber *eventID;
         goingOutLabel.text = @"Going Out";
         goingOutLabel.textColor = [FontProperties getBlueColor];
     }
-    [cell.contentView addSubview:goingOutLabel];
+    [aroundTapButton addSubview:goingOutLabel];
     
     UIButton *tapButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS/2 - 15, 30, 30)];
     if ([user isTapped]) {
@@ -169,9 +174,7 @@ NSNumber *eventID;
     tapButton.layer.borderColor = [UIColor clearColor].CGColor;
     tapButton.layer.borderWidth = 1.0f;
     tapButton.layer.cornerRadius = 7.0f;
-    tapButton.tag = [indexPath row];
-    [tapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [cell.contentView addSubview:tapButton];
+    [aroundTapButton addSubview:tapButton];
     
     return cell;
 }
