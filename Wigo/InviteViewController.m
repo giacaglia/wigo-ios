@@ -210,7 +210,7 @@ NSNumber *eventID;
 }
 
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?is_attending__ne=%@&following=true&ordering=invite&page=%@&is_tapped=%@",[eventID stringValue], [page stringValue], @"false"];
+    NSString *queryString = [NSString stringWithFormat:@"users/?following=true&ordering=invite&page=%@", [page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [everyoneParty addObjectsFromArray:arrayOfUsers];
