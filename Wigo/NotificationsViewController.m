@@ -149,8 +149,6 @@ BOOL isFetchingNotifications;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
-    
-    
     NSInteger row = [indexPath row];
     if (![_followRequestSummary isEqualToNumber:@0]) {
         if (row == 0) {
@@ -236,11 +234,7 @@ BOOL isFetchingNotifications;
     [notificationButton addSubview:profileImageView];
     
     UIButton *buttonCallback;
-    if ([typeString isEqualToString:@"chat"]) {
-        buttonCallback = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 50, HEIGHT_NOTIFICATION_CELL/2 - 20, 40, 40)];
-        [notificationButton addTarget:self action:@selector(chatSegue:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    else if ([typeString isEqualToString:@"tap"] && ![notification expired] &&
+    if ([typeString isEqualToString:@"tap"] && ![notification expired] &&
              [user isAttending] ) {
         if (![[Profile user] isGoingOut] || ([[Profile user] isAttending] && ![[[Profile user] attendingEventID] isEqualToNumber:[user attendingEventID]] )) {
             buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, HEIGHT_NOTIFICATION_CELL/2 - 20, 49, 40)];
@@ -255,7 +249,6 @@ BOOL isFetchingNotifications;
             buttonCallback.layer.cornerRadius = 7.0f;
             buttonCallback.tag = row;
             [buttonCallback addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-            [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
         }
     }
     else if ([typeString isEqualToString:@"follow"] || [typeString isEqualToString:@"facebook.follow"] || [typeString isEqualToString:@"follow.accepted"]) {
@@ -282,15 +275,19 @@ BOOL isFetchingNotifications;
             }
         }
         [buttonCallback addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
-    else if ([typeString isEqualToString:@"joined"]) {
-        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
+    [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
+
+    int tag;
+    if ([indexPath section] == 0) {
+        tag = (int)[indexPath row];
+        tag += 1;
     }
-    else if ([typeString isEqualToString:@"goingout"]) {
-        [notificationButton addTarget:self action:@selector(profileSegue:) forControlEvents:UIControlEventTouchUpInside];
+    else {
+        tag = - (int)[indexPath row];
+        tag -= 1;
     }
-    notificationButton.tag = row;
+    notificationButton.tag = tag;
     [cell.contentView addSubview:buttonCallback];
     
     UILabel *notificationLabel = [[UILabel alloc] init];
@@ -480,16 +477,42 @@ viewForFooterInSection:(NSInteger)section
     self.tabBarController.tabBar.hidden = YES;
 }
 
+- (NSIndexPath *)indexPathFromTag:(int)tag {
+    if (tag < 0) {
+        tag = -tag;
+        tag -= 1;
+        return [NSIndexPath indexPathForRow:tag inSection:1];
+    }
+    else {
+        tag -= 1;
+        return [NSIndexPath indexPathForRow:tag inSection:0];
+    }
+}
+
+
 - (void) profileSegue:(id)sender {
     UIButton *notificationButton = (UIButton *)sender;
-    int rowOfButtonSender = (int)notificationButton.tag;
-    if (rowOfButtonSender < [[_notificationsParty getObjectArray] count]) {
-        Notification *notification = [[_notificationsParty getObjectArray] objectAtIndex:rowOfButtonSender];
-        User *user = [[User alloc] initWithDictionary:[notification fromUser]];
-        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-        [self.navigationController pushViewController:self.profileViewController animated:YES];
-        self.tabBarController.tabBar.hidden = YES;
+    int tag = (int)notificationButton.tag;
+    NSIndexPath *indexPath = [self indexPathFromTag:tag];
+    if ([indexPath section] == 0) {
+        if ([indexPath row] < [[_nonExpiredNotificationsParty getObjectArray] count]) {
+            Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
+            User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+            self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+            [self.navigationController pushViewController:self.profileViewController animated:YES];
+            self.tabBarController.tabBar.hidden = YES;
+        }
     }
+    else {
+        if ([indexPath row] < [[_expiredNotificationsParty getObjectArray] count]) {
+            Notification *notification = [[_expiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
+            User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+            self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+            [self.navigationController pushViewController:self.profileViewController animated:YES];
+            self.tabBarController.tabBar.hidden = YES;
+        }
+    }
+   
 }
 
 #pragma mark - Refresh button

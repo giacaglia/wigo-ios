@@ -164,17 +164,17 @@ NSNumber *eventID;
     }
     [aroundTapButton addSubview:goingOutLabel];
     
-    UIButton *tapButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS/2 - 15, 30, 30)];
+    UIImageView *tapImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS/2 - 15, 30, 30)];
     if ([user isTapped]) {
-        [tapButton setBackgroundImage:[UIImage imageNamed:@"tapSelectedInvite"] forState:UIControlStateNormal];
+        [tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
     }
     else {
-        [tapButton setBackgroundImage:[UIImage imageNamed:@"tapUnselectedInvite"] forState:UIControlStateNormal];
+        [tapImageView setImage:[UIImage imageNamed:@"tapUnselectedInvite"]];
     }
-    tapButton.layer.borderColor = [UIColor clearColor].CGColor;
-    tapButton.layer.borderWidth = 1.0f;
-    tapButton.layer.cornerRadius = 7.0f;
-    [aroundTapButton addSubview:tapButton];
+//    tapButton.layer.borderColor = [UIColor clearColor].CGColor;
+//    tapButton.layer.borderWidth = 1.0f;
+//    tapButton.layer.cornerRadius = 7.0f;
+    [aroundTapButton addSubview:tapImageView];
     
     return cell;
 }

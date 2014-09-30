@@ -186,8 +186,8 @@ int userInt;
                             [[NSUserDefaults standardUserDefaults] setBool:localytics forKey:@"localyticsEnabled"];
                             [[NSUserDefaults standardUserDefaults] synchronize];
                             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            [appDelegate initializeGoogleAnalytics];
-                            [appDelegate initializeLocalytics];
+                            if (gAnalytics) [appDelegate initializeGoogleAnalytics];
+                            if (localytics) [appDelegate initializeLocalytics];
                         }
                     }
                 }
@@ -775,7 +775,6 @@ int userInt;
         tag -= 1;
         return [NSIndexPath indexPathForRow:tag inSection:0];
     }
-
 }
 
 #pragma mark - Collection view Data Source

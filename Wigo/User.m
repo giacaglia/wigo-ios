@@ -729,11 +729,24 @@
     for (NSString *key in modifiedKeys) {
         [query setValue:[_proxy objectForKey:key] forKey:key];
     }
-    NSDictionary *dictionaryUser = [query sendPOSTRequest];
-    if  (!(dictionaryUser == nil)) {
-        [_proxy addEntriesFromDictionary:dictionaryUser];
-        modifiedKeys = [[NSMutableArray alloc] init];
-    }
+    [query sendAsynchronousHTTPMethod:POST
+                          withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                              if (jsonResponse == nil || error != nil) {
+                                  [_proxy addEntriesFromDictionary:jsonResponse];
+                                  modifiedKeys = [[NSMutableArray alloc] init];
+                              }
+                              else if ([[jsonResponse allKeys] containsObject:@"code"]) {
+                                  if ([[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) {
+                                      [_proxy addEntriesFromDictionary:jsonResponse];
+                                      modifiedKeys = [[NSMutableArray alloc] init];
+                                  }
+                              }
+                              else {
+                                  [_proxy addEntriesFromDictionary:jsonResponse];
+                                  modifiedKeys = [[NSMutableArray alloc] init];
+                              }
+                          }];
+    
 }
 
 - (void)saveKey:(NSString *)key {

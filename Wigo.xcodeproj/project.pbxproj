@@ -1543,8 +1543,8 @@
 				API_VERSION = 1.0.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Giuliano Giacaglia (FL6238X65W)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1572,7 +1572,7 @@
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = WiGo;
-				PROVISIONING_PROFILE = "5D489863-B364-475E-8BD1-DDD16BF5DCB6";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1583,8 +1583,8 @@
 				API_VERSION = 1.0.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Blade LLC";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Blade LLC";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1613,7 +1613,7 @@
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = WiGo;
-				PROVISIONING_PROFILE = "E4957393-3A8F-421A-9272-A53C5401D048";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1624,8 +1624,8 @@
 				API_VERSION = 1.0.4;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: WiGo LLC (BJ73CT9B84)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: WiGo LLC (BJ73CT9B84)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1654,7 +1654,7 @@
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = WiGo;
-				PROVISIONING_PROFILE = "3B891E2B-BA3C-4F15-899D-F472DF73EFA3";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;

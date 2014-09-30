@@ -93,12 +93,16 @@ static CGRect GKScaleRect(CGRect rect, CGFloat scale)
     return self.cropOverlayView.cropSize;
 }
 
-- (CGRect)croppedArea {
-    return [self _calcVisibleRectForCropArea];
-}
-
 #pragma mark -
 #pragma Public Methods
+
+- (CGRect)croppedArea {
+    return [self _calcVisibleRectForCropArea];
+//    //transform visible rect to image orientation
+//    CGAffineTransform rectTransform = [self _orientationTransformedRectOfImage:self.imageToCrop];
+//    visibleRect = CGRectApplyAffineTransform(visibleRect, rectTransform);
+//    return CGRectMake(visibleRect.origin.x, visibleRect.origin.y, self.cropSize.width, self.cropSize.width);
+}
 
 - (UIImage *)croppedImage{
     
@@ -146,6 +150,7 @@ static CGRect GKScaleRect(CGRect rect, CGFloat scale)
     }
     //extract visible rect from scrollview and scale it
     CGRect visibleRect = [scrollView convertRect:scrollView.bounds toView:imageView];
+    NSLog(@"visible rect: %f, %f, %f, %f" , visibleRect.origin.x, visibleRect.origin.y, visibleRect.size.width, visibleRect.size.height);
     return visibleRect = GKScaleRect(visibleRect, scale);
 }
 

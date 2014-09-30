@@ -81,9 +81,6 @@
             return @"wants to see you out";
         }
         else {
-            if ([fromUser isAttending] && [fromUser attendingEventName]) {
-                return [NSString stringWithFormat:@"wanted to see you out at %@", [fromUser attendingEventName]];
-            }
             return @"wanted to see you out";
         }
     }

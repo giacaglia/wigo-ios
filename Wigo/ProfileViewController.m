@@ -641,7 +641,7 @@ UIButton *tapButton;
 }
 
 - (void) initializeTapButton {
-    if ([[Profile user] isGoingOut]) {
+    if ([[Profile user] isGoingOut] && ![self.user isEqualToUser:[Profile user]]) {
         tapButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 20, 64 + 20, 40, 40)];
         if ([self.user isTapped]) {
             [tapButton setBackgroundImage:[UIImage imageNamed:@"tapSelectedProfile"] forState:UIControlStateNormal];
