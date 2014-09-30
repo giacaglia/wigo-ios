@@ -125,10 +125,18 @@ NSNumber *eventID;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
 
-    if ([indexPath row] == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
-        [self fetchEveryone];
-        return cell;
+    if ([[everyoneParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
+        if ([indexPath row] == [[everyoneParty getObjectArray] count] - 5) {
+            [self fetchEveryone];
+        }
     }
+    else {
+        if ([indexPath row] == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
+            [self fetchEveryone];
+            return cell;
+        }
+    }
+   
     User *user;
 //    if (_isSearching) {
 //        if ([[_filteredContentParty getObjectArray] count] == 0) return cell;

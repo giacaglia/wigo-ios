@@ -55,7 +55,7 @@
 
 // Go OUT Button
 @property UIButtonUngoOut *ungoOutButton;
-@property BOOL spinnerAtTop;
+@property BOOL spinnerAtCenter;
 
 @end
 
@@ -93,7 +93,7 @@ BOOL shouldReloadEvents;
     lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
     [self.navigationController.navigationBar addSubview:lineView];
     
-    _spinnerAtTop = YES;
+    _spinnerAtCenter = YES;
     [self initializeTapHandler];
     [self initializeWhereView];
 
@@ -119,7 +119,6 @@ BOOL shouldReloadEvents;
     self.tabBarController.tabBar.hidden = NO;
     [self initializeNavigationBar];
     if (shouldReloadEvents) {
-        _spinnerAtTop = NO;
         [self fetchEventsFirstPage];
     }
     else {
@@ -741,7 +740,7 @@ BOOL shouldReloadEvents;
 - (void) fetchEvents {
     if (!fetchingEventAttendees) {
         fetchingEventAttendees = YES;
-        if (_spinnerAtTop) [WiGoSpinnerView addDancingGToCenterView:self.view];
+        if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *events = [jsonResponse objectForKey:@"objects"];
@@ -849,7 +848,8 @@ BOOL shouldReloadEvents;
 
 - (void)fetchedOneParty {
     dispatch_async(dispatch_get_main_queue(), ^(void){
-        _spinnerAtTop ? [WiGoSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
+        _spinnerAtCenter ? [WiGoSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
+         _spinnerAtCenter = NO;
         _contentParty = _eventsParty;
         _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
         [self dismissKeyboard];
@@ -885,7 +885,7 @@ BOOL shouldReloadEvents;
 
 - (void)addRefreshToScrollView {
     [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView withHandler:^{
-        _spinnerAtTop = NO;
+        _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];
     }];
 }
