@@ -31,6 +31,7 @@
 @end
 
 BOOL isFetchingNotifications;
+BOOL didProfileSegue;
 
 @implementation NotificationsViewController
 
@@ -63,8 +64,7 @@ BOOL isFetchingNotifications;
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"notificationsSelected"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
-    [self fetchSummaryOfFollowRequests];
-    [self fetchFirstPageNotifications];
+    [self fetchEverything];
 }
 
 
@@ -494,6 +494,7 @@ viewForFooterInSection:(NSInteger)section
     UIButton *notificationButton = (UIButton *)sender;
     int tag = (int)notificationButton.tag;
     NSIndexPath *indexPath = [self indexPathFromTag:tag];
+    didProfileSegue = YES;
     if ([indexPath section] == 0) {
         if ([indexPath row] < [[_nonExpiredNotificationsParty getObjectArray] count]) {
             Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
@@ -519,8 +520,7 @@ viewForFooterInSection:(NSInteger)section
 
 - (void)addRefreshToTable {
     [WiGoSpinnerView addDancingGToUIScrollView:_notificationsTableView withHandler:^{
-        [self fetchSummaryOfFollowRequests];
-        [self fetchFirstPageNotifications];
+        [self fetchEverything];
         [self updateLastNotificationsRead];
     }];
 }
@@ -542,8 +542,11 @@ viewForFooterInSection:(NSInteger)section
 }
 
 -(void)fetchEverything {
-    [self fetchSummaryOfFollowRequests];
-    [self fetchFirstPageNotifications];
+    if (!didProfileSegue) {
+        [self fetchSummaryOfFollowRequests];
+        [self fetchFirstPageNotifications];
+        didProfileSegue = NO;
+    }
 }
 
 - (void)fetchFirstPageNotifications {
