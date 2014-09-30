@@ -592,10 +592,10 @@ BOOL shouldReloadEvents;
     labelName.lineBreakMode = NSLineBreakByWordWrapping;
     NSString *text;
     if ([totalUsers intValue] == 1) {
-        text = [NSString stringWithFormat: @"%@ \n%@ is going out", [event name], [totalUsers stringValue]];
+        text = [NSString stringWithFormat: @"%@ \n%@ is going", [event name], [totalUsers stringValue]];
     }
     else {
-        text = [NSString stringWithFormat: @"%@ \n%@ are going out", [event name], [totalUsers stringValue]];
+        text = [NSString stringWithFormat: @"%@ \n%@ are going", [event name], [totalUsers stringValue]];
     }
     NSMutableAttributedString * attributedString = [[NSMutableAttributedString alloc] initWithString:text];
     [attributedString addAttribute:NSFontAttributeName value:[FontProperties getTitleFont] range:NSMakeRange(0,[[event name] length])];
