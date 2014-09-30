@@ -83,6 +83,12 @@
     if ([Profile localyticsEnabled]) {
         [[LocalyticsSession shared] tagScreen:name];
     }
+    
+    if ([Profile googleAnalyticsEnabled]) {
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:name];
+        [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+    }
 }
 
 +(void) tagGroup:(NSString *)name {
