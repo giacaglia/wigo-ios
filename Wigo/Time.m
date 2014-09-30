@@ -43,16 +43,23 @@
     }
     else { // Get the difference between the dates
         NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        NSDate *nowDate = [NSDate date];
+        NSDateComponents *otherDay=  [gregorianCalendar
+                                       components:NSDayCalendarUnit
+                                       fromDate:[dateInLocalTimezone dateByAddingTimeInterval:-3600*6]];
+        NSDateComponents *nowDay = [gregorianCalendar
+                                      components:NSDayCalendarUnit
+                                      fromDate:[nowDate dateByAddingTimeInterval:-3600*6]];
         NSDateComponents *differenceDateComponents = [gregorianCalendar
                                                       components:NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSWeekOfYearCalendarUnit |NSDayCalendarUnit
                                                       fromDate:dateInLocalTimezone
-                                                      toDate:[NSDate date]
+                                                      toDate:nowDate
                                                       options:0];
         if ([differenceDateComponents weekOfYear] == 0) {
-            if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
+            if (([nowDay day] - [otherDay day]) == 0 || ([nowDay day] - [otherDay day]) == 1) {
                 return @"1 day ago";
             }
-            return [NSString stringWithFormat:@"%ld days ago", (long)[differenceDateComponents day]];
+            return [NSString stringWithFormat:@"%ld days ago", (long)([nowDay day] - [otherDay day])];
         }
         else {
             if ([differenceDateComponents month] == 0) {
