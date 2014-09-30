@@ -173,7 +173,7 @@
     return [[NSDictionary alloc] init];
 }
 
-- (void)setImagesURL:(NSArray *)images {
+- (void)setImages:(NSArray *)images {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     [properties notNillsetObject:images forKey:@"images"];
     [_proxy notNillsetObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
@@ -213,15 +213,17 @@
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
     if ([imagesArray count] < 5) {
         [imagesArray addObject:@{@"url": imageURL}];
-        [self setImagesURL:[NSArray arrayWithArray:imagesArray]];
+        [self setImages:[NSArray arrayWithArray:imagesArray]];
     }
 }
 
 - (NSString *)removeImageURL:(NSString *)imageURL {
-    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
+    NSArray *imageArrayURL = [self imagesURL];
     if ([imagesArray count] > 3) {
-        [imagesArray removeObject:imageURL];
-        [self setImagesURL:[NSArray arrayWithArray:imagesArray]];
+        int i = [imageArrayURL indexOfObject:imageURL];
+        [imagesArray removeObjectAtIndex:i];
+        [self setImages:[NSArray arrayWithArray:imagesArray]];
         return @"Deleted";
     }
     return @"Error";
@@ -231,7 +233,7 @@
     NSMutableArray *imageMutableArrayURL = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
     int indexOfCover = (int)[imageMutableArrayURL indexOfObject:imageURL];
     [imageMutableArrayURL exchangeObjectAtIndex:indexOfCover withObjectAtIndex:0];
-    [self setImagesURL:[NSArray arrayWithArray:imageMutableArrayURL]];
+    [self setImages:[NSArray arrayWithArray:imageMutableArrayURL]];
 }
 
 - (void)setImagesArea:(NSArray *)imagesArea {
