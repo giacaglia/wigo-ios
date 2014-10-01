@@ -54,6 +54,7 @@ UIButton *newChatButton;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [self fetchFirstPageMessages];
 }
 
@@ -143,6 +144,7 @@ UIButton *newChatButton;
     NSString *queryString = [NSString stringWithFormat:@"conversations/?page=%@", [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
             if ([_page isEqualToNumber:@1])  _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
             NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
             [_messageParty addObjectsFromArray:arrayOfMessages];

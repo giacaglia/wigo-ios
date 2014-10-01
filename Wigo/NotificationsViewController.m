@@ -64,6 +64,7 @@ BOOL didProfileSegue;
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"notificationsSelected"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [self fetchEverything];
 }
 
@@ -560,6 +561,7 @@ viewForFooterInSection:(NSInteger)section
         NSString *queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
+                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                 if ([_page isEqualToNumber:@1]) {
                     _notificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
                     _expiredNotificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
