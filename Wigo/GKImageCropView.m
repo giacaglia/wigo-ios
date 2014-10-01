@@ -97,7 +97,7 @@ static CGRect GKScaleRect(CGRect rect, CGFloat scale)
 #pragma Public Methods
 
 - (CGRect)croppedArea {
-    return [self _calcVisibleRectForCropArea];
+    return [self _calcRect];
 //    //transform visible rect to image orientation
 //    CGAffineTransform rectTransform = [self _orientationTransformedRectOfImage:self.imageToCrop];
 //    visibleRect = CGRectApplyAffineTransform(visibleRect, rectTransform);
@@ -118,6 +118,16 @@ static CGRect GKScaleRect(CGRect rect, CGFloat scale)
     UIImage *result = [UIImage imageWithCGImage:imageRef scale:self.imageToCrop.scale orientation:self.imageToCrop.imageOrientation];
     CGImageRelease(imageRef);
     return result;
+}
+
+- (CGRect)_calcRect {
+    GKResizeableCropOverlayView* resizeableView = (GKResizeableCropOverlayView*)self.cropOverlayView;
+
+    CGFloat sizeScale = self.imageView.image.size.width / self.imageView.frame.size.width;
+    sizeScale *= self.scrollView.zoomScale;
+//    CGRect visibleRect = [resizeableView.contentView convertRect:resizeableView.cropSize toView:imageView];
+    return CGRectZero;
+//    return visibleRect;
 }
 
 - (CGRect)_calcVisibleRectForResizeableCropArea{

@@ -598,6 +598,7 @@ int queryQueueInt;
 #pragma mark - Network functions
 
 - (void)fetchFirstPageEveryone {
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     _page = @1;
     _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self fetchEveryone];
@@ -606,6 +607,7 @@ int queryQueueInt;
 - (void) fetchEveryone {
     NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@" ,[_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
         NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
@@ -620,6 +622,7 @@ int queryQueueInt;
 }
 
 - (void)fetchFirstPageFollowers {
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     _page = @1;
     _followersParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self fetchFollowers];
@@ -628,6 +631,7 @@ int queryQueueInt;
 - (void)fetchFollowers {
     NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
         NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
         for (NSDictionary *object in arrayOfFollowObjects) {
@@ -653,6 +657,7 @@ int queryQueueInt;
 }
 
 - (void)fetchFirstPageFollowing {
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     _page = @1;
     _followingParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self fetchFollowing];
@@ -661,6 +666,7 @@ int queryQueueInt;
 - (void)fetchFollowing {
     NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
         NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
         NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
         for (NSDictionary *object in arrayOfFollowObjects) {
