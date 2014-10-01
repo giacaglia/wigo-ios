@@ -671,9 +671,13 @@ UIButton *tapButton;
 - (void)goThereTooPressed {
     if (_isSeingImages) [self chooseImage];
     [self.navigationController popToRootViewControllerAnimated:NO];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabs" object:nil];
-    NSDictionary *dictionary = @{@"eventID": [self.user attendingEventID]};
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"chooseEvent" object:nil userInfo:dictionary];
+    [[Profile user] setIsAttending:YES];
+    [[Profile user] setIsGoingOut:YES];
+    [[Profile user] setAttendingEventID:[self.user  attendingEventID]];
+    UITabBarController *tabBarController = (UITabBarController *)self.parentViewController.parentViewController;
+    tabBarController.selectedViewController
+    = [tabBarController.viewControllers objectAtIndex:1];
+    [Network postGoingToEventNumber:[[self.user  attendingEventID] intValue]];
 }
 
 - (void)initializeLeftProfileButton {
