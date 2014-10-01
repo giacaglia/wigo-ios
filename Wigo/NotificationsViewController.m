@@ -240,7 +240,7 @@ BOOL didProfileSegue;
             buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, HEIGHT_NOTIFICATION_CELL/2 - 20, 49, 40)];
             [buttonCallback setTitle:@"Go\nHere" forState:UIControlStateNormal];
             [buttonCallback setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            buttonCallback.titleLabel.font = [FontProperties getSmallPhotoFont];
+            buttonCallback.titleLabel.font = [FontProperties scMediumFont:12.0f];
             buttonCallback.titleLabel.textAlignment = NSTextAlignmentCenter;
             buttonCallback.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
             buttonCallback.titleLabel.numberOfLines = 0;
@@ -372,13 +372,13 @@ viewForFooterInSection:(NSInteger)section
     if (notification) {
         User *user = [[User alloc] initWithDictionary:[notification fromUser]];
         if (user) {
-            [Network postGoingToEventNumber:[[user attendingEventID] intValue]];
             [[Profile user] setIsAttending:YES];
             [[Profile user] setIsGoingOut:YES];
             [[Profile user] setAttendingEventID:[user attendingEventID]];
             UITabBarController *tabBarController = (UITabBarController *)self.parentViewController.parentViewController;
             tabBarController.selectedViewController
             = [tabBarController.viewControllers objectAtIndex:1];
+            [Network postGoingToEventNumber:[[user attendingEventID] intValue]];
         }
     }
 

@@ -135,7 +135,6 @@
 - (NSString *)timeString {
     NSString *utcCreationTime = [_proxy objectForKey:@"created"];
     return [Time getUTCTimeStringToLocalTimeString:utcCreationTime];
-//    return [localTimeString substringWithRange:NSMakeRange(11, 5)];
 }
 
 - (void)setTimeString:(NSString *)timeString {
