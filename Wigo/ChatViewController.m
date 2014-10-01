@@ -41,7 +41,7 @@ UIButton *newChatButton;
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
     lineView.backgroundColor = RGBAlpha(244, 149, 45, 0.1f);
     [self.navigationController.navigationBar addSubview:lineView];
-    
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [self initializeNewChatButton];
     [self initializeTableOfChats];
 }
@@ -54,7 +54,6 @@ UIButton *newChatButton;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [self fetchFirstPageMessages];
 }
 

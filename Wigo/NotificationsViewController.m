@@ -53,6 +53,7 @@ BOOL didProfileSegue;
     lineView.backgroundColor = RGBAlpha(244, 149, 45, 0.1f);
     [self.navigationController.navigationBar addSubview:lineView];
     
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchEverything) name:@"fetchNotifications" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
 }
@@ -64,7 +65,6 @@ BOOL didProfileSegue;
     tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"notificationsSelected"];
     tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [self fetchEverything];
 }
 
