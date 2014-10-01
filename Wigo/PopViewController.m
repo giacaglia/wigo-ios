@@ -105,7 +105,7 @@ UILabel *emojiLabel;
 }
 
 - (void)acceptGoingOut {
-    [self dismissViewControllerAnimated:YES completion:^{
+    [self dismissViewControllerAnimated:NO completion:^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"goOutPressed" object:nil];
     }];
 }

@@ -682,11 +682,10 @@ int userInt;
 }
 
 - (void) goOutPressed {
-    User *profileUser = [Profile user];
-    [profileUser setIsGoingOut:YES];
+    [Network postGoOut];
+    [[Profile user] setIsGoingOut:YES];
     [self updateTitleView];
     [self showTapButtons];
-    [Network postGoOut];
     [self animationShowingTapIcons];
 }
 
