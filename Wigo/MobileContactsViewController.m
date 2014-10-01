@@ -71,8 +71,6 @@ NSMutableArray *filteredPeopleContactList;
             all = ABAddressBookCopyArrayOfAllPeople(addressBookRef);
             n = ABAddressBookGetPersonCount(addressBookRef);
             
-            
-            // SORT
             CFMutableArrayRef peopleMutable = CFArrayCreateMutableCopy(
                                                                        kCFAllocatorDefault,
                                                                        CFArrayGetCount(all),
@@ -101,10 +99,7 @@ NSMutableArray *filteredPeopleContactList;
                     (![firstName isEqualToString:@""] || ![lastName isEqualToString:@""]) ) {
                     [peopleContactList addObject:(__bridge id)(ref)];
                 }
-//                CFRelease(ref);
             }
-//            CFRelease(peopleMutable);
-//            CFRelease(addressBookRef);
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 [contactsTableView reloadData];
             });
@@ -127,7 +122,7 @@ NSMutableArray *filteredPeopleContactList;
 
     ABRecordRef contactPerson;
     if (isFiltered)
-       contactPerson  = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:[indexPath row]]);
+        contactPerson  = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:[indexPath row]]);
     else
         contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:[indexPath row]]);
     
@@ -190,21 +185,48 @@ NSMutableArray *filteredPeopleContactList;
 - (void)selectedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = buttonSender.tag;
-    
-    [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
-    for (UIView *subview in buttonSender.superview.subviews) {
-        if (subview.tag == tag && [subview isKindOfClass:[UIImageView class]]) {
-            UIImageView *selectedImageView = (UIImageView *)subview;
-            if (![(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
-                [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
-                selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
+    if (isFiltered) {
+        ABRecordRef contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
+        ABRecordID recordID = ABRecordGetRecordID(contactPerson);
+        for (int i = 0 ; i < [peopleContactList count] ; i++ ) {
+            ABRecordRef newContactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:i]);
+            ABRecordID newRecordID = ABRecordGetRecordID(newContactPerson);
+            if (recordID == newRecordID) {
+                tag = i;
+                
             }
-            else {
-                [choosenPeople replaceObjectAtIndex:tag withObject:@NO];
-                selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
+        }
+        [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
+        [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
+        for (UIView *subview in buttonSender.superview.subviews) {
+            if (subview.tag == tag && [subview isKindOfClass:[UIImageView class]]) {
+                UIImageView *selectedImageView = (UIImageView *)subview;
+                if (![(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
+                    selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
+                }
+                else {
+                    selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
+                }
             }
         }
     }
+    else {
+        [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
+        for (UIView *subview in buttonSender.superview.subviews) {
+            if (subview.tag == tag && [subview isKindOfClass:[UIImageView class]]) {
+                UIImageView *selectedImageView = (UIImageView *)subview;
+                if (![(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
+                    [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
+                    selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
+                }
+                else {
+                    [choosenPeople replaceObjectAtIndex:tag withObject:@NO];
+                    selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
+                }
+            }
+        }
+    }
+
 }
 
 - (void)initializeButtonIAmDone {
