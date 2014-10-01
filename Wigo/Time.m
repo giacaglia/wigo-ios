@@ -44,22 +44,27 @@
     else { // Get the difference between the dates
         NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
         NSDate *nowDate = [NSDate date];
+        unsigned int flags = NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSWeekOfYearCalendarUnit |NSDayCalendarUnit;
+        NSCalendar* calendar = [NSCalendar currentCalendar];
         NSDateComponents *otherDay=  [gregorianCalendar
-                                       components:NSDayCalendarUnit
+                                       components:flags
                                        fromDate:[dateInLocalTimezone dateByAddingTimeInterval:-3600*6]];
         NSDateComponents *nowDay = [gregorianCalendar
-                                      components:NSDayCalendarUnit
+                                      components:flags
                                       fromDate:[nowDate dateByAddingTimeInterval:-3600*6]];
+        NSDate *otherDayDate = [calendar dateFromComponents:otherDay];
+        NSDate *nowDayDate = [calendar dateFromComponents:nowDay];
+        
         NSDateComponents *differenceDateComponents = [gregorianCalendar
-                                                      components:NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSWeekOfYearCalendarUnit |NSDayCalendarUnit
-                                                      fromDate:dateInLocalTimezone
-                                                      toDate:nowDate
+                                                      components:flags
+                                                      fromDate:otherDayDate
+                                                      toDate:nowDayDate
                                                       options:0];
         if ([differenceDateComponents weekOfYear] == 0) {
-            if (([nowDay day] - [otherDay day]) == 0 || ([nowDay day] - [otherDay day]) == 1) {
+            if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
                 return @"1 day ago";
             }
-            return [NSString stringWithFormat:@"%ld days ago", (long)([nowDay day] - [otherDay day])];
+            return [NSString stringWithFormat:@"%ld days ago", (long)[differenceDateComponents day]];
         }
         else {
             if ([differenceDateComponents month] == 0) {
