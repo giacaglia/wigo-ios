@@ -785,6 +785,7 @@ int userInt;
     layout.minimumInteritemSpacing = 4;
     layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 30);
     _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49) collectionViewLayout:layout];
+    _collectionView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 100);
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier];

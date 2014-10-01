@@ -236,7 +236,7 @@ BOOL didProfileSegue;
     UIButton *buttonCallback;
     if ([typeString isEqualToString:@"tap"] && ![notification expired] &&
              [user isAttending] ) {
-        if (![[Profile user] isGoingOut] || ([[Profile user] isAttending] && ![[[Profile user] attendingEventID] isEqualToNumber:[user attendingEventID]] )) {
+        if (![[Profile user] isGoingOut] || ([[Profile user] isAttending] && ![[[Profile user] attendingEventID] isEqualToNumber:[user attendingEventID]]) || ([[Profile user] isGoingOut] && ![[Profile user] isAttending])) {
             buttonCallback = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, HEIGHT_NOTIFICATION_CELL/2 - 20, 49, 40)];
             [buttonCallback setTitle:@"Go\nHere" forState:UIControlStateNormal];
             [buttonCallback setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
