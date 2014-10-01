@@ -116,29 +116,30 @@ NSMutableArray *filteredPeopleContactList;
     UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-
+    
+    UIButton *aroundCellButton = [[UIButton alloc] initWithFrame:cell.contentView.frame];
+    aroundCellButton.tag = (int)[indexPath row];
+    [aroundCellButton addTarget:self action:@selector(selectedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.contentView addSubview:aroundCellButton];
+    
     ABRecordRef contactPerson;
     if (isFiltered)
         contactPerson  = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:[indexPath row]]);
     else
         contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:[indexPath row]]);
     
-    UIButton *selectedPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
-    selectedPersonButton.tag = (int)[indexPath row];
-    [selectedPersonButton addTarget:self action:@selector(selectedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [cell.contentView addSubview:selectedPersonButton];
-    
-    UIImageView *selectedPersonImageView = [[UIImageView alloc] initWithFrame:selectedPersonButton.frame];
+
+    UIImageView *selectedPersonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
     selectedPersonImageView.tag = (int)[indexPath row];
     if ([(NSNumber *)[choosenPeople objectAtIndex:[indexPath row]] boolValue])
         selectedPersonImageView.image = [UIImage imageNamed:@"tapFilled"];
     else
         selectedPersonImageView.image = [UIImage imageNamed:@"tapUnselected"];
     selectedPersonImageView.tintColor = [FontProperties getOrangeColor];
-    [cell.contentView addSubview:selectedPersonImageView];
+    [aroundCellButton addSubview:selectedPersonImageView];
     
     UILabel *nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 10, self.view.frame.size.width - 55 - 15, 30)];
     NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
@@ -162,7 +163,7 @@ NSMutableArray *filteredPeopleContactList;
                           value:RGB(20, 20, 20)
                           range:NSMakeRange([firstName length] + 1, [lastName length])];
     nameOfPersonLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:attString];
-    [cell.contentView addSubview:nameOfPersonLabel];
+    [aroundCellButton addSubview:nameOfPersonLabel];
     return cell;
 }
 
@@ -181,6 +182,7 @@ NSMutableArray *filteredPeopleContactList;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 70;
 }
+
 
 - (void)selectedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
@@ -212,7 +214,7 @@ NSMutableArray *filteredPeopleContactList;
     }
     else {
         [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
-        for (UIView *subview in buttonSender.superview.subviews) {
+        for (UIView *subview in buttonSender.subviews) {
             if (subview.tag == tag && [subview isKindOfClass:[UIImageView class]]) {
                 UIImageView *selectedImageView = (UIImageView *)subview;
                 if (![(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
