@@ -185,7 +185,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
             NSDictionary *alert = [aps objectForKey:@"alert"];
             if ([alert isKindOfClass:[NSDictionary class]]) {
                 NSString *locKeyString = [alert objectForKey:@"loc-key"];
-                if ([locKeyString isKindOfClass:[NSDictionary class]] && [locKeyString isEqualToString:@"M"]) {
+                if ([locKeyString isEqualToString:@"M"]) {
                     NSArray *locArgs = [alert objectForKey:@"loc-args"];
                     NSString *messageString = locArgs[1];
                     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObject:messageString forKey:@"message"];
