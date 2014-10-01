@@ -710,7 +710,8 @@ int userInt;
 }
 
 - (void) sendTapToUserAtIndex:(int)tag {
-    [EventAnalytics tagEvent:@"Tap User"];
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Who", @"Tap Source", nil];
+    [EventAnalytics tagEvent:@"Tap User" withDetails:options];
 
     User *user;
     if (tag < 0) {

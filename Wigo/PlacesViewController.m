@@ -257,6 +257,8 @@ BOOL shouldReloadEvents;
 }
 
 - (void) goHerePressed:(id)sender {
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
+    [EventAnalytics tagEvent:@"Go Here" withDetails:options];
     shouldAnimate = YES;
     _whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];

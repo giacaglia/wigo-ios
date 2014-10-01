@@ -373,6 +373,8 @@ viewForFooterInSection:(NSInteger)section
     if (notification) {
         User *user = [[User alloc] initWithDictionary:[notification fromUser]];
         if (user) {
+            NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Notifications", @"Go Here Source", nil];
+            [EventAnalytics tagEvent:@"Go Here" withDetails:options];
             [[Profile user] setIsAttending:YES];
             [[Profile user] setIsGoingOut:YES];
             [[Profile user] setAttendingEventID:[user attendingEventID]];

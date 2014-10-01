@@ -658,17 +658,21 @@ UIButton *tapButton;
 - (void)tapPressed {
     if ([self.user isTapped]) {
         [tapButton setBackgroundImage:[UIImage imageNamed:@"tapUnselectedProfile"] forState:UIControlStateNormal];
-        [self.user setIsTapped:YES];
+        [self.user setIsTapped:NO];
         [Network sendUntapToUserWithId:[self.user objectForKey:@"id"]];
     }
     else {
         [tapButton setBackgroundImage:[UIImage imageNamed:@"tapSelectedProfile"] forState:UIControlStateNormal];
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
+        [EventAnalytics tagEvent:@"Tap User" withDetails:options];
         [self.user setIsTapped:YES];
         [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
     }
 }
 
 - (void)goThereTooPressed {
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Go Here Source", nil];
+    [EventAnalytics tagEvent:@"Go Here" withDetails:options];
     if (_isSeingImages) [self chooseImage];
     [self.navigationController popToRootViewControllerAnimated:NO];
     [[Profile user] setIsAttending:YES];

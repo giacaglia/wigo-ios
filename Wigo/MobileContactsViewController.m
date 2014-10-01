@@ -43,6 +43,11 @@ NSMutableArray *filteredPeopleContactList;
     [self initializeButtonIAmDone];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"MobileContacts View"];
+}
+
 - (void)initializeTitle {
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 30, self.view.frame.size.width - 30, 25)];
     titleLabel.text = @"TAP 5 OR MORE FRIENDS";
@@ -67,7 +72,8 @@ NSMutableArray *filteredPeopleContactList;
     ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, &error);
     ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
         if (granted && addressBookRef) {
-            
+            [EventAnalytics tagEvent:@"Accepted Apple Contacts"];
+
             all = ABAddressBookCopyArrayOfAllPeople(addressBookRef);
             n = ABAddressBookGetPersonCount(addressBookRef);
             
@@ -106,6 +112,7 @@ NSMutableArray *filteredPeopleContactList;
        
         }
         else {
+            [EventAnalytics tagEvent:@"Decline Apple Contacts"];
             [self dismissViewControllerAnimated:NO completion:nil];
         }
     });

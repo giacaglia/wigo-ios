@@ -28,6 +28,11 @@
     });
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Confirmation View"];
+}
+
 - (void) initializeTitle {
     UIImageView *wigoIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 90 - 10 , 40, 180, 180)];
     wigoIconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];

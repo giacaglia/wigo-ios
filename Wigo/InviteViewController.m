@@ -40,6 +40,12 @@ BOOL isSearching;
     [self initializeTableInvite];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [EventAnalytics tagEvent:@"Invite View"];
+}
+
+
 - (void)initializeTitle {
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 30, self.view.frame.size.width - 20, 30)];
     titleLabel.text = @"Invite";
@@ -238,6 +244,8 @@ BOOL isSearching;
         [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapSelectedInvite"] forState:UIControlStateNormal];
         [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
         [user setIsTapped:YES];
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
+        [EventAnalytics tagEvent:@"Tap User" withDetails:options];
     }
     [everyoneParty replaceObjectAtIndex:tag withObject:user];
     [invitePeopleTableView beginUpdates];

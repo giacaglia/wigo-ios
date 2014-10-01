@@ -24,6 +24,8 @@ UILabel *emojiLabel;
     return self;
 }
 
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     if ([[dailyDictionary allKeys] containsObject:@"emoji"]) [self initializeEmojiLabel];
@@ -34,6 +36,8 @@ UILabel *emojiLabel;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self animateEmoji];
+    [EventAnalytics tagEvent:@"Pop View"];
+
 }
 
 - (void)initializeEmojiLabel {
