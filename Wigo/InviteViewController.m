@@ -333,7 +333,7 @@ BOOL isSearching;
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     page = @1;
-    NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[page stringValue], searchString];
+    NSString *queryString = [NSString stringWithFormat:@"users/?following=true&page=%@&text=%@" ,[page stringValue], searchString];
     [self searchUsersWithString:queryString];
 }
 
