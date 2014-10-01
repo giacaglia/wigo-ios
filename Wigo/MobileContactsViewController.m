@@ -195,13 +195,11 @@ NSMutableArray *filteredPeopleContactList;
             ABRecordID newRecordID = ABRecordGetRecordID(newContactPerson);
             if (recordID == newRecordID) {
                 tag = i;
-                
             }
         }
         [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
-        [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
-        for (UIView *subview in buttonSender.superview.subviews) {
-            if (subview.tag == tag && [subview isKindOfClass:[UIImageView class]]) {
+        for (UIView *subview in buttonSender.subviews) {
+            if ([subview isKindOfClass:[UIImageView class]]) {
                 UIImageView *selectedImageView = (UIImageView *)subview;
                 if (![(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
                     selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
@@ -211,6 +209,7 @@ NSMutableArray *filteredPeopleContactList;
                 }
             }
         }
+        [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
     }
     else {
         [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
@@ -300,6 +299,7 @@ NSMutableArray *filteredPeopleContactList;
     if(searchText.length == 0)
     {
         isFiltered = FALSE;
+        [self.view endEditing:YES];
     }
     else
     {

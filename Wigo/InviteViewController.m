@@ -192,9 +192,14 @@ BOOL isSearching;
     UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
     goingOutLabel.font = [FontProperties mediumFont:13.0f];
     goingOutLabel.textAlignment = NSTextAlignmentLeft;
+    goingOutLabel.textColor = [FontProperties getBlueColor];
     if ([user isGoingOut]) {
-        goingOutLabel.text = @"Going Out";
-        goingOutLabel.textColor = [FontProperties getBlueColor];
+        if ([user isAttending] && [user attendingEventName]) {
+            goingOutLabel.text = [NSString stringWithFormat:@"Going out to %@", [user attendingEventName]];
+        }
+        else {
+            goingOutLabel.text = @"Going Out";
+        }
     }
     [aroundTapButton addSubview:goingOutLabel];
     
