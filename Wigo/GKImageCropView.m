@@ -121,13 +121,14 @@ static CGRect GKScaleRect(CGRect rect, CGFloat scale)
 }
 
 - (CGRect)_calcRect {
-    GKResizeableCropOverlayView* resizeableView = (GKResizeableCropOverlayView*)self.cropOverlayView;
 
     CGFloat sizeScale = self.imageView.image.size.width / self.imageView.frame.size.width;
     sizeScale *= self.scrollView.zoomScale;
-//    CGRect visibleRect = [resizeableView.contentView convertRect:resizeableView.cropSize toView:imageView];
-    return CGRectZero;
-//    return visibleRect;
+    CGRect visibleRect = [scrollView convertRect:scrollView.bounds toView:imageView];
+    visibleRect = GKScaleRect(visibleRect, sizeScale);
+    NSLog(@"visible rect: %f, %f, %f, %f" , visibleRect.origin.x, visibleRect.origin.y, visibleRect.size.width, visibleRect.size.height);
+
+    return visibleRect;
 }
 
 - (CGRect)_calcVisibleRectForResizeableCropArea{
@@ -160,7 +161,6 @@ static CGRect GKScaleRect(CGRect rect, CGFloat scale)
     }
     //extract visible rect from scrollview and scale it
     CGRect visibleRect = [scrollView convertRect:scrollView.bounds toView:imageView];
-    NSLog(@"visible rect: %f, %f, %f, %f" , visibleRect.origin.x, visibleRect.origin.y, visibleRect.size.width, visibleRect.size.height);
     return visibleRect = GKScaleRect(visibleRect, scale);
 }
 
