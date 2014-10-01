@@ -10,6 +10,6 @@
 
 @interface PhotoViewController : UIViewController
 
-- (id)initWithImageURL:(NSString *)imageURL;
+- (id)initWithImage:(NSDictionary *)image;
 
 @end

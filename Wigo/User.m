@@ -230,10 +230,10 @@
 }
 
 - (void)makeImageURLCover:(NSString *)imageURL {
-    NSMutableArray *imageMutableArrayURL = [[NSMutableArray alloc] initWithArray:[self imagesURL]];
-    int indexOfCover = (int)[imageMutableArrayURL indexOfObject:imageURL];
-    [imageMutableArrayURL exchangeObjectAtIndex:indexOfCover withObjectAtIndex:0];
-    [self setImages:[NSArray arrayWithArray:imageMutableArrayURL]];
+    int indexOfCover = (int)[[self imagesURL] indexOfObject:imageURL];
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
+    [imagesArray exchangeObjectAtIndex:indexOfCover withObjectAtIndex:0];
+    [self setImages:[NSArray arrayWithArray:imagesArray]];
 }
 
 - (void)setImagesArea:(NSArray *)imagesArea {

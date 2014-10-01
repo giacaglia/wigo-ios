@@ -157,7 +157,7 @@ UIViewController *webViewController;
     }
     else {
         [self.view endEditing:YES];
-        self.photoViewController = [[PhotoViewController alloc] initWithImageURL:[[[Profile user] imagesURL] objectAtIndex:buttonSender.tag]];
+        self.photoViewController = [[PhotoViewController alloc] initWithImage:[[[Profile user] images] objectAtIndex:buttonSender.tag]];
         [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:30 andHeight:450];
     }
 }

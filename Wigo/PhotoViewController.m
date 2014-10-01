@@ -11,18 +11,16 @@
 #import "RWBlurPopover.h"
 
 @interface PhotoViewController ()
-
-@property NSString *imageURL;
-
+@property NSDictionary *image;
 @end
 
 @implementation PhotoViewController
 
-- (id)initWithImageURL:(NSString *)imageURL
+- (id)initWithImage:(NSDictionary *)image
 {
     self = [super init];
     if (self) {
-        _imageURL = imageURL;
+        _image = image;
         self.view.backgroundColor = [UIColor clearColor];
     }
     return self;
@@ -35,7 +33,7 @@
     UIImageView *photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, 0, 248, 248)];
     photoImageView.contentMode = UIViewContentModeScaleAspectFill;
     photoImageView.clipsToBounds = YES;
-    [photoImageView setImageWithURL:[NSURL URLWithString:_imageURL]];
+    [photoImageView setImageWithURL:[_image objectForKey:@"url"] imageArea:[_image objectForKey:@"crop"]];
     [self.view addSubview:photoImageView];
     
     UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
@@ -67,14 +65,14 @@
 
 
 - (void)makeCoverPressed {
-    [[Profile user] makeImageURLCover:_imageURL];
+    [[Profile user] makeImageURLCover:[_image objectForKey:@"url"]];
     [[Profile user] save];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)deletePressed {
-    NSString *message = [[Profile user] removeImageURL:_imageURL];
+    NSString *message = [[Profile user] removeImageURL:[_image objectForKey:@"url"]];
     if ([message isEqualToString:@"Error"]) {
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bummer"

@@ -39,6 +39,7 @@ typedef enum
 @property NSString *groupName;
 @property NSNumber *numberOfGroupMembers;
 @property NSString *bioString;
+@property NSArray *images;
 @property NSArray *imagesURL;
 @property NSArray *imagesArea;
 @property BOOL isPrivate;
