@@ -18,6 +18,17 @@
     [EventAnalytics tagEvent:name withDetails:[NSDictionary dictionaryWithObjectsAndKeys:nil]];
 }
 
++(NSString *) bucketizeUsers:(int) num {
+    // number of following
+    if (num < 0)        { return @"Unknown"; }
+    else if (num == 0)  { return @"0"; }
+    else if (num < 5)   { return @"<5"; }
+    else if (num < 10)  { return @"<10"; }
+    else if (num < 30)  { return @"<30"; }
+    else if (num < 100) { return @"30-100"; } 
+    else {                return @"100+"; }
+}
+
 +(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details {
     NSMutableDictionary *data = [NSMutableDictionary dictionaryWithObjectsAndKeys:nil];
 
@@ -29,43 +40,39 @@
     User *profileUser = [Profile user];
     
     if (profileUser != nil) {
+        // School
         NSString *groupName = profileUser.groupName;
         if (groupName != nil) {
             [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:groupName forKey:@"School"]];
             [tracker set:[GAIFields customDimensionForIndex:5] value:groupName];
         }
+
+        // Going Out
         NSString *goingOut = profileUser.isGoingOut ? @"Yes" : @"No";
         [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:goingOut forKey:@"Going Out"]];
-        
-        // number of following
-        NSString *followingBucket;
-        int following = [[profileUser numberOfFollowing] intValue];
-        
-        if (following < 0) {
-            followingBucket = @"Unknown";
-        } else if (following == 0) {
-            followingBucket = @"0";
-        } else if (following < 5) {
-            followingBucket = @"<5";
-        } else if (following < 10) {
-            followingBucket = @"<10";
-        } else if (following < 30) {
-            followingBucket = @"<30";
-        } else if (following < 100) {
-            followingBucket = @"30-100";
-        } else {
-            followingBucket = @"100+";
-        }
-        [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:followingBucket forKey:@"Following"]];
-        
-        [tracker set:[GAIFields customDimensionForIndex:2] value:[NSString stringWithFormat:@"%i", following]];
-        
-        int followers = [[profileUser numberOfFollowers] intValue];
-        [tracker set:[GAIFields customDimensionForIndex:3] value:[NSString stringWithFormat:@"%i", followers]];
-        
         [tracker set:[GAIFields customDimensionForIndex:4] value:goingOut];
-        
+
+        // Gender
+        [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:profileUser.gender forKey:@"Gender"]];
         [tracker set:[GAIFields customDimensionForIndex:1] value:profileUser.gender];
+        
+        // Following/Followers
+        NSString *followingBucket = [self bucketizeUsers:[[profileUser numberOfFollowing] intValue]];
+        NSString *followersBucket = [self bucketizeUsers:[[profileUser numberOfFollowers] intValue]];
+        [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:followingBucket forKey:@"Following"]];
+        [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:followersBucket forKey:@"Followers"]];
+        [tracker set:[GAIFields customDimensionForIndex:2] value:followingBucket];
+        [tracker set:[GAIFields customDimensionForIndex:3] value:followersBucket];
+
+        // is Group Locked
+        NSString *locked = [[Profile user] isGroupLocked] ? @"Yes" : @"No";
+        [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:locked forKey:@"Locked"]];
+        [tracker set:[GAIFields customDimensionForIndex:6] value:locked];
+        
+        // is User tapped
+        NSString *tapped = [[Profile user] isTapped] ? @"Yes" : @"No";
+        [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:tapped forKey:@"Tapped"]];
+        [tracker set:[GAIFields customDimensionForIndex:7] value:tapped];
     }
     
     [data addEntriesFromDictionary:details];
