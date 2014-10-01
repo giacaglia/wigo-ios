@@ -199,6 +199,19 @@
     return [[NSArray alloc] init];
 }
 
+- (void)setImagesURL:(NSArray *)imagesURL {
+    
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
+    if ([imagesURL count] < 5) {
+        for (int i = 0; i < [imagesURL count]; i++) {
+            NSString *imageURL = [imagesURL objectAtIndex:i];
+            [imagesArray addObject:@{@"url": imageURL}];
+        }
+        [self setImages:[NSArray arrayWithArray:imagesArray]];
+    }
+
+}
+
 - (NSArray *)images {
     NSDictionary *properties = [_proxy objectForKey:@"properties"];
     if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {

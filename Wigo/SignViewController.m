@@ -281,12 +281,11 @@
         _fbID = [fbGraphUser objectID];
         _profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", [fbGraphUser objectForKey:@"id"]];
         _accessToken = [FBSession activeSession].accessTokenData.accessToken;
-        User *profileUser = [Profile user];
-        [profileUser setFirstName:fbGraphUser[@"first_name"]];
-        [profileUser setLastName:fbGraphUser[@"last_name"]];
+        [[Profile user] setFirstName:fbGraphUser[@"first_name"]];
+        [[Profile user] setLastName:fbGraphUser[@"last_name"]];
         NSDictionary *userResponse = (NSDictionary *)fbGraphUser;
         if ([[userResponse allKeys] containsObject:@"gender"]) {
-            [profileUser setObject:[userResponse objectForKey:@"gender"] forKey:@"gender"];
+            [[Profile user] setObject:[userResponse objectForKey:@"gender"] forKey:@"gender"];
         }
         
         if (!_alertShown && !_fetchingProfilePictures) {
