@@ -122,6 +122,7 @@ NSString *urlOfSelectedImage;
 }
 
 - (void) getProfilePictures {
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     _profilePicturesURL = [[NSMutableArray alloc] initWithCapacity:0];
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
                                  parameters:nil
@@ -131,6 +132,7 @@ NSString *urlOfSelectedImage;
                                               id result,
                                               NSError *error
                                               ) {
+                              [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                               if (!error) {
                                   FBGraphObject *resultObject = [result objectForKey:@"data"];
                                   for (FBGraphObject *photoRepresentation in resultObject) {

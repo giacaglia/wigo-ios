@@ -12,9 +12,12 @@
 
 UITableView *invitePeopleTableView;
 Party *everyoneParty;
+Party *filteredContentParty;
 NSNumber *page;
 NSString *eventName;
 NSNumber *eventID;
+UISearchBar *searchBar;
+BOOL isSearching;
 
 @implementation InviteViewController
 
@@ -33,6 +36,7 @@ NSNumber *eventID;
     [self fetchFirstPageEveryone];
     [self initializeTitle];
     [self initializeTapPeopleTitle];
+    [self initializeSearchBar];
     [self initializeTableInvite];
 }
 
@@ -95,7 +99,7 @@ NSNumber *eventID;
 }
 
 - (void)initializeTableInvite {
-    invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 75, self.view.frame.size.width, self.view.frame.size.height - 64 - 75)];
+    invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 104 + 75, self.view.frame.size.width, self.view.frame.size.height - 104 - 75)];
     [self.view addSubview:invitePeopleTableView];
     invitePeopleTableView.dataSource = self;
     invitePeopleTableView.delegate = self;
@@ -115,8 +119,15 @@ NSNumber *eventID;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    int hasNextPage = ([everyoneParty hasNextPage] ? 1 : 0);
-    return [[everyoneParty getObjectArray] count] + hasNextPage;}
+    if (isSearching) {
+        return [[filteredContentParty getObjectArray] count];
+    }
+    else {
+        int hasNextPage = ([everyoneParty hasNextPage] ? 1 : 0);
+        return [[everyoneParty getObjectArray] count] + hasNextPage;
+    }
+
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
@@ -128,27 +139,39 @@ NSNumber *eventID;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
 
-    if ([[everyoneParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
-        if ([indexPath row] == [[everyoneParty getObjectArray] count] - 5) {
-            [self fetchEveryone];
+    
+    User *user;
+    if (isSearching) {
+        if ([[filteredContentParty getObjectArray] count] == 0) return cell;
+        user = [[filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
+        if ([[filteredContentParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
+            if ([indexPath row] == [[filteredContentParty getObjectArray] count] - 5) {
+                [self fetchEveryone];
+            }
+        }
+        else {
+            if ([indexPath row] == [[filteredContentParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
+                [self fetchEveryone];
+                return cell;
+            }
         }
     }
     else {
-        if ([indexPath row] == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
-            [self fetchEveryone];
-            return cell;
-        }
-    }
-   
-    User *user;
-//    if (_isSearching) {
-//        if ([[_filteredContentParty getObjectArray] count] == 0) return cell;
-//        user = [[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
-//    }
-//    else {
         if ([[everyoneParty getObjectArray] count] == 0) return cell;
         user = [[everyoneParty getObjectArray] objectAtIndex:[indexPath row]];
-//    }
+        if ([[everyoneParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
+            if ([indexPath row] == [[everyoneParty getObjectArray] count] - 5) {
+                [self fetchEveryone];
+            }
+        }
+        else {
+            if ([indexPath row] == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
+                [self fetchEveryone];
+                return cell;
+            }
+        }
+
+    }
     
     UIButton *aroundTapButton = [[UIButton alloc] initWithFrame:cell.contentView.frame];
     [aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -193,7 +216,13 @@ NSNumber *eventID;
 - (void) tapPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
-    User *user = [[everyoneParty getObjectArray] objectAtIndex:tag];
+    User *user;
+    if (isSearching) {
+        user = [[filteredContentParty getObjectArray] objectAtIndex:tag];
+    }
+    else {
+        user = [[everyoneParty getObjectArray] objectAtIndex:tag];
+    }
     
     if ([user isTapped]) {
         [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapUnselectedInvite"] forState:UIControlStateNormal];
@@ -210,6 +239,114 @@ NSNumber *eventID;
     [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
     [invitePeopleTableView endUpdates];
 }
+
+#pragma mark - UISearchBar
+
+- (void)initializeSearchBar {
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64 + 75, self.view.frame.size.width, 40)];
+    searchBar.barTintColor = [FontProperties getBlueColor];
+    searchBar.tintColor = [FontProperties getBlueColor];
+    searchBar.placeholder = @"Search By Name";
+    searchBar.delegate = self;
+    searchBar.layer.borderWidth = 1.0f;
+    searchBar.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    UITextField *searchField = [searchBar valueForKey:@"_searchField"];
+    [searchField setValue:[FontProperties getBlueColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [self.view addSubview:searchBar];
+    
+    // Search Icon Clear
+    UITextField *txfSearchField = [searchBar valueForKey:@"_searchField"];
+    [txfSearchField setLeftViewMode:UITextFieldViewModeNever];
+    
+    // Add Custom Search Icon
+    [self.view addSubview:searchBar];
+    [self.view bringSubviewToFront:searchBar];
+    
+    // Remove Clear Button on the right
+    UITextField *textField = [searchBar valueForKey:@"_searchField"];
+    textField.clearButtonMode = UITextFieldViewModeNever;
+    
+    // Text when editing becomes orange
+    for (UIView *subView in searchBar.subviews) {
+        for (UIView *secondLevelSubview in subView.subviews){
+            if ([secondLevelSubview isKindOfClass:[UITextField class]])
+            {
+                UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
+                searchBarTextField.textColor = [FontProperties getBlueColor];
+                break;
+            }
+        }
+    }
+}
+
+
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+//    _searchIconImageView.hidden = YES;
+    isSearching = YES;
+}
+
+//- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+//    if (![searchBar.text isEqualToString:@""]) {
+//        [UIView animateWithDuration:0.01 animations:^{
+//            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
+//        }  completion:^(BOOL finished){
+//            _searchIconImageView.hidden = NO;
+//        }];
+//    }
+//    else {
+//        [UIView animateWithDuration:0.01 animations:^{
+//            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
+//        }  completion:^(BOOL finished){
+//            _searchIconImageView.hidden = NO;
+//        }];
+//    }
+//}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    if([searchText length] != 0) {
+        isSearching = YES;
+        [self performBlock:^(void){[self searchTableList];}
+                afterDelay:0.25
+     cancelPreviousRequest:YES];
+    }
+    else {
+        isSearching = NO;
+    }
+    [invitePeopleTableView reloadData];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self performBlock:^(void){[self searchTableList];}
+            afterDelay:0.25
+ cancelPreviousRequest:YES];
+}
+
+
+- (void)searchTableList {
+    NSString *oldString = searchBar.text;
+    NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
+    page = @1;
+    NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[page stringValue], searchString];
+    [self searchUsersWithString:queryString];
+}
+
+- (void)searchUsersWithString:(NSString *)queryString {
+    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if ([page isEqualToNumber:@1]) filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+        NSMutableArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+        [filteredContentParty addObjectsFromArray:arrayOfUsers];
+        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+        [filteredContentParty addMetaInfo:metaDictionary];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            page = @([page intValue] + 1);
+            [invitePeopleTableView reloadData];
+        });
+    }];
+}
+
+
 
 #pragma mark - Network requests
 
