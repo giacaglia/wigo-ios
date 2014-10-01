@@ -899,6 +899,7 @@ UIButton *tapButton;
     [unblockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     unblockButton.titleLabel.font = [FontProperties scMediumFont:24.0f];
     [popViewController.view addSubview:unblockButton];
+    
     [[RWBlurPopover instance] presentViewController:popViewController withOrigin:0 andHeight:popViewController.view.frame.size.height];
 }
 
