@@ -307,6 +307,7 @@ BOOL shouldReloadEvents;
 }
 
 - (void) goingSomewhereElsePressed {
+    [self scrollUp];
     [self dismissKeyboard];
     [self showWhereAreYouGoingView];
     _goingSomewhereButton.hidden = YES;
@@ -438,13 +439,13 @@ BOOL shouldReloadEvents;
 - (void)createPressed {
     if ([_whereAreYouGoingTextField.text length] != 0) {
         NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
+        [self updatedTitleView];
+        [self fetchEventsFirstPage];
         [Network postGoingToEventNumber:[eventID intValue]];
         User *profileUser = [Profile user];
         [profileUser setIsAttending:YES];
         [profileUser setIsGoingOut:YES];
         [profileUser setAttendingEventID:eventID];
-        [self updatedTitleView];
-        [self fetchEventsFirstPage];
         if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
     }
 }

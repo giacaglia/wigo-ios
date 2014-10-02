@@ -145,18 +145,20 @@ BOOL isSearching;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
 
-    
+    int tag = [indexPath row];
     User *user;
     if (isSearching) {
         if ([[filteredContentParty getObjectArray] count] == 0) return cell;
-        user = [[filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
+        if (tag < [[filteredContentParty getObjectArray] count]) {
+            user = [[filteredContentParty getObjectArray] objectAtIndex:tag];
+        }
         if ([[filteredContentParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
-            if ([indexPath row] == [[filteredContentParty getObjectArray] count] - 5) {
+            if (tag == [[filteredContentParty getObjectArray] count] - 5) {
                 [self fetchEveryone];
             }
         }
         else {
-            if ([indexPath row] == [[filteredContentParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
+            if (tag == [[filteredContentParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
                 [self fetchEveryone];
                 return cell;
             }
@@ -164,14 +166,16 @@ BOOL isSearching;
     }
     else {
         if ([[everyoneParty getObjectArray] count] == 0) return cell;
-        user = [[everyoneParty getObjectArray] objectAtIndex:[indexPath row]];
+        if (tag < [[everyoneParty getObjectArray] count]) {
+            user = [[everyoneParty getObjectArray] objectAtIndex:tag];
+        }
         if ([[everyoneParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
-            if ([indexPath row] == [[everyoneParty getObjectArray] count] - 5) {
+            if (tag == [[everyoneParty getObjectArray] count] - 5) {
                 [self fetchEveryone];
             }
         }
         else {
-            if ([indexPath row] == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
+            if (tag == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
                 [self fetchEveryone];
                 return cell;
             }
@@ -179,47 +183,47 @@ BOOL isSearching;
 
     }
     
-    UIButton *aroundTapButton = [[UIButton alloc] initWithFrame:cell.contentView.frame];
-    [aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-    aroundTapButton.tag = [indexPath row];
-    [cell.contentView addSubview:aroundTapButton];
-    
-    UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
-    [aroundTapButton addSubview:profileImageView];
-    
-    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    textLabel.text = [user fullName];
-    textLabel.font = [FontProperties getSubtitleFont];
-    [aroundTapButton addSubview:textLabel];
-    
-    UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
-    goingOutLabel.font = [FontProperties mediumFont:13.0f];
-    goingOutLabel.textAlignment = NSTextAlignmentLeft;
-    goingOutLabel.textColor = [FontProperties getBlueColor];
-    if ([user isGoingOut]) {
-        if ([user isAttending] && [user attendingEventName]) {
-            goingOutLabel.text = [NSString stringWithFormat:@"Going out to %@", [user attendingEventName]];
+    if (user) {
+        UIButton *aroundTapButton = [[UIButton alloc] initWithFrame:cell.contentView.frame];
+        [aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+        aroundTapButton.tag = tag;
+        [cell.contentView addSubview:aroundTapButton];
+        
+        UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
+        profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+        profileImageView.clipsToBounds = YES;
+        [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+        [aroundTapButton addSubview:profileImageView];
+        
+        UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+        textLabel.text = [user fullName];
+        textLabel.font = [FontProperties getSubtitleFont];
+        [aroundTapButton addSubview:textLabel];
+        
+        UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
+        goingOutLabel.font = [FontProperties mediumFont:13.0f];
+        goingOutLabel.textAlignment = NSTextAlignmentLeft;
+        goingOutLabel.textColor = [FontProperties getBlueColor];
+        if ([user isGoingOut]) {
+            if ([user isAttending] && [user attendingEventName]) {
+                goingOutLabel.text = [NSString stringWithFormat:@"Going out to %@", [user attendingEventName]];
+            }
+            else {
+                goingOutLabel.text = @"Going Out";
+            }
+        }
+        [aroundTapButton addSubview:goingOutLabel];
+        
+        UIImageView *tapImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS/2 - 15, 30, 30)];
+        if ([user isTapped]) {
+            [tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
         }
         else {
-            goingOutLabel.text = @"Going Out";
+            [tapImageView setImage:[UIImage imageNamed:@"tapUnselectedInvite"]];
         }
+        [aroundTapButton addSubview:tapImageView];
     }
-    [aroundTapButton addSubview:goingOutLabel];
-    
-    UIImageView *tapImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS/2 - 15, 30, 30)];
-    if ([user isTapped]) {
-        [tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
-    }
-    else {
-        [tapImageView setImage:[UIImage imageNamed:@"tapUnselectedInvite"]];
-    }
-//    tapButton.layer.borderColor = [UIColor clearColor].CGColor;
-//    tapButton.layer.borderWidth = 1.0f;
-//    tapButton.layer.cornerRadius = 7.0f;
-    [aroundTapButton addSubview:tapImageView];
+   
     
     return cell;
 }
