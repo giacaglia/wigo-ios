@@ -607,13 +607,13 @@ int queryQueueInt;
 - (void) fetchEveryone {
     NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@" ,[_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        [_everyoneParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_everyoneParty addMetaInfo:metaDictionary];
-        [Profile setEveryoneParty:_everyoneParty];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+            [_everyoneParty addObjectsFromArray:arrayOfUsers];
+            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+            [_everyoneParty addMetaInfo:metaDictionary];
+            [Profile setEveryoneParty:_everyoneParty];
             _page = @([_page intValue] + 1);
             _contentParty = _everyoneParty;
             [_tableViewOfPeople reloadData];
@@ -631,24 +631,24 @@ int queryQueueInt;
 - (void)fetchFollowers {
     NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-        for (NSDictionary *object in arrayOfFollowObjects) {
-            NSDictionary *userDictionary = [object objectForKey:@"user"];
-            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                    [arrayOfUsers addObject:[[Profile user] dictionary]];
-                }
-                else {
-                    [arrayOfUsers addObject:userDictionary];
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+            NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+            for (NSDictionary *object in arrayOfFollowObjects) {
+                NSDictionary *userDictionary = [object objectForKey:@"user"];
+                if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                    if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                        [arrayOfUsers addObject:[[Profile user] dictionary]];
+                    }
+                    else {
+                        [arrayOfUsers addObject:userDictionary];
+                    }
                 }
             }
-        }
-        [_followersParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_followersParty addMetaInfo:metaDictionary];
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [_followersParty addObjectsFromArray:arrayOfUsers];
+            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+            [_followersParty addMetaInfo:metaDictionary];
             _page = @([_page intValue] + 1);
             _contentParty = _followersParty;
             [_tableViewOfPeople reloadData];
@@ -666,24 +666,24 @@ int queryQueueInt;
 - (void)fetchFollowing {
     NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
     [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-        NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-        NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-        for (NSDictionary *object in arrayOfFollowObjects) {
-            NSDictionary *userDictionary = [object objectForKey:@"follow"];
-            if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                    [arrayOfUsers addObject:[[Profile user] dictionary]];
-                }
-                else {
-                    [arrayOfUsers addObject:userDictionary];
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
+            NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
+            for (NSDictionary *object in arrayOfFollowObjects) {
+                NSDictionary *userDictionary = [object objectForKey:@"follow"];
+                if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+                    if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                        [arrayOfUsers addObject:[[Profile user] dictionary]];
+                    }
+                    else {
+                        [arrayOfUsers addObject:userDictionary];
+                    }
                 }
             }
-        }
-        [_followingParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [_followingParty addMetaInfo:metaDictionary];
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [_followingParty addObjectsFromArray:arrayOfUsers];
+            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+            [_followingParty addMetaInfo:metaDictionary];
             _page = @([_page intValue] + 1);
             _contentParty = _followingParty;
             [_tableViewOfPeople reloadData];
