@@ -11,7 +11,6 @@
 #import "Globals.h"
 
 NSMutableArray *peopleContactList;
-NSMutableArray *choosenPeople;
 UITableView *contactsTableView;
 NSMutableArray *selectedPeopleIndexes;
 CFArrayRef all;
@@ -19,6 +18,10 @@ CFIndex n;
 UISearchBar *searchBar;
 BOOL isFiltered;
 NSMutableArray *filteredPeopleContactList;
+
+NSMutableArray *shownChosenPeople;
+NSMutableArray *chosenPeople;
+
 
 @implementation MobileContactsViewController
 
@@ -33,7 +36,8 @@ NSMutableArray *filteredPeopleContactList;
 - (void)viewDidLoad {
     [super viewDidLoad];
     peopleContactList = [[NSMutableArray alloc] init];
-    choosenPeople = [[NSMutableArray alloc] init];
+    chosenPeople = [[NSMutableArray alloc] init];
+    shownChosenPeople = [[NSMutableArray alloc] init];
     selectedPeopleIndexes = [[NSMutableArray alloc] init];
 
     [self initializeTitle];
@@ -91,9 +95,6 @@ NSMutableArray *filteredPeopleContactList;
                               );
             NSMutableArray* data = [NSMutableArray arrayWithArray: (__bridge NSArray*) peopleMutable];
             
-            for (int i = 0; i < n; i++) {
-                [choosenPeople addObject:@NO];
-            }
 
             for( int i = 0 ; i < n ; i++ )
             {
@@ -141,7 +142,10 @@ NSMutableArray *filteredPeopleContactList;
 
     UIImageView *selectedPersonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
     selectedPersonImageView.tag = (int)[indexPath row];
-    if ([(NSNumber *)[choosenPeople objectAtIndex:[indexPath row]] boolValue])
+    ABRecordID recordID = ABRecordGetRecordID(contactPerson);
+    NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
+    
+    if ([shownChosenPeople containsObject:recordIdString])
         selectedPersonImageView.image = [UIImage imageNamed:@"tapFilled"];
     else
         selectedPersonImageView.image = [UIImage imageNamed:@"tapUnselected"];
@@ -208,29 +212,44 @@ NSMutableArray *filteredPeopleContactList;
         for (UIView *subview in buttonSender.subviews) {
             if ([subview isKindOfClass:[UIImageView class]]) {
                 UIImageView *selectedImageView = (UIImageView *)subview;
-                if (![(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
+                NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
+                if (![shownChosenPeople containsObject:recordIdString]) {
                     selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
+                    [chosenPeople addObject:recordIdString];
+                    [shownChosenPeople addObject:recordIdString];
                 }
                 else {
                     selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
+                    [shownChosenPeople removeObject:recordIdString];
                 }
             }
         }
-        [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
     }
     else {
+        ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:tag]);
+        ABRecordID recordID = ABRecordGetRecordID(contactPerson);
         [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
         for (UIView *subview in buttonSender.subviews) {
             if (subview.tag == tag && [subview isKindOfClass:[UIImageView class]]) {
                 UIImageView *selectedImageView = (UIImageView *)subview;
-                if (![(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
-                    [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
+                NSString *recordIdString = [NSString stringWithFormat:@"%d", recordID];
+                if (![shownChosenPeople containsObject:recordIdString]) {
                     selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
+                    [chosenPeople addObject:recordIdString];
+                    [shownChosenPeople addObject:recordIdString];
                 }
                 else {
-                    [choosenPeople replaceObjectAtIndex:tag withObject:@NO];
                     selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
+                    [shownChosenPeople removeObject:recordIdString];
                 }
+//                if (![(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
+//                    [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
+//                    selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
+//                }
+//                else {
+//                    [choosenPeople replaceObjectAtIndex:tag withObject:@NO];
+//                    selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
+//                }
             }
         }
     }
@@ -251,31 +270,37 @@ NSMutableArray *filteredPeopleContactList;
 
 - (void)donePressed {
     NSMutableArray *numbers = [[NSMutableArray alloc] init];
-    for(CFIndex i = 0; i < [choosenPeople count]; i++) {
-        if ([[choosenPeople objectAtIndex:i] boolValue]) {
-            ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:i]);
-            ABMultiValueRef multiPhones = ABRecordCopyValue(contactPerson, kABPersonPhoneProperty);
-            for(CFIndex i = 0; i < ABMultiValueGetCount(multiPhones); i++) {
-                
-                NSString* phoneLabel = (__bridge NSString*) ABMultiValueCopyLabelAtIndex(multiPhones, i);
-                NSString* phoneNumber = (__bridge NSString*) ABMultiValueCopyValueAtIndex(multiPhones, i);
-                //for example
-                if([phoneLabel isEqualToString:(NSString *)kABPersonPhoneIPhoneLabel]) {
-                    [numbers addObject:@{@"phone":phoneNumber}];
-                    break;
+    for (CFIndex i = 0; i < [chosenPeople count]; i++) {
+        NSString *recordIDString = [chosenPeople objectAtIndex:i];
+        for (int j = 0; j < [peopleContactList count]; j++) {
+            ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:j]);
+            ABRecordID newRecordID = ABRecordGetRecordID(contactPerson);
+            NSString *newRecordIDString = [NSString stringWithFormat:@"%d",newRecordID];
+            if ([recordIDString isEqualToString:newRecordIDString]) {
+                ABMultiValueRef multiPhones = ABRecordCopyValue(contactPerson, kABPersonPhoneProperty);
+                for(CFIndex i = 0; i < ABMultiValueGetCount(multiPhones); i++) {
+                    
+                    NSString* phoneLabel = (__bridge NSString*) ABMultiValueCopyLabelAtIndex(multiPhones, i);
+                    NSString* phoneNumber = (__bridge NSString*) ABMultiValueCopyValueAtIndex(multiPhones, i);
+                    //for example
+                    if([phoneLabel isEqualToString:(NSString *)kABPersonPhoneIPhoneLabel]) {
+                        [numbers addObject:@{@"phone":phoneNumber}];
+                        break;
+                    }
+                    else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMobileLabel])) {
+                        [numbers addObject:@{@"phone":phoneNumber}];
+                        break;
+                    }
+                    else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMainLabel])) {
+                        [numbers addObject:@{@"phone":phoneNumber}];
+                        break;
+                    }
+                    else {
+                        [numbers addObject:@{@"phone":phoneNumber}];
+                        break;
+                    }
                 }
-                else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMobileLabel])) {
-                    [numbers addObject:@{@"phone":phoneNumber}];
-                    break;
-                }
-                else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMainLabel])) {
-                    [numbers addObject:@{@"phone":phoneNumber}];
-                    break;
-                }
-                else {
-                    [numbers addObject:@{@"phone":phoneNumber}];
-                    break;
-                }
+
             }
         }
     }
