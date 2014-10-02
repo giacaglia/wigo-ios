@@ -64,17 +64,6 @@ NSDate *firstLoggedTime;
     
     [Parse setApplicationId:parseApplicationId
                   clientKey:parseClientKey];
-    BOOL triedToRegister =  [[NSUserDefaults standardUserDefaults] boolForKey: @"triedToRegister"];
-    if (!triedToRegister) {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"FYI"
-                                  message:@"WiGo only sends notifications from your closest friends at your school and important updates."
-                                  delegate:self
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles: nil];
-        [alertView show];
-        alertView.delegate = self;
-    }
     
     
     self.notificationDictionary = [[NSMutableDictionary alloc] init];
@@ -335,6 +324,22 @@ forRemoteNotification:(NSDictionary *)userInfo
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTabBarNotifications) name:@"reloadTabBarNotifications" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadColorWhenTabBarIsMessage) name:@"reloadColorWhenTabBarIsMessage" object:nil];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goingOutForRateApp) name:@"goingOutForRateApp" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentPush) name:@"presentPush" object:nil];
+}
+
+- (void)presentPush {
+    BOOL triedToRegister =  [[NSUserDefaults standardUserDefaults] boolForKey: @"triedToRegister"];
+    if (!triedToRegister) {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"FYI"
+                                  message:@"WiGo only sends notifications from your closest friends at your school and important updates."
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles: nil];
+        [alertView show];
+        alertView.delegate = self;
+    }
+
 }
 
 - (void)changeTabs {

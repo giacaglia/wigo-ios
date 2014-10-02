@@ -114,6 +114,7 @@ int userInt;
 
 // BEING CALLED TWICE
 - (void)loadViewAfterSigningUser {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
     [self fetchAppStart];
     _fetchingFirstPage = NO;
     _fetchingUserInfo = NO;
