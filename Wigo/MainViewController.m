@@ -375,20 +375,6 @@ int userInt;
     }];
 }
 
-//- (void) fetchAreThereMoreThan3Events {
-//        NSString *queryString = @"events/?date=tonight&page=1&attendees_limit=0";
-//        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-//            dispatch_async(dispatch_get_main_queue(), ^(void) {
-//                NSArray *events = [jsonResponse objectForKey:@"objects"];
-//                if ([events count] >= 3) {
-//                    UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
-//                    tabController.selectedViewController
-//                    = [tabController.viewControllers objectAtIndex:1];
-//                }
-//            });
-//        }];
-//}
-
 #pragma mark - viewDidLoad initializations
 
 - (void)initializeFlashScreen {

@@ -183,10 +183,11 @@
 - (void)setGrowthHackPresented {
     NSMutableDictionary *properties = [NSMutableDictionary dictionaryWithDictionary:[_proxy objectForKey:@"properties"]];
     if ([properties isKindOfClass:[NSDictionary class]]) {
-        NSString *dateString = [NSDateFormatter localizedStringFromDate:[NSDate date]
-                                                              dateStyle:NSDateFormatterShortStyle
-                                                              timeStyle:NSDateFormatterFullStyle];
-        NSDictionary *eventsDict = @{@"growth_hack": dateString};
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        NSString *stringDate = [dateFormatter stringFromDate:[NSDate date]];
+        NSDictionary *eventsDict = @{@"growth_hack": stringDate};
         [properties notNillsetObject:eventsDict forKey:@"events"];
         [_proxy notNillsetObject:[NSDictionary dictionaryWithDictionary:properties] forKey:@"properties"];
         [modifiedKeys addObject:@"properties"];
