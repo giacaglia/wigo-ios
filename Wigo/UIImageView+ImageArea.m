@@ -29,26 +29,12 @@
 }
 
 - (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock imageArea:(NSDictionary*)area completed:(SDWebImageCompletedBlock)completedBlock  {
-    __weak UIImageView *weakProfileImgView = self;
-    __weak NSDictionary* weakArea = area;
-    weakProfileImgView.hidden = YES;
-    [self setImageWithURL:url placeholderImage:nil options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if (![weakArea isKindOfClass:[NSNull class]] && weakArea) {
-                    CGRect rect = CGRectMake([[weakArea objectForKey:@"x"] intValue], [[weakArea objectForKey:@"y"] intValue], [[weakArea objectForKey:@"width"] intValue], [[weakArea objectForKey:@"height"] intValue]);
-                    if (!CGRectEqualToRect(CGRectZero, rect)) {
-                        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
-                        [weakProfileImgView setImage:[UIImage imageWithCGImage:imageRef]];
-                        CGImageRelease(imageRef);
-                    }
-                }
-                weakProfileImgView.hidden = NO;
-                if (completedBlock) {
-                    completedBlock(image, error, cacheType);
-                }
+    
 
-             });
+    [self setImageWithURL:url withArea:area placeholderImage:placeholder options:options progress:progressBlock completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType)  {
+//        completedBlock(image, error, cacheType);
     }];
+    
 }
 
 

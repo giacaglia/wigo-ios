@@ -38,6 +38,63 @@ static char imageURLKey;
     [self sd_setImageWithURL:url placeholderImage:placeholder options:options progress:nil completed:completedBlock];
 }
 
+- (void)sd_setImageWithURL:(NSURL *)url withArea:(NSDictionary *)area placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletionBlock)completedBlock {
+    
+    __weak NSDictionary* weakArea = area;
+    [self sd_cancelCurrentImageLoad];
+    objc_setAssociatedObject(self, &imageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
+    if (!(options & SDWebImageDelayPlaceholder)) {
+        self.image = placeholder;
+    }
+   
+    if (url) {
+        __weak UIImageView *wself = self;
+        id <SDWebImageOperation> operation = [SDWebImageManager.sharedManager downloadImageWithURL:url options:options progress:progressBlock completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+            if (!wself) return;
+            dispatch_main_sync_safe(^{
+                if (!wself) return;
+                if (image) {
+                    if (![weakArea isKindOfClass:[NSNull class]] && weakArea) {
+                        CGRect rect = CGRectMake([[weakArea objectForKey:@"x"] intValue], [[weakArea objectForKey:@"y"] intValue], [[weakArea objectForKey:@"width"] intValue], [[weakArea objectForKey:@"height"] intValue]);
+                        if (!CGRectEqualToRect(CGRectZero, rect)) {
+                            CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
+                            wself.image = [UIImage imageWithCGImage:imageRef];
+                            [wself setNeedsLayout];
+                            CGImageRelease(imageRef);
+                        }
+                        else {
+                            wself.image = image;
+                            [wself setNeedsLayout];
+                        }
+                    }
+                    else {
+                        wself.image = image;
+                        [wself setNeedsLayout];
+                    }
+                } else {
+                    if ((options & SDWebImageDelayPlaceholder)) {
+                        wself.image = placeholder;
+                        [wself setNeedsLayout];
+                    }
+                }
+                if (completedBlock && finished) {
+                    completedBlock(image, error, cacheType, url);
+                }
+            });
+        }];
+        [self sd_setImageLoadOperation:operation forKey:@"UIImageViewImageLoad"];
+    } else {
+        dispatch_main_async_safe(^{
+            NSError *error = [NSError errorWithDomain:@"SDWebImageErrorDomain" code:-1 userInfo:@{NSLocalizedDescriptionKey : @"Trying to load a nil url"}];
+            if (completedBlock) {
+                completedBlock(nil, error, SDImageCacheTypeNone, url);
+            }
+        });
+    }
+
+}
+
 - (void)sd_setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletionBlock)completedBlock {
     [self sd_cancelCurrentImageLoad];
     objc_setAssociatedObject(self, &imageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -176,6 +233,14 @@ static char imageURLKey;
     [self sd_setImageWithURL:url placeholderImage:placeholder options:options progress:progressBlock completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         if (completedBlock) {
             completedBlock(image, error, cacheType);
+        }
+    }];
+}
+
+- (void)setImageWithURL:(NSURL *)url withArea:(NSDictionary *)area placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletionBlock)completedBlock {
+    [self sd_setImageWithURL:url withArea:area placeholderImage:placeholder options:options progress:progressBlock completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        if (completedBlock) {
+            completedBlock(image, error, cacheType, imageURL);
         }
     }];
 }

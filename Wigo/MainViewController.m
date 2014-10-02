@@ -116,7 +116,6 @@ int userInt;
 // BEING CALLED TWICE
 - (void)loadViewAfterSigningUser {
     [self fetchAppStart];
-
     _fetchingFirstPage = NO;
     _fetchingUserInfo = NO;
     _fetchingIsThereNewPerson = NO;
