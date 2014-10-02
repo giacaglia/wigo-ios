@@ -693,6 +693,7 @@ UIButton *tapButton;
     tabBarController.selectedViewController
     = [tabBarController.viewControllers objectAtIndex:1];
     [Network postGoingToEventNumber:[[self.user  attendingEventID] intValue]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
 }
 
 - (void)initializeLeftProfileButton {
