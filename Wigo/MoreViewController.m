@@ -134,7 +134,13 @@ UIButton *cancelButton;
     gradient.frame = self.view.bounds;
     gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor blackColor] CGColor], (id)[[UIColor clearColor] CGColor], nil];
     gradient.opacity = 0.5f;
-    [self.view.layer addSublayer:gradient];
+    [self.view.layer insertSublayer:gradient atIndex:0];
+    
+    CAGradientLayer *newGradient = [CAGradientLayer layer];
+    newGradient.frame = self.view.bounds;
+    newGradient.colors = [NSArray arrayWithObjects:(id)[[UIColor clearColor] CGColor], (id)[[UIColor blackColor] CGColor], nil];
+    newGradient.opacity = 0.5f;
+    [self.view.layer insertSublayer:newGradient atIndex:0];
     
     UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, self.view.frame.size.width - 30, 60)];
     blockLabel.text = [NSString stringWithFormat:@"Block %@", [user fullName]];

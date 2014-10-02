@@ -325,6 +325,7 @@ BOOL isSearching;
      cancelPreviousRequest:YES];
     }
     else {
+        [self.view endEditing:YES];
         isSearching = NO;
     }
     [invitePeopleTableView reloadData];
