@@ -575,8 +575,16 @@ UIButton *tapButton;
         }
         else {
             NSString *textOfLabel = [NSString stringWithFormat:@"%@ is going to: %@", [self.user fullName], [self.user attendingEventName]];
-            
-            NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
+            NSMutableString *cutOffText;
+            if (textOfLabel.length > 67) {
+                cutOffText = [NSMutableString stringWithString:[textOfLabel substringWithRange: NSMakeRange(0, MIN(64, textOfLabel.length))]];
+                [cutOffText appendString:@"..."];
+            }
+            else {
+                cutOffText = [NSMutableString stringWithString:textOfLabel];
+            }
+
+            NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:cutOffText];
             [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
             [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
             NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];

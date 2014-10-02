@@ -734,10 +734,6 @@ BOOL shouldReloadEvents;
 
 - (void) fetchEventsFirstPage {
     page = @1;
-    numberOfFetchedParties = 0;
-    _eventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
-    _contentParty = _eventsParty;
-    _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
     [self fetchEvents];
 }
 
@@ -747,6 +743,12 @@ BOOL shouldReloadEvents;
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            if ([page isEqualToNumber:@1]) {
+                numberOfFetchedParties = 0;
+                _eventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
+                _contentParty = _eventsParty;
+                _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
+            }
             NSArray *events = [jsonResponse objectForKey:@"objects"];
             [_eventsParty addObjectsFromArray:events];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
