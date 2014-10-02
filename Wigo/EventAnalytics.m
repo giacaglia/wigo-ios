@@ -118,6 +118,11 @@
     if ([Profile localyticsEnabled]) {
         [[LocalyticsSession shared] setCustomerId:user];
     }
+    
+    if ([Profile googleAnalyticsEnabled]) {
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:@"&uid" value:user];
+    }
 }
 
 @end
