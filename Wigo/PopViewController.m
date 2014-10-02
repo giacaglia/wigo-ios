@@ -100,7 +100,7 @@ UILabel *emojiLabel;
     [acceptButton addTarget:self action:@selector(acceptGoingOut) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:acceptButton];
     
-    UIButton *notSureYetButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 30 - 60, self.view.frame.size.width - 30, 30)];
+    UIButton *notSureYetButton = [[UIButton alloc] initWithFrame:CGRectMake(100, self.view.frame.size.height - 30 - 60, self.view.frame.size.width - 200, 30)];
     [notSureYetButton setTitle:[dailyDictionary objectForKey:@"close_text"] forState:UIControlStateNormal];
     [notSureYetButton setTitleColor: RGB(201, 202, 204) forState:UIControlStateNormal];
     notSureYetButton.titleLabel.font = [FontProperties mediumFont:20.0f];
