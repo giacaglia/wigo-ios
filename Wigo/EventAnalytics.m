@@ -65,12 +65,12 @@
         [tracker set:[GAIFields customDimensionForIndex:3] value:followersBucket];
 
         // is Group Locked
-        NSString *locked = [[Profile user] isGroupLocked] ? @"Yes" : @"No";
+        NSString *locked = [profileUser isGroupLocked] ? @"Yes" : @"No";
         [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:locked forKey:@"Locked"]];
         [tracker set:[GAIFields customDimensionForIndex:6] value:locked];
         
         // is User tapped
-        NSString *tapped = [[Profile user] isTapped] ? @"Yes" : @"No";
+        NSString *tapped = [profileUser isTapped] ? @"Yes" : @"No";
         [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:tapped forKey:@"Tapped"]];
         [tracker set:[GAIFields customDimensionForIndex:7] value:tapped];
     }
