@@ -530,6 +530,17 @@
     return [blockedNumber boolValue];
 }
 
+- (NSNumber *)numEvents {
+    if ([[_proxy allKeys] containsObject:@"group"]) {
+        NSNumber *numEvents = (NSNumber *)[[_proxy objectForKey:@"group"]  objectForKey:@"num_events"];
+        return numEvents;
+    }
+    return @0;
+//        return [isGroupLocked boolValue];
+//    }
+//    return YES;
+}
+
 - (void)setIsBlocked:(BOOL)isBlocked {
     [_proxy notNillsetObject:[NSNumber numberWithBool:isBlocked] forKey:@"is_blocked"];
     [modifiedKeys addObject:@"is_following"];

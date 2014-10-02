@@ -61,7 +61,7 @@ typedef enum
 - (NSString  *)joinedDate;
 - (BOOL)isEqualToUser:(User *)otherUser;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
-
+- (NSNumber *)numEvents;
 - (NSDictionary *)dictionary;
 
 // Images

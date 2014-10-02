@@ -123,7 +123,6 @@ int userInt;
     if (!_fetchingUserInfo) [self fetchUserInfo];
     if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
     [self fetchSummaryGoingOut];
-    [self fetchAreThereMoreThan3Events];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
@@ -157,8 +156,8 @@ int userInt;
 }
 
 - (void)fetchAppStart {
-//    if ([self shouldFetchAppStartup]) {
-        [Network queryAsynchronousAPI:@"app/startup?force=true" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    if ([self shouldFetchAppStartup]) {
+        [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if (!error) {
                     if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
@@ -193,7 +192,7 @@ int userInt;
                 }
             });
         }];
-//    }
+    }
 }
 
 - (void) fetchUserInfo {
@@ -376,19 +375,19 @@ int userInt;
     }];
 }
 
-- (void) fetchAreThereMoreThan3Events {
-        NSString *queryString = @"events/?date=tonight&page=1&attendees_limit=0";
-        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                NSArray *events = [jsonResponse objectForKey:@"objects"];
-                if ([events count] >= 3) {
-                    UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
-                    tabController.selectedViewController
-                    = [tabController.viewControllers objectAtIndex:1];
-                }
-            });
-        }];
-}
+//- (void) fetchAreThereMoreThan3Events {
+//        NSString *queryString = @"events/?date=tonight&page=1&attendees_limit=0";
+//        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//            dispatch_async(dispatch_get_main_queue(), ^(void) {
+//                NSArray *events = [jsonResponse objectForKey:@"objects"];
+//                if ([events count] >= 3) {
+//                    UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
+//                    tabController.selectedViewController
+//                    = [tabController.viewControllers objectAtIndex:1];
+//                }
+//            });
+//        }];
+//}
 
 #pragma mark - viewDidLoad initializations
 

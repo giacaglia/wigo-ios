@@ -122,7 +122,7 @@ UILabel *emojiLabel;
 }
 
 - (void)animateEmoji {
-    [UIView animateWithDuration:0.2 delay:3 options:UIViewAnimationOptionCurveEaseIn animations:^{
+    [UIView animateWithDuration:0.2 delay:2 options:UIViewAnimationOptionCurveEaseIn animations:^{
         emojiLabel.hidden = NO;
         emojiLabel.transform = CGAffineTransformMakeScale(1.8, 1.8);
     } completion:^(BOOL finished) {
