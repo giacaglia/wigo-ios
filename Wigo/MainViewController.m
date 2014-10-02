@@ -157,8 +157,8 @@ int userInt;
 }
 
 - (void)fetchAppStart {
-    if ([self shouldFetchAppStartup]) {
-        [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//    if ([self shouldFetchAppStartup]) {
+        [Network queryAsynchronousAPI:@"app/startup?force=true" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if (!error) {
                     if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
@@ -193,7 +193,7 @@ int userInt;
                 }
             });
         }];
-    }
+//    }
 }
 
 - (void) fetchUserInfo {

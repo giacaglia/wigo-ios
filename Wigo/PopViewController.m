@@ -117,7 +117,8 @@ UILabel *emojiLabel;
 
 - (void)dimissView {
     [EventAnalytics tagEvent:@"Pop Not Yet"];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:YES completion:^{}];
+
 }
 
 - (void)animateEmoji {
