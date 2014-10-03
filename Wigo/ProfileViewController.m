@@ -689,9 +689,8 @@ UIButton *tapButton;
     [[Profile user] setIsAttending:YES];
     [[Profile user] setIsGoingOut:YES];
     [[Profile user] setAttendingEventID:[self.user  attendingEventID]];
-    UITabBarController *tabBarController = (UITabBarController *)self.parentViewController.parentViewController;
-    tabBarController.selectedViewController
-    = [tabBarController.viewControllers objectAtIndex:1];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabs" object:nil];
+
     [Network postGoingToEventNumber:[[self.user  attendingEventID] intValue]];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
 }

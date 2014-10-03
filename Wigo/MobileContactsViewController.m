@@ -44,7 +44,7 @@ NSMutableArray *chosenPeople;
     [self initializeSearchBar];
     [self initializeTapHandler];
     [self initializeTableViewWithPeople];
-    [self initializeButtonIAmDone];
+//    [self initializeButtonIAmDone];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -58,11 +58,20 @@ NSMutableArray *chosenPeople;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = [FontProperties mediumFont:16];
     [self.view addSubview:titleLabel];
+    
+    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 60, 30, 60, 25)];
+    [doneButton addTarget:self action:@selector(donePressed) forControlEvents:UIControlEventTouchUpInside];
+    [doneButton setTitle:@"Done" forState:UIControlStateNormal];
+    [doneButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    doneButton.titleLabel.textAlignment = NSTextAlignmentRight;
+    doneButton.titleLabel.font = [FontProperties getTitleFont];
+    [doneButton setShowsTouchWhenHighlighted:YES];
+    [self.view addSubview:doneButton];
 }
 
 - (void)initializeTableViewWithPeople {
     self.automaticallyAdjustsScrollViewInsets = NO;
-    contactsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - 70)];
+    contactsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104)];
     contactsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     contactsTableView.dataSource = self;
     contactsTableView.delegate = self;
@@ -242,14 +251,7 @@ NSMutableArray *chosenPeople;
                     selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
                     [shownChosenPeople removeObject:recordIdString];
                 }
-//                if (![(NSNumber *)[choosenPeople objectAtIndex:tag] boolValue]) {
-//                    [choosenPeople replaceObjectAtIndex:tag withObject:@YES];
-//                    selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
-//                }
-//                else {
-//                    [choosenPeople replaceObjectAtIndex:tag withObject:@NO];
-//                    selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
-//                }
+
             }
         }
     }
@@ -324,6 +326,33 @@ NSMutableArray *chosenPeople;
     searchBar.layer.borderWidth = 1.0f;
     searchBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [self.view addSubview:searchBar];
+}
+
+
+- (BOOL) textFieldShouldClear:(UITextField *)textField{
+    [searchBar resignFirstResponder];
+    [self.view endEditing:YES];
+    return YES;
+}
+
+- (BOOL)disablesAutomaticKeyboardDismissal {
+    return NO;
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
+    [self.view endEditing:YES];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+    // You can write search code Here
+}
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
+    [self.view endEditing:YES];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar

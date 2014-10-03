@@ -108,7 +108,7 @@
     }
     else {
         followBackPersonButton.tag = 100;
-        [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+        [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     }
     [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
     [cell.contentView addSubview:followBackPersonButton];
