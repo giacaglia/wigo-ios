@@ -335,6 +335,7 @@ BOOL shouldReloadEvents;
         if ([[partyUser getObjectArray] count] != 0 && userIndex < [[partyUser getObjectArray] count]){
             User *user = [[partyUser getObjectArray] objectAtIndex:userIndex];
             if (user && event) {
+                [user setIsAttending:YES];
                 [user setAttendingEventID:[event eventID]];
                 [user setAttendingEventName:[event name]];
                 shouldReloadEvents = NO;
@@ -951,21 +952,25 @@ BOOL shouldReloadEvents;
             index = i;
             [self addUser:[Profile user] toEventAtIndex:(int)index];
             Event *event = [[_eventsParty getObjectArray] objectAtIndex:index];
-            [[Profile user] setEventID:[event eventID]];
-            [[Profile user] setAttendingEventID:[event eventID]];
             [[Profile user] setIsAttending:YES];
             [[Profile user] setIsGoingOut:YES];
+            [[Profile user] setEventID:[event eventID]];
+            [[Profile user] setAttendingEventID:[event eventID]];
+            [newEvent setNumberAttending:@([[newEvent numberAttending] intValue] + 1)];
+            [_eventsParty replaceObjectAtIndex:index withObject:newEvent];
+
             break;
         }
+        
     }
-   }
+    [_eventsParty exchangeObjectAtIndex:index withObjectAtIndex:0];
+}
 
 - (void)addUser:(User *)user toEventAtIndex:(int)index {
     Party *partyUser = [_partyUserArray objectAtIndex:index];
     [self removeUserFromAnyOtherEvent:user];
     [partyUser insertObject:user inObjectArrayAtIndex:0];
     [_partyUserArray replaceObjectAtIndex:index withObject:partyUser];
-    [_eventsParty exchangeObjectAtIndex:index withObjectAtIndex:0];
     [_partyUserArray exchangeObjectAtIndex:index withObjectAtIndex:0];
 }
 
@@ -980,7 +985,6 @@ BOOL shouldReloadEvents;
             if ([user isEqualToUser:newUser]) {
                 [partyUser removeUser:newUser];
                 [event setNumberAttending:@([[event numberAttending] intValue] - 1)];
-                [_eventsParty replaceObjectAtIndex:i withObject:event];
                 [_partyUserArray replaceObjectAtIndex:i withObject:partyUser];
             }
         }

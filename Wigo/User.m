@@ -578,7 +578,7 @@
 }
 
 - (void)setAttendingEventID:(NSNumber *)attendingEventID {
-    if (attendingEventID != nil) {
+    if (attendingEventID) {
         if ([self isAttending]) {
             NSMutableDictionary *isAttending = [[NSMutableDictionary alloc] initWithDictionary:(NSDictionary *)[_proxy objectForKey:@"is_attending"]];
             [isAttending notNillsetObject:attendingEventID forKey:@"id"];
