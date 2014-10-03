@@ -86,7 +86,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void) initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
+                                                 name:UIKeyboardWillChangeFrameNotification
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -378,12 +378,20 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self animateScrollViewUp:up withInfo:userInfo];
    
     CGRect newFrame = [self getNewControlsFrame:userInfo up:up forView:_chatTextFieldWrapper];
+    //HACK For predictive shit
+    if (CGRectEqualToRect(newFrame, CGRectMake(0, 12, 320, 50))) {
+        newFrame =  CGRectMake(0, 303, 320, 50);
+    }
     [self animateControls:userInfo withFrame:newFrame];
 }
 
 - (void)animateScrollViewUp:(BOOL)up withInfo:(NSDictionary *)userInfo {
     CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     kbFrame = [self.view convertRect:kbFrame fromView:nil];
+
+    if (CGRectEqualToRect(kbFrame,CGRectMake(0, 315, 320, 253))) {
+        kbFrame =CGRectZero;
+    }
     CGRect frame = _scrollView.frame;
     frame.size.height += kbFrame.size.height * (up ? -1 : 1);
     NSTimeInterval duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];

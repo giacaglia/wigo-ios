@@ -27,7 +27,12 @@
 - (id)initWithDictionary:(NSDictionary *)otherDictionary {
     self = [super init];
     if (self) {
-        _proxy = [NSMutableDictionary dictionaryWithDictionary:otherDictionary];
+        if (otherDictionary) {
+            _proxy = [NSMutableDictionary dictionaryWithDictionary:otherDictionary];
+        }
+        else {
+            _proxy = [[NSMutableDictionary alloc] init];
+        }
         modifiedKeys = [[NSMutableArray alloc] init];
     }
     return self;

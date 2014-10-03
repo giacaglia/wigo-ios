@@ -89,7 +89,10 @@ static BOOL localyticsEnabled;
 }
 
 + (BOOL)isUserDictionaryProfileUser:(NSDictionary *)userDictionary {
-    return [[userDictionary objectForKey:@"id"] isEqualToNumber:[[Profile user] objectForKey:@"id" ]];
+    if (userDictionary) {
+        return [[userDictionary objectForKey:@"id"] isEqualToNumber:[[Profile user] objectForKey:@"id"]];
+    }
+    return NO;
 }
 
 
