@@ -264,7 +264,7 @@ BOOL shouldReloadEvents;
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
     [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
-    [_placesTableView reloadData];
+    [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     [self goOutToEventNumber:[NSNumber numberWithInt:(int)buttonSender.tag]];
     if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
 }
@@ -440,6 +440,8 @@ BOOL shouldReloadEvents;
 
 - (void)createPressed {
     if ([_whereAreYouGoingTextField.text length] != 0) {
+        [self createEventWithName:_whereAreYouGoingTextField.text];
+        [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
         NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
         [self updatedTitleView];
         [self fetchEventsFirstPage];
@@ -466,13 +468,13 @@ BOOL shouldReloadEvents;
         _createButton.hidden = YES;
         _clearButton.hidden = YES;
     }
-    if (shouldAnimate) {
-        [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-        shouldAnimate = NO;
-    }
-    else {
+//    if (shouldAnimate) {
+//        [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+//        shouldAnimate = NO;
+//    }
+//    else {
         [_placesTableView reloadData];
-    }
+//    }
 }
 
 
@@ -930,12 +932,11 @@ BOOL shouldReloadEvents;
 }
 
 - (void)createEventWithName:(NSString *)eventName {
-    Event *event = [[Event alloc] initWithDictionary:@{@"id": @-1, @"name": eventName}];
-    [_eventsParty addObject:event];
+    Event *event = [[Event alloc] initWithDictionary:@{@"id": @-1, @"name": eventName, @"num_attending": @1}];
+    [_eventsParty addObjectsFromArray:@[[event dictionary]]];
     Party *partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
-    [partyUser addObject:[NSMutableDictionary dictionaryWithDictionary:[[Profile user] dictionary]]];
+    [partyUser addObject:[Profile user]];
     [_partyUserArray addObject:partyUser];
-    
     [_eventsParty exchangeObjectAtIndex:([[_eventsParty getObjectArray] count] - 1) withObjectAtIndex:0];
     [_partyUserArray exchangeObjectAtIndex:([_partyUserArray count] - 1) withObjectAtIndex:0];
     [self removeUserFromAnyOtherEvent:[Profile user]];
@@ -962,22 +963,27 @@ BOOL shouldReloadEvents;
 - (void)addUser:(User *)user toEventAtIndex:(int)index {
     Party *partyUser = [_partyUserArray objectAtIndex:index];
     [self removeUserFromAnyOtherEvent:user];
-    [partyUser addObject:user];
+    [partyUser insertObject:user inObjectArrayAtIndex:0];
     [_partyUserArray replaceObjectAtIndex:index withObject:partyUser];
+    [_eventsParty exchangeObjectAtIndex:index withObjectAtIndex:0];
+    [_partyUserArray exchangeObjectAtIndex:index withObjectAtIndex:0];
 }
 
 
 - (void)removeUserFromAnyOtherEvent:(User *)user {
     NSArray *arrayOfEvents = [_eventsParty getObjectArray];
     for (int i = 0; i < [arrayOfEvents count]; i++) {
+        Event *event = [arrayOfEvents objectAtIndex:i];
         Party *partyUser = [_partyUserArray objectAtIndex:i];
         for (int j = 0; j < [[partyUser getObjectArray] count]; j++) {
             User *newUser = [[partyUser getObjectArray] objectAtIndex:j];
             if ([user isEqualToUser:newUser]) {
                 [partyUser removeUser:newUser];
+                [event setNumberAttending:@([[event numberAttending] intValue] - 1)];
+                [_eventsParty replaceObjectAtIndex:i withObject:event];
+                [_partyUserArray replaceObjectAtIndex:i withObject:partyUser];
             }
         }
-        [_partyUserArray replaceObjectAtIndex:i withObject:partyUser];
     }
 }
 

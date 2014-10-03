@@ -48,6 +48,12 @@
     return @0;
 }
 
+- (void)setNumberAttending:(NSNumber *)numberAttending {
+    if ([[_proxy allKeys] containsObject:@"num_attending"]) {
+        [_proxy setObject:numberAttending forKey:@"num_attending"];
+    }
+}
+
 - (NSString *)name {
     return (NSString *)[_proxy objectForKey:@"name"];
 }
