@@ -14,12 +14,10 @@
 @property NSString *name;
 @property NSNumber* eventID;
 
-
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
 - (void)addEventAttendeesWithDictionary:(NSDictionary *)eventAttendeesDictionary;
 - (NSArray *)getEventAttendees;
 - (NSNumber *)numberAttending;
 - (NSDictionary *)dictionary;
-
 
 @end

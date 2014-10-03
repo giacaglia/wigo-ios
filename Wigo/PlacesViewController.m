@@ -263,6 +263,8 @@ BOOL shouldReloadEvents;
     _whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
+    [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
+    [_placesTableView reloadData];
     [self goOutToEventNumber:[NSNumber numberWithInt:(int)buttonSender.tag]];
     if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
 }
@@ -924,6 +926,58 @@ BOOL shouldReloadEvents;
     if (!presentedMobileContacts) {
         presentedMobileContacts = YES;
         [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
+    }
+}
+
+- (void)createEventWithName:(NSString *)eventName {
+    Event *event = [[Event alloc] initWithDictionary:@{@"id": @-1, @"name": eventName}];
+    [_eventsParty addObject:event];
+    Party *partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
+    [partyUser addObject:[NSMutableDictionary dictionaryWithDictionary:[[Profile user] dictionary]]];
+    [_partyUserArray addObject:partyUser];
+    
+    [_eventsParty exchangeObjectAtIndex:([[_eventsParty getObjectArray] count] - 1) withObjectAtIndex:0];
+    [_partyUserArray exchangeObjectAtIndex:([_partyUserArray count] - 1) withObjectAtIndex:0];
+    [self removeUserFromAnyOtherEvent:[Profile user]];
+}
+
+- (void)addProfileUserToEventWithNumber:(int)eventID {
+    NSArray *arrayOfEvents = [_eventsParty getObjectArray];
+    int index;
+    for (int i = 0; i < [arrayOfEvents count]; i++) {
+        Event *newEvent = [arrayOfEvents objectAtIndex:i];
+        if ([[newEvent eventID] intValue] == eventID) {
+            index = i;
+            [self addUser:[Profile user] toEventAtIndex:(int)index];
+            Event *event = [[_eventsParty getObjectArray] objectAtIndex:index];
+            [[Profile user] setEventID:[event eventID]];
+            [[Profile user] setAttendingEventID:[event eventID]];
+            [[Profile user] setIsAttending:YES];
+            [[Profile user] setIsGoingOut:YES];
+            break;
+        }
+    }
+   }
+
+- (void)addUser:(User *)user toEventAtIndex:(int)index {
+    Party *partyUser = [_partyUserArray objectAtIndex:index];
+    [self removeUserFromAnyOtherEvent:user];
+    [partyUser addObject:user];
+    [_partyUserArray replaceObjectAtIndex:index withObject:partyUser];
+}
+
+
+- (void)removeUserFromAnyOtherEvent:(User *)user {
+    NSArray *arrayOfEvents = [_eventsParty getObjectArray];
+    for (int i = 0; i < [arrayOfEvents count]; i++) {
+        Party *partyUser = [_partyUserArray objectAtIndex:i];
+        for (int j = 0; j < [[partyUser getObjectArray] count]; j++) {
+            User *newUser = [[partyUser getObjectArray] objectAtIndex:j];
+            if ([user isEqualToUser:newUser]) {
+                [partyUser removeUser:newUser];
+            }
+        }
+        [_partyUserArray replaceObjectAtIndex:i withObject:partyUser];
     }
 }
 
