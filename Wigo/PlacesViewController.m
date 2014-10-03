@@ -865,24 +865,20 @@ BOOL shouldReloadEvents;
 
 - (void) fetchUserInfo {
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if ([[jsonResponse allKeys] containsObject:@"status"]) {
-            if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                User *user = [[User alloc] initWithDictionary:jsonResponse];
-                User *profileUser = [Profile user];
-                [profileUser setIsGoingOut:[user isGoingOut]];
-                dispatch_async(dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                    User *user = [[User alloc] initWithDictionary:jsonResponse];
+                    [Profile setUser:user];
                     [self updatedTitleView];
-                });
+                }
             }
-        }
-        else {
-            User *user = [[User alloc] initWithDictionary:jsonResponse];
-            User *profileUser = [Profile user];
-            [profileUser setIsGoingOut:[user isGoingOut]];
-            dispatch_async(dispatch_get_main_queue(), ^(void){
+            else {
+                User *user = [[User alloc] initWithDictionary:jsonResponse];
+                [Profile setUser:user];
                 [self updatedTitleView];
-            });
-        }
+            }
+        });
     }];
 }
 

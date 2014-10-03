@@ -243,10 +243,13 @@ forRemoteNotification:(NSDictionary *)userInfo
                         [[Profile user] setIsAttending:YES];
                         [[Profile user] setAttendingEventID:eventID];
                         [Network postGoingToEventNumber:[eventID intValue]];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
                     }
                     [navController popToRootViewControllerAnimated:NO];
                     tabBarController.selectedIndex = 1;
                     indexOfSelectedTab = @1;
+                    [self changeTabBarToBlue];
                 }
             }
         }
@@ -345,6 +348,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 - (void)changeTabs {
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
     tabBarController.selectedViewController = [tabBarController.viewControllers objectAtIndex:1];
+    [self changeTabBarToBlue];
 }
 
 # pragma mark - Facebook Login

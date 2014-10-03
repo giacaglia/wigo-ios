@@ -128,14 +128,16 @@ BOOL didProfileSegue;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        return [[_nonExpiredNotificationsParty getObjectArray] count];
+        if ([_followRequestSummary isEqualToNumber:@0]) {
+            return [[_nonExpiredNotificationsParty getObjectArray] count];
+        }
+        else {
+            return [[_nonExpiredNotificationsParty getObjectArray] count] + 1;
+        }
     }
     else {
         int hasNextPage = ([_notificationsParty hasNextPage] ? 1 : 0);
-        if ([_followRequestSummary isEqualToNumber:@0]) {
-            return [[_expiredNotificationsParty getObjectArray] count] + hasNextPage;
-        }
-        else return [[_expiredNotificationsParty getObjectArray] count] + hasNextPage + 1;
+        return [[_expiredNotificationsParty getObjectArray] count] + hasNextPage;
     }
    
 }
@@ -152,7 +154,7 @@ BOOL didProfileSegue;
     
     NSInteger row = [indexPath row];
     if (![_followRequestSummary isEqualToNumber:@0]) {
-        if (row == 0) {
+        if ([indexPath section] == 0 && row == 0) {
             UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HEIGHT_NOTIFICATION_CELL)];
             [notificationButton addTarget:self action:@selector(folowRequestPressed) forControlEvents:UIControlEventTouchUpInside];
             [cell.contentView addSubview:notificationButton];

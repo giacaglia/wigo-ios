@@ -60,7 +60,7 @@
                                                       fromDate:otherDayDate
                                                       toDate:nowDayDate
                                                       options:0];
-        if ([differenceDateComponents weekOfYear] == 0) {
+        if ([differenceDateComponents weekOfYear] == 0 && [differenceDateComponents month] == 0) {
             if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
                 return @"1 day ago";
             }
