@@ -16,6 +16,7 @@
 #import "RWBlurPopover.h"
 #import "PopViewController.h"
 #import "AppDelegate.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface MainViewController ()
 
@@ -57,6 +58,7 @@
 
 BOOL didProfileSegue;
 int userInt;
+UILabel *redDotLabel;
 
 @implementation MainViewController
 
@@ -303,15 +305,21 @@ int userInt;
                     NSNumber *lastUserRead = [profileUser lastUserRead];
                     NSNumber *lastUserJoinedNumber = (NSNumber *)[lastUserJoined objectForKey:@"id"];
                     [_rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+                    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
+                    imageView.image = [UIImage imageNamed:@"followPlus"];
+                    [_rightButton addSubview:imageView];
+
                     if ([lastUserRead intValue] < [lastUserJoinedNumber intValue]) {
-                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
-                        imageView.image = [UIImage imageNamed:@"orangeFollowPlus"];
-                        [_rightButton addSubview:imageView];
+                        redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 10, 10)];
+                        redDotLabel.backgroundColor = [UIColor redColor];
+                        redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
+                        redDotLabel.clipsToBounds = YES;
+                        redDotLabel.layer.borderWidth = 3;
+                        redDotLabel.layer.cornerRadius = 5;
+                        [_rightButton addSubview:redDotLabel];
                     }
                     else {
-                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
-                        imageView.image = [UIImage imageNamed:@"followPlus"];
-                        [_rightButton addSubview:imageView];
+                        if (redDotLabel) [redDotLabel removeFromSuperview];
                     }
                 }
             });

@@ -553,14 +553,11 @@ UIButton *tapButton;
     
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
 
+
     if ([self.user getUserState] == ATTENDING_EVENT_FOLLOWING_USER ||
         [self.user getUserState] == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
-        
         _nameOfPersonLabel.numberOfLines = 0;
         _nameOfPersonLabel.textAlignment = NSTextAlignmentLeft;
-        
-        
-        
         if ([[Profile user] isAttending] && [[self.user attendingEventID] isEqualToNumber:[[Profile user] attendingEventID]]) {
             NSString *textOfLabel = [NSString stringWithFormat:@"%@ is also going to: %@", [self.user fullName], [self.user attendingEventName]];
             NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
@@ -568,6 +565,7 @@ UIButton *tapButton;
             [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
             NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
             style.lineSpacing = 5;
+            [style setAlignment:NSTextAlignmentCenter];
             [string addAttribute:NSParagraphStyleAttributeName
                            value:style
                            range:NSMakeRange(0, [string length])];
@@ -620,6 +618,20 @@ UIButton *tapButton;
             }
 
         }
+    }
+    else if ([self.user isGoingOut] && ![self.user isEqualToUser:[Profile user]]) {
+        _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
+        NSString *textOfLabel = [NSString stringWithFormat:@"%@ is going out", [self.user fullName]];
+        NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
+        [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
+        [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
+        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        style.lineSpacing = 5;
+        [style setAlignment:NSTextAlignmentCenter];
+        [string addAttribute:NSParagraphStyleAttributeName
+                       value:style
+                       range:NSMakeRange(0, [string length])];
+        _nameOfPersonLabel.attributedText = string;
     }
     else {
         _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
