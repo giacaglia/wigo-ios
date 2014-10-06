@@ -648,6 +648,23 @@ int userInt;
         [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.titleView = goOutButton;
     }
+    [self updateMyselfShowingOnTheList];
+}
+
+- (void)updateMyselfShowingOnTheList {
+    User *firstUser = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:0];
+    if ([[Profile user] isGoingOut]) {
+        if (![firstUser isEqualToUser:[Profile user]]) {
+            [_whoIsGoingOutParty insertObject:[Profile user] inObjectArrayAtIndex:0];
+            [_collectionView reloadData];
+        }
+    }
+    else {
+        if ([firstUser isEqualToUser:[Profile user]]) {
+            [_whoIsGoingOutParty removeObjectAtIndex:0];
+            [_collectionView reloadData];
+        }
+    }
 }
 
 - (UIImageView *)gifGoOut {
