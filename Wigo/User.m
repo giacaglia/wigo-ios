@@ -244,7 +244,7 @@
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
     NSArray *imageArrayURL = [self imagesURL];
     if ([imagesArray count] > 3) {
-        int i = [imageArrayURL indexOfObject:imageURL];
+        int i = (int)[imageArrayURL indexOfObject:imageURL];
         [imagesArray removeObjectAtIndex:i];
         [self setImages:[NSArray arrayWithArray:imagesArray]];
         return @"Deleted";

@@ -572,7 +572,7 @@ int queryQueueInt;
     if (user) {
         if (_isSearching) {
             int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:0];
-            int sizeOfArray = [[_filteredContentParty getObjectArray] count];
+            int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
             if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
                 [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
                 [_tableViewOfPeople beginUpdates];
@@ -583,7 +583,7 @@ int queryQueueInt;
         }
         else {
             int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:0];
-            int sizeOfArray = [[_contentParty getObjectArray] count];
+            int sizeOfArray = (int)[[_contentParty getObjectArray] count];
             if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
                 [_contentParty replaceObjectAtIndex:userInt withObject:user];
                 [_tableViewOfPeople beginUpdates];

@@ -66,8 +66,8 @@ int userInt;
     [self initializeTabBar];
     [self initializeNavigationItem];
     [self showTapButtons];
-   
 }
+
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
@@ -81,6 +81,11 @@ int userInt;
     }
     didProfileSegue = NO;
     userInt = -1;
+}
+
+- (int) getTapInitialPosition {
+    if ([[Profile user] isGoingOut]) return 1;
+    else return 0;
 }
 
 - (void)viewDidLoad
@@ -254,6 +259,7 @@ int userInt;
                     _followingAcceptedParty = [[Party alloc] initWithObjectType:USER_TYPE];
                     _whoIsGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
                     _notGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                    if ([[Profile user] isGoingOut]) [_whoIsGoingOutParty addObject:[Profile user]];
                 }
                 NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
                 [_followingAcceptedParty addObjectsFromArray:arrayOfUsers];
@@ -349,7 +355,7 @@ int userInt;
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 for (UIView *subview in [_barAtTopView subviews]) {
                     if ([subview isKindOfClass:[UILabel class]]) {
-                        NSString *newString = [NSString stringWithFormat:@"GOING OUT: %@", friendsGoingOut];
+                        NSString *newString = [NSString stringWithFormat:@"GOING OUT: %d", [friendsGoingOut intValue] + [self getTapInitialPosition]];
                         UILabel *label = (UILabel *)subview;
                         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:newString];
                         [attributedString addAttribute:NSFontAttributeName
@@ -431,7 +437,7 @@ int userInt;
 - (void) updateViewNotGoingOut {
     [self updateTitleView];
     
-    for (int i = 0; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
+    for (int i = [self getTapInitialPosition]; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
         User *user = [self userForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
         UIImageViewShake *tappedImageView = [user objectForKey:@"tappedImageView"];
         tappedImageView.hidden = YES;
@@ -529,7 +535,7 @@ int userInt;
 - (void) showTapButtons {
     if ([[Profile user] isGoingOut]) {
         
-        for (int i = 0; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
+        for (int i = [self getTapInitialPosition]; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
             User *user = [self userForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             UIImageViewShake *tappedImageView =  [user objectForKey:@"tappedImageView"];
             tappedImageView.hidden = NO;
@@ -862,7 +868,7 @@ int userInt;
     else cell.favoriteSmall.image = nil;
     cell.tapButton.enabled = [[Profile user] isGoingOut] ? YES : NO;
     cell.tapButton.tag = tag;
-    if ([[Profile user] isGoingOut]) {
+    if ([[Profile user] isGoingOut] && ([indexPath section] == 1 || [indexPath row] >= [self getTapInitialPosition])) {
         cell.tappedImageView.hidden = NO;
         cell.profileButton3.enabled = NO;
     }
@@ -1019,7 +1025,7 @@ int userInt;
     NSMutableArray *tapArray = [[NSMutableArray alloc] initWithCapacity:0];
     NSMutableArray *tapFrameArray = [[NSMutableArray alloc] initWithCapacity:0];
     NSMutableArray *tapButtonArray = [[NSMutableArray alloc] initWithCapacity:0];
-    for (int i = 0; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
+    for (int i = [self getTapInitialPosition]; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
         User *user = [self userForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
         UIImageViewShake *tappedImageView = [user objectForKey:@"tappedImageView"];
         if (tappedImageView != nil) {

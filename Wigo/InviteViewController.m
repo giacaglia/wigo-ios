@@ -148,7 +148,7 @@ BOOL isSearching;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
 
-    int tag = [indexPath row];
+    int tag = (int)[indexPath row];
     User *user;
     if (isSearching) {
         if ([[filteredContentParty getObjectArray] count] == 0) return cell;

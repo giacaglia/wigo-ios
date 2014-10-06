@@ -206,7 +206,7 @@ NSMutableArray *chosenPeople;
 
 - (void)selectedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
+    int tag = (int)buttonSender.tag;
     if (isFiltered) {
         ABRecordRef contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
         ABRecordID recordID = ABRecordGetRecordID(contactPerson);
