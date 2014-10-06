@@ -848,10 +848,7 @@ int userInt;
             }
         }
     }
-//    else {
-//        [self fetchFollowing];
-//        return cell;
-//    }
+
     if ([userArray count] == 0 || (int)[indexPath row] >= [userArray count]) return cell;
     User *user = [userArray objectAtIndex:[indexPath row]];
     
@@ -1117,14 +1114,19 @@ int userInt;
     completion:^(BOOL finished) {
     [UIView animateWithDuration:0.2
     animations:^{
-        for (int i = 0; i <[tapArray count]; i++) {
+        for (int i = 0; i < [tapArray count]; i++) {
             UIImageViewShake *tappedImageView = [tapArray objectAtIndex:i];
-            tappedImageView.hidden = NO;
             UIButton *tapButton = [tapButtonArray objectAtIndex:i];
-            tapButton.enabled = YES;
-            CGRect previousFrame = [[tapFrameArray objectAtIndex:i] CGRectValue];
-            tappedImageView.frame = previousFrame;
-            [tappedImageView newShake];
+            NSIndexPath *indexPath = [self indexPathFromTag:(int)(tapButton.tag)];
+            // Profile user is supposedly already going out (but it does not hurt to double check).
+            if ([[Profile user] isGoingOut] && ([indexPath section] == 1 || [indexPath row] >= [self getTapInitialPosition])) {
+                tappedImageView.hidden = NO;
+                tapButton.enabled = YES;
+                CGRect previousFrame = [[tapFrameArray objectAtIndex:i] CGRectValue];
+                tappedImageView.frame = previousFrame;
+                [tappedImageView newShake];
+            }
+            
        }
     }
     completion:^(BOOL finised) {
