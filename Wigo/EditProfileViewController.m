@@ -9,6 +9,8 @@
 #import "EditProfileViewController.h"
 #import "Globals.h"
 
+#import "FacebookAlbumTableViewController.h"
+
 #import "UIButtonAligned.h"
 #import "RWBlurPopover.h"
 
@@ -152,8 +154,7 @@ UIViewController *webViewController;
 - (void)selectedEditImage:(id)sender {
     UIButton*buttonSender = (UIButton *)sender;
     if (buttonSender.tag == -1) {
-        self.facebookImagesViewController = [[FacebookImagesViewController alloc] init];
-        [self.navigationController pushViewController:self.facebookImagesViewController animated:YES];
+        [self.navigationController pushViewController:[FacebookAlbumTableViewController new] animated:YES];
     }
     else {
         [self.view endEditing:YES];

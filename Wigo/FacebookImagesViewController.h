@@ -11,4 +11,6 @@
 
 @interface FacebookImagesViewController : UIViewController
 
+- (id)initWithAlbumID:(NSString *)newAlbumID;
+
 @end

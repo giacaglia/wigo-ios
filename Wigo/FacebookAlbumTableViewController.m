@@ -7,6 +7,7 @@
 //
 
 #import "FacebookAlbumTableViewController.h"
+#import "FacebookImagesViewController.h"
 #import "Globals.h"
 
 @interface FacebookAlbumTableViewController ()
@@ -15,6 +16,10 @@
 
 @end
 
+NSMutableArray *idAlbumArray;
+NSMutableArray *coverIDArray;
+NSMutableArray *coverAlbumArray;
+
 @implementation FacebookAlbumTableViewController
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -22,7 +27,11 @@
     self = [super initWithStyle:style];
     if (self) {
         // Custom initialization
-        _albumArray = [[NSArray alloc] init];
+        _albumArray = [NSArray new];
+        idAlbumArray = [NSMutableArray new];
+        coverIDArray = [NSMutableArray new];
+        coverAlbumArray = [NSMutableArray new];
+        self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     }
     return self;
 }
@@ -51,13 +60,55 @@
                                                                                     id result,
                                                                                     NSError *error
                                                                                     ) {
-                                                                    _albumArray = (NSArray *)[result objectForKey:@"data"];
+                                                                    NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
+                                                                    NSMutableArray *cleanAlbums = [NSMutableArray new];
+                                                                    for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
+                                                                        NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
+                                                                        if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||
+                                                                            [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
+                                                                            [cleanAlbums addObject:albumFBGraphObject];
+                                                                            [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
+                                                                            [coverIDArray addObject:[albumFBGraphObject objectForKey:@"cover_photo"]];
+                                                                        }
+                                                                    }
+                                                                    _albumArray = [NSArray arrayWithArray:cleanAlbums];
+                                                                    [self getAlbumDetails];
                                                                     [self.tableView reloadData];
+
                                                                 }];
 
                                       }
                                   }];
     
+}
+
+- (void)getAlbumDetails {
+    for (int k = 0; k < [coverIDArray count]; k++) {
+        [coverAlbumArray addObject:@""];
+    }
+    for (int i = 0; i < [coverIDArray count]; i++) {
+        NSString *photoID = [coverIDArray objectAtIndex:i];
+        [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@", photoID]
+                                     parameters:nil
+                                     HTTPMethod:@"GET"
+                              completionHandler:^(
+                                                  FBRequestConnection *connection,
+                                                  id result,
+                                                  NSError *error
+                                                  ) {
+                                if (!error) {
+                                    NSString *resultObject = [result objectForKey:@"source"];
+                                    for (int j = 0; j < [coverIDArray count]; j++) {
+                                        if ([[result objectForKey:@"id"] isEqualToString:[coverIDArray objectAtIndex:j]]) {
+                                            [coverAlbumArray replaceObjectAtIndex:j withObject:resultObject];
+                                        }
+                                    }
+                                    [self.tableView reloadData];
+                                }
+        }];
+    }
+
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -102,66 +153,27 @@
     albumName.textAlignment = NSTextAlignmentLeft;
     [cell.contentView addSubview:albumName];
     
-    NSString *imageURL = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=album&access_token=%@", [albumFBGraphObject objectForKey:@"id"], [[Profile user] accessToken]];
-    UIImageView *coverImageView = [[UIImageView alloc] init];
-    coverImageView.frame = CGRectMake(10, 10, 45, 45);
-    coverImageView.contentMode = UIViewContentModeScaleAspectFill;
-    coverImageView.clipsToBounds = YES;
-    [coverImageView setImageWithURL:[NSURL URLWithString:imageURL]];
-    coverImageView.backgroundColor = [UIColor whiteColor];
-    [cell.contentView addSubview:coverImageView];
+    
+    if ([indexPath row] < [coverAlbumArray count]) {
+        NSString *imageURL = [coverAlbumArray objectAtIndex:[indexPath row]];
+        UIImageView *coverImageView = [[UIImageView alloc] init];
+        coverImageView.frame = CGRectMake(10, 10, 45, 45);
+        coverImageView.contentMode = UIViewContentModeScaleAspectFill;
+        coverImageView.clipsToBounds = YES;
+        [coverImageView setImageWithURL:[NSURL URLWithString:imageURL]];
+        coverImageView.backgroundColor = [UIColor whiteColor];
+        [cell.contentView addSubview:coverImageView];
+    }
     
     return cell;
 }
 
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    int tag = (int)[indexPath row];
+    NSString *albumID = [idAlbumArray objectAtIndex:tag];
+    [self.navigationController pushViewController:[[FacebookImagesViewController alloc] initWithAlbumID:albumID] animated:YES];
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -648,10 +648,21 @@ int userInt;
         [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.titleView = goOutButton;
     }
-    [self updateMyselfShowingOnTheList];
+    [self updateUIShowingMyselfGoingOut];
 }
 
-- (void)updateMyselfShowingOnTheList {
+
+- (void)updateUIShowingMyselfGoingOut {
+//    NSString *numberOfPeopleGoingOut =
+//    NSString *newString = [NSString stringWithFormat:@"GOING OUT: %d", [friendsGoingOut intValue] + [self getTapInitialPosition]];
+//    UILabel *label = (UILabel *)subview;
+//    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:newString];
+//    [attributedString addAttribute:NSFontAttributeName
+//                             value:[FontProperties numericLightFont:15.0f]
+//                             range:NSMakeRange(11, [friendsGoingOut stringValue].length)];
+//    label.attributedText = attributedString;
+
+    
     User *firstUser = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:0];
     if ([[Profile user] isGoingOut]) {
         if (![firstUser isEqualToUser:[Profile user]]) {
@@ -1126,7 +1137,6 @@ int userInt;
                 tappedImageView.frame = previousFrame;
                 [tappedImageView newShake];
             }
-            
        }
     }
     completion:^(BOOL finised) {

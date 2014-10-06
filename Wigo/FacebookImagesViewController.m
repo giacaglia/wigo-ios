@@ -20,9 +20,19 @@
 @end
 
 NSString *urlOfSelectedImage;
-
+//NSString *albumID;
 
 @implementation FacebookImagesViewController
+
+
+- (id)initWithAlbumID:(NSString *)newAlbumID {
+    self = [super init];
+    if (self) {
+        _profilePicturesAlbumId = newAlbumID;
+        self.view.backgroundColor = [UIColor whiteColor];
+    }
+    return self;
+}
 
 - (id)init {
     self = [super init];
@@ -74,7 +84,7 @@ NSString *urlOfSelectedImage;
                               FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
                               for (FBGraphObject *album in resultObject) {
                                   if ([[album objectForKey:@"name"] isEqualToString:@"Profile Pictures"]) {
-                                      _profilePicturesAlbumId = (NSString *)[album objectForKey:@"id"];
+//                                      _profilePicturesAlbumId = (NSString *)[album objectForKey:@"id"];
                                       [self getProfilePictures];
                                       break;
                                   }
@@ -194,12 +204,6 @@ NSString *urlOfSelectedImage;
 - (void)choseImageView:(UITapGestureRecognizer*)sender {
     UIImageView *imageViewSender = (UIImageView *)sender.view;
     urlOfSelectedImage = [_profilePicturesURL objectAtIndex:imageViewSender.tag];
-//    User *profileUser = [Profile user];
-//    [profileUser addImageURL:urlOfSelectedImage];
-//    [profileUser save];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
-//    [self.navigationController popViewControllerAnimated:YES];
-
     GKImageCropViewController *cropViewController = [[GKImageCropViewController alloc] init];
     cropViewController.sourceImage = imageViewSender.image;
     cropViewController.delegate = self;
@@ -218,9 +222,7 @@ NSString *urlOfSelectedImage;
 - (void)didFinishWithCroppedArea:(CGRect)croppedArea {
 
     User *profileUser = [Profile user];
-//    NSArray *imagesArea = [NSMutableArray arrayWithArray:[profileUser imagesArea]];
     [profileUser addImageWithURL:urlOfSelectedImage andArea:croppedArea];
-//    [profileUser addImageURL:urlOfSelectedImage];
     [profileUser save];
     [self dismissViewControllerAnimated:YES completion:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];

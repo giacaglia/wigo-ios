@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
-//#import <SDWebImage/UIImageView+WebCache.h>
 #import "UIImageView+ImageArea.h"
 
 #import "Profile.h"
