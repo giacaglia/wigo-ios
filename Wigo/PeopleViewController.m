@@ -14,9 +14,6 @@
 
 @interface PeopleViewController ()
 
-@property(atomic) UIButton *yourSchoolButton;
-@property(atomic) UIButton *followersButton;
-@property(atomic) UIButton *followingButton;
 
 //Table View of people
 @property UITableView *tableViewOfPeople;
@@ -46,6 +43,16 @@ int queryQueueInt;
 
 @implementation PeopleViewController
 
+- (id)initWithUser:(User *)user andTab:(NSNumber *)tab {
+    self = [super init];
+    if (self) {
+        self.user = user;
+        _currentTab = tab;
+        self.view.backgroundColor = [UIColor whiteColor];
+    }
+    return self;
+}
+
 - (id)initWithUser:(User *)user {
     self = [super init];
     if (self) {
@@ -55,13 +62,6 @@ int queryQueueInt;
     return self;
 }
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
@@ -75,9 +75,7 @@ int queryQueueInt;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
 
-    [self initializeYourSchoolButton];
-    [self initializeFollowingButton];
-    [self initializeFollowersButton];
+
     [self initializeSearchBar];
     [self initializeTableOfPeople];
     
@@ -170,50 +168,13 @@ int queryQueueInt;
     }
 }
 
-- (void)initializeYourSchoolButton {
-    _yourSchoolButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width/3, 60)];
-    [_yourSchoolButton setTitle:[NSString stringWithFormat:@"%d\nSchool", [[[Profile user] numberOfGroupMembers] intValue]] forState:UIControlStateNormal];
-    _yourSchoolButton.backgroundColor = [FontProperties getOrangeColor];
-    _yourSchoolButton.titleLabel.font = [FontProperties getTitleFont];
-    _yourSchoolButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    _yourSchoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    _yourSchoolButton.tag = 2;
-    [_yourSchoolButton addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_yourSchoolButton];
-}
-
-- (void)initializeFollowersButton {
-    _followersButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/3, 64, self.view.frame.size.width/3, 60)];
-    [_followersButton setTitle:[NSString stringWithFormat:@"%d\nFollowers", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]] forState:UIControlStateNormal];
-    [_followersButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    _followersButton.backgroundColor = [FontProperties getLightOrangeColor];
-    _followersButton.titleLabel.font = [FontProperties getTitleFont];
-    _followersButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    _followersButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    _followersButton.tag = 3;
-    [_followersButton addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_followersButton];
-}
-
-- (void)initializeFollowingButton {
-    _followingButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 64, self.view.frame.size.width/3, 60)];
-    [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]] forState:UIControlStateNormal];
-    [_followingButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    _followingButton.backgroundColor = [FontProperties getLightOrangeColor];
-    _followingButton.titleLabel.font = [FontProperties getTitleFont];
-    _followingButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    _followingButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    _followingButton.tag = 4;
-    [_followingButton addTarget:self action:@selector(changeFilter:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_followingButton];
-}
-
 
 - (void)initializeTableOfPeople {
-    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 164, self.view.frame.size.width, self.view.frame.size.height - 160)];
+    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     _tableViewOfPeople.delegate = self;
     _tableViewOfPeople.dataSource = self;
     _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    _tableViewOfPeople.contentOffset = CGPointMake(0, 40);
     [self.view addSubview:_tableViewOfPeople];
 }
 
@@ -221,15 +182,17 @@ int queryQueueInt;
 #pragma mark - UISearchBar 
 
 - (void)initializeSearchBar {
-    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 124, self.view.frame.size.width, 40)];
-    _searchBar.barTintColor = [FontProperties getOrangeColor];
-    _searchBar.tintColor = [FontProperties getOrangeColor];
+    UIColor *grayColor = RGB(184, 184, 184);
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(10, 10, self.view.frame.size.width - 20, 30)];
+    _searchBar.barTintColor = [UIColor whiteColor];
+    _searchBar.tintColor = grayColor;
     _searchBar.placeholder = @"Search By Name";
     _searchBar.delegate = self;
-    _searchBar.layer.borderWidth = 1.0f;
-    _searchBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    _searchBar.layer.borderWidth = 0.5f;
+    _searchBar.layer.cornerRadius = 15.0f;
+    _searchBar.layer.borderColor = grayColor.CGColor;
     UITextField *searchField = [_searchBar valueForKey:@"_searchField"];
-    [searchField setValue:[FontProperties getOrangeColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [searchField setValue:grayColor forKeyPath:@"_placeholderLabel.textColor"];
     [self.view addSubview:_searchBar];
     
     // Search Icon Clear
@@ -237,11 +200,10 @@ int queryQueueInt;
     [txfSearchField setLeftViewMode:UITextFieldViewModeNever];
 
     // Add Custom Search Icon
-    _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeSearchIcon"]];
-    _searchIconImageView.frame = CGRectMake(85, 13, 14, 14);
+    _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"graySearchIcon"]];
+    _searchIconImageView.frame = CGRectMake(76, 7, 14, 14);
     [_searchBar addSubview:_searchIconImageView];
-    [self.view addSubview:_searchBar];
-    [self.view bringSubviewToFront:_searchBar];
+
     
     // Remove Clear Button on the right
     UITextField *textField = [_searchBar valueForKey:@"_searchField"];
@@ -253,26 +215,45 @@ int queryQueueInt;
             if ([secondLevelSubview isKindOfClass:[UITextField class]])
             {
                 UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
-                searchBarTextField.textColor = [FontProperties getOrangeColor];
+                searchBarTextField.textColor = grayColor;
                 break;
+            }
+            else {
+                [secondLevelSubview removeFromSuperview];
             }
         }
     }
+}
+
+- (UIView *)initializeSecondPart {
+    UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 320)];
+    UILabel *nameOfSchoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 59, self.view.frame.size.width - 30, 21)];
+    nameOfSchoolLabel.text = @"Holy Cross";
+    nameOfSchoolLabel.textAlignment = NSTextAlignmentCenter;
+    nameOfSchoolLabel.textColor = [FontProperties getOrangeColor];
+    nameOfSchoolLabel.font = [FontProperties boldFont:17.0f];
+    [secondPartSubview addSubview:nameOfSchoolLabel];
+    
+    UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 95, self.view.frame.size.width - 14, 21)];
+    contextLabel.text = @"New on WiGo";
+    contextLabel.font = [FontProperties mediumFont:17.0f];
+    contextLabel.textAlignment = NSTextAlignmentLeft;
+    [secondPartSubview addSubview:contextLabel];
+    
+    User *user = [Profile user];
+    UIView *cellOfPerson = [self cellOfUser:user];
+    return secondPartSubview;
+}
+
+- (UIView *)cellOfUser:(User *)user {
+    UIView *cellOfUser = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 110, 164)];
+    return cellOfUser;
 }
 
 
 
 #pragma mark - Filter handlers
 
-- (void) changeFilter:(id)sender {
-    [self clearSearchBar];
-    UIButton *chosenButton = (UIButton *)sender;
-    int tag = (int)chosenButton.tag;
-    if (tag >= 2) {
-        _currentTab = [NSNumber numberWithInt:tag];
-        [self loadTableView];
-    }
-}
 
 - (void)clearSearchBar {
     [self.view endEditing:YES];
@@ -282,16 +263,6 @@ int queryQueueInt;
 }
 
 - (void)loadTableView {
-    UIButton *filterButton;
-    for (int i = 2; i < 5; i++) {
-        filterButton = (UIButton *)[self.view viewWithTag:i];
-        filterButton.backgroundColor = [FontProperties getLightOrangeColor];
-        [filterButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    }
-    UIButton *chosenButton = (UIButton *)[self.view viewWithTag:[_currentTab intValue]];
-    chosenButton.backgroundColor = [FontProperties getOrangeColor];
-    [chosenButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    
     if ([_currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageEveryone];
     }
@@ -307,10 +278,8 @@ int queryQueueInt;
 #pragma mark - Table View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath section] == 0) {
-        return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
-    }
-    return PEOPLEVIEW_HEIGHT_OF_CELLS;
+    if ([indexPath row] == 0) return 320;
+    return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -323,11 +292,11 @@ int queryQueueInt;
 
 - (int)numberOfRowsWithNoShare {
     if (_isSearching) {
-        return (int)[[_filteredContentParty getObjectArray] count];
+        return (int)[[_filteredContentParty getObjectArray] count] + 1;
     }
     else {
         int hasNextPage = ([_contentParty hasNextPage] ? 1 : 0);
-        return (int)[[_contentParty getObjectArray] count] + hasNextPage;
+        return (int)[[_contentParty getObjectArray] count] + hasNextPage + 1;
     }
 }
 
@@ -341,27 +310,35 @@ int queryQueueInt;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
+    if ([indexPath row] == 0) {
+        [self initializeSearchBar];
+        [cell.contentView addSubview:_searchBar];
+        [cell.contentView addSubview:[self initializeSecondPart]];
+        return cell;
+    }
+    int tag = (int)[indexPath row] - 1;
+    
     if ([[_contentParty getObjectArray] count] == 0) return cell;
     if ([[_contentParty getObjectArray] count] > 5) {
-        if ([_contentParty hasNextPage] && [indexPath row] == [[_contentParty getObjectArray] count] - 5) {
+        if ([_contentParty hasNextPage] && tag == [[_contentParty getObjectArray] count] - 5) {
             [self loadNextPage];
         }
     }
     else {
-        if ([indexPath row] == [[_contentParty getObjectArray] count]) {
+        if (tag == [[_contentParty getObjectArray] count]) {
             [self loadNextPage];
             return cell;
         }
     }
    
     
-    User *user = [self getUserAtIndex:(int)[indexPath row]];
+    User *user = [self getUserAtIndex:tag];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
     UIView *clickableView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 15 - 79, PEOPLEVIEW_HEIGHT_OF_CELLS - 5)];
     if (![user isEqualToUser:[Profile user]]) [clickableView addGestureRecognizer:tap];
     clickableView.userInteractionEnabled = YES;
-    clickableView.tag = [indexPath row];
+    clickableView.tag = tag;
     [cell.contentView addSubview:clickableView];
     
     UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
@@ -370,7 +347,7 @@ int queryQueueInt;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
     [profileButton addSubview:profileImageView];
-    profileButton.tag = [indexPath row];
+    profileButton.tag = tag;
     if (![user isEqualToUser:[Profile user]]) {
         [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -534,7 +511,6 @@ int queryQueueInt;
     User *profileUser = [Profile user];
     if (profileUser == self.user) {
         [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
-        [_followingButton setTitle:[NSString stringWithFormat:@"%d\nFollowing", [[NSNumber numberWithInt:num_following] intValue]] forState:UIControlStateNormal];
         [Profile setFollowingParty:_followingParty];
     }
 }
