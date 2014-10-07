@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Event.h"
 
-@interface InviteViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface InviteViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
 - (id)initWithEventName:(NSString *)eventName andID:(NSNumber *)eventID;
 

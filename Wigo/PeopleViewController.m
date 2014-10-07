@@ -38,8 +38,8 @@
 
 BOOL didProfileSegue;
 int userInt;
-
 int queryQueueInt;
+UIView *secondPartSubview;
 
 @implementation PeopleViewController
 
@@ -70,7 +70,6 @@ int queryQueueInt;
     didProfileSegue = NO;
     userInt = -1;
     // Title setup
-    self.title = [self.user fullName];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
@@ -78,7 +77,6 @@ int queryQueueInt;
 
     [self initializeSearchBar];
     [self initializeTableOfPeople];
-    
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -170,11 +168,11 @@ int queryQueueInt;
 
 
 - (void)initializeTableOfPeople {
-    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 66, self.view.frame.size.width, self.view.frame.size.height - 64)];
     _tableViewOfPeople.delegate = self;
     _tableViewOfPeople.dataSource = self;
     _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    _tableViewOfPeople.contentOffset = CGPointMake(0, 40);
     [self.view addSubview:_tableViewOfPeople];
 }
 
@@ -193,7 +191,6 @@ int queryQueueInt;
     _searchBar.layer.borderColor = grayColor.CGColor;
     UITextField *searchField = [_searchBar valueForKey:@"_searchField"];
     [searchField setValue:grayColor forKeyPath:@"_placeholderLabel.textColor"];
-    [self.view addSubview:_searchBar];
     
     // Search Icon Clear
     UITextField *txfSearchField = [_searchBar valueForKey:@"_searchField"];
@@ -203,7 +200,6 @@ int queryQueueInt;
     _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"graySearchIcon"]];
     _searchIconImageView.frame = CGRectMake(76, 7, 14, 14);
     [_searchBar addSubview:_searchIconImageView];
-
     
     // Remove Clear Button on the right
     UITextField *textField = [_searchBar valueForKey:@"_searchField"];
@@ -226,30 +222,129 @@ int queryQueueInt;
 }
 
 - (UIView *)initializeSecondPart {
-    UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 320)];
-    UILabel *nameOfSchoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 59, self.view.frame.size.width - 30, 21)];
-    nameOfSchoolLabel.text = @"Holy Cross";
-    nameOfSchoolLabel.textAlignment = NSTextAlignmentCenter;
-    nameOfSchoolLabel.textColor = [FontProperties getOrangeColor];
-    nameOfSchoolLabel.font = [FontProperties boldFont:17.0f];
-    [secondPartSubview addSubview:nameOfSchoolLabel];
-    
-    UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 95, self.view.frame.size.width - 14, 21)];
-    contextLabel.text = @"New on WiGo";
-    contextLabel.font = [FontProperties mediumFont:17.0f];
-    contextLabel.textAlignment = NSTextAlignmentLeft;
-    [secondPartSubview addSubview:contextLabel];
-    
-    User *user = [Profile user];
-    UIView *cellOfPerson = [self cellOfUser:user];
-    return secondPartSubview;
+    if ([_currentTab isEqualToNumber:@2]) {
+        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 320)];
+      
+        UILabel *nameOfSchoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 59, self.view.frame.size.width - 30, 21)];
+        nameOfSchoolLabel.text = @"Holy Cross";
+        nameOfSchoolLabel.textAlignment = NSTextAlignmentCenter;
+        nameOfSchoolLabel.textColor = [FontProperties getOrangeColor];
+        nameOfSchoolLabel.font = [FontProperties boldFont:17.0f];
+        [secondPartSubview addSubview:nameOfSchoolLabel];
+        
+        UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 95, self.view.frame.size.width - 14, 21)];
+        contextLabel.text = @"New on WiGo";
+        contextLabel.font = [FontProperties mediumFont:17.0f];
+        contextLabel.textAlignment = NSTextAlignmentLeft;
+        [secondPartSubview addSubview:contextLabel];
+        
+        UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 125, self.view.frame.size.width, 180)];
+        scrollView.showsHorizontalScrollIndicator = NO;
+        [secondPartSubview addSubview:scrollView];
+        int xPosition = 10;
+        for (int i = 0; i < [[_contentParty getObjectArray] count]; i++) {
+            User *user = [[_contentParty getObjectArray] objectAtIndex:i];
+            [scrollView addSubview:[self cellOfUser:user atXPosition:xPosition]];
+            xPosition += 130;
+            scrollView.contentSize = CGSizeMake(xPosition + 110, 175);
+        }
+        return secondPartSubview;
+    }
+    else {
+        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 130)];
+        
+        UILabel *lateToThePartyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 55, self.view.frame.size.width - 30, 21)];
+        lateToThePartyLabel.text = @"Some of your friends are late to the party";
+        lateToThePartyLabel.textAlignment = NSTextAlignmentCenter;
+        lateToThePartyLabel.font = [FontProperties mediumFont:16.0f];
+        lateToThePartyLabel.textColor = RGB(102, 102, 102);
+        [secondPartSubview addSubview:lateToThePartyLabel];
+        
+        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 84, 229, 30)];
+        inviteButton.backgroundColor = [FontProperties getOrangeColor];
+        [inviteButton setTitle:@"Invite more friends on WiGo" forState:UIControlStateNormal];
+        [inviteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        inviteButton.titleLabel.font = [FontProperties scMediumFont:16.0f];
+        inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        inviteButton.layer.borderWidth = 1.0f;
+        inviteButton.layer.borderColor = [UIColor whiteColor].CGColor;
+        inviteButton.layer.cornerRadius = 8.0f;
+        [secondPartSubview addSubview:inviteButton];
+        
+        return secondPartSubview;
+    }
+ 
 }
 
-- (UIView *)cellOfUser:(User *)user {
-    UIView *cellOfUser = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 110, 164)];
+- (UIView *)cellOfUser:(User *)user atXPosition:(int)xPosition {
+    UIView *cellOfUser = [[UIView alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 175)];
+    
+    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
+    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+    [cellOfUser addSubview:profileImageView];
+    
+    UILabel *nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 110 - 25, 110, 25)];
+    nameOfPersonLabel.textColor = [UIColor whiteColor];
+    nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
+    nameOfPersonLabel.text = [user firstName];
+    nameOfPersonLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
+    nameOfPersonLabel.font = [FontProperties lightFont:16.0f];
+    [cellOfUser addSubview:nameOfPersonLabel];
+    
+    if (![user isEqualToUser:[Profile user]]) {
+
+        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(30, 120, 49, 30)];
+        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+        followPersonButton.tag = -100;
+        [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [cellOfUser addSubview:followPersonButton];
+        if ([user getUserState] == BLOCKED_USER) {
+            [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
+            [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            followPersonButton.layer.borderWidth = 1;
+            followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            followPersonButton.layer.cornerRadius = 3;
+            followPersonButton.tag = 50;
+        }
+        else {
+            if ([user isFollowing]) {
+                [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+                followPersonButton.tag = 100;
+            }
+            if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+                [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+                [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+                [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+                followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+                followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+                followPersonButton.layer.borderWidth = 1;
+                followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                followPersonButton.layer.cornerRadius = 3;
+                followPersonButton.tag = 100;
+            }
+        }
+        
+        UILabel *mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 152, 110, 15)];
+        mutualFriendsLabel.text = @"25 mututal friends";
+        mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
+        mutualFriendsLabel.font = [FontProperties lightFont:12.0f];
+        mutualFriendsLabel.textColor = RGB(102, 102, 102);
+        [cellOfUser addSubview:mutualFriendsLabel];
+        
+        UILabel *dateJoined = [[UILabel alloc] initWithFrame:CGRectMake(0, 165, 110, 12)];
+        dateJoined.text = [user joinedDate];
+        dateJoined.textColor = RGB(201, 202, 204);
+        dateJoined.textAlignment = NSTextAlignmentCenter;
+        dateJoined.font = [FontProperties lightFont:10.0f];
+        [cellOfUser addSubview:dateJoined];
+    }
     return cellOfUser;
 }
-
 
 
 #pragma mark - Filter handlers
@@ -265,20 +360,32 @@ int queryQueueInt;
 - (void)loadTableView {
     if ([_currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageEveryone];
+        self.title = @"Find friends";
     }
     else if ([_currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
+        self.title = @"Followers";
     }
     else if ([_currentTab isEqualToNumber:@4]) {
         [self fetchFirstPageFollowing];
+        self.title = @"Following";
     }
+    _tableViewOfPeople.contentOffset = CGPointMake(0, 40);
 }
 
 
 #pragma mark - Table View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath row] == 0) return 320;
+    if ([_currentTab isEqualToNumber:@2]) {
+        if ([indexPath row] == 0) return 320;
+    }
+    else if ([_currentTab isEqualToNumber:@4]) {
+        if ([indexPath row] == 0) return 135;
+    }
+    else {
+        if ([indexPath row] == 0) return 40;
+    }
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
 }
 
@@ -313,8 +420,14 @@ int queryQueueInt;
     if ([indexPath row] == 0) {
         [self initializeSearchBar];
         [cell.contentView addSubview:_searchBar];
-        [cell.contentView addSubview:[self initializeSecondPart]];
+        if ([_currentTab isEqualToNumber:@2]) {
+            [cell.contentView addSubview:secondPartSubview];
+        }
+        else if ([_currentTab isEqualToNumber:@4]) {
+            [cell.contentView addSubview:secondPartSubview];
+        }
         return cell;
+
     }
     int tag = (int)[indexPath row] - 1;
     
@@ -427,7 +540,11 @@ int queryQueueInt;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.view endEditing:YES];
+//    UITableViewCell *cell = [_tableViewOfPeople cellForRowAtIndexPath:indexPath];
+    NSLog(@"here");
+
+//    [_searchBar becomeFirstResponder];
+
 }
 
 - (void)loadNextPage {
@@ -593,6 +710,7 @@ int queryQueueInt;
             _page = @([_page intValue] + 1);
             _contentParty = _everyoneParty;
             [_tableViewOfPeople reloadData];
+            secondPartSubview = [self initializeSecondPart];
         });
     }];
 }
@@ -663,6 +781,7 @@ int queryQueueInt;
             _page = @([_page intValue] + 1);
             _contentParty = _followingParty;
             [_tableViewOfPeople reloadData];
+            secondPartSubview = [self initializeSecondPart];
         });
     }];
     

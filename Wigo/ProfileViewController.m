@@ -31,8 +31,6 @@
 @property UITapGestureRecognizer *tapScrollView;
 
 //UIScrollView
-@property int currentPage;
-
 @property UIPageControl *pageControl;
 @property BOOL isSeingImages;
 @property UIScrollView *scrollView;
@@ -96,7 +94,6 @@ UIButton *tapButton;
     
     [EventAnalytics tagEvent:@"Profile View" withDetails:options];
 
-    _currentPage = 0;
     _isSeingImages = NO;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
     
