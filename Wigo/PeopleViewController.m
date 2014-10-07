@@ -223,22 +223,22 @@ UIView *secondPartSubview;
 
 - (UIView *)initializeSecondPart {
     if ([_currentTab isEqualToNumber:@2]) {
-        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 320)];
+        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 59, self.view.frame.size.width, 320)];
       
-        UILabel *nameOfSchoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 59, self.view.frame.size.width - 30, 21)];
+        UILabel *nameOfSchoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, 21)];
         nameOfSchoolLabel.text = @"Holy Cross";
         nameOfSchoolLabel.textAlignment = NSTextAlignmentCenter;
         nameOfSchoolLabel.textColor = [FontProperties getOrangeColor];
         nameOfSchoolLabel.font = [FontProperties boldFont:17.0f];
         [secondPartSubview addSubview:nameOfSchoolLabel];
         
-        UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 95, self.view.frame.size.width - 14, 21)];
+        UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 36, self.view.frame.size.width - 14, 21)];
         contextLabel.text = @"New on WiGo";
         contextLabel.font = [FontProperties mediumFont:17.0f];
         contextLabel.textAlignment = NSTextAlignmentLeft;
         [secondPartSubview addSubview:contextLabel];
         
-        UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 125, self.view.frame.size.width, 180)];
+        UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 66, self.view.frame.size.width, 180)];
         scrollView.showsHorizontalScrollIndicator = NO;
         [secondPartSubview addSubview:scrollView];
         int xPosition = 10;
@@ -251,16 +251,16 @@ UIView *secondPartSubview;
         return secondPartSubview;
     }
     else {
-        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 130)];
+        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 55, self.view.frame.size.width, 130)];
         
-        UILabel *lateToThePartyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 55, self.view.frame.size.width - 30, 21)];
+        UILabel *lateToThePartyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, 21)];
         lateToThePartyLabel.text = @"Some of your friends are late to the party";
         lateToThePartyLabel.textAlignment = NSTextAlignmentCenter;
         lateToThePartyLabel.font = [FontProperties mediumFont:16.0f];
         lateToThePartyLabel.textColor = RGB(102, 102, 102);
         [secondPartSubview addSubview:lateToThePartyLabel];
         
-        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 84, 229, 30)];
+        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 29, 229, 30)];
         inviteButton.backgroundColor = [FontProperties getOrangeColor];
         [inviteButton setTitle:@"Invite more friends on WiGo" forState:UIControlStateNormal];
         [inviteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -444,7 +444,6 @@ UIView *secondPartSubview;
         }
     }
    
-    
     User *user = [self getUserAtIndex:tag];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
@@ -539,13 +538,13 @@ UIView *secondPartSubview;
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    UITableViewCell *cell = [_tableViewOfPeople cellForRowAtIndexPath:indexPath];
-    NSLog(@"here");
-
-//    [_searchBar becomeFirstResponder];
-
-}
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+////    UITableViewCell *cell = [_tableViewOfPeople cellForRowAtIndexPath:indexPath];
+//    NSLog(@"here");
+//
+////    [_searchBar becomeFirstResponder];
+//
+//}
 
 - (void)loadNextPage {
     if ([_currentTab isEqualToNumber:@2]) {
