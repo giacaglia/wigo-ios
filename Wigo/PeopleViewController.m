@@ -11,6 +11,7 @@
 #import "ProfileViewController.h"
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
+#import "MobileContactsViewController.h"
 
 @interface PeopleViewController ()
 
@@ -189,6 +190,7 @@ UIView *secondPartSubview;
     _searchBar.layer.borderWidth = 0.5f;
     _searchBar.layer.cornerRadius = 15.0f;
     _searchBar.layer.borderColor = grayColor.CGColor;
+    _searchBar.hidden = YES;
     UITextField *searchField = [_searchBar valueForKey:@"_searchField"];
     [searchField setValue:grayColor forKeyPath:@"_placeholderLabel.textColor"];
     
@@ -242,12 +244,31 @@ UIView *secondPartSubview;
         scrollView.showsHorizontalScrollIndicator = NO;
         [secondPartSubview addSubview:scrollView];
         int xPosition = 10;
-        for (int i = 0; i < [[_contentParty getObjectArray] count]; i++) {
+        for (int i = 0; i < MIN(10,[[_contentParty getObjectArray] count]); i++) {
             User *user = [[_contentParty getObjectArray] objectAtIndex:i];
             [scrollView addSubview:[self cellOfUser:user atXPosition:xPosition]];
             xPosition += 130;
             scrollView.contentSize = CGSizeMake(xPosition + 110, 175);
         }
+        
+        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 110)];
+        [inviteButton setBackgroundImage:[UIImage imageNamed:@"InviteButton"] forState:UIControlStateNormal];
+        [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+        [scrollView addSubview:inviteButton];
+        
+        UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
+        inviteMoreFriendsLabel.text = @"Invite more friends\nto WiGo";
+        inviteMoreFriendsLabel.textAlignment = NSTextAlignmentCenter;
+        inviteMoreFriendsLabel.font = [FontProperties mediumFont:12.0f];
+        inviteMoreFriendsLabel.numberOfLines = 0;
+        inviteMoreFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        inviteMoreFriendsLabel.textColor = [FontProperties getOrangeColor];
+        [scrollView addSubview:inviteMoreFriendsLabel];
+        
+        xPosition += 130;
+        scrollView.contentSize = CGSizeMake(xPosition + 110, 175);
+
+        
         return secondPartSubview;
     }
     else {
@@ -274,6 +295,10 @@ UIView *secondPartSubview;
         return secondPartSubview;
     }
  
+}
+
+- (void)inviteButtonPressed  {
+    [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
 }
 
 - (UIView *)cellOfUser:(User *)user atXPosition:(int)xPosition {
@@ -418,7 +443,7 @@ UIView *secondPartSubview;
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
     if ([indexPath row] == 0) {
-        [self initializeSearchBar];
+        _searchBar.hidden = NO;
         [cell.contentView addSubview:_searchBar];
         if ([_currentTab isEqualToNumber:@2]) {
             [cell.contentView addSubview:secondPartSubview];
