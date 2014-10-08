@@ -252,7 +252,7 @@ int queryQueueInt;
     [self.view addSubview:searchBarView];
     
     [self.view bringSubviewToFront:_searchBar];
-    
+
     // Text when editing becomes orange
     for (UIView *subView in _searchBar.subviews) {
         for (UIView *secondLevelSubview in subView.subviews){
@@ -260,7 +260,9 @@ int queryQueueInt;
             {
                 UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
                 searchBarTextField.textColor = [FontProperties getOrangeColor];
-                break;
+            }
+            else {
+                [secondLevelSubview removeFromSuperview];
             }
         }
     }
@@ -336,13 +338,13 @@ int queryQueueInt;
                                                               UITextField *textField = alert.textFields[0];
                                                               NSString *text = textField.text;
                                                               if ([text isEqualToString:@"dev"] || [text isEqualToString:@"dev-api.wigo.us"]) {
-                                                                  [Query setBaseURLString:@"https://dev-api.wigo.us%@"];
+                                                                  [Query setBaseURLString:@"https://dev-api.wigo.us"];
                                                               }
                                                               else if ([text isEqualToString:@"stage"] || [text isEqualToString:@"stage-api.wigo.us"]) {
-                                                                  [Query setBaseURLString:@"https://stage-api.wigo.us%@"];
+                                                                  [Query setBaseURLString:@"https://stage-api.wigo.us"];
                                                               }
                                                               else if ([text isEqualToString:@"prod"] || [text isEqualToString:@"api.wigo.us"]) {
-                                                                  [Query setBaseURLString:@"https://api.wigo.us%@"];
+                                                                  [Query setBaseURLString:@"https://api.wigo.us"];
                                                               }
                                                               else {
                                                                   [Query setBaseURLString:text];

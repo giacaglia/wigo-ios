@@ -32,7 +32,9 @@ static NSString * BaseURLString = @"https://api.wigo.us%@";
 }
 
 + (void)setBaseURLString:(NSString *)newBaseURL {
-    BaseURLString = newBaseURL;
+    NSMutableString *returnedBaseURL = [NSMutableString stringWithFormat:@"%@", newBaseURL];
+    [returnedBaseURL appendString:@"%@"];
+    BaseURLString = [NSString stringWithString:returnedBaseURL];
 }
 
 - (void)setProfileKey:(NSString *)key {

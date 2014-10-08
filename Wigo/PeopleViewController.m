@@ -560,15 +560,15 @@ UIView *secondPartSubview;
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if ([_currentTab isEqualToNumber:@2]) return 320.0f;
     else if ([_currentTab isEqualToNumber:@4]) return 135;
-    
     return 40;
     
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//    [cell.contentView addSubview:secondPartSubview];
-
-    return _searchBar;
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40.0f)];
+    [self initializeSearchBar];
+    [headerView addSubview:_searchBar];
+    return headerView;
 }
 
 - (void)loadNextPage {
