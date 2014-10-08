@@ -39,6 +39,7 @@ NSMutableArray *coverAlbumArray;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"email", @"user_friends", @"user_photos"]
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
@@ -52,30 +53,32 @@ NSMutableArray *coverAlbumArray;
                                                                                     otherButtonTitles:nil];
                                           [alertView show];
                                       } else if (session.isOpen) {
-                                          [FBRequestConnection startWithGraphPath:@"/me/albums"
-                                                                       parameters:nil
-                                                                       HTTPMethod:@"GET"
-                                                                completionHandler:^(
-                                                                                    FBRequestConnection *connection,
-                                                                                    id result,
-                                                                                    NSError *error
-                                                                                    ) {
-                                                                    NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
-                                                                    NSMutableArray *cleanAlbums = [NSMutableArray new];
-                                                                    for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
-                                                                        NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
-                                                                        if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||
-                                                                            [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
-                                                                            [cleanAlbums addObject:albumFBGraphObject];
-                                                                            [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
-                                                                            [coverIDArray addObject:[albumFBGraphObject objectForKey:@"cover_photo"]];
+                                          dispatch_async(dispatch_get_main_queue(), ^(void){
+                                              [FBRequestConnection startWithGraphPath:@"/me/albums"
+                                                                           parameters:nil
+                                                                           HTTPMethod:@"GET"
+                                                                    completionHandler:^(
+                                                                                        FBRequestConnection *connection,
+                                                                                        id result,
+                                                                                        NSError *error
+                                                                                        ) {
+                                                                        NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
+                                                                        NSMutableArray *cleanAlbums = [NSMutableArray new];
+                                                                        for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
+                                                                            NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
+                                                                            if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||
+                                                                                [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
+                                                                                [cleanAlbums addObject:albumFBGraphObject];
+                                                                                [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
+                                                                                [coverIDArray addObject:[albumFBGraphObject objectForKey:@"cover_photo"]];
+                                                                            }
                                                                         }
-                                                                    }
-                                                                    _albumArray = [NSArray arrayWithArray:cleanAlbums];
-                                                                    [self getAlbumDetails];
-                                                                    [self.tableView reloadData];
-
-                                                                }];
+                                                                        _albumArray = [NSArray arrayWithArray:cleanAlbums];
+                                                                        [self getAlbumDetails];
+                                                                        [self.tableView reloadData];
+                                                                        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                                                                    }];
+                                          });
 
                                       }
                                   }];

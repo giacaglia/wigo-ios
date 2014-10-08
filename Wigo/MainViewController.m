@@ -368,7 +368,7 @@ UILabel *redDotLabel;
                         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:newString];
                         [attributedString addAttribute:NSFontAttributeName
                                      value:[FontProperties numericLightFont:15.0f]
-                                     range:NSMakeRange(11, [friendsGoingOut stringValue].length)];
+                                     range:NSMakeRange(11, newString.length - 11)];
                         label.attributedText = attributedString;
                     }
                 }

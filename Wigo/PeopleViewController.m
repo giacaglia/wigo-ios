@@ -225,22 +225,15 @@ UIView *secondPartSubview;
 
 - (UIView *)initializeSecondPart {
     if ([_currentTab isEqualToNumber:@2]) {
-        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 59, self.view.frame.size.width, 320)];
-      
-        UILabel *nameOfSchoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, 21)];
-        nameOfSchoolLabel.text = @"Holy Cross";
-        nameOfSchoolLabel.textAlignment = NSTextAlignmentCenter;
-        nameOfSchoolLabel.textColor = [FontProperties getOrangeColor];
-        nameOfSchoolLabel.font = [FontProperties boldFont:17.0f];
-        [secondPartSubview addSubview:nameOfSchoolLabel];
+        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 59, self.view.frame.size.width, 292)];
         
-        UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 36, self.view.frame.size.width - 14, 21)];
+        UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 0, self.view.frame.size.width - 14, 21)];
         contextLabel.text = @"New on WiGo";
         contextLabel.font = [FontProperties mediumFont:17.0f];
         contextLabel.textAlignment = NSTextAlignmentLeft;
         [secondPartSubview addSubview:contextLabel];
         
-        UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 66, self.view.frame.size.width, 180)];
+        UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 180)];
         scrollView.showsHorizontalScrollIndicator = NO;
         [secondPartSubview addSubview:scrollView];
         int xPosition = 10;
@@ -385,7 +378,7 @@ UIView *secondPartSubview;
 - (void)loadTableView {
     if ([_currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageEveryone];
-        self.title = @"Find friends";
+        self.title = [[Profile user] groupName];
     }
     else if ([_currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
@@ -563,13 +556,16 @@ UIView *secondPartSubview;
     return cell;
 }
 
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-////    UITableViewCell *cell = [_tableViewOfPeople cellForRowAtIndexPath:indexPath];
-//    NSLog(@"here");
-//
-////    [_searchBar becomeFirstResponder];
-//
-//}
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 50)];
+    [label setFont:[UIFont boldSystemFontOfSize:12]];
+    NSString *string = @"lala";
+    [label setText:string];
+    [view addSubview:label];
+    [view setBackgroundColor:[UIColor blackColor]];
+    return view;
+}
 
 - (void)loadNextPage {
     if ([_currentTab isEqualToNumber:@2]) {

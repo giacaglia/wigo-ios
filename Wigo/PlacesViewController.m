@@ -133,17 +133,17 @@ BOOL shouldReloadEvents;
 }
 
 - (void) initializeNavigationBar {
-    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
-    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] imageArea:[[Profile user] coverImageArea]];
-    [profileButton addSubview:profileImageView];
-    [profileButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchUpInside];
-    [profileButton setShowsTouchWhenHighlighted:YES];
-    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
-    self.navigationItem.leftBarButtonItem = profileBarButton;
+//    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
+//    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
+//    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
+//    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+//    profileImageView.clipsToBounds = YES;
+//    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] imageArea:[[Profile user] coverImageArea]];
+//    [profileButton addSubview:profileImageView];
+//    [profileButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchUpInside];
+//    [profileButton setShowsTouchWhenHighlighted:YES];
+//    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
+//    self.navigationItem.leftBarButtonItem = profileBarButton;
     self.navigationItem.rightBarButtonItem = nil;
     
     [self updatedTitleView];
@@ -251,7 +251,7 @@ BOOL shouldReloadEvents;
 
 - (void)invitePressed {
     if ([[Profile user] attendingEventID]) {
-            [self presentViewController:[[InviteViewController alloc] initWithEventName:[[Profile user] attendingEventName] andID:[[Profile user] attendingEventID]] animated:YES completion:nil];
+        [self presentViewController:[[InviteViewController alloc] initWithEventName:[[Profile user] attendingEventName] andID:[[Profile user] attendingEventID]] animated:YES completion:nil];
     }
 
 }
