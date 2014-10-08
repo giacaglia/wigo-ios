@@ -344,6 +344,9 @@ int queryQueueInt;
                                                               else if ([text isEqualToString:@"prod"] || [text isEqualToString:@"api.wigo.us"]) {
                                                                   [Query setBaseURLString:@"https://api.wigo.us%@"];
                                                               }
+                                                              else {
+                                                                  [Query setBaseURLString:text];
+                                                              }
                                                           }];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
