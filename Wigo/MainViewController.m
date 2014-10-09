@@ -1049,15 +1049,16 @@ UILabel *redDotLabel;
     NSMutableArray *tapArray = [[NSMutableArray alloc] initWithCapacity:0];
     NSMutableArray *tapFrameArray = [[NSMutableArray alloc] initWithCapacity:0];
     NSMutableArray *tapButtonArray = [[NSMutableArray alloc] initWithCapacity:0];
-    for (int i = [self getTapInitialPosition]; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
+    for (int i = 0; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
         User *user = [self userForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-        UIImageViewShake *tappedImageView = [user objectForKey:@"tappedImageView"];
-        if (tappedImageView != nil) {
-            [tapArray addObject:tappedImageView];
-            UIButton *tapButton = [user objectForKey:@"tapButton"];
-            [tapButtonArray addObject:tapButton];
+        if (![user isEqualToUser:[Profile user]]) {
+            UIImageViewShake *tappedImageView = [user objectForKey:@"tappedImageView"];
+            if (tappedImageView != nil) {
+                [tapArray addObject:tappedImageView];
+                UIButton *tapButton = [user objectForKey:@"tapButton"];
+                [tapButtonArray addObject:tapButton];
+            }
         }
-       
     }
     
     for (int i = 0; i < [[_notGoingOutParty getObjectArray] count]; i++) {
