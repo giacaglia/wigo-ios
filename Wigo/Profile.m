@@ -39,17 +39,6 @@ static BOOL localyticsEnabled;
     }
 }
 
-+ (Party *)everyoneParty {
-    if (everyoneParty == nil) {
-        everyoneParty = [[Party alloc] init];
-    }
-    return everyoneParty;
-}
-
-+ (void)setEveryoneParty:(Party *)newEveryoneParty {
-    everyoneParty = newEveryoneParty;
-}
-
 + (Party *)followingParty {
     if (followingParty == nil) {
         followingParty = [[Party alloc] init];

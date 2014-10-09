@@ -344,7 +344,6 @@ BOOL initializedPopScreen;
         [contentParty addObjectsFromArray:arrayOfUsers];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [contentParty addMetaInfo:metaDictionary];
-        [Profile setEveryoneParty:contentParty];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             page = @([page intValue] + 1);
             [tableViewOfPeople reloadData];

@@ -32,6 +32,7 @@
 @property Party *everyoneParty;
 @property Party *followingParty;
 @property Party *followersParty;
+@property Party *suggestionsParty;
 
 @property NSNumber *page;
 @property NSNumber *currentTab;
@@ -237,8 +238,8 @@ UIView *secondPartSubview;
         scrollView.showsHorizontalScrollIndicator = NO;
         [secondPartSubview addSubview:scrollView];
         int xPosition = 10;
-        for (int i = 0; i < MIN(10,[[_contentParty getObjectArray] count]); i++) {
-            User *user = [[_contentParty getObjectArray] objectAtIndex:i];
+        for (int i = 0; i < MIN(10,[[_suggestionsParty getObjectArray] count]); i++) {
+            User *user = [[_suggestionsParty getObjectArray] objectAtIndex:i];
             [scrollView addSubview:[self cellOfUser:user atXPosition:xPosition]];
             xPosition += 130;
             scrollView.contentSize = CGSizeMake(xPosition + 110, 175);
@@ -261,7 +262,6 @@ UIView *secondPartSubview;
         xPosition += 130;
         scrollView.contentSize = CGSizeMake(xPosition + 110, 175);
 
-        
         return secondPartSubview;
     }
     else {
@@ -378,6 +378,7 @@ UIView *secondPartSubview;
 - (void)loadTableView {
     if ([_currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageEveryone];
+        [self fetchFirstPageSuggestions];
         self.title = [[Profile user] groupName];
     }
     else if ([_currentTab isEqualToNumber:@3]) {
@@ -710,6 +711,24 @@ UIView *secondPartSubview;
 
 #pragma mark - Network functions
 
+- (void)fetchFirstPageSuggestions {
+    _suggestionsParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    [Network queryAsynchronousAPI:@"users/suggestions/" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+            [_suggestionsParty addObjectsFromArray:arrayOfUsers];
+            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+            [_suggestionsParty addMetaInfo:metaDictionary];
+            secondPartSubview = [self initializeSecondPart];
+            if ([_tableViewOfPeople numberOfRowsInSection:0] > 0) {
+                [_tableViewOfPeople beginUpdates];
+                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+                [_tableViewOfPeople endUpdates];
+            }
+        });
+    }];
+}
+
 - (void)fetchFirstPageEveryone {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
     _page = @1;
@@ -726,7 +745,6 @@ UIView *secondPartSubview;
             [_everyoneParty addObjectsFromArray:arrayOfUsers];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_everyoneParty addMetaInfo:metaDictionary];
-            [Profile setEveryoneParty:_everyoneParty];
             _page = @([_page intValue] + 1);
             _contentParty = _everyoneParty;
             [_tableViewOfPeople reloadData];

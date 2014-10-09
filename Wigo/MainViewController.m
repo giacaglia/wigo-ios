@@ -611,6 +611,7 @@ UILabel *redDotLabel;
 
 - (void)myProfileSegue {
     if ([Profile user]) {
+        didProfileSegue = YES;
         self.profileViewController = [[ProfileViewController alloc] initWithUser:[Profile user]];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
         self.tabBarController.tabBar.hidden = YES;

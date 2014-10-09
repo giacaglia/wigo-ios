@@ -118,7 +118,6 @@ int queryQueueInt;
         [_everyoneParty addObjectsFromArray:arrayOfUsers];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [_everyoneParty addMetaInfo:metaDictionary];
-        [Profile setEveryoneParty:_everyoneParty];
         [_everyoneParty removeUser:[Profile user]];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             _page = @([_page intValue] + 1);

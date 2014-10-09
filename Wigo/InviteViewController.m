@@ -385,7 +385,6 @@ BOOL isSearching;
         [everyoneParty addObjectsFromArray:arrayOfUsers];
         NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
         [everyoneParty addMetaInfo:metaDictionary];
-        [Profile setEveryoneParty:everyoneParty];
         [everyoneParty removeUser:[Profile user]];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             page = @([page intValue] + 1);

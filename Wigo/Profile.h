@@ -15,8 +15,6 @@
 + (User *) user;
 + (void)setUser:(User *)newUser;
 
-+ (Party *)everyoneParty;
-+ (void)setEveryoneParty:(Party *)newEveryoneParty;
 + (Party *)followingParty;
 + (void)setFollowingParty:(Party *)newFollowingParty;
 + (Party *)notAcceptedFollowingParty;
