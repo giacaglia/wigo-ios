@@ -438,15 +438,18 @@ viewForFooterInSection:(NSInteger)section
                 [user setIsFollowingRequested:NO];
                 [Network unfollowUser:user];
             }
-            [notification setFromUser:user];
+            [notification setFromUser:[user dictionary]];
             if ([indexPath section] == 0) {
                 if ([indexPath row] < [[_nonExpiredNotificationsParty getObjectArray] count]) {
                     [_nonExpiredNotificationsParty replaceObjectAtIndex:[indexPath row] withObject:notification];
+                    [_notificationsTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[indexPath row] inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
                 }
             }
             else {
                 if ([indexPath row] < [[_expiredNotificationsParty getObjectArray] count]) {
                     [_expiredNotificationsParty replaceObjectAtIndex:[indexPath row] withObject:notification];
+                    [_notificationsTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[indexPath row] inSection:1]] withRowAnimation:UITableViewRowAnimationNone];
+
                 }
             }
         }
