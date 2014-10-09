@@ -388,22 +388,22 @@ UIView *secondPartSubview;
         [self fetchFirstPageFollowing];
         self.title = @"Following";
     }
-//    _tableViewOfPeople.contentOffset = CGPointMake(0, 40);
+    _tableViewOfPeople.contentOffset = CGPointMake(0, 40);
 }
 
 
 #pragma mark - Table View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if ([_currentTab isEqualToNumber:@2]) {
-//        if ([indexPath row] == 0) return 320;
-//    }
-//    else if ([_currentTab isEqualToNumber:@4]) {
-//        if ([indexPath row] == 0) return 135;
-//    }
-//    else {
-//        if ([indexPath row] == 0) return 40;
-//    }
+    if ([_currentTab isEqualToNumber:@2]) {
+        if ([indexPath row] == 0) return 320;
+    }
+    else if ([_currentTab isEqualToNumber:@4]) {
+        if ([indexPath row] == 0) return 135;
+    }
+    else {
+        if ([indexPath row] == 0) return 40;
+    }
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
 }
 
@@ -435,20 +435,19 @@ UIView *secondPartSubview;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
-//    if ([indexPath row] == 0) {
-//        _searchBar.hidden = NO;
-//        [cell.contentView addSubview:_searchBar];
-//        if ([_currentTab isEqualToNumber:@2]) {
-//            [cell.contentView addSubview:secondPartSubview];
-//        }
-//        else if ([_currentTab isEqualToNumber:@4]) {
-//            [cell.contentView addSubview:secondPartSubview];
-//        }
-//        return cell;
-//
-//    }
-//    int tag = (int)[indexPath row] - 1;
-    int tag = (int)[indexPath row];
+    if ([indexPath row] == 0) {
+        _searchBar.hidden = NO;
+        [cell.contentView addSubview:_searchBar];
+        if ([_currentTab isEqualToNumber:@2]) {
+            [cell.contentView addSubview:secondPartSubview];
+        }
+        else if ([_currentTab isEqualToNumber:@4]) {
+            [cell.contentView addSubview:secondPartSubview];
+        }
+        return cell;
+
+    }
+    int tag = (int)[indexPath row] - 1;
     
     if ([[_contentParty getObjectArray] count] == 0) return cell;
     if ([[_contentParty getObjectArray] count] > 5) {
@@ -557,19 +556,16 @@ UIView *secondPartSubview;
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if ([_currentTab isEqualToNumber:@2]) return 320.0f;
-    else if ([_currentTab isEqualToNumber:@4]) return 135;
-    return 40;
-    
-}
-
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40.0f)];
-    [self initializeSearchBar];
-    [headerView addSubview:_searchBar];
-    return headerView;
-}
+//-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
+//    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 50)];
+//    [label setFont:[UIFont boldSystemFontOfSize:12]];
+//    NSString *string = @"lala";
+//    [label setText:string];
+//    [view addSubview:label];
+//    [view setBackgroundColor:[UIColor blackColor]];
+//    return view;
+//}
 
 - (void)loadNextPage {
     if ([_currentTab isEqualToNumber:@2]) {
@@ -920,6 +916,16 @@ UIView *secondPartSubview;
     }];
 }
 
+- (void)reloadTableExceptFirstRow {
+    NSMutableArray *allIndexes = [[NSMutableArray alloc] init];
+    for (int i = 1; i < [_tableViewOfPeople numberOfRowsInSection:0]; i++) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+        [allIndexes addObject:indexPath];
+    }
+    [_tableViewOfPeople beginUpdates];
+    [_tableViewOfPeople reloadRowsAtIndexPaths:[NSArray arrayWithArray:allIndexes] withRowAnimation:UITableViewRowAnimationNone];
+    [_tableViewOfPeople endUpdates];
+}
 
 
 

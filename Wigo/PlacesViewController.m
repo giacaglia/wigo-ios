@@ -899,6 +899,7 @@ BOOL shouldReloadEvents;
 
 #pragma mark - Growth Hack
 - (BOOL)shouldPresentGrowthHack {
+    return YES;
     int numberOfTimesWentOut = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"numberOfTimesWentOut"];
     if (numberOfTimesWentOut == 0) {
         [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"numberOfTimesWentOut"];
