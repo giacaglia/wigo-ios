@@ -379,7 +379,6 @@ BOOL fetching;
 
 - (void)loadTableView {
     if ([_currentTab isEqualToNumber:@2]) {
-        [self fetchFirstPageEveryone];
         [self fetchFirstPageSuggestions];
         self.title = [[Profile user] groupName];
     }
@@ -722,11 +721,7 @@ BOOL fetching;
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_suggestionsParty addMetaInfo:metaDictionary];
             secondPartSubview = [self initializeSecondPart];
-            if ([_tableViewOfPeople numberOfRowsInSection:0] > 0) {
-                [_tableViewOfPeople beginUpdates];
-                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-                [_tableViewOfPeople endUpdates];
-            }
+            [self fetchFirstPageEveryone];
         });
     }];
 }
@@ -747,7 +742,12 @@ BOOL fetching;
                 fetching = NO;
                 [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                 NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-                [_everyoneParty addObjectsFromArray:arrayOfUsers];
+                if (_suggestionsParty) {
+                    [_everyoneParty addObjectsFromArray:arrayOfUsers notInParty:_suggestionsParty];
+                }
+                else {
+                    [_everyoneParty addObjectsFromArray:arrayOfUsers];
+                }
                 NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                 [_everyoneParty addMetaInfo:metaDictionary];
                 _page = @([_page intValue] + 1);

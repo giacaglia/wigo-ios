@@ -32,6 +32,7 @@ typedef enum
 - (NSArray *)getNameArray;
 - (NSArray *)getFullNameArray;
 - (void)addObjectsFromArray:(NSArray *)newObjectArray;
+- (void)addObjectsFromArray:(NSArray *)newObjectArray notInParty:(Party *)otherParty;
 - (void)addObject:(NSMutableDictionary *)objectDictionary;
 - (void)insertObject:(NSDictionary *)object inObjectArrayAtIndex:(NSUInteger)index;
 - (void)removeAllObjects;

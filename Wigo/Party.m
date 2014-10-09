@@ -85,6 +85,32 @@
     }
 }
 
+- (void)addObjectsFromArray:(NSArray *)newObjectArray notInParty:(Party *)otherParty {
+    NSArray *arrayOfKeyOfOtherParty = [[otherParty getObjectArray] valueForKey:@"id"];
+    for (int i = 0; i < [newObjectArray count]; i++) {
+        NSDictionary *dict = newObjectArray[i];
+        if (![arrayOfKeyOfOtherParty containsObject:[dict objectForKey:@"id"]]) {
+            if (self.objectType == USER_TYPE) {
+                User *newUser = [[User alloc] initWithDictionary:dict];
+                [self.objectArray addObject:newUser];
+            }
+            else if (self.objectType == EVENT_TYPE) {
+                Event *newEvent = [[Event alloc] initWithDictionary:dict];
+                [self.objectArray addObject:newEvent];
+            }
+            else if (self.objectType == MESSAGE_TYPE) {
+                Message *newMessage = [[Message alloc] initWithDictionary:dict];
+                [self.objectArray addObject:newMessage];
+            }
+            else if (self.objectType == NOTIFICATION_TYPE) {
+                Notification *newNotification = [[Notification alloc] initWithDictionary:dict];
+                [self.objectArray addObject:newNotification];
+            }
+        }
+       
+    }
+}
+
 - (void)addObject:(NSMutableDictionary *)objectDictionary {
     if ([objectDictionary isKindOfClass:[NSDictionary class]]) {
         [self.objectArray addObject:objectDictionary];
