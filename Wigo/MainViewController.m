@@ -247,6 +247,9 @@ UILabel *redDotLabel;
         _page = @1;
         [self fetchFollowing];
     }
+    else {
+        if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
+    }
 }
 
 - (void)fetchFollowing {
@@ -272,7 +275,6 @@ UILabel *redDotLabel;
                 NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                 [_followingAcceptedParty addMetaInfo:metaDictionary];
                 [Profile setFollowingParty:_followingAcceptedParty];
-                
                 User *user;
                 for (int i = 0; i < [arrayOfUsers count]; i++) {
                     NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];
@@ -287,7 +289,7 @@ UILabel *redDotLabel;
                 if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
                 _page = @([_page intValue] + 1);
                 [_collectionView reloadData];
-                if ([_page isEqualToNumber:@1]) _fetchingFirstPage = NO;
+                if ([_page isEqualToNumber:@2]) _fetchingFirstPage = NO;
                 [self.view bringSubviewToFront:_barAtTopView];
                 [self fetchedMyInfoOrPeoplesInfo];
             });
