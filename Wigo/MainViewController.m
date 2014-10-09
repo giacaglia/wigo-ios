@@ -284,10 +284,10 @@ UILabel *redDotLabel;
                         [_notGoingOutParty addObject:user];
                     }
                 }
-                if ([_page isEqualToNumber:@1]) _fetchingFirstPage = NO;
                 if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
                 _page = @([_page intValue] + 1);
                 [_collectionView reloadData];
+                if ([_page isEqualToNumber:@1]) _fetchingFirstPage = NO;
                 [self.view bringSubviewToFront:_barAtTopView];
                 [self fetchedMyInfoOrPeoplesInfo];
             });
