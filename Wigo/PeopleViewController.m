@@ -275,6 +275,7 @@ UIView *secondPartSubview;
         [secondPartSubview addSubview:lateToThePartyLabel];
         
         UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 29, 229, 30)];
+        [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         inviteButton.backgroundColor = [FontProperties getOrangeColor];
         [inviteButton setTitle:@"Invite more friends on WiGo" forState:UIControlStateNormal];
         [inviteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
