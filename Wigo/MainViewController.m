@@ -907,10 +907,11 @@ UILabel *redDotLabel;
         cell.tappedImageView.tag = 1;
         cell.tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
     }
-    
-    [user setObject:cell.tapButton forKey:@"tapButton"];
-    [user setObject:cell.tappedImageView forKey:@"tappedImageView"];
-    [self setUser:user ForIndexPath:indexPath];
+    if (![user isEqualToUser:[Profile user]]) {
+        [user setObject:cell.tapButton forKey:@"tapButton"];
+        [user setObject:cell.tappedImageView forKey:@"tappedImageView"];
+        [self setUser:user ForIndexPath:indexPath];
+    }
     
     return cell;
 }

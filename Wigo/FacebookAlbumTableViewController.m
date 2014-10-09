@@ -39,7 +39,7 @@ NSMutableArray *coverAlbumArray;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+//    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"email", @"user_friends", @"user_photos"]
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
@@ -74,7 +74,7 @@ NSMutableArray *coverAlbumArray;
                                                                                 }
                                                                             }
                                                                             _albumArray = [NSArray arrayWithArray:cleanAlbums];
-                                                                            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+//                                                                            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
 
                                                                             [self getAlbumDetails];
                                                                             [self.tableView reloadData];
