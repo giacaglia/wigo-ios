@@ -154,7 +154,11 @@ UILabel *redDotLabel;
                                                       fromDate:dateAccessed
                                                       toDate:newDate
                                                       options:0];
-        if ([differenceDateComponents hour] >= 1) {
+        NSDateComponents *newDateComponents = [[NSCalendar currentCalendar] components: NSDayCalendarUnit| NSHourCalendarUnit fromDate:newDate];
+        NSDateComponents *dateAccessedComponents = [[NSCalendar currentCalendar] components: NSDayCalendarUnit|NSHourCalendarUnit fromDate:dateAccessed];
+        
+        
+        if ([differenceDateComponents hour] >= 1 || ([newDateComponents day] != [dateAccessedComponents day]) || ([dateAccessedComponents day] == [newDateComponents day] && [dateAccessedComponents hour] < 6 && [newDateComponents hour] > 6)) {
             [[NSUserDefaults standardUserDefaults] setObject:newDate forKey: @"lastTimeAccessed"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             return YES;
