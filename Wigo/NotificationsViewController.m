@@ -412,7 +412,6 @@ viewForFooterInSection:(NSInteger)section
                                         withOptions:options];
             }
             else if (senderButton.tag == -100) {
-                
                 if ([user isPrivate]) {
                     [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
                     [senderButton setTitle:@"Pending" forState:UIControlStateNormal];

@@ -741,7 +741,7 @@ BOOL fetching;
 - (void) fetchEveryone {
     if (!fetching) {
         fetching = YES;
-        NSString *queryString = [NSString stringWithFormat:@"users/?ordering=-id&page=%@" ,[_page stringValue]];
+        NSString *queryString = [NSString stringWithFormat:@"users/?page=%@" ,[_page stringValue]];
         [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 fetching = NO;
@@ -769,7 +769,7 @@ BOOL fetching;
 - (void)fetchFollowers {
     if (!fetching) {
         fetching = YES;
-        NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
+        NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 fetching = NO;
@@ -808,7 +808,7 @@ BOOL fetching;
 - (void)fetchFollowing {
     if (!fetching) {
         fetching = YES;
-        NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&ordering=-id&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
+        NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 fetching = NO;

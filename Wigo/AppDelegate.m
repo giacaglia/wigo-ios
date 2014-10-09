@@ -296,6 +296,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 }
 
 - (void) changeTabBarToBlue {
+    indexOfSelectedTab = @1;
     [[UITabBar appearance] setBackgroundImage:[[UIImage alloc] init]];
     [[UITabBar appearance] setShadowImage:[[UIImage alloc] init]];
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
