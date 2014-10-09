@@ -658,7 +658,7 @@ UIButton *tapButton;
 }
 
 - (void) initializeTapButton {
-    if ([[Profile user] isGoingOut] && ![self.user isEqualToUser:[Profile user]] && ([self.user getUserState] == ATTENDING_EVENT_FOLLOWING_USER || [self.user getUserState] == FOLLOWING_USER)) {
+    if ([[Profile user] isGoingOut] && ![self.user isEqualToUser:[Profile user]] && ([self.user getUserState] == ATTENDING_EVENT_FOLLOWING_USER || [self.user getUserState] == FOLLOWING_USER || [self.user getUserState] == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) ) {
         UIButton *aroundTapButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 60, 64, 60, 60)];
         [aroundTapButton addTarget:self action:@selector(tapPressed) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:aroundTapButton];
