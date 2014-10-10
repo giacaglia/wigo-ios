@@ -323,7 +323,7 @@ BOOL fetching;
         UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(30, 120, 49, 30)];
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = -100;
-        [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [followPersonButton addTarget:self action:@selector(suggestedFollowedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cellOfUser addSubview:followPersonButton];
         if ([user getUserState] == BLOCKED_USER) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
@@ -371,19 +371,31 @@ BOOL fetching;
     return cellOfUser;
 }
 
+- (void)suggestedFollowedPersonPressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = buttonSender.tag;
+//    User *user = [self getSuggestedUser:tag];
+//    [self updateButton:sender withIndex:indexPath andUser:user];
+}
+
 - (void)suggestedProfileSegue:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = buttonSender.tag;
-    User *user;
-    int sizeOfArray = (int)[[_suggestionsParty getObjectArray] count];
-    if (sizeOfArray > 0 && sizeOfArray > tag)
-        user = [[_suggestionsParty getObjectArray] objectAtIndex:tag];
+    User *user = [self getSuggestedUser:tag];
     if (user) {
         didProfileSegue = YES;
         userInt = tag;
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
+}
+
+- (User *)getSuggestedUser:(int)tag {
+    User *user;
+    int sizeOfArray = (int)[[_suggestionsParty getObjectArray] count];
+    if (sizeOfArray > 0 && sizeOfArray > tag)
+        user = [[_suggestionsParty getObjectArray] objectAtIndex:tag];
+    return user;
 }
 
 
@@ -607,66 +619,70 @@ BOOL fetching;
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
     NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
     User *user = [self getUserAtIndex:(int)[indexPath row]];
-    if (user) {
-        UIButton *senderButton = (UIButton*)sender;
-        if (senderButton.tag == 50) {
-            [senderButton setTitle:nil forState:UIControlStateNormal];
-            [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-            senderButton.tag = -100;
-            [user setIsBlocked:NO];
-            
-            NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
-            NSDictionary *options = @{@"is_blocked": @NO};
-            [Network sendAsynchronousHTTPMethod:POST
-                                    withAPIName:queryString
-                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                                    withOptions:options];
-        }
-        else if (senderButton.tag == -100) {
-            int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
-            
-            if ([user isPrivate]) {
-                [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
-                [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
-                [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-                senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-                senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-                senderButton.layer.borderWidth = 1;
-                senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-                senderButton.layer.cornerRadius = 3;
-                [user setIsFollowingRequested:YES];
-            }
-            else {
-                [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-                [_followingParty addObject:user];
-                num_following += 1;
-                [user setIsFollowing:YES];
-            }
-            senderButton.tag = 100;
-            [self updateFollowingUIAndCachedData:num_following];
-            [Network followUser:user];
-        }
-        else {
-            [senderButton setTitle:nil forState:UIControlStateNormal];
-            [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-            senderButton.tag = -100;
-            int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
-            [user setIsFollowing:NO];
-            [user setIsFollowingRequested:NO];
-            if (![user isPrivate] && user) {
-                [_followingParty removeUser:user];
-                num_following -= 1;
-            }
-            [self updateFollowingUIAndCachedData:num_following];
-            [Network unfollowUser:user];
-        }
-        if ([indexPath row] < [[_contentParty getObjectArray] count]) {
-            [_contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
-        }
+    if (user) [self updateButton:sender withIndex:indexPath andUser:user];
+    if ([indexPath row] < [[_contentParty getObjectArray] count]) {
+        [_contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
     }
 }
 
-- (void) updateFollowingUIAndCachedData:(int)num_following {
+- (void)updateButton:(id)sender withIndex:(NSIndexPath *)indexPath andUser:(User *)user {
+    UIButton *senderButton = (UIButton*)sender;
+    if (senderButton.tag == 50) {
+        [senderButton setTitle:nil forState:UIControlStateNormal];
+        [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+        senderButton.tag = -100;
+        [user setIsBlocked:NO];
+        
+        NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
+        NSDictionary *options = @{@"is_blocked": @NO};
+        [Network sendAsynchronousHTTPMethod:POST
+                                withAPIName:queryString
+                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                                withOptions:options];
+    }
+    else if (senderButton.tag == -100) {
+        int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+        
+        if ([user isPrivate]) {
+            [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
+            [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            senderButton.layer.borderWidth = 1;
+            senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            senderButton.layer.cornerRadius = 3;
+            [user setIsFollowingRequested:YES];
+        }
+        else {
+            [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+            [_followingParty addObject:user];
+            num_following += 1;
+            [user setIsFollowing:YES];
+        }
+        senderButton.tag = 100;
+        [self updatedCachedProfileUser:num_following];
+        [Network followUser:user];
+    }
+    else {
+        [senderButton setTitle:nil forState:UIControlStateNormal];
+        [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+        senderButton.tag = -100;
+        int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+        [user setIsFollowing:NO];
+        [user setIsFollowingRequested:NO];
+        if (![user isPrivate] && user) {
+            [_followingParty removeUser:user];
+            num_following -= 1;
+        }
+        [self updatedCachedProfileUser:num_following];
+        [Network unfollowUser:user];
+    }
+    
+
+}
+
+- (void) updatedCachedProfileUser:(int)num_following {
     User *profileUser = [Profile user];
     if (profileUser == self.user) {
         [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];

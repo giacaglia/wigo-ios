@@ -72,6 +72,7 @@
     _accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
 
     NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
+    key = @"0098Vn9nC4qRZ9m8nNvjEaPAsu";
     if (key) {
         User *user = [[User alloc] initWithDictionary:@{@"key": key}];
         [Profile setUser:user];
