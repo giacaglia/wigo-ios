@@ -76,8 +76,8 @@ UILabel *redDotLabel;
     [EventAnalytics tagEvent:@"Who View"];
     self.tabBarController.tabBar.hidden = NO;
     if (!didProfileSegue) {
-        [self fetchFirstPageFollowing];
         if (!_fetchingUserInfo) [self fetchUserInfo];
+        [self fetchFirstPageFollowing];
         if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
         [self fetchSummaryGoingOut];
     }
@@ -213,34 +213,33 @@ UILabel *redDotLabel;
         [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             if ([[jsonResponse allKeys] containsObject:@"status"]) {
                 if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                    User *user = [[User alloc] initWithDictionary:jsonResponse];
-                    if ([user key]) {
-                        User *profileUser = [Profile user];
-                        [profileUser setIsGoingOut:[user isGoingOut]];
-                        dispatch_async(dispatch_get_main_queue(), ^(void){
+                    dispatch_async(dispatch_get_main_queue(), ^(void){
+                        User *user = [[User alloc] initWithDictionary:jsonResponse];
+                        if ([user key]) {
+                            [Profile setUser:user];
                             _fetchingUserInfo = NO;
-                            [self updateTitleView];
+                            [self initializeNavigationItem];
                             [self fetchedMyInfoOrPeoplesInfo];
-                        });
-                    }
+                        }
+                    });
                 }
             }
             else {
-                User *user = [[User alloc] initWithDictionary:jsonResponse];
-                if ([user key]) {
-                    User *profileUser = [Profile user];
-                    [profileUser setIsGoingOut:[user isGoingOut]];
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    User *user = [[User alloc] initWithDictionary:jsonResponse];
+                    if ([user key]) {
+                        [Profile setUser:user];
                         _fetchingUserInfo = NO;
-                        [self updateTitleView];
+                        [self initializeNavigationItem];
                         [self fetchedMyInfoOrPeoplesInfo];
-                    });
-                    
-                }
+                    }
+                });
             }
         }];
     }
 }
+
+
 
 - (void)fetchFirstPageFollowing {
     if (!_fetchingFirstPage) {
@@ -522,6 +521,7 @@ UILabel *redDotLabel;
 }
 
 - (void) initializeNavigationItem {
+    NSLog(@"User %@", [[Profile user] dictionary]);
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
@@ -664,7 +664,7 @@ UILabel *redDotLabel;
         [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.titleView = goOutButton;
     }
-//    [self updateUIShowingMyselfGoingOut];
+    [self updateUIShowingMyselfGoingOut];
 }
 
 

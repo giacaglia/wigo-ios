@@ -71,20 +71,20 @@
     _fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"]);
     _accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
 
-//    NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
-//    if (key) {
-//        User *user = [[User alloc] initWithDictionary:@{@"key": key}];
-//        [Profile setUser:user];
-//        [self loadMainViewController];
-//    }
-//    else {
+    NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
+    if (key) {
+        User *user = [[User alloc] initWithDictionary:@{@"key": key}];
+        [Profile setUser:user];
+        [self loadMainViewController];
+    }
+    else {
         if ([_fbID isEqualToString:@""] || [_accessToken isEqualToString:@""]) {
             [self fetchTokensFromFacebook];
         }
         else {
             [self loginUserAsynchronous];
         }
-//    }   
+    }   
 }
 
 - (void) fetchTokensFromFacebook {
