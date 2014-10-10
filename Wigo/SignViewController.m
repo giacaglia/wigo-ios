@@ -71,12 +71,20 @@
     _fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"]);
     _accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
 
-    if ([_fbID isEqualToString:@""] || [_accessToken isEqualToString:@""]) {
-        [self fetchTokensFromFacebook];
-    }
-    else {
-        [self loginUserAsynchronous];
-    }
+//    NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
+//    if (key) {
+//        User *user = [[User alloc] initWithDictionary:@{@"key": key}];
+//        [Profile setUser:user];
+//        [self loadMainViewController];
+//    }
+//    else {
+        if ([_fbID isEqualToString:@""] || [_accessToken isEqualToString:@""]) {
+            [self fetchTokensFromFacebook];
+        }
+        else {
+            [self loginUserAsynchronous];
+        }
+//    }   
 }
 
 - (void) fetchTokensFromFacebook {
@@ -375,17 +383,21 @@
                         [self.navigationController pushViewController:self.lockScreenViewController animated:NO];
                     }
                     else {
-                        if ([[[Profile user] numEvents] intValue] >= 3) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabs" object:self];
-                        }
-                        [self dismissViewControllerAnimated:YES  completion:nil];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+                        [self loadMainViewController];
                     }
 
                 }
             }
         });
     }];
+}
+
+- (void)loadMainViewController {
+    if ([[[Profile user] numEvents] intValue] >= 3) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabs" object:self];
+    }
+    [self dismissViewControllerAnimated:YES  completion:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
 }
 
 

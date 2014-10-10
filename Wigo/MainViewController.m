@@ -208,10 +208,24 @@ UILabel *redDotLabel;
 }
 
 - (void) fetchUserInfo {
-    _fetchingUserInfo = YES;
-    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if ([[jsonResponse allKeys] containsObject:@"status"]) {
-            if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+    if ([[Profile user] key] ){
+        _fetchingUserInfo = YES;
+        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                    User *user = [[User alloc] initWithDictionary:jsonResponse];
+                    if ([user key]) {
+                        User *profileUser = [Profile user];
+                        [profileUser setIsGoingOut:[user isGoingOut]];
+                        dispatch_async(dispatch_get_main_queue(), ^(void){
+                            _fetchingUserInfo = NO;
+                            [self updateTitleView];
+                            [self fetchedMyInfoOrPeoplesInfo];
+                        });
+                    }
+                }
+            }
+            else {
                 User *user = [[User alloc] initWithDictionary:jsonResponse];
                 if ([user key]) {
                     User *profileUser = [Profile user];
@@ -221,23 +235,11 @@ UILabel *redDotLabel;
                         [self updateTitleView];
                         [self fetchedMyInfoOrPeoplesInfo];
                     });
+                    
                 }
             }
-        }
-        else {
-            User *user = [[User alloc] initWithDictionary:jsonResponse];
-            if ([user key]) {
-                User *profileUser = [Profile user];
-                [profileUser setIsGoingOut:[user isGoingOut]];
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    _fetchingUserInfo = NO;
-                    [self updateTitleView];
-                    [self fetchedMyInfoOrPeoplesInfo];
-                });
-
-            }
-        }
-    }];
+        }];
+    }
 }
 
 - (void)fetchFirstPageFollowing {

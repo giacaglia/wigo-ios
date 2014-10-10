@@ -34,6 +34,10 @@ static BOOL localyticsEnabled;
         user = newUser;
         if ([oldUser key]) {
             [user setKey:[oldUser key]];
+            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"key"]) {
+                [[NSUserDefaults standardUserDefaults] setObject:[oldUser key] forKey: @"key"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
         }
         [newUser updateUserAnalytics];
     }

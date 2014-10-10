@@ -409,7 +409,6 @@ UIButton *tapButton;
     _bioLabel.text = [NSString stringWithFormat:@"        %@" , [self.user bioString]];
     [_bioLabel sizeToFit];
     _bioLabel.hidden = NO;
-
 }
 
 - (void) addBlurredImageToImageView:(UIImageView *)imageView forIndex:(int)i {
