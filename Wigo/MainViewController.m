@@ -548,7 +548,6 @@ UILabel *redDotLabel;
 
 - (void) showTapButtons {
     if ([[Profile user] isGoingOut]) {
-        
         for (int i = [self getTapInitialPosition]; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
             User *user = [self userForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             UIImageViewShake *tappedImageView =  [user objectForKey:@"tappedImageView"];
@@ -1058,9 +1057,10 @@ UILabel *redDotLabel;
     NSMutableArray *tapButtonArray = [[NSMutableArray alloc] initWithCapacity:0];
     for (int i = 0; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
         User *user = [self userForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-        if (![user isEqualToUser:[Profile user]]) {
+        if (user && ![user isEqualToUser:[Profile user]]) {
             UIImageViewShake *tappedImageView = [user objectForKey:@"tappedImageView"];
-            if (tappedImageView != nil) {
+            if (tappedImageView) {
+                tappedImageView.hidden = YES;
                 [tapArray addObject:tappedImageView];
                 UIButton *tapButton = [user objectForKey:@"tapButton"];
                 [tapButtonArray addObject:tapButton];
@@ -1071,7 +1071,8 @@ UILabel *redDotLabel;
     for (int i = 0; i < [[_notGoingOutParty getObjectArray] count]; i++) {
         User *user = [self userForIndexPath:[NSIndexPath indexPathForRow:i inSection:1]];
         UIImageViewShake *tappedImageView =  [user objectForKey:@"tappedImageView"];
-        if (tappedImageView != nil) {
+        if (tappedImageView) {
+            tappedImageView.hidden = YES;
             [tapArray addObject:tappedImageView];
             UIButton *tapButton = [user objectForKey:@"tapButton"];
             [tapButtonArray addObject:tapButton];
@@ -1079,13 +1080,12 @@ UILabel *redDotLabel;
     }
     
     for (UIImageViewShake *tappedImageView in tapArray) {
+        tappedImageView.hidden = YES;
         CGRect previousFrame = tappedImageView.frame;
         [tapFrameArray addObject:[NSValue valueWithCGRect:previousFrame]];
         CGPoint centerFrame = [self.view convertPoint:self.view.center toView:tappedImageView.superview];
         tappedImageView.center = centerFrame;
-        tappedImageView.hidden = YES;
     }
-
 
     [UIView animateWithDuration:0.3
     animations:^{

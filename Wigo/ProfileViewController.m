@@ -395,7 +395,10 @@ UIButton *tapButton;
         NSDictionary *area = [[self.user imagesArea] objectAtIndex:i];
 
         __weak UIImageView *weakProfileImgView = profileImgView;
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        [activityIndicator startAnimating];
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] imageArea:area completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            [activityIndicator stopAnimating];
             [self addBlurredImageToImageView:weakProfileImgView forIndex:i];
         }];
         [_scrollView addSubview:profileImgView];
