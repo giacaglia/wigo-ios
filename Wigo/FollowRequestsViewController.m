@@ -246,17 +246,17 @@
     labelName.textAlignment = NSTextAlignmentLeft;
     [notificationButton addSubview:labelName];
     
-    UIButton *acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 86, 27 - 13, 20, 20)];
+    UIButton *acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 86, 27 - 13, 30, 30)];
     UIImageView *acceptImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"acceptFollowRequest"]];
-    acceptImageView.frame = CGRectMake(0, 0, 24, 24);
+    acceptImageView.frame = CGRectMake(0, 0, 30, 30);
     [acceptButton addSubview:acceptImageView];
     acceptButton.tag = [indexPath row];
     [acceptButton addTarget:self action:@selector(acceptUser:) forControlEvents:UIControlEventTouchUpInside];
     [cell.contentView addSubview:acceptButton];
     
-    UIButton *rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 43 , 27 - 13, 20, 20)];
+    UIButton *rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 43 , 27 - 13, 30, 30)];
     UIImageView *rejectImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rejectFollowRequest"]];
-    rejectImageView.frame = CGRectMake(0, 0, 24, 24);
+    rejectImageView.frame = CGRectMake(0, 0, 30, 30);
     [rejectButton addSubview:rejectImageView];
     rejectButton.tag = [indexPath row];
     [rejectButton addTarget:self action:@selector(rejectUser:) forControlEvents:UIControlEventTouchUpInside];
