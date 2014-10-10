@@ -299,11 +299,17 @@ BOOL fetching;
 - (UIView *)cellOfUser:(User *)user atXPosition:(int)xPosition {
     UIView *cellOfUser = [[UIView alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 175)];
     
+    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
-    [cellOfUser addSubview:profileImageView];
+    [profileButton addSubview:profileImageView];
+    profileButton.tag = (int)((xPosition - 10)/130);
+    if (![user isEqualToUser:[Profile user]]) {
+        [profileButton addTarget:self action:@selector(suggestedProfileSegue:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    [cellOfUser addSubview:profileButton];
     
     UILabel *nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 110 - 25, 110, 25)];
     nameOfPersonLabel.textColor = [UIColor whiteColor];
@@ -314,7 +320,6 @@ BOOL fetching;
     [cellOfUser addSubview:nameOfPersonLabel];
     
     if (![user isEqualToUser:[Profile user]]) {
-
         UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(30, 120, 49, 30)];
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = -100;
@@ -364,6 +369,21 @@ BOOL fetching;
         [cellOfUser addSubview:dateJoined];
     }
     return cellOfUser;
+}
+
+- (void)suggestedProfileSegue:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = buttonSender.tag;
+    User *user;
+    int sizeOfArray = (int)[[_suggestionsParty getObjectArray] count];
+    if (sizeOfArray > 0 && sizeOfArray > tag)
+        user = [[_suggestionsParty getObjectArray] objectAtIndex:tag];
+    if (user) {
+        didProfileSegue = YES;
+        userInt = tag;
+        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:self.profileViewController animated:YES];
+    }
 }
 
 

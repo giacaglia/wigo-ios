@@ -394,11 +394,16 @@ UIButton *tapButton;
 
         NSDictionary *area = [[self.user imagesArea] objectAtIndex:i];
 
+
+//        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+//        spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+//        spinner.center = profileImgView.center;
+//        [profileImgView addSubview:spinner];
+//        [spinner startAnimating];
+//        __weak UIActivityIndicatorView *weakSpinner = spinner;
         __weak UIImageView *weakProfileImgView = profileImgView;
-        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        [activityIndicator startAnimating];
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] imageArea:area completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            [activityIndicator stopAnimating];
+//            [weakSpinner stopAnimating];
             [self addBlurredImageToImageView:weakProfileImgView forIndex:i];
         }];
         [_scrollView addSubview:profileImgView];
@@ -409,6 +414,7 @@ UIButton *tapButton;
     _bioLabel.text = [NSString stringWithFormat:@"        %@" , [self.user bioString]];
     [_bioLabel sizeToFit];
     _bioLabel.hidden = NO;
+
 }
 
 - (void) addBlurredImageToImageView:(UIImageView *)imageView forIndex:(int)i {
