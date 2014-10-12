@@ -17,20 +17,10 @@
 #import "PopViewController.h"
 #import "AppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
+#import "CSStickyHeaderFlowLayout.h"
 
 @interface MainViewController ()
 
-// Bar at top
-//@property UIView *barAtTopView;
-//@property BOOL goingOutIsAttachedToScrollView;
-//@property CGPoint barAtTopPoint;
-
-//Not going out View
-//@property UIView *notGoingOutView;
-//@property BOOL isFirstTimeNotGoingOutIsAttachedToScrollView;
-//@property BOOL notGoingOutIsAttachedToScrollView;
-@property CGPoint notGoingOutStartingPoint;
-@property CGPoint scrollViewPointWhenDeatached;
 
 // Who and Where Buttons properties
 @property UIImageView *whoImageView;
@@ -112,9 +102,8 @@ UILabel *redDotLabel;
     [FBAppEvents logEvent:FBAppEventNameActivatedApp];
     [self initializeFlashScreen];
     _spinnerAtCenter = YES;
-//    _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
     
-    [self initializeWhoView];
+    [self initializeCollectionView];
     [self initializeNotificationObservers];
 }
 
@@ -244,7 +233,6 @@ UILabel *redDotLabel;
 - (void)fetchFirstPageFollowing {
     if (!_fetchingFirstPage) {
         _fetchingFirstPage = YES;
-//        _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
         _page = @1;
         [self fetchFollowing];
     }
@@ -264,8 +252,6 @@ UILabel *redDotLabel;
         else {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if ([_page isEqualToNumber:@1]) {
-//                    _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
-//                    _notGoingOutView.hidden = YES;
                     _followingAcceptedParty = [[Party alloc] initWithObjectType:USER_TYPE];
                     _whoIsGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
                     _notGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
@@ -291,7 +277,6 @@ UILabel *redDotLabel;
                 _page = @([_page intValue] + 1);
                 [_collectionView reloadData];
                 if ([_page isEqualToNumber:@2]) _fetchingFirstPage = NO;
-//                [self.view bringSubviewToFront:_barAtTopView];
                 [self fetchedMyInfoOrPeoplesInfo];
             });
         }
@@ -470,47 +455,6 @@ UILabel *redDotLabel;
     
 }
 
-- (void)initializeWhoView {
-//    [self initializeBarAtTopWithText:@"GOING OUT"];
-//    [self initializeNotGoingOutBar];
-    [self initializeCollectionView];
-}
-
-//- (void) initializeBarAtTopWithText:(NSString *)textAtTop {
-//    if (!_barAtTopView) {
-//        _barAtTopView = [[UIView alloc] init];
-//        _barAtTopView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
-//        UILabel *barAtTopLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
-//        barAtTopLabel.text = textAtTop;
-//        barAtTopLabel.textAlignment = NSTextAlignmentLeft;
-//        UIFont *font = [FontProperties scLightFont:15.0f];
-//        barAtTopLabel.font = font;
-//        [_barAtTopView addSubview:barAtTopLabel];
-//    }
-//    
-//    _barAtTopView.frame = CGRectMake(0, 64, self.view.frame.size.width, 30);
-//    [self.view addSubview:_barAtTopView];
-//    [self.view bringSubviewToFront:_barAtTopView];
-//    _barAtTopPoint = _barAtTopView.frame.origin;
-//    _goingOutIsAttachedToScrollView = NO;
-//}
-//
-//- (void) initializeNotGoingOutBar {
-//    if (!_notGoingOutView) {
-//        _notGoingOutView = [[UIView alloc] init];
-//        _notGoingOutView.backgroundColor = RGBAlpha(255, 255, 255, 0.95f);
-//        _notGoingOutView.hidden = YES;
-//        [self.view bringSubviewToFront:_notGoingOutView];
-//        
-//        UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 8, 200, 15)];
-//        goingOutLabel.text = @"NOT GOING OUT YET";
-//        goingOutLabel.textAlignment = NSTextAlignmentLeft;
-//        goingOutLabel.font = [FontProperties scLightFont:15.0f];
-//        [_notGoingOutView addSubview:goingOutLabel];
-//    }
-//    
-//    _notGoingOutIsAttachedToScrollView = YES;
-//}
 
 
 - (void) initializeTabBar {
@@ -807,11 +751,24 @@ UILabel *redDotLabel;
 
 - (void) initializeCollectionView {
     self.automaticallyAdjustsScrollViewInsets = NO;
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+    CSStickyHeaderFlowLayout *layout = [[CSStickyHeaderFlowLayout alloc] init];
+    if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
+        layout.parallaxHeaderReferenceSize = CGSizeMake(320, 44);
+        
+        // Setting the minimum size equal to the reference size results
+        // in disabled parallax effect and pushes up while scrolls
+        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 44);
+    }
+
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = 4;
     layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 30);
+//    [_collectionView registerNib:[UINib nibWithNibName:@"CSSearchBarHeader" bundle:nil]
+//          forSupplementaryViewOfKind:CSStickyHeaderParallaxHeader
+//                 withReuseIdentifier:@"header"];
+//    _collectionView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49);
     _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49) collectionViewLayout:layout];
+    [_collectionView registerNib:[UINib nibWithNibName:@"CSSearchBarHeader" bundle:nil] forSupplementaryViewOfKind:CSStickyHeaderParallaxHeader withReuseIdentifier:@"header"];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     _collectionView.alwaysBounceVertical = YES;
@@ -950,49 +907,32 @@ UILabel *redDotLabel;
     else return CGSizeMake(collectionView.bounds.size.width, 10);
 }
 
-//- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-//{
-//    UICollectionReusableView *reusableView = nil;
-//    
-//    if (kind == UICollectionElementKindSectionHeader) {
-//        reusableView = [_collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier forIndexPath:indexPath];
-//        [[reusableView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-//        if ([indexPath section] == 0) {
-//            UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, self.view.frame.size.width, 30)];
-//            goingOutLabel.text = @"GOING OUT";
-//            goingOutLabel.textAlignment = NSTextAlignmentLeft;
-//            [reusableView addSubview:goingOutLabel];
-//            return reusableView;
-//        }
-//        else {
-//            UILabel *notGoingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, self.view.frame.size.width, 30)];
-//            notGoingOutLabel.text = @"NOT GOING OUT YET";
-//            notGoingOutLabel.textAlignment = NSTextAlignmentLeft;
-//            [reusableView addSubview:notGoingOutLabel];
-//            return reusableView;
-////            _notGoingOutView.hidden = NO;
-////            if ([[_notGoingOutParty getObjectArray] count] == 0) {
-////                if (!_isFirstTimeNotGoingOutIsAttachedToScrollView) _isFirstTimeNotGoingOutIsAttachedToScrollView = YES;
-////                    _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, self.view.frame.size.height, reusableView.frame.size.width, 30);
-////                    [_collectionView addSubview:_notGoingOutView];
-////                    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
-////            }
-////            else {
-////                if (_isFirstTimeNotGoingOutIsAttachedToScrollView) {
-////                    _isFirstTimeNotGoingOutIsAttachedToScrollView = NO;
-////                    _notGoingOutView.frame = CGRectMake(reusableView.frame.origin.x, reusableView.frame.origin.y + 30, reusableView.frame.size.width, 30);
-////                    [_collectionView addSubview:_notGoingOutView];
-////                    _notGoingOutStartingPoint = _notGoingOutView.frame.origin;
-////                }
-////            }
-//            
-//        }
-//        return reusableView;
-//
-//    }
-//    
-//    return reusableView;
-//}
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+//    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+//        
+//        
+//        UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+//                                                          withReuseIdentifier:headerCellIdentifier
+//                                                                 forIndexPath:indexPath];
+//        
+//        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
+//        label.text = @"GOING OUT";
+//        [cell addSubview:label];
+//        
+//        return cell;
+//    } else
+if ([kind isEqualToString:CSStickyHeaderParallaxHeader]) {
+        UICollectionReusableView *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                            withReuseIdentifier:@"header"
+                                                                                   forIndexPath:indexPath];
+        
+        return cell;
+    }
+    NSLog(@"here");
+    return nil;
+}
+
+
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
@@ -1012,59 +952,6 @@ UILabel *redDotLabel;
 {
     return 100;
 }
-
-//- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-//    CGPoint notGoingOutPoint = [_notGoingOutView.superview convertPoint:_notGoingOutView.frame.origin toView:nil];
-//    
-//    // Going Out Label
-//    if (_goingOutIsAttachedToScrollView) {
-//        if (_collectionView.contentOffset.y > 0) {
-//            _goingOutLabelOnTopOfNotGoingOutLabel.hidden = YES;
-//            [_barAtTopView removeFromSuperview];
-//            _barAtTopView.frame = CGRectMake(0, 64, self.view.frame.size.width, 30);
-//            [self.view addSubview:_barAtTopView];
-//            [self.view bringSubviewToFront:_barAtTopView];
-//            _goingOutIsAttachedToScrollView = NO;
-//        }
-//    }
-//    if (!_goingOutIsAttachedToScrollView) {
-//        if (notGoingOutPoint.y <= 64 + 30) { // add to the scroll view when
-//            _goingOutLabelOnTopOfNotGoingOutLabel.hidden = NO;
-//            [_barAtTopView removeFromSuperview];
-//            _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
-//            [_collectionView addSubview:_barAtTopView];
-//            _goingOutIsAttachedToScrollView = YES;
-//        }
-//        if ( _collectionView.contentOffset.y < 0) {
-//            _goingOutLabelOnTopOfNotGoingOutLabel.hidden = YES;
-//            [_barAtTopView removeFromSuperview];
-//            _barAtTopView.frame = CGRectMake(0, 0, self.view.frame.size.width, 30);
-//            [_collectionView addSubview:_barAtTopView];
-//            _goingOutIsAttachedToScrollView = YES;
-//        }
-//    }
-//    
-//    // Not Going out label
-//    if (_notGoingOutIsAttachedToScrollView) {
-//        if (notGoingOutPoint.y <= 64) {
-//            [_notGoingOutView removeFromSuperview];
-//            _notGoingOutView.frame = CGRectMake(0, 64, self.view.frame.size.width, 30);
-//            [self.view addSubview:_notGoingOutView];
-//            _scrollViewPointWhenDeatached = _collectionView.contentOffset;
-//            _notGoingOutIsAttachedToScrollView = NO;
-//        }
-//    }
-//    if (!_notGoingOutIsAttachedToScrollView) {
-//        if (_collectionView.contentOffset.y < _scrollViewPointWhenDeatached.y) {
-//            [_notGoingOutView removeFromSuperview];
-//            _notGoingOutView.frame = CGRectMake(0, _notGoingOutStartingPoint.y, self.view.frame.size.width, 30);
-//            [_collectionView addSubview:_notGoingOutView];
-//            _notGoingOutIsAttachedToScrollView = YES;
-//        }
-//    }
-//}
-
-
 
 #pragma mark - Animation
 

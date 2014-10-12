@@ -248,6 +248,10 @@
 		E9E6A569199917BE003B590C /* OnboardFollowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E6A567199917BE003B590C /* OnboardFollowViewController.m */; };
 		E9E6A56E19994B41003B590C /* glowing.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9E6A56D19994B41003B590C /* glowing.gif */; };
 		E9E6A56F19994B41003B590C /* glowing.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9E6A56D19994B41003B590C /* glowing.gif */; };
+		E9EA951819E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */; };
+		E9EA951919E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */; };
+		E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */; };
+		E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */; };
 		E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
 		E9F7995219D4C727001D5BFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A695C619B0C7840071067B /* CoreData.framework */; };
@@ -480,6 +484,10 @@
 		E9E6A566199917BE003B590C /* OnboardFollowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardFollowViewController.h; sourceTree = "<group>"; };
 		E9E6A567199917BE003B590C /* OnboardFollowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardFollowViewController.m; sourceTree = "<group>"; };
 		E9E6A56D19994B41003B590C /* glowing.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = glowing.gif; sourceTree = "<group>"; };
+		E9EA951419E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSStickyHeaderFlowLayout.h; sourceTree = "<group>"; };
+		E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSStickyHeaderFlowLayout.m; sourceTree = "<group>"; };
+		E9EA951619E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSStickyHeaderFlowLayoutAttributes.h; sourceTree = "<group>"; };
+		E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSStickyHeaderFlowLayoutAttributes.m; sourceTree = "<group>"; };
 		E9ECFF7F196D917F00384252 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
 		E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpViewController.m; sourceTree = "<group>"; };
@@ -776,6 +784,7 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E9EA951319E9F83C003C79F0 /* StickyHeader */,
 				E9F7994719D4C633001D5BFC /* GoogleAnalytics */,
 				E96E0C1519B6171D001E6E37 /* GKImagePicker */,
 				E9CD537F1993C29800206B75 /* FLAnimatedImage */,
@@ -1068,6 +1077,17 @@
 			path = CHGifRefreshControl;
 			sourceTree = "<group>";
 		};
+		E9EA951319E9F83C003C79F0 /* StickyHeader */ = {
+			isa = PBXGroup;
+			children = (
+				E9EA951419E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.h */,
+				E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */,
+				E9EA951619E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.h */,
+				E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */,
+			);
+			name = StickyHeader;
+			sourceTree = "<group>";
+		};
 		E9F7994719D4C633001D5BFC /* GoogleAnalytics */ = {
 			isa = PBXGroup;
 			children = (
@@ -1324,6 +1344,7 @@
 				C12A110D19787BE700D53B1C /* UIImageCrop.m in Sources */,
 				E96F07C019BA654600E858D7 /* GKImageCropOverlayView.m in Sources */,
 				C12A110E19787BE700D53B1C /* UIScrollView+GifPullToRefresh.m in Sources */,
+				E9EA951919E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */,
 				E9E6A569199917BE003B590C /* OnboardFollowViewController.m in Sources */,
 				E9CD53851993C29800206B75 /* FLAnimatedImage.m in Sources */,
 				E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */,
@@ -1367,6 +1388,7 @@
 				C12A112719787BE700D53B1C /* ProfileViewController.m in Sources */,
 				C12A112819787BE700D53B1C /* SDImageCache.m in Sources */,
 				C12A112919787BE700D53B1C /* UIButtonAligned.m in Sources */,
+				E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
 				C12A112A19787BE700D53B1C /* Event.m in Sources */,
 				C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */,
 				C12A112C19787BE700D53B1C /* Query.m in Sources */,
@@ -1411,6 +1433,7 @@
 				E9DBB050197813F900DDACDE /* UIScrollView+GifPullToRefresh.m in Sources */,
 				E96F07BF19BA654600E858D7 /* GKImageCropOverlayView.m in Sources */,
 				E96EF676197DC94100F88A6D /* FollowRequestsViewController.m in Sources */,
+				E9EA951819E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */,
 				E9E6A568199917BE003B590C /* OnboardFollowViewController.m in Sources */,
 				E9CD53841993C29800206B75 /* FLAnimatedImage.m in Sources */,
 				E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */,
@@ -1454,6 +1477,7 @@
 				E900C2B71961EADE00A01F50 /* SDImageCache.m in Sources */,
 				E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */,
 				E95DC78019538A270012AA20 /* Event.m in Sources */,
+				E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
 				E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */,
 				E9681CB51950AA3B00182E0E /* Query.m in Sources */,
 				E9A31E641982B965008A711B /* WigoSearchBarDelegate.m in Sources */,
