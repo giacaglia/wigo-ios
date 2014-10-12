@@ -34,9 +34,6 @@
 @property Party *notGoingOutParty;
 
 @property NSNumber *page;
-@property UILabel *goingOutLabel;
-@property UILabel *goingOutLabelOnTopOfNotGoingOutLabel;
-@property UILabel *notGoingOutLabel;
 @property BOOL spinnerAtCenter;
 @property BOOL fetchingFirstPage;
 @property BOOL fetchingUserInfo;
@@ -607,7 +604,7 @@ UILabel *redDotLabel;
         [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.titleView = goOutButton;
     }
-    [self updateUIShowingMyselfGoingOut];
+//    [self updateUIShowingMyselfGoingOut];
 }
 
 
@@ -908,24 +905,26 @@ UILabel *redDotLabel;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-//    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
-//        
-//        
-//        UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
-//                                                          withReuseIdentifier:headerCellIdentifier
-//                                                                 forIndexPath:indexPath];
-//        
-//        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
-//        label.text = @"GOING OUT";
-//        [cell addSubview:label];
-//        
-//        return cell;
-//    } else
-if ([kind isEqualToString:CSStickyHeaderParallaxHeader]) {
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                          withReuseIdentifier:headerCellIdentifier
+                                                                 forIndexPath:indexPath];
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+        headerView.backgroundColor = [UIColor whiteColor];
+        [cell addSubview:headerView];
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, self.view.frame.size.width - 5, 30)];
+        label.backgroundColor = [UIColor whiteColor];
+        label.font = [FontProperties scLightFont:15.0f];
+        if ([indexPath section] == 0) label.text = @"GOING OUT";
+        else label.text = @"NOT GOING OUT";
+        [headerView addSubview:label];
+        
+        return cell;
+    } else if ([kind isEqualToString:CSStickyHeaderParallaxHeader]) {
         UICollectionReusableView *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                                             withReuseIdentifier:@"header"
                                                                                    forIndexPath:indexPath];
-        
         return cell;
     }
     NSLog(@"here");

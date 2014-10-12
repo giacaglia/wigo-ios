@@ -252,6 +252,8 @@
 		E9EA951919E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */; };
 		E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */; };
 		E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */; };
+		E9EA951D19EAE592003C79F0 /* CSSearchBarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9EA951C19EAE592003C79F0 /* CSSearchBarHeader.xib */; };
+		E9EA951E19EAE592003C79F0 /* CSSearchBarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9EA951C19EAE592003C79F0 /* CSSearchBarHeader.xib */; };
 		E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
 		E9F7995219D4C727001D5BFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A695C619B0C7840071067B /* CoreData.framework */; };
@@ -488,6 +490,7 @@
 		E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSStickyHeaderFlowLayout.m; sourceTree = "<group>"; };
 		E9EA951619E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSStickyHeaderFlowLayoutAttributes.h; sourceTree = "<group>"; };
 		E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSStickyHeaderFlowLayoutAttributes.m; sourceTree = "<group>"; };
+		E9EA951C19EAE592003C79F0 /* CSSearchBarHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CSSearchBarHeader.xib; sourceTree = "<group>"; };
 		E9ECFF7F196D917F00384252 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
 		E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpViewController.m; sourceTree = "<group>"; };
@@ -925,6 +928,7 @@
 		E9AAAFBD193D0E160069F700 /* 4MainViews */ = {
 			isa = PBXGroup;
 			children = (
+				E9EA951C19EAE592003C79F0 /* CSSearchBarHeader.xib */,
 				E921D66019239ED900361247 /* MainViewController.h */,
 				E921D66119239ED900361247 /* MainViewController.m */,
 				E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */,
@@ -1229,6 +1233,7 @@
 				E9CD538C1993C42600206B75 /* go-out.gif in Resources */,
 				E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
+				E9EA951E19EAE592003C79F0 /* CSSearchBarHeader.xib in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
 				E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */,
@@ -1251,6 +1256,7 @@
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
+				E9EA951D19EAE592003C79F0 /* CSSearchBarHeader.xib in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
