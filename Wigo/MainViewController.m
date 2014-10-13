@@ -795,7 +795,7 @@ UILabel *redDotLabel;
         if ([[_whoIsGoingOutParty getObjectArray] count] == 0) return cell;
         userArray = [_whoIsGoingOutParty getObjectArray];
         if ([[_notGoingOutParty getObjectArray] count] == 0 &&
-            [indexPath row] == [[_notGoingOutParty getObjectArray] count]) {
+            [indexPath row] == [[_whoIsGoingOutParty getObjectArray] count]) {
             [self fetchFollowing];
             return cell;
         }

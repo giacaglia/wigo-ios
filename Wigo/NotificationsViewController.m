@@ -191,6 +191,11 @@ BOOL didProfileSegue;
     // If the section is the first one
     if ([indexPath section] == 0 && [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
         return cell;
+        if ([[_expiredNotificationsParty getObjectArray] count] == 0 &&
+            [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
+            if ([_page intValue] < 5) [self fetchNotifications];
+            return cell;
+        }
     }
     
     // Else we are
