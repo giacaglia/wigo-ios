@@ -267,7 +267,7 @@ BOOL fetching;
         return secondPartSubview;
     }
     else {
-        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 130)];
+        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 90)];
         
         UILabel *lateToThePartyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, 21)];
         lateToThePartyLabel.text = @"Some of your friends are late to the party";
@@ -435,8 +435,8 @@ BOOL fetching;
             return 40;
         else {
             if ([_currentTab isEqualToNumber:@2]) return 220;
-            else if ([_currentTab isEqualToNumber:@4]) return 135;
-            else return 40;
+            else if ([_currentTab isEqualToNumber:@4]) return 95;
+            else return 0;
         }
     }
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;

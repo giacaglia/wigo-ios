@@ -806,7 +806,10 @@ UILabel *redDotLabel;
         }
     }
     else if ([indexPath section] == 1) {
-        if ([[_notGoingOutParty getObjectArray] count] == 0) return cell;
+        if ([[_notGoingOutParty getObjectArray] count] == 0) {
+            if ([_followingAcceptedParty hasNextPage]) [self fetchFollowing];
+            return cell;
+        }
         userArray = [_notGoingOutParty getObjectArray];
         if ([_followingAcceptedParty hasNextPage] && [[_notGoingOutParty getObjectArray] count] > 7) {
             if ([indexPath row] == [[_notGoingOutParty getObjectArray] count] - 7) {
