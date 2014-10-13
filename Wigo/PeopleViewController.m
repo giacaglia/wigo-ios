@@ -176,6 +176,7 @@ BOOL fetching;
     _tableViewOfPeople.delegate = self;
     _tableViewOfPeople.dataSource = self;
     _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    _tableViewOfPeople.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:_tableViewOfPeople];
 }
 
@@ -486,6 +487,10 @@ BOOL fetching;
         }
         return cell;
     }
+    
+    UIImageView *line = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS + 9 - 1, cell.contentView.frame.size.width, 1)];
+    line.backgroundColor = RGB(201, 202, 204);
+    [cell addSubview:line];
     
     int tag = (int)[indexPath row];
     
