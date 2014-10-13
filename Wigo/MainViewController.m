@@ -24,7 +24,6 @@
 
 // Who and Where Buttons properties
 @property UIImageView *whoImageView;
-
 // Saving Data
 @property int numberFetchedMyInfoAndEveryoneElse;
 @property NSMutableArray *userTappedIDArray;
@@ -35,14 +34,13 @@
 
 @property NSNumber *page;
 @property BOOL spinnerAtCenter;
-@property BOOL fetchingFirstPage;
 @property BOOL fetchingUserInfo;
 @property BOOL fetchingIsThereNewPerson;
 
 @property UIButtonAligned *rightButton;
-
 @end
 
+BOOL fetchingFollowing;
 BOOL didProfileSegue;
 int userInt;
 UILabel *redDotLabel;
@@ -109,7 +107,7 @@ UILabel *redDotLabel;
 - (void)loadViewAfterSigningUser {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
     [self fetchAppStart];
-    _fetchingFirstPage = NO;
+    fetchingFollowing = NO;
     _fetchingUserInfo = NO;
     _fetchingIsThereNewPerson = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
@@ -228,56 +226,57 @@ UILabel *redDotLabel;
 
 
 - (void)fetchFirstPageFollowing {
-    if (!_fetchingFirstPage) {
-        _fetchingFirstPage = YES;
-        _page = @1;
-        [self fetchFollowing];
+    _page = @1;
+    [self fetchFollowing];
+}
+
+- (void)fetchFollowing {
+    if (!fetchingFollowing) {
+        fetchingFollowing = YES;
+        NSString *queryString = [NSString stringWithFormat:@"users/?user=friends&ordering=is_goingout&page=%@", [_page stringValue]];
+        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            if (error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                   fetchingFollowing = NO;
+                });
+            }
+            else {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    if ([_page isEqualToNumber:@1]) {
+                        _followingAcceptedParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                        _whoIsGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                        _notGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                        if ([[Profile user] isGoingOut]) [_whoIsGoingOutParty addObject:[Profile user]];
+                    }
+                    NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+                    [_followingAcceptedParty addObjectsFromArray:arrayOfUsers];
+                    NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+                    [_followingAcceptedParty addMetaInfo:metaDictionary];
+                    [Profile setFollowingParty:_followingAcceptedParty];
+                    User *user;
+                    for (int i = 0; i < [arrayOfUsers count]; i++) {
+                        NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];
+                        user = [[User alloc] initWithDictionary:userDictionary];
+                        if ([user isGoingOut]) {
+                            [_whoIsGoingOutParty addObject:user];
+                        }
+                        else {
+                            [_notGoingOutParty addObject:user];
+                        }
+                    }
+                    if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
+                    _page = @([_page intValue] + 1);
+                    [_collectionView reloadData];
+                    fetchingFollowing = NO;
+                    [self fetchedMyInfoOrPeoplesInfo];
+                });
+            }
+        }];
     }
     else {
         if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
     }
-}
-
-- (void)fetchFollowing {
-    NSString *queryString = [NSString stringWithFormat:@"users/?user=friends&ordering=is_goingout&page=%@", [_page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if ([_page isEqualToNumber:@1]) _fetchingFirstPage = NO;
-            });
-        }
-        else {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if ([_page isEqualToNumber:@1]) {
-                    _followingAcceptedParty = [[Party alloc] initWithObjectType:USER_TYPE];
-                    _whoIsGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
-                    _notGoingOutParty = [[Party alloc] initWithObjectType:USER_TYPE];
-                    if ([[Profile user] isGoingOut]) [_whoIsGoingOutParty addObject:[Profile user]];
-                }
-                NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-                [_followingAcceptedParty addObjectsFromArray:arrayOfUsers];
-                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-                [_followingAcceptedParty addMetaInfo:metaDictionary];
-                [Profile setFollowingParty:_followingAcceptedParty];
-                User *user;
-                for (int i = 0; i < [arrayOfUsers count]; i++) {
-                    NSDictionary *userDictionary = [arrayOfUsers objectAtIndex:i];
-                    user = [[User alloc] initWithDictionary:userDictionary];
-                    if ([user isGoingOut]) {
-                        [_whoIsGoingOutParty addObject:user];
-                    }
-                    else {
-                        [_notGoingOutParty addObject:user];
-                    }
-                }
-                if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
-                _page = @([_page intValue] + 1);
-                [_collectionView reloadData];
-                if ([_page isEqualToNumber:@2]) _fetchingFirstPage = NO;
-                [self fetchedMyInfoOrPeoplesInfo];
-            });
-        }
-    }];
+   
 }
 
 
@@ -604,7 +603,7 @@ UILabel *redDotLabel;
         [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.titleView = goOutButton;
     }
-//    [self updateUIShowingMyselfGoingOut];
+    [self updateUIShowingMyselfGoingOut];
 }
 
 
@@ -885,8 +884,7 @@ UILabel *redDotLabel;
     return CGSizeMake(sizeOfEachImage, sizeOfEachImage);
 }
 
-//#pragma mark - Header for UICollectionView
-//
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
@@ -920,6 +918,7 @@ UILabel *redDotLabel;
                                                                                    forIndexPath:indexPath];
         return cell;
     }
+    NSLog(@"here");
     return nil;
 }
 
