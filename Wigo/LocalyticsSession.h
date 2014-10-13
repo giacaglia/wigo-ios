@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-#define CLIENT_VERSION              @"2.61.0"
+#define CLIENT_VERSION              @"2.71.0"
 #define MARKETING_PLATFORM
 
 /*!

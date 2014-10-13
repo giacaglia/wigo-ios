@@ -157,6 +157,10 @@
 		E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */; };
 		E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
+		E980C1FB19EC27E90088EBF4 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E980C1FA19EC27E90088EBF4 /* libLocalyticsAMP_x64.a */; };
+		E980C1FC19EC27E90088EBF4 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E980C1FA19EC27E90088EBF4 /* libLocalyticsAMP_x64.a */; };
+		E980C1FE19EC27F20088EBF4 /* iOSa_2.71.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E980C1FD19EC27F20088EBF4 /* iOSa_2.71.0.version */; };
+		E980C1FF19EC27F20088EBF4 /* iOSa_2.71.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E980C1FD19EC27F20088EBF4 /* iOSa_2.71.0.version */; };
 		E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
 		E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */; };
 		E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */; };
@@ -172,10 +176,6 @@
 		E998C26619CB80240012BF51 /* UIImageView+ImageArea.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */; };
 		E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E998C27319D068880012BF51 /* Whitney-Bold.ttf */; };
 		E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E998C27319D068880012BF51 /* Whitney-Bold.ttf */; };
-		E998C27A19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */; };
-		E998C27B19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */ = {isa = PBXBuildFile; fileRef = E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */; };
-		E998C27C19D0B8000012BF51 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */; };
-		E998C27D19D0B8000012BF51 /* libLocalyticsAMP_x64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */; };
 		E998C28019D1BF7D0012BF51 /* InviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C27F19D1BF7D0012BF51 /* InviteViewController.m */; };
 		E998C28119D1BF7D0012BF51 /* InviteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C27F19D1BF7D0012BF51 /* InviteViewController.m */; };
 		E998C28419D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C28319D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m */; };
@@ -386,6 +386,10 @@
 		E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoCustomCell.m; sourceTree = "<group>"; };
 		E9798F9819901EC100A97AE9 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		E97999D019759A2900C617E3 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
+		E980C1FA19EC27E90088EBF4 /* libLocalyticsAMP_x64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libLocalyticsAMP_x64.a; sourceTree = "<group>"; };
+		E980C1FD19EC27F20088EBF4 /* iOSa_2.71.0.version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = iOSa_2.71.0.version; sourceTree = "<group>"; };
+		E980C20019EC27FA0088EBF4 /* LocalyticsAmpSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsAmpSession.h; sourceTree = "<group>"; };
+		E980C20119EC27FA0088EBF4 /* LocalyticsSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsSession.h; sourceTree = "<group>"; };
 		E98C185B1924176500EF60F8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookAlbumTableViewController.h; sourceTree = "<group>"; };
 		E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookAlbumTableViewController.m; sourceTree = "<group>"; };
@@ -399,10 +403,6 @@
 		E998C26319CB80240012BF51 /* UIImageView+ImageArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+ImageArea.h"; sourceTree = "<group>"; };
 		E998C26419CB80240012BF51 /* UIImageView+ImageArea.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+ImageArea.m"; sourceTree = "<group>"; };
 		E998C27319D068880012BF51 /* Whitney-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Bold.ttf"; sourceTree = "<group>"; };
-		E998C27619D0B7F80012BF51 /* LocalyticsAmpSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsAmpSession.h; sourceTree = "<group>"; };
-		E998C27719D0B7F80012BF51 /* LocalyticsSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalyticsSession.h; sourceTree = "<group>"; };
-		E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = iOSa_2.61.0.version; sourceTree = "<group>"; };
-		E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libLocalyticsAMP_x64.a; sourceTree = "<group>"; };
 		E998C27E19D1BF7D0012BF51 /* InviteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteViewController.h; sourceTree = "<group>"; };
 		E998C27F19D1BF7D0012BF51 /* InviteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteViewController.m; sourceTree = "<group>"; };
 		E998C28219D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+NotOverwrite.h"; sourceTree = "<group>"; };
@@ -529,11 +529,11 @@
 				C12A114219787BE700D53B1C /* MobileCoreServices.framework in Frameworks */,
 				C12A114319787BE700D53B1C /* libz.dylib in Frameworks */,
 				C12A114419787BE700D53B1C /* CoreLocation.framework in Frameworks */,
+				E980C1FC19EC27E90088EBF4 /* libLocalyticsAMP_x64.a in Frameworks */,
 				C12A114619787BE700D53B1C /* CFNetwork.framework in Frameworks */,
 				C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */,
 				C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */,
 				C12A114919787BE700D53B1C /* CoreGraphics.framework in Frameworks */,
-				E998C27D19D0B8000012BF51 /* libLocalyticsAMP_x64.a in Frameworks */,
 				C12A114A19787BE700D53B1C /* UIKit.framework in Frameworks */,
 				C12A114B19787BE700D53B1C /* Foundation.framework in Frameworks */,
 				C12A114C19787BE700D53B1C /* FacebookSDK.framework in Frameworks */,
@@ -561,11 +561,11 @@
 				E9D906D719255DAB00E39FC8 /* MobileCoreServices.framework in Frameworks */,
 				E9D906D519255DA200E39FC8 /* libz.dylib in Frameworks */,
 				E9D906D319255D9A00E39FC8 /* CoreLocation.framework in Frameworks */,
+				E980C1FB19EC27E90088EBF4 /* libLocalyticsAMP_x64.a in Frameworks */,
 				E9D906D119255D8B00E39FC8 /* CFNetwork.framework in Frameworks */,
 				E9D906CF19255D8200E39FC8 /* AudioToolbox.framework in Frameworks */,
 				E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */,
 				E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */,
-				E998C27C19D0B8000012BF51 /* libLocalyticsAMP_x64.a in Frameworks */,
 				E921D61A1923967D00361247 /* UIKit.framework in Frameworks */,
 				E921D6161923967D00361247 /* Foundation.framework in Frameworks */,
 				E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */,
@@ -917,10 +917,10 @@
 		E9A31E561980AC4F008A711B /* Localytics */ = {
 			isa = PBXGroup;
 			children = (
-				E998C27819D0B8000012BF51 /* iOSa_2.61.0.version */,
-				E998C27919D0B8000012BF51 /* libLocalyticsAMP_x64.a */,
-				E998C27619D0B7F80012BF51 /* LocalyticsAmpSession.h */,
-				E998C27719D0B7F80012BF51 /* LocalyticsSession.h */,
+				E980C20019EC27FA0088EBF4 /* LocalyticsAmpSession.h */,
+				E980C20119EC27FA0088EBF4 /* LocalyticsSession.h */,
+				E980C1FD19EC27F20088EBF4 /* iOSa_2.71.0.version */,
+				E980C1FA19EC27E90088EBF4 /* libLocalyticsAMP_x64.a */,
 			);
 			name = Localytics;
 			sourceTree = "<group>";
@@ -1221,8 +1221,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E998C27B19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */,
 				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
+				E980C1FF19EC27F20088EBF4 /* iOSa_2.71.0.version in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
 				E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
@@ -1257,10 +1257,10 @@
 				E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
 				E9EA951D19EAE592003C79F0 /* CSSearchBarHeader.xib in Resources */,
+				E980C1FE19EC27F20088EBF4 /* iOSa_2.71.0.version in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
-				E998C27A19D0B8000012BF51 /* iOSa_2.61.0.version in Resources */,
 				C18AC292198451150056957B /* autorevision.sh in Resources */,
 				E921D6201923967D00361247 /* InfoPlist.strings in Resources */,
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,

@@ -918,7 +918,7 @@ UILabel *redDotLabel;
                                                                                    forIndexPath:indexPath];
         return cell;
     }
-    NSLog(@"here");
+//    NSLog(@"here");
     return nil;
 }
 
