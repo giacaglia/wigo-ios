@@ -489,7 +489,7 @@ BOOL fetching;
     }
     
     UIImageView *line = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS + 9 - 1, cell.contentView.frame.size.width, 1)];
-    line.backgroundColor = RGB(201, 202, 204);
+    line.backgroundColor = RGBAlpha(184, 184, 184, 0.3f);
     [cell addSubview:line];
     
     int tag = (int)[indexPath row];
