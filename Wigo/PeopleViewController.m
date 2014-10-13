@@ -776,7 +776,13 @@ BOOL fetching;
 - (void) fetchEveryone {
     if (!fetching) {
         fetching = YES;
-        NSString *queryString = [NSString stringWithFormat:@"users/?page=%@" ,[_page stringValue]];
+        NSString *queryString;
+        if ([_everyoneParty nextPageString]) {
+            queryString = [_everyoneParty nextPageString];
+        }
+        else {
+            queryString = [NSString stringWithFormat:@"users/?page=%@" ,[_page stringValue]];
+        }
         [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 fetching = NO;

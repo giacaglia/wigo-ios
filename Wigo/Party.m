@@ -200,7 +200,6 @@
 
 #pragma mark - Pagination Control
 
-// Pagination control
 - (BOOL)hasNextPage {
     if (self.metaDictionary) {
         if ([[self.metaDictionary allKeys] containsObject:@"has_next_page"]) {
@@ -217,7 +216,7 @@
             return [nextAPIString substringWithRange:NSMakeRange(5, nextAPIString.length - 5)];
         }
     }
-    return @"";
+    return nil;
 }
 
 - (void)addMetaInfo:(NSDictionary *)metaDictionary {

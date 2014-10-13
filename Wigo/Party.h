@@ -45,6 +45,7 @@ typedef enum
 - (void)insertObjectsFromArrayAtBeginning:(NSArray *)newObjectArray;
 // Pagination control
 - (BOOL)hasNextPage;
+- (NSString *)nextPageString;
 - (void)addMetaInfo:(NSDictionary *)metaDictionary;
 
 @end
