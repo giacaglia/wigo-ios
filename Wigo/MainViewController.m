@@ -275,6 +275,7 @@ UILabel *redDotLabel;
     }
     else {
         if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
+        fetchingFollowing = NO;
     }
    
 }
@@ -608,17 +609,21 @@ UILabel *redDotLabel;
 
 
 - (void)updateUIShowingMyselfGoingOut {
-    User *firstUser = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:0];
-    if ([[Profile user] isGoingOut]) {
-        if (![firstUser isEqualToUser:[Profile user]]) {
-            [_whoIsGoingOutParty insertObject:[Profile user] inObjectArrayAtIndex:0];
-            [_collectionView reloadData];
-        }
-    }
-    else {
-        if ([firstUser isEqualToUser:[Profile user]]) {
-            [_whoIsGoingOutParty removeObjectAtIndex:0];
-            [_collectionView reloadData];
+    if ([[_whoIsGoingOutParty getObjectArray] count] > 0) {
+        User *firstUser = [[_whoIsGoingOutParty getObjectArray] objectAtIndex:0];
+        if (firstUser && [Profile user]) {
+            if ([[Profile user] isGoingOut]) {
+                if (![firstUser isEqualToUser:[Profile user]]) {
+                    [_whoIsGoingOutParty insertObject:[Profile user] inObjectArrayAtIndex:0];
+                    [_collectionView reloadData];
+                }
+            }
+            else {
+                if ([firstUser isEqualToUser:[Profile user]]) {
+                    [_whoIsGoingOutParty removeObjectAtIndex:0];
+                    [_collectionView reloadData];
+                }
+            }
         }
     }
 }

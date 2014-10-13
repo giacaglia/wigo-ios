@@ -212,8 +212,6 @@ BOOL didProfileSegue;
             }
         }
     }
-  
-
     
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
     Notification *notification = [self getNotificationAtIndex:indexPath];

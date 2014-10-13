@@ -172,7 +172,7 @@ BOOL fetching;
 
 - (void)initializeTableOfPeople {
     self.automaticallyAdjustsScrollViewInsets = NO;
-    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 66, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     _tableViewOfPeople.delegate = self;
     _tableViewOfPeople.dataSource = self;
     _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -227,7 +227,7 @@ BOOL fetching;
 
 - (UIView *)initializeSecondPart {
     if ([_currentTab isEqualToNumber:@2]) {
-        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 59, self.view.frame.size.width, 292)];
+        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 200)];
         
         UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 0, self.view.frame.size.width - 14, 21)];
         contextLabel.text = @"New on WiGo";
@@ -266,7 +266,7 @@ BOOL fetching;
         return secondPartSubview;
     }
     else {
-        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 55, self.view.frame.size.width, 130)];
+        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 130)];
         
         UILabel *lateToThePartyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, 21)];
         lateToThePartyLabel.text = @"Some of your friends are late to the party";
@@ -429,23 +429,27 @@ BOOL fetching;
 #pragma mark - Table View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([_currentTab isEqualToNumber:@2]) {
-        if ([indexPath row] == 0) return 320;
-    }
-    else if ([_currentTab isEqualToNumber:@4]) {
-        if ([indexPath row] == 0) return 135;
-    }
-    else {
-        if ([indexPath row] == 0) return 40;
+    if ([indexPath section] == 0) {
+        if ([indexPath row] == 0)
+            return 40;
+        else {
+            if ([_currentTab isEqualToNumber:@2]) return 220;
+            else if ([_currentTab isEqualToNumber:@4]) return 135;
+            else return 40;
+        }
     }
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == 0) {
+        if (_isSearching) return 1;
+        else return 2;
+    }
     return [self numberOfRowsWithNoShare];
 }
 
@@ -469,19 +473,21 @@ BOOL fetching;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
-    if ([indexPath row] == 0) {
-        _searchBar.hidden = NO;
-        [cell.contentView addSubview:_searchBar];
-        if ([_currentTab isEqualToNumber:@2]) {
-            [cell.contentView addSubview:secondPartSubview];
+    if ([indexPath section] == 0) {
+        if ([indexPath row] == 0) {
+            _searchBar.hidden = NO;
+            [cell.contentView addSubview:_searchBar];
         }
-        else if ([_currentTab isEqualToNumber:@4]) {
-            [cell.contentView addSubview:secondPartSubview];
+        else {
+            if ([_currentTab isEqualToNumber:@2])
+                [cell.contentView addSubview:secondPartSubview];
+            else if ([_currentTab isEqualToNumber:@4])
+                [cell.contentView addSubview:secondPartSubview];
         }
         return cell;
-
     }
-    int tag = (int)[indexPath row] - 1;
+    
+    int tag = (int)[indexPath row];
     
     if ([[_contentParty getObjectArray] count] == 0) return cell;
     if ([[_contentParty getObjectArray] count] > 5) {
@@ -590,17 +596,6 @@ BOOL fetching;
     return cell;
 }
 
-//-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 50)];
-//    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 50)];
-//    [label setFont:[UIFont boldSystemFontOfSize:12]];
-//    NSString *string = @"lala";
-//    [label setText:string];
-//    [view addSubview:label];
-//    [view setBackgroundColor:[UIColor blackColor]];
-//    return view;
-//}
-
 - (void)loadNextPage {
     if ([_currentTab isEqualToNumber:@2]) {
         [self fetchEveryone];
@@ -615,7 +610,6 @@ BOOL fetching;
 
 
 - (void) followedPersonPressed:(id)sender {
-    //Get Index Path
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
     NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
     User *user = [self getUserAtIndex:(int)[indexPath row]];
@@ -722,7 +716,7 @@ BOOL fetching;
     User *user = [[User alloc] initWithDictionary:userInfo];
     if (user) {
         if (_isSearching) {
-            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:0];
+            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
             int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
             if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
                 [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
@@ -733,7 +727,7 @@ BOOL fetching;
             
         }
         else {
-            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:0];
+            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
             int sizeOfArray = (int)[[_contentParty getObjectArray] count];
             if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
                 [_contentParty replaceObjectAtIndex:userInt withObject:user];
@@ -978,7 +972,7 @@ BOOL fetching;
                               [_filteredContentParty addMetaInfo:metaDictionary];
                               dispatch_async(dispatch_get_main_queue(), ^(void) {
                                   _page = @([_page intValue] + 1);
-                                  [_tableViewOfPeople reloadData];
+                                  [self reloadTableExceptFirstRow];
                               });
                           }
        
@@ -986,13 +980,8 @@ BOOL fetching;
 }
 
 - (void)reloadTableExceptFirstRow {
-    NSMutableArray *allIndexes = [[NSMutableArray alloc] init];
-    for (int i = 1; i < [_tableViewOfPeople numberOfRowsInSection:0]; i++) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
-        [allIndexes addObject:indexPath];
-    }
     [_tableViewOfPeople beginUpdates];
-    [_tableViewOfPeople reloadRowsAtIndexPaths:[NSArray arrayWithArray:allIndexes] withRowAnimation:UITableViewRowAnimationNone];
+    [_tableViewOfPeople reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     [_tableViewOfPeople endUpdates];
 }
 
