@@ -44,6 +44,8 @@ BOOL fetchingFollowing;
 BOOL didProfileSegue;
 int userInt;
 UILabel *redDotLabel;
+NSString *goingOutString;
+NSString *notGoingOutString;
 
 @implementation MainViewController
 
@@ -78,6 +80,8 @@ UILabel *redDotLabel;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    goingOutString = [NSString new];
+    notGoingOutString = [NSString new];
     didProfileSegue = NO;
     fetchingFollowing = NO;
     userInt = -1;
@@ -233,7 +237,14 @@ UILabel *redDotLabel;
 - (void)fetchFollowing {
     if (!fetchingFollowing) {
         fetchingFollowing = YES;
-        NSString *queryString = [NSString stringWithFormat:@"users/?user=friends&ordering=is_goingout&page=%@", [_page stringValue]];
+        
+        NSString *queryString;
+        if (![_page isEqualToNumber:@1] && [_followingAcceptedParty nextPageString]) {
+            queryString = [_followingAcceptedParty nextPageString];
+        }
+        else {
+            queryString = [NSString stringWithFormat:@"users/?user=friends&ordering=is_goingout&page=%@", [_page stringValue]];
+        }
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -350,30 +361,9 @@ UILabel *redDotLabel;
         if ([[jsonResponse allKeys] containsObject:@"friends"]) {
             NSNumber *friendsGoingOut = [jsonResponse objectForKey:@"friends"];
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-//                for (UIView *subview in [_barAtTopView subviews]) {
-//                    if ([subview isKindOfClass:[UILabel class]]) {
-//                        NSString *newString = [NSString stringWithFormat:@"GOING OUT: %d", [friendsGoingOut intValue] + [self getTapInitialPosition]];
-//                        UILabel *label = (UILabel *)subview;
-//                        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:newString];
-//                        [attributedString addAttribute:NSFontAttributeName
-//                                     value:[FontProperties numericLightFont:15.0f]
-//                                     range:NSMakeRange(11, newString.length - 11)];
-//                        label.attributedText = attributedString;
-//                    }
-//                }
-//                for (UIView *subview in [_notGoingOutView subviews]) {
-//                    if ([subview isKindOfClass:[UILabel class]]) {
-//                        NSNumber *notGoingOutNumber = @([[[Profile user] numberOfFollowing] intValue] - [friendsGoingOut intValue]);
-//                        NSString *newString = [NSString stringWithFormat:@"NOT GOING OUT YET: %@", notGoingOutNumber];
-//                        UILabel *label = (UILabel *)subview;
-//                        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:newString];
-//                        [attributedString addAttribute:NSFontAttributeName
-//                                                 value:[FontProperties numericLightFont:15.0f]
-//                                                 range:NSMakeRange(19, [notGoingOutNumber stringValue].length)];
-//                        label.attributedText = attributedString;
-//                    }
-//                }
-                
+                goingOutString = [NSString stringWithFormat:@"GOING OUT: %d", [friendsGoingOut intValue] + [self getTapInitialPosition]];
+                NSNumber *notGoingOutNumber = @([[[Profile user] numberOfFollowing] intValue] - [friendsGoingOut intValue]);
+                notGoingOutString = [NSString stringWithFormat:@"NOT GOING OUT YET: %@", notGoingOutNumber];
             });
         }
     }];
@@ -918,8 +908,31 @@ UILabel *redDotLabel;
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, self.view.frame.size.width - 5, 30)];
         label.backgroundColor = [UIColor whiteColor];
         label.font = [FontProperties scLightFont:15.0f];
-        if ([indexPath section] == 0) label.text = @"GOING OUT";
-        else label.text = @"NOT GOING OUT";
+        NSString *newString;
+        if ([indexPath section] == 0) {
+            if (goingOutString.length > 0) {
+                newString = goingOutString;
+                NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:newString];
+                [attributedString addAttribute:NSFontAttributeName
+                                         value:[FontProperties numericLightFont:15.0f]
+                                         range:NSMakeRange(11, newString.length - 11)];
+                label.attributedText = attributedString;
+            }
+            else label.text = @"GOING OUT";
+           
+        }
+        else {
+            if (notGoingOutString.length > 0) {
+               newString = notGoingOutString;
+                NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:newString];
+                [attributedString addAttribute:NSFontAttributeName
+                                         value:[FontProperties numericLightFont:15.0f]
+                                         range:NSMakeRange(19, newString.length - 19)];
+                label.attributedText = attributedString;
+            }
+            else label.text = @"NOT GOING OUT YET";
+        }
+        
         [headerView addSubview:label];
         
         return cell;
@@ -939,7 +952,6 @@ UILabel *redDotLabel;
 
         return cell;
     }
-//    NSLog(@"here");
     return nil;
 }
 

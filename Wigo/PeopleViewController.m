@@ -777,7 +777,7 @@ BOOL fetching;
     if (!fetching) {
         fetching = YES;
         NSString *queryString;
-        if ([_everyoneParty nextPageString]) {
+        if (![_page isEqualToNumber:@1] && [_everyoneParty nextPageString]) {
             queryString = [_everyoneParty nextPageString];
         }
         else {
@@ -986,7 +986,7 @@ BOOL fetching;
                               [_filteredContentParty addMetaInfo:metaDictionary];
                               dispatch_async(dispatch_get_main_queue(), ^(void) {
                                   _page = @([_page intValue] + 1);
-                                  [_tableViewOfPeople reloadData];
+                                  [self reloadTableExceptFirstRow];
                               });
                           }
        
