@@ -209,6 +209,17 @@
     }
     return NO;
 }
+
+- (NSString *)nextPageString {
+    if (self.metaDictionary) {
+        if ([[self.metaDictionary allKeys] containsObject:@"next"]) {
+            NSString *nextAPIString = (NSString *)[self.metaDictionary objectForKey:@"next"];
+            return [nextAPIString substringWithRange:NSMakeRange(5, nextAPIString.length - 5)];
+        }
+    }
+    return @"";
+}
+
 - (void)addMetaInfo:(NSDictionary *)metaDictionary {
     self.metaDictionary = metaDictionary;
 }

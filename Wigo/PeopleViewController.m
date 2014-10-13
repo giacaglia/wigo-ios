@@ -402,8 +402,8 @@ BOOL fetching;
 
 #pragma mark - Filter handlers
 
-
 - (void)clearSearchBar {
+    NSLog(@"lala");
     [self.view endEditing:YES];
     _isSearching = NO;
     _searchBar.text = @"";
@@ -490,7 +490,7 @@ BOOL fetching;
     
     UIImageView *line = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS + 9 - 1, cell.contentView.frame.size.width, 1)];
     line.backgroundColor = RGBAlpha(184, 184, 184, 0.3f);
-    [cell addSubview:line];
+    [cell.contentView addSubview:line];
     
     int tag = (int)[indexPath row];
     
@@ -601,17 +601,10 @@ BOOL fetching;
     return cell;
 }
 
-- (void)loadNextPage {
-    if ([_currentTab isEqualToNumber:@2]) {
-        [self fetchEveryone];
-    }
-    else if ([_currentTab isEqualToNumber:@3]) {
-        [self fetchFollowers];
-    }
-    else if ([_currentTab isEqualToNumber:@4]) {
-        [self fetchFollowing];
-    }
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [_searchBar endEditing:YES];
 }
+
 
 
 - (void) followedPersonPressed:(id)sender {
@@ -746,6 +739,18 @@ BOOL fetching;
 }
 
 #pragma mark - Network functions
+
+- (void)loadNextPage {
+    if ([_currentTab isEqualToNumber:@2]) {
+        [self fetchEveryone];
+    }
+    else if ([_currentTab isEqualToNumber:@3]) {
+        [self fetchFollowers];
+    }
+    else if ([_currentTab isEqualToNumber:@4]) {
+        [self fetchFollowing];
+    }
+}
 
 - (void)fetchFirstPageSuggestions {
     _suggestionsParty = [[Party alloc] initWithObjectType:USER_TYPE];
@@ -884,46 +889,44 @@ BOOL fetching;
     _isSearching = YES;
 }
 
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    if (![searchBar.text isEqualToString:@""]) {
-        [UIView animateWithDuration:0.01 animations:^{
-            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
-        }  completion:^(BOOL finished){
-            _searchIconImageView.hidden = NO;
-        }];
-    }
-    else {
-        [UIView animateWithDuration:0.01 animations:^{
-            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
-        }  completion:^(BOOL finished){
-            _searchIconImageView.hidden = NO;
-        }];
-    }
-}
+//- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+//    if (![searchBar.text isEqualToString:@""]) {
+//        [UIView animateWithDuration:0.01 animations:^{
+//            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
+//        }  completion:^(BOOL finished){
+//            _searchIconImageView.hidden = NO;
+//        }];
+//    }
+//    else {
+//        [UIView animateWithDuration:0.01 animations:^{
+//            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
+//        }  completion:^(BOOL finished){
+//            _searchIconImageView.hidden = NO;
+//        }];
+//    }
+//}
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    [_filteredContentParty removeAllObjects];
-    
     if([searchText length] != 0) {
         _isSearching = YES;
         [self performBlock:^(void){[self searchTableList];}
-                afterDelay:0.25
+                afterDelay:0.3
      cancelPreviousRequest:YES];
     }
     else {
         _isSearching = NO;
     }
-    [_tableViewOfPeople reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [self performBlock:^(void){[self searchTableList];}
-            afterDelay:0.25
+            afterDelay:0.3
  cancelPreviousRequest:YES];
 }
 
 
 - (void)searchTableList {
+    NSLog(@"here");
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     _page = @1;
@@ -977,7 +980,7 @@ BOOL fetching;
                               [_filteredContentParty addMetaInfo:metaDictionary];
                               dispatch_async(dispatch_get_main_queue(), ^(void) {
                                   _page = @([_page intValue] + 1);
-                                  [self reloadTableExceptFirstRow];
+                                  [_tableViewOfPeople reloadData];
                               });
                           }
        
@@ -988,6 +991,7 @@ BOOL fetching;
     [_tableViewOfPeople beginUpdates];
     [_tableViewOfPeople reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
     [_tableViewOfPeople endUpdates];
+    [_searchBar becomeFirstResponder];
 }
 
 
