@@ -79,6 +79,7 @@ UILabel *redDotLabel;
 {
     [super viewDidLoad];
     didProfileSegue = NO;
+    fetchingFollowing = NO;
     userInt = -1;
     
     for (UIView *view in self.navigationController.navigationBar.subviews) {
@@ -107,7 +108,6 @@ UILabel *redDotLabel;
 - (void)loadViewAfterSigningUser {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
     [self fetchAppStart];
-    fetchingFollowing = NO;
     _fetchingUserInfo = NO;
     _fetchingIsThereNewPerson = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
@@ -237,7 +237,7 @@ UILabel *redDotLabel;
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             if (error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
-                   fetchingFollowing = NO;
+                    fetchingFollowing = NO;
                 });
             }
             else {
