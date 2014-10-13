@@ -750,8 +750,8 @@ UILabel *redDotLabel;
     self.automaticallyAdjustsScrollViewInsets = NO;
     CSStickyHeaderFlowLayout *layout = [[CSStickyHeaderFlowLayout alloc] init];
     if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
-        layout.parallaxHeaderReferenceSize = CGSizeMake(320, 20);
-        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 20);
+        layout.parallaxHeaderReferenceSize = CGSizeMake(320, 1);
+        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 1);
     }
 
     layout.minimumLineSpacing = 5;
@@ -892,7 +892,7 @@ UILabel *redDotLabel;
     if (section == 0) {
         return CGSizeMake(collectionView.bounds.size.width, 30);
     } else if (section == 1){
-        return CGSizeMake(collectionView.bounds.size.width, 5 + 26 + 30);
+        return CGSizeMake(collectionView.bounds.size.width, 30);
     }
     else return CGSizeMake(collectionView.bounds.size.width, 10);
 }
@@ -920,10 +920,8 @@ UILabel *redDotLabel;
                                                                                    forIndexPath:indexPath];
         return cell;
     }
-    NSLog(@"here");
     return nil;
 }
-
 
 #pragma mark - Animation
 
