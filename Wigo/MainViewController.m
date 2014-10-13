@@ -752,12 +752,12 @@ UILabel *redDotLabel;
         layout.parallaxHeaderReferenceSize = CGSizeMake(320, 1);
         layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 1);
     }
-
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = 4;
     layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 30);
     _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49) collectionViewLayout:layout];
-    [_collectionView registerNib:[UINib nibWithNibName:@"CSSearchBarHeader" bundle:nil] forSupplementaryViewOfKind:CSStickyHeaderParallaxHeader withReuseIdentifier:@"header"];
+    [_collectionView registerNib:[UINib nibWithNibName:@"Footer" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"footer"];
+    [_collectionView registerNib:[UINib nibWithNibName:@"LineHeader" bundle:nil] forSupplementaryViewOfKind:CSStickyHeaderParallaxHeader withReuseIdentifier:@"header"];
     _collectionView.dataSource = self;
     _collectionView.delegate = self;
     _collectionView.alwaysBounceVertical = YES;
@@ -884,6 +884,9 @@ UILabel *redDotLabel;
     return CGSizeMake(sizeOfEachImage, sizeOfEachImage);
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+    return CGSizeMake(self.view.frame.size.width, 56);
+}
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
@@ -916,6 +919,16 @@ UILabel *redDotLabel;
         UICollectionReusableView *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                                             withReuseIdentifier:@"header"
                                                                                    forIndexPath:indexPath];
+        return cell;
+    }
+    else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                        withReuseIdentifier:@"footer"
+                                                                               forIndexPath:indexPath];
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 56)];
+        headerView.backgroundColor = [UIColor whiteColor];
+        [cell addSubview:headerView];
+
         return cell;
     }
 //    NSLog(@"here");
