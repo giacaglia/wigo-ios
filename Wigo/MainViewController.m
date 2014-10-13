@@ -750,20 +750,13 @@ UILabel *redDotLabel;
     self.automaticallyAdjustsScrollViewInsets = NO;
     CSStickyHeaderFlowLayout *layout = [[CSStickyHeaderFlowLayout alloc] init];
     if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
-        layout.parallaxHeaderReferenceSize = CGSizeMake(320, 44);
-        
-        // Setting the minimum size equal to the reference size results
-        // in disabled parallax effect and pushes up while scrolls
-        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 44);
+        layout.parallaxHeaderReferenceSize = CGSizeMake(320, 20);
+        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 20);
     }
 
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = 4;
     layout.headerReferenceSize = CGSizeMake(self.view.frame.size.width, 30);
-//    [_collectionView registerNib:[UINib nibWithNibName:@"CSSearchBarHeader" bundle:nil]
-//          forSupplementaryViewOfKind:CSStickyHeaderParallaxHeader
-//                 withReuseIdentifier:@"header"];
-//    _collectionView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49);
     _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49) collectionViewLayout:layout];
     [_collectionView registerNib:[UINib nibWithNibName:@"CSSearchBarHeader" bundle:nil] forSupplementaryViewOfKind:CSStickyHeaderParallaxHeader withReuseIdentifier:@"header"];
     _collectionView.dataSource = self;
@@ -931,26 +924,6 @@ UILabel *redDotLabel;
     return nil;
 }
 
-
-
--(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 18)];
-    /* Create custom view to display section header... */
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 18)];
-    [label setFont:[UIFont boldSystemFontOfSize:12]];
-    NSString *string = @"Going out";
-    /* Section header is in 0th index... */
-    [label setText:string];
-    [view addSubview:label];
-    [view setBackgroundColor:[UIColor colorWithRed:166/255.0 green:177/255.0 blue:186/255.0 alpha:1.0]]; //your background color...
-    return view;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section;
-{
-    return 100;
-}
 
 #pragma mark - Animation
 
