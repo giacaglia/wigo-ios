@@ -15,7 +15,6 @@
 
 @interface PeopleViewController ()
 
-
 //Table View of people
 @property UITableView *tableViewOfPeople;
 
@@ -24,7 +23,7 @@
 @property Party *filteredContentParty;
 
 @property BOOL isSearching;
-@property  UISearchBar *searchBar;
+@property UISearchBar *searchBar;
 @property UIImageView *searchIconImageView;
 
 @property ProfileViewController *profileViewController;
@@ -77,7 +76,6 @@ BOOL fetching;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
 
-
     [self initializeSearchBar];
     [self initializeTableOfPeople];
 }
@@ -105,7 +103,7 @@ BOOL fetching;
 }
 
 - (void)initializeBackBarButton {
-    UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+    UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
     [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -130,6 +128,37 @@ BOOL fetching;
         UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
         self.navigationItem.rightBarButtonItem = profileBarButton;
     }
+    else {
+        UIButtonAligned *searchButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 21, 21) andType:@2];
+        [searchButton setBackgroundImage:[UIImage imageNamed:@"orangeSearchIcon"] forState:UIControlStateNormal];
+        [searchButton addTarget:self action:@selector(searchPressed)
+                forControlEvents:UIControlEventTouchUpInside];
+        [searchButton setShowsTouchWhenHighlighted:YES];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
+    }
+}
+
+- (void)searchPressed {
+    self.navigationItem.leftBarButtonItem = nil;
+    _searchBar.hidden = NO;
+    self.navigationItem.titleView = _searchBar;
+    [_searchBar becomeFirstResponder];
+    
+    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@2];
+    [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+    [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
+    cancelButton.titleLabel.font = [FontProperties getSubtitleFont];
+    [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
+    [barItem setCustomView:cancelButton];
+    self.navigationItem.rightBarButtonItem = barItem;
+}
+
+- (void)cancelPressed {
+    [self clearSearchBar];
+    [self initializeBackBarButton];
+    [self initializeRightBarButton];
+    [self loadTableView];
 }
 
 - (void) goBack {
@@ -190,9 +219,9 @@ BOOL fetching;
     _searchBar.tintColor = grayColor;
     _searchBar.placeholder = @"Search By Name";
     _searchBar.delegate = self;
-    _searchBar.layer.borderWidth = 0.5f;
-    _searchBar.layer.cornerRadius = 15.0f;
-    _searchBar.layer.borderColor = grayColor.CGColor;
+//    _searchBar.layer.borderWidth = 0.5f;
+//    _searchBar.layer.cornerRadius = 15.0f;
+//    _searchBar.layer.borderColor = grayColor.CGColor;
     _searchBar.hidden = YES;
     UITextField *searchField = [_searchBar valueForKey:@"_searchField"];
     [searchField setValue:grayColor forKeyPath:@"_placeholderLabel.textColor"];
@@ -203,7 +232,7 @@ BOOL fetching;
 
     // Add Custom Search Icon
     _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"graySearchIcon"]];
-    _searchIconImageView.frame = CGRectMake(76, 7, 14, 14);
+    _searchIconImageView.frame = CGRectMake(20, 14, 14, 14);
     [_searchBar addSubview:_searchIconImageView];
     
     // Remove Clear Button on the right
@@ -403,7 +432,6 @@ BOOL fetching;
 #pragma mark - Filter handlers
 
 - (void)clearSearchBar {
-    NSLog(@"lala");
     [self.view endEditing:YES];
     _isSearching = NO;
     _searchBar.text = @"";
@@ -411,6 +439,7 @@ BOOL fetching;
 }
 
 - (void)loadTableView {
+    self.navigationItem.titleView = nil;
     if ([_currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageSuggestions];
         self.title = [[Profile user] groupName];
@@ -423,21 +452,15 @@ BOOL fetching;
         [self fetchFirstPageFollowing];
         self.title = @"Following";
     }
-    _tableViewOfPeople.contentOffset = CGPointMake(0, 40);
 }
-
 
 #pragma mark - Table View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == 0) {
-        if ([indexPath row] == 0)
-            return 40;
-        else {
-            if ([_currentTab isEqualToNumber:@2]) return 220;
-            else if ([_currentTab isEqualToNumber:@4]) return 95;
-            else return 0;
-        }
+        if ([_currentTab isEqualToNumber:@2]) return 220;
+        else if ([_currentTab isEqualToNumber:@4]) return 95;
+        else return 0;
     }
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
 }
@@ -448,8 +471,8 @@ BOOL fetching;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        if (_isSearching) return 1;
-        else return 2;
+        if (_isSearching) return 0;
+        else return 1;
     }
     return [self numberOfRowsWithNoShare];
 }
@@ -475,16 +498,10 @@ BOOL fetching;
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
     if ([indexPath section] == 0) {
-        if ([indexPath row] == 0) {
-            _searchBar.hidden = NO;
-            [cell.contentView addSubview:_searchBar];
-        }
-        else {
-            if ([_currentTab isEqualToNumber:@2])
-                [cell.contentView addSubview:secondPartSubview];
-            else if ([_currentTab isEqualToNumber:@4])
-                [cell.contentView addSubview:secondPartSubview];
-        }
+        if ([_currentTab isEqualToNumber:@2])
+            [cell.contentView addSubview:secondPartSubview];
+        else if ([_currentTab isEqualToNumber:@4])
+            [cell.contentView addSubview:secondPartSubview];
         return cell;
     }
     
@@ -895,22 +912,22 @@ BOOL fetching;
     _isSearching = YES;
 }
 
-//- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-//    if (![searchBar.text isEqualToString:@""]) {
-//        [UIView animateWithDuration:0.01 animations:^{
-//            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
-//        }  completion:^(BOOL finished){
-//            _searchIconImageView.hidden = NO;
-//        }];
-//    }
-//    else {
-//        [UIView animateWithDuration:0.01 animations:^{
-//            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
-//        }  completion:^(BOOL finished){
-//            _searchIconImageView.hidden = NO;
-//        }];
-//    }
-//}
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    if (![searchBar.text isEqualToString:@""]) {
+        [UIView animateWithDuration:0.01 animations:^{
+            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
+        }  completion:^(BOOL finished){
+            _searchIconImageView.hidden = NO;
+        }];
+    }
+    else {
+        [UIView animateWithDuration:0.01 animations:^{
+            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
+        }  completion:^(BOOL finished){
+            _searchIconImageView.hidden = NO;
+        }];
+    }
+}
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if([searchText length] != 0) {
@@ -932,7 +949,6 @@ BOOL fetching;
 
 
 - (void)searchTableList {
-    NSLog(@"here");
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     _page = @1;
@@ -986,18 +1002,11 @@ BOOL fetching;
                               [_filteredContentParty addMetaInfo:metaDictionary];
                               dispatch_async(dispatch_get_main_queue(), ^(void) {
                                   _page = @([_page intValue] + 1);
-                                  [self reloadTableExceptFirstRow];
+                                  [_tableViewOfPeople reloadData];
                               });
                           }
        
     }];
-}
-
-- (void)reloadTableExceptFirstRow {
-    [_tableViewOfPeople beginUpdates];
-    [_tableViewOfPeople reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
-    [_tableViewOfPeople endUpdates];
-    [_searchBar becomeFirstResponder];
 }
 
 

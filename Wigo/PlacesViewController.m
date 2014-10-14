@@ -212,7 +212,6 @@ BOOL shouldReloadEvents;
 }
 
 - (void)dismissKeyboard {
-    NSLog(@"here");
     _ungoOutButton.enabled = YES;
     [self.view endEditing:YES];
     [UIView animateWithDuration:0.2 animations:^{
