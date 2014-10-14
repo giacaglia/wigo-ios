@@ -386,6 +386,7 @@ UIButton *tapButton;
     // HACK
     _pageControl.center = CGPointMake(90, 25);
     
+
     for (int i = 0; i < [[self.user imagesURL] count]; i++) {
         UIImageView *profileImgView = [[UIImageView alloc] init];
         profileImgView.contentMode = UIViewContentModeScaleAspectFill;
@@ -394,11 +395,10 @@ UIButton *tapButton;
 
         NSDictionary *area = [[self.user imagesArea] objectAtIndex:i];
 
-
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
-        spinner.center = profileImgView.center;
-        [profileImgView addSubview:spinner];
+        spinner.center = CGPointMake((self.view.frame.size.width + 10) * i + self.view.frame.size.width/2, self.view.frame.size.width/2);
+        [_scrollView addSubview:spinner];
         [spinner startAnimating];
         __weak UIActivityIndicatorView *weakSpinner = spinner;
         __weak UIImageView *weakProfileImgView = profileImgView;

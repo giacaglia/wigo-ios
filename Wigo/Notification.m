@@ -129,7 +129,6 @@
 - (BOOL)expired {
     NSString *utcCreationTime = [_proxy objectForKey:@"created"];
     return [Time isUTCtimeStringFromLastDay:utcCreationTime];
-//    return NO;
 }
 
 - (NSString *)timeString {
