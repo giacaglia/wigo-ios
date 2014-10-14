@@ -567,7 +567,13 @@ viewForFooterInSection:(NSInteger)section
 - (void)fetchNotifications {
     if (!isFetchingNotifications) {
         isFetchingNotifications = YES;
-        NSString *queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
+        NSString *queryString;
+        if (![_page isEqualToNumber:@1] && [_notificationsParty nextPageString]) {
+            queryString = [_notificationsParty nextPageString];
+        }
+        else {
+            queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
+        }
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 [WiGoSpinnerView removeDancingGFromCenterView:self.view];

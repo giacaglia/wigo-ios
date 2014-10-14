@@ -527,6 +527,20 @@ BOOL fetching;
     }
    
     User *user = [self getUserAtIndex:tag];
+ 
+    if (!user) {
+        BOOL loading = NO;
+        if (_isSearching && [_filteredContentParty hasNextPage]) loading = YES;
+        if (!_isSearching && [_contentParty hasNextPage]) loading = YES;
+        if (loading) {
+            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+            spinner.center = cell.contentView.center;
+            [cell.contentView addSubview:spinner];
+            [spinner startAnimating];
+        }
+        return cell;
+    }
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
     UIView *clickableView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 15 - 79, PEOPLEVIEW_HEIGHT_OF_CELLS - 5)];
@@ -715,6 +729,7 @@ BOOL fetching;
     }
     return user;
 }
+
 
 #pragma mark - Last User Read 
 - (void)updateLastUserRead {

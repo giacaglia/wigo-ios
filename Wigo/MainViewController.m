@@ -156,8 +156,8 @@ NSString *notGoingOutString;
 }
 
 - (void)fetchAppStart {
-//    if ([self shouldFetchAppStartup]) {
-        [Network queryAsynchronousAPI:@"app/startup/?force=true" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    if ([self shouldFetchAppStartup]) {
+        [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if (!error) {
                     if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
@@ -192,7 +192,7 @@ NSString *notGoingOutString;
                 }
             });
         }];
-//    }
+    }
 }
 
 - (void) fetchUserInfo {
@@ -948,12 +948,20 @@ NSString *notGoingOutString;
         return cell;
     }
     else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        
         UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                                         withReuseIdentifier:@"footer"
                                                                                forIndexPath:indexPath];
-        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 56)];
-        headerView.backgroundColor = [UIColor whiteColor];
-        [cell addSubview:headerView];
+        UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 56)];
+        footerView.backgroundColor = [UIColor whiteColor];
+        if ([indexPath section] == 1 && [_followingAcceptedParty hasNextPage]) {
+            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+            spinner.center = footerView.center;
+            [footerView addSubview:spinner];
+            [spinner startAnimating];
+        }
+        [cell addSubview:footerView];
 
         return cell;
     }

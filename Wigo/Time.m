@@ -17,10 +17,16 @@
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     NSDate *dateInLocalTimezone = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
     
+    NSDate *nowDate = [NSDate date];
     NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit fromDate:dateInLocalTimezone];
-    NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit fromDate:[NSDate date]];
-    // If today
+    NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit fromDate:nowDate];
+    NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:nowDate toDate:dateInLocalTimezone];
+    
+    // IF it's the same day as today return NO;
     if ([otherDay hour] >= 6 && [today day] == [otherDay day] && [today month] == [otherDay month] && [today year] == [otherDay year]) {
+        return NO;
+    }
+    if ([otherDay hour] < 6 && [today month] == [otherDay month] && [today year] == [otherDay year] && [differenceDateComponents day] == 1) {
         return NO;
     }
     return YES;
@@ -41,25 +47,9 @@
         [localTimeFormat setDateFormat:@"h:mm a"];
         return [localTimeFormat stringFromDate:dateInLocalTimezone];
     }
-    else { // Get the difference between the dates
-        NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    else {
         NSDate *nowDate = [NSDate date];
-        unsigned int flags = NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSWeekOfYearCalendarUnit |NSDayCalendarUnit;
-        NSCalendar* calendar = [NSCalendar currentCalendar];
-        NSDateComponents *otherDay=  [gregorianCalendar
-                                       components:flags
-                                       fromDate:[dateInLocalTimezone dateByAddingTimeInterval:-3600*6]];
-        NSDateComponents *nowDay = [gregorianCalendar
-                                      components:flags
-                                      fromDate:[nowDate dateByAddingTimeInterval:-3600*6]];
-        NSDate *otherDayDate = [calendar dateFromComponents:otherDay];
-        NSDate *nowDayDate = [calendar dateFromComponents:nowDay];
-        
-        NSDateComponents *differenceDateComponents = [gregorianCalendar
-                                                      components:flags
-                                                      fromDate:otherDayDate
-                                                      toDate:nowDayDate
-                                                      options:0];
+        NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:nowDate toDate:dateInLocalTimezone];
         if ([differenceDateComponents weekOfYear] == 0 && [differenceDateComponents month] == 0) {
             if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
                 return @"1 day ago";
@@ -82,6 +72,27 @@
             
         }
     }
+}
+
++ (NSDateComponents *)differenceBetweenFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate {
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    unsigned int flags = NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSWeekOfYearCalendarUnit |NSDayCalendarUnit;
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    NSDateComponents *otherDay=  [gregorianCalendar
+                                  components:flags
+                                  fromDate:[fromDate dateByAddingTimeInterval:-3600*6]];
+    NSDateComponents *nowDay = [gregorianCalendar
+                                components:flags
+                                fromDate:[toDate dateByAddingTimeInterval:-3600*6]];
+    NSDate *otherDayDate = [calendar dateFromComponents:otherDay];
+    NSDate *nowDayDate = [calendar dateFromComponents:nowDay];
+    
+    NSDateComponents *differenceDateComponents = [gregorianCalendar
+                                                  components:flags
+                                                  fromDate:otherDayDate
+                                                  toDate:nowDayDate
+                                                  options:0];
+    return differenceDateComponents;
 }
 
 + (NSString *)getLocalDateJoinedFromUTCTimeString:(NSString *)utcTimeString {
