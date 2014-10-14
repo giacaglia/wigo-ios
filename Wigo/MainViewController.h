@@ -6,7 +6,6 @@
 
 #import <UIKit/UIKit.h>
 #import "ProfileViewController.h"
-#import "PeopleViewController.h"
 #import "SignViewController.h"
 #import "SignNavigationViewController.h"
 #import "WigoCustomCell.h"
@@ -17,7 +16,6 @@
 }
 
 @property ProfileViewController *profileViewController;
-@property PeopleViewController *peopleViewController;
 @property SignViewController *signViewController;
 @property SignNavigationViewController *signNavigationViewController;
 

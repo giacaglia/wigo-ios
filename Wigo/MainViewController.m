@@ -18,9 +18,9 @@
 #import "AppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import "CSStickyHeaderFlowLayout.h"
+#import "PeopleViewController.h"
 
 @interface MainViewController ()
-
 
 // Who and Where Buttons properties
 @property UIImageView *whoImageView;
@@ -538,8 +538,7 @@ NSString *notGoingOutString;
 
 - (void)followPressed {
     if ([Profile user]) {
-        self.peopleViewController = [[PeopleViewController alloc] initWithUser:[Profile user]];
-        [self.navigationController pushViewController:self.peopleViewController animated:YES];
+        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[Profile user]] animated:YES];
         self.tabBarController.tabBar.hidden = YES;
     }
 }
@@ -547,8 +546,7 @@ NSString *notGoingOutString;
 - (void)myProfileSegue {
     if ([Profile user]) {
         didProfileSegue = YES;
-        self.profileViewController = [[ProfileViewController alloc] initWithUser:[Profile user]];
-        [self.navigationController pushViewController:self.profileViewController animated:YES];
+        [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:[Profile user]] animated:YES];
         self.tabBarController.tabBar.hidden = YES;
     }
 }

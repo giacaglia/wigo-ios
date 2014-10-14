@@ -215,6 +215,18 @@ BOOL didProfileSegue;
     
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
     Notification *notification = [self getNotificationAtIndex:indexPath];
+//    NSLog(@"notification %@", notification);
+    if (!notification) {
+//        NSLog(@"here");
+        if ([_notificationsParty hasNextPage]) {
+            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+            spinner.center = cell.contentView.center;
+            [cell.contentView addSubview:spinner];
+            [spinner startAnimating];
+        }
+        return cell;
+    }
     if ([notification fromUserID] == (id)[NSNull null]) return cell;
     // When group is unlocked
     if ([[notification type] isEqualToString:@"group.unlocked"]) return cell;

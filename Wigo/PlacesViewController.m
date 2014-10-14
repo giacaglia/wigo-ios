@@ -753,7 +753,6 @@ BOOL shouldReloadEvents;
         else {
             queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
         }
-//        NSString *queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             if ([page isEqualToNumber:@1]) {
                 numberOfFetchedParties = 0;

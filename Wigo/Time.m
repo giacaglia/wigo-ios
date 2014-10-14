@@ -20,7 +20,7 @@
     NSDate *nowDate = [NSDate date];
     NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit fromDate:dateInLocalTimezone];
     NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit fromDate:nowDate];
-    NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:nowDate toDate:dateInLocalTimezone];
+    NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:dateInLocalTimezone toDate:nowDate];
     
     // IF it's the same day as today return NO;
     if ([otherDay hour] >= 6 && [today day] == [otherDay day] && [today month] == [otherDay month] && [today year] == [otherDay year]) {
@@ -49,7 +49,7 @@
     }
     else {
         NSDate *nowDate = [NSDate date];
-        NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:nowDate toDate:dateInLocalTimezone];
+        NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:dateInLocalTimezone toDate:nowDate];
         if ([differenceDateComponents weekOfYear] == 0 && [differenceDateComponents month] == 0) {
             if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
                 return @"1 day ago";
