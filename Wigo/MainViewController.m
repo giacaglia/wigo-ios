@@ -156,8 +156,8 @@ NSString *notGoingOutString;
 }
 
 - (void)fetchAppStart {
-    if ([self shouldFetchAppStartup]) {
-        [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//    if ([self shouldFetchAppStartup]) {
+        [Network queryAsynchronousAPI:@"app/startup/?force=true" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if (!error) {
                     if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
@@ -192,7 +192,7 @@ NSString *notGoingOutString;
                 }
             });
         }];
-    }
+//    }
 }
 
 - (void) fetchUserInfo {
@@ -480,19 +480,21 @@ NSString *notGoingOutString;
 
 - (void) showTapButtons {
     if ([[Profile user] isGoingOut]) {
-        for (int i = [self getTapInitialPosition]; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
+        for (int i = 0; i < [[_whoIsGoingOutParty getObjectArray] count]; i++) {
             User *user = [self userForIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-            UIImageViewShake *tappedImageView =  [user objectForKey:@"tappedImageView"];
-            tappedImageView.hidden = NO;
-            UIButton *tapButton = [user objectForKey:@"tapButton"];
-            tapButton.enabled = YES;
-            if ([user isTapped]) {
-                tappedImageView.tag = -1;
-                tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
-            }
-            else {
-                tappedImageView.tag = 1;
-                tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+            if (user && ![user isEqualToUser:[Profile user]]) {
+                UIImageViewShake *tappedImageView =  [user objectForKey:@"tappedImageView"];
+                tappedImageView.hidden = NO;
+                UIButton *tapButton = [user objectForKey:@"tapButton"];
+                tapButton.enabled = YES;
+                if ([user isTapped]) {
+                    tappedImageView.tag = -1;
+                    tappedImageView.image = [UIImage imageNamed:@"tapFilled"];
+                }
+                else {
+                    tappedImageView.tag = 1;
+                    tappedImageView.image = [UIImage imageNamed:@"tapUnfilled"];
+                }
             }
         }
         
@@ -616,6 +618,7 @@ NSString *notGoingOutString;
             }
         }
     }
+//    NSLog(@"updated ui");
 }
 
 - (UIImageView *)gifGoOut {
@@ -648,6 +651,7 @@ NSString *notGoingOutString;
     [self updateTitleView];
     [self showTapButtons];
     [self animationShowingTapIcons];
+    [self fetchUserInfo];
 }
 
 
@@ -1012,8 +1016,8 @@ NSString *notGoingOutString;
         tappedImageView.hidden = YES;
         CGRect previousFrame = tappedImageView.frame;
         [tapFrameArray addObject:[NSValue valueWithCGRect:previousFrame]];
-        CGPoint centerFrame = [self.view convertPoint:self.view.center toView:tappedImageView.superview];
-        tappedImageView.center = centerFrame;
+        CGPoint centerPoint = [self.view convertPoint:self.view.center toView:tappedImageView.superview];
+        tappedImageView.center = centerPoint;
     }
 
     [UIView animateWithDuration:0.3
