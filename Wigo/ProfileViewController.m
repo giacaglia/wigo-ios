@@ -395,15 +395,15 @@ UIButton *tapButton;
         NSDictionary *area = [[self.user imagesArea] objectAtIndex:i];
 
 
-//        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-//        spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
-//        spinner.center = profileImgView.center;
-//        [profileImgView addSubview:spinner];
-//        [spinner startAnimating];
-//        __weak UIActivityIndicatorView *weakSpinner = spinner;
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+        spinner.center = profileImgView.center;
+        [profileImgView addSubview:spinner];
+        [spinner startAnimating];
+        __weak UIActivityIndicatorView *weakSpinner = spinner;
         __weak UIImageView *weakProfileImgView = profileImgView;
         [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] imageArea:area completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//            [weakSpinner stopAnimating];
+            [weakSpinner stopAnimating];
             [self addBlurredImageToImageView:weakProfileImgView forIndex:i];
         }];
         [_scrollView addSubview:profileImgView];

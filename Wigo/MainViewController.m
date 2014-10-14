@@ -784,6 +784,7 @@ NSString *notGoingOutString;
     WigoCustomCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"WigoCustomCell" forIndexPath:indexPath];
     cell.userCoverImageView.image = nil;
     cell.tappedImageView.image = nil;
+    cell.profileName.text = nil;
     // GET THE ARRAY OF USERS AND THE CORRESPONDING USER
     NSArray *userArray;
     if ([indexPath section] == 0) {
