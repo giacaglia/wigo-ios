@@ -145,9 +145,10 @@ BOOL fetching;
     [_searchBar becomeFirstResponder];
     [self.navigationItem setHidesBackButton:YES animated:YES];
 
-    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@2];
+    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
     [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
     [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
+    cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
     cancelButton.titleLabel.font = [FontProperties getSubtitleFont];
     [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
@@ -233,7 +234,7 @@ BOOL fetching;
 
     // Add Custom Search Icon
     _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"graySearchIcon"]];
-    _searchIconImageView.frame = CGRectMake(20, 14, 14, 14);
+    _searchIconImageView.frame = CGRectMake(40, 14, 14, 14);
     [_searchBar addSubview:_searchIconImageView];
     
     // Remove Clear Button on the right
@@ -260,7 +261,7 @@ BOOL fetching;
     if ([_currentTab isEqualToNumber:@2]) {
         UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 200)];
         
-        UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 0, self.view.frame.size.width - 14, 21)];
+        UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 14, 21)];
         contextLabel.text = @"New on WiGo";
         contextLabel.font = [FontProperties mediumFont:17.0f];
         contextLabel.textAlignment = NSTextAlignmentLeft;
@@ -939,6 +940,7 @@ BOOL fetching;
     }
     else {
         _isSearching = NO;
+        [_tableViewOfPeople reloadData];
     }
 }
 
