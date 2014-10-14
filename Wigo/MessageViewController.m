@@ -239,7 +239,7 @@ int queryQueueInt;
     
     // Add Custom Search Icon
     _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeSearchIcon"]];
-    _searchIconImageView.frame = CGRectMake(65, 8, 14, 14);
+    _searchIconImageView.frame = CGRectMake(65, 8, 15, 16);
     [_searchBar addSubview:_searchIconImageView];
     [self.view addSubview:_searchBar];
     

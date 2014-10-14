@@ -130,7 +130,7 @@ BOOL initializedPopScreen;
     
     // Add Custom Search Icon
     searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeSearchIcon"]];
-    searchIconImageView.frame = CGRectMake(85, 13, 14, 14);
+    searchIconImageView.frame = CGRectMake(85, 13, 15, 16);
     [searchBar addSubview:searchIconImageView];
     [self.view addSubview:searchBar];
     [self.view bringSubviewToFront:searchBar];

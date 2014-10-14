@@ -129,7 +129,7 @@ BOOL fetching;
         self.navigationItem.rightBarButtonItem = profileBarButton;
     }
     else {
-        UIButtonAligned *searchButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 21, 21) andType:@2];
+        UIButtonAligned *searchButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 15, 16) andType:@2];
         [searchButton setBackgroundImage:[UIImage imageNamed:@"orangeSearchIcon"] forState:UIControlStateNormal];
         [searchButton addTarget:self action:@selector(searchPressed)
                 forControlEvents:UIControlEventTouchUpInside];
@@ -143,7 +143,8 @@ BOOL fetching;
     _searchBar.hidden = NO;
     self.navigationItem.titleView = _searchBar;
     [_searchBar becomeFirstResponder];
-    
+    [self.navigationItem setHidesBackButton:YES animated:YES];
+
     UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@2];
     [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
     [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
