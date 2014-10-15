@@ -42,6 +42,7 @@ int userInt;
 int queryQueueInt;
 UIView *secondPartSubview;
 BOOL fetching;
+UIScrollView *suggestedScrollView;
 
 @implementation PeopleViewController
 
@@ -256,7 +257,7 @@ BOOL fetching;
 
 - (UIView *)initializeSecondPart {
     if ([_currentTab isEqualToNumber:@2]) {
-        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 200)];
+        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 223)];
         
         UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 14, 21)];
         contextLabel.text = @"New on WiGo";
@@ -264,21 +265,21 @@ BOOL fetching;
         contextLabel.textAlignment = NSTextAlignmentLeft;
         [secondPartSubview addSubview:contextLabel];
         
-        UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 180)];
-        scrollView.showsHorizontalScrollIndicator = NO;
-        [secondPartSubview addSubview:scrollView];
+        suggestedScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 180)];
+        suggestedScrollView.showsHorizontalScrollIndicator = NO;
+        [secondPartSubview addSubview:suggestedScrollView];
         int xPosition = 10;
         for (int i = 0; i < MIN(10,[[_suggestionsParty getObjectArray] count]); i++) {
             User *user = [[_suggestionsParty getObjectArray] objectAtIndex:i];
-            [scrollView addSubview:[self cellOfUser:user atXPosition:xPosition]];
+            [suggestedScrollView addSubview:[self cellOfUser:user atXPosition:xPosition]];
             xPosition += 130;
-            scrollView.contentSize = CGSizeMake(xPosition + 110, 175);
+            suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
         }
         
         UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 110)];
         [inviteButton setBackgroundImage:[UIImage imageNamed:@"InviteButton"] forState:UIControlStateNormal];
         [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        [scrollView addSubview:inviteButton];
+        [suggestedScrollView addSubview:inviteButton];
         
         UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
         inviteMoreFriendsLabel.text = @"Invite more friends\nto WiGo";
@@ -287,10 +288,14 @@ BOOL fetching;
         inviteMoreFriendsLabel.numberOfLines = 0;
         inviteMoreFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
         inviteMoreFriendsLabel.textColor = [FontProperties getOrangeColor];
-        [scrollView addSubview:inviteMoreFriendsLabel];
+        [suggestedScrollView addSubview:inviteMoreFriendsLabel];
         
         xPosition += 130;
-        scrollView.contentSize = CGSizeMake(xPosition + 110, 175);
+        suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
+
+        UIImageView *line = [[UIImageView alloc] initWithFrame:CGRectMake(15, secondPartSubview.frame.size.height - 1, secondPartSubview.frame.size.width, 1)];
+        line.backgroundColor = RGBAlpha(184, 184, 184, 0.3f);
+        [secondPartSubview addSubview:line];
 
         return secondPartSubview;
     }
@@ -401,10 +406,13 @@ BOOL fetching;
 }
 
 - (void)suggestedFollowedPersonPressed:(id)sender {
-    UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
-//    User *user = [self getSuggestedUser:tag];
-//    [self updateButton:sender withIndex:indexPath andUser:user];
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:suggestedScrollView];
+    int indexOfPerson = (buttonOriginInTableView.x - 40)/130 ;
+    User *user;
+    int sizeOfArray = (int)[[_suggestionsParty getObjectArray] count];
+    if (sizeOfArray > 0 && sizeOfArray > indexOfPerson)
+        user = [[_suggestionsParty getObjectArray] objectAtIndex:indexOfPerson];
+    if (user) [self updateButton:sender withUser:user];
 }
 
 - (void)suggestedProfileSegue:(id)sender {
@@ -457,7 +465,7 @@ BOOL fetching;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == 0) {
-        if ([_currentTab isEqualToNumber:@2]) return 220;
+        if ([_currentTab isEqualToNumber:@2]) return 233;
         else if ([_currentTab isEqualToNumber:@4]) return 95;
         else return 0;
     }
@@ -641,13 +649,13 @@ BOOL fetching;
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
     NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
     User *user = [self getUserAtIndex:(int)[indexPath row]];
-    if (user) [self updateButton:sender withIndex:indexPath andUser:user];
+    if (user) [self updateButton:sender withUser:user];
     if ([indexPath row] < [[_contentParty getObjectArray] count]) {
         [_contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
     }
 }
 
-- (void)updateButton:(id)sender withIndex:(NSIndexPath *)indexPath andUser:(User *)user {
+- (void)updateButton:(id)sender withUser:(User *)user {
     UIButton *senderButton = (UIButton*)sender;
     if (senderButton.tag == 50) {
         [senderButton setTitle:nil forState:UIControlStateNormal];

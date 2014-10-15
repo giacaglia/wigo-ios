@@ -245,7 +245,7 @@ BOOL isFetchingEveryone;
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(11, 70, self.view.frame.size.width - 22, 30)];
     _searchBar.barTintColor = [UIColor whiteColor];
     _searchBar.tintColor = grayColor;
-    _searchBar.placeholder = @"SEARCH BY NAME";
+    _searchBar.placeholder = @"Search By Name";
     _searchBar.delegate = self;
     UITextField *searchField = [_searchBar valueForKey:@"_searchField"];
     [searchField setValue:grayColor forKeyPath:@"_placeholderLabel.textColor"];

@@ -127,8 +127,6 @@
     Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:buttonSender.tag];
     User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
     [Network rejectFollowRequestForUser:user];
-
-
 }
 
 - (void)followedPersonPressed:(id)sender {
