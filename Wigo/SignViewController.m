@@ -75,7 +75,7 @@
     if (key) {
         User *user = [[User alloc] initWithDictionary:@{@"key": key}];
         [Profile setUser:user];
-        [self loadMainViewController];
+        [self fetchUserInfo];
     }
     else {
         if ([_fbID isEqualToString:@""] || [_accessToken isEqualToString:@""]) {
@@ -357,6 +357,10 @@
 }
 
 - (void)handleJsonResponse:(NSDictionary *)jsonResponse andError:(NSError *)error {
+    User *user;
+    if ([jsonResponse isKindOfClass:[NSDictionary class]]) {
+        user = [[User alloc] initWithDictionary:jsonResponse];
+    }
     if ([[jsonResponse allKeys] containsObject:@"status"] &&
         [[jsonResponse objectForKey:@"status"] isEqualToString:@"error"] &&
         ![[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"] ) { //If it exists but other error shows up.
@@ -374,7 +378,8 @@
     else if (!jsonResponse && [[error domain] isEqualToString:NSCocoaErrorDomain]) {
         [self showBummerError];
     }
-    else if (![[Profile user] emailValidated]) {
+    else if (![user emailValidated]) {
+        [Profile setUser:user];
         if (!_pushed) {
             _pushed = YES;
             self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
@@ -382,6 +387,7 @@
         }
     }
     else {
+        [Profile setUser:user];
         if (!_pushed) {
             _pushed = YES;
             if ([[Profile user] isGroupLocked]) {
