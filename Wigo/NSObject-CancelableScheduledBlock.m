@@ -1,5 +1,5 @@
 //
-//  NSObject-JTCancelableScheduledBlock.m
+//  NSObject-CancelableScheduledBlock.m
 //  Wigo
 //
 //  Created by Giuliano Giacaglia on 8/25/14.

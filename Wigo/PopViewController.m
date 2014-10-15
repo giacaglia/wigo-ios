@@ -19,6 +19,7 @@ UILabel *emojiLabel;
     self = [super init];
     if (self) {
         dailyDictionary = dict;
+        self.view.backgroundColor = [UIColor whiteColor];
         self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background"]];
     }
     return self;

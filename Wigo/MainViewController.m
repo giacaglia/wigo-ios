@@ -63,9 +63,9 @@ NSString *notGoingOutString;
     [EventAnalytics tagEvent:@"Who View"];
     self.tabBarController.tabBar.hidden = NO;
     if (!didProfileSegue) {
-        if (!_fetchingUserInfo) [self fetchUserInfo];
+        [self fetchUserInfo];
         [self fetchFirstPageFollowing];
-        if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
+        [self fetchIsThereNewPerson];
         [self fetchSummaryGoingOut];
     }
     didProfileSegue = NO;
@@ -116,8 +116,8 @@ NSString *notGoingOutString;
     _fetchingIsThereNewPerson = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
     [self fetchFirstPageFollowing];
-    if (!_fetchingUserInfo) [self fetchUserInfo];
-    if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
+    [self fetchUserInfo];
+    [self fetchIsThereNewPerson];
     [self fetchSummaryGoingOut];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
@@ -196,7 +196,7 @@ NSString *notGoingOutString;
 }
 
 - (void) fetchUserInfo {
-    if ([[Profile user] key] ){
+    if ([[Profile user] key] && !_fetchingUserInfo ) {
         _fetchingUserInfo = YES;
         [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             if ([[jsonResponse allKeys] containsObject:@"status"]) {
@@ -293,38 +293,40 @@ NSString *notGoingOutString;
 
 
 - (void) fetchIsThereNewPerson {
-    _fetchingIsThereNewPerson = YES;
-    [Network queryAsynchronousAPI:@"users/?limit=1" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *objects = [jsonResponse objectForKey:@"objects"];
-        _fetchingIsThereNewPerson = NO;
-        if ([objects isKindOfClass:[NSArray class]]) {
-            User *lastUserJoined = [[User alloc] initWithDictionary:[objects objectAtIndex:0]];
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                User *profileUser = [Profile user];
-                if (profileUser) {
-                    NSNumber *lastUserRead = [profileUser lastUserRead];
-                    NSNumber *lastUserJoinedNumber = (NSNumber *)[lastUserJoined objectForKey:@"id"];
-                    [_rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-                    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
-                    imageView.image = [UIImage imageNamed:@"followPlus"];
-                    [_rightButton addSubview:imageView];
+    if (!_fetchingIsThereNewPerson) {
+        _fetchingIsThereNewPerson = YES;
+        [Network queryAsynchronousAPI:@"users/?limit=1" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+            NSArray *objects = [jsonResponse objectForKey:@"objects"];
+            _fetchingIsThereNewPerson = NO;
+            if ([objects isKindOfClass:[NSArray class]]) {
+                User *lastUserJoined = [[User alloc] initWithDictionary:[objects objectAtIndex:0]];
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    User *profileUser = [Profile user];
+                    if (profileUser) {
+                        NSNumber *lastUserRead = [profileUser lastUserRead];
+                        NSNumber *lastUserJoinedNumber = (NSNumber *)[lastUserJoined objectForKey:@"id"];
+                        [_rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
+                        imageView.image = [UIImage imageNamed:@"followPlus"];
+                        [_rightButton addSubview:imageView];
 
-                    if ([lastUserRead intValue] < [lastUserJoinedNumber intValue]) {
-                        redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 10, 10)];
-                        redDotLabel.backgroundColor = [UIColor redColor];
-                        redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
-                        redDotLabel.clipsToBounds = YES;
-                        redDotLabel.layer.borderWidth = 3;
-                        redDotLabel.layer.cornerRadius = 5;
-                        [_rightButton addSubview:redDotLabel];
+                        if ([lastUserRead intValue] < [lastUserJoinedNumber intValue]) {
+                            redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 10, 10)];
+                            redDotLabel.backgroundColor = [UIColor redColor];
+                            redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
+                            redDotLabel.clipsToBounds = YES;
+                            redDotLabel.layer.borderWidth = 3;
+                            redDotLabel.layer.cornerRadius = 5;
+                            [_rightButton addSubview:redDotLabel];
+                        }
+                        else {
+                            if (redDotLabel) [redDotLabel removeFromSuperview];
+                        }
                     }
-                    else {
-                        if (redDotLabel) [redDotLabel removeFromSuperview];
-                    }
-                }
-            });
-        }
-    }];
+                });
+            }
+        }];
+    }
 }
 
 - (void)updateUserAtTable:(NSNotification*)notification {
@@ -723,7 +725,7 @@ NSString *notGoingOutString;
     [WiGoSpinnerView addDancingGToUIScrollView:_collectionView withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchFirstPageFollowing];
-        if (!_fetchingIsThereNewPerson)  [self fetchIsThereNewPerson];
+        [self fetchIsThereNewPerson];
         [self fetchSummaryGoingOut];
     }];
 }

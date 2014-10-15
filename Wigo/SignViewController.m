@@ -351,46 +351,61 @@
     [profileUser loginWithHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            if ([[jsonResponse allKeys] containsObject:@"status"] &&
-                [[jsonResponse objectForKey:@"status"] isEqualToString:@"error"] &&
-                ![[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"] ) { //If it exists but other error shows up.
-                [self showBummerError];
-            }
-            else if ([[jsonResponse allKeys] containsObject:@"status"] &&
-                     [[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) {
-                _fetchingProfilePictures = YES;
-                [self fetchTokensFromFacebook];
-                [self fetchProfilePicturesAlbumFacebook];
-            }
-            else if ([[error domain] isEqualToString:NSURLErrorDomain]) {
-                [self showErrorNoConnection];
-            }
-            else if (!jsonResponse && [[error domain] isEqualToString:NSCocoaErrorDomain]) {
-                [self showBummerError];
-            }
-            else if (![profileUser emailValidated]) {
-                if (!_pushed) {
-                    _pushed = YES;
-                    self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-                    [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
-                }
-            }
-            else {
-                if (!_pushed) {
-                    _pushed = YES;
-                    if ([[Profile user] isGroupLocked]) {
-                        self.lockScreenViewController = [[LockScreenViewController alloc] init];
-                        [self.navigationController pushViewController:self.lockScreenViewController animated:NO];
-                    }
-                    else {
-                        [self loadMainViewController];
-                    }
-
-                }
-            }
+            [self handleJsonResponse:jsonResponse andError:error];
         });
     }];
 }
+
+- (void)handleJsonResponse:(NSDictionary *)jsonResponse andError:(NSError *)error {
+    if ([[jsonResponse allKeys] containsObject:@"status"] &&
+        [[jsonResponse objectForKey:@"status"] isEqualToString:@"error"] &&
+        ![[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"] ) { //If it exists but other error shows up.
+        [self showBummerError];
+    }
+    else if ([[jsonResponse allKeys] containsObject:@"status"] &&
+             [[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) {
+        _fetchingProfilePictures = YES;
+        [self fetchTokensFromFacebook];
+        [self fetchProfilePicturesAlbumFacebook];
+    }
+    else if ([[error domain] isEqualToString:NSURLErrorDomain]) {
+        [self showErrorNoConnection];
+    }
+    else if (!jsonResponse && [[error domain] isEqualToString:NSCocoaErrorDomain]) {
+        [self showBummerError];
+    }
+    else if (![[Profile user] emailValidated]) {
+        if (!_pushed) {
+            _pushed = YES;
+            self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
+            [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+        }
+    }
+    else {
+        if (!_pushed) {
+            _pushed = YES;
+            if ([[Profile user] isGroupLocked]) {
+                self.lockScreenViewController = [[LockScreenViewController alloc] init];
+                [self.navigationController pushViewController:self.lockScreenViewController animated:NO];
+            }
+            else {
+                [self loadMainViewController];
+            }
+            
+        }
+    }
+}
+
+- (void)fetchUserInfo {
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            [self handleJsonResponse:jsonResponse andError:error];
+        });
+    }];
+}
+
 
 - (void)loadMainViewController {
     if ([[[Profile user] numEvents] intValue] >= 3) {
