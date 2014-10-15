@@ -27,7 +27,7 @@
 - (id)initWithDictionary:(NSDictionary *)otherDictionary {
     self = [super init];
     if (self) {
-        if (otherDictionary) {
+        if (otherDictionary && [otherDictionary isKindOfClass:[NSDictionary class]]) {
             _proxy = [NSMutableDictionary dictionaryWithDictionary:otherDictionary];
         }
         else {

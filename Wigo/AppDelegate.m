@@ -463,14 +463,11 @@ forRemoteNotification:(NSDictionary *)userInfo
             [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
         }
         else [self clearNotificationAtTabBar:@2];
-       
         if ([numberOfNewNotifications intValue] > 0) {
             [self addNotificationNumber:numberOfNewNotifications toTabBar:@3 containNumber:NO];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
         }
         else [self clearNotificationAtTabBar:@3];
-
-        
     }];
 }
 

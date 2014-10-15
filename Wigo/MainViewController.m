@@ -136,17 +136,8 @@ NSString *notGoingOutString;
     }
     else {
         NSDate *newDate = [NSDate date];
-        NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-        NSDateComponents *differenceDateComponents = [gregorianCalendar
-                                                      components: NSHourCalendarUnit
-                                                      fromDate:dateAccessed
-                                                      toDate:newDate
-                                                      options:0];
-        NSDateComponents *newDateComponents = [[NSCalendar currentCalendar] components: NSDayCalendarUnit| NSHourCalendarUnit fromDate:newDate];
-        NSDateComponents *dateAccessedComponents = [[NSCalendar currentCalendar] components: NSDayCalendarUnit|NSHourCalendarUnit fromDate:dateAccessed];
-        
-        
-        if ([differenceDateComponents hour] >= 1 || ([newDateComponents day] != [dateAccessedComponents day]) || ([dateAccessedComponents day] == [newDateComponents day] && [dateAccessedComponents hour] < 6 && [newDateComponents hour] > 6)) {
+        NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:dateAccessed toDate:newDate];
+        if ([differenceDateComponents hour] > 0 || [differenceDateComponents day] > 0 || [differenceDateComponents weekOfYear] > 0 || [differenceDateComponents month] > 0) {
             [[NSUserDefaults standardUserDefaults] setObject:newDate forKey: @"lastTimeAccessed"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             return YES;
@@ -275,8 +266,8 @@ NSString *notGoingOutString;
                             [_notGoingOutParty addObject:user];
                         }
                     }
-                    if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
                     _page = @([_page intValue] + 1);
+                    if (!_spinnerAtCenter) [_collectionView didFinishPullToRefresh];
                     [_collectionView reloadData];
                     fetchingFollowing = NO;
                     [self fetchedMyInfoOrPeoplesInfo];
