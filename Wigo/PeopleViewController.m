@@ -38,7 +38,8 @@
 @end
 
 BOOL didProfileSegue;
-int userInt;
+//int userInt;
+NSIndexPath *userIndex;
 int queryQueueInt;
 UIView *secondPartSubview;
 BOOL fetching;
@@ -71,7 +72,8 @@ UIScrollView *suggestedScrollView;
     queryQueueInt = 0;
     [super viewDidLoad];
     didProfileSegue = NO;
-    userInt = -1;
+//    userInt = -1;
+    userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
     // Title setup
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
@@ -100,7 +102,8 @@ UIScrollView *suggestedScrollView;
         [self loadTableView];
     }
     didProfileSegue = NO;
-    userInt = -1;
+//    userInt = -1;
+    userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
 }
 
 - (void)initializeBackBarButton {
@@ -183,7 +186,8 @@ UIScrollView *suggestedScrollView;
     User *user = [self getUserAtIndex:tag];
     if (user) {
         didProfileSegue = YES;
-        userInt = tag;
+//        userInt = tag;
+        userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -195,7 +199,8 @@ UIScrollView *suggestedScrollView;
     User *user = [self getUserAtIndex:tag];
     if (user) {
         didProfileSegue = YES;
-        userInt = tag;
+//        userInt = tag;
+        userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -421,7 +426,8 @@ UIScrollView *suggestedScrollView;
     User *user = [self getSuggestedUser:tag];
     if (user) {
         didProfileSegue = YES;
-        userInt = tag;
+//        userInt = tag;
+        userIndex = [NSIndexPath indexPathForRow:tag inSection:0];
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -751,29 +757,43 @@ UIScrollView *suggestedScrollView;
 - (void)updateUserAtTable:(NSNotification*)notification {
     NSDictionary* userInfo = [notification userInfo];
     User *user = [[User alloc] initWithDictionary:userInfo];
+    int userInt = [userIndex row];
+
     if (user) {
-        if (_isSearching) {
-            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
-            int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
-            if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
-                [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
+        if ([userIndex section] == 0) {
+            int sizeOfArray = (int)[[_suggestionsParty getObjectArray] count];
+            if (userInt >= 0 && sizeOfArray > userInt) {
+                [_suggestionsParty replaceObjectAtIndex:userInt withObject:user];
+                [self initializeSecondPart];
                 [_tableViewOfPeople beginUpdates];
-                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
                 [_tableViewOfPeople endUpdates];
             }
-            
         }
         else {
-            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
-            int sizeOfArray = (int)[[_contentParty getObjectArray] count];
-            if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
-                [_contentParty replaceObjectAtIndex:userInt withObject:user];
-                [_tableViewOfPeople beginUpdates];
-                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-                [_tableViewOfPeople endUpdates];
+            if (_isSearching) {
+                int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
+                int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
+                if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
+                    [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
+                    [_tableViewOfPeople beginUpdates];
+                    [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [_tableViewOfPeople endUpdates];
+                }
             }
-        }
+            else {
+                int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
+                int sizeOfArray = (int)[[_contentParty getObjectArray] count];
+                if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
+                    [_contentParty replaceObjectAtIndex:userInt withObject:user];
+                    [_tableViewOfPeople beginUpdates];
+                    [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [_tableViewOfPeople endUpdates];
+                }
+            }
 
+        }
+       
     }
 }
 
