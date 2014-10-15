@@ -191,8 +191,7 @@ BOOL didProfileSegue;
     // If the section is the first one
     if ([indexPath section] == 0 && [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
         return cell;
-        if ([[_expiredNotificationsParty getObjectArray] count] == 0 &&
-            [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
+        if ([[_expiredNotificationsParty getObjectArray] count] == 0) {
             if ([_page intValue] < 5) [self fetchNotifications];
             return cell;
         }
@@ -200,14 +199,21 @@ BOOL didProfileSegue;
     
     // Else we are
     if ([indexPath section] == 1) {
-        if ([_expiredNotificationsParty hasNextPage] && [[_expiredNotificationsParty getObjectArray] count] > 5) {
+        if ([_notificationsParty hasNextPage] && [[_expiredNotificationsParty getObjectArray] count] > 5) {
             if ([indexPath row] == [[_expiredNotificationsParty getObjectArray] count] - 5) {
                 if ([_page intValue] < 5) [self fetchNotifications];
             }
         }
         else {
             if ([indexPath row] == [[_expiredNotificationsParty getObjectArray] count]) {
-                if ([_page intValue] < 5) [self fetchNotifications];
+                if ([_page intValue] < 5) {
+                    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                    spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+                    spinner.center = cell.contentView.center;
+                    [cell.contentView addSubview:spinner];
+                    [spinner startAnimating];
+                    [self fetchNotifications];
+                }
                 return cell;
             }
         }
@@ -215,18 +221,7 @@ BOOL didProfileSegue;
     
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
     Notification *notification = [self getNotificationAtIndex:indexPath];
-//    NSLog(@"notification %@", notification);
-    if (!notification) {
-//        NSLog(@"here");
-        if ([_notificationsParty hasNextPage]) {
-            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-            spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
-            spinner.center = cell.contentView.center;
-            [cell.contentView addSubview:spinner];
-            [spinner startAnimating];
-        }
-        return cell;
-    }
+    
     if ([notification fromUserID] == (id)[NSNull null]) return cell;
     // When group is unlocked
     if ([[notification type] isEqualToString:@"group.unlocked"]) return cell;
