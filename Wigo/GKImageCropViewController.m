@@ -2,8 +2,6 @@
 //  GKImageCropViewController.m
 //  GKImagePicker
 //
-//  Created by Georg Kitz on 6/1/12.
-//  Copyright (c) 2012 Aurora Apps. All rights reserved.
 //
 
 #import "GKImageCropViewController.h"
@@ -31,8 +29,7 @@
 @synthesize sourceImage, cropSize, delegate;
 @synthesize imageCropView;
 @synthesize toolbar;
-//@synthesize cancelButton, useButton, resizeableCropArea;
-@synthesize useButton, resizeableCropArea;
+@synthesize cancelButton, useButton, resizeableCropArea;
 
 #pragma mark -
 #pragma Private Methods
@@ -185,8 +182,6 @@
         UIBarButtonItem *use = [[UIBarButtonItem alloc] initWithCustomView:self.useButton];
         
         [self.toolbar setItems:[NSArray arrayWithObjects:cancel, flex, lbl, flex, use, nil]];
-//        [self.toolbar setItems:[NSArray arrayWithObjects:flex, lbl, flex, use, nil]];
-
     }
 }
 

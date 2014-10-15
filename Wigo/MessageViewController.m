@@ -61,7 +61,7 @@ BOOL isFetchingEveryone;
 
 - (void) initializeNavigationItem {
     self.navigationItem.titleView = nil;
-    self.title = @"NEW MESSAGE";
+    self.title = @"New Message";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
 
     UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 60, 44) andType:@0];
@@ -241,21 +241,22 @@ BOOL isFetchingEveryone;
 
 #pragma mark - UISearchBar
 - (void)initializeSearchBar {
+    UIColor *grayColor = RGB(184, 184, 184);
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(11, 70, self.view.frame.size.width - 22, 30)];
     _searchBar.barTintColor = [UIColor whiteColor];
-    _searchBar.tintColor = [FontProperties getOrangeColor];
+    _searchBar.tintColor = grayColor;
     _searchBar.placeholder = @"SEARCH BY NAME";
     _searchBar.delegate = self;
     UITextField *searchField = [_searchBar valueForKey:@"_searchField"];
-    [searchField setValue:[FontProperties getOrangeColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [searchField setValue:grayColor forKeyPath:@"_placeholderLabel.textColor"];
     
     // Search Icon Clear
     UITextField *txtSearchField = [_searchBar valueForKey:@"_searchField"];
     [txtSearchField setLeftViewMode:UITextFieldViewModeNever];
     
     // Add Custom Search Icon
-    _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeSearchIcon"]];
-    _searchIconImageView.frame = CGRectMake(65, 8, 15, 16);
+    _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"graySearchIcon"]];
+    _searchIconImageView.frame = CGRectMake(40, 14, 14, 14);
     [_searchBar addSubview:_searchIconImageView];
     
     // Text when editing becomes orange
@@ -264,7 +265,7 @@ BOOL isFetchingEveryone;
             if ([secondLevelSubview isKindOfClass:[UITextField class]])
             {
                 UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
-                searchBarTextField.textColor = [FontProperties getOrangeColor];
+                searchBarTextField.textColor = grayColor;
             }
             else {
                 [secondLevelSubview removeFromSuperview];
