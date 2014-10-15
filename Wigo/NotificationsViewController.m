@@ -204,18 +204,16 @@ BOOL didProfileSegue;
                 if ([_page intValue] < 5) [self fetchNotifications];
             }
         }
-        else {
-            if ([indexPath row] == [[_expiredNotificationsParty getObjectArray] count]) {
-                if ([_page intValue] < 5) {
-                    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-                    spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
-                    spinner.center = cell.contentView.center;
-                    [cell.contentView addSubview:spinner];
-                    [spinner startAnimating];
-                    [self fetchNotifications];
-                }
-                return cell;
+        if ([indexPath row] == [[_expiredNotificationsParty getObjectArray] count]) {
+            [self fetchNotifications];
+            if ([_page intValue] < 5) {
+                UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+                spinner.center = cell.contentView.center;
+                [cell.contentView addSubview:spinner];
+                [spinner startAnimating];
             }
+            return cell;
         }
     }
     
