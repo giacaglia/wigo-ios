@@ -20,6 +20,10 @@ NSNumber *eventID;
 UISearchBar *searchBar;
 BOOL isSearching;
 
+UIButton *aroundInviteButton;
+UILabel *titleLabel;
+UIButton *searchButton;
+
 @implementation InviteViewController
 
 - (id)initWithEventName:(NSString *)newEventName andID:(NSNumber *)newEventID {
@@ -48,7 +52,7 @@ BOOL isSearching;
 
 
 - (void)initializeTitle {
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 30, self.view.frame.size.width - 20, 30)];
+    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 30, self.view.frame.size.width - 20, 30)];
     titleLabel.text = @"Invite";
     titleLabel.textColor = [FontProperties getBlueColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -59,7 +63,7 @@ BOOL isSearching;
     lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
     [self.view addSubview:lineView];
 
-    UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(15 - 5, 40 - 5, 60 + 10, 15 + 10)];
+    aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(15 - 5, 40 - 5, 60 + 10, 15 + 10)];
     [aroundInviteButton addTarget:self action:@selector(donePressed) forControlEvents:UIControlEventTouchUpInside];
     [aroundInviteButton setShowsTouchWhenHighlighted:YES];
     [self.view addSubview:aroundInviteButton];
@@ -71,8 +75,7 @@ BOOL isSearching;
     doneLabel.font = [FontProperties getTitleFont];
     [aroundInviteButton addSubview:doneLabel];
     
-    
-    UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15, 40 - 5, 15, 16)];
+    searchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15, 40 - 5, 15, 16)];
     [searchButton addTarget:self action:@selector(searchPressed) forControlEvents:UIControlEventTouchUpInside];
     [searchButton setBackgroundImage:[UIImage imageNamed:@"searchIcon"] forState:UIControlStateNormal];
     [searchButton setShowsTouchWhenHighlighted:YES];
@@ -271,13 +274,15 @@ BOOL isSearching;
 #pragma mark - UISearchBar
 
 - (void)searchPressed {
-    self.navigationItem.leftBarButtonItem = nil;
-    searchBar.hidden = NO;
-    self.navigationItem.titleView = searchBar;
-    [searchBar becomeFirstResponder];
-    [self.navigationItem setHidesBackButton:YES animated:YES];
+    aroundInviteButton.hidden = YES;
+    titleLabel.hidden = YES;
+    searchButton.hidden = YES;
     
-    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
+    searchBar.hidden = NO;
+//    self.navigationItem.titleView = searchBar;
+    [searchBar becomeFirstResponder];
+    
+    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 65 - 15, 0, 65, 44)];
     [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
     [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
@@ -289,6 +294,10 @@ BOOL isSearching;
 }
 
 - (void)cancelPressed {
+    aroundInviteButton.hidden = NO;
+    titleLabel.hidden = NO;
+    searchButton.hidden = NO;
+
     [self.view endEditing:YES];
     isSearching = NO;
     searchBar.text = @"";

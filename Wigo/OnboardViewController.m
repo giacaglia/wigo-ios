@@ -15,6 +15,8 @@ CGPoint startingPointScrollView;
 
 NSMutableArray *arrayOfTitleLabel;
 NSMutableArray *arrayOfImageView;
+NSMutableArray *arrayOfPhoneImageView;
+UIButton *getStartedButton;
 
 @implementation OnboardViewController
 
@@ -32,6 +34,7 @@ NSMutableArray *arrayOfImageView;
     [super viewDidAppear:animated];
     arrayOfImageView = [NSMutableArray new];
     arrayOfTitleLabel = [NSMutableArray new];
+    arrayOfPhoneImageView = [NSMutableArray new];
     [self initializeScrollView];
     [self initializeTitle];
     [self initializeAnimatedGif];
@@ -40,37 +43,50 @@ NSMutableArray *arrayOfImageView;
 }
 
 - (void)initializeScrollView {
-    scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 60)];
+    scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 50)];
     scrollView.delegate = self;
-    scrollView.contentSize = CGSizeMake(self.view.frame.size.width * 4, self.view.frame.size.height - 60);
+    scrollView.contentSize = CGSizeMake(self.view.frame.size.width * 4, self.view.frame.size.height - 50);
     scrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:scrollView];
 }
 
 - (void)initializeAnimatedGif {
+    UIImageView *phoneImageview = [[UIImageView alloc] initWithFrame:CGRectMake(50, self.view.frame.size.height + 40, self.view.frame.size.width - 100, 400)];
+    phoneImageview.image = [UIImage imageNamed:@"iphone6"];
+    [scrollView addSubview:phoneImageview];
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"who" withExtension:@"gif"];
     FLAnimatedImage *image = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url]];
-    FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(50, self.view.frame.size.height, self.view.frame.size.width - 100, 380)];
+    FLAnimatedImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(65, self.view.frame.size.height, self.view.frame.size.width - 130, 320)];
     imageView.animatedImage = image;
     [UIView animateWithDuration:0.7 animations:^{
-        imageView.frame = CGRectMake(50, 130, self.view.frame.size.width - 100, 380);
+        phoneImageview.frame = CGRectMake(50, 100, self.view.frame.size.width - 100, 420);
+        imageView.frame = CGRectMake(65, 150, self.view.frame.size.width - 130, 320);
     }];
     [scrollView addSubview:imageView];
     [arrayOfImageView addObject:imageView];
+    [arrayOfPhoneImageView addObject:phoneImageview];
 
+    UIImageView *phoneImageview2 = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width + 50, self.view.frame.size.height + 40, self.view.frame.size.width - 100, 400)];
+    phoneImageview2.image = [UIImage imageNamed:@"iphone6"];
+    [scrollView addSubview:phoneImageview2];
     NSURL *url2 = [[NSBundle mainBundle] URLForResource:@"where" withExtension:@"gif"];
     FLAnimatedImage *image2 = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url2]];
-    FLAnimatedImageView *imageView2 = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width + 50, self.view.frame.size.height, self.view.frame.size.width - 100, 380)];
+    FLAnimatedImageView *imageView2 = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width + 65, self.view.frame.size.height, self.view.frame.size.width - 100, 320)];
     imageView2.animatedImage = image2;
     [scrollView addSubview:imageView2];
     [arrayOfImageView addObject:imageView2];
+    [arrayOfPhoneImageView addObject:phoneImageview2];
     
-    NSURL *url3 = [[NSBundle mainBundle] URLForResource:@"taps" withExtension:@"gif"];
+    UIImageView *phoneImageview3 = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 2 + 50, self.view.frame.size.height + 40, self.view.frame.size.width - 100, 400)];
+    phoneImageview3.image = [UIImage imageNamed:@"iphone6"];
+    [scrollView addSubview:phoneImageview3];
+    NSURL *url3 = [[NSBundle mainBundle] URLForResource:@"tapping" withExtension:@"gif"];
     FLAnimatedImage *image3 = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfURL:url3]];
     FLAnimatedImageView *imageView3 = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 2 + 50, self.view.frame.size.height, self.view.frame.size.width - 100, 380)];
     imageView3.animatedImage = image3;
     [scrollView addSubview:imageView3];
     [arrayOfImageView addObject:imageView3];
+    [arrayOfPhoneImageView addObject:phoneImageview3];
 }
 
 - (void)initializeTitle {
@@ -106,28 +122,29 @@ NSMutableArray *arrayOfImageView;
 }
 
 - (void)initializeGetStartedButton {
-    UILabel *titleLabel4 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 20, self.view.frame.size.width - 30, 100)];
+    UILabel *titleLabel4 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 80, self.view.frame.size.width - 30, 100)];
     titleLabel4.text = @"NO ADMNISTRATION";
     [self formatLabel:titleLabel4];
     titleLabel4.textColor = [FontProperties getOrangeColor];
     titleLabel4.font = [FontProperties mediumFont:21.0f];
     [scrollView addSubview:titleLabel4];
     
-    UILabel *titleLabel5 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 80, self.view.frame.size.width - 30, 100)];
+    UILabel *titleLabel5 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 140, self.view.frame.size.width - 30, 100)];
     titleLabel5.text = @"NO PARENTS";
     [self formatLabel:titleLabel5];
     titleLabel5.textColor = [FontProperties getOrangeColor];
     titleLabel5.font = [FontProperties mediumFont:21.0f];
     [scrollView addSubview:titleLabel5];
     
-    UILabel *titleLabel6 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 140, self.view.frame.size.width - 30, 100)];
+    UILabel *titleLabel6 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 200, self.view.frame.size.width - 30, 100)];
     titleLabel6.text = @"NO B.S.";
     [self formatLabel:titleLabel6];
     titleLabel6.textColor = [FontProperties getOrangeColor];
     titleLabel6.font = [FontProperties mediumFont:21.0f];
     [scrollView addSubview:titleLabel6];
     
-    UIButton *getStartedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 40, self.view.frame.size.height - 150, self.view.frame.size.width - 80, 60)];
+    getStartedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 40, self.view.frame.size.height, self.view.frame.size.width - 80, 60)];
+    getStartedButton.hidden = YES;
     [getStartedButton setTitle:@"GET STARTED" forState:UIControlStateNormal];
     [getStartedButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
     getStartedButton.titleLabel.font = [FontProperties getBigButtonFont];
@@ -151,7 +168,7 @@ NSMutableArray *arrayOfImageView;
 }
 
 - (void)initializePageControl {
-    pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(50, self.view.frame.size.height - 50, self.view.frame.size.width - 100, 40)];
+    pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(50, self.view.frame.size.height - 40, self.view.frame.size.width - 100, 30)];
     pageControl.enabled = NO;
     pageControl.currentPage = 0;
     pageControl.numberOfPages = 4;
@@ -222,11 +239,21 @@ NSMutableArray *arrayOfImageView;
     if (page >= 1 && page < 3) {
         UIImageView *imageView = [arrayOfImageView objectAtIndex:page];
         [UIView animateWithDuration:0.7 animations:^{
-            imageView.frame = CGRectMake(self.view.frame.size.width * page + 50, 130, self.view.frame.size.width - 100, 380);
+            imageView.frame = CGRectMake(self.view.frame.size.width * page + 65, 150, self.view.frame.size.width - 130, 320);
+        }];
+        UIImageView *phoneImageView = [arrayOfPhoneImageView objectAtIndex:page];
+        [UIView animateWithDuration:0.7 animations:^{
+            phoneImageView.frame = CGRectMake(self.view.frame.size.width * page + 50, 100, self.view.frame.size.width - 100, 420);
         }];
         UILabel *titleLabel = [arrayOfTitleLabel objectAtIndex:page];
         [UIView animateWithDuration:0.7 animations:^{
             titleLabel.frame = CGRectMake(15, 20, self.view.frame.size.width - 30, 100);
+        }];
+    }
+    if (page == 3) {
+        getStartedButton.hidden = NO;
+        [UIView animateWithDuration:0.7 animations:^{
+            getStartedButton.frame = CGRectMake(self.view.frame.size.width * 3 + 40, self.view.frame.size.height - 120, self.view.frame.size.width - 80, 60);
         }];
     }
 }

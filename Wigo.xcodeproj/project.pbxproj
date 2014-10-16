@@ -128,12 +128,6 @@
 		E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */; };
 		E9444C0819F00FCC004E7925 /* OnboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9444C0719F00FCC004E7925 /* OnboardViewController.m */; };
 		E9444C0919F00FCC004E7925 /* OnboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9444C0719F00FCC004E7925 /* OnboardViewController.m */; };
-		E9444C0C19F0102D004E7925 /* taps.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9444C0A19F0102D004E7925 /* taps.gif */; };
-		E9444C0D19F0102D004E7925 /* taps.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9444C0A19F0102D004E7925 /* taps.gif */; };
-		E9444C0E19F0102D004E7925 /* where.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9444C0B19F0102D004E7925 /* where.gif */; };
-		E9444C0F19F0102D004E7925 /* where.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9444C0B19F0102D004E7925 /* where.gif */; };
-		E9444C1119F01035004E7925 /* who.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9444C1019F01035004E7925 /* who.gif */; };
-		E9444C1219F01035004E7925 /* who.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9444C1019F01035004E7925 /* who.gif */; };
 		E95DC77D195329B10012AA20 /* Party.m in Sources */ = {isa = PBXBuildFile; fileRef = E95DC77C195329B10012AA20 /* Party.m */; };
 		E95DC78019538A270012AA20 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = E95DC77F19538A270012AA20 /* Event.m */; };
 		E9681C62194F745300182E0E /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C61194F745300182E0E /* User.m */; };
@@ -239,6 +233,12 @@
 		E9CD538C1993C42600206B75 /* go-out.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9CD538A1993C42600206B75 /* go-out.gif */; };
 		E9CD53931993C73900206B75 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9CD53921993C73900206B75 /* Images.xcassets */; };
 		E9CD53941993C73900206B75 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9CD53921993C73900206B75 /* Images.xcassets */; };
+		E9D29F3619F064B3001ED208 /* who.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9D29F3519F064B3001ED208 /* who.gif */; };
+		E9D29F3719F064B3001ED208 /* who.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9D29F3519F064B3001ED208 /* who.gif */; };
+		E9D29F3919F064BD001ED208 /* tapping.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9D29F3819F064BD001ED208 /* tapping.gif */; };
+		E9D29F3A19F064BD001ED208 /* tapping.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9D29F3819F064BD001ED208 /* tapping.gif */; };
+		E9D29F3C19F064C4001ED208 /* where.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9D29F3B19F064C4001ED208 /* where.gif */; };
+		E9D29F3D19F064C4001ED208 /* where.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9D29F3B19F064C4001ED208 /* where.gif */; };
 		E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E9D7D5321926539C00E1ED10 /* Main.storyboard */; };
 		E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906BD19252DA900E39FC8 /* PeopleViewController.m */; };
 		E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906C419253A1D00E39FC8 /* ChatViewController.m */; };
@@ -364,9 +364,6 @@
 		E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPageControlAligned.m; sourceTree = "<group>"; };
 		E9444C0619F00FCC004E7925 /* OnboardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardViewController.h; sourceTree = "<group>"; };
 		E9444C0719F00FCC004E7925 /* OnboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardViewController.m; sourceTree = "<group>"; };
-		E9444C0A19F0102D004E7925 /* taps.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = taps.gif; sourceTree = "<group>"; };
-		E9444C0B19F0102D004E7925 /* where.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = where.gif; sourceTree = "<group>"; };
-		E9444C1019F01035004E7925 /* who.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = who.gif; sourceTree = "<group>"; };
 		E95DC77B195329B10012AA20 /* Party.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Party.h; sourceTree = "<group>"; };
 		E95DC77C195329B10012AA20 /* Party.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Party.m; sourceTree = "<group>"; };
 		E95DC77E19538A270012AA20 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
@@ -478,6 +475,9 @@
 		E9CD53831993C29800206B75 /* FLAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLAnimatedImageView.m; sourceTree = "<group>"; };
 		E9CD538A1993C42600206B75 /* go-out.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "go-out.gif"; sourceTree = "<group>"; };
 		E9CD53921993C73900206B75 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		E9D29F3519F064B3001ED208 /* who.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = who.gif; sourceTree = "<group>"; };
+		E9D29F3819F064BD001ED208 /* tapping.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = tapping.gif; sourceTree = "<group>"; };
+		E9D29F3B19F064C4001ED208 /* where.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = where.gif; sourceTree = "<group>"; };
 		E9D7D5331926539C00E1ED10 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Wigo/en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E9D906BC19252DA900E39FC8 /* PeopleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleViewController.h; sourceTree = "<group>"; };
 		E9D906BD19252DA900E39FC8 /* PeopleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeopleViewController.m; sourceTree = "<group>"; };
@@ -1084,9 +1084,9 @@
 		E9CD53901993C48400206B75 /* Gifs */ = {
 			isa = PBXGroup;
 			children = (
-				E9444C1019F01035004E7925 /* who.gif */,
-				E9444C0A19F0102D004E7925 /* taps.gif */,
-				E9444C0B19F0102D004E7925 /* where.gif */,
+				E9D29F3519F064B3001ED208 /* who.gif */,
+				E9D29F3819F064BD001ED208 /* tapping.gif */,
+				E9D29F3B19F064C4001ED208 /* where.gif */,
 				E9E6A56D19994B41003B590C /* glowing.gif */,
 				E9CD538A1993C42600206B75 /* go-out.gif */,
 			);
@@ -1253,10 +1253,8 @@
 			files = (
 				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E980C1FF19EC27F20088EBF4 /* iOSa_2.71.0.version in Resources */,
-				E9444C0D19F0102D004E7925 /* taps.gif in Resources */,
-				E9444C1219F01035004E7925 /* who.gif in Resources */,
+				E9D29F3719F064B3001ED208 /* who.gif in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
-				E9444C0F19F0102D004E7925 /* where.gif in Resources */,
 				E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
@@ -1267,11 +1265,13 @@
 				E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
 				E980C20419EC29550088EBF4 /* Footer.xib in Resources */,
+				E9D29F3A19F064BD001ED208 /* tapping.gif in Resources */,
 				E9EA951E19EAE592003C79F0 /* LineHeader.xib in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
 				E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */,
 				E9E6A56F19994B41003B590C /* glowing.gif in Resources */,
+				E9D29F3D19F064C4001ED208 /* where.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1295,12 +1295,12 @@
 				E980C1FE19EC27F20088EBF4 /* iOSa_2.71.0.version in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
-				E9444C0E19F0102D004E7925 /* where.gif in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
+				E9D29F3919F064BD001ED208 /* tapping.gif in Resources */,
 				C18AC292198451150056957B /* autorevision.sh in Resources */,
-				E9444C1119F01035004E7925 /* who.gif in Resources */,
+				E9D29F3C19F064C4001ED208 /* where.gif in Resources */,
+				E9D29F3619F064B3001ED208 /* who.gif in Resources */,
 				E921D6201923967D00361247 /* InfoPlist.strings in Resources */,
-				E9444C0C19F0102D004E7925 /* taps.gif in Resources */,
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

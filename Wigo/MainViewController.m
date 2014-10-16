@@ -19,6 +19,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "CSStickyHeaderFlowLayout.h"
 #import "PeopleViewController.h"
+#import "OnboardViewController.h"
 
 @interface MainViewController ()
 
@@ -531,7 +532,8 @@ NSString *notGoingOutString;
 
 - (void)followPressed {
     if ([Profile user]) {
-        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[Profile user]] animated:YES];
+        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
+//        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[Profile user]] animated:YES];
         self.tabBarController.tabBar.hidden = YES;
     }
 }
