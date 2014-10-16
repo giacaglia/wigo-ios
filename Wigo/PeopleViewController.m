@@ -265,7 +265,7 @@ UIScrollView *suggestedScrollView;
         UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 223)];
         
         UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 14, 21)];
-        contextLabel.text = @"New on WiGo";
+        contextLabel.text = @"Suggested people";
         contextLabel.font = [FontProperties mediumFont:17.0f];
         contextLabel.textAlignment = NSTextAlignmentLeft;
         [secondPartSubview addSubview:contextLabel];

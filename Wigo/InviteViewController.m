@@ -8,6 +8,7 @@
 
 #import "InviteViewController.h"
 #import "Globals.h"
+#import "UIButtonAligned.h"
 #define HEIGHT_CELLS 70
 
 UITableView *invitePeopleTableView;
@@ -69,6 +70,13 @@ BOOL isSearching;
     doneLabel.textAlignment = NSTextAlignmentLeft;
     doneLabel.font = [FontProperties getTitleFont];
     [aroundInviteButton addSubview:doneLabel];
+    
+    
+    UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15, 40 - 5, 15, 16)];
+    [searchButton addTarget:self action:@selector(searchPressed) forControlEvents:UIControlEventTouchUpInside];
+    [searchButton setBackgroundImage:[UIImage imageNamed:@"searchIcon"] forState:UIControlStateNormal];
+    [searchButton setShowsTouchWhenHighlighted:YES];
+    [self.view addSubview:searchButton];
 }
 
 - (void)initializeTapPeopleTitle {
@@ -108,7 +116,7 @@ BOOL isSearching;
 }
 
 - (void)initializeTableInvite {
-    invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 104 + 75, self.view.frame.size.width, self.view.frame.size.height - 104 - 75)];
+    invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 75, self.view.frame.size.width, self.view.frame.size.height - 64 - 75)];
     [self.view addSubview:invitePeopleTableView];
     invitePeopleTableView.dataSource = self;
     invitePeopleTableView.delegate = self;
@@ -262,25 +270,45 @@ BOOL isSearching;
 
 #pragma mark - UISearchBar
 
+- (void)searchPressed {
+    self.navigationItem.leftBarButtonItem = nil;
+    searchBar.hidden = NO;
+    self.navigationItem.titleView = searchBar;
+    [searchBar becomeFirstResponder];
+    [self.navigationItem setHidesBackButton:YES animated:YES];
+    
+    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
+    [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+    [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
+    cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
+    cancelButton.titleLabel.font = [FontProperties getSubtitleFont];
+    [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
+    [barItem setCustomView:cancelButton];
+    self.navigationItem.rightBarButtonItem = barItem;
+}
+
+- (void)cancelPressed {
+    [self.view endEditing:YES];
+    isSearching = NO;
+    searchBar.text = @"";
+    [self searchBarTextDidEndEditing:searchBar];
+//    [_tableView reloadData];
+//    [self initializeNavigationItem];
+}
+
 - (void)initializeSearchBar {
     searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64 + 75, self.view.frame.size.width, 40)];
     searchBar.barTintColor = [FontProperties getBlueColor];
     searchBar.tintColor = [FontProperties getBlueColor];
     searchBar.placeholder = @"Search By Name";
     searchBar.delegate = self;
-    searchBar.layer.borderWidth = 1.0f;
-    searchBar.layer.borderColor = [FontProperties getBlueColor].CGColor;
     UITextField *searchField = [searchBar valueForKey:@"_searchField"];
     [searchField setValue:[FontProperties getBlueColor] forKeyPath:@"_placeholderLabel.textColor"];
-    [self.view addSubview:searchBar];
     
     // Search Icon Clear
     UITextField *txfSearchField = [searchBar valueForKey:@"_searchField"];
     [txfSearchField setLeftViewMode:UITextFieldViewModeNever];
-    
-    // Add Custom Search Icon
-    [self.view addSubview:searchBar];
-    [self.view bringSubviewToFront:searchBar];
     
     // Remove Clear Button on the right
     UITextField *textField = [searchBar valueForKey:@"_searchField"];

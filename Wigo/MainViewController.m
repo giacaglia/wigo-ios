@@ -642,7 +642,7 @@ NSString *notGoingOutString;
     [self updateTitleView];
     [self showTapButtons];
     [self animationShowingTapIcons];
-    [self fetchUserInfo];
+//    [self fetchUserInfo]; //TODO: Needs to be added when sent a notification from the startup view
 }
 
 
