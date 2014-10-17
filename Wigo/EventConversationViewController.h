@@ -8,7 +8,8 @@
 
 #import "ConversationViewController.h"
 #import "Event.h"
+#import "SOMessagingViewController.h"
 
-@interface EventConversationViewController : UIViewController
+@interface EventConversationViewController : SOMessagingViewController
 - (id)initWithEvent: (Event *)event;
 @end
