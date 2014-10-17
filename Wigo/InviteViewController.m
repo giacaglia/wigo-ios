@@ -23,6 +23,7 @@ BOOL isSearching;
 UIButton *aroundInviteButton;
 UILabel *titleLabel;
 UIButton *searchButton;
+UIButton *cancelButton;
 
 @implementation InviteViewController
 
@@ -279,18 +280,16 @@ UIButton *searchButton;
     searchButton.hidden = YES;
     
     searchBar.hidden = NO;
-//    self.navigationItem.titleView = searchBar;
+    [self.view addSubview:searchBar];
     [searchBar becomeFirstResponder];
     
-    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 65 - 15, 0, 65, 44)];
+    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 65 - 15, 20, 65, 44)];
     [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
     [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
     cancelButton.titleLabel.font = [FontProperties getSubtitleFont];
-    [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
-    [barItem setCustomView:cancelButton];
-    self.navigationItem.rightBarButtonItem = barItem;
+    [cancelButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    [self.view addSubview:cancelButton];
 }
 
 - (void)cancelPressed {
@@ -298,16 +297,22 @@ UIButton *searchButton;
     titleLabel.hidden = NO;
     searchButton.hidden = NO;
 
+    cancelButton.hidden = YES;
     [self.view endEditing:YES];
     isSearching = NO;
     searchBar.text = @"";
-    [self searchBarTextDidEndEditing:searchBar];
-//    [_tableView reloadData];
-//    [self initializeNavigationItem];
+    searchBar.hidden = YES;
+    
+    [invitePeopleTableView reloadData];
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [searchBar endEditing:YES];
+}
+
+
 - (void)initializeSearchBar {
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64 + 75, self.view.frame.size.width, 40)];
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width - 60, 40)];
     searchBar.barTintColor = [FontProperties getBlueColor];
     searchBar.tintColor = [FontProperties getBlueColor];
     searchBar.placeholder = @"Search By Name";
@@ -326,11 +331,8 @@ UIButton *searchButton;
     // Text when editing becomes orange
     for (UIView *subView in searchBar.subviews) {
         for (UIView *secondLevelSubview in subView.subviews){
-            if ([secondLevelSubview isKindOfClass:[UITextField class]])
-            {
-                UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
-                searchBarTextField.textColor = [FontProperties getBlueColor];
-                break;
+            if (![secondLevelSubview isKindOfClass:[UITextField class]]) {
+                [secondLevelSubview removeFromSuperview];
             }
         }
     }
@@ -369,8 +371,8 @@ UIButton *searchButton;
      cancelPreviousRequest:YES];
     }
     else {
-        [self.view endEditing:YES];
-        isSearching = NO;
+//        [self.view endEditing:YES];
+//        isSearching = NO;
     }
     [invitePeopleTableView reloadData];
 }

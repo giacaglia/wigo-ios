@@ -649,8 +649,6 @@ UIScrollView *suggestedScrollView;
     [_searchBar endEditing:YES];
 }
 
-
-
 - (void) followedPersonPressed:(id)sender {
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
     NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
