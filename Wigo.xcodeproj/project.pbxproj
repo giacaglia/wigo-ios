@@ -271,6 +271,8 @@
 		E9F7995519D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */; };
 		E9F7995619D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */; };
 		E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
+		FA438E4619F16F7700AD74C2 /* EventConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */; };
+		FA438E4719F16F7700AD74C2 /* EventConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -521,6 +523,8 @@
 		E9F7995019D4C646001D5BFC /* GAITrackedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITrackedViewController.h; sourceTree = "<group>"; };
 		E9F7995119D4C646001D5BFC /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
 		E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
+		FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventConversationViewController.h; sourceTree = "<group>"; };
+		FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventConversationViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -988,6 +992,8 @@
 				E93DE529195C82B900079074 /* MessageViewController.m */,
 				E9A50CFB19350F13009B73EA /* ConversationViewController.h */,
 				E9A50CFC19350F13009B73EA /* ConversationViewController.m */,
+				FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */,
+				FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */,
 			);
 			name = ChatViews;
 			sourceTree = "<group>";
@@ -1408,6 +1414,7 @@
 				E96F07C819BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */,
 				C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */,
 				C12A111A19787BE700D53B1C /* Party.m in Sources */,
+				FA438E4719F16F7700AD74C2 /* EventConversationViewController.m in Sources */,
 				C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */,
 				E96F07BE19BA654600E858D7 /* GKCropBorderView.m in Sources */,
 				C12A111C19787BE700D53B1C /* NSMutableURLRequest+Wigo.m in Sources */,
@@ -1498,6 +1505,7 @@
 				E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */,
 				E95DC77D195329B10012AA20 /* Party.m in Sources */,
 				E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */,
+				FA438E4619F16F7700AD74C2 /* EventConversationViewController.m in Sources */,
 				C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */,
 				E96F07BD19BA654600E858D7 /* GKCropBorderView.m in Sources */,
 				E900C2B91961EADE00A01F50 /* SDWebImageDecoder.m in Sources */,

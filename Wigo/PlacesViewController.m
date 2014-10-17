@@ -16,6 +16,7 @@
 #import "WigoConfirmationViewController.h"
 #import "MobileContactsViewController.h"
 #import "InviteViewController.h"
+#import "EventConversationViewController.h"
 
 #define xSpacing 10
 #define sizeOfEachCell 165
@@ -708,8 +709,27 @@ BOOL shouldReloadEvents;
         [imgView addSubview:profileName];
     }
     [cell.contentView addSubview:placeSubView];
+    
+    //add invisible event conversation button
+    UIButton *eventFeedButton = [[UIButton alloc] initWithFrame: labelName.frame];
+    eventFeedButton.backgroundColor = [UIColor clearColor];
+    eventFeedButton.tag = indexPath.row;
+    [eventFeedButton addTarget: self action: @selector(showEventConversation:) forControlEvents: UIControlEventTouchUpInside];
+    [cell.contentView addSubview: eventFeedButton];
     imagesScrollView.contentOffset = CGPointMake(eventOffset, 0);
     return cell;
+}
+
+- (void)showEventConversation:(UIButton *) button {
+    NSArray *eventsArray;
+    if (_isSearching) eventsArray = [_filteredContentParty getObjectArray];
+    else eventsArray = [_contentParty getObjectArray];
+    
+    Event *chosenEvent = [eventsArray objectAtIndex: button.tag];
+    
+    EventConversationViewController *eventConversationController = [[EventConversationViewController alloc] initWithEvent: chosenEvent];
+    [self.navigationController pushViewController: eventConversationController animated: YES];
+    self.tabBarController.tabBar.hidden = YES;
 }
 
 -(int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
