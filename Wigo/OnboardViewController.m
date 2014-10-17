@@ -121,7 +121,7 @@ BOOL runningAnimations;
     UIView *containerTitleLabel4 = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3, 20, self.view.frame.size.width, 80)];
     containerTitleLabel4.clipsToBounds = YES;
     UILabel *titleLabel4 = [[UILabel alloc] initWithFrame:CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width - 30, 80)];
-    titleLabel4.text = @"And of course:";
+    titleLabel4.text = @"And of course...";
     [self formatLabel:titleLabel4];
     [scrollView addSubview:containerTitleLabel4];
     [containerTitleLabel4 addSubview:titleLabel4];
@@ -131,7 +131,7 @@ BOOL runningAnimations;
 
 - (void)initializeGetStartedButton {
     UILabel *titleLabel4 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 130, self.view.frame.size.width - 30, 100)];
-    titleLabel4.text = @"NO ADMNISTRATION";
+    titleLabel4.text = @"NO SKETCHY RANDOS";
     [self formatLabel:titleLabel4];
     titleLabel4.textColor = [FontProperties getOrangeColor];
     titleLabel4.font = [FontProperties mediumFont:21.0f];
@@ -140,7 +140,7 @@ BOOL runningAnimations;
     [arrayOfLabels addObject:titleLabel4];
     
     UILabel *titleLabel5 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 200, self.view.frame.size.width - 30, 100)];
-    titleLabel5.text = @"NO PARENTS";
+    titleLabel5.text = @"NO ADMINISTRATION";
     [self formatLabel:titleLabel5];
     titleLabel5.textColor = [FontProperties getOrangeColor];
     titleLabel5.font = [FontProperties mediumFont:21.0f];
@@ -149,7 +149,7 @@ BOOL runningAnimations;
     [arrayOfLabels addObject:titleLabel5];
     
     UILabel *titleLabel6 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 270, self.view.frame.size.width - 30, 100)];
-    titleLabel6.text = @"NO B.S.";
+    titleLabel6.text = @"NO PARENTS";
     [self formatLabel:titleLabel6];
     titleLabel6.textColor = [FontProperties getOrangeColor];
     titleLabel6.font = [FontProperties mediumFont:21.0f];
