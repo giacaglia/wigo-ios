@@ -44,6 +44,7 @@ int queryQueueInt;
 UIView *secondPartSubview;
 BOOL fetching;
 UIScrollView *suggestedScrollView;
+NSMutableArray *suggestedArrayView;
 
 @implementation PeopleViewController
 
@@ -72,8 +73,8 @@ UIScrollView *suggestedScrollView;
     queryQueueInt = 0;
     [super viewDidLoad];
     didProfileSegue = NO;
-//    userInt = -1;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
+    suggestedArrayView = [NSMutableArray new];
     // Title setup
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
@@ -102,7 +103,6 @@ UIScrollView *suggestedScrollView;
         [self loadTableView];
     }
     didProfileSegue = NO;
-//    userInt = -1;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
 }
 
@@ -186,7 +186,6 @@ UIScrollView *suggestedScrollView;
     User *user = [self getUserAtIndex:tag];
     if (user) {
         didProfileSegue = YES;
-//        userInt = tag;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
@@ -199,7 +198,6 @@ UIScrollView *suggestedScrollView;
     User *user = [self getUserAtIndex:tag];
     if (user) {
         didProfileSegue = YES;
-//        userInt = tag;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
@@ -265,7 +263,7 @@ UIScrollView *suggestedScrollView;
         UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 223)];
         
         UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 14, 21)];
-        contextLabel.text = @"Suggested people";
+        contextLabel.text = @"Suggested friends";
         contextLabel.font = [FontProperties mediumFont:17.0f];
         contextLabel.textAlignment = NSTextAlignmentLeft;
         [secondPartSubview addSubview:contextLabel];
@@ -276,7 +274,9 @@ UIScrollView *suggestedScrollView;
         int xPosition = 10;
         for (int i = 0; i < MIN(10,[[_suggestionsParty getObjectArray] count]); i++) {
             User *user = [[_suggestionsParty getObjectArray] objectAtIndex:i];
-            [suggestedScrollView addSubview:[self cellOfUser:user atXPosition:xPosition]];
+            UIView *cellView = [self cellOfUser:user atXPosition:xPosition];
+            [suggestedScrollView addSubview:cellView];
+            [suggestedArrayView addObject:cellView];
             xPosition += 130;
             suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
         }
@@ -393,14 +393,21 @@ UIScrollView *suggestedScrollView;
             }
         }
         
-        UILabel *mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 152, 110, 15)];
-        mutualFriendsLabel.text = @"25 mututal friends";
-        mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
-        mutualFriendsLabel.font = [FontProperties lightFont:12.0f];
-        mutualFriendsLabel.textColor = RGB(102, 102, 102);
-        [cellOfUser addSubview:mutualFriendsLabel];
-        
-        UILabel *dateJoined = [[UILabel alloc] initWithFrame:CGRectMake(0, 165, 110, 12)];
+        UILabel *dateJoined = [[UILabel alloc] init];
+        if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastUserRead] intValue]) {
+            UILabel *mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 152, 110, 15)];
+            mutualFriendsLabel.text = @"New on WiGo";
+            mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
+            mutualFriendsLabel.font = [FontProperties lightFont:12.0f];
+            mutualFriendsLabel.textColor = RGB(102, 102, 102);
+            [cellOfUser addSubview:mutualFriendsLabel];
+            
+            dateJoined.frame = CGRectMake(0, 165, 110, 12);
+        }
+        else {
+            dateJoined.frame = CGRectMake(0, 152, 110, 12);
+        }
+    
         dateJoined.text = [user joinedDate];
         dateJoined.textColor = RGB(201, 202, 204);
         dateJoined.textAlignment = NSTextAlignmentCenter;
@@ -415,8 +422,14 @@ UIScrollView *suggestedScrollView;
     int indexOfPerson = (buttonOriginInTableView.x - 40)/130 ;
     User *user;
     int sizeOfArray = (int)[[_suggestionsParty getObjectArray] count];
-    if (sizeOfArray > 0 && sizeOfArray > indexOfPerson)
+    if (sizeOfArray > 0 && sizeOfArray > indexOfPerson) {
         user = [[_suggestionsParty getObjectArray] objectAtIndex:indexOfPerson];
+        UIView *viewOfUser = [suggestedArrayView objectAtIndex:indexOfPerson];
+        CGRect frame = viewOfUser.frame;
+        [UIView animateWithDuration:0.1 animations:^{
+            viewOfUser.frame = CGRectMake(frame.origin.x, frame.origin.y - 100, frame.size.width, frame.size.height);
+        }];
+    }
     if (user) [self updateButton:sender withUser:user];
 }
 
@@ -426,7 +439,6 @@ UIScrollView *suggestedScrollView;
     User *user = [self getSuggestedUser:tag];
     if (user) {
         didProfileSegue = YES;
-//        userInt = tag;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:0];
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];

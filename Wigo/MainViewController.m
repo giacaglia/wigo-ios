@@ -296,6 +296,7 @@ NSString *notGoingOutString;
                     if (profileUser) {
                         NSNumber *lastUserRead = [profileUser lastUserRead];
                         NSNumber *lastUserJoinedNumber = (NSNumber *)[lastUserJoined objectForKey:@"id"];
+                        [Profile setLastUserJoined:lastUserJoinedNumber];
                         [_rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
                         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
                         imageView.image = [UIImage imageNamed:@"followPlus"];
@@ -468,6 +469,21 @@ NSString *notGoingOutString;
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:_rightButton];
     self.navigationItem.rightBarButtonItem = rightBarButton;
     
+    if ([Profile lastUserJoined]) {
+        if ([[[Profile user]  lastUserRead] intValue] < [[Profile lastUserJoined] intValue]) {
+            redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 10, 10)];
+            redDotLabel.backgroundColor = [UIColor redColor];
+            redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
+            redDotLabel.clipsToBounds = YES;
+            redDotLabel.layer.borderWidth = 3;
+            redDotLabel.layer.cornerRadius = 5;
+            [_rightButton addSubview:redDotLabel];
+        }
+        else {
+            if (redDotLabel) [redDotLabel removeFromSuperview];
+        }
+    }
+    
     [self updateTitleView];
 }
 
@@ -609,7 +625,6 @@ NSString *notGoingOutString;
             }
         }
     }
-//    NSLog(@"updated ui");
 }
 
 - (UIImageView *)gifGoOut {

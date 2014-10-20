@@ -19,6 +19,7 @@ static Party *followingParty;
 static Party *notAcceptedFollowingParty;
 static BOOL googleAnalyticsEnabled;
 static BOOL localyticsEnabled;
+static NSNumber *lastUserRead;
 
 
 + (User *)user {
@@ -41,6 +42,14 @@ static BOOL localyticsEnabled;
         }
         [newUser updateUserAnalytics];
     }
+}
+
++ (void)setLastUserJoined:(NSNumber *)newLastUserJoined {
+    lastUserRead = newLastUserJoined;
+}
+
++ (NSNumber *)lastUserJoined {
+    return lastUserRead;
 }
 
 + (Party *)followingParty {

@@ -15,6 +15,9 @@
 + (User *) user;
 + (void)setUser:(User *)newUser;
 
++ (void)setLastUserJoined:(NSNumber *)lastUserJoined;
++ (NSNumber *)lastUserJoined;
+
 + (Party *)followingParty;
 + (void)setFollowingParty:(Party *)newFollowingParty;
 + (Party *)notAcceptedFollowingParty;
