@@ -1024,14 +1024,13 @@ NSString *notGoingOutString;
             UIButton *tapButton = [user objectForKey:@"tapButton"];
             [tapButtonArray addObject:tapButton];
         }
-    }
-    
+    }    
     for (UIImageViewShake *tappedImageView in tapArray) {
         tappedImageView.hidden = YES;
         CGRect previousFrame = tappedImageView.frame;
         [tapFrameArray addObject:[NSValue valueWithCGRect:previousFrame]];
-        CGPoint centerPoint = [self.view convertPoint:self.view.center toView:tappedImageView.superview];
-        tappedImageView.center = centerPoint;
+//        CGPoint centerPoint = [self.view convertPoint:self.view.center toView:tappedImageView.superview];
+        tappedImageView.center = self.view.center;
     }
 
     [UIView animateWithDuration:0.3
