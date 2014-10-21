@@ -408,6 +408,11 @@ NSString *notGoingOutString;
                                              selector:@selector(goOutPressed)
                                                  name:@"goOutPressed"
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(popGoOutPressed)
+                                                 name:@"popGoOutPressed"
+                                               object:nil];
 
 }
 
@@ -651,13 +656,19 @@ NSString *notGoingOutString;
     return gifGoOutImageView;
 }
 
+
+- (void)popGoOutPressed {
+    [self goOutPressed];
+    [self fetchUserInfo];
+}
+
+
 - (void) goOutPressed {
     [Network postGoOut];
     [[Profile user] setIsGoingOut:YES];
     [self updateTitleView];
     [self showTapButtons];
     [self animationShowingTapIcons];
-//    [self fetchUserInfo]; //TODO: Needs to be added when sent a notification from the startup view
 }
 
 
@@ -930,7 +941,6 @@ NSString *notGoingOutString;
                 label.attributedText = attributedString;
             }
             else label.text = @"GOING OUT";
-           
         }
         else {
             if (notGoingOutString.length > 0) {
@@ -1024,7 +1034,7 @@ NSString *notGoingOutString;
             UIButton *tapButton = [user objectForKey:@"tapButton"];
             [tapButtonArray addObject:tapButton];
         }
-    }    
+    }
     for (UIImageViewShake *tappedImageView in tapArray) {
         tappedImageView.hidden = YES;
         CGRect previousFrame = tappedImageView.frame;

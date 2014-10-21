@@ -112,7 +112,7 @@ UILabel *emojiLabel;
 - (void)acceptGoingOut {
     [EventAnalytics tagEvent:@"Pop Go Out"];
     [self dismissViewControllerAnimated:NO completion:^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"goOutPressed" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"popGoOutPressed" object:nil];
     }];
 }
 
