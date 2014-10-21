@@ -131,7 +131,8 @@
     BOOL isEmail = [emailTest evaluateWithObject:emailString];
     if (isEmail) {
         // NEED TO save the url's before signing up
-        NSArray *imagesUrl = [[Profile user] imagesURL];
+//        NSArray *imagesUrl = [[Profile user] imagesURL];
+        NSArray *images = [[Profile user] images];
         [[Profile user] setEmail:emailString];
         NSString *response = [[Profile user] signUp];
         if ([response isEqualToString:@"error"]) {
@@ -143,7 +144,8 @@
             [alert show];
         }
         else {
-            [[Profile user] setImagesURL:imagesUrl];
+            [[Profile user] setImages:images];
+//            [[Profile user] setImagesURL:imagesUrl];
             [[Profile user] save];
             self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
             [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];

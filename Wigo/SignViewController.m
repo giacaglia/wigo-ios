@@ -176,10 +176,16 @@
                               }
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
                               for (FBGraphObject *photoRepresentation in resultObject) {
+//                                  NSLog(@"photo representation: %@", photoRepresentation);
                                   FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
                                   FBGraphObject *newPhoto = [self getFirstFacebookPhotoGreaterThanSixHundred:images];
                                   if (newPhoto != nil) {
-                                      [profilePictures addObject:[newPhoto objectForKey:@"source"]];
+                                      NSMutableDictionary *newImage = [NSMutableDictionary new];
+                                      [newImage setValue:[newPhoto objectForKey:@"source"] forKey:@"url"];
+                                      [newImage setValue:[photoRepresentation objectForKey:@"id"] forKey:@"id"];
+                                      [newImage setValue:@"facebook" forKey:@"type"];
+                                      [profilePictures addObject:newImage];
+//                                      [profilePictures addObject:[newPhoto objectForKey:@"source"]];
                                       if ([profilePictures count] == 1) {
                                           [[Profile user] setValue:[profilePictures objectAtIndex:0] forKey:@"image"];
                                       }
@@ -196,7 +202,8 @@
 }
 
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
-    [[Profile user] setImagesURL:profilePictures];
+    [[Profile user] setImages:profilePictures];
+//    [[Profile user] setImagesURL:profilePictures];
     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
     if (!_pushed) {
         _pushed = YES;
