@@ -434,8 +434,8 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void)addMessage:(NSNotification *)notification {
-    NSString *fullName = [[notification userInfo] valueForKey:@"fullName"];
-    if ([fullName isEqualToString:[self.user fullName]]) {
+    NSNumber *fromUserID = [[notification userInfo] valueForKey:@"id"];
+    if (fromUserID && [fromUserID isEqualToNumber:[self.user objectForKey:@"id"]]) {
         NSString *messageString = [[notification userInfo] valueForKey:@"message"];
         Message *message = [[Message alloc] init];
         [message setMessageString:messageString];
