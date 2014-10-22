@@ -86,12 +86,10 @@
 
     KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:@"WiGo" accessGroup:nil];
 
-//    [keychainItem setObject:@"password you are saving" forKey:key];
-//    KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:@"YourAppLogin" accessGroup:nil];
+
     NSData *keyData = (NSData *)[keychainItem objectForKey:(__bridge id)kSecValueData];
     NSString *key = [[NSString alloc] initWithData:keyData
                                                  encoding:NSUTF8StringEncoding];
-    //    NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
     if (key.length > 0) {
         User *user = [[User alloc] initWithDictionary:@{@"key": key}];
         [Profile setUser:user];

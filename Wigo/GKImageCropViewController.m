@@ -36,13 +36,12 @@
 
 
 - (void)_actionCancel{
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.delegate imageCropController:self didFinishWithCroppedImage:_croppedImage];
 }
 
 
 - (void)_actionUse{
     _croppedImage = [self.imageCropView croppedImage];
-    [self.delegate imageCropController:self didFinishWithCroppedImage:_croppedImage];
     [self.delegate didFinishWithCroppedArea:[self.imageCropView croppedArea]];
 }
 
