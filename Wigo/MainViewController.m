@@ -363,6 +363,16 @@ NSString *notGoingOutString;
     }];
 }
 
+- (void)sendImageFailureInfoForUser:(User *)user {
+    NSDictionary *options = @{@"user_id": [user objectForKey:@"id"], @"image_type": @"facebook"};
+    [Network sendAsynchronousHTTPMethod:POST
+                            withAPIName:@"images/failed/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                            }
+                            withOptions:options
+    ];
+}
+
 #pragma mark - viewDidLoad initializations
 
 - (void)initializeFlashScreen {
@@ -859,7 +869,14 @@ NSString *notGoingOutString;
     cell.profileButton2.tag = tag;
     cell.profileButton3.tag = tag;
     
-    [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea]];
+    __block int weakTag = tag;
+    [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        if (error) {
+            NSIndexPath *indexPath = [self indexPathFromTag:weakTag];
+            User *user = [self userForIndexPath:indexPath];
+            [self sendImageFailureInfoForUser:user];
+        }
+    }];
     
     cell.userCoverImageView.tag = tag;
     cell.profileName.text = [user firstName];
@@ -893,6 +910,7 @@ NSString *notGoingOutString;
     
     return cell;
 }
+
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
