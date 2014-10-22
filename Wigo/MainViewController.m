@@ -870,11 +870,14 @@ NSString *notGoingOutString;
     cell.profileButton3.tag = tag;
     
     __block int weakTag = tag;
+    __block WigoCustomCell *weakCell = cell;
     [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         if (error) {
             NSIndexPath *indexPath = [self indexPathFromTag:weakTag];
             User *user = [self userForIndexPath:indexPath];
             [self sendImageFailureInfoForUser:user];
+            NSString *facebookID = [user objectForKey:@"facebook_id"];
+            [weakCell.userCoverImageView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", facebookID]]];
         }
     }];
     
