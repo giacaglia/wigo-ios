@@ -8,6 +8,7 @@
 
 #import "SignViewController.h"
 #import "MainViewController.h"
+#import "OnboardViewController.h"
 #import "Globals.h"
 
 #import <Crashlytics/Crashlytics.h>
@@ -59,7 +60,18 @@
     _alertShown = NO;
     _fetchingProfilePictures = NO;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
-    [self getFacebookTokensAndLoginORSignUp];
+    [self showOnboard];
+}
+
+- (void)showOnboard {
+    BOOL showedOnboardView = [[NSUserDefaults standardUserDefaults] boolForKey:@"showedOnboardView"];
+    if (showedOnboardView) {
+        [self getFacebookTokensAndLoginORSignUp];
+    }
+    else {
+        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showedOnboardView"];
+    }
 }
 
 - (void) changeAlertToNotShown {
