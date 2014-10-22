@@ -364,7 +364,7 @@ NSString *notGoingOutString;
 }
 
 - (void)sendImageFailureInfoForUser:(User *)user {
-    NSDictionary *options = @{@"user_id": [user objectForKey:@"id"], @"image_type": @"facebook"};
+    NSDictionary *options = @[@{@"user_id": [user objectForKey:@"id"], @"image_type": @"facebook"}];
     [Network sendAsynchronousHTTPMethod:POST
                             withAPIName:@"images/failed/"
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {

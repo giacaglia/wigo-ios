@@ -117,7 +117,12 @@
 }
 
 - (NSString *)key {
-    return (NSString *)[_proxy objectForKey:@"key"];
+    NSString *key = (NSString *)[_proxy objectForKey:@"key"];
+    if (key) return key;
+    else {
+        NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
+        return key;
+    }
 }
 
 - (void)setKey:(NSString *)key {

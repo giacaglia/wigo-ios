@@ -83,6 +83,8 @@
     _fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"]);
     _accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
 
+//    KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:@"YourAppLogin" accessGroup:nil];
+
     NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
     if (key) {
         User *user = [[User alloc] initWithDictionary:@{@"key": key}];
