@@ -19,6 +19,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "CSStickyHeaderFlowLayout.h"
 #import "PeopleViewController.h"
+#import "NSObject-CancelableScheduledBlock.h"
 
 @interface MainViewController ()
 
@@ -46,6 +47,8 @@ int userInt;
 UILabel *redDotLabel;
 NSString *goingOutString;
 NSString *notGoingOutString;
+Party *failedUsersParty;
+NSMutableArray *failedUserInfoArray;
 
 @implementation MainViewController
 
@@ -364,13 +367,27 @@ NSString *notGoingOutString;
 }
 
 - (void)sendImageFailureInfoForUser:(User *)user {
-    NSDictionary *options = @[@{@"user_id": [user objectForKey:@"id"], @"image_type": @"facebook"}];
-    [Network sendAsynchronousHTTPMethod:POST
-                            withAPIName:@"images/failed/"
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                            }
-                            withOptions:options
-    ];
+    if (!failedUsersParty) {
+        failedUsersParty = [[Party alloc] initWithObjectType:USER_TYPE];
+        failedUserInfoArray = [NSMutableArray new];
+    }
+    if (![failedUsersParty containsObject:[user dictionary]]) {
+        [failedUserInfoArray addObject:@{@"user_id": [user objectForKey:@"id"], @"image_type": @"facebook"}];
+    }
+    
+    [self performBlock:^(void){
+        [Network sendAsynchronousHTTPMethod:POST
+                                withAPIName:@"images/failed/"
+                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                    failedUsersParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                                    failedUserInfoArray = [NSMutableArray new];
+                                }
+                                withOptions:failedUserInfoArray
+         ];
+    }
+            afterDelay:0.2
+ cancelPreviousRequest:YES];
+    
 }
 
 #pragma mark - viewDidLoad initializations
