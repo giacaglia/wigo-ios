@@ -176,16 +176,16 @@
                               }
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
                               for (FBGraphObject *photoRepresentation in resultObject) {
-//                                  NSLog(@"photo representation: %@", photoRepresentation);
                                   FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
-                                  FBGraphObject *newPhoto = [self getFirstFacebookPhotoGreaterThanSixHundred:images];
+                                  FBGraphObject *newPhoto = [self getFirstFacebookPhotoGreaterThanX:600 inPhotoArray:images];
+                                  FBGraphObject *smallPhoto = [self getFirstFacebookPhotoGreaterThanX:200 inPhotoArray:images];
                                   if (newPhoto != nil) {
                                       NSMutableDictionary *newImage = [NSMutableDictionary new];
                                       [newImage setValue:[newPhoto objectForKey:@"source"] forKey:@"url"];
                                       [newImage setValue:[photoRepresentation objectForKey:@"id"] forKey:@"id"];
                                       [newImage setValue:@"facebook" forKey:@"type"];
                                       [profilePictures addObject:newImage];
-//                                      [profilePictures addObject:[newPhoto objectForKey:@"source"]];
+                                      if (smallPhoto) [newImage setValue:[smallPhoto objectForKey:@"source"] forKey:@"small"];
                                       if ([profilePictures count] == 1) {
                                           [[Profile user] setValue:[profilePictures objectAtIndex:0] forKey:@"image"];
                                       }
@@ -201,9 +201,10 @@
                           }];
 }
 
+
+
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
     [[Profile user] setImages:profilePictures];
-//    [[Profile user] setImagesURL:profilePictures];
     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
     if (!_pushed) {
         _pushed = YES;
@@ -213,12 +214,13 @@
     }
 }
 
-- (FBGraphObject *)getFirstFacebookPhotoGreaterThanSixHundred:(FBGraphObject *)photoArray {
+
+- (FBGraphObject *)getFirstFacebookPhotoGreaterThanX:(int)X inPhotoArray:(FBGraphObject *)photoArray {
     int minHeight = 0;
     FBGraphObject *returnedPhoto;
     for (FBGraphObject *fbPhoto in photoArray) {
         int heightPhoto = [[fbPhoto objectForKey:@"height"] intValue];
-        if (heightPhoto > 600) {
+        if (heightPhoto > X) {
             if (minHeight == 0) {
                 returnedPhoto = fbPhoto;
                 minHeight = heightPhoto;
