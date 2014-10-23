@@ -42,7 +42,6 @@ NSMutableArray *chosenPeople;
     [self initializeSearchBar];
     [self initializeTapHandler];
     [self initializeTableViewWithPeople];
-//    [self initializeButtonIAmDone];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -81,7 +80,7 @@ NSMutableArray *chosenPeople;
    [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
        dispatch_async(dispatch_get_main_queue(), ^(void){
            if ([mobileArray count] > 0) {
-               peopleContactList = mobileArray;
+               peopleContactList = [NSMutableArray arrayWithArray:mobileArray];
                [contactsTableView reloadData];
            }
            else {
@@ -222,62 +221,8 @@ NSMutableArray *chosenPeople;
 
 }
 
-- (void)initializeButtonIAmDone {
-    UIButton *iAmDoneButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 50 - 10, self.view.frame.size.width - 30, 50)];
-    [iAmDoneButton setTitle:@"OK, I AM DONE" forState:UIControlStateNormal];
-    [iAmDoneButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    iAmDoneButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    iAmDoneButton.layer.borderWidth = 2.0f;
-    iAmDoneButton.layer.cornerRadius = 10;
-    [iAmDoneButton addTarget:self action:@selector(donePressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:iAmDoneButton];
-}
-
-
 - (void)donePressed {
-    NSMutableArray *numbers = [[NSMutableArray alloc] init];
-    for (CFIndex i = 0; i < [chosenPeople count]; i++) {
-        NSString *recordIDString = [chosenPeople objectAtIndex:i];
-        for (int j = 0; j < [peopleContactList count]; j++) {
-            ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:j]);
-            ABRecordID newRecordID = ABRecordGetRecordID(contactPerson);
-            NSString *newRecordIDString = [NSString stringWithFormat:@"%d",newRecordID];
-            if ([recordIDString isEqualToString:newRecordIDString]) {
-                ABMultiValueRef multiPhones = ABRecordCopyValue(contactPerson, kABPersonPhoneProperty);
-                for(CFIndex i = 0; i < ABMultiValueGetCount(multiPhones); i++) {
-                    
-                    NSString* phoneLabel = (__bridge NSString*) ABMultiValueCopyLabelAtIndex(multiPhones, i);
-                    NSString* phoneNumber = (__bridge NSString*) ABMultiValueCopyValueAtIndex(multiPhones, i);
-                    //for example
-                    if([phoneLabel isEqualToString:(NSString *)kABPersonPhoneIPhoneLabel]) {
-                        [numbers addObject:@{@"phone":phoneNumber}];
-                        break;
-                    }
-                    else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMobileLabel])) {
-                        [numbers addObject:@{@"phone":phoneNumber}];
-                        break;
-                    }
-                    else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMainLabel])) {
-                        [numbers addObject:@{@"phone":phoneNumber}];
-                        break;
-                    }
-                    else {
-                        [numbers addObject:@{@"phone":phoneNumber}];
-                        break;
-                    }
-                }
-
-            }
-        }
-    }
-    if ([numbers count] > 0) {
-        NSDictionary *options = (NSDictionary *)numbers;
-        [Network sendAsynchronousHTTPMethod:POST
-                                withAPIName:@"invites/"
-                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                                withOptions:options];
-
-    }
+    [MobileDelegate sendChosenPeople:chosenPeople forContactList:peopleContactList];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

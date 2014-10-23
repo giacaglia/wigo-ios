@@ -14,5 +14,5 @@ typedef void (^MobileArray)(NSArray *mobileArray);
 @interface MobileDelegate : NSObject
 
 + (void)getMobileContacts:(MobileArray)mobileArray;
-
++ (void)sendChosenPeople:(NSArray *)chosenPeople forContactList:(NSArray *)peopleContactList;
 @end

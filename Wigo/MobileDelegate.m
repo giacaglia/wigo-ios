@@ -58,7 +58,52 @@
             mobileArray([NSArray new]);
         }
     });
+}
 
++ (void)sendChosenPeople:(NSArray *)chosenPeople forContactList:(NSArray *)peopleContactList {
+    NSMutableArray *numbers = [[NSMutableArray alloc] init];
+    for (CFIndex i = 0; i < [chosenPeople count]; i++) {
+        NSString *recordIDString = [chosenPeople objectAtIndex:i];
+        for (int j = 0; j < [peopleContactList count]; j++) {
+            ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:j]);
+            ABRecordID newRecordID = ABRecordGetRecordID(contactPerson);
+            NSString *newRecordIDString = [NSString stringWithFormat:@"%d",newRecordID];
+            if ([recordIDString isEqualToString:newRecordIDString]) {
+                ABMultiValueRef multiPhones = ABRecordCopyValue(contactPerson, kABPersonPhoneProperty);
+                for(CFIndex i = 0; i < ABMultiValueGetCount(multiPhones); i++) {
+                    
+                    NSString* phoneLabel = (__bridge NSString*) ABMultiValueCopyLabelAtIndex(multiPhones, i);
+                    NSString* phoneNumber = (__bridge NSString*) ABMultiValueCopyValueAtIndex(multiPhones, i);
+                    //for example
+                    if([phoneLabel isEqualToString:(NSString *)kABPersonPhoneIPhoneLabel]) {
+                        [numbers addObject:@{@"phone":phoneNumber}];
+                        break;
+                    }
+                    else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMobileLabel])) {
+                        [numbers addObject:@{@"phone":phoneNumber}];
+                        break;
+                    }
+                    else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMainLabel])) {
+                        [numbers addObject:@{@"phone":phoneNumber}];
+                        break;
+                    }
+                    else {
+                        [numbers addObject:@{@"phone":phoneNumber}];
+                        break;
+                    }
+                }
+                
+            }
+        }
+    }
+    if ([numbers count] > 0) {
+        NSDictionary *options = (NSDictionary *)numbers;
+        [Network sendAsynchronousHTTPMethod:POST
+                                withAPIName:@"invites/"
+                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                                withOptions:options];
+        
+    }
 }
 
 @end

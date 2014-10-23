@@ -9,8 +9,10 @@
 #import "InviteViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
+#import "MobileDelegate.h"
 #define HEIGHT_CELLS 70
 
+NSArray *mobileContacts;
 UITableView *invitePeopleTableView;
 Party *everyoneParty;
 Party *filteredContentParty;
@@ -40,6 +42,7 @@ UIButton *cancelButton;
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self fetchFirstPageEveryone];
+    [self getMobileContacts];
     [self initializeTitle];
     [self initializeTapPeopleTitle];
     [self initializeSearchBar];
@@ -432,6 +435,13 @@ UIButton *cancelButton;
     }];
 }
 
+#pragma mark - Mobile
+
+- (void)getMobileContacts {
+    [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
+        mobileContacts = mobileArray;
+    }];
+}
 
 
 
