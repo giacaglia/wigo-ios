@@ -66,7 +66,9 @@ NSMutableArray *failedUserInfoArray;
     [EventAnalytics tagEvent:@"Who View"];
     self.tabBarController.tabBar.hidden = NO;
     if (!didProfileSegue) {
-        [self fetchUserInfo];
+        [self performBlock:^(void){[self fetchUserInfo];}
+                afterDelay:0.1
+     cancelPreviousRequest:YES];
         [self fetchFirstPageFollowing];
         [self fetchIsThereNewPerson];
         [self fetchSummaryGoingOut];
@@ -119,7 +121,9 @@ NSMutableArray *failedUserInfoArray;
     _fetchingIsThereNewPerson = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
     [self fetchFirstPageFollowing];
-    [self fetchUserInfo];
+    [self performBlock:^(void){[self fetchUserInfo];}
+            afterDelay:0.1
+ cancelPreviousRequest:YES];
     [self fetchIsThereNewPerson];
     [self fetchSummaryGoingOut];
 
@@ -193,21 +197,18 @@ NSMutableArray *failedUserInfoArray;
     if ([[Profile user] key] && !_fetchingUserInfo ) {
         _fetchingUserInfo = YES;
         [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
                         User *user = [[User alloc] initWithDictionary:jsonResponse];
                         if ([user key]) {
                             [Profile setUser:user];
-                            _fetchingUserInfo = NO;
                             [self initializeNavigationItem];
                             [self fetchedMyInfoOrPeoplesInfo];
                         }
-                    });
+                    }
                 }
-            }
-            else {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
+                else {
                     User *user = [[User alloc] initWithDictionary:jsonResponse];
                     if ([user key]) {
                         [Profile setUser:user];
@@ -215,8 +216,9 @@ NSMutableArray *failedUserInfoArray;
                         [self initializeNavigationItem];
                         [self fetchedMyInfoOrPeoplesInfo];
                     }
-                });
-            }
+                }
+                _fetchingUserInfo = NO;
+            });
         }];
     }
 }
@@ -686,7 +688,9 @@ NSMutableArray *failedUserInfoArray;
 
 - (void)popGoOutPressed {
     [self goOutPressed];
-    [self fetchUserInfo];
+    [self performBlock:^(void){[self fetchUserInfo];}
+            afterDelay:0.1
+ cancelPreviousRequest:YES];
 }
 
 

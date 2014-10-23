@@ -82,10 +82,6 @@ NSDate *firstLoggedTime;
     return YES;
 }
 
-//- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-//
-//}
-
 
 
 							
