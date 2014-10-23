@@ -10,7 +10,7 @@
 #import "Globals.h"
 #import "MobileDelegate.h"
 
-NSMutableArray *peopleContactList;
+NSArray *peopleContactList;
 UITableView *contactsTableView;
 NSMutableArray *selectedPeopleIndexes;
 UISearchBar *searchBar;
@@ -33,7 +33,7 @@ NSMutableArray *chosenPeople;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    peopleContactList = [[NSMutableArray alloc] init];
+    peopleContactList = [[NSArray alloc] init];
     chosenPeople = [[NSMutableArray alloc] init];
     shownChosenPeople = [[NSMutableArray alloc] init];
     selectedPeopleIndexes = [[NSMutableArray alloc] init];
@@ -170,51 +170,31 @@ NSMutableArray *chosenPeople;
 - (void)selectedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
+    ABRecordRef contactPerson;
+    ABRecordID recordID;
     if (isFiltered) {
-        ABRecordRef contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
-        ABRecordID recordID = ABRecordGetRecordID(contactPerson);
-        for (int i = 0 ; i < [peopleContactList count] ; i++ ) {
-            ABRecordRef newContactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:i]);
-            ABRecordID newRecordID = ABRecordGetRecordID(newContactPerson);
-            if (recordID == newRecordID) {
-                tag = i;
-            }
-        }
-        [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
-        for (UIView *subview in buttonSender.subviews) {
-            if ([subview isKindOfClass:[UIImageView class]]) {
-                UIImageView *selectedImageView = (UIImageView *)subview;
-                NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
-                if (![shownChosenPeople containsObject:recordIdString]) {
-                    selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
-                    [chosenPeople addObject:recordIdString];
-                    [shownChosenPeople addObject:recordIdString];
-                }
-                else {
-                    selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
-                    [shownChosenPeople removeObject:recordIdString];
-                }
-            }
-        }
+        contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
+        recordID = ABRecordGetRecordID(contactPerson);
+        tag = [MobileDelegate changeTag:tag fromArray:filteredPeopleContactList toArray:peopleContactList];
+       
     }
     else {
-        ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:tag]);
-        ABRecordID recordID = ABRecordGetRecordID(contactPerson);
-        [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
-        for (UIView *subview in buttonSender.subviews) {
-            if (subview.tag == tag && [subview isKindOfClass:[UIImageView class]]) {
-                UIImageView *selectedImageView = (UIImageView *)subview;
-                NSString *recordIdString = [NSString stringWithFormat:@"%d", recordID];
-                if (![shownChosenPeople containsObject:recordIdString]) {
-                    selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
-                    [chosenPeople addObject:recordIdString];
-                    [shownChosenPeople addObject:recordIdString];
-                }
-                else {
-                    selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
-                    [shownChosenPeople removeObject:recordIdString];
-                }
-
+        contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:tag]);
+        recordID = ABRecordGetRecordID(contactPerson);
+    }
+    [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
+    for (UIView *subview in buttonSender.subviews) {
+        if ([subview isKindOfClass:[UIImageView class]]) {
+            UIImageView *selectedImageView = (UIImageView *)subview;
+            NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
+            if (![shownChosenPeople containsObject:recordIdString]) {
+                selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
+                [chosenPeople addObject:recordIdString];
+                [shownChosenPeople addObject:recordIdString];
+            }
+            else {
+                selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
+                [shownChosenPeople removeObject:recordIdString];
             }
         }
     }

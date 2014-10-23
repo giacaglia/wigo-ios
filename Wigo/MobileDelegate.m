@@ -106,4 +106,18 @@
     }
 }
 
++ (int)changeTag:(int)tag fromArray:(NSArray *)partArray toArray:(NSArray *)totalArray {
+    ABRecordRef contactPerson = (__bridge ABRecordRef)([partArray objectAtIndex:tag]);
+    ABRecordID recordID = ABRecordGetRecordID(contactPerson);
+    int newTag = 0;
+    for (int i = 0 ; i < [totalArray count] ; i++ ) {
+        ABRecordRef newContactPerson = (__bridge ABRecordRef)([totalArray objectAtIndex:i]);
+        ABRecordID newRecordID = ABRecordGetRecordID(newContactPerson);
+        if (recordID == newRecordID) {
+            newTag = i;
+        }
+    }
+    return newTag;
+}
+
 @end

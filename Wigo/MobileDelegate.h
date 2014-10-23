@@ -15,4 +15,6 @@ typedef void (^MobileArray)(NSArray *mobileArray);
 
 + (void)getMobileContacts:(MobileArray)mobileArray;
 + (void)sendChosenPeople:(NSArray *)chosenPeople forContactList:(NSArray *)peopleContactList;
++ (int)changeTag:(int)tag fromArray:(NSArray *)partArray toArray:(NSArray *)totalArray;
+
 @end
