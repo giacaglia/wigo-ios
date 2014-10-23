@@ -116,7 +116,7 @@ BOOL didProfileSegue;
     if ([_notificationsParty hasNextPage] && [indexPath row] == [[_notificationsParty getObjectArray] count]) {
         return 30;
     }
-    else if ([indexPath section] == 0 && [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
+    else if ([indexPath section] == 0 && [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count] && ([_followRequestSummary intValue] == 0)) {
         return 20;
     }
     return HEIGHT_NOTIFICATION_CELL;
@@ -327,7 +327,7 @@ BOOL didProfileSegue;
 -(CGFloat) tableView:(UITableView *)tableView
 heightForFooterInSection:(NSInteger)section
 {
-    if (section == 0 && [[_nonExpiredNotificationsParty getObjectArray] count] > 0)
+    if (section == 0 && ([[_nonExpiredNotificationsParty getObjectArray] count] > 0 || [_followRequestSummary intValue] > 0))
         return HEADER_HEIGHT_CELL;
     else return 0;
 }
