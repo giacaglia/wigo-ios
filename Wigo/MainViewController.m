@@ -19,7 +19,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "CSStickyHeaderFlowLayout.h"
 #import "PeopleViewController.h"
-#import "WaitListViewController.h"
 #import "NSObject-CancelableScheduledBlock.h"
 
 @interface MainViewController ()
@@ -582,8 +581,7 @@ NSMutableArray *failedUserInfoArray;
 
 - (void)followPressed {
     if ([Profile user]) {
-        [self presentViewController:[WaitListViewController new] animated:YES completion:nil];
-//        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[Profile user]] animated:YES];
+        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[Profile user]] animated:YES];
         self.tabBarController.tabBar.hidden = YES;
     }
 }

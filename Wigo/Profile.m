@@ -44,10 +44,6 @@ static NSNumber *lastUserRead;
                 NSData *newKeyData = [[oldUser key] dataUsingEncoding:NSUTF8StringEncoding];
                 [keychainItem setObject:newKeyData forKey:(__bridge id)(kSecValueData)];
             }
-           //            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"key"]) {
-//                [[NSUserDefaults standardUserDefaults] setObject:[oldUser key] forKey: @"key"];
-//                [[NSUserDefaults standardUserDefaults] synchronize];
-//            }
         }
         [newUser updateUserAnalytics];
     }
@@ -100,7 +96,7 @@ static NSNumber *lastUserRead;
 }
 
 + (BOOL)isUserDictionaryProfileUser:(NSDictionary *)userDictionary {
-    if (userDictionary) {
+    if (userDictionary && [Profile user]) {
         return [[userDictionary objectForKey:@"id"] isEqualToNumber:[[Profile user] objectForKey:@"id"]];
     }
     return NO;
