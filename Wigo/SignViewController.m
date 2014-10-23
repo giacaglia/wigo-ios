@@ -9,6 +9,7 @@
 #import "SignViewController.h"
 #import "MainViewController.h"
 #import "OnboardViewController.h"
+#import "WaitListViewController.h"
 #import "KeychainItemWrapper.h"
 #import "Globals.h"
 
@@ -418,8 +419,7 @@
         if (!_pushed) {
             _pushed = YES;
             if ([[Profile user] isGroupLocked]) {
-                self.lockScreenViewController = [[LockScreenViewController alloc] init];
-                [self.navigationController pushViewController:self.lockScreenViewController animated:NO];
+                [self.navigationController pushViewController:[WaitListViewController new] animated:NO];
             }
             else {
                 [self loadMainViewController];

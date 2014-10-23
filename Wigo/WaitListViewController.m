@@ -9,6 +9,8 @@
 #import "WaitListViewController.h"
 #import "Globals.h"
 
+NSArray *groupArray;
+
 @implementation WaitListViewController
 
 
@@ -22,9 +24,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self fetchGroupsWaitlist];
     [self initializeTitle];
     [self initializeVogueRope];
-    [self initializeListOfSchools];
     [self initializeOvalImages];
     [self initializeShareButton];
 }
@@ -83,26 +85,26 @@
 }
 
 - (void)initializeListOfSchools {
-    [self viewForSchool:@{@"rank": @"1.", @"name": @"Virginia University"} andFrame: CGRectMake(54, 200, self.view.frame.size.width - 108, 25)];
+    [self viewForSchool:[groupArray objectAtIndex:0] andFrame: CGRectMake(54, 200, self.view.frame.size.width - 108, 25)];
     
-    [self viewForSchool:@{@"rank": @"83.", @"name": @"Columbia"} andFrame:CGRectMake(54, 300, self.view.frame.size.width - 108, 25)];
+    [self viewForSchool:[groupArray objectAtIndex:1] andFrame:CGRectMake(54, 300, self.view.frame.size.width - 108, 25)];
     
-    [self viewForSchool:@{@"rank": @"84.", @"name": @"MIT"} andFrame:CGRectMake(54, 330, self.view.frame.size.width - 108, 25)];
+    [self viewForSchool:[groupArray objectAtIndex:2] andFrame:CGRectMake(54, 330, self.view.frame.size.width - 108, 25)];
     
-    [self viewForSchool:@{@"rank": @"85.", @"name": @"Harvard"} andFrame:CGRectMake(54, 360, self.view.frame.size.width - 108, 25)];
+    [self viewForSchool:[groupArray objectAtIndex:3] andFrame:CGRectMake(54, 360, self.view.frame.size.width - 108, 25)];
 }
 
 - (void)viewForSchool:(NSDictionary *)school andFrame:(CGRect)frame {
     UIView *schoolView = [[UIView alloc] initWithFrame:frame];
    
-    UILabel *rankingSchool = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 25)];
-    rankingSchool.text = [school objectForKey:@"rank"];
+    UILabel *rankingSchool = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
+    rankingSchool.text = [NSString stringWithFormat:@"%@.", [school objectForKey:@"rank"] ];
     rankingSchool.textColor = RGBAlpha(212, 212, 212, 100);
     rankingSchool.textAlignment = NSTextAlignmentLeft;
     rankingSchool.font = [FontProperties mediumFont:20.0f];
     [schoolView addSubview:rankingSchool];
     
-    UILabel *nameOfSchool = [[UILabel alloc] initWithFrame:CGRectMake(40, 0, schoolView.frame.size.width - 40, 25)];
+    UILabel *nameOfSchool = [[UILabel alloc] initWithFrame:CGRectMake(55, 0, schoolView.frame.size.width - 40, 25)];
     nameOfSchool.text = [school objectForKey:@"name"];
     nameOfSchool.textAlignment = NSTextAlignmentLeft;
     nameOfSchool.font = [FontProperties mediumFont:20.0f];
@@ -110,5 +112,18 @@
     
     [self.view addSubview:schoolView];
 }
+
+- (void) fetchGroupsWaitlist {
+    [Network queryAsynchronousAPI:@"groups/?query=waitlist" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if ([[jsonResponse allKeys] containsObject:@"objects"]) {
+                    groupArray = [jsonResponse objectForKey:@"objects"];
+                    [self initializeListOfSchools];
+                }
+
+            });
+    }];
+}
+
 
 @end

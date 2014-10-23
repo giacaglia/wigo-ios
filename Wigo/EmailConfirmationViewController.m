@@ -9,6 +9,7 @@
 #import "EmailConfirmationViewController.h"
 #import "Globals.h"
 #import "OnboardFollowViewController.h"
+#import "WaitListViewController.h"
 
 UITextField *emailTextField;
 OnboardFollowViewController *onboardFollowViewController;
@@ -183,8 +184,7 @@ OnboardFollowViewController *onboardFollowViewController;
     [Profile setUser:user];
     if ([[Profile user] emailValidated]) {
         if ([[Profile user] isGroupLocked]) {
-            self.lockScreenViewController = [[LockScreenViewController alloc] init];
-            [self.navigationController pushViewController:self.lockScreenViewController animated:NO];
+            [self.navigationController pushViewController:[WaitListViewController new] animated:NO];
         }
         else {
             onboardFollowViewController = [OnboardFollowViewController new];
