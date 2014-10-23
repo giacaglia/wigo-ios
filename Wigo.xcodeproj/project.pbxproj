@@ -223,6 +223,8 @@
 		E9C3057019F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
 		E9C34A6F19F86FAB00D7E9D3 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */; };
 		E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */; };
+		E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
+		E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
 		E9CD47141948E27500AEA17D /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
 		E9CD472B194B889800AEA17D /* RWBlurImage.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD4728194B889800AEA17D /* RWBlurImage.m */; };
 		E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD472A194B889800AEA17D /* RWBlurPopover.m */; };
@@ -468,6 +470,8 @@
 		E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		E9C34A6D19F86FAB00D7E9D3 /* WaitListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaitListViewController.h; sourceTree = "<group>"; };
 		E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaitListViewController.m; sourceTree = "<group>"; };
+		E9C34A7619F98A2C00D7E9D3 /* MobileDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileDelegate.h; sourceTree = "<group>"; };
+		E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileDelegate.m; sourceTree = "<group>"; };
 		E9CD47121948E27500AEA17D /* UIImageViewShake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageViewShake.h; sourceTree = "<group>"; };
 		E9CD47131948E27500AEA17D /* UIImageViewShake.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageViewShake.m; sourceTree = "<group>"; };
 		E9CD4727194B889800AEA17D /* RWBlurImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWBlurImage.h; sourceTree = "<group>"; };
@@ -1026,6 +1030,7 @@
 		E9ACCA2619C4CC0600F3EB20 /* GrowthHackViews */ = {
 			isa = PBXGroup;
 			children = (
+				E9C34A7119F9868300D7E9D3 /* MobileDelegates */,
 				E9ACCA1E19C3A12500F3EB20 /* WigoConfirmationViewController.h */,
 				E9ACCA1F19C3A12500F3EB20 /* WigoConfirmationViewController.m */,
 				E9ACCA2219C4CBFB00F3EB20 /* MobileContactsViewController.h */,
@@ -1058,6 +1063,15 @@
 				E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */,
 			);
 			name = KeychainWrapper;
+			sourceTree = "<group>";
+		};
+		E9C34A7119F9868300D7E9D3 /* MobileDelegates */ = {
+			isa = PBXGroup;
+			children = (
+				E9C34A7619F98A2C00D7E9D3 /* MobileDelegate.h */,
+				E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */,
+			);
+			name = MobileDelegates;
 			sourceTree = "<group>";
 		};
 		E9CD47151948E41A00AEA17D /* ViewExtensions */ = {
@@ -1466,6 +1480,7 @@
 				C12A113119787BE700D53B1C /* NSData+ImageContentType.m in Sources */,
 				C12A113219787BE700D53B1C /* Profile.m in Sources */,
 				E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
+				E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				C12A113319787BE700D53B1C /* RWBlurPopover.m in Sources */,
 				E96F07AD19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
@@ -1558,6 +1573,7 @@
 				E900C2B61961EADE00A01F50 /* NSData+ImageContentType.m in Sources */,
 				E9BE8C4C192A54F3008BB84C /* Profile.m in Sources */,
 				E9C34A6F19F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
+				E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */,
 				E96F07AC19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */,

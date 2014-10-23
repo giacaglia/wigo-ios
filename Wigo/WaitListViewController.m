@@ -85,16 +85,16 @@ NSArray *groupArray;
 }
 
 - (void)initializeListOfSchools {
-    [self viewForSchool:[groupArray objectAtIndex:0] andFrame: CGRectMake(54, 200, self.view.frame.size.width - 108, 25)];
+    [self viewForSchool:[groupArray objectAtIndex:0] andFrame: CGRectMake(54, 200, self.view.frame.size.width - 108, 25) isMySchool:NO];
     
-    [self viewForSchool:[groupArray objectAtIndex:1] andFrame:CGRectMake(54, 300, self.view.frame.size.width - 108, 25)];
+    [self viewForSchool:[groupArray objectAtIndex:1] andFrame:CGRectMake(54, 300, self.view.frame.size.width - 108, 25) isMySchool:NO];
     
-    [self viewForSchool:[groupArray objectAtIndex:2] andFrame:CGRectMake(54, 330, self.view.frame.size.width - 108, 25)];
+    [self viewForSchool:[groupArray objectAtIndex:2] andFrame:CGRectMake(54, 330, self.view.frame.size.width - 108, 25) isMySchool:YES];
     
-    [self viewForSchool:[groupArray objectAtIndex:3] andFrame:CGRectMake(54, 360, self.view.frame.size.width - 108, 25)];
+    [self viewForSchool:[groupArray objectAtIndex:3] andFrame:CGRectMake(54, 360, self.view.frame.size.width - 108, 25) isMySchool:NO];
 }
 
-- (void)viewForSchool:(NSDictionary *)school andFrame:(CGRect)frame {
+- (void)viewForSchool:(NSDictionary *)school andFrame:(CGRect)frame isMySchool:(BOOL)mySchool {
     UIView *schoolView = [[UIView alloc] initWithFrame:frame];
    
     UILabel *rankingSchool = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
@@ -108,6 +108,7 @@ NSArray *groupArray;
     nameOfSchool.text = [school objectForKey:@"name"];
     nameOfSchool.textAlignment = NSTextAlignmentLeft;
     nameOfSchool.font = [FontProperties mediumFont:20.0f];
+    if (mySchool) nameOfSchool.textColor = [FontProperties getOrangeColor];
     [schoolView addSubview:nameOfSchool];
     
     [self.view addSubview:schoolView];

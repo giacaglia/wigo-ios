@@ -905,6 +905,7 @@ BOOL shouldReloadEvents;
 
 #pragma mark - Growth Hack
 - (BOOL)shouldPresentGrowthHack {
+    return YES;
     int numberOfTimesWentOut = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"numberOfTimesWentOut"];
     if (numberOfTimesWentOut == 0) {
         [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"numberOfTimesWentOut"];
@@ -928,7 +929,6 @@ BOOL shouldReloadEvents;
     transition.subtype = kCATransitionFromBottom;
     [self.view.window.layer addAnimation:transition forKey:kCATransition];
     [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
-    
 }
 
 - (void)presentContactsView {

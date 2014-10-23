@@ -7,14 +7,12 @@
 //
 
 #import "MobileContactsViewController.h"
-#import <AddressBook/AddressBook.h>
 #import "Globals.h"
+#import "MobileDelegate.h"
 
 NSMutableArray *peopleContactList;
 UITableView *contactsTableView;
 NSMutableArray *selectedPeopleIndexes;
-CFArrayRef all;
-CFIndex n;
 UISearchBar *searchBar;
 BOOL isFiltered;
 NSMutableArray *filteredPeopleContactList;
@@ -80,52 +78,18 @@ NSMutableArray *chosenPeople;
 }
 
 - (void)getContactAccess {
-    CFErrorRef error = NULL;
-    
-    ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, &error);
-    ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
-        if (granted && addressBookRef) {
-            [EventAnalytics tagEvent:@"Accepted Apple Contacts"];
-
-            all = ABAddressBookCopyArrayOfAllPeople(addressBookRef);
-            n = ABAddressBookGetPersonCount(addressBookRef);
-            
-            CFMutableArrayRef peopleMutable = CFArrayCreateMutableCopy(
-                                                                       kCFAllocatorDefault,
-                                                                       CFArrayGetCount(all),
-                                                                       all
-                                                                       );
-            
-            CFArraySortValues(
-                              peopleMutable,
-                              CFRangeMake(0, n),
-                              (CFComparatorFunction) ABPersonComparePeopleByName,
-                              (void*) ABPersonGetSortOrdering()
-                              );
-            NSMutableArray* data = [NSMutableArray arrayWithArray: (__bridge NSArray*) peopleMutable];
-            
-
-            for( int i = 0 ; i < n ; i++ )
-            {
-                ABRecordRef ref = (__bridge ABRecordRef)([data objectAtIndex:i]);
-                NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(ref, kABPersonFirstNameProperty));
-                NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(ref, kABPersonLastNameProperty));
-                ABMultiValueRef phones = ABRecordCopyValue(ref, kABPersonPhoneProperty);
-                if ( ABMultiValueGetCount(phones) > 0 &&
-                    (![firstName isEqualToString:@""] || ![lastName isEqualToString:@""]) ) {
-                    [peopleContactList addObject:(__bridge id)(ref)];
-                }
-            }
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [contactsTableView reloadData];
-            });
-       
-        }
-        else {
-            [EventAnalytics tagEvent:@"Decline Apple Contacts"];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
-    });
+   [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
+       dispatch_async(dispatch_get_main_queue(), ^(void){
+           if ([mobileArray count] > 0) {
+               peopleContactList = mobileArray;
+               [contactsTableView reloadData];
+           }
+           else {
+               [EventAnalytics tagEvent:@"Decline Apple Contacts"];
+               [self dismissViewControllerAnimated:NO completion:nil];
+           }
+       });
+   }];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
