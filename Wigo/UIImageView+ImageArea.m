@@ -30,7 +30,7 @@ NSMutableArray *failedUserInfoArray;
                                     withOptions:failedUserInfoArray
              ];
         }
-        completedBlock(image, error, cacheType);
+        if (completedBlock) completedBlock(image, error, cacheType);
     }];
 }
 
