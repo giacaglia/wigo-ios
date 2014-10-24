@@ -7,6 +7,7 @@
 //
 
 #import "Profile.h"
+#import "KeychainItemWrapper.h"
 
 @implementation Profile
 
@@ -19,6 +20,7 @@ static Party *followingParty;
 static Party *notAcceptedFollowingParty;
 static BOOL googleAnalyticsEnabled;
 static BOOL localyticsEnabled;
+static NSNumber *lastUserRead;
 
 
 + (User *)user {
@@ -34,13 +36,25 @@ static BOOL localyticsEnabled;
         user = newUser;
         if ([oldUser key]) {
             [user setKey:[oldUser key]];
-            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"key"]) {
-                [[NSUserDefaults standardUserDefaults] setObject:[oldUser key] forKey: @"key"];
-                [[NSUserDefaults standardUserDefaults] synchronize];
+            KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:@"WiGo" accessGroup:nil];
+            NSData *keyData = (NSData *)[keychainItem objectForKey:(__bridge id)kSecValueData];
+            NSString *key = [[NSString alloc] initWithData:keyData
+                                                  encoding:NSUTF8StringEncoding];
+            if (key.length == 0) {
+                NSData *newKeyData = [[oldUser key] dataUsingEncoding:NSUTF8StringEncoding];
+                [keychainItem setObject:newKeyData forKey:(__bridge id)(kSecValueData)];
             }
         }
         [newUser updateUserAnalytics];
     }
+}
+
++ (void)setLastUserJoined:(NSNumber *)newLastUserJoined {
+    lastUserRead = newLastUserJoined;
+}
+
++ (NSNumber *)lastUserJoined {
+    return lastUserRead;
 }
 
 + (Party *)followingParty {
@@ -82,7 +96,7 @@ static BOOL localyticsEnabled;
 }
 
 + (BOOL)isUserDictionaryProfileUser:(NSDictionary *)userDictionary {
-    if (userDictionary) {
+    if (userDictionary && [Profile user]) {
         return [[userDictionary objectForKey:@"id"] isEqualToNumber:[[Profile user] objectForKey:@"id"]];
     }
     return NO;

@@ -9,7 +9,12 @@
 #import "InviteViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
+#import "MobileDelegate.h"
 #define HEIGHT_CELLS 70
+
+NSArray *mobileContacts;
+NSMutableArray *filteredMobileContacts;
+NSMutableArray *chosenPeople;
 
 UITableView *invitePeopleTableView;
 Party *everyoneParty;
@@ -23,6 +28,7 @@ BOOL isSearching;
 UIButton *aroundInviteButton;
 UILabel *titleLabel;
 UIButton *searchButton;
+UIButton *cancelButton;
 
 @implementation InviteViewController
 
@@ -38,6 +44,11 @@ UIButton *searchButton;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    mobileContacts = [NSArray new];
+    filteredMobileContacts = [NSMutableArray new];
+    chosenPeople = [NSMutableArray new];
+    [self getMobileContacts];
     [self fetchFirstPageEveryone];
     [self initializeTitle];
     [self initializeTapPeopleTitle];
@@ -115,6 +126,7 @@ UIButton *searchButton;
 }
 
 - (void)donePressed {
+    [MobileDelegate sendChosenPeople:chosenPeople forContactList:mobileContacts];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -135,18 +147,23 @@ UIButton *searchButton;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (isSearching) {
-        return [[filteredContentParty getObjectArray] count];
+    if (section == 0) {
+        if (isSearching) {
+            return [[filteredContentParty getObjectArray] count];
+        }
+        else {
+            int hasNextPage = ([everyoneParty hasNextPage] ? 1 : 0);
+            return [[everyoneParty getObjectArray] count] + hasNextPage;
+        }
     }
     else {
-        int hasNextPage = ([everyoneParty hasNextPage] ? 1 : 0);
-        return [[everyoneParty getObjectArray] count] + hasNextPage;
+        if (isSearching) return [filteredMobileContacts count];
+        return [mobileContacts count];
     }
-
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -158,89 +175,201 @@ UIButton *searchButton;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
-
-    int tag = (int)[indexPath row];
-    User *user;
-    if (isSearching) {
-        if ([[filteredContentParty getObjectArray] count] == 0) return cell;
-        if (tag < [[filteredContentParty getObjectArray] count]) {
-            user = [[filteredContentParty getObjectArray] objectAtIndex:tag];
-        }
-        if ([[filteredContentParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
-            if (tag == [[filteredContentParty getObjectArray] count] - 5) {
-                [self fetchEveryone];
+    if ([indexPath section] == 0) {
+        int tag = (int)[indexPath row];
+        User *user;
+        if (isSearching) {
+            if ([[filteredContentParty getObjectArray] count] == 0) return cell;
+            if (tag < [[filteredContentParty getObjectArray] count]) {
+                user = [[filteredContentParty getObjectArray] objectAtIndex:tag];
             }
-        }
-        else {
-            if (tag == [[filteredContentParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
-                [self fetchEveryone];
-                return cell;
-            }
-        }
-    }
-    else {
-        if ([[everyoneParty getObjectArray] count] == 0) return cell;
-        if (tag < [[everyoneParty getObjectArray] count]) {
-            user = [[everyoneParty getObjectArray] objectAtIndex:tag];
-        }
-        if ([[everyoneParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
-            if (tag == [[everyoneParty getObjectArray] count] - 5) {
-                [self fetchEveryone];
-            }
-        }
-        else {
-            if (tag == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
-                [self fetchEveryone];
-                return cell;
-            }
-        }
-
-    }
-    
-    if (user) {
-        UIButton *aroundTapButton = [[UIButton alloc] initWithFrame:cell.contentView.frame];
-        [aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-        aroundTapButton.tag = tag;
-        [cell.contentView addSubview:aroundTapButton];
-        
-        UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
-        profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-        profileImageView.clipsToBounds = YES;
-        [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
-        [aroundTapButton addSubview:profileImageView];
-        
-        UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-        textLabel.text = [user fullName];
-        textLabel.font = [FontProperties getSubtitleFont];
-        [aroundTapButton addSubview:textLabel];
-        
-        UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
-        goingOutLabel.font = [FontProperties mediumFont:13.0f];
-        goingOutLabel.textAlignment = NSTextAlignmentLeft;
-        goingOutLabel.textColor = [FontProperties getBlueColor];
-        if ([user isGoingOut]) {
-            if ([user isAttending] && [user attendingEventName]) {
-                goingOutLabel.text = [NSString stringWithFormat:@"Going out to %@", [user attendingEventName]];
+            if ([[filteredContentParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
+                if (tag == [[filteredContentParty getObjectArray] count] - 5) {
+                    [self fetchEveryone];
+                }
             }
             else {
-                goingOutLabel.text = @"Going Out";
+                if (tag == [[filteredContentParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
+                    [self fetchEveryone];
+                    return cell;
+                }
             }
         }
-        [aroundTapButton addSubview:goingOutLabel];
+        else {
+            if ([[everyoneParty getObjectArray] count] == 0) return cell;
+            if (tag < [[everyoneParty getObjectArray] count]) {
+                user = [[everyoneParty getObjectArray] objectAtIndex:tag];
+            }
+            if ([[everyoneParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
+                if (tag == [[everyoneParty getObjectArray] count] - 5) {
+                    [self fetchEveryone];
+                }
+            }
+            else {
+                if (tag == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
+                    [self fetchEveryone];
+                    return cell;
+                }
+            }
+            
+        }
+        
+        if (user) {
+            UIButton *aroundTapButton = [[UIButton alloc] initWithFrame:cell.contentView.frame];
+            [aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+            aroundTapButton.tag = tag;
+            [cell.contentView addSubview:aroundTapButton];
+            
+            UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
+            profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+            profileImageView.clipsToBounds = YES;
+            [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+            [aroundTapButton addSubview:profileImageView];
+            
+            UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+            textLabel.text = [user fullName];
+            textLabel.font = [FontProperties getSubtitleFont];
+            [aroundTapButton addSubview:textLabel];
+            
+            UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
+            goingOutLabel.font = [FontProperties mediumFont:13.0f];
+            goingOutLabel.textAlignment = NSTextAlignmentLeft;
+            goingOutLabel.textColor = [FontProperties getBlueColor];
+            if ([user isGoingOut]) {
+                if ([user isAttending] && [user attendingEventName]) {
+                    goingOutLabel.text = [NSString stringWithFormat:@"Going out to %@", [user attendingEventName]];
+                }
+                else {
+                    goingOutLabel.text = @"Going Out";
+                }
+            }
+            [aroundTapButton addSubview:goingOutLabel];
+            
+            UIImageView *tapImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS/2 - 15, 30, 30)];
+            if ([user isTapped]) {
+                [tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
+            }
+            else {
+                [tapImageView setImage:[UIImage imageNamed:@"tapUnselectedInvite"]];
+            }
+            [aroundTapButton addSubview:tapImageView];
+        }
+    }
+    else  {
+        UIButton *aroundCellButton = [[UIButton alloc] initWithFrame:cell.contentView.frame];
+        aroundCellButton.tag = (int)[indexPath row];
+        [aroundCellButton addTarget:self action:@selector(inviteMobilePressed:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.contentView addSubview:aroundCellButton];
+        
+        UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
+        profileImageView.tag = -1;
+        profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+        profileImageView.clipsToBounds = YES;
+        profileImageView.image = [UIImage imageNamed:@"grayIcon"];
+        [aroundCellButton addSubview:profileImageView];
+
+        
+        ABRecordRef contactPerson;
+        if (isSearching)
+            contactPerson  = (__bridge ABRecordRef)([filteredMobileContacts objectAtIndex:[indexPath row]]);
+        else
+            contactPerson = (__bridge ABRecordRef)([mobileContacts objectAtIndex:[indexPath row]]);
+        
         
         UIImageView *tapImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS/2 - 15, 30, 30)];
-        if ([user isTapped]) {
-            [tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
-        }
-        else {
+        ABRecordID recordID = ABRecordGetRecordID(contactPerson);
+        NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
+        if ([chosenPeople containsObject:recordIdString])
+            tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+        else
             [tapImageView setImage:[UIImage imageNamed:@"tapUnselectedInvite"]];
-        }
-        [aroundTapButton addSubview:tapImageView];
+        [aroundCellButton addSubview:tapImageView];
+        
+        UILabel *nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+        NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
+        NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
+        NSString *fullName = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
+        [fullName capitalizedString];
+        
+        NSMutableAttributedString * attString = [[NSMutableAttributedString alloc] initWithString:fullName];
+        [attString addAttribute:NSFontAttributeName
+                          value:[FontProperties getSubtitleFont]
+                          range:NSMakeRange(0, fullName.length)];
+        [attString addAttribute:NSForegroundColorAttributeName
+                          value:RGB(120, 120, 120)
+                          range:NSMakeRange(0, fullName.length)];
+        if ([lastName isEqualToString:@""])
+            [attString addAttribute:NSForegroundColorAttributeName
+                              value:RGB(20, 20, 20)
+                              range:NSMakeRange(0, [firstName length])];
+        else
+            [attString addAttribute:NSForegroundColorAttributeName
+                              value:RGB(20, 20, 20)
+                              range:NSMakeRange([firstName length] + 1, [lastName length])];
+        nameOfPersonLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:attString];
+        [aroundCellButton addSubview:nameOfPersonLabel];
     }
-   
     
     return cell;
 }
+
+- (void)inviteMobilePressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = (int)buttonSender.tag;
+    ABRecordRef contactPerson;
+    ABRecordID recordID;
+    if (isSearching) {
+        contactPerson = (__bridge ABRecordRef)([filteredMobileContacts objectAtIndex:tag]);
+        recordID = ABRecordGetRecordID(contactPerson);
+        tag = [MobileDelegate changeTag:tag fromArray:filteredMobileContacts toArray:mobileContacts];
+    }
+    else {
+        contactPerson = (__bridge ABRecordRef)([mobileContacts objectAtIndex:tag]);
+        recordID = ABRecordGetRecordID(contactPerson);
+    }
+    for (UIView *subview in buttonSender.subviews) {
+        if ([subview isKindOfClass:[UIImageView class]] && subview.tag != -1) {
+            UIImageView *selectedImageView = (UIImageView *)subview;
+            NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
+            if (![chosenPeople containsObject:recordIdString]) {
+                selectedImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+                [chosenPeople addObject:recordIdString];
+            }
+            else {
+                selectedImageView.image = [UIImage imageNamed:@"tapUnselectedInvite"];
+                [chosenPeople removeObject:recordIdString];
+            }
+        }
+    }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return [[UIView alloc ] init];
+    }
+    else {
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+        headerView.backgroundColor = [UIColor whiteColor];
+        
+        UILabel *tapPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
+        tapPeopleLabel.text = @"Tap Contacts";
+        tapPeopleLabel.textAlignment = NSTextAlignmentLeft;
+        tapPeopleLabel.font = [FontProperties lightFont:15.0f];
+        tapPeopleLabel.textColor = [FontProperties getBlueColor];
+        
+        [headerView addSubview:tapPeopleLabel];
+        
+        return headerView;
+    }
+}
+-(CGFloat) tableView:(UITableView *)tableView
+heightForHeaderInSection:(NSInteger)section
+{
+    if (section == 1) return 30;
+    else return 0;
+}
+
+
 
 - (void) tapPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
@@ -279,18 +408,16 @@ UIButton *searchButton;
     searchButton.hidden = YES;
     
     searchBar.hidden = NO;
-//    self.navigationItem.titleView = searchBar;
+    [self.view addSubview:searchBar];
     [searchBar becomeFirstResponder];
     
-    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 65 - 15, 0, 65, 44)];
+    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 65 - 15, 20, 65, 44)];
     [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
     [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
     cancelButton.titleLabel.font = [FontProperties getSubtitleFont];
-    [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
-    [barItem setCustomView:cancelButton];
-    self.navigationItem.rightBarButtonItem = barItem;
+    [cancelButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    [self.view addSubview:cancelButton];
 }
 
 - (void)cancelPressed {
@@ -298,16 +425,22 @@ UIButton *searchButton;
     titleLabel.hidden = NO;
     searchButton.hidden = NO;
 
+    cancelButton.hidden = YES;
     [self.view endEditing:YES];
     isSearching = NO;
     searchBar.text = @"";
-    [self searchBarTextDidEndEditing:searchBar];
-//    [_tableView reloadData];
-//    [self initializeNavigationItem];
+    searchBar.hidden = YES;
+    
+    [invitePeopleTableView reloadData];
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [searchBar endEditing:YES];
+}
+
+
 - (void)initializeSearchBar {
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64 + 75, self.view.frame.size.width, 40)];
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width - 60, 40)];
     searchBar.barTintColor = [FontProperties getBlueColor];
     searchBar.tintColor = [FontProperties getBlueColor];
     searchBar.placeholder = @"Search By Name";
@@ -326,11 +459,8 @@ UIButton *searchButton;
     // Text when editing becomes orange
     for (UIView *subView in searchBar.subviews) {
         for (UIView *secondLevelSubview in subView.subviews){
-            if ([secondLevelSubview isKindOfClass:[UITextField class]])
-            {
-                UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
-                searchBarTextField.textColor = [FontProperties getBlueColor];
-                break;
+            if (![secondLevelSubview isKindOfClass:[UITextField class]]) {
+                [secondLevelSubview removeFromSuperview];
             }
         }
     }
@@ -369,8 +499,8 @@ UIButton *searchButton;
      cancelPreviousRequest:YES];
     }
     else {
-        [self.view endEditing:YES];
-        isSearching = NO;
+//        [self.view endEditing:YES];
+//        isSearching = NO;
     }
     [invitePeopleTableView reloadData];
 }
@@ -383,11 +513,15 @@ UIButton *searchButton;
 
 
 - (void)searchTableList {
+    // Normal users
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     page = @1;
     NSString *queryString = [NSString stringWithFormat:@"users/?following=true&page=%@&text=%@" ,[page stringValue], searchString];
     [self searchUsersWithString:queryString];
+    
+    // Mobile contacts
+    filteredMobileContacts = [NSMutableArray arrayWithArray:[MobileDelegate filterArray:mobileContacts withText:searchBar.text]];
 }
 
 - (void)searchUsersWithString:(NSString *)queryString {
@@ -430,6 +564,13 @@ UIButton *searchButton;
     }];
 }
 
+#pragma mark - Mobile
+
+- (void)getMobileContacts {
+    [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
+        mobileContacts = mobileArray;
+    }];
+}
 
 
 

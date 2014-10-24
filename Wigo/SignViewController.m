@@ -8,6 +8,9 @@
 
 #import "SignViewController.h"
 #import "MainViewController.h"
+#import "OnboardViewController.h"
+#import "WaitListViewController.h"
+#import "KeychainItemWrapper.h"
 #import "Globals.h"
 
 #import <Crashlytics/Crashlytics.h>
@@ -59,7 +62,18 @@
     _alertShown = NO;
     _fetchingProfilePictures = NO;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
-    [self getFacebookTokensAndLoginORSignUp];
+    [self showOnboard];
+}
+
+- (void)showOnboard {
+    BOOL showedOnboardView = [[NSUserDefaults standardUserDefaults] boolForKey:@"showedOnboardView"];
+    if (showedOnboardView) {
+        [self getFacebookTokensAndLoginORSignUp];
+    }
+    else {
+        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showedOnboardView"];
+    }
 }
 
 - (void) changeAlertToNotShown {
@@ -71,8 +85,13 @@
     _fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"]);
     _accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
 
-    NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
-    if (key) {
+    KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:@"WiGo" accessGroup:nil];
+
+
+    NSData *keyData = (NSData *)[keychainItem objectForKey:(__bridge id)kSecValueData];
+    NSString *key = [[NSString alloc] initWithData:keyData
+                                                 encoding:NSUTF8StringEncoding];
+    if (key.length > 0) {
         User *user = [[User alloc] initWithDictionary:@{@"key": key}];
         [Profile setUser:user];
         [self fetchUserInfo];
@@ -177,9 +196,15 @@
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
                               for (FBGraphObject *photoRepresentation in resultObject) {
                                   FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
-                                  FBGraphObject *newPhoto = [self getFirstFacebookPhotoGreaterThanSixHundred:images];
+                                  FBGraphObject *newPhoto = [self getFirstFacebookPhotoGreaterThanX:600 inPhotoArray:images];
+                                  FBGraphObject *smallPhoto = [self getFirstFacebookPhotoGreaterThanX:200 inPhotoArray:images];
                                   if (newPhoto != nil) {
-                                      [profilePictures addObject:[newPhoto objectForKey:@"source"]];
+                                      NSMutableDictionary *newImage = [NSMutableDictionary new];
+                                      [newImage setValue:[newPhoto objectForKey:@"source"] forKey:@"url"];
+                                      [newImage setValue:[photoRepresentation objectForKey:@"id"] forKey:@"id"];
+                                      [newImage setValue:@"facebook" forKey:@"type"];
+                                      [profilePictures addObject:newImage];
+                                      if (smallPhoto) [newImage setValue:[smallPhoto objectForKey:@"source"] forKey:@"small"];
                                       if ([profilePictures count] == 1) {
                                           [[Profile user] setValue:[profilePictures objectAtIndex:0] forKey:@"image"];
                                       }
@@ -195,8 +220,10 @@
                           }];
 }
 
+
+
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
-    [[Profile user] setImagesURL:profilePictures];
+    [[Profile user] setImages:profilePictures];
     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
     if (!_pushed) {
         _pushed = YES;
@@ -206,12 +233,13 @@
     }
 }
 
-- (FBGraphObject *)getFirstFacebookPhotoGreaterThanSixHundred:(FBGraphObject *)photoArray {
+
+- (FBGraphObject *)getFirstFacebookPhotoGreaterThanX:(int)X inPhotoArray:(FBGraphObject *)photoArray {
     int minHeight = 0;
     FBGraphObject *returnedPhoto;
     for (FBGraphObject *fbPhoto in photoArray) {
         int heightPhoto = [[fbPhoto objectForKey:@"height"] intValue];
-        if (heightPhoto > 600) {
+        if (heightPhoto > X) {
             if (minHeight == 0) {
                 returnedPhoto = fbPhoto;
                 minHeight = heightPhoto;
@@ -391,8 +419,7 @@
         if (!_pushed) {
             _pushed = YES;
             if ([[Profile user] isGroupLocked]) {
-                self.lockScreenViewController = [[LockScreenViewController alloc] init];
-                [self.navigationController pushViewController:self.lockScreenViewController animated:NO];
+                [self.navigationController pushViewController:[WaitListViewController new] animated:NO];
             }
             else {
                 [self loadMainViewController];

@@ -14,6 +14,7 @@
 #import "Time.h"
 #import "EventAnalytics.h"
 #import "NSMutableDictionary+NotOverwrite.h"
+#import "KeychainItemWrapper.h"
 
 
 @implementation User
@@ -117,7 +118,17 @@
 }
 
 - (NSString *)key {
-    return (NSString *)[_proxy objectForKey:@"key"];
+    NSString *key = (NSString *)[_proxy objectForKey:@"key"];
+    if (key) return key;
+    else {
+        KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:@"WiGo" accessGroup:nil];
+        NSData *keyData = (NSData *)[keychainItem objectForKey:(__bridge id)kSecValueData];
+        NSString *key = [[NSString alloc] initWithData:keyData
+                                              encoding:NSUTF8StringEncoding];
+//        NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
+        if (key.length == 0) return nil;
+        return key;
+    }
 }
 
 - (void)setKey:(NSString *)key {

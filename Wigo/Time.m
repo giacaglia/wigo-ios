@@ -26,7 +26,7 @@
     if ([otherDay hour] >= 6 && [today day] == [otherDay day] && [today month] == [otherDay month] && [today year] == [otherDay year]) {
         return NO;
     }
-    if ([otherDay hour] < 6 && [today month] == [otherDay month] && [today year] == [otherDay year] && [differenceDateComponents day] == 1) {
+    if ([today hour] < 6 && [today month] == [otherDay month] && [today year] == [otherDay year] && [differenceDateComponents day] == 1) {
         return NO;
     }
     return YES;
@@ -38,11 +38,8 @@
     NSDate *dateInUTC = [utcDateFormat dateFromString:utcTimeString];
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     NSDate *dateInLocalTimezone = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
-    
-    NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit fromDate:dateInLocalTimezone];
-    NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit |NSHourCalendarUnit fromDate:[NSDate date]];
-    
-    if ([otherDay hour] >= 6 && [today day] == [otherDay day] && [today month] == [otherDay month] && [today year] == [otherDay year]) {
+        
+    if (![Time isUTCtimeStringFromLastDay:utcTimeString]) {
         NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
         [localTimeFormat setDateFormat:@"h:mm a"];
         return [localTimeFormat stringFromDate:dateInLocalTimezone];
@@ -76,7 +73,7 @@
 
 + (NSDateComponents *)differenceBetweenFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate {
     NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    unsigned int flags = NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSWeekOfYearCalendarUnit |NSDayCalendarUnit;
+    unsigned int flags = NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSWeekOfYearCalendarUnit |NSDayCalendarUnit | NSHourCalendarUnit;
     NSCalendar* calendar = [NSCalendar currentCalendar];
     NSDateComponents *otherDay=  [gregorianCalendar
                                   components:flags

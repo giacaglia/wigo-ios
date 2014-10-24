@@ -7,17 +7,15 @@
 //
 
 #import "MobileContactsViewController.h"
-#import <AddressBook/AddressBook.h>
 #import "Globals.h"
+#import "MobileDelegate.h"
 
-NSMutableArray *peopleContactList;
+NSArray *peopleContactList;
 UITableView *contactsTableView;
 NSMutableArray *selectedPeopleIndexes;
-CFArrayRef all;
-CFIndex n;
 UISearchBar *searchBar;
 BOOL isFiltered;
-NSMutableArray *filteredPeopleContactList;
+NSArray *filteredPeopleContactList;
 
 NSMutableArray *shownChosenPeople;
 NSMutableArray *chosenPeople;
@@ -35,7 +33,7 @@ NSMutableArray *chosenPeople;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    peopleContactList = [[NSMutableArray alloc] init];
+    peopleContactList = [[NSArray alloc] init];
     chosenPeople = [[NSMutableArray alloc] init];
     shownChosenPeople = [[NSMutableArray alloc] init];
     selectedPeopleIndexes = [[NSMutableArray alloc] init];
@@ -44,7 +42,6 @@ NSMutableArray *chosenPeople;
     [self initializeSearchBar];
     [self initializeTapHandler];
     [self initializeTableViewWithPeople];
-//    [self initializeButtonIAmDone];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -80,52 +77,18 @@ NSMutableArray *chosenPeople;
 }
 
 - (void)getContactAccess {
-    CFErrorRef error = NULL;
-    
-    ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, &error);
-    ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
-        if (granted && addressBookRef) {
-            [EventAnalytics tagEvent:@"Accepted Apple Contacts"];
-
-            all = ABAddressBookCopyArrayOfAllPeople(addressBookRef);
-            n = ABAddressBookGetPersonCount(addressBookRef);
-            
-            CFMutableArrayRef peopleMutable = CFArrayCreateMutableCopy(
-                                                                       kCFAllocatorDefault,
-                                                                       CFArrayGetCount(all),
-                                                                       all
-                                                                       );
-            
-            CFArraySortValues(
-                              peopleMutable,
-                              CFRangeMake(0, n),
-                              (CFComparatorFunction) ABPersonComparePeopleByName,
-                              (void*) ABPersonGetSortOrdering()
-                              );
-            NSMutableArray* data = [NSMutableArray arrayWithArray: (__bridge NSArray*) peopleMutable];
-            
-
-            for( int i = 0 ; i < n ; i++ )
-            {
-                ABRecordRef ref = (__bridge ABRecordRef)([data objectAtIndex:i]);
-                NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(ref, kABPersonFirstNameProperty));
-                NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(ref, kABPersonLastNameProperty));
-                ABMultiValueRef phones = ABRecordCopyValue(ref, kABPersonPhoneProperty);
-                if ( ABMultiValueGetCount(phones) > 0 &&
-                    (![firstName isEqualToString:@""] || ![lastName isEqualToString:@""]) ) {
-                    [peopleContactList addObject:(__bridge id)(ref)];
-                }
-            }
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                [contactsTableView reloadData];
-            });
-       
-        }
-        else {
-            [EventAnalytics tagEvent:@"Decline Apple Contacts"];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
-    });
+   [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
+       dispatch_async(dispatch_get_main_queue(), ^(void){
+           if ([mobileArray count] > 0) {
+               peopleContactList = [NSMutableArray arrayWithArray:mobileArray];
+               [contactsTableView reloadData];
+           }
+           else {
+               [EventAnalytics tagEvent:@"Decline Apple Contacts"];
+               [self dismissViewControllerAnimated:NO completion:nil];
+           }
+       });
+   }];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -207,113 +170,38 @@ NSMutableArray *chosenPeople;
 - (void)selectedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
+    ABRecordRef contactPerson;
+    ABRecordID recordID;
     if (isFiltered) {
-        ABRecordRef contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
-        ABRecordID recordID = ABRecordGetRecordID(contactPerson);
-        for (int i = 0 ; i < [peopleContactList count] ; i++ ) {
-            ABRecordRef newContactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:i]);
-            ABRecordID newRecordID = ABRecordGetRecordID(newContactPerson);
-            if (recordID == newRecordID) {
-                tag = i;
-            }
-        }
-        [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
-        for (UIView *subview in buttonSender.subviews) {
-            if ([subview isKindOfClass:[UIImageView class]]) {
-                UIImageView *selectedImageView = (UIImageView *)subview;
-                NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
-                if (![shownChosenPeople containsObject:recordIdString]) {
-                    selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
-                    [chosenPeople addObject:recordIdString];
-                    [shownChosenPeople addObject:recordIdString];
-                }
-                else {
-                    selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
-                    [shownChosenPeople removeObject:recordIdString];
-                }
-            }
-        }
+        contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
+        recordID = ABRecordGetRecordID(contactPerson);
+        tag = [MobileDelegate changeTag:tag fromArray:filteredPeopleContactList toArray:peopleContactList];
+       
     }
     else {
-        ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:tag]);
-        ABRecordID recordID = ABRecordGetRecordID(contactPerson);
-        [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
-        for (UIView *subview in buttonSender.subviews) {
-            if (subview.tag == tag && [subview isKindOfClass:[UIImageView class]]) {
-                UIImageView *selectedImageView = (UIImageView *)subview;
-                NSString *recordIdString = [NSString stringWithFormat:@"%d", recordID];
-                if (![shownChosenPeople containsObject:recordIdString]) {
-                    selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
-                    [chosenPeople addObject:recordIdString];
-                    [shownChosenPeople addObject:recordIdString];
-                }
-                else {
-                    selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
-                    [shownChosenPeople removeObject:recordIdString];
-                }
-
+        contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:tag]);
+        recordID = ABRecordGetRecordID(contactPerson);
+    }
+    [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
+    for (UIView *subview in buttonSender.subviews) {
+        if ([subview isKindOfClass:[UIImageView class]]) {
+            UIImageView *selectedImageView = (UIImageView *)subview;
+            NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
+            if (![shownChosenPeople containsObject:recordIdString]) {
+                selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
+                [chosenPeople addObject:recordIdString];
+                [shownChosenPeople addObject:recordIdString];
+            }
+            else {
+                selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
+                [shownChosenPeople removeObject:recordIdString];
             }
         }
     }
-
 }
-
-- (void)initializeButtonIAmDone {
-    UIButton *iAmDoneButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 50 - 10, self.view.frame.size.width - 30, 50)];
-    [iAmDoneButton setTitle:@"OK, I AM DONE" forState:UIControlStateNormal];
-    [iAmDoneButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    iAmDoneButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    iAmDoneButton.layer.borderWidth = 2.0f;
-    iAmDoneButton.layer.cornerRadius = 10;
-    [iAmDoneButton addTarget:self action:@selector(donePressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:iAmDoneButton];
-}
-
 
 - (void)donePressed {
-    NSMutableArray *numbers = [[NSMutableArray alloc] init];
-    for (CFIndex i = 0; i < [chosenPeople count]; i++) {
-        NSString *recordIDString = [chosenPeople objectAtIndex:i];
-        for (int j = 0; j < [peopleContactList count]; j++) {
-            ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:j]);
-            ABRecordID newRecordID = ABRecordGetRecordID(contactPerson);
-            NSString *newRecordIDString = [NSString stringWithFormat:@"%d",newRecordID];
-            if ([recordIDString isEqualToString:newRecordIDString]) {
-                ABMultiValueRef multiPhones = ABRecordCopyValue(contactPerson, kABPersonPhoneProperty);
-                for(CFIndex i = 0; i < ABMultiValueGetCount(multiPhones); i++) {
-                    
-                    NSString* phoneLabel = (__bridge NSString*) ABMultiValueCopyLabelAtIndex(multiPhones, i);
-                    NSString* phoneNumber = (__bridge NSString*) ABMultiValueCopyValueAtIndex(multiPhones, i);
-                    //for example
-                    if([phoneLabel isEqualToString:(NSString *)kABPersonPhoneIPhoneLabel]) {
-                        [numbers addObject:@{@"phone":phoneNumber}];
-                        break;
-                    }
-                    else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMobileLabel])) {
-                        [numbers addObject:@{@"phone":phoneNumber}];
-                        break;
-                    }
-                    else if (([phoneLabel isEqualToString:(NSString *)kABPersonPhoneMainLabel])) {
-                        [numbers addObject:@{@"phone":phoneNumber}];
-                        break;
-                    }
-                    else {
-                        [numbers addObject:@{@"phone":phoneNumber}];
-                        break;
-                    }
-                }
-
-            }
-        }
-    }
-    if ([numbers count] > 0) {
-        NSDictionary *options = (NSDictionary *)numbers;
-        [Network sendAsynchronousHTTPMethod:POST
-                                withAPIName:@"invites/"
-                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                                withOptions:options];
-
-    }
+    [MobileDelegate sendChosenPeople:chosenPeople forContactList:peopleContactList];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -365,21 +253,7 @@ NSMutableArray *chosenPeople;
     else
     {
         isFiltered = true;
-        filteredPeopleContactList = [[NSMutableArray alloc] init];
-        
-        for (int i = 0 ; i < [peopleContactList count]; i++) {
-            ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:i]);
-            NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
-            NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
-
-            NSRange nameRange = [firstName rangeOfString:searchText options:NSCaseInsensitiveSearch];
-            NSRange descriptionRange = [lastName rangeOfString:searchText options:NSCaseInsensitiveSearch];
-            if(nameRange.location != NSNotFound || descriptionRange.location != NSNotFound)
-            {
-                [filteredPeopleContactList addObject:(__bridge id)(contactPerson)];
-            }
-        }
-      
+        filteredPeopleContactList = [MobileDelegate filterArray:peopleContactList withText:searchText];
     }
     
     [contactsTableView reloadData];

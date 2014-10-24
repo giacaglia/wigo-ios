@@ -948,7 +948,6 @@ BOOL shouldReloadEvents;
     transition.subtype = kCATransitionFromBottom;
     [self.view.window.layer addAnimation:transition forKey:kCATransition];
     [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
-    
 }
 
 - (void)presentContactsView {

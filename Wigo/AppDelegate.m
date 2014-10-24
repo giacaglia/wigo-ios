@@ -82,10 +82,6 @@ NSDate *firstLoggedTime;
     return YES;
 }
 
-//- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-//
-//}
-
 
 
 							
@@ -178,7 +174,12 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                     NSArray *locArgs = [alert objectForKey:@"loc-args"];
                     NSString *messageString = locArgs[1];
                     NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObject:messageString forKey:@"message"];
-                    [dictionary setObject:locArgs[0] forKey:@"fullName"];
+                    if ([[userInfo allKeys] containsObject:@"from_user"]) {
+                        NSDictionary *fromUserDict = [userInfo objectForKey:@"from_user"];
+                        if ([[fromUserDict allKeys] containsObject:@"id"]) {
+                            [dictionary setObject:[fromUserDict objectForKey:@"id"] forKey:@"id"];
+                        }
+                    }
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:[NSDictionary dictionaryWithDictionary:dictionary]];
                 }
             }

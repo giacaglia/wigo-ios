@@ -19,7 +19,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "CSStickyHeaderFlowLayout.h"
 #import "PeopleViewController.h"
-#import "OnboardViewController.h"
+#import "NSObject-CancelableScheduledBlock.h"
 
 @interface MainViewController ()
 
@@ -47,6 +47,8 @@ int userInt;
 UILabel *redDotLabel;
 NSString *goingOutString;
 NSString *notGoingOutString;
+Party *failedUsersParty;
+NSMutableArray *failedUserInfoArray;
 
 @implementation MainViewController
 
@@ -64,7 +66,9 @@ NSString *notGoingOutString;
     [EventAnalytics tagEvent:@"Who View"];
     self.tabBarController.tabBar.hidden = NO;
     if (!didProfileSegue) {
-        [self fetchUserInfo];
+        [self performBlock:^(void){[self fetchUserInfo];}
+                afterDelay:0.1
+     cancelPreviousRequest:YES];
         [self fetchFirstPageFollowing];
         [self fetchIsThereNewPerson];
         [self fetchSummaryGoingOut];
@@ -117,7 +121,9 @@ NSString *notGoingOutString;
     _fetchingIsThereNewPerson = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
     [self fetchFirstPageFollowing];
-    [self fetchUserInfo];
+    [self performBlock:^(void){[self fetchUserInfo];}
+            afterDelay:0.1
+ cancelPreviousRequest:YES];
     [self fetchIsThereNewPerson];
     [self fetchSummaryGoingOut];
 
@@ -191,21 +197,18 @@ NSString *notGoingOutString;
     if ([[Profile user] key] && !_fetchingUserInfo ) {
         _fetchingUserInfo = YES;
         [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
                         User *user = [[User alloc] initWithDictionary:jsonResponse];
                         if ([user key]) {
                             [Profile setUser:user];
-                            _fetchingUserInfo = NO;
                             [self initializeNavigationItem];
                             [self fetchedMyInfoOrPeoplesInfo];
                         }
-                    });
+                    }
                 }
-            }
-            else {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
+                else {
                     User *user = [[User alloc] initWithDictionary:jsonResponse];
                     if ([user key]) {
                         [Profile setUser:user];
@@ -213,8 +216,9 @@ NSString *notGoingOutString;
                         [self initializeNavigationItem];
                         [self fetchedMyInfoOrPeoplesInfo];
                     }
-                });
-            }
+                }
+                _fetchingUserInfo = NO;
+            });
         }];
     }
 }
@@ -297,6 +301,7 @@ NSString *notGoingOutString;
                     if (profileUser) {
                         NSNumber *lastUserRead = [profileUser lastUserRead];
                         NSNumber *lastUserJoinedNumber = (NSNumber *)[lastUserJoined objectForKey:@"id"];
+                        [Profile setLastUserJoined:lastUserJoinedNumber];
                         [_rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
                         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 30, 30)];
                         imageView.image = [UIImage imageNamed:@"followPlus"];
@@ -363,6 +368,30 @@ NSString *notGoingOutString;
     }];
 }
 
+- (void)sendImageFailureInfoForUser:(User *)user {
+    if (!failedUsersParty) {
+        failedUsersParty = [[Party alloc] initWithObjectType:USER_TYPE];
+        failedUserInfoArray = [NSMutableArray new];
+    }
+    if (![failedUsersParty containsObject:[user dictionary]]) {
+        [failedUserInfoArray addObject:@{@"user_id": [user objectForKey:@"id"], @"image_type": @"facebook"}];
+    }
+    
+    [self performBlock:^(void){
+        [Network sendAsynchronousHTTPMethod:POST
+                                withAPIName:@"images/failed/"
+                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                    failedUsersParty = [[Party alloc] initWithObjectType:USER_TYPE];
+                                    failedUserInfoArray = [NSMutableArray new];
+                                }
+                                withOptions:failedUserInfoArray
+         ];
+    }
+            afterDelay:0.2
+ cancelPreviousRequest:YES];
+    
+}
+
 #pragma mark - viewDidLoad initializations
 
 - (void)initializeFlashScreen {
@@ -407,6 +436,11 @@ NSString *notGoingOutString;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(goOutPressed)
                                                  name:@"goOutPressed"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(popGoOutPressed)
+                                                 name:@"popGoOutPressed"
                                                object:nil];
 
 }
@@ -468,6 +502,21 @@ NSString *notGoingOutString;
     [_rightButton setShowsTouchWhenHighlighted:YES];
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:_rightButton];
     self.navigationItem.rightBarButtonItem = rightBarButton;
+    
+    if ([Profile lastUserJoined]) {
+        if ([[[Profile user]  lastUserRead] intValue] < [[Profile lastUserJoined] intValue]) {
+            redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, 10, 10)];
+            redDotLabel.backgroundColor = [UIColor redColor];
+            redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
+            redDotLabel.clipsToBounds = YES;
+            redDotLabel.layer.borderWidth = 3;
+            redDotLabel.layer.cornerRadius = 5;
+            [_rightButton addSubview:redDotLabel];
+        }
+        else {
+            if (redDotLabel) [redDotLabel removeFromSuperview];
+        }
+    }
     
     [self updateTitleView];
 }
@@ -532,8 +581,7 @@ NSString *notGoingOutString;
 
 - (void)followPressed {
     if ([Profile user]) {
-        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
-//        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[Profile user]] animated:YES];
+        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[Profile user]] animated:YES];
         self.tabBarController.tabBar.hidden = YES;
     }
 }
@@ -611,7 +659,6 @@ NSString *notGoingOutString;
             }
         }
     }
-//    NSLog(@"updated ui");
 }
 
 - (UIImageView *)gifGoOut {
@@ -638,13 +685,21 @@ NSString *notGoingOutString;
     return gifGoOutImageView;
 }
 
+
+- (void)popGoOutPressed {
+    [self goOutPressed];
+    [self performBlock:^(void){[self fetchUserInfo];}
+            afterDelay:0.1
+ cancelPreviousRequest:YES];
+}
+
+
 - (void) goOutPressed {
     [Network postGoOut];
     [[Profile user] setIsGoingOut:YES];
     [self updateTitleView];
     [self showTapButtons];
     [self animationShowingTapIcons];
-//    [self fetchUserInfo]; //TODO: Needs to be added when sent a notification from the startup view
 }
 
 
@@ -835,7 +890,17 @@ NSString *notGoingOutString;
     cell.profileButton2.tag = tag;
     cell.profileButton3.tag = tag;
     
-    [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea]];
+    __block int weakTag = tag;
+    __block WigoCustomCell *weakCell = cell;
+    [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        if (error) {
+            NSIndexPath *indexPath = [self indexPathFromTag:weakTag];
+            User *user = [self userForIndexPath:indexPath];
+            [self sendImageFailureInfoForUser:user];
+            NSString *facebookID = [user objectForKey:@"facebook_id"];
+            [weakCell.userCoverImageView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", facebookID]]];
+        }
+    }];
     
     cell.userCoverImageView.tag = tag;
     cell.profileName.text = [user firstName];
@@ -869,6 +934,7 @@ NSString *notGoingOutString;
     
     return cell;
 }
+
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -917,7 +983,6 @@ NSString *notGoingOutString;
                 label.attributedText = attributedString;
             }
             else label.text = @"GOING OUT";
-           
         }
         else {
             if (notGoingOutString.length > 0) {
@@ -1012,13 +1077,12 @@ NSString *notGoingOutString;
             [tapButtonArray addObject:tapButton];
         }
     }
-    
     for (UIImageViewShake *tappedImageView in tapArray) {
         tappedImageView.hidden = YES;
         CGRect previousFrame = tappedImageView.frame;
         [tapFrameArray addObject:[NSValue valueWithCGRect:previousFrame]];
-        CGPoint centerPoint = [self.view convertPoint:self.view.center toView:tappedImageView.superview];
-        tappedImageView.center = centerPoint;
+//        CGPoint centerPoint = [self.view convertPoint:self.view.center toView:tappedImageView.superview];
+        tappedImageView.center = self.view.center;
     }
 
     [UIView animateWithDuration:0.3
