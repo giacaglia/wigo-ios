@@ -11,6 +11,7 @@
 #import "GKImagePicker.h"
 #import "GKImageCropViewController.h"
 #import "ErrorViewController.h"
+#import "FacebookHelper.h"
 
 @interface FacebookImagesViewController ()<GKImageCropControllerDelegate>
 @property NSString *profilePicturesAlbumId;
@@ -20,7 +21,7 @@
 @end
 
 NSDictionary *chosenPhoto;
-NSMutableArray *facebookIDArray;
+NSMutableArray *imagesArray;
 //NSString *albumID;
 
 @implementation FacebookImagesViewController
@@ -136,7 +137,7 @@ NSMutableArray *facebookIDArray;
 - (void) getProfilePictures {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
     _profilePicturesURL = [NSMutableArray new];
-    facebookIDArray = [NSMutableArray new];
+    imagesArray = [NSMutableArray new];
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
                                  parameters:nil
                                  HTTPMethod:@"GET"
@@ -149,9 +150,21 @@ NSMutableArray *facebookIDArray;
                               if (!error) {
                                   FBGraphObject *resultObject = [result objectForKey:@"data"];
                                   for (FBGraphObject *photoRepresentation in resultObject) {
-                                      [_profilePicturesURL addObject:[photoRepresentation objectForKey:@"source"]];
-                                      [facebookIDArray addObject:[photoRepresentation objectForKey:@"id"]];
-                                      _startingYPosition = 0;
+                                      FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
+                                      FBGraphObject *newPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:600 inPhotoArray:images];
+                                      FBGraphObject *smallPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:200 inPhotoArray:images];
+                                      if (newPhoto) {
+                                          NSDictionary *newImage =
+                                          @{@"url": [newPhoto objectForKey:@"source"],
+                                            @"small": [smallPhoto objectForKey:@"source"],
+                                            @"facebookID": [photoRepresentation objectForKey:@"id"],
+                                            @"type": @"facebook"
+                                            };
+                                          [_profilePicturesURL addObject:[newPhoto objectForKey:@"source"]];
+                                          [imagesArray addObject:newImage];
+                                          _startingYPosition = 0;
+                                      }
+                                     
                                   }
                                   [self addImagesFromURLArray];
                               }
@@ -208,11 +221,11 @@ NSMutableArray *facebookIDArray;
 
 - (void)choseImageView:(UITapGestureRecognizer*)sender {
     UIImageView *imageViewSender = (UIImageView *)sender.view;
-    chosenPhoto = @{@"pictureURL": [_profilePicturesURL objectAtIndex:imageViewSender.tag],
-                    @"facebookID": [facebookIDArray objectAtIndex:imageViewSender.tag],
+    NSDictionary *newImage = [imagesArray objectAtIndex:imageViewSender.tag];
+    chosenPhoto = @{@"pictureURL": [newImage objectForKey:@"url"],
+                    @"facebookID": [newImage objectForKey:@"facebookID"],
                     @"type": @"facebook"
                     };
-//    urlOfSelectedImage = ;
     GKImageCropViewController *cropViewController = [[GKImageCropViewController alloc] init];
     cropViewController.sourceImage = imageViewSender.image;
     cropViewController.delegate = self;

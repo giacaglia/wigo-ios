@@ -6,12 +6,14 @@
 //  Copyright (c) 2013 Giuliano Giacaglia. All rights reserved.
 //
 
+#import "Globals.h"
+
 #import "SignViewController.h"
 #import "MainViewController.h"
 #import "OnboardViewController.h"
 #import "WaitListViewController.h"
 #import "KeychainItemWrapper.h"
-#import "Globals.h"
+#import "FacebookHelper.h"
 
 #import <Crashlytics/Crashlytics.h>
 
@@ -196,27 +198,30 @@
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
                               for (FBGraphObject *photoRepresentation in resultObject) {
                                   FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
-                                  FBGraphObject *newPhoto = [self getFirstFacebookPhotoGreaterThanX:600 inPhotoArray:images];
-                                  FBGraphObject *smallPhoto = [self getFirstFacebookPhotoGreaterThanX:200 inPhotoArray:images];
-                                  if (newPhoto != nil) {
-                                      NSMutableDictionary *newImage = [NSMutableDictionary new];
-                                      [newImage setValue:[newPhoto objectForKey:@"source"] forKey:@"url"];
-                                      [newImage setValue:[photoRepresentation objectForKey:@"id"] forKey:@"id"];
-                                      [newImage setValue:@"facebook" forKey:@"type"];
+                                  FBGraphObject *newPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:600 inPhotoArray:images];
+                                  FBGraphObject *smallPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:200 inPhotoArray:images];
+                                  if (newPhoto) {
+                                      NSDictionary *newImage = @{
+                                                                 @"url": [newPhoto objectForKey:@"source"],
+                                                                 @"id": [newPhoto objectForKey:@"id"],
+                                                                 @"type": @"facebook",
+                                                                 @"small": [smallPhoto objectForKey:@"source"]
+                                                                 };
                                       [profilePictures addObject:newImage];
-                                      if (smallPhoto) [newImage setValue:[smallPhoto objectForKey:@"source"] forKey:@"small"];
+                                      
                                       if ([profilePictures count] == 1) {
                                           [[Profile user] setValue:[profilePictures objectAtIndex:0] forKey:@"image"];
                                       }
                                       if ([profilePictures count] >= 3) {
                                           break;
                                       }
+
                                   }
-                              }
-                              if ([profilePictures count] == 0) {
-                                  [profilePictures addObject:@"https://api.wigo.us/static/img/wigo_profile_gray.png"];
-                              }
-                              [self saveProfilePictures:profilePictures];
+                                }
+                                if ([profilePictures count] == 0) {
+                                    [profilePictures addObject:@"https://api.wigo.us/static/img/wigo_profile_gray.png"];
+                                }
+                                [self saveProfilePictures:profilePictures];
                           }];
 }
 
@@ -234,39 +239,7 @@
 }
 
 
-- (FBGraphObject *)getFirstFacebookPhotoGreaterThanX:(int)X inPhotoArray:(FBGraphObject *)photoArray {
-    int minHeight = 0;
-    FBGraphObject *returnedPhoto;
-    for (FBGraphObject *fbPhoto in photoArray) {
-        int heightPhoto = [[fbPhoto objectForKey:@"height"] intValue];
-        if (heightPhoto > X) {
-            if (minHeight == 0) {
-                returnedPhoto = fbPhoto;
-                minHeight = heightPhoto;
-            }
-            else if (minHeight > heightPhoto) {
-                returnedPhoto = fbPhoto;
-                minHeight = heightPhoto;
-            }
-        }
-    }
-    
-    // If the photo was fetched then returned it else return biggest res photo
-    if (minHeight > 0) {
-        return returnedPhoto;
-    }
-    else {
-        int maxHeight = 0;
-        for (FBGraphObject *fbPhoto in photoArray) {
-            int heightPhoto = [[fbPhoto objectForKey:@"height"] intValue];
-            if (heightPhoto > maxHeight) {
-                returnedPhoto = fbPhoto;
-                maxHeight = heightPhoto;
-            }
-        }
-        return returnedPhoto;
-    }
-}
+
 
 #pragma mark - UIAlertView Methods
 

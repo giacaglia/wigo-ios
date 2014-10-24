@@ -225,6 +225,8 @@
 		E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */; };
 		E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
 		E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
+		E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CB091419FB062D00B548A6 /* FacebookHelper.m */; };
+		E9CB091619FB062D00B548A6 /* FacebookHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CB091419FB062D00B548A6 /* FacebookHelper.m */; };
 		E9CD47141948E27500AEA17D /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
 		E9CD472B194B889800AEA17D /* RWBlurImage.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD4728194B889800AEA17D /* RWBlurImage.m */; };
 		E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD472A194B889800AEA17D /* RWBlurPopover.m */; };
@@ -472,6 +474,8 @@
 		E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaitListViewController.m; sourceTree = "<group>"; };
 		E9C34A7619F98A2C00D7E9D3 /* MobileDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileDelegate.h; sourceTree = "<group>"; };
 		E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileDelegate.m; sourceTree = "<group>"; };
+		E9CB091319FB062D00B548A6 /* FacebookHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookHelper.h; sourceTree = "<group>"; };
+		E9CB091419FB062D00B548A6 /* FacebookHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookHelper.m; sourceTree = "<group>"; };
 		E9CD47121948E27500AEA17D /* UIImageViewShake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageViewShake.h; sourceTree = "<group>"; };
 		E9CD47131948E27500AEA17D /* UIImageViewShake.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageViewShake.m; sourceTree = "<group>"; };
 		E9CD4727194B889800AEA17D /* RWBlurImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RWBlurImage.h; sourceTree = "<group>"; };
@@ -815,6 +819,7 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E9CB091219FB061F00B548A6 /* FacebookHelper */,
 				E9C3056819F831CA00F9564D /* KeychainWrapper */,
 				E9EA951319E9F83C003C79F0 /* StickyHeader */,
 				E9F7994719D4C633001D5BFC /* GoogleAnalytics */,
@@ -1072,6 +1077,15 @@
 				E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */,
 			);
 			name = MobileDelegates;
+			sourceTree = "<group>";
+		};
+		E9CB091219FB061F00B548A6 /* FacebookHelper */ = {
+			isa = PBXGroup;
+			children = (
+				E9CB091319FB062D00B548A6 /* FacebookHelper.h */,
+				E9CB091419FB062D00B548A6 /* FacebookHelper.m */,
+			);
+			name = FacebookHelper;
 			sourceTree = "<group>";
 		};
 		E9CD47151948E41A00AEA17D /* ViewExtensions */ = {
@@ -1482,6 +1496,7 @@
 				E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
 				E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				C12A113319787BE700D53B1C /* RWBlurPopover.m in Sources */,
+				E9CB091619FB062D00B548A6 /* FacebookHelper.m in Sources */,
 				E96F07AD19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
 				E9ACCA2519C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
@@ -1575,6 +1590,7 @@
 				E9C34A6F19F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
 				E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */,
+				E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */,
 				E96F07AC19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */,
 				E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
