@@ -259,7 +259,7 @@ UIButton *cancelButton;
         UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
-        profileImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
+        profileImageView.image = [UIImage imageNamed:@"grayIcon"];
         [aroundCellButton addSubview:profileImageView];
 
         
