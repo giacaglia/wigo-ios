@@ -120,4 +120,22 @@
     return newTag;
 }
 
++ (NSArray *)filterArray:(NSArray *)array withText:(NSString *)searchText {
+    NSMutableArray *filteredPeopleContactList = [[NSMutableArray alloc] init];
+    
+    for (int i = 0 ; i < [array count]; i++) {
+        ABRecordRef contactPerson = (__bridge ABRecordRef)([array objectAtIndex:i]);
+        NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
+        NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
+        
+        NSRange nameRange = [firstName rangeOfString:searchText options:NSCaseInsensitiveSearch];
+        NSRange descriptionRange = [lastName rangeOfString:searchText options:NSCaseInsensitiveSearch];
+        if(nameRange.location != NSNotFound || descriptionRange.location != NSNotFound)
+        {
+            [filteredPeopleContactList addObject:(__bridge id)(contactPerson)];
+        }
+    }
+    return [NSArray arrayWithArray:filteredPeopleContactList];
+}
+
 @end

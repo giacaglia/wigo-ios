@@ -15,7 +15,7 @@ UITableView *contactsTableView;
 NSMutableArray *selectedPeopleIndexes;
 UISearchBar *searchBar;
 BOOL isFiltered;
-NSMutableArray *filteredPeopleContactList;
+NSArray *filteredPeopleContactList;
 
 NSMutableArray *shownChosenPeople;
 NSMutableArray *chosenPeople;
@@ -254,21 +254,7 @@ NSMutableArray *chosenPeople;
     else
     {
         isFiltered = true;
-        filteredPeopleContactList = [[NSMutableArray alloc] init];
-        
-        for (int i = 0 ; i < [peopleContactList count]; i++) {
-            ABRecordRef contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:i]);
-            NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
-            NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
-
-            NSRange nameRange = [firstName rangeOfString:searchText options:NSCaseInsensitiveSearch];
-            NSRange descriptionRange = [lastName rangeOfString:searchText options:NSCaseInsensitiveSearch];
-            if(nameRange.location != NSNotFound || descriptionRange.location != NSNotFound)
-            {
-                [filteredPeopleContactList addObject:(__bridge id)(contactPerson)];
-            }
-        }
-      
+        filteredPeopleContactList = [MobileDelegate filterArray:peopleContactList withText:searchText];
     }
     
     [contactsTableView reloadData];
