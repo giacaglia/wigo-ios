@@ -16,7 +16,8 @@
 #import "WigoConfirmationViewController.h"
 #import "MobileContactsViewController.h"
 #import "InviteViewController.h"
-#import "EventConversationViewController.h"
+
+#import "EventStoryViewController.h"
 
 #define xSpacing 10
 #define sizeOfEachCell 165
@@ -727,8 +728,10 @@ BOOL shouldReloadEvents;
     
     Event *chosenEvent = [eventsArray objectAtIndex: button.tag];
     
-    EventConversationViewController *eventConversationController = [[EventConversationViewController alloc] initWithEvent: chosenEvent];
-    [self.navigationController pushViewController: eventConversationController animated: YES];
+    EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
+    eventStoryController.event = chosenEvent;
+    
+    [self.navigationController pushViewController: eventStoryController animated: YES];
     self.tabBarController.tabBar.hidden = YES;
 }
 

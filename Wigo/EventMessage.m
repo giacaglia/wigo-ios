@@ -10,8 +10,6 @@
 
 @implementation EventMessage
 
-@synthesize attributes,text,date,fromMe,media,thumbnail,type;
-
 - (id)init
 {
     if (self = [super init]) {
