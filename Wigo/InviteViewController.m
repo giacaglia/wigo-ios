@@ -341,8 +341,35 @@ UIButton *cancelButton;
             }
         }
     }
-
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return [[UIView alloc ] init];
+    }
+    else {
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+        headerView.backgroundColor = [UIColor whiteColor];
+        
+        UILabel *tapPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
+        tapPeopleLabel.text = @"Tap Contacts";
+        tapPeopleLabel.textAlignment = NSTextAlignmentLeft;
+        tapPeopleLabel.font = [FontProperties lightFont:15.0f];
+        tapPeopleLabel.textColor = [FontProperties getBlueColor];
+        
+        [headerView addSubview:tapPeopleLabel];
+        
+        return headerView;
+    }
+}
+-(CGFloat) tableView:(UITableView *)tableView
+heightForHeaderInSection:(NSInteger)section
+{
+    if (section == 1) return 30;
+    else return 0;
+}
+
+
 
 - (void) tapPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
