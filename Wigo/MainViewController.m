@@ -313,30 +313,6 @@ NSMutableArray *failedUserInfoArray;
     }];
 }
 
-- (void)sendImageFailureInfoForUser:(User *)user {
-    if (!failedUsersParty) {
-        failedUsersParty = [[Party alloc] initWithObjectType:USER_TYPE];
-        failedUserInfoArray = [NSMutableArray new];
-    }
-    if (![failedUsersParty containsObject:[user dictionary]]) {
-        [failedUserInfoArray addObject:@{@"user_id": [user objectForKey:@"id"], @"image_type": @"facebook"}];
-    }
-    
-    [self performBlock:^(void){
-        [Network sendAsynchronousHTTPMethod:POST
-                                withAPIName:@"images/failed/"
-                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                    failedUsersParty = [[Party alloc] initWithObjectType:USER_TYPE];
-                                    failedUserInfoArray = [NSMutableArray new];
-                                }
-                                withOptions:failedUserInfoArray
-         ];
-    }
-            afterDelay:0.2
- cancelPreviousRequest:YES];
-    
-}
-
 #pragma mark - viewDidLoad initializations
 
 - (void)initializeFlashScreen {
@@ -430,7 +406,7 @@ NSMutableArray *failedUserInfoArray;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-     [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[[Profile user] coverImageArea]];
+    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[[Profile user] coverImageArea]];
     [profileButton addSubview:profileImageView];
     [profileButton addTarget:self action:@selector(myProfileSegue)
             forControlEvents:UIControlEventTouchUpInside];
@@ -837,11 +813,11 @@ NSMutableArray *failedUserInfoArray;
     
     __block int weakTag = tag;
     __block WigoCustomCell *weakCell = cell;
-    [cell.userCoverImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+    [cell.userCoverImageView setCoverImageForUser:user
+                                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         if (error) {
             NSIndexPath *indexPath = [self indexPathFromTag:weakTag];
             User *user = [self userForIndexPath:indexPath];
-            [self sendImageFailureInfoForUser:user];
             NSString *facebookID = [user objectForKey:@"facebook_id"];
             [weakCell.userCoverImageView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", facebookID]]];
         }

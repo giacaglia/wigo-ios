@@ -7,9 +7,32 @@
 //
 
 #import "UIImageView+ImageArea.h"
+#import "Network.h"
+#import "NSObject-CancelableScheduledBlock.h"
 
+NSMutableArray *failedUserInfoArray;
 
 @implementation UIImageView (ImageArea)
+
+- (void)setCoverImageForUser:(User *)user completed:(SDWebImageCompletedBlock)completedBlock {
+    [self setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        if (error) {
+            if (!failedUserInfoArray) failedUserInfoArray = [NSMutableArray new];
+            
+            if (![[failedUserInfoArray valueForKey:@"user_id"] containsObject:[user objectForKey:@"id"]]) {
+                [failedUserInfoArray addObject:@{@"user_id": [user objectForKey:@"id"], @"image_type": @"facebook"}];
+            }
+            [Network sendAsynchronousHTTPMethod:POST
+                                    withAPIName:@"images/failed/"
+                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                        failedUserInfoArray = [NSMutableArray new];
+                                    }
+                                    withOptions:failedUserInfoArray
+             ];
+        }
+        completedBlock(image, error, cacheType);
+    }];
+}
 
 - (void)setImageWithURL:(NSURL *)url imageArea:(NSDictionary *)area {
     [self setImageWithURL:url placeholderImage:nil options:0 progress:nil imageArea:area completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {}];

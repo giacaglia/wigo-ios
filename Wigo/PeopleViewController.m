@@ -342,7 +342,7 @@ NSMutableArray *suggestedArrayView;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+    [profileImageView setCoverImageForUser:user completed:nil];
     [profileButton addSubview:profileImageView];
     profileButton.tag = (int)((xPosition - 10)/130);
     if (![user isEqualToUser:[Profile user]]) {
@@ -576,7 +576,7 @@ NSMutableArray *suggestedArrayView;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+    [profileImageView setCoverImageForUser:user completed:nil];
     [profileButton addSubview:profileImageView];
     profileButton.tag = tag;
     if (![user isEqualToUser:[Profile user]]) {

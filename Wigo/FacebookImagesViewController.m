@@ -19,7 +19,8 @@
 @property int startingYPosition;
 @end
 
-NSString *urlOfSelectedImage;
+NSDictionary *chosenPhoto;
+NSMutableArray *facebookIDArray;
 //NSString *albumID;
 
 @implementation FacebookImagesViewController
@@ -134,7 +135,8 @@ NSString *urlOfSelectedImage;
 
 - (void) getProfilePictures {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
-    _profilePicturesURL = [[NSMutableArray alloc] initWithCapacity:0];
+    _profilePicturesURL = [NSMutableArray new];
+    facebookIDArray = [NSMutableArray new];
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
                                  parameters:nil
                                  HTTPMethod:@"GET"
@@ -148,6 +150,7 @@ NSString *urlOfSelectedImage;
                                   FBGraphObject *resultObject = [result objectForKey:@"data"];
                                   for (FBGraphObject *photoRepresentation in resultObject) {
                                       [_profilePicturesURL addObject:[photoRepresentation objectForKey:@"source"]];
+                                      [facebookIDArray addObject:[photoRepresentation objectForKey:@"id"]];
                                       _startingYPosition = 0;
                                   }
                                   [self addImagesFromURLArray];
@@ -205,7 +208,11 @@ NSString *urlOfSelectedImage;
 
 - (void)choseImageView:(UITapGestureRecognizer*)sender {
     UIImageView *imageViewSender = (UIImageView *)sender.view;
-    urlOfSelectedImage = [_profilePicturesURL objectAtIndex:imageViewSender.tag];
+    chosenPhoto = @{@"pictureURL": [_profilePicturesURL objectAtIndex:imageViewSender.tag],
+                    @"facebookID": [facebookIDArray objectAtIndex:imageViewSender.tag],
+                    @"type": @"facebook"
+                    };
+//    urlOfSelectedImage = ;
     GKImageCropViewController *cropViewController = [[GKImageCropViewController alloc] init];
     cropViewController.sourceImage = imageViewSender.image;
     cropViewController.delegate = self;
@@ -223,7 +230,7 @@ NSString *urlOfSelectedImage;
 
 - (void)didFinishWithCroppedArea:(CGRect)croppedArea {
     User *profileUser = [Profile user];
-    [profileUser addImageWithURL:urlOfSelectedImage andArea:croppedArea];
+    [profileUser addImageWithURL:[chosenPhoto objectForKey:@"facebookID"] andArea:croppedArea];
     [profileUser save];
     [self dismissViewControllerAnimated:YES completion:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
