@@ -115,8 +115,8 @@ NSMutableArray *failedUserInfoArray;
 
 // BEING CALLED TWICE
 - (void)loadViewAfterSigningUser {
+
     [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
-    [self fetchAppStart];
     _fetchingUserInfo = NO;
     _fetchingIsThereNewPerson = NO;
     _numberFetchedMyInfoAndEveryoneElse = 0;
@@ -126,72 +126,17 @@ NSMutableArray *failedUserInfoArray;
  cancelPreviousRequest:YES];
     [self fetchIsThereNewPerson];
     [self fetchSummaryGoingOut];
-
+    
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
 }
 
+
 #pragma mark - Network function
 
-- (BOOL)shouldFetchAppStartup {
-    NSDate *dateAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastTimeAccessed"];
-    if (!dateAccessed) {
-        NSDate *firstSaveDate = [NSDate date];
-        [[NSUserDefaults standardUserDefaults] setObject:firstSaveDate forKey: @"lastTimeAccessed"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return YES;
-    }
-    else {
-        NSDate *newDate = [NSDate date];
-        NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:dateAccessed toDate:newDate];
-        if ([differenceDateComponents hour] > 0 || [differenceDateComponents day] > 0 || [differenceDateComponents weekOfYear] > 0 || [differenceDateComponents month] > 0) {
-            [[NSUserDefaults standardUserDefaults] setObject:newDate forKey: @"lastTimeAccessed"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            return YES;
-        }
-    }
-    return NO;
-}
-
-- (void)fetchAppStart {
-    if ([self shouldFetchAppStartup]) {
-        [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if (!error) {
-                    if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
-                        NSDictionary *prompt = [jsonResponse objectForKey:@"prompt"];
-                        if (prompt) [self presentViewController:[[PopViewController alloc] initWithDictionary:prompt] animated:YES completion:nil];
-                    }
-                    if ([[jsonResponse allKeys] containsObject:@"analytics"]) {
-                        NSDictionary *analytics = [jsonResponse objectForKey:@"analytics"];
-                        if (analytics) {
-                            BOOL gAnalytics = YES;
-                            NSNumber *gval = [analytics objectForKey:@"gAnalytics"];
-                            if (gval) {
-                                gAnalytics = [gval boolValue];
-                            }
-                            
-                            [Profile setGoogleAnalyticsEnabled:gAnalytics];
-                            [[NSUserDefaults standardUserDefaults] setBool:gAnalytics forKey:@"googleAnalyticsEnabled"];
-                            
-                            BOOL localytics = YES;
-                            NSNumber *lval = [analytics objectForKey:@"localytics"];
-                            if (lval) {
-                                localytics = [lval boolValue];
-                            }
-                            [Profile setLocalyticsEnabled:localytics];
-                            [[NSUserDefaults standardUserDefaults] setBool:localytics forKey:@"localyticsEnabled"];
-                            [[NSUserDefaults standardUserDefaults] synchronize];
-                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            if (gAnalytics) [appDelegate initializeGoogleAnalytics];
-                            if (localytics) [appDelegate initializeLocalytics];
-                        }
-                    }
-                }
-            });
-        }];
-    }
-}
 
 - (void) fetchUserInfo {
     if ([[Profile user] key] && !_fetchingUserInfo ) {

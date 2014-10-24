@@ -14,6 +14,8 @@
 #import "FontProperties.h"
 #import "Network.h"
 #import "GAI.h"
+#import "Time.h"
+#import "PopViewController.h"
 
 NSNumber *indexOfSelectedTab;
 NSNumber *numberOfNewMessages;
@@ -40,6 +42,7 @@ NSDate *firstLoggedTime;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"canFetchAppStartup"];
     [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
     BOOL googleAnalyticsEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"googleAnalyticsEnabled"];
     BOOL localyticsEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"localyticsEnabled"];
@@ -110,6 +113,7 @@ NSDate *firstLoggedTime;
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     [self reloadTabBarNotifications];
     [self updateGoingOutIfItsAnotherDay];
+    [self fetchAppStart];
     if ([Profile localyticsEnabled]) {
         [[LocalyticsSession shared] resume];
         [[LocalyticsSession shared] upload];
@@ -330,6 +334,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadColorWhenTabBarIsMessage) name:@"reloadColorWhenTabBarIsMessage" object:nil];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goingOutForRateApp) name:@"goingOutForRateApp" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentPush) name:@"presentPush" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchAppStart) name:@"fetchAppStart" object:nil];
 }
 
 - (void)presentPush {
@@ -612,5 +617,66 @@ forRemoteNotification:(NSDictionary *)userInfo
     return category;
 }
 
+- (void)fetchAppStart {
+    BOOL canFetchAppStartUp = [[NSUserDefaults standardUserDefaults] boolForKey:@"canFetchAppStartup"];
+    if (canFetchAppStartUp && [self shouldFetchAppStartup] && [Profile user]) {
+        [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if (!error) {
+                    if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
+                        NSDictionary *prompt = [jsonResponse objectForKey:@"prompt"];
+                        UIViewController *rootViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+                        if (prompt) [rootViewController presentViewController:[[PopViewController alloc] initWithDictionary:prompt] animated:YES completion:nil];
+                    }
+                    if ([[jsonResponse allKeys] containsObject:@"analytics"]) {
+                        NSDictionary *analytics = [jsonResponse objectForKey:@"analytics"];
+                        if (analytics) {
+                            BOOL gAnalytics = YES;
+                            NSNumber *gval = [analytics objectForKey:@"gAnalytics"];
+                            if (gval) {
+                                gAnalytics = [gval boolValue];
+                            }
+                            
+                            [Profile setGoogleAnalyticsEnabled:gAnalytics];
+                            [[NSUserDefaults standardUserDefaults] setBool:gAnalytics forKey:@"googleAnalyticsEnabled"];
+                            
+                            BOOL localytics = YES;
+                            NSNumber *lval = [analytics objectForKey:@"localytics"];
+                            if (lval) {
+                                localytics = [lval boolValue];
+                            }
+                            [Profile setLocalyticsEnabled:localytics];
+                            [[NSUserDefaults standardUserDefaults] setBool:localytics forKey:@"localyticsEnabled"];
+                            [[NSUserDefaults standardUserDefaults] synchronize];
+                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                            if (gAnalytics) [appDelegate initializeGoogleAnalytics];
+                            if (localytics) [appDelegate initializeLocalytics];
+                        }
+                    }
+                }
+            });
+        }];
+    }
+}
+
+- (BOOL)shouldFetchAppStartup {
+    NSDate *dateAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastTimeAccessed"];
+    if (!dateAccessed) {
+        NSDate *firstSaveDate = [NSDate date];
+        [[NSUserDefaults standardUserDefaults] setObject:firstSaveDate forKey: @"lastTimeAccessed"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return YES;
+    }
+    else {
+        NSDate *newDate = [NSDate date];
+        NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:dateAccessed toDate:newDate];
+        if ([differenceDateComponents hour] > 0 || [differenceDateComponents day] > 0 || [differenceDateComponents weekOfYear] > 0 || [differenceDateComponents month] > 0) {
+            [[NSUserDefaults standardUserDefaults] setObject:newDate forKey: @"lastTimeAccessed"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            return YES;
+        }
+    }
+    return NO;
+}
 
 @end
