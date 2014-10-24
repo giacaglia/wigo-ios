@@ -13,6 +13,7 @@
 #define HEIGHT_CELLS 70
 
 NSArray *mobileContacts;
+NSMutableArray *filteredMobileContacts;
 NSMutableArray *chosenPeople;
 
 UITableView *invitePeopleTableView;
@@ -45,6 +46,7 @@ UIButton *cancelButton;
     [super viewDidLoad];
     
     mobileContacts = [NSArray new];
+    filteredMobileContacts = [NSMutableArray new];
     chosenPeople = [NSMutableArray new];
     [self getMobileContacts];
     [self fetchFirstPageEveryone];
@@ -159,6 +161,7 @@ UIButton *cancelButton;
         }
     }
     else {
+        if (isSearching) return [filteredMobileContacts count];
         return [mobileContacts count];
     }
 }
@@ -267,27 +270,20 @@ UIButton *cancelButton;
 
         
         ABRecordRef contactPerson;
-//        if (isFiltered)
-//            contactPerson  = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:[indexPath row]]);
-//        else
+        if (isSearching)
+            contactPerson  = (__bridge ABRecordRef)([filteredMobileContacts objectAtIndex:[indexPath row]]);
+        else
             contactPerson = (__bridge ABRecordRef)([mobileContacts objectAtIndex:[indexPath row]]);
         
         
         UIImageView *tapImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS/2 - 15, 30, 30)];
-//        if ([user isTapped]) {
-//            [tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
-//        }
-//        else {
-            [tapImageView setImage:[UIImage imageNamed:@"tapUnselectedInvite"]];
-//        }
-        [aroundCellButton addSubview:tapImageView];
-        
         ABRecordID recordID = ABRecordGetRecordID(contactPerson);
-//        NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
-        
-//        if ([shownChosenPeople containsObject:recordIdString])
-//            selectedPersonImageView.image = [UIImage imageNamed:@"tapFilled"];
-//        else
+        NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
+        if ([chosenPeople containsObject:recordIdString])
+            tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+        else
+            [tapImageView setImage:[UIImage imageNamed:@"tapUnselectedInvite"]];
+        [aroundCellButton addSubview:tapImageView];
         
         UILabel *nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
         NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
@@ -322,16 +318,15 @@ UIButton *cancelButton;
     int tag = (int)buttonSender.tag;
     ABRecordRef contactPerson;
     ABRecordID recordID;
-//    if (isSearching) {
-//        contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
-//        recordID = ABRecordGetRecordID(contactPerson);
-//        tag = [MobileDelegate changeTag:tag fromArray:filteredPeopleContactList toArray:peopleContactList];
-//        
-//    }
-//    else {
+    if (isSearching) {
+        contactPerson = (__bridge ABRecordRef)([filteredMobileContacts objectAtIndex:tag]);
+        recordID = ABRecordGetRecordID(contactPerson);
+        tag = [MobileDelegate changeTag:tag fromArray:filteredMobileContacts toArray:mobileContacts];
+    }
+    else {
         contactPerson = (__bridge ABRecordRef)([mobileContacts objectAtIndex:tag]);
         recordID = ABRecordGetRecordID(contactPerson);
-//    }
+    }
     for (UIView *subview in buttonSender.subviews) {
         if ([subview isKindOfClass:[UIImageView class]] && subview.tag != -1) {
             UIImageView *selectedImageView = (UIImageView *)subview;
@@ -491,11 +486,15 @@ UIButton *cancelButton;
 
 
 - (void)searchTableList {
+    // Normal users
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     page = @1;
     NSString *queryString = [NSString stringWithFormat:@"users/?following=true&page=%@&text=%@" ,[page stringValue], searchString];
     [self searchUsersWithString:queryString];
+    
+    // Mobile contacts
+    filteredMobileContacts = [NSMutableArray arrayWithArray:[MobileDelegate filterArray:mobileContacts withText:searchBar.text]];
 }
 
 - (void)searchUsersWithString:(NSString *)queryString {
