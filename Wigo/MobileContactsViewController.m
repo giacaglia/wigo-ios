@@ -198,7 +198,6 @@ NSMutableArray *chosenPeople;
             }
         }
     }
-
 }
 
 - (void)donePressed {

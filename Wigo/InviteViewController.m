@@ -13,6 +13,8 @@
 #define HEIGHT_CELLS 70
 
 NSArray *mobileContacts;
+NSMutableArray *chosenPeople;
+
 UITableView *invitePeopleTableView;
 Party *everyoneParty;
 Party *filteredContentParty;
@@ -43,6 +45,7 @@ UIButton *cancelButton;
     [super viewDidLoad];
     
     mobileContacts = [NSArray new];
+    chosenPeople = [NSMutableArray new];
     [self getMobileContacts];
     [self fetchFirstPageEveryone];
     [self initializeTitle];
@@ -121,6 +124,7 @@ UIButton *cancelButton;
 }
 
 - (void)donePressed {
+    [MobileDelegate sendChosenPeople:chosenPeople forContactList:mobileContacts];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -157,8 +161,6 @@ UIButton *cancelButton;
     else {
         return [mobileContacts count];
     }
-   
-
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -253,10 +255,11 @@ UIButton *cancelButton;
     else  {
         UIButton *aroundCellButton = [[UIButton alloc] initWithFrame:cell.contentView.frame];
         aroundCellButton.tag = (int)[indexPath row];
-//        [aroundCellButton addTarget:self action:@selector(selectedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [aroundCellButton addTarget:self action:@selector(inviteMobilePressed:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:aroundCellButton];
         
         UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
+        profileImageView.tag = -1;
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
         profileImageView.image = [UIImage imageNamed:@"grayIcon"];
@@ -312,6 +315,38 @@ UIButton *cancelButton;
     }
     
     return cell;
+}
+
+- (void)inviteMobilePressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = (int)buttonSender.tag;
+    ABRecordRef contactPerson;
+    ABRecordID recordID;
+//    if (isSearching) {
+//        contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
+//        recordID = ABRecordGetRecordID(contactPerson);
+//        tag = [MobileDelegate changeTag:tag fromArray:filteredPeopleContactList toArray:peopleContactList];
+//        
+//    }
+//    else {
+        contactPerson = (__bridge ABRecordRef)([mobileContacts objectAtIndex:tag]);
+        recordID = ABRecordGetRecordID(contactPerson);
+//    }
+    for (UIView *subview in buttonSender.subviews) {
+        if ([subview isKindOfClass:[UIImageView class]] && subview.tag != -1) {
+            UIImageView *selectedImageView = (UIImageView *)subview;
+            NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
+            if (![chosenPeople containsObject:recordIdString]) {
+                selectedImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+                [chosenPeople addObject:recordIdString];
+            }
+            else {
+                selectedImageView.image = [UIImage imageNamed:@"tapUnselectedInvite"];
+                [chosenPeople removeObject:recordIdString];
+            }
+        }
+    }
+
 }
 
 - (void) tapPressed:(id)sender {
