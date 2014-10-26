@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WaitListViewController : UIViewController
+@interface WaitListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @end

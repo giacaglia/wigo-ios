@@ -84,45 +84,72 @@ NSArray *groupArray;
     [self.view addSubview:newOvalImageView];
 }
 
-- (void)initializeListOfSchools {
-    [self viewForSchool:[groupArray objectAtIndex:0] andFrame: CGRectMake(54, 200, self.view.frame.size.width - 108, 25) isMySchool:NO];
-    
-    [self viewForSchool:[groupArray objectAtIndex:1] andFrame:CGRectMake(54, 300, self.view.frame.size.width - 108, 25) isMySchool:NO];
-    
-    [self viewForSchool:[groupArray objectAtIndex:2] andFrame:CGRectMake(54, 330, self.view.frame.size.width - 108, 25) isMySchool:YES];
-    
-    [self viewForSchool:[groupArray objectAtIndex:3] andFrame:CGRectMake(54, 360, self.view.frame.size.width - 108, 25) isMySchool:NO];
+- (void)initializeTableViewOfSchools {
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(54, 200, self.view.frame.size.width - 108, self.view.frame.size.height - 300)];
+    tableView.delegate = self;
+    tableView.dataSource = self;
+    [self.view addSubview:tableView];
 }
 
-- (void)viewForSchool:(NSDictionary *)school andFrame:(CGRect)frame isMySchool:(BOOL)mySchool {
-    UIView *schoolView = [[UIView alloc] initWithFrame:frame];
-   
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView
+heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 25;
+}
+
+#pragma mark - UITableView Data Source
+
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
+    NSDictionary *school = [groupArray objectAtIndex:[indexPath row]];
+    BOOL mySchool = NO;
+    
     UILabel *rankingSchool = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
     rankingSchool.text = [NSString stringWithFormat:@"%@.", [school objectForKey:@"rank"] ];
     rankingSchool.textColor = RGBAlpha(212, 212, 212, 100);
     rankingSchool.textAlignment = NSTextAlignmentLeft;
     rankingSchool.font = [FontProperties mediumFont:20.0f];
-    [schoolView addSubview:rankingSchool];
+    [cell.contentView addSubview:rankingSchool];
     
-    UILabel *nameOfSchool = [[UILabel alloc] initWithFrame:CGRectMake(55, 0, schoolView.frame.size.width - 40, 25)];
+    UILabel *nameOfSchool = [[UILabel alloc] initWithFrame:CGRectMake(55, 0, self.view.frame.size.width - 40, 25)];
     nameOfSchool.text = [school objectForKey:@"name"];
     nameOfSchool.textAlignment = NSTextAlignmentLeft;
     nameOfSchool.font = [FontProperties mediumFont:20.0f];
     if (mySchool) nameOfSchool.textColor = [FontProperties getOrangeColor];
-    [schoolView addSubview:nameOfSchool];
+    [cell.contentView addSubview:nameOfSchool];
     
-    [self.view addSubview:schoolView];
+    return cell;
 }
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView
+ numberOfRowsInSection:(NSInteger)section {
+    return 4;
+}
+
+#pragma mark - Network function
 
 - (void) fetchGroupsWaitlist {
     [Network queryAsynchronousAPI:@"groups/?query=waitlist" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                if ([[jsonResponse allKeys] containsObject:@"objects"]) {
-                    groupArray = [jsonResponse objectForKey:@"objects"];
-                    [self initializeListOfSchools];
-                }
-
-            });
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            if ([[jsonResponse allKeys] containsObject:@"objects"]) {
+                groupArray = [jsonResponse objectForKey:@"objects"];
+                [self initializeTableViewOfSchools];
+            }
+        });
     }];
 }
 
