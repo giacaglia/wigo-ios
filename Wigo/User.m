@@ -236,6 +236,14 @@
 
 }
 
+- (void)addImageDictionary:(NSDictionary *)imageDictionary {
+    NSMutableArray *images = [NSMutableArray arrayWithArray:[self images]];
+    if ([imageDictionary isKindOfClass:[NSDictionary class]]) {
+        [images addObject:imageDictionary];
+        [self setImages:[NSArray arrayWithArray:images]];
+    }
+}
+
 - (NSArray *)images {
     NSDictionary *properties = [_proxy objectForKey:@"properties"];
     if ([properties isKindOfClass:[NSDictionary class]] && [[properties allKeys] containsObject:@"images"]) {

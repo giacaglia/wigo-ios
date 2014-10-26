@@ -66,6 +66,7 @@ typedef enum
 
 // Images
 - (void)setGrowthHackPresented;
+- (void)addImageDictionary:(NSDictionary *)imageDictionary;
 - (void)addImageURL:(NSString *)imageURL;
 - (void)addImageWithURL:(NSString *)imageURL andArea:(CGRect)area;
 - (NSString *)removeImageURL:(NSString *)imageURL;

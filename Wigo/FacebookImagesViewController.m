@@ -157,7 +157,7 @@ NSMutableArray *imagesArray;
                                           NSDictionary *newImage =
                                           @{@"url": [newPhoto objectForKey:@"source"],
                                             @"small": [smallPhoto objectForKey:@"source"],
-                                            @"facebookID": [photoRepresentation objectForKey:@"id"],
+                                            @"id": [photoRepresentation objectForKey:@"id"],
                                             @"type": @"facebook"
                                             };
                                           [_profilePicturesURL addObject:[newPhoto objectForKey:@"source"]];
@@ -221,10 +221,7 @@ NSMutableArray *imagesArray;
 - (void)choseImageView:(UITapGestureRecognizer*)sender {
     UIImageView *imageViewSender = (UIImageView *)sender.view;
     NSDictionary *newImage = [imagesArray objectAtIndex:imageViewSender.tag];
-    chosenPhoto = @{@"pictureURL": [newImage objectForKey:@"url"],
-                    @"facebookID": [newImage objectForKey:@"facebookID"],
-                    @"type": @"facebook"
-                    };
+    chosenPhoto = newImage;
     GKImageCropViewController *cropViewController = [[GKImageCropViewController alloc] init];
     cropViewController.sourceImage = imageViewSender.image;
     cropViewController.delegate = self;
@@ -242,7 +239,8 @@ NSMutableArray *imagesArray;
 
 - (void)didFinishWithCroppedArea:(CGRect)croppedArea {
     User *profileUser = [Profile user];
-    [profileUser addImageWithURL:[chosenPhoto objectForKey:@"facebookID"] andArea:croppedArea];
+    [profileUser addImageDictionary:chosenPhoto];
+//    [profileUser addImageWithURL:[chosenPhoto objectForKey:@"id"] andArea:croppedArea];
     [profileUser save];
     [self dismissViewControllerAnimated:YES completion:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
