@@ -174,6 +174,18 @@
     [modifiedKeys addObject:@"gender"];
 }
 
+- (NSString *)smallImageURL {
+    NSArray *images = [self images];
+    NSDictionary *image = [images objectAtIndex:0];
+    if ([image isKindOfClass:[NSDictionary class]]) {
+        if ([[image allKeys] containsObject:@"small"]) {
+            return [image objectForKey:@"small"];
+        }
+        else return [self coverImageURL];
+    }
+    return @"";
+}
+
 - (NSString *)coverImageURL {
     NSArray *imagesURL = [self imagesURL];
     if ([imagesURL count] > 0 && [imagesURL isKindOfClass:[NSArray class]]) {

@@ -12,6 +12,7 @@
 
 @interface UIImageView (ImageArea)
 
+- (void)setSmallImageForUser:(User *)user completed:(SDWebImageCompletedBlock)completedBlock;
 - (void)setCoverImageForUser:(User *)user completed:(SDWebImageCompletedBlock)completedBlock;
 - (void)setImageWithURL:(NSURL *)url imageArea:(NSDictionary *)area;
 - (void)setImageWithURL:(NSURL *)url imageArea:(NSDictionary*)area completed:(SDWebImageCompletedBlock)completedBlock;

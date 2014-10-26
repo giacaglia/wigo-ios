@@ -813,7 +813,7 @@ NSMutableArray *failedUserInfoArray;
     
     __block int weakTag = tag;
     __block WigoCustomCell *weakCell = cell;
-    [cell.userCoverImageView setCoverImageForUser:user
+    [cell.userCoverImageView setSmallImageForUser:user
                                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         if (error) {
             NSIndexPath *indexPath = [self indexPathFromTag:weakTag];
