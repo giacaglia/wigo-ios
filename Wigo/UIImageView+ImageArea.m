@@ -14,6 +14,25 @@ NSMutableArray *failedUserInfoArray;
 
 @implementation UIImageView (ImageArea)
 
+- (void)setImage:(NSDictionary *)image completed:(SDWebImageCompletedBlock)completedBlock {
+    [self setImageWithURL:[NSURL URLWithString:[image objectForKey:@"url"]] placeholderImage:[[UIImage alloc] init] imageArea:[image objectForKey:@"area"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        if (error) {
+//            if (!failedUserInfoArray) failedUserInfoArray = [NSMutableArray new];
+//            
+//            if (![[failedUserInfoArray valueForKey:@"user_id"] containsObject:[image objectForKey:@"id"]]) {
+//                [failedUserInfoArray addObject:@{@"user_id": [image objectForKey:@"id"], @"image_type": @"facebook"}];
+//            }
+//            [Network sendAsynchronousHTTPMethod:POST
+//                                    withAPIName:@"images/failed/"
+//                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//                                        failedUserInfoArray = [NSMutableArray new];
+//                                    }
+//                                    withOptions:failedUserInfoArray
+//             ];
+        }
+        if (completedBlock) completedBlock(image, error, cacheType);
+    }];
+}
 
 - (void)setSmallImageForUser:(User *)user completed:(SDWebImageCompletedBlock)completedBlock {
     [self setImageWithURL:[NSURL URLWithString:[user smallImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
