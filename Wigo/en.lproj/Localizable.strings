@@ -18,6 +18,6 @@
 "TAP" = "%@ wants to see you out %@";
 "T" = "%@ wants to see you out %@";
 "GOINGOUT" = "%@ is going out";
-"G" = "%@ is going out";
+"G" = "%@ %@";
 "GROUP_UNLOCKED" = "%@ was just unlocked";
 "GU" = "%@ was just unlocked";
