@@ -318,7 +318,7 @@ NSMutableArray *failedUserInfoArray;
 - (void)initializeFlashScreen {
     self.signViewController = [[SignViewController alloc] init];
     self.signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:self.signViewController];
-    [self presentViewController:self.signNavigationViewController animated:NO completion:nil];
+    [self.view.window.rootViewController presentViewController:self.signNavigationViewController animated:NO completion:nil];
 }
 
 

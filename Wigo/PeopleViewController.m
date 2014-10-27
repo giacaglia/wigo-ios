@@ -787,7 +787,7 @@ NSMutableArray *suggestedArrayView;
                 if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
                     [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
                     [_tableViewOfPeople beginUpdates];
-                    [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
                     [_tableViewOfPeople endUpdates];
                 }
             }
@@ -797,7 +797,7 @@ NSMutableArray *suggestedArrayView;
                 if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
                     [_contentParty replaceObjectAtIndex:userInt withObject:user];
                     [_tableViewOfPeople beginUpdates];
-                    [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
                     [_tableViewOfPeople endUpdates];
                 }
             }
