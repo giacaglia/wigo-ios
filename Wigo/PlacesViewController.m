@@ -17,7 +17,7 @@
 #import "MobileContactsViewController.h"
 #import "InviteViewController.h"
 
-#define xSpacing 10
+#define xSpacing 12
 #define sizeOfEachCell 165
 @interface PlacesViewController ()
 
@@ -67,6 +67,7 @@ NSMutableArray *eventPageArray;
 int eventOffset;
 int sizeOfEachImage;
 BOOL shouldReloadEvents;
+int firstIndexOfNegativeEvent;
 
 @implementation PlacesViewController {
     int numberOfFetchedParties;
@@ -82,6 +83,7 @@ BOOL shouldReloadEvents;
     presentedMobileContacts = NO;
     shouldReloadEvents = YES;
     eventOffset = 0;
+    firstIndexOfNegativeEvent = -1;
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
             if ([view2 isKindOfClass:[UIImageView class]]) {
@@ -515,6 +517,9 @@ BOOL shouldReloadEvents;
     if ([indexPath row] == [[_contentParty getObjectArray] count]) {
         return 70;
     }
+    if (firstIndexOfNegativeEvent >= 0 && [indexPath row] >= firstIndexOfNegativeEvent) {
+        return 70;
+    }
     return sizeOfEachCell;
 }
 
@@ -598,7 +603,10 @@ BOOL shouldReloadEvents;
     labelName.numberOfLines = 0;
     labelName.lineBreakMode = NSLineBreakByWordWrapping;
     NSString *text;
-    if ([totalUsers intValue] == 1) {
+    if ([[event eventID] intValue] < 0) {
+        text = [NSString stringWithFormat: @"%@ \nBe the first", [event name]];
+    }
+    else if ([totalUsers intValue] == 1) {
         text = [NSString stringWithFormat: @"%@ \n%@ is going", [event name], [totalUsers stringValue]];
     }
     else {
@@ -761,6 +769,7 @@ BOOL shouldReloadEvents;
                 _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
             }
             NSArray *events = [jsonResponse objectForKey:@"objects"];
+            [self getFirstIndexOfSuggestedEvent:events];
             [_eventsParty addObjectsFromArray:events];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_eventsParty addMetaInfo:metaDictionary];
@@ -774,6 +783,20 @@ BOOL shouldReloadEvents;
             [self fetchedOneParty];
         }];
     }
+}
+
+- (void)getFirstIndexOfSuggestedEvent:(NSArray *)events {
+    NSArray *arrayOfIDs = [events valueForKey:@"id"];
+    NSUInteger index = [arrayOfIDs indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        NSNumber *eventID = (NSNumber *)obj;
+        if ([eventID intValue] < 0) {
+            return YES;
+        }
+        else return NO;
+    }];
+    
+    if (index != NSNotFound) firstIndexOfNegativeEvent = -1;
+    firstIndexOfNegativeEvent = index;
 }
 
 - (void)fillEventAttendees {
