@@ -395,9 +395,11 @@ heightForHeaderInSection:(NSInteger)section
         [EventAnalytics tagEvent:@"Tap User" withDetails:options];
     }
     [everyoneParty replaceObjectAtIndex:tag withObject:user];
-    [invitePeopleTableView beginUpdates];
-    [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
-    [invitePeopleTableView endUpdates];
+    if (tag < [invitePeopleTableView numberOfRowsInSection:0]) {
+        [invitePeopleTableView beginUpdates];
+        [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
+        [invitePeopleTableView endUpdates];
+    }
 }
 
 #pragma mark - UISearchBar

@@ -304,18 +304,20 @@
 }
 
 - (void) loginView:(FBLoginView *)loginView handleError:(NSError *)error {
-    [self handleAuthError:error];
-//    if ([[[error userInfo] allKeys] containsObject:@"com.facebook.sdk:ErrorInnerErrorKey"]) {
-//        NSError *innerError = [[error userInfo] objectForKey:@"com.facebook.sdk:ErrorInnerErrorKey"];
-//        if ([[innerError domain] isEqualToString:NSURLErrorDomain]) {
-//            [self showErrorNoConnection];
-//        }
-//
-//    }
+    if ([[[error userInfo] allKeys] containsObject:@"com.facebook.sdk:ErrorInnerErrorKey"]) {
+        NSError *innerError = [[error userInfo] objectForKey:@"com.facebook.sdk:ErrorInnerErrorKey"];
+        if ([[innerError domain] isEqualToString:NSURLErrorDomain]) {
+            [self showErrorNoConnection];
+        }
+
+    }
 //    else if ([[[error userInfo] allKeys] containsObject:@"NSLocalizedFailureReason"]) {
 //        if ([[[error userInfo] objectForKey:@"NSLocalizedFailureReason"] isEqualToString:@"com.facebook.sdk:SystemLoginDisallowedWithoutError"])
 //            [self showErrorLoginFailed];
 //    }
+    else {
+        [self handleAuthError:error];
+    }
 }
 
 - (void)handleAuthError:(NSError *)error {
@@ -352,7 +354,7 @@
                                delegate:self
                       cancelButtonTitle:@"OK"
                       otherButtonTitles:nil] show];
-    [self loginUserAsynchronous];
+//    [self loginUserAsynchronous];
 }
 
 - (void) loginViewShowingLoggedOutUser:(FBLoginView *)loginView {

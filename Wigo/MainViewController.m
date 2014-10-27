@@ -104,7 +104,6 @@ NSMutableArray *failedUserInfoArray;
     
     
 
-    [FBAppEvents logEvent:FBAppEventNameActivatedApp];
     [self initializeFlashScreen];
     _spinnerAtCenter = YES;
     
@@ -318,7 +317,7 @@ NSMutableArray *failedUserInfoArray;
 - (void)initializeFlashScreen {
     self.signViewController = [[SignViewController alloc] init];
     self.signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:self.signViewController];
-    [self.view.window.rootViewController presentViewController:self.signNavigationViewController animated:NO completion:nil];
+    [self presentViewController:self.signNavigationViewController animated:NO completion:nil];
 }
 
 
