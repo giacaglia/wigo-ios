@@ -41,7 +41,7 @@
     [gaussianBlurFilter setValue:clampFilter.outputImage forKey: @"inputImage"];
     [gaussianBlurFilter setValue:[NSNumber numberWithFloat:radius] forKey:@"inputRadius"];
     
-    CIContext *context = [CIContext contextWithOptions:nil];
+    CIContext *context = [CIContext contextWithOptions:@{kCIContextUseSoftwareRenderer : @(YES)}];
     CGImageRef cgImg = [context createCGImage:gaussianBlurFilter.outputImage fromRect:[blurImg extent]];
     UIImage *newImage = [UIImage imageWithCGImage:cgImg];
     CGImageRelease(cgImg);
@@ -66,7 +66,7 @@
     [gaussianBlurFilter setValue:clampFilter.outputImage forKey: @"inputImage"];
     [gaussianBlurFilter setValue:[NSNumber numberWithFloat:radius] forKey:@"inputRadius"];
     
-    CIContext *context = [CIContext contextWithOptions:nil];
+    CIContext *context = [CIContext contextWithOptions:@{kCIContextUseSoftwareRenderer : @(YES)}];
     CGImageRef cgImg = [context createCGImage:gaussianBlurFilter.outputImage fromRect:[blurImg extent]];
     UIImage *outputImg = [UIImage imageWithCGImage:cgImg];
     CGImageRelease(cgImg);

@@ -124,7 +124,7 @@ static CGRect GKScaleRect(CGRect rect, CGFloat scale)
     sizeScale *= self.scrollView.zoomScale;
     CGRect visibleRect = [scrollView convertRect:scrollView.bounds toView:imageView];
     visibleRect = GKScaleRect(visibleRect, sizeScale);
-    NSLog(@"visible rect: %f, %f, %f, %f" , visibleRect.origin.x, visibleRect.origin.y, visibleRect.size.width, visibleRect.size.height);
+//    NSLog(@"visible rect: %f, %f, %f, %f" , visibleRect.origin.x, visibleRect.origin.y, visibleRect.size.width, visibleRect.size.height);
 
     return visibleRect;
 }
