@@ -551,7 +551,6 @@ int firstIndexOfNegativeEvent;
 
     if (_isSearching) {
         if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
-
             [cell.contentView addSubview:_goingSomewhereButton];
             return cell;
         }

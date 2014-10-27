@@ -181,11 +181,17 @@ BOOL isFetchingEveryone;
     User *user;
     if (_isSearching) {
         if ([[_filteredContentParty getObjectArray] count] == 0) return cell;
-        user = [[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
+        if ([indexPath row] < [[_filteredContentParty getObjectArray] count]) {
+            user = [[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
+        }
+        else return cell;
     }
     else {
         if ([[_contentParty getObjectArray] count] == 0) return cell;
-        user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
+        if ([indexPath row] < [[_contentParty getObjectArray] count]) {
+            user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
+        }
+        else return cell;
     }
        
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
