@@ -239,7 +239,14 @@ NSMutableArray *imagesArray;
 
 - (void)didFinishWithCroppedArea:(CGRect)croppedArea {
     User *profileUser = [Profile user];
-    [profileUser addImageDictionary:chosenPhoto];
+    NSMutableDictionary *imageDictionary = [NSMutableDictionary dictionaryWithDictionary:chosenPhoto];
+    [imageDictionary addEntriesFromDictionary:@{@"crop":
+                                                    @{@"x": @(MAX(0,(int)roundf(croppedArea.origin.x))),
+                                                      @"y": @(MAX((int)roundf(croppedArea.origin.y),0)),
+                                                      @"width": @((int)roundf(croppedArea.size.width)),
+                                                      @"height": @((int)roundf(croppedArea.size.height))}
+                                                 }];
+    [profileUser addImageDictionary:[NSDictionary dictionaryWithDictionary:imageDictionary]];
 //    [profileUser addImageWithURL:[chosenPhoto objectForKey:@"id"] andArea:croppedArea];
     [profileUser save];
     [self dismissViewControllerAnimated:YES completion:nil];
