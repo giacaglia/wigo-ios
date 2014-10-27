@@ -47,7 +47,9 @@ UIButton *cancelButton;
     
     mobileContacts = [NSArray new];
     filteredMobileContacts = [NSMutableArray new];
-    chosenPeople = [NSMutableArray new];
+    NSSet *savedChosenPeople = [[NSUserDefaults standardUserDefaults] valueForKey:@"chosenPeople"];
+    if (savedChosenPeople) chosenPeople = [NSMutableArray arrayWithArray:[savedChosenPeople allObjects]];
+    else chosenPeople = [NSMutableArray new];
     [self getMobileContacts];
     [self fetchFirstPageEveryone];
     [self initializeTitle];
@@ -126,6 +128,16 @@ UIButton *cancelButton;
 }
 
 - (void)donePressed {
+//    NSSet *savedChosenPeople = [[NSUserDefaults standardUserDefaults] valueForKey:@"chosenPeople"];
+//    if (savedChosenPeople) {
+//        NSMutableSet *newChosenPeople = [NSMutableSet setWithSet:savedChosenPeople];
+//        [newChosenPeople addObjectsFromArray:chosenPeople];
+//        [[NSUserDefaults standardUserDefaults] setValue:[NSSet setWithSet:newChosenPeople] forKey:@"chosenPeople"];
+//    }
+//    else {
+//        [[NSUserDefaults standardUserDefaults] setValue:[NSSet setWithArray:chosenPeople] forKey:@"chosenPeople"];
+//    }
+//    [[NSUserDefaults standardUserDefaults] synchronize];
     [MobileDelegate sendChosenPeople:chosenPeople forContactList:mobileContacts];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -408,7 +420,8 @@ heightForHeaderInSection:(NSInteger)section
     aroundInviteButton.hidden = YES;
     titleLabel.hidden = YES;
     searchButton.hidden = YES;
-    
+    [invitePeopleTableView setContentOffset:invitePeopleTableView.contentOffset animated:NO];
+
     searchBar.hidden = NO;
     [self.view addSubview:searchBar];
     [searchBar becomeFirstResponder];

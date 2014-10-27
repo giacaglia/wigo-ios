@@ -77,16 +77,13 @@ NSMutableArray *suggestedArrayView;
     suggestedArrayView = [NSMutableArray new];
     // Title setup
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    [self initializeBackBarButton];
+    [self initializeRightBarButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
 
     [self initializeSearchBar];
     [self initializeTableOfPeople];
-}
-
-- (void) viewWillAppear:(BOOL)animated {
-    [self initializeBackBarButton];
-    [self initializeRightBarButton];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -148,7 +145,9 @@ NSMutableArray *suggestedArrayView;
     self.navigationItem.titleView = _searchBar;
     [_searchBar becomeFirstResponder];
     [self.navigationItem setHidesBackButton:YES animated:YES];
+    [_tableViewOfPeople setContentOffset:_tableViewOfPeople.contentOffset animated:NO];
 
+    
     UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
     [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
     [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
