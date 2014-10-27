@@ -96,7 +96,7 @@ static NSNumber *lastUserRead;
 }
 
 + (BOOL)isUserDictionaryProfileUser:(NSDictionary *)userDictionary {
-    if (userDictionary && [Profile user]) {
+    if (userDictionary && [Profile user] && [[[Profile user] allKeys] containsObject:@"id"]) {
         return [[userDictionary objectForKey:@"id"] isEqualToNumber:[[Profile user] objectForKey:@"id"]];
     }
     return NO;
