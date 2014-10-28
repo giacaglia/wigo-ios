@@ -88,11 +88,16 @@ UIButton *cancelButton;
     doneLabel.font = [FontProperties getTitleFont];
     [aroundInviteButton addSubview:doneLabel];
     
-    searchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15, 40 - 5, 15, 16)];
+    searchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 30 - 15, 40 - 40, 60, 80)];
     [searchButton addTarget:self action:@selector(searchPressed) forControlEvents:UIControlEventTouchUpInside];
-    [searchButton setBackgroundImage:[UIImage imageNamed:@"searchIcon"] forState:UIControlStateNormal];
-    [searchButton setShowsTouchWhenHighlighted:YES];
     [self.view addSubview:searchButton];
+    
+    UIImageView *searchImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 35, 15, 16)];
+    searchImageView.image = [UIImage imageNamed:@"searchIcon"];
+//    searchButton = [[UIButton alloc] initWithFrame:CGRectMake(14, 35, 15, 16)];
+//    [searchButton setBackgroundImage:[UIImage imageNamed:@"searchIcon"] forState:UIControlStateNormal];
+//    [searchButton setShowsTouchWhenHighlighted:YES];
+    [searchButton addSubview:searchImageView];
 }
 
 - (void)initializeTapPeopleTitle {
