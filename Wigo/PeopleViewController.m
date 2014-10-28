@@ -773,9 +773,9 @@ NSMutableArray *suggestedArrayView;
             int sizeOfArray = (int)[[_suggestionsParty getObjectArray] count];
             if (userInt >= 0 && sizeOfArray > userInt) {
                 [_suggestionsParty replaceObjectAtIndex:userInt withObject:user];
-                [self initializeSecondPart];
+                secondPartSubview = [self initializeSecondPart];
                 [_tableViewOfPeople beginUpdates];
-                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
                 [_tableViewOfPeople endUpdates];
             }
         }
