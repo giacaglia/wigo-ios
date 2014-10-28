@@ -885,11 +885,12 @@ NSMutableArray *failedUserInfoArray;
         UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                           withReuseIdentifier:headerCellIdentifier
                                                                  forIndexPath:indexPath];
+        [[cell subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
         headerView.backgroundColor = [UIColor whiteColor];
         [cell addSubview:headerView];
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, self.view.frame.size.width - 5, 30)];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, self.view.frame.size.width - 15, 30)];
         label.backgroundColor = [UIColor whiteColor];
         label.font = [FontProperties scLightFont:15.0f];
         NSString *newString;
@@ -921,8 +922,8 @@ NSMutableArray *failedUserInfoArray;
         return cell;
     } else if ([kind isEqualToString:CSStickyHeaderParallaxHeader]) {
         UICollectionReusableView *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
-                                                                            withReuseIdentifier:@"header"
-                                                                                   forIndexPath:indexPath];
+                                                                        withReuseIdentifier:@"header"
+                                                                                forIndexPath:indexPath];
         return cell;
     }
     else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
@@ -930,7 +931,7 @@ NSMutableArray *failedUserInfoArray;
         UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                                         withReuseIdentifier:@"footer"
                                                                                forIndexPath:indexPath];
-        UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 56)];
+        UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 8, 56)];
         footerView.backgroundColor = [UIColor whiteColor];
         if ([indexPath section] == 1 && [_followingAcceptedParty hasNextPage]) {
             UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
