@@ -20,7 +20,6 @@
 #import "CSStickyHeaderFlowLayout.h"
 #import "PeopleViewController.h"
 #import "NSObject-CancelableScheduledBlock.h"
-#import "BatteryViewController.h"
 
 @interface MainViewController ()
 
