@@ -603,6 +603,7 @@ int firstIndexOfNegativeEvent;
     labelName.lineBreakMode = NSLineBreakByWordWrapping;
     NSString *text;
     if ([[event eventID] intValue] < 0) {
+        placeSubView.frame = CGRectMake(0, 0, self.view.frame.size.width, 70);
         text = [NSString stringWithFormat: @"%@ \nBe the first", [event name]];
     }
     else if ([totalUsers intValue] == 1) {
