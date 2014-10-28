@@ -128,16 +128,16 @@ UIButton *cancelButton;
 }
 
 - (void)donePressed {
-//    NSSet *savedChosenPeople = [[NSUserDefaults standardUserDefaults] valueForKey:@"chosenPeople"];
-//    if (savedChosenPeople) {
-//        NSMutableSet *newChosenPeople = [NSMutableSet setWithSet:savedChosenPeople];
-//        [newChosenPeople addObjectsFromArray:chosenPeople];
-//        [[NSUserDefaults standardUserDefaults] setValue:[NSSet setWithSet:newChosenPeople] forKey:@"chosenPeople"];
-//    }
-//    else {
-//        [[NSUserDefaults standardUserDefaults] setValue:[NSSet setWithArray:chosenPeople] forKey:@"chosenPeople"];
-//    }
-//    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSArray *savedChosenPeople = [[NSUserDefaults standardUserDefaults] valueForKey:@"chosenPeople"];
+    if (savedChosenPeople) {
+        NSMutableSet *newChosenPeople = [NSMutableSet setWithArray:savedChosenPeople];
+        [newChosenPeople addObjectsFromArray:chosenPeople];
+        [[NSUserDefaults standardUserDefaults] setValue:[newChosenPeople allObjects] forKey:@"chosenPeople"];
+    }
+    else {
+        [[NSUserDefaults standardUserDefaults] setValue:chosenPeople forKey:@"chosenPeople"];
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
     [MobileDelegate sendChosenPeople:chosenPeople forContactList:mobileContacts];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
