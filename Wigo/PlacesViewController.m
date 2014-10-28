@@ -632,7 +632,11 @@ int firstIndexOfNegativeEvent;
     imagesScrollView.tag = (int)[indexPath row];
     [placeSubView addSubview:imagesScrollView];
    
-    if ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]]) {
+    // If attending event ID is negative OR if attending event is positive and the user is attending
+    // the event.
+    if ( ([[[Profile user] attendingEventID] intValue] < 0 && [indexPath row] == 0) ||
+        ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]])
+        ) {
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
         
         UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 105 - 5, 10 - 5, 90 + 10, 17 + 25)];
