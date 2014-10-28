@@ -46,6 +46,8 @@ NSMutableArray *chosenPeople;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    isFiltered = NO;
+    if (contactsTableView) [contactsTableView reloadData];
     [EventAnalytics tagEvent:@"MobileContacts View"];
 }
 
