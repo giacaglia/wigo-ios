@@ -48,14 +48,17 @@ int widthShared;
 }
 
 - (void)initializeNameOfSchool {
-    UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 86, self.view.frame.size.width - 44, 60)];
-    schoolLabel.text = @"The University of Wiscosin-WhiteWater";
-    schoolLabel.textAlignment = NSTextAlignmentCenter;
-    schoolLabel.numberOfLines = 0;
-    schoolLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    schoolLabel.textColor = [UIColor whiteColor];
-    schoolLabel.font = [FontProperties scMediumFont:20];
-    [self.view addSubview:schoolLabel];
+    if ([[Profile user] groupName]) {
+        UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 86, self.view.frame.size.width - 44, 60)];
+        schoolLabel.text = [[Profile user] groupName];
+        schoolLabel.textAlignment = NSTextAlignmentCenter;
+        schoolLabel.numberOfLines = 0;
+        schoolLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        schoolLabel.textColor = [UIColor whiteColor];
+        schoolLabel.font = [FontProperties scMediumFont:20];
+        [self.view addSubview:schoolLabel];
+
+    }
 }
 
 - (void)initializeBattery {
