@@ -149,7 +149,7 @@ int widthShared;
             float percentage = (float)(width - 40)/(float)98;
             if (percentage < 1) {
                 percentage = (float)MIN(0.99, (float)percentage + (float)widthShared/(float)500);
-                widthShared /= 2;
+                widthShared = MIN(widthShared/2, 10);
             }
             percentage = MIN(0.99, percentage);
             width = 40 + percentage * (138 - 40);
