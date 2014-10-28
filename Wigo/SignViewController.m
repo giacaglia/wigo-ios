@@ -88,8 +88,6 @@
     _accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
 
     KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:@"WiGo" accessGroup:nil];
-
-
     NSData *keyData = (NSData *)[keychainItem objectForKey:(__bridge id)kSecValueData];
     NSString *key = [[NSString alloc] initWithData:keyData
                                                  encoding:NSUTF8StringEncoding];
@@ -201,14 +199,25 @@
                                   FBGraphObject *newPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:600 inPhotoArray:images];
                                   FBGraphObject *smallPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:200 inPhotoArray:images];
                                   if (newPhoto) {
-                                      NSDictionary *newImage = @{
-                                                                 @"url": [newPhoto objectForKey:@"source"],
-                                                                 @"id": [newPhoto objectForKey:@"id"],
-                                                                 @"type": @"facebook",
-                                                                 @"small": [smallPhoto objectForKey:@"source"]
-                                                                 };
+                                      NSDictionary *newImage;
+                                      if (smallPhoto) {
+                                          newImage =
+                                            @{
+                                              @"url": [newPhoto objectForKey:@"source"],
+                                              @"id": [photoRepresentation objectForKey:@"id"],
+                                              @"type": @"facebook",
+                                              @"small": [smallPhoto objectForKey:@"source"]
+                                            };
+                                      }
+                                      else {
+                                          newImage =
+                                          @{
+                                            @"url": [newPhoto objectForKey:@"source"],
+                                            @"id": [photoRepresentationbo objectForKey:@"id"],
+                                            @"type": @"facebook",
+                                            };
+                                      }
                                       [profilePictures addObject:newImage];
-                                      
                                       if ([profilePictures count] == 1) {
                                           [[Profile user] setValue:[profilePictures objectAtIndex:0] forKey:@"image"];
                                       }
