@@ -11,7 +11,7 @@
 #import "SignViewController.h"
 #import "MainViewController.h"
 #import "OnboardViewController.h"
-#import "WaitListViewController.h"
+#import "BatteryViewController.h"
 #import "KeychainItemWrapper.h"
 #import "FacebookHelper.h"
 
@@ -432,7 +432,7 @@
         if (!_pushed) {
             _pushed = YES;
             if ([[Profile user] isGroupLocked]) {
-                [self.navigationController pushViewController:[WaitListViewController new] animated:NO];
+                [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
             }
             else {
                 [self loadMainViewController];

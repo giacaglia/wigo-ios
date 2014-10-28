@@ -9,7 +9,7 @@
 #import "EmailConfirmationViewController.h"
 #import "Globals.h"
 #import "OnboardFollowViewController.h"
-#import "WaitListViewController.h"
+#import "BatteryViewController.h"
 
 UITextField *emailTextField;
 OnboardFollowViewController *onboardFollowViewController;
@@ -184,7 +184,7 @@ OnboardFollowViewController *onboardFollowViewController;
     [Profile setUser:user];
     if ([[Profile user] emailValidated]) {
         if ([[Profile user] isGroupLocked]) {
-            [self.navigationController pushViewController:[WaitListViewController new] animated:NO];
+            [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
         }
         else {
             onboardFollowViewController = [OnboardFollowViewController new];

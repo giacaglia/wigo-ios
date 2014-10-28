@@ -261,6 +261,8 @@
 		E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */; };
 		E9DBB050197813F900DDACDE /* UIScrollView+GifPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */; };
 		E9DE130C196F06B100AFA05A /* WiGoSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */; };
+		E9DFE16F1A001142003C5779 /* BatteryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DFE16E1A001142003C5779 /* BatteryViewController.m */; };
+		E9DFE1701A001142003C5779 /* BatteryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DFE16E1A001142003C5779 /* BatteryViewController.m */; };
 		E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
 		E9E6A568199917BE003B590C /* OnboardFollowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E6A567199917BE003B590C /* OnboardFollowViewController.m */; };
 		E9E6A569199917BE003B590C /* OnboardFollowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E6A567199917BE003B590C /* OnboardFollowViewController.m */; };
@@ -513,6 +515,8 @@
 		E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+GifPullToRefresh.m"; sourceTree = "<group>"; };
 		E9DE130A196F06B100AFA05A /* WiGoSpinnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WiGoSpinnerView.h; sourceTree = "<group>"; };
 		E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WiGoSpinnerView.m; sourceTree = "<group>"; };
+		E9DFE16D1A001142003C5779 /* BatteryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryViewController.h; sourceTree = "<group>"; };
+		E9DFE16E1A001142003C5779 /* BatteryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatteryViewController.m; sourceTree = "<group>"; };
 		E9E618FB193625BB00A224C0 /* EmailConfirmationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailConfirmationViewController.h; sourceTree = "<group>"; };
 		E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmailConfirmationViewController.m; sourceTree = "<group>"; };
 		E9E6A566199917BE003B590C /* OnboardFollowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardFollowViewController.h; sourceTree = "<group>"; };
@@ -1020,14 +1024,11 @@
 				E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */,
 				E9E618FB193625BB00A224C0 /* EmailConfirmationViewController.h */,
 				E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */,
-				E99F46AD199012F0007408C1 /* LockScreenViewController.h */,
-				E99F46AE199012F0007408C1 /* LockScreenViewController.m */,
 				E9E6A566199917BE003B590C /* OnboardFollowViewController.h */,
 				E9E6A567199917BE003B590C /* OnboardFollowViewController.m */,
 				E9444C0619F00FCC004E7925 /* OnboardViewController.h */,
 				E9444C0719F00FCC004E7925 /* OnboardViewController.m */,
-				E9C34A6D19F86FAB00D7E9D3 /* WaitListViewController.h */,
-				E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */,
+				E9DFE1711A00114A003C5779 /* LockScreen */,
 			);
 			name = OnboardingViews;
 			sourceTree = "<group>";
@@ -1157,6 +1158,19 @@
 				E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */,
 			);
 			path = CHGifRefreshControl;
+			sourceTree = "<group>";
+		};
+		E9DFE1711A00114A003C5779 /* LockScreen */ = {
+			isa = PBXGroup;
+			children = (
+				E9DFE16D1A001142003C5779 /* BatteryViewController.h */,
+				E9DFE16E1A001142003C5779 /* BatteryViewController.m */,
+				E99F46AD199012F0007408C1 /* LockScreenViewController.h */,
+				E99F46AE199012F0007408C1 /* LockScreenViewController.m */,
+				E9C34A6D19F86FAB00D7E9D3 /* WaitListViewController.h */,
+				E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */,
+			);
+			name = LockScreen;
 			sourceTree = "<group>";
 		};
 		E9EA951319E9F83C003C79F0 /* StickyHeader */ = {
@@ -1500,6 +1514,7 @@
 				E96F07AD19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
 				E9ACCA2519C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
+				E9DFE1701A001142003C5779 /* BatteryViewController.m in Sources */,
 				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
 				C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */,
 				C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */,
@@ -1594,6 +1609,7 @@
 				E96F07AC19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */,
 				E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
+				E9DFE16F1A001142003C5779 /* BatteryViewController.m in Sources */,
 				E900C2BE1961EADE00A01F50 /* UIButton+WebCache.m in Sources */,
 				E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */,
 				E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */,
