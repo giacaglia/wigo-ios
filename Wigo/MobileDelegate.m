@@ -128,8 +128,8 @@
         NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
         NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
         
-        NSRange nameRange = [firstName rangeOfString:searchText options:NSCaseInsensitiveSearch];
-        NSRange descriptionRange = [lastName rangeOfString:searchText options:NSCaseInsensitiveSearch];
+        NSRange nameRange = [searchText rangeOfString:firstName options:NSCaseInsensitiveSearch];
+        NSRange descriptionRange = [searchText rangeOfString:lastName options:NSCaseInsensitiveSearch];
         if(nameRange.location != NSNotFound || descriptionRange.location != NSNotFound)
         {
             [filteredPeopleContactList addObject:(__bridge id)(contactPerson)];
