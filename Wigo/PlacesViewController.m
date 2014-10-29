@@ -18,6 +18,8 @@
 #import "InviteViewController.h"
 
 #define xSpacing 12
+#import "EventStoryViewController.h"
+
 #define sizeOfEachCell 165
 @interface PlacesViewController ()
 
@@ -720,8 +722,29 @@ int firstIndexOfNegativeEvent;
         [imgView addSubview:profileName];
     }
     [cell.contentView addSubview:placeSubView];
+    
+    //add invisible event conversation button
+    UIButton *eventFeedButton = [[UIButton alloc] initWithFrame: labelName.frame];
+    eventFeedButton.backgroundColor = [UIColor clearColor];
+    eventFeedButton.tag = indexPath.row;
+    [eventFeedButton addTarget: self action: @selector(showEventConversation:) forControlEvents: UIControlEventTouchUpInside];
+    [cell.contentView addSubview: eventFeedButton];
     imagesScrollView.contentOffset = CGPointMake(eventOffset, 0);
     return cell;
+}
+
+- (void)showEventConversation:(UIButton *) button {
+    NSArray *eventsArray;
+    if (_isSearching) eventsArray = [_filteredContentParty getObjectArray];
+    else eventsArray = [_contentParty getObjectArray];
+    
+    Event *chosenEvent = [eventsArray objectAtIndex: button.tag];
+    
+    EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
+    eventStoryController.event = chosenEvent;
+    
+    [self.navigationController pushViewController: eventStoryController animated: YES];
+    self.tabBarController.tabBar.hidden = YES;
 }
 
 -(int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
