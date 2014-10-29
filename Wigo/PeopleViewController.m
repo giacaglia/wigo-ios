@@ -316,7 +316,7 @@ NSMutableArray *suggestedArrayView;
         UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 29, 229, 30)];
         [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         inviteButton.backgroundColor = [FontProperties getOrangeColor];
-        [inviteButton setTitle:@"Invite more friends on WiGo" forState:UIControlStateNormal];
+        [inviteButton setTitle:@"Invite More Friends To WiGo" forState:UIControlStateNormal];
         [inviteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         inviteButton.titleLabel.font = [FontProperties scMediumFont:16.0f];
         inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;

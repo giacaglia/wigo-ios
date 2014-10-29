@@ -49,7 +49,7 @@ int widthShared;
 
 - (void)initializeNameOfSchool {
     if ([[Profile user] groupName]) {
-        UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 86, self.view.frame.size.width - 44, 60)];
+        UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 60, self.view.frame.size.width - 44, 60)];
         schoolLabel.text = [[Profile user] groupName];
         schoolLabel.textAlignment = NSTextAlignmentCenter;
         schoolLabel.numberOfLines = 0;
@@ -62,30 +62,31 @@ int widthShared;
 }
 
 - (void)initializeBattery {
-    UILabel *youAreAlmostThereLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 193, self.view.frame.size.width - 44, 20)];
+    //193
+    UILabel *youAreAlmostThereLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, self.view.frame.size.height/2 - 80, self.view.frame.size.width - 44, 20)];
     youAreAlmostThereLabel.text = @"You are almost there...";
     youAreAlmostThereLabel.textAlignment = NSTextAlignmentCenter;
     youAreAlmostThereLabel.textColor = [UIColor whiteColor];
     youAreAlmostThereLabel.font = [FontProperties mediumFont:15.0f];
     [self.view addSubview:youAreAlmostThereLabel];
     
-    UILabel *orangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 224, 14, 44)];
+    UILabel *orangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, self.view.frame.size.height/2 - 51, 14, 48)];
     orangeLabel.backgroundColor = [FontProperties getOrangeColor];
     [self.view addSubview:orangeLabel];
     
-    orangeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(84, 220, 20, 54)];
+    orangeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(84, self.view.frame.size.height/2 - 53, 20, 54)];
     orangeImageView.image = [UIImage imageNamed:@"batteryRectangle"];
     [self.view addSubview:orangeImageView];
     
     UIImageView *batteryImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"batteryImage"]];
-    batteryImageView.frame = CGRectMake(76, 218, 168, 57);
+    batteryImageView.frame = CGRectMake(76, self.view.frame.size.height/2 - 55, 168, 57);
     [self.view addSubview:batteryImageView];
     
   
 }
 
 - (void)initializeShareLabel {
-    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 295, self.view.frame.size.width - 20, 50)];
+    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height/2 + 10, self.view.frame.size.width - 20, 50)];
 //    shareLabel.text = @"Share WiGo to charge the battery\nand unlock your school.";
     shareLabel.font = [FontProperties mediumFont:20.0f];
     shareLabel.textAlignment = NSTextAlignmentCenter;
@@ -96,10 +97,10 @@ int widthShared;
     NSString *string = @"Share WiGo to charge the battery\nand unlock your school.";
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
     [text addAttribute:NSForegroundColorAttributeName
-                 value:[FontProperties getOrangeColor]
+                 value:RGB(238, 122, 11)
                  range:NSMakeRange(25, 7)];
     [text addAttribute:NSForegroundColorAttributeName
-                 value:[FontProperties getOrangeColor]
+                 value:RGB(238, 122, 11)
                  range:NSMakeRange(37, 6)];
     
     shareLabel.attributedText = text;
@@ -107,7 +108,7 @@ int widthShared;
 }
 
 - (void)initializeJoinLabel {
-    UILabel *joinLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 465, self.view.frame.size.width - 40, 25)];
+    UILabel *joinLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 65 - 35, self.view.frame.size.width - 40, 25)];
     joinLabel.textAlignment = NSTextAlignmentCenter;
     joinLabel.textColor = [UIColor whiteColor];
     joinLabel.font = [FontProperties mediumFont:19.0f];
@@ -119,7 +120,7 @@ int widthShared;
                      value:[UIColor whiteColor]
                      range:NSMakeRange(0, string.length)];
         [text addAttribute:NSForegroundColorAttributeName
-                     value:[FontProperties getOrangeColor]
+                     value:RGB(238, 122, 11)
                      range:NSMakeRange(5, [numGroups stringValue].length)];
         joinLabel.attributedText = text;
     }
@@ -128,7 +129,7 @@ int widthShared;
 
 - (void)initializeShareButton {
     UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 100, self.view.frame.size.height - 65, 200, 48)];
-    shareButton.backgroundColor = [FontProperties getOrangeColor];
+    shareButton.backgroundColor = RGB(238, 122, 11);
     [shareButton setTitle:@"Share WiGo" forState:UIControlStateNormal];
     [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     shareButton.titleLabel.font = [FontProperties getBigButtonFont];
@@ -160,7 +161,7 @@ int widthShared;
                                   delay:0
                                 options:UIViewAnimationOptionCurveEaseInOut
                              animations:^{
-                                 orangeImageView.frame = CGRectMake(84, 220, width, 54);
+                                 orangeImageView.frame = CGRectMake(84, self.view.frame.size.height/2 - 53, width, 54);
                              }
                              completion:nil];
         }
@@ -191,7 +192,7 @@ int widthShared;
                               delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
-                             orangeImageView.frame = CGRectMake(84, 220, width, 54);
+                             orangeImageView.frame = CGRectMake(84, self.view.frame.size.height/2 - 53, width, 54);
                          }
                          completion:nil];
     }
