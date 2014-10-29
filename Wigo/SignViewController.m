@@ -439,8 +439,9 @@
     }
     else {
         [Profile setUser:user];
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+
         if ([[user allKeys] containsObject:@"id"]) {
-            PFInstallation *currentInstallation = [PFInstallation currentInstallation];
             currentInstallation[@"api_version"] = API_VERSION;
             currentInstallation[@"wigo_id"] = [user objectForKey:@"id"];
             [currentInstallation saveInBackground];
