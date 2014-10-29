@@ -30,6 +30,7 @@
 NSNumber *page;
 BOOL fetching;
 ProfileViewController *profileViewController;
+BOOL didBeginEditing;
 
 @implementation ConversationViewController
 
@@ -318,16 +319,18 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void)initializeMessageForEmptyConversation {
-    _viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
-    _viewForEmptyConversation.center = self.view.center;
-    [self.view addSubview:_viewForEmptyConversation];
-    
-    UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , self.view.frame.size.width, 30)];
-    everyDayLabel.text = @"Every day on WiGo is a new day.";
-    everyDayLabel.textColor = [FontProperties getOrangeColor];
-    everyDayLabel.textAlignment = NSTextAlignmentCenter;
-    everyDayLabel.font = [FontProperties getBigButtonFont];
-    [_viewForEmptyConversation addSubview:everyDayLabel];
+    if (!didBeginEditing) {
+        _viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+        _viewForEmptyConversation.center = self.view.center;
+        [self.view addSubview:_viewForEmptyConversation];
+        
+        UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , self.view.frame.size.width, 30)];
+        everyDayLabel.text = @"Every day on WiGo is a new day.";
+        everyDayLabel.textColor = [FontProperties getOrangeColor];
+        everyDayLabel.textAlignment = NSTextAlignmentCenter;
+        everyDayLabel.font = [FontProperties getBigButtonFont];
+        [_viewForEmptyConversation addSubview:everyDayLabel];
+    }
 }
 
 
@@ -478,6 +481,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
+    didBeginEditing = YES;
     if (_viewForEmptyConversation) _viewForEmptyConversation.hidden = YES;
     [self.view bringSubviewToFront:_chatTextFieldWrapper];
 }
