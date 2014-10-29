@@ -88,7 +88,7 @@ int widthShared;
 - (void)initializeShareLabel {
     UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height/2 + 10, self.view.frame.size.width - 20, 50)];
 //    shareLabel.text = @"Share WiGo to charge the battery\nand unlock your school.";
-    shareLabel.font = [FontProperties mediumFont:20.0f];
+    shareLabel.font = [FontProperties mediumFont:18.0f];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.textColor = [UIColor whiteColor];
     shareLabel.numberOfLines = 0;
@@ -143,7 +143,14 @@ int widthShared;
 
 - (void)sharedPressed {
     [EventAnalytics tagEvent:@"Share Pressed"];
-    NSArray *activityItems = @[@"Who is going out tonight? #WiGo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+    NSArray *activityItems;
+    if ([[Profile user] groupName] && numGroups) {
+        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on WiGo.\nLet's do this: wigo.us/app", [[[Profile user] groupName] uppercaseString], [numGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
+    }
+    else {
+        activityItems = @[@"Who is going out tonight? #WiGo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+    }
+    
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityVC animated:YES completion:nil];
@@ -152,10 +159,9 @@ int widthShared;
             int width = orangeImageView.frame.size.width;
             float percentage = (float)(width - 40)/(float)98;
             if (percentage < 1) {
-                percentage = (float)MIN(0.99, (float)percentage + (float)widthShared/(float)500);
-                widthShared = MIN(widthShared/2, 10);
+                percentage = (float)MIN(0.96, (float)percentage + (float)widthShared/(float)500);
             }
-            percentage = MIN(0.99, percentage);
+            percentage = MIN(0.96, percentage);
             width = 40 + percentage * (138 - 40);
             [UIView animateWithDuration:3
                                   delay:0
