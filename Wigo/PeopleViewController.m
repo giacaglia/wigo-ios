@@ -810,6 +810,7 @@ NSMutableArray *suggestedArrayView;
 
 - (void)loadNextPage {
     if ([_currentTab isEqualToNumber:@2]) {
+        NSLog(@"lala");
         [self fetchEveryone];
     }
     else if ([_currentTab isEqualToNumber:@3]) {
@@ -845,31 +846,37 @@ NSMutableArray *suggestedArrayView;
     if (!fetching) {
         fetching = YES;
         NSString *queryString;
-        if (![_page isEqualToNumber:@1] && [_everyoneParty nextPageString]) {
-            queryString = [_everyoneParty nextPageString];
+        if ([_suggestionsParty hasNextPage]) {
+            queryString = [_suggestionsParty nextPageString];
+        
+//        else {
+//            queryString = [NSString stringWithFormat:@"users/?page=%@" ,[_page stringValue]];
+//        }
+            [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    fetching = NO;
+                    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                    NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
+//                    if (_suggestionsParty) {
+//                        [_everyoneParty addObjectsFromArray:arrayOfUsers notInParty:_suggestionsParty];
+//                    }
+//                    else {
+                        [_everyoneParty addObjectsFromArray:arrayOfUsers];
+//                    }
+                    NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+                    [_everyoneParty addMetaInfo:metaDictionary];
+                    [_suggestionsParty addMetaInfo:metaDictionary];
+                    _page = @([_page intValue] + 1);
+                    _contentParty = _everyoneParty;
+                    [_tableViewOfPeople reloadData];
+                    secondPartSubview = [self initializeSecondPart];
+                });
+            }];
         }
         else {
-            queryString = [NSString stringWithFormat:@"users/?page=%@" ,[_page stringValue]];
+            fetching = NO;
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
         }
-        [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                fetching = NO;
-                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-                NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-                if (_suggestionsParty) {
-                    [_everyoneParty addObjectsFromArray:arrayOfUsers notInParty:_suggestionsParty];
-                }
-                else {
-                    [_everyoneParty addObjectsFromArray:arrayOfUsers];
-                }
-                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-                [_everyoneParty addMetaInfo:metaDictionary];
-                _page = @([_page intValue] + 1);
-                _contentParty = _everyoneParty;
-                [_tableViewOfPeople reloadData];
-                secondPartSubview = [self initializeSecondPart];
-            });
-        }];
     }
 }
 

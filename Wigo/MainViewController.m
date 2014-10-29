@@ -731,6 +731,7 @@ NSMutableArray *failedUserInfoArray;
     [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:headerCellIdentifier];
     [_collectionView registerNib:[UINib nibWithNibName:@"WigoCustomCell" bundle:[NSBundle mainBundle]] forCellWithReuseIdentifier:@"WigoCustomCell"];
     _collectionView.backgroundColor = [UIColor clearColor];
+    _collectionView.showsVerticalScrollIndicator = NO;
     [self addRefreshToCollectonView];
     [self.view addSubview:_collectionView];
 }
