@@ -213,7 +213,7 @@
                                           newImage =
                                           @{
                                             @"url": [newPhoto objectForKey:@"source"],
-                                            @"id": [photoRepresentationbo objectForKey:@"id"],
+                                            @"id": [photoRepresentation objectForKey:@"id"],
                                             @"type": @"facebook",
                                             };
                                       }
