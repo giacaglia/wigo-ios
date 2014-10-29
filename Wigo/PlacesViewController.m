@@ -28,7 +28,6 @@
 @property UIButton *clearButton;
 @property UIButton *createButton;
 
-
 @property int tagInteger;
 @property Party *contentParty;
 @property Party *filteredContentParty;

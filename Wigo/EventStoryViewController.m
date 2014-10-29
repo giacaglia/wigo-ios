@@ -8,9 +8,7 @@
 
 #import "EventStoryViewController.h"
 #import "EventConversationViewController.h"
-@interface EventStoryViewController ()
-
-@end
+#import "EventPeopleScrollView.h"
 
 @implementation EventStoryViewController
 
@@ -18,7 +16,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = self.event.name;
-    
+  
+    [self loadEventDetails];
     [self loadMessages];
 }
 
@@ -36,6 +35,11 @@
 }
 
 #pragma mark - Loading Messages
+
+- (void)loadEventDetails {
+    EventPeopleScrollView *eventScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
+    [self.view addSubview:eventScrollView];
+}
 
 - (void)loadMessages {
 }
