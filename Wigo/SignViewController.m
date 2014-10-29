@@ -14,6 +14,7 @@
 #import "BatteryViewController.h"
 #import "KeychainItemWrapper.h"
 #import "FacebookHelper.h"
+#import <Parse/Parse.h>
 
 #import <Crashlytics/Crashlytics.h>
 
@@ -438,6 +439,12 @@
     }
     else {
         [Profile setUser:user];
+        if ([[user allKeys] containsObject:@"id"]) {
+            PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+            currentInstallation[@"api_version"] = API_VERSION;
+            currentInstallation[@"wigo_id"] = [user objectForKey:@"id"];
+            [currentInstallation saveInBackground];
+        }
         if (!_pushed) {
             _pushed = YES;
             if ([[Profile user] isGroupLocked]) {
