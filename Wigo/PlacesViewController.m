@@ -598,7 +598,7 @@ int firstIndexOfNegativeEvent;
     placeSubView.tag = _tagInteger;
     _tagInteger += 1;
     
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 105, 60)];
+    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 117, 60)];
     labelName.numberOfLines = 0;
     labelName.lineBreakMode = NSLineBreakByWordWrapping;
     NSString *text;
@@ -618,7 +618,7 @@ int firstIndexOfNegativeEvent;
     [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(204, 204, 204) range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
     labelName.attributedText = attributedString;
     [labelName sizeToFit];
-    labelName.frame = CGRectMake(xSpacing, 5, self.view.frame.size.width - 105, 60);
+    labelName.frame = CGRectMake(xSpacing, 5, self.view.frame.size.width - 117, 60);
     [placeSubView addSubview:labelName];
 
     // Variables to add images
