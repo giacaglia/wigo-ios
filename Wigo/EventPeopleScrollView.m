@@ -19,7 +19,7 @@ int xPosition;
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(Event *)event {
-    self = [super initWithFrame:CGRectMake(0, 70, 320, sizeOfEachImage + 10)];
+    self = [super initWithFrame:CGRectMake(0, 90, 320, sizeOfEachImage + 10)];
     self.event = event;
     self.contentSize = CGSizeMake(5, sizeOfEachImage + 10);
     self.showsHorizontalScrollIndicator = NO;
@@ -62,10 +62,15 @@ int xPosition;
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+        if (i == 0) profileName.backgroundColor= RGBAlpha(245, 142, 29, 0.6f);
+        else profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
         profileName.font = [FontProperties getSmallPhotoFont];
         [imgView addSubview:profileName];
     }
+}
+
+- (void)chooseUser:(id)sender {
+    
 }
 
 - (void)fetchEventAttendeesAsynchronous {

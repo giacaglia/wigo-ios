@@ -742,7 +742,8 @@ int firstIndexOfNegativeEvent;
     EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
     eventStoryController.event = chosenEvent;
     
-    [self.navigationController pushViewController: eventStoryController animated: YES];
+    [self presentViewController:eventStoryController animated:YES completion:nil];
+//    [self.navigationController pushViewController: eventStoryController animated: YES];
     self.tabBarController.tabBar.hidden = YES;
 }
 
