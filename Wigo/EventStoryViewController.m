@@ -143,7 +143,7 @@ UIButton *sendButton;
 - (IBAction)showEventConversation:(id)sender {
     EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationController.event = self.event;
-    conversationController.eventMessages = self.eventMessages;
+    conversationController.eventMessages = @[@"1", @"2", @"3", @"4", @"4", @"4", @"4", @"4", @"4"];
     
     [self presentViewController: conversationController animated: YES completion: nil];
 }
