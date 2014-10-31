@@ -68,7 +68,7 @@
     exposureView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
     exposureView.center = self.center;
     exposureView.delegate = self;
-    exposureView.image = [UIImage imageNamed:@"IQ_exposure"];
+    exposureView.image = [UIImage imageNamed:@"exposureIcon"];
     [self addSubview:exposureView];
     
     _longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureRecognizer:)];
@@ -76,16 +76,23 @@
     [self addGestureRecognizer:_longPressRecognizer];
 
     _panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizer:)];
+    
     [_panRecognizer requireGestureRecognizerToFail:_longPressRecognizer];
     _panRecognizer.delegate = self;
     [self addGestureRecognizer:_panRecognizer];
     
     _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
+    _tapRecognizer.numberOfTapsRequired = 1;
     [_tapRecognizer requireGestureRecognizerToFail:_panRecognizer];
     [_tapRecognizer requireGestureRecognizerToFail:_longPressRecognizer];
     _tapRecognizer.delegate = self;
     [self addGestureRecognizer:_tapRecognizer];
     
+    UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapGestureRecognizer:)];
+    doubleTapRecognizer.numberOfTapsRequired = 2;
+    doubleTapRecognizer.delegate = self;
+    [self addGestureRecognizer:doubleTapRecognizer];
+    [_tapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
     
     overlayView = [[UIView alloc] initWithFrame:CGRectInset(self.bounds, -CGRectGetMidX(self.bounds), -CGRectGetMidY(self.bounds))];
     overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -133,6 +140,10 @@
         [self initialize];
     }
     return self;
+}
+
+- (void)doubleTapGestureRecognizer:(UITapGestureRecognizer *)recognizer {
+    [self.delegate reverseCamera];
 }
 
 -(void)tapGestureRecognizer:(UIPanGestureRecognizer*)recognizer

@@ -435,7 +435,7 @@
     }
 }
 
-- (void)toggleCameraAction:(UIButton *)sender
+- (void)toggleCameraAction
 {
     if ([self session].cameraPosition == AVCaptureDevicePositionBack)
     {
@@ -791,6 +791,10 @@
     [[self session] setExposurePoint:exposurePoint];
 }
 
+- (void)reverseCamera {
+    [self toggleCameraAction];
+}
+
 #pragma mark - IQCaptureSession Delegates
 
 - (void)captureSession:(IQCaptureSession*)audioSession didUpdateMeterLevel:(CGFloat)meterLevel
@@ -949,7 +953,7 @@
     {
         _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 60, 0, 73, 60)];
         [_buttonToggleCamera setImage:[UIImage imageNamed:@"cameraIcon"] forState:UIControlStateNormal];
-        [_buttonToggleCamera addTarget:self action:@selector(toggleCameraAction:) forControlEvents:UIControlEventTouchUpInside];
+        [_buttonToggleCamera addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
     }
     
     return _buttonToggleCamera;

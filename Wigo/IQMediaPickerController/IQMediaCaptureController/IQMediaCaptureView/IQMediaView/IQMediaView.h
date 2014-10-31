@@ -31,7 +31,7 @@
 
 -(void)mediaView:(IQMediaView*)mediaView focusPointOfInterest:(CGPoint)focusPoint;
 -(void)mediaView:(IQMediaView*)mediaView exposurePointOfInterest:(CGPoint)exposurePoint;
-
+- (void)reverseCamera;
 @end
 
 @interface IQMediaView : UIView
