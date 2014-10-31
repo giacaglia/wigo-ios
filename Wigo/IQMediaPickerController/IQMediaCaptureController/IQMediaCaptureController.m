@@ -141,7 +141,6 @@
     [IQFileManager removeItemsAtPath:[[self class] temporaryVideoStoragePath]];
     [IQFileManager removeItemsAtPath:[[self class] temporaryImageStoragePath]];
 
-    [self showSettings:YES animated:NO];
 
     [self updateUI];
 }
@@ -182,32 +181,6 @@
 
 #pragma mark - UI handling
 
-
-
--(void)showSettings:(BOOL)show animated:(BOOL)animated
-{
-    [UIView animateWithDuration:(animated)?0.3:0 delay:0 options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut animations:^{
-
-        if (show)
-        {
-            
-            CGPoint center = CGPointMake(30, 50);
-            center.x += 44;
-            
-            self.buttonFlash.alpha = 1.0;
-            self.buttonToggleCamera.alpha = 1.0;
-
-        }
-        else
-        {
-            self.buttonFlash.alpha = 0.0;
-            self.buttonToggleCamera.alpha = 0.0;
-        }
-    } completion:^(BOOL finished) {
-        
-    }];
-}
-
 -(void)updateUI
 {
     [UIView animateWithDuration:0.3 delay:0 options:(UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut) animations:^{
@@ -218,12 +191,22 @@
         if ([[self session] hasFlash])
         {
             if ([self session].flashMode == AVCaptureFlashModeOn) {
-                [self.buttonFlash setImage:[UIImage imageNamed:@"flashOn"] forState:UIControlStateNormal];
+                for (UIView *subview in self.buttonFlash.subviews) {
+                    if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
+                }
+                UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 16, 26)];
+                imageView.image = [UIImage imageNamed:@"flashOn"];
+                [self.buttonFlash addSubview:imageView];
                 self.buttonFlash.alpha = 1.0f;
             }
             
             else if ([self session].flashMode == AVCaptureFlashModeOff) {
-                [self.buttonFlash setImage:[UIImage imageNamed:@"flashOff"] forState:UIControlStateNormal];
+                for (UIView *subview in self.buttonFlash.subviews) {
+                    if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
+                }
+                UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 26, 31)];
+                imageView.image = [UIImage imageNamed:@"flashOff"];
+                [self.buttonFlash addSubview:imageView];
                 self.buttonFlash.alpha = 0.3f;
             }
             
@@ -231,7 +214,12 @@
         }
         else
         {
-            [self.buttonFlash setImage:[UIImage imageNamed:@"IQ_camera_flash_off"] forState:UIControlStateNormal];
+            for (UIView *subview in self.buttonFlash.subviews) {
+                if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
+            }
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 26, 31)];
+            imageView.image = [UIImage imageNamed:@"flashOff"];
+            [self.buttonFlash addSubview:imageView];
             self.buttonFlash.enabled = NO;
         }
         
@@ -449,7 +437,6 @@
 
 - (void)toggleCameraAction:(UIButton *)sender
 {
-    NSLog(@"here");
     if ([self session].cameraPosition == AVCaptureDevicePositionBack)
     {
         [self setCaptureDevice:IQMediaCaptureControllerCameraDeviceFront animated:YES];
@@ -697,12 +684,37 @@
 
 - (void)cancelAction:(UIButton *)sender
 {
-    if ([self.delegate respondsToSelector:@selector(mediaCaptureControllerDidCancel:)])
-    {
-        [self.delegate mediaCaptureControllerDidCancel:self];
+    if ([[self session] isSessionRunning] == NO) {
+        [[self session] startRunning];
+        [self.bottomContainerView setRightContentView:self.buttonToggleMedia];
+        
+        //Resetting
+        if (self.allowsCapturingMultipleItems == NO)
+        {
+            videoCounter = 0;
+            audioCounter = 0;
+            imageCounter = 0;
+            
+            [videoURLs removeAllObjects];
+            [audioURLs removeAllObjects];
+            [arrayImagesAttribute removeAllObjects];
+            
+            [IQFileManager removeItemsAtPath:[[self class] temporaryAudioStoragePath]];
+            [IQFileManager removeItemsAtPath:[[self class] temporaryVideoStoragePath]];
+            [IQFileManager removeItemsAtPath:[[self class] temporaryImageStoragePath]];
+            
+            [self.partitionBar setPartitions:[NSArray new] animated:YES];
+        }
     }
     
-    [self dismissViewControllerAnimated:YES completion:nil];
+    else {
+        if ([self.delegate respondsToSelector:@selector(mediaCaptureControllerDidCancel:)])
+        {
+            [self.delegate mediaCaptureControllerDidCancel:self];
+        }
+        
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)selectAction:(UIButton *)sender
@@ -906,6 +918,12 @@
         _settingsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 320, 44)];
         [_settingsContainerView addSubview:self.buttonToggleCamera];
         [_settingsContainerView addSubview:self.buttonFlash];
+        UILabel *verseLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, 280, 40)];
+        verseLabel.text = @"Add your verse";
+        verseLabel.textAlignment = NSTextAlignmentCenter;
+        verseLabel.textColor = [UIColor whiteColor];
+        verseLabel.alpha = 0.5f;
+        [_settingsContainerView addSubview:verseLabel];
     }
     
     return _settingsContainerView;
@@ -916,7 +934,7 @@
 {
     if (_buttonFlash == nil)
     {
-        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(44, 0, 44, 44)];
+        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(20, 20, 52, 62)];
         [_buttonFlash setImage:[UIImage imageNamed:@"flashOff"] forState:UIControlStateNormal];
         [_buttonFlash addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -982,7 +1000,6 @@
         UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
         cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
         [_buttonCancel addSubview:cancelCamera];
-//        [_buttonCancel setTitle:@"Cancel" forState:UIControlStateNormal];
         [_buttonCancel addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -994,7 +1011,6 @@
     if (_buttonCapture == nil)
     {
         _buttonCapture = [UIButton buttonWithType:UIButtonTypeCustom];
-        NSLog(@"here");
         [_buttonCapture setImage:[UIImage imageNamed:@"IQ_neutral_mode"] forState:UIControlStateNormal];
         [_buttonCapture addTarget:self action:@selector(captureAction:) forControlEvents:UIControlEventTouchUpInside];
     }
