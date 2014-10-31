@@ -13,16 +13,21 @@
 @interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) NSMutableArray *eventMessages;
-@property (nonatomic, strong) UICollectionView *facesCollectionView;
+@property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
 @end
 
 @interface FaceCell : UICollectionViewCell
 
+- (void) resetToInactive;
+
 @property (nonatomic, assign) BOOL rightLineEnabled;
 @property (nonatomic, assign) BOOL isActive;
-@property (nonatomic, strong) UIImage *face;
+@property (nonatomic, strong) UIImageView *faceImageView;
+
+@property (nonatomic, strong) UIView *rightLine;
+
 @end
 
-@interface FaceLayout : UICollectionViewLayout
+@interface FaceFlowLayout : UICollectionViewFlowLayout
 
 @end
