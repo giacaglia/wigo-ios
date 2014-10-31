@@ -20,9 +20,8 @@
 
 @property (nonatomic, assign) BOOL rightLineEnabled;
 @property (nonatomic, assign) BOOL isActive;
-@property (nonatomic)
+@property (nonatomic, strong) UIImage *face;
 @end
-
 
 @interface FaceLayout : UICollectionViewLayout
 
