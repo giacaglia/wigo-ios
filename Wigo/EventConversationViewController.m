@@ -63,7 +63,7 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     FaceCell *cell = (FaceCell *)[collectionView cellForItemAtIndexPath: indexPath];
-    
+        
     return cell.frame.size;
 }
 
@@ -160,5 +160,19 @@
     [generator generateCGImagesAsynchronouslyForTimes:[NSArray arrayWithObject:[NSValue valueWithCMTime:thumbTime]] completionHandler:handler];
 }
 
+
+@end
+
+@implementation FaceCell
+
+- (id) initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder: aDecoder];
+    
+    if (self) {
+        self.backgroundColor = UIColor.redColor;
+    }
+        
+    return self;
+}
 
 @end
