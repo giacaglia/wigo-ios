@@ -126,15 +126,7 @@ UIButton *sendButton;
 }
 
 - (void)sendPressed {
-//    UIImagePickerController * imagePicker = [[UIImagePickerController alloc] init];
-//    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-//    imagePicker.delegate = self;
-//    [self presentViewController:imagePicker animated:YES completion:nil];
-    //  Init the capture session
-//    CCamera *camera = [[CCamera alloc] init];
-//    [camera startRunning];
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
-    controller.delegate = self;
     [controller setMediaType:3];
     controller.allowsPickingMultipleItems = YES;
     [self presentViewController:controller animated:YES completion:nil];

@@ -126,7 +126,7 @@
     self.view.backgroundColor = [UIColor blackColor];
     
     [self.view addSubview:self.mediaView];
-    [self.view addSubview:self.settingsContainerView];
+//    [self.view addSubview:self.settingsContainerView];
     [self.view addSubview:self.bottomContainerView];
 }
 
@@ -1096,7 +1096,7 @@
     if (_bottomContainerView == nil)
     {
         _bottomContainerView = [[IQBottomContainerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds)-90, CGRectGetWidth(self.view.bounds), 90)];
-        _bottomContainerView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+//        _bottomContainerView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
         
         [_bottomContainerView setTopContentView:self.partitionBar];
         [_bottomContainerView setLeftContentView:self.buttonCancel];
@@ -1134,7 +1134,10 @@
     {
         _buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
         [_buttonCancel.titleLabel setFont:[UIFont boldSystemFontOfSize:18.0]];
-        [_buttonCancel setTitle:@"Cancel" forState:UIControlStateNormal];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 28, 28)];
+        cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
+        [_buttonCancel addSubview:cancelCamera];
+//        [_buttonCancel setTitle:@"Cancel" forState:UIControlStateNormal];
         [_buttonCancel addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     
