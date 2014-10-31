@@ -62,9 +62,12 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    FaceCell *cell = (FaceCell *)[collectionView cellForItemAtIndexPath: indexPath];
-        
-    return cell.frame.size;
+    return CGSizeMake(75,75);
+}
+
+- (UIEdgeInsets)collectionView: (UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    
+    return UIEdgeInsetsMake(20, 10, 0, 0);
 }
 
 #pragma mark - UICollectionViewDelegate
@@ -173,6 +176,17 @@
     }
         
     return self;
+}
+
+@end
+
+@implementation FaceLayout
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewLayoutAttributes *layoutAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+    layoutAttributes.frame = CGRectMake(10,10,75,75); // or whatever...
+    return layoutAttributes;
 }
 
 @end
