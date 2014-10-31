@@ -9,6 +9,7 @@
 #import "EventStoryViewController.h"
 #import "EventConversationViewController.h"
 #import "EventPeopleScrollView.h"
+#import "IQMediaPickerController.h"
 
 UIView *chatTextFieldWrapper;
 UITextView *messageTextView;
@@ -30,6 +31,13 @@ UIButton *sendButton;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
+    
+    UIButton *aroundBackButton = [[UIButton alloc] initWithFrame:CGRectMake(20, 30, 40, 40)];
+    [aroundBackButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:aroundBackButton];
+    UIImageView *backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 9, 15)];
+    backImageView.image = [UIImage imageNamed:@"blueBackIcon"];
+    [aroundBackButton addSubview:backImageView];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(45, 24, self.view.frame.size.width - 90, 36)];
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -99,7 +107,7 @@ UIButton *sendButton;
     [chatTextFieldWrapper bringSubviewToFront:messageTextView];
     
     sendButton = [[UIButton alloc] initWithFrame:CGRectMake(chatTextFieldWrapper.frame.size.width - 50, 10, 45, 35)];
-    [sendButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
+    [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     sendButton.backgroundColor = [FontProperties getOrangeColor];
     sendButton.layer.borderWidth = 1.0f;
     sendButton.layer.borderColor = [UIColor clearColor].CGColor;
@@ -109,6 +117,27 @@ UIButton *sendButton;
     UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 25, 25)];
     sendOvalImageView.image = [UIImage imageNamed:@"sendOval"];
     [sendButton addSubview:sendOvalImageView];
+}
+
+#pragma mark - Button handler
+
+- (void)goBack {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)sendPressed {
+//    UIImagePickerController * imagePicker = [[UIImagePickerController alloc] init];
+//    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+//    imagePicker.delegate = self;
+//    [self presentViewController:imagePicker animated:YES completion:nil];
+    //  Init the capture session
+//    CCamera *camera = [[CCamera alloc] init];
+//    [camera startRunning];
+    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
+    controller.delegate = self;
+    [controller setMediaType:3];
+    controller.allowsPickingMultipleItems = YES;
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 - (IBAction)showEventConversation:(id)sender {
