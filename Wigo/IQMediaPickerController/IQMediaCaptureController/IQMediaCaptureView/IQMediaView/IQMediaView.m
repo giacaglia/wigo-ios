@@ -311,15 +311,6 @@
 -(void)setExposureMode:(AVCaptureExposureMode)exposureMode
 {
     _exposureMode = exposureMode;
-    
-    if (exposureMode == AVCaptureExposureModeContinuousAutoExposure)
-    {
-        exposureView.alpha = 1.0;
-    }
-    else
-    {
-        exposureView.alpha = 0.0;
-    }
 }
 
 -(void)setFocusPointOfInterest:(CGPoint)focusPointOfInterest

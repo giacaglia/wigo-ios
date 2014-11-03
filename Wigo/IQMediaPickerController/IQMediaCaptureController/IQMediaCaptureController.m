@@ -48,7 +48,8 @@
     
     BOOL _previousNavigationBarHidden;
     BOOL _previousStatusBarHidden;
-
+    BOOL longGesturePressed;
+    
     NSOperationQueue *operationQueue;
 }
 
@@ -309,7 +310,7 @@
     }
     else
     {
-        [self.mediaView setBlur:YES];
+        [self.mediaView setBlur:NO];
         
         [operationQueue addOperationWithBlock:^{
             
@@ -343,8 +344,6 @@
                     if ([self session].captureMode == IQCameraCaptureModePhoto)
                     {
                         self.settingsContainerView.hidden = NO;
-
-//                        [self.mediaView setOverlayColor:nil];
                         
                         [self.bottomContainerView setTopContentView:nil];
                         [self.buttonToggleMedia setImage:[UIImage imageNamed:@"IQ_camera"] forState:UIControlStateNormal];
@@ -549,6 +548,7 @@
 
 - (void)captureAction:(UIButton *)sender
 {
+    NSLog(@"jakak");
     if ([[self session] isSessionRunning] == NO)
     {
         [self.buttonCapture setImage:[UIImage imageNamed:@"IQ_start_capture_mode"] forState:UIControlStateNormal];
@@ -592,7 +592,7 @@
 
             [self.bottomContainerView setLeftContentView:nil];
             [self.bottomContainerView setRightContentView:nil];
-            [self.bottomContainerView setMiddleContentView:self.imageViewProcessing];
+//            [self.bottomContainerView setMiddleContentView:self.imageViewProcessing];
 
             [[self session] takePicture];
         }
@@ -628,7 +628,8 @@
                 
                 [self.bottomContainerView setLeftContentView:nil];
                 [self.bottomContainerView setRightContentView:nil];
-                [self.bottomContainerView setMiddleContentView:self.imageViewProcessing];
+                [self.bottomContainerView setMiddleContentView:nil];
+//                [self.bottomContainerView setMiddleContentView:self.imageViewProcessing];
                 
                 [displayDuratioUpdate removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
                 [displayDuratioUpdate invalidate];
@@ -666,7 +667,8 @@
                 
                 [self.bottomContainerView setLeftContentView:nil];
                 [self.bottomContainerView setRightContentView:nil];
-                [self.bottomContainerView setMiddleContentView:self.imageViewProcessing];
+                [self.bottomContainerView setMiddleContentView:nil];
+//                [self.bottomContainerView setMiddleContentView:self.imageViewProcessing];
                 
                 [displayDuratioUpdate removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
                 [displayDuratioUpdate invalidate];
@@ -679,8 +681,11 @@
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
-    NSLog(@"here");
-    [self setCaptureMode:IQMediaCaptureControllerCaptureModeVideo];
+    if (!longGesturePressed) {
+        [self setCaptureMode:IQMediaCaptureControllerCaptureModeVideo];
+        longGesturePressed = YES;
+    }
+   
     if ( gesture.state == UIGestureRecognizerStateEnded ) {
         NSLog(@"Long Press");
     }
@@ -711,6 +716,20 @@
             
             [self.partitionBar setPartitions:[NSArray new] animated:YES];
         }
+     
+        for (UIView *subview in self.buttonCancel.subviews) {
+            if ([subview isKindOfClass:[UIImageView class]]) {
+                [subview removeFromSuperview];
+            }
+        }
+        [self.buttonCancel setTitle:nil forState:UIControlStateNormal];
+        
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
+        cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
+        [self.buttonCancel addSubview:cancelCamera];
+        
+        [self.buttonCapture setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
+        [self.bottomContainerView setMiddleContentView:self.buttonCapture];
     }
     
     else {
@@ -835,7 +854,7 @@
     } completion:NULL];
     
     [self.bottomContainerView setLeftContentView:self.buttonCancel];
-    [self.bottomContainerView setMiddleContentView:self.buttonCapture];
+    [self.bottomContainerView setMiddleContentView:nil];
     [self.bottomContainerView setRightContentView:self.buttonSelect];
     
     if (error == nil)
@@ -928,12 +947,6 @@
         _settingsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 320, 44)];
         [_settingsContainerView addSubview:self.buttonToggleCamera];
         [_settingsContainerView addSubview:self.buttonFlash];
-        UILabel *verseLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, 280, 40)];
-        verseLabel.text = @"Add your verse";
-        verseLabel.textAlignment = NSTextAlignmentCenter;
-        verseLabel.textColor = [UIColor whiteColor];
-        verseLabel.alpha = 0.5f;
-        [_settingsContainerView addSubview:verseLabel];
     }
     
     return _settingsContainerView;
@@ -945,7 +958,6 @@
     if (_buttonFlash == nil)
     {
         _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(20, 20, 52, 62)];
-        [_buttonFlash setImage:[UIImage imageNamed:@"flashOff"] forState:UIControlStateNormal];
         [_buttonFlash addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
     }
     
