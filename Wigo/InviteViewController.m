@@ -400,12 +400,10 @@ heightForHeaderInSection:(NSInteger)section
     }
     
     if ([user isTapped]) {
-        [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapUnselectedInvite"] forState:UIControlStateNormal];
         [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
         [user setIsTapped:NO];
     }
     else {
-        [buttonSender setBackgroundImage:[UIImage imageNamed:@"tapSelectedInvite"] forState:UIControlStateNormal];
         [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
         [user setIsTapped:YES];
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];

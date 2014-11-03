@@ -36,13 +36,9 @@ static NSNumber *lastUserRead;
         user = newUser;
         if ([oldUser key]) {
             [user setKey:[oldUser key]];
-            KeychainItemWrapper *keychainItem = [[KeychainItemWrapper alloc] initWithIdentifier:@"WiGo" accessGroup:nil];
-            NSData *keyData = (NSData *)[keychainItem objectForKey:(__bridge id)kSecValueData];
-            NSString *key = [[NSString alloc] initWithData:keyData
-                                                  encoding:NSUTF8StringEncoding];
+            NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
             if (key.length == 0) {
-                NSData *newKeyData = [[oldUser key] dataUsingEncoding:NSUTF8StringEncoding];
-                [keychainItem setObject:newKeyData forKey:(__bridge id)(kSecValueData)];
+                [[NSUserDefaults standardUserDefaults] setObject:[oldUser key] forKey:@"key"];
             }
         }
         [newUser updateUserAnalytics];

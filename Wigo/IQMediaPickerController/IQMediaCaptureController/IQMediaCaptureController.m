@@ -217,9 +217,6 @@
             for (UIView *subview in self.buttonFlash.subviews) {
                 if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
             }
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 26, 31)];
-            imageView.image = [UIImage imageNamed:@"flashOff"];
-            [self.buttonFlash addSubview:imageView];
             self.buttonFlash.enabled = NO;
         }
         
@@ -439,6 +436,7 @@
 {
     if ([self session].cameraPosition == AVCaptureDevicePositionBack)
     {
+        [[self session] setFlashMode:AVCaptureFlashModeOff];
         [self setCaptureDevice:IQMediaCaptureControllerCameraDeviceFront animated:YES];
     }
     else
