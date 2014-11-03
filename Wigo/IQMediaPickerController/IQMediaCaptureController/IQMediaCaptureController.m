@@ -394,7 +394,7 @@
     }
     else
     {
-        [self.mediaView setBlur:YES];
+        [self.mediaView setBlur:NO];
         
         [operationQueue addOperationWithBlock:^{
             
@@ -675,6 +675,14 @@
                 [self.partitionBar setUserInteractionEnabled:YES];
             }
         }
+    }
+}
+
+- (void)longPress:(UILongPressGestureRecognizer*)gesture {
+    NSLog(@"here");
+    [self setCaptureMode:IQMediaCaptureControllerCaptureModeVideo];
+    if ( gesture.state == UIGestureRecognizerStateEnded ) {
+        NSLog(@"Long Press");
     }
 }
 
@@ -1015,6 +1023,8 @@
         _buttonCapture = [UIButton buttonWithType:UIButtonTypeCustom];
         [_buttonCapture setImage:[UIImage imageNamed:@"IQ_neutral_mode"] forState:UIControlStateNormal];
         [_buttonCapture addTarget:self action:@selector(captureAction:) forControlEvents:UIControlEventTouchUpInside];
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+        [_buttonCapture addGestureRecognizer:longPress];
     }
     
     return _buttonCapture;

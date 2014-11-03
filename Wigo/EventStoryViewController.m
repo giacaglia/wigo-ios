@@ -127,7 +127,7 @@ UIButton *sendButton;
 
 - (void)sendPressed {
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
-    [controller setMediaType:3];
+    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
     controller.allowsPickingMultipleItems = YES;
     [self presentViewController:controller animated:YES completion:nil];
 }
