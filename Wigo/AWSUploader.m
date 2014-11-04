@@ -7,19 +7,18 @@
 //
 
 #import "AWSUploader.h"
-#import "Globals.h"
 #import "AFNetworking.h"
 
 @implementation AWSUploader
 
 + (void) uploadImage:(NSData *)image {
-    [Network sendAsynchronousHTTPMethod:GET
-                            withAPIName:@"uploads/photos/?filename=image.jpg"
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *fields = [jsonResponse objectForKey:@"fields"];
-        NSString *actionString = [jsonResponse objectForKey:@"action"];
-        [AWSUploader uploadToAWS:fields];
-    }];
+//    [Network sendAsynchronousHTTPMethod:GET
+//                            withAPIName:@"uploads/photos/?filename=image.jpg"
+//                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//        NSArray *fields = [jsonResponse objectForKey:@"fields"];
+//        NSString *actionString = [jsonResponse objectForKey:@"action"];
+//        [AWSUploader uploadToAWS:fields];
+//    }];
 }
 
 + (void)uploadToAWS:(NSArray *)fields {

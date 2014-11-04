@@ -136,13 +136,33 @@ UIButton *sendButton;
 }
 
 - (void)mediaPickerController:(IQMediaPickerController *)controller didFinishMediaWithInfo:(NSDictionary *)info {
+    NSDictionary *options;
     if ([[info allKeys] containsObject:@"IQMediaTypeImage"]) {
         UIImage *image = [[[info objectForKey:@"IQMediaTypeImage"] objectAtIndex:0] objectForKey:@"IQMediaImage" ];
         NSData *jpegData = UIImageJPEGRepresentation(image, 1.0f);
+        options =  @{
+                     @"event": [self.event eventID],
+                     @"message": @"So much beer",
+                     @"media_mime_type": @"image/jpeg",
+                     @"media": @"/imageuploads/video.mp4"
+                     };
+
     }
     else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
         NSString *urlOfVideo = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
+        options =  @{
+                     @"event": [self.event eventID],
+                     @"message": @"So much beer",
+                     @"media_mime_type": @"video/mp4",
+                     @"media": @"/videouploads/video.mp4"
+                     };
     }
+    
+    [Network sendAsynchronousHTTPMethod:POST
+                            withAPIName:@"eventmessages/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        
+    } withOptions:options];
     
     NSLog(@"info %@", info);
 }
