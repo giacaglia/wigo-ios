@@ -43,6 +43,7 @@
     UIPanGestureRecognizer *_panRecognizer;
     UITapGestureRecognizer *_tapRecognizer;
     UILongPressGestureRecognizer *_longPressRecognizer;
+    float beginGestureScale, effectiveScale;
 }
 
 +(Class)layerClass
@@ -55,6 +56,7 @@
     self.backgroundColor = [UIColor blackColor];
     [(AVCaptureVideoPreviewLayer*)self.layer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     
+    effectiveScale = 1.0;
     focusView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     focusView.alpha = 0.0;
     focusView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
@@ -93,6 +95,12 @@
     doubleTapRecognizer.delegate = self;
     [self addGestureRecognizer:doubleTapRecognizer];
     [_tapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
+    
+    UIPinchGestureRecognizer *pinchRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchFrom:)];
+    pinchRecognizer.delegate = self;
+    [self addGestureRecognizer:pinchRecognizer];
+    [_tapRecognizer requireGestureRecognizerToFail:pinchRecognizer];
+    [doubleTapRecognizer requireGestureRecognizerToFail:pinchRecognizer];
     
     overlayView = [[UIView alloc] initWithFrame:CGRectInset(self.bounds, -CGRectGetMidX(self.bounds), -CGRectGetMidY(self.bounds))];
     overlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -144,6 +152,21 @@
 
 - (void)doubleTapGestureRecognizer:(UITapGestureRecognizer *)recognizer {
     [self.delegate reverseCamera];
+}
+
+- (void)handlePinchFrom:(UIPinchGestureRecognizer *)pinchRecognizer {
+    effectiveScale = beginGestureScale * pinchRecognizer.scale;
+    if (effectiveScale >= 1) {
+        self.transform = CGAffineTransformMakeScale(effectiveScale, effectiveScale);
+    }
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
+        beginGestureScale = effectiveScale;
+    }
+    return YES;
 }
 
 -(void)tapGestureRecognizer:(UIPanGestureRecognizer*)recognizer

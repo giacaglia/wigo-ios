@@ -442,6 +442,14 @@
     {
         [self setCaptureDevice:IQMediaCaptureControllerCameraDeviceRear animated:YES];
     }
+    self.buttonToggleCamera.clipsToBounds = YES;
+    [UIView animateWithDuration:.15f animations:^{
+        self.buttonToggleCamera.imageView.transform = CGAffineTransformMakeScale(1.5,1.5);
+    }completion:^(BOOL finished) {
+        [UIView animateWithDuration:.15f animations:^{
+            self.buttonToggleCamera.imageView.transform = CGAffineTransformMakeScale(1.0,1.0);
+        }];
+    }];
 }
 
 - (void)toggleCaptureMode:(UIButton *)sender
@@ -598,6 +606,7 @@
         }
         else if ([self session].captureMode == IQCameraCaptureModeVideo)
         {
+            NSLog(@"heharue");
             if ([self session].isRecording == NO)
             {
                 [[self session] startVideoRecording];
