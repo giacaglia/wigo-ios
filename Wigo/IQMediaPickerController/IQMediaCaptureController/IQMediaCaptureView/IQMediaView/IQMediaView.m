@@ -156,7 +156,7 @@
 
 - (void)handlePinchFrom:(UIPinchGestureRecognizer *)pinchRecognizer {
     effectiveScale = beginGestureScale * pinchRecognizer.scale;
-    if (effectiveScale >= 1) {
+    if (effectiveScale >= 1 && effectiveScale < 6) {
         self.transform = CGAffineTransformMakeScale(effectiveScale, effectiveScale);
     }
 }

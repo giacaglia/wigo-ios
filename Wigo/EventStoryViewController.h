@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "Globals.h"
-@interface EventStoryViewController : UIViewController
+#import "IQMediaPickerController.h"
+
+@interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate>
+
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 

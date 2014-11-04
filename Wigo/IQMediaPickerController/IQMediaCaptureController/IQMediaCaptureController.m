@@ -236,24 +236,23 @@
         }
         
         {
-            if ([[self session] isSessionRunning] == NO)
-            {
+            [self.buttonCapture setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
+
+//            if ([[self session] isSessionRunning] == NO)
+//            {
 //                [self.buttonCapture setImage:[UIImage imageNamed:@"IQ_neutral_mode"] forState:UIControlStateNormal];
-                [self.buttonCapture setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
-            }
-            else
-            {
-                if ([[self session] isRecording] == NO)
-                {
+//            }
+//            else
+//            {
+//                if ([[self session] isRecording] == NO)
+//                {
 //                    [self.buttonCapture setImage:[UIImage imageNamed:@"IQ_start_capture_mode"] forState:UIControlStateNormal];
-                    [self.buttonCapture setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
-                }
-                else
-                {
+//                }
+//                else
+//                {
 //                    [self.buttonCapture setImage:[UIImage imageNamed:@"IQ_stop_capture_mode"] forState:UIControlStateNormal];
-                    [self.buttonCapture setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
-                }
-            }
+//                }
+//            }
         }
         
     } completion:^(BOOL finished) {
@@ -691,12 +690,19 @@
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
     if (!longGesturePressed) {
-        [self setCaptureMode:IQMediaCaptureControllerCaptureModeVideo];
+//        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+//        dispatch_group_t group = dispatch_group_create();
+//        dispatch_group_async(group, queue, ^{
+//            [self setCaptureMode:IQMediaCaptureControllerCaptureModeVideo];
+//        });
+//        dispatch_group_notify(group, queue, ^{
+//            [self captureAction:self.buttonCapture];
+//        });
         longGesturePressed = YES;
     }
    
     if ( gesture.state == UIGestureRecognizerStateEnded ) {
-        NSLog(@"Long Press");
+        [self setCaptureMode:IQMediaCaptureControllerCaptureModePhoto];
     }
 }
 

@@ -129,16 +129,33 @@ UIButton *sendButton;
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
     [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
     controller.allowsPickingMultipleItems = YES;
+    controller.delegate = self;
     [self presentViewController:controller animated:YES completion:nil];
+}
+
+- (void)mediaPickerController:(IQMediaPickerController *)controller didFinishMediaWithInfo:(NSDictionary *)info {
+    if ([[info allKeys] containsObject:@"IQMediaTypeImage"]) {
+        UIImage *image = [[[info objectForKey:@"IQMediaTypeImage"] objectAtIndex:0] objectForKey:@"IQMediaImage" ];
+    }
+    else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
+        NSString *urlOfVideo = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
+    }
+    
+    NSLog(@"info %@", info);
+}
+
+- (void)mediaPickerControllerDidCancel:(IQMediaPickerController *)controller {
+    
 }
 
 - (IBAction)showEventConversation:(id)sender {
     EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationController.event = self.event;
-    conversationController.eventMessages = @[@"1", @"2", @"3", @"4", @"4", @"4", @"4", @"4", @"4"];
-    
+    conversationController.eventMessages = [NSMutableArray arrayWithArray:@[@"1", @"2", @"3", @"4", @"4", @"4", @"4", @"4", @"4"]];
     [self presentViewController: conversationController animated: YES completion: nil];
 }
+
+
 
 
 @end
