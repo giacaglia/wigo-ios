@@ -141,12 +141,13 @@ NSArray *eventMessages;
 - (void)mediaPickerController:(IQMediaPickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
     
+    NSString *message = @"So much beer";
     NSDictionary *options;
     if ([[info allKeys] containsObject:@"IQMediaTypeImage"]) {
         NSString *imageURL = [[[info objectForKey:@"IQMediaTypeImage"] objectAtIndex:0] objectForKey:@"IQMediaURL" ];
         options =  @{
                      @"event": [self.event eventID],
-                     @"message": @"So much beer",
+                     @"message": message,
                      @"media_mime_type": @"image/jpeg"
                      };
         [self uploadContentWithFile:imageURL
@@ -157,7 +158,7 @@ NSArray *eventMessages;
         NSString *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
         options =  @{
                      @"event": [self.event eventID],
-                     @"message": @"So much beer",
+                     @"message": message,
                      @"media_mime_type": @"video/mp4"
                      };
         [self uploadContentWithFile:videoURL

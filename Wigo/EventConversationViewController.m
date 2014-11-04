@@ -252,7 +252,7 @@
 - (void)highlightCellAtPage:(NSInteger)page {
     page = MAX(page, -2);
     [self.facesCollectionView setContentOffset:CGPointMake((100) * page + 100, 0.0f) animated:YES];
-    
+    [self.imagesScrollView setContentOffset:CGPointMake(320 * (page + 2), 0.0f) animated:YES];
     
     
     NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem: MIN(page+2, self.eventMessages.count - 1) inSection: 0];
@@ -272,12 +272,11 @@
 #pragma mark - G's code
 
 - (void)loadScrollView {
-    ImagesScrollView *imagesScrollView = [[ImagesScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    imagesScrollView.eventMessages = self.eventMessages;
-    [imagesScrollView loadImages];
-    imagesScrollView.backgroundColor = [UIColor redColor];
-    [self.view addSubview:imagesScrollView];
-    [self.view sendSubviewToBack:imagesScrollView];
+    self.imagesScrollView = [[ImagesScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    self.imagesScrollView.eventMessages = self.eventMessages;
+    [self.imagesScrollView loadContent];
+    [self.view addSubview:self.imagesScrollView];
+    [self.view sendSubviewToBack:self.imagesScrollView];
 }
 
 

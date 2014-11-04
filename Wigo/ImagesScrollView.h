@@ -11,5 +11,5 @@
 @interface ImagesScrollView : UIScrollView
 
 @property (nonatomic, strong) NSMutableArray *eventMessages;
-- (void)loadImages;
+- (void)loadContent;
 @end
