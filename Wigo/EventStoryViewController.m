@@ -119,6 +119,8 @@ UIButton *sendButton;
     [sendButton addSubview:sendOvalImageView];
 }
 
+
+
 #pragma mark - Button handler
 
 - (void)goBack {
@@ -127,7 +129,7 @@ UIButton *sendButton;
 
 - (void)sendPressed {
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
-    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
+    [controller setMediaType:IQMediaPickerControllerMediaTypeVideo];
     controller.allowsPickingMultipleItems = YES;
     controller.delegate = self;
     [self presentViewController:controller animated:YES completion:nil];
@@ -136,6 +138,7 @@ UIButton *sendButton;
 - (void)mediaPickerController:(IQMediaPickerController *)controller didFinishMediaWithInfo:(NSDictionary *)info {
     if ([[info allKeys] containsObject:@"IQMediaTypeImage"]) {
         UIImage *image = [[[info objectForKey:@"IQMediaTypeImage"] objectAtIndex:0] objectForKey:@"IQMediaImage" ];
+        NSData *jpegData = UIImageJPEGRepresentation(image, 1.0f);
     }
     else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
         NSString *urlOfVideo = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];

@@ -21,6 +21,7 @@ static Party *notAcceptedFollowingParty;
 static BOOL googleAnalyticsEnabled;
 static BOOL localyticsEnabled;
 static NSNumber *lastUserRead;
+static NSString *stringAwsKey;
 
 
 + (User *)user {
@@ -96,6 +97,23 @@ static NSNumber *lastUserRead;
         return [[userDictionary objectForKey:@"id"] isEqualToNumber:[[Profile user] objectForKey:@"id"]];
     }
     return NO;
+}
+
++ (NSString *)awsKey {
+    if (stringAwsKey) return stringAwsKey;
+    NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"awsKey"];
+    if (key) {
+        stringAwsKey = key;
+        return key;
+    }
+    else return nil;
+}
+
++ (void)setAwsKey:(NSString *)awsKey {
+    if (awsKey) {
+        [[NSUserDefaults standardUserDefaults] setObject:awsKey forKey:@"awsKey"];
+        stringAwsKey = awsKey;
+    }
 }
 
 

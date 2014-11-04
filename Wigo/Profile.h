@@ -28,5 +28,6 @@
 + (void) setGoogleAnalyticsEnabled:(BOOL)enabled;
 + (BOOL) localyticsEnabled;
 + (void) setLocalyticsEnabled:(BOOL)enabled;
++ (NSString *)awsKey;
 
 @end
