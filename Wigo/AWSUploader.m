@@ -11,17 +11,21 @@
 
 @implementation AWSUploader
 
-+ (void) uploadImage:(NSData *)image {
-//    [Network sendAsynchronousHTTPMethod:GET
-//                            withAPIName:@"uploads/photos/?filename=image.jpg"
-//                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-//        NSArray *fields = [jsonResponse objectForKey:@"fields"];
-//        NSString *actionString = [jsonResponse objectForKey:@"action"];
-//        [AWSUploader uploadToAWS:fields];
-//    }];
-}
+//+ (void) uploadFile:(NSString *)filePath withFilename:(NSString *)filename {
+////    [Network sendAsynchronousHTTPMethod:GET
+////                            withAPIName:@"uploads/photos/?filename=image.jpg"
+////                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+////        NSArray *fields = [jsonResponse objectForKey:@"fields"];
+////        NSString *actionString = [jsonResponse objectForKey:@"action"];
+////        [AWSUploader uploadToAWS:fields];
+////    }];
+//}
 
-+ (void)uploadToAWS:(NSArray *)fields {
++ (void)uploadFields:(NSArray *)fields
+      withActionURL:(NSString *)action
+           withFile:(NSString *)filePath
+        andFileName:(NSString *)filename {
+    
     NSDictionary* parametersDictionary = @{
         @"AWSAccessKeyId" : [AWSUploader valueOfFieldWithName:@"AWSAccessKeyId" ofDictionary:fields],
         @"acl" : [AWSUploader valueOfFieldWithName:@"acl" ofDictionary:fields],
@@ -29,8 +33,15 @@
         @"signature" : [AWSUploader valueOfFieldWithName:@"signature" ofDictionary:fields]
     };
     
-    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:@"http://example.com/upload" parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        [formData appendPartWithFileURL:[NSURL fileURLWithPath:@"file://path/to/image.jpg"] name:@"file" fileName:@"filename.jpg" mimeType:@"image/jpeg" error:nil];
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST"
+                            URLString:action
+                           parameters:parametersDictionary
+            constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+                [formData appendPartWithFileURL:[NSURL fileURLWithPath:filePath]
+                                           name:@"file"
+                                       fileName:filename
+                                       mimeType:[AWSUploader valueOfFieldWithName:@"Content-Type" ofDictionary:fields]
+                                          error:nil];
     } error:nil];
     
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
