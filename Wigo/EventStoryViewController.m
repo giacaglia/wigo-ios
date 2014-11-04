@@ -14,6 +14,7 @@
 UIView *chatTextFieldWrapper;
 UITextView *messageTextView;
 UIButton *sendButton;
+NSArray *eventMessages;
 
 @implementation EventStoryViewController
 
@@ -22,6 +23,7 @@ UIButton *sendButton;
     [super viewDidLoad];
     self.title = self.event.name;
   
+    [self loadEventMessages];
     [self loadEventDetails];
     [self loadMessages];
     [self loadEventStory];
@@ -174,10 +176,19 @@ UIButton *sendButton;
 - (IBAction)showEventConversation:(id)sender {
     EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationController.event = self.event;
-    conversationController.eventMessages = [NSMutableArray arrayWithArray:@[@"1", @"2", @"3", @"4", @"4", @"4", @"4", @"4", @"4"]];
-    [self presentViewController: conversationController animated: YES completion: nil];
+    if (eventMessages) conversationController.eventMessages = [NSMutableArray arrayWithArray:eventMessages];
+    else conversationController.eventMessages = [NSMutableArray new];
+    [self presentViewController:conversationController animated:YES completion:nil];
 }
 
+
+- (void)loadEventMessages {
+    [Network sendAsynchronousHTTPMethod:GET
+                            withAPIName:@"eventmessages/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];
+    }];
+}
 
 
 

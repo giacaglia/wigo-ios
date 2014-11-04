@@ -70,7 +70,14 @@
     [myCell resetToInactive];
 
     myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
-    myCell.faceImageView.image = [UIImage imageNamed: @"jobs.jpg"];
+    User *user;
+    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:[indexPath row]];
+    user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
+    if ([user isEqualToUser:[Profile user]]) {
+        user = [Profile user];
+    }
+    if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
+//    myCell.faceImageView.image = [UIImage imageNamed: @"jobs.jpg"];
     if (indexPath == self.currentActiveCell) {
         myCell.isActive = YES;
     } else {
