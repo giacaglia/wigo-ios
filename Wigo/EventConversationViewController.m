@@ -12,6 +12,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "Profile.h"
+#import "ImagesScrollView.h"
 
 @interface EventConversationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
 @property (nonatomic, strong) UIImage *userProfileImage;
@@ -28,11 +29,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = self.event.name;
-    //self.facesCollectionView.backgroundColor = [UIColor clearColor];
+    self.facesCollectionView.backgroundColor = [UIColor clearColor];
     FaceFlowLayout *flow = [[FaceFlowLayout alloc] init];
     [self.facesCollectionView setCollectionViewLayout: flow];
     self.facesCollectionView.contentInset = UIEdgeInsetsMake(0, 100, 0, 100);
     self.facesCollectionView.pagingEnabled = NO;
+    [self loadScrollView];
 }
 
 - (void)loadMessages {
@@ -266,6 +268,19 @@
         self.currentActiveCell = activeIndexPath;
     }
 }
+
+#pragma mark - G's code
+
+- (void)loadScrollView {
+    ImagesScrollView *imagesScrollView = [[ImagesScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    imagesScrollView.eventMessages = self.eventMessages;
+    [imagesScrollView loadImages];
+    imagesScrollView.backgroundColor = [UIColor redColor];
+    [self.view addSubview:imagesScrollView];
+    [self.view sendSubviewToBack:imagesScrollView];
+}
+
+
 @end
 
 #pragma mark - Face Classes
@@ -404,6 +419,7 @@
 //    
 //    return CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
 //}
+
 
 @end
 

@@ -163,9 +163,6 @@ NSArray *eventMessages;
         [self uploadContentWithFile:videoURL
                         andFileName:@"" andOptions:options];
     }
-    
-    
-    NSLog(@"info %@", info);
 }
 
 - (void)uploadContentWithFile:(NSString *)filePath
@@ -194,6 +191,15 @@ NSArray *eventMessages;
     
 }
 
+- (void)loadEventMessages {
+    [Network sendAsynchronousHTTPMethod:GET
+                            withAPIName:@"eventmessages/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];
+                            }];
+}
+
+
 - (IBAction)showEventConversation:(id)sender {
     EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationController.event = self.event;
@@ -203,13 +209,6 @@ NSArray *eventMessages;
 }
 
 
-- (void)loadEventMessages {
-    [Network sendAsynchronousHTTPMethod:GET
-                            withAPIName:@"eventmessages/"
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];
-    }];
-}
 
 
 
