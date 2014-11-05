@@ -175,7 +175,7 @@ NSMutableArray *failedUserInfoArray;
 }
 
 - (void)fetchFollowing {
-    if (!fetchingFollowing) {
+    if (!fetchingFollowing && [[Profile user] key]) {
         fetchingFollowing = YES;
         
         NSString *queryString;
@@ -233,7 +233,7 @@ NSMutableArray *failedUserInfoArray;
 
 
 - (void) fetchIsThereNewPerson {
-    if (!_fetchingIsThereNewPerson) {
+    if (!_fetchingIsThereNewPerson && [[Profile user] key]) {
         _fetchingIsThereNewPerson = YES;
         [Network queryAsynchronousAPI:@"users/?limit=1" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *objects = [jsonResponse objectForKey:@"objects"];
@@ -300,16 +300,18 @@ NSMutableArray *failedUserInfoArray;
 }
 
 - (void) fetchSummaryGoingOut {
-    [Network queryAsynchronousAPI:@"goingouts/summary/" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        if ([[jsonResponse allKeys] containsObject:@"friends"]) {
-            NSNumber *friendsGoingOut = [jsonResponse objectForKey:@"friends"];
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                goingOutString = [NSString stringWithFormat:@"GOING OUT: %d", [friendsGoingOut intValue] + [self getTapInitialPosition]];
-                NSNumber *notGoingOutNumber = @([[[Profile user] numberOfFollowing] intValue] - [friendsGoingOut intValue]);
-                notGoingOutString = [NSString stringWithFormat:@"NOT GOING OUT YET: %@", notGoingOutNumber];
-            });
-        }
-    }];
+    if ([[Profile user] key]) {
+        [Network queryAsynchronousAPI:@"goingouts/summary/" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+            if ([[jsonResponse allKeys] containsObject:@"friends"]) {
+                NSNumber *friendsGoingOut = [jsonResponse objectForKey:@"friends"];
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    goingOutString = [NSString stringWithFormat:@"GOING OUT: %d", [friendsGoingOut intValue] + [self getTapInitialPosition]];
+                    NSNumber *notGoingOutNumber = @([[[Profile user] numberOfFollowing] intValue] - [friendsGoingOut intValue]);
+                    notGoingOutString = [NSString stringWithFormat:@"NOT GOING OUT YET: %@", notGoingOutNumber];
+                });
+            }
+        }];
+    }
 }
 
 #pragma mark - viewDidLoad initializations

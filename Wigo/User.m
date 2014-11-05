@@ -170,12 +170,14 @@
 
 - (NSString *)smallImageURL {
     NSArray *images = [self images];
-    NSDictionary *image = [images objectAtIndex:0];
-    if ([image isKindOfClass:[NSDictionary class]]) {
-        if ([[image allKeys] containsObject:@"small"]) {
-            return [image objectForKey:@"small"];
+    if (images && images.count) {
+        NSDictionary *image = [images objectAtIndex:0];
+        if ([image isKindOfClass:[NSDictionary class]]) {
+            if ([[image allKeys] containsObject:@"small"]) {
+                return [image objectForKey:@"small"];
+            }
+            else return [self coverImageURL];
         }
-        else return [self coverImageURL];
     }
     return @"";
 }

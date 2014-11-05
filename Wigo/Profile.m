@@ -22,6 +22,7 @@ static BOOL googleAnalyticsEnabled;
 static BOOL localyticsEnabled;
 static NSNumber *lastUserRead;
 static NSString *stringAwsKey;
+static NSString *cdnPrefix;
 
 
 + (User *)user {
@@ -113,6 +114,22 @@ static NSString *stringAwsKey;
     if (awsKey) {
         [[NSUserDefaults standardUserDefaults] setObject:awsKey forKey:@"awsKey"];
         stringAwsKey = awsKey;
+    }
+}
+
++ (NSString *)cdnPrefix {
+    if (cdnPrefix) return cdnPrefix;
+    else {
+        cdnPrefix = [[NSUserDefaults standardUserDefaults] objectForKey:@"cdnPrefix"];
+        if (cdnPrefix) return cdnPrefix;
+        return @"wigo-uploads.s3.amazonaws.com/";
+    }
+}
+
++(void)setCDNPrefix:(NSString *)newCdnPrefix {
+    if (newCdnPrefix) {
+        [[NSUserDefaults standardUserDefaults] setObject:newCdnPrefix forKey:@"cdnPrefix"];
+        cdnPrefix = newCdnPrefix;
     }
 }
 

@@ -17,7 +17,8 @@
 @interface EventConversationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
 @property (nonatomic, strong) UIImage *userProfileImage;
 @property (nonatomic, strong) NSIndexPath *currentActiveCell;
-@property (nonatomic, assign) CGPoint pointNow;
+@property (nonatomic, assign) CGPoint collectionViewPointNow;
+@property (nonatomic, assign) CGPoint imagesScrollViewPointNow;
 @end
 
 @implementation EventConversationViewController
@@ -199,36 +200,51 @@
 
 #pragma mark - ScrollViewDelegate
 
-
-
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    _pointNow = scrollView.contentOffset;
+    if (scrollView == self.imagesScrollView)
+        _imagesScrollViewPointNow = scrollView.contentOffset;
+    else _collectionViewPointNow = scrollView.contentOffset;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
                   willDecelerate:(BOOL)decelerate
 {
+    CGPoint pointNow;
+    if (scrollView == self.imagesScrollView) pointNow = _imagesScrollViewPointNow;
+    else pointNow = _collectionViewPointNow;
     if (decelerate) {
-        if (scrollView.contentOffset.x < _pointNow.x) {
-            [self stoppedScrollingToLeft:YES];
-        } else if (scrollView.contentOffset.x >= _pointNow.x) {
-            [self stoppedScrollingToLeft:NO];
+        if (scrollView.contentOffset.x < pointNow.x) {
+            [self stoppedScrollingToLeft:YES forScrollView:scrollView];
+        } else if (scrollView.contentOffset.x >= pointNow.x) {
+            [self stoppedScrollingToLeft:NO forScrollView:scrollView];
         }
     }
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    if (scrollView.contentOffset.x < _pointNow.x) {
-        [self stoppedScrollingToLeft:YES];
-    } else if (scrollView.contentOffset.x >= _pointNow.x) {
-        [self stoppedScrollingToLeft:NO];
+    CGPoint pointNow;
+    if (scrollView == self.imagesScrollView) pointNow = _imagesScrollViewPointNow;
+    else pointNow = _collectionViewPointNow;
+    if (scrollView.contentOffset.x < pointNow.x) {
+        [self stoppedScrollingToLeft:YES forScrollView:scrollView];
+    } else if (scrollView.contentOffset.x >= pointNow.x) {
+        [self stoppedScrollingToLeft:NO forScrollView:scrollView];
     }
 }
 
-- (void)stoppedScrollingToLeft:(BOOL)leftBoolean
+- (void)stoppedScrollingToLeft:(BOOL)leftBoolean forScrollView:(UIScrollView *)scrollView
 {
-    CGFloat pageWidth = 100; // you need to have a **iVar** with getter for scrollView
-    float fractionalPage = (self.facesCollectionView.contentOffset.x - 100) / pageWidth;
+    float fractionalPage;
+    if (scrollView == self.imagesScrollView) {
+        CGFloat pageWidth = 320;
+        fractionalPage = (self.imagesScrollView.contentOffset.x) / pageWidth;
+        fractionalPage -=  2;
+    }
+    else {
+        CGFloat pageWidth = 100; // you need to have a **iVar** with getter for scrollView
+        fractionalPage = (self.facesCollectionView.contentOffset.x - 100) / pageWidth;
+    }
+
     NSInteger page;
     if (leftBoolean) {
         if (fractionalPage - floor(fractionalPage) < 0.8) {
@@ -275,8 +291,20 @@
     self.imagesScrollView = [[ImagesScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     self.imagesScrollView.eventMessages = self.eventMessages;
     [self.imagesScrollView loadContent];
+    self.imagesScrollView.delegate = self;
     [self.view addSubview:self.imagesScrollView];
     [self.view sendSubviewToBack:self.imagesScrollView];
+    
+    UIButton *buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
+    cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
+    [buttonCancel addSubview:cancelCamera];
+    [buttonCancel addTarget:self action:@selector(cancelAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:buttonCancel];
+}
+
+- (void)cancelAction {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

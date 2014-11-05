@@ -29,5 +29,7 @@
 + (BOOL) localyticsEnabled;
 + (void) setLocalyticsEnabled:(BOOL)enabled;
 + (NSString *)awsKey;
++ (NSString *)cdnPrefix;
++ (void)setCDNPrefix:(NSString *)newCdnPrefix;
 
 @end

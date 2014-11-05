@@ -13,7 +13,7 @@
 //+ (void)uploadImage:(NSData *)image;
 + (void)uploadFields:(NSArray *)fields
       withActionURL:(NSString *)action
-           withFile:(NSString *)filePath
+           withFile:(NSData *)fileData
         andFileName:(NSString *)filename;
 
 + (NSString *)valueOfFieldWithName:(NSString *)name

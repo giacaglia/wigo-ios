@@ -23,25 +23,33 @@
 
 + (void)uploadFields:(NSArray *)fields
       withActionURL:(NSString *)action
-           withFile:(NSString *)filePath
+           withFile:(NSData *)fileData
         andFileName:(NSString *)filename {
     
-    NSDictionary* parametersDictionary = @{
-        @"AWSAccessKeyId" : [AWSUploader valueOfFieldWithName:@"AWSAccessKeyId" ofDictionary:fields],
-        @"acl" : [AWSUploader valueOfFieldWithName:@"acl" ofDictionary:fields],
-        @"key" : [AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields],                                @"policy" : [AWSUploader valueOfFieldWithName:@"policy" ofDictionary:fields],
-        @"signature" : [AWSUploader valueOfFieldWithName:@"signature" ofDictionary:fields]
-    };
+    NSMutableDictionary *parametersDictionary = [NSMutableDictionary new];
+    for (NSDictionary *field in fields) {
+        [parametersDictionary setObject:[field objectForKey:@"value"] forKey:[field objectForKey:@"name"]];
+    }
+//    NSDictionary* parametersDictionary = @{
+//        @"AWSAccessKeyId" : [AWSUploader valueOfFieldWithName:@"AWSAccessKeyId" ofDictionary:fields],
+//        @"acl" : [AWSUploader valueOfFieldWithName:@"acl" ofDictionary:fields],
+//        @"key" : [AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields],                                @"policy" : [AWSUploader valueOfFieldWithName:@"policy" ofDictionary:fields],
+//        @"signature" : [AWSUploader valueOfFieldWithName:@"signature" ofDictionary:fields]
+//    };
     
     NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST"
                             URLString:action
-                           parameters:parametersDictionary
+                           parameters:[NSDictionary dictionaryWithDictionary:parametersDictionary]
             constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-                [formData appendPartWithFileURL:[NSURL fileURLWithPath:filePath]
-                                           name:@"file"
-                                       fileName:filename
-                                       mimeType:[AWSUploader valueOfFieldWithName:@"Content-Type" ofDictionary:fields]
-                                          error:nil];
+//                [formData appendPartWithFileURL:filePath
+//                                           name:@"file"
+//                                       fileName:filename
+//                                       mimeType:[AWSUploader valueOfFieldWithName:@"Content-Type" ofDictionary:fields]
+//                                          error:nil];
+                [formData appendPartWithFileData:fileData
+                                            name:@"file" //N.B.! To post to S3 name should be "file", not real file name
+                                        fileName:filename
+                                        mimeType:[AWSUploader valueOfFieldWithName:@"Content-Type" ofDictionary:fields]];
     } error:nil];
     
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];

@@ -144,34 +144,36 @@ NSArray *eventMessages;
     NSString *message = @"So much beer";
     NSDictionary *options;
     if ([[info allKeys] containsObject:@"IQMediaTypeImage"]) {
-        NSString *imageURL = [[[info objectForKey:@"IQMediaTypeImage"] objectAtIndex:0] objectForKey:@"IQMediaURL" ];
+        UIImage *image = [[[info objectForKey:@"IQMediaTypeImage"] objectAtIndex:0] objectForKey:@"IQMediaImage" ];
+        NSData *fileData = UIImageJPEGRepresentation(image, 1.0);
         options =  @{
                      @"event": [self.event eventID],
                      @"message": message,
                      @"media_mime_type": @"image/jpeg"
                      };
-        [self uploadContentWithFile:imageURL
-                        andFileName:@"image0.jpg" andOptions:options];
+        [self uploadContentWithFile:fileData
+                        andFileName:@"image0.jpg"
+                         andOptions:options];
 
     }
-    else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
-        NSString *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
-        options =  @{
-                     @"event": [self.event eventID],
-                     @"message": message,
-                     @"media_mime_type": @"video/mp4"
-                     };
-        [self uploadContentWithFile:videoURL
-                        andFileName:@"video0.jpg" andOptions:options];
-    }
+//    else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
+//        NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
+//        options =  @{
+//                     @"event": [self.event eventID],
+//                     @"message": message,
+//                     @"media_mime_type": @"video/mp4"
+//                     };
+//        [self uploadContentWithFile:videoURL
+//                        andFileName:@"video0.jpg" andOptions:options];
+//    }
 }
 
-- (void)uploadContentWithFile:(NSString *)filePath
+- (void)uploadContentWithFile:(NSData *)fileData
                   andFileName:(NSString *)filename
                    andOptions:(NSDictionary *)options
 {
     [Network sendAsynchronousHTTPMethod:GET
-                            withAPIName:@"uploads/photos/?filename=image.jpg"
+                            withAPIName:@"uploads/photos/?filename=image0.jpg"
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -179,13 +181,15 @@ NSArray *eventMessages;
             NSString *actionString = [jsonResponse objectForKey:@"action"];
             [AWSUploader uploadFields:fields
                         withActionURL:actionString
-                             withFile:filePath
+                             withFile:fileData
                           andFileName:filename];
+            NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
+            [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"media"];
             [Network sendAsynchronousHTTPMethod:POST
                                     withAPIName:@"eventmessages/"
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                         
-                                    } withOptions:options];
+                                    } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
         });
 
     }];
