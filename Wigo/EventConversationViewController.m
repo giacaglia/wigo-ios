@@ -89,6 +89,8 @@
     else {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"textType"];
     }
+    
+    myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
     if (indexPath == self.currentActiveCell) {
         myCell.isActive = YES;
     } else {
@@ -363,6 +365,13 @@
         self.mediaTypeImageView.layer.borderColor = [UIColor whiteColor].CGColor;
         self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
         [self addSubview:self.mediaTypeImageView];
+        
+        self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 78, 50, 20)];
+//        self.timeLabel.text = Time getLocalDateJoinedFromUTCTimeString:[]
+        self.timeLabel.textAlignment = NSTextAlignmentCenter;
+        self.timeLabel.textColor = [UIColor whiteColor];
+        self.timeLabel.font = [FontProperties lightFont:12];
+        [self addSubview:self.timeLabel];
         
         _isActive = NO;
     }

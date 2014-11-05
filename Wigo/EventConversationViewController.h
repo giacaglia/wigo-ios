@@ -26,6 +26,7 @@
 @property (nonatomic, assign) BOOL isActive;
 @property (nonatomic, strong) UIImageView *faceImageView;
 @property (nonatomic, strong) UIImageView *mediaTypeImageView;
+@property (nonatomic, strong) UILabel *timeLabel;
 
 @property (nonatomic, strong) UIView *rightLine;
 

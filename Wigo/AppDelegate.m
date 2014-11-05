@@ -620,7 +620,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 - (void)fetchAppStart {
     BOOL canFetchAppStartUp = [[NSUserDefaults standardUserDefaults] boolForKey:@"canFetchAppStartup"];
     if (canFetchAppStartUp && [self shouldFetchAppStartup] && [Profile user]) {
-        [Network queryAsynchronousAPI:@"app/startup?force=true" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if (!error) {
                     if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
