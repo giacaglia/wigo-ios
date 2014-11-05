@@ -80,7 +80,15 @@
         user = [Profile user];
     }
     if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
-//    myCell.faceImageView.image = [UIImage imageNamed: @"jobs.jpg"];
+    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"image/jpeg"]) {
+        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
+    }
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mpeg"]) {
+        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
+    }
+    else {
+        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"textType"];
+    }
     if (indexPath == self.currentActiveCell) {
         myCell.isActive = YES;
     } else {
@@ -296,17 +304,27 @@
     [self.view sendSubviewToBack:self.imagesScrollView];
     
     UIButton *buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
-    UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
-    cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
-    [buttonCancel addSubview:cancelCamera];
-    [buttonCancel addTarget:self action:@selector(cancelAction) forControlEvents:UIControlEventTouchUpInside];
+    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
+    cancelImageView.image = [UIImage imageNamed:@"cancelCamera"];
+    [buttonCancel addSubview:cancelImageView];
+    [buttonCancel addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:buttonCancel];
+    
+    UIButton *flagButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIImageView *flagImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56, self.view.frame.size.height - 56, 36, 36)];
+    flagImageView.image = [UIImage imageNamed:@"flagImage"];
+    [flagButton addSubview:flagImageView];
+    [flagButton addTarget:self action:@selector(flagPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:flagButton];
 }
 
-- (void)cancelAction {
+- (void)cancelPressed {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)flagPressed{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 @end
 
@@ -335,6 +353,16 @@
         self.faceImageView.layer.borderColor = [UIColor whiteColor].CGColor;
         self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
         [self addSubview: self.faceImageView];
+        
+        self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(40, 15, 20, 20)];
+        self.mediaTypeImageView.layer.masksToBounds = YES;
+        self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
+        self.mediaTypeImageView.layer.cornerRadius = 10;
+        self.mediaTypeImageView.layer.borderWidth = 2.0;
+        self.mediaTypeImageView.alpha = 0.5f;
+        self.mediaTypeImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+        self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
+        [self addSubview:self.mediaTypeImageView];
         
         _isActive = NO;
     }
