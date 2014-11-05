@@ -24,9 +24,9 @@
         if ([mimeType isEqualToString:@"image/jpeg"]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i*320, 0, 320, 640)];
-            [imageView setImageWithURL:imageURL];
             imageView.contentMode = UIViewContentModeScaleAspectFill;
             imageView.clipsToBounds = YES;
+            [imageView setImageWithURL:imageURL];
             [self addSubview:imageView];
             
             if ([[eventMessage allKeys] containsObject:@"message"]) {

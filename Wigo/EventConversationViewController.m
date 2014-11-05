@@ -306,13 +306,15 @@
     [self.view sendSubviewToBack:self.imagesScrollView];
     
     UIButton *buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
+    buttonCancel.frame = CGRectMake(10, self.view.frame.size.height - 56, 36, 36);
     UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
     cancelImageView.image = [UIImage imageNamed:@"cancelCamera"];
     [buttonCancel addSubview:cancelImageView];
-    [buttonCancel addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
+    [buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:buttonCancel];
     
     UIButton *flagButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    flagButton.frame = CGRectMake(56, self.view.frame.size.height - 56, 36, 36);
     UIImageView *flagImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56, self.view.frame.size.height - 56, 36, 36)];
     flagImageView.image = [UIImage imageNamed:@"flagImage"];
     [flagButton addSubview:flagImageView];
@@ -320,7 +322,7 @@
     [self.view addSubview:flagButton];
 }
 
-- (void)cancelPressed {
+- (void)cancelPressed:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -366,8 +368,7 @@
         self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
         [self addSubview:self.mediaTypeImageView];
         
-        self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 78, 50, 20)];
-//        self.timeLabel.text = Time getLocalDateJoinedFromUTCTimeString:[]
+        self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 78, 60, 20)];
         self.timeLabel.textAlignment = NSTextAlignmentCenter;
         self.timeLabel.textColor = [UIColor whiteColor];
         self.timeLabel.font = [FontProperties lightFont:12];
