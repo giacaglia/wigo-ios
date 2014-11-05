@@ -151,7 +151,7 @@ NSArray *eventMessages;
                      @"media_mime_type": @"image/jpeg"
                      };
         [self uploadContentWithFile:imageURL
-                        andFileName:@"" andOptions:options];
+                        andFileName:@"image0.jpg" andOptions:options];
 
     }
     else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
@@ -162,7 +162,7 @@ NSArray *eventMessages;
                      @"media_mime_type": @"video/mp4"
                      };
         [self uploadContentWithFile:videoURL
-                        andFileName:@"" andOptions:options];
+                        andFileName:@"video0.jpg" andOptions:options];
     }
 }
 
@@ -173,17 +173,20 @@ NSArray *eventMessages;
     [Network sendAsynchronousHTTPMethod:GET
                             withAPIName:@"uploads/photos/?filename=image.jpg"
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *fields = [jsonResponse objectForKey:@"fields"];
-        NSString *actionString = [jsonResponse objectForKey:@"action"];
-        [AWSUploader uploadFields:fields
-                    withActionURL:actionString
-                         withFile:filePath
-                      andFileName:filename];
-        [Network sendAsynchronousHTTPMethod:POST
-                                withAPIName:@"eventmessages/"
-                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                    
-                                } withOptions:options];
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            NSArray *fields = [jsonResponse objectForKey:@"fields"];
+            NSString *actionString = [jsonResponse objectForKey:@"action"];
+            [AWSUploader uploadFields:fields
+                        withActionURL:actionString
+                             withFile:filePath
+                          andFileName:filename];
+            [Network sendAsynchronousHTTPMethod:POST
+                                    withAPIName:@"eventmessages/"
+                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                        
+                                    } withOptions:options];
+        });
 
     }];
 }
