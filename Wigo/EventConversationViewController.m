@@ -46,10 +46,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     
-    self.currentActiveCell = [NSIndexPath indexPathForItem:0 inSection:0];
-    [self.facesCollectionView scrollToItemAtIndexPath: self.currentActiveCell atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
+    self.currentActiveCell = [NSIndexPath indexPathForItem:self.eventMessages.count - 1 inSection:0];
+    [self.facesCollectionView scrollToItemAtIndexPath: self.currentActiveCell atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive: YES];
-
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -298,8 +297,8 @@
 - (void)loadScrollView {
     self.imagesScrollView = [[ImagesScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     self.imagesScrollView.eventMessages = self.eventMessages;
-    [self.imagesScrollView loadContent];
     self.imagesScrollView.controller = self.controller;
+    [self.imagesScrollView loadContent];
     self.imagesScrollView.delegate = self;
     [self.view addSubview:self.imagesScrollView];
     [self.view sendSubviewToBack:self.imagesScrollView];
@@ -310,13 +309,6 @@
     [buttonCancel addSubview:cancelImageView];
     [buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:buttonCancel];
-    
-    UIButton *flagButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56, self.view.frame.size.height - 56, 36, 36)];
-    UIImageView *flagImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
-    flagImageView.image = [UIImage imageNamed:@"flagImage"];
-    [flagButton addSubview:flagImageView];
-    [flagButton addTarget:self action:@selector(flagPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:flagButton];
 }
 
 - (void)cancelPressed:(id)sender {

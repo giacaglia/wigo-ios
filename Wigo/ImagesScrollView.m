@@ -34,13 +34,16 @@
             [self addSubview:imageView];
             UILabel *labelInsideImage;
             if ([[eventMessage allKeys] containsObject:@"message"]) {
-                labelInsideImage = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, imageView.frame.size.width, 50)];
-                labelInsideImage.font = [FontProperties mediumFont:20.0f];
-                labelInsideImage.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
-                labelInsideImage.textAlignment = NSTextAlignmentCenter;
-                labelInsideImage.text = [eventMessage objectForKey:@"message"];
-                labelInsideImage.textColor = [UIColor whiteColor];
-                [imageView addSubview:labelInsideImage];
+                NSString *message = [eventMessage objectForKey:@"message"];
+                if (message) {
+                    labelInsideImage = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, imageView.frame.size.width, 50)];
+                    labelInsideImage.font = [FontProperties mediumFont:20.0f];
+                    labelInsideImage.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
+                    labelInsideImage.textAlignment = NSTextAlignmentCenter;
+                    labelInsideImage.text = message;
+                    labelInsideImage.textColor = [UIColor whiteColor];
+                    [imageView addSubview:labelInsideImage];
+                }
             }
             if ([[eventMessage allKeys] containsObject:@"properties"]) {
                 NSDictionary *properties = [eventMessage objectForKey:@"properties"];
@@ -63,6 +66,7 @@
             [theMoviPlayer play];
         }
     }
+    self.contentOffset = CGPointMake(320*(self.eventMessages.count - 1), 0);
 }
 
 @end
