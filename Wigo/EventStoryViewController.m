@@ -24,7 +24,6 @@ NSArray *eventMessages;
     [super viewDidLoad];
     self.title = self.event.name;
   
-    [self loadEventMessages];
     [self loadEventDetails];
     [self loadMessages];
     [self loadEventStory];
@@ -32,8 +31,12 @@ NSArray *eventMessages;
 }
 
 
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
+    
+    [self loadEventMessages];
+
     
     UIButton *aroundBackButton = [[UIButton alloc] initWithFrame:CGRectMake(20, 30, 40, 40)];
     [aroundBackButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
@@ -110,7 +113,7 @@ NSArray *eventMessages;
     [chatTextFieldWrapper bringSubviewToFront:messageTextView];
     
     sendButton = [[UIButton alloc] initWithFrame:CGRectMake(chatTextFieldWrapper.frame.size.width - 50, 10, 45, 35)];
-    [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
+    [sendButton addTarget:self action:@selector(sendPressed:) forControlEvents:UIControlEventTouchUpInside];
     sendButton.backgroundColor = [FontProperties getOrangeColor];
     sendButton.layer.borderWidth = 1.0f;
     sendButton.layer.borderColor = [UIColor clearColor].CGColor;
@@ -130,12 +133,32 @@ NSArray *eventMessages;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)sendPressed {
+- (void)sendPressed:(id)sender {
+    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    [mutableEventMessages addObject:@{
+                                     @"user": [[Profile user] dictionary],
+                                     @"created": [dateFormatter stringFromDate:[NSDate date]],
+                                     @"media_mime_type": @"new",
+                                     @"media": @""
+                                     }];
+    
+    EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    conversationController.event = self.event;
+    if (eventMessages) conversationController.eventMessages = mutableEventMessages;
+    else conversationController.eventMessages = [NSMutableArray new];
+    
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
     [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
     controller.allowsPickingMultipleItems = YES;
     controller.delegate = self;
-    [self presentViewController:controller animated:YES completion:nil];
+    conversationController.controller = controller;
+    
+    [self presentViewController:conversationController animated:YES completion:nil];
 }
 
 - (void)mediaPickerController:(IQMediaPickerController *)controller

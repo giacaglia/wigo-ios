@@ -14,6 +14,7 @@
 #import "Profile.h"
 #import "ImagesScrollView.h"
 
+
 @interface EventConversationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
 @property (nonatomic, strong) UIImage *userProfileImage;
 @property (nonatomic, strong) NSIndexPath *currentActiveCell;
@@ -45,11 +46,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     
-    self.currentActiveCell = [NSIndexPath indexPathForItem:self.eventMessages.count - 1 inSection:0];
-
-    
+    self.currentActiveCell = [NSIndexPath indexPathForItem:0 inSection:0];
     [self.facesCollectionView scrollToItemAtIndexPath: self.currentActiveCell atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
-    
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive: YES];
 
 }
@@ -118,7 +116,7 @@
     
     self.currentActiveCell = indexPath;
     
-    [self highlightCellAtPage:(indexPath.row - 2)];
+    [self highlightCellAtPage:indexPath.row ];
 }
 
 #define kActionPhotoVideo 0
@@ -249,11 +247,10 @@
     if (scrollView == self.imagesScrollView) {
         CGFloat pageWidth = 320;
         fractionalPage = (self.imagesScrollView.contentOffset.x) / pageWidth;
-        fractionalPage -=  2;
     }
     else {
         CGFloat pageWidth = 100; // you need to have a **iVar** with getter for scrollView
-        fractionalPage = (self.facesCollectionView.contentOffset.x - 100) / pageWidth;
+        fractionalPage = (self.facesCollectionView.contentOffset.x + 100) / pageWidth;
     }
 
     NSInteger page;
@@ -277,12 +274,12 @@
 }
 
 - (void)highlightCellAtPage:(NSInteger)page {
-    page = MAX(page, -2);
-    [self.facesCollectionView setContentOffset:CGPointMake((100) * page + 100, 0.0f) animated:YES];
-    [self.imagesScrollView setContentOffset:CGPointMake(320 * (page + 2), 0.0f) animated:YES];
+    page = MAX(page, 0);
+    [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
+    [self.imagesScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
     
     
-    NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem: MIN(page+2, self.eventMessages.count - 1) inSection: 0];
+    NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem: MIN(page, self.eventMessages.count - 1) inSection: 0];
     
     if (activeIndexPath != self.currentActiveCell) {
         
@@ -302,21 +299,20 @@
     self.imagesScrollView = [[ImagesScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     self.imagesScrollView.eventMessages = self.eventMessages;
     [self.imagesScrollView loadContent];
+    self.imagesScrollView.controller = self.controller;
     self.imagesScrollView.delegate = self;
     [self.view addSubview:self.imagesScrollView];
     [self.view sendSubviewToBack:self.imagesScrollView];
     
-    UIButton *buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
-    buttonCancel.frame = CGRectMake(10, self.view.frame.size.height - 56, 36, 36);
-    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
+    UIButton *buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
+    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
     cancelImageView.image = [UIImage imageNamed:@"cancelCamera"];
     [buttonCancel addSubview:cancelImageView];
     [buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:buttonCancel];
     
-    UIButton *flagButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    flagButton.frame = CGRectMake(56, self.view.frame.size.height - 56, 36, 36);
-    UIImageView *flagImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56, self.view.frame.size.height - 56, 36, 36)];
+    UIButton *flagButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56, self.view.frame.size.height - 56, 36, 36)];
+    UIImageView *flagImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
     flagImageView.image = [UIImage imageNamed:@"flagImage"];
     [flagButton addSubview:flagImageView];
     [flagButton addTarget:self action:@selector(flagPressed) forControlEvents:UIControlEventTouchUpInside];

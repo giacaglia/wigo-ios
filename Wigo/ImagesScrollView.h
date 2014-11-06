@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "IQMediaPickerController.h"
 
 @interface ImagesScrollView : UIScrollView
 
 @property (nonatomic, strong) NSMutableArray *eventMessages;
+@property (nonatomic, strong) IQMediaPickerController *controller;
 - (void)loadContent;
 @end

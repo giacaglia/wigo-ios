@@ -10,12 +10,14 @@
 #import <UIKit/UIKit.h>
 #import "Globals.h"
 #import "ImagesScrollView.h"
+#import "IQMediaPickerController.h"
 
 @interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 @property (nonatomic, strong) ImagesScrollView *imagesScrollView;
 @property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
+@property (nonatomic, strong) IQMediaPickerController *controller;
 @end
 
 @interface FaceCell : UICollectionViewCell
