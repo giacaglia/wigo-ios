@@ -32,6 +32,7 @@
     self.title = self.event.name;
     self.facesCollectionView.backgroundColor = [UIColor clearColor];
     FaceFlowLayout *flow = [[FaceFlowLayout alloc] init];
+    self.facesCollectionView.showsHorizontalScrollIndicator = NO;
     [self.facesCollectionView setCollectionViewLayout: flow];
     self.facesCollectionView.contentInset = UIEdgeInsetsMake(0, 100, 0, 100);
     self.facesCollectionView.pagingEnabled = NO;

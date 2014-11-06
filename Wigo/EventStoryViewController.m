@@ -141,21 +141,34 @@ NSArray *eventMessages;
 - (void)mediaPickerController:(IQMediaPickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
     
-    NSString *message = @"So much beer";
     NSDictionary *options;
-    if ([[info allKeys] containsObject:@"IQMediaTypeImage"]) {
-        UIImage *image = [[[info objectForKey:@"IQMediaTypeImage"] objectAtIndex:0] objectForKey:@"IQMediaImage" ];
+    if ([[info allKeys] containsObject:IQMediaTypeImage]) {
+        UIImage *image = [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage];
         NSData *fileData = UIImageJPEGRepresentation(image, 1.0);
-        options =  @{
-                     @"event": [self.event eventID],
-                     @"message": message,
-                     @"media_mime_type": @"image/jpeg"
-                     };
+        if ([[info allKeys] containsObject:IQMediaTypeText]) {
+            NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
+            NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
+            NSDictionary *properties = @{@"yPosition": yPosition};
+            options =  @{
+                         @"event": [self.event eventID],
+                         @"message": text,
+                         @"properties": properties,
+                         @"media_mime_type": @"image/jpeg"
+                         };
+        }
+        else {
+            options =  @{
+                         @"event": [self.event eventID],
+                         @"media_mime_type": @"image/jpeg"
+                         };
+        }
+      
         [self uploadContentWithFile:fileData
                         andFileName:@"image0.jpg"
                          andOptions:options];
 
     }
+   
 //    else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
 //        NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
 //        options =  @{

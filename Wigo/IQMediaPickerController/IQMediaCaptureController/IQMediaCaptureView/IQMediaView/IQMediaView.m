@@ -178,6 +178,7 @@
     if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
     {
         [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];
+        [self.delegate mediaView:self labelPointOfInterest:center];
         [exposureView hideAfterSeconds:1];
 
         if (exposureView.alpha == 0.0)

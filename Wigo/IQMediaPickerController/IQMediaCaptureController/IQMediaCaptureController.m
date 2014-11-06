@@ -65,6 +65,8 @@
 
 @property(nonatomic, strong, readonly) IQCaptureSession *session;
 
+@property(nonatomic, assign) CGPoint labelPoint;
+@property(nonatomic, strong) UITextField *textField;
 @end
 
 @implementation IQMediaCaptureController
@@ -76,6 +78,7 @@
 
 @synthesize bottomContainerView = _bottomContainerView;
 @synthesize buttonFlash = _buttonFlash, buttonToggleCamera = _buttonToggleCamera;
+
 
 
 #pragma mark - Lifetime
@@ -555,7 +558,6 @@
 
 - (void)captureAction:(UIButton *)sender
 {
-    NSLog(@"jakak");
     if ([[self session] isSessionRunning] == NO)
     {
         [self.buttonCapture setImage:[UIImage imageNamed:@"IQ_start_capture_mode"] forState:UIControlStateNormal];
@@ -605,7 +607,6 @@
         }
         else if ([self session].captureMode == IQCameraCaptureModeVideo)
         {
-            NSLog(@"heharue");
             if ([self session].isRecording == NO)
             {
                 [[self session] startVideoRecording];
@@ -793,7 +794,17 @@
             
             [info setObject:audioMedias forKey:IQMediaTypeAudio];
         }
-        
+        if (self.textField && self.textField.text.length > 0) {
+            NSMutableArray *textMedias = [[NSMutableArray alloc] init];
+
+            NSDictionary *dict = @{
+                                   IQMediaText: self.textField.text,
+                                   IQMediaYPosition:@(self.labelPoint.y)
+                                   };
+            [textMedias addObject:dict];
+
+            [info setObject:textMedias forKey:IQMediaTypeText];
+        }
         [self.delegate mediaCaptureController:self didFinishMediaWithInfo:info];
     }
     
@@ -823,13 +834,44 @@
 
 -(void)mediaView:(IQMediaView*)mediaView focusPointOfInterest:(CGPoint)focusPoint
 {
-    [[self session] setFocusPoint:focusPoint];
+    if ([self session].isSessionRunning) {
+        [[self session] setFocusPoint:focusPoint];
+    }
 }
 
 -(void)mediaView:(IQMediaView*)mediaView exposurePointOfInterest:(CGPoint)exposurePoint
 {
-    [[self session] setExposurePoint:exposurePoint];
+    if ([self session].isSessionRunning) {
+        [[self session] setExposurePoint:exposurePoint];
+    }
 }
+
+- (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
+    if (![self session].isSessionRunning) {
+        if (!self.textField) {
+            self.textField = [[UITextField alloc] init];
+            self.textField.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
+            self.textField.textColor = [UIColor whiteColor];
+            self.textField.textAlignment = NSTextAlignmentCenter;
+            self.textField.delegate = self;
+            [self.view addSubview:self.textField];
+        }
+        self.labelPoint = labelPoint;
+        [UIView animateWithDuration:0.3 animations:^{
+            self.textField.frame = CGRectMake(0, self.view.frame.size.height - 270, self.view.frame.size.width, 50);
+        }];
+        [self.textField becomeFirstResponder];
+    }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self.textField endEditing:YES];
+    [UIView animateWithDuration:0.3 animations:^{
+        textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
+    }];
+    return YES;
+}
+
 
 - (void)reverseCamera {
     [self toggleCameraAction];

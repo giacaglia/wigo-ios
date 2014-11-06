@@ -28,7 +28,10 @@ NSString *const IQMediaAssetURL     =   @"IQMediaAssetURL";
 NSString *const IQMediaItem         =   @"IQMediaItem";
 NSString *const IQMediaType         =   @"IQMediaType";
 NSString *const IQMediaImage        =   @"IQMediaImage";
+NSString *const IQMediaText         =   @"IQMediaText";
+NSString *const IQMediaYPosition    =   @"IQMediaYPosition";
 
 NSString *const IQMediaTypeAudio    =   @"IQMediaTypeAudio";
 NSString *const IQMediaTypeVideo    =   @"IQMediaTypeVideo";
 NSString *const IQMediaTypeImage    =   @"IQMediaTypeImage";
+NSString *const IQMediaTypeText     =   @"IQMediaTypeText";
