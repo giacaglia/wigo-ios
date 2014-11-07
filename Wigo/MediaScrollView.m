@@ -6,11 +6,16 @@
 //  Copyright (c) 2014 Giuliano Giacaglia. All rights reserved.
 //
 
-#import "ImagesScrollView.h"
+#import "MediaScrollView.h"
 #import "Globals.h"
 #import <MediaPlayer/MediaPlayer.h>
 
-@implementation ImagesScrollView
+
+@interface MediaScrollView() {}
+@property (nonatomic, strong) NSMutableArray *moviePlayers;
+
+@end
+@implementation MediaScrollView
 
 
 - (void)loadContent {
@@ -57,16 +62,47 @@
           
         }
         else {
-            MPMoviePlayerController *theMoviPlayer;
-            NSURL *urlString = [NSURL URLWithString:[NSString stringWithFormat:@"https://wigo-uploads.s3.amazonaws.com/%@", contentURL]];
-            theMoviPlayer = [[MPMoviePlayerController alloc] initWithContentURL:urlString];
-            theMoviPlayer.scalingMode = MPMovieScalingModeFill;
-            theMoviPlayer.view.frame = CGRectMake(0, 60, 320, 350);
-            [self addSubview:theMoviPlayer.view];
-            [theMoviPlayer play];
+            NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://wigo-uploads.s3.amazonaws.com/%@", contentURL]];
+            
+            MPMoviePlayerController *theMoviePlayer = [[MPMoviePlayerController alloc] initWithContentURL: videoURL];
+            theMoviePlayer.movieSourceType=MPMovieSourceTypeStreaming;
+            theMoviePlayer.scalingMode = MPMovieScalingModeFill;
+            [theMoviePlayer setControlStyle: MPMovieControlStyleNone];
+            theMoviePlayer.view.frame = self.frame;
+
+            if (!self.moviePlayers) {
+                self.moviePlayers = [[NSMutableArray alloc] init];
+            }
+            
+            [self.moviePlayers addObject: theMoviePlayer];
+            
+            [theMoviePlayer prepareToPlay];
+            
+            UIView *videoView = [[UIView alloc] initWithFrame: self.frame];
+            videoView.backgroundColor = [UIColor clearColor];
+            
+            UIButton *playButton = [[UIButton alloc] initWithFrame: theMoviePlayer.view.frame];
+            [playButton addTarget: self action: @selector(playVideo:) forControlEvents:UIControlEventTouchUpInside];
+            playButton.tag = [self.moviePlayers indexOfObject: theMoviePlayer];
+            playButton.backgroundColor = [UIColor clearColor];
+            
+            [videoView addSubview: theMoviePlayer.view];
+            [videoView addSubview: playButton];
+            
+            [self addSubview: videoView];
         }
     }
     self.contentOffset = CGPointMake(320*(self.eventMessages.count - 1), 0);
+}
+
+- (void) playVideo: (UIButton *) sender {
+    if (sender.tag > self.moviePlayers.count - 1) {
+        NSLog(@"Movie Player trying to play movie that doesn't exist in the array.");
+        return;
+    }
+    
+    MPMoviePlayerController *theMoviePlayer = [self.moviePlayers objectAtIndex: sender.tag];
+    [theMoviePlayer play];
 }
 
 @end

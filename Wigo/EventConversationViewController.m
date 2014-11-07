@@ -12,7 +12,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "Profile.h"
-#import "ImagesScrollView.h"
+#import "MediaScrollView.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 
 @interface EventConversationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
@@ -186,6 +187,9 @@
 - (void) sendVideo: (NSData *) data withThumbnail: (UIImage *) thumb {
 
 }
+#pragma mark - Media Scroll View Delegate
+
+
 #pragma mark - Helpers
 
 -(void)generateThumbnailAndSendVideo: (NSURL *) videoUrl
@@ -214,7 +218,7 @@
 #pragma mark - ScrollViewDelegate
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    if (scrollView == self.imagesScrollView)
+    if (scrollView == self.mediaScrollView)
         _imagesScrollViewPointNow = scrollView.contentOffset;
     else _collectionViewPointNow = scrollView.contentOffset;
 }
@@ -223,7 +227,7 @@
                   willDecelerate:(BOOL)decelerate
 {
     CGPoint pointNow;
-    if (scrollView == self.imagesScrollView) pointNow = _imagesScrollViewPointNow;
+    if (scrollView == self.mediaScrollView) pointNow = _imagesScrollViewPointNow;
     else pointNow = _collectionViewPointNow;
     if (decelerate) {
         if (scrollView.contentOffset.x < pointNow.x) {
@@ -236,7 +240,7 @@
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     CGPoint pointNow;
-    if (scrollView == self.imagesScrollView) pointNow = _imagesScrollViewPointNow;
+    if (scrollView == self.mediaScrollView) pointNow = _imagesScrollViewPointNow;
     else pointNow = _collectionViewPointNow;
     if (scrollView.contentOffset.x < pointNow.x) {
         [self stoppedScrollingToLeft:YES forScrollView:scrollView];
@@ -248,9 +252,9 @@
 - (void)stoppedScrollingToLeft:(BOOL)leftBoolean forScrollView:(UIScrollView *)scrollView
 {
     float fractionalPage;
-    if (scrollView == self.imagesScrollView) {
+    if (scrollView == self.mediaScrollView) {
         CGFloat pageWidth = 320;
-        fractionalPage = (self.imagesScrollView.contentOffset.x) / pageWidth;
+        fractionalPage = (self.mediaScrollView.contentOffset.x) / pageWidth;
     }
     else {
         CGFloat pageWidth = 100; // you need to have a **iVar** with getter for scrollView
@@ -280,7 +284,7 @@
 - (void)highlightCellAtPage:(NSInteger)page {
     page = MAX(page, 0);
     [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
-    [self.imagesScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
+    [self.mediaScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
     
     
     NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem: MIN(page, self.eventMessages.count - 1) inSection: 0];
@@ -300,13 +304,15 @@
 #pragma mark - G's code
 
 - (void)loadScrollView {
-    self.imagesScrollView = [[ImagesScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    self.imagesScrollView.eventMessages = self.eventMessages;
-    self.imagesScrollView.controller = self.controller;
-    [self.imagesScrollView loadContent];
-    self.imagesScrollView.delegate = self;
-    [self.view addSubview:self.imagesScrollView];
-    [self.view sendSubviewToBack:self.imagesScrollView];
+    self.mediaScrollView = [[MediaScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    self.mediaScrollView.eventMessages = self.eventMessages;
+    self.mediaScrollView.controller = self.controller;
+    self.mediaScrollView.mediaDelegate = self;
+    
+    [self.mediaScrollView loadContent];
+    self.mediaScrollView.delegate = self;
+    [self.view addSubview:self.mediaScrollView];
+    [self.view sendSubviewToBack:self.mediaScrollView];
     
     UIButton *buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
     UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];

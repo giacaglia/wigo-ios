@@ -9,9 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "IQMediaPickerController.h"
 
-@interface ImagesScrollView : UIScrollView
+@protocol MediaScrollViewDelegate
+@end
+
+@interface MediaScrollView : UIScrollView
 
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 @property (nonatomic, strong) IQMediaPickerController *controller;
+@property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
+
 - (void)loadContent;
 @end
