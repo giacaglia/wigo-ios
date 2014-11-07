@@ -250,14 +250,32 @@ NSArray *eventMessages;
    
     else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
         NSLog(@"Video Taken");
-//        NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
-//        options =  @{
-//                     @"event": [self.event eventID],
-//                     @"message": message,
-//                     @"media_mime_type": @"video/mp4"
-//                     };
-//        [self uploadContentWithFile:videoURL
-//                        andFileName:@"video0.jpg" andOptions:options];
+        NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
+        
+        NSError *error;
+        NSData *fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
+        
+        if ([[info allKeys] containsObject:IQMediaTypeText]) {
+            NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
+            NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
+            NSDictionary *properties = @{@"yPosition": yPosition};
+            options =  @{
+                         @"event": [self.event eventID],
+                         @"message": text,
+                         @"properties": properties,
+                         @"media_mime_type": @"video/mp4"
+                         };
+        }
+        else {
+            options =  @{
+                         @"event": [self.event eventID],
+                         @"media_mime_type": @"video/mp4"
+                         };
+        }
+        
+        [self uploadContentWithFile:fileData
+                        andFileName:@"video0.mp4"
+                         andOptions:options];
     }
 }
 
@@ -266,7 +284,7 @@ NSArray *eventMessages;
                    andOptions:(NSDictionary *)options
 {
     [Network sendAsynchronousHTTPMethod:GET
-                            withAPIName:@"uploads/photos/?filename=image0.jpg"
+                            withAPIName:[NSString stringWithFormat: @"uploads/photos/?filename=%@", filename]
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
 
