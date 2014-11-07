@@ -30,6 +30,9 @@
 #import "IQBottomContainerView.h"
 #import "IQMediaPickerControllerConstants.h"
 #import "Globals.h"
+#import "LLACircularProgressView.h"
+
+#define kVideoTimeoutMax 8.0
 
 @interface IQMediaCaptureController ()<IQCaptureSessionDelegate,IQPartitionBarDelegate,IQMediaViewDelegate>
 {
@@ -49,6 +52,9 @@
     BOOL _previousNavigationBarHidden;
     BOOL _previousStatusBarHidden;
     BOOL longGesturePressed;
+    
+    BOOL isTouchedDown;
+    double videoTimerCount;
     
     NSOperationQueue *operationQueue;
 }
@@ -558,6 +564,8 @@
 
 - (void)captureAction:(UIButton *)sender
 {
+
+    
     if ([[self session] isSessionRunning] == NO)
     {
         [self.buttonCapture setImage:[UIImage imageNamed:@"IQ_start_capture_mode"] forState:UIControlStateNormal];
@@ -691,21 +699,65 @@
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
     if (!longGesturePressed) {
-//        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-//        dispatch_group_t group = dispatch_group_create();
-//        dispatch_group_async(group, queue, ^{
-//            [self setCaptureMode:IQMediaCaptureControllerCaptureModeVideo];
-//        });
-//        dispatch_group_notify(group, queue, ^{
-//            [self captureAction:self.buttonCapture];
-//        });
+        
+        NSLog(@"touch down");
+        
+        [[self session] setCaptureMode:IQCameraCaptureModeVideo];
+        [[self session] startVideoRecording];
+        
+        LLACircularProgressView *circularProgressView = [[LLACircularProgressView alloc] initWithFrame: self.buttonCapture.frame];
+        // Optionally set the current progress
+        circularProgressView.progress = 0.0f;
+        circularProgressView.tintColor = [FontProperties getBlueColor];
+        circularProgressView.innerObjectTintColor = [FontProperties getOrangeColor];
+        circularProgressView.backgroundColor = [UIColor clearColor];
+        
+        [self.buttonCapture addSubview:circularProgressView];
+        
+        videoTimerCount = kVideoTimeoutMax;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSTimer scheduledTimerWithTimeInterval: 0.01 target: self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": circularProgressView} repeats: YES] fire];
+        });
+        
+        
         longGesturePressed = YES;
     }
-   
-    if ( gesture.state == UIGestureRecognizerStateEnded ) {
-        [self setCaptureMode:IQMediaCaptureControllerCaptureModePhoto];
+    if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && longGesturePressed) {
+        NSLog(@"touch up");
+
+        [[self session] stopVideoRecording];
+
+        longGesturePressed = NO;
+        
     }
 }
+
+- (void) videoCaptureTimerFired:(NSTimer *) timer {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        videoTimerCount -= timer.timeInterval;
+        
+        LLACircularProgressView *circularProgressView = timer.userInfo[@"progress"];
+        UILongPressGestureRecognizer *gesture = timer.userInfo[@"gesture"];
+        [circularProgressView setProgress: MIN(1.0, (kVideoTimeoutMax - videoTimerCount)/kVideoTimeoutMax) animated:YES];
+        
+        
+        if (videoTimerCount <= 0) {
+            
+            [timer invalidate];
+            
+            //hack to cancel the gesture.
+            gesture.enabled = NO;
+            gesture.enabled = YES;
+            
+            [self longPress: gesture];
+            
+        }
+    });
+}
+
+
 
 #pragma mark - Other Actions
 
@@ -1094,6 +1146,7 @@
         [_buttonCapture addTarget:self action:@selector(captureAction:) forControlEvents:UIControlEventTouchUpInside];
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
         [_buttonCapture addGestureRecognizer:longPress];
+        
     }
     
     return _buttonCapture;
