@@ -25,7 +25,6 @@ NSArray *eventMessages;
     self.title = self.event.name;
   
     [self loadEventDetails];
-    [self loadConversationViewController];
     [self loadEventStory];
     [self loadTextViewAndSendButton];
 }
@@ -91,7 +90,63 @@ NSArray *eventMessages;
 }
 
 - (void)loadConversationViewController {
+    StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
+    UICollectionView *facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 380, self.view.frame.size.width, self.view.frame.size.height - 270 - 50) collectionViewLayout:flow];
+
+    facesCollectionView.backgroundColor = RGBAlpha(248, 253, 255, 100);
+    facesCollectionView.showsHorizontalScrollIndicator = NO;
+    [facesCollectionView setCollectionViewLayout: flow];
+    facesCollectionView.contentInset = UIEdgeInsetsMake(0, 100, 0, 100);
+    facesCollectionView.pagingEnabled = NO;
+    [facesCollectionView registerClass:[FaceCell class] forCellWithReuseIdentifier:@"FaceCell"];
+    
+    facesCollectionView.dataSource = self;
+    facesCollectionView.delegate = self;
+    
+    [self.view addSubview:facesCollectionView];
 }
+
+#pragma mark - UICollectionView Data Source
+
+-(NSInteger)numberOfSectionsInCollectionView: (UICollectionView *)collectionView
+{
+    return 1;
+}
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return eventMessages.count;
+}
+
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
+    myCell.isActive = YES;
+    myCell.rightLineEnabled = (indexPath.row < eventMessages.count - 1);
+    User *user;
+    NSDictionary *eventMessage = [eventMessages objectAtIndex:[indexPath row]];
+    user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
+    if ([user isEqualToUser:[Profile user]]) {
+        user = [Profile user];
+    }
+    if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
+    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"image/jpeg"]) {
+        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
+    }
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mpeg"]) {
+        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
+    }
+    else {
+        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"textType"];
+    }
+    
+    return myCell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView
+    didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    [self showEventConversation:collectionView];
+}
+
+
 
 - (void)loadTextViewAndSendButton {
     chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 60)];
@@ -239,12 +294,17 @@ NSArray *eventMessages;
     [Network sendAsynchronousHTTPMethod:GET
                             withAPIName:@"eventmessages/"
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];
+                                    [self loadConversationViewController];
+                                });
                             }];
 }
 
 
-- (IBAction)showEventConversation:(id)sender {
+
+
+- (void)showEventConversation:(id)sender {
     EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationController.event = self.event;
     if (eventMessages) conversationController.eventMessages = [NSMutableArray arrayWithArray:eventMessages];
@@ -253,7 +313,27 @@ NSArray *eventMessages;
 }
 
 
+@end
+
+@implementation StoryFlowLayout
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        [self setup];
+    }
+    
+    return self;
+}
 
 
+- (void)setup
+{
+    self.itemSize = CGSizeMake(100, 100);
+    self.sectionInset = UIEdgeInsetsMake(10, 10, 10,10);
+    self.minimumInteritemSpacing = 0.0;
+    self.minimumLineSpacing = 0.0;
+}
 
 @end
