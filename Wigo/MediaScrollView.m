@@ -92,7 +92,8 @@
             [self addSubview: videoView];
         }
     }
-    self.contentOffset = CGPointMake(320*(self.eventMessages.count - 1), 0);
+    if (self.index) self.contentOffset = CGPointMake(320 * [self.index intValue], 0);
+    else self.contentOffset = CGPointMake(320*(self.eventMessages.count - 1), 0);
 }
 
 - (void) playVideo: (UIButton *) sender {

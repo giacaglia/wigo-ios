@@ -91,13 +91,13 @@ NSArray *eventMessages;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-//    UICollectionView *facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 380, self.view.frame.size.width, self.view.frame.size.height - 270 - 50) collectionViewLayout:flow];
-    UICollectionView *facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 300, self.view.frame.size.width, 180) collectionViewLayout:flow];
+    UICollectionView *facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 260, self.view.frame.size.width, 260) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = RGBAlpha(248, 253, 255, 100);
     facesCollectionView.showsHorizontalScrollIndicator = NO;
+    facesCollectionView.showsVerticalScrollIndicator = NO;
+    
     [facesCollectionView setCollectionViewLayout: flow];
-    facesCollectionView.contentInset = UIEdgeInsetsMake(0, 100, 0, 100);
     facesCollectionView.pagingEnabled = NO;
     [facesCollectionView registerClass:[FaceCell class] forCellWithReuseIdentifier:@"FaceCell"];
     
@@ -132,7 +132,7 @@ NSArray *eventMessages;
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"image/jpeg"]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
     }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mpeg"]) {
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mp4"]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
     }
     else {
@@ -144,7 +144,7 @@ NSArray *eventMessages;
 
 - (void)collectionView:(UICollectionView *)collectionView
     didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self showEventConversation:collectionView];
+    [self showEventConversation:[NSNumber numberWithUnsignedInteger:indexPath.row]];
 }
 
 
@@ -325,9 +325,10 @@ NSArray *eventMessages;
 
 
 
-- (void)showEventConversation:(id)sender {
+- (void)showEventConversation:(NSNumber *)index {
     EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationController.event = self.event;
+    conversationController.index = index;
     if (eventMessages) conversationController.eventMessages = [NSMutableArray arrayWithArray:eventMessages];
     else conversationController.eventMessages = [NSMutableArray new];
     [self presentViewController:conversationController animated:YES completion:nil];
@@ -352,9 +353,9 @@ NSArray *eventMessages;
 - (void)setup
 {
     self.itemSize = CGSizeMake(100, 100);
-    self.sectionInset = UIEdgeInsetsMake(10, 10, 10,10);
-    self.minimumInteritemSpacing = 0.0;
-    self.minimumLineSpacing = 0.0;
+    self.minimumLineSpacing = 5;
+    self.minimumInteritemSpacing = 4;
+    self.scrollDirection = UICollectionViewScrollDirectionVertical;
 }
 
 @end

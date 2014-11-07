@@ -48,7 +48,7 @@
     [super viewWillAppear: animated];
     
     if (self.eventMessages.count > 0) {
-        self.currentActiveCell = [NSIndexPath indexPathForItem:self.eventMessages.count - 1 inSection:0];
+        self.currentActiveCell = [NSIndexPath indexPathForItem:[self.index intValue] inSection:0];
     } else {
         self.currentActiveCell = nil;
     }
@@ -87,7 +87,7 @@
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"image/jpeg"]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
     }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mpeg"]) {
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mp4"]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
     }
     else {
@@ -308,11 +308,13 @@
     self.mediaScrollView.eventMessages = self.eventMessages;
     self.mediaScrollView.controller = self.controller;
     self.mediaScrollView.mediaDelegate = self;
-    
+    if (self.index) self.mediaScrollView.index = self.index;
+
     [self.mediaScrollView loadContent];
     self.mediaScrollView.delegate = self;
     [self.view addSubview:self.mediaScrollView];
     [self.view sendSubviewToBack:self.mediaScrollView];
+
     
     UIButton *buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
     UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];

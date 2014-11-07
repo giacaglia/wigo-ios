@@ -18,6 +18,7 @@
 @property (nonatomic, strong) MediaScrollView *mediaScrollView;
 @property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
 @property (nonatomic, strong) IQMediaPickerController *controller;
+@property (nonatomic, strong) NSNumber *index;
 @end
 
 @interface FaceCell : UICollectionViewCell
