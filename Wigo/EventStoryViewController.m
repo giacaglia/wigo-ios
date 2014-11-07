@@ -25,7 +25,7 @@ NSArray *eventMessages;
     self.title = self.event.name;
   
     [self loadEventDetails];
-    [self loadMessages];
+    [self loadConversationViewController];
     [self loadEventStory];
     [self loadTextViewAndSendButton];
 }
@@ -90,7 +90,7 @@ NSArray *eventMessages;
     [self.view addSubview:eventStoryLabel];
 }
 
-- (void)loadMessages {
+- (void)loadConversationViewController {
 }
 
 - (void)loadTextViewAndSendButton {
