@@ -91,13 +91,13 @@ NSArray *eventMessages;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    UICollectionView *facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 300, self.view.frame.size.width, 180) collectionViewLayout:flow];
+    UICollectionView *facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 260, self.view.frame.size.width, 260) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = RGBAlpha(248, 253, 255, 100);
     facesCollectionView.showsHorizontalScrollIndicator = NO;
-    [facesCollectionView setCollectionViewLayout: flow];
     facesCollectionView.showsVerticalScrollIndicator = NO;
-    facesCollectionView.contentInset = UIEdgeInsetsMake(0, 100, 0, 100);
+    
+    [facesCollectionView setCollectionViewLayout: flow];
     facesCollectionView.pagingEnabled = NO;
     [facesCollectionView registerClass:[FaceCell class] forCellWithReuseIdentifier:@"FaceCell"];
     
@@ -351,9 +351,9 @@ NSArray *eventMessages;
 - (void)setup
 {
     self.itemSize = CGSizeMake(100, 100);
-    self.sectionInset = UIEdgeInsetsMake(10, 10, 10,10);
-    self.minimumInteritemSpacing = 0.0;
-    self.minimumLineSpacing = 0.0;
+    self.minimumLineSpacing = 5;
+    self.minimumInteritemSpacing = 4;
+    self.scrollDirection = UICollectionViewScrollDirectionVertical;
 }
 
 @end
