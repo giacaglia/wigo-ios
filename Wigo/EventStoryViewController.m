@@ -301,6 +301,7 @@ NSArray *eventMessages;
             [Network sendAsynchronousHTTPMethod:POST
                                     withAPIName:@"eventmessages/"
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                        NSLog(@"eventmessages: %@", jsonResponse);
                                         
                                     } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
         });

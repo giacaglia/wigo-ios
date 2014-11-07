@@ -334,8 +334,8 @@
 		E9D039C31A096DB100DEF094 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039B21A096DB100DEF094 /* AFURLSessionManager.m */; };
 		E9D039C41A096DB100DEF094 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039B21A096DB100DEF094 /* AFURLSessionManager.m */; };
 		E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */; };
-		E9D039C81A09886A00DEF094 /* ImagesScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* ImagesScrollView.m */; };
-		E9D039C91A09886A00DEF094 /* ImagesScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* ImagesScrollView.m */; };
+		E9D039C81A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
+		E9D039C91A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
 		E9D29F3619F064B3001ED208 /* who.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9D29F3519F064B3001ED208 /* who.gif */; };
 		E9D29F3719F064B3001ED208 /* who.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9D29F3519F064B3001ED208 /* who.gif */; };
 		E9D29F3919F064BD001ED208 /* tapping.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9D29F3819F064BD001ED208 /* tapping.gif */; };
@@ -693,8 +693,8 @@
 		E9D039B01A096DB100DEF094 /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
 		E9D039B11A096DB100DEF094 /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
 		E9D039B21A096DB100DEF094 /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
-		E9D039C61A09886A00DEF094 /* ImagesScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagesScrollView.h; sourceTree = "<group>"; };
-		E9D039C71A09886A00DEF094 /* ImagesScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesScrollView.m; sourceTree = "<group>"; };
+		E9D039C61A09886A00DEF094 /* MediaScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaScrollView.h; sourceTree = "<group>"; };
+		E9D039C71A09886A00DEF094 /* MediaScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaScrollView.m; sourceTree = "<group>"; };
 		E9D29F3519F064B3001ED208 /* who.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = who.gif; sourceTree = "<group>"; };
 		E9D29F3819F064BD001ED208 /* tapping.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = tapping.gif; sourceTree = "<group>"; };
 		E9D29F3B19F064C4001ED208 /* where.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = where.gif; sourceTree = "<group>"; };
@@ -1719,8 +1719,8 @@
 				FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */,
 				FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */,
 				FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */,
-				E9D039C61A09886A00DEF094 /* ImagesScrollView.h */,
-				E9D039C71A09886A00DEF094 /* ImagesScrollView.m */,
+				E9D039C61A09886A00DEF094 /* MediaScrollView.h */,
+				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
 				FA438E8B19F1960400AD74C2 /* FakeContent */,
 				E9AEAE511A0190DB00BD77AF /* EventPeopleScrollView.h */,
 				E9AEAE521A0190DB00BD77AF /* EventPeopleScrollView.m */,
@@ -2109,7 +2109,7 @@
 				E9C63BF51A03ED35006C5DD2 /* IQSongsPlaylistViewController.m in Sources */,
 				E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
 				E9D039B81A096DB100DEF094 /* AFHTTPSessionManager.m in Sources */,
-				E9D039C91A09886A00DEF094 /* ImagesScrollView.m in Sources */,
+				E9D039C91A09886A00DEF094 /* MediaScrollView.m in Sources */,
 				E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				C12A113319787BE700D53B1C /* RWBlurPopover.m in Sources */,
 				E9CB091619FB062D00B548A6 /* FacebookHelper.m in Sources */,
@@ -2252,7 +2252,7 @@
 				E9C34A6F19F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
 				E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */,
-				E9D039C81A09886A00DEF094 /* ImagesScrollView.m in Sources */,
+				E9D039C81A09886A00DEF094 /* MediaScrollView.m in Sources */,
 				E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */,
 				E96F07AC19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */,
