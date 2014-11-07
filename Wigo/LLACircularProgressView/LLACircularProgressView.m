@@ -62,7 +62,7 @@
     
     //inner circle
     CGContextSetFillColorWithColor(ctx, self.innerObjectTintColor.CGColor);
-    CGRect circlePoint = (CGRectMake(CGRectGetMidX(self.bounds) - self.bounds.size.width / 4, CGRectGetMidY(self.bounds) - self.bounds.size.height / 4, self.bounds.size.width / 2, self.bounds.size.height / 2));
+    CGRect circlePoint = (CGRectMake(CGRectGetMidX(self.bounds) - self.bounds.size.width / 5, CGRectGetMidY(self.bounds) - self.bounds.size.height / 5, self.bounds.size.width / 2.5, self.bounds.size.height / 2.5));
     CGContextFillEllipseInRect(ctx, circlePoint);
     
 //    CGContextSetFillColorWithColor(ctx, self.progressTintColor.CGColor);
