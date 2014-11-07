@@ -91,8 +91,9 @@ NSArray *eventMessages;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    UICollectionView *facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 380, self.view.frame.size.width, self.view.frame.size.height - 270 - 50) collectionViewLayout:flow];
-
+//    UICollectionView *facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 380, self.view.frame.size.width, self.view.frame.size.height - 270 - 50) collectionViewLayout:flow];
+    UICollectionView *facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 300, self.view.frame.size.width, 180) collectionViewLayout:flow];
+    
     facesCollectionView.backgroundColor = RGBAlpha(248, 253, 255, 100);
     facesCollectionView.showsHorizontalScrollIndicator = NO;
     [facesCollectionView setCollectionViewLayout: flow];
