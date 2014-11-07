@@ -47,7 +47,7 @@
     [super viewWillAppear: animated];
     
     if (self.eventMessages.count > 0) {
-        self.currentActiveCell = [NSIndexPath indexPathForItem:self.eventMessages.count - 1 inSection:0];
+        self.currentActiveCell = [NSIndexPath indexPathForItem:[self.index intValue] inSection:0];
     } else {
         self.currentActiveCell = nil;
     }
@@ -86,7 +86,7 @@
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"image/jpeg"]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
     }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mpeg"]) {
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mp4"]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
     }
     else {
@@ -303,6 +303,7 @@
     self.imagesScrollView = [[ImagesScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     self.imagesScrollView.eventMessages = self.eventMessages;
     self.imagesScrollView.controller = self.controller;
+    if (self.index) self.imagesScrollView.index = self.index;
     [self.imagesScrollView loadContent];
     self.imagesScrollView.delegate = self;
     [self.view addSubview:self.imagesScrollView];

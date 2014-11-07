@@ -13,5 +13,6 @@
 
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 @property (nonatomic, strong) IQMediaPickerController *controller;
+@property (nonatomic, strong) NSNumber *index;
 - (void)loadContent;
 @end

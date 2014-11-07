@@ -132,7 +132,7 @@ NSArray *eventMessages;
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"image/jpeg"]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
     }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mpeg"]) {
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mp4"]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
     }
     else {
@@ -144,7 +144,7 @@ NSArray *eventMessages;
 
 - (void)collectionView:(UICollectionView *)collectionView
     didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self showEventConversation:collectionView];
+    [self showEventConversation:[NSNumber numberWithUnsignedInteger:indexPath.row]];
 }
 
 
@@ -324,9 +324,10 @@ NSArray *eventMessages;
 
 
 
-- (void)showEventConversation:(id)sender {
+- (void)showEventConversation:(NSNumber *)index {
     EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationController.event = self.event;
+    conversationController.index = index;
     if (eventMessages) conversationController.eventMessages = [NSMutableArray arrayWithArray:eventMessages];
     else conversationController.eventMessages = [NSMutableArray new];
     [self presentViewController:conversationController animated:YES completion:nil];
