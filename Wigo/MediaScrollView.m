@@ -64,11 +64,11 @@
         else {
             NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://wigo-uploads.s3.amazonaws.com/%@", contentURL]];
             
-            MPMoviePlayerController *theMoviePlayer = [[MPMoviePlayerController alloc] initWithContentURL: videoURL];
+            MPMoviePlayerController *theMoviePlayer = [[MPMoviePlayerController alloc] init];
             theMoviePlayer.movieSourceType=MPMovieSourceTypeStreaming;
-            theMoviePlayer.scalingMode = MPMovieScalingModeFill;
+            [theMoviePlayer setContentURL: videoURL];
+            theMoviePlayer.scalingMode = MPMovieScalingModeAspectFill;
             [theMoviePlayer setControlStyle: MPMovieControlStyleNone];
-            theMoviePlayer.view.frame = self.frame;
 
             if (!self.moviePlayers) {
                 self.moviePlayers = [[NSMutableArray alloc] init];
@@ -78,16 +78,21 @@
             
             [theMoviePlayer prepareToPlay];
             
-            UIView *videoView = [[UIView alloc] initWithFrame: self.frame];
-            videoView.backgroundColor = [UIColor clearColor];
-            
-            UIButton *playButton = [[UIButton alloc] initWithFrame: theMoviePlayer.view.frame];
+            UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(i*320, 0, 320, 640)];
+            videoView.backgroundColor = [UIColor greenColor];
+            theMoviePlayer.view.frame = videoView.bounds;
+            theMoviePlayer.backgroundView.backgroundColor = [UIColor blueColor];
+
+            UIButton *playButton = [[UIButton alloc] initWithFrame: videoView.bounds];
             [playButton addTarget: self action: @selector(playVideo:) forControlEvents:UIControlEventTouchUpInside];
             playButton.tag = [self.moviePlayers indexOfObject: theMoviePlayer];
             playButton.backgroundColor = [UIColor clearColor];
             
             [videoView addSubview: theMoviePlayer.view];
+            [self bringSubviewToFront: theMoviePlayer.view];
+
             [videoView addSubview: playButton];
+            [self bringSubviewToFront: playButton];
             
             [self addSubview: videoView];
         }
