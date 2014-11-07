@@ -82,18 +82,22 @@
     if ([user isEqualToUser:[Profile user]]) {
         user = [Profile user];
     }
-    if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"image/jpeg"]) {
-        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
-    }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mp4"]) {
-        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
-    }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"text"])  {
-        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"textType"];
+    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"]) {
+        myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
+        myCell.mediaTypeImageView.image = [UIImage new];
+        myCell.mediaTypeImageView = nil;
     }
     else {
-        
+        if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
+        if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"image/jpeg"]) {
+            myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
+        }
+        else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mp4"]) {
+            myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
+        }
+        else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"text"])  {
+            myCell.mediaTypeImageView.image = [UIImage imageNamed:@"textType"];
+        }
     }
     
     myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
