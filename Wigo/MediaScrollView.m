@@ -79,9 +79,9 @@
             [theMoviePlayer prepareToPlay];
             
             UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(i*320, 0, 320, 640)];
-            videoView.backgroundColor = [UIColor greenColor];
+            videoView.backgroundColor = [UIColor clearColor];
             theMoviePlayer.view.frame = videoView.bounds;
-            theMoviePlayer.backgroundView.backgroundColor = [UIColor blueColor];
+            theMoviePlayer.backgroundView.backgroundColor = [UIColor clearColor];
 
             UIButton *playButton = [[UIButton alloc] initWithFrame: videoView.bounds];
             [playButton addTarget: self action: @selector(playVideo:) forControlEvents:UIControlEventTouchUpInside];
