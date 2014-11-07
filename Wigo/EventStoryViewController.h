@@ -10,7 +10,7 @@
 #import "Globals.h"
 #import "IQMediaPickerController.h"
 
-@interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
+@interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong) Event *event;
 @end

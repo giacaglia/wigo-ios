@@ -120,8 +120,10 @@ NSArray *eventMessages;
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
+    myCell.rightLine.backgroundColor = RGB(237, 237, 237);
+    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
+
     myCell.isActive = YES;
-    myCell.rightLineEnabled = (indexPath.row < eventMessages.count - 1);
     User *user;
     NSDictionary *eventMessage = [eventMessages objectAtIndex:[indexPath row]];
     user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
@@ -352,6 +354,7 @@ NSArray *eventMessages;
 
 - (void)setup
 {
+//    self.sectionInset = UIEdgeInsetsMake(0, 50, 0, 0);
     self.itemSize = CGSizeMake(100, 100);
     self.minimumLineSpacing = 5;
     self.minimumInteritemSpacing = 4;

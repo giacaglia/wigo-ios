@@ -90,8 +90,11 @@
     else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mp4"]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
     }
-    else {
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"text"])  {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"textType"];
+    }
+    else {
+        
     }
     
     myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
