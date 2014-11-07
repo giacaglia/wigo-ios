@@ -46,7 +46,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     
-    self.currentActiveCell = [NSIndexPath indexPathForItem:self.eventMessages.count - 1 inSection:0];
+    if (self.eventMessages.count > 0) {
+        self.currentActiveCell = [NSIndexPath indexPathForItem:self.eventMessages.count - 1 inSection:0];
+    } else {
+        self.currentActiveCell = nil;
+    }
+    
     [self.facesCollectionView scrollToItemAtIndexPath: self.currentActiveCell atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive: YES];
 }
