@@ -333,46 +333,59 @@
 - (id) initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder: aDecoder];
     if (self) {
-        self.frame = CGRectMake(0, 0, 100,100);
-
-        self.backgroundColor = UIColor.clearColor;
-    
-        self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x, self.center.y, self.frame.size.width, 2)];
-        self.rightLine.alpha = 0.5f;
-        self.rightLine.backgroundColor = [UIColor whiteColor];
-        [self addSubview: self.rightLine];
-        
-        self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 25, 50, 50)];
-        self.faceImageView.layer.masksToBounds = YES;
-        self.faceImageView.backgroundColor = [UIColor blackColor];
-        self.faceImageView.layer.cornerRadius = 25;
-        self.faceImageView.layer.borderWidth = 2.0;
-        self.faceImageView.alpha = 0.5f;
-        self.faceImageView.layer.borderColor = [UIColor whiteColor].CGColor;
-        self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
-        [self addSubview: self.faceImageView];
-        
-        self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(40, 15, 20, 20)];
-        self.mediaTypeImageView.layer.masksToBounds = YES;
-        self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
-        self.mediaTypeImageView.layer.cornerRadius = 10;
-        self.mediaTypeImageView.layer.borderWidth = 2.0;
-        self.mediaTypeImageView.alpha = 0.5f;
-        self.mediaTypeImageView.layer.borderColor = [UIColor whiteColor].CGColor;
-        self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
-        [self addSubview:self.mediaTypeImageView];
-        
-        self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 78, 60, 20)];
-        self.timeLabel.textAlignment = NSTextAlignmentCenter;
-        self.timeLabel.textColor = [UIColor whiteColor];
-        self.timeLabel.font = [FontProperties lightFont:12];
-        [self addSubview:self.timeLabel];
-        
-        _isActive = NO;
+        [self setup];
     }
-        
     return self;
 }
+
+- (id) initWithFrame:(CGRect)frame {
+    self = [super initWithFrame: frame];
+    if (self) {
+        [self setup];
+    }
+    
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 100,100);
+    
+    self.backgroundColor = UIColor.clearColor;
+    
+    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x, self.center.y, self.frame.size.width, 2)];
+    self.rightLine.alpha = 0.5f;
+    self.rightLine.backgroundColor = [UIColor whiteColor];
+    [self addSubview: self.rightLine];
+    
+    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 25, 50, 50)];
+    self.faceImageView.layer.masksToBounds = YES;
+    self.faceImageView.backgroundColor = [UIColor blackColor];
+    self.faceImageView.layer.cornerRadius = 25;
+    self.faceImageView.layer.borderWidth = 2.0;
+    self.faceImageView.alpha = 0.5f;
+    self.faceImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
+    [self addSubview: self.faceImageView];
+    
+    self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(40, 15, 20, 20)];
+    self.mediaTypeImageView.layer.masksToBounds = YES;
+    self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
+    self.mediaTypeImageView.layer.cornerRadius = 10;
+    self.mediaTypeImageView.layer.borderWidth = 2.0;
+    self.mediaTypeImageView.alpha = 0.5f;
+    self.mediaTypeImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
+    [self addSubview:self.mediaTypeImageView];
+    
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 78, 60, 20)];
+    self.timeLabel.textAlignment = NSTextAlignmentCenter;
+    self.timeLabel.textColor = [UIColor whiteColor];
+    self.timeLabel.font = [FontProperties lightFont:12];
+    [self addSubview:self.timeLabel];
+    
+    _isActive = NO;
+}
+
 
 
 - (void)setRightLineEnabled:(BOOL)rightLineEnabled {
