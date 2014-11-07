@@ -389,6 +389,8 @@
 		FA438EA219F196DA00AD74C2 /* EventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438EA019F196DA00AD74C2 /* EventMessage.m */; };
 		FA438EA719F1998A00AD74C2 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */; };
 		FA438EA919F19F2200AD74C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA819F19F2200AD74C2 /* AVFoundation.framework */; };
+		FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
+		FADD07311A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -752,6 +754,8 @@
 		FA438EA019F196DA00AD74C2 /* EventMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventMessage.m; sourceTree = "<group>"; };
 		FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		FA438EA819F19F2200AD74C2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		FADD072E1A0D296900492369 /* LLACircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLACircularProgressView.h; sourceTree = "<group>"; };
+		FADD072F1A0D296900492369 /* LLACircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLACircularProgressView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1040,6 +1044,7 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				FADD072D1A0D296900492369 /* LLACircularProgressView */,
 				E9D0399F1A096DB100DEF094 /* AFNetworking */,
 				E9D0399A1A095BC600DEF094 /* AWS */,
 				E9C63B741A03ED35006C5DD2 /* IQMediaPickerController */,
@@ -1733,6 +1738,15 @@
 			name = FakeContent;
 			sourceTree = "<group>";
 		};
+		FADD072D1A0D296900492369 /* LLACircularProgressView */ = {
+			isa = PBXGroup;
+			children = (
+				FADD072E1A0D296900492369 /* LLACircularProgressView.h */,
+				FADD072F1A0D296900492369 /* LLACircularProgressView.m */,
+			);
+			path = LLACircularProgressView;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2064,6 +2078,7 @@
 				E9C63BF71A03ED35006C5DD2 /* IQMediaCaptureController.m in Sources */,
 				E9C63BD91A03ED35006C5DD2 /* IQAssetsPickerController.m in Sources */,
 				E96EF682197EE95D00F88A6D /* Time.m in Sources */,
+				FADD07311A0D296900492369 /* LLACircularProgressView.m in Sources */,
 				C12A112519787BE700D53B1C /* UIImage+GIF.m in Sources */,
 				C12A112619787BE700D53B1C /* UIImageView+WebCache.m in Sources */,
 				E9D0399E1A095C1500DEF094 /* AWSUploader.m in Sources */,
@@ -2206,6 +2221,7 @@
 				E9C63BEA1A03ED35006C5DD2 /* IQSongsArtistListViewController.m in Sources */,
 				E9147B6C1925123C00C25C9A /* ProfileViewController.m in Sources */,
 				FA438EA119F196DA00AD74C2 /* EventMessage.m in Sources */,
+				FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */,
 				E9C63C081A03ED35006C5DD2 /* IQPartitionView.m in Sources */,
 				E900C2B71961EADE00A01F50 /* SDImageCache.m in Sources */,
 				E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */,

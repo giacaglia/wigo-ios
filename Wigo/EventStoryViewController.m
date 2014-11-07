@@ -192,7 +192,8 @@ NSArray *eventMessages;
 
     }
    
-//    else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
+    else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
+        NSLog(@"Video Taken");
 //        NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
 //        options =  @{
 //                     @"event": [self.event eventID],
@@ -201,7 +202,7 @@ NSArray *eventMessages;
 //                     };
 //        [self uploadContentWithFile:videoURL
 //                        andFileName:@"video0.jpg" andOptions:options];
-//    }
+    }
 }
 
 - (void)uploadContentWithFile:(NSData *)fileData
