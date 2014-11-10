@@ -301,8 +301,8 @@
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"] && !self.facesHidden) {
         self.facesHidden = YES;
         [self.buttonCancel removeFromSuperview];
-        [UIView animateWithDuration:0.8 animations:^{
-            self.facesCollectionView.frame = CGRectMake(0, -self.facesCollectionView.frame.size.height, self.facesCollectionView.frame.size.width, self.facesCollectionView.frame.size.height);
+        [UIView animateWithDuration:0.5 animations:^{
+            self.facesCollectionView.alpha = 0;
         }];
     }
     else {
