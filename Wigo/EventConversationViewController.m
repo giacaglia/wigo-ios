@@ -22,6 +22,7 @@
 @property (nonatomic, assign) CGPoint collectionViewPointNow;
 @property (nonatomic, assign) CGPoint imagesScrollViewPointNow;
 @property (nonatomic, assign) BOOL facesHidden;
+@property (nonatomic, strong) UIButton * buttonCancel;
 @end
 
 @implementation EventConversationViewController
@@ -299,6 +300,7 @@
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"] && !self.facesHidden) {
         self.facesHidden = YES;
+        [self.buttonCancel removeFromSuperview];
         [UIView animateWithDuration:0.8 animations:^{
             self.facesCollectionView.frame = CGRectMake(0, -self.facesCollectionView.frame.size.height, self.facesCollectionView.frame.size.width, self.facesCollectionView.frame.size.height);
         }];
@@ -336,12 +338,12 @@
     [self.view sendSubviewToBack:self.mediaScrollView];
 
     
-    UIButton *buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
+    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
     UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
     cancelImageView.image = [UIImage imageNamed:@"cancelCamera"];
-    [buttonCancel addSubview:cancelImageView];
-    [buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:buttonCancel];
+    [self.buttonCancel addSubview:cancelImageView];
+    [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.buttonCancel];
 }
 
 - (void)cancelPressed:(id)sender {

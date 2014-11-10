@@ -225,7 +225,7 @@ NSArray *eventMessages;
 
 - (void)mediaPickerController:(IQMediaPickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
-    
+    [self dismissViewControllerAnimated:YES completion:nil];
     NSDictionary *options;
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
         UIImage *image = [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage];
@@ -305,7 +305,6 @@ NSArray *eventMessages;
             [Network sendAsynchronousHTTPMethod:POST
                                     withAPIName:@"eventmessages/"
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                        NSLog(@"eventmessages: %@", jsonResponse);
                                         
                                     } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
         });
@@ -314,7 +313,7 @@ NSArray *eventMessages;
 }
 
 - (void)mediaPickerControllerDidCancel:(IQMediaPickerController *)controller {
-    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)loadEventMessages {

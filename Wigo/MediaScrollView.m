@@ -71,10 +71,11 @@
             NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://wigo-uploads.s3.amazonaws.com/%@", contentURL]];
             
             MPMoviePlayerController *theMoviePlayer = [[MPMoviePlayerController alloc] init];
-            theMoviePlayer.movieSourceType=MPMovieSourceTypeStreaming;
+            theMoviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
             [theMoviePlayer setContentURL: videoURL];
             theMoviePlayer.scalingMode = MPMovieScalingModeAspectFill;
             [theMoviePlayer setControlStyle: MPMovieControlStyleNone];
+            theMoviePlayer.repeatMode = MPMovieRepeatModeOne;
             [theMoviePlayer prepareToPlay];
             
             UIImageView *videoView = [[UIImageView alloc] initWithFrame: CGRectMake(i*320, 0, 320, 640)];

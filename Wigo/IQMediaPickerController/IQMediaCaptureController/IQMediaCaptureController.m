@@ -792,11 +792,11 @@
         }
         [self.buttonCancel setTitle:nil forState:UIControlStateNormal];
         
-//        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
-//        cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
-//        [self.buttonCancel addSubview:cancelCamera];
-//        
-//        [self.buttonCapture setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
+        cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
+        [self.buttonCancel addSubview:cancelCamera];
+        
+        [self.buttonCapture setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
         [self.bottomContainerView setMiddleContentView:self.buttonCapture];
     }
     
@@ -1128,9 +1128,9 @@
     {
         _buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
         [_buttonCancel.titleLabel setFont:[UIFont boldSystemFontOfSize:18.0]];
-//        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
-//        cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
-//        [_buttonCancel addSubview:cancelCamera];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
+        cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
+        [_buttonCancel addSubview:cancelCamera];
         [_buttonCancel addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
     }
     
