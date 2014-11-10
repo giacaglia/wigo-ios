@@ -86,22 +86,21 @@ int widthShared;
 }
 
 - (void)initializeShareLabel {
-    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height/2 + 10, self.view.frame.size.width - 20, 50)];
-//    shareLabel.text = @"Share WiGo to charge the battery\nand unlock your school.";
+    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height/2 + 10, self.view.frame.size.width - 20, 100)];
     shareLabel.font = [FontProperties mediumFont:18.0f];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.textColor = [UIColor whiteColor];
     shareLabel.numberOfLines = 0;
     shareLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-    NSString *string = @"Share WiGo to charge the battery\nand unlock your school.";
+    NSString *string = @"WiGo will unlock when more people from your school download the app. Share WiGo to charge the battery and speed things up!";
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
     [text addAttribute:NSForegroundColorAttributeName
                  value:RGB(238, 122, 11)
-                 range:NSMakeRange(25, 7)];
+                 range:NSMakeRange(94, 7)];
     [text addAttribute:NSForegroundColorAttributeName
                  value:RGB(238, 122, 11)
-                 range:NSMakeRange(37, 6)];
+                 range:NSMakeRange(10, 6)];
     
     shareLabel.attributedText = text;
     [self.view addSubview:shareLabel];

@@ -13,6 +13,7 @@
 
 @interface MediaScrollView() {}
 @property (nonatomic, strong) NSMutableArray *moviePlayers;
+@property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 
 @end
 @implementation MediaScrollView
@@ -83,9 +84,7 @@
             [videoView addSubview: theMoviePlayer.view];
             [self bringSubviewToFront: theMoviePlayer.view];
 
-            
-            [self addSubview: videoView];
-            
+            [self addSubview: videoView];            
             [self.moviePlayers addObject: theMoviePlayer];
         }
     }
@@ -94,9 +93,13 @@
 }
 
 -(void)scrolledToPage:(int)page {
+    if (self.lastMoviePlayer) {
+        [self.lastMoviePlayer stop];
+    }
     MPMoviePlayerController *theMoviePlayer = [self.moviePlayers objectAtIndex:page];
     if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
         [theMoviePlayer play];
+        self.lastMoviePlayer = theMoviePlayer;
     }
 }
 

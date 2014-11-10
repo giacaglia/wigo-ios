@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSIndexPath *currentActiveCell;
 @property (nonatomic, assign) CGPoint collectionViewPointNow;
 @property (nonatomic, assign) CGPoint imagesScrollViewPointNow;
+@property (nonatomic, assign) BOOL facesHidden;
 @end
 
 @implementation EventConversationViewController
@@ -295,7 +296,16 @@
     [self.mediaScrollView scrolledToPage:page];
     [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
-    
+    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
+    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"] && !self.facesHidden) {
+        self.facesHidden = YES;
+        [UIView animateWithDuration:0.8 animations:^{
+            self.facesCollectionView.frame = CGRectMake(0, -self.facesCollectionView.frame.size.height, self.facesCollectionView.frame.size.width, self.facesCollectionView.frame.size.height);
+        }];
+    }
+    else {
+        self.facesHidden = NO;
+    }
     
     NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
     
