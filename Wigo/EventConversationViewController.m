@@ -292,6 +292,7 @@
 - (void)highlightCellAtPage:(NSInteger)page {
     page = MAX(page, 0);
     page = MIN(page, self.eventMessages.count - 1);
+    [self.mediaScrollView scrolledToPage:page];
     [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
     

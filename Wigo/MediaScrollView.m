@@ -22,6 +22,9 @@
     self.backgroundColor = RGB(23, 23, 23);
     self.showsHorizontalScrollIndicator = NO;
     self.contentSize = CGSizeMake(self.eventMessages.count * 320, [self superview].frame.size.height);
+    if (!self.moviePlayers) {
+        self.moviePlayers = [[NSMutableArray alloc] init];
+    }
     for (int i = 0; i < self.eventMessages.count; i++) {
         NSDictionary *eventMessage = [self.eventMessages objectAtIndex:i];
         NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
@@ -29,6 +32,7 @@
         if ([mimeType isEqualToString:@"new"]) {
             self.controller.view.frame = CGRectMake(i*320, 0, 320, 640);
             [self addSubview:self.controller.view];
+            [self.moviePlayers addObject:[NSNull null]];
         }
         else if ([mimeType isEqualToString:@"image/jpeg"]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
@@ -59,6 +63,7 @@
                     labelInsideImage.frame = CGRectMake(0, [yPosition intValue], imageView.frame.size.width, 50);
                 }
             }
+            [self.moviePlayers addObject:[NSNull null]];
           
         }
         else {
@@ -69,46 +74,33 @@
             [theMoviePlayer setContentURL: videoURL];
             theMoviePlayer.scalingMode = MPMovieScalingModeAspectFill;
             [theMoviePlayer setControlStyle: MPMovieControlStyleNone];
-
-            if (!self.moviePlayers) {
-                self.moviePlayers = [[NSMutableArray alloc] init];
-            }
-            
-            [self.moviePlayers addObject: theMoviePlayer];
-            
             [theMoviePlayer prepareToPlay];
             
             UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(i*320, 0, 320, 640)];
             videoView.backgroundColor = [UIColor clearColor];
             theMoviePlayer.view.frame = videoView.bounds;
             theMoviePlayer.backgroundView.backgroundColor = [UIColor clearColor];
-
-            UIButton *playButton = [[UIButton alloc] initWithFrame: videoView.bounds];
-            [playButton addTarget: self action: @selector(playVideo:) forControlEvents:UIControlEventTouchUpInside];
-            playButton.tag = [self.moviePlayers indexOfObject: theMoviePlayer];
-            playButton.backgroundColor = [UIColor clearColor];
-            
             [videoView addSubview: theMoviePlayer.view];
             [self bringSubviewToFront: theMoviePlayer.view];
 
-            [videoView addSubview: playButton];
-            [self bringSubviewToFront: playButton];
             
             [self addSubview: videoView];
+            
+            [self.moviePlayers addObject: theMoviePlayer];
         }
     }
     if (self.index) self.contentOffset = CGPointMake(320 * [self.index intValue], 0);
     else self.contentOffset = CGPointMake(320*(self.eventMessages.count - 1), 0);
 }
 
-- (void) playVideo: (UIButton *) sender {
-    if (sender.tag > self.moviePlayers.count - 1) {
-        NSLog(@"Movie Player trying to play movie that doesn't exist in the array.");
-        return;
+-(void)scrolledToPage:(int)page {
+    MPMoviePlayerController *theMoviePlayer = [self.moviePlayers objectAtIndex:page];
+    if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
+        [theMoviePlayer play];
     }
-    
-    MPMoviePlayerController *theMoviePlayer = [self.moviePlayers objectAtIndex: sender.tag];
-    [theMoviePlayer play];
 }
+
+
+
 
 @end

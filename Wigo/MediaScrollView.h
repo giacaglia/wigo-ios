@@ -19,4 +19,6 @@
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
 @property (nonatomic, strong) NSNumber *index;
 - (void)loadContent;
+
+-(void)scrolledToPage:(int)page;
 @end
