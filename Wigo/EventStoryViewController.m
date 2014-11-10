@@ -319,7 +319,7 @@ NSArray *eventMessages;
 
 - (void)loadEventMessages {
     [Network sendAsynchronousHTTPMethod:GET
-                            withAPIName:@"eventmessages/"
+                            withAPIName:@"eventmessages/?ordering=id"
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];

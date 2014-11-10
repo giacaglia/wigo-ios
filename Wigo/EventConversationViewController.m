@@ -53,8 +53,8 @@
         self.currentActiveCell = nil;
     }
     
-    [self.facesCollectionView scrollToItemAtIndexPath: self.currentActiveCell atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
-    [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive: YES];
+    [self highlightCellAtPage:[self.index intValue]];
+    [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -87,7 +87,7 @@
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"]) {
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
         myCell.mediaTypeImageView.image = [UIImage new];
-        myCell.mediaTypeImageView = nil;
+        [myCell.mediaTypeImageView removeFromSuperview];
     }
     else {
         if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
@@ -103,7 +103,7 @@
     }
     
     myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
-    if (indexPath == self.currentActiveCell) {
+    if ([indexPath compare:self.currentActiveCell] == NSOrderedSame) {
         myCell.isActive = YES;
     } else {
         myCell.isActive = NO;
@@ -291,11 +291,12 @@
 
 - (void)highlightCellAtPage:(NSInteger)page {
     page = MAX(page, 0);
+    page = MIN(page, self.eventMessages.count - 1);
     [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
     
     
-    NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem: MIN(page, self.eventMessages.count - 1) inSection: 0];
+    NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
     
     if (activeIndexPath != self.currentActiveCell) {
         
