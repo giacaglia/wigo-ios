@@ -171,6 +171,7 @@
 
 -(void)tapGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
+    NSLog(@"tap gesture");
     CGPoint center = [recognizer locationInView:self];
     
     [exposureView setCenter:center];
@@ -179,7 +180,7 @@
     if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
     {
         [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];
-        [self.delegate mediaView:self labelPointOfInterest:center];
+        [self.delegate mediaView:self editLabelAtPoint:center];
         [exposureView hideAfterSeconds:1];
 
         if (exposureView.alpha == 0.0)
@@ -194,6 +195,8 @@
     CGPoint center = [recognizer locationInView:self];
     
     [exposureView setCenter:center];
+    
+    [self.delegate mediaView:self labelPointOfInterest:center];
     
     if (recognizer.state == UIGestureRecognizerStateBegan)
     {

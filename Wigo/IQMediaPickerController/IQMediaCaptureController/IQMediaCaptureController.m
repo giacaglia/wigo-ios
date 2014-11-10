@@ -902,7 +902,7 @@
     }
 }
 
-- (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
+- (void)mediaView:(IQMediaView *)mediaView editLabelAtPoint:(CGPoint)labelPoint {
     if (![self session].isSessionRunning) {
         if (!self.textField) {
             self.textField = [[UITextField alloc] init];
@@ -914,8 +914,14 @@
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
         }
         self.labelPoint = labelPoint;
-        
         [self.textField becomeFirstResponder];
+    }
+}
+
+- (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
+    if (![self.textField isFirstResponder]) {
+        self.textField.frame = CGRectMake(0, labelPoint.y, self.view.frame.size.width, 50);
+        self.labelPoint = labelPoint;
     }
 }
 
