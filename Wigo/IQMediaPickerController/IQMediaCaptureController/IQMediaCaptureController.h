@@ -23,6 +23,7 @@
 
 
 #import <UIKit/UIKit.h>
+#import "IQCaptureSession.h"
 
 typedef NS_ENUM(NSInteger, IQMediaCaptureControllerCaptureMode) {
     IQMediaCaptureControllerCaptureModePhoto,
@@ -51,6 +52,7 @@ typedef NS_ENUM(NSInteger, IQMediaCaptureControllerCameraDevice) {
 
 @protocol IQMediaCaptureControllerDelegate <NSObject>
 
+@property(nonatomic, strong, readonly) IQCaptureSession *session;
 - (void)mediaCaptureController:(IQMediaCaptureController*)controller didFinishMediaWithInfo:(NSDictionary *)info;
 - (void)mediaCaptureControllerDidCancel:(IQMediaCaptureController *)controller;
 

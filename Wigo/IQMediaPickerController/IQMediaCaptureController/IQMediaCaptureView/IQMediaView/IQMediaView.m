@@ -171,22 +171,23 @@
 
 -(void)tapGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
-    NSLog(@"tap gesture");
     CGPoint center = [recognizer locationInView:self];
     
     [exposureView setCenter:center];
-//    x (recognizer.state == UIGestureRecognizerStateRecognized) {
-//    }
-    if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
+    if (recognizer.state == UIGestureRecognizerStateEnded  &&
+        [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
     {
-        [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];
         [self.delegate mediaView:self editLabelAtPoint:center];
-        [exposureView hideAfterSeconds:1];
-
-        if (exposureView.alpha == 0.0)
-        {
-            [exposureView animate];
+        if ([self.delegate session].isSessionRunning) {
+            [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];
+            [exposureView hideAfterSeconds:1];
+            
+            if (exposureView.alpha == 0.0)
+            {
+                [exposureView animate];
+            }
         }
+       
     }
 }
 
@@ -197,38 +198,42 @@
     [exposureView setCenter:center];
     
     [self.delegate mediaView:self labelPointOfInterest:center];
-    
-    if (recognizer.state == UIGestureRecognizerStateBegan)
-    {
-        if (exposureView.alpha == 0.0)
+    if ([self.delegate session].isSessionRunning) {
+        if (recognizer.state == UIGestureRecognizerStateBegan)
         {
-            [exposureView animate];
+            if (exposureView.alpha == 0.0)
+            {
+                [exposureView animate];
+            }
+        }
+        else if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
+        {
+            [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];
+            [exposureView hideAfterSeconds:1];
         }
     }
-    else if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
-    {
-        [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];
-        [exposureView hideAfterSeconds:1];
-    }
+   
 }
 
 -(void)longPressGestureRecognizer:(UILongPressGestureRecognizer*)recognizer
 {
     CGPoint center = [recognizer locationInView:self];
     
-    [focusView setCenter:center];
-    
-    if (recognizer.state == UIGestureRecognizerStateBegan)
-    {
-        if (focusView.alpha == 0.0)
+    if ([self.delegate session].isSessionRunning) {
+        [focusView setCenter:center];
+        
+        if (recognizer.state == UIGestureRecognizerStateBegan)
         {
-            [focusView animate];
+            if (focusView.alpha == 0.0)
+            {
+                [focusView animate];
+            }
         }
-    }
-    else if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
-    {
-        [self.delegate mediaView:self focusPointOfInterest:focusView.center];
-        [focusView hideAfterSeconds:1];
+        else if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
+        {
+            [self.delegate mediaView:self focusPointOfInterest:focusView.center];
+            [focusView hideAfterSeconds:1];
+        }
     }
 }
 

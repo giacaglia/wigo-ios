@@ -24,7 +24,6 @@
 
 #import "IQMediaCaptureController.h"
 #import "IQMediaView.h"
-#import "IQCaptureSession.h"
 #import "IQFileManager.h"
 #import "IQPartitionBar.h"
 #import "IQBottomContainerView.h"
@@ -69,7 +68,7 @@
 @property(nonatomic, strong, readonly) UIImageView *imageViewProcessing;
 @property(nonatomic, strong, readonly) UIButton *buttonCancel, *buttonCapture, *buttonToggleMedia, *buttonSelect, *buttonDelete;
 
-@property(nonatomic, strong, readonly) IQCaptureSession *session;
+//@property(nonatomic, strong, readonly) IQCaptureSession *session;
 
 @property(nonatomic, assign) CGPoint labelPoint;
 @property(nonatomic, strong) UITextField *textField;
@@ -802,6 +801,8 @@
         [self.bottomContainerView setMiddleContentView:self.buttonCapture];
         self.buttonToggleCamera.hidden = NO;
         self.buttonFlash.hidden = NO;
+        self.textField.text = @"";
+        self.textField.hidden = YES;
     }
     
     else {
@@ -913,6 +914,7 @@
             [self.view addSubview:self.textField];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
         }
+        self.textField.hidden = NO;
         self.labelPoint = labelPoint;
         [self.textField becomeFirstResponder];
     }
