@@ -174,7 +174,8 @@
     CGPoint center = [recognizer locationInView:self];
     
     [exposureView setCenter:center];
-    
+//    x (recognizer.state == UIGestureRecognizerStateRecognized) {
+//    }
     if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
     {
         [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];

@@ -610,6 +610,8 @@
             [self.bottomContainerView setLeftContentView:nil];
             [self.bottomContainerView setRightContentView:nil];
 //            [self.bottomContainerView setMiddleContentView:self.imageViewProcessing];
+            self.buttonToggleCamera.hidden = YES;
+            self.buttonFlash.hidden = YES;
 
             [[self session] takePicture];
         }
@@ -798,6 +800,8 @@
         
         [self.buttonCapture setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
         [self.bottomContainerView setMiddleContentView:self.buttonCapture];
+        self.buttonToggleCamera.hidden = NO;
+        self.buttonFlash.hidden = NO;
     }
     
     else {
@@ -907,14 +911,23 @@
             self.textField.textAlignment = NSTextAlignmentCenter;
             self.textField.delegate = self;
             [self.view addSubview:self.textField];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
         }
         self.labelPoint = labelPoint;
-        [UIView animateWithDuration:0.3 animations:^{
-            self.textField.frame = CGRectMake(0, self.view.frame.size.height - 270, self.view.frame.size.width, 50);
-        }];
+        
         [self.textField becomeFirstResponder];
     }
 }
+
+- (void)keyboardWillShow:(NSNotification*)notification
+{
+    NSDictionary* userInfo = [notification userInfo];
+    CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    [UIView animateWithDuration:0.3 animations:^{
+        self.textField.frame = CGRectMake(0, 302, self.view.frame.size.width, 50);
+    }];
+}
+
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self.textField endEditing:YES];
@@ -926,7 +939,9 @@
 
 
 - (void)reverseCamera {
-    [self toggleCameraAction];
+    if ([self session].isSessionRunning) {
+       [self toggleCameraAction];
+    }
 }
 
 #pragma mark - IQCaptureSession Delegates

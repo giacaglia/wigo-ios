@@ -37,7 +37,7 @@ typedef NS_ENUM(NSInteger, IQMediaCaptureControllerCameraDevice) {
 
 @protocol IQMediaCaptureControllerDelegate;
 
-@interface IQMediaCaptureController : UIViewController
+@interface IQMediaCaptureController : UIViewController <UITextFieldDelegate>
 
 @property(nonatomic, assign) id<IQMediaCaptureControllerDelegate> delegate;
 
