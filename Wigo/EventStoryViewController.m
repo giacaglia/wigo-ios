@@ -120,6 +120,10 @@ NSArray *eventMessages;
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
+    
+    myCell.leftLine.backgroundColor = RGB(237, 237, 237);
+    myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
+    
     myCell.rightLine.backgroundColor = RGB(237, 237, 237);
     myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
 
@@ -356,8 +360,8 @@ NSArray *eventMessages;
 {
 //    self.sectionInset = UIEdgeInsetsMake(0, 50, 0, 0);
     self.itemSize = CGSizeMake(100, 100);
-    self.minimumLineSpacing = 5;
-    self.minimumInteritemSpacing = 4;
+    self.minimumLineSpacing = 0;
+    self.minimumInteritemSpacing = 0;
     self.scrollDirection = UICollectionViewScrollDirectionVertical;
 }
 

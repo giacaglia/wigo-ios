@@ -99,7 +99,7 @@
     if ([numbers count] > 0) {
         NSDictionary *options = (NSDictionary *)numbers;
         [Network sendAsynchronousHTTPMethod:POST
-                                withAPIName:@"invites/"
+                                withAPIName:@"invites/?force=true"
                                 withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
                                 withOptions:options];
         

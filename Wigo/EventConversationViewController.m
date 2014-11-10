@@ -76,6 +76,7 @@
 
     [myCell resetToInactive];
 
+    myCell.leftLineEnabled = (indexPath.row > 0);
     myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
     User *user;
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:[indexPath row]];
@@ -367,12 +368,17 @@
     
     self.backgroundColor = UIColor.clearColor;
     
-    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x, self.center.y, self.frame.size.width, 2)];
+    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x + 25, self.center.y, self.center.x - 25, 2)];
     self.rightLine.alpha = 0.5f;
     self.rightLine.backgroundColor = [UIColor whiteColor];
     [self addSubview: self.rightLine];
     
-    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 25, 50, 50)];
+    self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - 25, 2)];
+    self.leftLine.alpha = 0.5f;
+    self.leftLine.backgroundColor = [UIColor whiteColor];
+    [self addSubview: self.leftLine];
+    
+    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(25, 25, 50, 50)];
     self.faceImageView.layer.masksToBounds = YES;
     self.faceImageView.backgroundColor = [UIColor blackColor];
     self.faceImageView.layer.cornerRadius = 25;
@@ -382,7 +388,7 @@
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self addSubview: self.faceImageView];
     
-    self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(40, 15, 20, 20)];
+    self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(25 + 40, 15, 20, 20)];
     self.mediaTypeImageView.layer.masksToBounds = YES;
     self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
     self.mediaTypeImageView.layer.cornerRadius = 10;
@@ -392,7 +398,7 @@
     self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self addSubview:self.mediaTypeImageView];
     
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 78, 60, 20)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 78, 60, 20)];
     self.timeLabel.textAlignment = NSTextAlignmentCenter;
     self.timeLabel.textColor = [UIColor whiteColor];
     self.timeLabel.font = [FontProperties lightFont:12];
@@ -405,6 +411,10 @@
 
 - (void)setRightLineEnabled:(BOOL)rightLineEnabled {
     self.rightLine.hidden = !rightLineEnabled;
+}
+
+- (void)setLeftLineEnabled:(BOOL)leftLineEnabled {
+    self.leftLine.hidden = !leftLineEnabled;
 }
 
 - (void) setIsActive:(BOOL)isActive {
@@ -423,7 +433,7 @@
             [self.faceImageView.layer addAnimation: animation forKey:@"cornerRadius"];
             
             [UIView animateWithDuration: 0.5 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
-                self.faceImageView.frame = CGRectMake(0, 20, 60, 60);
+                self.faceImageView.frame = CGRectMake(20, 20, 60, 60);
                 self.faceImageView.alpha = 1.0f;
                 self.faceImageView.layer.cornerRadius = 30;
             } completion:^(BOOL finished) {
@@ -450,7 +460,7 @@
 }
 
 - (void) resetToInactive {
-    self.faceImageView.frame = CGRectMake(0, 25, 50, 50);
+    self.faceImageView.frame = CGRectMake(25, 25, 50, 50);
     self.faceImageView.alpha = 0.5f;
     self.faceImageView.layer.cornerRadius = 25;
 }

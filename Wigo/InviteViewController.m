@@ -393,10 +393,14 @@ heightForHeaderInSection:(NSInteger)section
     int tag = (int)buttonSender.tag;
     User *user;
     if (isSearching) {
-        user = [[filteredContentParty getObjectArray] objectAtIndex:tag];
+        if (tag < [[filteredContentParty getObjectArray] count]) {
+            user = [[filteredContentParty getObjectArray] objectAtIndex:tag];
+        }
     }
     else {
-        user = [[everyoneParty getObjectArray] objectAtIndex:tag];
+        if (tag < [[everyoneParty getObjectArray] count]) {
+            user = [[everyoneParty getObjectArray] objectAtIndex:tag];
+        }
     }
     
     if ([user isTapped]) {
@@ -409,8 +413,11 @@ heightForHeaderInSection:(NSInteger)section
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
         [EventAnalytics tagEvent:@"Tap User" withDetails:options];
     }
-    [everyoneParty replaceObjectAtIndex:tag withObject:user];
-    if (tag < [invitePeopleTableView numberOfRowsInSection:0]) {
+    if (tag < [[everyoneParty getObjectArray] count]) {
+        [everyoneParty replaceObjectAtIndex:tag withObject:user];
+    }
+    int sizeOfTable = [invitePeopleTableView numberOfRowsInSection:0];
+    if (sizeOfTable > 0 && tag < sizeOfTable && tag > 0) {
         [invitePeopleTableView beginUpdates];
         [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
         [invitePeopleTableView endUpdates];
