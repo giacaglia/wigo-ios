@@ -347,10 +347,12 @@
 }
 
 - (void)cancelPressed:(id)sender {
+    [self.mediaScrollView closeView];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)flagPressed{
+- (void)flagPressed {
+    [self.mediaScrollView closeView];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

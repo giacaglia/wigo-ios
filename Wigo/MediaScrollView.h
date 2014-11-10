@@ -20,5 +20,6 @@
 @property (nonatomic, strong) NSNumber *index;
 - (void)loadContent;
 
+- (void)closeView;
 -(void)scrolledToPage:(int)page;
 @end

@@ -76,16 +76,17 @@
             theMoviePlayer.scalingMode = MPMovieScalingModeAspectFill;
             [theMoviePlayer setControlStyle: MPMovieControlStyleNone];
             theMoviePlayer.repeatMode = MPMovieRepeatModeOne;
+            theMoviePlayer.shouldAutoplay = NO;
             [theMoviePlayer prepareToPlay];
             
-            UIImageView *videoView = [[UIImageView alloc] initWithFrame: CGRectMake(i*320, 0, 320, 640)];
-            [theMoviePlayer requestThumbnailImagesAtTimes:@[@0.0f] timeOption:MPMovieTimeOptionNearestKeyFrame];
-            [[NSNotificationCenter defaultCenter] addObserverForName:MPMoviePlayerThumbnailImageRequestDidFinishNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-                UIImage *image = [[note userInfo] objectForKey:MPMoviePlayerThumbnailTimeKey];
-                if (image && [image isKindOfClass:[UIImage class]]) {
-                    videoView.image = [[note userInfo] objectForKey:MPMoviePlayerThumbnailTimeKey];
-                }
-            }];
+            UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(i*320, 0, 320, 640)];
+//            [theMoviePlayer requestThumbnailImagesAtTimes:@[@0.0f] timeOption:MPMovieTimeOptionNearestKeyFrame];
+//            [[NSNotificationCenter defaultCenter] addObserverForName:MPMoviePlayerThumbnailImageRequestDidFinishNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+//                UIImage *image = [[note userInfo] objectForKey:MPMoviePlayerThumbnailTimeKey];
+//                if (image && [image isKindOfClass:[UIImage class]]) {
+//                    videoView.image = [[note userInfo] objectForKey:MPMoviePlayerThumbnailTimeKey];
+//                }
+//            }];
 
             videoView.backgroundColor = [UIColor clearColor];
             theMoviePlayer.view.frame = videoView.bounds;
@@ -101,6 +102,12 @@
     else self.contentOffset = CGPointMake(320*(self.eventMessages.count - 1), 0);
 }
 
+- (void)closeView {
+    if (self.lastMoviePlayer) {
+        [self.lastMoviePlayer stop];
+    }
+}
+
 -(void)scrolledToPage:(int)page {
     if (self.lastMoviePlayer) {
         [self.lastMoviePlayer stop];
@@ -108,7 +115,7 @@
     MPMoviePlayerController *theMoviePlayer = [self.moviePlayers objectAtIndex:page];
     if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
         UIImageView *movieSuperview = (UIImageView *)theMoviePlayer.view.superview;
-        movieSuperview.image = nil;
+//        movieSuperview.image = nil;
         [theMoviePlayer play];
         self.lastMoviePlayer = theMoviePlayer;
     }
