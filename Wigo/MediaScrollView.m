@@ -77,7 +77,15 @@
             [theMoviePlayer setControlStyle: MPMovieControlStyleNone];
             [theMoviePlayer prepareToPlay];
             
-            UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(i*320, 0, 320, 640)];
+            UIImageView *videoView = [[UIImageView alloc] initWithFrame: CGRectMake(i*320, 0, 320, 640)];
+            [theMoviePlayer requestThumbnailImagesAtTimes:@[@0.0f] timeOption:MPMovieTimeOptionNearestKeyFrame];
+            [[NSNotificationCenter defaultCenter] addObserverForName:MPMoviePlayerThumbnailImageRequestDidFinishNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+                UIImage *image = [[note userInfo] objectForKey:MPMoviePlayerThumbnailTimeKey];
+                if (image && [image isKindOfClass:[UIImage class]]) {
+                    videoView.image = [[note userInfo] objectForKey:MPMoviePlayerThumbnailTimeKey];
+                }
+            }];
+
             videoView.backgroundColor = [UIColor clearColor];
             theMoviePlayer.view.frame = videoView.bounds;
             theMoviePlayer.backgroundView.backgroundColor = [UIColor clearColor];
@@ -98,6 +106,8 @@
     }
     MPMoviePlayerController *theMoviePlayer = [self.moviePlayers objectAtIndex:page];
     if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
+        UIImageView *movieSuperview = (UIImageView *)theMoviePlayer.view.superview;
+        movieSuperview.image = nil;
         [theMoviePlayer play];
         self.lastMoviePlayer = theMoviePlayer;
     }
