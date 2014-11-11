@@ -23,6 +23,7 @@
 @property (nonatomic, assign) CGPoint imagesScrollViewPointNow;
 @property (nonatomic, assign) BOOL facesHidden;
 @property (nonatomic, strong) UIButton * buttonCancel;
+@property (nonatomic, strong) UIButton *buttonTrash;
 @end
 
 @implementation EventConversationViewController
@@ -301,6 +302,7 @@
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"] && !self.facesHidden) {
         self.facesHidden = YES;
         [self.buttonCancel removeFromSuperview];
+        [self.buttonTrash removeFromSuperview];
         [UIView animateWithDuration:0.5 animations:^{
             self.facesCollectionView.alpha = 0;
         }];
@@ -308,6 +310,16 @@
     else {
         self.facesHidden = NO;
     }
+    User *user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
+    if ([user isEqualToUser:[Profile user]]) {
+        self.buttonTrash.hidden = NO;
+        self.buttonTrash.enabled = YES;
+    }
+    else {
+        self.buttonTrash.hidden = YES;
+        self.buttonTrash.enabled = NO;
+    }
+    
     
     NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
     
@@ -344,6 +356,15 @@
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
+    
+    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 46, self.view.frame.size.height - 56, 36, 36)];
+    UIImageView *trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
+    trashImageView.image = [UIImage imageNamed:@"trashIcon"];
+    [self.buttonTrash addSubview:trashImageView];
+    [self.buttonTrash addTarget:self action:@selector(trashPressed:) forControlEvents:UIControlEventTouchUpInside];
+    self.buttonTrash.hidden = YES;
+    self.buttonTrash.enabled = NO;
+    [self.view addSubview:self.buttonTrash];
 }
 
 - (void)cancelPressed:(id)sender {
@@ -351,8 +372,8 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)flagPressed {
-    [self.mediaScrollView closeView];
+
+- (void)trashPressed:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -404,10 +425,10 @@
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self addSubview: self.faceImageView];
     
-    self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(25 + 40, 15, 20, 20)];
+    self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(62, 20, 15, 15)];
     self.mediaTypeImageView.layer.masksToBounds = YES;
     self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
-    self.mediaTypeImageView.layer.cornerRadius = 10;
+    self.mediaTypeImageView.layer.cornerRadius = 7;
     self.mediaTypeImageView.layer.borderWidth = 2.0;
     self.mediaTypeImageView.alpha = 0.5f;
     self.mediaTypeImageView.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -452,6 +473,10 @@
                 self.faceImageView.frame = CGRectMake(20, 20, 60, 60);
                 self.faceImageView.alpha = 1.0f;
                 self.faceImageView.layer.cornerRadius = 30;
+                
+                self.mediaTypeImageView.frame = CGRectMake(65, 15, 20, 20);
+                self.mediaTypeImageView.alpha = 1.0f;
+                self.mediaTypeImageView.layer.cornerRadius = 10;
             } completion:^(BOOL finished) {
 
             }];
@@ -479,6 +504,10 @@
     self.faceImageView.frame = CGRectMake(25, 25, 50, 50);
     self.faceImageView.alpha = 0.5f;
     self.faceImageView.layer.cornerRadius = 25;
+    
+    self.mediaTypeImageView.frame = CGRectMake(62, 20, 15, 15);
+    self.mediaTypeImageView.alpha = 0.5f;
+    self.mediaTypeImageView.layer.cornerRadius = 7;
 }
 
 @end

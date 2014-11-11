@@ -120,14 +120,14 @@ NSArray *eventMessages;
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
-    
+    myCell.isActive = YES;
+
     myCell.leftLine.backgroundColor = RGB(237, 237, 237);
     myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
     
     myCell.rightLine.backgroundColor = RGB(237, 237, 237);
     myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
 
-    myCell.isActive = YES;
     User *user;
     NSDictionary *eventMessage = [eventMessages objectAtIndex:[indexPath row]];
     user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];

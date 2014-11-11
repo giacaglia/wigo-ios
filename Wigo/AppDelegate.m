@@ -342,7 +342,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     if (!triedToRegister) {
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"FYI"
-                                  message:@"WiGo only sends notifications from your closest friends at your school and important updates."
+                                  message:@"WiGo only sends notifications from your closest friends and important updates."
                                   delegate:self
                                   cancelButtonTitle:@"OK"
                                   otherButtonTitles: nil];
