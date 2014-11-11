@@ -138,6 +138,22 @@
     [self.view addSubview:self.mediaView];
     [self.view addSubview:self.settingsContainerView];
     [self.view addSubview:self.bottomContainerView];
+    
+//    CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+//    gradientLayer.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+//    gradientLayer.colors = @[(id)RGBAlpha(0, 0, 0, 0.7f).CGColor,
+//                             (id)RGBAlpha(0, 0, 0, 0.2f).CGColor,
+//                             (id)RGBAlpha(0, 0, 0, 0.0f).CGColor,
+//                             (id)RGBAlpha(0, 0, 0, 0.0f).CGColor,
+//                             (id)RGBAlpha(0, 0, 0, 0.7f).CGColor
+//                             ];
+//    gradientLayer.locations = @[[NSNumber numberWithFloat:0.0f],
+//                                [NSNumber numberWithFloat:0.2f],
+//                                [NSNumber numberWithFloat:0.3f],
+//                                [NSNumber numberWithFloat:0.85f],
+//                                [NSNumber numberWithFloat:1],
+//                                ];
+//    [self.view.layer addSublayer:gradientLayer];
 }
 
 - (void)viewDidLoad

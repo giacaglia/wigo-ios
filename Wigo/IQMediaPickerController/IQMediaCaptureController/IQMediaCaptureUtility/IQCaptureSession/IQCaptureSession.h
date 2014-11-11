@@ -23,7 +23,6 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#import "IQMediaCaptureController.h"
 
 
 typedef NS_ENUM(NSInteger, IQCameraCaptureMode) {

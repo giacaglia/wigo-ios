@@ -26,6 +26,7 @@
 #import "IQFileManager.h"
 #import "IQAudioSession.h"
 #import "IQMediaPickerControllerConstants.h"
+#import "IQMediaCaptureController.h"
 
 
 

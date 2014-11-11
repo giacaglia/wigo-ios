@@ -196,22 +196,10 @@ NSArray *eventMessages;
 }
 
 - (void)sendPressed:(id)sender {
-    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    
-    [mutableEventMessages addObject:@{
-                                     @"user": [[Profile user] dictionary],
-                                     @"created": [dateFormatter stringFromDate:[NSDate date]],
-                                     @"media_mime_type": @"new",
-                                     @"media": @""
-                                     }];
     
     EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationController.event = self.event;
-    if (eventMessages) conversationController.eventMessages = mutableEventMessages;
+    if (eventMessages) conversationController.eventMessages = [self eventMessagesWithCamera];
     else conversationController.eventMessages = [NSMutableArray new];
     
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
@@ -285,6 +273,23 @@ NSArray *eventMessages;
     }
 }
 
+- (NSMutableArray *)eventMessagesWithCamera {
+    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    [mutableEventMessages addObject:@{
+                                      @"user": [[Profile user] dictionary],
+                                      @"created": [dateFormatter stringFromDate:[NSDate date]],
+                                      @"media_mime_type": @"new",
+                                      @"media": @""
+                                      }];
+
+    return mutableEventMessages;
+}
+
 - (void)uploadContentWithFile:(NSData *)fileData
                   andFileName:(NSString *)filename
                    andOptions:(NSDictionary *)options
@@ -334,8 +339,15 @@ NSArray *eventMessages;
     EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationController.event = self.event;
     conversationController.index = index;
-    if (eventMessages) conversationController.eventMessages = [NSMutableArray arrayWithArray:eventMessages];
+    if (eventMessages) conversationController.eventMessages = [self eventMessagesWithCamera];
     else conversationController.eventMessages = [NSMutableArray new];
+    
+    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
+    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
+    controller.allowsPickingMultipleItems = YES;
+    controller.delegate = self;
+    conversationController.controller = controller;
+    
     [self presentViewController:conversationController animated:YES completion:nil];
 }
 
