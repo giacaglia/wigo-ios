@@ -159,9 +159,9 @@ NSArray *eventMessages;
     chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 60)];
     [self.view addSubview:chatTextFieldWrapper];
 
-    messageTextView.tintColor = [FontProperties getOrangeColor];
     messageTextView = [[UITextView alloc] initWithFrame:CGRectMake(10, 10, chatTextFieldWrapper.frame.size.width - 70, 35)];
     //    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
+    messageTextView.tintColor = [FontProperties getOrangeColor];
     messageTextView.delegate = self;
     messageTextView.returnKeyType = UIReturnKeySend;
     messageTextView.backgroundColor = [UIColor whiteColor];
@@ -170,12 +170,13 @@ NSArray *eventMessages;
     messageTextView.layer.cornerRadius = 4.0f;
     messageTextView.font = [FontProperties mediumFont:18.0f];
     messageTextView.textColor = RGB(102, 102, 102);
+    messageTextView.delegate = self;
     [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
     [chatTextFieldWrapper addSubview:messageTextView];
     [chatTextFieldWrapper bringSubviewToFront:messageTextView];
     
     sendButton = [[UIButton alloc] initWithFrame:CGRectMake(chatTextFieldWrapper.frame.size.width - 50, 10, 45, 35)];
-    [sendButton addTarget:self action:@selector(sendPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     sendButton.backgroundColor = [FontProperties getOrangeColor];
     sendButton.layer.borderWidth = 1.0f;
     sendButton.layer.borderColor = [UIColor clearColor].CGColor;
@@ -187,6 +188,20 @@ NSArray *eventMessages;
     [sendButton addSubview:sendOvalImageView];
 }
 
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    conversationController.event = self.event;
+    if (eventMessages) conversationController.eventMessages = [self eventMessagesWithText];
+    else conversationController.eventMessages = [NSMutableArray new];
+    
+    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
+    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
+    controller.allowsPickingMultipleItems = YES;
+    controller.delegate = self;
+    conversationController.controller = controller;
+    
+    [self presentViewController:conversationController animated:YES completion:nil];
+}
 
 
 #pragma mark - Button handler
@@ -195,8 +210,7 @@ NSArray *eventMessages;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)sendPressed:(id)sender {
-    
+- (void)sendPressed {
     EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationController.event = self.event;
     if (eventMessages) conversationController.eventMessages = [self eventMessagesWithCamera];
@@ -271,6 +285,23 @@ NSArray *eventMessages;
                         andFileName:@"video0.mp4"
                          andOptions:options];
     }
+}
+
+- (NSMutableArray *)eventMessagesWithText {
+    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    [mutableEventMessages addObject:@{
+                                      @"user": [[Profile user] dictionary],
+                                      @"created": [dateFormatter stringFromDate:[NSDate date]],
+                                      @"media_mime_type": @"newText",
+                                      @"media": @""
+                                      }];
+    
+    return mutableEventMessages;
 }
 
 - (NSMutableArray *)eventMessagesWithCamera {

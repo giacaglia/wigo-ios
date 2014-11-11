@@ -35,6 +35,10 @@
             [self addSubview:self.controller.view];
             [self.players addObject:[NSNull null]];
         }
+        else if ([mimeType isEqualToString:@"newText"]) {
+            [self addViewForNewTextAtPage:i];
+            [self.players addObject:[NSNull null]];
+        }
         else if ([mimeType isEqualToString:@"image/jpeg"]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i*320, 0, 320, 640)];
@@ -124,7 +128,6 @@
 - (void)removeMediaAtPage:(int)page {
     UIView *player = [self.players objectAtIndex:page];
     if ([player isKindOfClass:[MPMoviePlayerController class]])    {
-        
     }
     else {
         [UIView animateWithDuration:0.4 animations:^{
@@ -135,6 +138,40 @@
     }
 }
 
+
+- (void)addViewForNewTextAtPage:(int)page {
+    UIView *chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(page*320, self.frame.size.height - 50, self.frame.size.width, 60)];
+    [self addSubview:chatTextFieldWrapper];
+    
+    UITextField * messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, chatTextFieldWrapper.frame.size.width - 70, 35)];
+    messageTextField.tintColor = [FontProperties getOrangeColor];
+    messageTextField.placeholder = @"Add to the story";
+    //    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
+    messageTextField.delegate = self;
+    messageTextField.returnKeyType = UIReturnKeySend;
+    messageTextField.backgroundColor = [UIColor whiteColor];
+    messageTextField.layer.borderColor = RGB(147, 147, 147).CGColor;
+    messageTextField.layer.borderWidth = 0.5f;
+    messageTextField.layer.cornerRadius = 4.0f;
+    messageTextField.font = [FontProperties mediumFont:18.0f];
+    messageTextField.textColor = RGB(102, 102, 102);
+    messageTextField.delegate = self;
+    [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
+    [chatTextFieldWrapper addSubview:messageTextField];
+    [chatTextFieldWrapper bringSubviewToFront:messageTextField];
+    
+    UIButton *sendButton = [[UIButton alloc] initWithFrame:CGRectMake(chatTextFieldWrapper.frame.size.width - 50, 10, 45, 35)];
+    [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
+    sendButton.backgroundColor = [FontProperties getOrangeColor];
+    sendButton.layer.borderWidth = 1.0f;
+    sendButton.layer.borderColor = [UIColor clearColor].CGColor;
+    sendButton.layer.cornerRadius = 5;
+    [chatTextFieldWrapper addSubview:sendButton];
+    
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 25, 25)];
+    sendOvalImageView.image = [UIImage imageNamed:@"sendOval"];
+    [sendButton addSubview:sendOvalImageView];
+}
 
 
 

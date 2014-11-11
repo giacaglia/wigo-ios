@@ -308,6 +308,10 @@
         }];
     }
     else {
+        if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"newText"]) {
+            [self.buttonCancel removeFromSuperview];
+            [self.buttonTrash removeFromSuperview];
+        }
         self.facesHidden = NO;
     }
     User *user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
