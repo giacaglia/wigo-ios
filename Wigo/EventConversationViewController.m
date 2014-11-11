@@ -361,6 +361,7 @@
     UIImageView *trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
     trashImageView.image = [UIImage imageNamed:@"trashIcon"];
     [self.buttonTrash addSubview:trashImageView];
+    self.buttonTrash.tag = [self.index intValue];
     [self.buttonTrash addTarget:self action:@selector(trashPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.buttonTrash.hidden = YES;
     self.buttonTrash.enabled = NO;
@@ -374,7 +375,8 @@
 
 
 - (void)trashPressed:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    UIButton *buttonSender = (UIButton *)sender;
+    [self.mediaScrollView removeMediaAtPage:buttonSender.tag];
 }
 
 @end

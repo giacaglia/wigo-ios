@@ -22,4 +22,5 @@
 
 - (void)closeView;
 -(void)scrolledToPage:(int)page;
+- (void)removeMediaAtPage:(int)page;
 @end
