@@ -14,6 +14,8 @@
 @interface MediaScrollView() {}
 @property (nonatomic, strong) NSMutableArray *players;
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
+@property (nonatomic, strong) UIView *chatTextFieldWrapper;
+@property (nonatomic, strong) UILabel *addYourVerseLabel;
 
 @end
 @implementation MediaScrollView
@@ -140,10 +142,10 @@
 
 
 - (void)addViewForNewTextAtPage:(int)page {
-    UIView *chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(page*320, self.frame.size.height - 50, self.frame.size.width, 60)];
-    [self addSubview:chatTextFieldWrapper];
+    self.chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(page*320, self.frame.size.height - 50, self.frame.size.width, 60)];
+    [self addSubview:self.chatTextFieldWrapper];
     
-    UITextField * messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, chatTextFieldWrapper.frame.size.width - 70, 35)];
+    UITextField * messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, self.chatTextFieldWrapper.frame.size.width - 70, 35)];
     messageTextField.tintColor = [FontProperties getOrangeColor];
     messageTextField.placeholder = @"Add to the story";
     //    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
@@ -155,24 +157,47 @@
     messageTextField.layer.cornerRadius = 4.0f;
     messageTextField.font = [FontProperties mediumFont:18.0f];
     messageTextField.textColor = RGB(102, 102, 102);
-    messageTextField.delegate = self;
     [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
-    [chatTextFieldWrapper addSubview:messageTextField];
-    [chatTextFieldWrapper bringSubviewToFront:messageTextField];
+    [self.chatTextFieldWrapper addSubview:messageTextField];
+    [self.chatTextFieldWrapper bringSubviewToFront:messageTextField];
     
-    UIButton *sendButton = [[UIButton alloc] initWithFrame:CGRectMake(chatTextFieldWrapper.frame.size.width - 50, 10, 45, 35)];
+    UIButton *sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.chatTextFieldWrapper.frame.size.width - 50, 10, 45, 35)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     sendButton.backgroundColor = [FontProperties getOrangeColor];
     sendButton.layer.borderWidth = 1.0f;
     sendButton.layer.borderColor = [UIColor clearColor].CGColor;
     sendButton.layer.cornerRadius = 5;
-    [chatTextFieldWrapper addSubview:sendButton];
+    [self.chatTextFieldWrapper addSubview:sendButton];
     
     UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 25, 25)];
     sendOvalImageView.image = [UIImage imageNamed:@"sendOval"];
     [sendButton addSubview:sendOvalImageView];
+    
+    self.addYourVerseLabel = [[UILabel alloc] initWithFrame:CGRectMake(page * 320, 250, self.frame.size.width, 30)];
+    self.addYourVerseLabel.text = @"Add your verse";
+    self.addYourVerseLabel.textColor = [UIColor whiteColor];
+    self.addYourVerseLabel.font = [FontProperties lightFont:30.0f];
+    self.addYourVerseLabel.textAlignment = NSTextAlignmentCenter;
+    [self addSubview:self.addYourVerseLabel];
+    
 }
 
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    NSLog(@"lalala");
+    self.chatTextFieldWrapper.frame = CGRectMake((self.eventMessages.count -1) * 320, 280, self.frame.size.width, 60);
+}
+- (BOOL)textField:(UITextField *)textField
+shouldChangeCharactersInRange:(NSRange)range
+replacementString:(NSString *)string {
+    self.addYourVerseLabel.text = textField.text;
+    return YES;
+}
+
+
+
+- (void)sendPressed {
+    NSLog(@"here");
+}
 
 
 @end
