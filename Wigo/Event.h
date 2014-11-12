@@ -14,6 +14,7 @@
 @property NSString *name;
 @property NSNumber* eventID;
 @property NSNumber *numberAttending;
+@property NSNumber *numberOfMessages;
 
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
 - (void)addEventAttendeesWithDictionary:(NSDictionary *)eventAttendeesDictionary;

@@ -54,6 +54,17 @@
     }
 }
 
+- (NSNumber *)numberOfMessages {
+    if ([[_proxy allKeys] containsObject:@"num_messages"]) return [_proxy objectForKey:@"num_messages"];
+    return @0;
+}
+
+- (void)setNumberOfMessages:(NSNumber *)numberOfMessages {
+    if ([[_proxy allKeys] containsObject:@"num_messages"]) {
+        [_proxy setObject:numberOfMessages forKey:@"num_messages"];
+    }
+}
+
 - (NSString *)name {
     return (NSString *)[_proxy objectForKey:@"name"];
 }

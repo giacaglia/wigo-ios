@@ -20,7 +20,7 @@
 #define xSpacing 12
 #import "EventStoryViewController.h"
 
-#define sizeOfEachCell 165
+#define sizeOfEachCell 210
 @interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
@@ -615,6 +615,7 @@ int firstIndexOfNegativeEvent;
     }
     NSMutableAttributedString * attributedString = [[NSMutableAttributedString alloc] initWithString:text];
     [attributedString addAttribute:NSFontAttributeName value:[FontProperties getTitleFont] range:NSMakeRange(0,[[event name] length])];
+//    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(104, 174, 215) range:NSMakeRange(0,[[event name] length])];
     [attributedString addAttribute:NSFontAttributeName value:[FontProperties getSubtitleFont] range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
     [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(204, 204, 204) range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
     labelName.attributedText = attributedString;
@@ -622,6 +623,25 @@ int firstIndexOfNegativeEvent;
     labelName.frame = CGRectMake(xSpacing, 5, self.view.frame.size.width - 117, 60);
     [placeSubView addSubview:labelName];
 
+    NSNumber *numberOfMessages = [event numberOfMessages];
+    
+//    if ([numberOfMessages intValue] > 0) {
+        UIImageView *chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(90, 40, 20, 20)];
+        chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
+        [placeSubView addSubview:chatBubbleImageView];
+        UILabel *chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
+        chatNumberLabel.text = [NSString stringWithFormat:@"%@", [numberOfMessages stringValue]];
+        chatNumberLabel.textAlignment = NSTextAlignmentCenter;
+        chatNumberLabel.font = [FontProperties mediumFont:12.0f];
+        chatNumberLabel.textColor = [UIColor whiteColor];
+        [chatBubbleImageView addSubview:chatNumberLabel];
+//    } 
+    
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 30, 26, 13, 22)];
+    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+    [placeSubView addSubview:postStoryImageView];
+
+    
     // Variables to add images
     int xPosition = xSpacing;
     sizeOfEachImage = 80;
@@ -640,7 +660,8 @@ int firstIndexOfNegativeEvent;
         ) {
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
         
-        UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 105 - 5, 10 - 5, 90 + 10, 17 + 25)];
+//        UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 105 - 5, 10 - 5, 90 + 10, 17 + 25)];
+        UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width/2 - 50, 168, 90 + 10, 17 + 25)];
         aroundInviteButton.tag = [(NSNumber *)[event eventID] intValue];
         [aroundInviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
         
@@ -657,7 +678,8 @@ int firstIndexOfNegativeEvent;
         [aroundInviteButton addSubview:inviteButton];
     }
     else {
-        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 90 - 5, 10 - 5, 80 + 10, 17 + 25)];
+//        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 90 - 5, 10 - 5, 80 + 10, 17 + 25)];
+        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width/2 - 50, 168, 90 + 10, 17 + 25)];
         aroundGoOutButton.tag = [(NSNumber *)[event eventID] intValue];
         [aroundGoOutButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
         

@@ -172,7 +172,7 @@
 -(void)tapGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
     CGPoint center = [recognizer locationInView:self];
-    
+    NSLog(@"tap gesture recognizer");
     [exposureView setCenter:center];
     if (recognizer.state == UIGestureRecognizerStateEnded  &&
         [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
@@ -193,25 +193,31 @@
 
 -(void)panGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
-    CGPoint center = [recognizer locationInView:self];
-    
-    [exposureView setCenter:center];
-    
-    [self.delegate mediaView:self labelPointOfInterest:center];
-    if ([self.delegate session].isSessionRunning) {
-        if (recognizer.state == UIGestureRecognizerStateBegan)
-        {
-            if (exposureView.alpha == 0.0)
-            {
-                [exposureView animate];
-            }
-        }
-        else if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
-        {
-            [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];
-            [exposureView hideAfterSeconds:1];
-        }
+//    CGPoint center = [recognizer locationInView:self];
+//    [exposureView setCenter:center];
+    CGPoint translation = [recognizer translationInView:self];
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        [self.delegate mediaView:self stopTranslateAt:translation];
     }
+    else {
+        [self.delegate mediaView:self translate:translation];
+    }
+   
+//    [self.delegate mediaView:self labelPointOfInterest:center];
+//    if ([self.delegate session].isSessionRunning) {
+//        if (recognizer.state == UIGestureRecognizerStateBegan)
+//        {
+//            if (exposureView.alpha == 0.0)
+//            {
+//                [exposureView animate];
+//            }
+//        }
+//        else if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
+//        {
+//            [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];
+//            [exposureView hideAfterSeconds:1];
+//        }
+//    }
    
 }
 

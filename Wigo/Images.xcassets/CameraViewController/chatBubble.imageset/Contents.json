@@ -7,12 +7,12 @@
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "captureIcon@2x.png"
+      "filename" : "chatbubble-1.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "captureIcon.png"
+      "filename" : "chatbubble.png"
     }
   ],
   "info" : {

@@ -309,7 +309,7 @@
     }
     else {
         if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"newText"]) {
-            [self.buttonCancel removeFromSuperview];
+//            [self.buttonCancel removeFromSuperview];
             [self.buttonTrash removeFromSuperview];
         }
         self.facesHidden = NO;

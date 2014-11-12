@@ -34,6 +34,8 @@
 -(void)mediaView:(IQMediaView*)mediaView exposurePointOfInterest:(CGPoint)exposurePoint;
 - (void)mediaView:(IQMediaView *)mediaView editLabelAtPoint:(CGPoint)labelPoint;
 - (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint;
+- (void)mediaView:(IQMediaView *)mediaView translate:(CGPoint)translationPoint;
+- (void)mediaView:(IQMediaView *)mediaView stopTranslateAt:(CGPoint)translatePoint;
 - (void)reverseCamera;
 @end
 
