@@ -22,6 +22,11 @@
 
 
 - (void)loadContent {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+
     self.backgroundColor = RGB(23, 23, 23);
     self.showsHorizontalScrollIndicator = NO;
     self.contentSize = CGSizeMake(self.eventMessages.count * 320, [self superview].frame.size.height);
@@ -182,22 +187,28 @@
     
 }
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
-    NSLog(@"lalala");
-    self.chatTextFieldWrapper.frame = CGRectMake((self.eventMessages.count -1) * 320, 280, self.frame.size.width, 60);
-}
+//- (void)textFieldDidBeginEditing:(UITextField *)textField {
+//    NSLog(@"lalala");
+//}
 - (BOOL)textField:(UITextField *)textField
 shouldChangeCharactersInRange:(NSRange)range
 replacementString:(NSString *)string {
-    self.addYourVerseLabel.text = textField.text;
+    self.addYourVerseLabel.text = [NSString stringWithFormat:@"%@%@", textField.text, string];
     return YES;
 }
-
-
 
 - (void)sendPressed {
     NSLog(@"here");
 }
 
+- (void)keyboardWillShow:(NSNotification*)notification
+{
+    NSDictionary* userInfo = [notification userInfo];
+    CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+//    CGRect initialFrame = self.chatTextFieldWrapper.frame;
+//    initialFrame = initialFrame - kbFrame;
+    self.chatTextFieldWrapper.frame = CGRectMake(self.chatTextFieldWrapper.frame.origin.x, self.chatTextFieldWrapper.frame.origin.y - kbFrame.size.height, self.chatTextFieldWrapper.frame.size.width, self.chatTextFieldWrapper.frame.size.height);
+    
+}
 
 @end

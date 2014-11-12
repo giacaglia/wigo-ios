@@ -399,12 +399,12 @@
     [profileUser loginWithHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            [self handleJsonResponse:jsonResponse andError:error];
+            [self handleJsonResponse:jsonResponse andError:error isLoggingIn:YES];
         });
     }];
 }
 
-- (void)handleJsonResponse:(NSDictionary *)jsonResponse andError:(NSError *)error {
+- (void)handleJsonResponse:(NSDictionary *)jsonResponse andError:(NSError *)error isLoggingIn:(BOOL)logging{
     User *user;
     if ([jsonResponse isKindOfClass:[NSDictionary class]]) {
         user = [[User alloc] initWithDictionary:jsonResponse];
@@ -421,7 +421,13 @@
         [self fetchProfilePicturesAlbumFacebook];
     }
     else if ([[error domain] isEqualToString:NSURLErrorDomain]) {
-        [self showErrorNoConnection];
+        if ([error code] == NSURLErrorTimedOut) {
+            if (logging) [self loginUserAsynchronous];
+            else [self fetchUserInfo];
+        }
+        else {
+            [self showErrorNoConnection];
+        }
     }
     else if (!jsonResponse && [[error domain] isEqualToString:NSCocoaErrorDomain]) {
         [self showBummerError];
@@ -461,7 +467,7 @@
     [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            [self handleJsonResponse:jsonResponse andError:error];
+            [self handleJsonResponse:jsonResponse andError:error isLoggingIn:NO];
         });
     }];
 }
