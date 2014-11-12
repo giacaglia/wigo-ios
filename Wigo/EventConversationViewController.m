@@ -299,30 +299,37 @@
     [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"] && !self.facesHidden) {
-        self.facesHidden = YES;
-        [self.buttonCancel removeFromSuperview];
-        [self.buttonTrash removeFromSuperview];
-        [UIView animateWithDuration:0.5 animations:^{
-            self.facesCollectionView.alpha = 0;
-        }];
-    }
-    else {
-        if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"newText"]) {
-//            [self.buttonCancel removeFromSuperview];
-            [self.buttonTrash removeFromSuperview];
+    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"]) {
+        if (!self.facesHidden) {
+            self.facesHidden = YES;
+            self.buttonCancel.hidden = YES;
+            self.buttonCancel.enabled = NO;
+            self.buttonTrash.hidden = YES;
+            self.buttonTrash.enabled = NO;
+            [UIView animateWithDuration:0.5 animations:^{
+                self.facesCollectionView.alpha = 0;
+            }];
         }
-        self.facesHidden = NO;
     }
-    User *user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
-    if ([user isEqualToUser:[Profile user]]) {
-        self.buttonTrash.hidden = NO;
-        self.buttonTrash.enabled = YES;
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"newText"]) {
+//            [self.buttonCancel removeFromSuperview];
+            self.buttonTrash.hidden = YES;
+            self.buttonTrash.enabled = NO;
     }
     else {
-        self.buttonTrash.hidden = YES;
-        self.buttonTrash.enabled = NO;
+        self.facesHidden = NO;
+        User *user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
+        if ([user isEqualToUser:[Profile user]]) {
+            self.buttonTrash.hidden = NO;
+            self.buttonTrash.enabled = YES;
+        }
+        else {
+            self.buttonTrash.hidden = YES;
+            self.buttonTrash.enabled = NO;
+        }
+
     }
+
     
     
     NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
