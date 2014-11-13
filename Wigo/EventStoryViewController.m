@@ -11,6 +11,7 @@
 #import "EventPeopleScrollView.h"
 #import "IQMediaPickerController.h"
 #import "AWSUploader.h"
+#import "InviteViewController.h"
 
 UIView *chatTextFieldWrapper;
 UITextView *messageTextView;
@@ -76,7 +77,14 @@ NSArray *eventMessages;
     invitePeopleButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
     invitePeopleButton.layer.borderWidth = 1.0f;
     invitePeopleButton.layer.cornerRadius = 5.0f;
+    [invitePeopleButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:invitePeopleButton];
+}
+
+- (void)invitePressed {
+    [self presentViewController:[[InviteViewController alloc] initWithEventName:self.event.name andID:[self.event eventID]]
+                       animated:YES
+                     completion:nil];
 }
 
 - (void)loadEventStory {
@@ -400,7 +408,7 @@ NSArray *eventMessages;
 
 - (void)setup
 {
-//    self.sectionInset = UIEdgeInsetsMake(0, 50, 0, 0);
+    self.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10);
     self.itemSize = CGSizeMake(100, 100);
     self.minimumLineSpacing = 0;
     self.minimumInteritemSpacing = 0;
