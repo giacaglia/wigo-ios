@@ -946,40 +946,48 @@
 
 -(void)mediaView:(IQMediaView*)mediaView translate:(CGPoint)translationPoint
 {
-    UIView *topSuperView = [(UIView *)[(UIView *)[(UIView *)[self.view superview] superview] superview] superview];
-    if ([topSuperView isKindOfClass:[UIScrollView class]]) {
-      
-        UIScrollView *scrollView = (UIScrollView *)topSuperView;
-        if (!self.startXPoint) {
-            self.startXPoint = scrollView.contentOffset.x;
+    if ([[self session] isSessionRunning]){
+        UIView *topSuperView = [(UIView *)[(UIView *)[(UIView *)[self.view superview] superview] superview] superview];
+        if ([topSuperView isKindOfClass:[UIScrollView class]]) {
+            
+            UIScrollView *scrollView = (UIScrollView *)topSuperView;
+            if (!self.startXPoint) {
+                self.startXPoint = scrollView.contentOffset.x;
+            }
+            if (translationPoint.x > 0) {
+                scrollView.contentOffset = CGPointMake(self.startXPoint - translationPoint.x, scrollView.contentOffset.y);
+            }
         }
-        if (translationPoint.x > 0) {
-            scrollView.contentOffset = CGPointMake(self.startXPoint - translationPoint.x, scrollView.contentOffset.y);
-        }
+
     }
 }
 
 - (void)mediaView:(IQMediaView *)mediaView stopTranslateAt:(CGPoint)translatePoint {
-    UIView *topSuperView = [(UIView *)[(UIView *)[(UIView *)[self.view superview] superview] superview] superview];
-    if ([topSuperView isKindOfClass:[UIScrollView class]]) {
-        
-        UIScrollView *scrollView = (UIScrollView *)topSuperView;
-        if (!self.startXPoint) {
-            self.startXPoint = scrollView.contentOffset.x;
-        }
-        if (translatePoint.x > 0) {
-            float fractionalPage = (self.startXPoint - translatePoint.x)/320;
-            int page;
-            if (fractionalPage - floor(fractionalPage) < 0.8) {
-                page = floor(fractionalPage);
+    if ([self session].isSessionRunning) {
+        UIView *topSuperView = [(UIView *)[(UIView *)[(UIView *)[self.view superview] superview] superview] superview];
+        if ([topSuperView isKindOfClass:[UIScrollView class]]) {
+            
+            UIScrollView *scrollView = (UIScrollView *)topSuperView;
+            if (!self.startXPoint) {
+                self.startXPoint = scrollView.contentOffset.x;
             }
-            else {
-                page = ceil(fractionalPage);
+            if (translatePoint.x > 0) {
+                float fractionalPage = (self.startXPoint - translatePoint.x)/320;
+                int page;
+                if (fractionalPage - floor(fractionalPage) < 0.8) {
+                    page = floor(fractionalPage);
+                }
+                else {
+                    page = ceil(fractionalPage);
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"notificationHighlightPage"
+                                                                    object:nil
+                                                                  userInfo:@{@"page": [NSNumber numberWithInt:page]}];
             }
-            [scrollView setContentOffset:CGPointMake(320*page, scrollView.contentOffset.y) animated:YES];
         }
-    }
 
+    }
+   
 }
 
 - (void)keyboardWillShow:(NSNotification*)notification

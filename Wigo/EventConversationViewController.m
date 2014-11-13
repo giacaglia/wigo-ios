@@ -29,7 +29,6 @@
 @implementation EventConversationViewController
 
 
-
 #pragma mark - ViewController Delegate
 
 - (void)viewDidLoad {
@@ -42,6 +41,16 @@
     self.facesCollectionView.contentInset = UIEdgeInsetsMake(0, 100, 0, 100);
     self.facesCollectionView.pagingEnabled = NO;
     [self loadScrollView];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(notificationHighlightPage:)
+                                                 name:@"notificationHighlightPage"
+                                               object:nil];
+}
+
+- (void)notificationHighlightPage:(NSNotification *) notification {
+    NSDictionary *userInfo = [notification userInfo];
+    NSNumber *pageNumber = (NSNumber *)[userInfo objectForKey:@"page"];
+    [self highlightCellAtPage:[pageNumber integerValue]];
 }
 
 - (void)loadMessages {
@@ -319,6 +328,11 @@
     else {
         self.facesHidden = NO;
         User *user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
+        [UIView animateWithDuration:0.5 animations:^{
+            self.facesCollectionView.alpha = 1;
+        }];
+        self.buttonCancel.hidden = NO;
+        self.buttonCancel.enabled = YES;
         if ([user isEqualToUser:[Profile user]]) {
             self.buttonTrash.hidden = NO;
             self.buttonTrash.enabled = YES;

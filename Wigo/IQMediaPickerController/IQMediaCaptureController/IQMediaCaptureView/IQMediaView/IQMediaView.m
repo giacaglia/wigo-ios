@@ -193,7 +193,6 @@
 
 -(void)panGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
-//    CGPoint center = [recognizer locationInView:self];
 //    [exposureView setCenter:center];
     CGPoint translation = [recognizer translationInView:self];
     if (recognizer.state == UIGestureRecognizerStateEnded) {
@@ -202,8 +201,9 @@
     else {
         [self.delegate mediaView:self translate:translation];
     }
-   
-//    [self.delegate mediaView:self labelPointOfInterest:center];
+
+    CGPoint center = [recognizer locationInView:self];
+    [self.delegate mediaView:self labelPointOfInterest:center];
 //    if ([self.delegate session].isSessionRunning) {
 //        if (recognizer.state == UIGestureRecognizerStateBegan)
 //        {

@@ -13,6 +13,7 @@
 #import "IQMediaPickerController.h"
 
 @interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, MediaScrollViewDelegate>
+- (void)highlightCellAtPage:(NSInteger)page;
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 @property (nonatomic, strong) MediaScrollView *mediaScrollView;
@@ -35,6 +36,7 @@
 
 @property (nonatomic, strong) UIView *leftLine;
 @property (nonatomic, strong) UIView *rightLine;
+
 
 @end
 
