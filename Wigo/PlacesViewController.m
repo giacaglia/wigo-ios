@@ -599,19 +599,22 @@ int firstIndexOfNegativeEvent;
     placeSubView.tag = _tagInteger;
     _tagInteger += 1;
     
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 117, 60)];
+    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 30, 60)];
     labelName.numberOfLines = 0;
     labelName.lineBreakMode = NSLineBreakByWordWrapping;
+    NSString *numberOfPeopleGoing;
     NSString *text;
     if ([[event eventID] intValue] < 0) {
         placeSubView.frame = CGRectMake(0, 0, self.view.frame.size.width, 70);
         text = [NSString stringWithFormat: @"%@ \nBe the first", [event name]];
     }
     else if ([totalUsers intValue] == 1) {
-        text = [NSString stringWithFormat: @"%@ \n%@ is going", [event name], [totalUsers stringValue]];
+        numberOfPeopleGoing = [NSString stringWithFormat:@"%@ is going", [totalUsers stringValue]];
+        text = [NSString stringWithFormat: @"%@ \n%@", [event name], numberOfPeopleGoing];
     }
     else {
-        text = [NSString stringWithFormat: @"%@ \n%@ are going", [event name], [totalUsers stringValue]];
+        numberOfPeopleGoing = [NSString stringWithFormat:@"%@ are going", [totalUsers stringValue]];
+        text = [NSString stringWithFormat: @"%@ \n%@", [event name], numberOfPeopleGoing];
     }
     NSMutableAttributedString * attributedString = [[NSMutableAttributedString alloc] initWithString:text];
     [attributedString addAttribute:NSFontAttributeName value:[FontProperties getTitleFont] range:NSMakeRange(0,[[event name] length])];
@@ -624,9 +627,12 @@ int firstIndexOfNegativeEvent;
     [placeSubView addSubview:labelName];
 
     NSNumber *numberOfMessages = [event numberOfMessages];
-    
+    CGSize size = [numberOfPeopleGoing sizeWithAttributes:
+                   @{NSFontAttributeName:
+                         [FontProperties getSubtitleFont]}];
+
 //    if ([numberOfMessages intValue] > 0) {
-        UIImageView *chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(90, 40, 20, 20)];
+        UIImageView *chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xSpacing + size.width + 5, 40, 20, 20)];
         chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
         [placeSubView addSubview:chatBubbleImageView];
         UILabel *chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
