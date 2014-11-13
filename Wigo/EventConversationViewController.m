@@ -53,9 +53,6 @@
     [self highlightCellAtPage:[pageNumber integerValue]];
 }
 
-- (void)loadMessages {
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     

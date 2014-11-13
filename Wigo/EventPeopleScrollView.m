@@ -20,13 +20,16 @@ int xPosition;
 
 - (id)initWithEvent:(Event *)event {
     self = [super initWithFrame:CGRectMake(0, 90, 320, sizeOfEachImage + 10)];
-    self.event = event;
-    self.contentSize = CGSizeMake(5, sizeOfEachImage + 10);
-    self.showsHorizontalScrollIndicator = NO;
-    self.delegate = self;
-    page = @1;
-    partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
-    [self fetchEventAttendeesAsynchronous];
+    if (self) {
+        self.event = event;
+        self.contentSize = CGSizeMake(5, sizeOfEachImage + 10);
+        self.showsHorizontalScrollIndicator = NO;
+        self.delegate = self;
+        page = @1;
+        [self fillEventAttendees];
+        [self loadUsers];
+    }
+   //    [self fetchEventAttendeesAsynchronous];
     return self;
 }
 
@@ -39,10 +42,34 @@ int xPosition;
 
 }
 
+- (void)fillEventAttendees {
+    NSArray *eventAttendeesArray = [self.event getEventAttendees];
+    partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
+    for (int j = 0; j < [eventAttendeesArray count]; j++) {
+        NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
+        NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
+        User *user;
+        if ([userDictionary isKindOfClass:[NSDictionary class]]) {
+            if ([Profile isUserDictionaryProfileUser:userDictionary]) {
+                user = [Profile user];
+            }
+            else {
+                user = [[User alloc] initWithDictionary:userDictionary];
+            }
+        }
+        [user setValue:[eventAttendee objectForKey:@"event_owner"] forKey:@"event_owner"];
+        [partyUser addObject:user];
+    }
+}
+
+
 - (void)loadUsers {
     xPosition = 12;
     for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
+        if ([user isEqualToUser:[Profile user]]) {
+            user = [Profile user];
+        }
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 0, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage + 3;
 //        imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
@@ -62,7 +89,7 @@ int xPosition;
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-        if (i == 0) profileName.backgroundColor= RGBAlpha(245, 142, 29, 0.6f);
+        if ([user objectForKey:@"event_owner"]) profileName.backgroundColor= RGBAlpha(245, 142, 29, 0.6f);
         else profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
         profileName.font = [FontProperties getSmallPhotoFont];
         [imgView addSubview:profileName];
@@ -102,7 +129,6 @@ int xPosition;
                                       page = @-1;
                                   }
                                   fetchingEventAttendees = NO;
-                                  [self loadUsers];
                               });
         }];
     }

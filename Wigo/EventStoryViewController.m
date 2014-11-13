@@ -35,7 +35,6 @@ NSArray *eventMessages;
     [super viewWillAppear: animated];
     
     [self loadEventMessages];
-
     
     UIButton *aroundBackButton = [[UIButton alloc] initWithFrame:CGRectMake(20, 30, 40, 40)];
     [aroundBackButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
@@ -154,7 +153,6 @@ NSArray *eventMessages;
 }
 
 
-
 - (void)loadTextViewAndSendButton {
     chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 60)];
     [self.view addSubview:chatTextFieldWrapper];
@@ -215,6 +213,7 @@ NSArray *eventMessages;
     conversationController.event = self.event;
     if (eventMessages) conversationController.eventMessages = [self eventMessagesWithCamera];
     else conversationController.eventMessages = [NSMutableArray new];
+    conversationController.index = [NSNumber numberWithInteger:conversationController.eventMessages.count];
     
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
     [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
