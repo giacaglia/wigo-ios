@@ -402,7 +402,12 @@ UIButton *tapButton;
         [spinner startAnimating];
         __weak UIActivityIndicatorView *weakSpinner = spinner;
         __weak UIImageView *weakProfileImgView = profileImgView;
-        [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] imageArea:area completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        
+    [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]]
+                          imageArea:area
+                           withInfo:@{}
+                          completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+//        [profileImgView setImageWithURL:[NSURL URLWithString:[[self.user imagesURL] objectAtIndex:i]] imageArea:area completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             [weakSpinner stopAnimating];
             [self addBlurredImageToImageView:weakProfileImgView forIndex:i];
         }];
