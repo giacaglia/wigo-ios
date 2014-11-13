@@ -80,9 +80,10 @@ NSArray *eventMessages;
 }
 
 - (void)loadEventStory {
-    UILabel *eventStoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 220, self.view.frame.size.width - 200, 50)];
+    UILabel *eventStoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 230, self.view.frame.size.width, 40)];
     eventStoryLabel.text = @"Event Story";
     eventStoryLabel.textColor = RGB(208, 208, 208);
+    eventStoryLabel.backgroundColor = RGBAlpha(248, 253, 255, 100);
     eventStoryLabel.textAlignment = NSTextAlignmentCenter;
     eventStoryLabel.font = [FontProperties mediumFont:20];
     [self.view addSubview:eventStoryLabel];
@@ -119,6 +120,7 @@ NSArray *eventMessages;
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
+    [myCell setToActiveWithNoAnimation];
     myCell.isActive = YES;
 
     myCell.leftLine.backgroundColor = RGB(237, 237, 237);
@@ -155,23 +157,24 @@ NSArray *eventMessages;
 
 - (void)loadTextViewAndSendButton {
     chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 60)];
+    chatTextFieldWrapper.backgroundColor = RGBAlpha(248, 253, 255, 100);
     [self.view addSubview:chatTextFieldWrapper];
-
-    messageTextView = [[UITextView alloc] initWithFrame:CGRectMake(10, 10, chatTextFieldWrapper.frame.size.width - 70, 35)];
-    //    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
-    messageTextView.tintColor = [FontProperties getOrangeColor];
-    messageTextView.delegate = self;
-    messageTextView.returnKeyType = UIReturnKeySend;
-    messageTextView.backgroundColor = [UIColor whiteColor];
-    messageTextView.layer.borderColor = RGB(147, 147, 147).CGColor;
-    messageTextView.layer.borderWidth = 0.5f;
-    messageTextView.layer.cornerRadius = 4.0f;
-    messageTextView.font = [FontProperties mediumFont:18.0f];
-    messageTextView.textColor = RGB(102, 102, 102);
-    messageTextView.delegate = self;
-    [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
-    [chatTextFieldWrapper addSubview:messageTextView];
-    [chatTextFieldWrapper bringSubviewToFront:messageTextView];
+//
+//    messageTextView = [[UITextView alloc] initWithFrame:CGRectMake(10, 10, chatTextFieldWrapper.frame.size.width - 70, 35)];
+//    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
+//    messageTextView.tintColor = [FontProperties getOrangeColor];
+//    messageTextView.delegate = self;
+//    messageTextView.returnKeyType = UIReturnKeySend;
+//    messageTextView.backgroundColor = [UIColor whiteColor];
+//    messageTextView.layer.borderColor = RGB(147, 147, 147).CGColor;
+//    messageTextView.layer.borderWidth = 0.5f;
+//    messageTextView.layer.cornerRadius = 4.0f;
+//    messageTextView.font = [FontProperties mediumFont:18.0f];
+//    messageTextView.textColor = RGB(102, 102, 102);
+//    messageTextView.delegate = self;
+//    [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
+//    [chatTextFieldWrapper addSubview:messageTextView];
+//    [chatTextFieldWrapper bringSubviewToFront:messageTextView];
     
     sendButton = [[UIButton alloc] initWithFrame:CGRectMake(chatTextFieldWrapper.frame.size.width - 50, 10, 45, 35)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];

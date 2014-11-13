@@ -25,7 +25,7 @@
 @interface FaceCell : UICollectionViewCell
 
 - (void) resetToInactive;
-
+- (void)setToActiveWithNoAnimation;
 @property (nonatomic, assign) BOOL rightLineEnabled;
 @property (nonatomic, assign) BOOL leftLineEnabled;
 

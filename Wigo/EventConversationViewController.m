@@ -524,6 +524,16 @@
 
 }
 
+- (void)setToActiveWithNoAnimation {
+    self.faceImageView.frame = CGRectMake(20, 20, 60, 60);
+    self.faceImageView.alpha = 1.0f;
+    self.faceImageView.layer.cornerRadius = 30;
+    
+    self.mediaTypeImageView.frame = CGRectMake(65, 15, 20, 20);
+    self.mediaTypeImageView.alpha = 1.0f;
+    self.mediaTypeImageView.layer.cornerRadius = 10;
+}
+
 - (void) resetToInactive {
     self.faceImageView.frame = CGRectMake(25, 25, 50, 50);
     self.faceImageView.alpha = 0.5f;
