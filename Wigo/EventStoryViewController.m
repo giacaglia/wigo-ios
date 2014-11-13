@@ -197,7 +197,6 @@ NSArray *eventMessages;
     
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
     [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
-    controller.allowsPickingMultipleItems = YES;
     controller.delegate = self;
     conversationController.controller = controller;
     
@@ -219,7 +218,6 @@ NSArray *eventMessages;
     
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
     [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
-    controller.allowsPickingMultipleItems = YES;
     controller.delegate = self;
     conversationController.controller = controller;
     
@@ -376,7 +374,6 @@ NSArray *eventMessages;
     
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
     [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
-    controller.allowsPickingMultipleItems = YES;
     controller.delegate = self;
     conversationController.controller = controller;
     

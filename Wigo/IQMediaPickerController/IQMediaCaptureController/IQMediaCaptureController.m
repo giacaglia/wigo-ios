@@ -718,7 +718,7 @@
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
     if (!longGesturePressed) {
         
-        NSLog(@"touch down");
+//        NSLog(@"touch down");
         
         [[self session] setCaptureMode:IQCameraCaptureModeVideo];
         [[self session] startVideoRecording];
@@ -742,7 +742,7 @@
         longGesturePressed = YES;
     }
     if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && longGesturePressed) {
-        NSLog(@"touch up");
+//        NSLog(@"touch up");
 
         [[self session] stopVideoRecording];
 

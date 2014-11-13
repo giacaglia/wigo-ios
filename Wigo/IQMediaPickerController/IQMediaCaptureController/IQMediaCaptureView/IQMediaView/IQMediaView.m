@@ -172,7 +172,6 @@
 -(void)tapGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
     CGPoint center = [recognizer locationInView:self];
-    NSLog(@"tap gesture recognizer");
     [exposureView setCenter:center];
     if (recognizer.state == UIGestureRecognizerStateEnded  &&
         [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
