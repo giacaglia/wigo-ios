@@ -16,23 +16,32 @@
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
-
 @end
+
 @implementation MediaScrollView
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        [self setup];
+       
+    }
+    return self;
+}
 
-- (void)loadContent {
+- (void)setup {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
-
     self.backgroundColor = RGB(23, 23, 23);
     self.showsHorizontalScrollIndicator = NO;
+}
+
+- (void)loadContent {
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     self.contentSize = CGSizeMake(self.eventMessages.count * 320, [self superview].frame.size.height);
-    if (!self.players) {
-        self.players = [[NSMutableArray alloc] init];
-    }
+    self.players = [[NSMutableArray alloc] init];
     for (int i = 0; i < self.eventMessages.count; i++) {
         NSDictionary *eventMessage = [self.eventMessages objectAtIndex:i];
         NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
@@ -187,9 +196,6 @@
     
 }
 
-//- (void)textFieldDidBeginEditing:(UITextField *)textField {
-//    NSLog(@"lalala");
-//}
 - (BOOL)textField:(UITextField *)textField
 shouldChangeCharactersInRange:(NSRange)range
 replacementString:(NSString *)string {

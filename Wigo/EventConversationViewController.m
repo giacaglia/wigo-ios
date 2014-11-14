@@ -268,6 +268,20 @@
 
 - (void)stoppedScrollingToLeft:(BOOL)leftBoolean forScrollView:(UIScrollView *)scrollView
 {
+    float width;
+    if (scrollView == self.mediaScrollView) {
+        width = 320;
+    }
+    else {
+        width = 100;
+    }
+    NSInteger page = [self getPageForScrollView:scrollView toLeft:leftBoolean];
+    [self highlightCellAtPage:page];
+    
+
+}
+
+- (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
     float fractionalPage;
     if (scrollView == self.mediaScrollView) {
         CGFloat pageWidth = 320;
@@ -277,7 +291,7 @@
         CGFloat pageWidth = 100; // you need to have a **iVar** with getter for scrollView
         fractionalPage = (self.facesCollectionView.contentOffset.x + 100) / pageWidth;
     }
-
+    
     NSInteger page;
     if (leftBoolean) {
         if (fractionalPage - floor(fractionalPage) < 0.8) {
@@ -295,7 +309,7 @@
             page = ceil(fractionalPage);
         }
     }
-    [self highlightCellAtPage:page];
+    return page;
 }
 
 - (void)highlightCellAtPage:(NSInteger)page {
@@ -383,7 +397,6 @@
     UIImageView *trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
     trashImageView.image = [UIImage imageNamed:@"trashIcon"];
     [self.buttonTrash addSubview:trashImageView];
-    self.buttonTrash.tag = [self.index intValue];
     [self.buttonTrash addTarget:self action:@selector(trashPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.buttonTrash.hidden = YES;
     self.buttonTrash.enabled = NO;
@@ -397,10 +410,11 @@
 
 
 - (void)trashPressed:(id)sender {
-    UIButton *buttonSender = (UIButton *)sender;
-    [self.mediaScrollView removeMediaAtPage:(int)buttonSender.tag];
-    [self.eventMessages removeObjectAtIndex:buttonSender.tag];
+    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    [self.eventMessages removeObjectAtIndex:page];
+    [self.mediaScrollView removeMediaAtPage:(int)page];
     [self.facesCollectionView reloadData];
+    [self.mediaScrollView loadContent];
 }
 
 @end
