@@ -17,23 +17,35 @@
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
-
 @end
+
 @implementation MediaScrollView
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        [self setup];
+       
+    }
+    return self;
+}
 
-- (void)loadContent {
+- (void)setup {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
-
     self.backgroundColor = RGB(23, 23, 23);
     self.showsHorizontalScrollIndicator = NO;
+}
+
+- (void)loadContent {
     self.contentSize = CGSizeMake(self.eventMessages.count * 320, [self superview].frame.size.height);
+
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] init];
     }
+    
     for (int i = 0; i < self.eventMessages.count; i++) {
         NSDictionary *eventMessage = [self.eventMessages objectAtIndex:i];
         NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
@@ -201,9 +213,6 @@
     
 }
 
-//- (void)textFieldDidBeginEditing:(UITextField *)textField {
-//    NSLog(@"lalala");
-//}
 - (BOOL)textField:(UITextField *)textField
 shouldChangeCharactersInRange:(NSRange)range
 replacementString:(NSString *)string {
@@ -222,7 +231,15 @@ replacementString:(NSString *)string {
 //    CGRect initialFrame = self.chatTextFieldWrapper.frame;
 //    initialFrame = initialFrame - kbFrame;
     self.chatTextFieldWrapper.frame = CGRectMake(self.chatTextFieldWrapper.frame.origin.x, self.chatTextFieldWrapper.frame.origin.y - kbFrame.size.height, self.chatTextFieldWrapper.frame.size.width, self.chatTextFieldWrapper.frame.size.height);
-    
+
+}
+
+- (void)removeEventMessageAtPage:(int)page {
+    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
+    NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
+    [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/?id=%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        
+    }];
 }
 
 @end

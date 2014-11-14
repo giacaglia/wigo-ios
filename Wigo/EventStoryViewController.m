@@ -38,7 +38,7 @@ NSArray *eventMessages;
     
     [self loadEventMessages];
     
-    UIButton *aroundBackButton = [[UIButton alloc] initWithFrame:CGRectMake(20, 30, 40, 40)];
+    UIButton *aroundBackButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 25, 50, 50)];
     [aroundBackButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:aroundBackButton];
     UIImageView *backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 9, 15)];
@@ -71,16 +71,34 @@ NSArray *eventMessages;
     EventPeopleScrollView *eventScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
     eventScrollView.delegate = self;
     [self.view addSubview:eventScrollView];
-    
-    UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 190, self.view.frame.size.width - 140, 30)];
-    [invitePeopleButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
-    [invitePeopleButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-    invitePeopleButton.titleLabel.font = [FontProperties mediumFont:15];
-    invitePeopleButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    invitePeopleButton.layer.borderWidth = 1.0f;
-    invitePeopleButton.layer.cornerRadius = 5.0f;
-    [invitePeopleButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:invitePeopleButton];
+    if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+        UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 190, self.view.frame.size.width - 140, 30)];
+        [invitePeopleButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
+        [invitePeopleButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+        invitePeopleButton.titleLabel.font = [FontProperties mediumFont:15];
+        invitePeopleButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+        invitePeopleButton.layer.borderWidth = 1.0f;
+        invitePeopleButton.layer.cornerRadius = 5.0f;
+        [invitePeopleButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:invitePeopleButton];
+    }
+    else {
+        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 190, 100, 30)];
+        aroundGoOutButton.tag = [(NSNumber *)[self.event eventID] intValue];
+        [aroundGoOutButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:aroundGoOutButton];
+        
+        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 85, 25)];
+        goOutButton.enabled = NO;
+        [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
+        [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        goOutButton.backgroundColor = [FontProperties getBlueColor];
+        goOutButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
+        goOutButton.layer.cornerRadius = 5;
+        goOutButton.layer.borderWidth = 1;
+        goOutButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+        [aroundGoOutButton addSubview:goOutButton];
+    }
 }
 
 - (void)loadViewOfUser:(User *)user {
@@ -96,6 +114,10 @@ NSArray *eventMessages;
     [self presentViewController:[[InviteViewController alloc] initWithEventName:self.event.name andID:[self.event eventID]]
                        animated:YES
                      completion:nil];
+}
+
+- (void)goHerePressed {
+    
 }
 
 - (void)loadEventStory {
