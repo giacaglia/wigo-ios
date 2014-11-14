@@ -930,7 +930,7 @@
             self.textField.delegate = self;
             self.textField.returnKeyType = UIReturnKeyDone;
             [self.view addSubview:self.textField];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
         }
         self.textField.hidden = NO;
         self.labelPoint = labelPoint;
@@ -995,12 +995,22 @@
 - (void)keyboardWillShow:(NSNotification*)notification
 {
     NSDictionary* userInfo = [notification userInfo];
-    CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-    NSLog(@"keyboard y frame: %f, keyboard size: %f", kbFrame.origin.y, kbFrame.size.height);
+    CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
     [UIView animateWithDuration:0.3 animations:^{
-        self.textField.frame = CGRectMake(0, 302, self.view.frame.size.width, 50);
+        self.textField.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
     }];
 }
+
+//- (void)keyboardWillChange:(NSNotification *)note {
+////    NSLog(@"keybaorddidchange: user info: %@", userInfo);
+//    NSValue *keyboardEndFrameValue = [[note userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey];
+//    CGRect keyboardEndFrame = [keyboardEndFrameValue CGRectValue];
+////    CGRect properlyRotatedCoords = [self.view.window convertRect:kbFrame toView:self.view.window.rootViewController.view];
+//    
+//    NSLog(@"keyboard frame change: %f, %f", keyboardEndFrame.size.height, keyboardEndFrame.origin.y);
+////    NSLog(@"properly frame change: %f, %f", properlyRotatedCoords.size.height, properlyRotatedCoords.origin.y);
+//}
 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -1122,7 +1132,7 @@
     {
         _session = [[IQCaptureSession alloc] init];
         [_session setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
-        [_session setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
+        [_session setFocusMode:AVCaptureFocusModeAutoFocus];
     }
     return _session;
 }

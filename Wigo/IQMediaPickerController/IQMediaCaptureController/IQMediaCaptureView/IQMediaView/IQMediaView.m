@@ -57,15 +57,15 @@
     [(AVCaptureVideoPreviewLayer*)self.layer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     
     effectiveScale = 1.0;
-    focusView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    focusView.alpha = 0.0;
-    focusView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
-    focusView.center = self.center;
-    focusView.delegate = self;
-    focusView.image = [UIImage imageNamed:@"IQ_focus"];
-    [self addSubview:focusView];
+//    focusView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+//    focusView.alpha = 0.0;
+//    focusView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
+//    focusView.center = self.center;
+//    focusView.delegate = self;
+//    focusView.image = [UIImage imageNamed:@"IQ_focus"];
+//    [self addSubview:focusView];
     
-    exposureView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    exposureView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
     exposureView.alpha = 0.0;
     exposureView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
     exposureView.center = self.center;
@@ -202,22 +202,7 @@
     }
 
     CGPoint center = [recognizer locationInView:self];
-    [self.delegate mediaView:self labelPointOfInterest:center];
-//    if ([self.delegate session].isSessionRunning) {
-//        if (recognizer.state == UIGestureRecognizerStateBegan)
-//        {
-//            if (exposureView.alpha == 0.0)
-//            {
-//                [exposureView animate];
-//            }
-//        }
-//        else if (recognizer.state == UIGestureRecognizerStateEnded  && [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
-//        {
-//            [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];
-//            [exposureView hideAfterSeconds:1];
-//        }
-//    }
-   
+    [self.delegate mediaView:self labelPointOfInterest:center];   
 }
 
 -(void)longPressGestureRecognizer:(UILongPressGestureRecognizer*)recognizer
