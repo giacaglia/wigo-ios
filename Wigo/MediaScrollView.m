@@ -15,6 +15,9 @@
 @property (nonatomic, strong) NSMutableArray *pageViews;
 
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
+@property (nonatomic, strong) NSMutableDictionary *thumbnails;
+@property (nonatomic, assign) BOOL lastPageWasVideo;
+
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
 @end
@@ -40,6 +43,9 @@
 }
 
 - (void)loadContent {
+    
+    self.thumbnails = [[NSMutableDictionary alloc] init];
+    
     self.contentSize = CGSizeMake(self.eventMessages.count * 320, [self superview].frame.size.height);
 
     if (!self.pageViews) {
@@ -95,37 +101,48 @@
             NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://wigo-uploads.s3.amazonaws.com/%@", contentURL]];
             
             MPMoviePlayerController *theMoviePlayer = [[MPMoviePlayerController alloc] init];
+            
             theMoviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
             [theMoviePlayer setContentURL: videoURL];
             theMoviePlayer.scalingMode = MPMovieScalingModeAspectFill;
             [theMoviePlayer setControlStyle: MPMovieControlStyleNone];
             theMoviePlayer.repeatMode = MPMovieRepeatModeOne;
             theMoviePlayer.shouldAutoplay = NO;
-            [theMoviePlayer prepareToPlay];
+            
+            [theMoviePlayer play];
+            [theMoviePlayer pause];
+
+            //[theMoviePlayer prepareToPlay];
             
             UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(i*320, 0, 320, 640)];
             
             videoView.backgroundColor = [UIColor clearColor];
             theMoviePlayer.view.frame = videoView.bounds;
-            theMoviePlayer.backgroundView.backgroundColor = [UIColor clearColor];
+            [theMoviePlayer requestThumbnailImagesAtTimes: @[@0, @0.5, @1, @1.5] timeOption: MPMovieTimeOptionNearestKeyFrame];
+            [[NSNotificationCenter defaultCenter] addObserverForName: MPMoviePlayerThumbnailImageRequestDidFinishNotification object: theMoviePlayer queue: [NSOperationQueue new] usingBlock:^(NSNotification *note) {
+               
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    MPMoviePlayerController *curentMoviePlayer = note.object;
+                    
+                    UIImage *thumb = [note.userInfo objectForKey: MPMoviePlayerThumbnailImageKey];
+                    
+                    if ([thumb isKindOfClass: [UIImage class]] && [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", i]] == nil) {
+                        NSLog(@"adding thumb ---> %i", i);
+                        UIImageView *imageView = [[UIImageView alloc] initWithImage: thumb];
+                        imageView.frame = curentMoviePlayer.backgroundView.bounds;
+                        imageView.clipsToBounds = YES;
+                        imageView.contentMode = UIViewContentModeScaleAspectFill;
+                        [curentMoviePlayer.view addSubview: imageView];
+                        [self.thumbnails setObject: imageView forKey: [NSString stringWithFormat: @"%i", i]];
+                    }
+                });
+                
+
+            }];
+            
             [videoView addSubview: theMoviePlayer.view];
             [self bringSubviewToFront: theMoviePlayer.view];
             
-            [theMoviePlayer requestThumbnailImagesAtTimes:@[@1] timeOption:MPMovieTimeOptionNearestKeyFrame];
-            [[NSNotificationCenter defaultCenter] addObserverForName:MPMoviePlayerThumbnailImageRequestDidFinishNotification object: theMoviePlayer queue: [NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
-                MPMoviePlayerController *currentMoviePlayer = note.object;
-                
-                UIImage *image = [[note userInfo] objectForKey:MPMoviePlayerThumbnailImageKey];
-                if (image && [image isKindOfClass:[UIImage class]]) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        UIImageView *imageView = [[UIImageView alloc] initWithImage: image];
-                        imageView.frame = currentMoviePlayer.view.frame;
-                        imageView.contentMode = UIViewContentModeScaleAspectFill;
-                        [currentMoviePlayer.backgroundView addSubview: imageView];
-                    });
-                }
-            }];
-
             [self addSubview: videoView];
             [self.pageViews addObject: theMoviePlayer];
 
@@ -135,27 +152,42 @@
     else self.contentOffset = CGPointMake(320*(self.eventMessages.count - 1), 0);
 }
 
+
+
 - (void)closeView {
     if (self.lastMoviePlayer) {
         [self.lastMoviePlayer stop];
     }
 }
 
+
+
 -(void)scrolledToPage:(int)page {
-    if (self.lastMoviePlayer) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.lastMoviePlayer stop];
-        });
-    }
-    
+
     MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
     if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             [theMoviePlayer play];
+            
+            UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
+            thumb.hidden = YES;
         });
+
         self.lastMoviePlayer = theMoviePlayer;
+        self.lastPageWasVideo = YES;
     } else {
-        self.lastMoviePlayer = nil;
+        if (self.lastPageWasVideo && self.lastMoviePlayer) {
+            if (self.lastMoviePlayer.playbackState == MPMusicPlaybackStatePlaying) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+//                    UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
+//                    thumb.hidden = NO;
+                    [self.lastMoviePlayer pause];
+
+                });
+            }
+        }
     }
 }
 - (void)removeMediaAtPage:(int)page {
