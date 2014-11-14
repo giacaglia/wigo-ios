@@ -209,7 +209,15 @@ replacementString:(NSString *)string {
 //    CGRect initialFrame = self.chatTextFieldWrapper.frame;
 //    initialFrame = initialFrame - kbFrame;
     self.chatTextFieldWrapper.frame = CGRectMake(self.chatTextFieldWrapper.frame.origin.x, self.chatTextFieldWrapper.frame.origin.y - kbFrame.size.height, self.chatTextFieldWrapper.frame.size.width, self.chatTextFieldWrapper.frame.size.height);
-    
+
+}
+
+- (void)removeEventMessageAtPage:(int)page {
+    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
+    NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
+    [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/?id=%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        
+    }];
 }
 
 @end
