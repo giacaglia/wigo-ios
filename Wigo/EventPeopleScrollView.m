@@ -72,7 +72,7 @@ int xPosition;
         }
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 0, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage + 3;
-//        imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
+        imageButton.tag = i;
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:imageButton];
         self.contentSize = CGSizeMake(xPosition, sizeOfEachImage + 10);
@@ -97,7 +97,10 @@ int xPosition;
 }
 
 - (void)chooseUser:(id)sender {
-    
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = buttonSender.tag;
+    User *user = [[partyUser getObjectArray] objectAtIndex:tag];
+    [self.delegate loadViewOfUser:user];
 }
 
 - (void)fetchEventAttendeesAsynchronous {

@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "Globals.h"
 #import "IQMediaPickerController.h"
+#import "EventPeopleScrollView.h"
 
-@interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate>
+@interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate, EventPeopleScrollDelegate>
 
 @property (nonatomic, strong) Event *event;
 @end

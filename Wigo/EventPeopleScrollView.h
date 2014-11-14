@@ -9,10 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "Event.h"
 
+@protocol EventPeopleScrollDelegate <NSObject>
+- (void)loadViewOfUser:(User *)user;
+@end
+
 @interface EventPeopleScrollView : UIScrollView <UIScrollViewDelegate>
 
 - (id)initWithEvent:(Event*)event;
+@property (nonatomic, assign) id <EventPeopleScrollDelegate> delegate;
+
 
 @property Event *event;
 
 @end
+
+

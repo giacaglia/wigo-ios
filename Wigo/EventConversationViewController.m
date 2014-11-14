@@ -398,7 +398,9 @@
 
 - (void)trashPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    [self.mediaScrollView removeMediaAtPage:buttonSender.tag];
+    [self.mediaScrollView removeMediaAtPage:(int)buttonSender.tag];
+    [self.eventMessages removeObjectAtIndex:buttonSender.tag];
+    [self.facesCollectionView reloadData];
 }
 
 @end

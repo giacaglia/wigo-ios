@@ -631,8 +631,8 @@ int firstIndexOfNegativeEvent;
                    @{NSFontAttributeName:
                          [FontProperties getSubtitleFont]}];
 
-//    if ([numberOfMessages intValue] > 0) {
-        UIImageView *chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xSpacing + size.width + 5, 40, 20, 20)];
+    if ([numberOfMessages intValue] > 0) {
+        UIImageView *chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xSpacing + size.width + 10, 40, 20, 20)];
         chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
         [placeSubView addSubview:chatBubbleImageView];
         UILabel *chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
@@ -641,13 +641,12 @@ int firstIndexOfNegativeEvent;
         chatNumberLabel.font = [FontProperties mediumFont:12.0f];
         chatNumberLabel.textColor = [UIColor whiteColor];
         [chatBubbleImageView addSubview:chatNumberLabel];
-//    } 
+    }
     
     UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 30, 26, 13, 22)];
     postStoryImageView.image = [UIImage imageNamed:@"postStory"];
     [placeSubView addSubview:postStoryImageView];
 
-    
     // Variables to add images
     int xPosition = xSpacing;
     sizeOfEachImage = 80;
@@ -706,7 +705,7 @@ int firstIndexOfNegativeEvent;
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 70, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage + 3;
-        imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
+        imageButton.tag = i+1;
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
@@ -775,10 +774,6 @@ int firstIndexOfNegativeEvent;
     self.tabBarController.tabBar.hidden = YES;
 }
 
--(int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
-    int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
-    return numberOfEvents * userIndex + eventIndex;
-}
 
 - (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {
     int userIndex, eventIndex;

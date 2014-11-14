@@ -8,15 +8,16 @@
 
 #import "EventStoryViewController.h"
 #import "EventConversationViewController.h"
-#import "EventPeopleScrollView.h"
 #import "IQMediaPickerController.h"
 #import "AWSUploader.h"
 #import "InviteViewController.h"
+#import "ProfileViewController.h"
 
 UIView *chatTextFieldWrapper;
 UITextView *messageTextView;
 UIButton *sendButton;
 NSArray *eventMessages;
+
 
 @implementation EventStoryViewController
 
@@ -68,6 +69,7 @@ NSArray *eventMessages;
 
 - (void)loadEventDetails {
     EventPeopleScrollView *eventScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
+    eventScrollView.delegate = self;
     [self.view addSubview:eventScrollView];
     
     UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 190, self.view.frame.size.width - 140, 30)];
@@ -79,6 +81,15 @@ NSArray *eventMessages;
     invitePeopleButton.layer.cornerRadius = 5.0f;
     [invitePeopleButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:invitePeopleButton];
+}
+
+- (void)loadViewOfUser:(User *)user {
+//    [self dismissViewControllerAnimated:YES completion:^{
+//        [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
+//    }];
+//    [self presentViewController:[[ProfileViewController alloc] initWithUser:user]
+//                       animated:YES
+//                     completion:nil];
 }
 
 - (void)invitePressed {
