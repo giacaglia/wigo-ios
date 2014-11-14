@@ -1132,7 +1132,7 @@
     {
         _session = [[IQCaptureSession alloc] init];
         [_session setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
-        [_session setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
+        [_session setFocusMode:AVCaptureFocusModeAutoFocus];
     }
     return _session;
 }
