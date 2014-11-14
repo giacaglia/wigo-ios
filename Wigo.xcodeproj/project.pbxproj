@@ -379,12 +379,6 @@
 		FA2BE9BD19FAF06500CC0E5E /* EventStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */; };
 		FA438E4619F16F7700AD74C2 /* EventConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */; };
 		FA438E4719F16F7700AD74C2 /* EventConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */; };
-		FA438E9419F1962800AD74C2 /* arturdev.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA438E8E19F1962800AD74C2 /* arturdev.jpg */; };
-		FA438E9519F1962800AD74C2 /* arturdev.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA438E8E19F1962800AD74C2 /* arturdev.jpg */; };
-		FA438E9619F1962800AD74C2 /* jobs.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA438E8F19F1962800AD74C2 /* jobs.jpg */; };
-		FA438E9719F1962800AD74C2 /* jobs.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA438E8F19F1962800AD74C2 /* jobs.jpg */; };
-		FA438E9919F1963400AD74C2 /* lion.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = FA438E9819F1963400AD74C2 /* lion.mp4 */; };
-		FA438E9A19F1963400AD74C2 /* lion.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = FA438E9819F1963400AD74C2 /* lion.mp4 */; };
 		FA438EA119F196DA00AD74C2 /* EventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438EA019F196DA00AD74C2 /* EventMessage.m */; };
 		FA438EA219F196DA00AD74C2 /* EventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438EA019F196DA00AD74C2 /* EventMessage.m */; };
 		FA438EA719F1998A00AD74C2 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */; };
@@ -747,9 +741,6 @@
 		FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventStoryViewController.m; sourceTree = "<group>"; };
 		FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventConversationViewController.h; sourceTree = "<group>"; };
 		FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventConversationViewController.m; sourceTree = "<group>"; };
-		FA438E8E19F1962800AD74C2 /* arturdev.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = arturdev.jpg; sourceTree = "<group>"; };
-		FA438E8F19F1962800AD74C2 /* jobs.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = jobs.jpg; sourceTree = "<group>"; };
-		FA438E9819F1963400AD74C2 /* lion.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = lion.mp4; sourceTree = "<group>"; };
 		FA438E9F19F196DA00AD74C2 /* EventMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventMessage.h; sourceTree = "<group>"; };
 		FA438EA019F196DA00AD74C2 /* EventMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventMessage.m; sourceTree = "<group>"; };
 		FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -1721,21 +1712,10 @@
 				FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */,
 				E9D039C61A09886A00DEF094 /* MediaScrollView.h */,
 				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
-				FA438E8B19F1960400AD74C2 /* FakeContent */,
 				E9AEAE511A0190DB00BD77AF /* EventPeopleScrollView.h */,
 				E9AEAE521A0190DB00BD77AF /* EventPeopleScrollView.m */,
 			);
 			name = EventMessages;
-			sourceTree = "<group>";
-		};
-		FA438E8B19F1960400AD74C2 /* FakeContent */ = {
-			isa = PBXGroup;
-			children = (
-				FA438E8E19F1962800AD74C2 /* arturdev.jpg */,
-				FA438E8F19F1962800AD74C2 /* jobs.jpg */,
-				FA438E9819F1963400AD74C2 /* lion.mp4 */,
-			);
-			name = FakeContent;
 			sourceTree = "<group>";
 		};
 		FADD072D1A0D296900492369 /* LLACircularProgressView */ = {
@@ -1874,13 +1854,10 @@
 				E9C63C0F1A03ED35006C5DD2 /* mic.svg in Resources */,
 				E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
-				FA438E9519F1962800AD74C2 /* arturdev.jpg in Resources */,
 				E980C20419EC29550088EBF4 /* Footer.xib in Resources */,
 				E9D29F3A19F064BD001ED208 /* tapping.gif in Resources */,
 				E9EA951E19EAE592003C79F0 /* LineHeader.xib in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
-				FA438E9A19F1963400AD74C2 /* lion.mp4 in Resources */,
-				FA438E9719F1962800AD74C2 /* jobs.jpg in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
 				E9C63BDD1A03ED35006C5DD2 /* IQAudioPickerController.xcassets in Resources */,
 				E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */,
@@ -1908,14 +1885,11 @@
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
 				E9EA951D19EAE592003C79F0 /* LineHeader.xib in Resources */,
 				E980C1FE19EC27F20088EBF4 /* iOSa_2.71.0.version in Resources */,
-				FA438E9419F1962800AD74C2 /* arturdev.jpg in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
 				E9C63C0E1A03ED35006C5DD2 /* mic.svg in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
-				FA438E9919F1963400AD74C2 /* lion.mp4 in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
 				E9D29F3919F064BD001ED208 /* tapping.gif in Resources */,
-				FA438E9619F1962800AD74C2 /* jobs.jpg in Resources */,
 				C18AC292198451150056957B /* autorevision.sh in Resources */,
 				E9D29F3C19F064C4001ED208 /* where.gif in Resources */,
 				E9D29F3619F064B3001ED208 /* who.gif in Resources */,

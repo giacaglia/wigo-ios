@@ -12,7 +12,8 @@
 
 
 @interface MediaScrollView() {}
-@property (nonatomic, strong) NSMutableArray *players;
+@property (nonatomic, strong) NSMutableArray *pageViews;
+
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
@@ -30,8 +31,8 @@
     self.backgroundColor = RGB(23, 23, 23);
     self.showsHorizontalScrollIndicator = NO;
     self.contentSize = CGSizeMake(self.eventMessages.count * 320, [self superview].frame.size.height);
-    if (!self.players) {
-        self.players = [[NSMutableArray alloc] init];
+    if (!self.pageViews) {
+        self.pageViews = [[NSMutableArray alloc] init];
     }
     for (int i = 0; i < self.eventMessages.count; i++) {
         NSDictionary *eventMessage = [self.eventMessages objectAtIndex:i];
@@ -40,11 +41,11 @@
         if ([mimeType isEqualToString:@"new"]) {
             self.controller.view.frame = CGRectMake(i*320, 0, 320, 640);
             [self addSubview:self.controller.view];
-            [self.players addObject:[NSNull null]];
+            [self.pageViews addObject:[NSNull null]];
         }
         else if ([mimeType isEqualToString:@"newText"]) {
             [self addViewForNewTextAtPage:i];
-            [self.players addObject:[NSNull null]];
+            [self.pageViews addObject:[NSNull null]];
         }
         else if ([mimeType isEqualToString:@"image/jpeg"]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
@@ -75,7 +76,7 @@
                     labelInsideImage.frame = CGRectMake(0, [yPosition intValue], imageView.frame.size.width, 50);
                 }
             }
-            [self.players addObject:imageView];
+            [self.pageViews addObject:imageView];
           
         }
         else {
@@ -91,22 +92,31 @@
             [theMoviePlayer prepareToPlay];
             
             UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(i*320, 0, 320, 640)];
-//            [theMoviePlayer requestThumbnailImagesAtTimes:@[@0.0f] timeOption:MPMovieTimeOptionNearestKeyFrame];
-//            [[NSNotificationCenter defaultCenter] addObserverForName:MPMoviePlayerThumbnailImageRequestDidFinishNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-//                UIImage *image = [[note userInfo] objectForKey:MPMoviePlayerThumbnailTimeKey];
-//                if (image && [image isKindOfClass:[UIImage class]]) {
-//                    videoView.image = [[note userInfo] objectForKey:MPMoviePlayerThumbnailTimeKey];
-//                }
-//            }];
-
+            
             videoView.backgroundColor = [UIColor clearColor];
             theMoviePlayer.view.frame = videoView.bounds;
             theMoviePlayer.backgroundView.backgroundColor = [UIColor clearColor];
             [videoView addSubview: theMoviePlayer.view];
             [self bringSubviewToFront: theMoviePlayer.view];
+            
+            [theMoviePlayer requestThumbnailImagesAtTimes:@[@1] timeOption:MPMovieTimeOptionNearestKeyFrame];
+            [[NSNotificationCenter defaultCenter] addObserverForName:MPMoviePlayerThumbnailImageRequestDidFinishNotification object: theMoviePlayer queue: [NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+                MPMoviePlayerController *currentMoviePlayer = note.object;
+                
+                UIImage *image = [[note userInfo] objectForKey:MPMoviePlayerThumbnailImageKey];
+                if (image && [image isKindOfClass:[UIImage class]]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UIImageView *imageView = [[UIImageView alloc] initWithImage: image];
+                        imageView.frame = currentMoviePlayer.view.frame;
+                        imageView.contentMode = UIViewContentModeScaleAspectFill;
+                        [currentMoviePlayer.backgroundView addSubview: imageView];
+                    });
+                }
+            }];
 
-            [self addSubview: videoView];            
-            [self.players addObject: theMoviePlayer];
+            [self addSubview: videoView];
+            [self.pageViews addObject: theMoviePlayer];
+
         }
     }
     if (self.index) self.contentOffset = CGPointMake(320 * [self.index intValue], 0);
@@ -121,19 +131,23 @@
 
 -(void)scrolledToPage:(int)page {
     if (self.lastMoviePlayer) {
-        [self.lastMoviePlayer stop];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.lastMoviePlayer stop];
+        });
     }
-    MPMoviePlayerController *theMoviePlayer = [self.players objectAtIndex:page];
+    
+    MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
     if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
-        UIImageView *movieSuperview = (UIImageView *)theMoviePlayer.view.superview;
-//        movieSuperview.image = nil;
-        [theMoviePlayer play];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [theMoviePlayer play];
+        });
         self.lastMoviePlayer = theMoviePlayer;
+    } else {
+        self.lastMoviePlayer = nil;
     }
 }
-
 - (void)removeMediaAtPage:(int)page {
-    UIView *player = [self.players objectAtIndex:page];
+    UIView *player = [self.pageViews objectAtIndex:page];
     if ([player isKindOfClass:[MPMoviePlayerController class]])    {
     }
     else {
