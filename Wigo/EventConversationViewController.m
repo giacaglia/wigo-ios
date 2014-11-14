@@ -408,13 +408,13 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-
+// Needs to load faster.
 - (void)trashPressed:(id)sender {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     [self.eventMessages removeObjectAtIndex:page];
     [self.mediaScrollView removeMediaAtPage:(int)page];
     [self.facesCollectionView reloadData];
-    [self.mediaScrollView loadContent];
+//    [self highlightCellAtPage:MIN(page, self.eventMessages.count - 1)];
 }
 
 @end

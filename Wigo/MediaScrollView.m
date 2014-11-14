@@ -39,7 +39,6 @@
 }
 
 - (void)loadContent {
-    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     self.contentSize = CGSizeMake(self.eventMessages.count * 320, [self superview].frame.size.height);
     self.players = [[NSMutableArray alloc] init];
     for (int i = 0; i < self.eventMessages.count; i++) {
@@ -49,10 +48,6 @@
         if ([mimeType isEqualToString:@"new"]) {
             self.controller.view.frame = CGRectMake(i*320, 0, 320, 640);
             [self addSubview:self.controller.view];
-            [self.players addObject:[NSNull null]];
-        }
-        else if ([mimeType isEqualToString:@"newText"]) {
-            [self addViewForNewTextAtPage:i];
             [self.players addObject:[NSNull null]];
         }
         else if ([mimeType isEqualToString:@"image/jpeg"]) {
