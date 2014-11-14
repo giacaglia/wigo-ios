@@ -118,27 +118,27 @@
             
             videoView.backgroundColor = [UIColor clearColor];
             theMoviePlayer.view.frame = videoView.bounds;
-            [theMoviePlayer requestThumbnailImagesAtTimes: @[@0, @0.5, @1, @1.5] timeOption: MPMovieTimeOptionNearestKeyFrame];
-            [[NSNotificationCenter defaultCenter] addObserverForName: MPMoviePlayerThumbnailImageRequestDidFinishNotification object: theMoviePlayer queue: [NSOperationQueue new] usingBlock:^(NSNotification *note) {
-               
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    MPMoviePlayerController *curentMoviePlayer = note.object;
-                    
-                    UIImage *thumb = [note.userInfo objectForKey: MPMoviePlayerThumbnailImageKey];
-                    
-                    if ([thumb isKindOfClass: [UIImage class]] && [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", i]] == nil) {
-                        NSLog(@"adding thumb ---> %i", i);
-                        UIImageView *imageView = [[UIImageView alloc] initWithImage: thumb];
-                        imageView.frame = curentMoviePlayer.backgroundView.bounds;
-                        imageView.clipsToBounds = YES;
-                        imageView.contentMode = UIViewContentModeScaleAspectFill;
-                        [curentMoviePlayer.view addSubview: imageView];
-                        [self.thumbnails setObject: imageView forKey: [NSString stringWithFormat: @"%i", i]];
-                    }
-                });
-                
-
-            }];
+//            [theMoviePlayer requestThumbnailImagesAtTimes: @[@0, @0.5, @1, @1.5] timeOption: MPMovieTimeOptionNearestKeyFrame];
+//            [[NSNotificationCenter defaultCenter] addObserverForName: MPMoviePlayerThumbnailImageRequestDidFinishNotification object: theMoviePlayer queue: [NSOperationQueue new] usingBlock:^(NSNotification *note) {
+//               
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    MPMoviePlayerController *curentMoviePlayer = note.object;
+//                    
+//                    UIImage *thumb = [note.userInfo objectForKey: MPMoviePlayerThumbnailImageKey];
+//                    
+//                    if ([thumb isKindOfClass: [UIImage class]] && [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", i]] == nil) {
+//                        NSLog(@"adding thumb ---> %i", i);
+//                        UIImageView *imageView = [[UIImageView alloc] initWithImage: thumb];
+//                        imageView.frame = curentMoviePlayer.backgroundView.bounds;
+//                        imageView.clipsToBounds = YES;
+//                        imageView.contentMode = UIViewContentModeScaleAspectFill;
+//                        [curentMoviePlayer.view addSubview: imageView];
+//                        [self.thumbnails setObject: imageView forKey: [NSString stringWithFormat: @"%i", i]];
+//                    }
+//                });
+//                
+//
+//            }];
             
             [videoView addSubview: theMoviePlayer.view];
             [self bringSubviewToFront: theMoviePlayer.view];
@@ -170,8 +170,8 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [theMoviePlayer play];
             
-            UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
-            thumb.hidden = YES;
+            //UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
+            //thumb.hidden = YES;
         });
 
         self.lastMoviePlayer = theMoviePlayer;
