@@ -277,8 +277,6 @@
     }
     NSInteger page = [self getPageForScrollView:scrollView toLeft:leftBoolean];
     [self highlightCellAtPage:page];
-    
-
 }
 
 - (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
@@ -476,7 +474,7 @@
     self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self addSubview:self.mediaTypeImageView];
     
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 78, 60, 24)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 82, 60, 20)];
     self.timeLabel.textAlignment = NSTextAlignmentCenter;
     self.timeLabel.textColor = [UIColor whiteColor];
     self.timeLabel.font = [FontProperties lightFont:12];

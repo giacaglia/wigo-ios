@@ -17,6 +17,7 @@
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) NSMutableDictionary *thumbnails;
 @property (nonatomic, assign) BOOL lastPageWasVideo;
+@property (nonatomic, assign) int lastVisitedPage;
 
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
@@ -180,32 +181,40 @@
             [self.pageViews addObject:[NSNull null]];
         }
     }
-    MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
-    if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [theMoviePlayer play];
+
+    if (!self.lastVisitedPage) {
+        self.lastVisitedPage = page;
+    }
+    if (self.lastVisitedPage != page) {
+        MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
+        if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
             
+            //        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"play");
+            [theMoviePlayer play];
             //UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
             //thumb.hidden = YES;
-        });
-
-        self.lastMoviePlayer = theMoviePlayer;
-        self.lastPageWasVideo = YES;
-    } else {
-        if (self.lastPageWasVideo && self.lastMoviePlayer) {
-            if (self.lastMoviePlayer.playbackState == MPMusicPlaybackStatePlaying) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-//                    UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
-//                    thumb.hidden = NO;
-                    [self.lastMoviePlayer pause];
-
-                });
+            //        });
+            
+            self.lastMoviePlayer = theMoviePlayer;
+            self.lastPageWasVideo = YES;
+        } else {
+            if (self.lastPageWasVideo && self.lastMoviePlayer) {
+                if (self.lastMoviePlayer.playbackState == MPMusicPlaybackStatePlaying) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        //                    UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
+                        //                    thumb.hidden = NO;
+                        [self.lastMoviePlayer pause];
+                    });
+                }
             }
         }
+        self.lastVisitedPage = page;
+        
     }
 }
+
 - (void)removeMediaAtPage:(int)page {
     UIView *player = [self.pageViews objectAtIndex:page];
     if ([player isKindOfClass:[MPMoviePlayerController class]])    {
@@ -227,7 +236,7 @@
     UITextField * messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, self.chatTextFieldWrapper.frame.size.width - 70, 35)];
     messageTextField.tintColor = [FontProperties getOrangeColor];
     messageTextField.placeholder = @"Add to the story";
-    //    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
+//    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
     messageTextField.delegate = self;
     messageTextField.returnKeyType = UIReturnKeySend;
     messageTextField.backgroundColor = [UIColor whiteColor];
