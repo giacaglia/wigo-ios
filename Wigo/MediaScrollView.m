@@ -66,13 +66,13 @@
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
     }
     if ([mimeType isEqualToString:@"new"]) {
-        self.controller.view.frame = CGRectMake(0, 0, 320, self.superview.frame.size.height);
+        self.controller.view.frame = CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height);
         [myCell.contentView addSubview:self.controller.view];
         [self.pageViews setObject:[NSNull null] atIndexedSubscript:indexPath.row];
     }
     else if ([mimeType isEqualToString:@"image/jpeg"]) {
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 640)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height)];
         imageView.contentMode = UIViewContentModeScaleAspectFill;
         imageView.clipsToBounds = YES;
         [imageView setImageWithURL:imageURL];
@@ -114,9 +114,10 @@
             theMoviePlayer.repeatMode = MPMovieRepeatModeOne;
             theMoviePlayer.shouldAutoplay = NO;
 
-            [theMoviePlayer play];
-            [theMoviePlayer pause];
-            UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 320, self.superview.frame.size.height)];
+//            [theMoviePlayer play];
+//            [theMoviePlayer pause];
+            [theMoviePlayer prepareToPlay];
+            UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height)];
 
             videoView.backgroundColor = [UIColor clearColor];
             theMoviePlayer.view.frame = videoView.bounds;
@@ -129,20 +130,20 @@
 //
 //                    UIImage *thumb = [note.userInfo objectForKey: MPMoviePlayerThumbnailImageKey];
 //
-//                    if ([thumb isKindOfClass: [UIImage class]] && [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", i]] == nil) {
-//                        NSLog(@"adding thumb ---> %i", i);
+//                    if ([thumb isKindOfClass: [UIImage class]] && [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", indexPath.row]] == nil) {
+//                        NSLog(@"adding thumb ---> %i", indexPath.row);
 //                        UIImageView *imageView = [[UIImageView alloc] initWithImage: thumb];
 //                        imageView.frame = curentMoviePlayer.backgroundView.bounds;
 //                        imageView.clipsToBounds = YES;
 //                        imageView.contentMode = UIViewContentModeScaleAspectFill;
-//                        [curentMoviePlayer.view addSubview: imageView];
-//                        [self.thumbnails setObject: imageView forKey: [NSString stringWithFormat: @"%i", i]];
+//                        [curentMoviePlayer.backgroundView addSubview: imageView];
+//                        [self.thumbnails setObject: imageView forKey: [NSString stringWithFormat: @"%i", indexPath.row]];
 //                    }
 //                });
 //                
 //
 //            }];
-            
+//            
             [videoView addSubview: theMoviePlayer.view];
             [myCell.contentView bringSubviewToFront: theMoviePlayer.view];
             
@@ -256,10 +257,6 @@ shouldChangeCharactersInRange:(NSRange)range
 replacementString:(NSString *)string {
     self.addYourVerseLabel.text = [NSString stringWithFormat:@"%@%@", textField.text, string];
     return YES;
-}
-
-- (void)sendPressed {
-    NSLog(@"here");
 }
 
 - (void)keyboardWillShow:(NSNotification*)notification

@@ -949,7 +949,7 @@
 -(void)mediaView:(IQMediaView*)mediaView translate:(CGPoint)translationPoint
 {
     if ([[self session] isSessionRunning]){
-        UIView *topSuperView = [(UIView *)[(UIView *)[(UIView *)[self.view superview] superview] superview] superview];
+        UIView *topSuperView = (UIView *)(UIView *)(UIView *)(UIView *)(UIView *)self.view.superview.superview.superview.superview.superview.superview;
         if ([topSuperView isKindOfClass:[UIScrollView class]]) {
             
             UIScrollView *scrollView = (UIScrollView *)topSuperView;
@@ -966,7 +966,7 @@
 
 - (void)mediaView:(IQMediaView *)mediaView stopTranslateAt:(CGPoint)translatePoint {
     if ([self session].isSessionRunning) {
-        UIView *topSuperView = [(UIView *)[(UIView *)[(UIView *)[self.view superview] superview] superview] superview];
+        UIView *topSuperView = (UIView *)(UIView *)(UIView *)(UIView *)(UIView *)self.view.superview.superview.superview.superview.superview.superview;
         if ([topSuperView isKindOfClass:[UIScrollView class]]) {
             
             UIScrollView *scrollView = (UIScrollView *)topSuperView;

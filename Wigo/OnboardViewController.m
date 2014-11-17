@@ -149,7 +149,7 @@ BOOL runningAnimations;
     [arrayOfLabels addObject:titleLabel5];
     
     UILabel *titleLabel6 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 270, self.view.frame.size.width - 30, 100)];
-    titleLabel6.text = @"NO ADULT SUPERVISION \U0001f609";
+    titleLabel6.text = @"NO ADULT SUPERVISION";
     [self formatLabel:titleLabel6];
     titleLabel6.textColor = [FontProperties getOrangeColor];
     titleLabel6.font = [FontProperties mediumFont:21.0f];
