@@ -190,7 +190,6 @@
         if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
             
             //        dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"play");
             [theMoviePlayer play];
             //UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
             //thumb.hidden = YES;

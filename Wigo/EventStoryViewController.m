@@ -259,7 +259,7 @@ NSArray *eventMessages;
     conversationController.event = self.event;
     if (eventMessages) conversationController.eventMessages = [self eventMessagesWithCamera];
     else conversationController.eventMessages = [NSMutableArray new];
-    conversationController.index = [NSNumber numberWithInteger:conversationController.eventMessages.count];
+    conversationController.index = [NSNumber numberWithInteger:conversationController.eventMessages.count - 1];
     
     IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
     [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
