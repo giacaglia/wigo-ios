@@ -44,7 +44,6 @@
     self.pagingEnabled = YES;
     self.dataSource = self;
     [self registerClass:[MediaCell class] forCellWithReuseIdentifier:@"MediaCell"];
-
 }
 
 #pragma mark - UICollectionView Data Source
@@ -61,13 +60,15 @@
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MediaCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MediaCell" forIndexPath: indexPath];
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:indexPath.row];
-    NSLog(@"event message :%@", eventMessage);
     NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
     NSString *contentURL = [eventMessage objectForKey:@"media"];
+    if (!self.pageViews) {
+        self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
+    }
     if ([mimeType isEqualToString:@"new"]) {
-        self.controller.view.frame = CGRectMake(0, 0, 320, 640);
+        self.controller.view.frame = CGRectMake(0, 0, 320, self.superview.frame.size.height);
         [myCell.contentView addSubview:self.controller.view];
-        [self.pageViews addObject:[NSNull null]];
+        [self.pageViews setObject:[NSNull null] atIndexedSubscript:indexPath.row];
     }
     else if ([mimeType isEqualToString:@"image/jpeg"]) {
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
@@ -98,8 +99,8 @@
                 labelInsideImage.frame = CGRectMake(0, [yPosition intValue], imageView.frame.size.width, 50);
             }
         }
-        [self.pageViews addObject:imageView];
-
+//        [self.pageViews addObject:imageView];
+        [self.pageViews setObject:imageView atIndexedSubscript:indexPath.row];
     }
         else {
             NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://wigo-uploads.s3.amazonaws.com/%@", contentURL]];
@@ -115,7 +116,7 @@
 
             [theMoviePlayer play];
             [theMoviePlayer pause];
-            UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 320, 640)];
+            UIView *videoView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 320, self.superview.frame.size.height)];
 
             videoView.backgroundColor = [UIColor clearColor];
             theMoviePlayer.view.frame = videoView.bounds;
@@ -146,7 +147,8 @@
             [myCell.contentView bringSubviewToFront: theMoviePlayer.view];
             
             [myCell.contentView addSubview: videoView];
-            [self.pageViews addObject: theMoviePlayer];
+//            [self.pageViews addObject: theMoviePlayer];
+            [self.pageViews setObject:theMoviePlayer atIndexedSubscript:indexPath.row];
 
         }
 
@@ -162,7 +164,12 @@
 
 
 -(void)scrolledToPage:(int)page {
-
+    if (!self.pageViews) {
+        self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
+        for (int i = 0 ; i < self.eventMessages.count; i++) {
+            [self.pageViews addObject:[NSNull null]];
+        }
+    }
     MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
     if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
         
@@ -291,7 +298,7 @@ replacementString:(NSString *)string {
 
 - (void)setup
 {
-    self.itemSize = CGSizeMake(320, 640);
+    self.itemSize = CGSizeMake(320, 568);
     self.minimumLineSpacing = 0;
     self.minimumInteritemSpacing = 0;
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -319,7 +326,7 @@ replacementString:(NSString *)string {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 640);
+    self.frame = CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height);
     self.backgroundColor = UIColor.clearColor;
 }
 

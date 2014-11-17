@@ -123,22 +123,23 @@
 #pragma mark - UICollectionViewDelegate
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (indexPath == self.currentActiveCell) {
-        return;
+    if (collectionView == self.facesCollectionView) {
+        if (indexPath == self.currentActiveCell) {
+            return;
+        }
+        
+        FaceCell *cell = (FaceCell *)[collectionView cellForItemAtIndexPath: indexPath];
+        
+        if (self.currentActiveCell) {
+            [(FaceCell *)[collectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:NO];
+        }
+        
+        [cell setIsActive: YES];
+        
+        self.currentActiveCell = indexPath;
+        
+        [self highlightCellAtPage:indexPath.row ];
     }
-    
-    FaceCell *cell = (FaceCell *)[collectionView cellForItemAtIndexPath: indexPath];
-    
-    if (self.currentActiveCell) {
-        [(FaceCell *)[collectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:NO];
-    }
-    
-    [cell setIsActive: YES];
-    
-    self.currentActiveCell = indexPath;
-    
-    [self highlightCellAtPage:indexPath.row ];
 }
 
 #define kActionPhotoVideo 0
@@ -159,7 +160,6 @@
     if (buttonIndex == kActionCancel) {
         return;
     }
-    
     
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
@@ -380,7 +380,7 @@
     self.mediaScrollView.eventMessages = self.eventMessages;
     self.mediaScrollView.controller = self.controller;
     self.mediaScrollView.mediaDelegate = self;
-    if (self.index) self.mediaScrollView.index = self.index;
+    if (self.index) [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
 
     self.mediaScrollView.delegate = self;
     [self.view addSubview:self.mediaScrollView];
