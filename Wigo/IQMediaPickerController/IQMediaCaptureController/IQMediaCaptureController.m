@@ -951,7 +951,7 @@
     if ([[self session] isSessionRunning]){
         UIView *topSuperView = (UIView *)(UIView *)(UIView *)(UIView *)(UIView *)self.view.superview.superview.superview.superview.superview.superview;
         if ([topSuperView isKindOfClass:[UIScrollView class]]) {
-            
+            NSLog(@"here");
             UIScrollView *scrollView = (UIScrollView *)topSuperView;
             if (!self.startXPoint) {
                 self.startXPoint = scrollView.contentOffset.x;

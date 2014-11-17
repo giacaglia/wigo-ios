@@ -66,6 +66,7 @@
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
     }
+    [myCell.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     UIView *player = [self.pageViews objectAtIndex:indexPath.row];
     if ([player isKindOfClass:[UIImageView class]]) {
         [myCell.contentView addSubview:player];
@@ -74,11 +75,15 @@
         MPMoviePlayerController *moviePlayer = (MPMoviePlayerController *)player;
         [myCell.contentView addSubview:moviePlayer.view];
     }
+    else if ([player isKindOfClass:[IQMediaPickerController class]]) {
+        IQMediaPickerController *controller = (IQMediaPickerController *)player;
+        [myCell.contentView addSubview:controller.view];
+    }
     else {
         if ([mimeType isEqualToString:@"new"]) {
             self.controller.view.frame = CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height);
             [myCell.contentView addSubview:self.controller.view];
-            [self.pageViews setObject:[NSNull null] atIndexedSubscript:indexPath.row];
+            [self.pageViews setObject:self.controller atIndexedSubscript:indexPath.row];
         }
         else if ([mimeType isEqualToString:@"image/jpeg"]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
