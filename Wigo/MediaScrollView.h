@@ -29,4 +29,5 @@
 @end
 
 @interface MediaCell : UICollectionViewCell
+@property (nonatomic, strong) UIImageView *coverMediaView;
 @end
