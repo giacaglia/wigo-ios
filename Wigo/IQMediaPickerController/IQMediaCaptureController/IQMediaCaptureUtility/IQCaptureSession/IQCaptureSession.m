@@ -69,9 +69,9 @@
     {
         _captureSession = [[AVCaptureSession alloc] init];
         
-        if ([_captureSession canSetSessionPreset:AVCaptureSessionPresetMedium])
+        if ([_captureSession canSetSessionPreset:AVCaptureSessionPreset640x480])
         {
-            _captureSession.sessionPreset = AVCaptureSessionPresetMedium;
+            _captureSession.sessionPreset = AVCaptureSessionPreset640x480;
         }
     }
     

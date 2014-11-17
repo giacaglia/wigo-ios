@@ -12,6 +12,8 @@
 #import "AWSUploader.h"
 #import "InviteViewController.h"
 #import "ProfileViewController.h"
+#import <MediaPlayer/MediaPlayer.h>
+
 
 UIView *chatTextFieldWrapper;
 UITextView *messageTextView;
@@ -301,6 +303,7 @@ NSArray *eventMessages;
     else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
         NSLog(@"Video Taken");
         NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
+        
         
         NSError *error;
         NSData *fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];

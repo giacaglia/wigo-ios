@@ -705,7 +705,7 @@ int firstIndexOfNegativeEvent;
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 70, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage + 3;
-        imageButton.tag = i+1;
+        imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
@@ -759,6 +759,7 @@ int firstIndexOfNegativeEvent;
     return cell;
 }
 
+
 - (void)showEventConversation:(UIButton *) button {
     NSArray *eventsArray;
     if (_isSearching) eventsArray = [_filteredContentParty getObjectArray];
@@ -774,6 +775,10 @@ int firstIndexOfNegativeEvent;
     self.tabBarController.tabBar.hidden = YES;
 }
 
+- (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
+    int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
+    return numberOfEvents * userIndex + eventIndex;
+}
 
 - (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {
     int userIndex, eventIndex;

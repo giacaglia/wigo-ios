@@ -374,13 +374,14 @@
 #pragma mark - G's code
 
 - (void)loadScrollView {
-    self.mediaScrollView = [[MediaScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    self.mediaScrollView = [[MediaScrollView alloc]
+                            initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
+                            collectionViewLayout:[[MediaFlowLayout alloc] init]];
     self.mediaScrollView.eventMessages = self.eventMessages;
     self.mediaScrollView.controller = self.controller;
     self.mediaScrollView.mediaDelegate = self;
     if (self.index) self.mediaScrollView.index = self.index;
 
-    [self.mediaScrollView loadContent];
     self.mediaScrollView.delegate = self;
     [self.view addSubview:self.mediaScrollView];
     [self.view sendSubviewToBack:self.mediaScrollView];

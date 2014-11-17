@@ -12,15 +12,21 @@
 @protocol MediaScrollViewDelegate
 @end
 
-@interface MediaScrollView : UIScrollView <UITextFieldDelegate>
+@interface MediaScrollView : UICollectionView <UITextFieldDelegate, UICollectionViewDataSource>
 
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 @property (nonatomic, strong) IQMediaPickerController *controller;
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
 @property (nonatomic, strong) NSNumber *index;
-- (void)loadContent;
 
 - (void)closeView;
 -(void)scrolledToPage:(int)page;
 - (void)removeMediaAtPage:(int)page;
+@end
+
+
+@interface MediaFlowLayout : UICollectionViewFlowLayout
+@end
+
+@interface MediaCell : UICollectionViewCell
 @end
