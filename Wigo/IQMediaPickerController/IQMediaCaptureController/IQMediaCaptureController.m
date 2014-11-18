@@ -72,6 +72,7 @@
 
 @property(nonatomic, assign) CGPoint labelPoint;
 @property(nonatomic, strong) UITextField *textField;
+@property(nonatomic, strong) UILabel *textLabel;
 @property(nonatomic, assign) float startXPoint;
 @end
 
@@ -917,7 +918,11 @@
     if (!self.session.isSessionRunning) {
         [self.textField endEditing:YES];
         [UIView animateWithDuration:0.3 animations:^{
-            self.textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
+            self.textField.hidden = YES;
+            self.textLabel.hidden = NO;
+            self.textLabel.text = self.textField.text;
+            self.textLabel.frame =  CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
+//            self.textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
         }];
         if (self.textField.text.length  == 0) {
             self.textField.hidden = YES;
@@ -951,7 +956,15 @@
             self.textField.returnKeyType = UIReturnKeyDone;
             [self.view addSubview:self.textField];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
+            
+            self.textLabel = [[UILabel alloc] init];
+            self.textLabel.hidden = YES;
+            self.textLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
+            self.textLabel.textColor = [UIColor whiteColor];
+            self.textLabel.textAlignment = NSTextAlignmentCenter;
+            [self.view addSubview:self.textLabel];
         }
+        self.textLabel.hidden = YES;
         self.textField.hidden = NO;
         self.labelPoint = labelPoint;
         [self.textField becomeFirstResponder];
@@ -962,7 +975,11 @@
 - (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
     if (![self.textField isFirstResponder]) {
         labelPoint.y = MIN(MAX(labelPoint.y, 110), 460);
-        self.textField.frame = CGRectMake(0, labelPoint.y, self.view.frame.size.width, 50);
+        self.textField.hidden = YES;
+        self.textLabel.hidden = NO;
+        self.textLabel.text = self.textField.text;
+        self.textLabel.frame =  CGRectMake(0, labelPoint.y, self.view.frame.size.width, 50);
+//        self.textField.frame = CGRectMake(0, labelPoint.y, self.view.frame.size.width, 50);
         self.labelPoint = labelPoint;
     }
 }
@@ -972,7 +989,6 @@
     if ([[self session] isSessionRunning]){
         UIView *topSuperView = (UIView *)(UIView *)(UIView *)(UIView *)(UIView *)self.view.superview.superview.superview.superview.superview.superview;
         if ([topSuperView isKindOfClass:[UIScrollView class]]) {
-            NSLog(@"here");
             UIScrollView *scrollView = (UIScrollView *)topSuperView;
             if (!self.startXPoint) {
                 self.startXPoint = scrollView.contentOffset.x;
@@ -1037,7 +1053,11 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self.textField endEditing:YES];
     [UIView animateWithDuration:0.3 animations:^{
-        textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
+        self.textField.hidden = YES;
+        self.textLabel.hidden = NO;
+        self.textLabel.text = self.textField.text;
+        self.textLabel.frame =  CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
+//        textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
     }];
     if (self.textField.text.length  == 0) {
         self.textField.hidden = YES;
