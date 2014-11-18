@@ -955,6 +955,7 @@
             self.textField.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
             self.textField.textColor = [UIColor whiteColor];
             self.textField.textAlignment = NSTextAlignmentCenter;
+            self.textField.font = [FontProperties mediumFont:17.0f];
             self.textField.delegate = self;
             self.textField.returnKeyType = UIReturnKeyDone;
             [self.view addSubview:self.textField];
@@ -965,6 +966,7 @@
             self.textLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
             self.textLabel.textColor = [UIColor whiteColor];
             self.textLabel.textAlignment = NSTextAlignmentCenter;
+            self.textLabel.font = [FontProperties mediumFont:17.0f];
             [self.view addSubview:self.textLabel];
         }
         self.textLabel.hidden = YES;
@@ -1067,7 +1069,15 @@
     }
     return YES;
 }
-
+- (BOOL)textField:(UITextField *)textField
+shouldChangeCharactersInRange:(NSRange)range
+replacementString:(NSString *)string {
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    CGSize size = [newString sizeWithAttributes:
+                   @{NSFontAttributeName:textField.font}];
+    if (size.width < self.view.frame.size.width - 10) return YES;
+    return NO;
+}
 
 - (void)reverseCamera {
     if ([self session].isSessionRunning) {

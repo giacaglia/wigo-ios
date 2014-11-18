@@ -96,7 +96,7 @@
             if ([[eventMessage allKeys] containsObject:@"message"]) {
                 NSString *message = [eventMessage objectForKey:@"message"];
                 if (message && [message isKindOfClass:[NSString class]]) {
-                    labelInsideImage = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, imageView.frame.size.width, 50)];
+                    labelInsideImage = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, imageView.frame.size.width, 40)];
                     labelInsideImage.font = [FontProperties mediumFont:20.0f];
                     labelInsideImage.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
                     labelInsideImage.textAlignment = NSTextAlignmentCenter;
@@ -111,7 +111,7 @@
                     [properties isKindOfClass:[NSDictionary class]] &&
                     [[properties allKeys] containsObject:@"yPosition"]) {
                     NSNumber *yPosition = [properties objectForKey:@"yPosition"];
-                    labelInsideImage.frame = CGRectMake(0, [yPosition intValue], imageView.frame.size.width, 50);
+                    labelInsideImage.frame = CGRectMake(0, [yPosition intValue], imageView.frame.size.width, 40);
                 }
             }
             [self.pageViews setObject:imageView atIndexedSubscript:indexPath.row];

@@ -19,7 +19,8 @@ UIView *chatTextFieldWrapper;
 UITextView *messageTextView;
 UIButton *sendButton;
 NSArray *eventMessages;
-
+UICollectionView *facesCollectionView;
+BOOL cancelFetchMessages;
 
 @implementation EventStoryViewController
 
@@ -134,7 +135,7 @@ NSArray *eventMessages;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    UICollectionView *facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 260, self.view.frame.size.width, 260) collectionViewLayout:flow];
+    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 260, self.view.frame.size.width, 260) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = RGBAlpha(248, 253, 255, 100);
     facesCollectionView.showsHorizontalScrollIndicator = NO;
@@ -173,6 +174,7 @@ NSArray *eventMessages;
     myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
 
     User *user;
+//    NSLog(@"index path %d", [indexPath row]);
     NSDictionary *eventMessage = [eventMessages objectAtIndex:[indexPath row]];
     user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
     if ([user isEqualToUser:[Profile user]]) {
@@ -273,6 +275,7 @@ NSArray *eventMessages;
        didFinishMediaWithInfo:(NSDictionary *)info {
     [self dismissViewControllerAnimated:YES completion:nil];
     NSDictionary *options;
+    NSString *type = @"";
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
         UIImage *image = [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage];
         NSData *fileData = UIImageJPEGRepresentation(image, 1.0);
@@ -280,17 +283,18 @@ NSArray *eventMessages;
             NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
             NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
             NSDictionary *properties = @{@"yPosition": yPosition};
+            type =  @"image/jpeg";
             options =  @{
                          @"event": [self.event eventID],
                          @"message": text,
                          @"properties": properties,
-                         @"media_mime_type": @"image/jpeg"
+                         @"media_mime_type": type
                          };
         }
         else {
             options =  @{
                          @"event": [self.event eventID],
-                         @"media_mime_type": @"image/jpeg"
+                         @"media_mime_type": type
                          };
         }
       
@@ -301,7 +305,7 @@ NSArray *eventMessages;
     }
    
     else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
-        NSLog(@"Video Taken");
+        type = @"video/mp4";
         NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
         
         
@@ -316,13 +320,13 @@ NSArray *eventMessages;
                          @"event": [self.event eventID],
                          @"message": text,
                          @"properties": properties,
-                         @"media_mime_type": @"video/mp4"
+                         @"media_mime_type": type
                          };
         }
         else {
             options =  @{
                          @"event": [self.event eventID],
-                         @"media_mime_type": @"video/mp4"
+                         @"media_mime_type": type
                          };
         }
         
@@ -330,6 +334,17 @@ NSArray *eventMessages;
                         andFileName:@"video0.mp4"
                          andOptions:options];
     }
+    NSDictionary *eventMessage =  @{
+                                    @"user": [Profile user].dictionary,
+                                    @"media_mime_type": type,
+                                    @"loading": @YES
+                                    };
+    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
+    [mutableEventMessages addObject:eventMessage];
+    eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+//    NSLog(@"event Messages %@", eventMessages);
+    [facesCollectionView reloadData];
+    cancelFetchMessages = YES;
 }
 
 - (NSMutableArray *)eventMessagesWithText {
@@ -398,14 +413,17 @@ NSArray *eventMessages;
 }
 
 - (void)loadEventMessages {
-    [Network sendAsynchronousHTTPMethod:GET
-                            withAPIName:[NSString stringWithFormat:@"eventmessages/?event=%@&ordering=id", [self.event eventID]]
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];
-                                    [self loadConversationViewController];
-                                });
-                            }];
+    if (!cancelFetchMessages) {
+        [Network sendAsynchronousHTTPMethod:GET
+                                withAPIName:[NSString stringWithFormat:@"eventmessages/?event=%@&ordering=id", [self.event eventID]]
+                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];
+                                        [self loadConversationViewController];
+                                    });
+                                }];
+    }
+    cancelFetchMessages = NO;
 }
 
 
