@@ -169,6 +169,10 @@
     if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
         beginGestureScale = effectiveScale;
     }
+    if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] &&
+        [gestureRecognizer.view isKindOfClass:[repeatPlayer.view class]]) {
+        [self.delegate mediaView:self editLabelAtPoint:[gestureRecognizer locationInView:self]];
+    }
     return YES;
 }
 

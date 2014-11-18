@@ -194,11 +194,11 @@
         MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
         if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
             
-            //        dispatch_async(dispatch_get_main_queue(), ^{
-            [theMoviePlayer play];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [theMoviePlayer play];
             //UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
             //thumb.hidden = YES;
-            //        });
+            });
             
             self.lastMoviePlayer = theMoviePlayer;
             self.lastPageWasVideo = YES;
