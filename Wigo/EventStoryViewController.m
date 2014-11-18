@@ -190,6 +190,12 @@ BOOL cancelFetchMessages;
     else {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"textType"];
     }
+    if ([[eventMessage allKeys] containsObject:@"loading"]) {
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        spinner.frame = CGRectMake(0.0, 0.0, myCell.faceImageView.frame.size.width/2,  myCell.faceImageView.frame.size.height/2);
+        [spinner startAnimating];
+        [myCell.faceImageView addSubview:spinner];
+    }
     
     return myCell;
 }
