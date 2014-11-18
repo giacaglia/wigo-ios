@@ -178,9 +178,12 @@
     {
         [self.delegate mediaView:self editLabelAtPoint:center];
         if ([self.delegate session].isSessionRunning) {
-            [self.delegate mediaView:self exposurePointOfInterest:exposureView.center];
+            CGPoint percentPoint = CGPointMake(exposureView.center.y/568, 1 - (exposureView.center.x/320));
+            [self.delegate mediaView:self exposurePointOfInterest:percentPoint];
+            [self.delegate mediaView:self focusPointOfInterest:percentPoint];
+
             [exposureView hideAfterSeconds:1];
-            
+
             if (exposureView.alpha == 0.0)
             {
                 [exposureView animate];
@@ -319,6 +322,7 @@
 
 -(void)setFocusMode:(AVCaptureFocusMode)focusMode
 {
+
     _focusMode = focusMode;
     
     if (focusMode == AVCaptureFocusModeAutoFocus)

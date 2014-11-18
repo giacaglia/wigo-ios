@@ -522,7 +522,7 @@
 -(BOOL)setFocusMode:(AVCaptureFocusMode)focusMode
 {
     AVCaptureDevice *device = _videoCaptureDeviceInput.device;
-    
+
     if ( [device isFocusModeSupported:focusMode])
     {
         NSError *error;
@@ -549,7 +549,6 @@
 -(BOOL)setExposureMode:(AVCaptureExposureMode)exposureMode
 {
     AVCaptureDevice *device = _videoCaptureDeviceInput.device;
-    
     if (device.exposureMode != exposureMode && [device isExposureModeSupported:exposureMode])
     {
         NSError *error;
@@ -601,7 +600,7 @@
 - (BOOL)setFocusPoint:(CGPoint)focusPoint
 {
     AVCaptureDevice *device = _videoCaptureDeviceInput.device;
-    
+
     if ([device isFocusPointOfInterestSupported])
     {
         NSError *error;

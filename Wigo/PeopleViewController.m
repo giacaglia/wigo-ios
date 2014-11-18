@@ -811,7 +811,6 @@ NSMutableArray *suggestedArrayView;
 
 - (void)loadNextPage {
     if ([_currentTab isEqualToNumber:@2]) {
-        NSLog(@"lala");
         [self fetchEveryone];
     }
     else if ([_currentTab isEqualToNumber:@3]) {
