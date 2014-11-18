@@ -720,10 +720,9 @@
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
-    if (!longGesturePressed) {
+    if (!longGesturePressed && gesture.state == UIGestureRecognizerStateBegan) {
         
 //        NSLog(@"touch down");
-        
         [[self session] setCaptureMode:IQCameraCaptureModeVideo];
         [[self session] startVideoRecording];
         
@@ -742,14 +741,12 @@
             [[NSTimer scheduledTimerWithTimeInterval: 0.01 target: self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": circularProgressView} repeats: YES] fire];
         });
         
-        
         longGesturePressed = YES;
+        
     }
     if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && longGesturePressed) {
-//        NSLog(@"touch up");
 
         [[self session] stopVideoRecording];
-
         longGesturePressed = NO;
         
     }
@@ -863,6 +860,7 @@
             }
             
             [info setObject:videoMedias forKey:IQMediaTypeVideo];
+            [self.mediaView stopReplayVideo];
         }
         
         if ([audioURLs count])
