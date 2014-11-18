@@ -620,6 +620,10 @@
                 }
                 self.buttonCancel.titleLabel.font = [FontProperties mediumFont:20.0f];
                 [self.buttonCancel setTitle:@"< Cancel" forState:UIControlStateNormal];
+                self.buttonCancel.titleLabel.layer.shadowColor = [[UIColor blackColor] CGColor];
+                self.buttonCancel.titleLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
+                self.buttonCancel.titleLabel.layer.shadowOpacity = 0.5;
+                self.buttonCancel.titleLabel.layer.shadowRadius = 0.5;
                 self.settingsContainerView.alpha = 0.0;
             } completion:NULL];
 
@@ -1289,6 +1293,10 @@
         _buttonSelect = [UIButton buttonWithType:UIButtonTypeCustom];
         [_buttonSelect.titleLabel setFont:[FontProperties mediumFont:20.0f]];
         [_buttonSelect setTitle:@"Post >" forState:UIControlStateNormal];
+        _buttonSelect.titleLabel.layer.shadowColor = [[UIColor blackColor] CGColor];
+         _buttonSelect.titleLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
+         _buttonSelect.titleLabel.layer.shadowOpacity = 0.5;
+        _buttonSelect.titleLabel.layer.shadowRadius = 0.5;
         [_buttonSelect setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_buttonSelect addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
