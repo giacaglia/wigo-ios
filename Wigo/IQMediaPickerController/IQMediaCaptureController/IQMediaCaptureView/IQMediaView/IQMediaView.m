@@ -400,11 +400,15 @@
     repeatPlayer.repeatMode = MPMovieRepeatModeOne;
     [repeatPlayer play];
     [self addSubview:repeatPlayer.view];
+    [repeatPlayer.view addGestureRecognizer:_tapRecognizer];
 }
 
 - (void)stopReplayVideo {
+    [repeatPlayer stop];
     [repeatPlayer.view removeFromSuperview];
+    repeatPlayer = nil;
 }
+
 @end
 
 

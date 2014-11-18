@@ -814,11 +814,15 @@
             }
         }
         [self.buttonCancel setTitle:nil forState:UIControlStateNormal];
-        
         UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
         cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
         [self.buttonCancel addSubview:cancelCamera];
         
+        for (UIView *subview in self.buttonCapture.subviews) {
+            if ([subview isKindOfClass:[LLACircularProgressView class]]) {
+                [subview removeFromSuperview];
+            }
+        }
         [self.buttonCapture setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
         [self.bottomContainerView setMiddleContentView:self.buttonCapture];
         self.buttonToggleCamera.hidden = NO;
