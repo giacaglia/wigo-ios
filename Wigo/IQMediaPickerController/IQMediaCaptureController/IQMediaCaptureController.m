@@ -785,6 +785,7 @@
 {
     if ([[self session] isSessionRunning] == NO) {
         [self.mediaView stopReplayVideo];
+        [[self session] setCaptureMode:IQCameraCaptureModePhoto];
         [[self session] startRunning];
         [self.bottomContainerView setRightContentView:self.buttonToggleMedia];
         
@@ -921,8 +922,8 @@
             self.textField.hidden = YES;
             self.textLabel.hidden = NO;
             self.textLabel.text = self.textField.text;
-            self.textLabel.frame =  CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
-//            self.textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
+            self.textLabel.frame =  CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 40);
+//            self.textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 40);
         }];
         if (self.textField.text.length  == 0) {
             self.textField.hidden = YES;
@@ -978,8 +979,8 @@
         self.textField.hidden = YES;
         self.textLabel.hidden = NO;
         self.textLabel.text = self.textField.text;
-        self.textLabel.frame =  CGRectMake(0, labelPoint.y, self.view.frame.size.width, 50);
-//        self.textField.frame = CGRectMake(0, labelPoint.y, self.view.frame.size.width, 50);
+        self.textLabel.frame =  CGRectMake(0, labelPoint.y, self.view.frame.size.width, 40);
+//        self.textField.frame = CGRectMake(0, labelPoint.y, self.view.frame.size.width, 40);
         self.labelPoint = labelPoint;
     }
 }
@@ -1035,7 +1036,7 @@
     CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
     [UIView animateWithDuration:0.3 animations:^{
-        self.textField.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
+        self.textField.frame = CGRectMake(0, kbFrame.origin.y - 40, self.view.frame.size.width, 40);
     }];
 }
 
@@ -1056,8 +1057,8 @@
         self.textField.hidden = YES;
         self.textLabel.hidden = NO;
         self.textLabel.text = self.textField.text;
-        self.textLabel.frame =  CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
-//        textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
+        self.textLabel.frame =  CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 40);
+//        textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 40);
     }];
     if (self.textField.text.length  == 0) {
         self.textField.hidden = YES;
