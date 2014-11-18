@@ -56,5 +56,7 @@
 @property(nonatomic, assign) CGPoint exposurePointOfInterest;
 
 @property(nonatomic, assign) IQMediaCaptureControllerCaptureMode captureMode;
+- (void)replayVideoAtPath:(NSURL *)url;
+- (void)stopReplayVideo;
 
 @end

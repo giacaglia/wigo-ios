@@ -782,6 +782,7 @@
 - (void)cancelAction:(UIButton *)sender
 {
     if ([[self session] isSessionRunning] == NO) {
+        [self.mediaView stopReplayVideo];
         [[self session] startRunning];
         [self.bottomContainerView setRightContentView:self.buttonToggleMedia];
         
@@ -912,6 +913,9 @@
         [UIView animateWithDuration:0.3 animations:^{
             self.textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
         }];
+        if (self.textField.text.length  == 0) {
+            self.textField.hidden = YES;
+        }
     }
 }
 
@@ -1029,6 +1033,9 @@
     [UIView animateWithDuration:0.3 animations:^{
         textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
     }];
+    if (self.textField.text.length  == 0) {
+        self.textField.hidden = YES;
+    }
     return YES;
 }
 
@@ -1091,6 +1098,7 @@
             NSArray *durations = [IQFileManager durationsOfFilesAtPath:[[self class] temporaryVideoStoragePath]];
             
             [self.partitionBar setPartitions:durations animated:NO];
+            [self.mediaView replayVideoAtPath:[IQFileManager URLForFilePath:nextMediaPath]];
         }
         else if ([[info objectForKey:IQMediaType] isEqualToString:IQMediaTypeImage])
         {

@@ -25,6 +25,7 @@
 #import "IQFeatureOverlay.h"
 #import "IQ_DPMeterView.h"
 #import "IQ_PocketSVG.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface IQMediaView ()<IQFeatureOverlayDelegate,UIGestureRecognizerDelegate>
 
@@ -45,6 +46,7 @@
     UILongPressGestureRecognizer *_longPressRecognizer;
     float beginGestureScale, effectiveScale;
     BOOL editing;
+    MPMoviePlayerController *repeatPlayer;
 }
 
 +(Class)layerClass
@@ -388,6 +390,21 @@
     }
 }
 
+- (void)replayVideoAtPath:(NSURL *)url {
+    repeatPlayer = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL fileURLWithPath:[url path]]];
+    repeatPlayer.view.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    repeatPlayer.shouldAutoplay = NO;
+    repeatPlayer.movieSourceType = MPMovieSourceTypeFile;
+    repeatPlayer.scalingMode = MPMovieScalingModeAspectFill;
+    repeatPlayer.controlStyle = MPMovieControlStyleNone;
+    repeatPlayer.repeatMode = MPMovieRepeatModeOne;
+    [repeatPlayer play];
+    [self addSubview:repeatPlayer.view];
+}
+
+- (void)stopReplayVideo {
+    [repeatPlayer.view removeFromSuperview];
+}
 @end
 
 
