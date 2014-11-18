@@ -828,6 +828,8 @@
         self.buttonFlash.hidden = NO;
         self.textField.text = @"";
         self.textField.hidden = YES;
+        self.textLabel.text = @"";
+        self.textLabel.hidden = YES;
     }
     
     else {
