@@ -906,6 +906,16 @@
 
 #pragma mark - IQMediaView Delegates
 
+- (void)doneWithEditingMediaView:(IQMediaView *)mediaView {
+    if (!self.session.isSessionRunning) {
+        [self.textField endEditing:YES];
+        [UIView animateWithDuration:0.3 animations:^{
+            self.textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 50);
+        }];
+    }
+}
+
+
 -(void)mediaView:(IQMediaView*)mediaView focusPointOfInterest:(CGPoint)focusPoint
 {
     if ([self session].isSessionRunning) {
@@ -937,6 +947,7 @@
         [self.textField becomeFirstResponder];
     }
 }
+
 
 - (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
     if (![self.textField isFirstResponder]) {

@@ -44,6 +44,7 @@
     UITapGestureRecognizer *_tapRecognizer;
     UILongPressGestureRecognizer *_longPressRecognizer;
     float beginGestureScale, effectiveScale;
+    BOOL editing;
 }
 
 +(Class)layerClass
@@ -65,7 +66,7 @@
 //    focusView.image = [UIImage imageNamed:@"IQ_focus"];
 //    [self addSubview:focusView];
     
-    exposureView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
+    exposureView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
     exposureView.alpha = 0.0;
     exposureView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
     exposureView.center = self.center;
@@ -176,20 +177,25 @@
     if (recognizer.state == UIGestureRecognizerStateEnded  &&
         [self.delegate respondsToSelector:@selector(mediaView:exposurePointOfInterest:)])
     {
-        [self.delegate mediaView:self editLabelAtPoint:center];
-        if ([self.delegate session].isSessionRunning) {
-            CGPoint percentPoint = CGPointMake(exposureView.center.y/568, 1 - (exposureView.center.x/320));
-            [self.delegate mediaView:self exposurePointOfInterest:percentPoint];
-            [self.delegate mediaView:self focusPointOfInterest:percentPoint];
-
-            [exposureView hideAfterSeconds:1];
-
-            if (exposureView.alpha == 0.0)
-            {
-                [exposureView animate];
+        if (!editing) {
+            [self.delegate mediaView:self editLabelAtPoint:center];
+            if ([self.delegate session].isSessionRunning) {
+                CGPoint percentPoint = CGPointMake(exposureView.center.y/568, 1 - (exposureView.center.x/320));
+                [self.delegate mediaView:self exposurePointOfInterest:percentPoint];
+                [self.delegate mediaView:self focusPointOfInterest:percentPoint];
+                
+                [exposureView hideAfterSeconds:1];
+                
+                if (exposureView.alpha == 0.0)
+                {
+                    [exposureView animate];
+                }
             }
         }
-       
+        else {
+            [self.delegate doneWithEditingMediaView:self];
+        }
+        editing = !editing;
     }
 }
 
