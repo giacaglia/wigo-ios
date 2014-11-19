@@ -58,65 +58,40 @@
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
     }
+
     UIView *player = [self.pageViews objectAtIndex:indexPath.row];
     if ([player isKindOfClass:[UIImageView class]]) {
-//        myCell.imageView = player;
-        NSLog(@"imageview at row: %d", (int)indexPath.row);
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
         [myCell.imageView setImageWithURL:imageURL];
+        [myCell setTextForEventMessage:eventMessage];
         myCell.imageView.hidden = NO;
         myCell.moviePlayer.view.hidden = YES;
-        myCell.controllerView.hidden = YES;
+        myCell.controller.view.hidden = YES;
     }
     else if ([player isKindOfClass:[MPMoviePlayerController class]]) {
         myCell.moviePlayer.view.hidden = NO;
         myCell.imageView.hidden = YES;
-        myCell.controllerView.hidden = YES;
-        NSLog(@"movie at row: %d", (int)indexPath.row);
+        myCell.controller.view.hidden = YES;
     }
     else if ([player isKindOfClass:[IQMediaPickerController class]]) {
-        IQMediaPickerController *controller = (IQMediaPickerController *)player;
-//        myCell.imageView = controller.view;
-        myCell.controllerView = controller.view;
-        myCell.controllerView.hidden = NO;
+        myCell.controller.view.hidden = NO;
         myCell.imageView.hidden = YES;
         myCell.moviePlayer.view.hidden = YES;
-        NSLog(@"camera at row: %d", (int)indexPath.row);
     }
     else {
-        NSLog(@"load content at row: %d", (int)indexPath.row);
         if ([mimeType isEqualToString:@"new"]) {
-            self.controller.view.frame = CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height);
-            myCell.controllerView = self.controller.view;
+            myCell.controller.view.hidden = NO;
+            myCell.moviePlayer.view.hidden = YES;
+            myCell.imageView.hidden = YES;
             [self.pageViews setObject:self.controller atIndexedSubscript:indexPath.row];
         }
         else if ([mimeType isEqualToString:@"image/jpeg"]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-//            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.superview.frame.size.width, self.superview.frame.size.height)];
             [myCell.imageView setImageWithURL:imageURL];
             myCell.imageView.hidden = NO;
-//            UILabel *labelInsideImage;
-//            if ([[eventMessage allKeys] containsObject:@"message"]) {
-//                NSString *message = [eventMessage objectForKey:@"message"];
-//                if (message && [message isKindOfClass:[NSString class]]) {
-//                    labelInsideImage = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, imageView.frame.size.width, 40)];
-//                    labelInsideImage.font = [FontProperties mediumFont:20.0f];
-//                    labelInsideImage.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
-//                    labelInsideImage.textAlignment = NSTextAlignmentCenter;
-//                    labelInsideImage.text = message;
-//                    labelInsideImage.textColor = [UIColor whiteColor];
-//                    [imageView addSubview:labelInsideImage];
-//                }
-//            }
-//            if ([[eventMessage allKeys] containsObject:@"properties"]) {
-//                NSDictionary *properties = [eventMessage objectForKey:@"properties"];
-//                if (properties &&
-//                    [properties isKindOfClass:[NSDictionary class]] &&
-//                    [[properties allKeys] containsObject:@"yPosition"]) {
-//                    NSNumber *yPosition = [properties objectForKey:@"yPosition"];
-//                    labelInsideImage.frame = CGRectMake(0, [yPosition intValue], imageView.frame.size.width, 40);
-//                }
-//            }
+            [myCell setTextForEventMessage:eventMessage];
+            myCell.moviePlayer.view.hidden = YES;
+            myCell.controller.view.hidden = YES;
             [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
         }
         else {
@@ -124,11 +99,10 @@
             myCell.moviePlayer.contentURL = videoURL;
             myCell.moviePlayer.view.hidden = NO;
             myCell.imageView.hidden = YES;
+            myCell.controller.view.hidden = YES;
             [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
         }
-
     }
-
     
     return myCell;
 }
@@ -161,7 +135,6 @@
     MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
     if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]] &&
         theMoviePlayer.playbackState != MPMoviePlaybackStatePlaying) {
-        NSLog(@"play video at page: %d", page);
         [theMoviePlayer play];
         self.lastMoviePlayer = theMoviePlayer;
     }
@@ -231,6 +204,14 @@
     self.imageView.clipsToBounds = YES;
     self.imageView.hidden = YES;
     [self.contentView addSubview:self.imageView];
+   
+    self.labelInsideImage = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.imageView.frame.size.width, 40)];
+    self.labelInsideImage.font = [FontProperties mediumFont:20.0f];
+    self.labelInsideImage.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
+    self.labelInsideImage.textAlignment = NSTextAlignmentCenter;
+    self.labelInsideImage.textColor = [UIColor whiteColor];
+    self.labelInsideImage.hidden = YES;
+    [self.imageView addSubview:self.labelInsideImage];
     
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
@@ -242,34 +223,33 @@
     self.moviePlayer.view.frame = self.frame;
     self.moviePlayer.view.hidden = YES;
     [self.contentView addSubview:self.moviePlayer.view];
-    
-    self.controllerView = [[UIView alloc] initWithFrame:self.frame];
-    self.controllerView.hidden = YES;
-    [self.contentView addSubview:self.controllerView];
+
+    self.controller = [[IQMediaPickerController alloc] init];
+    [self.controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
+    self.controller.view.frame = self.frame;
+    self.controller.view.hidden = YES;
+    [self.contentView addSubview:self.controller.view];
 }
 
-//- (void)setImageView:(UIImageView *)imageView {
-//    self.imageView = imageView;
-//    self.imageView.hidden = NO;
-//    self.videoView.hidden = YES;
-//    self.controllerView.hidden = YES;
-//    NSLog(@"set image");
-//}
 
-//- (void)setVideoView:(UIView *)videoView {
-//    self.videoView = videoView;
-//    self.videoView.hidden = NO;
-//    self.imageView.hidden = YES;
-//    self.controllerView.hidden = YES;
-//    NSLog(@"set video");
-//}
-//
-//- (void)setControllerView:(UIView *)controllerView {
-//    self.controllerView = controllerView;
-//    self.controllerView.hidden = NO;
-//    self.imageView.hidden = YES;
-//    self.videoView.hidden = YES;
-//    NSLog(@"set controller");
-//}
+- (void)setTextForEventMessage:(NSDictionary *)eventMessage {
+    if ([[eventMessage allKeys] containsObject:@"message"]) {
+        NSString *message = [eventMessage objectForKey:@"message"];
+        if (message && [message isKindOfClass:[NSString class]]) {
+            self.labelInsideImage.hidden = NO;
+            self.labelInsideImage.text = message;
+        }
+        else self.labelInsideImage.hidden = YES;
+        if ([[eventMessage allKeys] containsObject:@"properties"]) {
+            NSDictionary *properties = [eventMessage objectForKey:@"properties"];
+            if (properties &&
+                [properties isKindOfClass:[NSDictionary class]] &&
+                [[properties allKeys] containsObject:@"yPosition"]) {
+                NSNumber *yPosition = [properties objectForKey:@"yPosition"];
+                self.labelInsideImage.frame = CGRectMake(0, [yPosition intValue], self.imageView.frame.size.width, 40);
+            }
+        }
+    }
+}
 
 @end
