@@ -81,9 +81,10 @@
     else {
         if ([mimeType isEqualToString:@"new"]) {
             myCell.controller.view.hidden = NO;
+            [myCell setControllerDelegate:self.controllerDelegate];
             myCell.moviePlayer.view.hidden = YES;
             myCell.imageView.hidden = YES;
-            [self.pageViews setObject:self.controller atIndexedSubscript:indexPath.row];
+            [self.pageViews setObject:myCell.controller atIndexedSubscript:indexPath.row];
         }
         else if ([mimeType isEqualToString:@"image/jpeg"]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
@@ -229,6 +230,13 @@
     self.controller.view.frame = self.frame;
     self.controller.view.hidden = YES;
     [self.contentView addSubview:self.controller.view];
+}
+
+- (void)setControllerDelegate:(id)controllerDelegate {
+    if (!self.controllerDelegateSet) {
+        self.controller.delegate = controllerDelegate;
+    }
+    self.controllerDelegateSet = YES;
 }
 
 

@@ -24,7 +24,8 @@ typedef NS_ENUM(NSInteger, MediaType) {
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource>
 
 @property (nonatomic, strong) NSMutableArray *eventMessages;
-@property (nonatomic, strong) IQMediaPickerController *controller;
+//@property (nonatomic, strong) IQMediaPickerController *controller;
+@property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
 @property (nonatomic, strong) NSNumber *index;
 
@@ -38,9 +39,11 @@ typedef NS_ENUM(NSInteger, MediaType) {
 @end
 
 @interface MediaCell : UICollectionViewCell
+@property (nonatomic, assign) BOOL controllerDelegateSet;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) UILabel *labelInsideImage;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) IQMediaPickerController *controller;
 - (void)setTextForEventMessage:(NSDictionary *)eventMessage;
+- (void)setControllerDelegate:(id)controllerDelegate;
 @end

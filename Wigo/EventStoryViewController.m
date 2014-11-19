@@ -247,10 +247,10 @@ BOOL cancelFetchMessages;
     else conversationController.eventMessages = [NSMutableArray new];
     conversationController.index = [NSNumber numberWithInt:eventMessages.count];
     
-    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
-    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
-    controller.delegate = self;
-    conversationController.controller = controller;
+//    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
+//    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
+//    controller.delegate = self;
+    conversationController.controllerDelegate = self;
     
     [self presentViewController:conversationController animated:YES completion:nil];
 }
@@ -269,10 +269,10 @@ BOOL cancelFetchMessages;
     else conversationController.eventMessages = [NSMutableArray new];
     conversationController.index = [NSNumber numberWithInteger:conversationController.eventMessages.count - 1];
     
-    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
-    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
-    controller.delegate = self;
-    conversationController.controller = controller;
+//    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
+//    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
+//    controller.delegate = self;
+    conversationController.controllerDelegate = self;
     
     [self presentViewController:conversationController animated:YES completion:nil];
 }
@@ -442,10 +442,10 @@ BOOL cancelFetchMessages;
     if (eventMessages) conversationController.eventMessages = [self eventMessagesWithCamera];
     else conversationController.eventMessages = [NSMutableArray new];
     
-    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
-    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
-    controller.delegate = self;
-    conversationController.controller = controller;
+//    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
+//    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
+//    controller.delegate = self;
+    conversationController.controllerDelegate = self;
     
     [self presentViewController:conversationController animated:YES completion:nil];
 }
