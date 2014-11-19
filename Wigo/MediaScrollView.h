@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, MediaType) {
 @interface MediaCell : UICollectionViewCell
 @property (nonatomic, assign) BOOL controllerDelegateSet;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
-@property (nonatomic, strong) UILabel *labelInsideImage;
+@property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) IQMediaPickerController *controller;
 - (void)setTextForEventMessage:(NSDictionary *)eventMessage;
