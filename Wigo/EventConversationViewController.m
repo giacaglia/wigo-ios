@@ -235,6 +235,7 @@
 #pragma mark - ScrollViewDelegate
 
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    NSLog(@"lalala");
     if (scrollView == self.mediaScrollView)
         _imagesScrollViewPointNow = scrollView.contentOffset;
     else _collectionViewPointNow = scrollView.contentOffset;
@@ -243,6 +244,7 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
                   willDecelerate:(BOOL)decelerate
 {
+    NSLog(@"end dragging");
     CGPoint pointNow;
     if (scrollView == self.mediaScrollView) pointNow = _imagesScrollViewPointNow;
     else pointNow = _collectionViewPointNow;
@@ -256,6 +258,7 @@
 }
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    NSLog(@"will end dragging");
     CGPoint pointNow;
     if (scrollView == self.mediaScrollView) pointNow = _imagesScrollViewPointNow;
     else pointNow = _collectionViewPointNow;
@@ -313,7 +316,7 @@
 - (void)highlightCellAtPage:(NSInteger)page {
     page = MAX(page, 0);
     page = MIN(page, self.eventMessages.count - 1);
-    [self.mediaScrollView scrolledToPage:page];
+    [self.mediaScrollView scrolledToPage:(int)page];
     [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];

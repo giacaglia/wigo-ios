@@ -669,7 +669,6 @@
                 [self.bottomContainerView setLeftContentView:nil];
                 [self.bottomContainerView setRightContentView:nil];
                 [self.bottomContainerView setMiddleContentView:nil];
-//                [self.bottomContainerView setMiddleContentView:self.imageViewProcessing];
                 
                 [displayDuratioUpdate removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
                 [displayDuratioUpdate invalidate];

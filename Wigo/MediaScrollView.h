@@ -8,6 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "IQMediaPickerController.h"
+#import <MediaPlayer/MediaPlayer.h>
+
+typedef NS_ENUM(NSInteger, MediaType) {
+    MediaTypeImage,
+    MediaTypeVideo,
+    MediaTypeCameram
+};
+
+
 
 @protocol MediaScrollViewDelegate
 @end
@@ -29,5 +38,7 @@
 @end
 
 @interface MediaCell : UICollectionViewCell
-@property (nonatomic, strong) UIImageView *coverMediaView;
+@property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UIView *controllerView;
 @end
