@@ -188,7 +188,6 @@ BOOL didProfileSegue;
         row = [indexPath row] - 1;
     }
     row = MAX(row, 0);
-    NSLog(@"row %d", row);
     // If the section is the first one
     if ([indexPath section] == 0 && row == [[_nonExpiredNotificationsParty getObjectArray] count]) {
         return cell;

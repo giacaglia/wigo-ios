@@ -12,7 +12,7 @@
 @protocol MediaScrollViewDelegate
 @end
 
-@interface MediaScrollView : UICollectionView <UITextFieldDelegate, UICollectionViewDataSource>
+@interface MediaScrollView : UICollectionView <UICollectionViewDataSource>
 
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 @property (nonatomic, strong) IQMediaPickerController *controller;

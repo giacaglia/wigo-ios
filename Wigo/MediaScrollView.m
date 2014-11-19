@@ -16,8 +16,6 @@
 
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) NSMutableDictionary *thumbnails;
-@property (nonatomic, assign) BOOL lastPageWasVideo;
-@property (nonatomic, assign) int lastVisitedPage;
 
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
@@ -34,10 +32,6 @@
 }
 
 - (void)setup {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
     
     self.backgroundColor = RGB(23, 23, 23);
     self.showsHorizontalScrollIndicator = NO;
@@ -122,6 +116,7 @@
             MPMoviePlayerController *theMoviePlayer = [[MPMoviePlayerController alloc] init];
             
             theMoviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+            NSLog(@"video URL %@", videoURL);
             [theMoviePlayer setContentURL: videoURL];
             theMoviePlayer.scalingMode = MPMovieScalingModeAspectFill;
             [theMoviePlayer setControlStyle: MPMovieControlStyleNone];
@@ -187,109 +182,25 @@
         }
     }
 
-    if (!self.lastVisitedPage) {
-        self.lastVisitedPage = page;
-    }
-    if (self.lastVisitedPage != page) {
-        MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
-        if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]]) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [theMoviePlayer play];
-            //UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
-            //thumb.hidden = YES;
-            });
-            
+    [self performBlock:^(void){[self playVideoAtPage:page];}
+            afterDelay:0.01
+ cancelPreviousRequest:YES];
+    
+}
+
+
+- (void)playVideoAtPage:(int)page {
+    MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
+    if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]] &&
+        theMoviePlayer.playbackState != MPMoviePlaybackStatePlaying) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.lastMoviePlayer)  [self.lastMoviePlayer pause];
+            [theMoviePlayer play];
             self.lastMoviePlayer = theMoviePlayer;
-            self.lastPageWasVideo = YES;
-        } else {
-            if (self.lastPageWasVideo && self.lastMoviePlayer) {
-                if (self.lastMoviePlayer.playbackState == MPMusicPlaybackStatePlaying) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        
-                        //                    UIImageView *thumb = [self.thumbnails objectForKey: [NSString stringWithFormat: @"%i", page]];
-                        //                    thumb.hidden = NO;
-                        [self.lastMoviePlayer pause];
-                    });
-                }
-            }
-        }
-        self.lastVisitedPage = page;
-        
+        });
     }
 }
 
-- (void)removeMediaAtPage:(int)page {
-    UIView *player = [self.pageViews objectAtIndex:page];
-    if ([player isKindOfClass:[MPMoviePlayerController class]])    {
-    }
-    else {
-        [UIView animateWithDuration:0.4 animations:^{
-            player.alpha = 0.0f;
-        } completion:^(BOOL finished) {
-            [player removeFromSuperview];
-        }];
-    }
-}
-
-
-- (void)addViewForNewTextAtPage:(int)page {
-    self.chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(page*320, self.frame.size.height - 50, self.frame.size.width, 60)];
-    [self addSubview:self.chatTextFieldWrapper];
-    
-    UITextField * messageTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 10, self.chatTextFieldWrapper.frame.size.width - 70, 35)];
-    messageTextField.tintColor = [FontProperties getOrangeColor];
-    messageTextField.placeholder = @"Add to the story";
-//    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
-    messageTextField.delegate = self;
-    messageTextField.returnKeyType = UIReturnKeySend;
-    messageTextField.backgroundColor = [UIColor whiteColor];
-    messageTextField.layer.borderColor = RGB(147, 147, 147).CGColor;
-    messageTextField.layer.borderWidth = 0.5f;
-    messageTextField.layer.cornerRadius = 4.0f;
-    messageTextField.font = [FontProperties mediumFont:18.0f];
-    messageTextField.textColor = RGB(102, 102, 102);
-    [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
-    [self.chatTextFieldWrapper addSubview:messageTextField];
-    [self.chatTextFieldWrapper bringSubviewToFront:messageTextField];
-    
-    UIButton *sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.chatTextFieldWrapper.frame.size.width - 50, 10, 45, 35)];
-    [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
-    sendButton.backgroundColor = [FontProperties getOrangeColor];
-    sendButton.layer.borderWidth = 1.0f;
-    sendButton.layer.borderColor = [UIColor clearColor].CGColor;
-    sendButton.layer.cornerRadius = 5;
-    [self.chatTextFieldWrapper addSubview:sendButton];
-    
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 25, 25)];
-    sendOvalImageView.image = [UIImage imageNamed:@"sendOval"];
-    [sendButton addSubview:sendOvalImageView];
-    
-    self.addYourVerseLabel = [[UILabel alloc] initWithFrame:CGRectMake(page * 320, 250, self.frame.size.width, 30)];
-    self.addYourVerseLabel.text = @"Add your verse";
-    self.addYourVerseLabel.textColor = [UIColor whiteColor];
-    self.addYourVerseLabel.font = [FontProperties lightFont:30.0f];
-    self.addYourVerseLabel.textAlignment = NSTextAlignmentCenter;
-    [self addSubview:self.addYourVerseLabel];
-    
-}
-
-- (BOOL)textField:(UITextField *)textField
-shouldChangeCharactersInRange:(NSRange)range
-replacementString:(NSString *)string {
-    self.addYourVerseLabel.text = [NSString stringWithFormat:@"%@%@", textField.text, string];
-    return YES;
-}
-
-- (void)keyboardWillShow:(NSNotification*)notification
-{
-    NSDictionary* userInfo = [notification userInfo];
-    CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-//    CGRect initialFrame = self.chatTextFieldWrapper.frame;
-//    initialFrame = initialFrame - kbFrame;
-    self.chatTextFieldWrapper.frame = CGRectMake(self.chatTextFieldWrapper.frame.origin.x, self.chatTextFieldWrapper.frame.origin.y - kbFrame.size.height, self.chatTextFieldWrapper.frame.size.width, self.chatTextFieldWrapper.frame.size.height);
-
-}
 
 - (void)removeEventMessageAtPage:(int)page {
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
