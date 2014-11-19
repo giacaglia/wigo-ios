@@ -187,9 +187,10 @@ BOOL didProfileSegue;
         }
         row = [indexPath row] - 1;
     }
-    
+    row = MAX(row, 0);
+    NSLog(@"row %d", row);
     // If the section is the first one
-    if ([indexPath section] == 0 && [indexPath row] == [[_nonExpiredNotificationsParty getObjectArray] count]) {
+    if ([indexPath section] == 0 && row == [[_nonExpiredNotificationsParty getObjectArray] count]) {
         return cell;
         if ([[_expiredNotificationsParty getObjectArray] count] == 0) {
             if ([_page intValue] < 5) [self fetchNotifications];
@@ -218,7 +219,7 @@ BOOL didProfileSegue;
     }
     
     if ([[_notificationsParty getObjectArray] count] == 0) return cell;
-    Notification *notification = [self getNotificationAtIndex:indexPath];
+    Notification *notification = [self getNotificationAtIndex:[NSIndexPath indexPathForRow:row inSection:indexPath.section]];
     
     if ([notification fromUserID] == (id)[NSNull null]) return cell;
     // When group is unlocked
