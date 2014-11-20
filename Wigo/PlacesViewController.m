@@ -750,7 +750,7 @@ int firstIndexOfNegativeEvent;
     [cell.contentView addSubview:placeSubView];
     
     //add invisible event conversation button
-    UIButton *eventFeedButton = [[UIButton alloc] initWithFrame: labelName.frame];
+    UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(labelName.frame.origin.x, labelName.frame.origin.y, self.view.frame.size.width - labelName.frame.origin.x, labelName.frame.size.height)];
     eventFeedButton.backgroundColor = [UIColor clearColor];
     eventFeedButton.tag = indexPath.row;
     [eventFeedButton addTarget: self action: @selector(showEventConversation:) forControlEvents: UIControlEventTouchUpInside];
