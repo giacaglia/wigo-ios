@@ -1710,16 +1710,16 @@
 		FA2BE9BA19FAEAFC00CC0E5E /* EventMessages */ = {
 			isa = PBXGroup;
 			children = (
-				E9AEAE521A0190DB00BD77AF /* EventPeopleScrollView.m */,
 				E9A0F9AF1A1E5CBE001A66DF /* EventMessagesConstants.h */,
+				E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */,
+				E9AEAE511A0190DB00BD77AF /* EventPeopleScrollView.h */,
+				E9AEAE521A0190DB00BD77AF /* EventPeopleScrollView.m */,
 				FA2BE9BB19FAF06500CC0E5E /* EventStoryViewController.h */,
 				FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */,
 				FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */,
 				FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */,
 				E9D039C61A09886A00DEF094 /* MediaScrollView.h */,
 				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
-				E9AEAE511A0190DB00BD77AF /* EventPeopleScrollView.h */,
-				E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */,
 			);
 			name = EventMessages;
 			sourceTree = "<group>";

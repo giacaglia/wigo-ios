@@ -53,6 +53,7 @@
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MediaCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MediaCell" forIndexPath: indexPath];
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:indexPath.row];
+    NSLog(@"event message %@", eventMessage);
     NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
     NSString *contentURL = [eventMessage objectForKey:@"media"];
     if (!self.pageViews) {

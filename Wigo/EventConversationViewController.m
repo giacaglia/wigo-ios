@@ -14,6 +14,7 @@
 #import "Profile.h"
 #import "MediaScrollView.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "EventMessagesConstants.h"
 
 
 @interface EventConversationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
@@ -95,19 +96,17 @@
     }
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"]) {
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
-        myCell.mediaTypeImageView.image = [UIImage new];
-        [myCell.mediaTypeImageView removeFromSuperview];
+        myCell.mediaTypeImageView.hidden = YES;
     }
     else {
         if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
-        if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"image/jpeg"]) {
+        if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
+            myCell.mediaTypeImageView.hidden = NO;
         }
-        else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mp4"]) {
+        else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
-        }
-        else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"text"])  {
-            myCell.mediaTypeImageView.image = [UIImage imageNamed:@"textType"];
+            myCell.mediaTypeImageView.hidden = NO;
         }
     }
     
@@ -376,7 +375,6 @@
                             initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
                             collectionViewLayout:[[MediaFlowLayout alloc] init]];
     self.mediaScrollView.eventMessages = self.eventMessages;
-//    self.mediaScrollView.controller = self.controller;
     self.mediaScrollView.controllerDelegate = self.controllerDelegate;
     self.mediaScrollView.mediaDelegate = self;
     if (self.index) [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
@@ -384,7 +382,6 @@
     self.mediaScrollView.delegate = self;
     [self.view addSubview:self.mediaScrollView];
     [self.view sendSubviewToBack:self.mediaScrollView];
-
     
     self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height - 56, 36, 36)];
     UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
