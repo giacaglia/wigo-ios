@@ -59,9 +59,9 @@
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
     }
 
-    [myCell setTextForEventMessage:eventMessage];
     UIView *player = [self.pageViews objectAtIndex:indexPath.row];
     if ([player isKindOfClass:[UIImageView class]]) {
+        [myCell setTextForEventMessage:eventMessage];
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
         [myCell.imageView setImageWithURL:imageURL];
         myCell.imageView.hidden = NO;
@@ -69,17 +69,20 @@
         myCell.controller.view.hidden = YES;
     }
     else if ([player isKindOfClass:[MPMoviePlayerController class]]) {
+        myCell.label.hidden = YES;
         myCell.moviePlayer.view.hidden = NO;
         myCell.imageView.hidden = YES;
         myCell.controller.view.hidden = YES;
     }
     else if ([player isKindOfClass:[IQMediaPickerController class]]) {
+        [myCell setTextForEventMessage:eventMessage];
         myCell.controller.view.hidden = NO;
         myCell.imageView.hidden = YES;
         myCell.moviePlayer.view.hidden = YES;
     }
     else {
         if ([mimeType isEqualToString:@"new"]) {
+            myCell.label.hidden = YES;
             myCell.controller.view.hidden = NO;
             [myCell setControllerDelegate:self.controllerDelegate];
             myCell.moviePlayer.view.hidden = YES;
@@ -87,6 +90,7 @@
             [self.pageViews setObject:myCell.controller atIndexedSubscript:indexPath.row];
         }
         else if ([mimeType isEqualToString:@"image/jpeg"]) {
+            [myCell setTextForEventMessage:eventMessage];
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
             [myCell.imageView setImageWithURL:imageURL];
             myCell.imageView.hidden = NO;
@@ -96,6 +100,7 @@
             [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
         }
         else {
+            [myCell setTextForEventMessage:eventMessage];
             NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://wigo-uploads.s3.amazonaws.com/%@", contentURL]];
             myCell.moviePlayer.contentURL = videoURL;
             myCell.moviePlayer.view.hidden = NO;
@@ -143,6 +148,7 @@
 }
 
 - (void)removeMediaAtPage:(int)page {
+    [self removeEventMessageAtPage:page];
     UIView *player = [self.pageViews objectAtIndex:page];
     if ([player isKindOfClass:[MPMoviePlayerController class]])    {
     }
@@ -158,8 +164,7 @@
 - (void)removeEventMessageAtPage:(int)page {
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
     NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
-    [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/?id=%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        
+    [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
     }];
 }
 
