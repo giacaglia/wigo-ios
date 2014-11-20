@@ -398,10 +398,11 @@
 // Needs to load faster.
 - (void)trashPressed:(id)sender {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
-    [self.eventMessages removeObjectAtIndex:page];
+    // NEeds to be sequential.
     [self.mediaScrollView removeMediaAtPage:(int)page];
+    [self.eventMessages removeObjectAtIndex:page];
     [self.facesCollectionView reloadData];
-//    [self highlightCellAtPage:MIN(page, self.eventMessages.count - 1)];
+    [self highlightCellAtPage:MIN(page, self.eventMessages.count - 1)];
 }
 
 @end
