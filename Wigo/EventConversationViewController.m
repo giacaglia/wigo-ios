@@ -94,7 +94,7 @@
     if ([user isEqualToUser:[Profile user]]) {
         user = [Profile user];
     }
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"]) {
+    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType]) {
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
         myCell.mediaTypeImageView.hidden = YES;
     }
@@ -311,27 +311,20 @@
 
 - (void)highlightCellAtPage:(NSInteger)page {
     page = MAX(page, 0);
-    page = MIN(page, self.eventMessages.count - 1);
+    page = MIN(page, self.eventMessages.count);
     [self.mediaScrollView scrolledToPage:(int)page];
-    [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
+    [self.facesCollectionView setContentOffset:CGPointMake((100) * page, 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"new"]) {
-        if (!self.facesHidden) {
-            self.facesHidden = YES;
-            self.buttonCancel.hidden = YES;
-            self.buttonCancel.enabled = NO;
-            self.buttonTrash.hidden = YES;
-            self.buttonTrash.enabled = NO;
-            [UIView animateWithDuration:0.5 animations:^{
-                self.facesCollectionView.alpha = 0;
-            }];
-        }
-    }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"newText"]) {
-//            [self.buttonCancel removeFromSuperview];
-            self.buttonTrash.hidden = YES;
-            self.buttonTrash.enabled = NO;
+    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType]) {
+        self.facesHidden = YES;
+        self.buttonCancel.hidden = YES;
+        self.buttonCancel.enabled = NO;
+        self.buttonTrash.hidden = YES;
+        self.buttonTrash.enabled = NO;
+        [UIView animateWithDuration:0.5 animations:^{
+            self.facesCollectionView.alpha = 0;
+        }];
     }
     else {
         self.facesHidden = NO;

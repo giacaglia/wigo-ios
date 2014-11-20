@@ -166,7 +166,6 @@ BOOL cancelFetchMessages;
     myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
 
     User *user;
-//    NSLog(@"index path %d", [indexPath row]);
     NSDictionary *eventMessage = [eventMessages objectAtIndex:[indexPath row]];
     user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
     if ([user isEqualToUser:[Profile user]]) {
@@ -272,7 +271,6 @@ BOOL cancelFetchMessages;
                          @"media_mime_type": type
                          };
         }
-        NSLog(@"options %@", options);
         [self uploadContentWithFile:fileData
                         andFileName:@"image0.jpg"
                          andOptions:options];
@@ -333,7 +331,7 @@ BOOL cancelFetchMessages;
     [mutableEventMessages addObject:@{
                                       @"user": [[Profile user] dictionary],
                                       @"created": [dateFormatter stringFromDate:[NSDate date]],
-                                      @"media_mime_type": @"new",
+                                      @"media_mime_type": kCameraType,
                                       @"media": @""
                                       }];
 

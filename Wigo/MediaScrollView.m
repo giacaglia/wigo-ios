@@ -34,7 +34,6 @@
     self.backgroundColor = RGB(23, 23, 23);
     self.showsHorizontalScrollIndicator = NO;
     self.showsVerticalScrollIndicator = NO;
-    self.pagingEnabled = YES;
     self.dataSource = self;
     [self registerClass:[VideoCell class] forCellWithReuseIdentifier:@"VideoCell"];
     [self registerClass:[ImageCell class] forCellWithReuseIdentifier:@"ImageCell"];
@@ -60,7 +59,7 @@
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:indexPath.row];
     NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
     NSString *contentURL = [eventMessage objectForKey:@"media"];
-    if ([mimeType isEqualToString:@"new"]) {
+    if ([mimeType isEqualToString:kCameraType]) {
         CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
         [cameraCell setControllerDelegate:self.controllerDelegate];
         [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
