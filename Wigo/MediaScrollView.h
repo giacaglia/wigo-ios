@@ -31,10 +31,18 @@
 @end
 
 @interface MediaCell : UICollectionViewCell
+@property (nonatomic, strong) UILabel *label;
+- (void)setTextForEventMessage:(NSDictionary *)eventMessage;
+@end
+
+@interface ImageCell : MediaCell
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UILabel *label;
+@end
+
+@interface VideoCell : MediaCell
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) UILabel *label;
-@property (nonatomic, strong) UIImageView *imageView;
-- (void)setTextForEventMessage:(NSDictionary *)eventMessage;
 @end
 
 @interface CameraCell : UICollectionViewCell

@@ -36,7 +36,8 @@
     self.showsVerticalScrollIndicator = NO;
     self.pagingEnabled = YES;
     self.dataSource = self;
-    [self registerClass:[MediaCell class] forCellWithReuseIdentifier:@"MediaCell"];
+    [self registerClass:[VideoCell class] forCellWithReuseIdentifier:@"VideoCell"];
+    [self registerClass:[ImageCell class] forCellWithReuseIdentifier:@"ImageCell"];
     [self registerClass:[CameraCell class] forCellWithReuseIdentifier:@"CameraCell"];
     
 }
@@ -59,35 +60,28 @@
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:indexPath.row];
     NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
     NSString *contentURL = [eventMessage objectForKey:@"media"];
-    if (indexPath.row == self.eventMessages.count - 1) {
+    if ([mimeType isEqualToString:@"new"]) {
         CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
         [cameraCell setControllerDelegate:self.controllerDelegate];
         [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
         return cameraCell;
     }
-    else {
-        MediaCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MediaCell" forIndexPath: indexPath];
-        
-        if ([mimeType isEqualToString:kImageEventType]) {
-            [myCell setTextForEventMessage:eventMessage];
-            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-            [myCell.imageView setImageWithURL:imageURL];
-            myCell.imageView.hidden = NO;
-            [myCell setTextForEventMessage:eventMessage];
-            myCell.moviePlayer.view.hidden = YES;
-            [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
-        }
-        else {
-            [myCell setTextForEventMessage:eventMessage];
-            NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-            myCell.moviePlayer.contentURL = videoURL;
-            myCell.moviePlayer.view.hidden = NO;
-            myCell.imageView.hidden = YES;
-            [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
-        }    
-        
+    else if ([mimeType isEqualToString:kImageEventType]) {
+        ImageCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCell" forIndexPath: indexPath];
+        [myCell setTextForEventMessage:eventMessage];
+        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+        [myCell.imageView setImageWithURL:imageURL];
+        [myCell setTextForEventMessage:eventMessage];
+        [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
         return myCell;
-
+    }
+    else {
+        VideoCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VideoCell" forIndexPath: indexPath];
+        [myCell setTextForEventMessage:eventMessage];
+        NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+        myCell.moviePlayer.contentURL = videoURL;
+        [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
+        return myCell;
     }
 }
 
@@ -172,7 +166,55 @@
 
 @end
 
-@implementation MediaCell
+
+@implementation VideoCell
+
+- (id) initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder: aDecoder];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (id) initWithFrame:(CGRect)frame {
+    self = [super initWithFrame: frame];
+    if (self) {
+        [self setup];
+    }
+    
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 320, 568);
+    self.backgroundColor = UIColor.clearColor;
+    
+    self.moviePlayer = [[MPMoviePlayerController alloc] init];
+    self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+    self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
+    [self.moviePlayer setControlStyle: MPMovieControlStyleNone];
+    self.moviePlayer.repeatMode = MPMovieRepeatModeOne;
+    self.moviePlayer.shouldAutoplay = NO;
+    [self.moviePlayer prepareToPlay];
+    self.moviePlayer.view.frame = self.frame;
+    [self.contentView addSubview:self.moviePlayer.view];
+    
+    self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
+    self.label.font = [FontProperties mediumFont:20.0f];
+    self.label.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
+    self.label.textAlignment = NSTextAlignmentCenter;
+    self.label.textColor = [UIColor whiteColor];
+    self.label.hidden = YES;
+    [self.contentView addSubview:self.label];
+    [self.contentView bringSubviewToFront:self.label];
+}
+
+
+@end
+
+
+@implementation ImageCell
 
 - (id) initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder: aDecoder];
@@ -198,21 +240,9 @@
     self.imageView = [[UIImageView alloc] initWithFrame:self.frame];
     self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     self.imageView.clipsToBounds = YES;
-    self.imageView.hidden = YES;
     [self.contentView addSubview:self.imageView];
-   
-    self.moviePlayer = [[MPMoviePlayerController alloc] init];
-    self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
-    self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
-    [self.moviePlayer setControlStyle: MPMovieControlStyleNone];
-    self.moviePlayer.repeatMode = MPMovieRepeatModeOne;
-    self.moviePlayer.shouldAutoplay = NO;
-    [self.moviePlayer prepareToPlay];
-    self.moviePlayer.view.frame = self.frame;
-    self.moviePlayer.view.hidden = YES;
-    [self.contentView addSubview:self.moviePlayer.view];
     
-    self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.imageView.frame.size.width, 40)];
+    self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:20.0f];
     self.label.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
     self.label.textAlignment = NSTextAlignmentCenter;
@@ -223,6 +253,10 @@
 }
 
 
+@end
+
+
+@implementation MediaCell
 
 - (void)setTextForEventMessage:(NSDictionary *)eventMessage {
     if ([[eventMessage allKeys] containsObject:@"message"]) {
@@ -238,7 +272,7 @@
                 [properties isKindOfClass:[NSDictionary class]] &&
                 [[properties allKeys] containsObject:@"yPosition"]) {
                 NSNumber *yPosition = [properties objectForKey:@"yPosition"];
-                self.label.frame = CGRectMake(0, [yPosition intValue], self.imageView.frame.size.width, 40);
+                self.label.frame = CGRectMake(0, [yPosition intValue], self.frame.size.width, 40);
             }
         }
     }
