@@ -100,7 +100,7 @@ int xPosition;
     UIButton *buttonSender = (UIButton *)sender;
     int tag = buttonSender.tag;
     User *user = [[partyUser getObjectArray] objectAtIndex:tag];
-    [self.delegate loadViewOfUser:user];
+//    [self.delegate loadViewOfUser:user];
 }
 
 - (void)fetchEventAttendeesAsynchronous {

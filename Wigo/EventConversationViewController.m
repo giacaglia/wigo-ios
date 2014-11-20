@@ -344,9 +344,6 @@
         }
 
     }
-
-    
-    
     NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
     
     if (activeIndexPath != self.currentActiveCell) {
