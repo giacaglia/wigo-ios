@@ -313,7 +313,7 @@
     page = MAX(page, 0);
     page = MIN(page, self.eventMessages.count);
     [self.mediaScrollView scrolledToPage:(int)page];
-    [self.facesCollectionView setContentOffset:CGPointMake((100) * page, 0.0f) animated:YES];
+    [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType]) {
