@@ -455,6 +455,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     if (currentInstallation.badge != 0) {
         currentInstallation.badge = total;
+        [currentInstallation setValue:@"ios" forKey:@"deviceType"];
         currentInstallation[@"api_version"] = API_VERSION;
         [currentInstallation saveEventually];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber:total];
