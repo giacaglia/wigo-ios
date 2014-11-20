@@ -31,11 +31,14 @@
 @end
 
 @interface MediaCell : UICollectionViewCell
-@property (nonatomic, assign) BOOL controllerDelegateSet;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) IQMediaPickerController *controller;
 - (void)setTextForEventMessage:(NSDictionary *)eventMessage;
+@end
+
+@interface CameraCell : UICollectionViewCell
+@property (nonatomic, assign) BOOL controllerDelegateSet;
+@property (nonatomic, strong) IQMediaPickerController *controller;
 - (void)setControllerDelegate:(id)controllerDelegate;
 @end

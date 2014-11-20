@@ -37,6 +37,8 @@
     self.pagingEnabled = YES;
     self.dataSource = self;
     [self registerClass:[MediaCell class] forCellWithReuseIdentifier:@"MediaCell"];
+    [self registerClass:[CameraCell class] forCellWithReuseIdentifier:@"CameraCell"];
+    
 }
 
 #pragma mark - UICollectionView Data Source
@@ -51,44 +53,42 @@
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    MediaCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MediaCell" forIndexPath: indexPath];
-    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:indexPath.row];
-    NSLog(@"event message %@", eventMessage);
-    NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
-    NSString *contentURL = [eventMessage objectForKey:@"media"];
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
     }
-
-    if ([mimeType isEqualToString:@"new"]) {
-        myCell.label.hidden = YES;
-        myCell.controller.view.hidden = NO;
-        [myCell setControllerDelegate:self.controllerDelegate];
-        myCell.moviePlayer.view.hidden = YES;
-        myCell.imageView.hidden = YES;
-        [self.pageViews setObject:myCell.controller atIndexedSubscript:indexPath.row];
-    }
-    else if ([mimeType isEqualToString:kImageEventType]) {
-        [myCell setTextForEventMessage:eventMessage];
-        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-        [myCell.imageView setImageWithURL:imageURL];
-        myCell.imageView.hidden = NO;
-        [myCell setTextForEventMessage:eventMessage];
-        myCell.moviePlayer.view.hidden = YES;
-        myCell.controller.view.hidden = YES;
-        [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
+    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:indexPath.row];
+    NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
+    NSString *contentURL = [eventMessage objectForKey:@"media"];
+    if (indexPath.row == self.eventMessages.count - 1) {
+        CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
+        [cameraCell setControllerDelegate:self.controllerDelegate];
+        [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
+        return cameraCell;
     }
     else {
-        [myCell setTextForEventMessage:eventMessage];
-        NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://wigo-uploads.s3.amazonaws.com/%@", contentURL]];
-        myCell.moviePlayer.contentURL = videoURL;
-        myCell.moviePlayer.view.hidden = NO;
-        myCell.imageView.hidden = YES;
-        myCell.controller.view.hidden = YES;
-        [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
-    }    
-    
-    return myCell;
+        MediaCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MediaCell" forIndexPath: indexPath];
+        
+        if ([mimeType isEqualToString:kImageEventType]) {
+            [myCell setTextForEventMessage:eventMessage];
+            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+            [myCell.imageView setImageWithURL:imageURL];
+            myCell.imageView.hidden = NO;
+            [myCell setTextForEventMessage:eventMessage];
+            myCell.moviePlayer.view.hidden = YES;
+            [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
+        }
+        else {
+            [myCell setTextForEventMessage:eventMessage];
+            NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+            myCell.moviePlayer.contentURL = videoURL;
+            myCell.moviePlayer.view.hidden = NO;
+            myCell.imageView.hidden = YES;
+            [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
+        }    
+        
+        return myCell;
+
+    }
 }
 
 
@@ -115,7 +115,7 @@
 
 
 - (void)playVideoAtPage:(int)page {
-    if (self.lastMoviePlayer)  [self.lastMoviePlayer pause];
+    if (self.lastMoviePlayer)  [self.lastMoviePlayer stop];
     MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
     if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]] &&
         theMoviePlayer.playbackState != MPMoviePlaybackStatePlaying) {
@@ -211,12 +211,6 @@
     self.moviePlayer.view.frame = self.frame;
     self.moviePlayer.view.hidden = YES;
     [self.contentView addSubview:self.moviePlayer.view];
-
-    self.controller = [[IQMediaPickerController alloc] init];
-    [self.controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
-    self.controller.view.frame = self.frame;
-    self.controller.view.hidden = YES;
-    [self.contentView addSubview:self.controller.view];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.imageView.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:20.0f];
@@ -228,12 +222,6 @@
     [self.contentView bringSubviewToFront:self.label];
 }
 
-- (void)setControllerDelegate:(id)controllerDelegate {
-    if (!self.controllerDelegateSet) {
-        self.controller.delegate = controllerDelegate;
-    }
-    self.controllerDelegateSet = YES;
-}
 
 
 - (void)setTextForEventMessage:(NSDictionary *)eventMessage {
@@ -255,5 +243,46 @@
         }
     }
 }
+
+@end
+
+
+@implementation CameraCell
+
+- (id) initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder: aDecoder];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (id) initWithFrame:(CGRect)frame {
+    self = [super initWithFrame: frame];
+    if (self) {
+        [self setup];
+    }
+    
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 320, 568);
+    self.backgroundColor = UIColor.clearColor;
+
+    self.controller = [[IQMediaPickerController alloc] init];
+    [self.controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
+    self.controller.view.frame = self.frame;
+    [self.contentView addSubview:self.controller.view];
+    
+}
+
+- (void)setControllerDelegate:(id)controllerDelegate {
+    if (!self.controllerDelegateSet) {
+        self.controller.delegate = controllerDelegate;
+    }
+    self.controllerDelegateSet = YES;
+}
+
 
 @end
