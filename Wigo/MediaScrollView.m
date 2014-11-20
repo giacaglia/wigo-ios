@@ -8,7 +8,7 @@
 
 #import "MediaScrollView.h"
 #import "Globals.h"
-
+#import "EventMessagesConstants.h"
 
 @interface MediaScrollView() {}
 @property (nonatomic, strong) NSMutableArray *pageViews;
@@ -59,56 +59,33 @@
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
     }
 
-    UIView *player = [self.pageViews objectAtIndex:indexPath.row];
-    if ([player isKindOfClass:[UIImageView class]]) {
+    if ([mimeType isEqualToString:@"new"]) {
+        myCell.label.hidden = YES;
+        myCell.controller.view.hidden = NO;
+        [myCell setControllerDelegate:self.controllerDelegate];
+        myCell.moviePlayer.view.hidden = YES;
+        myCell.imageView.hidden = YES;
+        [self.pageViews setObject:myCell.controller atIndexedSubscript:indexPath.row];
+    }
+    else if ([mimeType isEqualToString:kImageEventType]) {
         [myCell setTextForEventMessage:eventMessage];
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
         [myCell.imageView setImageWithURL:imageURL];
         myCell.imageView.hidden = NO;
+        [myCell setTextForEventMessage:eventMessage];
         myCell.moviePlayer.view.hidden = YES;
         myCell.controller.view.hidden = YES;
+        [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
     }
-    else if ([player isKindOfClass:[MPMoviePlayerController class]]) {
-        myCell.label.hidden = YES;
+    else {
+        [myCell setTextForEventMessage:eventMessage];
+        NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://wigo-uploads.s3.amazonaws.com/%@", contentURL]];
+        myCell.moviePlayer.contentURL = videoURL;
         myCell.moviePlayer.view.hidden = NO;
         myCell.imageView.hidden = YES;
         myCell.controller.view.hidden = YES;
-    }
-    else if ([player isKindOfClass:[IQMediaPickerController class]]) {
-        [myCell setTextForEventMessage:eventMessage];
-        myCell.controller.view.hidden = NO;
-        myCell.imageView.hidden = YES;
-        myCell.moviePlayer.view.hidden = YES;
-    }
-    else {
-        if ([mimeType isEqualToString:@"new"]) {
-            myCell.label.hidden = YES;
-            myCell.controller.view.hidden = NO;
-            [myCell setControllerDelegate:self.controllerDelegate];
-            myCell.moviePlayer.view.hidden = YES;
-            myCell.imageView.hidden = YES;
-            [self.pageViews setObject:myCell.controller atIndexedSubscript:indexPath.row];
-        }
-        else if ([mimeType isEqualToString:@"image/jpeg"]) {
-            [myCell setTextForEventMessage:eventMessage];
-            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-            [myCell.imageView setImageWithURL:imageURL];
-            myCell.imageView.hidden = NO;
-            [myCell setTextForEventMessage:eventMessage];
-            myCell.moviePlayer.view.hidden = YES;
-            myCell.controller.view.hidden = YES;
-            [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
-        }
-        else {
-            [myCell setTextForEventMessage:eventMessage];
-            NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://wigo-uploads.s3.amazonaws.com/%@", contentURL]];
-            myCell.moviePlayer.contentURL = videoURL;
-            myCell.moviePlayer.view.hidden = NO;
-            myCell.imageView.hidden = YES;
-            myCell.controller.view.hidden = YES;
-            [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
-        }
-    }
+        [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
+    }    
     
     return myCell;
 }

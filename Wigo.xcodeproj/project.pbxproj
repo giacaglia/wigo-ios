@@ -189,6 +189,8 @@
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
+		E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */; };
+		E9A0F9B21A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */; };
 		E9A17C70195C761E0057C89A /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A17C6F195C761E0057C89A /* Network.m */; };
 		E9A1EAAF199CFD25003A744C /* boyVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9A1EAAE199CFD25003A744C /* boyVoice.caf */; };
 		E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9A1EAAE199CFD25003A744C /* boyVoice.caf */; };
@@ -540,6 +542,8 @@
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
 		E99F46AD199012F0007408C1 /* LockScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockScreenViewController.h; sourceTree = "<group>"; };
 		E99F46AE199012F0007408C1 /* LockScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LockScreenViewController.m; sourceTree = "<group>"; };
+		E9A0F9AF1A1E5CBE001A66DF /* EventMessagesConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventMessagesConstants.h; sourceTree = "<group>"; };
+		E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventMessagesConstants.m; sourceTree = "<group>"; };
 		E9A17C6E195C761E0057C89A /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
 		E9A17C6F195C761E0057C89A /* Network.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Network.m; sourceTree = "<group>"; };
 		E9A1EAAE199CFD25003A744C /* boyVoice.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = boyVoice.caf; sourceTree = "<group>"; };
@@ -1706,6 +1710,8 @@
 		FA2BE9BA19FAEAFC00CC0E5E /* EventMessages */ = {
 			isa = PBXGroup;
 			children = (
+				E9AEAE521A0190DB00BD77AF /* EventPeopleScrollView.m */,
+				E9A0F9AF1A1E5CBE001A66DF /* EventMessagesConstants.h */,
 				FA2BE9BB19FAF06500CC0E5E /* EventStoryViewController.h */,
 				FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */,
 				FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */,
@@ -1713,7 +1719,7 @@
 				E9D039C61A09886A00DEF094 /* MediaScrollView.h */,
 				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
 				E9AEAE511A0190DB00BD77AF /* EventPeopleScrollView.h */,
-				E9AEAE521A0190DB00BD77AF /* EventPeopleScrollView.m */,
+				E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */,
 			);
 			name = EventMessages;
 			sourceTree = "<group>";
@@ -2045,6 +2051,7 @@
 				E9D039C21A096DB100DEF094 /* AFURLResponseSerialization.m in Sources */,
 				E9C63BFF1A03ED35006C5DD2 /* IQFileManager.m in Sources */,
 				C12A112219787BE700D53B1C /* FontProperties.m in Sources */,
+				E9A0F9B21A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */,
 				E9CD53871993C29800206B75 /* FLAnimatedImageView.m in Sources */,
 				C12A112319787BE700D53B1C /* Notification.m in Sources */,
 				C12A112419787BE700D53B1C /* PhotoViewController.m in Sources */,
@@ -2188,6 +2195,7 @@
 				E9C63BFE1A03ED35006C5DD2 /* IQFileManager.m in Sources */,
 				E9C63BE21A03ED35006C5DD2 /* IQSongsAlbumViewCell.m in Sources */,
 				E96EF681197EE95D00F88A6D /* Time.m in Sources */,
+				E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */,
 				E9ACCA2019C3A12500F3EB20 /* WigoConfirmationViewController.m in Sources */,
 				E900C2BF1961EADE00A01F50 /* UIImage+GIF.m in Sources */,
 				E9C63BE01A03ED35006C5DD2 /* IQAudioPickerShadowView.m in Sources */,

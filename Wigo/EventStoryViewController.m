@@ -13,6 +13,7 @@
 #import "InviteViewController.h"
 #import "ProfileViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "EventMessagesConstants.h"
 
 
 UIView *chatTextFieldWrapper;
@@ -104,15 +105,6 @@ BOOL cancelFetchMessages;
     }
 }
 
-- (void)loadViewOfUser:(User *)user {
-//    [self dismissViewControllerAnimated:YES completion:^{
-//        [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
-//    }];
-//    [self presentViewController:[[ProfileViewController alloc] initWithUser:user]
-//                       animated:YES
-//                     completion:nil];
-}
-
 - (void)invitePressed {
     [self presentViewController:[[InviteViewController alloc] initWithEventName:self.event.name andID:[self.event eventID]]
                        animated:YES
@@ -181,14 +173,11 @@ BOOL cancelFetchMessages;
         user = [Profile user];
     }
     if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"image/jpeg"]) {
+    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
     }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:@"video/mp4"]) {
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
-    }
-    else {
-        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"textType"];
     }
     if ([[eventMessage allKeys] containsObject:@"loading"]) {
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
@@ -240,22 +229,6 @@ BOOL cancelFetchMessages;
     [sendButton addSubview:sendOvalImageView];
 }
 
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
-    conversationController.event = self.event;
-    if (eventMessages) conversationController.eventMessages = [self eventMessagesWithText];
-    else conversationController.eventMessages = [NSMutableArray new];
-    conversationController.index = [NSNumber numberWithInt:eventMessages.count];
-    
-//    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
-//    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
-//    controller.delegate = self;
-    conversationController.controllerDelegate = self;
-    
-    [self presentViewController:conversationController animated:YES completion:nil];
-}
-
-
 #pragma mark - Button handler
 
 - (void)goBack {
@@ -268,10 +241,6 @@ BOOL cancelFetchMessages;
     if (eventMessages) conversationController.eventMessages = [self eventMessagesWithCamera];
     else conversationController.eventMessages = [NSMutableArray new];
     conversationController.index = [NSNumber numberWithInteger:conversationController.eventMessages.count - 1];
-    
-//    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
-//    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
-//    controller.delegate = self;
     conversationController.controllerDelegate = self;
     
     [self presentViewController:conversationController animated:YES completion:nil];
@@ -285,11 +254,11 @@ BOOL cancelFetchMessages;
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
         UIImage *image = [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage];
         NSData *fileData = UIImageJPEGRepresentation(image, 1.0);
+        type = kImageEventType;
         if ([[info allKeys] containsObject:IQMediaTypeText]) {
             NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
             NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
             NSDictionary *properties = @{@"yPosition": yPosition};
-            type =  @"image/jpeg";
             options =  @{
                          @"event": [self.event eventID],
                          @"message": text,
@@ -303,7 +272,7 @@ BOOL cancelFetchMessages;
                          @"media_mime_type": type
                          };
         }
-      
+        NSLog(@"options %@", options);
         [self uploadContentWithFile:fileData
                         andFileName:@"image0.jpg"
                          andOptions:options];
@@ -311,7 +280,7 @@ BOOL cancelFetchMessages;
     }
    
     else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
-        type = @"video/mp4";
+        type = kVideoEventType;
         NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
         
         
@@ -353,22 +322,6 @@ BOOL cancelFetchMessages;
     cancelFetchMessages = YES;
 }
 
-- (NSMutableArray *)eventMessagesWithText {
-    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    
-    [mutableEventMessages addObject:@{
-                                      @"user": [[Profile user] dictionary],
-                                      @"created": [dateFormatter stringFromDate:[NSDate date]],
-                                      @"media_mime_type": @"newText",
-                                      @"media": @""
-                                      }];
-    
-    return mutableEventMessages;
-}
 
 - (NSMutableArray *)eventMessagesWithCamera {
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
@@ -441,10 +394,6 @@ BOOL cancelFetchMessages;
     conversationController.index = index;
     if (eventMessages) conversationController.eventMessages = [self eventMessagesWithCamera];
     else conversationController.eventMessages = [NSMutableArray new];
-    
-//    IQMediaPickerController *controller = [[IQMediaPickerController alloc] init];
-//    [controller setMediaType:IQMediaPickerControllerMediaTypePhoto];
-//    controller.delegate = self;
     conversationController.controllerDelegate = self;
     
     [self presentViewController:conversationController animated:YES completion:nil];

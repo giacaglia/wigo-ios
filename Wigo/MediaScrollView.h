@@ -10,13 +10,6 @@
 #import "IQMediaPickerController.h"
 #import <MediaPlayer/MediaPlayer.h>
 
-typedef NS_ENUM(NSInteger, MediaType) {
-    MediaTypeImage,
-    MediaTypeVideo,
-    MediaTypeCameram
-};
-
-
 
 @protocol MediaScrollViewDelegate
 @end
