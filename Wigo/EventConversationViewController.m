@@ -449,9 +449,9 @@
     self.faceImageView.layer.masksToBounds = YES;
     self.faceImageView.backgroundColor = [UIColor blackColor];
     self.faceImageView.layer.cornerRadius = 25;
-    self.faceImageView.layer.borderWidth = 2.0;
+    self.faceImageView.layer.borderWidth = 1.0;
     self.faceImageView.alpha = 0.5f;
-    self.faceImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.faceImageView.layer.borderColor = [UIColor blackColor].CGColor;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self addSubview: self.faceImageView];
     

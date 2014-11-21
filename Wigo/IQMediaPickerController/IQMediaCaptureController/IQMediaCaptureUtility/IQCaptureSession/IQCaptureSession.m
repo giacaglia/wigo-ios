@@ -604,10 +604,10 @@
     if ([device isFocusPointOfInterestSupported])
     {
         NSError *error;
-        if (device.focusMode == AVCaptureFocusModeAutoFocus && [device lockForConfiguration:&error] )
+        if ([device lockForConfiguration:&error] )
         {
-            device.focusPointOfInterest = focusPoint;
             device.focusMode = AVCaptureFocusModeAutoFocus;
+            device.focusPointOfInterest = focusPoint;
             [device unlockForConfiguration];
             
             return YES;
