@@ -11,6 +11,8 @@
 
 #import "FacebookAlbumTableViewController.h"
 
+#import "AmbassadorViewController.h"
+
 #import "UIButtonAligned.h"
 #import "RWBlurPopover.h"
 
@@ -301,11 +303,21 @@ UIViewController *webViewController;
     [communityStandardsButton addTarget:self action:@selector(openCommunityStandards) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:communityStandardsButton];
     
-    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, 845, 50, 50)];
+    
+    UIButton *ambassadorButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 825, self.view.frame.size.width, 50)];
+    ambassadorButton.backgroundColor = [UIColor whiteColor];
+    UILabel *ambassadorButtonLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, termsOfServiceButton.frame.size.height)];
+    ambassadorButtonLabel.text = @"Ambassador Dashboard";
+    ambassadorButtonLabel.font = [FontProperties getNormalFont];
+    [ambassadorButton addSubview:ambassadorButtonLabel];
+    [ambassadorButton addTarget:self action:@selector(showAmbassadorPanel) forControlEvents:UIControlEventTouchUpInside];
+    [_scrollView addSubview:ambassadorButton];
+    
+    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, 895, 50, 50)];
     iconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
     [_scrollView addSubview:iconImageView];
     
-    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 885, self.view.frame.size.width, 50)];
+    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 935, self.view.frame.size.width, 50)];
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
     NSString *versionString = [info objectForKey:@"CFBundleShortVersionString"];
     versionLabel.text = [NSString stringWithFormat:@"Version %@", versionString];
@@ -313,13 +325,13 @@ UIViewController *webViewController;
     versionLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:versionLabel];
     
-    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 915, self.view.frame.size.width, 50)];
+    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 965, self.view.frame.size.width, 50)];
     builtInBostonLabel.text = @"Built in Boston";
     builtInBostonLabel.font = [FontProperties getSmallFont];
     builtInBostonLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:builtInBostonLabel];
     
-    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 945, self.view.frame.size.width, 50)];
+    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 995, self.view.frame.size.width, 50)];
     NSString *gitCount = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitCount"];
     NSString *gitHash = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitHash"];
     gitCountLabel.text = [NSString stringWithFormat:@"Git Count %@, Git Hash %@", gitCount, gitHash];
@@ -327,7 +339,7 @@ UIViewController *webViewController;
     gitCountLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:gitCountLabel];
     
-    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 995, self.view.frame.size.width, 50)];
+    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 1045, self.view.frame.size.width, 50)];
     NSString *debugString = @"";
     
 #if defined(DEBUG)
@@ -364,6 +376,12 @@ UIViewController *webViewController;
 - (void) openCommunityStandards {
     NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/communitystandards.html"];
     [self openViewControllerWithURL:currentURL];
+}
+
+- (void) showAmbassadorPanel {
+    AmbassadorViewController *ambassadorController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil]instantiateViewControllerWithIdentifier: @"AmbassadorViewController"];
+    
+    [self.navigationController pushViewController: ambassadorController animated: YES];
 }
 
 - (void)openViewControllerWithURL:(NSURL*)url {

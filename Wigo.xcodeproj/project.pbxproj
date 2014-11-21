@@ -385,6 +385,10 @@
 		FA438EA219F196DA00AD74C2 /* EventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438EA019F196DA00AD74C2 /* EventMessage.m */; };
 		FA438EA719F1998A00AD74C2 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */; };
 		FA438EA919F19F2200AD74C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA819F19F2200AD74C2 /* AVFoundation.framework */; };
+		FA55260C1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA55260B1A1FCAFF00101AE7 /* AmbassadorViewController.m */; };
+		FA55260D1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA55260B1A1FCAFF00101AE7 /* AmbassadorViewController.m */; };
+		FA5526111A1FCB3700101AE7 /* GroupStats.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526101A1FCB3700101AE7 /* GroupStats.m */; };
+		FA5526121A1FCB3700101AE7 /* GroupStats.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526101A1FCB3700101AE7 /* GroupStats.m */; };
 		FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 		FADD07311A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 /* End PBXBuildFile section */
@@ -749,6 +753,10 @@
 		FA438EA019F196DA00AD74C2 /* EventMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventMessage.m; sourceTree = "<group>"; };
 		FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		FA438EA819F19F2200AD74C2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		FA55260A1A1FCAFF00101AE7 /* AmbassadorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AmbassadorViewController.h; sourceTree = "<group>"; };
+		FA55260B1A1FCAFF00101AE7 /* AmbassadorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AmbassadorViewController.m; sourceTree = "<group>"; };
+		FA55260F1A1FCB3700101AE7 /* GroupStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupStats.h; sourceTree = "<group>"; };
+		FA5526101A1FCB3700101AE7 /* GroupStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupStats.m; sourceTree = "<group>"; };
 		FADD072E1A0D296900492369 /* LLACircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLACircularProgressView.h; sourceTree = "<group>"; };
 		FADD072F1A0D296900492369 /* LLACircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLACircularProgressView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1216,6 +1224,7 @@
 				E9147B6B1925123C00C25C9A /* ProfileViewController.m */,
 				E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */,
 				E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */,
+				FA55260E1A1FCB0C00101AE7 /* Ambassador */,
 				E9D906BC19252DA900E39FC8 /* PeopleViewController.h */,
 				E9D906BD19252DA900E39FC8 /* PeopleViewController.m */,
 				E99EC28B1986B6A400CBFA59 /* DropUpMenus */,
@@ -1724,6 +1733,17 @@
 			name = EventMessages;
 			sourceTree = "<group>";
 		};
+		FA55260E1A1FCB0C00101AE7 /* Ambassador */ = {
+			isa = PBXGroup;
+			children = (
+				FA55260F1A1FCB3700101AE7 /* GroupStats.h */,
+				FA5526101A1FCB3700101AE7 /* GroupStats.m */,
+				FA55260A1A1FCAFF00101AE7 /* AmbassadorViewController.h */,
+				FA55260B1A1FCAFF00101AE7 /* AmbassadorViewController.m */,
+			);
+			name = Ambassador;
+			sourceTree = "<group>";
+		};
 		FADD072D1A0D296900492369 /* LLACircularProgressView */ = {
 			isa = PBXGroup;
 			children = (
@@ -2063,10 +2083,12 @@
 				C12A112519787BE700D53B1C /* UIImage+GIF.m in Sources */,
 				C12A112619787BE700D53B1C /* UIImageView+WebCache.m in Sources */,
 				E9D0399E1A095C1500DEF094 /* AWSUploader.m in Sources */,
+				FA5526121A1FCB3700101AE7 /* GroupStats.m in Sources */,
 				FA438EA219F196DA00AD74C2 /* EventMessage.m in Sources */,
 				E9C63BCF1A03ED35006C5DD2 /* IQAlbumAssetsViewController.m in Sources */,
 				E9C63BE71A03ED35006C5DD2 /* IQSongsListTableHeaderView.m in Sources */,
 				E9C63BE11A03ED35006C5DD2 /* IQAudioPickerShadowView.m in Sources */,
+				FA55260D1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,
 				C12A112719787BE700D53B1C /* ProfileViewController.m in Sources */,
 				E9C63BFB1A03ED35006C5DD2 /* IQAudioSession.m in Sources */,
 				C12A112819787BE700D53B1C /* SDImageCache.m in Sources */,
@@ -2207,10 +2229,12 @@
 				E9C63C081A03ED35006C5DD2 /* IQPartitionView.m in Sources */,
 				E900C2B71961EADE00A01F50 /* SDImageCache.m in Sources */,
 				E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */,
+				FA5526111A1FCB3700101AE7 /* GroupStats.m in Sources */,
 				E95DC78019538A270012AA20 /* Event.m in Sources */,
 				E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
 				E9C63C041A03ED35006C5DD2 /* IQMediaView.m in Sources */,
 				E9D039BD1A096DB100DEF094 /* AFURLConnectionOperation.m in Sources */,
+				FA55260C1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,
 				E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */,
 				E9681CB51950AA3B00182E0E /* Query.m in Sources */,
 				E9A31E641982B965008A711B /* WigoSearchBarDelegate.m in Sources */,
