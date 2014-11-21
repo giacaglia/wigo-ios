@@ -69,7 +69,13 @@
         ImageCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCell" forIndexPath: indexPath];
         [myCell setTextForEventMessage:eventMessage];
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-        [myCell.imageView setImageWithURL:imageURL];
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        spinner.frame = CGRectMake(myCell.imageView.frame.size.width/4, myCell.imageView.frame.size.height/4, myCell.imageView.frame.size.width/2,  myCell.imageView.frame.size.height/2);
+        [spinner startAnimating];
+        [myCell.imageView setImageWithURL:imageURL
+                                completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                                    [spinner stopAnimating];
+        }];
         [myCell setTextForEventMessage:eventMessage];
         [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
         return myCell;
@@ -102,7 +108,7 @@
     }
 
     [self performBlock:^(void){[self playVideoAtPage:page];}
-            afterDelay:0.01
+            afterDelay:0.5
  cancelPreviousRequest:YES];
 }
 
@@ -112,6 +118,7 @@
     MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
     if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]] &&
         theMoviePlayer.playbackState != MPMoviePlaybackStatePlaying) {
+//        NSLog(@"here");
         [theMoviePlayer play];
         self.lastMoviePlayer = theMoviePlayer;
     }
@@ -133,10 +140,10 @@
 }
 
 - (void)removeEventMessageAtPage:(int)page {
-    NSLog(@"page %d", page);
+//    NSLog(@"page %d", page);
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
     NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
-    NSLog(@"event message ID %@", eventMessageID);
+//    NSLog(@"event message ID %@", eventMessageID);
     [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
     }];
 }

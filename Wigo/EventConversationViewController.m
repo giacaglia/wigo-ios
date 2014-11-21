@@ -465,7 +465,9 @@
     self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self addSubview:self.mediaTypeImageView];
     
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 82, 60, 20)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(23, 82, 60, 20)];
+    self.timeLabel.numberOfLines = 0;
+    self.timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.timeLabel.textAlignment = NSTextAlignmentCenter;
     self.timeLabel.textColor = [UIColor whiteColor];
     self.timeLabel.font = [FontProperties lightFont:12];

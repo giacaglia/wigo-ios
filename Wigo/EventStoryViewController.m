@@ -46,14 +46,16 @@ BOOL cancelFetchMessages;
     backImageView.image = [UIImage imageNamed:@"blueBackIcon"];
     [aroundBackButton addSubview:backImageView];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(45, 24, self.view.frame.size.width - 90, 36)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(45, 24, self.view.frame.size.width - 90, 50)];
     titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.numberOfLines = 0;
+    titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     titleLabel.text = self.event.name;
     titleLabel.textColor = [FontProperties getBlueColor];
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
-    UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 60, self.view.frame.size.width - 220, 20)];
+    UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 74, self.view.frame.size.width - 220, 20)];
     if ([self.event.numberAttending intValue] == 1) {
         numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
     }
@@ -73,7 +75,7 @@ BOOL cancelFetchMessages;
 //    eventScrollView.delegate = self;
 //    [self.view addSubview:eventScrollView];
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
-        UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 90, self.view.frame.size.width - 140, 30)];
+        UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 104, self.view.frame.size.width - 140, 30)];
         [invitePeopleButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
         [invitePeopleButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
         invitePeopleButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
@@ -84,7 +86,7 @@ BOOL cancelFetchMessages;
         [self.view addSubview:invitePeopleButton];
     }
     else {
-        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 90, 100, 30)];
+        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 104, 100, 30)];
         aroundGoOutButton.tag = [(NSNumber *)[self.event eventID] intValue];
         [aroundGoOutButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:aroundGoOutButton];
@@ -113,7 +115,7 @@ BOOL cancelFetchMessages;
 }
 
 - (void)loadEventStory {
-    UILabel *eventStoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 130, self.view.frame.size.width, 40)];
+    UILabel *eventStoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 145, self.view.frame.size.width, 40)];
     eventStoryLabel.text = @"Event Story";
     eventStoryLabel.textColor = RGB(208, 208, 208);
     eventStoryLabel.backgroundColor = UIColor.whiteColor;
@@ -124,7 +126,7 @@ BOOL cancelFetchMessages;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 160, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
+    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 175, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = UIColor.whiteColor;
     facesCollectionView.showsHorizontalScrollIndicator = NO;
@@ -165,10 +167,11 @@ BOOL cancelFetchMessages;
     
     if ([indexPath row] == eventMessages.count) {
         myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
+        myCell.timeLabel.frame = CGRectMake(23, 82, 60, 30);
         myCell.timeLabel.text = @"Add to\nthe story";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
         myCell.mediaTypeImageView.hidden = YES;
-        myCell.layer.borderColor = UIColor.clearColor.CGColor;
+        [myCell.layer removeFromSuperlayer];
         return myCell;
     }
     
@@ -352,7 +355,9 @@ BOOL cancelFetchMessages;
             [Network sendAsynchronousHTTPMethod:POST
                                     withAPIName:@"eventmessages/"
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                        
+                                        if (!error) {
+                                            
+                                        }
                                     } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
         });
 
