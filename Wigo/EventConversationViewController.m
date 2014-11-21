@@ -402,6 +402,8 @@
     [self.mediaScrollView removeMediaAtPage:(int)page];
     [self.eventMessages removeObjectAtIndex:page];
     [self.facesCollectionView reloadData];
+    self.mediaScrollView.eventMessages = self.eventMessages;
+    [self.mediaScrollView reloadData];
     [self highlightCellAtPage:MIN(page, self.eventMessages.count - 1)];
 }
 

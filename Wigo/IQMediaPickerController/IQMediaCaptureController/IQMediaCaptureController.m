@@ -924,7 +924,6 @@
             self.textLabel.hidden = NO;
             self.textLabel.text = self.textField.text;
             self.textLabel.frame =  CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 40);
-//            self.textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 40);
         }];
         if (self.textField.text.length  == 0) {
             self.textField.hidden = YES;
@@ -1061,7 +1060,6 @@
         self.textLabel.hidden = NO;
         self.textLabel.text = self.textField.text;
         self.textLabel.frame =  CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 40);
-//        textField.frame = CGRectMake(0, self.labelPoint.y, self.view.frame.size.width, 40);
     }];
     if (self.textField.text.length  == 0) {
         self.textField.hidden = YES;

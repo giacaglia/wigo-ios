@@ -202,7 +202,7 @@
     [self.contentView addSubview:self.moviePlayer.view];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
-    self.label.font = [FontProperties mediumFont:20.0f];
+    self.label.font = [FontProperties mediumFont:17.0f];
     self.label.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
     self.label.textAlignment = NSTextAlignmentCenter;
     self.label.textColor = [UIColor whiteColor];
@@ -244,7 +244,7 @@
     [self.contentView addSubview:self.imageView];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
-    self.label.font = [FontProperties mediumFont:20.0f];
+    self.label.font = [FontProperties mediumFont:17.0f];
     self.label.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
     self.label.textAlignment = NSTextAlignmentCenter;
     self.label.textColor = [UIColor whiteColor];
