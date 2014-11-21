@@ -459,9 +459,9 @@
     self.mediaTypeImageView.layer.masksToBounds = YES;
     self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
     self.mediaTypeImageView.layer.cornerRadius = 7;
-    self.mediaTypeImageView.layer.borderWidth = 2.0;
+    self.mediaTypeImageView.layer.borderWidth = 1.0;
     self.mediaTypeImageView.alpha = 0.5f;
-    self.mediaTypeImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.mediaTypeImageView.layer.borderColor = [UIColor blackColor].CGColor;
     self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self addSubview:self.mediaTypeImageView];
     
