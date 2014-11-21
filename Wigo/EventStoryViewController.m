@@ -178,9 +178,11 @@ BOOL cancelFetchMessages;
     else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
     }
+    myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
+    myCell.timeLabel.textColor = RGB(59, 59, 59);
     if ([[eventMessage allKeys] containsObject:@"loading"]) {
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        spinner.frame = CGRectMake(0.0, 0.0, myCell.faceImageView.frame.size.width/2,  myCell.faceImageView.frame.size.height/2);
+        spinner.frame = CGRectMake(myCell.faceImageView.frame.size.width/4, myCell.faceImageView.frame.size.height/4, myCell.faceImageView.frame.size.width/2,  myCell.faceImageView.frame.size.height/2);
         [spinner startAnimating];
         [myCell.faceImageView addSubview:spinner];
     }
