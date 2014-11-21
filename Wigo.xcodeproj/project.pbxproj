@@ -389,6 +389,14 @@
 		FA55260D1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA55260B1A1FCAFF00101AE7 /* AmbassadorViewController.m */; };
 		FA5526111A1FCB3700101AE7 /* GroupStats.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526101A1FCB3700101AE7 /* GroupStats.m */; };
 		FA5526121A1FCB3700101AE7 /* GroupStats.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526101A1FCB3700101AE7 /* GroupStats.m */; };
+		FA55261A1A1FDB4000101AE7 /* JBBarChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526151A1FDB4000101AE7 /* JBBarChartView.m */; };
+		FA55261B1A1FDB4000101AE7 /* JBBarChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526151A1FDB4000101AE7 /* JBBarChartView.m */; };
+		FA55261C1A1FDB4000101AE7 /* JBChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526171A1FDB4000101AE7 /* JBChartView.m */; };
+		FA55261D1A1FDB4000101AE7 /* JBChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526171A1FDB4000101AE7 /* JBChartView.m */; };
+		FA55261E1A1FDB4000101AE7 /* JBLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526191A1FDB4000101AE7 /* JBLineChartView.m */; };
+		FA55261F1A1FDB4000101AE7 /* JBLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526191A1FDB4000101AE7 /* JBLineChartView.m */; };
+		FA5526221A1FE3D800101AE7 /* EngagementGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526211A1FE3D800101AE7 /* EngagementGraph.m */; };
+		FA5526231A1FE3D800101AE7 /* EngagementGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526211A1FE3D800101AE7 /* EngagementGraph.m */; };
 		FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 		FADD07311A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 /* End PBXBuildFile section */
@@ -757,6 +765,14 @@
 		FA55260B1A1FCAFF00101AE7 /* AmbassadorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AmbassadorViewController.m; sourceTree = "<group>"; };
 		FA55260F1A1FCB3700101AE7 /* GroupStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupStats.h; sourceTree = "<group>"; };
 		FA5526101A1FCB3700101AE7 /* GroupStats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupStats.m; sourceTree = "<group>"; };
+		FA5526141A1FDB4000101AE7 /* JBBarChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBarChartView.h; sourceTree = "<group>"; };
+		FA5526151A1FDB4000101AE7 /* JBBarChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBarChartView.m; sourceTree = "<group>"; };
+		FA5526161A1FDB4000101AE7 /* JBChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBChartView.h; sourceTree = "<group>"; };
+		FA5526171A1FDB4000101AE7 /* JBChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBChartView.m; sourceTree = "<group>"; };
+		FA5526181A1FDB4000101AE7 /* JBLineChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartView.h; sourceTree = "<group>"; };
+		FA5526191A1FDB4000101AE7 /* JBLineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartView.m; sourceTree = "<group>"; };
+		FA5526201A1FE3D800101AE7 /* EngagementGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EngagementGraph.h; sourceTree = "<group>"; };
+		FA5526211A1FE3D800101AE7 /* EngagementGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EngagementGraph.m; sourceTree = "<group>"; };
 		FADD072E1A0D296900492369 /* LLACircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLACircularProgressView.h; sourceTree = "<group>"; };
 		FADD072F1A0D296900492369 /* LLACircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLACircularProgressView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1047,6 +1063,7 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				FA5526131A1FDB4000101AE7 /* JBBarChart */,
 				FADD072D1A0D296900492369 /* LLACircularProgressView */,
 				E9D0399F1A096DB100DEF094 /* AFNetworking */,
 				E9D0399A1A095BC600DEF094 /* AWS */,
@@ -1736,12 +1753,27 @@
 		FA55260E1A1FCB0C00101AE7 /* Ambassador */ = {
 			isa = PBXGroup;
 			children = (
+				FA5526201A1FE3D800101AE7 /* EngagementGraph.h */,
+				FA5526211A1FE3D800101AE7 /* EngagementGraph.m */,
 				FA55260F1A1FCB3700101AE7 /* GroupStats.h */,
 				FA5526101A1FCB3700101AE7 /* GroupStats.m */,
 				FA55260A1A1FCAFF00101AE7 /* AmbassadorViewController.h */,
 				FA55260B1A1FCAFF00101AE7 /* AmbassadorViewController.m */,
 			);
 			name = Ambassador;
+			sourceTree = "<group>";
+		};
+		FA5526131A1FDB4000101AE7 /* JBBarChart */ = {
+			isa = PBXGroup;
+			children = (
+				FA5526141A1FDB4000101AE7 /* JBBarChartView.h */,
+				FA5526151A1FDB4000101AE7 /* JBBarChartView.m */,
+				FA5526161A1FDB4000101AE7 /* JBChartView.h */,
+				FA5526171A1FDB4000101AE7 /* JBChartView.m */,
+				FA5526181A1FDB4000101AE7 /* JBLineChartView.h */,
+				FA5526191A1FDB4000101AE7 /* JBLineChartView.m */,
+			);
+			path = JBBarChart;
 			sourceTree = "<group>";
 		};
 		FADD072D1A0D296900492369 /* LLACircularProgressView */ = {
@@ -2017,6 +2049,7 @@
 				E96F07C019BA654600E858D7 /* GKImageCropOverlayView.m in Sources */,
 				C12A110E19787BE700D53B1C /* UIScrollView+GifPullToRefresh.m in Sources */,
 				E9EA951919E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */,
+				FA55261B1A1FDB4000101AE7 /* JBBarChartView.m in Sources */,
 				E9E6A569199917BE003B590C /* OnboardFollowViewController.m in Sources */,
 				E9CD53851993C29800206B75 /* FLAnimatedImage.m in Sources */,
 				E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */,
@@ -2030,6 +2063,7 @@
 				C12A111419787BE700D53B1C /* SDWebImageDownloader.m in Sources */,
 				E93030C51986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
 				E9D039C01A096DB100DEF094 /* AFURLRequestSerialization.m in Sources */,
+				FA5526231A1FE3D800101AE7 /* EngagementGraph.m in Sources */,
 				C12A111519787BE700D53B1C /* MessageViewController.m in Sources */,
 				C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */,
 				E9C63C0B1A03ED35006C5DD2 /* IQ_DPMeterView.m in Sources */,
@@ -2116,6 +2150,7 @@
 				E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				C12A113319787BE700D53B1C /* RWBlurPopover.m in Sources */,
 				E9CB091619FB062D00B548A6 /* FacebookHelper.m in Sources */,
+				FA55261F1A1FDB4000101AE7 /* JBLineChartView.m in Sources */,
 				E96F07AD19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
 				E9ACCA2519C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
@@ -2125,6 +2160,7 @@
 				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
 				C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */,
 				C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */,
+				FA55261D1A1FDB4000101AE7 /* JBChartView.m in Sources */,
 				E9D039B61A096DB100DEF094 /* AFHTTPRequestOperationManager.m in Sources */,
 				C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */,
 				E9C63BD11A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m in Sources */,
@@ -2163,6 +2199,7 @@
 				E9CD53841993C29800206B75 /* FLAnimatedImage.m in Sources */,
 				E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */,
 				E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */,
+				FA55261A1A1FDB4000101AE7 /* JBBarChartView.m in Sources */,
 				E900C2C01961EADE00A01F50 /* UIImage+MultiFormat.m in Sources */,
 				E921D6221923967D00361247 /* main.m in Sources */,
 				E9C63C121A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m in Sources */,
@@ -2176,6 +2213,7 @@
 				E93DE52A195C82B900079074 /* MessageViewController.m in Sources */,
 				E900C2C11961EADE00A01F50 /* UIImage+WebP.m in Sources */,
 				E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */,
+				FA5526221A1FE3D800101AE7 /* EngagementGraph.m in Sources */,
 				C10BFB54198C24E6003CA59A /* EventAnalytics.m in Sources */,
 				E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */,
 				E9706E1819C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
@@ -2262,6 +2300,7 @@
 				E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */,
 				E96F07AC19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */,
+				FA55261E1A1FDB4000101AE7 /* JBLineChartView.m in Sources */,
 				E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
 				E9DFE16F1A001142003C5779 /* BatteryViewController.m in Sources */,
 				E900C2BE1961EADE00A01F50 /* UIButton+WebCache.m in Sources */,
@@ -2271,6 +2310,7 @@
 				E9C63BF21A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */,
 				E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */,
 				E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */,
+				FA55261C1A1FDB4000101AE7 /* JBChartView.m in Sources */,
 				E9ACDC6919AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
 				E900C2B51961EADE00A01F50 /* MKAnnotationView+WebCache.m in Sources */,
 				E9C63BD61A03ED35006C5DD2 /* IQCheckmarkView.m in Sources */,

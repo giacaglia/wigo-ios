@@ -9,6 +9,10 @@
 #import "AmbassadorViewController.h"
 #import "UIButtonAligned.h"
 
+#import "JBChartView.h"
+#import "JBBarChartView.h"
+#import "JBLineChartView.h"
+
 #define kNewUsersPrefix @"New users %@"
 
 #define kNewUsersSuffixDay @"today"
@@ -18,7 +22,9 @@
 
 typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 
-@interface AmbassadorViewController()
+@interface AmbassadorViewController()<JBBarChartViewDataSource, JBBarChartViewDelegate>
+
+@property (nonatomic, strong) GroupStats *groupStats;
 
 @property (nonatomic, assign) Period period;
 @property (nonatomic, strong) IBOutlet UIButton *dailyButton;
@@ -34,6 +40,8 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 
 @property (nonatomic, strong) IBOutlet UITableViewCell *graphCell;
 
+@property (nonatomic, strong) JBChartView *barGraph;
+
 @end
 
 @implementation AmbassadorViewController
@@ -45,12 +53,20 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
     self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
     self.tableView.tableFooterView = [[UIView alloc] init];
+    
+    self.numberUsersLabel.text = @"--";
+    
     [self initializeLeftBarButton];
     [self stylePeriodSelectionButtons];
     [self styleNumbersLabels];
     [self styleActionButtons];
 
     [self selectDaily];
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
+    [self loadStats];
 }
 
 - (void) initializeLeftBarButton {
@@ -103,6 +119,76 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     }
 }
 
+- (void) initializeBarGraph {
+    self.barGraph = [[JBBarChartView alloc] init];
+    self.barGraph.delegate = self;
+    self.barGraph.dataSource = self;
+    self.barGraph.frame = self.graphCell.bounds;
+    
+    [self.graphCell.contentView addSubview: self.barGraph];
+}
+
+
+#pragma mark - Load Stats
+- (void) loadStats {
+    [WiGoSpinnerView addDancingGToCenterView: self.navigationController.view];
+    
+    [GroupStats loadStats:^(GroupStats *groupStats, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [WiGoSpinnerView removeDancingGFromCenterView: self.navigationController.view];
+        });
+        
+        if (error) {
+            
+            //FIXME:Put alert here
+            return;
+        }
+        self.groupStats = groupStats;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self changeDataForPeriod: self.period];
+        });
+        
+    }];
+}
+
+#pragma mark - Graph Related
+
+- (void) changeDataForPeriod: (Period) period {
+    
+    if (self.groupStats == nil) {
+        return;
+    }
+    
+    
+    if (period == DAY) {
+        self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixDay];
+        self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.todayUserCount];
+    }
+    else if (period == WEEK) {
+        self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixWeek];
+        self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.weekUserCount];
+
+    }
+    else if (period == MONTH) {
+        self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixMonth];
+        self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.monthUserCount];
+
+    }
+    else if (period == ALLTIME) {
+        self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixAll];
+        self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.allUsersCount];
+
+    }
+    
+    if (!self.barGraph) {
+        [self initializeBarGraph];
+    }
+    
+    [self.barGraph reloadData];
+}
+
+#pragma mark - Go Back
 - (void) goBack {
     [self.navigationController popViewControllerAnimated: YES];
 }
@@ -129,28 +215,57 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 - (IBAction) selectDaily {
     self.period = DAY;
     [self setButtonSelected: self.dailyButton];
-    self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixDay];
+    [self changeDataForPeriod: self.period];
 }
     
 - (IBAction) selectWeekly {
     self.period = WEEK;
     [self setButtonSelected: self.weeklyButton];
-    self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixWeek];
-
+    [self changeDataForPeriod: self.period];
 }
 
 - (IBAction) selectMonthly {
     self.period = MONTH;
     [self setButtonSelected: self.monthlyButton];
-    self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixMonth];
-
+    [self changeDataForPeriod: self.period];
 }
 
 - (IBAction) selectAllTime {
     self.period = ALLTIME;
     [self setButtonSelected: self.allTimeButton];
-    self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixAll];
+    [self changeDataForPeriod: self.period];
+}
 
+#pragma mark - JBChart Delegate + Datasource
+
+- (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
+{
+    if (self.period == DAY) {
+        return self.groupStats.dailyEngagement.xAxisLabels.count;
+    } else if (self.period == WEEK) {
+        return self.groupStats.weeklyEngagement.xAxisLabels.count;
+    } else if (self.period == MONTH) {
+        return self.groupStats.monthlyEngagement.xAxisLabels.count;
+    } else if (self.period == ALLTIME) {
+        return self.groupStats.monthlyEngagement.xAxisLabels.count;
+    }
+    NSLog(@"Bar Chart error: no index exists!");
+    return 0;
+}
+
+- (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index
+{
+    if (self.period == DAY) {
+        return [self.groupStats.dailyEngagement.values[index] floatValue];
+    } else if (self.period == WEEK) {
+        return [self.groupStats.weeklyEngagement.values[index] floatValue];
+    } else if (self.period == MONTH) {
+        return [self.groupStats.monthlyEngagement.values[index] floatValue];
+    } else if (self.period == ALLTIME) {
+        return [self.groupStats.monthlyEngagement.values[index] floatValue];
+    }
+    NSLog(@"Bar Chart error: no index exists!");
+    return 0;
 }
 
 @end

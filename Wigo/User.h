@@ -37,6 +37,7 @@ typedef enum
 @property NSString *gender;
 @property NSNumber* eventID;
 @property NSString *groupName;
+@property NSNumber *groupID;
 @property NSNumber *numberOfGroupMembers;
 @property NSString *bioString;
 @property NSArray *images;

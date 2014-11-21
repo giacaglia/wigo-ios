@@ -361,9 +361,21 @@
     return [[_proxy objectForKey:@"group"] objectForKey:@"name"];
 }
 
+
 - (void)setGroupName:(NSString *)groupName {
     [[_proxy objectForKey:@"group"] notNillsetObject:groupName forKey:@"name"];
     [modifiedKeys addObject:@"group"];
+}
+
+
+- (NSNumber *)groupID {
+    return [[_proxy objectForKey:@"group"] objectForKey:@"id"];
+}
+
+
+- (void) setGroupID:(NSNumber *)groupID {
+    [[_proxy objectForKey:@"group"] notNillsetObject: groupID forKey:@"id"];
+    [modifiedKeys addObject:@"id"];
 }
 
 - (NSNumber *)numberOfGroupMembers {
