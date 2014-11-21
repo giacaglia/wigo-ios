@@ -707,8 +707,9 @@ int firstIndexOfNegativeEvent;
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-        if ([user isEventOwner]) profileName.backgroundColor= RGBAlpha(245, 142, 29, 0.6f);
-        else profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+//        if ([user isEventOwner]) profileName.backgroundColor= RGBAlpha(245, 142, 29, 0.6f);
+//        else
+            profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
         profileName.font = [FontProperties getSmallPhotoFont];
         [imgView addSubview:profileName];
     }

@@ -110,6 +110,8 @@
 		E903C63D19BF8C2E003BCF90 /* LeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E903C63A19BF89FA003BCF90 /* LeaderboardViewController.m */; };
 		E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E90AA8A71976C8B60055D74B /* Crashlytics.framework */; };
 		E9147B6C1925123C00C25C9A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9147B6B1925123C00C25C9A /* ProfileViewController.m */; };
+		E91BD01D1A1FE48A00A9D0BF /* MSU.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E91BD01C1A1FE48A00A9D0BF /* MSU.gpx */; };
+		E91BD01E1A1FE48A00A9D0BF /* MSU.gpx in Resources */ = {isa = PBXBuildFile; fileRef = E91BD01C1A1FE48A00A9D0BF /* MSU.gpx */; };
 		E921D6161923967D00361247 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6151923967D00361247 /* Foundation.framework */; };
 		E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6171923967D00361247 /* CoreGraphics.framework */; };
 		E921D61A1923967D00361247 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6191923967D00361247 /* UIKit.framework */; };
@@ -458,6 +460,7 @@
 		E90AA8A71976C8B60055D74B /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		E9147B6A1925123C00C25C9A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
 		E9147B6B1925123C00C25C9A /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
+		E91BD01C1A1FE48A00A9D0BF /* MSU.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MSU.gpx; sourceTree = "<group>"; };
 		E921D6121923967D00361247 /* wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E921D6151923967D00361247 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E921D6171923967D00361247 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -928,6 +931,7 @@
 		E921D6091923967D00361247 = {
 			isa = PBXGroup;
 			children = (
+				E91BD01C1A1FE48A00A9D0BF /* MSU.gpx */,
 				E921D61B1923967D00361247 /* Wigo */,
 				E921D63D1923967D00361247 /* WigoTests */,
 				E921D6141923967D00361247 /* Frameworks */,
@@ -1882,6 +1886,7 @@
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
 				E980C20419EC29550088EBF4 /* Footer.xib in Resources */,
 				E9D29F3A19F064BD001ED208 /* tapping.gif in Resources */,
+				E91BD01E1A1FE48A00A9D0BF /* MSU.gpx in Resources */,
 				E9EA951E19EAE592003C79F0 /* LineHeader.xib in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
@@ -1905,6 +1910,7 @@
 				E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				E9A1EAAF199CFD25003A744C /* boyVoice.caf in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
+				E91BD01D1A1FE48A00A9D0BF /* MSU.gpx in Resources */,
 				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */,
