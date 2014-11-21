@@ -15,9 +15,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "EventMessagesConstants.h"
 
-
-UIView *chatTextFieldWrapper;
-UITextView *messageTextView;
 UIButton *sendButton;
 NSArray *eventMessages;
 UICollectionView *facesCollectionView;
@@ -127,7 +124,7 @@ BOOL cancelFetchMessages;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 260, self.view.frame.size.width, 260) collectionViewLayout:flow];
+    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 260, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = RGBAlpha(248, 253, 255, 100);
     facesCollectionView.showsHorizontalScrollIndicator = NO;
@@ -141,6 +138,7 @@ BOOL cancelFetchMessages;
     facesCollectionView.delegate = self;
     
     [self.view addSubview:facesCollectionView];
+    [self.view sendSubviewToBack:facesCollectionView];
 }
 
 #pragma mark - UICollectionView Data Source
@@ -197,33 +195,14 @@ BOOL cancelFetchMessages;
 
 
 - (void)loadTextViewAndSendButton {
-    chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 60)];
-    chatTextFieldWrapper.backgroundColor = RGBAlpha(248, 253, 255, 100);
-    [self.view addSubview:chatTextFieldWrapper];
-//
-//    messageTextView = [[UITextView alloc] initWithFrame:CGRectMake(10, 10, chatTextFieldWrapper.frame.size.width - 70, 35)];
-//    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
-//    messageTextView.tintColor = [FontProperties getOrangeColor];
-//    messageTextView.delegate = self;
-//    messageTextView.returnKeyType = UIReturnKeySend;
-//    messageTextView.backgroundColor = [UIColor whiteColor];
-//    messageTextView.layer.borderColor = RGB(147, 147, 147).CGColor;
-//    messageTextView.layer.borderWidth = 0.5f;
-//    messageTextView.layer.cornerRadius = 4.0f;
-//    messageTextView.font = [FontProperties mediumFont:18.0f];
-//    messageTextView.textColor = RGB(102, 102, 102);
-//    messageTextView.delegate = self;
-//    [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
-//    [chatTextFieldWrapper addSubview:messageTextView];
-//    [chatTextFieldWrapper bringSubviewToFront:messageTextView];
-    
-    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(chatTextFieldWrapper.frame.size.width - 50, 10, 45, 35)];
+    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 50, self.view.frame.size.height - 40, 45, 35)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     sendButton.backgroundColor = [FontProperties getOrangeColor];
     sendButton.layer.borderWidth = 1.0f;
     sendButton.layer.borderColor = [UIColor clearColor].CGColor;
     sendButton.layer.cornerRadius = 5;
-    [chatTextFieldWrapper addSubview:sendButton];
+    [self.view addSubview:sendButton];
+    [self.view bringSubviewToFront:sendButton];
 
     UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 25, 25)];
     sendOvalImageView.image = [UIImage imageNamed:@"sendOval"];

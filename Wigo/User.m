@@ -119,6 +119,21 @@
     [modifiedKeys addObject:@"accessToken"];
 }
 
+
+- (BOOL)isEventOwner {
+    if ([[_proxy allKeys] containsObject:@"event_owner"]) {
+        NSNumber *numberIsEventOwner = (NSNumber *)[_proxy objectForKey:@"event_owner"];
+        return [numberIsEventOwner boolValue];
+    }
+    else return NO;
+}
+
+- (void)setIsEventOwner:(BOOL)isEventOwner {
+    NSNumber *numberIsEventOwner = [NSNumber numberWithBool:isEventOwner];
+    [_proxy notNillsetObject:numberIsEventOwner forKey:@"event_owner"];
+}
+
+
 - (NSString *)key {
     NSString *key = (NSString *)[_proxy objectForKey:@"key"];
     if (key) return key;

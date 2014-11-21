@@ -136,17 +136,6 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) initializeNavigationBar {
-//    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
-//    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
-//    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-//    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-//    profileImageView.clipsToBounds = YES;
-//    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] imageArea:[[Profile user] coverImageArea]];
-//    [profileButton addSubview:profileImageView];
-//    [profileButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchUpInside];
-//    [profileButton setShowsTouchWhenHighlighted:YES];
-//    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
-//    self.navigationItem.leftBarButtonItem = profileBarButton;
     self.navigationItem.rightBarButtonItem = nil;
     
     [self updatedTitleView];
@@ -472,13 +461,8 @@ int firstIndexOfNegativeEvent;
         _createButton.hidden = YES;
         _clearButton.hidden = YES;
     }
-//    if (shouldAnimate) {
-//        [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-//        shouldAnimate = NO;
-//    }
-//    else {
-        [_placesTableView reloadData];
-//    }
+
+    [_placesTableView reloadData];
 }
 
 
@@ -592,7 +576,6 @@ int firstIndexOfNegativeEvent;
         if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
         else partyUser  = [_partyUserArray objectAtIndex:[indexPath row]];
     }
-    
     NSNumber *totalUsers = [event numberAttending];
     
     UIView *placeSubView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, sizeOfEachCell)];
@@ -618,7 +601,6 @@ int firstIndexOfNegativeEvent;
     }
     NSMutableAttributedString * attributedString = [[NSMutableAttributedString alloc] initWithString:text];
     [attributedString addAttribute:NSFontAttributeName value:[FontProperties getTitleFont] range:NSMakeRange(0,[[event name] length])];
-//    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(104, 174, 215) range:NSMakeRange(0,[[event name] length])];
     [attributedString addAttribute:NSFontAttributeName value:[FontProperties getSubtitleFont] range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
     [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(204, 204, 204) range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
     labelName.attributedText = attributedString;
@@ -722,7 +704,8 @@ int firstIndexOfNegativeEvent;
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+        if ([user isEventOwner]) profileName.backgroundColor= RGBAlpha(245, 142, 29, 0.6f);
+        else profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
         profileName.font = [FontProperties getSmallPhotoFont];
         [imgView addSubview:profileName];
     }
@@ -864,6 +847,7 @@ int firstIndexOfNegativeEvent;
             NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
             NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
             User *user;
+           
             if ([userDictionary isKindOfClass:[NSDictionary class]]) {
                 if ([Profile isUserDictionaryProfileUser:userDictionary]) {
                     user = [Profile user];
@@ -871,6 +855,9 @@ int firstIndexOfNegativeEvent;
                 else {
                     user = [[User alloc] initWithDictionary:userDictionary];
                 }
+            }
+            if ([[eventAttendee allKeys] containsObject:@"event_owner"]) {
+                [user setIsEventOwner:[[eventAttendee objectForKey:@"event_owner"] boolValue]];
             }
             [partyUser addObject:user];
         }

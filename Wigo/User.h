@@ -42,6 +42,7 @@ typedef enum
 @property NSArray *images;
 @property NSArray *imagesURL;
 @property NSArray *imagesArea;
+@property BOOL isEventOwner;
 @property BOOL isPrivate;
 @property BOOL isGoingOut;
 @property BOOL emailValidated;
