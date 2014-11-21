@@ -601,12 +601,14 @@ int firstIndexOfNegativeEvent;
     }
     NSMutableAttributedString * attributedString = [[NSMutableAttributedString alloc] initWithString:text];
     [attributedString addAttribute:NSFontAttributeName value:[FontProperties getTitleFont] range:NSMakeRange(0,[[event name] length])];
+    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(104, 174, 215) range:NSMakeRange(0,[[event name] length])];
+
 //    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(104, 174, 215) range:NSMakeRange(0,[[event name] length])];
     [attributedString addAttribute:NSFontAttributeName value:[FontProperties getSubtitleFont] range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
-    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(204, 204, 204) range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
+    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(158, 158, 158) range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
     labelName.attributedText = attributedString;
     [labelName sizeToFit];
-    labelName.frame = CGRectMake(xSpacing, 5, self.view.frame.size.width - 50, 60);
+    labelName.frame = CGRectMake(xSpacing, 5, self.view.frame.size.width - 55 - xSpacing, 60);
     [placeSubView addSubview:labelName];
 
     NSNumber *numberOfMessages = [event numberOfMessages];
@@ -615,7 +617,7 @@ int firstIndexOfNegativeEvent;
                          [FontProperties getSubtitleFont]}];
 
     if ([numberOfMessages intValue] > 0) {
-        UIImageView *chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(xSpacing + size.width + 10, 40, 20, 20)];
+        UIImageView *chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, 25, 20, 20)];
         chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
         [placeSubView addSubview:chatBubbleImageView];
         UILabel *chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
@@ -626,7 +628,7 @@ int firstIndexOfNegativeEvent;
         [chatBubbleImageView addSubview:chatNumberLabel];
     }
     
-    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 30, 26, 13, 22)];
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 30, 23, 13, 22)];
     postStoryImageView.image = [UIImage imageNamed:@"postStory"];
     [placeSubView addSubview:postStoryImageView];
 
@@ -634,7 +636,7 @@ int firstIndexOfNegativeEvent;
     int xPosition = xSpacing;
     sizeOfEachImage = 80;
     
-    UIScrollView *imagesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, placeSubView.frame.size.width, placeSubView.frame.size.height)];
+    UIScrollView *imagesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 5, placeSubView.frame.size.width, placeSubView.frame.size.height)];
     imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
     imagesScrollView.showsHorizontalScrollIndicator = NO;
     imagesScrollView.delegate = self;
@@ -649,34 +651,34 @@ int firstIndexOfNegativeEvent;
         placeSubView.backgroundColor = [FontProperties getLightBlueColor];
         
 //        UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 105 - 5, 10 - 5, 90 + 10, 17 + 25)];
-        UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width/2 - 50, 168, 90 + 10, 17 + 25)];
+        UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width/2 - 70, 163, 130 + 10, 17 + 30)];
         aroundInviteButton.tag = [(NSNumber *)[event eventID] intValue];
         [aroundInviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
         
-        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 95, 25)];
+        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 130, 30)];
         inviteButton.enabled = NO;
         [inviteButton setTitle:@"INVITE PEOPLE" forState:UIControlStateNormal];
-        [inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+        [inviteButton setTitleColor:RGB(100, 173, 215) forState:UIControlStateNormal];
         inviteButton.backgroundColor = [UIColor whiteColor];
-        inviteButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
+        inviteButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
         inviteButton.layer.cornerRadius = 5;
         inviteButton.layer.borderWidth = 1;
-        inviteButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+        inviteButton.layer.borderColor = RGB(100, 173, 215).CGColor;
         [placeSubView addSubview:aroundInviteButton];
         [aroundInviteButton addSubview:inviteButton];
     }
     else {
 //        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 90 - 5, 10 - 5, 80 + 10, 17 + 25)];
-        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width/2 - 50, 168, 90 + 10, 17 + 25)];
+        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width/2 - 55, 163, 90 + 10, 17 + 25)];
         aroundGoOutButton.tag = [(NSNumber *)[event eventID] intValue];
         [aroundGoOutButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
         
-        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 80, 25)];
+        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 90, 30)];
         goOutButton.enabled = NO;
         [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
         [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         goOutButton.backgroundColor = [FontProperties getBlueColor];
-        goOutButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
+        goOutButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
         goOutButton.layer.cornerRadius = 5;
         goOutButton.layer.borderWidth = 1;
         goOutButton.layer.borderColor = [FontProperties getBlueColor].CGColor;

@@ -60,7 +60,7 @@ BOOL cancelFetchMessages;
     else {
         numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
     }
-    numberGoingLabel.textColor = RGB(195, 195, 195);
+    numberGoingLabel.textColor = RGB(170, 170, 170);
     numberGoingLabel.textAlignment = NSTextAlignmentCenter;
     numberGoingLabel.font = [FontProperties mediumFont:15];
     [self.view addSubview:numberGoingLabel];
@@ -76,7 +76,7 @@ BOOL cancelFetchMessages;
         UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 190, self.view.frame.size.width - 140, 30)];
         [invitePeopleButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
         [invitePeopleButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-        invitePeopleButton.titleLabel.font = [FontProperties mediumFont:15];
+        invitePeopleButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
         invitePeopleButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
         invitePeopleButton.layer.borderWidth = 1.0f;
         invitePeopleButton.layer.cornerRadius = 5.0f;
@@ -116,7 +116,7 @@ BOOL cancelFetchMessages;
     UILabel *eventStoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 230, self.view.frame.size.width, 40)];
     eventStoryLabel.text = @"Event Story";
     eventStoryLabel.textColor = RGB(208, 208, 208);
-    eventStoryLabel.backgroundColor = RGBAlpha(248, 253, 255, 100);
+    eventStoryLabel.backgroundColor = UIColor.whiteColor;
     eventStoryLabel.textAlignment = NSTextAlignmentCenter;
     eventStoryLabel.font = [FontProperties mediumFont:20];
     [self.view addSubview:eventStoryLabel];
@@ -126,7 +126,7 @@ BOOL cancelFetchMessages;
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
     facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 260, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
     
-    facesCollectionView.backgroundColor = RGBAlpha(248, 253, 255, 100);
+    facesCollectionView.backgroundColor = UIColor.whiteColor;
     facesCollectionView.showsHorizontalScrollIndicator = NO;
     facesCollectionView.showsVerticalScrollIndicator = NO;
     
@@ -149,7 +149,7 @@ BOOL cancelFetchMessages;
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return eventMessages.count;
+    return eventMessages.count + 1;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -161,8 +161,16 @@ BOOL cancelFetchMessages;
     myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
     
     myCell.rightLine.backgroundColor = RGB(237, 237, 237);
-    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
-
+    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count);
+    
+    if ([indexPath row] == eventMessages.count) {
+        myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
+        myCell.timeLabel.text = @"Add to the story";
+        myCell.mediaTypeImageView.hidden = YES;
+        myCell.layer.borderColor = UIColor.clearColor.CGColor;
+        return myCell;
+    }
+    
     User *user;
     NSDictionary *eventMessage = [eventMessages objectAtIndex:[indexPath row]];
     user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
@@ -195,17 +203,21 @@ BOOL cancelFetchMessages;
 
 
 - (void)loadTextViewAndSendButton {
-    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 50, self.view.frame.size.height - 40, 45, 35)];
+    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 70, self.view.frame.size.height - 70, 60, 60)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     sendButton.backgroundColor = [FontProperties getOrangeColor];
     sendButton.layer.borderWidth = 1.0f;
     sendButton.layer.borderColor = [UIColor clearColor].CGColor;
-    sendButton.layer.cornerRadius = 5;
+    sendButton.layer.cornerRadius = 30;
+    sendButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    sendButton.layer.shadowOpacity = 0.4f;
+    sendButton.layer.shadowRadius = 8.0f;
+    sendButton.layer.shadowOffset = CGSizeMake(0.0f, 3.0f);
     [self.view addSubview:sendButton];
     [self.view bringSubviewToFront:sendButton];
 
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 25, 25)];
-    sendOvalImageView.image = [UIImage imageNamed:@"sendOval"];
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 20, 20)];
+    sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
     [sendButton addSubview:sendOvalImageView];
 }
 
