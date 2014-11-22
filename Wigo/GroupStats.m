@@ -28,8 +28,8 @@
 
 
 + (void)doGet:(QueryResult)handler {
-    NSURL *url = [NSURL URLWithString: [NSString stringWithFormat: kStatsApiUrl, @"1231"]];
-    //NSURL *url = [NSURL URLWithString: [NSString stringWithFormat: kStatsApiUrl, [Profile user].groupID]];
+    //NSURL *url = [NSURL URLWithString: [NSString stringWithFormat: kStatsApiUrl, @"1231"]];
+    NSURL *url = [NSURL URLWithString: [NSString stringWithFormat: kStatsApiUrl, [Profile user].groupID]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL: url];
     [req setHTTPMethod:GET];
     [NSURLConnection sendAsynchronousRequest:req queue:[[NSOperationQueue alloc] init]  completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -89,7 +89,7 @@
     
     //daily engagement
     groupStats.dailyEngagement = [GroupStats getEngagementGraph: engagement[kDaily]];
-    groupStats.dailyEngagement.xAxisLabels = @[@"M", @"T", @"W", @"Th", @"F", @"Sa", @"Su"];
+//    groupStats.dailyEngagement.xAxisLabels = @[@"M", @"T", @"W", @"Th", @"F", @"Sa", @"Su"];
     
     groupStats.weeklyEngagement = [GroupStats getEngagementGraph: engagement[kWeekly]];
     

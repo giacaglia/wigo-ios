@@ -44,6 +44,10 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 
 @property (nonatomic, assign) int currentMaxIndex;
 
+@property (nonatomic, strong) UIView *tooltipView;
+@property (nonatomic, strong) UILabel *tooltipLabel;
+
+@property (nonatomic, assign) BOOL tooltipVisible;
 @end
 
 @implementation AmbassadorViewController
@@ -132,7 +136,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     self.barGraph.maximumValue = 100.0f;
     self.barGraph.minimumValue = 0.0f;
     self.barGraph.headerPadding = 0;
-    self.barGraph.footerPadding = 30;
+    self.barGraph.footerPadding = 0;
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.barGraph.frame.size.width, 40)];
     titleLabel.backgroundColor = [UIColor clearColor];
@@ -143,7 +147,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     self.barGraph.headerView = titleLabel;
     
     //y-axis
-    UIView *yAxis = [[UIView alloc] initWithFrame: CGRectMake(0, titleLabel.frame.size.height + self.barGraph.headerPadding, 40, self.barGraph.frame.size.height - titleLabel.frame.size.height - self.barGraph.footerPadding + 3)];
+    UIView *yAxis = [[UIView alloc] initWithFrame: CGRectMake(0, titleLabel.frame.size.height + self.barGraph.headerPadding, 40, self.barGraph.frame.size.height - titleLabel.frame.size.height - self.barGraph.footerPadding - 15)];
     yAxis.backgroundColor = [UIColor clearColor];
     
     UILabel *topLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, yAxis.frame.size.width, 20)];
@@ -160,9 +164,60 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     bottomLabel.textColor = [UIColor lightGrayColor];
     [yAxis addSubview: bottomLabel];
     
+    //x-axis
+    
     [self.graphCell.contentView addSubview: yAxis];
     
     [self.graphCell.contentView addSubview: self.barGraph];
+}
+
+- (void) createXAxisWithDates:(NSArray *) dates andPeriod:(Period) period {
+    NSDateFormatter *periodDateFormatter = [[NSDateFormatter alloc] init];
+    
+    if (period == DAY) {
+        [periodDateFormatter setDateFormat:@"EEE"];
+    }
+    else if (period == WEEK) {
+        [periodDateFormatter setDateFormat:@"MM/dd"];
+    }
+    else if (period == MONTH || period == ALLTIME) {
+        [periodDateFormatter setDateFormat:@"MMM"];
+    }
+    
+    
+    NSMutableArray *labels = [[NSMutableArray alloc] init];
+    
+    for (NSString *dateStr in dates) {
+        NSDateFormatter *prevDateFormatter = [[NSDateFormatter alloc] init];
+        [prevDateFormatter setDateFormat:@"yyyy-MM-dd"];
+        
+        NSDate *date = [prevDateFormatter dateFromString: dateStr];
+        
+        NSString *abrevDateLabel = [periodDateFormatter stringFromDate: date];
+        [labels addObject: abrevDateLabel];
+    }
+    
+    [self createXAxisWithLabels: labels];
+}
+
+- (void) createXAxisWithLabels:(NSArray *) labels {
+    UIView *xAxis = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.barGraph.frame.size.width, 30)];
+    CGFloat labelWidth = xAxis.frame.size.width/labels.count;
+    
+    int index = 0;
+    for (NSString *label in labels) {
+        UILabel *axisLabel = [[UILabel alloc] initWithFrame: CGRectMake(index*labelWidth,0, labelWidth, 30)];
+        axisLabel.backgroundColor = [UIColor clearColor];
+        axisLabel.text = label;
+        axisLabel.font = [FontProperties mediumFont: 10];
+        axisLabel.textAlignment = NSTextAlignmentCenter;
+        axisLabel.textColor = [UIColor lightGrayColor];
+        
+        [xAxis addSubview: axisLabel];
+        index++;
+    }
+    
+    self.barGraph.footerView = xAxis;
 }
 
 
@@ -197,33 +252,40 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
         return;
     }
     
+    if (!self.barGraph) {
+        [self initializeBarGraph];
+    }
     
     if (period == DAY) {
         self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixDay];
         self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.todayUserCount];
         _currentMaxIndex = [self maxValueIndex: self.groupStats.dailyEngagement.values];
+        [self createXAxisWithDates:self.groupStats.dailyEngagement.xAxisLabels andPeriod: period];
     }
     else if (period == WEEK) {
         self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixWeek];
         self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.weekUserCount];
         _currentMaxIndex = [self maxValueIndex: self.groupStats.weeklyEngagement.values];
+        [self createXAxisWithDates:self.groupStats.weeklyEngagement.xAxisLabels andPeriod: period];
 
     }
     else if (period == MONTH) {
         self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixMonth];
         self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.monthUserCount];
         _currentMaxIndex = [self maxValueIndex: self.groupStats.monthlyEngagement.values];
+        [self createXAxisWithDates:self.groupStats.monthlyEngagement.xAxisLabels andPeriod: period];
+
     }
     else if (period == ALLTIME) {
         self.numberUsersDescrLabel.text = [NSString stringWithFormat: @"Total Users"];
         self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.allUsersCount];
         _currentMaxIndex = [self maxValueIndex: self.groupStats.monthlyEngagement.values];
+        [self createXAxisWithDates:self.groupStats.monthlyEngagement.xAxisLabels andPeriod: period];
+
     }
 
     
-    if (!self.barGraph) {
-        [self initializeBarGraph];
-    }
+
     
     [self.barGraph reloadData];
 }
@@ -279,7 +341,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 #pragma mark - JBChart Delegate + Datasource
 
 - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView {
-    return [FontProperties getOrangeColor];
+    return [UIColor clearColor];
 }
 
 - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index {
@@ -323,6 +385,28 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     return 0.0f;
 }
 
+- (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint {
+    float percentage = 0;
+    if (self.period == DAY) {
+        percentage = [self.groupStats.dailyEngagement.values[index] floatValue]*100.0f;
+    } else if (self.period == WEEK) {
+        percentage = [self.groupStats.weeklyEngagement.values[index] floatValue]*100.0f;
+    } else if (self.period == MONTH) {
+        percentage = [self.groupStats.monthlyEngagement.values[index] floatValue]*100.0f;
+    } else if (self.period == ALLTIME) {
+        percentage = [self.groupStats.monthlyEngagement.values[index] floatValue]*100.0f;
+    }
+    
+    [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
+    self.tooltipLabel.text = [NSString stringWithFormat: @"%i%@", (int)percentage, @"%"];
+}
+
+- (void)didDeselectBarChartView:(JBBarChartView *)barChartView
+{
+    [self setTooltipVisible:NO animated:YES];
+}
+
+
 #pragma mark - Helpers
 
 - (int ) maxValueIndex: (NSArray *) numbers {
@@ -339,6 +423,111 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     }
     
     return maxIndex;
+}
+
+#pragma mark - ToolTip 
+
+- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated atTouchPoint:(CGPoint)touchPoint
+{
+    _tooltipVisible = tooltipVisible;
+    
+    JBChartView *chartView = self.barGraph;
+    
+    if (!chartView)
+    {
+        return;
+    }
+    
+    if (!self.tooltipView)
+    {
+        self.tooltipView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 40, 40)];
+        self.tooltipView.backgroundColor = [FontProperties getBlueColor];
+        
+        self.tooltipLabel = [[UILabel alloc] initWithFrame: self.tooltipView.bounds];
+        self.tooltipLabel.backgroundColor = [UIColor clearColor];
+        self.tooltipLabel.text = @"";
+        self.tooltipLabel.font = [FontProperties boldFont: 14];
+        self.tooltipLabel.textAlignment = NSTextAlignmentCenter;
+        self.tooltipLabel.textColor = [UIColor whiteColor];
+        
+        [self.tooltipView addSubview: self.tooltipLabel];
+        
+        
+        self.tooltipView.layer.cornerRadius = self.tooltipView.frame.size.width/2;
+        
+        self.tooltipView.alpha = 0.0;
+        [self.graphCell.contentView addSubview:self.tooltipView];
+    }
+    
+    
+    dispatch_block_t adjustTooltipPosition = ^{
+        CGPoint originalTouchPoint = [self.graphCell.contentView convertPoint:touchPoint fromView:chartView];
+        CGPoint convertedTouchPoint = originalTouchPoint; // modified
+        JBChartView *chartView = self.barGraph;
+        
+        if (chartView)
+        {
+            CGFloat minChartX = (chartView.frame.origin.x + ceil(self.tooltipView.frame.size.width * 0.5));
+            if (convertedTouchPoint.x < minChartX)
+            {
+                convertedTouchPoint.x = minChartX;
+            }
+            CGFloat maxChartX = (chartView.frame.origin.x + chartView.frame.size.width - ceil(self.tooltipView.frame.size.width * 0.5));
+            if (convertedTouchPoint.x > maxChartX)
+            {
+                convertedTouchPoint.x = maxChartX;
+            }
+            self.tooltipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), CGRectGetMaxY(chartView.headerView.frame), self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
+            
+//            CGFloat minTipX = (chartView.frame.origin.x + self.tooltipTipView.frame.size.width);
+//            if (originalTouchPoint.x < minTipX)
+//            {
+//                originalTouchPoint.x = minTipX;
+//            }
+//            CGFloat maxTipX = (chartView.frame.origin.x + chartView.frame.size.width - self.tooltipTipView.frame.size.width);
+//            if (originalTouchPoint.x > maxTipX)
+//            {
+//                originalTouchPoint.x = maxTipX;
+//            }
+//            self.tooltipTipView.frame = CGRectMake(originalTouchPoint.x - ceil(self.tooltipTipView.frame.size.width * 0.5), CGRectGetMaxY(self.tooltipView.frame), self.tooltipTipView.frame.size.width, self.tooltipTipView.frame.size.height);
+        }
+    };
+    
+    dispatch_block_t adjustTooltipVisibility = ^{
+        self.tooltipView.alpha = _tooltipVisible ? 1.0 : 0.0;
+       // self.tooltipTipView.alpha = _tooltipVisible ? 1.0 : 0.0;
+    };
+    
+    if (tooltipVisible)
+    {
+        adjustTooltipPosition();
+    }
+    
+    if (animated)
+    {
+        [UIView animateWithDuration: 0.2 animations:^{
+            adjustTooltipVisibility();
+        } completion:^(BOOL finished) {
+            if (!tooltipVisible)
+            {
+                adjustTooltipPosition();
+            }
+        }];
+    }
+    else
+    {
+        adjustTooltipVisibility();
+    }
+}
+
+- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated
+{
+    [self setTooltipVisible:tooltipVisible animated:animated atTouchPoint:CGPointZero];
+}
+
+- (void)setTooltipVisible:(BOOL)tooltipVisible
+{
+    [self setTooltipVisible:tooltipVisible animated:NO];
 }
 
 @end
