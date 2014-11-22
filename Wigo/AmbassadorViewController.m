@@ -8,6 +8,7 @@
 
 #import "AmbassadorViewController.h"
 #import "UIButtonAligned.h"
+#import "MobileContactsViewController.h"
 
 #import "JBChartView.h"
 #import "JBBarChartView.h"
@@ -293,6 +294,11 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 #pragma mark - Go Back
 - (void) goBack {
     [self.navigationController popViewControllerAnimated: YES];
+}
+
+- (IBAction)inviteFrendsTapped:(id)sender {
+    [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
+
 }
 
 
