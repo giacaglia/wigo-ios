@@ -537,7 +537,6 @@
     });
     
     _isActive = isActive;
-
 }
 
 - (void)setToActiveWithNoAnimation {
@@ -559,6 +558,18 @@
     self.mediaTypeImageView.alpha = 0.5f;
     self.mediaTypeImageView.layer.cornerRadius = 7;
 }
+
+- (void)updateUIToRead:(BOOL)read {
+    if (read) {
+        self.faceImageView.alpha = 0.4f;
+        self.mediaTypeImageView.alpha = 0.4f;
+    }
+    else {
+        self.faceImageView.alpha = 1.0f;
+        self.mediaTypeImageView.alpha = 1.0f;
+    }
+}
+
 
 @end
 

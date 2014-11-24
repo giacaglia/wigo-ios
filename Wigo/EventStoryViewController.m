@@ -204,6 +204,13 @@ BOOL cancelFetchMessages;
             myCell.mediaTypeImageView.alpha = 1.0f;
         }
     }
+    
+    if ([[eventMessage allKeys] containsObject:@"is_read"]) {
+        if ([eventMessage objectForKey:@"is_read"]) {
+            [myCell updateUIToRead:YES];
+        }
+        else [myCell updateUIToRead:NO];
+    }
    
     
     return myCell;
