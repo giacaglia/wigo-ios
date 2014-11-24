@@ -89,7 +89,9 @@
     myCell.leftLineEnabled = (indexPath.row > 0);
     myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
     User *user;
+    NSLog(@"row %d", indexPath.row);
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:[indexPath row]];
+    NSLog(@"row %@", eventMessage);
     user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
     if ([user isEqualToUser:[Profile user]]) {
         user = [Profile user];
@@ -451,17 +453,22 @@
     self.faceImageView.layer.cornerRadius = 25;
     self.faceImageView.layer.borderWidth = 1.0;
     self.faceImageView.alpha = 0.5f;
-    self.faceImageView.layer.borderColor = [UIColor blackColor].CGColor;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self addSubview: self.faceImageView];
+    
+    self.spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    self.spinner.frame = CGRectMake(self.faceImageView.frame.size.width/4, self.faceImageView.frame.size.height/4, self.faceImageView.frame.size.width/2,  self.faceImageView.frame.size.height/2);
+    self.spinner.hidesWhenStopped = YES;
+    self.spinner.hidden = YES;
+    [self.faceImageView addSubview:self.spinner];
     
     self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(62, 20, 15, 15)];
     self.mediaTypeImageView.layer.masksToBounds = YES;
     self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
     self.mediaTypeImageView.layer.cornerRadius = 7;
     self.mediaTypeImageView.layer.borderWidth = 1.0;
+    self.mediaTypeImageView.layer.borderColor = UIColor.blackColor.CGColor;
     self.mediaTypeImageView.alpha = 0.5f;
-    self.mediaTypeImageView.layer.borderColor = [UIColor blackColor].CGColor;
     self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self addSubview:self.mediaTypeImageView];
     
@@ -473,6 +480,7 @@
     self.timeLabel.font = [FontProperties lightFont:12];
     [self addSubview:self.timeLabel];
     
+
     _isActive = NO;
 }
 

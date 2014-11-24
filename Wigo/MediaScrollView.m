@@ -56,7 +56,9 @@
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
     }
+    NSLog(@"indexpath %ld", (long)[indexPath row]);
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:indexPath.row];
+    NSLog(@"event message %@", eventMessage);
     NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
     NSString *contentURL = [eventMessage objectForKey:@"media"];
     if ([mimeType isEqualToString:kCameraType]) {

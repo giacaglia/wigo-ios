@@ -71,9 +71,6 @@ BOOL cancelFetchMessages;
 #pragma mark - Loading Messages
 
 - (void)loadEventDetails {
-//    EventPeopleScrollView *eventScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-//    eventScrollView.delegate = self;
-//    [self.view addSubview:eventScrollView];
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
         UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 104, self.view.frame.size.width - 140, 30)];
         [invitePeopleButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
@@ -167,6 +164,7 @@ BOOL cancelFetchMessages;
     
     if ([indexPath row] == eventMessages.count) {
         myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
+        myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
         myCell.timeLabel.frame = CGRectMake(23, 82, 60, 30);
         myCell.timeLabel.text = @"Add to\nthe story";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
@@ -174,6 +172,9 @@ BOOL cancelFetchMessages;
         [myCell.layer removeFromSuperlayer];
         return myCell;
     }
+    myCell.mediaTypeImageView.hidden = NO;
+    myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
+    myCell.mediaTypeImageView.hidden = NO;
     
     User *user;
     NSDictionary *eventMessage = [eventMessages objectAtIndex:[indexPath row]];
@@ -191,11 +192,20 @@ BOOL cancelFetchMessages;
     myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
     myCell.timeLabel.textColor = RGB(59, 59, 59);
     if ([[eventMessage allKeys] containsObject:@"loading"]) {
-        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        spinner.frame = CGRectMake(myCell.faceImageView.frame.size.width/4, myCell.faceImageView.frame.size.height/4, myCell.faceImageView.frame.size.width/2,  myCell.faceImageView.frame.size.height/2);
-        [spinner startAnimating];
-        [myCell.faceImageView addSubview:spinner];
+        myCell.spinner.hidden = NO;
+        [myCell.spinner startAnimating];
+        myCell.faceImageView.alpha = 0.4f;
+        myCell.mediaTypeImageView.alpha = 0.4f;
+        myCell.userInteractionEnabled = NO;
     }
+    else {
+        if (myCell.spinner.isAnimating) {
+            [myCell.spinner stopAnimating];
+            myCell.faceImageView.alpha = 1.0f;
+            myCell.mediaTypeImageView.alpha = 1.0f;
+        }
+    }
+   
     
     return myCell;
 }
@@ -304,15 +314,20 @@ BOOL cancelFetchMessages;
                         andFileName:@"video0.mp4"
                          andOptions:options];
     }
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
     NSDictionary *eventMessage =  @{
                                     @"user": [Profile user].dictionary,
+                                    @"created": [dateFormatter stringFromDate:[NSDate date]],
                                     @"media_mime_type": type,
                                     @"loading": @YES
                                     };
     NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
     [mutableEventMessages addObject:eventMessage];
     eventMessages = [NSArray arrayWithArray:mutableEventMessages];
-//    NSLog(@"event Messages %@", eventMessages);
     [facesCollectionView reloadData];
     cancelFetchMessages = YES;
 }
@@ -350,13 +365,20 @@ BOOL cancelFetchMessages;
                         withActionURL:actionString
                              withFile:fileData
                           andFileName:filename];
+//            NSLog(@"fields: %@", fields);
             NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
             [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"media"];
             [Network sendAsynchronousHTTPMethod:POST
                                     withAPIName:@"eventmessages/"
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                         if (!error) {
-                                            
+//                                            NSLog(@"response jsonResponse: %@", jsonResponse);
+//                                            NSMutableDictionary *eventMessage =  [NSMutableDictionary dictionaryWithDictionary:[eventMessages objectAtIndex:(eventMessages.count - 1)]];
+//                                            [eventMessage removeObjectForKey:@"loading"];
+                                            NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
+                                            [mutableEventMessages replaceObjectAtIndex:(eventMessages.count - 1) withObject:jsonResponse];
+                                            eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+                                            [facesCollectionView reloadData];
                                         }
                                     } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
         });
