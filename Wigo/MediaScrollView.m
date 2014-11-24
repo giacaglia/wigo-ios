@@ -142,10 +142,8 @@
 }
 
 - (void)removeEventMessageAtPage:(int)page {
-//    NSLog(@"page %d", page);
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
     NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
-//    NSLog(@"event message ID %@", eventMessageID);
     [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
     }];
 }

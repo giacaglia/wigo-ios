@@ -166,7 +166,7 @@ BOOL cancelFetchMessages;
         NSLog(@"here");
         myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
         myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
-        myCell.timeLabel.frame = CGRectMake(23, 82, 60, 30);
+        myCell.timeLabel.frame = CGRectMake(23, 80, 60, 28);
         myCell.timeLabel.text = @"Add to\nthe story";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
         myCell.mediaTypeImageView.hidden = YES;
@@ -438,7 +438,7 @@ BOOL cancelFetchMessages;
 
 - (void)setup
 {
-    self.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10);
+    self.sectionInset = UIEdgeInsetsMake(0, 10, 10, 10);
     self.itemSize = CGSizeMake(100, 100);
     self.minimumLineSpacing = 0;
     self.minimumInteritemSpacing = 0;

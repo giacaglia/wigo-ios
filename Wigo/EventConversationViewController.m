@@ -25,6 +25,8 @@
 @property (nonatomic, assign) BOOL facesHidden;
 @property (nonatomic, strong) UIButton * buttonCancel;
 @property (nonatomic, strong) UIButton *buttonTrash;
+@property (nonatomic, strong) UIButton *upVoteButton;
+@property (nonatomic, strong) UIButton *downVoteButton;
 @end
 
 @implementation EventConversationViewController
@@ -324,6 +326,10 @@
         self.buttonCancel.enabled = NO;
         self.buttonTrash.hidden = YES;
         self.buttonTrash.enabled = NO;
+        self.upVoteButton.hidden = YES;
+        self.upVoteButton.enabled = NO;
+        self.downVoteButton.hidden = YES;
+        self.downVoteButton.enabled = NO;
         [UIView animateWithDuration:0.5 animations:^{
             self.facesCollectionView.alpha = 0;
         }];
@@ -339,10 +345,18 @@
         if ([user isEqualToUser:[Profile user]]) {
             self.buttonTrash.hidden = NO;
             self.buttonTrash.enabled = YES;
+            self.upVoteButton.hidden = YES;
+            self.upVoteButton.enabled = NO;
+            self.downVoteButton.hidden = YES;
+            self.downVoteButton.enabled = NO;
         }
         else {
             self.buttonTrash.hidden = YES;
             self.buttonTrash.enabled = NO;
+            self.upVoteButton.hidden = NO;
+            self.upVoteButton.enabled = YES;
+            self.downVoteButton.hidden = NO;
+            self.downVoteButton.enabled = YES;
         }
 
     }
@@ -390,6 +404,24 @@
     self.buttonTrash.hidden = YES;
     self.buttonTrash.enabled = NO;
     [self.view addSubview:self.buttonTrash];
+    
+    self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 46, self.view.frame.size.height - 74, 36, 36)];
+    UIImageView *upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
+    upvoteImageView.image = [UIImage imageNamed:@"upvote"];
+    [self.upVoteButton addSubview:upvoteImageView];
+    [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
+    self.upVoteButton.hidden = YES;
+    self.upVoteButton.enabled = NO;
+    [self.view addSubview:self.upVoteButton];
+    
+    self.downVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 46, self.view.frame.size.height - 54, 36, 36)];
+    UIImageView *downVoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
+    downVoteImageView.image = [UIImage imageNamed:@"downvote"];
+    [self.downVoteButton addSubview:downVoteImageView];
+    [self.downVoteButton addTarget:self action:@selector(downvotePressed:) forControlEvents:UIControlEventTouchUpInside];
+    self.downVoteButton.hidden = YES;
+    self.downVoteButton.enabled = NO;
+    [self.view addSubview:self.downVoteButton];
 }
 
 - (void)cancelPressed:(id)sender {
@@ -408,6 +440,27 @@
     [self.mediaScrollView reloadData];
     [self highlightCellAtPage:MIN(page, self.eventMessages.count - 1)];
 }
+
+- (void)upvotePressed:(id)sender {
+    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
+    NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
+    NSDictionary *options = @{@"message" : eventMessageID, @"up_vote": @YES};
+    [Network sendAsynchronousHTTPMethod:POST withAPIName:@"eventmessagevotes/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:options];
+}
+
+- (void)downvotePressed:(id)sender {
+    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
+    NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
+    NSDictionary *options = @{@"message" : eventMessageID, @"down_vote": @YES};
+    [Network sendAsynchronousHTTPMethod:POST withAPIName:@"eventmessagevotes/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:options];
+}
+
 
 @end
 
@@ -592,25 +645,6 @@
     self.minimumInteritemSpacing = 0.0;
     self.minimumLineSpacing = 0.0;
 }
-
-//- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity
-//{
-//    CGFloat offsetAdjustment = MAXFLOAT;
-//    CGFloat horizontalOffset = proposedContentOffset.x + 5;
-//    
-//    CGRect targetRect = CGRectMake(proposedContentOffset.x, 0, self.collectionView.bounds.size.width, self.collectionView.bounds.size.height);
-//    
-//    NSArray *array = [super layoutAttributesForElementsInRect:targetRect];
-//    
-//    for (UICollectionViewLayoutAttributes *layoutAttributes in array) {
-//        CGFloat itemOffset = layoutAttributes.frame.origin.x;
-//        if (ABS(itemOffset - horizontalOffset) < ABS(offsetAdjustment)) {
-//            offsetAdjustment = itemOffset - horizontalOffset;
-//        }
-//    }
-//    
-//    return CGPointMake(proposedContentOffset.x + offsetAdjustment, proposedContentOffset.y);
-//}
 
 
 @end

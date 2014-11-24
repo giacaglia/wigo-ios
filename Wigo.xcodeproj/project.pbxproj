@@ -110,6 +110,8 @@
 		E903C63D19BF8C2E003BCF90 /* LeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E903C63A19BF89FA003BCF90 /* LeaderboardViewController.m */; };
 		E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E90AA8A71976C8B60055D74B /* Crashlytics.framework */; };
 		E9147B6C1925123C00C25C9A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9147B6B1925123C00C25C9A /* ProfileViewController.m */; };
+		E9203B531A23C4B90086BF73 /* EventConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9203B521A23C4B90086BF73 /* EventConversationViewController.m */; };
+		E9203B541A23C4B90086BF73 /* EventConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9203B521A23C4B90086BF73 /* EventConversationViewController.m */; };
 		E921D6161923967D00361247 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6151923967D00361247 /* Foundation.framework */; };
 		E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6171923967D00361247 /* CoreGraphics.framework */; };
 		E921D61A1923967D00361247 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6191923967D00361247 /* UIKit.framework */; };
@@ -379,8 +381,6 @@
 		E9F7995619D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */; };
 		E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
 		FA2BE9BD19FAF06500CC0E5E /* EventStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */; };
-		FA438E4619F16F7700AD74C2 /* EventConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */; };
-		FA438E4719F16F7700AD74C2 /* EventConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */; };
 		FA438EA119F196DA00AD74C2 /* EventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438EA019F196DA00AD74C2 /* EventMessage.m */; };
 		FA438EA219F196DA00AD74C2 /* EventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FA438EA019F196DA00AD74C2 /* EventMessage.m */; };
 		FA438EA719F1998A00AD74C2 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */; };
@@ -466,6 +466,7 @@
 		E90AA8A71976C8B60055D74B /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		E9147B6A1925123C00C25C9A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
 		E9147B6B1925123C00C25C9A /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
+		E9203B521A23C4B90086BF73 /* EventConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventConversationViewController.m; sourceTree = "<group>"; };
 		E921D6121923967D00361247 /* wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E921D6151923967D00361247 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E921D6171923967D00361247 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -756,7 +757,6 @@
 		FA2BE9BB19FAF06500CC0E5E /* EventStoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventStoryViewController.h; sourceTree = "<group>"; };
 		FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventStoryViewController.m; sourceTree = "<group>"; };
 		FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventConversationViewController.h; sourceTree = "<group>"; };
-		FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventConversationViewController.m; sourceTree = "<group>"; };
 		FA438E9F19F196DA00AD74C2 /* EventMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventMessage.h; sourceTree = "<group>"; };
 		FA438EA019F196DA00AD74C2 /* EventMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventMessage.m; sourceTree = "<group>"; };
 		FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -1743,7 +1743,7 @@
 				FA2BE9BB19FAF06500CC0E5E /* EventStoryViewController.h */,
 				FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */,
 				FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */,
-				FA438E4519F16F7700AD74C2 /* EventConversationViewController.m */,
+				E9203B521A23C4B90086BF73 /* EventConversationViewController.m */,
 				E9D039C61A09886A00DEF094 /* MediaScrollView.h */,
 				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
 			);
@@ -2080,7 +2080,6 @@
 				C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */,
 				E9C63C031A03ED35006C5DD2 /* IQFeatureOverlay.m in Sources */,
 				C12A111A19787BE700D53B1C /* Party.m in Sources */,
-				FA438E4719F16F7700AD74C2 /* EventConversationViewController.m in Sources */,
 				E9C63BF31A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */,
 				E9C63C0D1A03ED35006C5DD2 /* IQ_PocketSVG.m in Sources */,
 				C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */,
@@ -2095,6 +2094,7 @@
 				C12A111F19787BE700D53B1C /* Network.m in Sources */,
 				E9C63BE91A03ED35006C5DD2 /* IQSongsAlbumListViewController.m in Sources */,
 				E998C28119D1BF7D0012BF51 /* InviteViewController.m in Sources */,
+				E9203B541A23C4B90086BF73 /* EventConversationViewController.m in Sources */,
 				C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */,
 				E9C63BE51A03ED35006C5DD2 /* IQSongsCell.m in Sources */,
 				E96F07C619BA654600E858D7 /* GKImagePicker.m in Sources */,
@@ -2223,7 +2223,6 @@
 				E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */,
 				E9C63BE61A03ED35006C5DD2 /* IQSongsListTableHeaderView.m in Sources */,
 				E9C63BD41A03ED35006C5DD2 /* IQAssetsPickerShadowView.m in Sources */,
-				FA438E4619F16F7700AD74C2 /* EventConversationViewController.m in Sources */,
 				E9C63BF01A03ED35006C5DD2 /* IQSongsGenreViewController.m in Sources */,
 				E9C63BD21A03ED35006C5DD2 /* IQAssetsCell.m in Sources */,
 				C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */,
@@ -2245,6 +2244,7 @@
 				E9C63BDA1A03ED35006C5DD2 /* IQAudioPickerController.m in Sources */,
 				E9C63BEE1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */,
 				E9D0399D1A095C1500DEF094 /* AWSUploader.m in Sources */,
+				E9203B531A23C4B90086BF73 /* EventConversationViewController.m in Sources */,
 				E998C28419D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m in Sources */,
 				E9C63C001A03ED35006C5DD2 /* IQBottomContainerView.m in Sources */,
 				E9AEAE531A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */,
