@@ -318,20 +318,11 @@
 }
 
 - (void)upvotePressed:(id)sender {
-    NSNumber *eventMessageID = [self.eventMessage objectForKey:@"id"];
-    NSDictionary *options = @{@"message" : eventMessageID, @"up_vote": @YES};
-    [Network sendAsynchronousHTTPMethod:POST withAPIName:@"eventmessagevotes/"
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                            withOptions:options];
+    [self updateNumberOfVotes:YES];
 }
 
 - (void)downvotePressed:(id)sender {
-    NSNumber *eventMessageID = [self.eventMessage objectForKey:@"id"];
-    NSDictionary *options = @{@"message" : eventMessageID, @"up_vote": @NO};
-    [Network sendAsynchronousHTTPMethod:POST withAPIName:@"eventmessagevotes/"
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                            }
-                            withOptions:options];
+    [self updateNumberOfVotes:NO];
 }
 
 - (void)hideVotes {
@@ -350,6 +341,31 @@
     self.numberOfVotesLabel.hidden = NO;
 }
 
+- (void)updateNumberOfVotes:(BOOL)upvoteBool {
+    NSNumber *votedUpNumber = [self.eventMessage objectForKey:@"vote"];
+    if ([votedUpNumber intValue] == 1) {
+        if (!upvoteBool) {
+            [self sendVote:upvoteBool];
+        }
+    }
+    else {
+        if (upvoteBool) {
+            [self sendVote:upvoteBool];
+        }
+    }
+    NSLog(@"update number of votes %@", self.eventMessage);
+}
+
+
+- (void)sendVote:(BOOL)upvoteBool {
+    NSNumber *eventMessageID = [self.eventMessage objectForKey:@"id"];
+    NSDictionary *options = @{@"message" : eventMessageID, @"up_vote": @(upvoteBool)};
+    [Network sendAsynchronousHTTPMethod:POST withAPIName:@"eventmessagevotes/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                            }
+                            withOptions:options];
+
+}
 @end
 
 
