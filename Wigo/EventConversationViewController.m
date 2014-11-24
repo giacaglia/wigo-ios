@@ -27,6 +27,7 @@
 @property (nonatomic, strong) UIButton *buttonTrash;
 @property (nonatomic, strong) UIButton *upVoteButton;
 @property (nonatomic, strong) UIButton *downVoteButton;
+@property (nonatomic, strong) UILabel *numberOfVotes;
 @end
 
 @implementation EventConversationViewController
@@ -326,10 +327,7 @@
         self.buttonCancel.enabled = NO;
         self.buttonTrash.hidden = YES;
         self.buttonTrash.enabled = NO;
-        self.upVoteButton.hidden = YES;
-        self.upVoteButton.enabled = NO;
-        self.downVoteButton.hidden = YES;
-        self.downVoteButton.enabled = NO;
+        [self hideVotes];
         [UIView animateWithDuration:0.5 animations:^{
             self.facesCollectionView.alpha = 0;
         }];
@@ -345,18 +343,12 @@
         if ([user isEqualToUser:[Profile user]]) {
             self.buttonTrash.hidden = NO;
             self.buttonTrash.enabled = YES;
-            self.upVoteButton.hidden = YES;
-            self.upVoteButton.enabled = NO;
-            self.downVoteButton.hidden = YES;
-            self.downVoteButton.enabled = NO;
+            [self hideVotes];
         }
         else {
             self.buttonTrash.hidden = YES;
             self.buttonTrash.enabled = NO;
-            self.upVoteButton.hidden = NO;
-            self.upVoteButton.enabled = YES;
-            self.downVoteButton.hidden = NO;
-            self.downVoteButton.enabled = YES;
+            [self showVotes];
         }
 
     }
@@ -372,6 +364,21 @@
         
         self.currentActiveCell = activeIndexPath;
     }
+}
+
+- (void)hideVotes {
+    self.upVoteButton.hidden = YES;
+    self.upVoteButton.enabled = NO;
+    self.downVoteButton.hidden = YES;
+    self.downVoteButton.enabled = NO;
+    self.numberOfVotes.hidden = YES;
+}
+
+- (void)showVotes {
+    self.upVoteButton.hidden = NO;
+    self.upVoteButton.enabled = YES;
+    self.downVoteButton.hidden = NO;
+    self.downVoteButton.enabled = YES;
 }
 
 #pragma mark - G's code
@@ -405,7 +412,7 @@
     self.buttonTrash.enabled = NO;
     [self.view addSubview:self.buttonTrash];
     
-    self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 46, self.view.frame.size.height - 74, 36, 36)];
+    self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 46, self.view.frame.size.height - 90, 36, 36)];
     UIImageView *upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
     upvoteImageView.image = [UIImage imageNamed:@"upvote"];
     [self.upVoteButton addSubview:upvoteImageView];

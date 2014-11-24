@@ -69,7 +69,7 @@
     }
     else if ([mimeType isEqualToString:kImageEventType]) {
         ImageCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCell" forIndexPath: indexPath];
-        [myCell setTextForEventMessage:eventMessage];
+        [myCell updateUIForEventMessage:eventMessage];
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         spinner.frame = CGRectMake(myCell.imageView.frame.size.width/4, myCell.imageView.frame.size.height/4, myCell.imageView.frame.size.width/2,  myCell.imageView.frame.size.height/2);
@@ -78,13 +78,13 @@
                                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                                     [spinner stopAnimating];
         }];
-        [myCell setTextForEventMessage:eventMessage];
+        [myCell updateUIForEventMessage:eventMessage];
         [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
         return myCell;
     }
     else {
         VideoCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VideoCell" forIndexPath: indexPath];
-        [myCell setTextForEventMessage:eventMessage];
+        [myCell updateUIForEventMessage:eventMessage];
         NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
         myCell.moviePlayer.contentURL = videoURL;
         [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
@@ -266,7 +266,7 @@
 
 @implementation MediaCell
 
-- (void)setTextForEventMessage:(NSDictionary *)eventMessage {
+- (void)updateUIForEventMessage:(NSDictionary *)eventMessage {
     if ([[eventMessage allKeys] containsObject:@"message"]) {
         NSString *message = [eventMessage objectForKey:@"message"];
         if (message && [message isKindOfClass:[NSString class]]) {
@@ -284,6 +284,13 @@
             }
         }
     }
+    if (!self.numberOfVotesLabel) {
+        self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 70, 20, 30)];
+        self.numberOfVotesLabel.textColor = [UIColor whiteColor];
+    }
+    
+    int votes = [[eventMessage objectForKey:@"up_votes"] intValue] - [[eventMessage objectForKey:@"down_votes"] intValue];
+    self.numberOfVotesLabel.text = [[NSNumber numberWithInt:votes] stringValue];
 }
 
 @end

@@ -32,7 +32,8 @@
 
 @interface MediaCell : UICollectionViewCell
 @property (nonatomic, strong) UILabel *label;
-- (void)setTextForEventMessage:(NSDictionary *)eventMessage;
+- (void)updateUIForEventMessage:(NSDictionary *)eventMessage;
+@property (nonatomic, strong) UILabel *numberOfVotesLabel;
 @end
 
 @interface ImageCell : MediaCell
