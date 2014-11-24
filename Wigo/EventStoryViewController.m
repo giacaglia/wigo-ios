@@ -163,7 +163,6 @@ BOOL cancelFetchMessages;
     myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count);
     
     if ([indexPath row] == eventMessages.count) {
-        NSLog(@"here");
         myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
         myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
         myCell.timeLabel.frame = CGRectMake(23, 80, 60, 28);

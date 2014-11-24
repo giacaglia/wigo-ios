@@ -119,7 +119,6 @@
     MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
     if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]] &&
         theMoviePlayer.playbackState != MPMoviePlaybackStatePlaying) {
-//        NSLog(@"here");
         [theMoviePlayer play];
         self.lastMoviePlayer = theMoviePlayer;
     }
@@ -328,9 +327,10 @@
 
 - (void)downvotePressed:(id)sender {
     NSNumber *eventMessageID = [self.eventMessage objectForKey:@"id"];
-    NSDictionary *options = @{@"message" : eventMessageID, @"down_vote": @YES};
+    NSDictionary *options = @{@"message" : eventMessageID, @"up_vote": @NO};
     [Network sendAsynchronousHTTPMethod:POST withAPIName:@"eventmessagevotes/"
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                            }
                             withOptions:options];
 }
 
