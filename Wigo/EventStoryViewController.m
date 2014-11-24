@@ -163,13 +163,13 @@ BOOL cancelFetchMessages;
     myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count);
     
     if ([indexPath row] == eventMessages.count) {
+        NSLog(@"here");
         myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
         myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
         myCell.timeLabel.frame = CGRectMake(23, 82, 60, 30);
         myCell.timeLabel.text = @"Add to\nthe story";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
         myCell.mediaTypeImageView.hidden = YES;
-        [myCell.layer removeFromSuperlayer];
         return myCell;
     }
     myCell.mediaTypeImageView.hidden = NO;
@@ -365,18 +365,20 @@ BOOL cancelFetchMessages;
                         withActionURL:actionString
                              withFile:fileData
                           andFileName:filename];
-//            NSLog(@"fields: %@", fields);
             NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
             [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"media"];
             [Network sendAsynchronousHTTPMethod:POST
                                     withAPIName:@"eventmessages/"
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                         if (!error) {
-//                                            NSLog(@"response jsonResponse: %@", jsonResponse);
-//                                            NSMutableDictionary *eventMessage =  [NSMutableDictionary dictionaryWithDictionary:[eventMessages objectAtIndex:(eventMessages.count - 1)]];
-//                                            [eventMessage removeObjectForKey:@"loading"];
                                             NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
                                             [mutableEventMessages replaceObjectAtIndex:(eventMessages.count - 1) withObject:jsonResponse];
+                                            eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+                                            [facesCollectionView reloadData];
+                                        }
+                                        else {
+                                            NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
+                                            [mutableEventMessages removeLastObject];
                                             eventMessages = [NSArray arrayWithArray:mutableEventMessages];
                                             [facesCollectionView reloadData];
                                         }
