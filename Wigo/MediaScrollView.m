@@ -56,9 +56,7 @@
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
     }
-    NSLog(@"indexpath %ld", (long)[indexPath row]);
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:indexPath.row];
-    NSLog(@"event message %@", eventMessage);
     NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
     NSString *contentURL = [eventMessage objectForKey:@"media"];
     if ([mimeType isEqualToString:kCameraType]) {
@@ -69,7 +67,8 @@
     }
     else if ([mimeType isEqualToString:kImageEventType]) {
         ImageCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCell" forIndexPath: indexPath];
-        [myCell updateUIForEventMessage:eventMessage];
+        myCell.eventMessage = eventMessage;
+        [myCell updateUI];
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         spinner.frame = CGRectMake(myCell.imageView.frame.size.width/4, myCell.imageView.frame.size.height/4, myCell.imageView.frame.size.width/2,  myCell.imageView.frame.size.height/2);
@@ -78,13 +77,13 @@
                                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                                     [spinner stopAnimating];
         }];
-        [myCell updateUIForEventMessage:eventMessage];
         [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
         return myCell;
     }
     else {
         VideoCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VideoCell" forIndexPath: indexPath];
-        [myCell updateUIForEventMessage:eventMessage];
+        myCell.eventMessage = eventMessage;
+        [myCell updateUI];
         NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
         myCell.moviePlayer.contentURL = videoURL;
         [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
@@ -266,16 +265,16 @@
 
 @implementation MediaCell
 
-- (void)updateUIForEventMessage:(NSDictionary *)eventMessage {
-    if ([[eventMessage allKeys] containsObject:@"message"]) {
-        NSString *message = [eventMessage objectForKey:@"message"];
+- (void)updateUI {
+    if ([[self.eventMessage allKeys] containsObject:@"message"]) {
+        NSString *message = [self.eventMessage objectForKey:@"message"];
         if (message && [message isKindOfClass:[NSString class]]) {
             self.label.hidden = NO;
             self.label.text = message;
         }
         else self.label.hidden = YES;
-        if ([[eventMessage allKeys] containsObject:@"properties"]) {
-            NSDictionary *properties = [eventMessage objectForKey:@"properties"];
+        if ([[self.eventMessage allKeys] containsObject:@"properties"]) {
+            NSDictionary *properties = [self.eventMessage objectForKey:@"properties"];
             if (properties &&
                 [properties isKindOfClass:[NSDictionary class]] &&
                 [[properties allKeys] containsObject:@"yPosition"]) {
@@ -284,13 +283,71 @@
             }
         }
     }
-    if (!self.numberOfVotesLabel) {
-        self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 70, 20, 30)];
-        self.numberOfVotesLabel.textColor = [UIColor whiteColor];
+    
+    User *user = [[User alloc] initWithDictionary:[self.eventMessage objectForKey:@"user"]];
+    if (![user isEqualToUser:[Profile user]]) {
+        if (!self.numberOfVotesLabel) {
+            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 40, 568 - 80, 20, 30)];
+            self.numberOfVotesLabel.textColor = [UIColor whiteColor];
+            self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
+            self.numberOfVotesLabel.font = [FontProperties mediumFont:18.0f];
+            [self.contentView addSubview:self.numberOfVotesLabel];
+        }
+        int votes = [[self.eventMessage objectForKey:@"up_votes"] intValue] - [[self.eventMessage objectForKey:@"down_votes"] intValue];
+        self.numberOfVotesLabel.text = [[NSNumber numberWithInt:votes] stringValue];
+        
+        self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(320 - 46, 568 - 108, 36, 36)];
+        UIImageView *upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
+        upvoteImageView.image = [UIImage imageNamed:@"upvote"];
+        [self.upVoteButton addSubview:upvoteImageView];
+        [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:self.upVoteButton];
+        
+        self.downVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(320 - 46, 568 - 54, 36, 36)];
+        UIImageView *downVoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
+        downVoteImageView.image = [UIImage imageNamed:@"downvote"];
+        [self.downVoteButton addSubview:downVoteImageView];
+        [self.downVoteButton addTarget:self action:@selector(downvotePressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:self.downVoteButton];
+        
+        [self showVotes];
+    }
+    else {
+        [self hideVotes];
     }
     
-    int votes = [[eventMessage objectForKey:@"up_votes"] intValue] - [[eventMessage objectForKey:@"down_votes"] intValue];
-    self.numberOfVotesLabel.text = [[NSNumber numberWithInt:votes] stringValue];
+}
+
+- (void)upvotePressed:(id)sender {
+    NSNumber *eventMessageID = [self.eventMessage objectForKey:@"id"];
+    NSDictionary *options = @{@"message" : eventMessageID, @"up_vote": @YES};
+    [Network sendAsynchronousHTTPMethod:POST withAPIName:@"eventmessagevotes/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:options];
+}
+
+- (void)downvotePressed:(id)sender {
+    NSNumber *eventMessageID = [self.eventMessage objectForKey:@"id"];
+    NSDictionary *options = @{@"message" : eventMessageID, @"down_vote": @YES};
+    [Network sendAsynchronousHTTPMethod:POST withAPIName:@"eventmessagevotes/"
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:options];
+}
+
+- (void)hideVotes {
+    self.upVoteButton.hidden = YES;
+    self.upVoteButton.enabled = NO;
+    self.downVoteButton.hidden = YES;
+    self.downVoteButton.enabled = NO;
+    self.numberOfVotesLabel.hidden = YES;
+}
+
+- (void)showVotes {
+    self.upVoteButton.hidden = NO;
+    self.upVoteButton.enabled = YES;
+    self.downVoteButton.hidden = NO;
+    self.downVoteButton.enabled = YES;
+    self.numberOfVotesLabel.hidden = NO;
 }
 
 @end
