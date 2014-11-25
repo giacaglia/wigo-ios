@@ -309,7 +309,7 @@
     User *user = [[User alloc] initWithDictionary:[self.eventMessage objectForKey:@"user"]];
     if (![user isEqualToUser:[Profile user]]) {
         if (!self.numberOfVotesLabel) {
-            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 40, 568 - 80, 20, 30)];
+            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 46, 568 - 80, 36, 30)];
             self.numberOfVotesLabel.textColor = [UIColor whiteColor];
             self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
             self.numberOfVotesLabel.font = [FontProperties mediumFont:18.0f];
