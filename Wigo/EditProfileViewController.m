@@ -379,7 +379,7 @@ UIViewController *webViewController;
 }
 
 - (void) showAmbassadorPanel {
-    AmbassadorViewController *ambassadorController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil]instantiateViewControllerWithIdentifier: @"AmbassadorViewController"];
+    AmbassadorViewController *ambassadorController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"AmbassadorViewController"];
     
     [self.navigationController pushViewController: ambassadorController animated: YES];
 }

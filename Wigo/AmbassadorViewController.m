@@ -9,6 +9,7 @@
 #import "AmbassadorViewController.h"
 #import "UIButtonAligned.h"
 #import "MobileContactsViewController.h"
+#import "CampusNotificationViewController.h"
 
 #import "JBChartView.h"
 #import "JBBarChartView.h"
@@ -71,6 +72,13 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     [self styleActionButtons];
 
     [self selectDaily];
+    
+    //only enable scroll if we need to.
+    if (self.tableView.contentSize.height < self.tableView.frame.size.height) {
+        self.tableView.scrollEnabled = NO;
+    } else {
+        self.tableView.scrollEnabled = YES;
+    }
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -298,9 +306,13 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 
 - (IBAction)inviteFrendsTapped:(id)sender {
     [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
-
 }
 
+- (IBAction) sendCampusNotificationTapped {
+    CampusNotificationViewController *campusNotifViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"CampusNotificationViewController"];
+    
+    [self.navigationController pushViewController: campusNotifViewController animated: YES];
+}
 
 #pragma mark - Change Period
 
@@ -405,6 +417,12 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
     self.tooltipLabel.text = [NSString stringWithFormat: @"%i%@", (int)percentage, @"%"];
+    
+    if (index == _currentMaxIndex) {
+        self.tooltipView.backgroundColor = [FontProperties getBlueColor];
+    } else {
+        self.tooltipView.backgroundColor = [UIColor grayColor];
+    }
 }
 
 - (void)didDeselectBarChartView:(JBBarChartView *)barChartView
@@ -447,7 +465,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     if (!self.tooltipView)
     {
         self.tooltipView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 40, 40)];
-        self.tooltipView.backgroundColor = [FontProperties getBlueColor];
+        self.tooltipView.backgroundColor = [UIColor grayColor];
         
         self.tooltipLabel = [[UILabel alloc] initWithFrame: self.tooltipView.bounds];
         self.tooltipLabel.backgroundColor = [UIColor clearColor];

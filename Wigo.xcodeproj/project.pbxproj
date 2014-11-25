@@ -397,6 +397,8 @@
 		FA55261F1A1FDB4000101AE7 /* JBLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526191A1FDB4000101AE7 /* JBLineChartView.m */; };
 		FA5526221A1FE3D800101AE7 /* EngagementGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526211A1FE3D800101AE7 /* EngagementGraph.m */; };
 		FA5526231A1FE3D800101AE7 /* EngagementGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526211A1FE3D800101AE7 /* EngagementGraph.m */; };
+		FAACB6731A2508E00089FD01 /* CampusNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */; };
+		FAACB6741A2508E00089FD01 /* CampusNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */; };
 		FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 		FADD07311A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 /* End PBXBuildFile section */
@@ -773,6 +775,8 @@
 		FA5526191A1FDB4000101AE7 /* JBLineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartView.m; sourceTree = "<group>"; };
 		FA5526201A1FE3D800101AE7 /* EngagementGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EngagementGraph.h; sourceTree = "<group>"; };
 		FA5526211A1FE3D800101AE7 /* EngagementGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EngagementGraph.m; sourceTree = "<group>"; };
+		FAACB6711A2508E00089FD01 /* CampusNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampusNotificationViewController.h; sourceTree = "<group>"; };
+		FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampusNotificationViewController.m; sourceTree = "<group>"; };
 		FADD072E1A0D296900492369 /* LLACircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLACircularProgressView.h; sourceTree = "<group>"; };
 		FADD072F1A0D296900492369 /* LLACircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLACircularProgressView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1759,6 +1763,8 @@
 				FA5526101A1FCB3700101AE7 /* GroupStats.m */,
 				FA55260A1A1FCAFF00101AE7 /* AmbassadorViewController.h */,
 				FA55260B1A1FCAFF00101AE7 /* AmbassadorViewController.m */,
+				FAACB6711A2508E00089FD01 /* CampusNotificationViewController.h */,
+				FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */,
 			);
 			name = Ambassador;
 			sourceTree = "<group>";
@@ -2056,6 +2062,7 @@
 				E9C63BEB1A03ED35006C5DD2 /* IQSongsArtistListViewController.m in Sources */,
 				C12A110F19787BE700D53B1C /* UIButtonUngoOut.m in Sources */,
 				C12A111019787BE700D53B1C /* PeopleViewController.m in Sources */,
+				FAACB6741A2508E00089FD01 /* CampusNotificationViewController.m in Sources */,
 				C12A111119787BE700D53B1C /* UIImage+MultiFormat.m in Sources */,
 				C12A111219787BE700D53B1C /* main.m in Sources */,
 				E9C3057019F8341600F9564D /* KeychainItemWrapper.m in Sources */,
@@ -2206,6 +2213,7 @@
 				E9D039B71A096DB100DEF094 /* AFHTTPSessionManager.m in Sources */,
 				E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */,
 				E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */,
+				FAACB6731A2508E00089FD01 /* CampusNotificationViewController.m in Sources */,
 				E9C63BF61A03ED35006C5DD2 /* IQMediaCaptureController.m in Sources */,
 				E900C2BA1961EADE00A01F50 /* SDWebImageDownloader.m in Sources */,
 				E9C63BDE1A03ED35006C5DD2 /* IQAudioPickerUtility.m in Sources */,
