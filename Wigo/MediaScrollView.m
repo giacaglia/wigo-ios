@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
+@property (nonatomic, strong) NSMutableSet *readPagesSet;
 @end
 
 @implementation MediaScrollView
@@ -96,6 +97,9 @@
     if (self.lastMoviePlayer) {
         [self.lastMoviePlayer stop];
     }
+    [Network sendAsynchronousHTTPMethod:POST withAPIName:[NSString stringWithFormat:@"events/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    }];
+
 }
 
 
@@ -122,7 +126,13 @@
         [theMoviePlayer play];
         self.lastMoviePlayer = theMoviePlayer;
     }
+}
 
+- (void)addReadPage:(int)page {
+    if (!self.readPagesSet) {
+        self.readPagesSet = [NSMutableSet new];
+    }
+    [self.readPagesSet addObject:@(page)];
 }
 
 - (void)removeMediaAtPage:(int)page {
@@ -373,7 +383,6 @@
             [self sendVote:upvoteBool];
         }
     }
-    NSLog(@"update number of votes %@", self.eventMessage);
 }
 
 
@@ -386,6 +395,7 @@
                             withOptions:options];
 
 }
+
 @end
 
 

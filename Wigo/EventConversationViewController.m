@@ -192,7 +192,6 @@
         NSData *imageData = UIImageJPEGRepresentation(image, 0.8);
         [self sendImage: imageData];
     }
-    
     [picker dismissViewControllerAnimated: YES completion:nil];
 }
 
