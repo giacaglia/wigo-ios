@@ -300,7 +300,8 @@ int firstIndexOfNegativeEvent;
     _goingSomewhereButton.layer.cornerRadius = 10;
     _goingSomewhereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
     _goingSomewhereButton.layer.borderWidth = 1;
-   
+    _goingSomewhereButton.isAccessibilityElement = YES;
+    _goingSomewhereButton.accessibilityIdentifier = @"Go Somewhere";
 }
 
 - (void)updateGoingSomewhereSubviewsWithTitle:(NSString *)title {
@@ -443,6 +444,8 @@ int firstIndexOfNegativeEvent;
 - (void) addCreateButtonToTextField {
     _createButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 90, _whereAreYouGoingView.frame.size.height/2 - 12, 80, 25)];
     [_createButton setTitle:@"CREATE" forState:UIControlStateNormal];
+    _createButton.isAccessibilityElement = YES;
+    _createButton.accessibilityLabel = @"Create";
     [_createButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _createButton.backgroundColor = [FontProperties getBlueColor];
     [_createButton addTarget:self action:@selector(createPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -714,6 +717,8 @@ int firstIndexOfNegativeEvent;
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 70, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage + 3;
         imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
+        imageButton.isAccessibilityElement = YES;
+        imageButton.accessibilityIdentifier = [user firstName];
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [imagesScrollView addSubview:imageButton];
         imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
