@@ -138,6 +138,29 @@ int firstIndexOfNegativeEvent;
 - (void) initializeNavigationBar {
     self.navigationItem.rightBarButtonItem = nil;
     
+    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
+    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
+    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
+    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[[Profile user] coverImageArea]];
+    [profileButton addSubview:profileImageView];
+    [profileButton addTarget:self action:@selector(profileSegue)
+            forControlEvents:UIControlEventTouchUpInside];
+    [profileButton setShowsTouchWhenHighlighted:YES];
+    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
+    self.navigationItem.leftBarButtonItem = profileBarButton;
+    
+    UIButton *rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
+    UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 22, 17)];
+    imageView.image = [UIImage imageNamed:@"followPlusBlue"];
+    [rightButton addSubview:imageView];
+//    [rightButton addTarget:self action:@selector(followPressed)
+//           forControlEvents:UIControlEventTouchUpInside];
+    [rightButton setShowsTouchWhenHighlighted:YES];
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    self.navigationItem.rightBarButtonItem = rightBarButton;
+
     [self updatedTitleView];
 }
 

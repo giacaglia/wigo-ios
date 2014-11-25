@@ -10,7 +10,7 @@
 #import "NSMutableURLRequest+Wigo.h"
 #define WIGO_API_KEY @"oi34u53205ju34ik23"
 
-static NSString * BaseURLString = @"https://dev-api.wigo.us%@";
+static NSString * BaseURLString = @"https://api.wigo.us%@";
 
 
 @interface Query ()
