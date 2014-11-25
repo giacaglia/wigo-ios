@@ -127,11 +127,7 @@ int firstIndexOfNegativeEvent;
     }
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
 
-}
 
 - (void) initializeNavigationBar {
     self.navigationItem.rightBarButtonItem = nil;
@@ -152,6 +148,8 @@ int firstIndexOfNegativeEvent;
     UIButton *rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
     UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 22, 17)];
     imageView.image = [UIImage imageNamed:@"followPlusBlue"];
+    [rightButton addTarget:self action:@selector(followPressed)
+           forControlEvents:UIControlEventTouchUpInside];
     [rightButton addSubview:imageView];
     [rightButton setShowsTouchWhenHighlighted:YES];
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
@@ -197,7 +195,17 @@ int firstIndexOfNegativeEvent;
                                              selector:@selector(presentContactsView)
                                                  name:@"presentContactsView"
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(loadViewAfterSigningUser)
+                                                 name:@"loadViewAfterSigningUser"
+                                               object:nil];
 
+}
+
+- (void)loadViewAfterSigningUser {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
 }
 
 - (void)updateTitleViewForNotGoingOut {
@@ -263,6 +271,13 @@ int firstIndexOfNegativeEvent;
     if ([[Profile user] key]) {
         NSNumber *eventID = [[notification userInfo] valueForKey:@"eventID"];
         [self goOutToEventNumber:eventID];
+    }
+}
+
+- (void)followPressed {
+    if ([Profile user]) {
+        self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[Profile user]] animated:YES];
     }
 }
 
