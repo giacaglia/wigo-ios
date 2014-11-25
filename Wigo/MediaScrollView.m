@@ -368,7 +368,7 @@
             [self sendVote:upvoteBool];
         }
     }
-    else {
+    else if ([votedUpNumber intValue] == -1) {
         if (upvoteBool) {
             NSMutableDictionary *mutableEventMessage = [NSMutableDictionary dictionaryWithDictionary:self.eventMessage];
             [mutableEventMessage setObject:@1 forKey:@"vote"];
@@ -378,6 +378,28 @@
             NSNumber *downVotes = [mutableEventMessage objectForKey:@"down_votes"];
             downVotes = @([downVotes intValue] - 1);
             [mutableEventMessage setObject:downVotes forKey:@"down_votes"];
+            self.eventMessage = [NSDictionary dictionaryWithDictionary:mutableEventMessage];
+            [self updateUI];
+            [self sendVote:upvoteBool];
+        }
+    }
+    else {
+        if (!upvoteBool) {
+            NSMutableDictionary *mutableEventMessage = [NSMutableDictionary dictionaryWithDictionary:self.eventMessage];
+            [mutableEventMessage setObject:@-1 forKey:@"vote"];
+            NSNumber *downVotes = [mutableEventMessage objectForKey:@"down_votes"];
+            downVotes = @([downVotes intValue] + 1);
+            [mutableEventMessage setObject:downVotes forKey:@"down_votes"];
+            self.eventMessage = [NSDictionary dictionaryWithDictionary:mutableEventMessage];
+            [self updateUI];
+            [self sendVote:upvoteBool];
+        }
+        else {
+            NSMutableDictionary *mutableEventMessage = [NSMutableDictionary dictionaryWithDictionary:self.eventMessage];
+            [mutableEventMessage setObject:@1 forKey:@"vote"];
+            NSNumber *upVotes = [mutableEventMessage objectForKey:@"up_votes"];
+            upVotes = @([upVotes intValue] + 1);
+            [mutableEventMessage setObject:upVotes forKey:@"up_votes"];
             self.eventMessage = [NSDictionary dictionaryWithDictionary:mutableEventMessage];
             [self updateUI];
             [self sendVote:upvoteBool];
