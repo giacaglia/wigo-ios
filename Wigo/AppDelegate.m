@@ -661,6 +661,18 @@ forRemoteNotification:(NSDictionary *)userInfo
                             if (localytics) [appDelegate initializeLocalytics];
                         }
                     }
+                    if ([[jsonResponse allKeys] containsObject:@"provisioning"]) {
+                        NSDictionary *provisioning = [jsonResponse objectForKey:@"provisioning"];
+                        if ([provisioning isKindOfClass:[NSDictionary class]] &&
+                            [[provisioning allKeys] containsObject:@"school_statistics"]) {
+                            NSNumber *schoolVal = [provisioning objectForKey:@"school_statistics"];
+                            if (schoolVal) {
+                                BOOL schoolStats = [schoolVal boolValue];
+                                [[NSUserDefaults standardUserDefaults] setBool:schoolStats forKey:@"school_statistics"];
+                                [[NSUserDefaults standardUserDefaults] synchronize];
+                            }
+                        }
+                    }
                 }
             });
         }];
