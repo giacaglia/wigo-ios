@@ -34,7 +34,6 @@ UITableView *leaderboardTableView;
 }
 
 - (void)initializeNavigationItem {
-    self.tabBarController.tabBar.hidden = NO;
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"Leaderboard";

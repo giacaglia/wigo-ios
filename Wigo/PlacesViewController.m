@@ -16,6 +16,8 @@
 #import "WigoConfirmationViewController.h"
 #import "MobileContactsViewController.h"
 #import "InviteViewController.h"
+#import "SignViewController.h"
+#import "SignNavigationViewController.h"
 
 #define xSpacing 12
 #import "EventStoryViewController.h"
@@ -96,6 +98,8 @@ int firstIndexOfNegativeEvent;
     lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
     [self.navigationController.navigationBar addSubview:lineView];
     
+    [self initializeFlashScreen];
+
     _spinnerAtCenter = YES;
     [self initializeTapHandler];
     [self initializeWhereView];
@@ -106,20 +110,14 @@ int firstIndexOfNegativeEvent;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self initializeNotificationObservers];
-    self.tabBarController.tabBar.hidden = NO;
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
-    UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
-    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"whereTabIcon"];
-    tabController.tabBar.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToBlue" object:nil];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Where View"];
 
     [self.view endEditing:YES];
-    self.tabBarController.tabBar.hidden = NO;
     [self initializeNavigationBar];
     if (shouldReloadEvents) {
         [self fetchEventsFirstPage];
@@ -155,13 +153,17 @@ int firstIndexOfNegativeEvent;
     UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 22, 17)];
     imageView.image = [UIImage imageNamed:@"followPlusBlue"];
     [rightButton addSubview:imageView];
-//    [rightButton addTarget:self action:@selector(followPressed)
-//           forControlEvents:UIControlEventTouchUpInside];
     [rightButton setShowsTouchWhenHighlighted:YES];
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     self.navigationItem.rightBarButtonItem = rightBarButton;
 
     [self updatedTitleView];
+}
+
+- (void)initializeFlashScreen {
+    SignViewController *signViewController = [[SignViewController alloc] init];
+    SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:signViewController];
+    [self presentViewController:signNavigationViewController animated:NO completion:nil];
 }
 
 
@@ -245,7 +247,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeWhereView {
-    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
+    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
@@ -337,7 +339,6 @@ int firstIndexOfNegativeEvent;
 - (void)profileSegue {
     self.profileViewController = [[ProfileViewController alloc] initWithUser:[Profile user]];
     [self.navigationController pushViewController:self.profileViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
 }
 
 - (void)chooseUser:(id)sender {
@@ -357,7 +358,6 @@ int firstIndexOfNegativeEvent;
                 shouldReloadEvents = NO;
                 self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
                 [self.navigationController pushViewController:self.profileViewController animated:YES];
-                self.tabBarController.tabBar.hidden = YES;
             }
         }
     }
@@ -787,7 +787,6 @@ int firstIndexOfNegativeEvent;
     
     [self presentViewController:eventStoryController animated:YES completion:nil];
 //    [self.navigationController pushViewController: eventStoryController animated: YES];
-    self.tabBarController.tabBar.hidden = YES;
 }
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {

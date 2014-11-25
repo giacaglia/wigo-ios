@@ -54,8 +54,6 @@ NSMutableArray *failedUserInfoArray;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.tabBarController.tabBar.hidden = NO;
-    [self initializeTabBar];
     [self initializeNavigationItem];
     [self showTapButtons];
 }
@@ -64,7 +62,6 @@ NSMutableArray *failedUserInfoArray;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [EventAnalytics tagEvent:@"Who View"];
-    self.tabBarController.tabBar.hidden = NO;
     if (!didProfileSegue) {
         [self performBlock:^(void){[self fetchUserInfo];}
                 afterDelay:0.1
@@ -129,8 +126,6 @@ NSMutableArray *failedUserInfoArray;
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
 }
 
 
@@ -394,12 +389,6 @@ NSMutableArray *failedUserInfoArray;
 
 
 
-- (void) initializeTabBar {
-    UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
-    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"whoTabIcon"];
-    tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
-}
 
 - (void) initializeNavigationItem {
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
@@ -504,7 +493,6 @@ NSMutableArray *failedUserInfoArray;
 - (void)followPressed {
     if ([Profile user]) {
         [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[Profile user]] animated:YES];
-        self.tabBarController.tabBar.hidden = YES;
     }
 }
 
@@ -512,7 +500,6 @@ NSMutableArray *failedUserInfoArray;
     if ([Profile user]) {
         didProfileSegue = YES;
         [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:[Profile user]] animated:YES];
-        self.tabBarController.tabBar.hidden = YES;
     }
 }
 
@@ -537,7 +524,6 @@ NSMutableArray *failedUserInfoArray;
         didProfileSegue = YES;
         self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
-        self.tabBarController.tabBar.hidden = YES;
     }
 }
 
