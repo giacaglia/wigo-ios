@@ -97,9 +97,18 @@
     if (self.lastMoviePlayer) {
         [self.lastMoviePlayer stop];
     }
-//    [Network sendAsynchronousHTTPMethod:POST withAPIName:[NSString stringWithFormat:@"events/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-//    }];
-
+    if (self.readPagesSet.count > 0) {
+        [Network sendAsynchronousHTTPMethod:POST
+                                withAPIName:[NSString stringWithFormat:@"events/%@/messages/read/", [self.event eventID]]
+                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                    if (!error) {
+                                        NSLog(@"json response %@", jsonResponse);
+                                    }
+                                    else {
+                                        NSLog(@"error %@", error);
+                                    }
+                                } withOptions:[self.readPagesSet allObjects]];
+    }
 }
 
 
@@ -111,6 +120,7 @@
             [self.pageViews addObject:[NSNull null]];
         }
     }
+    [self addReadPage:page];
 
     [self performBlock:^(void){[self playVideoAtPage:page];}
             afterDelay:0.5
@@ -132,7 +142,10 @@
     if (!self.readPagesSet) {
         self.readPagesSet = [NSMutableSet new];
     }
-    [self.readPagesSet addObject:@(page)];
+    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
+    if ([[eventMessage allKeys] containsObject:@"id"]) {
+        [self.readPagesSet addObject:[eventMessage objectForKey:@"id"]];
+    }
 }
 
 - (void)removeMediaAtPage:(int)page {

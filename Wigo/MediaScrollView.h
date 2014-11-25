@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "IQMediaPickerController.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "Event.h"
 
 
 @protocol MediaScrollViewDelegate
@@ -16,6 +17,7 @@
 
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource>
 
+@property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 @property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;

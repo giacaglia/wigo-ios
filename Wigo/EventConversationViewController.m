@@ -364,6 +364,7 @@
                             initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
                             collectionViewLayout:[[MediaFlowLayout alloc] init]];
     self.mediaScrollView.eventMessages = self.eventMessages;
+    self.mediaScrollView.event = self.event;
     self.mediaScrollView.controllerDelegate = self.controllerDelegate;
     self.mediaScrollView.mediaDelegate = self;
     if (self.index) [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
