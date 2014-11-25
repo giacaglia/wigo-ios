@@ -97,8 +97,8 @@
     if (self.lastMoviePlayer) {
         [self.lastMoviePlayer stop];
     }
-    [Network sendAsynchronousHTTPMethod:POST withAPIName:[NSString stringWithFormat:@"events/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-    }];
+//    [Network sendAsynchronousHTTPMethod:POST withAPIName:[NSString stringWithFormat:@"events/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//    }];
 
 }
 
