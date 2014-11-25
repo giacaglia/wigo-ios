@@ -313,6 +313,14 @@ UIViewController *webViewController;
     [ambassadorButton addTarget:self action:@selector(showAmbassadorPanel) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:ambassadorButton];
     
+    BOOL showSchoolStats = [[NSUserDefaults standardUserDefaults] boolForKey: @"school_statistics"];
+    if (showSchoolStats == NO) {
+        ambassadorButton.hidden = YES;
+    } else {
+        ambassadorButton.hidden = NO;
+    }
+    
+    
     UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, 895, 50, 50)];
     iconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
     [_scrollView addSubview:iconImageView];
