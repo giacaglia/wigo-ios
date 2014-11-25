@@ -154,7 +154,6 @@ BOOL cancelFetchMessages;
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
     [myCell setToActiveWithNoAnimation];
-    myCell.isActive = YES;
 
     myCell.leftLine.backgroundColor = RGB(237, 237, 237);
     myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
@@ -169,6 +168,7 @@ BOOL cancelFetchMessages;
         myCell.timeLabel.text = @"Add to\nthe story";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
         myCell.mediaTypeImageView.hidden = YES;
+        [myCell updateUIToRead:NO];
         return myCell;
     }
     myCell.mediaTypeImageView.hidden = NO;
@@ -206,7 +206,7 @@ BOOL cancelFetchMessages;
     }
     
     if ([[eventMessage allKeys] containsObject:@"is_read"]) {
-        if ([eventMessage objectForKey:@"is_read"]) {
+        if ([[eventMessage objectForKey:@"is_read"] boolValue]) {
             [myCell updateUIToRead:YES];
         }
         else [myCell updateUIToRead:NO];

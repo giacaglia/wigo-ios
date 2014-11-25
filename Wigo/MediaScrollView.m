@@ -143,7 +143,7 @@
         self.readPagesSet = [NSMutableSet new];
     }
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
-    if ([[eventMessage allKeys] containsObject:@"id"]) {
+    if ([[eventMessage allKeys] containsObject:@"id"] && [[eventMessage allKeys] containsObject:@"is_read"] && ![[eventMessage objectForKey:@"is_read"] boolValue]) {
         [self.readPagesSet addObject:[eventMessage objectForKey:@"id"]];
     }
 }
