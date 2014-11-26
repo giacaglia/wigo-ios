@@ -880,7 +880,7 @@ int firstIndexOfNegativeEvent;
     }];
     
     if (index != NSNotFound) firstIndexOfNegativeEvent = -1;
-    firstIndexOfNegativeEvent = index;
+    firstIndexOfNegativeEvent = (int)index;
 }
 
 - (void)fillEventAttendees {

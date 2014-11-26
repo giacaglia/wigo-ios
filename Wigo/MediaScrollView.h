@@ -13,9 +13,10 @@
 
 
 @protocol MediaScrollViewDelegate
+- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell;
 @end
 
-@interface MediaScrollView : UICollectionView <UICollectionViewDataSource>
+@interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate>
 
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) NSMutableArray *eventMessages;
@@ -33,6 +34,7 @@
 @end
 
 @interface MediaCell : UICollectionViewCell
+@property (nonatomic, assign) id <MediaScrollViewDelegate> mediaScrollDelegate;
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) NSDictionary *eventMessage;
 - (void)updateUI;

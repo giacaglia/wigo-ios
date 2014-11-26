@@ -10,7 +10,6 @@
 #import "Event.h"
 
 @protocol EventPeopleScrollDelegate <NSObject>
-//- (void)loadViewOfUser:(User *)user;
 @end
 
 @interface EventPeopleScrollView : UIScrollView <UIScrollViewDelegate>

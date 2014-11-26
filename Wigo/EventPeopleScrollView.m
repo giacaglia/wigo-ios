@@ -98,9 +98,9 @@ int xPosition;
 }
 
 - (void)chooseUser:(id)sender {
-    UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
-    User *user = [[partyUser getObjectArray] objectAtIndex:tag];
+//    UIButton *buttonSender = (UIButton *)sender;
+//    int tag = buttonSender.tag;
+//    User *user = [[partyUser getObjectArray] objectAtIndex:tag];
 //    [self.delegate loadViewOfUser:user];
 }
 

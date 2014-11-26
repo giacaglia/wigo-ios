@@ -168,7 +168,6 @@
         <!--Who-->
         <scene sceneID="5Z6-ag-ZQ1">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="vOb-gn-Bt7" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="5D7-fp-3iF" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Who" image="peopleIcon.png" id="t73-in-thS"/>
                     <toolbarItems/>
@@ -182,6 +181,7 @@
                         <segue destination="2" kind="relationship" relationship="rootViewController" id="zaF-c6-UNR"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vOb-gn-Bt7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1140" y="-3358.75"/>
         </scene>
