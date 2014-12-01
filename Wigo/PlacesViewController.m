@@ -962,7 +962,7 @@ int firstIndexOfNegativeEvent;
     UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
     borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
     borderLabel.layer.borderWidth = 1.5f;
-    borderLabel.layer.cornerRadius = 3;
+    borderLabel.layer.cornerRadius = 8;
     [self.contentView addSubview:borderLabel];
 }
 
