@@ -50,7 +50,7 @@
     self.schoolsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     self.schoolsTableView.dataSource = self;
     self.schoolsTableView.delegate = self;
-    self.schoolsTableView.backgroundColor = [UIColor whiteColor];
+    self.schoolsTableView.backgroundColor = [FontProperties getBlueColor];
     [self.schoolsTableView registerClass:[SchoolCell class] forCellReuseIdentifier:kSchoolCellName];
     [self.view addSubview:self.schoolsTableView];
     
@@ -80,23 +80,13 @@
 
 @implementation SchoolCell
 
-- (id) initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder: aDecoder];
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self setup];
     }
     return self;
 }
-
-- (id) initWithFrame:(CGRect)frame {
-    self = [super initWithFrame: frame];
-    if (self) {
-        [self setup];
-    }
-    
-    return self;
-}
-
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, 320, 50);
