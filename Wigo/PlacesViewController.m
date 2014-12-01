@@ -264,7 +264,7 @@ int firstIndexOfNegativeEvent;
 
     _yPositionOfWhereSubview = 280;
     [self addRefreshToScrollView];
-//    [self initializeGoingSomewhereElseButton];
+    [self initializeGoingSomewhereElseButton];
 }
 
 - (void)chooseEvent:(NSNotification *)notification {
@@ -311,41 +311,31 @@ int firstIndexOfNegativeEvent;
     [self fetchEventsFirstPage];
 }
 
-//- (void)initializeGoingSomewhereElseButton {
-//    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(xSpacing, 35 - 20, self.view.frame.size.width - 2*xSpacing, 40)];
-//    [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
-//    _goingSomewhereButton.layer.cornerRadius = 10;
-//    _goingSomewhereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-//    _goingSomewhereButton.layer.borderWidth = 1;
-//    _goingSomewhereButton.isAccessibilityElement = YES;
-//    _goingSomewhereButton.accessibilityIdentifier = @"Go Somewhere";
-//}
+- (void)initializeGoingSomewhereElseButton {
+    
+    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, self.view.frame.size.height - 55, 45, 45)];
+    [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
+    _goingSomewhereButton.backgroundColor = [FontProperties getBlueColor];
+    _goingSomewhereButton.layer.borderWidth = 1.0f;
+    _goingSomewhereButton.layer.borderColor = [UIColor clearColor].CGColor;
+    _goingSomewhereButton.layer.cornerRadius = 20;
+    _goingSomewhereButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _goingSomewhereButton.layer.shadowOpacity = 0.4f;
+    _goingSomewhereButton.layer.shadowRadius = 5.0f;
+    _goingSomewhereButton.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
+    [self.view addSubview:_goingSomewhereButton];
+    [self.view bringSubviewToFront:_goingSomewhereButton];
+    
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 15, 15)];
+    sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
+    [_goingSomewhereButton addSubview:sendOvalImageView];
 
-//- (void)updateGoingSomewhereSubviewsWithTitle:(NSString *)title {
-//    [[_goingSomewhereButton subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-//
-//    UILabel *goingSomewhereLabel = [[UILabel alloc] init];
-//    if ([title isEqualToString:@"GO SOMEWHERE"]) {
-//        goingSomewhereLabel.frame = CGRectMake(100, _goingSomewhereButton.frame.size.height/2 - 7, 150, 15);
-//    }
-//    else {
-//        goingSomewhereLabel.frame = CGRectMake(67, _goingSomewhereButton.frame.size.height/2 - 7, 230, 15);
-//    }
-//    goingSomewhereLabel.text = title;
-//    goingSomewhereLabel.font = [FontProperties scMediumFont:18.0f];
-//    goingSomewhereLabel.textColor = [FontProperties getBlueColor];
-//    [_goingSomewhereButton addSubview:goingSomewhereLabel];
-//    
-//    UIImageView *goingSomewhereImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"goingSomewhereElse"]];
-//    goingSomewhereImageView.frame = CGRectMake(35, _goingSomewhereButton.frame.size.height/2 - 10, 18, 21);
-//    [_goingSomewhereButton addSubview:goingSomewhereImageView];
-//}
+}
 
 - (void) goingSomewhereElsePressed {
     [self scrollUp];
     [self dismissKeyboard];
     [self showWhereAreYouGoingView];
-//    _goingSomewhereButton.hidden = YES;
     _ungoOutButton.enabled = NO;
     [_whereAreYouGoingTextField becomeFirstResponder];
     [self textFieldDidChange:_whereAreYouGoingTextField];
@@ -577,21 +567,11 @@ int firstIndexOfNegativeEvent;
 
     if (_isSearching) {
         if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
-//            [cell.contentView addSubview:_goingSomewhereButton];
             return cell;
         }
     }
     else {
         if (indexPath.row == [[_contentParty getObjectArray] count]) {
-//            if (indexPath.row == 0)
-//                [self updateGoingSomewhereSubviewsWithTitle:@"GO SOMEWHERE"];
-//            else
-//                [self updateGoingSomewhereSubviewsWithTitle:@"GO SOMEWHERE ELSE"];
-                
-//            [cell.contentView addSubview:_goingSomewhereButton];
-//            return cell;
-//        }
-//        else if (indexPath.row == [[_contentParty getObjectArray] count] + 1) {
             [self fetchEvents];
             return cell;
         }
