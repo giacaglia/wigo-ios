@@ -95,7 +95,7 @@ Event *event;
         profileName.text = [user firstName];
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 30, sizeOfEachImage, 30);
+        profileName.frame = CGRectMake(0, sizeOfEachImage - 25, sizeOfEachImage, 25);
         profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
         profileName.font = [FontProperties lightFont:13.0f];
         [imgView addSubview:profileName];

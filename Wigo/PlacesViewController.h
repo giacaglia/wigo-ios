@@ -8,8 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "ProfileViewController.h"
+#import "Event.h"
 
-@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
+
+@protocol PlacesDelegate <NSObject>
+- (void)showUser:(User *)user;
+- (void)showConversationForEvent:(Event*)event;
+@end
+
+@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate >
 
 @property ProfileViewController *profileViewController;
 
@@ -19,9 +26,11 @@
 #import "EventPeopleScrollView.h"
 
 @interface EventCell : UITableViewCell
+@property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UIImageView *chatBubbleImageView;
 @property (nonatomic, strong) UILabel *chatNumberLabel;
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 @end
+

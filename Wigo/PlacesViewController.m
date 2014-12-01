@@ -566,7 +566,7 @@ int firstIndexOfNegativeEvent;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName];
-    
+    cell.placesDelegate = self;
     if (_isSearching) {
         if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
             return cell;
@@ -596,7 +596,16 @@ int firstIndexOfNegativeEvent;
 }
 
 
+- (void)showUser:(User *)user {
+    [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
+}
 
+- (void)showConversationForEvent:(Event*)event {
+    EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
+    eventStoryController.event = event;
+
+    [self presentViewController:eventStoryController animated:YES completion:nil];
+}
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
     int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
@@ -945,7 +954,7 @@ int firstIndexOfNegativeEvent;
     UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y, self.frame.size.width - self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.size.height)];
     eventFeedButton.backgroundColor = [UIColor clearColor];
 //    eventFeedButton.tag = indexPath.row;
-    [eventFeedButton addTarget: self action: @selector(showEventConversation:) forControlEvents: UIControlEventTouchUpInside];
+    [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
 }
 
@@ -959,17 +968,8 @@ int firstIndexOfNegativeEvent;
     self.eventPeopleScrollView.event = event;
 }
 
-- (void)showEventConversation:(UIButton *) button {
-//    NSArray *eventsArray;
-//    if (_isSearching) eventsArray = [_filteredContentParty getObjectArray];
-//    else eventsArray = [_contentParty getObjectArray];
-//    
-//    Event *chosenEvent = [eventsArray objectAtIndex: button.tag];
-    
-//    EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
-//    eventStoryController.event = self.event;
-//    
-//    [self presentViewController:eventStoryController animated:YES completion:nil];
+- (void)showEventConversation {
+//    [self.placesDelegate showConversationForEvent:self.event];
 }
 
 
