@@ -81,6 +81,7 @@ int firstIndexOfNegativeEvent;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor = RGB(249, 249, 249);
     self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
     fetchingEventAttendees = NO;
