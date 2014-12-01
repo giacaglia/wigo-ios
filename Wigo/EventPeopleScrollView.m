@@ -91,13 +91,15 @@ Event *event;
         [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
         
-        UILabel *profileName = [[UILabel alloc] init];
+        UILabel *nameBackground = [[UILabel alloc] initWithFrame:CGRectMake(0, sizeOfEachImage - 25, sizeOfEachImage, 25)];
+        nameBackground.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+        [imgView addSubview:nameBackground];
+        
+        UILabel *profileName = [[UILabel alloc] initWithFrame:nameBackground.frame];
         profileName.text = [user firstName];
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 25, sizeOfEachImage, 25);
-        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-        profileName.font = [FontProperties lightFont:13.0f];
+        profileName.font = [FontProperties lightFont:14.0f];
         [imgView addSubview:profileName];
     }
 }

@@ -22,7 +22,7 @@
 
 #define xSpacing 12
 
-#define sizeOfEachCell 170
+#define sizeOfEachCell 175
 #define kEventCellName @"EventCell"
 #import "EventStoryViewController.h"
 
@@ -267,7 +267,8 @@ int firstIndexOfNegativeEvent;
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
-    [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
+//    [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
+    _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
@@ -923,8 +924,12 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 50);
+    self.frame = CGRectMake(0, 0, 320, 125);
     self.backgroundColor = RGB(249, 249, 249);
+    
+    UILabel *backgroundLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, 40)];
+    backgroundLabel.backgroundColor = RGB(239, 247, 251);
+    [self.contentView addSubview:backgroundLabel];
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.frame.size.width - 30, 30)];
     self.eventNameLabel.font = [FontProperties getTitleFont];
@@ -947,18 +952,18 @@ int firstIndexOfNegativeEvent;
     [self.contentView addSubview:postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(5, 45, self.frame.size.width - 5, 125);
+    self.eventPeopleScrollView.frame = CGRectMake(10, 45, self.frame.size.width - 20, 125);
     self.eventPeopleScrollView.backgroundColor = UIColor.whiteColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
     UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y, self.frame.size.width - self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.size.height)];
     eventFeedButton.backgroundColor = [UIColor clearColor];
-//    eventFeedButton.tag = indexPath.row;
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
 }
 
 - (void)setEvent:(Event *)event {
+    _event = event;
     self.eventNameLabel.text = [event name];
     if ([event.numberOfMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;
@@ -969,7 +974,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)showEventConversation {
-//    [self.placesDelegate showConversationForEvent:self.event];
+    [self.placesDelegate showConversationForEvent:_event];
 }
 
 
