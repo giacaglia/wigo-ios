@@ -22,7 +22,7 @@
 #define xSpacing 12
 #import "EventStoryViewController.h"
 
-#define sizeOfEachCell 160
+#define sizeOfEachCell 140
 @interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
@@ -687,7 +687,7 @@ int firstIndexOfNegativeEvent;
 
     for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
         User *user = [[partyUser getObjectArray] objectAtIndex:i];
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 50, sizeOfEachImage, sizeOfEachImage)];
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 40, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage + 3;
         imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
         imageButton.isAccessibilityElement = YES;

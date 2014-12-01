@@ -28,7 +28,6 @@ BOOL cancelFetchMessages;
     self.title = self.event.name;
   
     [self loadEventDetails];
-    [self loadEventStory];
     [self loadTextViewAndSendButton];
 }
 
@@ -108,18 +107,15 @@ BOOL cancelFetchMessages;
 }
 
 - (void)goHerePressed {
-    
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
+    [EventAnalytics tagEvent:@"Go Here" withDetails:options];
+    [[Profile user] setIsAttending:YES];
+    [[Profile user] setIsGoingOut:YES];
+    [[Profile user] setAttendingEventID:[self.event eventID]];
+    [[Profile user] setEventID:[self.event eventID]];
+    [Network postGoingToEventNumber:[[self.event eventID] intValue]];
 }
 
-- (void)loadEventStory {
-    UILabel *eventStoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 145, self.view.frame.size.width, 40)];
-    eventStoryLabel.text = @"Event Story";
-    eventStoryLabel.textColor = RGB(208, 208, 208);
-    eventStoryLabel.backgroundColor = UIColor.whiteColor;
-    eventStoryLabel.textAlignment = NSTextAlignmentCenter;
-    eventStoryLabel.font = [FontProperties mediumFont:20];
-    [self.view addSubview:eventStoryLabel];
-}
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
@@ -164,8 +160,8 @@ BOOL cancelFetchMessages;
     if ([indexPath row] == eventMessages.count) {
         myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
         myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
-        myCell.timeLabel.frame = CGRectMake(23, 80, 60, 28);
-        myCell.timeLabel.text = @"Add to\nthe story";
+        myCell.timeLabel.frame = CGRectMake(23, 83, 60, 28);
+        myCell.timeLabel.text = @"Add to the story";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
         myCell.mediaTypeImageView.hidden = YES;
         [myCell updateUIToRead:NO];

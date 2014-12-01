@@ -315,7 +315,6 @@
     
     User *user = [[User alloc] initWithDictionary:[self.eventMessage objectForKey:@"user"]];
     NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
-    if (![user isEqualToUser:[Profile user]]) {
         if (!self.numberOfVotesLabel) {
             self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 46, self.frame.size.height - 75, 32, 30)];
             self.numberOfVotesLabel.textColor = [UIColor whiteColor];
@@ -346,10 +345,10 @@
         else self.downvoteImageView.image = [UIImage imageNamed:@"downvote"];
         
         [self showVotes];
-    }
-    else {
-        [self hideVotes];
-    }
+    
+//    else {
+//        [self hideVotes];
+//    }
     
 }
 
