@@ -263,7 +263,8 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeWhereView {
-    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 5, self.view.frame.size.width, self.view.frame.size.height - 64 - 5)];
+    _placesTableView.backgroundColor = RGB(249, 249, 249);
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
