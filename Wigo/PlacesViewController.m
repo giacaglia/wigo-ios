@@ -242,7 +242,7 @@ int firstIndexOfNegativeEvent;
     [UIView animateWithDuration:0.2 animations:^{
         _placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-47);
-        _goingSomewhereButton.hidden = NO;
+//        _goingSomewhereButton.hidden = NO;
     }];
     [self clearTextField];
 }
@@ -264,7 +264,7 @@ int firstIndexOfNegativeEvent;
 
     _yPositionOfWhereSubview = 280;
     [self addRefreshToScrollView];
-    [self initializeGoingSomewhereElseButton];
+//    [self initializeGoingSomewhereElseButton];
 }
 
 - (void)chooseEvent:(NSNotification *)notification {
@@ -311,41 +311,41 @@ int firstIndexOfNegativeEvent;
     [self fetchEventsFirstPage];
 }
 
-- (void)initializeGoingSomewhereElseButton {
-    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(xSpacing, 35 - 20, self.view.frame.size.width - 2*xSpacing, 40)];
-    [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
-    _goingSomewhereButton.layer.cornerRadius = 10;
-    _goingSomewhereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    _goingSomewhereButton.layer.borderWidth = 1;
-    _goingSomewhereButton.isAccessibilityElement = YES;
-    _goingSomewhereButton.accessibilityIdentifier = @"Go Somewhere";
-}
+//- (void)initializeGoingSomewhereElseButton {
+//    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(xSpacing, 35 - 20, self.view.frame.size.width - 2*xSpacing, 40)];
+//    [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
+//    _goingSomewhereButton.layer.cornerRadius = 10;
+//    _goingSomewhereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+//    _goingSomewhereButton.layer.borderWidth = 1;
+//    _goingSomewhereButton.isAccessibilityElement = YES;
+//    _goingSomewhereButton.accessibilityIdentifier = @"Go Somewhere";
+//}
 
-- (void)updateGoingSomewhereSubviewsWithTitle:(NSString *)title {
-    [[_goingSomewhereButton subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-
-    UILabel *goingSomewhereLabel = [[UILabel alloc] init];
-    if ([title isEqualToString:@"GO SOMEWHERE"]) {
-        goingSomewhereLabel.frame = CGRectMake(100, _goingSomewhereButton.frame.size.height/2 - 7, 150, 15);
-    }
-    else {
-        goingSomewhereLabel.frame = CGRectMake(67, _goingSomewhereButton.frame.size.height/2 - 7, 230, 15);
-    }
-    goingSomewhereLabel.text = title;
-    goingSomewhereLabel.font = [FontProperties scMediumFont:18.0f];
-    goingSomewhereLabel.textColor = [FontProperties getBlueColor];
-    [_goingSomewhereButton addSubview:goingSomewhereLabel];
-    
-    UIImageView *goingSomewhereImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"goingSomewhereElse"]];
-    goingSomewhereImageView.frame = CGRectMake(35, _goingSomewhereButton.frame.size.height/2 - 10, 18, 21);
-    [_goingSomewhereButton addSubview:goingSomewhereImageView];
-}
+//- (void)updateGoingSomewhereSubviewsWithTitle:(NSString *)title {
+//    [[_goingSomewhereButton subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+//
+//    UILabel *goingSomewhereLabel = [[UILabel alloc] init];
+//    if ([title isEqualToString:@"GO SOMEWHERE"]) {
+//        goingSomewhereLabel.frame = CGRectMake(100, _goingSomewhereButton.frame.size.height/2 - 7, 150, 15);
+//    }
+//    else {
+//        goingSomewhereLabel.frame = CGRectMake(67, _goingSomewhereButton.frame.size.height/2 - 7, 230, 15);
+//    }
+//    goingSomewhereLabel.text = title;
+//    goingSomewhereLabel.font = [FontProperties scMediumFont:18.0f];
+//    goingSomewhereLabel.textColor = [FontProperties getBlueColor];
+//    [_goingSomewhereButton addSubview:goingSomewhereLabel];
+//    
+//    UIImageView *goingSomewhereImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"goingSomewhereElse"]];
+//    goingSomewhereImageView.frame = CGRectMake(35, _goingSomewhereButton.frame.size.height/2 - 10, 18, 21);
+//    [_goingSomewhereButton addSubview:goingSomewhereImageView];
+//}
 
 - (void) goingSomewhereElsePressed {
     [self scrollUp];
     [self dismissKeyboard];
     [self showWhereAreYouGoingView];
-    _goingSomewhereButton.hidden = YES;
+//    _goingSomewhereButton.hidden = YES;
     _ungoOutButton.enabled = NO;
     [_whereAreYouGoingTextField becomeFirstResponder];
     [self textFieldDidChange:_whereAreYouGoingTextField];
@@ -560,7 +560,7 @@ int firstIndexOfNegativeEvent;
     }
     else {
         int hasNextPage = ([_eventsParty hasNextPage] ? 1 : 0);
-        return [[_contentParty getObjectArray] count] + 1 + hasNextPage;
+        return [[_contentParty getObjectArray] count] + hasNextPage;
         
     }
 }
@@ -577,21 +577,21 @@ int firstIndexOfNegativeEvent;
 
     if (_isSearching) {
         if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
-            [cell.contentView addSubview:_goingSomewhereButton];
+//            [cell.contentView addSubview:_goingSomewhereButton];
             return cell;
         }
     }
     else {
         if (indexPath.row == [[_contentParty getObjectArray] count]) {
-            if (indexPath.row == 0)
-                [self updateGoingSomewhereSubviewsWithTitle:@"GO SOMEWHERE"];
-            else
-                [self updateGoingSomewhereSubviewsWithTitle:@"GO SOMEWHERE ELSE"];
+//            if (indexPath.row == 0)
+//                [self updateGoingSomewhereSubviewsWithTitle:@"GO SOMEWHERE"];
+//            else
+//                [self updateGoingSomewhereSubviewsWithTitle:@"GO SOMEWHERE ELSE"];
                 
-            [cell.contentView addSubview:_goingSomewhereButton];
-            return cell;
-        }
-        else if (indexPath.row == [[_contentParty getObjectArray] count] + 1) {
+//            [cell.contentView addSubview:_goingSomewhereButton];
+//            return cell;
+//        }
+//        else if (indexPath.row == [[_contentParty getObjectArray] count] + 1) {
             [self fetchEvents];
             return cell;
         }
