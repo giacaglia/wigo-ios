@@ -16,3 +16,6 @@
 @property (nonatomic, strong) UILabel *schoolLabel;
 @end
 
+@interface SchoolHeaderCell : UITableViewHeaderFooterView
+@property (nonatomic, strong) UILabel *headerTitleLabel;
+@end
