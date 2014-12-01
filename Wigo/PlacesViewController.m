@@ -596,19 +596,7 @@ int firstIndexOfNegativeEvent;
 }
 
 
-- (void)showEventConversation:(UIButton *) button {
-    NSArray *eventsArray;
-    if (_isSearching) eventsArray = [_filteredContentParty getObjectArray];
-    else eventsArray = [_contentParty getObjectArray];
-    
-    Event *chosenEvent = [eventsArray objectAtIndex: button.tag];
-    
-    EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
-    eventStoryController.event = chosenEvent;
-    
-    [self presentViewController:eventStoryController animated:YES completion:nil];
-//    [self.navigationController pushViewController: eventStoryController animated: YES];
-}
+
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
     int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
@@ -927,7 +915,7 @@ int firstIndexOfNegativeEvent;
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, 320, 50);
-    self.backgroundColor = UIColor.clearColor;
+    self.backgroundColor = RGB(249, 249, 249);
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.frame.size.width - 30, 30)];
     self.eventNameLabel.font = [FontProperties getTitleFont];
@@ -968,6 +956,19 @@ int firstIndexOfNegativeEvent;
     }
     else self.chatBubbleImageView.hidden = YES;
     self.eventPeopleScrollView.event = event;
+}
+
+- (void)showEventConversation:(UIButton *) button {
+//    NSArray *eventsArray;
+//    if (_isSearching) eventsArray = [_filteredContentParty getObjectArray];
+//    else eventsArray = [_contentParty getObjectArray];
+//    
+//    Event *chosenEvent = [eventsArray objectAtIndex: button.tag];
+    
+//    EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
+//    eventStoryController.event = self.event;
+//    
+//    [self presentViewController:eventStoryController animated:YES completion:nil];
 }
 
 
