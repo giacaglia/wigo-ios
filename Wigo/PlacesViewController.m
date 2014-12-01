@@ -921,7 +921,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 125);
+    self.frame = CGRectMake(0, 0, 320, 175);
     self.backgroundColor = RGB(249, 249, 249);
     
     UILabel *backgroundLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, 40)];
@@ -957,6 +957,13 @@ int firstIndexOfNegativeEvent;
     eventFeedButton.backgroundColor = [UIColor clearColor];
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
+    
+    // Add borders
+    UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
+    borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
+    borderLabel.layer.borderWidth = 1.5f;
+    borderLabel.layer.cornerRadius = 3;
+    [self.contentView addSubview:borderLabel];
 }
 
 - (void)setEvent:(Event *)event {
