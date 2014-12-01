@@ -20,7 +20,6 @@
 #import "SignNavigationViewController.h"
 #import "PeekViewController.h"
 
-#define xSpacing 12
 
 #define sizeOfEachCell 175
 #define kEventCellName @"EventCell"
@@ -149,7 +148,7 @@ int firstIndexOfNegativeEvent;
     self.navigationItem.leftBarButtonItem = profileBarButton;
     
     UIButton *rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
-    UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 22, 17)];
+    UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
     imageView.image = [UIImage imageNamed:@"followPlusBlue"];
     [rightButton addTarget:self action:@selector(followPressed)
            forControlEvents:UIControlEventTouchUpInside];
@@ -267,7 +266,6 @@ int firstIndexOfNegativeEvent;
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
-//    [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
     _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -592,7 +590,7 @@ int firstIndexOfNegativeEvent;
         event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
     }
     cell.event = event;
-   
+    cell.eventPeopleScrollView.placesDelegate = self;
     return cell;
 }
 
@@ -604,7 +602,6 @@ int firstIndexOfNegativeEvent;
 - (void)showConversationForEvent:(Event*)event {
     EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
     eventStoryController.event = event;
-
     [self presentViewController:eventStoryController animated:YES completion:nil];
 }
 
@@ -931,7 +928,7 @@ int firstIndexOfNegativeEvent;
     backgroundLabel.backgroundColor = RGB(239, 247, 251);
     [self.contentView addSubview:backgroundLabel];
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.frame.size.width - 30, 30)];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 8, self.frame.size.width - 30, 30)];
     self.eventNameLabel.font = [FontProperties getTitleFont];
     self.eventNameLabel.textColor = RGB(100, 173, 215);
     [self.contentView addSubview:self.eventNameLabel];

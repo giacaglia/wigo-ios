@@ -11,7 +11,7 @@
 #import "IQMediaPickerController.h"
 #import "EventPeopleScrollView.h"
 
-@interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate, EventPeopleScrollDelegate>
+@interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong) Event *event;
 @end

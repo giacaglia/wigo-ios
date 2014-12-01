@@ -26,7 +26,7 @@
 #import "EventPeopleScrollView.h"
 
 @interface EventCell : UITableViewCell
-@property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UIImageView *chatBubbleImageView;

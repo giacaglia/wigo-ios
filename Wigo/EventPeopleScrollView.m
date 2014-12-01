@@ -105,10 +105,10 @@ Event *event;
 }
 
 - (void)chooseUser:(id)sender {
-//    UIButton *buttonSender = (UIButton *)sender;
-//    int tag = buttonSender.tag;
-//    User *user = [[partyUser getObjectArray] objectAtIndex:tag];
-//    [self.delegate loadViewOfUser:user];
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = buttonSender.tag;
+    User *user = [[partyUser getObjectArray] objectAtIndex:tag];
+    [self.placesDelegate showUser:user];
 }
 
 - (void)fetchEventAttendeesAsynchronous {
