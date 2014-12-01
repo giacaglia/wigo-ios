@@ -22,7 +22,7 @@
 #define xSpacing 12
 #import "EventStoryViewController.h"
 
-#define sizeOfEachCell 140
+#define sizeOfEachCell 160
 @interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
@@ -624,31 +624,32 @@ int firstIndexOfNegativeEvent;
     _tagInteger += 1;
     
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 30, 30)];
-    NSString *numberOfPeopleGoing;
+//    NSString *numberOfPeopleGoing;
     NSString *text;
     if ([[event eventID] intValue] < 0) {
         placeSubView.frame = CGRectMake(0, 0, self.view.frame.size.width, 70);
         text = [NSString stringWithFormat: @"%@ \nBe the first", [event name]];
     }
     else {
-        text = [NSString stringWithFormat: @"%@ (%@)", [event name], [totalUsers stringValue]];
+//        text = [NSString stringWithFormat: @"%@ (%@)", [event name], [totalUsers stringValue]];
+        text = [event name];
     }
     NSMutableAttributedString * attributedString = [[NSMutableAttributedString alloc] initWithString:text];
     [attributedString addAttribute:NSFontAttributeName value:[FontProperties getTitleFont] range:NSMakeRange(0,[[event name] length])];
     [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(104, 174, 215) range:NSMakeRange(0,[[event name] length])];
 
 //    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(104, 174, 215) range:NSMakeRange(0,[[event name] length])];
-    [attributedString addAttribute:NSFontAttributeName value:[FontProperties getSubtitleFont] range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
-    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(158, 158, 158) range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
+//    [attributedString addAttribute:NSFontAttributeName value:[FontProperties getSubtitleFont] range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
+//    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(158, 158, 158) range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
     labelName.attributedText = attributedString;
     [labelName sizeToFit];
     labelName.frame = CGRectMake(xSpacing, 5, self.view.frame.size.width - 55 - xSpacing, 30);
     [placeSubView addSubview:labelName];
 
     NSNumber *numberOfMessages = [event numberOfMessages];
-    CGSize size = [numberOfPeopleGoing sizeWithAttributes:
-                   @{NSFontAttributeName:
-                         [FontProperties getSubtitleFont]}];
+//    CGSize size = [numberOfPeopleGoing sizeWithAttributes:
+//                   @{NSFontAttributeName:
+//                         [FontProperties getSubtitleFont]}];
 
     if ([numberOfMessages intValue] > 0) {
         UIImageView *chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, 15, 20, 20)];
@@ -668,7 +669,7 @@ int firstIndexOfNegativeEvent;
 
     // Variables to add images
     int xPosition = xSpacing;
-    sizeOfEachImage = 80;
+    sizeOfEachImage = 100;
     
     UIScrollView *imagesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 5, placeSubView.frame.size.width, placeSubView.frame.size.height)];
     imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
@@ -707,11 +708,9 @@ int firstIndexOfNegativeEvent;
         profileName.text = [user firstName];
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-//        if ([user isEventOwner]) profileName.backgroundColor= RGBAlpha(245, 142, 29, 0.6f);
-//        else
-            profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-        profileName.font = [FontProperties getSmallPhotoFont];
+        profileName.frame = CGRectMake(0, sizeOfEachImage - 25, sizeOfEachImage, 25);
+        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+        profileName.font = [FontProperties lightFont:14.0f];
         [imgView addSubview:profileName];
     }
     

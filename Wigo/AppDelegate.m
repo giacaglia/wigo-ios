@@ -285,7 +285,8 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 
 - (void)updateBadge {
-    int total = [numberOfNewMessages intValue] + [numberOfNewNotifications intValue];
+//    int total = [numberOfNewMessages intValue] + [numberOfNewNotifications intValue];
+    int total = 0;
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     if (currentInstallation.badge != 0) {
         currentInstallation.badge = total;
