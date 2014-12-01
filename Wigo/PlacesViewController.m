@@ -21,7 +21,7 @@
 #import "PeekViewController.h"
 
 
-#define sizeOfEachCell 175
+#define sizeOfEachCell 160
 #define kEventCellName @"EventCell"
 #import "EventStoryViewController.h"
 
@@ -922,7 +922,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 175);
+    self.frame = CGRectMake(0, 0, 320, 155);
     self.backgroundColor = RGB(249, 249, 249);
     
     UILabel *backgroundLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, 40)];
@@ -950,7 +950,7 @@ int firstIndexOfNegativeEvent;
     [self.contentView addSubview:postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(10, 45, self.frame.size.width - 20, 125);
+    self.eventPeopleScrollView.frame = CGRectMake(10, 40, self.frame.size.width - 20, 110);
     self.eventPeopleScrollView.backgroundColor = UIColor.whiteColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     

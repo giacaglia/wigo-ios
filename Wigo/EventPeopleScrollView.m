@@ -9,7 +9,7 @@
 #import "EventPeopleScrollView.h"
 #import "Globals.h"
 
-#define sizeOfEachImage 100
+#define sizeOfEachImage 90
 
 BOOL fetchingEventAttendees;
 NSNumber *page;
