@@ -18,6 +18,7 @@
 #import "InviteViewController.h"
 #import "SignViewController.h"
 #import "SignNavigationViewController.h"
+#import "PeekViewController.h"
 
 #define xSpacing 12
 #import "EventStoryViewController.h"
@@ -208,10 +209,6 @@ int firstIndexOfNegativeEvent;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
 }
 
-- (void)updateTitleViewForNotGoingOut {
-    self.navigationItem.titleView = nil;
-    self.navigationItem.title = [[Profile user] groupName];
-}
 
 - (void)scrollUp {
     [_placesTableView setContentOffset:CGPointZero animated:YES];
@@ -224,8 +221,17 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) updatedTitleView {
-    self.navigationItem.titleView = nil;
-    self.navigationItem.title = [[Profile user] groupName];
+    UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [schoolButton setTitle:[[Profile user] groupName] forState:UIControlStateNormal];
+    [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
+    schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    schoolButton.titleLabel.font = [FontProperties scMediumFont:20.0f];
+    self.navigationItem.titleView = schoolButton;
+}
+
+- (void)showSchools {
+    [self presentViewController:[PeekViewController new] animated:YES completion:nil];
 }
 
 - (void)initializeTapHandler {
@@ -649,7 +655,7 @@ int firstIndexOfNegativeEvent;
 
     // Variables to add images
     int xPosition = xSpacing;
-    sizeOfEachImage = 100;
+    sizeOfEachImage = 90;
     
     UIScrollView *imagesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 5, placeSubView.frame.size.width, placeSubView.frame.size.height)];
     imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);

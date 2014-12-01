@@ -82,7 +82,7 @@
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell"forIndexPath: indexPath];
+    FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
 
     [myCell resetToInactive];
 
