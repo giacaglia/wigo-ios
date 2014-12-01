@@ -9,28 +9,35 @@
 #import "EventPeopleScrollView.h"
 #import "Globals.h"
 
-#define sizeOfEachImage 80
+#define sizeOfEachImage 100
 
 BOOL fetchingEventAttendees;
 NSNumber *page;
 Party *partyUser;
 int xPosition;
+Event *event;
 
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(Event *)event {
-    self = [super initWithFrame:CGRectMake(0, 90, 320, sizeOfEachImage + 10)];
+    self = [super initWithFrame:CGRectMake(0, 0, 320, sizeOfEachImage + 10)];
     if (self) {
-        self.event = event;
         self.contentSize = CGSizeMake(5, sizeOfEachImage + 10);
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
+        _event = event;
+    }
+    return self;
+}
+
+
+- (void)setEvent:(Event *)event {
+    if (event) {
+        _event = event;
         page = @1;
         [self fillEventAttendees];
         [self loadUsers];
     }
-   //    [self fetchEventAttendeesAsynchronous];
-    return self;
 }
 
 
@@ -43,7 +50,7 @@ int xPosition;
 }
 
 - (void)fillEventAttendees {
-    NSArray *eventAttendeesArray = [self.event getEventAttendees];
+    NSArray *eventAttendeesArray = [_event getEventAttendees];
     partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
     for (int j = 0; j < [eventAttendeesArray count]; j++) {
         NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
@@ -88,11 +95,9 @@ int xPosition;
         profileName.text = [user firstName];
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-//        if ([user isEventOwner]) profileName.backgroundColor= RGBAlpha(245, 142, 29, 0.6f);
-//        else
-            profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-        profileName.font = [FontProperties getSmallPhotoFont];
+        profileName.frame = CGRectMake(0, sizeOfEachImage - 30, sizeOfEachImage, 30);
+        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+        profileName.font = [FontProperties lightFont:13.0f];
         [imgView addSubview:profileName];
     }
 }
@@ -105,7 +110,7 @@ int xPosition;
 }
 
 - (void)fetchEventAttendeesAsynchronous {
-    NSNumber *eventId = [self.event eventID];
+    NSNumber *eventId = [_event eventID];
     if (!fetchingEventAttendees) {
         NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [page stringValue]];
         [Network queryAsynchronousAPI:queryString

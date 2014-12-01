@@ -21,9 +21,11 @@
 #import "PeekViewController.h"
 
 #define xSpacing 12
-#import "EventStoryViewController.h"
 
 #define sizeOfEachCell 160
+#define kEventCellName @"EventCell"
+#import "EventStoryViewController.h"
+
 @interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
@@ -266,6 +268,7 @@ int firstIndexOfNegativeEvent;
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
     [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
+    [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
     _yPositionOfWhereSubview = 280;
@@ -562,15 +565,8 @@ int firstIndexOfNegativeEvent;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    cell.contentView.backgroundColor = [UIColor whiteColor];
-
+    EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName];
+    
     if (_isSearching) {
         if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
             return cell;
@@ -583,152 +579,19 @@ int firstIndexOfNegativeEvent;
         }
     }
   
-    Party *partyUser;
     Event *event;
     if (_isSearching) {
         int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
         if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
         event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
-        sizeOfArray = (int)[_filteredPartyUserArray count];
-        if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) {
-            partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
-        }
-        else partyUser = [_filteredPartyUserArray objectAtIndex:[indexPath row]];
     }
     else {
         int sizeOfArray = (int)[[_contentParty getObjectArray] count];
         if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
         event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
-        sizeOfArray = (int)[_partyUserArray count];
-        if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
-        else partyUser  = [_partyUserArray objectAtIndex:[indexPath row]];
     }
-    NSNumber *totalUsers = [event numberAttending];
-    
-    UIView *placeSubView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, sizeOfEachCell)];
-    placeSubView.tag = _tagInteger;
-    _tagInteger += 1;
-    
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 30, 30)];
-//    NSString *numberOfPeopleGoing;
-    NSString *text;
-    if ([[event eventID] intValue] < 0) {
-        placeSubView.frame = CGRectMake(0, 0, self.view.frame.size.width, 70);
-        text = [NSString stringWithFormat: @"%@ \nBe the first", [event name]];
-    }
-    else {
-//        text = [NSString stringWithFormat: @"%@ (%@)", [event name], [totalUsers stringValue]];
-        text = [event name];
-    }
-    NSMutableAttributedString * attributedString = [[NSMutableAttributedString alloc] initWithString:text];
-    [attributedString addAttribute:NSFontAttributeName value:[FontProperties getTitleFont] range:NSMakeRange(0,[[event name] length])];
-    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(100, 173, 215) range:NSMakeRange(0,[[event name] length])];
-
-//    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(104, 174, 215) range:NSMakeRange(0,[[event name] length])];
-//    [attributedString addAttribute:NSFontAttributeName value:[FontProperties getSubtitleFont] range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
-//    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(158, 158, 158) range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
-    labelName.attributedText = attributedString;
-    [labelName sizeToFit];
-    labelName.frame = CGRectMake(xSpacing, 5, self.view.frame.size.width - 55 - xSpacing, 30);
-    [placeSubView addSubview:labelName];
-
-    NSNumber *numberOfMessages = [event numberOfMessages];
-//    CGSize size = [numberOfPeopleGoing sizeWithAttributes:
-//                   @{NSFontAttributeName:
-//                         [FontProperties getSubtitleFont]}];
-
-    if ([numberOfMessages intValue] > 0) {
-        UIImageView *chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, 15, 20, 20)];
-        chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
-        [placeSubView addSubview:chatBubbleImageView];
-        UILabel *chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
-        chatNumberLabel.text = [NSString stringWithFormat:@"%@", [numberOfMessages stringValue]];
-        chatNumberLabel.textAlignment = NSTextAlignmentCenter;
-        chatNumberLabel.font = [FontProperties mediumFont:12.0f];
-        chatNumberLabel.textColor = [UIColor whiteColor];
-        [chatBubbleImageView addSubview:chatNumberLabel];
-    }
-    
-    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 30, 13, 13, 22)];
-    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-    [placeSubView addSubview:postStoryImageView];
-
-    // Variables to add images
-    int xPosition = xSpacing;
-    sizeOfEachImage = 90;
-    
-    UIScrollView *imagesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 5, placeSubView.frame.size.width, placeSubView.frame.size.height)];
-    imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
-    imagesScrollView.showsHorizontalScrollIndicator = NO;
-    imagesScrollView.delegate = self;
-    imagesScrollView.tag = (int)[indexPath row];
-    [placeSubView addSubview:imagesScrollView];
+    cell.event = event;
    
-    // If attending event ID is negative OR if attending event is positive and the user is attending
-    // the event.
-    if ( ([[[Profile user] attendingEventID] intValue] < 0 && [indexPath row] == 0) ||
-        ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]])
-        ) {
-        placeSubView.backgroundColor = [FontProperties getLightBlueColor];
-    }
-
-    for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
-        User *user = [[partyUser getObjectArray] objectAtIndex:i];
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 40, sizeOfEachImage, sizeOfEachImage)];
-        xPosition += sizeOfEachImage + 3;
-        imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
-        imageButton.isAccessibilityElement = YES;
-        imageButton.accessibilityIdentifier = [user firstName];
-        [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
-        [imagesScrollView addSubview:imageButton];
-        imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
-        
-        UIImageView *imgView = [[UIImageView alloc] init];
-        imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
-        imgView.contentMode = UIViewContentModeScaleAspectFill;
-        imgView.clipsToBounds = YES;
-        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
-        [imageButton addSubview:imgView];
-        
-        UILabel *profileName = [[UILabel alloc] init];
-        profileName.text = [user firstName];
-        profileName.textColor = [UIColor whiteColor];
-        profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 25, sizeOfEachImage, 25);
-        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-        profileName.font = [FontProperties lightFont:14.0f];
-        [imgView addSubview:profileName];
-    }
-    
-    int usersCantSee = (int)[totalUsers intValue] - (int)[[partyUser getObjectArray] count];
-    if (usersCantSee  > 0) {
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 70, sizeOfEachImage, sizeOfEachImage)];
-        xPosition += sizeOfEachImage;
-        [imagesScrollView addSubview:imageButton];
-        imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
-        
-        UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"privacyLogo"]];
-        imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
-        [imageButton addSubview:imgView];
-        
-        UILabel *profileName = [[UILabel alloc] init];
-        profileName.text = [NSString stringWithFormat:@"+ %d more", usersCantSee ];;
-        profileName.textColor = [UIColor whiteColor];
-        profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-        profileName.font = [FontProperties getSmallPhotoFont];
-        [imgView addSubview:profileName];
-    }
-    [cell.contentView addSubview:placeSubView];
-    
-    //add invisible event conversation button
-    UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(labelName.frame.origin.x, labelName.frame.origin.y, self.view.frame.size.width - labelName.frame.origin.x, labelName.frame.size.height)];
-    eventFeedButton.backgroundColor = [UIColor clearColor];
-    eventFeedButton.tag = indexPath.row;
-    [eventFeedButton addTarget: self action: @selector(showEventConversation:) forControlEvents: UIControlEventTouchUpInside];
-    [cell.contentView addSubview: eventFeedButton];
-    imagesScrollView.contentOffset = CGPointMake(eventOffset, 0);
     return cell;
 }
 
@@ -1049,5 +912,63 @@ int firstIndexOfNegativeEvent;
         }
     }
 }
+
+@end
+
+@implementation EventCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 320, 50);
+    self.backgroundColor = UIColor.clearColor;
+    
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.frame.size.width - 30, 30)];
+    self.eventNameLabel.font = [FontProperties getTitleFont];
+    self.eventNameLabel.textColor = RGB(100, 173, 215);
+    [self.contentView addSubview:self.eventNameLabel];
+    
+    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
+    self.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
+    self.chatBubbleImageView.hidden = YES;
+    [self.contentView addSubview:self.chatBubbleImageView];
+    
+    self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
+    self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
+    self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
+    self.chatNumberLabel.textColor = [UIColor whiteColor];
+    [self.chatBubbleImageView addSubview:self.chatNumberLabel];
+    
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
+    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+    [self.contentView addSubview:postStoryImageView];
+
+    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
+    self.eventPeopleScrollView.frame = CGRectMake(0, 50, self.frame.size.width, 110);
+    [self.contentView addSubview:self.eventPeopleScrollView];
+    
+    UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y, self.frame.size.width - self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.size.height)];
+    eventFeedButton.backgroundColor = [UIColor clearColor];
+//    eventFeedButton.tag = indexPath.row;
+    [eventFeedButton addTarget: self action: @selector(showEventConversation:) forControlEvents: UIControlEventTouchUpInside];
+    [self.contentView addSubview: eventFeedButton];
+}
+
+- (void)setEvent:(Event *)event {
+    self.eventNameLabel.text = [event name];
+    if ([event.numberOfMessages intValue] > 0) {
+        self.chatBubbleImageView.hidden = NO;
+        self.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [event.numberOfMessages stringValue]];
+    }
+    else self.chatBubbleImageView.hidden = YES;
+    self.eventPeopleScrollView.event = event;
+}
+
 
 @end

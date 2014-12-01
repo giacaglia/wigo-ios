@@ -14,3 +14,14 @@
 @property ProfileViewController *profileViewController;
 
 @end
+
+#import "Event.h"
+#import "EventPeopleScrollView.h"
+
+@interface EventCell : UITableViewCell
+@property (nonatomic, strong) Event *event;
+@property (nonatomic, strong) UILabel *eventNameLabel;
+@property (nonatomic, strong) UIImageView *chatBubbleImageView;
+@property (nonatomic, strong) UILabel *chatNumberLabel;
+@property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
+@end
