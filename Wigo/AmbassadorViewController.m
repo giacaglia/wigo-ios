@@ -9,6 +9,7 @@
 #import "AmbassadorViewController.h"
 #import "UIButtonAligned.h"
 #import "MobileContactsViewController.h"
+#import "CampusNotificationViewController.h"
 
 #import "JBChartView.h"
 #import "JBBarChartView.h"
@@ -49,6 +50,8 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 @property (nonatomic, strong) UILabel *tooltipLabel;
 
 @property (nonatomic, assign) BOOL tooltipVisible;
+
+@property (nonatomic, strong) NSArray *currentPercentLabels;
 @end
 
 @implementation AmbassadorViewController
@@ -71,6 +74,13 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     [self styleActionButtons];
 
     [self selectDaily];
+    
+    //only enable scroll if we need to.
+    if (self.tableView.contentSize.height < self.tableView.frame.size.height) {
+        self.tableView.scrollEnabled = NO;
+    } else {
+        self.tableView.scrollEnabled = YES;
+    }
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -134,7 +144,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     self.barGraph.dataSource = self;
     self.barGraph.frame = CGRectMake(0, 0, self.graphCell.frame.size.width - 80, self.graphCell.frame.size.height);
     self.barGraph.center = self.graphCell.contentView.center;
-    self.barGraph.maximumValue = 100.0f;
+    self.barGraph.maximumValue = 1.0f;
     self.barGraph.minimumValue = 0.0f;
     self.barGraph.headerPadding = 0;
     self.barGraph.footerPadding = 0;
@@ -170,6 +180,46 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     [self.graphCell.contentView addSubview: yAxis];
     
     [self.graphCell.contentView addSubview: self.barGraph];
+}
+
+- (void) showPercentsWithValues: (NSArray *) values {
+    
+    //clear current percents
+    if (self.currentPercentLabels) {
+        for (UILabel *label in self.currentPercentLabels) {
+            [label removeFromSuperview];
+        }
+    }
+    
+    CGFloat graphHeight = self.barGraph.frame.size.height - self.barGraph.headerView.frame.size.height - self.barGraph.footerPadding - 15;
+    CGFloat labelWidth = self.barGraph.frame.size.width/values.count;
+
+    NSMutableArray *percentLabels = [[NSMutableArray alloc] init];
+    
+    int idx = 0;
+    for (NSNumber *percent in values) {
+        CGFloat yPos = graphHeight*(1.0 - [percent floatValue]) - 30;
+        
+        CGFloat buffer = self.barGraph.headerView.frame.size.height + self.barGraph.headerPadding;
+        
+        UILabel *label = [[UILabel alloc] initWithFrame: CGRectMake(idx*labelWidth, buffer + yPos, labelWidth, 12)];
+        label.backgroundColor = [UIColor clearColor];
+        label.text = [NSString stringWithFormat: @"%i%@", (int)([percent floatValue]*100), @"%"];
+        label.font = [FontProperties mediumFont: 10];
+        label.textAlignment = NSTextAlignmentCenter;
+        
+        if (idx == _currentMaxIndex) {
+            label.textColor = [FontProperties getBlueColor];
+        } else {
+            label.textColor = [UIColor lightGrayColor];
+        }
+        
+        [percentLabels addObject: label];
+        [self.barGraph addSubview: label];
+        idx++;
+    }
+    
+    self.currentPercentLabels = [NSArray arrayWithArray: percentLabels];
 }
 
 - (void) createXAxisWithDates:(NSArray *) dates andPeriod:(Period) period {
@@ -262,12 +312,14 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
         self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.todayUserCount];
         _currentMaxIndex = [self maxValueIndex: self.groupStats.dailyEngagement.values];
         [self createXAxisWithDates:self.groupStats.dailyEngagement.xAxisLabels andPeriod: period];
+        [self showPercentsWithValues: self.groupStats.dailyEngagement.values];
     }
     else if (period == WEEK) {
         self.numberUsersDescrLabel.text = [NSString stringWithFormat: kNewUsersPrefix, kNewUsersSuffixWeek];
         self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.weekUserCount];
         _currentMaxIndex = [self maxValueIndex: self.groupStats.weeklyEngagement.values];
         [self createXAxisWithDates:self.groupStats.weeklyEngagement.xAxisLabels andPeriod: period];
+        [self showPercentsWithValues: self.groupStats.weeklyEngagement.values];
 
     }
     else if (period == MONTH) {
@@ -275,6 +327,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
         self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.monthUserCount];
         _currentMaxIndex = [self maxValueIndex: self.groupStats.monthlyEngagement.values];
         [self createXAxisWithDates:self.groupStats.monthlyEngagement.xAxisLabels andPeriod: period];
+        [self showPercentsWithValues: self.groupStats.monthlyEngagement.values];
 
     }
     else if (period == ALLTIME) {
@@ -282,6 +335,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
         self.numberUsersLabel.text = [NSString stringWithFormat: @"%@", _groupStats.allUsersCount];
         _currentMaxIndex = [self maxValueIndex: self.groupStats.monthlyEngagement.values];
         [self createXAxisWithDates:self.groupStats.monthlyEngagement.xAxisLabels andPeriod: period];
+        [self showPercentsWithValues: self.groupStats.monthlyEngagement.values];
 
     }
 
@@ -298,9 +352,13 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 
 - (IBAction)inviteFrendsTapped:(id)sender {
     [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
-
 }
 
+- (IBAction) sendCampusNotificationTapped {
+    CampusNotificationViewController *campusNotifViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"CampusNotificationViewController"];
+    
+    [self.navigationController pushViewController: campusNotifViewController animated: YES];
+}
 
 #pragma mark - Change Period
 
@@ -379,13 +437,13 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index
 {
     if (self.period == DAY) {
-        return [self.groupStats.dailyEngagement.values[index] floatValue]*100.0f;
+        return [self.groupStats.dailyEngagement.values[index] floatValue];
     } else if (self.period == WEEK) {
-        return [self.groupStats.weeklyEngagement.values[index] floatValue]*100.0f;
+        return [self.groupStats.weeklyEngagement.values[index] floatValue];
     } else if (self.period == MONTH) {
-        return [self.groupStats.monthlyEngagement.values[index] floatValue]*100.0f;
+        return [self.groupStats.monthlyEngagement.values[index] floatValue];
     } else if (self.period == ALLTIME) {
-        return [self.groupStats.monthlyEngagement.values[index] floatValue]*100.0f;
+        return [self.groupStats.monthlyEngagement.values[index] floatValue];
     }
     NSLog(@"Bar Chart error: no index exists!");
     return 0.0f;
@@ -403,8 +461,15 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
         percentage = [self.groupStats.monthlyEngagement.values[index] floatValue]*100.0f;
     }
     
-    [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
-    self.tooltipLabel.text = [NSString stringWithFormat: @"%i%@", (int)percentage, @"%"];
+    //tool tip visiblity
+//    [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
+//    self.tooltipLabel.text = [NSString stringWithFormat: @"%i%@", (int)percentage, @"%"];
+//    
+//    if (index == _currentMaxIndex) {
+//        self.tooltipView.backgroundColor = [FontProperties getBlueColor];
+//    } else {
+//        self.tooltipView.backgroundColor = [UIColor grayColor];
+//    }
 }
 
 - (void)didDeselectBarChartView:(JBBarChartView *)barChartView
@@ -447,7 +512,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     if (!self.tooltipView)
     {
         self.tooltipView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 40, 40)];
-        self.tooltipView.backgroundColor = [FontProperties getBlueColor];
+        self.tooltipView.backgroundColor = [UIColor grayColor];
         
         self.tooltipLabel = [[UILabel alloc] initWithFrame: self.tooltipView.bounds];
         self.tooltipLabel.backgroundColor = [UIColor clearColor];
