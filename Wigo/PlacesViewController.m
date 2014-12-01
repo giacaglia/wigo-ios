@@ -22,7 +22,7 @@
 
 #define xSpacing 12
 
-#define sizeOfEachCell 160
+#define sizeOfEachCell 170
 #define kEventCellName @"EventCell"
 #import "EventStoryViewController.h"
 
@@ -938,7 +938,8 @@ int firstIndexOfNegativeEvent;
     [self.contentView addSubview:postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(0, 50, self.frame.size.width, 110);
+    self.eventPeopleScrollView.frame = CGRectMake(5, 45, self.frame.size.width - 5, 125);
+    self.eventPeopleScrollView.backgroundColor = UIColor.whiteColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
     UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y, self.frame.size.width - self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.size.height)];
