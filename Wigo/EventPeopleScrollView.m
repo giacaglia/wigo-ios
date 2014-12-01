@@ -13,7 +13,6 @@
 
 BOOL fetchingEventAttendees;
 NSNumber *page;
-Party *partyUser;
 int xPosition;
 Event *event;
 
@@ -51,7 +50,7 @@ Event *event;
 
 - (void)fillEventAttendees {
     NSArray *eventAttendeesArray = [_event getEventAttendees];
-    partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
+    self.partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
     for (int j = 0; j < [eventAttendeesArray count]; j++) {
         NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
         NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
@@ -65,15 +64,15 @@ Event *event;
             }
         }
         [user setValue:[eventAttendee objectForKey:@"event_owner"] forKey:@"event_owner"];
-        [partyUser addObject:user];
+        [self.partyUser addObject:user];
     }
 }
 
 
 - (void)loadUsers {
     xPosition = 12;
-    for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
-        User *user = [[partyUser getObjectArray] objectAtIndex:i];
+    for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
+        User *user = [[self.partyUser getObjectArray] objectAtIndex:i];
         if ([user isEqualToUser:[Profile user]]) {
             user = [Profile user];
         }
@@ -107,7 +106,7 @@ Event *event;
 - (void)chooseUser:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = buttonSender.tag;
-    User *user = [[partyUser getObjectArray] objectAtIndex:tag];
+    User *user = [[self.partyUser getObjectArray] objectAtIndex:tag];
     [self.placesDelegate showUser:user];
 }
 
@@ -131,7 +130,7 @@ Event *event;
                                               user = [[User alloc] initWithDictionary:userDictionary];
                                           }
                                       }
-                                      [partyUser addObject:user];
+                                      [self.partyUser addObject:user];
                                   }
                                   if ([eventAttendeesArray count] > 0) {
                                       page = @([page intValue] + 1);

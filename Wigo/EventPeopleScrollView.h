@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Event.h"
+#import "Party.h"
 
 @protocol PlacesDelegate <NSObject>
 - (void)showUser:(User *)user;
@@ -18,4 +19,5 @@
 - (id)initWithEvent:(Event*)event;
 @property Event *event;
 @property (nonatomic, assign) id <PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) Party *partyUser;
 @end
