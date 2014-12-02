@@ -59,12 +59,6 @@ BOOL didProfileSegue;
 }
 
 - (void) viewWillAppear:(BOOL)animated {
-    self.tabBarController.tabBar.hidden = NO;
-    
-    UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
-    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"notificationsSelected"];
-    tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
     [self fetchEverything];
 }
 
@@ -81,7 +75,6 @@ BOOL didProfileSegue;
 }
 
 - (void)initializeNavigationItem {
-    self.tabBarController.tabBar.hidden = NO;
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"Notifications";
@@ -91,7 +84,6 @@ BOOL didProfileSegue;
 - (void)leaderboardSegue {
     LeaderboardViewController *leaderboardViewController = [LeaderboardViewController new];
     [self.navigationController pushViewController:leaderboardViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
 }
 
 - (void) initializeTableNotifications {
@@ -388,9 +380,6 @@ viewForFooterInSection:(NSInteger)section
             [[Profile user] setIsAttending:YES];
             [[Profile user] setIsGoingOut:YES];
             [[Profile user] setAttendingEventID:[user attendingEventID]];
-            UITabBarController *tabBarController = (UITabBarController *)self.parentViewController.parentViewController;
-            tabBarController.selectedViewController
-            = [tabBarController.viewControllers objectAtIndex:1];
             [Network postGoingToEventNumber:[[user attendingEventID] intValue]];
         }
     }
@@ -483,13 +472,11 @@ viewForFooterInSection:(NSInteger)section
 - (void)folowRequestPressed {
     self.followRequestsViewController = [[FollowRequestsViewController alloc] init];
     [self.navigationController pushViewController:self.followRequestsViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
 }
 
 - (void)chatSegue:(id)sender {
     self.conversationViewController = [[ConversationViewController alloc] init];
     [self.navigationController pushViewController:self.conversationViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
 }
 
 - (NSIndexPath *)indexPathFromTag:(int)tag {
@@ -516,7 +503,6 @@ viewForFooterInSection:(NSInteger)section
             User *user = [[User alloc] initWithDictionary:[notification fromUser]];
             self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
             [self.navigationController pushViewController:self.profileViewController animated:YES];
-            self.tabBarController.tabBar.hidden = YES;
         }
     }
     else {
@@ -525,7 +511,6 @@ viewForFooterInSection:(NSInteger)section
             User *user = [[User alloc] initWithDictionary:[notification fromUser]];
             self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
             [self.navigationController pushViewController:self.profileViewController animated:YES];
-            self.tabBarController.tabBar.hidden = YES;
         }
     }
    
@@ -549,7 +534,6 @@ viewForFooterInSection:(NSInteger)section
             [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
             [profileUser saveKeyAsynchronously:@"last_notification_read" withHandler:^() {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
                 });
             }];
         }

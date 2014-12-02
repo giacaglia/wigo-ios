@@ -188,6 +188,8 @@
 		E998C28519D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C28319D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m */; };
 		E998C28819D342C50012BF51 /* PopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C28719D342C50012BF51 /* PopViewController.m */; };
 		E998C28919D342C50012BF51 /* PopViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E998C28719D342C50012BF51 /* PopViewController.m */; };
+		E99D0ADC1A2CCA3300384A73 /* PeekViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99D0ADB1A2CCA3300384A73 /* PeekViewController.m */; };
+		E99D0ADD1A2CCA3300384A73 /* PeekViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99D0ADB1A2CCA3300384A73 /* PeekViewController.m */; };
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
@@ -225,6 +227,8 @@
 		E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */; };
 		E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C60192AA29C008BB84C /* Whitney-Medium.ttf */; };
 		E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */; };
+		E9C14E611A2E201D00E20B15 /* ReProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */; };
+		E9C14E621A2E201D00E20B15 /* ReProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */; };
 		E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
 		E9C3057019F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
 		E9C34A6F19F86FAB00D7E9D3 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */; };
@@ -553,6 +557,8 @@
 		E998C28319D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+NotOverwrite.m"; sourceTree = "<group>"; };
 		E998C28619D342C50012BF51 /* PopViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopViewController.h; sourceTree = "<group>"; };
 		E998C28719D342C50012BF51 /* PopViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopViewController.m; sourceTree = "<group>"; };
+		E99D0ADA1A2CCA3300384A73 /* PeekViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeekViewController.h; sourceTree = "<group>"; };
+		E99D0ADB1A2CCA3300384A73 /* PeekViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeekViewController.m; sourceTree = "<group>"; };
 		E99EC2871986B69C00CBFA59 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
 		E99F46AD199012F0007408C1 /* LockScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockScreenViewController.h; sourceTree = "<group>"; };
@@ -595,6 +601,8 @@
 		E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-LightSC.ttf"; sourceTree = "<group>"; };
 		E9BE8C60192AA29C008BB84C /* Whitney-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Medium.ttf"; sourceTree = "<group>"; };
 		E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-MediumSC.ttf"; sourceTree = "<group>"; };
+		E9C14E5F1A2E201D00E20B15 /* ReProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReProfileViewController.h; sourceTree = "<group>"; };
+		E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReProfileViewController.m; sourceTree = "<group>"; };
 		E9C3056D19F8341600F9564D /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		E9C34A6D19F86FAB00D7E9D3 /* WaitListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaitListViewController.h; sourceTree = "<group>"; };
@@ -1243,6 +1251,8 @@
 			children = (
 				E9147B6A1925123C00C25C9A /* ProfileViewController.h */,
 				E9147B6B1925123C00C25C9A /* ProfileViewController.m */,
+				E9C14E5F1A2E201D00E20B15 /* ReProfileViewController.h */,
+				E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */,
 				E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */,
 				E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */,
 				FA55260E1A1FCB0C00101AE7 /* Ambassador */,
@@ -1750,6 +1760,8 @@
 				E9203B521A23C4B90086BF73 /* EventConversationViewController.m */,
 				E9D039C61A09886A00DEF094 /* MediaScrollView.h */,
 				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
+				E99D0ADA1A2CCA3300384A73 /* PeekViewController.h */,
+				E99D0ADB1A2CCA3300384A73 /* PeekViewController.m */,
 			);
 			name = EventMessages;
 			sourceTree = "<group>";
@@ -2139,6 +2151,7 @@
 				C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */,
 				C12A112C19787BE700D53B1C /* Query.m in Sources */,
 				E9A31E651982B965008A711B /* WigoSearchBarDelegate.m in Sources */,
+				E9C14E621A2E201D00E20B15 /* ReProfileViewController.m in Sources */,
 				C12A112D19787BE700D53B1C /* PlacesViewController.m in Sources */,
 				C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */,
 				E9C63BDB1A03ED35006C5DD2 /* IQAudioPickerController.m in Sources */,
@@ -2150,6 +2163,7 @@
 				C12A113119787BE700D53B1C /* NSData+ImageContentType.m in Sources */,
 				C12A113219787BE700D53B1C /* Profile.m in Sources */,
 				E9D039BE1A096DB100DEF094 /* AFURLConnectionOperation.m in Sources */,
+				E99D0ADD1A2CCA3300384A73 /* PeekViewController.m in Sources */,
 				E9C63BF51A03ED35006C5DD2 /* IQSongsPlaylistViewController.m in Sources */,
 				E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
 				E9D039B81A096DB100DEF094 /* AFHTTPSessionManager.m in Sources */,
@@ -2290,6 +2304,7 @@
 				E9D039B51A096DB100DEF094 /* AFHTTPRequestOperationManager.m in Sources */,
 				E900C2BB1961EADE00A01F50 /* SDWebImageDownloaderOperation.m in Sources */,
 				E9D039B31A096DB100DEF094 /* AFHTTPRequestOperation.m in Sources */,
+				E9C14E611A2E201D00E20B15 /* ReProfileViewController.m in Sources */,
 				E9C63C0C1A03ED35006C5DD2 /* IQ_PocketSVG.m in Sources */,
 				E9C63C061A03ED35006C5DD2 /* IQPartitionBar.m in Sources */,
 				E9C63C101A03ED35006C5DD2 /* IQMediaPickerController.m in Sources */,
@@ -2301,6 +2316,7 @@
 				E900C2B61961EADE00A01F50 /* NSData+ImageContentType.m in Sources */,
 				E9C63C021A03ED35006C5DD2 /* IQFeatureOverlay.m in Sources */,
 				E9BE8C4C192A54F3008BB84C /* Profile.m in Sources */,
+				E99D0ADC1A2CCA3300384A73 /* PeekViewController.m in Sources */,
 				E9C34A6F19F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
 				E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */,

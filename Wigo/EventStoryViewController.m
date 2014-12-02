@@ -12,7 +12,6 @@
 #import "AWSUploader.h"
 #import "InviteViewController.h"
 #import "ProfileViewController.h"
-#import <MediaPlayer/MediaPlayer.h>
 #import "EventMessagesConstants.h"
 
 UIButton *sendButton;
@@ -28,8 +27,11 @@ BOOL cancelFetchMessages;
     self.title = self.event.name;
   
     [self loadEventDetails];
-    [self loadEventStory];
     [self loadTextViewAndSendButton];
+    EventPeopleScrollView *eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
+    eventPeopleScrollView.event = _event;
+    eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
+    [self.view addSubview:eventPeopleScrollView];
 }
 
 
@@ -55,7 +57,7 @@ BOOL cancelFetchMessages;
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
-    UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 74, self.view.frame.size.width - 220, 20)];
+    UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 184, self.view.frame.size.width - 220, 20)];
     if ([self.event.numberAttending intValue] == 1) {
         numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
     }
@@ -72,7 +74,7 @@ BOOL cancelFetchMessages;
 
 - (void)loadEventDetails {
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
-        UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 104, self.view.frame.size.width - 140, 30)];
+        UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 214, self.view.frame.size.width - 140, 30)];
         [invitePeopleButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
         [invitePeopleButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
         invitePeopleButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
@@ -83,7 +85,7 @@ BOOL cancelFetchMessages;
         [self.view addSubview:invitePeopleButton];
     }
     else {
-        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 104, 100, 30)];
+        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 214, 100, 30)];
         aroundGoOutButton.tag = [(NSNumber *)[self.event eventID] intValue];
         [aroundGoOutButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:aroundGoOutButton];
@@ -108,22 +110,19 @@ BOOL cancelFetchMessages;
 }
 
 - (void)goHerePressed {
-    
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
+    [EventAnalytics tagEvent:@"Go Here" withDetails:options];
+    [[Profile user] setIsAttending:YES];
+    [[Profile user] setIsGoingOut:YES];
+    [[Profile user] setAttendingEventID:[self.event eventID]];
+    [[Profile user] setEventID:[self.event eventID]];
+    [Network postGoingToEventNumber:[[self.event eventID] intValue]];
 }
 
-- (void)loadEventStory {
-    UILabel *eventStoryLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 145, self.view.frame.size.width, 40)];
-    eventStoryLabel.text = @"Event Story";
-    eventStoryLabel.textColor = RGB(208, 208, 208);
-    eventStoryLabel.backgroundColor = UIColor.whiteColor;
-    eventStoryLabel.textAlignment = NSTextAlignmentCenter;
-    eventStoryLabel.font = [FontProperties mediumFont:20];
-    [self.view addSubview:eventStoryLabel];
-}
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 175, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
+    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 235, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = UIColor.whiteColor;
     facesCollectionView.showsHorizontalScrollIndicator = NO;
@@ -164,8 +163,8 @@ BOOL cancelFetchMessages;
     if ([indexPath row] == eventMessages.count) {
         myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
         myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
-        myCell.timeLabel.frame = CGRectMake(23, 80, 60, 28);
-        myCell.timeLabel.text = @"Add to\nthe story";
+        myCell.timeLabel.frame = CGRectMake(23, 83, 60, 28);
+        myCell.timeLabel.text = @"Add to the story";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
         myCell.mediaTypeImageView.hidden = YES;
         [myCell updateUIToRead:NO];
@@ -293,16 +292,22 @@ BOOL cancelFetchMessages;
     else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
         type = kVideoEventType;
         NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
-        
+        self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(thumbnailGenerated:)
+                                                     name:MPMoviePlayerThumbnailImageRequestDidFinishNotification
+                                                   object:self.moviePlayer];
+
+        [self.moviePlayer requestThumbnailImagesAtTimes:@[@0.0f, @0.1f] timeOption:MPMovieTimeOptionNearestKeyFrame];
         
         NSError *error;
-        NSData *fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
+        self.fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
         
         if ([[info allKeys] containsObject:IQMediaTypeText]) {
             NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
             NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
             NSDictionary *properties = @{@"yPosition": yPosition};
-            options =  @{
+            self.options =  @{
                          @"event": [self.event eventID],
                          @"message": text,
                          @"properties": properties,
@@ -310,15 +315,13 @@ BOOL cancelFetchMessages;
                          };
         }
         else {
-            options =  @{
+            self.options =  @{
                          @"event": [self.event eventID],
                          @"media_mime_type": type
                          };
         }
         
-        [self uploadContentWithFile:fileData
-                        andFileName:@"video0.mp4"
-                         andOptions:options];
+        
     }
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
@@ -338,6 +341,14 @@ BOOL cancelFetchMessages;
     cancelFetchMessages = YES;
 }
 
+- (void)thumbnailGenerated:(NSNotification *)notification {
+    NSLog(@"thumbnail generated");
+    NSDictionary *userInfo = [notification userInfo];
+    UIImage *image = [userInfo valueForKey:MPMoviePlayerThumbnailImageKey];
+    [self uploadContentWithFile:self.fileData
+                    andFileName:@"video0.mp4"
+                     andOptions:self.options];
+}
 
 - (NSMutableArray *)eventMessagesWithCamera {
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];

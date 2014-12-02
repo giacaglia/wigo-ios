@@ -8,19 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "Event.h"
+#import "Party.h"
 
-@protocol EventPeopleScrollDelegate <NSObject>
-//- (void)loadViewOfUser:(User *)user;
+@protocol PlacesDelegate <NSObject>
+- (void)showUser:(User *)user;
+- (void)showConversationForEvent:(Event*)event;
 @end
 
 @interface EventPeopleScrollView : UIScrollView <UIScrollViewDelegate>
-
 - (id)initWithEvent:(Event*)event;
-@property (nonatomic, assign) id <EventPeopleScrollDelegate> delegate;
-
-
 @property Event *event;
-
+@property (nonatomic, assign) id <PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) Party *partyUser;
 @end
-
-

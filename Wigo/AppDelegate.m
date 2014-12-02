@@ -17,7 +17,6 @@
 #import "Time.h"
 #import "PopViewController.h"
 
-NSNumber *indexOfSelectedTab;
 NSNumber *numberOfNewMessages;
 NSNumber *numberOfNewNotifications;
 NSDate *firstLoggedTime;
@@ -72,13 +71,7 @@ NSDate *firstLoggedTime;
     self.notificationDictionary = [[NSMutableDictionary alloc] init];
     
     // Override point for customization after application launch.
-    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-    UITabBar *tabBar = tabBarController.tabBar;
-    tabBar.tintColor = [UIColor clearColor];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [UIColor clearColor] } forState:UIControlStateSelected];
-    
-    [self addTabBarDelegate];
-    [self changeTabBarToOrange];
+
     [self addNotificationHandlers];
     [self logFirstTimeLoading];
 
@@ -111,7 +104,6 @@ NSDate *firstLoggedTime;
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [self reloadTabBarNotifications];
     [self updateGoingOutIfItsAnotherDay];
     [self fetchAppStart];
     if ([Profile localyticsEnabled]) {
@@ -168,7 +160,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         [[LocalyticsSession shared] handleRemoteNotification:userInfo];
     }
     if (application.applicationState == UIApplicationStateActive) {
-        [self reloadTabBarNotifications];
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if ([aps isKindOfClass:[NSDictionary class]]) {
             NSDictionary *alert = [aps objectForKey:@"alert"];
@@ -190,36 +181,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         }
     }
     else { // If it's was at the background or inactive
-        UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-        UINavigationController *navController = (UINavigationController*)tabBarController.selectedViewController;
-        
-        NSDictionary *aps = [userInfo objectForKey:@"aps"];
-        if ([aps isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *alert = [aps objectForKey:@"alert"];
-            if ([alert isKindOfClass:[NSDictionary class]]) {
-                NSString *locKeyString = [alert objectForKey:@"loc-key"];
-                if ([locKeyString isEqualToString:@"M"]) {
-                    if ([locKeyString isEqualToString:@"M"]) {
-                        [navController popToRootViewControllerAnimated:NO];
-                        tabBarController.selectedIndex = 2;
-                        indexOfSelectedTab = @2;
-                    }
-                    else if ([locKeyString isEqualToString:@"T"]) {
-                        [navController popToRootViewControllerAnimated:NO];
-                        tabBarController.selectedIndex = 3;
-                    }
-                    else if ([locKeyString isEqualToString:@"F"] || [locKeyString isEqualToString:@"FR"]) {
-                        [navController popToRootViewControllerAnimated:NO];
-                        tabBarController.selectedIndex = 3;
-                    }
-                    else if ([locKeyString isEqualToString:@"G"]) {
-                        [navController popToRootViewControllerAnimated:NO];
-                        tabBarController.selectedIndex = 0;
-                    }
-
-                }
-            }
-        }
     }
 }
 
@@ -230,9 +191,6 @@ handleActionWithIdentifier:(NSString *)identifier
 forRemoteNotification:(NSDictionary *)userInfo
   completionHandler:(void (^)())completionHandler {
     
-    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-    UINavigationController *navController = (UINavigationController*)tabBarController.selectedViewController;
-
     if ([identifier isEqualToString: @"tap_with_diff_event"]) {
         NSDictionary *event = [userInfo objectForKey:@"event"];
         NSNumber *eventID = [event objectForKey:@"id"];
@@ -251,10 +209,6 @@ forRemoteNotification:(NSDictionary *)userInfo
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
                     }
-                    [navController popToRootViewControllerAnimated:NO];
-                    tabBarController.selectedIndex = 1;
-                    indexOfSelectedTab = @1;
-                    [self changeTabBarToBlue];
                 }
             }
         }
@@ -263,75 +217,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 }
 
 
-- (void)addTabBarDelegate {
-    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-    tabBarController.delegate = self;
-}
-
-- (void)tabBarController:(UITabBarController *)theTabBarController didSelectViewController:(UIViewController *)viewController {
-    indexOfSelectedTab = [NSNumber numberWithUnsignedInteger:[theTabBarController.viewControllers indexOfObject:viewController]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"scrollUp" object:nil];
-}
-
-- (void) changeTabBarToOrange {
-    [[UITabBar appearance] setBackgroundImage:[[UIImage alloc] init]];
-    [[UITabBar appearance] setShadowImage:[[UIImage alloc] init]];
-    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-    UITabBar *tabBar = tabBarController.tabBar;
-    tabBar.layer.borderWidth = 0.5;
-    UIFont *smallFont = [FontProperties scMediumFont:11.0f];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : [FontProperties getOrangeColor], NSFontAttributeName:smallFont } forState:UIControlStateNormal];
-    UITabBarItem *tabItem = [tabBar.items objectAtIndex:0];
-    tabItem.image = [[UIImage imageNamed:@"peopleIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [tabItem setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-    tabItem = [tabBar.items objectAtIndex:1];
-    tabItem.image = [[UIImage imageNamed:@"placesIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [tabItem setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-    tabItem = [tabBar.items objectAtIndex:2];
-    tabItem.image = [[UIImage imageNamed:@"chatsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [tabItem setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-    tabItem = [tabBar.items objectAtIndex:3];
-    tabItem.image = [[UIImage imageNamed:@"notificationsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [tabItem setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-    for (NSString *key in [self.notificationDictionary allKeys] ) {
-        UILabel *notificationLabel = [self.notificationDictionary objectForKey:key];
-        notificationLabel.backgroundColor = [FontProperties getOrangeColor];
-        notificationLabel.textColor = [UIColor whiteColor];
-    }
-}
-
-- (void) changeTabBarToBlue {
-    indexOfSelectedTab = @1;
-    [[UITabBar appearance] setBackgroundImage:[[UIImage alloc] init]];
-    [[UITabBar appearance] setShadowImage:[[UIImage alloc] init]];
-    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-    UITabBar *tabBar = tabBarController.tabBar;
-    tabBar.layer.borderWidth = 0.5;
-    UIFont *smallFont = [FontProperties scMediumFont:11.0f];
-    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName:[FontProperties getBlueColor], NSFontAttributeName:smallFont } forState:UIControlStateNormal];
-    UITabBarItem *firstTab = [tabBar.items objectAtIndex:0];
-    firstTab.image = [[UIImage imageNamed:@"peopleIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-    firstTab = [tabBar.items objectAtIndex:2];
-    firstTab.image = [[UIImage imageNamed:@"chatsIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-    firstTab = [tabBar.items objectAtIndex:3];
-    firstTab.image = [[UIImage imageNamed:@"notificationsIconBlue"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    [firstTab setTitlePositionAdjustment:UIOffsetMake(0, -2)];
-    for (NSString *key in [self.notificationDictionary allKeys] ) {
-        UILabel *notificationLabel = [self.notificationDictionary objectForKey:key];
-        notificationLabel.backgroundColor = [FontProperties getBlueColor];
-        notificationLabel.textColor = [UIColor whiteColor];
-
-    }
-}
-
 - (void)addNotificationHandlers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabBarToOrange) name:@"changeTabBarToOrange" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabBarToBlue) name:@"changeTabBarToBlue" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeTabs) name:@"changeTabs" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTabBarNotifications) name:@"reloadTabBarNotifications" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadColorWhenTabBarIsMessage) name:@"reloadColorWhenTabBarIsMessage" object:nil];
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goingOutForRateApp) name:@"goingOutForRateApp" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentPush) name:@"presentPush" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchAppStart) name:@"fetchAppStart" object:nil];
@@ -350,12 +236,6 @@ forRemoteNotification:(NSDictionary *)userInfo
         alertView.delegate = self;
     }
 
-}
-
-- (void)changeTabs {
-    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-    tabBarController.selectedViewController = [tabBarController.viewControllers objectAtIndex:1];
-    [self changeTabBarToBlue];
 }
 
 # pragma mark - Facebook Login
@@ -403,55 +283,10 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 #pragma mark - Notification Tab Bar
 
-- (void)addNotificationNumber:(NSNumber *)number toTabBar:(NSNumber *)tabBarNumber containNumber:(BOOL)itDoes {
-    CGSize origin;
-    if ([tabBarNumber isEqualToNumber:@2]) { // Chats notification
-        origin = CGSizeMake(216, 6);
-    }
-    else { //Other notifications
-        origin = CGSizeMake(295, 6);
-    }
-    
-    UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-    UITabBar *tabBar = tabBarController.tabBar;
-    
-    UILabel *numberOfNotificationsLabel;
-    if ([[self.notificationDictionary allKeys] containsObject:[tabBarNumber stringValue]]) {
-        numberOfNotificationsLabel = [self.notificationDictionary objectForKey:[tabBarNumber stringValue]];
-    }
-    else numberOfNotificationsLabel = [[UILabel alloc] init];
-    
-    if (itDoes) {
-        numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 16, 12);
-        numberOfNotificationsLabel.text = [number stringValue];
-        numberOfNotificationsLabel.textAlignment = NSTextAlignmentCenter;
-        numberOfNotificationsLabel.textColor = [UIColor whiteColor];
-        numberOfNotificationsLabel.font = [FontProperties mediumFont:10.0f];
-    }
-    else numberOfNotificationsLabel.frame = CGRectMake(origin.width, origin.height, 8, 8);
-
-  
-    if ([indexOfSelectedTab isEqualToNumber:@1]) numberOfNotificationsLabel.backgroundColor = [FontProperties getBlueColor];
-    else numberOfNotificationsLabel.backgroundColor = [FontProperties getOrangeColor];
-    numberOfNotificationsLabel.layer.borderColor = [UIColor clearColor].CGColor;
-    numberOfNotificationsLabel.layer.cornerRadius = 5;
-    numberOfNotificationsLabel.layer.borderWidth = 1;
-    numberOfNotificationsLabel.layer.masksToBounds = YES;
-    
-    [tabBar addSubview:numberOfNotificationsLabel];
-    [self.notificationDictionary setValue:numberOfNotificationsLabel forKey:[tabBarNumber stringValue]];
-}
-
-- (void)clearNotificationAtTabBar:(NSNumber *)tabBarNumber {
-    if ([[self.notificationDictionary allKeys] containsObject:[tabBarNumber stringValue]]) {
-        UILabel *numberOfNotificationLabel = [self.notificationDictionary valueForKey:[tabBarNumber stringValue]];
-        [numberOfNotificationLabel removeFromSuperview];
-        [self.notificationDictionary removeObjectForKey:[tabBarNumber stringValue]];
-    }
-}
 
 - (void)updateBadge {
-    int total = [numberOfNewMessages intValue] + [numberOfNewNotifications intValue];
+//    int total = [numberOfNewMessages intValue] + [numberOfNewNotifications intValue];
+    int total = 0;
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     if (currentInstallation.badge != 0) {
         currentInstallation.badge = total;
@@ -463,31 +298,6 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 }
 
-- (void)reloadTabBarNotifications {
-    [self areThereNotificationsWithHandler:^(NSNumber *numberOFNewMessages, NSNumber *numberOfNewNotifications) {
-        if ([numberOFNewMessages intValue] > 0) {
-            [self addNotificationNumber:numberOFNewMessages toTabBar:@2 containNumber:YES];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
-        }
-        else [self clearNotificationAtTabBar:@2];
-        if ([numberOfNewNotifications intValue] > 0) {
-            [self addNotificationNumber:numberOfNewNotifications toTabBar:@3 containNumber:NO];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchNotifications" object:nil];
-        }
-        else [self clearNotificationAtTabBar:@3];
-    }];
-}
-
-- (void)reloadColorWhenTabBarIsMessage {
-    if ([[self.notificationDictionary allKeys] containsObject:@"2"]) {
-        UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
-        UITabBar *tabBar = tabBarController.tabBar;
-        UILabel *numberOfNotificationsLabel = [self.notificationDictionary objectForKey:@"2"];
-        numberOfNotificationsLabel.backgroundColor = [UIColor whiteColor];
-        numberOfNotificationsLabel.textColor = [FontProperties getOrangeColor];
-        [tabBar addSubview:numberOfNotificationsLabel];
-    }
-}
 
 #pragma mark - Save the time
 

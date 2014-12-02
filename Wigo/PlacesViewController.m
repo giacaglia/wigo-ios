@@ -16,11 +16,17 @@
 #import "WigoConfirmationViewController.h"
 #import "MobileContactsViewController.h"
 #import "InviteViewController.h"
+#import "SignViewController.h"
+#import "SignNavigationViewController.h"
+#import "PeekViewController.h"
+#import "ReProfileViewController.h"
 
-#define xSpacing 12
+#define sizeOfEachCell 160
+#define kEventCellName @"EventCell"
+#define kOldEventCellName @"OldEventCell"
+#define kHeaderOldEventCellName @"HeaderOldEventCell"
 #import "EventStoryViewController.h"
 
-#define sizeOfEachCell 210
 @interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
@@ -77,6 +83,7 @@ int firstIndexOfNegativeEvent;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor = RGB(249, 249, 249);
     self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
     fetchingEventAttendees = NO;
@@ -96,6 +103,8 @@ int firstIndexOfNegativeEvent;
     lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
     [self.navigationController.navigationBar addSubview:lineView];
     
+    [self initializeFlashScreen];
+
     _spinnerAtCenter = YES;
     [self initializeTapHandler];
     [self initializeWhereView];
@@ -106,20 +115,14 @@ int firstIndexOfNegativeEvent;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self initializeNotificationObservers];
-    self.tabBarController.tabBar.hidden = NO;
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
-    UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
-    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"whereTabIcon"];
-    tabController.tabBar.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToBlue" object:nil];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Where View"];
 
     [self.view endEditing:YES];
-    self.tabBarController.tabBar.hidden = NO;
     [self initializeNavigationBar];
     if (shouldReloadEvents) {
         [self fetchEventsFirstPage];
@@ -129,11 +132,7 @@ int firstIndexOfNegativeEvent;
     }
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
 
-}
 
 - (void) initializeNavigationBar {
     self.navigationItem.rightBarButtonItem = nil;
@@ -152,16 +151,22 @@ int firstIndexOfNegativeEvent;
     self.navigationItem.leftBarButtonItem = profileBarButton;
     
     UIButton *rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
-    UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 22, 17)];
+    UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
     imageView.image = [UIImage imageNamed:@"followPlusBlue"];
+    [rightButton addTarget:self action:@selector(followPressed)
+           forControlEvents:UIControlEventTouchUpInside];
     [rightButton addSubview:imageView];
-//    [rightButton addTarget:self action:@selector(followPressed)
-//           forControlEvents:UIControlEventTouchUpInside];
     [rightButton setShowsTouchWhenHighlighted:YES];
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     self.navigationItem.rightBarButtonItem = rightBarButton;
 
     [self updatedTitleView];
+}
+
+- (void)initializeFlashScreen {
+    SignViewController *signViewController = [[SignViewController alloc] init];
+    SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:signViewController];
+    [self presentViewController:signNavigationViewController animated:NO completion:nil];
 }
 
 
@@ -195,13 +200,19 @@ int firstIndexOfNegativeEvent;
                                              selector:@selector(presentContactsView)
                                                  name:@"presentContactsView"
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(loadViewAfterSigningUser)
+                                                 name:@"loadViewAfterSigningUser"
+                                               object:nil];
 
 }
 
-- (void)updateTitleViewForNotGoingOut {
-    self.navigationItem.titleView = nil;
-    self.navigationItem.title = @"Where are you going?";
+- (void)loadViewAfterSigningUser {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
 }
+
 
 - (void)scrollUp {
     [_placesTableView setContentOffset:CGPointZero animated:YES];
@@ -214,8 +225,22 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) updatedTitleView {
-    self.navigationItem.titleView = nil;
-    self.navigationItem.title = @"Where are you going?";
+    UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [schoolButton setTitle:[[Profile user] groupName] forState:UIControlStateNormal];
+    [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
+    schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    schoolButton.titleLabel.font = [FontProperties scMediumFont:20.0f];
+    
+    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(150, 0, 6, 5)];
+    triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
+    [schoolButton addSubview:triangleImageView];
+    
+    self.navigationItem.titleView = schoolButton;
+}
+
+- (void)showSchools {
+    [self presentViewController:[PeekViewController new] animated:YES completion:nil];
 }
 
 - (void)initializeTapHandler {
@@ -232,7 +257,7 @@ int firstIndexOfNegativeEvent;
     [UIView animateWithDuration:0.2 animations:^{
         _placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-47);
-        _goingSomewhereButton.hidden = NO;
+//        _goingSomewhereButton.hidden = NO;
     }];
     [self clearTextField];
 }
@@ -245,11 +270,15 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeWhereView {
-    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
+    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 5, self.view.frame.size.width, self.view.frame.size.height - 64 - 5)];
+    _placesTableView.backgroundColor = RGB(249, 249, 249);
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
-    [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
+    _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
+    [_placesTableView registerClass:[OldEventCell class] forCellReuseIdentifier:kOldEventCellName];
+    [_placesTableView registerClass:[HeaderOldEventCell class] forHeaderFooterViewReuseIdentifier:kHeaderOldEventCellName];
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
     _yPositionOfWhereSubview = 280;
@@ -261,6 +290,13 @@ int firstIndexOfNegativeEvent;
     if ([[Profile user] key]) {
         NSNumber *eventID = [[notification userInfo] valueForKey:@"eventID"];
         [self goOutToEventNumber:eventID];
+    }
+}
+
+- (void)followPressed {
+    if ([Profile user]) {
+        self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[Profile user]] animated:YES];
     }
 }
 
@@ -295,49 +331,36 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeGoingSomewhereElseButton {
-    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(xSpacing, 35 - 20, self.view.frame.size.width - 2*xSpacing, 40)];
+    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, self.view.frame.size.height - 55, 45, 45)];
     [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
-    _goingSomewhereButton.layer.cornerRadius = 10;
-    _goingSomewhereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    _goingSomewhereButton.layer.borderWidth = 1;
-    _goingSomewhereButton.isAccessibilityElement = YES;
-    _goingSomewhereButton.accessibilityIdentifier = @"Go Somewhere";
-}
-
-- (void)updateGoingSomewhereSubviewsWithTitle:(NSString *)title {
-    [[_goingSomewhereButton subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-
-    UILabel *goingSomewhereLabel = [[UILabel alloc] init];
-    if ([title isEqualToString:@"GO SOMEWHERE"]) {
-        goingSomewhereLabel.frame = CGRectMake(100, _goingSomewhereButton.frame.size.height/2 - 7, 150, 15);
-    }
-    else {
-        goingSomewhereLabel.frame = CGRectMake(67, _goingSomewhereButton.frame.size.height/2 - 7, 230, 15);
-    }
-    goingSomewhereLabel.text = title;
-    goingSomewhereLabel.font = [FontProperties scMediumFont:18.0f];
-    goingSomewhereLabel.textColor = [FontProperties getBlueColor];
-    [_goingSomewhereButton addSubview:goingSomewhereLabel];
+    _goingSomewhereButton.backgroundColor = [FontProperties getBlueColor];
+    _goingSomewhereButton.layer.borderWidth = 1.0f;
+    _goingSomewhereButton.layer.borderColor = [UIColor clearColor].CGColor;
+    _goingSomewhereButton.layer.cornerRadius = 20;
+    _goingSomewhereButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    _goingSomewhereButton.layer.shadowOpacity = 0.4f;
+    _goingSomewhereButton.layer.shadowRadius = 5.0f;
+    _goingSomewhereButton.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
+    [self.view addSubview:_goingSomewhereButton];
+    [self.view bringSubviewToFront:_goingSomewhereButton];
     
-    UIImageView *goingSomewhereImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"goingSomewhereElse"]];
-    goingSomewhereImageView.frame = CGRectMake(35, _goingSomewhereButton.frame.size.height/2 - 10, 18, 21);
-    [_goingSomewhereButton addSubview:goingSomewhereImageView];
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 15, 15)];
+    sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
+    [_goingSomewhereButton addSubview:sendOvalImageView];
+
 }
 
 - (void) goingSomewhereElsePressed {
     [self scrollUp];
     [self dismissKeyboard];
     [self showWhereAreYouGoingView];
-    _goingSomewhereButton.hidden = YES;
     _ungoOutButton.enabled = NO;
     [_whereAreYouGoingTextField becomeFirstResponder];
     [self textFieldDidChange:_whereAreYouGoingTextField];
 }
 
 - (void)profileSegue {
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:[Profile user]];
-    [self.navigationController pushViewController:self.profileViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
+    [self presentViewController:[[ReProfileViewController alloc] initWithUser:[Profile user]] animated:YES completion:nil];
 }
 
 - (void)chooseUser:(id)sender {
@@ -357,7 +380,6 @@ int firstIndexOfNegativeEvent;
                 shouldReloadEvents = NO;
                 self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
                 [self.navigationController pushViewController:self.profileViewController animated:YES];
-                self.tabBarController.tabBar.hidden = YES;
             }
         }
     }
@@ -525,269 +547,87 @@ int firstIndexOfNegativeEvent;
 #pragma mark - Tablew View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath row] == [[_contentParty getObjectArray] count]) {
-        return 70;
+    if ([indexPath section] == 0) {
+        if ([indexPath row] == [[_contentParty getObjectArray] count]) {
+            return 70;
+        }
+        if (firstIndexOfNegativeEvent >= 0 && [indexPath row] >= firstIndexOfNegativeEvent) {
+            return 70;
+        }
+        return sizeOfEachCell;
+
     }
-    if (firstIndexOfNegativeEvent >= 0 && [indexPath row] >= firstIndexOfNegativeEvent) {
-        return 70;
-    }
-    return sizeOfEachCell;
+    else return 50;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    if (_isSearching) {
-        return [[_filteredContentParty getObjectArray] count];
+    if (section == 0) {
+        if (_isSearching) {
+            return [[_filteredContentParty getObjectArray] count];
+        }
+        else {
+            int hasNextPage = ([_eventsParty hasNextPage] ? 1 : 0);
+            return [[_contentParty getObjectArray] count] + hasNextPage;
+        }
     }
-    else {
-        int hasNextPage = ([_eventsParty hasNextPage] ? 1 : 0);
-        return [[_contentParty getObjectArray] count] + 1 + hasNextPage;
-        
-    }
+    else return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    cell.contentView.backgroundColor = [UIColor whiteColor];
+    if (indexPath.section == 0) {
+        EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName];
 
-    if (_isSearching) {
-        if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
-            [cell.contentView addSubview:_goingSomewhereButton];
-            return cell;
+        cell.placesDelegate = self;
+        if (_isSearching) {
+            if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
+                return cell;
+            }
         }
+        else {
+            if (indexPath.row == [[_contentParty getObjectArray] count]) {
+                [self fetchEvents];
+                return cell;
+            }
+        }
+        
+        Event *event;
+        if (_isSearching) {
+            int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
+            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
+            event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
+        }
+        else {
+            int sizeOfArray = (int)[[_contentParty getObjectArray] count];
+            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
+            event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
+        }
+        cell.event = event;
+        cell.eventPeopleScrollView.placesDelegate = self;
+        return cell;
     }
     else {
-        if (indexPath.row == [[_contentParty getObjectArray] count]) {
-            if (indexPath.row == 0)
-                [self updateGoingSomewhereSubviewsWithTitle:@"GO SOMEWHERE"];
-            else
-                [self updateGoingSomewhereSubviewsWithTitle:@"GO SOMEWHERE ELSE"];
-                
-            [cell.contentView addSubview:_goingSomewhereButton];
-            return cell;
-        }
-        else if (indexPath.row == [[_contentParty getObjectArray] count] + 1) {
-            [self fetchEvents];
-            return cell;
-        }
+        OldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventCellName];
+        cell.oldEventLabel.text = @"That long cool party name";
+        cell.chatBubbleImageView.hidden = NO;
+        cell.chatNumberLabel.text = @"36";
+        return cell;
     }
   
-    Party *partyUser;
-    Event *event;
-    if (_isSearching) {
-        int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
-        if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
-        event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
-        sizeOfArray = (int)[_filteredPartyUserArray count];
-        if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) {
-            partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
-        }
-        else partyUser = [_filteredPartyUserArray objectAtIndex:[indexPath row]];
-    }
-    else {
-        int sizeOfArray = (int)[[_contentParty getObjectArray] count];
-        if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
-        event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
-        sizeOfArray = (int)[_partyUserArray count];
-        if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
-        else partyUser  = [_partyUserArray objectAtIndex:[indexPath row]];
-    }
-    NSNumber *totalUsers = [event numberAttending];
-    
-    UIView *placeSubView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, sizeOfEachCell)];
-    placeSubView.tag = _tagInteger;
-    _tagInteger += 1;
-    
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(xSpacing, 5, self.view.frame.size.width - 30, 60)];
-    labelName.numberOfLines = 0;
-    labelName.lineBreakMode = NSLineBreakByWordWrapping;
-    NSString *numberOfPeopleGoing;
-    NSString *text;
-    if ([[event eventID] intValue] < 0) {
-        placeSubView.frame = CGRectMake(0, 0, self.view.frame.size.width, 70);
-        text = [NSString stringWithFormat: @"%@ \nBe the first", [event name]];
-    }
-    else if ([totalUsers intValue] == 1) {
-        numberOfPeopleGoing = [NSString stringWithFormat:@"%@ is going", [totalUsers stringValue]];
-        text = [NSString stringWithFormat: @"%@ \n%@", [event name], numberOfPeopleGoing];
-    }
-    else {
-        numberOfPeopleGoing = [NSString stringWithFormat:@"%@ are going", [totalUsers stringValue]];
-        text = [NSString stringWithFormat: @"%@ \n%@", [event name], numberOfPeopleGoing];
-    }
-    NSMutableAttributedString * attributedString = [[NSMutableAttributedString alloc] initWithString:text];
-    [attributedString addAttribute:NSFontAttributeName value:[FontProperties getTitleFont] range:NSMakeRange(0,[[event name] length])];
-    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(104, 174, 215) range:NSMakeRange(0,[[event name] length])];
-
-//    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(104, 174, 215) range:NSMakeRange(0,[[event name] length])];
-    [attributedString addAttribute:NSFontAttributeName value:[FontProperties getSubtitleFont] range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
-    [attributedString addAttribute:NSForegroundColorAttributeName value:RGB(158, 158, 158) range:NSMakeRange([[event name] length],[text length] - [[event name] length])];
-    labelName.attributedText = attributedString;
-    [labelName sizeToFit];
-    labelName.frame = CGRectMake(xSpacing, 5, self.view.frame.size.width - 55 - xSpacing, 60);
-    [placeSubView addSubview:labelName];
-
-    NSNumber *numberOfMessages = [event numberOfMessages];
-    CGSize size = [numberOfPeopleGoing sizeWithAttributes:
-                   @{NSFontAttributeName:
-                         [FontProperties getSubtitleFont]}];
-
-    if ([numberOfMessages intValue] > 0) {
-        UIImageView *chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, 25, 20, 20)];
-        chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
-        [placeSubView addSubview:chatBubbleImageView];
-        UILabel *chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
-        chatNumberLabel.text = [NSString stringWithFormat:@"%@", [numberOfMessages stringValue]];
-        chatNumberLabel.textAlignment = NSTextAlignmentCenter;
-        chatNumberLabel.font = [FontProperties mediumFont:12.0f];
-        chatNumberLabel.textColor = [UIColor whiteColor];
-        [chatBubbleImageView addSubview:chatNumberLabel];
-    }
-    
-    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 30, 23, 13, 22)];
-    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-    [placeSubView addSubview:postStoryImageView];
-
-    // Variables to add images
-    int xPosition = xSpacing;
-    sizeOfEachImage = 80;
-    
-    UIScrollView *imagesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 5, placeSubView.frame.size.width, placeSubView.frame.size.height)];
-    imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
-    imagesScrollView.showsHorizontalScrollIndicator = NO;
-    imagesScrollView.delegate = self;
-    imagesScrollView.tag = (int)[indexPath row];
-    [placeSubView addSubview:imagesScrollView];
-   
-    // If attending event ID is negative OR if attending event is positive and the user is attending
-    // the event.
-    if ( ([[[Profile user] attendingEventID] intValue] < 0 && [indexPath row] == 0) ||
-        ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]])
-        ) {
-        placeSubView.backgroundColor = [FontProperties getLightBlueColor];
-        
-//        UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 105 - 5, 10 - 5, 90 + 10, 17 + 25)];
-        UIButton *aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width/2 - 70, 163, 130 + 10, 17 + 30)];
-        aroundInviteButton.tag = [(NSNumber *)[event eventID] intValue];
-        [aroundInviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 130, 30)];
-        inviteButton.enabled = NO;
-        [inviteButton setTitle:@"INVITE PEOPLE" forState:UIControlStateNormal];
-        [inviteButton setTitleColor:RGB(100, 173, 215) forState:UIControlStateNormal];
-        inviteButton.backgroundColor = [UIColor whiteColor];
-        inviteButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
-        inviteButton.layer.cornerRadius = 5;
-        inviteButton.layer.borderWidth = 1;
-        inviteButton.layer.borderColor = RGB(100, 173, 215).CGColor;
-        [placeSubView addSubview:aroundInviteButton];
-        [aroundInviteButton addSubview:inviteButton];
-    }
-    else {
-//        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width - 90 - 5, 10 - 5, 80 + 10, 17 + 25)];
-        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(placeSubView.frame.size.width/2 - 55, 163, 90 + 10, 17 + 25)];
-        aroundGoOutButton.tag = [(NSNumber *)[event eventID] intValue];
-        [aroundGoOutButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 90, 30)];
-        goOutButton.enabled = NO;
-        [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
-        [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        goOutButton.backgroundColor = [FontProperties getBlueColor];
-        goOutButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
-        goOutButton.layer.cornerRadius = 5;
-        goOutButton.layer.borderWidth = 1;
-        goOutButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-        [placeSubView addSubview:aroundGoOutButton];
-        [aroundGoOutButton addSubview:goOutButton];
-    }
-
-    for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
-        User *user = [[partyUser getObjectArray] objectAtIndex:i];
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 70, sizeOfEachImage, sizeOfEachImage)];
-        xPosition += sizeOfEachImage + 3;
-        imageButton.tag = [self createUniqueIndexFromUserIndex:i andEventIndex:(int)[indexPath row]];
-        imageButton.isAccessibilityElement = YES;
-        imageButton.accessibilityIdentifier = [user firstName];
-        [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
-        [imagesScrollView addSubview:imageButton];
-        imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
-        
-        UIImageView *imgView = [[UIImageView alloc] init];
-        imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
-        imgView.contentMode = UIViewContentModeScaleAspectFill;
-        imgView.clipsToBounds = YES;
-        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
-        [imageButton addSubview:imgView];
-        
-        UILabel *profileName = [[UILabel alloc] init];
-        profileName.text = [user firstName];
-        profileName.textColor = [UIColor whiteColor];
-        profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-//        if ([user isEventOwner]) profileName.backgroundColor= RGBAlpha(245, 142, 29, 0.6f);
-//        else
-            profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-        profileName.font = [FontProperties getSmallPhotoFont];
-        [imgView addSubview:profileName];
-    }
-    
-    int usersCantSee = (int)[totalUsers intValue] - (int)[[partyUser getObjectArray] count];
-    if (usersCantSee  > 0) {
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 70, sizeOfEachImage, sizeOfEachImage)];
-        xPosition += sizeOfEachImage;
-        [imagesScrollView addSubview:imageButton];
-        imagesScrollView.contentSize = CGSizeMake(xPosition, placeSubView.frame.size.height);
-        
-        UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"privacyLogo"]];
-        imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
-        [imageButton addSubview:imgView];
-        
-        UILabel *profileName = [[UILabel alloc] init];
-        profileName.text = [NSString stringWithFormat:@"+ %d more", usersCantSee ];;
-        profileName.textColor = [UIColor whiteColor];
-        profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-        profileName.font = [FontProperties getSmallPhotoFont];
-        [imgView addSubview:profileName];
-    }
-    [cell.contentView addSubview:placeSubView];
-    
-    //add invisible event conversation button
-    UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(labelName.frame.origin.x, labelName.frame.origin.y, self.view.frame.size.width - labelName.frame.origin.x, labelName.frame.size.height)];
-    eventFeedButton.backgroundColor = [UIColor clearColor];
-    eventFeedButton.tag = indexPath.row;
-    [eventFeedButton addTarget: self action: @selector(showEventConversation:) forControlEvents: UIControlEventTouchUpInside];
-    [cell.contentView addSubview: eventFeedButton];
-    imagesScrollView.contentOffset = CGPointMake(eventOffset, 0);
-    return cell;
 }
 
 
-- (void)showEventConversation:(UIButton *) button {
-    NSArray *eventsArray;
-    if (_isSearching) eventsArray = [_filteredContentParty getObjectArray];
-    else eventsArray = [_contentParty getObjectArray];
-    
-    Event *chosenEvent = [eventsArray objectAtIndex: button.tag];
-    
+- (void)showUser:(User *)user {
+    [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
+}
+
+- (void)showConversationForEvent:(Event*)event {
     EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
-    eventStoryController.event = chosenEvent;
-    
+    eventStoryController.event = event;
     [self presentViewController:eventStoryController animated:YES completion:nil];
-//    [self.navigationController pushViewController: eventStoryController animated: YES];
-    self.tabBarController.tabBar.hidden = YES;
 }
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
@@ -802,6 +642,20 @@ int firstIndexOfNegativeEvent;
     eventIndex = uniqueIndex - userIndex * numberOfEvents;
     return @{@"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex":[NSNumber numberWithInt:eventIndex]};
 }
+
+- (CGFloat)tableView:(UITableView *)tableView
+heightForHeaderInSection:(NSInteger)section {
+    if (section == 0)  return 0;
+    return 49;
+}
+
+- (UIView *)tableView:(UITableView *)tableView
+viewForHeaderInSection:(NSInteger)section {
+    HeaderOldEventCell *headerOldEventCell = [tableView dequeueReusableHeaderFooterViewWithIdentifier:kHeaderOldEventCellName];
+    headerOldEventCell.headerTitleLabel.text = @"Fuzzy on Yesterday? Check out ";
+    return headerOldEventCell;
+}
+
 
 #pragma mark - UIScrollView Delegate
 
@@ -866,7 +720,7 @@ int firstIndexOfNegativeEvent;
     }];
     
     if (index != NSNotFound) firstIndexOfNegativeEvent = -1;
-    firstIndexOfNegativeEvent = index;
+    firstIndexOfNegativeEvent = (int)index;
 }
 
 - (void)fillEventAttendees {
@@ -1094,3 +948,141 @@ int firstIndexOfNegativeEvent;
 }
 
 @end
+
+@implementation EventCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 320, 155);
+    self.backgroundColor = RGB(249, 249, 249);
+    
+    UILabel *backgroundLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, 40)];
+    backgroundLabel.backgroundColor = RGB(239, 247, 251);
+    [self.contentView addSubview:backgroundLabel];
+    
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 8, self.frame.size.width - 75, 30)];
+    self.eventNameLabel.font = [FontProperties getTitleFont];
+    self.eventNameLabel.textColor = RGB(100, 173, 215);
+    [self.contentView addSubview:self.eventNameLabel];
+    
+    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
+    self.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
+    self.chatBubbleImageView.hidden = YES;
+    [self.contentView addSubview:self.chatBubbleImageView];
+    
+    self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
+    self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
+    self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
+    self.chatNumberLabel.textColor = [UIColor whiteColor];
+    [self.chatBubbleImageView addSubview:self.chatNumberLabel];
+    
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
+    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+    [self.contentView addSubview:postStoryImageView];
+
+    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
+    self.eventPeopleScrollView.frame = CGRectMake(10, 40, self.frame.size.width - 20, 110);
+    self.eventPeopleScrollView.backgroundColor = UIColor.whiteColor;
+    [self.contentView addSubview:self.eventPeopleScrollView];
+    
+    UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y, self.frame.size.width - self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.size.height)];
+    eventFeedButton.backgroundColor = [UIColor clearColor];
+    [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
+    [self.contentView addSubview: eventFeedButton];
+    
+    UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
+    borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
+    borderLabel.layer.borderWidth = 1.5f;
+    borderLabel.layer.cornerRadius = 8;
+    [self.contentView addSubview:borderLabel];
+}
+
+- (void)setEvent:(Event *)event {
+    _event = event;
+    self.eventNameLabel.text = [event name];
+    if ([event.numberOfMessages intValue] > 0) {
+        self.chatBubbleImageView.hidden = NO;
+        self.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [event.numberOfMessages stringValue]];
+    }
+    else self.chatBubbleImageView.hidden = YES;
+    self.eventPeopleScrollView.event = event;
+}
+
+- (void)showEventConversation {
+    [self.placesDelegate showConversationForEvent:_event];
+}
+
+@end
+
+@implementation OldEventCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 320, 50);
+    self.backgroundColor = UIColor.whiteColor;
+    
+    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, self.frame.size.width - 75, self.frame.size.height)];
+    self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
+    self.oldEventLabel.font = [FontProperties mediumFont:18.0f];
+    self.oldEventLabel.textColor = RGB(184, 184, 184);
+    [self.contentView addSubview:self.oldEventLabel];
+   
+    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
+    self.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
+    self.chatBubbleImageView.hidden = YES;
+    [self.contentView addSubview:self.chatBubbleImageView];
+    
+    self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
+    self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
+    self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
+    self.chatNumberLabel.textColor = [UIColor whiteColor];
+    [self.chatBubbleImageView addSubview:self.chatNumberLabel];
+    
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
+    postStoryImageView.image = [UIImage imageNamed:@"grayPostStory"];
+    [self.contentView addSubview:postStoryImageView];
+
+    UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
+    borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
+    borderLabel.layer.borderWidth = 1.5f;
+    borderLabel.layer.cornerRadius = 8;
+    [self.contentView addSubview:borderLabel];
+}
+
+@end
+
+@implementation HeaderOldEventCell
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithReuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 320, 49);
+    self.contentView.backgroundColor = UIColor.clearColor;
+   
+    self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, self.frame.size.width, 39)];
+    self.headerTitleLabel.textColor = RGB(155, 155, 155);
+    self.headerTitleLabel.textAlignment = NSTextAlignmentCenter;
+    self.headerTitleLabel.font = [FontProperties scMediumFont:14.0f];
+    [self.contentView addSubview:self.headerTitleLabel];
+}
+@end
+

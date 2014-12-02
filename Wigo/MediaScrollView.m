@@ -68,6 +68,7 @@
     }
     else if ([mimeType isEqualToString:kImageEventType]) {
         ImageCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCell" forIndexPath: indexPath];
+        myCell.mediaScrollDelegate = self;
         myCell.eventMessage = eventMessage;
         [myCell updateUI];
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
@@ -83,6 +84,7 @@
     }
     else {
         VideoCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VideoCell" forIndexPath: indexPath];
+        myCell.mediaScrollDelegate = self;
         myCell.eventMessage = eventMessage;
         [myCell updateUI];
         NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
@@ -92,6 +94,10 @@
     }
 }
 
+- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell {
+    NSIndexPath *indexPath = [self indexPathForCell:cell];
+    [self.eventMessages replaceObjectAtIndex:[indexPath row] withObject:eventMessage];
+}
 
 - (void)closeView {
     if (self.lastMoviePlayer) {
@@ -142,9 +148,11 @@
     if (!self.readPagesSet) {
         self.readPagesSet = [NSMutableSet new];
     }
-    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
+    NSMutableDictionary *eventMessage = [NSMutableDictionary dictionaryWithDictionary:[self.eventMessages objectAtIndex:page]];
     if ([[eventMessage allKeys] containsObject:@"id"] && [[eventMessage allKeys] containsObject:@"is_read"] && ![[eventMessage objectForKey:@"is_read"] boolValue]) {
         [self.readPagesSet addObject:[eventMessage objectForKey:@"id"]];
+        [eventMessage setValue:@YES forKey:@"is_read"];
+        [self.eventMessages replaceObjectAtIndex:page withObject:eventMessage];
     }
 }
 
@@ -219,6 +227,14 @@
     self.frame = CGRectMake(0, 0, 320, 568);
     self.backgroundColor = UIColor.clearColor;
     
+    self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.thumbnailImageView.clipsToBounds = YES;
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
+    [self.thumbnailImageView addSubview:backgroundImageView];
+    [self.contentView addSubview:self.thumbnailImageView];
+    
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
     self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
@@ -227,6 +243,9 @@
     self.moviePlayer.shouldAutoplay = NO;
     [self.moviePlayer prepareToPlay];
     self.moviePlayer.view.frame = self.frame;
+    UIImageView *movieBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    movieBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
+    [self.moviePlayer.view addSubview:backgroundImageView];
     [self.contentView addSubview:self.moviePlayer.view];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
@@ -271,6 +290,10 @@
     self.imageView.clipsToBounds = YES;
     [self.contentView addSubview:self.imageView];
     
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
+    [self.imageView addSubview:backgroundImageView];
+    
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];
     self.label.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
@@ -283,7 +306,6 @@
 
 
 @end
-
 
 @implementation MediaCell
 
@@ -306,10 +328,9 @@
         }
     }
     
-    User *user = [[User alloc] initWithDictionary:[self.eventMessage objectForKey:@"user"]];
-    if (![user isEqualToUser:[Profile user]]) {
+    NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
         if (!self.numberOfVotesLabel) {
-            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 46, 568 - 80, 36, 30)];
+            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 46, self.frame.size.height - 75, 32, 30)];
             self.numberOfVotesLabel.textColor = [UIColor whiteColor];
             self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
             self.numberOfVotesLabel.font = [FontProperties mediumFont:18.0f];
@@ -318,25 +339,30 @@
         int votes = [[self.eventMessage objectForKey:@"up_votes"] intValue] - [[self.eventMessage objectForKey:@"down_votes"] intValue];
         self.numberOfVotesLabel.text = [[NSNumber numberWithInt:votes] stringValue];
         
-        self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(320 - 46, 568 - 108, 36, 36)];
-        UIImageView *upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
-        upvoteImageView.image = [UIImage imageNamed:@"upvote"];
-        [self.upVoteButton addSubview:upvoteImageView];
-        [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:self.upVoteButton];
-        
-        self.downVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(320 - 46, 568 - 54, 36, 36)];
-        UIImageView *downVoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
-        downVoteImageView.image = [UIImage imageNamed:@"downvote"];
-        [self.downVoteButton addSubview:downVoteImageView];
-        [self.downVoteButton addTarget:self action:@selector(downvotePressed:) forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:self.downVoteButton];
+        if (!self.upVoteButton) {
+            self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 46, self.frame.size.height - 108, 32, 32)];
+            self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
+            [self.upVoteButton addSubview:self.upvoteImageView];
+            [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
+            [self.contentView addSubview:self.upVoteButton];
+        }
+        if (!self.downVoteButton) {
+            self.downVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 46, self.frame.size.height - 42, 32, 32)];
+            self.downvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
+                       [self.downVoteButton addSubview:self.downvoteImageView];
+            [self.downVoteButton addTarget:self action:@selector(downvotePressed:) forControlEvents:UIControlEventTouchUpInside];
+            [self.contentView addSubview:self.downVoteButton];
+        }
+        if ([vote intValue] == 1) self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
+        else self.upvoteImageView.image = [UIImage imageNamed:@"upvote"];
+        if ([vote intValue] == -1) self.downvoteImageView.image = [UIImage imageNamed:@"downvoteFilled"];
+        else self.downvoteImageView.image = [UIImage imageNamed:@"downvote"];
         
         [self showVotes];
-    }
-    else {
-        [self hideVotes];
-    }
+    
+//    else {
+//        [self hideVotes];
+//    }
     
 }
 
@@ -418,6 +444,7 @@
             [self sendVote:upvoteBool];
         }
     }
+    [self.mediaScrollDelegate updateEventMessage:self.eventMessage forCell:self];
 }
 
 

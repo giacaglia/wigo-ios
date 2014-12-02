@@ -9,28 +9,34 @@
 #import "EventPeopleScrollView.h"
 #import "Globals.h"
 
-#define sizeOfEachImage 80
+#define sizeOfEachImage 90
 
 BOOL fetchingEventAttendees;
 NSNumber *page;
-Party *partyUser;
 int xPosition;
+Event *event;
 
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(Event *)event {
-    self = [super initWithFrame:CGRectMake(0, 90, 320, sizeOfEachImage + 10)];
+    self = [super initWithFrame:CGRectMake(0, 0, 320, sizeOfEachImage + 10)];
     if (self) {
-        self.event = event;
         self.contentSize = CGSizeMake(5, sizeOfEachImage + 10);
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
+        _event = event;
+    }
+    return self;
+}
+
+
+- (void)setEvent:(Event *)event {
+    if (event) {
+        _event = event;
         page = @1;
         [self fillEventAttendees];
         [self loadUsers];
     }
-   //    [self fetchEventAttendeesAsynchronous];
-    return self;
 }
 
 
@@ -43,8 +49,8 @@ int xPosition;
 }
 
 - (void)fillEventAttendees {
-    NSArray *eventAttendeesArray = [self.event getEventAttendees];
-    partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
+    NSArray *eventAttendeesArray = [_event getEventAttendees];
+    self.partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
     for (int j = 0; j < [eventAttendeesArray count]; j++) {
         NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
         NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
@@ -58,19 +64,19 @@ int xPosition;
             }
         }
         [user setValue:[eventAttendee objectForKey:@"event_owner"] forKey:@"event_owner"];
-        [partyUser addObject:user];
+        [self.partyUser addObject:user];
     }
 }
 
 
 - (void)loadUsers {
     xPosition = 12;
-    for (int i = 0; i < [[partyUser getObjectArray] count]; i++) {
-        User *user = [[partyUser getObjectArray] objectAtIndex:i];
+    for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
+        User *user = [[self.partyUser getObjectArray] objectAtIndex:i];
         if ([user isEqualToUser:[Profile user]]) {
             user = [Profile user];
         }
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 0, sizeOfEachImage, sizeOfEachImage)];
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
         xPosition += sizeOfEachImage + 3;
         imageButton.tag = i;
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
@@ -84,15 +90,15 @@ int xPosition;
         [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
         
-        UILabel *profileName = [[UILabel alloc] init];
+        UILabel *nameBackground = [[UILabel alloc] initWithFrame:CGRectMake(0, sizeOfEachImage - 25, sizeOfEachImage, 25)];
+        nameBackground.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+        [imgView addSubview:nameBackground];
+        
+        UILabel *profileName = [[UILabel alloc] initWithFrame:nameBackground.frame];
         profileName.text = [user firstName];
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-//        if ([user isEventOwner]) profileName.backgroundColor= RGBAlpha(245, 142, 29, 0.6f);
-//        else
-            profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-        profileName.font = [FontProperties getSmallPhotoFont];
+        profileName.font = [FontProperties lightFont:14.0f];
         [imgView addSubview:profileName];
     }
 }
@@ -100,12 +106,12 @@ int xPosition;
 - (void)chooseUser:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = buttonSender.tag;
-    User *user = [[partyUser getObjectArray] objectAtIndex:tag];
-//    [self.delegate loadViewOfUser:user];
+    User *user = [[self.partyUser getObjectArray] objectAtIndex:tag];
+    [self.placesDelegate showUser:user];
 }
 
 - (void)fetchEventAttendeesAsynchronous {
-    NSNumber *eventId = [self.event eventID];
+    NSNumber *eventId = [_event eventID];
     if (!fetchingEventAttendees) {
         NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [page stringValue]];
         [Network queryAsynchronousAPI:queryString
@@ -124,7 +130,7 @@ int xPosition;
                                               user = [[User alloc] initWithDictionary:userDictionary];
                                           }
                                       }
-                                      [partyUser addObject:user];
+                                      [self.partyUser addObject:user];
                                   }
                                   if ([eventAttendeesArray count] > 0) {
                                       page = @([page intValue] + 1);

@@ -221,10 +221,7 @@ UIButton *tapButton;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)initializeRightBarButton {
-    UITabBarController *tabController = (UITabBarController *)self.parentViewController;
-    tabController.navigationItem.rightBarButtonItem = nil;
-    
+- (void)initializeRightBarButton {    
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
         [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];

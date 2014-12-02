@@ -10,10 +10,14 @@
 #import "Globals.h"
 #import "IQMediaPickerController.h"
 #import "EventPeopleScrollView.h"
+#import <AVFoundation/AVFoundation.h>
+#import <MediaPlayer/MediaPlayer.h>
 
-@interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate, EventPeopleScrollDelegate>
-
+@interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate>
 @property (nonatomic, strong) Event *event;
+@property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
+@property (nonatomic, strong) NSData *fileData;
+@property (nonatomic, strong) NSDictionary *options;
 @end
 
 @interface StoryFlowLayout : UICollectionViewFlowLayout

@@ -47,22 +47,12 @@ UIButton *newChatButton;
 }
 
 - (void) viewWillAppear:(BOOL)animated {
-    self.tabBarController.tabBar.hidden = NO;
-    UITabBarController *tabController = (UITabBarController *)self.parentViewController.parentViewController;
-    tabController.tabBar.selectionIndicatorImage = [UIImage imageNamed:@"chatsSelected"];
-    tabController.tabBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabBarToOrange" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadColorWhenTabBarIsMessage" object:nil];
     [self fetchFirstPageMessages];
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Chat View"];
-
-    self.tabBarController.tabBar.hidden = NO;
-    
     
     self.navigationItem.titleView = nil;
     self.navigationItem.title = @"Chats";
@@ -75,7 +65,6 @@ UIButton *newChatButton;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTabBarNotifications" object:nil];
 }
 
 - (void)scrollUp {
@@ -97,7 +86,6 @@ UIButton *newChatButton;
 - (void) writeMessage {
     self.messageViewController = [[MessageViewController alloc] init];
     [self.navigationController pushViewController:self.messageViewController animated:YES];
-    self.tabBarController.tabBar.hidden = YES;
 }
 
 
@@ -290,7 +278,6 @@ UIButton *newChatButton;
         }
         self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.conversationViewController animated:YES];
-        self.tabBarController.tabBar.hidden = YES;
     }
 }
 

@@ -245,7 +245,7 @@ BOOL runningAnimations;
             page = ceil(fractionalPage);
         }
     }
-    [self changeToPage:page];
+    [self changeToPage:(int)page];
 }
 
 - (void)changeToPage:(int)page {

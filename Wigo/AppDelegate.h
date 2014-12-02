@@ -12,11 +12,10 @@
 typedef void (^IsThereResult)(NSNumber *numberOfNewMessages, NSNumber *numberOfNewNotifications);
 
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIGestureRecognizerDelegate, UITabBarControllerDelegate, UIAlertViewDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIGestureRecognizerDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 @property NSMutableDictionary *notificationDictionary;
-- (void)reloadTabBarNotifications;
 - (void) initializeLocalytics;
 - (void) initializeGoogleAnalytics;
 
