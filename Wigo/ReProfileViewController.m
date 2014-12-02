@@ -92,7 +92,7 @@ UIButton *tapButton;
     
     _isSeingImages = NO;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
-    
+   
     [self initializeNotificationHandlers];
     [self initializeFollowingAndFollowers];
     [self initializeFollowButton];
