@@ -13,7 +13,7 @@
 #import "UIPageControlAligned.h"
 #import "UIImageCrop.h"
 #import "RWBlurPopover.h"
-
+#import "ChatViewController.h"
 
 @interface ReProfileViewController ()
 
@@ -684,14 +684,6 @@ UIButton *tapButton;
         followingLabel.text = @"following";
         [_rightProfileButton addSubview:followingLabel];
         
-        UIButton *chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, self.view.frame.size.width, self.view.frame.size.width/3, 70)];
-        
-        UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, chatButton.frame.size.width, 20)];
-        chatLabel.textAlignment = NSTextAlignmentCenter;
-        chatLabel.text = @"chats";
-        chatLabel.textColor = [FontProperties getOrangeColor];
-        chatLabel.font = [FontProperties scMediumFont:16.0f];
-        [self.view addSubview:chatButton];
     }
     else {
         _rightProfileButton.frame = CGRectMake(3*self.view.frame.size.width/4, self.view.frame.size.width, self.view.frame.size.width/4, 100);
@@ -706,6 +698,28 @@ UIButton *tapButton;
         [_rightProfileButton addSubview:chatImageView];
     }
     [self.view addSubview:_rightProfileButton];
+    
+    UIButton *chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, self.view.frame.size.width, self.view.frame.size.width/3, 70)];
+    [chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
+    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, chatButton.frame.size.width, 20)];
+    chatLabel.textAlignment = NSTextAlignmentCenter;
+    chatLabel.text = @"chats";
+    chatLabel.textColor = [FontProperties getOrangeColor];
+    chatLabel.font = [FontProperties scMediumFont:16.0f];
+    [chatButton addSubview:chatLabel];
+    
+    UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(chatButton.frame.size.width/2 - 10, 10, 20, 20)];
+    orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
+    [chatButton addSubview:orangeChatBubbleImageView];
+
+    UILabel *numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, orangeChatBubbleImageView.frame.size.width, orangeChatBubbleImageView.frame.size.height - 4)];
+    numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
+    numberOfChatsLabel.textColor = UIColor.whiteColor;
+    numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
+    numberOfChatsLabel.text = @"8";
+    [orangeChatBubbleImageView addSubview:numberOfChatsLabel];
+    
+    [self.view addSubview:chatButton];
 }
 
 - (void)followersButtonPressed {
@@ -730,6 +744,9 @@ UIButton *tapButton;
     }
 }
 
+- (void)chatPressed {
+    [self presentViewController:[ChatViewController new] animated:YES completion:nil];
+}
 
 #pragma mark UIScrollView delegate
 
