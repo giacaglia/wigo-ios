@@ -641,13 +641,18 @@ UIButton *tapButton;
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         _leftProfileButton.frame = CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width/3, 70);
         [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _leftProfileButton.frame.size.width, 60)];
+        UILabel *numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _leftProfileButton.frame.size.width, 25)];
+        numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
+        numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
+        numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
+        numberOfFollowersLabel.text = [(NSNumber*)[self.user objectForKey:@"num_followers"] stringValue];
+        [_leftProfileButton addSubview:numberOfFollowersLabel];
+        
+        UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _leftProfileButton.frame.size.width, 20)];
         followersLabel.textColor = [FontProperties getOrangeColor];
         followersLabel.font = [FontProperties getTitleFont];
         followersLabel.textAlignment = NSTextAlignmentCenter;
-        followersLabel.text = [NSString stringWithFormat:@"%d\nFollowers", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
-        followersLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        followersLabel.numberOfLines = 0;
+        followersLabel.text = @"Followers";
         [_leftProfileButton addSubview:followersLabel];
     }
 
@@ -666,13 +671,19 @@ UIButton *tapButton;
     
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, self.view.frame.size.width, self.view.frame.size.width/3, 70);
-        UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _rightProfileButton.frame.size.width, 60)];
+        
+        UILabel *numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _rightProfileButton.frame.size.width, 25)];
+        numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
+        numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
+        numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
+        numberOfFollowingLabel.text = [(NSNumber*)[self.user objectForKey:@"num_following"] stringValue];
+        [_rightProfileButton addSubview:numberOfFollowingLabel];
+        
+        UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _rightProfileButton.frame.size.width, 20)];
         followingLabel.textColor = [FontProperties getOrangeColor];
         followingLabel.font = [FontProperties getTitleFont];
         followingLabel.textAlignment = NSTextAlignmentCenter;
-        followingLabel.text = [NSString stringWithFormat:@"%d\nFollowing", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
-        followingLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        followingLabel.numberOfLines = 0;
+        followingLabel.text = @"Following";
         [_rightProfileButton addSubview:followingLabel];
     }
     else {
