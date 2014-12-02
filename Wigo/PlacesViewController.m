@@ -24,6 +24,7 @@
 #define sizeOfEachCell 160
 #define kEventCellName @"EventCell"
 #define kOldEventCellName @"OldEventCell"
+#define kHeaderOldEventCellName @"HeaderOldEventCell"
 #import "EventStoryViewController.h"
 
 @interface PlacesViewController ()
@@ -277,6 +278,7 @@ int firstIndexOfNegativeEvent;
     _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[OldEventCell class] forCellReuseIdentifier:kOldEventCellName];
+    [_placesTableView registerClass:[HeaderOldEventCell class] forHeaderFooterViewReuseIdentifier:kHeaderOldEventCellName];
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
     _yPositionOfWhereSubview = 280;
@@ -642,6 +644,20 @@ int firstIndexOfNegativeEvent;
     return @{@"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex":[NSNumber numberWithInt:eventIndex]};
 }
 
+- (CGFloat)tableView:(UITableView *)tableView
+heightForHeaderInSection:(NSInteger)section {
+    if (section == 0)  return 0;
+    return 59;
+}
+
+- (UIView *)tableView:(UITableView *)tableView
+viewForHeaderInSection:(NSInteger)section {
+    HeaderOldEventCell *headerOldEventCell = [tableView dequeueReusableHeaderFooterViewWithIdentifier:kHeaderOldEventCellName];
+    headerOldEventCell.headerTitleLabel.text = @"Fuzzy on Yesterday? Check out ";
+    return headerOldEventCell;
+}
+
+
 #pragma mark - UIScrollView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -982,7 +998,6 @@ int firstIndexOfNegativeEvent;
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
     
-    // Add borders
     UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
     borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
     borderLabel.layer.borderWidth = 1.5f;
@@ -1021,7 +1036,7 @@ int firstIndexOfNegativeEvent;
     self.frame = CGRectMake(0, 0, 320, 50);
     self.backgroundColor = UIColor.whiteColor;
     
-    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.frame.size.width - 75, self.frame.size.height)];
+    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, self.frame.size.width - 75, self.frame.size.height)];
     self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
     self.oldEventLabel.font = [FontProperties mediumFont:18.0f];
     self.oldEventLabel.textColor = RGB(184, 184, 184);
@@ -1041,7 +1056,34 @@ int firstIndexOfNegativeEvent;
     UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
     postStoryImageView.image = [UIImage imageNamed:@"grayPostStory"];
     [self.contentView addSubview:postStoryImageView];
+
+    UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
+    borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
+    borderLabel.layer.borderWidth = 1.5f;
+    borderLabel.layer.cornerRadius = 8;
+    [self.contentView addSubview:borderLabel];
 }
 
+@end
+
+@implementation HeaderOldEventCell
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithReuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 320, 59);
+    self.contentView.backgroundColor = UIColor.clearColor;
+   
+    self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, self.frame.size.width, 39)];
+    self.headerTitleLabel.textColor = RGB(155, 155, 155);
+    self.headerTitleLabel.textAlignment = NSTextAlignmentCenter;
+    self.headerTitleLabel.font = [FontProperties scMediumFont:14.0f];
+    [self.contentView addSubview:self.headerTitleLabel];
+}
 @end
 

@@ -39,3 +39,7 @@
 @property (nonatomic, strong) UIImageView *chatBubbleImageView;
 @property (nonatomic, strong) UILabel *chatNumberLabel;
 @end
+
+@interface HeaderOldEventCell : UITableViewHeaderFooterView
+@property (nonatomic, strong) UILabel *headerTitleLabel;
+@end
