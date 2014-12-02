@@ -29,6 +29,16 @@ BOOL cancelFetchMessages;
   
     [self loadEventDetails];
     [self loadTextViewAndSendButton];
+    EventPeopleScrollView *eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
+    eventPeopleScrollView.event = _event;
+    eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
+    [self.view addSubview:eventPeopleScrollView];
+    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(thumbnailGenerated)
+                                                 name:MPMoviePlayerThumbnailImageRequestDidFinishNotification
+                                               object:nil];
 }
 
 
@@ -53,11 +63,6 @@ BOOL cancelFetchMessages;
     titleLabel.textColor = [FontProperties getBlueColor];
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
-    
-    EventPeopleScrollView *eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
-    eventPeopleScrollView.event = _event;
-    eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
-    [self.view addSubview:eventPeopleScrollView];
     
     UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 184, self.view.frame.size.width - 220, 20)];
     if ([self.event.numberAttending intValue] == 1) {
@@ -294,7 +299,8 @@ BOOL cancelFetchMessages;
     else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
         type = kVideoEventType;
         NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
-        
+        MPMoviePlayerController *moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
+        [moviePlayer requestThumbnailImagesAtTimes:@[@0] timeOption:MPMovieTimeOptionNearestKeyFrame];
         
         NSError *error;
         NSData *fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
@@ -339,6 +345,9 @@ BOOL cancelFetchMessages;
     cancelFetchMessages = YES;
 }
 
+- (void)thumbnailGenerated {
+    NSLog(@"here");
+}
 
 - (NSMutableArray *)eventMessagesWithCamera {
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];

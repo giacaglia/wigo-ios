@@ -230,6 +230,9 @@
     self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
     self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.thumbnailImageView.clipsToBounds = YES;
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
+    [self.thumbnailImageView addSubview:backgroundImageView];
     [self.contentView addSubview:self.thumbnailImageView];
     
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
@@ -240,6 +243,9 @@
     self.moviePlayer.shouldAutoplay = NO;
     [self.moviePlayer prepareToPlay];
     self.moviePlayer.view.frame = self.frame;
+    UIImageView *movieBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    movieBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
+    [self.moviePlayer.view addSubview:backgroundImageView];
     [self.contentView addSubview:self.moviePlayer.view];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
@@ -322,7 +328,6 @@
         }
     }
     
-    User *user = [[User alloc] initWithDictionary:[self.eventMessage objectForKey:@"user"]];
     NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
         if (!self.numberOfVotesLabel) {
             self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 46, self.frame.size.height - 75, 32, 30)];
