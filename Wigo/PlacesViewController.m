@@ -229,6 +229,11 @@ int firstIndexOfNegativeEvent;
     [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
     schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     schoolButton.titleLabel.font = [FontProperties scMediumFont:20.0f];
+    
+    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(150, 0, 6, 5)];
+    triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
+    [schoolButton addSubview:triangleImageView];
+    
     self.navigationItem.titleView = schoolButton;
 }
 

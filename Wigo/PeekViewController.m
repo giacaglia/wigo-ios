@@ -46,7 +46,7 @@
     [searchButton addTarget:self action:@selector(searchPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:searchButton];
     UIImageView *searchImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 35, 15, 16)];
-    searchImageView.image = [UIImage imageNamed:@"searchIcon"];
+    searchImageView.image = [UIImage imageNamed:@"whiteSearchIcon"];
     [searchButton addSubview:searchImageView];
 }
 
