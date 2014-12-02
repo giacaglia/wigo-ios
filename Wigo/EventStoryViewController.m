@@ -54,6 +54,11 @@ BOOL cancelFetchMessages;
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
+    EventPeopleScrollView *eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
+    eventPeopleScrollView.event = _event;
+    eventPeopleScrollView.frame = CGRectMake(0, 90, self.view.frame.size.width, 100);
+    [self.view addSubview:eventPeopleScrollView];
+    
     UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 74, self.view.frame.size.width - 220, 20)];
     if ([self.event.numberAttending intValue] == 1) {
         numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
