@@ -197,15 +197,14 @@ UIButton *tapButton;
 }
 
 - (void) initializeLeftBarButton {
-    UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+    UIButton  *barBt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 44)];
     [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
-    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    [barBt setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     barBt.titleLabel.font = [FontProperties getSubtitleFont];
     [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
-    [barItem setCustomView:barBt];
-    self.navigationItem.leftBarButtonItem = barItem;
+    [self.view addSubview:barBt];
+    [self.view bringSubviewToFront:barBt];
 }
 
 - (void) goBack {
@@ -455,12 +454,6 @@ UIButton *tapButton;
         _isSeingImages = YES;
         _lastLineView.hidden = NO;
         
-        self.navigationController.navigationBar.barTintColor = RGB(23, 23, 23);
-        UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"closeButton"] style:UIBarButtonItemStylePlain target:self action:@selector(chooseImage)];
-        [closeButton setTintColor:[UIColor whiteColor]];
-        self.navigationItem.leftBarButtonItem = closeButton;
-        self.navigationItem.rightBarButtonItem = nil;
-        
         [UIView animateWithDuration:0.2
                               delay:0
                             options:UIViewAnimationOptionCurveLinear
@@ -483,7 +476,6 @@ UIButton *tapButton;
         _tapScrollView.enabled = YES;
         _isSeingImages = NO;
         _lastLineView.hidden = YES;
-        [self initializeLeftBarButton];
         [self initializeRightBarButton];
         [UIView animateWithDuration:0.2
                          animations:^{
@@ -664,11 +656,9 @@ UIButton *tapButton;
 - (void)initializeLeftProfileButton {
     _leftProfileButton = [[UIButton alloc] init];
     [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    _leftProfileButton.layer.borderWidth = 1;
-    _leftProfileButton.layer.borderColor = RGBAlpha(0, 0, 0, 0.05f).CGColor;
     
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _leftProfileButton.frame = CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width/2, 100);
+        _leftProfileButton.frame = CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width/3, 70);
         
         UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _leftProfileButton.frame.size.width, 60)];
         followersLabel.textColor = [FontProperties getOrangeColor];
@@ -720,11 +710,9 @@ UIButton *tapButton;
 - (void)initializeRightProfileButton {
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    _rightProfileButton.layer.borderWidth = 1;
-    _rightProfileButton.layer.borderColor = RGBAlpha(0, 0, 0, 0.05f).CGColor;
     
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.width, self.view.frame.size.width/2, 100);
+        _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, self.view.frame.size.width, self.view.frame.size.width/3, 70);
         UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _rightProfileButton.frame.size.width, 60)];
         followingLabel.textColor = [FontProperties getOrangeColor];
         followingLabel.font = [FontProperties getTitleFont];
