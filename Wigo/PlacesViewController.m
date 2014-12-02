@@ -23,6 +23,7 @@
 
 #define sizeOfEachCell 160
 #define kEventCellName @"EventCell"
+#define kOldEventCellName @"OldEventCell"
 #import "EventStoryViewController.h"
 
 @interface PlacesViewController ()
@@ -275,6 +276,7 @@ int firstIndexOfNegativeEvent;
     _placesTableView.delegate = self;
     _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
+    [_placesTableView registerClass:[OldEventCell class] forCellReuseIdentifier:kOldEventCellName];
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
     _yPositionOfWhereSubview = 280;
@@ -327,7 +329,6 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeGoingSomewhereElseButton {
-    
     _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, self.view.frame.size.height - 55, 45, 45)];
     [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
     _goingSomewhereButton.backgroundColor = [FontProperties getBlueColor];
@@ -545,60 +546,76 @@ int firstIndexOfNegativeEvent;
 #pragma mark - Tablew View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath row] == [[_contentParty getObjectArray] count]) {
-        return 70;
+    if ([indexPath section] == 0) {
+        if ([indexPath row] == [[_contentParty getObjectArray] count]) {
+            return 70;
+        }
+        if (firstIndexOfNegativeEvent >= 0 && [indexPath row] >= firstIndexOfNegativeEvent) {
+            return 70;
+        }
+        return sizeOfEachCell;
+
     }
-    if (firstIndexOfNegativeEvent >= 0 && [indexPath row] >= firstIndexOfNegativeEvent) {
-        return 70;
-    }
-    return sizeOfEachCell;
+    else return 50;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    if (_isSearching) {
-        return [[_filteredContentParty getObjectArray] count];
+    if (section == 0) {
+        if (_isSearching) {
+            return [[_filteredContentParty getObjectArray] count];
+        }
+        else {
+            int hasNextPage = ([_eventsParty hasNextPage] ? 1 : 0);
+            return [[_contentParty getObjectArray] count] + hasNextPage;
+        }
     }
-    else {
-        int hasNextPage = ([_eventsParty hasNextPage] ? 1 : 0);
-        return [[_contentParty getObjectArray] count] + hasNextPage;
-        
-    }
+    else return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName];
-    cell.placesDelegate = self;
-    if (_isSearching) {
-        if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
-            return cell;
+    if (indexPath.section == 0) {
+        EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName];
+
+        cell.placesDelegate = self;
+        if (_isSearching) {
+            if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
+                return cell;
+            }
         }
+        else {
+            if (indexPath.row == [[_contentParty getObjectArray] count]) {
+                [self fetchEvents];
+                return cell;
+            }
+        }
+        
+        Event *event;
+        if (_isSearching) {
+            int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
+            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
+            event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
+        }
+        else {
+            int sizeOfArray = (int)[[_contentParty getObjectArray] count];
+            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
+            event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
+        }
+        cell.event = event;
+        cell.eventPeopleScrollView.placesDelegate = self;
+        return cell;
     }
     else {
-        if (indexPath.row == [[_contentParty getObjectArray] count]) {
-            [self fetchEvents];
-            return cell;
-        }
+        OldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventCellName];
+        cell.oldEventLabel.text = @"Date with Ben's Mom";
+        cell.chatBubbleImageView.hidden = NO;
+        cell.chatNumberLabel.text = @"36";
+        return cell;
     }
   
-    Event *event;
-    if (_isSearching) {
-        int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
-        if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
-        event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
-    }
-    else {
-        int sizeOfArray = (int)[[_contentParty getObjectArray] count];
-        if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
-        event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
-    }
-    cell.event = event;
-    cell.eventPeopleScrollView.placesDelegate = self;
-    return cell;
 }
 
 
@@ -935,7 +952,7 @@ int firstIndexOfNegativeEvent;
     backgroundLabel.backgroundColor = RGB(239, 247, 251);
     [self.contentView addSubview:backgroundLabel];
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 8, self.frame.size.width - 30, 30)];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 8, self.frame.size.width - 75, 30)];
     self.eventNameLabel.font = [FontProperties getTitleFont];
     self.eventNameLabel.textColor = RGB(100, 173, 215);
     [self.contentView addSubview:self.eventNameLabel];
@@ -988,5 +1005,43 @@ int firstIndexOfNegativeEvent;
     [self.placesDelegate showConversationForEvent:_event];
 }
 
+@end
+
+@implementation OldEventCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 320, 50);
+    self.backgroundColor = UIColor.whiteColor;
+    
+    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.frame.size.width - 75, self.frame.size.height)];
+    self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
+    self.oldEventLabel.font = [FontProperties mediumFont:18.0f];
+    self.oldEventLabel.textColor = RGB(184, 184, 184);
+    [self.contentView addSubview:self.oldEventLabel];
+   
+    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
+    self.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
+    self.chatBubbleImageView.hidden = YES;
+    [self.contentView addSubview:self.chatBubbleImageView];
+    
+    self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
+    self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
+    self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
+    self.chatNumberLabel.textColor = [UIColor whiteColor];
+    [self.chatBubbleImageView addSubview:self.chatNumberLabel];
+    
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
+    postStoryImageView.image = [UIImage imageNamed:@"grayPostStory"];
+    [self.contentView addSubview:postStoryImageView];
+}
 
 @end
+

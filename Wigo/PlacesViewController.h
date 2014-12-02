@@ -34,3 +34,8 @@
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 @end
 
+@interface OldEventCell : UITableViewCell
+@property (nonatomic, strong) UILabel *oldEventLabel;
+@property (nonatomic, strong) UIImageView *chatBubbleImageView;
+@property (nonatomic, strong) UILabel *chatNumberLabel;
+@end
