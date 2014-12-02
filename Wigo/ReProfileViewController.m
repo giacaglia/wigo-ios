@@ -405,26 +405,6 @@ UIButton *tapButton;
     [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count] - 10, 320)];
 }
 
-- (void) addBlurredImageToImageView:(UIImageView *)imageView forIndex:(int)i {
-    UIImage *imageRightSize = [UIImageCrop imageFromImageView:imageView];
-    UIImage *croppedImage = [UIImageCrop croppingImage:imageRightSize toRect:CGRectMake(0, imageView.frame.size.height - 80, self.view.frame.size.width, 80)];
-    UIImageView *croppedImageView = [[UIImageView alloc] initWithImage:croppedImage];
-    croppedImageView.frame = CGRectMake(0, imageView.frame.size.height - 80, imageView.frame.size.width, 80);
-    
-    UIImage *blurredImage = [UIImageCrop blurredImageFromImageView:croppedImageView withRadius:10.0f];
-    croppedImageView.image = blurredImage;
-    // IF THE USER IS NOT SEEING THEIR PHOTOS FULL SCREEN then add blur
-    if (!_isSeingImages) {
-        [imageView addSubview:croppedImageView];
-    }
-}
-
-- (void)deleteBlurredImageFromImageView:(UIImageView *)imageView {
-    for (UIView *subview in imageView.subviews) {
-        [subview removeFromSuperview];
-    }
-}
-
 - (void) initializeFollowButton {
     _followButton = [[UIButton alloc] initWithFrame:CGRectMake(25, self.view.frame.size.width + 20, self.view.frame.size.width - 50, 50)];
     [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -493,9 +473,7 @@ UIButton *tapButton;
                              _rightProfileButton.hidden = YES;
                              _followingButton.hidden = YES;
                              _followersButton.hidden = YES;
-                             for (UIImageView *profileImageView in _profileImagesArray) {
-                                 [self deleteBlurredImageFromImageView:profileImageView];
-                             }
+                         
                          }
                          completion:nil
          ];
@@ -510,7 +488,6 @@ UIButton *tapButton;
         [UIView animateWithDuration:0.2
                          animations:^{
                              _nameOfPersonBackground.transform =  CGAffineTransformMakeTranslation(0, 0);
-                             _nameOfPersonBackground.backgroundColor = RGBAlpha(23, 23, 23, 0.7f);
                              [self.view bringSubviewToFront:_nameOfPersonBackground];
                              self.view.backgroundColor = [UIColor whiteColor];
                              self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
@@ -518,16 +495,16 @@ UIButton *tapButton;
                              
                          } completion:^(BOOL finished) {
                              
-                             for (int i = 0; i < [_profileImagesArray count]; i++) {
-                                 UIImageView *profileImageView = [_profileImagesArray objectAtIndex:i];
-                                 [self addBlurredImageToImageView:profileImageView forIndex:i];
-                             }
                          }];
     }
 }
 
 - (void)initializeNameOfPerson {
     _nameOfPersonBackground = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
+    UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
+    gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
+    [_nameOfPersonBackground addSubview:gradientBackground];
+    
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
     
     
@@ -617,7 +594,7 @@ UIButton *tapButton;
         _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
     }
     
-      [_nameOfPersonBackground addSubview:_nameOfPersonLabel];
+    [_nameOfPersonBackground addSubview:_nameOfPersonLabel];
     [self.view addSubview:_nameOfPersonBackground];
     [self.view bringSubviewToFront:_nameOfPersonBackground];
     
