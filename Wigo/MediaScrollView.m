@@ -227,6 +227,11 @@
     self.frame = CGRectMake(0, 0, 320, 568);
     self.backgroundColor = UIColor.clearColor;
     
+    self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.thumbnailImageView.clipsToBounds = YES;
+    [self.contentView addSubview:self.thumbnailImageView];
+    
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
     self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
@@ -278,6 +283,10 @@
     self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     self.imageView.clipsToBounds = YES;
     [self.contentView addSubview:self.imageView];
+    
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
+    [self.imageView addSubview:backgroundImageView];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];
