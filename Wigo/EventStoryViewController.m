@@ -417,15 +417,6 @@ BOOL cancelFetchMessages;
                             withAPIName:[NSString stringWithFormat: @"uploads/videos/?filename=%@", filename]
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                    
-                                    NSDictionary *thumbnailDictionary = [jsonResponse objectForKey:@"thumbnail"];
-                                    NSArray *fields = [thumbnailDictionary objectForKey:@"fields"];
-                                    NSString *actionString = [thumbnailDictionary objectForKey:@"action"];
-                                    [AWSUploader uploadFields:fields
-                                                withActionURL:actionString
-                                                     withFile:thumbnailData
-                                                  andFileName:thumnailFilename];
-                                    
                                     NSDictionary *videoDictionary = [jsonResponse objectForKey:@"video"];
                                     NSArray *videoFields = [videoDictionary objectForKey:@"fields"];
                                     NSString *videoActionString = [videoDictionary objectForKey:@"action"];
@@ -433,29 +424,37 @@ BOOL cancelFetchMessages;
                                     [AWSUploader uploadFields:videoFields
                                                 withActionURL:videoActionString
                                                      withFile:fileData
-                                                  andFileName:filename];
-                                    
-                                    NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
-                                    [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:videoFields] forKey:@"media"];
-                                    [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"thumbnail"];
-                                    [Network sendAsynchronousHTTPMethod:POST
-                                                            withAPIName:@"eventmessages/"
-                                                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                                                if (!error) {
-                                                                    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
-                                                                    [mutableEventMessages replaceObjectAtIndex:(eventMessages.count - 1) withObject:jsonResponse];
-                                                                    eventMessages = [NSArray arrayWithArray:mutableEventMessages];
-                                                                    [facesCollectionView reloadData];
-                                                                }
-                                                                else {
-                                                                    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
-                                                                    [mutableEventMessages removeLastObject];
-                                                                    eventMessages = [NSArray arrayWithArray:mutableEventMessages];
-                                                                    [facesCollectionView reloadData];
-                                                                }
-                                                            } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
+                                                  andFileName:filename
+                                     withCompletion:^{
+                                        NSDictionary *thumbnailDictionary = [jsonResponse objectForKey:@"thumbnail"];
+                                        NSArray *fields = [thumbnailDictionary objectForKey:@"fields"];
+                                        NSString *actionString = [thumbnailDictionary objectForKey:@"action"];
+                                        [AWSUploader uploadFields:fields
+                                                    withActionURL:actionString
+                                                         withFile:thumbnailData
+                                                      andFileName:thumnailFilename];
+                                         
+                                         NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
+                                         [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:videoFields] forKey:@"media"];
+                                         [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"thumbnail"];
+                                         [Network sendAsynchronousHTTPMethod:POST
+                                                                 withAPIName:@"eventmessages/"
+                                                                 withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                                                     if (!error) {
+                                                                         NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
+                                                                         [mutableEventMessages replaceObjectAtIndex:(eventMessages.count - 1) withObject:jsonResponse];
+                                                                         eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+                                                                         [facesCollectionView reloadData];
+                                                                     }
+                                                                     else {
+                                                                         NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
+                                                                         [mutableEventMessages removeLastObject];
+                                                                         eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+                                                                         [facesCollectionView reloadData];
+                                                                     }
+                                                                 } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
+                                     }];
                                 });
-                                
                             }];
 }
 

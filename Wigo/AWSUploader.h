@@ -10,7 +10,12 @@
 
 @interface AWSUploader : NSObject
 
-//+ (void)uploadImage:(NSData *)image;
++ (void)uploadFields:(NSArray *)fields
+       withActionURL:(NSString *)action
+            withFile:(NSData *)fileData
+         andFileName:(NSString *)filename
+      withCompletion:(void(^)(void))callback;
+
 + (void)uploadFields:(NSArray *)fields
       withActionURL:(NSString *)action
            withFile:(NSData *)fileData
