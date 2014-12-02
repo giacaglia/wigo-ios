@@ -500,6 +500,11 @@ UIButton *tapButton;
 }
 
 - (void)initializeNameOfPerson {
+    UIImageView *topGradientBackground =[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
+    topGradientBackground.image = [UIImage imageNamed:@"topGradientBackground"];
+    [self.view addSubview:topGradientBackground];
+    [self.view bringSubviewToFront:topGradientBackground];
+    
     _nameOfPersonBackground = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
     UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
     gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
