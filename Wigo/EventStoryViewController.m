@@ -298,7 +298,7 @@ BOOL cancelFetchMessages;
                                                      name:MPMoviePlayerThumbnailImageRequestDidFinishNotification
                                                    object:self.moviePlayer];
 
-        [self.moviePlayer requestThumbnailImagesAtTimes:@[@0.0f, @0.1f] timeOption:MPMovieTimeOptionNearestKeyFrame];
+        [self.moviePlayer requestThumbnailImagesAtTimes:@[@0.0f] timeOption:MPMovieTimeOptionNearestKeyFrame];
         
         NSError *error;
         self.fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
@@ -342,7 +342,7 @@ BOOL cancelFetchMessages;
 }
 
 - (void)thumbnailGenerated:(NSNotification *)notification {
-    NSLog(@"thumbnail generated");
+//    NSLog(@"thumbnail generated");
     NSDictionary *userInfo = [notification userInfo];
     UIImage *image = [userInfo valueForKey:MPMoviePlayerThumbnailImageKey];
     [self uploadContentWithFile:self.fileData
