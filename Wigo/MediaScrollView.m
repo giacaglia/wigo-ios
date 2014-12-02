@@ -87,6 +87,11 @@
         myCell.mediaScrollDelegate = self;
         myCell.eventMessage = eventMessage;
         [myCell updateUI];
+        NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
+        if (![thumbnailURL isKindOfClass:[NSNull class]]) {
+            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], thumbnailURL]];
+            [myCell.thumbnailImageView setImageWithURL:imageURL];
+        }
         NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
         myCell.moviePlayer.contentURL = videoURL;
         [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
@@ -227,13 +232,8 @@
     self.frame = CGRectMake(0, 0, 320, 568);
     self.backgroundColor = UIColor.clearColor;
     
-    self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
-    self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.thumbnailImageView.clipsToBounds = YES;
     UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
     backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-    [self.thumbnailImageView addSubview:backgroundImageView];
-    [self.contentView addSubview:self.thumbnailImageView];
     
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
@@ -247,6 +247,12 @@
     movieBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
     [self.moviePlayer.view addSubview:backgroundImageView];
     [self.contentView addSubview:self.moviePlayer.view];
+    
+    self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.thumbnailImageView.clipsToBounds = YES;
+    [self.thumbnailImageView addSubview:backgroundImageView];
+    [self.moviePlayer.backgroundView addSubview:self.thumbnailImageView];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];
