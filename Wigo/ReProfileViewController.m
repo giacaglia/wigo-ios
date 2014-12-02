@@ -95,9 +95,8 @@ UIButton *tapButton;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
     
     [self initializeNotificationHandlers];
-    [self initializeLeftBarButton];
+//    self.navigationController.navigationBar.hidden = YES;
     [self initializeBioLabel];
-    [self initializeRightBarButton];
     [self initializeFollowingAndFollowers];
     [self initializeFollowButton];
     [self initializeFollowRequestLabel];
@@ -196,16 +195,6 @@ UIButton *tapButton;
     [self initializeTapButton];
 }
 
-- (void) initializeLeftBarButton {
-    UIButton  *barBt = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 44)];
-    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
-    [barBt setTitle:@" Back" forState:UIControlStateNormal];
-    [barBt setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    barBt.titleLabel.font = [FontProperties getSubtitleFont];
-    [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:barBt];
-    [self.view bringSubviewToFront:barBt];
-}
 
 - (void) goBack {
     if (![self.user isEqualToUser:[Profile user]]) {
@@ -214,26 +203,7 @@ UIButton *tapButton;
         isUserBlocked = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
     }
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)initializeRightBarButton {
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
-        [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
-        [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
-        
-    }
-    else  {
-        _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
-        [_rightBarBt setTitle:@"More" forState:UIControlStateNormal];
-        [_rightBarBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
-    }
-    _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
-    [_rightBarBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
-    [barItem setCustomView:_rightBarBt];
-    self.navigationItem.rightBarButtonItem = barItem;
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -266,7 +236,7 @@ UIButton *tapButton;
 - (void) editPressed {
     self.editProfileViewController = [[EditProfileViewController alloc] init];
     self.editProfileViewController.view.backgroundColor = RGB(235, 235, 235);
-    [self.navigationController pushViewController:self.editProfileViewController animated:YES];
+    [self presentViewController:self.editProfileViewController animated:YES completion:nil];
 }
 
 - (void)unfollowPressed {
@@ -387,8 +357,6 @@ UIButton *tapButton;
         [_scrollView addSubview:spinner];
         [spinner startAnimating];
         __weak UIActivityIndicatorView *weakSpinner = spinner;
-        __weak UIImageView *weakProfileImgView = profileImgView;
-        
         NSDictionary *info = @{@"user": self.user,
                                @"images": [self.user images],
                                @"index": [NSNumber numberWithInt:i]};
@@ -450,7 +418,6 @@ UIButton *tapButton;
 - (void)chooseImage {
     [self setNeedsStatusBarAppearanceUpdate];
     if (!_isSeingImages) {
-        self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
         _isSeingImages = YES;
         _lastLineView.hidden = NO;
         
@@ -472,11 +439,9 @@ UIButton *tapButton;
          ];
     }
     else {
-        self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
         _tapScrollView.enabled = YES;
         _isSeingImages = NO;
         _lastLineView.hidden = YES;
-        [self initializeRightBarButton];
         [UIView animateWithDuration:0.2
                          animations:^{
                              _nameOfPersonBackground.transform =  CGAffineTransformMakeTranslation(0, 0);
@@ -497,14 +462,34 @@ UIButton *tapButton;
     [self.view addSubview:topGradientBackground];
     [self.view bringSubviewToFront:topGradientBackground];
     
+    UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 44)];
+    [backButton setImage:[UIImage imageNamed:@"whiteBackButton"] forState:UIControlStateNormal];
+    [backButton setTitle:@" Back" forState:UIControlStateNormal];
+    [backButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    backButton.titleLabel.font = [FontProperties getSubtitleFont];
+    [backButton addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:backButton];
+    
+    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 75, 0, 65, 44)];
+    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
+        [rightButton setTitle:@"Edit" forState:UIControlStateNormal];
+        [rightButton addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
+        
+    }
+    else  {
+        [rightButton setTitle:@"More" forState:UIControlStateNormal];
+        [rightButton addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
+    }
+    rightButton.titleLabel.font = [FontProperties getSubtitleFont];
+    [self.view addSubview:rightButton];
+
+    
     _nameOfPersonBackground = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
     UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
     gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
     [_nameOfPersonBackground addSubview:gradientBackground];
     
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
-    
-    
     if ([self.user getUserState] == ATTENDING_EVENT_FOLLOWING_USER ||
         [self.user getUserState] == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
         _nameOfPersonLabel.numberOfLines = 0;
