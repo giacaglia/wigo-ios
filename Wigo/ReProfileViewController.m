@@ -327,10 +327,7 @@ UIButton *tapButton;
     _pageControl.currentPageIndicatorTintColor = UIColor.whiteColor;
     _pageControl.pageIndicatorTintColor = RGBAlpha(255, 255, 255, 0.4f);
     _pageControl.center = CGPointMake(self.view.center.x, 25);
-    
-    UIView *pageControlView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 320, 44)];
-    [pageControlView addSubview: _pageControl];
-    [self.view addSubview:pageControlView];
+    [self.view addSubview:_pageControl];
     [self updateProfile];
 }
 
@@ -458,6 +455,7 @@ UIButton *tapButton;
     topGradientBackground.image = [UIImage imageNamed:@"topGradientBackground"];
     [self.view addSubview:topGradientBackground];
     [self.view bringSubviewToFront:topGradientBackground];
+    [self.view bringSubviewToFront:_pageControl];
     
     UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 44)];
     [backButton setImage:[UIImage imageNamed:@"whiteBackButton"] forState:UIControlStateNormal];
@@ -577,7 +575,7 @@ UIButton *tapButton;
     [self.view addSubview:_nameOfPersonBackground];
     [self.view bringSubviewToFront:_nameOfPersonBackground];
     
-    _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 11, 16, 22)];
+    _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 9, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
     if (self.userState == ACCEPTED_PRIVATE_USER || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER || self.userState == PRIVATE_PROFILE) {
         _privateLogoImageView.hidden = NO;
@@ -650,9 +648,9 @@ UIButton *tapButton;
         
         UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _leftProfileButton.frame.size.width, 20)];
         followersLabel.textColor = [FontProperties getOrangeColor];
-        followersLabel.font = [FontProperties getTitleFont];
+        followersLabel.font = [FontProperties scMediumFont:16];
         followersLabel.textAlignment = NSTextAlignmentCenter;
-        followersLabel.text = @"Followers";
+        followersLabel.text = @"followers";
         [_leftProfileButton addSubview:followersLabel];
     }
 
@@ -681,10 +679,19 @@ UIButton *tapButton;
         
         UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _rightProfileButton.frame.size.width, 20)];
         followingLabel.textColor = [FontProperties getOrangeColor];
-        followingLabel.font = [FontProperties getTitleFont];
+        followingLabel.font = [FontProperties scMediumFont:16.0F];
         followingLabel.textAlignment = NSTextAlignmentCenter;
-        followingLabel.text = @"Following";
+        followingLabel.text = @"following";
         [_rightProfileButton addSubview:followingLabel];
+        
+        UIButton *chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, self.view.frame.size.width, self.view.frame.size.width/3, 70)];
+        
+        UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, chatButton.frame.size.width, 20)];
+        chatLabel.textAlignment = NSTextAlignmentCenter;
+        chatLabel.text = @"chats";
+        chatLabel.textColor = [FontProperties getOrangeColor];
+        chatLabel.font = [FontProperties scMediumFont:16.0f];
+        [self.view addSubview:chatButton];
     }
     else {
         _rightProfileButton.frame = CGRectMake(3*self.view.frame.size.width/4, self.view.frame.size.width, self.view.frame.size.width/4, 100);
