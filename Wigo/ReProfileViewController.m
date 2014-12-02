@@ -23,7 +23,6 @@
 
 //favorite
 @property UIButton *leftProfileButton;
-@property UIImageView *favoriteImageView;
 @property UIButton *rightProfileButton;
 @property UITapGestureRecognizer *tapScrollView;
 
@@ -95,13 +94,11 @@ UIButton *tapButton;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
     
     [self initializeNotificationHandlers];
-//    self.navigationController.navigationBar.hidden = YES;
-    [self initializeBioLabel];
     [self initializeFollowingAndFollowers];
     [self initializeFollowButton];
     [self initializeFollowRequestLabel];
     [self initializeLeftProfileButton];
-    [self initializeRightProfileButton];
+    [self initializeMiddleProfileButton];
     [self reloadView];
 }
 
@@ -640,11 +637,10 @@ UIButton *tapButton;
 
 - (void)initializeLeftProfileButton {
     _leftProfileButton = [[UIButton alloc] init];
-    [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         _leftProfileButton.frame = CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width/3, 70);
-        
+        [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, _leftProfileButton.frame.size.width, 60)];
         followersLabel.textColor = [FontProperties getOrangeColor];
         followersLabel.font = [FontProperties getTitleFont];
@@ -654,23 +650,7 @@ UIButton *tapButton;
         followersLabel.numberOfLines = 0;
         [_leftProfileButton addSubview:followersLabel];
     }
-    else  {
-        _leftProfileButton.frame = CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width/4, 100);
-        if ([self.user isFavorite]) {
-            _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favoriteSelected"]];
-        }
-        else {
-            _favoriteImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"favorite"]];
-        }
-        _favoriteImageView.frame = CGRectMake(_leftProfileButton.frame.size.width/2 - 12, _leftProfileButton.frame.size.height/2 - 12 - 11, 24, 24);
-        UILabel *favoriteLabel = [[UILabel alloc] initWithFrame:CGRectMake(_leftProfileButton.frame.size.width/2 - 30, _leftProfileButton.frame.size.height/2 + 12 - 3, 60, 15)];
-        favoriteLabel.textAlignment = NSTextAlignmentCenter;
-        favoriteLabel.text = @"Favorite";
-        favoriteLabel.textColor = [FontProperties getOrangeColor];
-        favoriteLabel.font = [FontProperties getSubtitleFont];
-        [_leftProfileButton addSubview:favoriteLabel];
-        [_leftProfileButton addSubview:_favoriteImageView];
-    }
+
     [self.view addSubview:_leftProfileButton];
 }
 
@@ -678,21 +658,9 @@ UIButton *tapButton;
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         [self followersButtonPressed];
     }
-    else {
-        if ([self.user isFavorite]) {
-            [self.user setIsFavorite:NO];
-            [self.user saveKeyAsynchronously:@"is_favorite"];
-            _favoriteImageView.image = [UIImage imageNamed:@"favorite"];
-        }
-        else {
-            [self.user setIsFavorite:YES];
-            [self.user saveKeyAsynchronously:@"is_favorite"];
-            _favoriteImageView.image = [UIImage imageNamed:@"favoriteSelected"];
-        }
-    }
 }
 
-- (void)initializeRightProfileButton {
+- (void)initializeMiddleProfileButton {
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     
@@ -744,9 +712,6 @@ UIButton *tapButton;
     }
 }
 
-- (void) initializeBioLabel {
-
-}
 
 #pragma mark UIScrollView delegate
 
