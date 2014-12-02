@@ -19,7 +19,7 @@
 #import "SignViewController.h"
 #import "SignNavigationViewController.h"
 #import "PeekViewController.h"
-
+#import "ReProfileViewController.h"
 
 #define sizeOfEachCell 160
 #define kEventCellName @"EventCell"
@@ -360,8 +360,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)profileSegue {
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:[Profile user]];
-    [self.navigationController pushViewController:self.profileViewController animated:YES];
+    [self presentViewController:[[ReProfileViewController alloc] initWithUser:[Profile user]] animated:YES completion:nil];
 }
 
 - (void)chooseUser:(id)sender {
@@ -612,7 +611,7 @@ int firstIndexOfNegativeEvent;
     }
     else {
         OldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventCellName];
-        cell.oldEventLabel.text = @"Date with Ben's Mom";
+        cell.oldEventLabel.text = @"That long cool party name";
         cell.chatBubbleImageView.hidden = NO;
         cell.chatNumberLabel.text = @"36";
         return cell;
@@ -647,7 +646,7 @@ int firstIndexOfNegativeEvent;
 - (CGFloat)tableView:(UITableView *)tableView
 heightForHeaderInSection:(NSInteger)section {
     if (section == 0)  return 0;
-    return 59;
+    return 49;
 }
 
 - (UIView *)tableView:(UITableView *)tableView
@@ -1076,10 +1075,10 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 59);
+    self.frame = CGRectMake(0, 0, 320, 49);
     self.contentView.backgroundColor = UIColor.clearColor;
    
-    self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, self.frame.size.width, 39)];
+    self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, self.frame.size.width, 39)];
     self.headerTitleLabel.textColor = RGB(155, 155, 155);
     self.headerTitleLabel.textAlignment = NSTextAlignmentCenter;
     self.headerTitleLabel.font = [FontProperties scMediumFont:14.0f];
