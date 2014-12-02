@@ -232,8 +232,6 @@
     self.frame = CGRectMake(0, 0, 320, 568);
     self.backgroundColor = UIColor.clearColor;
     
-    UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
-    backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
     
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
@@ -245,12 +243,14 @@
     self.moviePlayer.view.frame = self.frame;
     UIImageView *movieBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
     movieBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-    [self.moviePlayer.view addSubview:backgroundImageView];
+    [self.moviePlayer.view addSubview:movieBackgroundImageView];
     [self.contentView addSubview:self.moviePlayer.view];
     
     self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
     self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.thumbnailImageView.clipsToBounds = YES;
+    UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
     [self.thumbnailImageView addSubview:backgroundImageView];
     [self.moviePlayer.backgroundView addSubview:self.thumbnailImageView];
     
