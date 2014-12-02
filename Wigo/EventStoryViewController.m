@@ -56,10 +56,10 @@ BOOL cancelFetchMessages;
     
     EventPeopleScrollView *eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
     eventPeopleScrollView.event = _event;
-    eventPeopleScrollView.frame = CGRectMake(0, 90, self.view.frame.size.width, 100);
+    eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
     [self.view addSubview:eventPeopleScrollView];
     
-    UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 74, self.view.frame.size.width - 220, 20)];
+    UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 184, self.view.frame.size.width - 220, 20)];
     if ([self.event.numberAttending intValue] == 1) {
         numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
     }
@@ -76,7 +76,7 @@ BOOL cancelFetchMessages;
 
 - (void)loadEventDetails {
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
-        UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 104, self.view.frame.size.width - 140, 30)];
+        UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 214, self.view.frame.size.width - 140, 30)];
         [invitePeopleButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
         [invitePeopleButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
         invitePeopleButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
@@ -87,7 +87,7 @@ BOOL cancelFetchMessages;
         [self.view addSubview:invitePeopleButton];
     }
     else {
-        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 104, 100, 30)];
+        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 214, 100, 30)];
         aroundGoOutButton.tag = [(NSNumber *)[self.event eventID] intValue];
         [aroundGoOutButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:aroundGoOutButton];
@@ -124,7 +124,7 @@ BOOL cancelFetchMessages;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 175, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
+    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 235, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = UIColor.whiteColor;
     facesCollectionView.showsHorizontalScrollIndicator = NO;
