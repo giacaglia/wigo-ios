@@ -12,7 +12,6 @@
 #import "AWSUploader.h"
 #import "InviteViewController.h"
 #import "ProfileViewController.h"
-#import <MediaPlayer/MediaPlayer.h>
 #import "EventMessagesConstants.h"
 
 UIButton *sendButton;
@@ -33,12 +32,6 @@ BOOL cancelFetchMessages;
     eventPeopleScrollView.event = _event;
     eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
     [self.view addSubview:eventPeopleScrollView];
-    
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(thumbnailGenerated)
-                                                 name:MPMoviePlayerThumbnailImageRequestDidFinishNotification
-                                               object:nil];
 }
 
 
@@ -299,17 +292,22 @@ BOOL cancelFetchMessages;
     else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
         type = kVideoEventType;
         NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
-        MPMoviePlayerController *moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
-        [moviePlayer requestThumbnailImagesAtTimes:@[@0] timeOption:MPMovieTimeOptionNearestKeyFrame];
+        self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(thumbnailGenerated:)
+                                                     name:MPMoviePlayerThumbnailImageRequestDidFinishNotification
+                                                   object:self.moviePlayer];
+
+        [self.moviePlayer requestThumbnailImagesAtTimes:@[@0.0f, @0.1f] timeOption:MPMovieTimeOptionNearestKeyFrame];
         
         NSError *error;
-        NSData *fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
+        self.fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
         
         if ([[info allKeys] containsObject:IQMediaTypeText]) {
             NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
             NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
             NSDictionary *properties = @{@"yPosition": yPosition};
-            options =  @{
+            self.options =  @{
                          @"event": [self.event eventID],
                          @"message": text,
                          @"properties": properties,
@@ -317,15 +315,13 @@ BOOL cancelFetchMessages;
                          };
         }
         else {
-            options =  @{
+            self.options =  @{
                          @"event": [self.event eventID],
                          @"media_mime_type": type
                          };
         }
         
-        [self uploadContentWithFile:fileData
-                        andFileName:@"video0.mp4"
-                         andOptions:options];
+        
     }
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
@@ -345,8 +341,13 @@ BOOL cancelFetchMessages;
     cancelFetchMessages = YES;
 }
 
-- (void)thumbnailGenerated {
-    NSLog(@"here");
+- (void)thumbnailGenerated:(NSNotification *)notification {
+    NSLog(@"thumbnail generated");
+    NSDictionary *userInfo = [notification userInfo];
+    UIImage *image = [userInfo valueForKey:MPMoviePlayerThumbnailImageKey];
+    [self uploadContentWithFile:self.fileData
+                    andFileName:@"video0.mp4"
+                     andOptions:self.options];
 }
 
 - (NSMutableArray *)eventMessagesWithCamera {
