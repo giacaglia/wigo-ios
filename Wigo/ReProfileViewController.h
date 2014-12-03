@@ -38,4 +38,5 @@
 @property (nonatomic, assign) BOOL isTapped;
 @property (nonatomic, strong) UIImageView *tapImageView;
 @property (nonatomic, strong) UILabel *tapLabel;
+@property (nonatomic, strong) UIImageView *rightPostImageView;
 @end

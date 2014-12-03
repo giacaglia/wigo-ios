@@ -909,6 +909,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void) setup {
     self.frame = CGRectMake(0, 0, 320, 54);
     self.backgroundColor = UIColor.clearColor;
+    self.selectionStyle = UITableViewCellSeparatorStyleNone;
     
     self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, self.frame.size.height/2 - 22, 45, 45)];
     self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -927,14 +928,19 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.descriptionLabel.textColor = RGB(104, 104, 104);
     [self.contentView addSubview:self.descriptionLabel];
     
-    self.buttonCallback = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 41, self.frame.size.height/2  - 13, 27, 27)];
+    self.buttonCallback = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 27 - 14, self.frame.size.height/2  - 13, 27, 27)];
     [self.buttonCallback addTarget:self action:@selector(tapPressed) forControlEvents:UIControlEventTouchUpInside];
     self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 27, 27)];
     self.tapImageView.image = [UIImage imageNamed:@"tapUnselectedNotification"];
     [self.buttonCallback addSubview:self.tapImageView];
     [self.contentView addSubview:self.buttonCallback];
     
-    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 12 - 45, self.frame.size.height/2 + 13 + 3, 50, 15)];
+    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 41, self.frame.size.height/2 - 7, 9, 15)];
+    self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
+    self.rightPostImageView.hidden = YES;
+    [self.contentView addSubview:self.rightPostImageView];
+    
+    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 27, self.frame.size.height/2 + 13 + 3, 50, 15)];
     self.tapLabel.text = @"Tap back";
     self.tapLabel.textAlignment = NSTextAlignmentCenter;
     self.tapLabel.font = [FontProperties lightFont:12.0f];
