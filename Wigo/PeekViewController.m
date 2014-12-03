@@ -20,9 +20,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.schoolSections = [NSArray new];
     self.view.backgroundColor = RGB(100, 173, 215);
     [self initializeTitleView];
     [self initializeTableView];
+    [self fetchSchools];
 }
 
 - (void)initializeTitleView {
@@ -72,21 +74,23 @@
 
 
 -  (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return self.schoolSections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) return 1;
-    else if (section == 1) return 3;
-    else return 5;
-    return 0;
+    NSDictionary *sectionDictionary = [self.schoolSections objectAtIndex:section];
+    NSArray *arrayOfSchools = [sectionDictionary objectForKey:@"schools"];
+    return [arrayOfSchools count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SchoolCell *myCell = [tableView dequeueReusableCellWithIdentifier:kSchoolCellName];
-    myCell.schoolLabel.text = @"Blade University";
+    NSDictionary *sectionDictionary = [self.schoolSections objectAtIndex:indexPath.section];
+    NSArray *arrayOfSchools = [sectionDictionary objectForKey:@"schools"];
+    NSDictionary *schoolDictionary = [arrayOfSchools objectAtIndex:indexPath.row];
+    myCell.schoolLabel.text = [schoolDictionary objectForKey:@"name"];
     return myCell;
 }
 
@@ -98,9 +102,8 @@ heightForHeaderInSection:(NSInteger)section {
 - (UIView *)tableView:(UITableView *)tableView
 viewForHeaderInSection:(NSInteger)section {
     SchoolHeaderCell *schoolHeaderCell = [tableView dequeueReusableHeaderFooterViewWithIdentifier:kHeaderSchoolCellName];
-    if (section == 0) schoolHeaderCell.headerTitleLabel.text = @"Your School";
-    else if (section == 1) schoolHeaderCell.headerTitleLabel.text = @"Top Partying School";
-    else schoolHeaderCell.headerTitleLabel.text = @"Nearby Schools";
+    NSDictionary *sectionDictionary = [self.schoolSections objectAtIndex:section];
+    schoolHeaderCell.headerTitleLabel.text =  [sectionDictionary objectForKey:@"title"];
     return schoolHeaderCell;
 }
 
@@ -108,6 +111,18 @@ viewForHeaderInSection:(NSInteger)section {
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+- (void)fetchSchools {
+    [Network queryAsynchronousAPI:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.schoolSections = [jsonResponse objectForKey:@"sections"];
+                [self.schoolsTableView reloadData];
+            });
+        }
+    }];
+}
+
 
 @end
 
@@ -135,6 +150,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     schoolLinkImageView.image = [UIImage imageNamed:@"schoolLink"];
     [self.contentView addSubview:schoolLinkImageView];
 }
+
+
 @end
 
 

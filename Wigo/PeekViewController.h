@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface PeekViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
-
+@property (nonatomic, strong) NSArray *schoolSections;
 @end
 
 @interface SchoolCell : UITableViewCell

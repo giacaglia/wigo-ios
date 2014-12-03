@@ -607,6 +607,10 @@ int firstIndexOfNegativeEvent;
         }
         cell.event = event;
         cell.eventPeopleScrollView.placesDelegate = self;
+        if ([[event dictionary] objectForKey:@"last_message"] == [[event dictionary] objectForKey:@"last_message_read"]) {
+            cell.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
+        }
+        else cell.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
         return cell;
     }
     else {
