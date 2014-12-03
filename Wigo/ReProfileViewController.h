@@ -28,3 +28,11 @@
 @property MoreViewController *moreViewController;
 
 @end
+
+
+@interface NotificationCell : UITableViewCell
+@property (nonatomic, strong) UIImageView *profileImageView;
+@property (nonatomic, strong) UILabel *textLabel;
+@property (nonatomic, strong) UILabel *timeLabel;
+@property (nonatomic, strong) UIButton *buttonCallback;
+@end

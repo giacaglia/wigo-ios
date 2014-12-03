@@ -99,6 +99,7 @@ UIButton *tapButton;
     [self initializeFollowRequestLabel];
     [self initializeLeftProfileButton];
     [self initializeMiddleProfileButton];
+    [self initializeBottomTableView];
     [self reloadView];
 }
 
@@ -848,5 +849,18 @@ UIButton *tapButton;
     [self goBack];
     [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){}];
 }
+
+#pragma mark - Notifications bottom
+
+- (void)initializeBottomTableView {
+    UILabel *wantToSeeLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, 390, self.view.frame.size.width - 24, 22)];
+    wantToSeeLabel.text = @"Want to see you out tonight:";
+    wantToSeeLabel.textAlignment = NSTextAlignmentLeft;
+    wantToSeeLabel.textColor = RGB(180, 180, 180);
+    wantToSeeLabel.font = [FontProperties lightFont:20.0f];
+    [self.view addSubview:wantToSeeLabel];
+    
+}
+
 
 @end
