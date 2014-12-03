@@ -651,7 +651,7 @@
                 [self.partitionBar setUserInteractionEnabled:NO];
                 [self.bottomContainerView setLeftContentView:nil];
                 [self.bottomContainerView setRightContentView:nil];
-                
+                NSLog(@"took video");
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 
                     displayDuratioUpdate = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateDuration)];
@@ -854,6 +854,8 @@
         
         if ([videoURLs count])
         {
+            [self.mediaView stopReplayVideo];
+
             NSMutableArray *videoMedias = [[NSMutableArray alloc] init];
             
             for (NSURL *videoURL in videoURLs)
@@ -863,7 +865,6 @@
             }
             
             [info setObject:videoMedias forKey:IQMediaTypeVideo];
-            [self.mediaView stopReplayVideo];
         }
         
         if ([audioURLs count])

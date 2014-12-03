@@ -57,7 +57,7 @@ BOOL cancelFetchMessages;
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
-    UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 184, self.view.frame.size.width - 220, 20)];
+    UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 65, self.view.frame.size.width - 220, 20)];
     if ([self.event.numberAttending intValue] == 1) {
         numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
     }
@@ -74,7 +74,7 @@ BOOL cancelFetchMessages;
 
 - (void)loadEventDetails {
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
-        UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 214, self.view.frame.size.width - 140, 30)];
+        UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 204, self.view.frame.size.width - 140, 30)];
         [invitePeopleButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
         [invitePeopleButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
         invitePeopleButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
@@ -85,7 +85,7 @@ BOOL cancelFetchMessages;
         [self.view addSubview:invitePeopleButton];
     }
     else {
-        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 214, 100, 30)];
+        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 204, 100, 30)];
         aroundGoOutButton.tag = [(NSNumber *)[self.event eventID] intValue];
         [aroundGoOutButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:aroundGoOutButton];
@@ -297,9 +297,12 @@ BOOL cancelFetchMessages;
                                                  selector:@selector(thumbnailGenerated:)
                                                      name:MPMoviePlayerThumbnailImageRequestDidFinishNotification
                                                    object:self.moviePlayer];
-
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(didFinishPlaying:)
+                                                     name:MPMoviePlayerLoadStateDidChangeNotification
+                                                   object:self.moviePlayer];
         [self.moviePlayer requestThumbnailImagesAtTimes:@[@0.0f] timeOption:MPMovieTimeOptionNearestKeyFrame];
-        
+
         NSError *error;
         self.fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
         
@@ -342,7 +345,6 @@ BOOL cancelFetchMessages;
 }
 
 - (void)thumbnailGenerated:(NSNotification *)notification {
-//    NSLog(@"thumbnail generated");
     NSDictionary *userInfo = [notification userInfo];
     UIImage *image = [userInfo valueForKey:MPMoviePlayerThumbnailImageKey];
     [self uploadVideo:self.fileData
@@ -350,6 +352,10 @@ BOOL cancelFetchMessages;
           andThumnail:UIImageJPEGRepresentation(image, 1.0f)
       andThumnailName:@"thumnail0.jpeg"
            andOptions:self.options];
+}
+
+- (void)didFinishPlaying:(NSNotification *)notification {
+    [self.moviePlayer stop];
 }
 
 - (NSMutableArray *)eventMessagesWithCamera {
