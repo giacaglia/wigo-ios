@@ -860,7 +860,103 @@ UIButton *tapButton;
     wantToSeeLabel.font = [FontProperties lightFont:20.0f];
     [self.view addSubview:wantToSeeLabel];
     
+    
+    UITableView *notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 412, self.view.frame.size.width, self.view.frame.size.height - 412)];
+    notificationsTableView.delegate = self;
+    notificationsTableView.dataSource = self;
+    notificationsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [notificationsTableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
+    [self.view addSubview:notificationsTableView];
 }
 
 
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
+    [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
+    notificationCell.descriptionLabel.text = @"Alison wants to see you out at The Bar";
+    return notificationCell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView
+heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 54;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView
+ numberOfRowsInSection:(NSInteger)section {
+    return 2;
+}
+
 @end
+
+
+@implementation NotificationCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 320, 54);
+    self.backgroundColor = UIColor.clearColor;
+    self.selectionStyle = UITableViewCellSeparatorStyleNone;
+    
+    self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, self.frame.size.height/2 - 22, 45, 45)];
+    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.profileImageView.clipsToBounds = YES;
+    self.profileImageView.layer.cornerRadius = 7;
+    self.profileImageView.layer.borderWidth = 0.5;
+    self.profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
+    self.profileImageView.layer.masksToBounds = YES;
+    [self.contentView addSubview:self.profileImageView];
+    
+    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, 175, 45)];
+    self.descriptionLabel.textAlignment = NSTextAlignmentLeft;
+    self.descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.descriptionLabel.numberOfLines = 0;
+    self.descriptionLabel.font = [FontProperties lightFont:15.0f];
+    self.descriptionLabel.textColor = RGB(104, 104, 104);
+    [self.contentView addSubview:self.descriptionLabel];
+    
+    self.buttonCallback = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 27 - 14, self.frame.size.height/2  - 13, 27, 27)];
+    [self.buttonCallback addTarget:self action:@selector(tapPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 27, 27)];
+    self.tapImageView.image = [UIImage imageNamed:@"tapUnselectedNotification"];
+    [self.buttonCallback addSubview:self.tapImageView];
+    [self.contentView addSubview:self.buttonCallback];
+    
+    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 41, self.frame.size.height/2 - 7, 9, 15)];
+    self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
+    self.rightPostImageView.hidden = YES;
+    [self.contentView addSubview:self.rightPostImageView];
+    
+    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 27, self.frame.size.height/2 + 13 + 3, 50, 15)];
+    self.tapLabel.text = @"Tap back";
+    self.tapLabel.textAlignment = NSTextAlignmentCenter;
+    self.tapLabel.font = [FontProperties lightFont:12.0f];
+    self.tapLabel.textColor = RGB(240, 203, 163);
+    [self.contentView addSubview:self.tapLabel];
+}
+
+- (void)tapPressed {
+    if (self.isTapped) {
+        self.tapImageView.image = [UIImage imageNamed:@"tapUnselectedNotification"];
+    }
+    else {
+        self.tapImageView.image = [UIImage imageNamed:@"tapSelectedNotification"];
+    }
+    self.isTapped = !self.isTapped;
+}
+
+@end
+

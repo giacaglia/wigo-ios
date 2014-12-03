@@ -14,7 +14,7 @@
 #import "User.h"
 
 
-@interface ReProfileViewController : UIViewController <UIScrollViewDelegate, UIAlertViewDelegate>
+@interface ReProfileViewController : UIViewController <UIScrollViewDelegate, UIAlertViewDelegate, UITableViewDataSource, UITableViewDelegate>
 
 -(id)initWithUser:(User *)user;
 
@@ -29,10 +29,14 @@
 
 @end
 
-
+#define kNotificationCellName @"notificationCellName"
 @interface NotificationCell : UITableViewCell
 @property (nonatomic, strong) UIImageView *profileImageView;
-@property (nonatomic, strong) UILabel *textLabel;
-@property (nonatomic, strong) UILabel *timeLabel;
+@property (nonatomic, strong) UILabel *descriptionLabel;
+
 @property (nonatomic, strong) UIButton *buttonCallback;
+@property (nonatomic, assign) BOOL isTapped;
+@property (nonatomic, strong) UIImageView *tapImageView;
+@property (nonatomic, strong) UILabel *tapLabel;
+@property (nonatomic, strong) UIImageView *rightPostImageView;
 @end
