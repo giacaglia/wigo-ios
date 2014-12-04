@@ -543,7 +543,6 @@ int firstIndexOfNegativeEvent;
 
 }
 
-
 #pragma mark - Tablew View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -634,8 +633,21 @@ int firstIndexOfNegativeEvent;
     [self presentViewController:eventStoryController animated:YES completion:nil];
 }
 
-- (void)setGroupID:(NSNumber *)groupID {
+- (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
     self.groupNumberID = groupID;
+    self.groupName = groupName;
+    UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [schoolButton setTitle:self.groupName forState:UIControlStateNormal];
+    [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
+    schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    schoolButton.titleLabel.font = [FontProperties scMediumFont:20.0f];
+    
+    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(150, 0, 6, 5)];
+    triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
+    [schoolButton addSubview:triangleImageView];
+    
+    self.navigationItem.titleView = schoolButton;
     [self fetchEvents];
 }
 

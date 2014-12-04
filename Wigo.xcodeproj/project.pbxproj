@@ -603,6 +603,7 @@
 		E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-MediumSC.ttf"; sourceTree = "<group>"; };
 		E9C14E5F1A2E201D00E20B15 /* ReProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReProfileViewController.h; sourceTree = "<group>"; };
 		E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReProfileViewController.m; sourceTree = "<group>"; };
+		E9C14E631A30B07C00E20B15 /* Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Delegate.h; sourceTree = "<group>"; };
 		E9C3056D19F8341600F9564D /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		E9C34A6D19F86FAB00D7E9D3 /* WaitListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaitListViewController.h; sourceTree = "<group>"; };
@@ -1014,6 +1015,7 @@
 				E97999D019759A2900C617E3 /* Globals.h */,
 				E921D6241923967D00361247 /* AppDelegate.h */,
 				E921D6251923967D00361247 /* AppDelegate.m */,
+				E9C14E631A30B07C00E20B15 /* Delegate.h */,
 				E9681C6C194F7C1000182E0E /* Core Objects */,
 				E921D6531923973800361247 /* ViewControllers */,
 				E921D657192398B000361247 /* Library */,

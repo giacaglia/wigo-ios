@@ -113,7 +113,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *arrayOfSchools = [sectionDictionary objectForKey:@"schools"];
     NSDictionary *schoolDictionary = [arrayOfSchools objectAtIndex:indexPath.row];
     NSNumber *groupID = [schoolDictionary objectForKey:@"id"];
-    [self.placesDelegate setGroupID:groupID];
+    NSString *groupName = [schoolDictionary objectForKey:@"name"];
+    [self.placesDelegate setGroupID:groupID andGroupName:groupName];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

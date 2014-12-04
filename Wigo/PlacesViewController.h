@@ -9,18 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "ProfileViewController.h"
 #import "Event.h"
-
-
-@protocol PlacesDelegate <NSObject>
-- (void)showUser:(User *)user;
-- (void)showConversationForEvent:(Event*)event;
-- (void)setGroupID:(NSNumber *)groupID;
-@end
+#import "Delegate.h"
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate >
 
 @property ProfileViewController *profileViewController;
 @property (nonatomic, strong) NSNumber *groupNumberID;
+@property (nonatomic, strong) NSString *groupName;
 @end
 
 #import "Event.h"

@@ -7,10 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@protocol PlacesDelegate <NSObject>
-- (void)setGroupID:(NSNumber *)groupID;
-@end
+#import "Delegate.h"
 
 @interface PeekViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong) NSArray *schoolSections;
