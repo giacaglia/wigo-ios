@@ -609,8 +609,12 @@ int firstIndexOfNegativeEvent;
         [cell updateUI];
         if ([[[event dictionary] objectForKey:@"is_read"] boolValue]) {
             cell.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
+            cell.postStoryImageView.image = [UIImage imageNamed:@"grayPostStory"];
         }
-        else cell.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
+        else {
+            cell.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
+            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+        }
         return cell;
     }
     else {
@@ -1011,9 +1015,9 @@ viewForHeaderInSection:(NSInteger)section {
     self.chatNumberLabel.textColor = [UIColor whiteColor];
     [self.chatBubbleImageView addSubview:self.chatNumberLabel];
     
-    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
-    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-    [self.contentView addSubview:postStoryImageView];
+    self.postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
+    self.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+    [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
     self.eventPeopleScrollView.frame = CGRectMake(10, 40, self.frame.size.width - 20, 110);
