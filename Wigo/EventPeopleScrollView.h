@@ -20,4 +20,5 @@
 @property Event *event;
 @property (nonatomic, assign) id <PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) Party *partyUser;
+- (void)updateUI;
 @end

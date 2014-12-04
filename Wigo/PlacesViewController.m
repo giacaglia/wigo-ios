@@ -83,7 +83,7 @@ int firstIndexOfNegativeEvent;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = RGB(249, 249, 249);
+    self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
     fetchingEventAttendees = NO;
@@ -271,7 +271,7 @@ int firstIndexOfNegativeEvent;
 
 - (void)initializeWhereView {
     _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 5, self.view.frame.size.width, self.view.frame.size.height - 64 - 5)];
-    _placesTableView.backgroundColor = RGB(249, 249, 249);
+    _placesTableView.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
@@ -606,6 +606,7 @@ int firstIndexOfNegativeEvent;
         }
         cell.event = event;
         cell.eventPeopleScrollView.placesDelegate = self;
+        [cell updateUI];
         if ([[[event dictionary] objectForKey:@"is_read"] boolValue]) {
             cell.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
         }
@@ -988,7 +989,7 @@ viewForHeaderInSection:(NSInteger)section {
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, 320, 155);
-    self.backgroundColor = RGB(249, 249, 249);
+    self.backgroundColor = UIColor.whiteColor;
     
     UILabel *backgroundLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, 40)];
     backgroundLabel.backgroundColor = RGB(239, 247, 251);
@@ -1031,19 +1032,20 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview:borderLabel];
 }
 
-- (void)setEvent:(Event *)event {
-    _event = event;
-    self.eventNameLabel.text = [event name];
-    if ([event.numberOfMessages intValue] > 0) {
+- (void)updateUI {
+    self.eventNameLabel.text = [self.event name];
+    if ([self.event.numberOfMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;
-        self.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [event.numberOfMessages stringValue]];
+        self.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [self.event.numberOfMessages stringValue]];
     }
     else self.chatBubbleImageView.hidden = YES;
-    self.eventPeopleScrollView.event = event;
+    self.eventPeopleScrollView.event = self.event;
+    [self.eventPeopleScrollView updateUI];
 }
 
+
 - (void)showEventConversation {
-    [self.placesDelegate showConversationForEvent:_event];
+    [self.placesDelegate showConversationForEvent:self.event];
 }
 
 @end

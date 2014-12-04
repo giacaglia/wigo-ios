@@ -24,19 +24,16 @@ Event *event;
         self.contentSize = CGSizeMake(5, sizeOfEachImage + 10);
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
-        _event = event;
+        self.event = event;
     }
     return self;
 }
 
 
-- (void)setEvent:(Event *)event {
-    if (event) {
-        _event = event;
-        page = @1;
-        [self fillEventAttendees];
-        [self loadUsers];
-    }
+- (void)updateUI {
+    page = @1;
+    [self fillEventAttendees];
+    [self loadUsers];
 }
 
 
@@ -49,7 +46,7 @@ Event *event;
 }
 
 - (void)fillEventAttendees {
-    NSArray *eventAttendeesArray = [_event getEventAttendees];
+    NSArray *eventAttendeesArray = [self.event getEventAttendees];
     self.partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
     for (int j = 0; j < [eventAttendeesArray count]; j++) {
         NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
@@ -70,6 +67,7 @@ Event *event;
 
 
 - (void)loadUsers {
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     xPosition = 12;
     for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
         User *user = [[self.partyUser getObjectArray] objectAtIndex:i];
@@ -111,7 +109,7 @@ Event *event;
 }
 
 - (void)fetchEventAttendeesAsynchronous {
-    NSNumber *eventId = [_event eventID];
+    NSNumber *eventId = [self.event eventID];
     if (!fetchingEventAttendees) {
         NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [page stringValue]];
         [Network queryAsynchronousAPI:queryString

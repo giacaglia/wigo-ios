@@ -102,6 +102,7 @@ BOOL cancelFetchMessages;
 
     // Update UI
     self.eventPeopleScrollView.event = self.event;
+    [self.eventPeopleScrollView updateUI];
     self.aroundGoHereButton.hidden = YES;
     self.aroundGoHereButton.enabled = NO;
     self.inviteButton.hidden = NO;
@@ -231,6 +232,7 @@ BOOL cancelFetchMessages;
 - (void)loadEventPeopleScrollView {
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
     self.eventPeopleScrollView.event = _event;
+    [self.eventPeopleScrollView updateUI];
     self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
     [self.view addSubview:self.eventPeopleScrollView];
 }
