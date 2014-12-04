@@ -367,6 +367,7 @@
     self.mediaScrollView.event = self.event;
     self.mediaScrollView.controllerDelegate = self.controllerDelegate;
     self.mediaScrollView.mediaDelegate = self;
+    self.mediaScrollView.storyDelegate = self.storyDelegate;
     if (self.index) [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
 
     self.mediaScrollView.delegate = self;

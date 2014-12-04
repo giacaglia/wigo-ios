@@ -10,7 +10,7 @@
 #import "IQMediaPickerController.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "Event.h"
-
+#import "Delegate.h"
 
 @protocol MediaScrollViewDelegate
 - (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell;
@@ -22,6 +22,7 @@
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 @property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
+@property (nonatomic, strong) id<StoryDelegate> storyDelegate;
 @property (nonatomic, strong) NSNumber *index;
 
 - (void)closeView;

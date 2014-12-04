@@ -1109,7 +1109,7 @@ viewForHeaderInSection:(NSInteger)section {
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, 320, 49);
-    self.contentView.backgroundColor = UIColor.clearColor;
+    self.contentView.backgroundColor = UIColor.whiteColor;
    
     self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, self.frame.size.width, 39)];
     self.headerTitleLabel.textColor = RGB(155, 155, 155);

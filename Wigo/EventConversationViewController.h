@@ -11,6 +11,7 @@
 #import "Globals.h"
 #import "MediaScrollView.h"
 #import "IQMediaPickerController.h"
+#import "Delegate.h"
 
 @interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, MediaScrollViewDelegate>
 - (void)highlightCellAtPage:(NSInteger)page;
@@ -21,6 +22,7 @@
 //@property (nonatomic, strong) IQMediaPickerController *controller;
 @property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) NSNumber *index;
+@property (nonatomic, strong) id<StoryDelegate> storyDelegate;
 @end
 
 @interface FaceCell : UICollectionViewCell

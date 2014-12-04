@@ -18,4 +18,8 @@
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 @end
 
+@protocol StoryDelegate <NSObject>
+- (void)readEventMessageIDArray:(NSArray *)pages;
+@end
+
 #endif

@@ -18,7 +18,7 @@
 
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
-@property (nonatomic, strong) NSMutableSet *readPagesSet;
+@property (nonatomic, strong) NSMutableSet *eventMessagesIDSet;
 @end
 
 @implementation MediaScrollView
@@ -108,7 +108,7 @@
     if (self.lastMoviePlayer) {
         [self.lastMoviePlayer stop];
     }
-    if (self.readPagesSet.count > 0) {
+    if (self.eventMessagesIDSet.count > 0) {
         [Network sendAsynchronousHTTPMethod:POST
                                 withAPIName:[NSString stringWithFormat:@"events/%@/messages/read/", [self.event eventID]]
                                 withHandler:^(NSDictionary *jsonResponse, NSError *error) {
@@ -118,8 +118,9 @@
                                     else {
                                         NSLog(@"error %@", error);
                                     }
-                                } withOptions:[self.readPagesSet allObjects]];
+                                } withOptions:[self.eventMessagesIDSet allObjects]];
     }
+    [self.storyDelegate readEventMessageIDArray:[self.eventMessagesIDSet allObjects]];
 }
 
 
@@ -150,12 +151,12 @@
 }
 
 - (void)addReadPage:(int)page {
-    if (!self.readPagesSet) {
-        self.readPagesSet = [NSMutableSet new];
+    if (!self.eventMessagesIDSet) {
+        self.eventMessagesIDSet = [NSMutableSet new];
     }
     NSMutableDictionary *eventMessage = [NSMutableDictionary dictionaryWithDictionary:[self.eventMessages objectAtIndex:page]];
     if ([[eventMessage allKeys] containsObject:@"id"] && [[eventMessage allKeys] containsObject:@"is_read"] && ![[eventMessage objectForKey:@"is_read"] boolValue]) {
-        [self.readPagesSet addObject:[eventMessage objectForKey:@"id"]];
+        [self.eventMessagesIDSet addObject:[eventMessage objectForKey:@"id"]];
         [eventMessage setValue:@YES forKey:@"is_read"];
         [self.eventMessages replaceObjectAtIndex:page withObject:eventMessage];
     }
