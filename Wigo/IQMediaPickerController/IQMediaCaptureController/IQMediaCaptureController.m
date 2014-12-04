@@ -215,8 +215,8 @@
         self.buttonToggleCamera.enabled = ([[IQCaptureSession supportedVideoCaptureDevices] count]>1)?YES:NO;
         
         //Flash
-        if ([[self session] hasFlash])
-        {
+//        if ([[self session] hasFlash])
+//        {
             if ([self session].flashMode == AVCaptureFlashModeOn) {
                 for (UIView *subview in self.buttonFlash.subviews) {
                     if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
@@ -238,14 +238,14 @@
             }
             
             self.buttonFlash.enabled = YES;
-        }
-        else
-        {
-            for (UIView *subview in self.buttonFlash.subviews) {
-                if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
-            }
-            self.buttonFlash.enabled = NO;
-        }
+//        }
+//        else
+//        {
+//            for (UIView *subview in self.buttonFlash.subviews) {
+//                if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
+//            }
+//            self.buttonFlash.enabled = NO;
+//        }
         
         //Focus
         {
@@ -582,7 +582,6 @@
 - (void)captureAction:(UIButton *)sender
 {
 
-    
     if ([[self session] isSessionRunning] == NO)
     {
         [self.buttonCapture setImage:[UIImage imageNamed:@"IQ_start_capture_mode"] forState:UIControlStateNormal];
@@ -612,6 +611,7 @@
     {
         if ([self session].captureMode == IQCameraCaptureModePhoto)
         {
+            [self setFrontFlash];
             [UIView animateWithDuration:0.2 delay:0 options:(UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut) animations:^{
                 [self.buttonCapture setImage:[UIImage new] forState:UIControlStateNormal];
                 for (UIView *subview in self.buttonCancel.subviews) {
@@ -630,11 +630,9 @@
 
             [self.bottomContainerView setLeftContentView:nil];
             [self.bottomContainerView setRightContentView:nil];
-//            [self.bottomContainerView setMiddleContentView:self.imageViewProcessing];
             self.buttonToggleCamera.hidden = YES;
             self.buttonFlash.hidden = YES;
 
-            [[self session] takePicture];
         }
         else if ([self session].captureMode == IQCameraCaptureModeVideo)
         {
@@ -716,6 +714,43 @@
                 [self.partitionBar setUserInteractionEnabled:YES];
             }
         }
+    }
+}
+
+- (void)setFrontFlash {
+    if ([self session].cameraPosition == AVCaptureDevicePositionFront &&
+        [self session].flashMode == AVCaptureFlashModeOn) {
+        CGFloat oldBrightness = [UIScreen mainScreen].brightness;
+        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+        UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, window.frame.size.width, window.frame.size.height)];
+        [UIView animateWithDuration:0.1f
+                              delay:0.0
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^
+         {
+             [window addSubview:view];
+             [[UIScreen mainScreen]setBrightness:1.0];
+             view.backgroundColor = [UIColor whiteColor];
+             view.alpha = 1.0f;
+         }
+                         completion:^(BOOL finished)
+         {
+             if (finished)
+             {
+                 [[self session] takePicture];
+                 [UIView beginAnimations:nil context:nil];
+                 [UIView setAnimationBeginsFromCurrentState:YES];
+                 [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+                 [UIView setAnimationDuration:1.0f];
+                 view.alpha = 0.0;
+                 [view removeFromSuperview];
+                 [[UIScreen mainScreen]setBrightness:oldBrightness];
+                 [UIView commitAnimations];
+             }
+         }];
+    }
+    else {
+        [[self session] takePicture];
     }
 }
 

@@ -284,9 +284,6 @@ BOOL cancelFetchMessages;
     }
 }
 
-- (void)setPagesRead:(NSArray *)arrayOfPages {
-    
-}
 #pragma mark - Button handler
 
 - (void)goBack {
