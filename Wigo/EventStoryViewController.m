@@ -15,7 +15,7 @@
 #import "EventMessagesConstants.h"
 
 UIButton *sendButton;
-NSMutableArray *eventMessages;
+NSArray *eventMessages;
 UICollectionView *facesCollectionView;
 BOOL cancelFetchMessages;
 
@@ -197,7 +197,6 @@ BOOL cancelFetchMessages;
     
     if ([[eventMessage allKeys] containsObject:@"is_read"]) {
         if ([[eventMessage objectForKey:@"is_read"] boolValue]) {
-            NSLog(@"indexPath %d is read", [indexPath row]);
             [myCell updateUIToRead:YES];
         }
         else [myCell updateUIToRead:NO];
@@ -387,7 +386,7 @@ BOOL cancelFetchMessages;
                                     };
     NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
     [mutableEventMessages addObject:eventMessage];
-    eventMessages = mutableEventMessages;
+    eventMessages = [NSArray arrayWithArray:mutableEventMessages];
     [facesCollectionView reloadData];
     cancelFetchMessages = YES;
 }
@@ -446,13 +445,13 @@ BOOL cancelFetchMessages;
                                         if (!error) {
                                             NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
                                             [mutableEventMessages replaceObjectAtIndex:(eventMessages.count - 1) withObject:jsonResponse];
-                                            eventMessages = mutableEventMessages;
+                                            eventMessages = [NSArray arrayWithArray:mutableEventMessages];
                                             [facesCollectionView reloadData];
                                         }
                                         else {
                                             NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
                                             [mutableEventMessages removeLastObject];
-                                            eventMessages = mutableEventMessages;
+                                            eventMessages = [NSArray arrayWithArray:mutableEventMessages];
                                             [facesCollectionView reloadData];
                                         }
                                     } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
@@ -497,13 +496,13 @@ BOOL cancelFetchMessages;
                                                                      if (!error) {
                                                                          NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
                                                                          [mutableEventMessages replaceObjectAtIndex:(eventMessages.count - 1) withObject:jsonResponse];
-                                                                         eventMessages = mutableEventMessages;
+                                                                         eventMessages = [NSArray arrayWithArray:mutableEventMessages];
                                                                          [facesCollectionView reloadData];
                                                                      }
                                                                      else {
                                                                          NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
                                                                          [mutableEventMessages removeLastObject];
-                                                                         eventMessages = mutableEventMessages;
+                                                                         eventMessages = [NSArray arrayWithArray:mutableEventMessages];
                                                                          [facesCollectionView reloadData];
                                                                      }
                                                                  } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
@@ -523,7 +522,7 @@ BOOL cancelFetchMessages;
                                 withAPIName:[NSString stringWithFormat:@"eventmessages/?event=%@&ordering=id", [self.event eventID]]
                                 withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                        eventMessages = (NSMutableArray *)[jsonResponse objectForKey:@"objects"];
+                                        eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];
                                         [self loadConversationViewController];
                                     });
                                 }];
@@ -544,20 +543,24 @@ BOOL cancelFetchMessages;
     [self presentViewController:conversationController animated:YES completion:nil];
 }
 
+
 - (void)readEventMessageIDArray:(NSArray *)eventMessageIDArray {
+    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
     for (int i = 0; i < [eventMessageIDArray count]; i++) {
         NSNumber *eventMessageID = [eventMessageIDArray objectAtIndex:i];
         for (int j = 0; j < [eventMessages count]; j++) {
             NSMutableDictionary *eventMessage = [NSMutableDictionary dictionaryWithDictionary:[eventMessages objectAtIndex:j]];
             if ([[eventMessage objectForKey:@"id"] isEqualToNumber:eventMessageID]) {
                 [eventMessage setObject:@YES forKey:@"is_read"];
-                [eventMessages setObject:eventMessage atIndexedSubscript:i];
+                [mutableEventMessages setObject:eventMessage atIndexedSubscript:i];
                 break;
             }
         }
     }
+    eventMessages = [NSArray arrayWithArray:mutableEventMessages];
     [facesCollectionView reloadData];
 }
+
 
 
 @end
