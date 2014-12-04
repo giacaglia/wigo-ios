@@ -30,9 +30,8 @@ BOOL cancelFetchMessages;
     [self loadTextViewAndSendButton];
     [self loadEventPeopleScrollView];
     [self loadEventTitle];
+    [self setDetailViewRead];
 }
-
-
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
@@ -264,6 +263,23 @@ BOOL cancelFetchMessages;
     self.numberGoingLabel.textAlignment = NSTextAlignmentCenter;
     self.numberGoingLabel.font = [FontProperties mediumFont:15];
     [self.view addSubview:self.numberGoingLabel];
+}
+
+- (void)setDetailViewRead {
+    if (![[[self.event dictionary] objectForKey:@"is_read"] boolValue]) {
+        [Network sendAsynchronousHTTPMethod:POST
+                                withAPIName:@"events/read/"
+                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                    if (!error) {
+                                        NSLog(@"json response %@", jsonResponse);
+                                    }
+                                    else {
+                                        NSLog(@"error %@", error);
+                                    }
+                                }
+                                withOptions:@[[self.event eventID]]
+         ];
+    }
 }
 
 #pragma mark - Button handler
