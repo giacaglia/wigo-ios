@@ -25,6 +25,13 @@
     [_proxy setObject:usersArray forKey:@"userArray"];
 }
 
+- (void)addUser:(User *)user {
+    NSMutableArray *attendees = [NSMutableArray arrayWithArray:[_proxy objectForKey:@"attendees"]];
+    NSDictionary *newAttendee = @{ @"user": [user dictionary] };
+    [attendees insertObject:newAttendee atIndex:0];
+    [_proxy setObject:[NSArray arrayWithArray:attendees] forKey:@"attendees"];
+}
+
 -(NSArray *)getEventAttendees {
     return [_proxy objectForKey:@"attendees"];
 }

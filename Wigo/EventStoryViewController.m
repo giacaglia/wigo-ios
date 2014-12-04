@@ -28,10 +28,10 @@ BOOL cancelFetchMessages;
   
     [self loadEventDetails];
     [self loadTextViewAndSendButton];
-    EventPeopleScrollView *eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
-    eventPeopleScrollView.event = _event;
-    eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
-    [self.view addSubview:eventPeopleScrollView];
+    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
+    self.eventPeopleScrollView.event = _event;
+    self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
+    [self.view addSubview:self.eventPeopleScrollView];
 }
 
 
@@ -117,6 +117,8 @@ BOOL cancelFetchMessages;
     [[Profile user] setAttendingEventID:[self.event eventID]];
     [[Profile user] setEventID:[self.event eventID]];
     [Network postGoingToEventNumber:[[self.event eventID] intValue]];
+    [self.event addUser:[Profile user]];
+    self.eventPeopleScrollView.event = self.event;
 }
 
 

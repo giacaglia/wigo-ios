@@ -19,6 +19,7 @@
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
 - (void)addEventAttendeesWithDictionary:(NSDictionary *)eventAttendeesDictionary;
 - (NSArray *)getEventAttendees;
+- (void)addUser:(User *)user;
 - (NSDictionary *)dictionary;
 
 @end

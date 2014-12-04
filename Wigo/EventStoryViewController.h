@@ -18,6 +18,7 @@
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) NSData *fileData;
 @property (nonatomic, strong) NSDictionary *options;
+@property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 @end
 
 @interface StoryFlowLayout : UICollectionViewFlowLayout
