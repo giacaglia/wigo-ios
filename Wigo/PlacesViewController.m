@@ -689,7 +689,7 @@ viewForHeaderInSection:(NSInteger)section {
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString;
         if (self.groupNumberID) {
-             queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
+             queryString = [NSString stringWithFormat:@"events/?group=%@&date=tonight&page=%@&attendees_limit=10", [page stringValue], [self.groupNumberID stringValue]];
         }
         else {
             if (![page isEqualToNumber:@1] && [_eventsParty nextPageString]) {
