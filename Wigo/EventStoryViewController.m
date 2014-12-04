@@ -57,49 +57,60 @@ BOOL cancelFetchMessages;
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
-    UILabel *numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 65, self.view.frame.size.width - 220, 20)];
+    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 65, self.view.frame.size.width - 220, 20)];
     if ([self.event.numberAttending intValue] == 1) {
-        numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
+        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
     }
     else {
-        numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
+        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
     }
-    numberGoingLabel.textColor = RGB(170, 170, 170);
-    numberGoingLabel.textAlignment = NSTextAlignmentCenter;
-    numberGoingLabel.font = [FontProperties mediumFont:15];
-    [self.view addSubview:numberGoingLabel];
+    self.numberGoingLabel.textColor = RGB(170, 170, 170);
+    self.numberGoingLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberGoingLabel.font = [FontProperties mediumFont:15];
+    [self.view addSubview:self.numberGoingLabel];
 }
 
 #pragma mark - Loading Messages
 
 - (void)loadEventDetails {
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 204, self.view.frame.size.width - 140, 30)];
+    [self.inviteButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
+    [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    self.inviteButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
+    self.inviteButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    self.inviteButton.layer.borderWidth = 1.0f;
+    self.inviteButton.layer.cornerRadius = 5.0f;
+    [self.inviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+    self.inviteButton.hidden = YES;
+    self.inviteButton.enabled = NO;
+    [self.view addSubview:self.inviteButton];
+    
+    self.aroundGoHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 204, 100, 30)];
+    self.aroundGoHereButton.tag = [(NSNumber *)[self.event eventID] intValue];
+    [self.aroundGoHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
+    self.aroundGoHereButton.hidden = YES;
+    self.aroundGoHereButton.enabled = NO;
+    [self.view addSubview:self.aroundGoHereButton];
+    
+    UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 85, 25)];
+    goOutButton.enabled = NO;
+    [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
+    [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    goOutButton.backgroundColor = [FontProperties getBlueColor];
+    goOutButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
+    goOutButton.layer.cornerRadius = 5;
+    goOutButton.layer.borderWidth = 1;
+    goOutButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    [self.aroundGoHereButton addSubview:goOutButton];
+
+    
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
-        UIButton *invitePeopleButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 204, self.view.frame.size.width - 140, 30)];
-        [invitePeopleButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
-        [invitePeopleButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-        invitePeopleButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
-        invitePeopleButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-        invitePeopleButton.layer.borderWidth = 1.0f;
-        invitePeopleButton.layer.cornerRadius = 5.0f;
-        [invitePeopleButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:invitePeopleButton];
+        self.inviteButton.hidden = NO;
+        self.inviteButton.enabled = YES;
     }
     else {
-        UIButton *aroundGoOutButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 204, 100, 30)];
-        aroundGoOutButton.tag = [(NSNumber *)[self.event eventID] intValue];
-        [aroundGoOutButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:aroundGoOutButton];
-        
-        UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 85, 25)];
-        goOutButton.enabled = NO;
-        [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
-        [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        goOutButton.backgroundColor = [FontProperties getBlueColor];
-        goOutButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
-        goOutButton.layer.cornerRadius = 5;
-        goOutButton.layer.borderWidth = 1;
-        goOutButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-        [aroundGoOutButton addSubview:goOutButton];
+        self.aroundGoHereButton.hidden = NO;
+        self.aroundGoHereButton.enabled = YES;
     }
 }
 
@@ -110,6 +121,7 @@ BOOL cancelFetchMessages;
 }
 
 - (void)goHerePressed {
+    // Update data
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
     [EventAnalytics tagEvent:@"Go Here" withDetails:options];
     [[Profile user] setIsAttending:YES];
@@ -118,7 +130,15 @@ BOOL cancelFetchMessages;
     [[Profile user] setEventID:[self.event eventID]];
     [Network postGoingToEventNumber:[[self.event eventID] intValue]];
     [self.event addUser:[Profile user]];
+    [self.event setNumberAttending:@([self.event.numberAttending intValue] + 1)];
+
+    // Update UI
     self.eventPeopleScrollView.event = self.event;
+    self.aroundGoHereButton.hidden = YES;
+    self.aroundGoHereButton.enabled = NO;
+    self.inviteButton.hidden = NO;
+    self.inviteButton.enabled = YES;
+    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
 }
 
 
@@ -212,8 +232,6 @@ BOOL cancelFetchMessages;
         }
         else [myCell updateUIToRead:NO];
     }
-   
-    
     return myCell;
 }
 

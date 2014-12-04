@@ -19,6 +19,9 @@
 @property (nonatomic, strong) NSData *fileData;
 @property (nonatomic, strong) NSDictionary *options;
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
+@property (nonatomic, strong) UILabel *numberGoingLabel;
+@property (nonatomic, strong) UIButton *inviteButton;
+@property (nonatomic, strong) UIButton *aroundGoHereButton;
 @end
 
 @interface StoryFlowLayout : UICollectionViewFlowLayout
