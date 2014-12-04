@@ -109,6 +109,11 @@ viewForHeaderInSection:(NSInteger)section {
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSDictionary *sectionDictionary = [self.schoolSections objectAtIndex:indexPath.section];
+    NSArray *arrayOfSchools = [sectionDictionary objectForKey:@"schools"];
+    NSDictionary *schoolDictionary = [arrayOfSchools objectAtIndex:indexPath.row];
+    NSNumber *groupID = [schoolDictionary objectForKey:@"id"];
+    [self.placesDelegate setGroupID:groupID];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

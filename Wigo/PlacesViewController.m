@@ -634,6 +634,11 @@ int firstIndexOfNegativeEvent;
     [self presentViewController:eventStoryController animated:YES completion:nil];
 }
 
+- (void)setGroupID:(NSNumber *)groupID {
+    self.groupNumberID = groupID;
+    [self fetchEvents];
+}
+
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
     int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
     return numberOfEvents * userIndex + eventIndex;
@@ -683,11 +688,17 @@ viewForHeaderInSection:(NSInteger)section {
         fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString;
-        if (![page isEqualToNumber:@1] && [_eventsParty nextPageString]) {
-            queryString = [_eventsParty nextPageString];
+        if (self.groupNumberID) {
+             queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
         }
         else {
-            queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
+            if (![page isEqualToNumber:@1] && [_eventsParty nextPageString]) {
+                queryString = [_eventsParty nextPageString];
+            }
+            else {
+                queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
+            }
+
         }
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             if ([page isEqualToNumber:@1]) {

@@ -14,12 +14,13 @@
 @protocol PlacesDelegate <NSObject>
 - (void)showUser:(User *)user;
 - (void)showConversationForEvent:(Event*)event;
+- (void)setGroupID:(NSNumber *)groupID;
 @end
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate >
 
 @property ProfileViewController *profileViewController;
-
+@property (nonatomic, strong) NSNumber *groupNumberID;
 @end
 
 #import "Event.h"
