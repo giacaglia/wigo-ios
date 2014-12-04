@@ -215,37 +215,26 @@
         self.buttonToggleCamera.enabled = ([[IQCaptureSession supportedVideoCaptureDevices] count]>1)?YES:NO;
         
         //Flash
-        if ([[self session] hasFlash])
-        {
-            if ([self session].flashMode == AVCaptureFlashModeOn) {
-                for (UIView *subview in self.buttonFlash.subviews) {
-                    if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
-                }
-                UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 16, 26)];
-                imageView.image = [UIImage imageNamed:@"flashOn"];
-                [self.buttonFlash addSubview:imageView];
-                self.buttonFlash.alpha = 1.0f;
-            }
-            
-            else if ([self session].flashMode == AVCaptureFlashModeOff) {
-                for (UIView *subview in self.buttonFlash.subviews) {
-                    if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
-                }
-                UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 26, 31)];
-                imageView.image = [UIImage imageNamed:@"flashOff"];
-                [self.buttonFlash addSubview:imageView];
-                self.buttonFlash.alpha = 0.3f;
-            }
-            
-            self.buttonFlash.enabled = YES;
-        }
-        else
-        {
+        if ([self session].fakeFlashMode == AVCaptureFlashModeOn) {
             for (UIView *subview in self.buttonFlash.subviews) {
                 if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
             }
-            self.buttonFlash.enabled = NO;
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 16, 26)];
+            imageView.image = [UIImage imageNamed:@"flashOn"];
+            [self.buttonFlash addSubview:imageView];
+            self.buttonFlash.alpha = 1.0f;
         }
+        else if ([self session].fakeFlashMode == AVCaptureFlashModeOff) {
+            for (UIView *subview in self.buttonFlash.subviews) {
+                if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
+            }
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 26, 31)];
+            imageView.image = [UIImage imageNamed:@"flashOff"];
+            [self.buttonFlash addSubview:imageView];
+            self.buttonFlash.alpha = 0.3f;
+        }
+        self.buttonFlash.enabled = YES;
+        
         
         //Focus
         {
@@ -446,7 +435,6 @@
     if ([self session].cameraPosition == AVCaptureDevicePositionBack)
     {
         [[self session] setFlashMode:AVCaptureFlashModeOff];
-        [[self session] setFakeFlashMode:AVCaptureFlashModeOn];
         [self setCaptureDevice:IQMediaCaptureControllerCameraDeviceFront animated:YES];
     }
     else
@@ -481,13 +469,16 @@
 
 - (void)toggleFlash:(UIButton *)sender
 {
-    if ([self session].flashMode == AVCaptureFlashModeOff)
+    if ([self session].fakeFlashMode == AVCaptureFlashModeOff)
     {
+        [[self session] setFakeFlashMode:AVCaptureFlashModeOn];
         if ([[self session] isFlashModeSupported:AVCaptureFlashModeOn])
             [[self session] setFlashMode:AVCaptureFlashModeOn];
+        
     }
-    else if ([self session].flashMode == AVCaptureFlashModeOn)
+    else if ([self session].fakeFlashMode == AVCaptureFlashModeOn)
     {
+        [[self session] setFakeFlashMode:AVCaptureFlashModeOff];
         if ([[self session] isFlashModeSupported:AVCaptureFlashModeOff])
             [[self session] setFlashMode:AVCaptureFlashModeOff];
     }
@@ -705,7 +696,7 @@
 
 - (void)setFrontFlash {
     if ([self session].cameraPosition == AVCaptureDevicePositionFront &&
-        [self session].flashMode == AVCaptureFlashModeOn) {
+        [self session].fakeFlashMode == AVCaptureFlashModeOn) {
         CGFloat oldBrightness = [UIScreen mainScreen].brightness;
         UIWindow *window = [UIApplication sharedApplication].keyWindow;
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, window.frame.size.width, window.frame.size.height)];
