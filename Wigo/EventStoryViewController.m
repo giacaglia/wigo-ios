@@ -28,46 +28,15 @@ BOOL cancelFetchMessages;
   
     [self loadEventDetails];
     [self loadTextViewAndSendButton];
-    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
-    self.eventPeopleScrollView.event = _event;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
-    [self.view addSubview:self.eventPeopleScrollView];
+    [self loadEventPeopleScrollView];
+    [self loadEventTitle];
 }
 
 
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    
     [self loadEventMessages];
-    
-    UIButton *aroundBackButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 25, 50, 50)];
-    [aroundBackButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:aroundBackButton];
-    UIImageView *backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 9, 15)];
-    backImageView.image = [UIImage imageNamed:@"blueBackIcon"];
-    [aroundBackButton addSubview:backImageView];
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(45, 24, self.view.frame.size.width - 90, 50)];
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.numberOfLines = 0;
-    titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    titleLabel.text = self.event.name;
-    titleLabel.textColor = [FontProperties getBlueColor];
-    titleLabel.font = [FontProperties getTitleFont];
-    [self.view addSubview:titleLabel];
-    
-    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 65, self.view.frame.size.width - 220, 20)];
-    if ([self.event.numberAttending intValue] == 1) {
-        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
-    }
-    else {
-        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
-    }
-    self.numberGoingLabel.textColor = RGB(170, 170, 170);
-    self.numberGoingLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberGoingLabel.font = [FontProperties mediumFont:15];
-    [self.view addSubview:self.numberGoingLabel];
 }
 
 #pragma mark - Loading Messages
@@ -258,6 +227,43 @@ BOOL cancelFetchMessages;
     UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 20, 20)];
     sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
     [sendButton addSubview:sendOvalImageView];
+}
+
+- (void)loadEventPeopleScrollView {
+    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
+    self.eventPeopleScrollView.event = _event;
+    self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
+    [self.view addSubview:self.eventPeopleScrollView];
+}
+
+- (void)loadEventTitle {
+    UIButton *aroundBackButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 25, 50, 50)];
+    [aroundBackButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:aroundBackButton];
+    UIImageView *backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 9, 15)];
+    backImageView.image = [UIImage imageNamed:@"blueBackIcon"];
+    [aroundBackButton addSubview:backImageView];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(45, 24, self.view.frame.size.width - 90, 50)];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.numberOfLines = 0;
+    titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    titleLabel.text = self.event.name;
+    titleLabel.textColor = [FontProperties getBlueColor];
+    titleLabel.font = [FontProperties getTitleFont];
+    [self.view addSubview:titleLabel];
+    
+    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 65, self.view.frame.size.width - 220, 20)];
+    if ([self.event.numberAttending intValue] == 1) {
+        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
+    }
+    else {
+        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
+    }
+    self.numberGoingLabel.textColor = RGB(170, 170, 170);
+    self.numberGoingLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberGoingLabel.font = [FontProperties mediumFont:15];
+    [self.view addSubview:self.numberGoingLabel];
 }
 
 #pragma mark - Button handler
