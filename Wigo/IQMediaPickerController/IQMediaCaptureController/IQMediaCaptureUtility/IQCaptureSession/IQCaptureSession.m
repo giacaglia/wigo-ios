@@ -465,6 +465,27 @@
     }
 }
 
+- (BOOL)setFakeFlashMode:(AVCaptureFlashMode)fakeFlashMode {
+    AVCaptureDevice *device = _videoCaptureDeviceInput.device;
+    if ( [device isFlashModeSupported:fakeFlashMode])
+    {
+        NSError *error;
+        if (device.flashMode != fakeFlashMode && [device lockForConfiguration:&error])
+        {
+            device.flashMode = fakeFlashMode;
+            [device unlockForConfiguration];
+            
+            return YES;
+        }
+        else
+        {            
+            return YES;
+        }
+    }
+
+    return YES;
+}
+
 -(BOOL)setFlashMode:(AVCaptureFlashMode)flashMode
 {
     AVCaptureDevice *device = _videoCaptureDeviceInput.device;

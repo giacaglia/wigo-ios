@@ -215,8 +215,8 @@
         self.buttonToggleCamera.enabled = ([[IQCaptureSession supportedVideoCaptureDevices] count]>1)?YES:NO;
         
         //Flash
-//        if ([[self session] hasFlash])
-//        {
+        if ([[self session] hasFlash])
+        {
             if ([self session].flashMode == AVCaptureFlashModeOn) {
                 for (UIView *subview in self.buttonFlash.subviews) {
                     if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
@@ -238,14 +238,14 @@
             }
             
             self.buttonFlash.enabled = YES;
-//        }
-//        else
-//        {
-//            for (UIView *subview in self.buttonFlash.subviews) {
-//                if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
-//            }
-//            self.buttonFlash.enabled = NO;
-//        }
+        }
+        else
+        {
+            for (UIView *subview in self.buttonFlash.subviews) {
+                if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
+            }
+            self.buttonFlash.enabled = NO;
+        }
         
         //Focus
         {
@@ -264,21 +264,6 @@
         {
             [self.buttonCapture setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
 
-//            if ([[self session] isSessionRunning] == NO)
-//            {
-//                [self.buttonCapture setImage:[UIImage imageNamed:@"IQ_neutral_mode"] forState:UIControlStateNormal];
-//            }
-//            else
-//            {
-//                if ([[self session] isRecording] == NO)
-//                {
-//                    [self.buttonCapture setImage:[UIImage imageNamed:@"IQ_start_capture_mode"] forState:UIControlStateNormal];
-//                }
-//                else
-//                {
-//                    [self.buttonCapture setImage:[UIImage imageNamed:@"IQ_stop_capture_mode"] forState:UIControlStateNormal];
-//                }
-//            }
         }
         
     } completion:^(BOOL finished) {
@@ -461,6 +446,7 @@
     if ([self session].cameraPosition == AVCaptureDevicePositionBack)
     {
         [[self session] setFlashMode:AVCaptureFlashModeOff];
+        [[self session] setFakeFlashMode:AVCaptureFlashModeOn];
         [self setCaptureDevice:IQMediaCaptureControllerCameraDeviceFront animated:YES];
     }
     else

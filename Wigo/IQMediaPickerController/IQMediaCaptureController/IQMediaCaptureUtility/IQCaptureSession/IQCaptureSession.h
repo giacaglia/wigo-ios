@@ -69,6 +69,7 @@ typedef NS_ENUM(NSInteger, IQCameraCaptureMode) {
 + (NSArray*)supportedVideoCaptureDevices;
 - (AVCaptureDevicePosition)cameraPosition;
 - (AVCaptureFlashMode)flashMode;
+- (AVCaptureFlashMode)fakeFlashMode;
 - (AVCaptureTorchMode)torchMode;
 - (AVCaptureFocusMode)focusMode;
 - (AVCaptureExposureMode)exposureMode;
@@ -78,6 +79,7 @@ typedef NS_ENUM(NSInteger, IQCameraCaptureMode) {
 
 - (BOOL)setCaptureMode:(IQCameraCaptureMode)captureMode;
 - (BOOL)setCameraPosition:(AVCaptureDevicePosition)cameraPosition;
+- (BOOL)setFakeFlashMode:(AVCaptureFlashMode)fakeFlashMode;
 - (BOOL)setFlashMode:(AVCaptureFlashMode)flashMode;
 - (BOOL)setTorchMode:(AVCaptureTorchMode)torchMode;
 - (BOOL)setFocusMode:(AVCaptureFocusMode)focusMode;
