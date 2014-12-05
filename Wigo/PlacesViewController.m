@@ -225,8 +225,9 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) updatedTitleView {
+    if (!self.groupName) self.groupName = [[Profile user] groupName];
     UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    [schoolButton setTitle:[[Profile user] groupName] forState:UIControlStateNormal];
+    [schoolButton setTitle:self.groupName forState:UIControlStateNormal];
     [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
     schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -240,7 +241,9 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)showSchools {
-    [self presentViewController:[PeekViewController new] animated:YES completion:nil];
+    PeekViewController *peekViewController = [PeekViewController new];
+    peekViewController.placesDelegate = self;
+    [self presentViewController:peekViewController animated:YES completion:nil];
 }
 
 - (void)initializeTapHandler {
