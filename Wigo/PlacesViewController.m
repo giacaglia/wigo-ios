@@ -233,7 +233,9 @@ int firstIndexOfNegativeEvent;
     schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     schoolButton.titleLabel.font = [FontProperties scMediumFont:20.0f];
     
-    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(150, 0, 6, 5)];
+    CGSize size = [self.groupName sizeWithAttributes:
+                   @{NSFontAttributeName:[FontProperties scMediumFont:20.0f]}];
+    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, 0, 6, 5)];
     triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
     [schoolButton addSubview:triangleImageView];
     
@@ -644,18 +646,7 @@ int firstIndexOfNegativeEvent;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
     self.groupNumberID = groupID;
     self.groupName = groupName;
-    UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    [schoolButton setTitle:self.groupName forState:UIControlStateNormal];
-    [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-    [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
-    schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    schoolButton.titleLabel.font = [FontProperties scMediumFont:20.0f];
-    
-    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(150, 0, 6, 5)];
-    triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
-    [schoolButton addSubview:triangleImageView];
-    
-    self.navigationItem.titleView = schoolButton;
+    [self updatedTitleView];
     [self fetchEventsFirstPage];
 }
 
