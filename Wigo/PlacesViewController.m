@@ -695,7 +695,7 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) fetchEvents {
-    if (!fetchingEventAttendees) {
+    if (!fetchingEventAttendees && [[Profile user] key]) {
         fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString;

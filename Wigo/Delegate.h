@@ -22,4 +22,8 @@
 - (void)readEventMessageIDArray:(NSArray *)pages;
 @end
 
+@protocol EventConversationDelegate <NSObject>
+- (void)focusOnContent;
+@end
+
 #endif

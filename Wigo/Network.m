@@ -36,8 +36,7 @@
 + (void)sendAsynchronousHTTPMethod:(NSString *)httpMethod withAPIName:(NSString *)apiName withHandler:(QueryResult)handler {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:apiName];
-    User *user = [Profile user];
-    [query setProfileKey:user.key];
+    [query setProfileKey:[[Profile user] key]];
     [query sendAsynchronousHTTPMethod:(NSString *)httpMethod withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(jsonResponse, error);
     }];
@@ -50,8 +49,7 @@
 {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:apiName];
-    User *user = [Profile user];
-    [query setProfileKey:user.key];
+    [query setProfileKey:[[Profile user] key]];
     if ([options isKindOfClass:[NSDictionary class]]) {
         for (NSString *key in [options allKeys]) {
             [query setValue:[options objectForKey:key] forKey:key];
@@ -69,8 +67,7 @@
 
 + (void)sendAsynchronousTapToUserWithIndex:(NSNumber *)indexOfUser {
     Query *query = [[Query alloc] init];
-    User *user = [Profile user];
-    [query setProfileKey:user.key];
+    [query setProfileKey:[[Profile user] key]];
     [query queryWithClassName:@"taps/"];
     [query setValue:indexOfUser forKey:@"tapped"];
     [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error){}];
@@ -99,8 +96,7 @@
                     Query *query = [[Query alloc] init];
                     NSString *apiName = [NSString stringWithFormat:@"follows/%d/", [followObjectNumber intValue]];
                     [query queryWithClassName:apiName];
-                    User *profileUser = [Profile user];
-                    [query setProfileKey:profileUser.key];
+                    [query setProfileKey:[[Profile user] key]];
                     [query sendAsynchronousHTTPMethod:DELETE withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
                 });
             }
@@ -111,8 +107,7 @@
 + (void)followUser:(User *)user {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"follows/"];
-    User *profileUser = [Profile user];
-    [query setProfileKey:profileUser.key];
+    [query setProfileKey:[[Profile user] key]];
     [query setValue:[user objectForKey:@"id"] forKey:@"follow"];
     [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
 
@@ -121,16 +116,14 @@
 + (void)acceptFollowRequestForUser:(User *)user {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:[NSString stringWithFormat:@"follows/accept?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]]];
-    User *profileUser = [Profile user];
-    [query setProfileKey:profileUser.key];
+    [query setProfileKey:[[Profile user] key]];
     [query sendAsynchronousHTTPMethod:GET withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
 }
 
 + (void)rejectFollowRequestForUser:(User *)user {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:[NSString stringWithFormat:@"follows/reject?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]]];
-    User *profileUser = [Profile user];
-    [query setProfileKey:profileUser.key];
+    [query setProfileKey:[[Profile user] key]];
     [query sendAsynchronousHTTPMethod:GET withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
 }
 
@@ -139,8 +132,7 @@
 + (void)sendTapToUserWithIndex:(NSNumber *)indexOfUser {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"taps/"];
-    User *user = [Profile user];
-    [query setProfileKey:user.key];
+    [query setProfileKey:[[Profile user] key]];
     [query setValue:indexOfUser forKey:@"tapped"];
     [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
 }
@@ -148,16 +140,14 @@
 + (void)postGoOut {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"goingouts/"];
-    User *user = [Profile user];
-    [query setProfileKey:user.key];
+    [query setProfileKey:[[Profile user] key]];
     [query sendPOSTRequest];
 }
 
 + (void) postGoingToEventNumber:(int)indexOfObject {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"eventattendees/"];
-    User *user = [Profile user];
-    [query setProfileKey:user.key];
+    [query setProfileKey:[[Profile user] key]];
     [query setValue:[NSNumber numberWithInt:indexOfObject] forKey:@"event"];
     [query sendPOSTRequest];
 }
@@ -165,8 +155,7 @@
 + (NSNumber *)createEventWithName:(NSString *)nameString {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:@"events/"];
-    User *user = [Profile user];
-    [query setProfileKey:user.key];
+    [query setProfileKey:[[Profile user] key]];
     [query setValue:nameString forKey:@"name"];
     NSDictionary *result = [query sendPOSTRequest];
     return (NSNumber *)[result objectForKey:@"id"];
@@ -175,8 +164,7 @@
 + (NSArray *)queryWithAPI:(NSString *)apiName {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:apiName];
-    User *user = [Profile user];
-    [query setProfileKey:user.key];
+    [query setProfileKey:[[Profile user] key]];
     NSDictionary *result = [query sendGETRequest];
     return [result objectForKey:@"objects"];
 }
