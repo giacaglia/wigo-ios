@@ -31,7 +31,7 @@ Event *event;
 
 
 - (void)updateUI {
-    page = @1;
+    page = @2;
     [self fillEventAttendees];
     [self loadUsers];
 }
@@ -39,7 +39,6 @@ Event *event;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - sizeOfEachImage && !fetchingEventAttendees) {
-        fetchingEventAttendees = YES;
         [self fetchEventAttendeesAsynchronous];
     }
 
@@ -110,8 +109,16 @@ Event *event;
 
 - (void)fetchEventAttendeesAsynchronous {
     NSNumber *eventId = [self.event eventID];
-    if (!fetchingEventAttendees) {
-        NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [page stringValue]];
+    if (!fetchingEventAttendees && [page isEqualToNumber:@-1]) {
+        fetchingEventAttendees = YES;
+        NSString *queryString;
+        if (self.groupID) {
+              queryString = [NSString stringWithFormat:@"eventattendees/?group=%@&event=%@&limit=10&page=%@", [self.groupID stringValue] , [eventId stringValue], [page stringValue]];
+        }
+        else {
+            queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [page stringValue]];
+        }
+       
         [Network queryAsynchronousAPI:queryString
                           withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                               dispatch_async(dispatch_get_main_queue(), ^(void){

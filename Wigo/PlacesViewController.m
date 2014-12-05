@@ -610,6 +610,12 @@ int firstIndexOfNegativeEvent;
             event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
         }
         cell.event = event;
+        if (self.groupNumberID) {
+            cell.eventPeopleScrollView.groupID = self.groupNumberID;
+        }
+        else {
+            cell.eventPeopleScrollView.groupID = nil;
+        }
         cell.eventPeopleScrollView.placesDelegate = self;
         [cell updateUI];
         if ([[[event dictionary] objectForKey:@"is_read"] boolValue]) {
