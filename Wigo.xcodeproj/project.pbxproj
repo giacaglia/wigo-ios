@@ -87,6 +87,8 @@
 		C16D86A819747FF6003EB336 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
 		C18AC292198451150056957B /* autorevision.sh in Resources */ = {isa = PBXBuildFile; fileRef = C18AC290198451150056957B /* autorevision.sh */; };
 		C18AC293198451150056957B /* process_info_plist.sh in Resources */ = {isa = PBXBuildFile; fileRef = C18AC291198451150056957B /* process_info_plist.sh */; };
+		C1FE7D9E1A2D1DD10016F82A /* UserTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FE7D9D1A2D1DD10016F82A /* UserTestCase.m */; };
+		C1FE7DB41A2D22EA0016F82A /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		E900C251195DCC4100A01F50 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C250195DCC4100A01F50 /* Message.m */; };
 		E900C254195E010500A01F50 /* Notification.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C253195E010500A01F50 /* Notification.m */; };
 		E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2581961B96000A01F50 /* SignNavigationViewController.m */; };
@@ -427,6 +429,7 @@
 		C16D86A919747FF6003EB336 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C18AC290198451150056957B /* autorevision.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = autorevision.sh; sourceTree = "<group>"; };
 		C18AC291198451150056957B /* process_info_plist.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = process_info_plist.sh; sourceTree = "<group>"; };
+		C1FE7D9D1A2D1DD10016F82A /* UserTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserTestCase.m; sourceTree = "<group>"; };
 		E900C24F195DCC4100A01F50 /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
 		E900C250195DCC4100A01F50 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		E900C252195E010500A01F50 /* Notification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notification.h; sourceTree = "<group>"; };
@@ -861,6 +864,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1FE7DB41A2D22EA0016F82A /* FacebookSDK.framework in Frameworks */,
 				E921D63A1923967D00361247 /* UIKit.framework in Frameworks */,
 				E921D6391923967D00361247 /* Foundation.framework in Frameworks */,
 			);
@@ -1047,6 +1051,7 @@
 			children = (
 				E921D6431923967D00361247 /* WigoTests.m */,
 				E921D63E1923967D00361247 /* Supporting Files */,
+				C1FE7D9D1A2D1DD10016F82A /* UserTestCase.m */,
 			);
 			path = WigoTests;
 			sourceTree = "<group>";
@@ -2354,6 +2359,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1FE7D9E1A2D1DD10016F82A /* UserTestCase.m in Sources */,
 				E921D6441923967D00361247 /* WigoTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2617,10 +2623,7 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = (
 					"'PARSE_APPLICATIONID=@\"${PARSE_APPLICATIONID}\"'",
 					"'PARSE_CLIENTKEY=@\"${PARSE_CLIENTKEY}\"'",
@@ -2688,12 +2691,13 @@
 		E921D64B1923967D00361247 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Wigo.app/Wigo";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/wigo.app/wigo";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
@@ -2703,6 +2707,11 @@
 				);
 				INFOPLIST_FILE = "WigoTests/WigoTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Wigo",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -2713,17 +2722,23 @@
 		E921D64C1923967D00361247 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Wigo.app/Wigo";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/wigo.app/wigo";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
 				INFOPLIST_FILE = "WigoTests/WigoTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Wigo",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -2809,17 +2824,23 @@
 		E94A2853196D830F0027D3BA /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Wigo.app/Wigo";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/wigo.app/wigo";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
 				INFOPLIST_FILE = "WigoTests/WigoTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Wigo",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "3B891E2B-BA3C-4F15-899D-F472DF73EFA3";
 				TEST_HOST = "$(BUNDLE_LOADER)";
