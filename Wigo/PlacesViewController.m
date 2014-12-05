@@ -656,7 +656,7 @@ int firstIndexOfNegativeEvent;
     [schoolButton addSubview:triangleImageView];
     
     self.navigationItem.titleView = schoolButton;
-    [self fetchEvents];
+    [self fetchEventsFirstPage];
 }
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
@@ -709,7 +709,7 @@ viewForHeaderInSection:(NSInteger)section {
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString;
         if (self.groupNumberID) {
-             queryString = [NSString stringWithFormat:@"events/?group=%@&date=tonight&page=%@&attendees_limit=10", [page stringValue], [self.groupNumberID stringValue]];
+             queryString = [NSString stringWithFormat:@"events/?group=%@&date=tonight&page=%@&attendees_limit=10", [self.groupNumberID stringValue], [page stringValue]];
         }
         else {
             if (![page isEqualToNumber:@1] && [_eventsParty nextPageString]) {
