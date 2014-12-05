@@ -275,7 +275,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeWhereView {
-    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 5, self.view.frame.size.width, self.view.frame.size.height - 64 - 5)];
+    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 5)];
     _placesTableView.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
@@ -619,6 +619,16 @@ int firstIndexOfNegativeEvent;
         else {
             cell.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
             cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+        }
+        if ( ([[[Profile user] attendingEventID] intValue] < 0 && [indexPath row] == 0) ||
+            ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]])
+            ) {
+            cell.backgroundColor = [FontProperties getLightBlueColor];
+//            cell.eventPeopleScrollView.backgroundColor = [FontProperties getLightBlueColor];
+        }
+        else {
+            cell.backgroundColor = UIColor.whiteColor;
+            cell.eventPeopleScrollView.backgroundColor = [UIColor whiteColor];
         }
         return cell;
     }
@@ -1011,7 +1021,7 @@ viewForHeaderInSection:(NSInteger)section {
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
     self.eventPeopleScrollView.frame = CGRectMake(10, 40, self.frame.size.width - 20, 110);
-    self.eventPeopleScrollView.backgroundColor = UIColor.whiteColor;
+    self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
     UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y, self.frame.size.width - self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.size.height)];
