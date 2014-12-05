@@ -439,18 +439,20 @@ BOOL cancelFetchMessages;
             [Network sendAsynchronousHTTPMethod:POST
                                     withAPIName:@"eventmessages/"
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                        if (!error) {
-                                            NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
-                                            [mutableEventMessages replaceObjectAtIndex:(eventMessages.count - 1) withObject:jsonResponse];
-                                            eventMessages = [NSArray arrayWithArray:mutableEventMessages];
-                                            [facesCollectionView reloadData];
-                                        }
-                                        else {
-                                            NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
-                                            [mutableEventMessages removeLastObject];
-                                            eventMessages = [NSArray arrayWithArray:mutableEventMessages];
-                                            [facesCollectionView reloadData];
-                                        }
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            if (!error) {
+                                                NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
+                                                [mutableEventMessages replaceObjectAtIndex:(eventMessages.count - 1) withObject:jsonResponse];
+                                                eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+                                                [facesCollectionView reloadData];
+                                            }
+                                            else {
+                                                NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
+                                                [mutableEventMessages removeLastObject];
+                                                eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+                                                [facesCollectionView reloadData];
+                                            }
+                                        });
                                     } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
         });
 
