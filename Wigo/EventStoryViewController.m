@@ -26,6 +26,7 @@ BOOL cancelFetchMessages;
     [super viewDidLoad];
     self.title = self.event.name;
   
+    [self loadConversationViewController];
     [self loadEventDetails];
     [self loadTextViewAndSendButton];
     [self loadEventPeopleScrollView];
@@ -427,7 +428,6 @@ BOOL cancelFetchMessages;
                             withAPIName:[NSString stringWithFormat: @"uploads/photos/?filename=%@", filename]
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-
             NSArray *fields = [jsonResponse objectForKey:@"fields"];
             NSString *actionString = [jsonResponse objectForKey:@"action"];
             [AWSUploader uploadFields:fields
@@ -522,7 +522,7 @@ BOOL cancelFetchMessages;
                                 withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                     dispatch_async(dispatch_get_main_queue(), ^{
                                         eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];
-                                        [self loadConversationViewController];
+                                        [facesCollectionView reloadData];
                                     });
                                 }];
     }
@@ -544,20 +544,22 @@ BOOL cancelFetchMessages;
 
 
 - (void)readEventMessageIDArray:(NSArray *)eventMessageIDArray {
-    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
-    for (int i = 0; i < [eventMessageIDArray count]; i++) {
-        NSNumber *eventMessageID = [eventMessageIDArray objectAtIndex:i];
-        for (int j = 0; j < [eventMessages count]; j++) {
-            NSMutableDictionary *eventMessage = [NSMutableDictionary dictionaryWithDictionary:[eventMessages objectAtIndex:j]];
-            if ([[eventMessage objectForKey:@"id"] isEqualToNumber:eventMessageID]) {
-                [eventMessage setObject:@YES forKey:@"is_read"];
-                [mutableEventMessages setObject:eventMessage atIndexedSubscript:i];
-                break;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
+        for (int i = 0; i < [eventMessageIDArray count]; i++) {
+            NSNumber *eventMessageID = [eventMessageIDArray objectAtIndex:i];
+            for (int j = 0; j < [eventMessages count]; j++) {
+                NSMutableDictionary *eventMessage = [NSMutableDictionary dictionaryWithDictionary:[eventMessages objectAtIndex:j]];
+                if ([[eventMessage objectForKey:@"id"] isEqualToNumber:eventMessageID]) {
+                    [eventMessage setObject:@YES forKey:@"is_read"];
+                    [mutableEventMessages setObject:eventMessage atIndexedSubscript:i];
+                    break;
+                }
             }
         }
-    }
-    eventMessages = [NSArray arrayWithArray:mutableEventMessages];
-    [facesCollectionView reloadData];
+        eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+        [facesCollectionView reloadData];
+    });
 }
 
 
