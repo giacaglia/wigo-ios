@@ -989,10 +989,6 @@ viewForHeaderInSection:(NSInteger)section {
     self.frame = CGRectMake(0, 0, 320, 155);
     self.backgroundColor = UIColor.whiteColor;
     
-    UILabel *backgroundLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, 40)];
-    backgroundLabel.backgroundColor = RGB(239, 247, 251);
-    [self.contentView addSubview:backgroundLabel];
-    
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 8, self.frame.size.width - 75, 30)];
     self.eventNameLabel.font = [FontProperties getTitleFont];
     self.eventNameLabel.textColor = RGB(100, 173, 215);
@@ -1022,12 +1018,6 @@ viewForHeaderInSection:(NSInteger)section {
     eventFeedButton.backgroundColor = [UIColor clearColor];
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
-    
-    UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
-    borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
-    borderLabel.layer.borderWidth = 1.5f;
-    borderLabel.layer.cornerRadius = 8;
-    [self.contentView addSubview:borderLabel];
 }
 
 - (void)updateUI {
