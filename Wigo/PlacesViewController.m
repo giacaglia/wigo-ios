@@ -280,7 +280,7 @@ int firstIndexOfNegativeEvent;
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
-    _placesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[OldEventCell class] forCellReuseIdentifier:kOldEventCellName];
     [_placesTableView registerClass:[HeaderOldEventCell class] forHeaderFooterViewReuseIdentifier:kHeaderOldEventCellName];
@@ -624,11 +624,9 @@ int firstIndexOfNegativeEvent;
             ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]])
             ) {
             cell.backgroundColor = [FontProperties getLightBlueColor];
-//            cell.eventPeopleScrollView.backgroundColor = [FontProperties getLightBlueColor];
         }
         else {
             cell.backgroundColor = UIColor.whiteColor;
-            cell.eventPeopleScrollView.backgroundColor = [UIColor whiteColor];
         }
         return cell;
     }
