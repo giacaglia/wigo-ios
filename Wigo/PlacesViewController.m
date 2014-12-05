@@ -109,6 +109,7 @@ int firstIndexOfNegativeEvent;
     [self initializeTapHandler];
     [self initializeWhereView];
 
+
 }
 
 
@@ -117,6 +118,10 @@ int firstIndexOfNegativeEvent;
     [self initializeNotificationObservers];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
+    [[UIApplication sharedApplication] setStatusBarHidden: NO];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+
+
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -365,7 +370,9 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)profileSegue {
-    [self presentViewController:[[ReProfileViewController alloc] initWithUser:[Profile user]] animated:YES completion:nil];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[ReProfileViewController alloc] initWithUser:[Profile user]]];
+    
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 - (void)chooseUser:(id)sender {

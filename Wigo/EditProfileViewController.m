@@ -43,15 +43,16 @@ UIViewController *webViewController;
     [self.view addSubview:_scrollView];
     
     self.title = @"Edit Profile";
-    self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
-    self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
-    
+
+
     [self initializeBarButton];
     [self initializePhotosSection];
     [self initializeBioSection];
     [self initializeNotificationsSection];
     [self initializePrivacySection];
     [self initializeWiGoSection];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -59,6 +60,17 @@ UIViewController *webViewController;
     [EventAnalytics tagEvent:@"Edit Profile View"];
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
+    
+    self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
+    self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
+    
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    
+    
+    //[[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationSlide];
+}
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -86,7 +98,7 @@ UIViewController *webViewController;
     [profileUser save];
     [WiGoSpinnerView hideSpinnerForView:self.view];
     
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated: YES  completion: nil];
 }
 
 

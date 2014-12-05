@@ -44,25 +44,44 @@ UIButton *newChatButton;
     [WiGoSpinnerView addDancingGToCenterView:self.view];
     [self initializeNewChatButton];
     [self initializeTableOfChats];
+    [self initializeLeftBarButton];
+
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     [self fetchFirstPageMessages];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
+    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Chat View"];
     
-    self.navigationItem.titleView = nil;
     self.navigationItem.title = @"Chats";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
     
+
     [self initializeRightBarButtonItem];
-    
-    self.navigationItem.leftBarButtonItem = nil;
 }
 
+- (void) goBack {
+    [self.navigationController popViewControllerAnimated: YES];
+}
+
+- (void) initializeLeftBarButton {
+    UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
+    [barBt setTitle:@" Back" forState:UIControlStateNormal];
+    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    barBt.titleLabel.font = [FontProperties getSubtitleFont];
+    [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
+    [barItem setCustomView:barBt];
+    self.navigationItem.leftBarButtonItem = barItem;
+}
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 }
