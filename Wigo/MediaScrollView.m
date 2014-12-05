@@ -183,6 +183,12 @@
     }];
 }
 
+#pragma mark - MediaScrollViewDelegate 
+
+- (void)focusOnContent {
+    [self.delegate collectionView:self didSelectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+}
+
 @end
 
 
@@ -233,7 +239,6 @@
     self.frame = CGRectMake(0, 0, 320, 568);
     self.backgroundColor = UIColor.clearColor;
     
-    
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
     self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
@@ -242,9 +247,9 @@
     self.moviePlayer.shouldAutoplay = NO;
     [self.moviePlayer prepareToPlay];
     self.moviePlayer.view.frame = self.frame;
-    UIImageView *movieBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
-    movieBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-    [self.moviePlayer.view addSubview:movieBackgroundImageView];
+    self.gradientBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    self.gradientBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
+    [self.moviePlayer.view addSubview:self.gradientBackgroundImageView];
     [self.contentView addSubview:self.moviePlayer.view];
     
     self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
@@ -263,6 +268,12 @@
     self.label.hidden = YES;
     [self.contentView addSubview:self.label];
     [self.contentView bringSubviewToFront:self.label];
+    
+    self.focusButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 110, self.frame.size.width, self.frame.size.height - 220)];
+    self.focusButton.backgroundColor = UIColor.clearColor;
+    [self.focusButton addTarget:self action:@selector(focusOnContent) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:self.focusButton];
+    [self.contentView bringSubviewToFront:self.focusButton];
 }
 
 
@@ -297,9 +308,9 @@
     self.imageView.clipsToBounds = YES;
     [self.contentView addSubview:self.imageView];
     
-    UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
-    backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-    [self.imageView addSubview:backgroundImageView];
+    self.gradientBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    self.gradientBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
+    [self.imageView addSubview:self.gradientBackgroundImageView];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];
@@ -309,6 +320,12 @@
     self.label.hidden = YES;
     [self.contentView addSubview:self.label];
     [self.contentView bringSubviewToFront:self.label];
+    
+    self.focusButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 110, self.frame.size.width, self.frame.size.height - 220)];
+    self.focusButton.backgroundColor = UIColor.clearColor;
+    [self.focusButton addTarget:self action:@selector(focusOnContent) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:self.focusButton];
+    [self.contentView bringSubviewToFront:self.focusButton];
 }
 
 
@@ -433,6 +450,15 @@
                             }
                             withOptions:options];
 
+}
+
+- (void)focusOnContent {
+    if (self.gradientBackgroundImageView.alpha == 1) {
+        self.gradientBackgroundImageView.alpha = 0;
+    }
+    else self.gradientBackgroundImageView.alpha = 1;
+    [self.mediaScrollDelegate focusOnContent];
+    
 }
 
 @end

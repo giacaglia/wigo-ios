@@ -139,6 +139,24 @@
         
         [self highlightCellAtPage:indexPath.row ];
     }
+    else {
+        if (!self.facesHidden) {
+            [UIView animateWithDuration:0.5 animations:^{
+                self.facesCollectionView.alpha = 0;
+                self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,-self.facesCollectionView.frame.size.height);
+            } completion:^(BOOL finished) {
+                self.facesHidden = YES;
+            }];
+        }
+        else {
+            [UIView animateWithDuration:0.5 animations:^{
+                self.facesCollectionView.alpha = 1;
+                self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,0);
+            } completion:^(BOOL finished) {
+                self.facesHidden = NO;
+            }];
+        }
+    }
 }
 
 #define kActionPhotoVideo 0
@@ -408,6 +426,7 @@
     [self.mediaScrollView reloadData];
     [self highlightCellAtPage:MIN(page, self.eventMessages.count - 1)];
 }
+
 
 
 @end

@@ -14,6 +14,7 @@
 
 @protocol MediaScrollViewDelegate
 - (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell;
+- (void)focusOnContent;
 @end
 
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate>
@@ -44,6 +45,9 @@
 @property (nonatomic, strong) UIImageView *upvoteImageView;
 @property (nonatomic, strong) UIButton *downVoteButton;
 @property (nonatomic, strong) UIImageView *downvoteImageView;
+@property (nonatomic, strong) UIButton *focusButton;
+@property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
+- (void)focusOnContent;
 @end
 
 @interface ImageCell : MediaCell
