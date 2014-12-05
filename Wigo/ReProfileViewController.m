@@ -69,14 +69,22 @@ UIButton *tapButton;
     return self;
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear: animated];
     _pageControl.hidden = YES;
+    
+    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
+
+    
+}
+- (void)viewDidDisappear:(BOOL)animated {
 }
 
 
 - (void)viewDidAppear:(BOOL)animated {
     _pageControl.hidden = NO;
     if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
+
 }
 
 
@@ -101,6 +109,8 @@ UIButton *tapButton;
     [self initializeMiddleProfileButton];
     [self initializeBottomTableView];
     [self reloadView];
+    
+    
 }
 
 - (void) initializeNotificationHandlers {
@@ -191,8 +201,21 @@ UIButton *tapButton;
     [self initializeProfileImage];
     [self initializeNameOfPerson];
     [self initializeTapButton];
+    
+    [self initializeLeftBarButton];
+    [self initializeRightBarButton];
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                             forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
 
 - (void) goBack {
     if (![self.user isEqualToUser:[Profile user]]) {
@@ -202,7 +225,40 @@ UIButton *tapButton;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
     }
     [self dismissViewControllerAnimated:YES completion:nil];
+    [[UIApplication sharedApplication] setStatusBarHidden: NO];
 }
+
+- (void) initializeLeftBarButton {
+    UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+    [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
+    [barBt setTitle:@" Back" forState:UIControlStateNormal];
+    [barBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    barBt.titleLabel.font = [FontProperties getSubtitleFont];
+    [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
+    [barItem setCustomView:barBt];
+    self.navigationItem.leftBarButtonItem = barItem;
+}
+
+- (void) initializeRightBarButton {
+    UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+    [barBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    barBt.titleLabel.font = [FontProperties getSubtitleFont];
+    
+    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
+        [barBt setTitle:@"Edit" forState:UIControlStateNormal];
+        [barBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
+    } else {
+        [barBt setTitle:@"More" forState:UIControlStateNormal];
+        [barBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    [barBt sizeToFit];
+    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
+    [barItem setCustomView:barBt];
+    self.navigationItem.rightBarButtonItem = barItem;
+}
+
 
 
 - (void) initializeFollowingAndFollowers {
@@ -234,7 +290,9 @@ UIButton *tapButton;
 - (void) editPressed {
     self.editProfileViewController = [[EditProfileViewController alloc] init];
     self.editProfileViewController.view.backgroundColor = RGB(235, 235, 235);
-    [self presentViewController:self.editProfileViewController animated:YES completion:nil];
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: self.editProfileViewController];
+    [self presentViewController: navController animated: YES completion: nil];
 }
 
 - (void)unfollowPressed {
@@ -328,7 +386,8 @@ UIButton *tapButton;
     _pageControl.currentPageIndicatorTintColor = UIColor.whiteColor;
     _pageControl.pageIndicatorTintColor = RGBAlpha(255, 255, 255, 0.4f);
     _pageControl.center = CGPointMake(self.view.center.x, 25);
-    [self.view addSubview:_pageControl];
+
+    [self.navigationController.navigationBar addSubview: _pageControl];
     [self updateProfile];
 }
 
@@ -458,26 +517,26 @@ UIButton *tapButton;
     [self.view bringSubviewToFront:topGradientBackground];
     [self.view bringSubviewToFront:_pageControl];
     
-    UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 44)];
-    [backButton setImage:[UIImage imageNamed:@"whiteBackButton"] forState:UIControlStateNormal];
-    [backButton setTitle:@" Back" forState:UIControlStateNormal];
-    [backButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    backButton.titleLabel.font = [FontProperties getSubtitleFont];
-    [backButton addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:backButton];
+//    UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 44)];
+//    [backButton setImage:[UIImage imageNamed:@"whiteBackButton"] forState:UIControlStateNormal];
+//    [backButton setTitle:@" Back" forState:UIControlStateNormal];
+//    [backButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+//    backButton.titleLabel.font = [FontProperties getSubtitleFont];
+//    [backButton addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:backButton];
     
-    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 75, 0, 65, 44)];
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        [rightButton setTitle:@"Edit" forState:UIControlStateNormal];
-        [rightButton addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
-        
-    }
-    else  {
-        [rightButton setTitle:@"More" forState:UIControlStateNormal];
-        [rightButton addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
-    }
-    rightButton.titleLabel.font = [FontProperties getSubtitleFont];
-    [self.view addSubview:rightButton];
+//    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 75, 0, 65, 44)];
+//    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
+//        [rightButton setTitle:@"Edit" forState:UIControlStateNormal];
+//        [rightButton addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
+//        
+//    }
+//    else  {
+//        [rightButton setTitle:@"More" forState:UIControlStateNormal];
+//        [rightButton addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
+//    }
+//    rightButton.titleLabel.font = [FontProperties getSubtitleFont];
+//    [self.view addSubview:rightButton];
 
     _nameOfPersonBackground = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
     UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
@@ -709,14 +768,22 @@ UIButton *tapButton;
     [chatButton addSubview:chatLabel];
     
     UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(chatButton.frame.size.width/2 - 10, 10, 20, 20)];
-    orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
     [chatButton addSubview:orangeChatBubbleImageView];
 
     UILabel *numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, orangeChatBubbleImageView.frame.size.width, orangeChatBubbleImageView.frame.size.height - 4)];
     numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
     numberOfChatsLabel.textColor = UIColor.whiteColor;
     numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
-    numberOfChatsLabel.text = @"8";
+    
+    NSNumber *unreadChats = (NSNumber *)[self.user objectForKey:@"num_unread_conversations"];
+    
+    if (![unreadChats isEqualToNumber: @0]) {
+        orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
+        numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
+    } else {
+        orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
+    }
+    
     [orangeChatBubbleImageView addSubview:numberOfChatsLabel];
     
     [self.view addSubview:chatButton];
@@ -745,7 +812,9 @@ UIButton *tapButton;
 }
 
 - (void)chatPressed {
-    [self presentViewController:[ChatViewController new] animated:YES completion:nil];
+    ChatViewController *chatViewController = [ChatViewController new];
+    chatViewController.view.backgroundColor = UIColor.whiteColor;
+    [self.navigationController pushViewController:chatViewController animated:YES];
 }
 
 #pragma mark UIScrollView delegate

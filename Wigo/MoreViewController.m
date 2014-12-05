@@ -89,6 +89,17 @@ UIButton *cancelButton;
 }
 
 
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
+    
+    self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
+    self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
+    
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+}
+
 - (void)unfollowPressed {
     if (once) {
         once = NO;

@@ -76,7 +76,6 @@ NSMutableArray *suggestedArrayView;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
     suggestedArrayView = [NSMutableArray new];
     // Title setup
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     [self initializeBackBarButton];
     [self initializeRightBarButton];
     
@@ -89,6 +88,14 @@ NSMutableArray *suggestedArrayView;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [EventAnalytics tagEvent:@"People View"];
+
+
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
+    
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
 
     if (!didProfileSegue) {
         if ([[self.user allKeys] containsObject:@"tabNumber"]) {
