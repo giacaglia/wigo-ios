@@ -454,9 +454,21 @@
 
 - (void)focusOnContent {
     if (self.gradientBackgroundImageView.alpha == 1) {
-        self.gradientBackgroundImageView.alpha = 0;
+        [UIView animateWithDuration: 0.5 animations:^{
+            self.gradientBackgroundImageView.alpha = 0;
+            self.upVoteButton.alpha = 0;
+            self.downVoteButton.alpha = 0;
+            self.numberOfVotesLabel.alpha = 0;
+        }];
     }
-    else self.gradientBackgroundImageView.alpha = 1;
+    else {
+        [UIView animateWithDuration: 0.5 animations:^{
+            self.gradientBackgroundImageView.alpha = 1;
+            self.upVoteButton.alpha = 1;
+            self.downVoteButton.alpha = 1;
+            self.numberOfVotesLabel.alpha = 1;
+        }];
+    }
     [self.mediaScrollDelegate focusOnContent];
     
 }
