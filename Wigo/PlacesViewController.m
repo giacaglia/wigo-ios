@@ -236,10 +236,20 @@ int firstIndexOfNegativeEvent;
     [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
     schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    schoolButton.titleLabel.font = [FontProperties scMediumFont:20.0f];
-    
-    CGSize size = [self.groupName sizeWithAttributes:
-                   @{NSFontAttributeName:[FontProperties scMediumFont:20.0f]}];
+  
+    CGFloat fontSize = 20.0f;
+    CGSize size;
+    while (fontSize > 0.0)
+    {
+        size = [self.groupName sizeWithAttributes:
+                       @{NSFontAttributeName:[FontProperties scMediumFont:fontSize]}];
+        //TODO: not use fixed length
+        if (size.width <= 210) break;
+        
+        fontSize -= 2.0;
+    }
+    schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
+
     UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, 0, 6, 5)];
     triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
     [schoolButton addSubview:triangleImageView];
@@ -633,11 +643,9 @@ int firstIndexOfNegativeEvent;
         [cell updateUI];
         if ([[[event dictionary] objectForKey:@"is_read"] boolValue]) {
             cell.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
-            cell.postStoryImageView.image = [UIImage imageNamed:@"grayPostStory"];
         }
         else {
             cell.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
-            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
         if ( ([[[Profile user] attendingEventID] intValue] < 0 && [indexPath row] == 0) ||
             ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]])
@@ -1097,7 +1105,7 @@ viewForHeaderInSection:(NSInteger)section {
     [self.chatBubbleImageView addSubview:self.chatNumberLabel];
     
     UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
-    postStoryImageView.image = [UIImage imageNamed:@"grayPostStory"];
+    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
     [self.contentView addSubview:postStoryImageView];
 
     UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
