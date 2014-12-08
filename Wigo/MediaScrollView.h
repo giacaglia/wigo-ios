@@ -23,6 +23,7 @@
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 @property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
+@property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
 @property (nonatomic, strong) NSNumber *index;
 

@@ -9,11 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Event.h"
 #import "Party.h"
-
-@protocol PlacesDelegate <NSObject>
-- (void)showUser:(User *)user;
-- (void)showConversationForEvent:(Event*)event;
-@end
+#import "Delegate.h"
 
 @interface EventPeopleScrollView : UIScrollView <UIScrollViewDelegate>
 - (id)initWithEvent:(Event*)event;

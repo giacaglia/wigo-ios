@@ -139,36 +139,33 @@
         
         [self highlightCellAtPage:indexPath.row ];
     }
-    else {
-        if (!self.facesHidden) {
-            [UIView animateWithDuration:0.5 animations:^{
-                self.facesCollectionView.alpha = 0;
-                self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,-self.facesCollectionView.frame.size.height);
-                self.buttonTrash.alpha = 0;
-                self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, self.buttonTrash.frame.size.height);
-                self.buttonCancel.alpha = 0;
-                self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, self.buttonCancel.frame.size.height);
-            } completion:^(BOOL finished) {
-                self.facesHidden = YES;
-            }];
-        }
-        else {
-            [UIView animateWithDuration:0.5 animations:^{
-                self.facesCollectionView.alpha = 1;
-                self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,0);
-                self.buttonTrash.alpha = 1;
-                self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, 0);
-                self.buttonCancel.alpha = 1;
-                self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, 0);
-            } completion:^(BOOL finished) {
-                self.facesHidden = NO;
-            }];
-        }
-    }
 }
 
 - (void)focusOnContent {
-    
+    if (!self.facesHidden) {
+        [UIView animateWithDuration:0.5 animations:^{
+            self.facesCollectionView.alpha = 0;
+            self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,-self.facesCollectionView.frame.size.height);
+            self.buttonTrash.alpha = 0;
+            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, self.buttonTrash.frame.size.height);
+            self.buttonCancel.alpha = 0;
+            self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, self.buttonCancel.frame.size.height);
+        } completion:^(BOOL finished) {
+            self.facesHidden = YES;
+        }];
+    }
+    else {
+        [UIView animateWithDuration:0.5 animations:^{
+            self.facesCollectionView.alpha = 1;
+            self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,0);
+            self.buttonTrash.alpha = 1;
+            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, 0);
+            self.buttonCancel.alpha = 1;
+            self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, 0);
+        } completion:^(BOOL finished) {
+            self.facesHidden = NO;
+        }];
+    }
 }
 
 #define kActionPhotoVideo 0
@@ -397,6 +394,7 @@
     self.mediaScrollView.event = self.event;
     self.mediaScrollView.controllerDelegate = self.controllerDelegate;
     self.mediaScrollView.mediaDelegate = self;
+    self.mediaScrollView.eventConversationDelegate = self;
     self.mediaScrollView.storyDelegate = self.storyDelegate;
     if (self.index) [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
 

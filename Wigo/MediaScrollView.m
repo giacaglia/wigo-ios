@@ -186,7 +186,7 @@
 #pragma mark - MediaScrollViewDelegate 
 
 - (void)focusOnContent {
-    [self.delegate collectionView:self didSelectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    [self.eventConversationDelegate focusOnContent];
 }
 
 @end

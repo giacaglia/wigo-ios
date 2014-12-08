@@ -106,6 +106,6 @@
     }
 }
 - (void)textViewDidChange:(UITextView *)textView {
-    self.charCountLabel.text = [NSString stringWithFormat: @"%lu", MAX_NOTIFICATION_LENGTH - textView.text.length];
+    self.charCountLabel.text = [NSString stringWithFormat: @"%u", MAX_NOTIFICATION_LENGTH - textView.text.length];
 }
 @end
