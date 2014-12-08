@@ -71,7 +71,6 @@ BOOL shouldAnimate;
 BOOL presentedMobileContacts;
 NSNumber *page;
 NSMutableArray *eventPageArray;
-int eventOffset;
 int sizeOfEachImage;
 BOOL shouldReloadEvents;
 int firstIndexOfNegativeEvent;
@@ -90,8 +89,8 @@ int firstIndexOfNegativeEvent;
     shouldAnimate = NO;
     presentedMobileContacts = NO;
     shouldReloadEvents = YES;
-    eventOffset = 0;
     firstIndexOfNegativeEvent = -1;
+    self.eventOffsetDictionary = [NSMutableDictionary new];
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
             if ([view2 isKindOfClass:[UIImageView class]]) {
@@ -617,8 +616,10 @@ int firstIndexOfNegativeEvent;
         else {
             cell.eventPeopleScrollView.groupID = nil;
         }
-        cell.eventPeopleScrollView.eventOffset = 0;
         cell.eventPeopleScrollView.placesDelegate = self;
+        if ([[self.eventOffsetDictionary allKeys] containsObject:[[event eventID] stringValue]]) {
+            cell.eventPeopleScrollView.contentOffset = CGPointMake([(NSNumber *)[self.eventOffsetDictionary objectForKey:[[event eventID] stringValue]] intValue],0);
+        }
         [cell updateUI];
         if ([[[event dictionary] objectForKey:@"is_read"] boolValue]) {
             cell.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
@@ -659,6 +660,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
+    self.eventOffsetDictionary = [NSMutableDictionary new];
     self.groupNumberID = groupID;
     self.groupName = groupName;
     [self updatedTitleView];
@@ -829,18 +831,9 @@ viewForHeaderInSection:(NSInteger)section {
                                       
                                       if ([eventAttendeesArray count] > 0) {
                                           pageNumberForEvent = @([pageNumberForEvent intValue] + 1);
-                                          NSIndexPath *indexPath = [NSIndexPath indexPathForRow:eventNumber inSection:0];
-                                          UITableViewCell *cell = [_placesTableView cellForRowAtIndexPath:indexPath];
-                                          for (UIView *view in [[[cell.contentView subviews] objectAtIndex:0] subviews]) {
-                                              if ([view isKindOfClass:[UIScrollView class]]) {
-                                                  UIScrollView *scrollView = (UIScrollView *)view;
-                                                  eventOffset = scrollView.contentOffset.x;
-                                              }
-                                          }
                                           [_placesTableView beginUpdates];
                                           [_placesTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:eventNumber inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
                                           [_placesTableView endUpdates];
-                                          eventOffset = 0;
                                       }
                                       else {
                                           pageNumberForEvent = @-1;
@@ -1047,8 +1040,13 @@ viewForHeaderInSection:(NSInteger)section {
     [self.eventPeopleScrollView updateUI];
 }
 
+- (void)setOffset:(int)offset forIndexPath:(NSIndexPath *)indexPath {
+    
+}
+
 
 - (void)showEventConversation {
+    shouldReloadEvents = NO;
     [self.placesDelegate showConversationForEvent:self.event];
 }
 

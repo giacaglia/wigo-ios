@@ -16,6 +16,7 @@
 - (void)showUser:(User *)user;
 - (void)showConversationForEvent:(Event*)event;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
+@property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 @end
 
 @protocol StoryDelegate <NSObject>

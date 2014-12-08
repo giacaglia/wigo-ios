@@ -16,6 +16,7 @@
 @property ProfileViewController *profileViewController;
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) NSString *groupName;
+@property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 @end
 
 #import "Event.h"

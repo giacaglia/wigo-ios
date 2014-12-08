@@ -26,9 +26,9 @@
 
 
 - (void)updateUI {
-    self.page = @2;
     [self fillEventAttendees];
     [self loadUsers];
+    self.page = @2;
 }
 
 
@@ -64,7 +64,7 @@
 
 - (void)loadUsers {
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    if ([self.page isEqualToNumber:@1]) self.eventOffset = 0;
+//    if ([self.page isEqualToNumber:@1]) self.eventOffset = 0;
     self.xPosition = 12;
     for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
         User *user = [[self.partyUser getObjectArray] objectAtIndex:i];
@@ -124,6 +124,9 @@
     UIButton *buttonSender = (UIButton *)sender;
     int tag = buttonSender.tag;
     User *user = [[self.partyUser getObjectArray] objectAtIndex:tag];
+    self.eventOffset = self.contentOffset.x;
+    [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
+                                                 forKey:[[self.event eventID] stringValue]];
     [self.placesDelegate showUser:user];
 }
 
@@ -161,6 +164,8 @@
                                   if ([eventAttendeesArray count] > 0) {
                                       self.page = @([self.page intValue] + 1);
                                       self.eventOffset = self.contentOffset.x;
+//                                      [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.eventOffset]
+//                                                                                   forKey:[self.page stringValue]];
                                       [self loadUsers];
                                   }
                                   else {
