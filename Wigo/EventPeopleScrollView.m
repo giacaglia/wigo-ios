@@ -98,6 +98,27 @@ Event *event;
         profileName.font = [FontProperties lightFont:14.0f];
         [imgView addSubview:profileName];
     }
+    
+    int usersCantSee = (int)[[self.event numberAttending] intValue] - (int)[[self.partyUser getObjectArray] count];
+    if (usersCantSee  > 0) {
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
+        xPosition += sizeOfEachImage + 3;
+        [self addSubview:imageButton];
+        self.contentSize = CGSizeMake(xPosition, sizeOfEachImage + 10);
+        
+        UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"privacyLogo"]];
+        imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
+        [imageButton addSubview:imgView];
+        
+        UILabel *profileName = [[UILabel alloc] init];
+        profileName.text = [NSString stringWithFormat:@"+ %d more", usersCantSee ];;
+        profileName.textColor = [UIColor whiteColor];
+        profileName.textAlignment = NSTextAlignmentCenter;
+        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
+        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+        profileName.font = [FontProperties getSmallPhotoFont];
+        [imgView addSubview:profileName];
+    }
 }
 
 - (void)chooseUser:(id)sender {

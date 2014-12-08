@@ -256,7 +256,7 @@ int firstIndexOfNegativeEvent;
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(dismissKeyboard)];
-    tap.cancelsTouchesInView = YES;
+    tap.cancelsTouchesInView = NO;
     tap.delegate = self;
     [self.view addGestureRecognizer:tap];
 }
@@ -267,7 +267,6 @@ int firstIndexOfNegativeEvent;
     [UIView animateWithDuration:0.2 animations:^{
         _placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-47);
-//        _goingSomewhereButton.hidden = NO;
     }];
     [self clearTextField];
 }
