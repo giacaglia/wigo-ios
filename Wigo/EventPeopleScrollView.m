@@ -11,10 +11,7 @@
 
 #define sizeOfEachImage 90
 
-BOOL fetchingEventAttendees;
-NSNumber *page;
-int xPosition;
-Event *event;
+
 
 @implementation EventPeopleScrollView
 
@@ -31,14 +28,15 @@ Event *event;
 
 
 - (void)updateUI {
-    page = @2;
+    self.page = @2;
     [self fillEventAttendees];
     [self loadUsers];
 }
 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - sizeOfEachImage && !fetchingEventAttendees) {
+    if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - sizeOfEachImage &&
+        !self.fetchingEventAttendees) {
         [self fetchEventAttendeesAsynchronous];
     }
 
@@ -67,18 +65,18 @@ Event *event;
 
 - (void)loadUsers {
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    xPosition = 12;
+    self.xPosition = 12;
     for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
         User *user = [[self.partyUser getObjectArray] objectAtIndex:i];
         if ([user isEqualToUser:[Profile user]]) {
             user = [Profile user];
         }
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
-        xPosition += sizeOfEachImage + 3;
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
+        self.xPosition += sizeOfEachImage + 3;
         imageButton.tag = i;
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:imageButton];
-        self.contentSize = CGSizeMake(xPosition, sizeOfEachImage + 10);
+        self.contentSize = CGSizeMake(self.xPosition, sizeOfEachImage + 10);
         
         UIImageView *imgView = [[UIImageView alloc] init];
         imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
@@ -101,10 +99,10 @@ Event *event;
     
     int usersCantSee = (int)[[self.event numberAttending] intValue] - (int)[[self.partyUser getObjectArray] count];
     if (usersCantSee  > 0) {
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
-        xPosition += sizeOfEachImage + 3;
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
+        self.xPosition += sizeOfEachImage + 3;
         [self addSubview:imageButton];
-        self.contentSize = CGSizeMake(xPosition, sizeOfEachImage + 10);
+        self.contentSize = CGSizeMake(self.xPosition, sizeOfEachImage + 10);
         
         UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"privacyLogo"]];
         imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
@@ -119,6 +117,7 @@ Event *event;
         profileName.font = [FontProperties getSmallPhotoFont];
         [imgView addSubview:profileName];
     }
+    self.contentOffset =  CGPointMake(self.eventOffset, 0);
 }
 
 - (void)chooseUser:(id)sender {
@@ -130,14 +129,14 @@ Event *event;
 
 - (void)fetchEventAttendeesAsynchronous {
     NSNumber *eventId = [self.event eventID];
-    if (!fetchingEventAttendees && ![page isEqualToNumber:@-1]) {
-        fetchingEventAttendees = YES;
+    if (!self.fetchingEventAttendees && ![self.page isEqualToNumber:@-1]) {
+        self.fetchingEventAttendees = YES;
         NSString *queryString;
         if (self.groupID) {
-              queryString = [NSString stringWithFormat:@"eventattendees/?group=%@&event=%@&limit=10&page=%@", [self.groupID stringValue] , [eventId stringValue], [page stringValue]];
+              queryString = [NSString stringWithFormat:@"eventattendees/?group=%@&event=%@&limit=10&page=%@", [self.groupID stringValue] , [eventId stringValue], [self.page stringValue]];
         }
         else {
-            queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [page stringValue]];
+            queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [self.page stringValue]];
         }
        
         [Network queryAsynchronousAPI:queryString
@@ -159,17 +158,18 @@ Event *event;
                                       [self.partyUser addObject:user];
                                   }
                                   if ([eventAttendeesArray count] > 0) {
-                                      page = @([page intValue] + 1);
+                                      self.page = @([self.page intValue] + 1);
+                                      self.eventOffset = self.contentOffset.x;
                                       [self loadUsers];
                                   }
                                   else {
-                                      page = @-1;
+                                      self.page = @-1;
                                   }
-                                  fetchingEventAttendees = NO;
+                                  self.fetchingEventAttendees = NO;
                               });
         }];
     }
-    else fetchingEventAttendees = NO;
+    else self.fetchingEventAttendees = NO;
 }
 
 @end
