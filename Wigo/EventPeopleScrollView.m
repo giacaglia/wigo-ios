@@ -164,8 +164,8 @@
                                   if ([eventAttendeesArray count] > 0) {
                                       self.page = @([self.page intValue] + 1);
                                       self.eventOffset = self.contentOffset.x;
-//                                      [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.eventOffset]
-//                                                                                   forKey:[self.page stringValue]];
+                                      [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
+                                                                                   forKey:[[self.event eventID] stringValue]];
                                       [self loadUsers];
                                   }
                                   else {

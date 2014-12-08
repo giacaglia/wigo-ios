@@ -458,6 +458,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)clearTextField {
+    _placesTableView.userInteractionEnabled = YES;
     _whereAreYouGoingTextField.text = @"";
     [self textFieldDidChange:_whereAreYouGoingTextField];
 }
@@ -499,6 +500,7 @@ int firstIndexOfNegativeEvent;
     [_filteredContentParty removeAllObjects];
     _filteredPartyUserArray = [[NSMutableArray alloc] init];
     if([textField.text length] != 0) {
+        _placesTableView.userInteractionEnabled = NO;
         _isSearching = YES;
         _createButton.hidden = NO;
         _clearButton.hidden = NO;
