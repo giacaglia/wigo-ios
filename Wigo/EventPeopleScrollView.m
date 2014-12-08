@@ -117,7 +117,10 @@
         profileName.font = [FontProperties getSmallPhotoFont];
         [imgView addSubview:profileName];
     }
-    self.contentOffset =  CGPointMake(self.eventOffset, 0);
+    if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]]) {
+        NSNumber *xNumber = [self.placesDelegate.eventOffsetDictionary valueForKey:[[self.event eventID] stringValue]];
+        self.contentOffset = CGPointMake([xNumber intValue], 0);
+    }
 }
 
 - (void)chooseUser:(id)sender {
