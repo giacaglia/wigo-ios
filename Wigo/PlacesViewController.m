@@ -289,11 +289,12 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeWhereView {
-    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 5)];
+    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     _placesTableView.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
+    _placesTableView.showsVerticalScrollIndicator = NO;
     [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[OldEventCell class] forCellReuseIdentifier:kOldEventCellName];
@@ -1045,7 +1046,7 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(10, 40, self.frame.size.width - 20, 110);
+    self.eventPeopleScrollView.frame = CGRectMake(10, 40, self.frame.size.width - 10, 110);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     

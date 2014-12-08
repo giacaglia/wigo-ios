@@ -35,7 +35,8 @@
 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - sizeOfEachImage &&
+    // Add 3 images
+    if (scrollView.contentOffset.x + 320  + 3*sizeOfEachImage >= scrollView.contentSize.width - sizeOfEachImage &&
         !self.fetchingEventAttendees) {
         [self fetchEventAttendeesAsynchronous];
     }
