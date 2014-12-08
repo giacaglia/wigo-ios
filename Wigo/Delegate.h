@@ -24,6 +24,7 @@
 
 @protocol EventConversationDelegate <NSObject>
 - (void)focusOnContent;
+@property (nonatomic, assign) BOOL isFocusing;
 @end
 
 #endif

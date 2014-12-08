@@ -134,8 +134,8 @@
     }
     if (page < self.eventMessages.count - 1) {
         MediaCell *mediaCell = (MediaCell *)[self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:page inSection:0]];
-        if (self.isFocusing) mediaCell.gradientBackgroundImageView.alpha = 0.0f;
-        else mediaCell.gradientBackgroundImageView.alpha = 1.0f;
+//        if (self.isFocusing) mediaCell.gradientBackgroundImageView.alpha = 0.0f;
+//        else mediaCell.gradientBackgroundImageView.alpha = 1.0f;
     }
     [self addReadPage:page];
 
@@ -191,18 +191,6 @@
 #pragma mark - MediaScrollViewDelegate 
 
 - (void)focusOnContent {
-    if (!self.isFocusing) {
-        [UIView animateWithDuration: 0.5 animations:^{
-        } completion:^(BOOL finished) {
-            self.isFocusing = YES;
-        }];
-    }
-    else {
-        [UIView animateWithDuration: 0.5 animations:^{
-        } completion:^(BOOL finished) {
-            self.isFocusing = NO;
-        }];
-    }
     [self.eventConversationDelegate focusOnContent];
 }
 
@@ -264,9 +252,9 @@
     self.moviePlayer.shouldAutoplay = NO;
     [self.moviePlayer prepareToPlay];
     self.moviePlayer.view.frame = self.frame;
-    self.gradientBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
-    self.gradientBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-    [self.moviePlayer.view addSubview:self.gradientBackgroundImageView];
+//    self.gradientBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+//    self.gradientBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
+//    [self.moviePlayer.view addSubview:self.gradientBackgroundImageView];
     [self.contentView addSubview:self.moviePlayer.view];
     
     self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
@@ -325,9 +313,9 @@
     self.imageView.clipsToBounds = YES;
     [self.contentView addSubview:self.imageView];
     
-    self.gradientBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
-    self.gradientBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-    [self.imageView addSubview:self.gradientBackgroundImageView];
+//    self.gradientBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+//    self.gradientBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
+//    [self.imageView addSubview:self.gradientBackgroundImageView];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];
@@ -470,24 +458,7 @@
 }
 
 - (void)focusOnContent {
-    if (!self.isFocusing) {
-        [UIView animateWithDuration: 0.5 animations:^{
-            self.gradientBackgroundImageView.alpha = 0;
-        }
-         completion:^(BOOL finished) {
-             self.isFocusing = YES;
-         }];
-    }
-    else {
-        [UIView animateWithDuration: 0.5 animations:^{
-            self.gradientBackgroundImageView.alpha = 1;
-        }
-         completion:^(BOOL finished) {
-             self.isFocusing = NO;
-         }];
-    }
     [self.mediaScrollDelegate focusOnContent];
-    
 }
 
 @end

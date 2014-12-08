@@ -23,6 +23,7 @@
 @property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) NSNumber *index;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
+@property (nonatomic, assign) BOOL isFocusing;
 @end
 
 @interface FaceCell : UICollectionViewCell
