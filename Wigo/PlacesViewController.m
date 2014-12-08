@@ -640,6 +640,7 @@ int firstIndexOfNegativeEvent;
         else {
             cell.eventPeopleScrollView.groupID = nil;
         }
+        cell.eventPeopleScrollView.eventOffset = 0;
         cell.eventPeopleScrollView.placesDelegate = self;
         [cell updateUI];
         if ([[[event dictionary] objectForKey:@"is_read"] boolValue]) {
