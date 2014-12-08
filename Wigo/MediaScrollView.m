@@ -132,6 +132,11 @@
             [self.pageViews addObject:[NSNull null]];
         }
     }
+    if (page < self.eventMessages.count - 1) {
+        MediaCell *mediaCell = (MediaCell *)[self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:page inSection:0]];
+        if (self.isFocusing) mediaCell.gradientBackgroundImageView.alpha = 0.0f;
+        else mediaCell.gradientBackgroundImageView.alpha = 1.0f;
+    }
     [self addReadPage:page];
 
     [self performBlock:^(void){[self playVideoAtPage:page];}
@@ -186,6 +191,18 @@
 #pragma mark - MediaScrollViewDelegate 
 
 - (void)focusOnContent {
+    if (!self.isFocusing) {
+        [UIView animateWithDuration: 0.5 animations:^{
+        } completion:^(BOOL finished) {
+            self.isFocusing = YES;
+        }];
+    }
+    else {
+        [UIView animateWithDuration: 0.5 animations:^{
+        } completion:^(BOOL finished) {
+            self.isFocusing = NO;
+        }];
+    }
     [self.eventConversationDelegate focusOnContent];
 }
 
@@ -456,9 +473,6 @@
     if (!self.isFocusing) {
         [UIView animateWithDuration: 0.5 animations:^{
             self.gradientBackgroundImageView.alpha = 0;
-            self.upVoteButton.alpha = 0;
-            self.downVoteButton.alpha = 0;
-            self.numberOfVotesLabel.alpha = 0;
         }
          completion:^(BOOL finished) {
              self.isFocusing = YES;
@@ -467,9 +481,6 @@
     else {
         [UIView animateWithDuration: 0.5 animations:^{
             self.gradientBackgroundImageView.alpha = 1;
-            self.upVoteButton.alpha = 1;
-            self.downVoteButton.alpha = 1;
-            self.numberOfVotesLabel.alpha = 1;
         }
          completion:^(BOOL finished) {
              self.isFocusing = NO;
