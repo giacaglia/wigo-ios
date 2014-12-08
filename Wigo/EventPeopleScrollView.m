@@ -130,7 +130,7 @@ Event *event;
 
 - (void)fetchEventAttendeesAsynchronous {
     NSNumber *eventId = [self.event eventID];
-    if (!fetchingEventAttendees && [page isEqualToNumber:@-1]) {
+    if (!fetchingEventAttendees && ![page isEqualToNumber:@-1]) {
         fetchingEventAttendees = YES;
         NSString *queryString;
         if (self.groupID) {
@@ -160,6 +160,7 @@ Event *event;
                                   }
                                   if ([eventAttendeesArray count] > 0) {
                                       page = @([page intValue] + 1);
+                                      [self loadUsers];
                                   }
                                   else {
                                       page = @-1;
