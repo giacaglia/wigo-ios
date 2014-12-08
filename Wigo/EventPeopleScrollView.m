@@ -127,6 +127,7 @@
     [self.placesDelegate showUser:user];
 }
 
+
 - (void)fetchEventAttendeesAsynchronous {
     NSNumber *eventId = [self.event eventID];
     if (!self.fetchingEventAttendees && ![self.page isEqualToNumber:@-1]) {

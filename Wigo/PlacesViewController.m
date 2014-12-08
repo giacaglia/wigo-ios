@@ -385,29 +385,6 @@ int firstIndexOfNegativeEvent;
     [self presentViewController:navController animated:YES completion:nil];
 }
 
-- (void)chooseUser:(id)sender {
-    int tag = (int)((UIButton *)sender).tag;
-    NSDictionary *eventAndUserIndex = [self getUserIndexAndEventIndexFromUniqueIndex:tag];
-    int eventIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"eventIndex"] intValue];
-    int userIndex = [(NSNumber *)[eventAndUserIndex objectForKey:@"userIndex"] intValue];
-    if (eventIndex < [_partyUserArray count]) {
-        Party *partyUser  = [_partyUserArray objectAtIndex:eventIndex];
-        Event *event = [[_eventsParty getObjectArray] objectAtIndex:eventIndex];
-        if ([[partyUser getObjectArray] count] != 0 && userIndex < [[partyUser getObjectArray] count]){
-            User *user = [[partyUser getObjectArray] objectAtIndex:userIndex];
-            if (user && event) {
-                [user setIsAttending:YES];
-                [user setAttendingEventID:[event eventID]];
-                [user setAttendingEventName:[event name]];
-                shouldReloadEvents = NO;
-                self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-                [self.navigationController pushViewController:self.profileViewController animated:YES];
-            }
-        }
-    }
-
-}
-
 - (void)choseProfile:(id)sender {
     _scrollViewPoint = _scrollViewSender.contentOffset;
     _scrollViewSender = (UIScrollView *)[sender superview];
@@ -671,6 +648,7 @@ int firstIndexOfNegativeEvent;
 
 
 - (void)showUser:(User *)user {
+    shouldReloadEvents = NO;
     [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
 }
 
@@ -1025,6 +1003,7 @@ viewForHeaderInSection:(NSInteger)section {
 - (void) setup {
     self.frame = CGRectMake(0, 0, 320, 155);
     self.backgroundColor = UIColor.whiteColor;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 8, self.frame.size.width - 75, 30)];
     self.eventNameLabel.font = [FontProperties getTitleFont];
