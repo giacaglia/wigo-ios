@@ -460,6 +460,7 @@ int firstIndexOfNegativeEvent;
     [_whereAreYouGoingTextField addTarget:self
                                    action:@selector(textFieldDidChange:)
                          forControlEvents:UIControlEventEditingChanged];
+    _whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
     [_whereAreYouGoingView addSubview:_whereAreYouGoingTextField];
     
     [self addCreateButtonToTextField];
@@ -474,6 +475,7 @@ int firstIndexOfNegativeEvent;
     _whereAreYouGoingTextField.text = @"";
     [self textFieldDidChange:_whereAreYouGoingTextField];
 }
+
 
 - (void) addCreateButtonToTextField {
     _createButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 90, _whereAreYouGoingView.frame.size.height/2 - 12, 80, 25)];
@@ -525,6 +527,11 @@ int firstIndexOfNegativeEvent;
     [_placesTableView reloadData];
 }
 
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self createPressed];
+    return YES;
+}
 
 - (void)searchTableList:(NSString *)searchString {
     NSArray *contentNameArray = [_contentParty getNameArray];
