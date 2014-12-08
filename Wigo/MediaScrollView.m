@@ -453,13 +453,16 @@
 }
 
 - (void)focusOnContent {
-    if (self.gradientBackgroundImageView.alpha == 1) {
+    if (!self.isFocusing) {
         [UIView animateWithDuration: 0.5 animations:^{
             self.gradientBackgroundImageView.alpha = 0;
             self.upVoteButton.alpha = 0;
             self.downVoteButton.alpha = 0;
             self.numberOfVotesLabel.alpha = 0;
-        }];
+        }
+         completion:^(BOOL finished) {
+             self.isFocusing = YES;
+         }];
     }
     else {
         [UIView animateWithDuration: 0.5 animations:^{
@@ -467,7 +470,10 @@
             self.upVoteButton.alpha = 1;
             self.downVoteButton.alpha = 1;
             self.numberOfVotesLabel.alpha = 1;
-        }];
+        }
+         completion:^(BOOL finished) {
+             self.isFocusing = NO;
+         }];
     }
     [self.mediaScrollDelegate focusOnContent];
     

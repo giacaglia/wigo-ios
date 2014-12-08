@@ -48,6 +48,7 @@
 @property (nonatomic, strong) UIButton *focusButton;
 @property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
 - (void)focusOnContent;
+@property (nonatomic, assign) BOOL isFocusing;
 @end
 
 @interface ImageCell : MediaCell

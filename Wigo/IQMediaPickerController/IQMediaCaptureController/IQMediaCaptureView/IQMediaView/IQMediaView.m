@@ -160,7 +160,9 @@
 - (void)handlePinchFrom:(UIPinchGestureRecognizer *)pinchRecognizer {
     effectiveScale = beginGestureScale * pinchRecognizer.scale;
     if (effectiveScale >= 1 && effectiveScale < 6) {
-        self.transform = CGAffineTransformMakeScale(effectiveScale, effectiveScale);
+        if ([self captureMode] == IQMediaCaptureControllerCaptureModePhoto) {
+            self.transform = CGAffineTransformMakeScale(effectiveScale, effectiveScale);
+        }
     }
 }
 
