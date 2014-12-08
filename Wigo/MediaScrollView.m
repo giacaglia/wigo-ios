@@ -369,15 +369,15 @@
         self.numberOfVotesLabel.text = [[NSNumber numberWithInt:votes] stringValue];
         
         if (!self.upVoteButton) {
-            self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 46, self.frame.size.height - 108, 32, 32)];
-            self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
+            self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 118, 56, 52)];
+            self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 32, 32)];
             [self.upVoteButton addSubview:self.upvoteImageView];
             [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
             [self.contentView addSubview:self.upVoteButton];
         }
         if (!self.downVoteButton) {
-            self.downVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 46, self.frame.size.height - 42, 32, 32)];
-            self.downvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
+            self.downVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 52, 56, 52)];
+            self.downvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 32, 32)];
                        [self.downVoteButton addSubview:self.downvoteImageView];
             [self.downVoteButton addTarget:self action:@selector(downvotePressed:) forControlEvents:UIControlEventTouchUpInside];
             [self.contentView addSubview:self.downVoteButton];
