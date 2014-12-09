@@ -445,7 +445,6 @@
     [self.facesCollectionView reloadData];
     self.mediaScrollView.eventMessages = self.eventMessages;
     [self.mediaScrollView reloadData];
-//    [self highlightCellAtPage:MIN(page, self.eventMessages.count - 1)];
 }
 
 

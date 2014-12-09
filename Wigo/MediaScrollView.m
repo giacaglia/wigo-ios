@@ -132,11 +132,6 @@
             [self.pageViews addObject:[NSNull null]];
         }
     }
-    if (page < self.eventMessages.count - 1) {
-        MediaCell *mediaCell = (MediaCell *)[self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:page inSection:0]];
-//        if (self.isFocusing) mediaCell.gradientBackgroundImageView.alpha = 0.0f;
-//        else mediaCell.gradientBackgroundImageView.alpha = 1.0f;
-    }
     [self addReadPage:page];
 
     [self performBlock:^(void){[self playVideoAtPage:page];}
@@ -146,12 +141,14 @@
 
 
 - (void)playVideoAtPage:(int)page {
-    if (self.lastMoviePlayer)  [self.lastMoviePlayer stop];
-    MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
-    if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]] &&
-        theMoviePlayer.playbackState != MPMoviePlaybackStatePlaying) {
-        [theMoviePlayer play];
-        self.lastMoviePlayer = theMoviePlayer;
+    if (self.lastMoviePlayer) [self.lastMoviePlayer stop];
+    if ((int)page < [self.pageViews count]) {
+        MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
+        if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]] &&
+            theMoviePlayer.playbackState != MPMoviePlaybackStatePlaying) {
+            [theMoviePlayer play];
+            self.lastMoviePlayer = theMoviePlayer;
+        }
     }
 }
 
@@ -168,20 +165,6 @@
 }
 
 - (void)removeMediaAtPage:(int)page {
-    [self removeEventMessageAtPage:page];
-//    UIView *player = [self.pageViews objectAtIndex:page];
-//    if ([player isKindOfClass:[MPMoviePlayerController class]])    {
-//    }
-//    else {
-//        [UIView animateWithDuration:0.4 animations:^{
-//            player.alpha = 0.0f;
-//        } completion:^(BOOL finished) {
-//            [player removeFromSuperview];
-//        }];
-//    }
-}
-
-- (void)removeEventMessageAtPage:(int)page {
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
     NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
     [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
