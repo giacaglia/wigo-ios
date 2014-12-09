@@ -169,16 +169,16 @@
 
 - (void)removeMediaAtPage:(int)page {
     [self removeEventMessageAtPage:page];
-    UIView *player = [self.pageViews objectAtIndex:page];
-    if ([player isKindOfClass:[MPMoviePlayerController class]])    {
-    }
-    else {
-        [UIView animateWithDuration:0.4 animations:^{
-            player.alpha = 0.0f;
-        } completion:^(BOOL finished) {
-            [player removeFromSuperview];
-        }];
-    }
+//    UIView *player = [self.pageViews objectAtIndex:page];
+//    if ([player isKindOfClass:[MPMoviePlayerController class]])    {
+//    }
+//    else {
+//        [UIView animateWithDuration:0.4 animations:^{
+//            player.alpha = 0.0f;
+//        } completion:^(BOOL finished) {
+//            [player removeFromSuperview];
+//        }];
+//    }
 }
 
 - (void)removeEventMessageAtPage:(int)page {

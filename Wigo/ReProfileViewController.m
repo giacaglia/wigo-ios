@@ -77,14 +77,12 @@ UIButton *tapButton;
 
     
 }
-- (void)viewDidDisappear:(BOOL)animated {
-}
 
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     _pageControl.hidden = NO;
     if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
-
 }
 
 
@@ -109,8 +107,6 @@ UIButton *tapButton;
     [self initializeMiddleProfileButton];
     [self initializeBottomTableView];
     [self reloadView];
-    
-    
 }
 
 - (void) initializeNotificationHandlers {
