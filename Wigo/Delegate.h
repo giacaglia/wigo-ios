@@ -26,6 +26,7 @@
 @protocol EventConversationDelegate <NSObject>
 - (void)focusOnContent;
 @property (nonatomic, assign) BOOL isFocusing;
+- (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages;
 @end
 
 #endif

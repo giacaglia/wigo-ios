@@ -10,6 +10,7 @@
 #import "Globals.h"
 #import "EventMessagesConstants.h"
 #import "IQMediaCaptureController.h"
+#import "AWSUploader.h"
 
 @interface MediaScrollView() {}
 @property (nonatomic, strong) NSMutableArray *pageViews;
@@ -63,7 +64,7 @@
     NSString *contentURL = [eventMessage objectForKey:@"media"];
     if ([mimeType isEqualToString:kCameraType]) {
         CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
-        [cameraCell setControllerDelegate:self.controllerDelegate];
+        [cameraCell setControllerDelegate:self];
         NSArray *arrayViewContollers = (NSArray *)cameraCell.controller.viewControllers;
         if (arrayViewContollers.count > 0) {
             IQMediaCaptureController *captureController = (IQMediaCaptureController *)arrayViewContollers[0];
@@ -181,6 +182,187 @@
 
 - (void)focusOnContent {
     [self.eventConversationDelegate focusOnContent];
+}
+
+#pragma mark - IQMediaPickerController Delegate methods
+
+- (void)mediaPickerController:(IQMediaPickerController *)controller
+       didFinishMediaWithInfo:(NSDictionary *)info {
+    NSDictionary *options;
+    NSString *type = @"";
+    if ([[info allKeys] containsObject:IQMediaTypeImage]) {
+        UIImage *image = [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage];
+        NSData *fileData = UIImageJPEGRepresentation(image, 1.0);
+        type = kImageEventType;
+        if ([[info allKeys] containsObject:IQMediaTypeText]) {
+            NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
+            NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
+            NSDictionary *properties = @{@"yPosition": yPosition};
+            options =  @{
+                         @"event": [self.event eventID],
+                         @"message": text,
+                         @"properties": properties,
+                         @"media_mime_type": type
+                         };
+        }
+        else {
+            options =  @{
+                         @"event": [self.event eventID],
+                         @"media_mime_type": type
+                         };
+        }
+        [self uploadContentWithFile:fileData
+                        andFileName:@"image0.jpg"
+                         andOptions:options];
+        
+    }
+    
+    else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
+        type = kVideoEventType;
+        NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
+        self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(thumbnailGenerated:)
+                                                     name:MPMoviePlayerThumbnailImageRequestDidFinishNotification
+                                                   object:self.moviePlayer];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(didFinishPlaying:)
+                                                     name:MPMoviePlayerLoadStateDidChangeNotification
+                                                   object:self.moviePlayer];
+        [self.moviePlayer requestThumbnailImagesAtTimes:@[@0.0f] timeOption:MPMovieTimeOptionNearestKeyFrame];
+        
+        NSError *error;
+        self.fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
+        
+        if ([[info allKeys] containsObject:IQMediaTypeText]) {
+            NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
+            NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
+            NSDictionary *properties = @{@"yPosition": yPosition};
+            self.options =  @{
+                              @"event": [self.event eventID],
+                              @"message": text,
+                              @"properties": properties,
+                              @"media_mime_type": type
+                              };
+        }
+        else {
+            self.options =  @{
+                              @"event": [self.event eventID],
+                              @"media_mime_type": type
+                              };
+        }
+        
+        
+    }
+//    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
+//    [mutableEventMessages addObject:eventMessage];
+//    eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+//    cancelFetchMessages = YES;
+}
+
+- (void)thumbnailGenerated:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    UIImage *image = [userInfo valueForKey:MPMoviePlayerThumbnailImageKey];
+    [self uploadVideo:self.fileData
+        withVideoName:@"video0.mp4"
+          andThumnail:UIImageJPEGRepresentation(image, 1.0f)
+      andThumnailName:@"thumnail0.jpeg"
+           andOptions:self.options];
+}
+
+- (void)didFinishPlaying:(NSNotification *)notification {
+    [self.moviePlayer stop];
+}
+
+
+- (void)uploadContentWithFile:(NSData *)fileData
+                  andFileName:(NSString *)filename
+                   andOptions:(NSDictionary *)options
+{
+    [Network sendAsynchronousHTTPMethod:GET
+                            withAPIName:[NSString stringWithFormat: @"uploads/photos/?filename=%@", filename]
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    NSArray *fields = [jsonResponse objectForKey:@"fields"];
+                                    NSString *actionString = [jsonResponse objectForKey:@"action"];
+                                    [AWSUploader uploadFields:fields
+                                                withActionURL:actionString
+                                                     withFile:fileData
+                                                  andFileName:filename];
+                                    NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
+                                    [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"media"];
+                                    [Network sendAsynchronousHTTPMethod:POST
+                                                            withAPIName:@"eventmessages/"
+                                                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                                    NSLog(@"Sup!");
+                                                                    if (error) {
+                                                                        
+                                                                        NSLog(@"response: %@", error);
+                                                                    }
+                                                                    else {
+                                                                        NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
+                                                                        [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:jsonResponse];
+//                                                                        self.eventMessages = mutableEventMessages;
+                                                                        [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+                                                                        NSLog(@"error: %@", jsonResponse);
+                                                                    }
+                                                                });
+                                                            } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
+                                });
+                                
+                            }];
+}
+
+- (void)uploadVideo:(NSData *)fileData
+      withVideoName:(NSString *)filename
+        andThumnail:(NSData *)thumbnailData
+    andThumnailName:(NSString *)thumnailFilename
+         andOptions:(NSDictionary *)options
+{
+    [Network sendAsynchronousHTTPMethod:GET
+                            withAPIName:[NSString stringWithFormat: @"uploads/videos/?filename=%@", filename]
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    NSDictionary *videoDictionary = [jsonResponse objectForKey:@"video"];
+                                    NSArray *videoFields = [videoDictionary objectForKey:@"fields"];
+                                    NSString *videoActionString = [videoDictionary objectForKey:@"action"];
+                                    
+                                    [AWSUploader uploadFields:videoFields
+                                                withActionURL:videoActionString
+                                                     withFile:fileData
+                                                  andFileName:filename
+                                               withCompletion:^{
+                                                   NSDictionary *thumbnailDictionary = [jsonResponse objectForKey:@"thumbnail"];
+                                                   NSArray *fields = [thumbnailDictionary objectForKey:@"fields"];
+                                                   NSString *actionString = [thumbnailDictionary objectForKey:@"action"];
+                                                   [AWSUploader uploadFields:fields
+                                                               withActionURL:actionString
+                                                                    withFile:thumbnailData
+                                                                 andFileName:thumnailFilename];
+                                                   
+                                                   NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
+                                                   [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:videoFields] forKey:@"media"];
+                                                   [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"thumbnail"];
+                                                   [Network sendAsynchronousHTTPMethod:POST
+                                                                           withAPIName:@"eventmessages/"
+                                                                           withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                                                               if (!error) {
+                                                                                   NSLog(@"fjahefi Response: %@", jsonResponse);
+
+                                                                               }
+                                                                               else {
+                                                                                   NSLog(@"jerhj error: %@", error);
+                                                                               }
+                                                                           } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
+                                               }];
+                                });
+                            }];
+}
+
+
+- (void)mediaPickerControllerDidCancel:(IQMediaPickerController *)controller {
+    [self.controllerDelegate mediaPickerControllerDidCancel:controller];
 }
 
 @end

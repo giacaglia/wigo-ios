@@ -17,7 +17,7 @@
 - (void)focusOnContent;
 @end
 
-@interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate>
+@interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate, IQMediaPickerControllerDelegate>
 
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) NSMutableArray *eventMessages;
@@ -30,6 +30,11 @@
 - (void)closeView;
 -(void)scrolledToPage:(int)page;
 - (void)removeMediaAtPage:(int)page;
+
+#pragma mark - IQMediaPickerController  Delegate
+@property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
+@property (nonatomic, strong) NSData *fileData;
+@property (nonatomic, strong) NSDictionary *options;
 @end
 
 
@@ -67,4 +72,5 @@
 @property (nonatomic, assign) BOOL controllerDelegateSet;
 @property (nonatomic, strong) IQMediaPickerController *controller;
 - (void)setControllerDelegate:(id)controllerDelegate;
+
 @end

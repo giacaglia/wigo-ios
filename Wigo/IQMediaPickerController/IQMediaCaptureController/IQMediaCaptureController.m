@@ -831,7 +831,7 @@
             [self.delegate mediaCaptureControllerDidCancel:self];
         }
         
-        [self dismissViewControllerAnimated:YES completion:nil];
+//        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 

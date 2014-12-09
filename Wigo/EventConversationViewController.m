@@ -62,6 +62,7 @@
     [self highlightCellAtPage:[self.index intValue]];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
@@ -447,6 +448,27 @@
     [self.mediaScrollView reloadData];
 }
 
+
+#pragma mark - EventConversationDelegate 
+
+- (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages {
+    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    [mutableEventMessages addObject:@{
+                                      @"user": [[Profile user] dictionary],
+                                      @"created": [dateFormatter stringFromDate:[NSDate date]],
+                                      @"media_mime_type": kCameraType,
+                                      @"media": @""
+                                      }];
+    self.eventMessages = mutableEventMessages;
+    [self.facesCollectionView reloadData];
+    self.mediaScrollView.eventMessages = self.eventMessages;
+    [self.mediaScrollView reloadData];
+}
 
 
 @end
