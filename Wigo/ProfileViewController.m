@@ -74,11 +74,13 @@ UIButton *tapButton;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
     _pageControl.hidden = YES;
 }
 
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     _pageControl.hidden = NO;
     if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
 }

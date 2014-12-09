@@ -450,16 +450,16 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 }
 
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint {
-    float percentage = 0;
-    if (self.period == DAY) {
-        percentage = [self.groupStats.dailyEngagement.values[index] floatValue]*100.0f;
-    } else if (self.period == WEEK) {
-        percentage = [self.groupStats.weeklyEngagement.values[index] floatValue]*100.0f;
-    } else if (self.period == MONTH) {
-        percentage = [self.groupStats.monthlyEngagement.values[index] floatValue]*100.0f;
-    } else if (self.period == ALLTIME) {
-        percentage = [self.groupStats.monthlyEngagement.values[index] floatValue]*100.0f;
-    }
+//    float percentage = 0;
+//    if (self.period == DAY) {
+//        percentage = [self.groupStats.dailyEngagement.values[index] floatValue]*100.0f;
+//    } else if (self.period == WEEK) {
+//        percentage = [self.groupStats.weeklyEngagement.values[index] floatValue]*100.0f;
+//    } else if (self.period == MONTH) {
+//        percentage = [self.groupStats.monthlyEngagement.values[index] floatValue]*100.0f;
+//    } else if (self.period == ALLTIME) {
+//        percentage = [self.groupStats.monthlyEngagement.values[index] floatValue]*100.0f;
+//    }
     
     //tool tip visiblity
 //    [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];

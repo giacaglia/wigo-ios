@@ -151,7 +151,7 @@ int firstIndexOfNegativeEvent;
     [profileButton addTarget:self action:@selector(profileSegue)
             forControlEvents:UIControlEventTouchUpInside];
     [profileButton setShowsTouchWhenHighlighted:YES];
-    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
+    UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.leftBarButtonItem = profileBarButton;
     
     UIButton *rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
@@ -238,7 +238,7 @@ int firstIndexOfNegativeEvent;
   
     CGFloat fontSize = 20.0f;
     CGSize size;
-    while (fontSize > 0.0)
+    while (fontSize > 0.0f)
     {
         size = [self.groupName sizeWithAttributes:
                        @{NSFontAttributeName:[FontProperties scMediumFont:fontSize]}];

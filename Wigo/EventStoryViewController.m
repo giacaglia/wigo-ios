@@ -7,7 +7,6 @@
 //
 
 #import "EventStoryViewController.h"
-#import "EventConversationViewController.h"
 #import "IQMediaPickerController.h"
 #import "AWSUploader.h"
 #import "InviteViewController.h"
@@ -292,21 +291,21 @@ BOOL cancelFetchMessages;
 }
 
 - (void)sendPressed {
-    EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
-    conversationController.event = self.event;
-    if (eventMessages) conversationController.eventMessages = [self eventMessagesWithCamera];
-    else conversationController.eventMessages = [NSMutableArray new];
-    conversationController.index = [NSNumber numberWithInteger:conversationController.eventMessages.count - 1];
-    conversationController.controllerDelegate = self;
-    conversationController.storyDelegate = self;
-    [self presentViewController:conversationController animated:YES completion:nil];
+    self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    self.conversationViewController.event = self.event;
+    if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
+    else self.conversationViewController.eventMessages = [NSMutableArray new];
+    self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
+    self.conversationViewController.controllerDelegate = self;
+    self.conversationViewController.storyDelegate = self;
+    [self presentViewController:self.conversationViewController animated:YES completion:nil];
 }
 
 - (void)mediaPickerController:(IQMediaPickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
-    [self dismissViewControllerAnimated:YES completion:nil];
     NSDictionary *options;
     NSString *type = @"";
+    [self dismissViewControllerAnimated:YES completion:nil];
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
         UIImage *image = [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage];
         NSData *fileData = UIImageJPEGRepresentation(image, 1.0);
@@ -385,6 +384,9 @@ BOOL cancelFetchMessages;
     NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
     [mutableEventMessages addObject:eventMessage];
     eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+//    self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
+//    self.conversationViewController.mediaScrollView.eventMessages = [self eventMessagesWithCamera];
+//    [self.conversationViewController.mediaScrollView reloadData];
     [facesCollectionView reloadData];
     cancelFetchMessages = YES;
 }
@@ -532,14 +534,14 @@ BOOL cancelFetchMessages;
 
 
 - (void)showEventConversation:(NSNumber *)index {
-    EventConversationViewController *conversationController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
-    conversationController.event = self.event;
-    conversationController.index = index;
-    if (eventMessages) conversationController.eventMessages = [self eventMessagesWithCamera];
-    else conversationController.eventMessages = [NSMutableArray new];
-    conversationController.controllerDelegate = self;
-    conversationController.storyDelegate = self;
-    [self presentViewController:conversationController animated:YES completion:nil];
+    self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    self.conversationViewController.event = self.event;
+    self.conversationViewController.index = index;
+    if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
+    else self.conversationViewController.eventMessages = [NSMutableArray new];
+    self.conversationViewController.controllerDelegate = self;
+    self.conversationViewController.storyDelegate = self;
+    [self presentViewController:self.conversationViewController animated:YES completion:nil];
 }
 
 

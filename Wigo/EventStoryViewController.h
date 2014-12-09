@@ -13,6 +13,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import "Delegate.h"
+#import "EventConversationViewController.h"
 
 @interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate, StoryDelegate>
 @property (nonatomic, strong) Event *event;
@@ -23,6 +24,7 @@
 @property (nonatomic, strong) UILabel *numberGoingLabel;
 @property (nonatomic, strong) UIButton *inviteButton;
 @property (nonatomic, strong) UIButton *aroundGoHereButton;
+@property (nonatomic, strong) EventConversationViewController *conversationViewController;
 @end
 
 @interface StoryFlowLayout : UICollectionViewFlowLayout

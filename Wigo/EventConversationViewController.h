@@ -19,7 +19,6 @@
 @property (nonatomic, strong) NSMutableArray *eventMessages;
 @property (nonatomic, strong) MediaScrollView *mediaScrollView;
 @property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
-//@property (nonatomic, strong) IQMediaPickerController *controller;
 @property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) NSNumber *index;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
