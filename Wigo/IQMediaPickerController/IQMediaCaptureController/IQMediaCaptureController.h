@@ -46,6 +46,7 @@ typedef NS_ENUM(NSInteger, IQMediaCaptureControllerCameraDevice) {
 @property(nonatomic, assign) IQMediaCaptureControllerCameraDevice captureDevice;
 
 @property (nonatomic, assign) BOOL allowsCapturingMultipleItems; // default is NO.
+@property(nonatomic, assign) float startXPoint;
 
 @end
 

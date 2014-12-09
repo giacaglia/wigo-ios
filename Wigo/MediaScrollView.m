@@ -9,6 +9,7 @@
 #import "MediaScrollView.h"
 #import "Globals.h"
 #import "EventMessagesConstants.h"
+#import "IQMediaCaptureController.h"
 
 @interface MediaScrollView() {}
 @property (nonatomic, strong) NSMutableArray *pageViews;
@@ -63,6 +64,11 @@
     if ([mimeType isEqualToString:kCameraType]) {
         CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
         [cameraCell setControllerDelegate:self.controllerDelegate];
+        NSArray *arrayViewContollers = (NSArray *)cameraCell.controller.viewControllers;
+        if (arrayViewContollers.count > 0) {
+            IQMediaCaptureController *captureController = (IQMediaCaptureController *)arrayViewContollers[0];
+            captureController.startXPoint = (self.eventMessages.count - 1) * 320;
+        }
         [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
         return cameraCell;
     }
