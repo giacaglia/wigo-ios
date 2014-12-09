@@ -340,6 +340,10 @@
     [self.mediaScrollView scrolledToPage:(int)page];
     [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
+    [self hideOrShowFacesForPage:page];
+}
+
+- (void)hideOrShowFacesForPage:(int)page {
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType]) {
         self.facesHidden = YES;
@@ -369,7 +373,7 @@
             self.buttonTrash.hidden = YES;
             self.buttonTrash.enabled = NO;
         }
-
+        
     }
     NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
     
@@ -446,6 +450,7 @@
     [self.facesCollectionView reloadData];
     self.mediaScrollView.eventMessages = self.eventMessages;
     [self.mediaScrollView reloadData];
+    [self hideOrShowFacesForPage:(int)page];
 }
 
 
