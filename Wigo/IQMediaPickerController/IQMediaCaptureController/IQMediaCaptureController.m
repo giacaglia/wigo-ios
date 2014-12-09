@@ -902,6 +902,7 @@
             [info setObject:textMedias forKey:IQMediaTypeText];
         }
         [self.delegate mediaCaptureController:self didFinishMediaWithInfo:info];
+        [self cancelAction:self.buttonCancel];
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];

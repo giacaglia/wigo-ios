@@ -305,7 +305,7 @@ BOOL cancelFetchMessages;
        didFinishMediaWithInfo:(NSDictionary *)info {
     NSDictionary *options;
     NSString *type = @"";
-    [self dismissViewControllerAnimated:YES completion:nil];
+//    [self dismissViewControllerAnimated:YES completion:nil];
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
         UIImage *image = [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage];
         NSData *fileData = UIImageJPEGRepresentation(image, 1.0);
@@ -384,10 +384,6 @@ BOOL cancelFetchMessages;
     NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
     [mutableEventMessages addObject:eventMessage];
     eventMessages = [NSArray arrayWithArray:mutableEventMessages];
-//    self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
-//    self.conversationViewController.mediaScrollView.eventMessages = [self eventMessagesWithCamera];
-//    [self.conversationViewController.mediaScrollView reloadData];
-    [facesCollectionView reloadData];
     cancelFetchMessages = YES;
 }
 
@@ -454,6 +450,13 @@ BOOL cancelFetchMessages;
                                                 eventMessages = [NSArray arrayWithArray:mutableEventMessages];
                                                 [facesCollectionView reloadData];
                                             }
+                                            self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
+                                            self.conversationViewController.mediaScrollView.eventMessages = [self eventMessagesWithCamera];
+                                            //    [self.conversationViewController.mediaScrollView scrolledToPage:[[self eventMessagesWithCamera] count]];
+                                            [self.conversationViewController.facesCollectionView reloadData];
+                                            [self.conversationViewController.mediaScrollView reloadData];
+                                            [facesCollectionView reloadData];
+
                                         });
                                     } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
         });
