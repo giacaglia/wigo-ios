@@ -284,6 +284,9 @@ int firstIndexOfNegativeEvent;
     if (touch.view == _whereAreYouGoingView) {
         return NO;
     }
+    if (touch.view == _createButton) {
+        [self createPressed];
+    }
     return YES;
 }
 
