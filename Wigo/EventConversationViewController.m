@@ -514,6 +514,10 @@
     }];
 }
 
+- (void)dissmissView {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - EventConversationDelegate
 
 - (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages {

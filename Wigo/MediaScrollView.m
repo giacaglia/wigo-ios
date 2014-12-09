@@ -358,6 +358,10 @@
 }
 
 
+- (void)mediaPickerControllerDidCancel:(IQMediaPickerController *)controller {
+    [self.eventConversationDelegate dissmissView];
+}
+
 @end
 
 
