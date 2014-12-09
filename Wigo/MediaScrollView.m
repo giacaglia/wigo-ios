@@ -188,6 +188,7 @@
 
 - (void)mediaPickerController:(IQMediaPickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
+    [self.eventConversationDelegate addLoadingBanner];
     NSDictionary *options;
     NSString *type = @"";
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
@@ -254,10 +255,6 @@
         
         
     }
-//    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
-//    [mutableEventMessages addObject:eventMessage];
-//    eventMessages = [NSArray arrayWithArray:mutableEventMessages];
-//    cancelFetchMessages = YES;
 }
 
 - (void)thumbnailGenerated:(NSNotification *)notification {
@@ -288,27 +285,27 @@
                                     [AWSUploader uploadFields:fields
                                                 withActionURL:actionString
                                                      withFile:fileData
-                                                  andFileName:filename];
-                                    NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
-                                    [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"media"];
-                                    [Network sendAsynchronousHTTPMethod:POST
-                                                            withAPIName:@"eventmessages/"
-                                                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                                                dispatch_async(dispatch_get_main_queue(), ^{
-                                                                    NSLog(@"Sup!");
-                                                                    if (error) {
-                                                                        
-                                                                        NSLog(@"response: %@", error);
-                                                                    }
-                                                                    else {
-                                                                        NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
-                                                                        [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:jsonResponse];
-//                                                                        self.eventMessages = mutableEventMessages;
-                                                                        [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
-                                                                        NSLog(@"error: %@", jsonResponse);
-                                                                    }
-                                                                });
-                                                            } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
+                                                  andFileName:filename
+                                     withCompletion:^{
+                                         NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
+                                         [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"media"];
+                                         [Network sendAsynchronousHTTPMethod:POST
+                                                                 withAPIName:@"eventmessages/"
+                                                                 withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                                                         if (error) {
+                                                                             [self.eventConversationDelegate showErrorMessage];
+                                                                         }
+                                                                         else {
+                                                                             NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
+                                                                             [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:jsonResponse];
+                                                                             [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+                                                                             [self.eventConversationDelegate showCompletedMessage];
+                                                                         }
+                                                                     });
+                                                                 } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
+                                     }];
+                                    
                                 });
                                 
                             }];
@@ -360,10 +357,6 @@
                             }];
 }
 
-
-- (void)mediaPickerControllerDidCancel:(IQMediaPickerController *)controller {
-    [self.controllerDelegate mediaPickerControllerDidCancel:controller];
-}
 
 @end
 
@@ -423,9 +416,6 @@
     self.moviePlayer.shouldAutoplay = NO;
     [self.moviePlayer prepareToPlay];
     self.moviePlayer.view.frame = self.frame;
-//    self.gradientBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
-//    self.gradientBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-//    [self.moviePlayer.view addSubview:self.gradientBackgroundImageView];
     [self.contentView addSubview:self.moviePlayer.view];
     
     self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
@@ -483,10 +473,6 @@
     self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     self.imageView.clipsToBounds = YES;
     [self.contentView addSubview:self.imageView];
-    
-//    self.gradientBackgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
-//    self.gradientBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-//    [self.imageView addSubview:self.gradientBackgroundImageView];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];

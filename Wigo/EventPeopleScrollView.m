@@ -64,7 +64,6 @@
 
 - (void)loadUsers {
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-//    if ([self.page isEqualToNumber:@1]) self.eventOffset = 0;
     self.xPosition = 12;
     for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
         User *user = [[self.partyUser getObjectArray] objectAtIndex:i];

@@ -27,6 +27,9 @@
 - (void)focusOnContent;
 @property (nonatomic, assign) BOOL isFocusing;
 - (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages;
+- (void)addLoadingBanner;
+- (void)showErrorMessage;
+- (void)showCompletedMessage;
 @end
 
 #endif

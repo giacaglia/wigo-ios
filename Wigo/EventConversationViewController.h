@@ -23,6 +23,8 @@
 @property (nonatomic, strong) NSNumber *index;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
 @property (nonatomic, assign) BOOL isFocusing;
+@property (nonatomic, strong) UILabel *postingLabel;
+@property (nonatomic, strong) UIView *loadingBanner;
 @end
 
 @interface FaceCell : UICollectionViewCell

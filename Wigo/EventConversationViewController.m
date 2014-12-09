@@ -449,7 +449,67 @@
 }
 
 
-#pragma mark - EventConversationDelegate 
+#pragma mark -  EventConversation Delegate methods
+
+- (void)addLoadingBanner {
+    self.loadingBanner = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 20)];
+    self.loadingBanner.backgroundColor = UIColor.blackColor;
+    [self.view addSubview:self.loadingBanner];
+    
+    self.postingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 20)];
+    self.postingLabel.text = @"Posting...";
+    self.postingLabel.textColor = UIColor.whiteColor;
+    self.postingLabel.font = [FontProperties mediumFont:13.0f];
+    [self.view addSubview:self.postingLabel];
+    
+    [NSTimer scheduledTimerWithTimeInterval:0.2
+                                     target:self
+                                   selector:@selector(changePostingLabel)
+                                   userInfo:nil
+                                    repeats:YES];
+}
+
+- (void)changePostingLabel {
+    if ([self.postingLabel.text isEqualToString:@"Posting"]) {
+        self.postingLabel.text = @"Posting.";
+    }
+    else if ([self.postingLabel.text isEqualToString:@"Posting."]) {
+        self.postingLabel.text = @"Posting..";
+    }
+    else if ([self.postingLabel.text isEqualToString:@"Posting.."]) {
+        self.postingLabel.text = @"Posting...";
+    }
+    else if ([self.postingLabel.text isEqualToString:@"Posting..."]) {
+        self.postingLabel.text = @"Posting";
+    }
+}
+
+- (void)showErrorMessage {
+    self.loadingBanner.backgroundColor = RGB(196, 0, 0);
+    self.postingLabel.text = @"Wasn't able to post :-(";
+    
+    [self performBlock:^(void){[self removeBanner];}
+            afterDelay:5
+ cancelPreviousRequest:YES];
+    
+}
+
+- (void)showCompletedMessage {
+    self.loadingBanner.backgroundColor = RGB(245, 142, 29);
+    self.postingLabel.text = @"Posted!";
+    [self performBlock:^(void){[self removeBanner];}
+            afterDelay:5
+ cancelPreviousRequest:YES];
+}
+
+- (void)removeBanner {
+    [UIView animateWithDuration:15 animations:^{} completion:^(BOOL finished) {
+        self.loadingBanner.hidden = YES;
+        self.postingLabel.hidden = YES;
+    }];
+}
+
+#pragma mark - EventConversationDelegate
 
 - (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages {
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
