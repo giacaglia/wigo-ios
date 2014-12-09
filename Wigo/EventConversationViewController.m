@@ -533,6 +533,9 @@
     [self.facesCollectionView reloadData];
     self.mediaScrollView.eventMessages = self.eventMessages;
     [self.mediaScrollView reloadData];
+    
+    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    [self hideOrShowFacesForPage:(int)page];
 }
 
 
