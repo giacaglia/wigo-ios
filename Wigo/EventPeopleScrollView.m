@@ -88,7 +88,7 @@
         
         UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, sizeOfEachImage + 5, sizeOfEachImage, 25)];
         profileName.text = [user firstName];
-        profileName.textColor = [UIColor whiteColor];
+        profileName.textColor = [UIColor blackColor];
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.font = [FontProperties lightFont:14.0f];
         [self addSubview:profileName];
