@@ -228,7 +228,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     if (!triedToRegister) {
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"FYI"
-                                  message:@"WiGo only sends notifications from your closest friends and important updates."
+                                  message:@"Wigo only sends notifications from your closest friends and important updates."
                                   delegate:self
                                   cancelButtonTitle:@"OK"
                                   otherButtonTitles: nil];
@@ -375,11 +375,11 @@ forRemoteNotification:(NSDictionary *)userInfo
     NSArray *datesAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"datesAccessed"];
     if ([datesAccessed count] == 3) {
         UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"Love WiGo?"
+                                  initWithTitle:@"Love Wigo?"
                                   message:@"Looks like you love WiGo. The feeling is mutual. Share your love on the App Store."
                                   delegate:self
                                   cancelButtonTitle:@"Not now"
-                                  otherButtonTitles:@"Rate WiGo", nil];
+                                  otherButtonTitles:@"Rate Wigo", nil];
         [alertView show];
         NSMutableArray *mutableDatesAccessed = [[NSMutableArray alloc] initWithArray:datesAccessed];
         [mutableDatesAccessed addObject:firstLoggedTime];

@@ -33,7 +33,7 @@ NSArray *groupArray;
 
 - (void)initializeTitle {
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 100, 56, 200, 24)];
-    titleLabel.text = @"WiGo WAIT LIST";
+    titleLabel.text = @"WiGgo WAIT LIST";
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = [FontProperties scMediumFont:20.0f];
     [self.view addSubview:titleLabel];
@@ -47,14 +47,14 @@ NSArray *groupArray;
 
 - (void)initializeShareButton {
     UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 90 - 16, self.view.frame.size.width - 40, 25)];
-    shareLabel.text = @"Share WiGo to jump up the list";
+    shareLabel.text = @"Share Wigo to jump up the list";
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.font = [FontProperties mediumFont:18.0f];
     [self.view addSubview:shareLabel];
     
     UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 125, self.view.frame.size.height - 65, 250, 48)];
     shareButton.backgroundColor = [FontProperties getOrangeColor];
-    [shareButton setTitle:@"Share WiGo" forState:UIControlStateNormal];
+    [shareButton setTitle:@"Share Wigo" forState:UIControlStateNormal];
     [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     shareButton.titleLabel.font = [FontProperties getBigButtonFont];
     shareButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -67,7 +67,7 @@ NSArray *groupArray;
 
 - (void)sharedPressed {
     [EventAnalytics tagEvent:@"Share Pressed"];
-    NSArray *activityItems = @[@"Who is going out tonight? #WiGo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+    NSArray *activityItems = @[@"Who is going out tonight? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityVC animated:YES completion:nil];

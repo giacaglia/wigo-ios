@@ -39,7 +39,7 @@
     [self.view addSubview:wigoIconImageView];
     
     UILabel *wigoLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 60 + 190, self.view.frame.size.width - 40, 60)];
-    wigoLabel.text = @"WiGo is better with friends";
+    wigoLabel.text = @"Wigo is better with friends";
     wigoLabel.textAlignment = NSTextAlignmentCenter;
     wigoLabel.font = [FontProperties mediumFont:23.0f];
     [self.view addSubview:wigoLabel];
@@ -49,7 +49,7 @@
     [self.view addSubview:evenMoreImageView];
     
     UILabel *tapFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 60 + 250, self.view.frame.size.width - 20, 50)];
-    tapFriendsLabel.text = @"Tap some friends from your contacts \n to get them going on WiGo";
+    tapFriendsLabel.text = @"Tap some friends from your contacts \n to get them going on Wigo";
     tapFriendsLabel.textAlignment = NSTextAlignmentCenter;
     tapFriendsLabel.font = [FontProperties mediumFont:18.0f];
     tapFriendsLabel.textColor = RGB(100, 100, 100);

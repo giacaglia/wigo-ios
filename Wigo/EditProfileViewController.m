@@ -205,7 +205,7 @@ UIViewController *webViewController;
 
 - (void) initializeWiGoSection {
     UILabel *wiGoLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 285 + 40, 100, 20)];
-    wiGoLabel.text = @"WiGo";
+    wiGoLabel.text = @"Wigo";
     wiGoLabel.textAlignment = NSTextAlignmentLeft;
     wiGoLabel.font = [FontProperties getNormalFont];
     [_scrollView addSubview:wiGoLabel];

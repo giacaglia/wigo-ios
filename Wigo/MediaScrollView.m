@@ -78,14 +78,21 @@
         myCell.mediaScrollDelegate = self;
         myCell.eventMessage = eventMessage;
         [myCell updateUI];
-        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        spinner.frame = CGRectMake(myCell.imageView.frame.size.width/4, myCell.imageView.frame.size.height/4, myCell.imageView.frame.size.width/2,  myCell.imageView.frame.size.height/2);
-        [spinner startAnimating];
-        [myCell.imageView setImageWithURL:imageURL
-                                completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                                    [spinner stopAnimating];
-        }];
+        NSURL *imageURL;
+        if ([contentURL isKindOfClass:[UIImage class]]) {
+            myCell.imageView.image = (UIImage *)contentURL;
+        }
+        else {
+            imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+            spinner.frame = CGRectMake(myCell.imageView.frame.size.width/4, myCell.imageView.frame.size.height/4, myCell.imageView.frame.size.width/2,  myCell.imageView.frame.size.height/2);
+            [spinner startAnimating];
+            [myCell.imageView setImageWithURL:imageURL
+                                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                                        [spinner stopAnimating];
+                                    }];
+
+        }
         [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
         return myCell;
     }
@@ -256,16 +263,29 @@
     }
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
 
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
-        [mutableDict setValue:[[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaURL] forKey:@"media"];
+        [mutableDict addEntriesFromDictionary:@{
+                                                @"user": [[Profile user] dictionary],
+                                                @"created": [dateFormatter stringFromDate:[NSDate date]],
+                                                @"media": [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage]
+                                                }];
     }
     else if ( [[info allKeys] containsObject:IQMediaTypeVideo]) {
-        [mutableDict setValue:[[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaURL] forKey:@"media"];
+            [mutableDict addEntriesFromDictionary:@{
+                                                    @"user": [[Profile user] dictionary],
+                                                    @"created": [dateFormatter stringFromDate:[NSDate date]],
+                                                    @"media": [[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaImage],
+                                                               }];
     }
     
-//    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
-//    [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:mutableDict];
-//    [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
+    [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1)  withObject:mutableDict];
+    [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
 }
 
 - (void)thumbnailGenerated:(NSNotification *)notification {
@@ -308,9 +328,9 @@
                                                                              [self.eventConversationDelegate showErrorMessage];
                                                                          }
                                                                          else {
-                                                                             NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
-                                                                             [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:jsonResponse];
-                                                                             [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+//                                                                             NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
+//                                                                             [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:jsonResponse];
+//                                                                             [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
                                                                              [self.eventConversationDelegate showCompletedMessage];
                                                                          }
                                                                      });

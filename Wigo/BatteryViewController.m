@@ -93,7 +93,7 @@ int widthShared;
     shareLabel.numberOfLines = 0;
     shareLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-    NSString *string = @"WiGo will unlock when more people from your school download the app. Share WiGo to charge the battery and speed things up!";
+    NSString *string = @"Wigo will unlock when more people from your school download the app. Share Wigo to charge the battery and speed things up!";
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
     [text addAttribute:NSForegroundColorAttributeName
                  value:RGB(238, 122, 11)
@@ -113,7 +113,7 @@ int widthShared;
     joinLabel.font = [FontProperties mediumFont:19.0f];
    
     if (numGroups) {
-        NSString *string =[NSString stringWithFormat:@"Join %@ schools already on WiGo", [numGroups stringValue]];
+        NSString *string =[NSString stringWithFormat:@"Join %@ schools already on Wigo", [numGroups stringValue]];
         NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
         [text addAttribute:NSForegroundColorAttributeName
                      value:[UIColor whiteColor]
@@ -129,7 +129,7 @@ int widthShared;
 - (void)initializeShareButton {
     UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 100, self.view.frame.size.height - 65, 200, 48)];
     shareButton.backgroundColor = RGB(238, 122, 11);
-    [shareButton setTitle:@"Share WiGo" forState:UIControlStateNormal];
+    [shareButton setTitle:@"Share Wigo" forState:UIControlStateNormal];
     [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     shareButton.titleLabel.font = [FontProperties getBigButtonFont];
     shareButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -144,10 +144,10 @@ int widthShared;
     [EventAnalytics tagEvent:@"Share Pressed"];
     NSArray *activityItems;
     if ([[Profile user] groupName] && numGroups) {
-        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on WiGo.\nLet's do this: wigo.us/app", [[[Profile user] groupName] uppercaseString], [numGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
+        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[[Profile user] groupName] uppercaseString], [numGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
     }
     else {
-        activityItems = @[@"Who is going out tonight? #WiGo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+        activityItems = @[@"Who is going out tonight? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
     }
     
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];

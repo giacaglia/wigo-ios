@@ -252,7 +252,7 @@
 
 - (void)showErrorLoginFailed {
     _alert = [[UIAlertView alloc] initWithTitle:@"Not so fast!"
-                                        message:@"WiGo requires Facebook login. Open Settings > Facebook and make sure WiGo is turned on."
+                                        message:@"Wigo requires Facebook login. Open Settings > Facebook and make sure Wigo is turned on."
                                        delegate:self
                               cancelButtonTitle:@"Ok"
                               otherButtonTitles: nil];

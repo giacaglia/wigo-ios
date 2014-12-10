@@ -63,7 +63,7 @@
 
 - (void)sendEmail {
     NSString *path;
-    NSString *subject = @"Question about WiGo";
+    NSString *subject = @"Question about Wigo";
     NSString *toField = @"support@wigo.us";
     BOOL gmailInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlegmail://requests"]];
     if (gmailInstalled) {
