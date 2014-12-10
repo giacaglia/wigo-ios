@@ -19,7 +19,6 @@ static Party *everyoneParty;
 static Party *followingParty;
 static Party *notAcceptedFollowingParty;
 static BOOL googleAnalyticsEnabled;
-static BOOL localyticsEnabled;
 static NSNumber *lastUserRead;
 static NSString *stringAwsKey;
 static NSString *cdnPrefix;
@@ -77,13 +76,6 @@ static NSString *cdnPrefix;
     notAcceptedFollowingParty = newFollowingParty;
 }
 
-+ (BOOL) localyticsEnabled {
-    return localyticsEnabled;
-}
-
-+ (void) setLocalyticsEnabled:(BOOL)enabled {
-    localyticsEnabled = enabled;
-}
 
 + (BOOL) googleAnalyticsEnabled {
     return googleAnalyticsEnabled;

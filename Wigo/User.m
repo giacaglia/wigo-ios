@@ -10,7 +10,6 @@
 #import "User.h"
 #import "Profile.h"
 #import <Parse/Parse.h>
-#import "LocalyticsSession.h"
 #import "Time.h"
 #import "EventAnalytics.h"
 #import "NSMutableDictionary+NotOverwrite.h"

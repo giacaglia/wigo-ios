@@ -21,7 +21,6 @@
 #import "FontProperties.h"
 
 
-#import "LocalyticsSession.h"
 #import "EventAnalytics.h"
 
 #import "WiGoSpinnerView.h"

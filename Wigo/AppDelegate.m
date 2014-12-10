@@ -10,7 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
-#import "LocalyticsSession.h"
 #import "FontProperties.h"
 #import "Network.h"
 #import "GAI.h"
@@ -24,15 +23,6 @@ NSDate *firstLoggedTime;
 
 @implementation AppDelegate
 
-- (void) initializeLocalytics {
-#if DEBUG
-    [[LocalyticsSession shared] LocalyticsSession:@"b6cd95cf2fdb16d4a9c6442-0646de50-12de-11e4-224f-004a77f8b47f"];
-#else
-    [[LocalyticsSession shared] LocalyticsSession:@"708a99db734a53dbd326638-47f80b0a-12dc-11e4-9e90-005cf8cbabd8"];
-#endif
-    //    [[LocalyticsSession shared] setLoggingEnabled:YES];
-}
-
 - (void) initializeGoogleAnalytics {
     [GAI sharedInstance].trackUncaughtExceptions = YES;
     [GAI sharedInstance].dispatchInterval = 20;
@@ -44,19 +34,9 @@ NSDate *firstLoggedTime;
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"canFetchAppStartup"];
     [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
     BOOL googleAnalyticsEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"googleAnalyticsEnabled"];
-    BOOL localyticsEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"localyticsEnabled"];
-    [Profile setLocalyticsEnabled:localyticsEnabled];
     [Profile setGoogleAnalyticsEnabled:googleAnalyticsEnabled];
     
-    if ([[launchOptions allKeys]
-         containsObject:UIApplicationLaunchOptionsRemoteNotificationKey])
-    {
-        if ([Profile localyticsEnabled]) {
-            [[LocalyticsSession shared] resume];
-            [[LocalyticsSession shared] handleRemoteNotification:[launchOptions
-                                                                  objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey]];
-        }
-    }
+
     if ([Profile googleAnalyticsEnabled]) {
         [self initializeGoogleAnalytics];
     }
@@ -85,20 +65,12 @@ NSDate *firstLoggedTime;
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    if ([Profile localyticsEnabled]) {
-        [[LocalyticsSession shared] close];
-        [[LocalyticsSession shared] upload];
-    }
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    if ([Profile localyticsEnabled]) {
-        [[LocalyticsSession shared] close];
-        [[LocalyticsSession shared] upload];
-    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -106,30 +78,19 @@ NSDate *firstLoggedTime;
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     [self updateGoingOutIfItsAnotherDay];
     [self fetchAppStart];
-    if ([Profile localyticsEnabled]) {
-        [[LocalyticsSession shared] resume];
-        [[LocalyticsSession shared] upload];
-    }
+
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    if ([Profile localyticsEnabled]) {
-   
-        [self initializeLocalytics];
-        [[LocalyticsSession shared] resume];
-        [[LocalyticsSession shared] upload];
-    }
+
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    if ([Profile localyticsEnabled]) {
-        [[LocalyticsSession shared] close];
-        [[LocalyticsSession shared] upload];
-    }
+
 }
 
 - (void)application:(UIApplication *)application
@@ -141,10 +102,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
     
-    if ([Profile localyticsEnabled]) {
-        [[LocalyticsSession shared] setPushToken:deviceToken];
     }
-}
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     if (error.code == 3010) {
@@ -156,9 +114,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    if ([Profile localyticsEnabled]) {
-        [[LocalyticsSession shared] handleRemoteNotification:userInfo];
-    }
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if ([aps isKindOfClass:[NSDictionary class]]) {
@@ -457,18 +412,9 @@ forRemoteNotification:(NSDictionary *)userInfo
                             
                             [Profile setGoogleAnalyticsEnabled:gAnalytics];
                             [[NSUserDefaults standardUserDefaults] setBool:gAnalytics forKey:@"googleAnalyticsEnabled"];
-                            
-                            BOOL localytics = YES;
-                            NSNumber *lval = [analytics objectForKey:@"localytics"];
-                            if (lval) {
-                                localytics = [lval boolValue];
-                            }
-                            [Profile setLocalyticsEnabled:localytics];
-                            [[NSUserDefaults standardUserDefaults] setBool:localytics forKey:@"localyticsEnabled"];
                             [[NSUserDefaults standardUserDefaults] synchronize];
                             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                             if (gAnalytics) [appDelegate initializeGoogleAnalytics];
-                            if (localytics) [appDelegate initializeLocalytics];
                         }
                     }
                     if ([[jsonResponse allKeys] containsObject:@"provisioning"]) {

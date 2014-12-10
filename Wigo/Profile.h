@@ -26,8 +26,6 @@
 
 + (BOOL) googleAnalyticsEnabled;
 + (void) setGoogleAnalyticsEnabled:(BOOL)enabled;
-+ (BOOL) localyticsEnabled;
-+ (void) setLocalyticsEnabled:(BOOL)enabled;
 + (NSString *)awsKey;
 + (NSString *)cdnPrefix;
 + (void)setCDNPrefix:(NSString *)newCdnPrefix;

@@ -76,9 +76,7 @@
     }
     
     [data addEntriesFromDictionary:details];
-    if ([Profile localyticsEnabled]) {
-        [[LocalyticsSession shared] tagEvent:name attributes:data];
-    }
+   
 
     [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"ui_action"     // Event category (required)
                                                           action:name  // Event action (required)
@@ -87,9 +85,6 @@
 }
 
 +(void) tagScreen:(NSString *)name {
-    if ([Profile localyticsEnabled]) {
-        [[LocalyticsSession shared] tagScreen:name];
-    }
     
     if ([Profile googleAnalyticsEnabled]) {
         id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
@@ -103,10 +98,6 @@
     // Note that this is vulnerable to Ben renaming schools via the admin dashboard, but the
     // alternative of having us have all the reports be by school ID as a string seems far too
     // painful to contemplate.
-    if ([Profile localyticsEnabled]) {
-        [[LocalyticsSession shared] setCustomDimension:0 value:name];
-    }
-    
     id<GAITracker> tracker;
     if ([Profile googleAnalyticsEnabled]) {
         tracker = [[GAI sharedInstance] defaultTracker];
@@ -115,9 +106,6 @@
 }
 
 +(void) tagUser:(NSString *)user {
-    if ([Profile localyticsEnabled]) {
-        [[LocalyticsSession shared] setCustomerId:user];
-    }
     
     if ([Profile googleAnalyticsEnabled]) {
         id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
