@@ -255,12 +255,7 @@ BOOL cancelFetchMessages;
     [self.view addSubview:titleLabel];
     
     self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 65, self.view.frame.size.width - 220, 20)];
-    if ([self.event.numberAttending intValue] == 1) {
-        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
-    }
-    else {
-        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
-    }
+    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numberAttending stringValue]];
     self.numberGoingLabel.textColor = RGB(170, 170, 170);
     self.numberGoingLabel.textAlignment = NSTextAlignmentCenter;
     self.numberGoingLabel.font = [FontProperties mediumFont:15];
