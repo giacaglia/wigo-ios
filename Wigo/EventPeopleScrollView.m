@@ -82,9 +82,9 @@
         [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
         
-        UILabel *nameBackground = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, sizeOfEachImage + 5, sizeOfEachImage, 25)];
-        nameBackground.backgroundColor = UIColor.blackColor
-        [imgView addSubview:nameBackground];
+//        UILabel *nameBackground = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, sizeOfEachImage + 5, sizeOfEachImage, 25)];
+//        nameBackground.backgroundColor = UIColor.blackColor
+//        [imgView addSubview:nameBackground];
         
         UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, sizeOfEachImage + 5, sizeOfEachImage, 25)];
         profileName.text = [user firstName];
