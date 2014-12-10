@@ -71,11 +71,9 @@
             user = [Profile user];
         }
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
-        self.xPosition += sizeOfEachImage + 3;
         imageButton.tag = i;
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:imageButton];
-        self.contentSize = CGSizeMake(self.xPosition, sizeOfEachImage + 10);
         
         UIImageView *imgView = [[UIImageView alloc] init];
         imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
@@ -84,38 +82,41 @@
         [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
         
-        UILabel *nameBackground = [[UILabel alloc] initWithFrame:CGRectMake(0, sizeOfEachImage - 25, sizeOfEachImage, 25)];
-        nameBackground.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+        UILabel *nameBackground = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, sizeOfEachImage + 5, sizeOfEachImage, 25)];
+        nameBackground.backgroundColor = UIColor.blackColor
         [imgView addSubview:nameBackground];
         
-        UILabel *profileName = [[UILabel alloc] initWithFrame:nameBackground.frame];
+        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, sizeOfEachImage + 5, sizeOfEachImage, 25)];
         profileName.text = [user firstName];
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.font = [FontProperties lightFont:14.0f];
-        [imgView addSubview:profileName];
+        [self addSubview:profileName];
+        
+        self.xPosition += sizeOfEachImage + 3;
+        self.contentSize = CGSizeMake(self.xPosition, sizeOfEachImage + 10);
     }
     
-    int usersCantSee = (int)[[self.event numberAttending] intValue] - (int)[[self.partyUser getObjectArray] count];
-    if (usersCantSee  > 0) {
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
-        self.xPosition += sizeOfEachImage + 3;
-        [self addSubview:imageButton];
-        self.contentSize = CGSizeMake(self.xPosition, sizeOfEachImage + 10);
-        
-        UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"privacyLogo"]];
-        imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
-        [imageButton addSubview:imgView];
-        
-        UILabel *profileName = [[UILabel alloc] init];
-        profileName.text = [NSString stringWithFormat:@"+ %d more", usersCantSee ];;
-        profileName.textColor = [UIColor whiteColor];
-        profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-        profileName.font = [FontProperties getSmallPhotoFont];
-        [imgView addSubview:profileName];
-    }
+//    int usersCantSee = (int)[[self.event numberAttending] intValue] - (int)[[self.partyUser getObjectArray] count];
+//    if (usersCantSee  > 0) {
+//        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
+//        self.xPosition += sizeOfEachImage + 3;
+//        [self addSubview:imageButton];
+//        self.contentSize = CGSizeMake(self.xPosition, sizeOfEachImage + 10);
+//        
+//        UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"privacyLogo"]];
+//        imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
+//        [imageButton addSubview:imgView];
+//        
+//        UILabel *profileName = [[UILabel alloc] init];
+//        profileName.text = [NSString stringWithFormat:@"+ %d more", usersCantSee ];;
+//        profileName.textColor = [UIColor whiteColor];
+//        profileName.textAlignment = NSTextAlignmentCenter;
+//        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
+//        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
+//        profileName.font = [FontProperties getSmallPhotoFont];
+//        [imgView addSubview:profileName];
+//    }
     if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]]) {
         NSNumber *xNumber = [self.placesDelegate.eventOffsetDictionary valueForKey:[[self.event eventID] stringValue]];
         self.contentOffset = CGPointMake([xNumber intValue], 0);

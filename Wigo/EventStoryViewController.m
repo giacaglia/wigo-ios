@@ -233,7 +233,7 @@ BOOL cancelFetchMessages;
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
     self.eventPeopleScrollView.event = _event;
     [self.eventPeopleScrollView updateUI];
-    self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 100);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 120);
     [self.view addSubview:self.eventPeopleScrollView];
 }
 

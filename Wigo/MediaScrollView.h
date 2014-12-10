@@ -35,6 +35,7 @@
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) NSData *fileData;
 @property (nonatomic, strong) NSDictionary *options;
+@property (nonatomic, strong) NSString *type;
 @end
 
 

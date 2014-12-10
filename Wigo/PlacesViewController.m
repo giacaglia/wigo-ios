@@ -1024,7 +1024,7 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(10, 40, self.frame.size.width - 10, 110);
+    self.eventPeopleScrollView.frame = CGRectMake(10, 40, self.frame.size.width - 10, 120);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
