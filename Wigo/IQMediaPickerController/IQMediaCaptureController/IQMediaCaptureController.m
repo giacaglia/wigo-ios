@@ -969,18 +969,27 @@
         self.labelPoint = labelPoint;
         [self.textField becomeFirstResponder];
     }
+    else {
+        self.textField.hidden = YES;
+        self.textLabel.hidden = YES;
+    }
 }
 
 
 - (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
-    if (![self.textField isFirstResponder]) {
-        labelPoint.y = MIN(MAX(labelPoint.y, 110), 460);
+    if (![self session].isSessionRunning) {
+        if (![self.textField isFirstResponder]) {
+            labelPoint.y = MIN(MAX(labelPoint.y, 110), 460);
+            self.textField.hidden = YES;
+            self.textLabel.hidden = NO;
+            self.textLabel.text = self.textField.text;
+            self.textLabel.frame =  CGRectMake(0, labelPoint.y, self.view.frame.size.width, 40);
+            self.labelPoint = labelPoint;
+        }
+    }
+    else {
         self.textField.hidden = YES;
-        self.textLabel.hidden = NO;
-        self.textLabel.text = self.textField.text;
-        self.textLabel.frame =  CGRectMake(0, labelPoint.y, self.view.frame.size.width, 40);
-//        self.textField.frame = CGRectMake(0, labelPoint.y, self.view.frame.size.width, 40);
-        self.labelPoint = labelPoint;
+        self.textLabel.hidden = YES;
     }
 }
 

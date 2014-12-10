@@ -189,8 +189,8 @@
 - (void)mediaPickerController:(IQMediaPickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
     [self.eventConversationDelegate addLoadingBanner];
-    NSDictionary *options;
     NSString *type = @"";
+    
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
         UIImage *image = [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage];
         NSData *fileData = UIImageJPEGRepresentation(image, 1.0);
@@ -199,7 +199,7 @@
             NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
             NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
             NSDictionary *properties = @{@"yPosition": yPosition};
-            options =  @{
+            self.options =  @{
                          @"event": [self.event eventID],
                          @"message": text,
                          @"properties": properties,
@@ -207,14 +207,14 @@
                          };
         }
         else {
-            options =  @{
+            self.options =  @{
                          @"event": [self.event eventID],
                          @"media_mime_type": type
                          };
         }
         [self uploadContentWithFile:fileData
                         andFileName:@"image0.jpg"
-                         andOptions:options];
+                         andOptions:self.options];
         
     }
     
@@ -253,8 +253,19 @@
                               };
         }
         
-        
     }
+    NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
+
+    if ([[info allKeys] containsObject:IQMediaTypeImage]) {
+        [mutableDict setValue:[[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaURL] forKey:@"media"];
+    }
+    else if ( [[info allKeys] containsObject:IQMediaTypeVideo]) {
+        [mutableDict setValue:[[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaURL] forKey:@"media"];
+    }
+    
+//    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
+//    [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:mutableDict];
+//    [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
 }
 
 - (void)thumbnailGenerated:(NSNotification *)notification {
