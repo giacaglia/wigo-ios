@@ -100,12 +100,19 @@
     else if ([mimeType isEqualToString:kFaceImage]) {
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
         [myCell.imageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL] ]];
-        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, you're going out to %@", [self.event name]];
+        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, you're going out to %@.", [self.event name]];
         myCell.subtitleTextLabel.text = @"You can now add story";
         myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
         [myCell.actionButton setTitle:@"ADD TO THE STORY" forState:UIControlStateNormal];
         [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
         [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
+        return myCell;
+    }
+    else if ([mimeType isEqualToString:kNotAbleToPost]) {
+        PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
+        [myCell.imageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL] ]];
+        myCell.titleTextLabel.text = @"To post this story you must be going here.";
+        myCell.avoidAction.hidden = YES;
         return myCell;
     }
     else {
@@ -534,7 +541,7 @@
     self.blackBackgroundLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.7);
     [self.imageView addSubview:self.blackBackgroundLabel];
     
-    self.titleTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 230, self.frame.size.width - 30, 45)];
+    self.titleTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 230, self.frame.size.width - 30, 60)];
     self.titleTextLabel.font = [FontProperties mediumFont:20.0f];
     self.titleTextLabel.textColor = UIColor.whiteColor;
     self.titleTextLabel.numberOfLines = 0;

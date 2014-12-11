@@ -15,4 +15,5 @@ NSString *const kVideoEventType = @"video/mp4";
 NSString *const kCameraType = @"camera";
 NSString *const kAddStory = @"addStory";
 NSString *const kFaceImage = @"faceImage";
+NSString *const kNotAbleToPost = @"notAbleToPost";
 @end

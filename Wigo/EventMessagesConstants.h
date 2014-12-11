@@ -15,4 +15,5 @@ extern NSString *const kVideoEventType;
 extern NSString *const kCameraType;
 extern NSString *const kAddStory;
 extern NSString *const kFaceImage;
+extern NSString *const kNotAbleToPost;
 @end
