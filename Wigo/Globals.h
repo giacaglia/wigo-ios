@@ -44,6 +44,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 #define isiPhone5  ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
 #define MAX_LENGTH_BIO 110
 #define PEOPLEVIEW_HEIGHT_OF_CELLS 80
+#define kGoHereState @"goHereState"
 
 @protocol Globals <NSObject>
 

@@ -526,6 +526,7 @@
 }
 
 - (void)promptCamera {
+    [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kGoHereState];
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:self.eventMessages];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];

@@ -108,18 +108,31 @@ BOOL cancelFetchMessages;
     self.inviteButton.hidden = NO;
     self.inviteButton.enabled = YES;
     self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
+    
     [self presentFirstTimeGoingToEvent];
+
 }
 
 - (void)presentFirstTimeGoingToEvent {
-    self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
-    self.conversationViewController.event = self.event;
-    if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace];
-    else self.conversationViewController.eventMessages = [NSMutableArray new];
-    self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
-    self.conversationViewController.controllerDelegate = self;
-    self.conversationViewController.storyDelegate = self;
-    [self presentViewController:self.conversationViewController animated:YES completion:nil];
+    GOHERESTATE goHereState = [[NSUserDefaults standardUserDefaults] integerForKey:kGoHereState];
+
+    if (goHereState != DONOTPRESENTANYTHINGSTATE) {
+        self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+        self.conversationViewController.event = self.event;
+        if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
+        if (goHereState == PRESENTFACESTATE) {
+            if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace];
+        }
+        else {
+            if (goHereState == FIRSTTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:SECONDTIMEPRESENTCAMERASTATE forKey:kGoHereState];
+            if (goHereState == SECONDTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:DONOTPRESENTANYTHINGSTATE forKey:kGoHereState];
+            if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
+        }
+        self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
+        self.conversationViewController.controllerDelegate = self;
+        self.conversationViewController.storyDelegate = self;
+        [self presentViewController:self.conversationViewController animated:YES completion:nil];
+    }
 }
 
 - (NSMutableArray *)eventMessagesWithYourFace {
