@@ -30,7 +30,7 @@
 - (void)addLoadingBanner;
 - (void)showErrorMessage;
 - (void)showCompletedMessage;
-- (void)dissmissView;
+- (void)dismissView;
 @end
 
 #endif

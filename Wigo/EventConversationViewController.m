@@ -521,7 +521,7 @@
     }];
 }
 
-- (void)dissmissView {
+- (void)dismissView {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

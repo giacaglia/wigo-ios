@@ -100,10 +100,12 @@
     else if ([mimeType isEqualToString:kFaceImage]) {
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
         [myCell.imageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL] ]];
-        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, going out to %@", [self.event name]];
+        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, you're going out to %@", [self.event name]];
         myCell.subtitleTextLabel.text = @"You can now add story";
         myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
         [myCell.actionButton setTitle:@"ADD TO THE STORY" forState:UIControlStateNormal];
+        [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
+        [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
         return myCell;
     }
     else {
@@ -147,6 +149,13 @@
     [self.storyDelegate readEventMessageIDArray:[self.eventMessagesIDSet allObjects]];
 }
 
+- (void)dismissView {
+    [self.eventConversationDelegate dismissView];
+}
+
+- (void)promptCamera {
+    
+}
 
 
 -(void)scrolledToPage:(int)page {
@@ -400,7 +409,7 @@
 
 
 - (void)mediaPickerControllerDidCancel:(IQMediaPickerController *)controller {
-    [self.eventConversationDelegate dissmissView];
+    [self.eventConversationDelegate dismissView];
 }
 
 @end
