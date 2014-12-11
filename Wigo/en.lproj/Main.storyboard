@@ -5,6 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -356,14 +357,14 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="84" id="d0j-TR-zXI">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="100" id="d0j-TR-zXI">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="d0j-TR-zXI" id="RuY-Bm-9hC">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rdx-TC-wio">
-                                                    <rect key="frame" x="10" y="9" width="300" height="30"/>
+                                                    <rect key="frame" x="10" y="18" width="300" height="30"/>
                                                     <state key="normal" title="INVITE MORE PEOPLE">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -372,7 +373,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7wP-wc-Qp3">
-                                                    <rect key="frame" x="10" y="43" width="300" height="30"/>
+                                                    <rect key="frame" x="10" y="52" width="300" height="30"/>
                                                     <state key="normal" title="CUSTOM CAMPUS NOTIFICATION">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -382,17 +383,22 @@
                                                 </button>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="7wP-wc-Qp3" firstAttribute="top" secondItem="rdx-TC-wio" secondAttribute="bottom" constant="4" id="3it-hs-AVl"/>
+                                                <constraint firstItem="rdx-TC-wio" firstAttribute="leading" secondItem="RuY-Bm-9hC" secondAttribute="leadingMargin" constant="2" id="435-lK-OaU"/>
+                                                <constraint firstItem="rdx-TC-wio" firstAttribute="top" secondItem="RuY-Bm-9hC" secondAttribute="topMargin" constant="10" id="5fE-UH-CYZ"/>
+                                                <constraint firstItem="7wP-wc-Qp3" firstAttribute="centerX" secondItem="RuY-Bm-9hC" secondAttribute="centerX" id="7RK-wG-jRe"/>
+                                                <constraint firstItem="7wP-wc-Qp3" firstAttribute="trailing" secondItem="rdx-TC-wio" secondAttribute="trailing" id="9fL-0M-fwm"/>
                                                 <constraint firstItem="7wP-wc-Qp3" firstAttribute="height" secondItem="rdx-TC-wio" secondAttribute="height" id="F87-2c-mFs"/>
-                                                <constraint firstItem="rdx-TC-wio" firstAttribute="top" secondItem="RuY-Bm-9hC" secondAttribute="topMargin" constant="1" id="GPc-oe-MFm"/>
-                                                <constraint firstItem="rdx-TC-wio" firstAttribute="leading" secondItem="7wP-wc-Qp3" secondAttribute="leading" id="GZt-ps-2OP"/>
                                                 <constraint firstItem="rdx-TC-wio" firstAttribute="leading" secondItem="RuY-Bm-9hC" secondAttribute="leadingMargin" constant="2" id="Wbn-cH-A5h"/>
-                                                <constraint firstItem="rdx-TC-wio" firstAttribute="centerX" secondItem="RuY-Bm-9hC" secondAttribute="centerX" id="eQR-C2-aYL"/>
-                                                <constraint firstItem="rdx-TC-wio" firstAttribute="trailing" secondItem="7wP-wc-Qp3" secondAttribute="trailing" id="fPt-HX-Msj"/>
+                                                <constraint firstItem="rdx-TC-wio" firstAttribute="width" secondItem="7wP-wc-Qp3" secondAttribute="height" multiplier="10:1" id="j9u-gg-d1L"/>
+                                                <constraint firstItem="7wP-wc-Qp3" firstAttribute="leading" secondItem="rdx-TC-wio" secondAttribute="leading" id="nbB-Ny-YqL"/>
                                                 <constraint firstItem="7wP-wc-Qp3" firstAttribute="top" secondItem="rdx-TC-wio" secondAttribute="bottom" constant="4" id="sir-y5-RMB"/>
                                             </constraints>
                                             <variation key="default">
                                                 <mask key="constraints">
+                                                    <exclude reference="Wbn-cH-A5h"/>
                                                     <exclude reference="F87-2c-mFs"/>
+                                                    <exclude reference="sir-y5-RMB"/>
                                                 </mask>
                                             </variation>
                                         </tableViewCellContentView>
@@ -421,7 +427,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cQY-Df-XBi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3275" y="-2424"/>
+            <point key="canvasLocation" x="3275" y="-2428"/>
         </scene>
         <!--Campus Notification View Controller-->
         <scene sceneID="KRE-xI-MdA">
