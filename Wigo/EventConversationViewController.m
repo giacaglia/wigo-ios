@@ -250,7 +250,7 @@
 
     };
     
-    CGSize maxSize = CGSizeMake(320, 180);
+    CGSize maxSize = CGSizeMake([[UIScreen mainScreen] bounds].size.width, 180);
     generator.maximumSize = maxSize;
     [generator generateCGImagesAsynchronouslyForTimes:[NSArray arrayWithObject:[NSValue valueWithCMTime:thumbTime]] completionHandler:handler];
 }
@@ -294,7 +294,7 @@
 {
     float width;
     if (scrollView == self.mediaScrollView) {
-        width = 320;
+        width = [[UIScreen mainScreen] bounds].size.width;
     }
     else {
         width = 100;
@@ -306,7 +306,7 @@
 - (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
     float fractionalPage;
     if (scrollView == self.mediaScrollView) {
-        CGFloat pageWidth = 320;
+        CGFloat pageWidth = [[UIScreen mainScreen] bounds].size.width;
         fractionalPage = (self.mediaScrollView.contentOffset.x) / pageWidth;
     }
     else {
@@ -339,7 +339,7 @@
     page = MIN(page, self.eventMessages.count);
     [self.mediaScrollView scrolledToPage:(int)page];
     [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
-    [self.mediaScrollView setContentOffset:CGPointMake(320 * page, 0.0f) animated:YES];
+    [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:YES];
     [self hideOrShowFacesForPage:page];
 }
 

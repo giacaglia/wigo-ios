@@ -144,15 +144,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 50);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 50);
     self.backgroundColor = UIColor.clearColor;
-    self.schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 295, 50)];
+    self.schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.frame.size.width - 25, 50)];
     self.schoolLabel.textColor = UIColor.whiteColor;
     self.schoolLabel.textAlignment = NSTextAlignmentLeft;
     self.schoolLabel.font = [FontProperties mediumFont:18.0f];
     [self.contentView addSubview:self.schoolLabel];
     
-    UIImageView *schoolLinkImageView = [[UIImageView alloc] initWithFrame:CGRectMake(295, self.frame.size.height/2 - 9, 10, 18)];
+    UIImageView *schoolLinkImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 25, self.frame.size.height/2 - 9, 10, 18)];
     schoolLinkImageView.image = [UIImage imageNamed:@"schoolLink"];
     [self.contentView addSubview:schoolLinkImageView];
 }
@@ -172,9 +172,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 59);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 59);
     self.contentView.backgroundColor = RGB(100, 173, 215);
-    self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, 295, 39)];
+    self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, self.frame.size.width - 25, 39)];
     self.headerTitleLabel.textColor = UIColor.whiteColor;
     self.headerTitleLabel.textAlignment = NSTextAlignmentLeft;
     self.headerTitleLabel.font = [FontProperties scLightFont:15.0f];

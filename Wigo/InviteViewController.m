@@ -417,7 +417,7 @@ heightForHeaderInSection:(NSInteger)section
         [everyoneParty replaceObjectAtIndex:tag withObject:user];
     }
     int sizeOfTable = [invitePeopleTableView numberOfRowsInSection:0];
-    if (sizeOfTable > 0 && tag < sizeOfTable && tag > 0) {
+    if (sizeOfTable > 0 && tag < sizeOfTable && tag >= 0) {
         [invitePeopleTableView beginUpdates];
         [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
         [invitePeopleTableView endUpdates];

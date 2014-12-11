@@ -714,7 +714,7 @@ viewForHeaderInSection:(NSInteger)section {
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView != _placesTableView)
-        if (scrollView.contentOffset.x + 320 >= scrollView.contentSize.width - sizeOfEachImage && !fetchingEventAttendees) {
+        if (scrollView.contentOffset.x + self.view.frame.size.width >= scrollView.contentSize.width - sizeOfEachImage && !fetchingEventAttendees) {
             fetchingEventAttendees = YES;
             [self fetchEventAttendeesAsynchronousForEvent:(int)scrollView.tag];
         }
@@ -1010,7 +1010,7 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 155);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 155);
     self.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -1079,7 +1079,7 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 50);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 50);
     self.backgroundColor = UIColor.whiteColor;
     
     self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, self.frame.size.width - 75, self.frame.size.height)];
@@ -1122,7 +1122,7 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 49);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 49);
     self.contentView.backgroundColor = UIColor.whiteColor;
    
     self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, self.frame.size.width, 39)];

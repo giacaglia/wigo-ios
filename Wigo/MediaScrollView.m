@@ -69,7 +69,7 @@
         NSArray *arrayViewContollers = (NSArray *)cameraCell.controller.viewControllers;
         if (arrayViewContollers.count > 0) {
             IQMediaCaptureController *captureController = (IQMediaCaptureController *)arrayViewContollers[0];
-            captureController.startXPoint = (self.eventMessages.count - 1) * 320;
+            captureController.startXPoint = (self.eventMessages.count - 1) * [[UIScreen mainScreen] bounds].size.width;
         }
         [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
         return cameraCell;
@@ -440,7 +440,7 @@
 
 - (void)setup
 {
-    self.itemSize = CGSizeMake(320, 568);
+    self.itemSize = CGSizeMake([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     self.minimumLineSpacing = 0;
     self.minimumInteritemSpacing = 0;
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -469,7 +469,7 @@
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 568);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     self.backgroundColor = UIColor.clearColor;
     
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
@@ -529,7 +529,7 @@
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 568);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     self.backgroundColor = UIColor.clearColor;
     
     self.imageView = [[UIImageView alloc] initWithFrame:self.frame];
@@ -594,7 +594,7 @@
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 568);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     self.backgroundColor = UIColor.clearColor;
     
     self.imageView = [[UIImageView alloc] initWithFrame:self.frame];
@@ -645,7 +645,7 @@
     
     NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
         if (!self.numberOfVotesLabel) {
-            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(320 - 46, self.frame.size.height - 75, 32, 30)];
+            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 46, self.frame.size.height - 75, 32, 30)];
             self.numberOfVotesLabel.textColor = [UIColor whiteColor];
             self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
             self.numberOfVotesLabel.font = [FontProperties mediumFont:18.0f];
@@ -770,7 +770,7 @@
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 568);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     self.backgroundColor = UIColor.clearColor;
 
     self.controller = [[IQMediaPickerController alloc] init];

@@ -14,7 +14,7 @@
 
 - (id)initWithEvent:(Event *)event {
     if (self.sizeOfEachImage == 0) self.sizeOfEachImage = 90;
-    self = [super initWithFrame:CGRectMake(0, 0, 320, self.sizeOfEachImage + 10)];
+    self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.sizeOfEachImage + 10)];
     if (self) {
         self.contentSize = CGSizeMake(5, self.sizeOfEachImage + 10);
         self.showsHorizontalScrollIndicator = NO;
@@ -36,7 +36,8 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     // Add 3 images
-    if (scrollView.contentOffset.x + 320  + 3*self.sizeOfEachImage >= scrollView.contentSize.width - self.sizeOfEachImage &&
+    if (scrollView.contentOffset.x + [[UIScreen mainScreen] bounds].size.width  + 3*self.sizeOfEachImage >= scrollView.contentSize.width - self.sizeOfEachImage &&
+
         !self.fetchingEventAttendees) {
         [self fetchEventAttendeesAsynchronous];
     }
