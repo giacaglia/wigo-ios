@@ -13,9 +13,11 @@
 
 #define MAX_NOTIFICATION_LENGTH 100
 
-@interface CampusNotificationViewController() <UITextViewDelegate> {
+@interface CampusNotificationViewController() <UITextViewDelegate, UIAlertViewDelegate> {
     NSString *placeholderText;
 }
+
+#define kSuccessAlertTag 1
 
 @property (nonatomic, strong) IBOutlet UILabel *rallyLabel;
 @property (nonatomic, strong) IBOutlet UITextView *notificationTextView;
@@ -49,6 +51,7 @@
     
     self.notificationTextView.font = [FontProperties mediumFont: 17.0f];
     self.notificationTextView.delegate = self;
+    [self.notificationTextView becomeFirstResponder];
     
     [self.sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.sendButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -78,11 +81,43 @@
 
 - (IBAction)sendForApproval {
     if ([self.notificationTextView.text isEqualToString: @""] || [self.notificationTextView.text isEqualToString: placeholderText]) {
-        //TODO: Show error here
+        UIAlertView *errAlert = [[UIAlertView alloc] initWithTitle: @"Error" message: @"Please write something first!" delegate: self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+        [errAlert show];
         return;
     }
+    
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
+
+    [Network sendAsynchronousHTTPMethod: POST withAPIName: @"school/broadcast" withHandler:
+     ^(NSDictionary *jsonResponse, NSError *error) {
+         [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+
+         if (error) {
+             UIAlertView *errAlert = [[UIAlertView alloc] initWithTitle: @"Error" message: @"Something went wrong, sorry about that! Please try again." delegate: self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+             [errAlert show];
+             return;
+         }
+         
+         UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle: @"Sent!" message: @"Thanks! We'll send it out to your school asap!" delegate: self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+         successAlert.tag = kSuccessAlertTag;
+         successAlert.delegate = self;
+         
+         dispatch_async(dispatch_get_main_queue(), ^{
+             [successAlert show];
+         });
+
+         
+     } withOptions: @{@"message": self.notificationTextView.text}];
+
 }
 
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == kSuccessAlertTag) {
+        [self goBack];
+    }
+}
 # pragma mark - TextViewDelegate
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
