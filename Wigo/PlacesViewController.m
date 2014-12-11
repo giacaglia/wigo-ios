@@ -21,7 +21,7 @@
 #import "PeekViewController.h"
 #import "ReProfileViewController.h"
 
-#define sizeOfEachCell 160
+#define sizeOfEachCell 180
 #define kEventCellName @"EventCell"
 #define kOldEventCellName @"OldEventCell"
 #define kHeaderOldEventCellName @"HeaderOldEventCell"
@@ -1059,32 +1059,37 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 155);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 175);
     self.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 8, self.frame.size.width - 75, 30)];
-    self.eventNameLabel.font = [FontProperties getTitleFont];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 3, self.frame.size.width - 75, 50)];
+    self.eventNameLabel.numberOfLines = 2;
+
+    self.eventNameLabel.font = [FontProperties scMediumFont: 20];
     self.eventNameLabel.textColor = RGB(100, 173, 215);
     [self.contentView addSubview:self.eventNameLabel];
     
     self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
     self.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
+    self.chatBubbleImageView.center = CGPointMake(self.chatBubbleImageView.center.x, self.eventNameLabel.center.y);
     self.chatBubbleImageView.hidden = YES;
     [self.contentView addSubview:self.chatBubbleImageView];
     
     self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
     self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
     self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
+
     self.chatNumberLabel.textColor = [UIColor whiteColor];
     [self.chatBubbleImageView addSubview:self.chatNumberLabel];
     
     self.postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
+    self.postStoryImageView.center = CGPointMake(self.postStoryImageView.center.x, self.eventNameLabel.center.y);
     self.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
     [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(10, 40, self.frame.size.width - 10, 120);
+    self.eventPeopleScrollView.frame = CGRectMake(10, 60, self.frame.size.width - 10, 120);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
