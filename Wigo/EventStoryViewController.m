@@ -200,6 +200,7 @@ BOOL cancelFetchMessages;
         myCell.timeLabel.frame = CGRectMake(23, 83, 60, 28);
         myCell.timeLabel.text = @"Add to the story";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
+        myCell.timeLabel.layer.shadowColor = [RGB(59, 59, 59) CGColor];
         myCell.mediaTypeImageView.hidden = YES;
         [myCell updateUIToRead:NO];
         return myCell;
