@@ -53,30 +53,28 @@ UIButton *cancelButton;
         state == ACCEPTED_PRIVATE_USER ||
         state == ATTENDING_EVENT_FOLLOWING_USER ||
         state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
-        unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 100 + 248 + 50, 248, 42)];
+        unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60 - 2*54, self.view.frame.size.width - 70, 42)];
         unfollowButton.backgroundColor = RGB(246, 143, 30);
         [unfollowButton setTitle:@"UNFOLLOW" forState:UIControlStateNormal];
         [unfollowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         unfollowButton.titleLabel.font = [FontProperties getTitleFont];
         unfollowButton.layer.borderWidth = 1;
-//        unfollowButton.layer.cornerRadius = 12;
         unfollowButton.layer.borderColor = [UIColor clearColor].CGColor;
         [unfollowButton addTarget:self action:@selector(unfollowPressed) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:unfollowButton];
     }
     
-    blockButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 100 + 248 + 50 + 42 + 12, 248, 42)];
+    blockButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60 - 54, self.view.frame.size.width - 70, 42)];
     blockButton.backgroundColor = [UIColor redColor];
     [blockButton addTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [blockButton setTitle:@"BLOCK/REPORT" forState:UIControlStateNormal];
     [blockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     blockButton.titleLabel.font = [FontProperties getTitleFont];
     blockButton.layer.borderWidth = 0.5;
-//    blockButton.layer.cornerRadius = 12;
     blockButton.layer.borderColor = [UIColor clearColor].CGColor;
     [self.view addSubview:blockButton];
 
-    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 100 + 248 + 50 + 42 + 12 + 42 + 12, 248, 42)];
+    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60, self.view.frame.size.width - 70, 42)];
     cancelButton.backgroundColor = [UIColor whiteColor];
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
@@ -84,7 +82,6 @@ UIButton *cancelButton;
     cancelButton.titleLabel.font = [FontProperties getTitleFont];
     cancelButton.layer.borderColor = RGB(214, 45, 58).CGColor;
     cancelButton.layer.borderWidth = 0.5;
-//    cancelButton.layer.cornerRadius = 12;
     [self.view addSubview:cancelButton];
 }
 
