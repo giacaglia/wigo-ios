@@ -15,14 +15,10 @@
 
 #pragma mark - Accessory methods
 
-- (void)addEventAttendeesWithDictionary:(NSDictionary *)eventAttendeesDictionary {
-    NSMutableArray *usersArray = [[NSMutableArray alloc] init];
-    for (NSString *key in [eventAttendeesDictionary allKeys]) {
-        NSDictionary *userAndEventDictionary = eventAttendeesDictionary[key];
-        User *user = [[User alloc] initWithDictionary:[userAndEventDictionary objectForKey:@"user"]];
-        [usersArray addObject:user];
-    }
-    [_proxy setObject:usersArray forKey:@"userArray"];
+- (void)addEventAttendees:(NSArray *)newEventAttendees {
+    NSMutableArray *attendees = [NSMutableArray arrayWithArray:[_proxy objectForKey:@"attendees"]];
+    [attendees addObjectsFromArray:newEventAttendees];
+    [_proxy setObject:[NSArray arrayWithArray:attendees] forKey:@"attendees"];
 }
 
 - (void)addUser:(User *)user {

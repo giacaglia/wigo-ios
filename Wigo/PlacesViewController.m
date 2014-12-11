@@ -652,6 +652,7 @@ int firstIndexOfNegativeEvent;
   
 }
 
+#pragma mark - PlacesDelegate
 
 - (void)showUser:(User *)user {
     shouldReloadEvents = NO;
@@ -675,6 +676,16 @@ int firstIndexOfNegativeEvent;
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
     int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
     return numberOfEvents * userIndex + eventIndex;
+}
+
+- (void)updateEvent:(Event *)newEvent {
+    for (int i = 0 ; i < [[_contentParty getObjectArray] count]; i++) {
+        Event *event = [[_contentParty getObjectArray] objectAtIndex:i];
+        if ([[event eventID] isEqualToNumber:[newEvent eventID]]) {
+            [_contentParty replaceObjectAtIndex:i withObject:newEvent];
+            break;
+        }
+    }
 }
 
 - (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {

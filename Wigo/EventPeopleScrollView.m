@@ -84,10 +84,6 @@
         [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
         
-//        UILabel *nameBackground = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, sizeOfEachImage + 5, sizeOfEachImage, 25)];
-//        nameBackground.backgroundColor = UIColor.blackColor
-//        [imgView addSubview:nameBackground];
-        
         UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage + 5, self.self.sizeOfEachImage, 25)];
         profileName.text = [user firstName];
         profileName.textColor = [UIColor blackColor];
@@ -99,26 +95,6 @@
         self.contentSize = CGSizeMake(self.xPosition, self.sizeOfEachImage + 10);
     }
     
-//    int usersCantSee = (int)[[self.event numberAttending] intValue] - (int)[[self.partyUser getObjectArray] count];
-//    if (usersCantSee  > 0) {
-//        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
-//        self.xPosition += sizeOfEachImage + 3;
-//        [self addSubview:imageButton];
-//        self.contentSize = CGSizeMake(self.xPosition, sizeOfEachImage + 10);
-//        
-//        UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"privacyLogo"]];
-//        imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
-//        [imageButton addSubview:imgView];
-//        
-//        UILabel *profileName = [[UILabel alloc] init];
-//        profileName.text = [NSString stringWithFormat:@"+ %d more", usersCantSee ];;
-//        profileName.textColor = [UIColor whiteColor];
-//        profileName.textAlignment = NSTextAlignmentCenter;
-//        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-//        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-//        profileName.font = [FontProperties getSmallPhotoFont];
-//        [imgView addSubview:profileName];
-//    }
     if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]]) {
         NSNumber *xNumber = [self.placesDelegate.eventOffsetDictionary valueForKey:[[self.event eventID] stringValue]];
         self.contentOffset = CGPointMake([xNumber intValue], 0);
@@ -152,6 +128,10 @@
                           withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                               dispatch_async(dispatch_get_main_queue(), ^(void){
                                   NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
+                                  [self.event addEventAttendees:eventAttendeesArray];
+                                  if (self.placesDelegate) {
+                                      [self.placesDelegate updateEvent:self.event];
+                                  }
                                   for (int j = 0; j < [eventAttendeesArray count]; j++) {
                                       NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
                                       NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];

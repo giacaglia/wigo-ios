@@ -25,7 +25,6 @@
 @property (nonatomic, assign) BOOL facesHidden;
 @property (nonatomic, strong) UIButton * buttonCancel;
 @property (nonatomic, strong) UIButton *buttonTrash;
-@property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
 @end
 
 @implementation EventConversationViewController
@@ -149,7 +148,6 @@
             self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, self.buttonTrash.frame.size.height);
             self.buttonCancel.alpha = 0;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, self.buttonCancel.frame.size.height);
-            self.gradientBackgroundImageView.alpha = 0;
         } completion:^(BOOL finished) {
             self.facesHidden = YES;
         }];
@@ -162,7 +160,6 @@
             self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, 0);
             self.buttonCancel.alpha = 1;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, 0);
-            self.gradientBackgroundImageView.alpha = 1;
         } completion:^(BOOL finished) {
             self.facesHidden = NO;
         }];
@@ -353,7 +350,6 @@
         self.buttonCancel.enabled = NO;
         self.buttonTrash.hidden = YES;
         self.buttonTrash.enabled = NO;
-        self.gradientBackgroundImageView.hidden = YES;
         [UIView animateWithDuration:0.5 animations:^{
             self.facesCollectionView.alpha = 0;
         }];
@@ -361,7 +357,6 @@
     else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage]) {
         self.buttonTrash.hidden = YES;
         self.buttonTrash.enabled = NO;
-        self.gradientBackgroundImageView.hidden = YES;
     }
     else {
         self.facesHidden = NO;
@@ -371,7 +366,6 @@
         }];
         self.buttonCancel.hidden = NO;
         self.buttonCancel.enabled = YES;
-        self.gradientBackgroundImageView.hidden = NO;
         if ([user isEqualToUser:[Profile user]]) {
             self.buttonTrash.hidden = NO;
             self.buttonTrash.enabled = YES;
@@ -413,10 +407,6 @@
     self.mediaScrollView.delegate = self;
     [self.view addSubview:self.mediaScrollView];
     [self.view sendSubviewToBack:self.mediaScrollView];
-    
-    self.gradientBackgroundImageView = [[UIImageView alloc] initWithFrame:self.view.frame];
-    self.gradientBackgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-    [self.view addSubview:self.gradientBackgroundImageView];
     
     self.facesCollectionView.backgroundColor = [UIColor clearColor];
     FaceFlowLayout *flow = [[FaceFlowLayout alloc] init];
