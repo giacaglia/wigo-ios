@@ -154,7 +154,7 @@
 }
 
 - (void)promptCamera {
-    
+    [self.eventConversationDelegate promptCamera];
 }
 
 

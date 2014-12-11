@@ -525,6 +525,28 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)promptCamera {
+    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:self.eventMessages];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:@{
+                                      @"user": [[Profile user] dictionary],
+                                      @"created": [dateFormatter stringFromDate:[NSDate date]],
+                                      @"media_mime_type": kCameraType,
+                                      @"media": @""
+                                      }];
+    self.eventMessages = mutableEventMessages;
+    [self.facesCollectionView reloadData];
+    self.mediaScrollView.eventMessages = self.eventMessages;
+    [self.mediaScrollView reloadData];
+    
+    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    [self hideOrShowFacesForPage:(int)page];
+}
+
 #pragma mark - EventConversationDelegate
 
 - (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages {

@@ -31,6 +31,7 @@
 - (void)showErrorMessage;
 - (void)showCompletedMessage;
 - (void)dismissView;
+- (void)promptCamera;
 @end
 
 #endif
