@@ -44,6 +44,12 @@
 @property UIView *nameOfPersonBackground;
 @property UILabel *nameOfPersonLabel;
 
+
+// Notifications table view
+@property Party *notificationsParty;
+@property NSNumber *page;
+@property Party *nonExpiredNotificationsParty;
+@property UITableView *notificationsTableView;
 @end
 
 BOOL isUserBlocked;
@@ -81,6 +87,8 @@ UIButton *tapButton;
     [super viewDidAppear:animated];
     _pageControl.hidden = NO;
     if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
+    _page = @1;
+    [self fetchNotifications];
 }
 
 
@@ -924,20 +932,24 @@ UIButton *tapButton;
     [self.view addSubview:wantToSeeLabel];
     
     
-    UITableView *notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width + 92, self.view.frame.size.width, self.view.frame.size.height - 412)];
-    notificationsTableView.delegate = self;
-    notificationsTableView.dataSource = self;
-    notificationsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [notificationsTableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
-    [self.view addSubview:notificationsTableView];
+    _notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width + 92, self.view.frame.size.width, self.view.frame.size.height - 412)];
+    _notificationsTableView.delegate = self;
+    _notificationsTableView.dataSource = self;
+    _notificationsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [_notificationsTableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
+    [self.view addSubview:_notificationsTableView];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
-    [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
-    notificationCell.descriptionLabel.text = @"Alison wants to see you out at The Bar";
+    Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
+    if ([notification fromUserID] == (id)[NSNull null]) return notificationCell;
+    if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
+    User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+    [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+    notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName] ,[notification message] ];
     return notificationCell;
 }
 
@@ -952,8 +964,50 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
-    return 2;
+    return [_nonExpiredNotificationsParty getObjectArray].count;
 }
+
+#pragma mark - Notifications Network requests
+
+- (void)fetchNotifications {
+    if (!self.isFetchingNotifications) {
+        self.isFetchingNotifications = YES;
+        NSString *queryString;
+        if (![_page isEqualToNumber:@1] && [_notificationsParty nextPageString]) {
+            queryString = [_notificationsParty nextPageString];
+        }
+        else {
+            queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
+        }
+        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([_page isEqualToNumber:@1]) {
+                    _notificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
+                    _nonExpiredNotificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
+                }
+                NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
+                Notification *notification;
+                for (int i = 0; i < [arrayOfNotifications count]; i++) {
+                    NSDictionary *notificationDictionary = [arrayOfNotifications objectAtIndex:i];
+                    notification = [[Notification alloc] initWithDictionary:notificationDictionary];
+                    if (![notification expired]) {
+                        [_nonExpiredNotificationsParty addObject:(NSMutableDictionary *)notification];
+                    }
+                }
+                [_notificationsParty addObjectsFromArray:arrayOfNotifications];
+                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
+                [_notificationsParty addMetaInfo:metaDictionary];
+                _page = @([_page intValue] + 1);
+                [_notificationsTableView reloadData];
+                [_notificationsTableView didFinishPullToRefresh];
+                self.isFetchingNotifications = NO;
+            });
+        }];
+        
+    }
+}
+
+
 
 @end
 
@@ -1020,6 +1074,5 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     }
     self.isTapped = !self.isTapped;
 }
-
 @end
 

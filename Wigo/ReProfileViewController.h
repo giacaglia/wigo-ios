@@ -27,6 +27,7 @@
 @property PeopleViewController *peopleViewController;
 @property MoreViewController *moreViewController;
 
+@property (nonatomic, assign) BOOL isFetchingNotifications;
 @end
 
 #define kNotificationCellName @"notificationCellName"

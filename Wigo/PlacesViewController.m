@@ -128,6 +128,7 @@ int firstIndexOfNegativeEvent;
 
     [self.view endEditing:YES];
     [self initializeNavigationBar];
+    [self fetchIsThereNewPerson];
     if (shouldReloadEvents) {
         [self fetchEventsFirstPage];
     }
@@ -151,17 +152,27 @@ int firstIndexOfNegativeEvent;
     [profileButton addTarget:self action:@selector(profileSegue)
             forControlEvents:UIControlEventTouchUpInside];
     [profileButton setShowsTouchWhenHighlighted:YES];
+    if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 &&
+        [(NSNumber *)[[Profile user] objectForKey:@"num_unread_notifications"] intValue] > 0) {
+        UILabel *redDotLeftLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, 10, 10)];
+        redDotLeftLabel.backgroundColor = [UIColor redColor];
+        redDotLeftLabel.layer.borderColor = [UIColor clearColor].CGColor;
+        redDotLeftLabel.clipsToBounds = YES;
+        redDotLeftLabel.layer.borderWidth = 3;
+        redDotLeftLabel.layer.cornerRadius = 5;
+        [profileButton addSubview:redDotLeftLabel];
+    }
     UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.leftBarButtonItem = profileBarButton;
     
-    UIButton *rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
-    UIImageView *imageView = [[FLAnimatedImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
+    self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
     imageView.image = [UIImage imageNamed:@"followPlusBlue"];
-    [rightButton addTarget:self action:@selector(followPressed)
+    [self.rightButton addTarget:self action:@selector(followPressed)
            forControlEvents:UIControlEventTouchUpInside];
-    [rightButton addSubview:imageView];
-    [rightButton setShowsTouchWhenHighlighted:YES];
-    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+    [self.rightButton addSubview:imageView];
+    [self.rightButton setShowsTouchWhenHighlighted:YES];
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
     self.navigationItem.rightBarButtonItem = rightBarButton;
 
     [self updatedTitleView];
@@ -892,6 +903,44 @@ viewForHeaderInSection:(NSInteger)section {
             }
         });
     }];
+}
+
+- (void) fetchIsThereNewPerson {
+    if (!self.fetchingIsThereNewPerson && [[Profile user] key]) {
+        self.fetchingIsThereNewPerson = YES;
+        [Network queryAsynchronousAPI:@"users/?limit=1" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+            NSArray *objects = [jsonResponse objectForKey:@"objects"];
+            if ([objects isKindOfClass:[NSArray class]]) {
+                User *lastUserJoined = [[User alloc] initWithDictionary:[objects objectAtIndex:0]];
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    User *profileUser = [Profile user];
+                    if (profileUser) {
+                        NSNumber *lastUserRead = [profileUser lastUserRead];
+                        NSNumber *lastUserJoinedNumber = (NSNumber *)[lastUserJoined objectForKey:@"id"];
+                        [Profile setLastUserJoined:lastUserJoinedNumber];
+                        [self.rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
+                        imageView.image = [UIImage imageNamed:@"followPlusBlue"];
+                        [self.rightButton addSubview:imageView];
+                        
+                        if ([lastUserRead intValue] < [lastUserJoinedNumber intValue]) {
+                            self.redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, 10, 10)];
+                            self.redDotLabel.backgroundColor = [UIColor redColor];
+                            self.redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
+                            self.redDotLabel.clipsToBounds = YES;
+                            self.redDotLabel.layer.borderWidth = 3;
+                            self.redDotLabel.layer.cornerRadius = 5;
+                            [self.rightButton addSubview:self.redDotLabel];
+                        }
+                        else {
+                            if (self.redDotLabel) [self.redDotLabel removeFromSuperview];
+                        }
+                    }
+                    self.fetchingIsThereNewPerson = NO;
+                });
+            }
+        }];
+    }
 }
 
 
