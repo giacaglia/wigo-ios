@@ -655,7 +655,7 @@ int firstIndexOfNegativeEvent;
 
 - (void)showUser:(User *)user {
     shouldReloadEvents = NO;
-    [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:YES];
+    [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:NO];
 }
 
 - (void)showConversationForEvent:(Event*)event {

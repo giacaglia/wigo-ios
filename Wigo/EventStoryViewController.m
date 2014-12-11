@@ -41,7 +41,7 @@ BOOL cancelFetchMessages;
 #pragma mark - Loading Messages
 
 - (void)loadEventDetails {
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 204, self.view.frame.size.width - 140, 30)];
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 220, self.view.frame.size.width - 140, 30)];
     [self.inviteButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     self.inviteButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
@@ -53,7 +53,7 @@ BOOL cancelFetchMessages;
     self.inviteButton.enabled = NO;
     [self.view addSubview:self.inviteButton];
     
-    self.aroundGoHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 204, 100, 30)];
+    self.aroundGoHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 220, 100, 30)];
     self.aroundGoHereButton.tag = [(NSNumber *)[self.event eventID] intValue];
     [self.aroundGoHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
     self.aroundGoHereButton.hidden = YES;
@@ -140,7 +140,7 @@ BOOL cancelFetchMessages;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 235, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
+    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 245, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = UIColor.whiteColor;
     facesCollectionView.showsHorizontalScrollIndicator = NO;
@@ -261,9 +261,10 @@ BOOL cancelFetchMessages;
 
 - (void)loadEventPeopleScrollView {
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
+    self.eventPeopleScrollView.sizeOfEachImage = 110;
     self.eventPeopleScrollView.event = _event;
     [self.eventPeopleScrollView updateUI];
-    self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 120);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 140);
     [self.view addSubview:self.eventPeopleScrollView];
 }
 
