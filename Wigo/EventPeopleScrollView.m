@@ -110,6 +110,7 @@
     [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
                                                  forKey:[[self.event eventID] stringValue]];
     [self.placesDelegate showUser:user];
+    [self.userSelectDelegate showUser: user];
 }
 
 

@@ -10,7 +10,7 @@
 #import "IQMediaPickerController.h"
 #import "AWSUploader.h"
 #import "InviteViewController.h"
-#import "ProfileViewController.h"
+#import "ReProfileViewController.h"
 #import "EventMessagesConstants.h"
 
 UIButton *sendButton;
@@ -278,6 +278,7 @@ BOOL cancelFetchMessages;
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
     self.eventPeopleScrollView.sizeOfEachImage = 110;
     self.eventPeopleScrollView.event = _event;
+    self.eventPeopleScrollView.userSelectDelegate = self;
     [self.eventPeopleScrollView updateUI];
     self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 140);
     [self.view addSubview:self.eventPeopleScrollView];
@@ -416,6 +417,14 @@ BOOL cancelFetchMessages;
     });
 }
 
+#pragma mark - Places Delegate
+
+- (void)showUser:(User *)user {
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[ReProfileViewController alloc] initWithUser:user]];
+    
+    [self presentViewController: navController animated: YES completion: nil];
+}
 
 
 @end
