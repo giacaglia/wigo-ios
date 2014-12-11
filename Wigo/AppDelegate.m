@@ -389,11 +389,6 @@ forRemoteNotification:(NSDictionary *)userInfo
         [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if (!error) {
-                    if ([[jsonResponse allKeys] containsObject:@"prompt"]) {
-                        NSDictionary *prompt = [jsonResponse objectForKey:@"prompt"];
-                        UIViewController *rootViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-                        if (prompt) [rootViewController presentViewController:[[PopViewController alloc] initWithDictionary:prompt] animated:YES completion:nil];
-                    }
                     if ([[jsonResponse allKeys] containsObject:@"cdn"]) {
                         NSDictionary *cdnDictionary = [jsonResponse objectForKey:@"cdn"];
                         if ([[cdnDictionary allKeys] containsObject:@"uploads"]) {

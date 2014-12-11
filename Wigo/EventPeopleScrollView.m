@@ -9,14 +9,14 @@
 #import "EventPeopleScrollView.h"
 #import "Globals.h"
 
-#define sizeOfEachImage 90
 
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(Event *)event {
-    self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, sizeOfEachImage + 10)];
+    if (self.sizeOfEachImage == 0) self.sizeOfEachImage = 90;
+    self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.sizeOfEachImage + 10)];
     if (self) {
-        self.contentSize = CGSizeMake(5, sizeOfEachImage + 10);
+        self.contentSize = CGSizeMake(5, self.sizeOfEachImage + 10);
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
         self.event = event;
@@ -26,6 +26,8 @@
 
 
 - (void)updateUI {
+//    self.frame = CGRectMake(0, 0, 320, self.sizeOfEachImage + 10);
+//    self.contentSize = CGSizeMake(5, self.sizeOfEachImage + 10);
     [self fillEventAttendees];
     [self loadUsers];
     self.page = @2;
@@ -34,7 +36,8 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     // Add 3 images
-    if (scrollView.contentOffset.x + [[UIScreen mainScreen] bounds].size.width  + 3*sizeOfEachImage >= scrollView.contentSize.width - sizeOfEachImage &&
+    if (scrollView.contentOffset.x + [[UIScreen mainScreen] bounds].size.width  + 3*self.sizeOfEachImage >= scrollView.contentSize.width - self.sizeOfEachImage &&
+
         !self.fetchingEventAttendees) {
         [self fetchEventAttendeesAsynchronous];
     }
@@ -70,53 +73,29 @@
         if ([user isEqualToUser:[Profile user]]) {
             user = [Profile user];
         }
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, self.sizeOfEachImage, self.sizeOfEachImage)];
         imageButton.tag = i;
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:imageButton];
         
         UIImageView *imgView = [[UIImageView alloc] init];
-        imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
+        imgView.frame = CGRectMake(0, 0, self.sizeOfEachImage, self.sizeOfEachImage);
         imgView.contentMode = UIViewContentModeScaleAspectFill;
         imgView.clipsToBounds = YES;
         [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
         
-//        UILabel *nameBackground = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, sizeOfEachImage + 5, sizeOfEachImage, 25)];
-//        nameBackground.backgroundColor = UIColor.blackColor
-//        [imgView addSubview:nameBackground];
-        
-        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, sizeOfEachImage + 5, sizeOfEachImage, 25)];
+        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage + 5, self.self.sizeOfEachImage, 25)];
         profileName.text = [user firstName];
         profileName.textColor = [UIColor blackColor];
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.font = [FontProperties lightFont:14.0f];
         [self addSubview:profileName];
         
-        self.xPosition += sizeOfEachImage + 3;
-        self.contentSize = CGSizeMake(self.xPosition, sizeOfEachImage + 10);
+        self.xPosition += self.sizeOfEachImage + 3;
+        self.contentSize = CGSizeMake(self.xPosition, self.sizeOfEachImage + 10);
     }
     
-//    int usersCantSee = (int)[[self.event numberAttending] intValue] - (int)[[self.partyUser getObjectArray] count];
-//    if (usersCantSee  > 0) {
-//        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, sizeOfEachImage, sizeOfEachImage)];
-//        self.xPosition += sizeOfEachImage + 3;
-//        [self addSubview:imageButton];
-//        self.contentSize = CGSizeMake(self.xPosition, sizeOfEachImage + 10);
-//        
-//        UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"privacyLogo"]];
-//        imgView.frame = CGRectMake(0, 0, sizeOfEachImage, sizeOfEachImage);
-//        [imageButton addSubview:imgView];
-//        
-//        UILabel *profileName = [[UILabel alloc] init];
-//        profileName.text = [NSString stringWithFormat:@"+ %d more", usersCantSee ];;
-//        profileName.textColor = [UIColor whiteColor];
-//        profileName.textAlignment = NSTextAlignmentCenter;
-//        profileName.frame = CGRectMake(0, sizeOfEachImage - 20, sizeOfEachImage, 20);
-//        profileName.backgroundColor = RGBAlpha(0, 0, 0, 0.6f);
-//        profileName.font = [FontProperties getSmallPhotoFont];
-//        [imgView addSubview:profileName];
-//    }
     if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]]) {
         NSNumber *xNumber = [self.placesDelegate.eventOffsetDictionary valueForKey:[[self.event eventID] stringValue]];
         self.contentOffset = CGPointMake([xNumber intValue], 0);
@@ -150,6 +129,10 @@
                           withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                               dispatch_async(dispatch_get_main_queue(), ^(void){
                                   NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
+                                  [self.event addEventAttendees:eventAttendeesArray];
+                                  if (self.placesDelegate) {
+                                      [self.placesDelegate updateEvent:self.event];
+                                  }
                                   for (int j = 0; j < [eventAttendeesArray count]; j++) {
                                       NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
                                       NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];

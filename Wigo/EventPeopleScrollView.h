@@ -23,4 +23,5 @@
 @property (nonatomic, strong) NSNumber *page;
 @property (nonatomic, assign) int xPosition;
 @property (nonatomic, strong) Event *event;
+@property (nonatomic, assign) int sizeOfEachImage;
 @end

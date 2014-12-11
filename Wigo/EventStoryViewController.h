@@ -15,6 +15,14 @@
 #import "Delegate.h"
 #import "EventConversationViewController.h"
 
+typedef enum
+{
+    PRESENTFACESTATE,
+    FIRSTTIMEPRESENTCAMERASTATE,
+    SECONDTIMEPRESENTCAMERASTATE,
+    DONOTPRESENTANYTHINGSTATE
+} GOHERESTATE;
+
 @interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate, StoryDelegate>
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;

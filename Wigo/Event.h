@@ -17,7 +17,7 @@
 @property NSNumber *numberOfMessages;
 
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
-- (void)addEventAttendeesWithDictionary:(NSDictionary *)eventAttendeesDictionary;
+- (void)addEventAttendees:(NSArray *)newEventAttendees;
 - (NSArray *)getEventAttendees;
 - (void)addUser:(User *)user;
 - (NSDictionary *)dictionary;
