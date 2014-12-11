@@ -10,6 +10,8 @@
 #import "ProfileViewController.h"
 #import "Event.h"
 #import "Delegate.h"
+#import "UIButtonAligned.h"
+
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate >
 
@@ -17,6 +19,10 @@
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) NSString *groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
+
+@property (nonatomic, assign) BOOL fetchingIsThereNewPerson;
+@property (nonatomic, strong) UILabel *redDotLabel;
+@property (nonatomic, strong) UIButton *rightButton;
 @end
 
 #import "Event.h"
