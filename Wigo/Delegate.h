@@ -12,8 +12,11 @@
 #import "User.h"
 #import "Event.h"
 
-@protocol PlacesDelegate <NSObject>
+@protocol UserSelectDelegate <NSObject>
 - (void)showUser:(User *)user;
+@end
+
+@protocol PlacesDelegate <UserSelectDelegate>
 - (void)showConversationForEvent:(Event*)event;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
