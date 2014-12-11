@@ -380,7 +380,6 @@ int firstIndexOfNegativeEvent;
     UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 15, 15)];
     sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
     [_goingSomewhereButton addSubview:sendOvalImageView];
-
 }
 
 - (void) goingSomewhereElsePressed {
@@ -672,6 +671,7 @@ int firstIndexOfNegativeEvent;
 
 - (void)showConversationForEvent:(Event*)event {
     EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
+    eventStoryController.placesDelegate = self;
     eventStoryController.event = event;
     [self presentViewController:eventStoryController animated:YES completion:nil];
 }

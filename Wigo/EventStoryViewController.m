@@ -279,6 +279,7 @@ BOOL cancelFetchMessages;
     self.eventPeopleScrollView.sizeOfEachImage = 110;
     self.eventPeopleScrollView.event = _event;
     self.eventPeopleScrollView.userSelectDelegate = self;
+    self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
     [self.eventPeopleScrollView updateUI];
     self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 140);
     [self.view addSubview:self.eventPeopleScrollView];
