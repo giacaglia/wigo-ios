@@ -189,12 +189,15 @@
     if (!self.eventMessagesIDSet) {
         self.eventMessagesIDSet = [NSMutableSet new];
     }
-    NSMutableDictionary *eventMessage = [NSMutableDictionary dictionaryWithDictionary:[self.eventMessages objectAtIndex:page]];
-    if ([[eventMessage allKeys] containsObject:@"id"] && [[eventMessage allKeys] containsObject:@"is_read"] && ![[eventMessage objectForKey:@"is_read"] boolValue]) {
-        [self.eventMessagesIDSet addObject:[eventMessage objectForKey:@"id"]];
-        [eventMessage setValue:@YES forKey:@"is_read"];
-        [self.eventMessages replaceObjectAtIndex:page withObject:eventMessage];
+    if ((int)page < self.eventMessages.count) {
+        NSMutableDictionary *eventMessage = [NSMutableDictionary dictionaryWithDictionary:[self.eventMessages objectAtIndex:page]];
+        if ([[eventMessage allKeys] containsObject:@"id"] && [[eventMessage allKeys] containsObject:@"is_read"] && ![[eventMessage objectForKey:@"is_read"] boolValue]) {
+            [self.eventMessagesIDSet addObject:[eventMessage objectForKey:@"id"]];
+            [eventMessage setValue:@YES forKey:@"is_read"];
+            [self.eventMessages replaceObjectAtIndex:page withObject:eventMessage];
+        }
     }
+  
 }
 
 - (void)removeMediaAtPage:(int)page {
