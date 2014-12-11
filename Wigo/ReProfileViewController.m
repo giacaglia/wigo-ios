@@ -419,7 +419,7 @@ UIButton *tapButton;
         [_scrollView addSubview:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
-    [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count] - 10, 320)];
+    [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count] - 10, [[UIScreen mainScreen] bounds].size.width)];
 }
 
 - (void) initializeFollowButton {
@@ -972,7 +972,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 320, 54);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 54);
     self.backgroundColor = UIColor.clearColor;
     self.selectionStyle = UITableViewCellSeparatorStyleNone;
     

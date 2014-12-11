@@ -371,7 +371,7 @@ UIButton *tapButton;
     _pageControl.currentPageIndicatorTintColor = [FontProperties getOrangeColor];
     _pageControl.pageIndicatorTintColor = [UIColor grayColor];
 
-    UIView *pageControlView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, 320, 44)];
+    UIView *pageControlView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 44)];
     [pageControlView addSubview: _pageControl];
     self.navigationItem.titleView = pageControlView;
     [self updateProfile];
@@ -415,7 +415,7 @@ UIButton *tapButton;
         [_scrollView addSubview:profileImgView];
         [_profileImagesArray addObject:profileImgView];
     }
-    [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count] - 10, 320)];
+    [_scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [[self.user imagesURL] count] - 10, [[UIScreen mainScreen] bounds].size.width)];
     _bioLabel.frame = CGRectMake(7, 64 + self.view.frame.size.width + 90 + 5 + 10, self.view.frame.size.width - 14, 80);
     _bioLabel.text = [NSString stringWithFormat:@"        %@" , [self.user bioString]];
     [_bioLabel sizeToFit];

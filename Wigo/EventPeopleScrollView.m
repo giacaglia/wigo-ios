@@ -14,7 +14,7 @@
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(Event *)event {
-    self = [super initWithFrame:CGRectMake(0, 0, 320, sizeOfEachImage + 10)];
+    self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, sizeOfEachImage + 10)];
     if (self) {
         self.contentSize = CGSizeMake(5, sizeOfEachImage + 10);
         self.showsHorizontalScrollIndicator = NO;
@@ -34,7 +34,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     // Add 3 images
-    if (scrollView.contentOffset.x + 320  + 3*sizeOfEachImage >= scrollView.contentSize.width - sizeOfEachImage &&
+    if (scrollView.contentOffset.x + [[UIScreen mainScreen] bounds].size.width  + 3*sizeOfEachImage >= scrollView.contentSize.width - sizeOfEachImage &&
         !self.fetchingEventAttendees) {
         [self fetchEventAttendeesAsynchronous];
     }

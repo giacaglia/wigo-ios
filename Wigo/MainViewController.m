@@ -704,8 +704,8 @@ NSMutableArray *failedUserInfoArray;
     self.automaticallyAdjustsScrollViewInsets = NO;
     CSStickyHeaderFlowLayout *layout = [[CSStickyHeaderFlowLayout alloc] init];
     if ([layout isKindOfClass:[CSStickyHeaderFlowLayout class]]) {
-        layout.parallaxHeaderReferenceSize = CGSizeMake(320, 1);
-        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake(320, 1);
+        layout.parallaxHeaderReferenceSize = CGSizeMake([[UIScreen mainScreen] bounds].size.width, 1);
+        layout.parallaxHeaderMinimumReferenceSize = CGSizeMake([[UIScreen mainScreen] bounds].size.width, 1);
     }
     layout.minimumLineSpacing = 5;
     layout.minimumInteritemSpacing = 4;

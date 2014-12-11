@@ -382,8 +382,8 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
    
     CGRect newFrame = [self getNewControlsFrame:userInfo up:up forView:_chatTextFieldWrapper];
     //HACK For predictive shit
-    if (CGRectEqualToRect(newFrame, CGRectMake(0, 12, 320, 50))) {
-        newFrame =  CGRectMake(0, 303, 320, 50);
+    if (CGRectEqualToRect(newFrame, CGRectMake(0, 12, [[UIScreen mainScreen] bounds].size.width, 50))) {
+        newFrame =  CGRectMake(0, 303, [[UIScreen mainScreen] bounds].size.width, 50);
     }
     [self animateControls:userInfo withFrame:newFrame];
 }
@@ -392,7 +392,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     kbFrame = [self.view convertRect:kbFrame fromView:nil];
 
-    if (CGRectEqualToRect(kbFrame,CGRectMake(0, 315, 320, 253))) {
+    if (CGRectEqualToRect(kbFrame,CGRectMake(0, 315, [[UIScreen mainScreen] bounds].size.width, 253))) {
         kbFrame =CGRectZero;
     }
     CGRect frame = _scrollView.frame;
