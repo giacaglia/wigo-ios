@@ -1050,11 +1050,12 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 27, 27)];
     self.tapImageView.image = [UIImage imageNamed:@"tapUnselectedNotification"];
     [self.buttonCallback addSubview:self.tapImageView];
+    self.buttonCallback.hidden = YES;
     [self.contentView addSubview:self.buttonCallback];
     
     self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 41, self.frame.size.height/2 - 7, 9, 15)];
     self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
-    self.rightPostImageView.hidden = YES;
+//    self.rightPostImageView.hidden = YES;
     [self.contentView addSubview:self.rightPostImageView];
     
     self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 27, self.frame.size.height/2 + 13 + 3, 50, 15)];
@@ -1062,6 +1063,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.tapLabel.textAlignment = NSTextAlignmentCenter;
     self.tapLabel.font = [FontProperties lightFont:12.0f];
     self.tapLabel.textColor = RGB(240, 203, 163);
+    self.tapLabel.hidden = YES;
     [self.contentView addSubview:self.tapLabel];
 }
 

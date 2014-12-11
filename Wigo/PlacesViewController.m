@@ -389,6 +389,7 @@ int firstIndexOfNegativeEvent;
     [self showWhereAreYouGoingView];
     _ungoOutButton.enabled = NO;
     [_whereAreYouGoingTextField becomeFirstResponder];
+    _placesTableView.userInteractionEnabled = NO;
     [self textFieldDidChange:_whereAreYouGoingTextField];
 }
 
@@ -514,7 +515,6 @@ int firstIndexOfNegativeEvent;
     [_filteredContentParty removeAllObjects];
     _filteredPartyUserArray = [[NSMutableArray alloc] init];
     if([textField.text length] != 0) {
-        _placesTableView.userInteractionEnabled = NO;
         _isSearching = YES;
         _createButton.hidden = NO;
         _clearButton.hidden = NO;
