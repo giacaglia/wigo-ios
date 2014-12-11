@@ -74,8 +74,6 @@ UIButton *tapButton;
     _pageControl.hidden = YES;
     
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
-
-    
 }
 
 
@@ -918,7 +916,7 @@ UIButton *tapButton;
 #pragma mark - Notifications bottom
 
 - (void)initializeBottomTableView {
-    UILabel *wantToSeeLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, 390, self.view.frame.size.width - 24, 22)];
+    UILabel *wantToSeeLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, self.view.frame.size.width + 60, self.view.frame.size.width - 24, 22)];
     wantToSeeLabel.text = @"Want to see you out tonight:";
     wantToSeeLabel.textAlignment = NSTextAlignmentLeft;
     wantToSeeLabel.textColor = RGB(180, 180, 180);
@@ -926,7 +924,7 @@ UIButton *tapButton;
     [self.view addSubview:wantToSeeLabel];
     
     
-    UITableView *notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 412, self.view.frame.size.width, self.view.frame.size.height - 412)];
+    UITableView *notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width + 92, self.view.frame.size.width, self.view.frame.size.height - 412)];
     notificationsTableView.delegate = self;
     notificationsTableView.dataSource = self;
     notificationsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;

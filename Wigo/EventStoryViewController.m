@@ -121,7 +121,7 @@ BOOL cancelFetchMessages;
         self.conversationViewController.event = self.event;
         if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
         if (goHereState == PRESENTFACESTATE) {
-            if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace];
+            if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
         }
         else {
             if (goHereState == FIRSTTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:SECONDTIMEPRESENTCAMERASTATE forKey:kGoHereState];
@@ -135,16 +135,17 @@ BOOL cancelFetchMessages;
     }
 }
 
-- (NSMutableArray *)eventMessagesWithYourFace {
+- (NSMutableArray *)eventMessagesWithYourFace:(BOOL)faceBool {
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
     [dateFormatter setTimeZone:timeZone];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *type = faceBool ? kFaceImage : kNotAbleToPost;
     [mutableEventMessages addObject:@{
                                       @"user": [[Profile user] dictionary],
                                       @"created": [dateFormatter stringFromDate:[NSDate date]],
-                                      @"media_mime_type": kFaceImage,
+                                      @"media_mime_type": type,
                                       @"media": @""
                                       }];
     
@@ -334,8 +335,13 @@ BOOL cancelFetchMessages;
 - (void)sendPressed {
     self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
-    if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
-    else self.conversationViewController.eventMessages = [NSMutableArray new];
+    if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
+    if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+        self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
+    }
+    else {
+        self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
+    }
     self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
     self.conversationViewController.controllerDelegate = self;
     self.conversationViewController.storyDelegate = self;
@@ -380,9 +386,13 @@ BOOL cancelFetchMessages;
     self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
     self.conversationViewController.index = index;
-    if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
-    else self.conversationViewController.eventMessages = [NSMutableArray new];
-    self.conversationViewController.controllerDelegate = self;
+    if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
+    if (![[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+         self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:NO];
+    }
+    else {
+        self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
+    }
     self.conversationViewController.storyDelegate = self;
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
 }

@@ -91,7 +91,8 @@
         user = [Profile user];
     }
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
-        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage]
+        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
+        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost]
         ) {
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
         myCell.mediaTypeImageView.hidden = YES;
@@ -354,7 +355,9 @@
             self.facesCollectionView.alpha = 0;
         }];
     }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage]) {
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
+             [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost]
+             ) {
         self.buttonTrash.hidden = YES;
         self.buttonTrash.enabled = NO;
     }
