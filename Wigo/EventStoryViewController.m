@@ -335,11 +335,11 @@ BOOL cancelFetchMessages;
     self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
     if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
-    if ([[[Profile user] eventID] isEqualToNumber:[self.event eventID]]) {
-        self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
+    if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+        self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     else {
-        if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:NO];
+        self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
     }
     self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
     self.conversationViewController.controllerDelegate = self;
@@ -386,11 +386,11 @@ BOOL cancelFetchMessages;
     self.conversationViewController.event = self.event;
     self.conversationViewController.index = index;
     if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
-    if (![[[Profile user] eventID] isEqualToNumber:[self.event eventID]]) {
-         if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:NO];
+    if (![[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+         self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:NO];
     }
     else {
-        if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
+        self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     self.conversationViewController.storyDelegate = self;
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
