@@ -58,6 +58,16 @@
 @property (nonatomic, assign) BOOL isFocusing;
 @end
 
+
+@interface PromptCell : MediaCell
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) UILabel *titleTextLabel;
+@property (nonatomic, strong) UILabel *subtitleTextLabel;
+@property (nonatomic, strong) UIButton *actionButton;
+@property (nonatomic, strong) UIButton *avoidAction;
+@property (nonatomic, strong) UILabel *blackBackgroundLabel;
+@end
+
 @interface ImageCell : MediaCell
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UILabel *label;

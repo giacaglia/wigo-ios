@@ -91,7 +91,9 @@
     if ([user isEqualToUser:[Profile user]]) {
         user = [Profile user];
     }
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType]) {
+    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
+        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage]
+        ) {
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
         myCell.mediaTypeImageView.hidden = YES;
     }
@@ -355,6 +357,11 @@
         [UIView animateWithDuration:0.5 animations:^{
             self.facesCollectionView.alpha = 0;
         }];
+    }
+    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage]) {
+        self.buttonTrash.hidden = YES;
+        self.buttonTrash.enabled = NO;
+        self.gradientBackgroundImageView.hidden = YES;
     }
     else {
         self.facesHidden = NO;

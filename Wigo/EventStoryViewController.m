@@ -108,8 +108,35 @@ BOOL cancelFetchMessages;
     self.inviteButton.hidden = NO;
     self.inviteButton.enabled = YES;
     self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
+    [self presentFirstTimeGoingToEvent];
 }
 
+- (void)presentFirstTimeGoingToEvent {
+    self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    self.conversationViewController.event = self.event;
+    if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace];
+    else self.conversationViewController.eventMessages = [NSMutableArray new];
+    self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
+    self.conversationViewController.controllerDelegate = self;
+    self.conversationViewController.storyDelegate = self;
+    [self presentViewController:self.conversationViewController animated:YES completion:nil];
+}
+
+- (NSMutableArray *)eventMessagesWithYourFace {
+    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [mutableEventMessages addObject:@{
+                                      @"user": [[Profile user] dictionary],
+                                      @"created": [dateFormatter stringFromDate:[NSDate date]],
+                                      @"media_mime_type": kFaceImage,
+                                      @"media": @""
+                                      }];
+    
+    return mutableEventMessages;
+}
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
@@ -129,6 +156,9 @@ BOOL cancelFetchMessages;
     [self.view addSubview:facesCollectionView];
     [self.view sendSubviewToBack:facesCollectionView];
 }
+
+
+
 
 #pragma mark - UICollectionView Data Source
 

@@ -40,6 +40,7 @@
     self.dataSource = self;
     [self registerClass:[VideoCell class] forCellWithReuseIdentifier:@"VideoCell"];
     [self registerClass:[ImageCell class] forCellWithReuseIdentifier:@"ImageCell"];
+    [self registerClass:[PromptCell class] forCellWithReuseIdentifier:@"PromptCell"];
     [self registerClass:[CameraCell class] forCellWithReuseIdentifier:@"CameraCell"];
     
 }
@@ -94,6 +95,15 @@
 
         }
         [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
+        return myCell;
+    }
+    else if ([mimeType isEqualToString:kFaceImage]) {
+        PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
+        [myCell.imageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL] ]];
+        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, going out to %@", [self.event name]];
+        myCell.subtitleTextLabel.text = @"You can now add story";
+        myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
+        [myCell.actionButton setTitle:@"ADD TO THE STORY" forState:UIControlStateNormal];
         return myCell;
     }
     else {
@@ -480,6 +490,70 @@
 
 @end
 
+@implementation PromptCell
+
+- (id) initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder: aDecoder];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (id) initWithFrame:(CGRect)frame {
+    self = [super initWithFrame: frame];
+    if (self) {
+        [self setup];
+    }
+    
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, 320, 568);
+    self.backgroundColor = UIColor.clearColor;
+    
+    self.imageView = [[UIImageView alloc] initWithFrame:self.frame];
+    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageView.clipsToBounds = YES;
+    [self.contentView addSubview:self.imageView];
+    
+    self.blackBackgroundLabel = [[UILabel alloc] initWithFrame:self.frame];
+    self.blackBackgroundLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.7);
+    [self.imageView addSubview:self.blackBackgroundLabel];
+    
+    self.titleTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 230, self.frame.size.width - 30, 45)];
+    self.titleTextLabel.font = [FontProperties mediumFont:20.0f];
+    self.titleTextLabel.textColor = UIColor.whiteColor;
+    self.titleTextLabel.numberOfLines = 0;
+    self.titleTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.titleTextLabel.textAlignment = NSTextAlignmentCenter;
+    [self.contentView addSubview:self.titleTextLabel];
+    
+    self.subtitleTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 270, self.frame.size.width - 30, 45)];
+    self.subtitleTextLabel.font = [FontProperties mediumFont:18.0f];
+    self.subtitleTextLabel.textColor = UIColor.whiteColor;
+    self.subtitleTextLabel.numberOfLines = 0;
+    self.subtitleTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.subtitleTextLabel.textAlignment = NSTextAlignmentCenter;
+    [self.contentView addSubview:self.subtitleTextLabel];
+
+    self.actionButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 350, self.frame.size.width - 30, 55)];
+    [self.actionButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    self.actionButton.titleLabel.font = [FontProperties mediumFont:20.0f];
+    self.actionButton.layer.borderColor = UIColor.clearColor.CGColor;
+    self.actionButton.layer.cornerRadius = 10.0f;
+    self.actionButton.layer.borderWidth = 3.0f;
+    [self.contentView addSubview:self.actionButton];
+
+    self.avoidAction = [[UIButton alloc] initWithFrame:CGRectMake(15, self.frame.size.height - 55, self.frame.size.width - 30, 55)];
+    [self.avoidAction setTitle:@"Not Now" forState:UIControlStateNormal];
+    [self.avoidAction setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    [self.contentView addSubview:self.avoidAction];
+}
+
+@end
+
 
 @implementation ImageCell
 
@@ -523,6 +597,7 @@
     [self.focusButton addTarget:self action:@selector(focusOnContent) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.focusButton];
     [self.contentView bringSubviewToFront:self.focusButton];
+
 }
 
 
