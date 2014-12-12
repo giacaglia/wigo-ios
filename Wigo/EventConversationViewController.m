@@ -593,17 +593,18 @@
     self.frame = CGRectMake(0, 0, sizeOfEachFaceCell, sizeOfEachFaceCell);
 //    self.backgroundColor = UIColor.greenColor;
     
-    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x + sizeOfEachFaceCell/4, self.center.y, self.center.x - sizeOfEachFaceCell/4, 2)];
+    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x + 0.3*sizeOfEachFaceCell, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.rightLine.alpha = 0.5f;
     self.rightLine.backgroundColor = [UIColor whiteColor];
     [self addSubview: self.rightLine];
     
-    self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - sizeOfEachFaceCell/4, 2)];
+    self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
     self.leftLine.backgroundColor = [UIColor whiteColor];
     [self addSubview: self.leftLine];
-    
-    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfEachFaceCell/4, sizeOfEachFaceCell/4, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2)];
+ 
+//      self.faceImageView.frame = CGRectMake(0.2*sizeOfEachFaceCell, 0.2*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell);
+    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.2*sizeOfEachFaceCell, 0.2*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell)];
     self.faceImageView.layer.masksToBounds = YES;
     self.faceImageView.backgroundColor = [UIColor blackColor];
 //    self.faceImageView.layer.cornerRadius = sizeOfEachFaceCell/4;
@@ -677,6 +678,9 @@
                 self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
                 self.mediaTypeImageView.alpha = 1.0f;
                 self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
+                self.rightLine.frame = CGRectMake(sizeOfEachFaceCell/2 + 0.3*sizeOfEachFaceCell, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2 - 0.3*sizeOfEachFaceCell, 2);
+                self.leftLine.frame = CGRectMake(0, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2- 0.3*sizeOfEachFaceCell, 2);
+
             } completion:^(BOOL finished) {
 
             }];
@@ -717,6 +721,9 @@
     self.mediaTypeImageView.frame = CGRectMake(0.6*sizeOfEachFaceCell, 0.25*sizeOfEachFaceCell, sizeOfEachFaceCell/6.6, sizeOfEachFaceCell/6.6);
     self.mediaTypeImageView.alpha = 0.5f;
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
+    
+    self.rightLine.frame = CGRectMake(sizeOfEachFaceCell/2+ 0.225*sizeOfEachFaceCell, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2 - 0.225*sizeOfEachFaceCell, 2);
+    self.leftLine.frame = CGRectMake(0, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2 - 0.225*sizeOfEachFaceCell, 2);
 }
 
 - (void)updateUIToRead:(BOOL)read {

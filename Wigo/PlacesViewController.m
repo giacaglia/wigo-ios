@@ -120,8 +120,11 @@ int firstIndexOfNegativeEvent;
     
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+}
 
-
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -766,14 +769,14 @@ viewForHeaderInSection:(NSInteger)section {
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString;
         if (self.groupNumberID) {
-             queryString = [NSString stringWithFormat:@"events/?group=%@&date=tonight&page=%@&attendees_limit=10", [self.groupNumberID stringValue], [page stringValue]];
+             queryString = [NSString stringWithFormat:@"events/?group=%@&page=%@&attendees_limit=10", [self.groupNumberID stringValue], [page stringValue]];
         }
         else {
             if (![page isEqualToNumber:@1] && [_eventsParty nextPageString]) {
                 queryString = [_eventsParty nextPageString];
             }
             else {
-                queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
+                queryString = [NSString stringWithFormat:@"events/?page=%@&attendees_limit=10", [page stringValue]];
             }
 
         }
