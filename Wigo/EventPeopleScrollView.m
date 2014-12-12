@@ -107,10 +107,14 @@
     int tag = (int)buttonSender.tag;
     User *user = [[self.partyUser getObjectArray] objectAtIndex:tag];
     self.eventOffset = self.contentOffset.x;
-    [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
-                                                 forKey:[[self.event eventID] stringValue]];
-    [self.placesDelegate showUser:user];
-    [self.userSelectDelegate showUser: user];
+    if (self.userSelectDelegate) {
+        [self.userSelectDelegate showUser: user];
+    }
+    else {
+        [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
+                                                     forKey:[[self.event eventID] stringValue]];
+        [self.placesDelegate showUser:user];
+    }
 }
 
 
