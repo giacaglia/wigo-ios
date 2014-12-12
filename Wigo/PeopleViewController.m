@@ -293,7 +293,7 @@ NSMutableArray *suggestedArrayView;
         [suggestedScrollView addSubview:inviteButton];
         
         UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
-        inviteMoreFriendsLabel.text = @"Invite more friends\nto WiGo";
+        inviteMoreFriendsLabel.text = @"Invite more friends\nto Wigo";
         inviteMoreFriendsLabel.textAlignment = NSTextAlignmentCenter;
         inviteMoreFriendsLabel.font = [FontProperties mediumFont:12.0f];
         inviteMoreFriendsLabel.numberOfLines = 0;

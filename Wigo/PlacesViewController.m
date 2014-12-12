@@ -115,19 +115,22 @@ int firstIndexOfNegativeEvent;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self initializeNotificationObservers];
+    [self initializeNavigationBar];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+}
 
-
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Where View"];
 
     [self.view endEditing:YES];
-    [self initializeNavigationBar];
     [self fetchIsThereNewPerson];
     if (shouldReloadEvents) {
         [self fetchEventsFirstPage];
@@ -140,42 +143,50 @@ int firstIndexOfNegativeEvent;
 
 
 - (void) initializeNavigationBar {
+    self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.rightBarButtonItem = nil;
-    
-    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
-    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[[Profile user] coverImageArea]];
-    [profileButton addSubview:profileImageView];
-    [profileButton addTarget:self action:@selector(profileSegue)
-            forControlEvents:UIControlEventTouchUpInside];
-    [profileButton setShowsTouchWhenHighlighted:YES];
-    if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 &&
-        [(NSNumber *)[[Profile user] objectForKey:@"num_unread_notifications"] intValue] > 0) {
-        UILabel *redDotLeftLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, 10, 10)];
-        redDotLeftLabel.backgroundColor = [UIColor redColor];
-        redDotLeftLabel.layer.borderColor = [UIColor clearColor].CGColor;
-        redDotLeftLabel.clipsToBounds = YES;
-        redDotLeftLabel.layer.borderWidth = 3;
-        redDotLeftLabel.layer.cornerRadius = 5;
-        [profileButton addSubview:redDotLeftLabel];
-    }
-    UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
-    self.navigationItem.leftBarButtonItem = profileBarButton;
-    
-    self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
-    imageView.image = [UIImage imageNamed:@"followPlusBlue"];
-    [self.rightButton addTarget:self action:@selector(followPressed)
-           forControlEvents:UIControlEventTouchUpInside];
-    [self.rightButton addSubview:imageView];
-    [self.rightButton setShowsTouchWhenHighlighted:YES];
-    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
-    self.navigationItem.rightBarButtonItem = rightBarButton;
 
-    [self updatedTitleView];
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        CGRect profileFrame = CGRectMake(0, 0, 30, 30);
+        UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
+        UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
+        profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+        profileImageView.clipsToBounds = YES;
+        [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[[Profile user] coverImageArea]];
+        [profileButton addSubview:profileImageView];
+        [profileButton addTarget:self action:@selector(profileSegue)
+                forControlEvents:UIControlEventTouchUpInside];
+        [profileButton setShowsTouchWhenHighlighted:YES];
+        if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 &&
+            [(NSNumber *)[[Profile user] objectForKey:@"num_unread_notifications"] intValue] > 0) {
+            UILabel *redDotLeftLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, 10, 10)];
+            redDotLeftLabel.backgroundColor = [UIColor redColor];
+            redDotLeftLabel.layer.borderColor = [UIColor clearColor].CGColor;
+            redDotLeftLabel.clipsToBounds = YES;
+            redDotLeftLabel.layer.borderWidth = 3;
+            redDotLeftLabel.layer.cornerRadius = 5;
+            [profileButton addSubview:redDotLeftLabel];
+        }
+        UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
+        self.navigationItem.leftBarButtonItem = profileBarButton;
+        
+        self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
+        imageView.image = [UIImage imageNamed:@"followPlusBlue"];
+        [self.rightButton addTarget:self action:@selector(followPressed)
+                   forControlEvents:UIControlEventTouchUpInside];
+        [self.rightButton addSubview:imageView];
+        [self.rightButton setShowsTouchWhenHighlighted:YES];
+        UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
+        self.navigationItem.rightBarButtonItem = rightBarButton;
+        self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
+    }
+    else {
+        self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
+    }
+  
+
+    [self updateTitleView];
 }
 
 - (void)initializeFlashScreen {
@@ -235,15 +246,20 @@ int firstIndexOfNegativeEvent;
 
 - (void) updateViewNotGoingOut {
     [[Profile user] setIsGoingOut:NO];
-    [self updatedTitleView];
+    [self updateTitleView];
     [self fetchEventsFirstPage];
 }
 
-- (void) updatedTitleView {
+- (void) updateTitleView {
     if (!self.groupName) self.groupName = [[Profile user] groupName];
     UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [schoolButton setTitle:self.groupName forState:UIControlStateNormal];
-    [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    }
+    else {
+        [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    }
     [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
     schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
   
@@ -261,8 +277,17 @@ int firstIndexOfNegativeEvent;
     schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
 
     UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, 0, 6, 5)];
-    triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
+    
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+        triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
+    }
+    else {
+        [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        triangleImageView.image = [UIImage imageNamed:@"whiteTriangle"];
+    }
     [schoolButton addSubview:triangleImageView];
+
     
     self.navigationItem.titleView = schoolButton;
 }
@@ -357,7 +382,7 @@ int firstIndexOfNegativeEvent;
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
     [profileUser setAttendingEventID:eventID];
-    [self updatedTitleView];
+    [self updateTitleView];
     [[Profile user] setEventID:eventID];
     [Network postGoingToEventNumber:[eventID intValue]];
     [self fetchEventsFirstPage];
@@ -499,7 +524,7 @@ int firstIndexOfNegativeEvent;
         [self createEventWithName:_whereAreYouGoingTextField.text];
         [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
         NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
-        [self updatedTitleView];
+        [self updateTitleView];
         [self fetchEventsFirstPage];
         [Network postGoingToEventNumber:[eventID intValue]];
         User *profileUser = [Profile user];
@@ -680,7 +705,7 @@ int firstIndexOfNegativeEvent;
     self.eventOffsetDictionary = [NSMutableDictionary new];
     self.groupNumberID = groupID;
     self.groupName = groupName;
-    [self updatedTitleView];
+    [self updateTitleView];
     [self fetchEventsFirstPage];
 }
 
@@ -744,14 +769,14 @@ viewForHeaderInSection:(NSInteger)section {
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString;
         if (self.groupNumberID) {
-             queryString = [NSString stringWithFormat:@"events/?group=%@&date=tonight&page=%@&attendees_limit=10", [self.groupNumberID stringValue], [page stringValue]];
+             queryString = [NSString stringWithFormat:@"events/?group=%@&page=%@&attendees_limit=10", [self.groupNumberID stringValue], [page stringValue]];
         }
         else {
             if (![page isEqualToNumber:@1] && [_eventsParty nextPageString]) {
                 queryString = [_eventsParty nextPageString];
             }
             else {
-                queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
+                queryString = [NSString stringWithFormat:@"events/?page=%@&attendees_limit=10", [page stringValue]];
             }
 
         }
@@ -893,13 +918,13 @@ viewForHeaderInSection:(NSInteger)section {
                 if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
                     User *user = [[User alloc] initWithDictionary:jsonResponse];
                     [Profile setUser:user];
-                    [self updatedTitleView];
+                    [self updateTitleView];
                 }
             }
             else {
                 User *user = [[User alloc] initWithDictionary:jsonResponse];
                 [Profile setUser:user];
-                [self updatedTitleView];
+                [self updateTitleView];
             }
         });
     }];

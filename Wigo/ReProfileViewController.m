@@ -928,7 +928,7 @@ UIButton *tapButton;
 
 - (void)initializeBottomTableView {
     UILabel *wantToSeeLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, self.view.frame.size.width + 60, self.view.frame.size.width - 24, 22)];
-    wantToSeeLabel.text = @"Want to see you out tonight:";
+    wantToSeeLabel.text = @"Want to see you out:";
     wantToSeeLabel.textAlignment = NSTextAlignmentLeft;
     wantToSeeLabel.textColor = RGB(180, 180, 180);
     wantToSeeLabel.font = [FontProperties lightFont:20.0f];

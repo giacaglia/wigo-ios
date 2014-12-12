@@ -225,6 +225,8 @@
 		E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */; };
 		E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C60192AA29C008BB84C /* Whitney-Medium.ttf */; };
 		E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */; };
+		E9BF59E81A3B40EB00AF8AFE /* UILabelBorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */; };
+		E9BF59E91A3B40EB00AF8AFE /* UILabelBorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */; };
 		E9C14E611A2E201D00E20B15 /* ReProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */; };
 		E9C14E621A2E201D00E20B15 /* ReProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */; };
 		E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
@@ -596,6 +598,8 @@
 		E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-LightSC.ttf"; sourceTree = "<group>"; };
 		E9BE8C60192AA29C008BB84C /* Whitney-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Medium.ttf"; sourceTree = "<group>"; };
 		E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-MediumSC.ttf"; sourceTree = "<group>"; };
+		E9BF59E61A3B40EB00AF8AFE /* UILabelBorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UILabelBorder.h; sourceTree = "<group>"; };
+		E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UILabelBorder.m; sourceTree = "<group>"; };
 		E9C14E5F1A2E201D00E20B15 /* ReProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReProfileViewController.h; sourceTree = "<group>"; };
 		E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReProfileViewController.m; sourceTree = "<group>"; };
 		E9C14E631A30B07C00E20B15 /* Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Delegate.h; sourceTree = "<group>"; };
@@ -1600,6 +1604,8 @@
 				E93DE52F195C99F600079074 /* UIImageCrop.m */,
 				E9A31E621982B965008A711B /* WigoSearchBarDelegate.h */,
 				E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */,
+				E9BF59E61A3B40EB00AF8AFE /* UILabelBorder.h */,
+				E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */,
 			);
 			name = ViewExtensions;
 			sourceTree = "<group>";
@@ -2089,6 +2095,7 @@
 				E9C63BE31A03ED35006C5DD2 /* IQSongsAlbumViewCell.m in Sources */,
 				C12A111C19787BE700D53B1C /* NSMutableURLRequest+Wigo.m in Sources */,
 				E9D039BA1A096DB100DEF094 /* AFNetworkReachabilityManager.m in Sources */,
+				E9BF59E91A3B40EB00AF8AFE /* UILabelBorder.m in Sources */,
 				E9C63BED1A03ED35006C5DD2 /* IQSongsCompilationsViewController.m in Sources */,
 				C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */,
 				C12A111E19787BE700D53B1C /* SDWebImagePrefetcher.m in Sources */,
@@ -2242,6 +2249,7 @@
 				E900C251195DCC4100A01F50 /* Message.m in Sources */,
 				E96F07C519BA654600E858D7 /* GKImagePicker.m in Sources */,
 				E9C63BE41A03ED35006C5DD2 /* IQSongsCell.m in Sources */,
+				E9BF59E81A3B40EB00AF8AFE /* UILabelBorder.m in Sources */,
 				E9D039B91A096DB100DEF094 /* AFNetworkReachabilityManager.m in Sources */,
 				E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */,
 				E998C26519CB80240012BF51 /* UIImageView+ImageArea.m in Sources */,

@@ -147,7 +147,7 @@ int widthShared;
         activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[[Profile user] groupName] uppercaseString], [numGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
     }
     else {
-        activityItems = @[@"Who is going out tonight? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+        activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
     }
     
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
