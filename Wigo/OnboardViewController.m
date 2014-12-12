@@ -91,7 +91,7 @@ BOOL runningAnimations;
     UIView *containerTitleLabel = [[UIView alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 80)];
     containerTitleLabel.clipsToBounds = YES;
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width - 30, 80)];
-    titleLabel.text = @"See who at your school\nis going out tonight";
+    titleLabel.text = @"See who at your school\nis going out";
     [self formatLabel:titleLabel];
     [scrollView addSubview:containerTitleLabel];
     [containerTitleLabel addSubview:titleLabel];

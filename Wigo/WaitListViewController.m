@@ -67,7 +67,7 @@ NSArray *groupArray;
 
 - (void)sharedPressed {
     [EventAnalytics tagEvent:@"Share Pressed"];
-    NSArray *activityItems = @[@"Who is going out tonight? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+    NSArray *activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityVC animated:YES completion:nil];

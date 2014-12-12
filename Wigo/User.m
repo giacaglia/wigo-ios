@@ -438,7 +438,7 @@
                                @"Too busy partying to fill out my bio",
                                @"I go hard",
                                @"Do you even Wigo, bro?",
-                               @"Where are Wigoing tonight?",
+                               @"Where are Wigoing?",
                                @"If I tap you, put it on your resume",
                                @"Tap me",
                                @"I set my alarm for 6am every day so I'm the first one going out on WiGo",

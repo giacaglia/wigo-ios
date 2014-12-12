@@ -199,8 +199,8 @@ BOOL cancelFetchMessages;
     if ([indexPath row] == eventMessages.count) {
         myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
         myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
-        myCell.timeLabel.frame = CGRectMake(23, 0.75*sizeOfEachFaceCell + 7, 60, 28);
-        myCell.timeLabel.text = @"Add to the story";
+        myCell.timeLabel.text = @"Add to the\nstory";
+//        myCell.backgroundColor = UIColor.redColor;
         myCell.timeLabel.textColor = RGB(59, 59, 59);
         myCell.timeLabel.layer.shadowColor = [RGB(59, 59, 59) CGColor];
         myCell.mediaTypeImageView.hidden = YES;
