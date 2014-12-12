@@ -115,6 +115,7 @@ int firstIndexOfNegativeEvent;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self initializeNotificationObservers];
+    [self initializeNavigationBar];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
     
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
@@ -127,7 +128,6 @@ int firstIndexOfNegativeEvent;
     [EventAnalytics tagEvent:@"Where View"];
 
     [self.view endEditing:YES];
-    [self initializeNavigationBar];
     [self fetchIsThereNewPerson];
     if (shouldReloadEvents) {
         [self fetchEventsFirstPage];
@@ -183,7 +183,7 @@ int firstIndexOfNegativeEvent;
     }
   
 
-    [self updatedTitleView];
+    [self updateTitleView];
 }
 
 - (void)initializeFlashScreen {
@@ -243,11 +243,11 @@ int firstIndexOfNegativeEvent;
 
 - (void) updateViewNotGoingOut {
     [[Profile user] setIsGoingOut:NO];
-    [self updatedTitleView];
+    [self updateTitleView];
     [self fetchEventsFirstPage];
 }
 
-- (void) updatedTitleView {
+- (void) updateTitleView {
     if (!self.groupName) self.groupName = [[Profile user] groupName];
     UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [schoolButton setTitle:self.groupName forState:UIControlStateNormal];
@@ -379,7 +379,7 @@ int firstIndexOfNegativeEvent;
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
     [profileUser setAttendingEventID:eventID];
-    [self updatedTitleView];
+    [self updateTitleView];
     [[Profile user] setEventID:eventID];
     [Network postGoingToEventNumber:[eventID intValue]];
     [self fetchEventsFirstPage];
@@ -521,7 +521,7 @@ int firstIndexOfNegativeEvent;
         [self createEventWithName:_whereAreYouGoingTextField.text];
         [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
         NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
-        [self updatedTitleView];
+        [self updateTitleView];
         [self fetchEventsFirstPage];
         [Network postGoingToEventNumber:[eventID intValue]];
         User *profileUser = [Profile user];
@@ -702,7 +702,7 @@ int firstIndexOfNegativeEvent;
     self.eventOffsetDictionary = [NSMutableDictionary new];
     self.groupNumberID = groupID;
     self.groupName = groupName;
-    [self updatedTitleView];
+    [self updateTitleView];
     [self fetchEventsFirstPage];
 }
 
@@ -915,13 +915,13 @@ viewForHeaderInSection:(NSInteger)section {
                 if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
                     User *user = [[User alloc] initWithDictionary:jsonResponse];
                     [Profile setUser:user];
-                    [self updatedTitleView];
+                    [self updateTitleView];
                 }
             }
             else {
                 User *user = [[User alloc] initWithDictionary:jsonResponse];
                 [Profile setUser:user];
-                [self updatedTitleView];
+                [self updateTitleView];
             }
         });
     }];
