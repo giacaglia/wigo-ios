@@ -20,12 +20,14 @@
 #import "SignNavigationViewController.h"
 #import "PeekViewController.h"
 #import "ReProfileViewController.h"
+#import "EventStoryViewController.h"
+#import "ParallaxProfileViewController.h"
 
 #define sizeOfEachCell 180
 #define kEventCellName @"EventCell"
 #define kOldEventCellName @"OldEventCell"
 #define kHeaderOldEventCellName @"HeaderOldEventCell"
-#import "EventStoryViewController.h"
+
 
 @interface PlacesViewController ()
 
@@ -418,7 +420,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)profileSegue {
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[ReProfileViewController alloc] initWithUser:[Profile user]]];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[ParallaxProfileViewController alloc] initWithUser:[Profile user]]];
     
     [self presentViewController:navController animated:YES completion:nil];
 }
