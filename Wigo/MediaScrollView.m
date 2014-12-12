@@ -229,7 +229,18 @@
     
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
         UIImage *image = [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage];
-        NSData *fileData = UIImageJPEGRepresentation(image, 1.0);
+        
+        IQMediaCaptureController *captureController = [controller.viewControllers objectAtIndex: 0];
+        
+        float scaleFactor = [captureController effectiveScale];
+        
+        UIImage *resizedImage = [self imageWithImage: image scaledToSize: CGSizeMake(image.size.width*scaleFactor, image.size.height*scaleFactor)];
+        
+        CGRect cropRect = CGRectMake(resizedImage.size.width/2 - image.size.width/2, resizedImage.size.height/2 - image.size.height/2, image.size.width, image.size.height);
+        
+        UIImage *zoomedImage = [self getSubImageFrom: resizedImage WithRect: cropRect];
+
+        NSData *fileData = UIImageJPEGRepresentation(zoomedImage, 1.0);
         type = kImageEventType;
         if ([[info allKeys] containsObject:IQMediaTypeText]) {
             NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
@@ -316,6 +327,40 @@
     [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1)  withObject:mutableDict];
     [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
 }
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+// get sub image
+- (UIImage*) getSubImageFrom: (UIImage*) img WithRect: (CGRect) rect {
+    
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // translated rectangle for drawing sub image
+    CGRect drawRect = CGRectMake(-rect.origin.x, -rect.origin.y, img.size.width, img.size.height);
+    
+    // clip to the bounds of the image context
+    // not strictly necessary as it will get clipped anyway?
+    CGContextClipToRect(context, CGRectMake(0, 0, rect.size.width, rect.size.height));
+    
+    // draw image
+    [img drawInRect:drawRect];
+    
+    // grab image
+    UIImage* subImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return subImage;
+}
+
 
 - (void)thumbnailGenerated:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];

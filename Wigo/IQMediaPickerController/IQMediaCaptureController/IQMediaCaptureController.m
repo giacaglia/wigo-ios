@@ -23,13 +23,13 @@
 
 
 #import "IQMediaCaptureController.h"
-#import "IQMediaView.h"
 #import "IQFileManager.h"
 #import "IQPartitionBar.h"
 #import "IQBottomContainerView.h"
 #import "IQMediaPickerControllerConstants.h"
 #import "Globals.h"
 #import "LLACircularProgressView.h"
+#import "IQMediaView.h"
 
 #define kVideoTimeoutMax 8.0
 
@@ -1172,6 +1172,10 @@ replacementString:(NSString *)string {
             [self.partitionBar setPartitions:durations animated:NO];
         }
     }
+}
+
+-(float)effectiveScale {
+    return _mediaView.effectiveScale;
 }
 
 #pragma mark - IQPartitionBar Delegate

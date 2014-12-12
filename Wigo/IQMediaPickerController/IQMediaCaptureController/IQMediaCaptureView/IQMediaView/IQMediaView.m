@@ -44,7 +44,6 @@
     UIPanGestureRecognizer *_panRecognizer;
     UITapGestureRecognizer *_tapRecognizer;
     UILongPressGestureRecognizer *_longPressRecognizer;
-    float beginGestureScale, effectiveScale;
     BOOL editing;
     MPMoviePlayerController *repeatPlayer;
 }
@@ -59,7 +58,7 @@
     self.backgroundColor = [UIColor blackColor];
     [(AVCaptureVideoPreviewLayer*)self.layer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     
-    effectiveScale = 1.0;
+    _effectiveScale = 1.0;
 //    focusView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
 //    focusView.alpha = 0.0;
 //    focusView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
@@ -158,10 +157,10 @@
 }
 
 - (void)handlePinchFrom:(UIPinchGestureRecognizer *)pinchRecognizer {
-    effectiveScale = beginGestureScale * pinchRecognizer.scale;
-    if (effectiveScale >= 1 && effectiveScale < 6) {
+    _effectiveScale = _beginGestureScale * pinchRecognizer.scale;
+    if (_effectiveScale >= 1 && _effectiveScale < 6) {
         if ([self captureMode] == IQMediaCaptureControllerCaptureModePhoto) {
-            self.transform = CGAffineTransformMakeScale(effectiveScale, effectiveScale);
+            self.transform = CGAffineTransformMakeScale(_effectiveScale, _effectiveScale);
         }
     }
 }
@@ -169,7 +168,7 @@
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
     if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
-        beginGestureScale = effectiveScale;
+        _beginGestureScale = _effectiveScale;
     }
     if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] &&
         [gestureRecognizer.view isKindOfClass:[repeatPlayer.view class]]) {
