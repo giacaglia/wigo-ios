@@ -12,6 +12,7 @@
 #import "InviteViewController.h"
 #import "ReProfileViewController.h"
 #import "EventMessagesConstants.h"
+#define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 
 UIButton *sendButton;
 NSArray *eventMessages;
@@ -198,7 +199,7 @@ BOOL cancelFetchMessages;
     if ([indexPath row] == eventMessages.count) {
         myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
         myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
-        myCell.timeLabel.frame = CGRectMake(23, 83, 60, 28);
+        myCell.timeLabel.frame = CGRectMake(23, 0.75*sizeOfEachFaceCell + 7, 60, 28);
         myCell.timeLabel.text = @"Add to the story";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
         myCell.timeLabel.layer.shadowColor = [RGB(59, 59, 59) CGColor];
@@ -445,8 +446,8 @@ BOOL cancelFetchMessages;
 
 - (void)setup
 {
+    self.itemSize = CGSizeMake(sizeOfEachFaceCell, sizeOfEachFaceCell);
     self.sectionInset = UIEdgeInsetsMake(0, 10, 10, 10);
-    self.itemSize = CGSizeMake(100, 100);
     self.minimumLineSpacing = 0;
     self.minimumInteritemSpacing = 0;
     self.scrollDirection = UICollectionViewScrollDirectionVertical;

@@ -104,7 +104,7 @@
 
 - (void)chooseUser:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
+    int tag = (int)buttonSender.tag;
     User *user = [[self.partyUser getObjectArray] objectAtIndex:tag];
     self.eventOffset = self.contentOffset.x;
     [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]

@@ -16,7 +16,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "EventMessagesConstants.h"
 
-
+#define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 @interface EventConversationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
 @property (nonatomic, strong) UIImage *userProfileImage;
 @property (nonatomic, strong) NSIndexPath *currentActiveCell;
@@ -297,7 +297,7 @@
         width = [[UIScreen mainScreen] bounds].size.width;
     }
     else {
-        width = 100;
+        width = sizeOfEachFaceCell;
     }
     NSInteger page = [self getPageForScrollView:scrollView toLeft:leftBoolean];
     [self highlightCellAtPage:page];
@@ -310,8 +310,8 @@
         fractionalPage = (self.mediaScrollView.contentOffset.x) / pageWidth;
     }
     else {
-        CGFloat pageWidth = 100; // you need to have a **iVar** with getter for scrollView
-        fractionalPage = (self.facesCollectionView.contentOffset.x + 100) / pageWidth;
+        CGFloat pageWidth = sizeOfEachFaceCell; // you need to have a **iVar** with getter for scrollView
+        fractionalPage = (self.facesCollectionView.contentOffset.x + sizeOfEachFaceCell) / pageWidth;
     }
     
     NSInteger page;
@@ -338,9 +338,9 @@
     page = MAX(page, 0);
     page = MIN(page, self.eventMessages.count);
     [self.mediaScrollView scrolledToPage:(int)page];
-    [self.facesCollectionView setContentOffset:CGPointMake((100) * (page - 1), 0.0f) animated:YES];
+    [self.facesCollectionView setContentOffset:CGPointMake((sizeOfEachFaceCell) * (page - 1), 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:YES];
-    [self hideOrShowFacesForPage:page];
+    [self hideOrShowFacesForPage:(int)page];
 }
 
 - (void)hideOrShowFacesForPage:(int)page {
@@ -415,7 +415,7 @@
     FaceFlowLayout *flow = [[FaceFlowLayout alloc] init];
     self.facesCollectionView.showsHorizontalScrollIndicator = NO;
     [self.facesCollectionView setCollectionViewLayout: flow];
-    self.facesCollectionView.contentInset = UIEdgeInsetsMake(0, 100, 0, 100);
+    self.facesCollectionView.contentInset = UIEdgeInsetsMake(0, sizeOfEachFaceCell, 0, sizeOfEachFaceCell);
     self.facesCollectionView.pagingEnabled = NO;
     
     self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 86, 86, 66)];
@@ -590,24 +590,25 @@
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, 100,100);
+    self.frame = CGRectMake(0, 0, sizeOfEachFaceCell, sizeOfEachFaceCell);
     
     self.backgroundColor = UIColor.clearColor;
     
-    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x + 25, self.center.y, self.center.x - 25, 2)];
+    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x + sizeOfEachFaceCell/4, self.center.y, self.center.x - sizeOfEachFaceCell/4, 2)];
     self.rightLine.alpha = 0.5f;
     self.rightLine.backgroundColor = [UIColor whiteColor];
     [self addSubview: self.rightLine];
     
-    self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - 25, 2)];
+    NSLog(@"sizeOf each cell %f and center %f", sizeOfEachFaceCell, self.center.y);
+    self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - sizeOfEachFaceCell/4, 2)];
     self.leftLine.alpha = 0.5f;
     self.leftLine.backgroundColor = [UIColor whiteColor];
     [self addSubview: self.leftLine];
     
-    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(25, 25, 50, 50)];
+    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfEachFaceCell/4, sizeOfEachFaceCell/4, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2)];
     self.faceImageView.layer.masksToBounds = YES;
     self.faceImageView.backgroundColor = [UIColor blackColor];
-    self.faceImageView.layer.cornerRadius = 25;
+    self.faceImageView.layer.cornerRadius = sizeOfEachFaceCell/4;
     self.faceImageView.layer.borderWidth = 1.0;
     self.faceImageView.alpha = 0.5f;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -619,17 +620,17 @@
     self.spinner.hidden = YES;
     [self.faceImageView addSubview:self.spinner];
     
-    self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(62, 20, 15, 15)];
+    self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfEachFaceCell/2 + 12, sizeOfEachFaceCell/5, sizeOfEachFaceCell/6, sizeOfEachFaceCell/6)];
     self.mediaTypeImageView.layer.masksToBounds = YES;
     self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
-    self.mediaTypeImageView.layer.cornerRadius = 7;
+    self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
     self.mediaTypeImageView.layer.borderWidth = 1.0;
     self.mediaTypeImageView.layer.borderColor = UIColor.blackColor.CGColor;
     self.mediaTypeImageView.alpha = 0.5f;
     self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self addSubview:self.mediaTypeImageView];
     
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(23, 82, 60, 20)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(23, 0.75*sizeOfEachFaceCell + 7, 60, sizeOfEachFaceCell/5)];
     self.timeLabel.numberOfLines = 0;
     self.timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.timeLabel.textAlignment = NSTextAlignmentCenter;
@@ -665,19 +666,19 @@
             
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-            animation.fromValue = [NSNumber numberWithFloat:25.0f];
-            animation.toValue = [NSNumber numberWithFloat:30.0f];
+            animation.fromValue = [NSNumber numberWithFloat:sizeOfEachFaceCell/4];
+            animation.toValue = [NSNumber numberWithFloat:sizeOfEachFaceCell/3.5];
             animation.duration = 0.5;
             [self.faceImageView.layer addAnimation: animation forKey:@"cornerRadius"];
             
             [UIView animateWithDuration: 0.5 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
-                self.faceImageView.frame = CGRectMake(20, 20, 60, 60);
+                self.faceImageView.frame = CGRectMake(20, 20, sizeOfEachFaceCell/1.6, sizeOfEachFaceCell/1.6);
                 self.faceImageView.alpha = 1.0f;
-                self.faceImageView.layer.cornerRadius = 30;
+                self.faceImageView.layer.cornerRadius = sizeOfEachFaceCell/3.5;
                 
-                self.mediaTypeImageView.frame = CGRectMake(65, 15, 20, 20);
+                self.mediaTypeImageView.frame = CGRectMake(sizeOfEachFaceCell/2 + 10, 15, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
                 self.mediaTypeImageView.alpha = 1.0f;
-                self.mediaTypeImageView.layer.cornerRadius = 10;
+                self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
             } completion:^(BOOL finished) {
 
             }];
@@ -701,23 +702,23 @@
 }
 
 - (void)setToActiveWithNoAnimation {
-    self.faceImageView.frame = CGRectMake(20, 20, 60, 60);
+    self.faceImageView.frame = CGRectMake(20, 20, sizeOfEachFaceCell/2 + 10, sizeOfEachFaceCell/2 + 10);
     self.faceImageView.alpha = 1.0f;
-    self.faceImageView.layer.cornerRadius = 30;
+    self.faceImageView.layer.cornerRadius = sizeOfEachFaceCell/3.5;
     
-    self.mediaTypeImageView.frame = CGRectMake(65, 15, 20, 20);
+    self.mediaTypeImageView.frame = CGRectMake(65, 15, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
     self.mediaTypeImageView.alpha = 1.0f;
-    self.mediaTypeImageView.layer.cornerRadius = 10;
+    self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
 }
 
 - (void) resetToInactive {
-    self.faceImageView.frame = CGRectMake(25, 25, 50, 50);
+    self.faceImageView.frame = CGRectMake(sizeOfEachFaceCell/4, sizeOfEachFaceCell/4, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2);
     self.faceImageView.alpha = 0.5f;
-    self.faceImageView.layer.cornerRadius = 25;
+    self.faceImageView.layer.cornerRadius = sizeOfEachFaceCell/4;
     
-    self.mediaTypeImageView.frame = CGRectMake(62, 20, 15, 15);
+    self.mediaTypeImageView.frame = CGRectMake(sizeOfEachFaceCell/2 + 12, 20, sizeOfEachFaceCell/6.6, sizeOfEachFaceCell/6.6);
     self.mediaTypeImageView.alpha = 0.5f;
-    self.mediaTypeImageView.layer.cornerRadius = 7;
+    self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
 }
 
 - (void)updateUIToRead:(BOOL)read {
@@ -758,9 +759,9 @@
 
 - (void)setup
 {
-    self.itemSize = CGSizeMake(100, 100);
+    self.itemSize = CGSizeMake(sizeOfEachFaceCell, sizeOfEachFaceCell);
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    self.sectionInset = UIEdgeInsetsMake(10, 10, 10,10);
+    self.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     self.minimumInteritemSpacing = 0.0;
     self.minimumLineSpacing = 0.0;
 }

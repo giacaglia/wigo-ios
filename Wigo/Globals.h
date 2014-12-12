@@ -46,6 +46,7 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 #define PEOPLEVIEW_HEIGHT_OF_CELLS 80
 #define kGoHereState @"goHereState"
 
+
 @protocol Globals <NSObject>
 
 @end
