@@ -599,7 +599,6 @@
     self.rightLine.backgroundColor = [UIColor whiteColor];
     [self addSubview: self.rightLine];
     
-    NSLog(@"sizeOf each cell %f and center %f", sizeOfEachFaceCell, self.center.y);
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - sizeOfEachFaceCell/4, 2)];
     self.leftLine.alpha = 0.5f;
     self.leftLine.backgroundColor = [UIColor whiteColor];
