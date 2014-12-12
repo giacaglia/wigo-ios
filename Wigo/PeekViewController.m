@@ -43,22 +43,12 @@
     titleLabel.textColor = UIColor.whiteColor;
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
-    
-    UIButton *searchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 30 - 15, 40 - 40, 60, 80)];
-    [searchButton addTarget:self action:@selector(searchPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:searchButton];
-    UIImageView *searchImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 35, 15, 16)];
-    searchImageView.image = [UIImage imageNamed:@"whiteSearchIcon"];
-    [searchButton addSubview:searchImageView];
 }
 
 - (void)goBack {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)searchPressed {
-    
-}
 
 - (void)initializeTableView {
     self.schoolsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
