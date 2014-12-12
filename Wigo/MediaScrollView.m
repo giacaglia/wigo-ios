@@ -227,6 +227,7 @@
     [self.eventConversationDelegate addLoadingBanner];
     NSString *type = @"";
     
+    UIImage *zoomedImage;
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
         UIImage *image = [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage];
         
@@ -238,7 +239,7 @@
         
         CGRect cropRect = CGRectMake(resizedImage.size.width/2 - image.size.width/2, resizedImage.size.height/2 - image.size.height/2, image.size.width, image.size.height);
         
-        UIImage *zoomedImage = [self getSubImageFrom: resizedImage WithRect: cropRect];
+        zoomedImage = [self getSubImageFrom: resizedImage WithRect: cropRect];
 
         NSData *fileData = UIImageJPEGRepresentation(zoomedImage, 1.0);
         type = kImageEventType;
@@ -312,7 +313,7 @@
         [mutableDict addEntriesFromDictionary:@{
                                                 @"user": [[Profile user] dictionary],
                                                 @"created": [dateFormatter stringFromDate:[NSDate date]],
-                                                @"media": [[[info objectForKey:IQMediaTypeImage] objectAtIndex:0] objectForKey:IQMediaImage]
+                                                @"media": zoomedImage
                                                 }];
     }
     else if ( [[info allKeys] containsObject:IQMediaTypeVideo]) {
