@@ -18,6 +18,7 @@ UIButton *sendButton;
 NSArray *eventMessages;
 UICollectionView *facesCollectionView;
 BOOL cancelFetchMessages;
+NSDictionary *metaInfo;
 
 @implementation EventStoryViewController
 
@@ -36,7 +37,8 @@ BOOL cancelFetchMessages;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    [self loadEventMessages];
+    metaInfo = nil;
+    [self fetchEventMessages];
 }
 
 #pragma mark - Loading Messages
@@ -118,7 +120,8 @@ BOOL cancelFetchMessages;
     GOHERESTATE goHereState = [[NSUserDefaults standardUserDefaults] integerForKey:kGoHereState];
 
     if (goHereState != DONOTPRESENTANYTHINGSTATE) {
-        self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
         self.conversationViewController.event = self.event;
         if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
         if (goHereState == PRESENTFACESTATE) {
@@ -197,10 +200,12 @@ BOOL cancelFetchMessages;
     myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count);
     
     if ([indexPath row] == eventMessages.count) {
+        if ([[metaInfo objectForKey:@"has_next_page"] boolValue]) {
+            [self fetchEventMessages];
+        }
         myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
         myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
         myCell.timeLabel.text = @"Add to the\nstory";
-//        myCell.backgroundColor = UIColor.redColor;
         myCell.timeLabel.textColor = RGB(59, 59, 59);
         myCell.timeLabel.layer.shadowColor = [RGB(59, 59, 59) CGColor];
         myCell.mediaTypeImageView.hidden = YES;
@@ -335,7 +340,8 @@ BOOL cancelFetchMessages;
 }
 
 - (void)sendPressed {
-    self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
     if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
@@ -368,24 +374,43 @@ BOOL cancelFetchMessages;
 }
 
 
-- (void)loadEventMessages {
+- (void)fetchEventMessages {
     if (!cancelFetchMessages) {
+        cancelFetchMessages = YES;
+        NSString *queryString;
+        
+        if ([[metaInfo objectForKey:@"has_next_page"] boolValue]) {
+            NSString *nextAPIString = (NSString *)[metaInfo objectForKey:@"next"] ;
+            queryString = [nextAPIString substringWithRange:NSMakeRange(5, nextAPIString.length - 5)];
+        }
+        else {
+            queryString = [NSString stringWithFormat:@"eventmessages/?event=%@&ordering=id", [self.event eventID]];
+        }
         [Network sendAsynchronousHTTPMethod:GET
-                                withAPIName:[NSString stringWithFormat:@"eventmessages/?event=%@&ordering=id", [self.event eventID]]
+                                withAPIName:queryString
                                 withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                        eventMessages = (NSArray *)[jsonResponse objectForKey:@"objects"];
+                                        if (metaInfo) {
+                                            NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
+                                            [mutableEventMessages addObjectsFromArray:(NSArray *)[jsonResponse objectForKey:@"objects"]];
+                                            eventMessages = [NSArray arrayWithArray:mutableEventMessages];
+                                        }
+                                        else {
+                                            eventMessages = [NSMutableArray arrayWithArray:(NSArray *)[jsonResponse objectForKey:@"objects"]];
+                                        }
+                                        metaInfo = [jsonResponse objectForKey:@"meta"];
                                         [facesCollectionView reloadData];
+                                        cancelFetchMessages = NO;
                                     });
                                 }];
     }
-    cancelFetchMessages = NO;
 }
 
 
 
 - (void)showEventConversation:(NSNumber *)index {
-    self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
     self.conversationViewController.index = index;
     if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];

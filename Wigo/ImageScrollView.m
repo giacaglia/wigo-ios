@@ -13,6 +13,8 @@
     CGPoint _currentPoint;
 }
 @property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) NSMutableArray *images;
+
 @end
 
 @implementation ImageScrollView
@@ -39,7 +41,7 @@
     
 
     [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
+    self.images = [[NSMutableArray alloc] init];
     for (int i = 0; i < [imageURLs count]; i++) {
         
         UIImageView *profileImgView = [self getNewProfileImageView: CGRectMake((self.frame.size.width + 10) * i, 0, self.frame.size.width, self.frame.size.width)];
@@ -63,6 +65,7 @@
                                withInfo:infoDict
                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                                   [weakSpinner stopAnimating];
+                                  [self.images addObject: image];
                               }];
         
         
@@ -72,6 +75,20 @@
     
     [self.scrollView setContentSize:CGSizeMake((self.frame.size.width + 10) * [imageURLs count] - 10, [[UIScreen mainScreen] bounds].size.width)];
 }
+
+- (UIImageView *) getImageAtPage: (NSInteger) page {
+    if (page < self.images.count) {
+        UIImage *image = [self.images objectAtIndex: page];
+        UIImageView *imageView = [self getNewProfileImageView: CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        [imageView setImage: image];
+        
+        return imageView;
+    }
+    
+
+    return nil;
+}
+
 
 - (UIImageView *) getNewProfileImageView: (CGRect) frame {
     UIImageView *profileImgView = [[UIImageView alloc] init];

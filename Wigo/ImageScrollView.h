@@ -21,4 +21,6 @@
 
 - (instancetype)initWithFrame: (CGRect) frame imageURLs:(NSArray *)imageURLS infoDicts:(NSArray *)infoDicts areaDicts:(NSArray *)arrayDicts;
 
+- (UIImageView *) getImageAtPage: (NSInteger) page;
+
 @end

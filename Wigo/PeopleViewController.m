@@ -287,7 +287,7 @@ NSMutableArray *suggestedArrayView;
         [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         [suggestedScrollView addSubview:inviteButton];
         
-        UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, self.view.frame.size.width - 2*xPosition, 30)];
+        UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
         inviteMoreFriendsLabel.text = @"Invite more friends\nto Wigo";
         inviteMoreFriendsLabel.textAlignment = NSTextAlignmentCenter;
         inviteMoreFriendsLabel.font = [FontProperties mediumFont:12.0f];
@@ -769,7 +769,7 @@ NSMutableArray *suggestedArrayView;
 - (void)updateUserAtTable:(NSNotification*)notification {
     NSDictionary* userInfo = [notification userInfo];
     User *user = [[User alloc] initWithDictionary:userInfo];
-    int userInt = [userIndex row];
+    int userInt = (int)[userIndex row];
 
     if (user) {
         if ([userIndex section] == 0) {

@@ -111,7 +111,7 @@
     else if ([mimeType isEqualToString:kNotAbleToPost]) {
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
         [myCell.imageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL] ]];
-        myCell.titleTextLabel.text = @"To post this story you must be going here.";
+        myCell.titleTextLabel.text = @"To post to this story you must be going here.";
         myCell.avoidAction.hidden = YES;
         return myCell;
     }

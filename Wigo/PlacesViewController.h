@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ProfileViewController.h"
 #import "Event.h"
 #import "Delegate.h"
 #import "UIButtonAligned.h"
@@ -15,7 +14,6 @@
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate >
 
-@property ProfileViewController *profileViewController;
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) NSString *groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;

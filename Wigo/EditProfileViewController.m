@@ -65,9 +65,6 @@ UIViewController *webViewController;
     self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
     
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    
-    
-    //[[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationSlide];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -171,7 +168,7 @@ UIViewController *webViewController;
     else {
         [self.view endEditing:YES];
         self.photoViewController = [[PhotoViewController alloc] initWithImage:[[[Profile user] images] objectAtIndex:buttonSender.tag]];
-        [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:30 andHeight:450];
+        [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:30 andHeight:450 fromViewController:self.navigationController];
     }
 }
 
@@ -313,7 +310,7 @@ UIViewController *webViewController;
 - (void)sendEmail {
     [self.view endEditing:YES];
     self.contactUsViewController = [[ContactUsViewController alloc] init];
-    [[RWBlurPopover instance] presentViewController:self.contactUsViewController withOrigin:30 andHeight:450];
+    [[RWBlurPopover instance] presentViewController:self.contactUsViewController withOrigin:30 andHeight:450 fromViewController:self.navigationController];
 }
 
 - (void)openTerms {
