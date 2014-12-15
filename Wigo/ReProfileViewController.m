@@ -29,7 +29,6 @@
 
 //UIScrollView
 @property UIPageControl *pageControl;
-@property BOOL isSeingImages;
 @property UIScrollView *scrollView;
 @property CGPoint pointNow;
 @property NSMutableArray *profileImagesArray;
@@ -79,7 +78,6 @@ UIButton *tapButton;
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
     _pageControl.hidden = YES;
-    
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
 }
 
@@ -105,7 +103,6 @@ UIButton *tapButton;
     
     [EventAnalytics tagEvent:@"Profile View" withDetails:options];
     
-    _isSeingImages = NO;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
    
     [self initializeNotificationHandlers];
@@ -120,8 +117,7 @@ UIButton *tapButton;
 
 - (void) initializeNotificationHandlers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseImage) name:@"chooseImage" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
+       [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed:) name:@"blockPressed" object:nil];
 }
 
@@ -372,9 +368,6 @@ UIButton *tapButton;
     [_scrollView setShowsHorizontalScrollIndicator:NO];
     _scrollView.layer.borderWidth = 1;
     _scrollView.backgroundColor = RGB(23,23,23);
-    _tapScrollView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(chooseImage)];
-    _tapScrollView.cancelsTouchesInView = NO;
-    [_scrollView addGestureRecognizer:_tapScrollView];
     _scrollView.delegate = self;
     
     // DISPLAY CONTENT PROPERLY (Scroll View)
@@ -471,48 +464,6 @@ UIButton *tapButton;
     if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) _followRequestLabel.hidden = NO;
     else _followRequestLabel.hidden = YES;
     [self.view addSubview:_followRequestLabel];
-}
-
-
-- (void)chooseImage {
-    [self setNeedsStatusBarAppearanceUpdate];
-    if (!_isSeingImages) {
-        _isSeingImages = YES;
-        _lastLineView.hidden = NO;
-        
-        [UIView animateWithDuration:0.2
-                              delay:0
-                            options:UIViewAnimationOptionCurveLinear
-                         animations:^{
-                             _nameOfPersonBackground.transform =  CGAffineTransformMakeTranslation(0, _nameOfPersonBackground.frame.size.height);
-                             self.view.backgroundColor = RGB(23, 23, 23);
-                             
-                             _followButton.hidden = YES;
-                             _leftProfileButton.hidden = YES;
-                             _rightProfileButton.hidden = YES;
-                             _followingButton.hidden = YES;
-                             _followersButton.hidden = YES;
-                         
-                         }
-                         completion:nil
-         ];
-    }
-    else {
-        _tapScrollView.enabled = YES;
-        _isSeingImages = NO;
-        _lastLineView.hidden = YES;
-        [UIView animateWithDuration:0.2
-                         animations:^{
-                             _nameOfPersonBackground.transform =  CGAffineTransformMakeTranslation(0, 0);
-                             [self.view bringSubviewToFront:_nameOfPersonBackground];
-                             self.view.backgroundColor = [UIColor whiteColor];
-                             self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-                             [self reloadView];
-                             
-                         } completion:^(BOOL finished) {
-                             
-                         }];
-    }
 }
 
 - (void)initializeNameOfPerson {
@@ -686,7 +637,6 @@ UIButton *tapButton;
 - (void)goThereTooPressed {
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Go Here Source", nil];
     [EventAnalytics tagEvent:@"Go Here" withDetails:options];
-    if (_isSeingImages) [self chooseImage];
     [self.navigationController popToRootViewControllerAnimated:NO];
     [[Profile user] setIsAttending:YES];
     [[Profile user] setIsGoingOut:YES];
@@ -795,15 +745,11 @@ UIButton *tapButton;
 }
 
 - (void)followersButtonPressed {
-    [self.user setObject:@3 forKey:@"tabNumber"];
-    self.peopleViewController = [[PeopleViewController alloc] initWithUser:self.user];
-    [self.navigationController pushViewController:self.peopleViewController animated:YES];
+    [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:self.user andTab:@3] animated:YES];
 }
 
 - (void)followingButtonPressed {
-    [self.user setObject:@4 forKey:@"tabNumber"];
-    self.peopleViewController = [[PeopleViewController alloc] initWithUser:self.user];
-    [self.navigationController pushViewController:self.peopleViewController animated:YES];
+    [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:self.user andTab:@4] animated:YES];
 }
 
 - (void)rightProfileButtonPressed {
@@ -927,15 +873,7 @@ UIButton *tapButton;
 #pragma mark - Notifications bottom
 
 - (void)initializeBottomTableView {
-    UILabel *wantToSeeLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, self.view.frame.size.width + 60, self.view.frame.size.width - 24, 22)];
-    wantToSeeLabel.text = @"Want to see you out:";
-    wantToSeeLabel.textAlignment = NSTextAlignmentLeft;
-    wantToSeeLabel.textColor = RGB(180, 180, 180);
-    wantToSeeLabel.font = [FontProperties lightFont:20.0f];
-    [self.view addSubview:wantToSeeLabel];
-    
-    
-    _notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width + 92, self.view.frame.size.width, self.view.frame.size.height - 412)];
+    _notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width + 60, self.view.frame.size.width, self.view.frame.size.height - 412)];
     _notificationsTableView.delegate = self;
     _notificationsTableView.dataSource = self;
     _notificationsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -1063,7 +1001,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.profileImageView.layer.masksToBounds = YES;
     [self.contentView addSubview:self.profileImageView];
     
-    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, 175, 45)];
+    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, self.frame.size.width - 70 - 80, 45)];
     self.descriptionLabel.textAlignment = NSTextAlignmentLeft;
     self.descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.descriptionLabel.numberOfLines = 0;
@@ -1079,9 +1017,8 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.buttonCallback.hidden = YES;
     [self.contentView addSubview:self.buttonCallback];
     
-    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 41, self.frame.size.height/2 - 7, 9, 15)];
+    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
     self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
-//    self.rightPostImageView.hidden = YES;
     [self.contentView addSubview:self.rightPostImageView];
     
     self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 27, self.frame.size.height/2 + 13 + 3, 50, 15)];

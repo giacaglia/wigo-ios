@@ -155,7 +155,7 @@ BOOL cancelFetchMessages;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 245, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
+    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 250, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = UIColor.whiteColor;
     facesCollectionView.showsHorizontalScrollIndicator = NO;
@@ -257,20 +257,20 @@ BOOL cancelFetchMessages;
 
 
 - (void)loadTextViewAndSendButton {
-    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 70, self.view.frame.size.height - 70, 60, 60)];
+    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, self.view.frame.size.height - 55, 45, 45)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     sendButton.backgroundColor = [FontProperties getOrangeColor];
     sendButton.layer.borderWidth = 1.0f;
     sendButton.layer.borderColor = [UIColor clearColor].CGColor;
-    sendButton.layer.cornerRadius = 30;
+    sendButton.layer.cornerRadius = 20.0f;
     sendButton.layer.shadowColor = [UIColor blackColor].CGColor;
     sendButton.layer.shadowOpacity = 0.4f;
-    sendButton.layer.shadowRadius = 8.0f;
-    sendButton.layer.shadowOffset = CGSizeMake(0.0f, 3.0f);
+    sendButton.layer.shadowRadius = 5.0f;
+    sendButton.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
     [self.view addSubview:sendButton];
     [self.view bringSubviewToFront:sendButton];
 
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 20, 20)];
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 15, 15)];
     sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
     [sendButton addSubview:sendOvalImageView];
 }
