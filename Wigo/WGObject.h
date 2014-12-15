@@ -7,16 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NSDictionary+STHelper.h"
 
-@interface WGObject : NSMutableDictionary
+@interface WGObject : NSObject
+
+@property NSInteger id;
 
 +(WGObject *)serialize:(NSDictionary *)json;
 
--(NSNumber *) numberAtKey:(NSString *)key;
--(NSString *) stringAtKey:(NSString *)key;
--(NSDictionary *) dictionaryAtKey:(NSString *)key;
--(NSDate *) dateAtKey:(NSString *)key;
-
-@property NSNumber* id;
+- (BOOL)isEqual:(WGObject*)object;
 
 @end

@@ -8,25 +8,24 @@
 
 #import "WGCollection.h"
 
-@implementation WGCollection {
-    BOOL _hasNextPage;
-    NSString *_nextPage;
-}
+@implementation WGCollection
 
 #pragma mark - Init
 
-+(WGCollection *)initWithResponse:(NSDictionary *) jsonResponse {
++(WGCollection *)initWithResponse:(NSDictionary *) jsonResponse andClass:(Class)type {
     WGCollection *newCollection = [WGCollection new];
     [newCollection setPaginationFromDictionary: [jsonResponse objectForKey:@"meta"]];
-    [newCollection setObjectsFromJson: [jsonResponse objectForKey:@"objects"]];
+    [newCollection setObjectsFromJson: [jsonResponse objectForKey:@"objects"] andType:type];
     return newCollection;
 }
 
 #pragma mark - Objects
 
--(void) setObjectsFromJson:(NSArray *)objects {
+-(void) setObjectsFromJson:(NSArray *)objects andType:(Class)type {
+    _objects = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {
-        [self addObject: [WGObject initWithJson: objectDict]];
+        WGObject *object = [type serialize:objectDict];
+        [_objects addObject: object];
     }
 }
 
@@ -41,22 +40,6 @@
         NSString *nextPage = (NSString *)[metaDictionary objectForKey:@"next"];
         [self setNextPage:nextPage];
     }
-}
-
--(void)setHasNextPage:(BOOL)hasNextPage {
-    _hasNextPage = hasNextPage;
-}
-
--(void)setNextPage:(NSString *)nextPage {
-    _nextPage = nextPage;
-}
-
--(BOOL)hasNextPage {
-    return _hasNextPage;
-}
-
--(NSString *)nextPage {
-    return _nextPage;
 }
 
 @end

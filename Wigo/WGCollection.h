@@ -9,7 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "WGObject.h"
 
-@interface WGCollection : NSMutableArray
+@interface WGCollection : NSObject
+
+@property NSMutableArray *objects;
+@property BOOL hasNextPage;
+@property NSString *nextPage;
+
++(WGCollection *)initWithResponse:(NSDictionary *) jsonResponse andClass:(Class)type;
 
 -(void)setHasNextPage:(BOOL)hasNextPage;
 -(void)setNextPage:(NSString *)nextPage;

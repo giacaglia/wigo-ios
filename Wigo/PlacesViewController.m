@@ -27,6 +27,8 @@
 #define kHeaderOldEventCellName @"HeaderOldEventCell"
 #import "EventStoryViewController.h"
 
+#import "WGUser.h"
+
 @interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
@@ -108,7 +110,17 @@ int firstIndexOfNegativeEvent;
     [self initializeTapHandler];
     [self initializeWhereView];
 
-
+    NSLog(@"TESTING NEW COLLECTION LOADING - PLACES");
+    [WGUser getUsers:^(WGCollection *collection, NSError *error) {
+        if (error) {
+            NSLog(@"ERROR: %@", error);
+            return;
+        }
+        for (WGUser *user in collection.objects) {
+            NSLog(@"User ID: %ld", (long)user.id);
+        }
+        NSLog(@"SUCCESS: collection loading success");
+    }];
 }
 
 

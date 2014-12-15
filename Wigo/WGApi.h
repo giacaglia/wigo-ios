@@ -7,13 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AFNetworking.h"
 
 typedef void (^ApiResult)(NSDictionary *jsonResponse, NSError *error);
 
 @interface WGApi : NSObject
-
-+(NSString *) getUrlStringForEndpoint:(NSString *)endpoint;
 
 +(void) get:(NSString *)endpoint withHandler:(ApiResult)handler;
 
