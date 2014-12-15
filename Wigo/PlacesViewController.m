@@ -23,6 +23,7 @@
 
 #define sizeOfEachCell 180
 #define kEventCellName @"EventCell"
+#define kHighlightOldEventCel @"HighlightOldEventCell"
 #define kOldEventCellName @"OldEventCell"
 #define kHeaderOldEventCellName @"HeaderOldEventCell"
 #import "EventStoryViewController.h"
@@ -58,6 +59,7 @@
 
 // Events Summary
 @property Party *eventsParty;
+@property Party *oldEventsParty;
 @property NSMutableArray *partyUserArray;
 
 // Go OUT Button
@@ -335,6 +337,7 @@ int firstIndexOfNegativeEvent;
     _placesTableView.showsVerticalScrollIndicator = NO;
     [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
+    [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
     [_placesTableView registerClass:[OldEventCell class] forCellReuseIdentifier:kOldEventCellName];
     [_placesTableView registerClass:[HeaderOldEventCell class] forHeaderFooterViewReuseIdentifier:kHeaderOldEventCellName];
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -619,7 +622,7 @@ int firstIndexOfNegativeEvent;
             return [[_contentParty getObjectArray] count] + hasNextPage;
         }
     }
-    else return 1;
+    else return [[_oldEventsParty getObjectArray] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -680,9 +683,12 @@ int firstIndexOfNegativeEvent;
     }
     else {
         OldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventCellName];
-        cell.oldEventLabel.text = @"That long cool party name";
-        cell.chatBubbleImageView.hidden = NO;
-        cell.chatNumberLabel.text = @"36";
+        Event *event = (Event *)[[_oldEventsParty getObjectArray] objectAtIndex:[indexPath row]];
+        cell.oldEventLabel.text = [event name];
+        if ([event.numberOfMessages intValue] > 0) {
+            cell.chatBubbleImageView.hidden = NO;
+            cell.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [event.numberOfMessages stringValue]];
+        }
         return cell;
     }
   
@@ -695,7 +701,16 @@ int firstIndexOfNegativeEvent;
     [self.navigationController pushViewController:[[ReProfileViewController alloc] initWithUser:user] animated:NO];
 }
 
-- (void)showConversationForEvent:(Event*)event {
+- (void)showConversationForEvent:(Event *)event {
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    conversationViewController.event = event;
+    conversationViewController.index = 0;
+    conversationViewController.eventMessages = [NSMutableArray new];
+    [self presentViewController:conversationViewController animated:YES completion:nil];
+}
+
+- (void)showStoryForEvent:(Event*)event {
     EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
     eventStoryController.placesDelegate = self;
     eventStoryController.event = event;
@@ -785,12 +800,17 @@ viewForHeaderInSection:(NSInteger)section {
             if ([page isEqualToNumber:@1]) {
                 numberOfFetchedParties = 0;
                 _eventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
+                _oldEventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
                 _contentParty = _eventsParty;
                 _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
             }
             NSArray *events = [jsonResponse objectForKey:@"objects"];
+            NSDictionary *separatedEvents = [self separateEvents:events];
+            NSArray *oldEvents = [separatedEvents objectForKey:@"oldEvents"];
+            NSArray *newEvents = [separatedEvents objectForKey:@"newEvents"];
             [self getFirstIndexOfSuggestedEvent:events];
-            [_eventsParty addObjectsFromArray:events];
+            [_eventsParty addObjectsFromArray:newEvents];
+            [_oldEventsParty addObjectsFromArray:oldEvents];
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_eventsParty addMetaInfo:metaDictionary];
             [self fillEventAttendees];
@@ -803,6 +823,29 @@ viewForHeaderInSection:(NSInteger)section {
             [self fetchedOneParty];
         }];
     }
+}
+
+- (NSDictionary *)separateEvents:(NSArray *)events {
+    NSMutableArray *mutableOldEvents = [NSMutableArray new];
+    NSMutableArray *newEvents = [NSMutableArray new];
+    NSIndexSet *indexSet = [events indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        NSDictionary *eventDictionary = (NSDictionary *)obj;
+        if ([[eventDictionary objectForKey:@"is_expired"] boolValue]) {
+            return YES;
+        }
+        else return NO;
+    }];
+    for (int i = 0; i < [events count]; i++) {
+        if ([indexSet containsIndex:(NSUInteger)i]) {
+            [mutableOldEvents addObject:[events objectAtIndex:i]];
+        }
+        else {
+            [newEvents addObject:[events objectAtIndex:i]];
+        }
+    }
+    return @{@"oldEvents": [NSArray arrayWithArray:mutableOldEvents],
+             @"newEvents": [NSArray arrayWithArray:newEvents]
+             };
 }
 
 - (void)getFirstIndexOfSuggestedEvent:(NSArray *)events {
@@ -1142,6 +1185,68 @@ viewForHeaderInSection:(NSInteger)section {
 
 
 - (void)showEventConversation {
+    [self.placesDelegate showStoryForEvent:self.event];
+}
+
+@end
+
+@implementation TitleHeaderEventCell
+
+- (void)setupTitleHeader {
+    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, self.frame.size.width - 75, 50)];
+    self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
+    self.oldEventLabel.font = [FontProperties mediumFont:18.0f];
+    self.oldEventLabel.textColor = RGB(184, 184, 184);
+    [self.contentView addSubview:self.oldEventLabel];
+    
+    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
+    self.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
+    self.chatBubbleImageView.hidden = YES;
+    [self.contentView addSubview:self.chatBubbleImageView];
+    
+    self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
+    self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
+    self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
+    self.chatNumberLabel.textColor = [UIColor whiteColor];
+    [self.chatBubbleImageView addSubview:self.chatNumberLabel];
+    
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
+    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+    [self.contentView addSubview:postStoryImageView];
+    
+    UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
+    borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
+    borderLabel.layer.borderWidth = 1.5f;
+    borderLabel.layer.cornerRadius = 8;
+    [self.contentView addSubview:borderLabel];
+}
+
+@end
+
+@implementation HighlightOldEventCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 304);
+    self.backgroundColor = UIColor.whiteColor;
+    [super setupTitleHeader];
+    self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 50, self.frame.size.width - 20, 254)];
+//    self.highlightImageView.backgroundColor = UIColor.redColor;
+    [self.contentView addSubview:self.highlightImageView];
+    
+    UIButton *conversationButton = [[UIButton alloc] initWithFrame:self.frame];
+    [conversationButton addTarget:self action:@selector(loadConversation) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:conversationButton];
+}
+
+- (void)loadConversation {
     [self.placesDelegate showConversationForEvent:self.event];
 }
 
@@ -1160,33 +1265,7 @@ viewForHeaderInSection:(NSInteger)section {
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 50);
     self.backgroundColor = UIColor.whiteColor;
-    
-    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, self.frame.size.width - 75, self.frame.size.height)];
-    self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
-    self.oldEventLabel.font = [FontProperties mediumFont:18.0f];
-    self.oldEventLabel.textColor = RGB(184, 184, 184);
-    [self.contentView addSubview:self.oldEventLabel];
-   
-    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
-    self.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
-    self.chatBubbleImageView.hidden = YES;
-    [self.contentView addSubview:self.chatBubbleImageView];
-    
-    self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
-    self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
-    self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
-    self.chatNumberLabel.textColor = [UIColor whiteColor];
-    [self.chatBubbleImageView addSubview:self.chatNumberLabel];
-    
-    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
-    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-    [self.contentView addSubview:postStoryImageView];
-
-    UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
-    borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
-    borderLabel.layer.borderWidth = 1.5f;
-    borderLabel.layer.cornerRadius = 8;
-    [self.contentView addSubview:borderLabel];
+    [super setupTitleHeader];
 }
 
 @end

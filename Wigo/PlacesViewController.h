@@ -37,10 +37,21 @@
 - (void)updateUI;
 @end
 
-@interface OldEventCell : UITableViewCell
+@interface TitleHeaderEventCell : UITableViewCell
+@property (nonatomic, strong) Event *event;
+@property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
+- (void)setupTitleHeader;
 @property (nonatomic, strong) UILabel *oldEventLabel;
 @property (nonatomic, strong) UIImageView *chatBubbleImageView;
 @property (nonatomic, strong) UILabel *chatNumberLabel;
+@end
+
+@interface HighlightOldEventCell : TitleHeaderEventCell
+@property (nonatomic, strong) UIImageView *highlightImageView;
+@end
+
+@interface OldEventCell : TitleHeaderEventCell
+
 @end
 
 @interface HeaderOldEventCell : UITableViewHeaderFooterView
