@@ -287,7 +287,7 @@ NSMutableArray *suggestedArrayView;
         [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         [suggestedScrollView addSubview:inviteButton];
         
-        UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
+        UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, self.view.frame.size.width - 2*xPosition, 30)];
         inviteMoreFriendsLabel.text = @"Invite more friends\nto Wigo";
         inviteMoreFriendsLabel.textAlignment = NSTextAlignmentCenter;
         inviteMoreFriendsLabel.font = [FontProperties mediumFont:12.0f];
@@ -315,10 +315,10 @@ NSMutableArray *suggestedArrayView;
         lateToThePartyLabel.textColor = RGB(102, 102, 102);
         [secondPartSubview addSubview:lateToThePartyLabel];
         
-        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 29, 229, 30)];
+        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 29, self.view.frame.size.width - 90, 30)];
         [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         inviteButton.backgroundColor = [FontProperties getOrangeColor];
-        [inviteButton setTitle:@"Invite More Friends To WiGo" forState:UIControlStateNormal];
+        [inviteButton setTitle:@"Invite More Friends To Wigo" forState:UIControlStateNormal];
         [inviteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         inviteButton.titleLabel.font = [FontProperties scMediumFont:16.0f];
         inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -522,6 +522,7 @@ NSMutableArray *suggestedArrayView;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
+    cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
     
     if ([indexPath section] == 0) {
         if ([self.currentTab isEqualToNumber:@2])
