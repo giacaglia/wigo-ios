@@ -12,7 +12,7 @@
 #import "PeopleViewController.h"
 #import "MoreViewController.h"
 #import "User.h"
-
+#import "Party.h"
 
 @interface ReProfileViewController : UIViewController <UIScrollViewDelegate, UIAlertViewDelegate, UITableViewDataSource, UITableViewDelegate>
 
@@ -21,11 +21,8 @@
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;
 @property User *user;
 @property STATE userState;
-
+@property Party *eventsParty;
 @property EditProfileViewController *editProfileViewController;
-@property ConversationViewController *conversationViewController;
-@property PeopleViewController *peopleViewController;
-@property MoreViewController *moreViewController;
 
 @property (nonatomic, assign) BOOL isFetchingNotifications;
 @end

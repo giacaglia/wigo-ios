@@ -418,8 +418,9 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)profileSegue {
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[ReProfileViewController alloc] initWithUser:[Profile user]]];
-    
+    ReProfileViewController *profileViewController = [[ReProfileViewController alloc] initWithUser:[Profile user]];
+    profileViewController.eventsParty = _contentParty;
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: profileViewController];
     [self presentViewController:navController animated:YES completion:nil];
 }
 

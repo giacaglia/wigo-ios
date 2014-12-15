@@ -65,9 +65,6 @@ UIViewController *webViewController;
     self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
     
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    
-    
-    //[[UIApplication sharedApplication] setStatusBarHidden: NO withAnimation: UIStatusBarAnimationSlide];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

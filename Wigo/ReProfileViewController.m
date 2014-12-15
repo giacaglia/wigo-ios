@@ -329,8 +329,7 @@ UIButton *tapButton;
 }
 
 - (void)morePressed {
-    self.moreViewController = [[MoreViewController alloc] initWithUser:self.user];
-    [[RWBlurPopover instance] presentViewController:self.moreViewController withOrigin:0 andHeight:self.view.frame.size.height];
+    [[RWBlurPopover instance] presentViewController:[[MoreViewController alloc] initWithUser:self.user] withOrigin:0 andHeight:self.view.frame.size.height];
 }
 
 
@@ -759,12 +758,42 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
     User *user = [[User alloc] initWithDictionary:[notification fromUser]];
     Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
+    [self presentEvent:event];
+   }
 
-    EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-    eventStoryViewController.event = event;
-    eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-    [self presentViewController: eventStoryViewController animated: YES completion: nil];
+- (void)presentEvent:(Event *)event {
+    BOOL isEventPresentInArray = NO;
+    NSArray *eventsArray = [self.eventsParty getObjectArray];
+    for (int i = 0; i < [eventsArray count]; i++) {
+        Event *newEvent = [eventsArray objectAtIndex:i];
+        if ([[newEvent eventID] isEqualToNumber:[event eventID]]) {
+            event = newEvent;
+            isEventPresentInArray = YES;
+            break;
+        }
+    }
+    if (isEventPresentInArray) {
+        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+        eventStoryViewController.event = event;
+        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+        [self presentViewController: eventStoryViewController animated: YES completion: nil];
+    }
+    else [self fetchEvent:event];
 }
+
+- (void)fetchEvent:(Event *)event {
+    [Network sendAsynchronousHTTPMethod:GET withAPIName:[NSString stringWithFormat:@"events/%@", [event eventID]] withHandler:^(NSDictionary *jsonResponse, NSError *error) {        dispatch_async(dispatch_get_main_queue(), ^(void){
+            if (!error) {
+                Event *newEvent = [[Event alloc] initWithDictionary:jsonResponse];
+                EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+                eventStoryViewController.event = newEvent;
+                eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+                [self presentViewController: eventStoryViewController animated: YES completion: nil];
+            }
+        });
+    }];
+}
+
 
 #pragma mark - Notifications Network requests
 

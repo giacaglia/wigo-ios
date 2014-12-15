@@ -287,7 +287,7 @@ NSMutableArray *suggestedArrayView;
         [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         [suggestedScrollView addSubview:inviteButton];
         
-        UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, self.view.frame.size.width - 2*xPosition, 30)];
+        UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
         inviteMoreFriendsLabel.text = @"Invite more friends\nto Wigo";
         inviteMoreFriendsLabel.textAlignment = NSTextAlignmentCenter;
         inviteMoreFriendsLabel.font = [FontProperties mediumFont:12.0f];
