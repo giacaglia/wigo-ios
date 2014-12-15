@@ -30,8 +30,8 @@
 @property (nonatomic, assign) BOOL isFetchingNotifications;
 @end
 
-#define kNotificationCellName @"notificationCellName"
-@interface NotificationCell : UITableViewCell
+#define kNotificationCellName_old @"notificationCellName"
+@interface NotificationCell_old : UITableViewCell
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UILabel *descriptionLabel;
 

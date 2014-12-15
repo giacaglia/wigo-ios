@@ -16,6 +16,7 @@
 - (void)addHeaderOverlayView:(UIView*)overlay;
 - (CGFloat)headerHeight;
 - (UIScrollView*)mainScrollView;
+- (void) addImages: (NSArray *) imageURLS info: (NSDictionary *) info area: (NSArray *) area;
 
 /**
  *  This should be called whenever the content size of the scrollview need to be adjusted.

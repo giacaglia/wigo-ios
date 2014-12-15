@@ -437,6 +437,32 @@
             </objects>
             <point key="canvasLocation" x="3275" y="-2428"/>
         </scene>
+        <!--Parallax Profile View Controller-->
+        <scene sceneID="4Co-ES-03f">
+            <objects>
+                <tableViewController storyboardIdentifier="ParallaxProfileViewController" automaticallyAdjustsScrollViewInsets="NO" id="4XA-L7-y6d" customClass="ParallaxProfileViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="NaO-eg-QbV">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ImageScrollViewCell" id="8qs-C0-ik1">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8qs-C0-ik1" id="BQz-2Y-ogu">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="4XA-L7-y6d" id="mXj-FW-OJ4"/>
+                            <outlet property="delegate" destination="4XA-L7-y6d" id="zzX-6o-scp"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zA2-sG-0eV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3275" y="-1437"/>
+        </scene>
         <!--Campus Notification View Controller-->
         <scene sceneID="KRE-xI-MdA">
             <objects>

@@ -420,7 +420,10 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)profileSegue {
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[ParallaxProfileViewController alloc] initWithUser:[Profile user]]];
+    
+    ParallaxProfileViewController *parallaxViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ParallaxProfileViewController"];
+    [parallaxViewController setStateWithUser: [Profile user]];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: parallaxViewController];
     
     [self presentViewController:navController animated:YES completion:nil];
 }

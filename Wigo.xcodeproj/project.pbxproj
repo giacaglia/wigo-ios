@@ -403,6 +403,7 @@
 		FA5526231A1FE3D800101AE7 /* EngagementGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526211A1FE3D800101AE7 /* EngagementGraph.m */; };
 		FAACB6731A2508E00089FD01 /* CampusNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */; };
 		FAACB6741A2508E00089FD01 /* CampusNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */; };
+		FAAF4AC51A3F7ABA0065E160 /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAAF4AC41A3F7ABA0065E160 /* ImageScrollView.m */; };
 		FABD337A1A3B9904008FF56D /* FXBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33731A3B9904008FF56D /* FXBlurView.m */; };
 		FABD337B1A3B9904008FF56D /* JPBFloatingTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33751A3B9904008FF56D /* JPBFloatingTextViewController.m */; };
 		FABD337C1A3B9904008FF56D /* JPBParallaxBlurViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33771A3B9904008FF56D /* JPBParallaxBlurViewController.m */; };
@@ -790,6 +791,8 @@
 		FA5526211A1FE3D800101AE7 /* EngagementGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EngagementGraph.m; sourceTree = "<group>"; };
 		FAACB6711A2508E00089FD01 /* CampusNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CampusNotificationViewController.h; sourceTree = "<group>"; };
 		FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CampusNotificationViewController.m; sourceTree = "<group>"; };
+		FAAF4AC31A3F7ABA0065E160 /* ImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageScrollView.h; sourceTree = "<group>"; };
+		FAAF4AC41A3F7ABA0065E160 /* ImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageScrollView.m; sourceTree = "<group>"; };
 		FABD33721A3B9904008FF56D /* FXBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FXBlurView.h; sourceTree = "<group>"; };
 		FABD33731A3B9904008FF56D /* FXBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FXBlurView.m; sourceTree = "<group>"; };
 		FABD33741A3B9904008FF56D /* JPBFloatingTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPBFloatingTextViewController.h; sourceTree = "<group>"; };
@@ -1091,6 +1094,7 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				FAAF4AC21A3F7AA00065E160 /* ImageScrollview */,
 				FABD33711A3B98ED008FF56D /* ParallaxHeaderTV */,
 				FA5526131A1FDB4000101AE7 /* JBBarChart */,
 				FADD072D1A0D296900492369 /* LLACircularProgressView */,
@@ -1803,6 +1807,15 @@
 			path = JBBarChart;
 			sourceTree = "<group>";
 		};
+		FAAF4AC21A3F7AA00065E160 /* ImageScrollview */ = {
+			isa = PBXGroup;
+			children = (
+				FAAF4AC31A3F7ABA0065E160 /* ImageScrollView.h */,
+				FAAF4AC41A3F7ABA0065E160 /* ImageScrollView.m */,
+			);
+			name = ImageScrollview;
+			sourceTree = "<group>";
+		};
 		FABD33711A3B98ED008FF56D /* ParallaxHeaderTV */ = {
 			isa = PBXGroup;
 			children = (
@@ -2288,6 +2301,7 @@
 				E9D039B91A096DB100DEF094 /* AFNetworkReachabilityManager.m in Sources */,
 				E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */,
 				E998C26519CB80240012BF51 /* UIImageView+ImageArea.m in Sources */,
+				FAAF4AC51A3F7ABA0065E160 /* ImageScrollView.m in Sources */,
 				E9BE8C49192A48F1008BB84C /* FontProperties.m in Sources */,
 				E9C63BDA1A03ED35006C5DD2 /* IQAudioPickerController.m in Sources */,
 				E9C63BEE1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */,

@@ -877,14 +877,14 @@ UIButton *tapButton;
     _notificationsTableView.delegate = self;
     _notificationsTableView.dataSource = self;
     _notificationsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [_notificationsTableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
+    [_notificationsTableView registerClass:[NotificationCell_old class] forCellReuseIdentifier:kNotificationCellName_old];
     [self.view addSubview:_notificationsTableView];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
+    NotificationCell_old *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName_old forIndexPath:indexPath];
     Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
     if ([notification fromUserID] == (id)[NSNull null]) return notificationCell;
     if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
@@ -976,7 +976,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 @end
 
 
-@implementation NotificationCell
+@implementation NotificationCell_old
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
