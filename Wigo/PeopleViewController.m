@@ -34,7 +34,7 @@
 @property Party *suggestionsParty;
 
 @property NSNumber *page;
-@property NSNumber *currentTab;
+
 @end
 
 BOOL didProfileSegue;
@@ -52,7 +52,7 @@ NSMutableArray *suggestedArrayView;
     self = [super init];
     if (self) {
         self.user = user;
-        _currentTab = tab;
+        self.currentTab = tab;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -88,8 +88,6 @@ NSMutableArray *suggestedArrayView;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [EventAnalytics tagEvent:@"People View"];
-
-
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -98,10 +96,7 @@ NSMutableArray *suggestedArrayView;
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
 
     if (!didProfileSegue) {
-        if ([[self.user allKeys] containsObject:@"tabNumber"]) {
-            _currentTab = [self.user objectForKey:@"tabNumber"];
-        }
-        else if (!_currentTab) _currentTab = @2;
+        if (!self.currentTab) self.currentTab = @2;
         _contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
         _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
         [self loadTableView];
@@ -265,7 +260,7 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (UIView *)initializeSecondPart {
-    if ([_currentTab isEqualToNumber:@2]) {
+    if ([self.currentTab isEqualToNumber:@2]) {
         UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 223)];
         
         UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 14, 21)];
@@ -471,15 +466,15 @@ NSMutableArray *suggestedArrayView;
 
 - (void)loadTableView {
     self.navigationItem.titleView = nil;
-    if ([_currentTab isEqualToNumber:@2]) {
+    if ([self.currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageSuggestions];
         self.title = [[Profile user] groupName];
     }
-    else if ([_currentTab isEqualToNumber:@3]) {
+    else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
         self.title = @"Followers";
     }
-    else if ([_currentTab isEqualToNumber:@4]) {
+    else if ([self.currentTab isEqualToNumber:@4]) {
         [self fetchFirstPageFollowing];
         self.title = @"Following";
     }
@@ -489,8 +484,8 @@ NSMutableArray *suggestedArrayView;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == 0) {
-        if ([_currentTab isEqualToNumber:@2]) return 233;
-        else if ([_currentTab isEqualToNumber:@4]) return 95;
+        if ([self.currentTab isEqualToNumber:@2]) return 233;
+        else if ([self.currentTab isEqualToNumber:@4]) return 95;
         else return 0;
     }
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
@@ -529,9 +524,9 @@ NSMutableArray *suggestedArrayView;
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
     if ([indexPath section] == 0) {
-        if ([_currentTab isEqualToNumber:@2])
+        if ([self.currentTab isEqualToNumber:@2])
             [cell.contentView addSubview:secondPartSubview];
-        else if ([_currentTab isEqualToNumber:@4])
+        else if ([self.currentTab isEqualToNumber:@4])
             [cell.contentView addSubview:secondPartSubview];
         return cell;
     }
@@ -612,7 +607,7 @@ NSMutableArray *suggestedArrayView;
     }
     [clickableView addSubview:goingOutLabel];
     
-    if ([_currentTab isEqualToNumber:@2]) {
+    if ([self.currentTab isEqualToNumber:@2]) {
         UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140 - 15, PEOPLEVIEW_HEIGHT_OF_CELLS - 15, 140, 12)];
         timeLabel.text = [user joinedDate];
         timeLabel.textAlignment = NSTextAlignmentRight;
@@ -817,13 +812,13 @@ NSMutableArray *suggestedArrayView;
 #pragma mark - Network functions
 
 - (void)loadNextPage {
-    if ([_currentTab isEqualToNumber:@2]) {
+    if ([self.currentTab isEqualToNumber:@2]) {
         [self fetchEveryone];
     }
-    else if ([_currentTab isEqualToNumber:@3]) {
+    else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFollowers];
     }
-    else if ([_currentTab isEqualToNumber:@4]) {
+    else if ([self.currentTab isEqualToNumber:@4]) {
         [self fetchFollowing];
     }
 }
@@ -1018,11 +1013,11 @@ NSMutableArray *suggestedArrayView;
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     _page = @1;
-    if ([_currentTab isEqualToNumber:@2]) {
+    if ([self.currentTab isEqualToNumber:@2]) {
         NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[_page stringValue], searchString];
         [self searchUsersWithString:queryString andObjectType:USER_TYPE];
     }
-    else if ([_currentTab isEqualToNumber:@3]) {
+    else if ([self.currentTab isEqualToNumber:@3]) {
         NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&page=%@&text=%@" ,[[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
         [self searchUsersWithString:queryString andObjectType:FOLLOW_TYPE];
     }
@@ -1047,7 +1042,7 @@ NSMutableArray *suggestedArrayView;
                                   arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
                                   for (NSDictionary *object in arrayOfFollowObjects) {
                                       NSDictionary *userDictionary;
-                                      if ([_currentTab isEqualToNumber:@3]) userDictionary = [object objectForKey:@"user"];
+                                      if ([self.currentTab isEqualToNumber:@3]) userDictionary = [object objectForKey:@"user"];
                                       else userDictionary = [object objectForKey:@"follow"];
                                       if ([userDictionary isKindOfClass:[NSDictionary class]]) {
                                           if ([Profile isUserDictionaryProfileUser:userDictionary]) {
