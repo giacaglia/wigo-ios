@@ -108,30 +108,34 @@
     return image;
 }
 
-- (void)prepareBlurredImage
-{
-    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+- (void)prepareBlurredImageWithViewController:(UIViewController *)viewController {
     
     // add a cover on top of rootViewController.view, to disable user interactions
-    self.coverView = [[UIView alloc] initWithFrame:rootViewController.view.bounds];
+    self.coverView = [[UIView alloc] initWithFrame:viewController.view.bounds];
     self.coverView.backgroundColor = [UIColor clearColor];
     UIImageView *coverImageView = [[UIImageView alloc] initWithFrame:self.coverView.bounds];
     coverImageView.backgroundColor = [UIColor clearColor];
     [self.coverView addSubview:coverImageView];
-    [rootViewController.view addSubview:self.coverView];
+    [viewController.view addSubview:self.coverView];
     
     if (![self shouldWorkOnThisDevice])
     {
         return;
     }
     
-    self.origImage = [self imageFromView:rootViewController.view];
+    self.origImage = [self imageFromView:viewController.view];
     coverImageView.image = self.origImage;
     
-    self.blurredImageView = [[UIImageView alloc] initWithFrame:rootViewController.view.bounds];
+    self.blurredImageView = [[UIImageView alloc] initWithFrame:viewController.view.bounds];
     self.blurredImageView.backgroundColor = [UIColor clearColor];
     self.blurredImageView.alpha = 0;
-    [rootViewController.view addSubview:self.blurredImageView];
+    [viewController.view addSubview:self.blurredImageView];
+}
+
+- (void)prepareBlurredImage
+{
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [self prepareBlurredImageWithViewController:rootViewController];
 }
 
 - (void)presentBlurredViewAnimated:(BOOL)animated
@@ -183,7 +187,7 @@
 }
 
 - (void)presentViewController:(UIViewController *)viewController withFrame:(CGRect)frame fromViewController:(UIViewController *)fromViewController {
-    [self prepareBlurredImage];
+    [self prepareBlurredImageWithViewController:fromViewController];
     [self presentBlurredViewAnimated:YES];
     
     self.contentViewController = viewController;
@@ -221,7 +225,7 @@
 }
 
 - (void)presentViewController:(UIViewController *)viewController withOrigin:(CGFloat)origin andHeight:(CGFloat)height fromViewController:(UIViewController *)fromViewController {
-    [self prepareBlurredImage];
+    [self prepareBlurredImageWithViewController:fromViewController];
     [self presentBlurredViewAnimated:YES];
     
     self.contentViewController = viewController;
