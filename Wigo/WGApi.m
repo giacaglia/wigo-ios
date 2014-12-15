@@ -66,8 +66,12 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [serializer setValue:kDeviceType forHTTPHeaderField:@"X-Wigo-Device"];
     
     [serializer setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+#warning TODO: find out how to 'actually' get the key
+    
+    NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
 
-    [serializer setValue:@"0026cjAKWyXemocHRXM6TsdgEx" forHTTPHeaderField:@"X-Wigo-User-Key"];
+    [serializer setValue:key forHTTPHeaderField:@"X-Wigo-User-Key"];
     
     /* if (userKey) {
         [serializer setValue:userKey forHTTPHeaderField:@"X-Wigo-User-Key"];

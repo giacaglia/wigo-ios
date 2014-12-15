@@ -41,6 +41,7 @@ typedef enum State {
 
 @interface WGUser : WGObject
 
+@property NSString* key;
 @property (nonatomic, assign) Privacy privacy;
 @property BOOL isFollower;
 @property NSInteger numFollowing;
@@ -64,6 +65,9 @@ typedef enum State {
 @property BOOL isAttending;
 @property NSDictionary* group;
 @property NSInteger groupRank;
+
++ (WGUser *) currentUser;
++ (void) setCurrentUser: (WGUser *) user;
 
 +(WGUser *)serialize:(NSDictionary *)json;
 

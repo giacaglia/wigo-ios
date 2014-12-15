@@ -8,6 +8,7 @@
 
 #import "Profile.h"
 #import "KeychainItemWrapper.h"
+#import "WGUser.h"
 
 @implementation Profile
 

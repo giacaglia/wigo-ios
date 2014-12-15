@@ -9,7 +9,7 @@
 #import "WGUser.h"
 
 #define kIdKey @"id"
-
+#define kKeyKey @"key"
 #define kPrivacyKey @"privacy" //: "public",
 #define kIsFollowerKey @"is_follower" //: false,
 #define kNumFollowingKey @"num_following" //: 10,
@@ -40,19 +40,37 @@
 #define kPrivacyPublicValue @"public"
 #define kPrivacyPrivateValue @"private"
 
+@interface WGUser()
+
+@end
+
+
+static WGUser *currentUser = nil;
+
 @implementation WGUser
+
++ (void)setCurrentUser:(WGUser *)user {
+    currentUser = user;
+#warning TODO: is this the correct way to set the key?
+    [[NSUserDefaults standardUserDefaults] setObject:user.key forKey:@"key"];
+}
+
++ (WGUser *)currentUser {
+    return currentUser;
+}
 
 +(WGUser *)serialize:(NSDictionary *)json {
     WGUser *newWGUser = [WGUser new];
     
-    newWGUser.id = [json st_integerForKey:kIdKey];
+    newWGUser.id =                      [json st_integerForKey:kIdKey];
+    newWGUser.key =                     [json st_stringForKey:kKeyKey];
     
     if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPublicValue]) {
-        newWGUser.privacy = PUBLIC;
+        newWGUser.privacy =             PUBLIC;
     } else if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPrivateValue]) {
-        newWGUser.privacy = PRIVATE;
+        newWGUser.privacy =             PRIVATE;
     } else {
-        newWGUser.privacy = OTHER;
+        newWGUser.privacy =             OTHER;
     }
     
     newWGUser.isFollower =              [json st_boolForKey:kIsFollowerKey];
@@ -72,11 +90,11 @@
     newWGUser.firstName =               [json st_stringForKey:kFirstNameKey];
     
     if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderMaleValue]) {
-        newWGUser.gender = MALE;
+        newWGUser.gender =              MALE;
     } else if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderFemaleValue]) {
-        newWGUser.gender = FEMALE;
+        newWGUser.gender =              FEMALE;
     } else {
-        newWGUser.gender = UNKNOWN;
+        newWGUser.gender =              UNKNOWN;
     }
     
     newWGUser.facebookId =              [json st_stringForKey:kFacebookIdKey];
@@ -117,6 +135,16 @@
         }
         WGCollection *users = [WGCollection initWithResponse:jsonResponse andClass:[self class]];
         handler(users, error);
+    }];
+}
+
++(void) getCurrentUser {
+    [WGApi get:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        }
+        [WGUser setCurrentUser: [WGUser serialize:jsonResponse]];
+        NSLog(@"---- Set Current User -----");
     }];
 }
 
