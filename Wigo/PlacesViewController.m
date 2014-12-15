@@ -691,7 +691,7 @@ int firstIndexOfNegativeEvent;
 
 - (void)showUser:(User *)user {
     shouldReloadEvents = NO;
-    [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:NO];
+    [self.navigationController pushViewController:[[ReProfileViewController alloc] initWithUser:user] animated:NO];
 }
 
 - (void)showConversationForEvent:(Event*)event {
@@ -1141,7 +1141,6 @@ viewForHeaderInSection:(NSInteger)section {
 
 
 - (void)showEventConversation {
-    shouldReloadEvents = NO;
     [self.placesDelegate showConversationForEvent:self.event];
 }
 

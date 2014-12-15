@@ -769,7 +769,7 @@ NSMutableArray *suggestedArrayView;
 - (void)updateUserAtTable:(NSNotification*)notification {
     NSDictionary* userInfo = [notification userInfo];
     User *user = [[User alloc] initWithDictionary:userInfo];
-    int userInt = [userIndex row];
+    int userInt = (int)[userIndex row];
 
     if (user) {
         if ([userIndex section] == 0) {

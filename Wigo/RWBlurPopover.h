@@ -12,7 +12,9 @@
 
 + (instancetype)instance;
 
+- (void)presentViewController:(UIViewController *)viewController withFrame:(CGRect)frame fromViewController:(UIViewController *)fromViewController;
 - (void)presentViewController:(UIViewController *)viewController withFrame:(CGRect)frame;
+- (void)presentViewController:(UIViewController *)viewController withOrigin:(CGFloat)origin andHeight:(CGFloat)height fromViewController:(UIViewController *)fromViewController;
 - (void)presentViewController:(UIViewController *)viewController withOrigin:(CGFloat)origin andHeight:(CGFloat)height;
 - (void)dismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion;
 

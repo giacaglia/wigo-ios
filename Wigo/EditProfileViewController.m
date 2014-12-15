@@ -171,7 +171,8 @@ UIViewController *webViewController;
     else {
         [self.view endEditing:YES];
         self.photoViewController = [[PhotoViewController alloc] initWithImage:[[[Profile user] images] objectAtIndex:buttonSender.tag]];
-        [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:30 andHeight:450];
+//        [self presentViewController:self.photoViewController animated:YES completion:nil];
+        [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:30 andHeight:450 fromViewController:self];
     }
 }
 
@@ -313,7 +314,7 @@ UIViewController *webViewController;
 - (void)sendEmail {
     [self.view endEditing:YES];
     self.contactUsViewController = [[ContactUsViewController alloc] init];
-    [[RWBlurPopover instance] presentViewController:self.contactUsViewController withOrigin:30 andHeight:450];
+    [[RWBlurPopover instance] presentViewController:self.contactUsViewController withOrigin:30 andHeight:450 fromViewController:self];
 }
 
 - (void)openTerms {

@@ -39,12 +39,13 @@ NSMutableArray *coverAlbumArray;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-//    [WiGoSpinnerView addDancingGToCenterView:self.view];
     [FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"email", @"user_friends", @"user_photos"]
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
                                                       FBSessionState state,
                                                       NSError *error) {
+                                      dispatch_async(dispatch_get_main_queue(), ^{
+
                                       if (error) {
                                           UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
                                                                                               message:error.localizedDescription
@@ -74,13 +75,13 @@ NSMutableArray *coverAlbumArray;
                                                                                 }
                                                                             }
                                                                             _albumArray = [NSArray arrayWithArray:cleanAlbums];
-//                                                                            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
 
                                                                             [self getAlbumDetails];
                                                                             [self.tableView reloadData];
                                                                         });
                                                                     }];
                                       }
+                                      });
                                   }];
     
 }
