@@ -198,6 +198,7 @@ UIButton *tapButton;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self initializeProfileImage];
+    [self initializeTopGradient];
     [self initializeNameOfPerson];
     [self initializeTapButton];
     
@@ -439,129 +440,29 @@ UIButton *tapButton;
     [self.view addSubview:_followRequestLabel];
 }
 
-- (void)initializeNameOfPerson {
+- (void)initializeTopGradient {
     UIImageView *topGradientBackground =[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
     topGradientBackground.image = [UIImage imageNamed:@"topGradientBackground"];
     [self.view addSubview:topGradientBackground];
     [self.view bringSubviewToFront:topGradientBackground];
     [self.view bringSubviewToFront:_pageControl];
-    
-//    UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 44)];
-//    [backButton setImage:[UIImage imageNamed:@"whiteBackButton"] forState:UIControlStateNormal];
-//    [backButton setTitle:@" Back" forState:UIControlStateNormal];
-//    [backButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-//    backButton.titleLabel.font = [FontProperties getSubtitleFont];
-//    [backButton addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:backButton];
-    
-//    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 75, 0, 65, 44)];
-//    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-//        [rightButton setTitle:@"Edit" forState:UIControlStateNormal];
-//        [rightButton addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
-//        
-//    }
-//    else  {
-//        [rightButton setTitle:@"More" forState:UIControlStateNormal];
-//        [rightButton addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
-//    }
-//    rightButton.titleLabel.font = [FontProperties getSubtitleFont];
-//    [self.view addSubview:rightButton];
+}
 
-    _nameOfPersonBackground = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
+- (void)initializeNameOfPerson {
+    UIView *nameOfPersonView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
+    [self.view bringSubviewToFront:nameOfPersonView];
+    [self.view addSubview:nameOfPersonView];
+    
     UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
     gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
-    [_nameOfPersonBackground addSubview:gradientBackground];
-    
+    [nameOfPersonView addSubview:gradientBackground];
+
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
-    if ([self.user getUserState] == ATTENDING_EVENT_FOLLOWING_USER ||
-        [self.user getUserState] == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
-        _nameOfPersonLabel.numberOfLines = 0;
-        _nameOfPersonLabel.textAlignment = NSTextAlignmentLeft;
-        if ([[Profile user] isAttending] && [[self.user attendingEventID] isEqualToNumber:[[Profile user] attendingEventID]]) {
-            NSString *textOfLabel = [NSString stringWithFormat:@"%@ is also going to: %@", [self.user fullName], [self.user attendingEventName]];
-            NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
-            [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
-            [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
-            NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-            style.lineSpacing = 5;
-            [style setAlignment:NSTextAlignmentCenter];
-            [string addAttribute:NSParagraphStyleAttributeName
-                           value:style
-                           range:NSMakeRange(0, [string length])];
-            _nameOfPersonLabel.attributedText = string;
-        }
-        else {
-            NSString *textOfLabel = [NSString stringWithFormat:@"%@ is going to: %@", [self.user fullName], [self.user attendingEventName]];
-            NSMutableString *cutOffText;
-            if (textOfLabel.length > 67) {
-                cutOffText = [NSMutableString stringWithString:[textOfLabel substringWithRange: NSMakeRange(0, MIN(64, textOfLabel.length))]];
-                [cutOffText appendString:@"..."];
-            }
-            else {
-                cutOffText = [NSMutableString stringWithString:textOfLabel];
-            }
-            
-            NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:cutOffText];
-            [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
-            [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
-            NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-            style.lineSpacing = 5;
-            [string addAttribute:NSParagraphStyleAttributeName
-                           value:style
-                           range:NSMakeRange(0, [string length])];
-            _nameOfPersonLabel.attributedText = string;
-            
-            UIButton *goHereTooButton = [[UIButton alloc] init];
-            [goHereTooButton setTitle:@"GO HERE" forState:UIControlStateNormal];
-            [goHereTooButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            goHereTooButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            goHereTooButton.titleLabel.font = [FontProperties getSmallPhotoFont];
-            goHereTooButton.layer.borderColor = RGB(201, 202, 204).CGColor;
-            goHereTooButton.layer.borderWidth = 1;
-            goHereTooButton.layer.cornerRadius = 4;
-            [goHereTooButton addTarget:self action:@selector(goThereTooPressed) forControlEvents:UIControlEventTouchUpInside];
-            
-            CGFloat requiredWidth =  [_nameOfPersonLabel.text sizeWithAttributes:@{NSFontAttributeName:[FontProperties getSmallFont]}].width;
-            if (requiredWidth < self.view.frame.size.width - 14 - 10) {
-                CGRect frame = _nameOfPersonLabel.frame;
-                frame.origin.y -= 10;
-                _nameOfPersonLabel.frame = frame;
-                _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-                goHereTooButton.frame = CGRectMake(self.view.frame.size.width/2 - 48, 45, 95, 25);
-                [_nameOfPersonBackground addSubview:goHereTooButton];
-                
-            }
-            else {
-                goHereTooButton.frame = CGRectMake(_nameOfPersonBackground.frame.size.width - 95 - 7, _nameOfPersonLabel.frame.origin.y + _nameOfPersonLabel.frame.size.height - 25, 95, 25);
-                [_nameOfPersonBackground addSubview:goHereTooButton];
-            }
-            
-        }
-    }
-    else if ([self.user isGoingOut] && ![self.user isEqualToUser:[Profile user]]) {
-        _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-        NSString *textOfLabel = [NSString stringWithFormat:@"%@ is going out", [self.user fullName]];
-        NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
-        [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
-        [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
-        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-        style.lineSpacing = 5;
-        [style setAlignment:NSTextAlignmentCenter];
-        [string addAttribute:NSParagraphStyleAttributeName
-                       value:style
-                       range:NSMakeRange(0, [string length])];
-        _nameOfPersonLabel.attributedText = string;
-    }
-    else {
-        _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-        _nameOfPersonLabel.text = [self.user fullName];
-        _nameOfPersonLabel.textColor = [UIColor whiteColor];
-        _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
-    }
-    
-    [_nameOfPersonBackground addSubview:_nameOfPersonLabel];
-    [self.view addSubview:_nameOfPersonBackground];
-    [self.view bringSubviewToFront:_nameOfPersonBackground];
+    _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
+    _nameOfPersonLabel.text = [self.user fullName];
+    _nameOfPersonLabel.textColor = [UIColor whiteColor];
+    _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
+    [nameOfPersonView addSubview:_nameOfPersonLabel];
     
     _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 9, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
@@ -569,9 +470,7 @@ UIButton *tapButton;
         _privateLogoImageView.hidden = NO;
     }
     else _privateLogoImageView.hidden = YES;
-    [_nameOfPersonBackground addSubview:_privateLogoImageView];
-    [_nameOfPersonBackground bringSubviewToFront:_privateLogoImageView];
-    
+    [nameOfPersonView addSubview:_privateLogoImageView];
 }
 
 - (void) initializeTapButton {
