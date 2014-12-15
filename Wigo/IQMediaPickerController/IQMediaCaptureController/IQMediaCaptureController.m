@@ -995,7 +995,7 @@
 
 -(void)mediaView:(IQMediaView*)mediaView translate:(CGPoint)translationPoint
 {
-    NSLog(@"translate");
+//    NSLog(@"translate");
     if ([[self session] isSessionRunning]){
         UIView *topSuperView = (UIView *)(UIView *)(UIView *)(UIView *)(UIView *)self.view.superview.superview.superview.superview.superview.superview;
         if ([topSuperView isKindOfClass:[UIScrollView class]]) {
@@ -1012,7 +1012,7 @@
 }
 
 - (void)mediaView:(IQMediaView *)mediaView stopTranslateAt:(CGPoint)translatePoint {
-    NSLog(@"stop translate");
+//    NSLog(@"stop translate");
     if ([self session].isSessionRunning) {
         UIView *topSuperView = (UIView *)(UIView *)(UIView *)(UIView *)(UIView *)self.view.superview.superview.superview.superview.superview.superview;
         if ([topSuperView isKindOfClass:[UIScrollView class]]) {
@@ -1030,7 +1030,7 @@
                 else {
                     page = ceil(fractionalPage);
                 }
-                NSLog(@"page %d", page);
+//                NSLog(@"page %d", page);
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"notificationHighlightPage"
                                                                     object:nil
                                                                   userInfo:@{@"page": [NSNumber numberWithInt:page]}];
