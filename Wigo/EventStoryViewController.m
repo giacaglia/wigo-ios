@@ -120,7 +120,8 @@ NSDictionary *metaInfo;
     GOHERESTATE goHereState = [[NSUserDefaults standardUserDefaults] integerForKey:kGoHereState];
 
     if (goHereState != DONOTPRESENTANYTHINGSTATE) {
-        self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
         self.conversationViewController.event = self.event;
         if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
         if (goHereState == PRESENTFACESTATE) {
@@ -339,7 +340,8 @@ NSDictionary *metaInfo;
 }
 
 - (void)sendPressed {
-    self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
     if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
@@ -407,7 +409,8 @@ NSDictionary *metaInfo;
 
 
 - (void)showEventConversation:(NSNumber *)index {
-    self.conversationViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
     self.conversationViewController.index = index;
     if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];

@@ -776,6 +776,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
         eventStoryViewController.event = event;
         eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+//        [self.navigationController pushViewController:eventStoryViewController animated:YES];
         [self presentViewController: eventStoryViewController animated: YES completion: nil];
     }
     else [self fetchEvent:event];
