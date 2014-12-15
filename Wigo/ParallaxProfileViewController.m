@@ -49,7 +49,7 @@
 - (void)initializeProfileImageScrollView {
     if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
         self.user = [Profile user];
-    }
+    }   
     
     _profileImagesScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width)];
     [_profileImagesScrollView setShowsHorizontalScrollIndicator:NO];
