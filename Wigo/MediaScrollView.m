@@ -688,6 +688,7 @@
             }
         }
     }
+    else self.label.hidden = YES;
     
     NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
         if (!self.numberOfVotesLabel) {

@@ -336,7 +336,7 @@
 
 - (void)highlightCellAtPage:(NSInteger)page {
     page = MAX(page, 0);
-    page = MIN(page, self.eventMessages.count);
+    page = MIN(page, self.eventMessages.count - 1);
     [self.mediaScrollView scrolledToPage:(int)page];
     [self.facesCollectionView setContentOffset:CGPointMake((sizeOfEachFaceCell) * (page - 1), 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:YES];
@@ -603,11 +603,9 @@
     self.leftLine.backgroundColor = [UIColor whiteColor];
     [self addSubview: self.leftLine];
  
-//      self.faceImageView.frame = CGRectMake(0.2*sizeOfEachFaceCell, 0.2*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell);
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.2*sizeOfEachFaceCell, 0.2*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell)];
     self.faceImageView.layer.masksToBounds = YES;
     self.faceImageView.backgroundColor = [UIColor blackColor];
-//    self.faceImageView.layer.cornerRadius = sizeOfEachFaceCell/4;
     self.faceImageView.layer.borderWidth = 1.0;
     self.faceImageView.alpha = 0.5f;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;

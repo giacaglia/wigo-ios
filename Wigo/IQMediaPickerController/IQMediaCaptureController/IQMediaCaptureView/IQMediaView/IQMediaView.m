@@ -167,6 +167,7 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
+    NSLog(@"hareeuahr");
     if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
         _beginGestureScale = _effectiveScale;
     }
@@ -179,6 +180,7 @@
 
 -(void)tapGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
+    NSLog(@"sup?");
     CGPoint center = [recognizer locationInView:self];
     [exposureView setCenter:center];
     if (recognizer.state == UIGestureRecognizerStateEnded  &&
@@ -209,6 +211,7 @@
 -(void)panGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
 //    [exposureView setCenter:center];
+    NSLog(@"pan gesture recognizer");
     CGPoint translation = [recognizer translationInView:self];
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         [self.delegate mediaView:self stopTranslateAt:translation];
