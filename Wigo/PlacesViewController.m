@@ -335,7 +335,7 @@ int firstIndexOfNegativeEvent;
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
     _placesTableView.showsVerticalScrollIndicator = NO;
-    [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
+    [_placesTableView setSeparatorColor:UIColor.clearColor];
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
     [_placesTableView registerClass:[OldEventCell class] forCellReuseIdentifier:kOldEventCellName];
@@ -751,7 +751,8 @@ int firstIndexOfNegativeEvent;
 - (CGFloat)tableView:(UITableView *)tableView
 heightForHeaderInSection:(NSInteger)section {
     if (section == 0)  return 0;
-    return 49;
+    if ([[_oldEventsParty  getObjectArray] count] > 0) return 49;
+    else return 0;
 }
 
 - (UIView *)tableView:(UITableView *)tableView
@@ -1128,7 +1129,7 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 175);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, sizeOfEachCell);
     self.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -1166,6 +1167,10 @@ viewForHeaderInSection:(NSInteger)section {
     eventFeedButton.backgroundColor = [UIColor clearColor];
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
+    
+    UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(20, self.frame.size.height - 1, self.frame.size.width - 20, 1)];
+    lineSeparator.backgroundColor = [FontProperties getBlueColor];
+    [self.contentView addSubview:lineSeparator];
 }
 
 - (void)updateUI {
@@ -1238,7 +1243,6 @@ viewForHeaderInSection:(NSInteger)section {
     self.backgroundColor = UIColor.whiteColor;
     [super setupTitleHeader];
     self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 50, self.frame.size.width - 20, 254)];
-//    self.highlightImageView.backgroundColor = UIColor.redColor;
     [self.contentView addSubview:self.highlightImageView];
     
     UIButton *conversationButton = [[UIButton alloc] initWithFrame:self.frame];
