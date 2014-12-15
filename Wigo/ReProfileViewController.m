@@ -106,11 +106,9 @@ UIButton *tapButton;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
    
     [self initializeNotificationHandlers];
-    [self initializeFollowingAndFollowers];
     [self initializeFollowButton];
     [self initializeFollowRequestLabel];
-    [self initializeLeftProfileButton];
-    [self initializeMiddleProfileButton];
+    [self initializeHeaderButtonView];
     [self initializeBottomTableView];
     [self reloadView];
 }
@@ -262,31 +260,6 @@ UIButton *tapButton;
 
 
 
-- (void) initializeFollowingAndFollowers {
-    _followingButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/4, self.view.frame.size.width + 50, self.view.frame.size.width/2, 50)];
-    [_followingButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followingButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
-    followingLabel.textColor = [FontProperties getOrangeColor];
-    followingLabel.textAlignment = NSTextAlignmentCenter;
-    followingLabel.text = [NSString stringWithFormat:@"Following (%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
-    followingLabel.font = [FontProperties getTitleFont];
-    followingLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    followingLabel.numberOfLines = 0;
-    [_followingButton addSubview:followingLabel];
-    [self.view addSubview:_followingButton];
-    
-    _followersButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/4, self.view.frame.size.width, self.view.frame.size.width/2, 50)];
-    [_followersButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followersButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
-    followersLabel.textColor = [FontProperties getOrangeColor];
-    followersLabel.font = [FontProperties getTitleFont];
-    followersLabel.textAlignment = NSTextAlignmentCenter;
-    followersLabel.text = [NSString stringWithFormat:@"Followers (%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
-    followersLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    followersLabel.numberOfLines = 0;
-    [_followersButton addSubview:followersLabel];
-    [self.view addSubview:_followersButton];
-}
 
 - (void) editPressed {
     self.editProfileViewController = [[EditProfileViewController alloc] init];
@@ -647,11 +620,15 @@ UIButton *tapButton;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
 }
 
-- (void)initializeLeftProfileButton {
-    _leftProfileButton = [[UIButton alloc] init];
-    
+
+#pragma mark - HeaderButtonView
+
+- (void)initializeHeaderButtonView {
+    UIView *headerButtonView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width, 70)];
+    [self.view addSubview:headerButtonView];
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _leftProfileButton.frame = CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width/3, 70);
+        _leftProfileButton = [[UIButton alloc] init];
+        _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3, 70);
         [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         UILabel *numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _leftProfileButton.frame.size.width, 25)];
         numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
@@ -666,24 +643,14 @@ UIButton *tapButton;
         followersLabel.textAlignment = NSTextAlignmentCenter;
         followersLabel.text = @"followers";
         [_leftProfileButton addSubview:followersLabel];
+        [headerButtonView addSubview:_leftProfileButton];
     }
-
-    [self.view addSubview:_leftProfileButton];
-}
-
-- (void)leftProfileButtonPressed {
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        [self followersButtonPressed];
-    }
-}
-
-- (void)initializeMiddleProfileButton {
-    _rightProfileButton = [[UIButton alloc] init];
-    [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     
+    
+    _rightProfileButton = [[UIButton alloc] init];
+    [_rightProfileButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, self.view.frame.size.width, self.view.frame.size.width/3, 70);
-        
+        _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70);
         UILabel *numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _rightProfileButton.frame.size.width, 25)];
         numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
         numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
@@ -697,23 +664,10 @@ UIButton *tapButton;
         followingLabel.textAlignment = NSTextAlignmentCenter;
         followingLabel.text = @"following";
         [_rightProfileButton addSubview:followingLabel];
-        
     }
-    else {
-        _rightProfileButton.frame = CGRectMake(3*self.view.frame.size.width/4, self.view.frame.size.width, self.view.frame.size.width/4, 100);
-        UIImageView *chatImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chatImage"]];
-        chatImageView.frame = CGRectMake(_rightProfileButton.frame.size.width/2 - 12, _rightProfileButton.frame.size.height/2 - 12 - 11, 24, 24);
-        UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(_rightProfileButton.frame.size.width/2 - 20, _rightProfileButton.frame.size.height/2 + 12 - 3, 40, 15)];
-        chatLabel.textAlignment = NSTextAlignmentCenter;
-        chatLabel.text = @"Chat";
-        chatLabel.textColor = [FontProperties getOrangeColor];
-        chatLabel.font = [FontProperties getSubtitleFont];
-        [_rightProfileButton addSubview:chatLabel];
-        [_rightProfileButton addSubview:chatImageView];
-    }
-    [self.view addSubview:_rightProfileButton];
-    
-    UIButton *chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, self.view.frame.size.width, self.view.frame.size.width/3, 70)];
+    [headerButtonView addSubview:_rightProfileButton];
+
+    UIButton *chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70)];
     [chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
     UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, chatButton.frame.size.width, 20)];
     chatLabel.textAlignment = NSTextAlignmentCenter;
@@ -724,24 +678,26 @@ UIButton *tapButton;
     
     UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(chatButton.frame.size.width/2 - 10, 10, 20, 20)];
     [chatButton addSubview:orangeChatBubbleImageView];
-
     UILabel *numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, orangeChatBubbleImageView.frame.size.width, orangeChatBubbleImageView.frame.size.height - 4)];
     numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
     numberOfChatsLabel.textColor = UIColor.whiteColor;
     numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
-    
     NSNumber *unreadChats = (NSNumber *)[self.user objectForKey:@"num_unread_conversations"];
-    
     if (![unreadChats isEqualToNumber: @0]) {
         orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
         numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
     } else {
         orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
     }
-    
     [orangeChatBubbleImageView addSubview:numberOfChatsLabel];
     
-    [self.view addSubview:chatButton];
+    [headerButtonView addSubview:chatButton];
+}
+
+- (void)leftProfileButtonPressed {
+    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
+        [self followersButtonPressed];
+    }
 }
 
 - (void)followersButtonPressed {
@@ -750,16 +706,6 @@ UIButton *tapButton;
 
 - (void)followingButtonPressed {
     [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:self.user andTab:@4] animated:YES];
-}
-
-- (void)rightProfileButtonPressed {
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        [self followingButtonPressed];
-    }
-    else {
-        self.conversationViewController = [[ConversationViewController alloc] initWithUser:self.user];
-        [self.navigationController pushViewController:self.conversationViewController animated:YES];
-    }
 }
 
 - (void)chatPressed {
