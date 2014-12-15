@@ -14,6 +14,7 @@
 #import "UIImageCrop.h"
 #import "RWBlurPopover.h"
 #import "ChatViewController.h"
+#import "EventStoryViewController.h"
 #import <Parse/Parse.h>
 
 @interface ReProfileViewController ()
@@ -751,6 +752,18 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
     return [_nonExpiredNotificationsParty getObjectArray].count;
+}
+
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
+    User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+    Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
+
+    EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+    eventStoryViewController.event = event;
+    eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+    [self presentViewController: eventStoryViewController animated: YES completion: nil];
 }
 
 #pragma mark - Notifications Network requests
