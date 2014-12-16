@@ -308,11 +308,6 @@ UIButton *tapButton;
     lowerBorder.frame = CGRectMake(0, _headerButtonView.frame.size.height, CGRectGetWidth(_headerButtonView.frame), 0.5f);
     [_headerButtonView.layer addSublayer: lowerBorder];
     
-    if (self.userState != FOLLOWING_USER) {
-        
-        return;
-    }
-    
     _leftProfileButton = [[UIButton alloc] init];
     _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3, 70);
     [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -375,13 +370,117 @@ UIButton *tapButton;
     [orangeChatBubbleImageView addSubview:numberOfChatsLabel];
     
     [_headerButtonView addSubview:chatButton];
+    
+    if (self.userState != FOLLOWING_USER) {
+        
+        if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) {
+            [self initializeFollowRequestLabel];
+            [_headerButtonView addSubview: _followRequestLabel];
+            [_headerButtonView bringSubviewToFront: _followRequestLabel];
+        }
+        else {
+            [self initializeFollowButton];
+            [_headerButtonView addSubview: _followButton];
+            [_headerButtonView bringSubviewToFront: _followButton];
+        }
+    }
 }
 
+- (void) initializeFollowButton {
+    _followButton = [[UIButton alloc] initWithFrame: _headerButtonView.bounds];
+    _followButton.backgroundColor = [UIColor clearColor];
+    [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
+    
+    NSString *followText = [NSString stringWithFormat:@"Follow %@", [self.user firstName]];
+    UIView *followLabelPlusImage = [[UIView alloc] init];
+    int sizeOfText = (int)[followText length];
+    followLabelPlusImage.frame = CGRectMake((_followButton.frame.size.width - (sizeOfText*13 + 28))/2, 15, sizeOfText*13 + 28, 20);
+    followLabelPlusImage.userInteractionEnabled = NO;
+    [_followButton addSubview:followLabelPlusImage];
+    
+    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, followLabelPlusImage.frame.size.width, 20)];
+    followLabel.text = followText;
+    followLabel.textAlignment = NSTextAlignmentLeft;
+    followLabel.textColor = [FontProperties getOrangeColor];
+    followLabel.font =  [FontProperties scMediumFont:24.0f];
+    
+    [followLabelPlusImage addSubview:followLabel];
+    
+    UIImageView *plusImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plusPerson"]];
+    plusImageView.frame = CGRectMake(followLabelPlusImage.frame.size.width - 28, followLabelPlusImage.frame.size.height/2 - 11, 28, 20);
+    plusImageView.tintColor = [FontProperties getOrangeColor];
+    [followLabelPlusImage addSubview:plusImageView];
+}
+
+- (void)initializeFollowRequestLabel {
+    _followRequestLabel = [[UILabel alloc] initWithFrame: _headerButtonView.bounds];
+    _followRequestLabel.text = @"Your follow request has been sent";
+    _followRequestLabel.textAlignment = NSTextAlignmentCenter;
+    _followRequestLabel.textColor = [FontProperties getOrangeColor];
+    _followRequestLabel.font = [FontProperties scMediumFont:16.0f];
+    if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) _followRequestLabel.hidden = NO;
+    else _followRequestLabel.hidden = YES;
+}
+
+#pragma mark - Action Taps
 - (void)leftProfileButtonPressed {
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         [self followersButtonPressed];
     }
 }
+
+- (void)blockPressed:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    
+    User *sentUser = [[User alloc] initWithDictionary:[userInfo objectForKey:@"user"]];
+    NSNumber *typeNumber = (NSNumber *)[userInfo objectForKey:@"type"];
+    NSArray *blockTypeArray = @[@"annoying", @"not_student", @"abusive"];
+    NSString *blockType = [blockTypeArray objectAtIndex:[typeNumber intValue]];
+    if (!blockShown) {
+        blockShown = YES;
+        if (![sentUser isEqualToUser:[Profile user]]) {
+            NSString *queryString = @"blocks/";
+            NSDictionary *options = @{@"block": [sentUser objectForKey:@"id"], @"type": blockType};
+            [Network sendAsynchronousHTTPMethod:POST
+                                    withAPIName:queryString
+                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                                    withOptions:options];
+            [sentUser setIsBlocked:YES];
+            [self presentBlockPopView:sentUser];
+        }
+        
+    }
+}
+
+
+- (void)followPressed {
+    [self.user setIsFollowing:YES];
+    [self.user saveKeyAsynchronously:@"is_following"];
+    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) {
+        self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
+        [self.user setIsFollowingRequested:YES];
+    }
+    else {
+        self.userState = FOLLOWING_USER;
+        [self.user setIsFollowing:YES];
+    }
+    [self reloadViewForUserState];
+    
+}
+
+- (void)unfollowPressed {
+    if (self.userState == ACCEPTED_PRIVATE_USER) {
+        self.userState = NOT_SENT_FOLLOWING_PRIVATE_USER;
+    } else {
+        self.userState = NOT_FOLLOWING_PUBLIC_USER;
+    }
+    
+    [self.user setIsFollowing:NO];
+    [self.user saveKeyAsynchronously:@"is_following"];
+    
+    [self reloadViewForUserState];
+}
+
 
 - (void)followersButtonPressed {
     [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:self.user andTab:@3] animated:YES];
@@ -474,15 +573,60 @@ UIButton *tapButton;
         else _privateLogoImageView.hidden = YES;
         _followRequestLabel.hidden = YES;
     }
+    
+    [self.tableView reloadData];
 }
 
+#pragma mark - Block View
+
+- (void)presentBlockPopView:(User *)user {
+    UIViewController *popViewController = [[UIViewController alloc] init];
+    popViewController.view.frame = self.view.frame;
+    popViewController.view.backgroundColor = RGBAlpha(244,149,45, 0.8f);
+    
+    UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 10, 65, 55)];
+    [backButton setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
+    [backButton setTitle:@" Back" forState:UIControlStateNormal];
+    [backButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    backButton.titleLabel.font = [FontProperties getSubtitleFont];
+    [backButton addTarget:self action: @selector(dismissAndGoBack) forControlEvents:UIControlEventTouchUpInside];
+    [popViewController.view addSubview:backButton];
+    
+    UILabel *blockedLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height/2 - 60 - 40, popViewController.view.frame.size.width - 40, 120)];
+    blockedLabel.text = [NSString stringWithFormat:@"%@ can't follow you or see any of your activity.", [user fullName]];
+    blockedLabel.textColor = [UIColor whiteColor];
+    blockedLabel.numberOfLines = 0;
+    blockedLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    blockedLabel.font = [FontProperties getSubHeaderFont];
+    blockedLabel.textAlignment = NSTextAlignmentCenter;
+    [popViewController.view addSubview:blockedLabel];
+    
+    UIButton *unblockButton = [[UIButton alloc] initWithFrame:CGRectMake(25, 64 + self.view.frame.size.width + 20, self.view.frame.size.width - 50, 50)];
+    [unblockButton addTarget:self action:@selector(unblockPressed) forControlEvents:UIControlEventTouchUpInside];
+    unblockButton.layer.cornerRadius = 15;
+    unblockButton.layer.borderWidth = 1;
+    unblockButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    [unblockButton setTitle:[NSString stringWithFormat:@"Unblock %@", [user firstName]] forState:UIControlStateNormal];
+    [unblockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    unblockButton.titleLabel.font = [FontProperties scMediumFont:24.0f];
+    [popViewController.view addSubview:unblockButton];
+    
+    [[RWBlurPopover instance] presentViewController:popViewController withOrigin:0 andHeight:popViewController.view.frame.size.height];
+}
+
+- (void)dismissAndGoBack {
+    isUserBlocked = [self.user isBlocked];
+    [self.user setIsBlocked:NO];
+    [self goBack];
+    [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){}];
+}
 
 #pragma mark Notification Handlers
 
 - (void) initializeNotificationHandlers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
-   // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed:) name:@"blockPressed" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed:) name:@"blockPressed" object:nil];
 }
 
 
