@@ -87,6 +87,7 @@
             imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
             UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
             spinner.frame = CGRectMake(myCell.imageView.frame.size.width/4, myCell.imageView.frame.size.height/4, myCell.imageView.frame.size.width/2,  myCell.imageView.frame.size.height/2);
+            [myCell.imageView addSubview:spinner];
             [spinner startAnimating];
             [myCell.imageView setImageWithURL:imageURL
                                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
