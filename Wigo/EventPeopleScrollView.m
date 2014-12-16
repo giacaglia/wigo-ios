@@ -124,7 +124,8 @@
         self.fetchingEventAttendees = YES;
         NSString *queryString;
         if (self.groupID) {
-              queryString = [NSString stringWithFormat:@"eventattendees/?group=%@&event=%@&limit=10&page=%@", [self.groupID stringValue] , [eventId stringValue], [self.page stringValue]];
+            if (!self.page) self.page = @2;
+            queryString = [NSString stringWithFormat:@"eventattendees/?group=%@&event=%@&limit=10&page=%@", [self.groupID stringValue] , [eventId stringValue], [self.page stringValue]];
         }
         else {
             queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [self.page stringValue]];

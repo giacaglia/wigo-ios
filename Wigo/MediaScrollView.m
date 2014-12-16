@@ -64,15 +64,28 @@
     NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
     NSString *contentURL = [eventMessage objectForKey:@"media"];
     if ([mimeType isEqualToString:kCameraType]) {
-        CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
-        [cameraCell setControllerDelegate:self];
-        NSArray *arrayViewContollers = (NSArray *)cameraCell.controller.viewControllers;
-        if (arrayViewContollers.count > 0) {
-            IQMediaCaptureController *captureController = (IQMediaCaptureController *)arrayViewContollers[0];
-            captureController.startXPoint = (self.eventMessages.count - 1) * [[UIScreen mainScreen] bounds].size.width;
+        AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+        if (authStatus == AVAuthorizationStatusDenied) {
+            PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
+            [myCell.imageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL] ]];
+             myCell.titleTextLabel.frame = CGRectMake(15, 160, self.frame.size.width - 30, 60);
+            myCell.titleTextLabel.text = @"Please Give WiGo an access to camera to add to the story:";
+            myCell.avoidAction.hidden = YES;
+            myCell.cameraAccessImageView.hidden = NO;
+            return myCell;
         }
-        [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
-        return cameraCell;
+        else {
+            CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
+            [cameraCell setControllerDelegate:self];
+            NSArray *arrayViewContollers = (NSArray *)cameraCell.controller.viewControllers;
+            if (arrayViewContollers.count > 0) {
+                IQMediaCaptureController *captureController = (IQMediaCaptureController *)arrayViewContollers[0];
+                captureController.startXPoint = (self.eventMessages.count - 1) * [[UIScreen mainScreen] bounds].size.width;
+            }
+            [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
+            return cameraCell;
+
+        }
     }
     else if ([mimeType isEqualToString:kImageEventType]) {
         ImageCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCell" forIndexPath: indexPath];
@@ -87,6 +100,7 @@
             imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
             UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
             spinner.frame = CGRectMake(myCell.imageView.frame.size.width/4, myCell.imageView.frame.size.height/4, myCell.imageView.frame.size.width/2,  myCell.imageView.frame.size.height/2);
+            [myCell.imageView addSubview:spinner];
             [spinner startAnimating];
             [myCell.imageView setImageWithURL:imageURL
                                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -615,6 +629,11 @@
     [self.avoidAction setTitle:@"Not Now" forState:UIControlStateNormal];
     [self.avoidAction setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     [self.contentView addSubview:self.avoidAction];
+    
+    self.cameraAccessImageView = [[UIImageView alloc] initWithFrame:CGRectMake(25, 250, 224, 192)];
+    self.cameraAccessImageView.image = [UIImage imageNamed:@"cameraRoll"];
+    self.cameraAccessImageView.hidden = YES;
+    [self.contentView addSubview:self.cameraAccessImageView];
 }
 
 @end
