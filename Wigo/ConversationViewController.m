@@ -69,7 +69,8 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     // Title setup
     self.title = [self.user fullName];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    
+    self.navigationController.navigationBar.barTintColor = [FontProperties getOrangeColor];
+    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
     [self initializeScrollView];

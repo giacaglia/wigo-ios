@@ -311,7 +311,7 @@ UIButton *tapButton;
     
     _leftProfileButton = [[UIButton alloc] init];
     _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3, 70);
-    [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [_leftProfileButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     UILabel *numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _leftProfileButton.frame.size.width, 25)];
     numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
     numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
@@ -422,11 +422,6 @@ UIButton *tapButton;
 }
 
 #pragma mark - Action Taps
-- (void)leftProfileButtonPressed {
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        [self followersButtonPressed];
-    }
-}
 
 - (void)blockPressed:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
@@ -490,9 +485,16 @@ UIButton *tapButton;
 }
 
 - (void)chatPressed {
-    ChatViewController *chatViewController = [ChatViewController new];
-    chatViewController.view.backgroundColor = UIColor.whiteColor;
-    [self.navigationController pushViewController:chatViewController animated:YES];
+    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
+        ChatViewController *chatViewController = [ChatViewController new];
+        chatViewController.view.backgroundColor = UIColor.whiteColor;
+        [self.navigationController pushViewController:chatViewController animated:YES];
+    }
+    else {
+       
+        [self.navigationController pushViewController: [[ConversationViewController alloc] initWithUser:self.user] animated:YES];
+    }
+   
 }
 
 
