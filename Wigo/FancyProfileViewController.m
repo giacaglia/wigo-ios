@@ -308,7 +308,10 @@ UIButton *tapButton;
     lowerBorder.frame = CGRectMake(0, _headerButtonView.frame.size.height, CGRectGetWidth(_headerButtonView.frame), 0.5f);
     [_headerButtonView.layer addSublayer: lowerBorder];
     
-    [self.view addSubview: _headerButtonView];
+    if (self.userState != FOLLOWING_USER) {
+        
+        return;
+    }
     
     _leftProfileButton = [[UIButton alloc] init];
     _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3, 70);
@@ -513,7 +516,7 @@ UIButton *tapButton;
 
 - (NSInteger) notificationCount {
     if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
-        return [_nonExpiredNotificationsParty getObjectArray].count*5;
+        return [_nonExpiredNotificationsParty getObjectArray].count*2;
     }
     
     return 0;
