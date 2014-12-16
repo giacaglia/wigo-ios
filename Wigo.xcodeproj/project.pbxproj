@@ -2450,7 +2450,7 @@
 		C12A11DE19787BE700D53B1C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				API_VERSION = 1.0.5;
+				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -2490,7 +2490,7 @@
 		C12A11DF19787BE700D53B1C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				API_VERSION = 1.0.5;
+				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "";
@@ -2531,7 +2531,7 @@
 		C12A11E019787BE700D53B1C /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				API_VERSION = 1.0.5;
+				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "";
@@ -2647,7 +2647,7 @@
 		E921D6481923967D00361247 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				API_VERSION = 1.0.5;
+				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -2687,7 +2687,7 @@
 		E921D6491923967D00361247 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				API_VERSION = 1.0.5;
+				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -2820,7 +2820,7 @@
 		E94A2852196D830F0027D3BA /* Distribution */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				API_VERSION = 1.0.5;
+				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
