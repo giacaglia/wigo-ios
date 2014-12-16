@@ -6,18 +6,22 @@
 //  Copyright (c) 2014 Alex Grinman. All rights reserved.
 //
 
-#import "ParallaxProfileViewController.h"
+#import "FancyProfileViewController.h"
 #import <Parse/Parse.h>
 #import "UIButtonAligned.h"
 #import "ImageScrollView.h"
 #import "ChatViewController.h"
+#import "FXBlurView.h"
 
-@interface ParallaxProfileViewController()<ImageScrollViewDelegate>
+@interface FancyProfileViewController()<ImageScrollViewDelegate> {
+
+}
 
 @property (nonatomic, strong) ImageScrollView *imageScrollView;
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIView *nameView;
 @property (nonatomic, strong) UIView *headerButtonView;
+@property (nonatomic, strong) UIImageView *nameViewBackground;
 
 @property UIPageControl *pageControl;
 
@@ -37,8 +41,6 @@
 @property UIButton *followButton;
 @property UILabel *followRequestLabel;
 
-@property UIView *lastLineView;
-@property UIView *nameOfPersonBackground;
 @property UILabel *nameOfPersonLabel;
 @property UIImageView *privateLogoImageView;
 
@@ -50,7 +52,7 @@ BOOL isUserBlocked;
 BOOL blockShown;
 UIButton *tapButton;
 
-@implementation ParallaxProfileViewController
+@implementation FancyProfileViewController
 
 #pragma  mark - Init
 - (id)initWithUser:(User *)user {
@@ -81,6 +83,7 @@ UIButton *tapButton;
     [super viewDidLoad];
     
     blockShown = NO;
+    [self pageChangedTo: 0];
 
 
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -95,7 +98,7 @@ UIButton *tapButton;
     
     NSString *isCurrentUser = (self.user == [Profile user]) ? @"Yes" : @"No";
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", nil];
-    
+
     [EventAnalytics tagEvent:@"Profile View" withDetails:options];
 }
 
@@ -120,6 +123,7 @@ UIButton *tapButton;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
@@ -137,7 +141,7 @@ UIButton *tapButton;
 
 #pragma mark - Image Scroll View 
 - (void) createPageControl {
-    _pageControl = [[UIPageControl alloc] init];
+    _pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, 0, 200, 20)];
     _pageControl.enabled = NO;
     _pageControl.currentPage = 0;
     _pageControl.currentPageIndicatorTintColor = UIColor.whiteColor;
@@ -167,16 +171,12 @@ UIButton *tapButton;
 - (void)pageChangedTo:(NSInteger)page {
     _pageControl.currentPage = page;
     
-    UIImageView *imageView = [self.imageScrollView getImageAtPage: page];
-    if (!imageView) {
+    UIImageView *image = [self.imageScrollView getCurrentImage];
+    if (!image) {
+        NSLog(@"nil image");
         return;
     }
-    
-    
-    imageView.frame = CGRectMake(0, -1*imageView.frame.size.height + _nameView.frame.size.height, imageView.frame.size.width, _nameView.frame.size.height   );
-    
-    
-    [_nameView insertSubview: imageView atIndex: 0];
+    [_nameViewBackground setImage:[image.image blurredImageWithRadius:20.0f iterations:4 tintColor:[UIColor clearColor]]];
 }
 
 #pragma mark - Go Back
@@ -237,9 +237,12 @@ UIButton *tapButton;
 #pragma mark Name View
 - (void)initializeNameOfPerson {
     _nameView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
-    _nameView.clipsToBounds = NO;
-    [self.view bringSubviewToFront:_nameView];
-    [self.view addSubview:_nameView];
+    
+    _nameViewBackground = [[UIImageView alloc] initWithFrame: _nameView.bounds];
+    _nameViewBackground.contentMode = UIViewContentModeBottom;
+    _nameViewBackground.clipsToBounds = NO;
+    _nameViewBackground.alpha = 0;
+    [_nameView addSubview: _nameViewBackground];
     
     UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
     gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
@@ -265,6 +268,12 @@ UIButton *tapButton;
 - (void)initializeHeaderButtonView {
     _headerButtonView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width, 70)];
     _headerButtonView.backgroundColor = [UIColor whiteColor];
+    
+    CALayer *lowerBorder = [CALayer layer];
+    lowerBorder.backgroundColor = [[[UIColor lightGrayColor] colorWithAlphaComponent: 0.5f] CGColor];
+    lowerBorder.frame = CGRectMake(0, _headerButtonView.frame.size.height, CGRectGetWidth(_headerButtonView.frame), 0.5f);
+    [_headerButtonView.layer addSublayer: lowerBorder];
+    
     [self.view addSubview: _headerButtonView];
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
         _leftProfileButton = [[UIButton alloc] init];
@@ -433,7 +442,7 @@ UIButton *tapButton;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == kImageViewSection) {
-        return 0.0f;
+        return 0;
     }
     return _nameView.frame.size.height + _headerButtonView.frame.size.height;
 }
@@ -442,7 +451,7 @@ UIButton *tapButton;
     if (indexPath.section == kNotificationsSection) {
         return 54;
     } else if (indexPath.section == kImageViewSection) {
-        return self.imageScrollView.frame.size.height - self.nameView.frame.size.height;
+        return self.imageScrollView.frame.size.height - _nameView.frame.size.height;
     }
     
     return 0;
@@ -453,9 +462,21 @@ UIButton *tapButton;
     if (scrollView.contentOffset.y < 0) {
         scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
     }
+    
+    CGFloat defaultLength = self.imageScrollView.frame.size.height - _nameView.frame.size.height;
+    
+//    self.nameOfPersonLabel.alpha = MIN(1.0, (defaultLength - scrollView.contentOffset.y)/defaultLength);
+//    self.nameOfPersonLabel.alpha  = MAX(self.nameOfPersonLabel.alpha, 0);
+    
+    _nameViewBackground.alpha = MIN(1.0, (defaultLength - scrollView.contentOffset.y)/defaultLength);
+    _nameViewBackground.alpha  = 1 - MAX(_nameViewBackground.alpha, 0);
+
+    
 }
 
-
+-(BOOL)isRowZeroVisible {
+    return [self.tableView.indexPathsForVisibleRows indexOfObject: [NSIndexPath indexPathForRow:0 inSection:0]] != NSNotFound;
+}
 
 #pragma mark - Notifications Network requests
 

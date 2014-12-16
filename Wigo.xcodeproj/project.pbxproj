@@ -408,7 +408,7 @@
 		FABD337B1A3B9904008FF56D /* JPBFloatingTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33751A3B9904008FF56D /* JPBFloatingTextViewController.m */; };
 		FABD337C1A3B9904008FF56D /* JPBParallaxBlurViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33771A3B9904008FF56D /* JPBParallaxBlurViewController.m */; };
 		FABD337D1A3B9904008FF56D /* JPBParallaxTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33791A3B9904008FF56D /* JPBParallaxTableViewController.m */; };
-		FABD33801A3B996F008FF56D /* ParallaxProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD337F1A3B996F008FF56D /* ParallaxProfileViewController.m */; };
+		FABD33801A3B996F008FF56D /* FancyProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD337F1A3B996F008FF56D /* FancyProfileViewController.m */; };
 		FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 		FADD07311A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 /* End PBXBuildFile section */
@@ -801,8 +801,8 @@
 		FABD33771A3B9904008FF56D /* JPBParallaxBlurViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBParallaxBlurViewController.m; sourceTree = "<group>"; };
 		FABD33781A3B9904008FF56D /* JPBParallaxTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPBParallaxTableViewController.h; sourceTree = "<group>"; };
 		FABD33791A3B9904008FF56D /* JPBParallaxTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBParallaxTableViewController.m; sourceTree = "<group>"; };
-		FABD337E1A3B996F008FF56D /* ParallaxProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParallaxProfileViewController.h; sourceTree = "<group>"; };
-		FABD337F1A3B996F008FF56D /* ParallaxProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParallaxProfileViewController.m; sourceTree = "<group>"; };
+		FABD337E1A3B996F008FF56D /* FancyProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FancyProfileViewController.h; sourceTree = "<group>"; };
+		FABD337F1A3B996F008FF56D /* FancyProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FancyProfileViewController.m; sourceTree = "<group>"; };
 		FADD072E1A0D296900492369 /* LLACircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLACircularProgressView.h; sourceTree = "<group>"; };
 		FADD072F1A0D296900492369 /* LLACircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLACircularProgressView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1262,8 +1262,8 @@
 				E9147B6B1925123C00C25C9A /* ProfileViewController.m */,
 				E9C14E5F1A2E201D00E20B15 /* ReProfileViewController.h */,
 				E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */,
-				FABD337E1A3B996F008FF56D /* ParallaxProfileViewController.h */,
-				FABD337F1A3B996F008FF56D /* ParallaxProfileViewController.m */,
+				FABD337E1A3B996F008FF56D /* FancyProfileViewController.h */,
+				FABD337F1A3B996F008FF56D /* FancyProfileViewController.m */,
 				E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */,
 				E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */,
 				FA55260E1A1FCB0C00101AE7 /* Ambassador */,
@@ -2315,7 +2315,7 @@
 				E9CD53861993C29800206B75 /* FLAnimatedImageView.m in Sources */,
 				E9CD473A194B9AD600AEA17D /* PhotoViewController.m in Sources */,
 				E9C63BFE1A03ED35006C5DD2 /* IQFileManager.m in Sources */,
-				FABD33801A3B996F008FF56D /* ParallaxProfileViewController.m in Sources */,
+				FABD33801A3B996F008FF56D /* FancyProfileViewController.m in Sources */,
 				E9C63BE21A03ED35006C5DD2 /* IQSongsAlbumViewCell.m in Sources */,
 				E96EF681197EE95D00F88A6D /* Time.m in Sources */,
 				E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */,

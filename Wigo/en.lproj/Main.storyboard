@@ -437,10 +437,10 @@
             </objects>
             <point key="canvasLocation" x="3275" y="-2428"/>
         </scene>
-        <!--Parallax Profile View Controller-->
+        <!--Fancy Profile View Controller-->
         <scene sceneID="4Co-ES-03f">
             <objects>
-                <tableViewController storyboardIdentifier="ParallaxProfileViewController" automaticallyAdjustsScrollViewInsets="NO" id="4XA-L7-y6d" customClass="ParallaxProfileViewController" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="FancyProfileViewController" automaticallyAdjustsScrollViewInsets="NO" id="4XA-L7-y6d" customClass="FancyProfileViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="NaO-eg-QbV">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -21,7 +21,7 @@
 #import "PeekViewController.h"
 #import "ReProfileViewController.h"
 #import "EventStoryViewController.h"
-#import "ParallaxProfileViewController.h"
+#import "FancyProfileViewController.h"
 
 #define sizeOfEachCell 180
 #define kEventCellName @"EventCell"
@@ -420,9 +420,9 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)profileSegue {
-    ParallaxProfileViewController *parallaxViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ParallaxProfileViewController"];
-    [parallaxViewController setStateWithUser: [Profile user]];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: parallaxViewController];
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser: [Profile user]];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: fancyProfileViewController];
     
     [self presentViewController:navController animated:YES completion:nil];
 }

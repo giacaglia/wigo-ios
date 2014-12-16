@@ -11,7 +11,7 @@
 #import "Globals.h"
 #import "ReProfileViewController.h"
 
-@interface ParallaxProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
+@interface FancyProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property EditProfileViewController *editProfileViewController;
 @property ConversationViewController *conversationViewController;

@@ -11,9 +11,10 @@
 
 @interface ImageScrollView() {
     CGPoint _currentPoint;
+    NSInteger _currentPage;
 }
 @property (nonatomic, strong) UIScrollView *scrollView;
-@property (nonatomic, strong) NSMutableArray *images;
+@property (nonatomic, strong) NSMutableArray *imageViews;
 
 @end
 
@@ -28,8 +29,10 @@
         self.scrollView.autoresizesSubviews = YES;
         self.scrollView.delegate = self;
         self.scrollView.backgroundColor = [UIColor blackColor];
-        
+    
         [self addSubview: self.scrollView];
+        
+        _currentPage = 0;
         
         [self addImages: imageURLS infoDicts: infoDicts areaDicts: areaDicts];
     }
@@ -41,7 +44,7 @@
     
 
     [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    self.images = [[NSMutableArray alloc] init];
+    self.imageViews = [[NSMutableArray alloc] init];
     for (int i = 0; i < [imageURLs count]; i++) {
         
         UIImageView *profileImgView = [self getNewProfileImageView: CGRectMake((self.frame.size.width + 10) * i, 0, self.frame.size.width, self.frame.size.width)];
@@ -65,10 +68,16 @@
                                withInfo:infoDict
                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                                   [weakSpinner stopAnimating];
-                                  [self.images addObject: image];
+                                  
+                                  if (i == 0) {
+                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                          [self.delegate pageChangedTo: 0];
+                                      });
+                                  }
                               }];
         
         
+        [self.imageViews addObject: profileImgView];
         [self.scrollView addSubview:profileImgView];
         
     }
@@ -76,15 +85,10 @@
     [self.scrollView setContentSize:CGSizeMake((self.frame.size.width + 10) * [imageURLs count] - 10, [[UIScreen mainScreen] bounds].size.width)];
 }
 
-- (UIImageView *) getImageAtPage: (NSInteger) page {
-    if (page < self.images.count) {
-        UIImage *image = [self.images objectAtIndex: page];
-        UIImageView *imageView = [self getNewProfileImageView: CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-        [imageView setImage: image];
-        
-        return imageView;
+- (UIImageView *) getCurrentImage {
+    if (_currentPage < self.imageViews.count) {
+        return [self.imageViews objectAtIndex: _currentPage];
     }
-    
 
     return nil;
 }
@@ -109,6 +113,7 @@
     float fractionalPage = scrollView.contentOffset.x / pageWidth;
     NSInteger page = lround(fractionalPage);
     
+    _currentPage = page;
     [self.delegate pageChangedTo: page];
 }
 
