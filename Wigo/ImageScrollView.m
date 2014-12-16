@@ -113,8 +113,11 @@
     float fractionalPage = scrollView.contentOffset.x / pageWidth;
     NSInteger page = lround(fractionalPage);
     
-    _currentPage = page;
-    [self.delegate pageChangedTo: page];
+    if (page != _currentPage) {
+        [self.delegate pageChangedTo: page];
+        _currentPage = page;
+    }
+
 }
 
 

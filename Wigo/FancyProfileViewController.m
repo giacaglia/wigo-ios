@@ -14,7 +14,8 @@
 #import "FXBlurView.h"
 
 @interface FancyProfileViewController()<ImageScrollViewDelegate> {
-    BOOL animatedTitleView;
+    UIImageView *_gradientImageView;
+    NSMutableArray *_blurredImages;
 }
 
 @property (nonatomic, strong) ImageScrollView *imageScrollView;
@@ -85,11 +86,11 @@ UIButton *tapButton;
     blockShown = NO;
     [self pageChangedTo: 0];
 
-
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
     [self.tableView setTableHeaderView: self.imageScrollView];
-
+    self.tableView.showsVerticalScrollIndicator = NO;
+    
     [self initializeNotificationHandlers];
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
@@ -104,14 +105,17 @@ UIButton *tapButton;
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
-    _pageControl.hidden = YES;
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
+    
+    [_pageControl removeFromSuperview];
+    _pageControl = nil;
+    [_gradientImageView removeFromSuperview];
+    _gradientImageView = nil;
 }
 
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    _pageControl.hidden = NO;
     //if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
     _page = @1;
     [self fetchNotifications];
@@ -123,14 +127,22 @@ UIButton *tapButton;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+
+    if (!_gradientImageView) {
+        _gradientImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0, -1*[UIApplication sharedApplication].statusBarFrame.size.height, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height)];
+        [_gradientImageView setImage: [UIImage imageNamed:@"topGradientBackground"]];
+        
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                      forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.shadowImage = [UIImage new];
+        self.navigationController.navigationBar.translucent = YES;
+        
+        [self.navigationController.navigationBar insertSubview: _gradientImageView atIndex: 0];
+    }
     
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
-    self.navigationController.navigationBar.translucent = YES;
-    [self createPageControl];
-
-
+    if (!_pageControl) {
+        [self createPageControl];
+    }
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
@@ -141,14 +153,15 @@ UIButton *tapButton;
 
 #pragma mark - Image Scroll View 
 - (void) createPageControl {
-    _pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, 0, 200, 20)];
+    _pageControl = [[UIPageControl alloc] initWithFrame: self.navigationController.navigationBar.bounds];
+//    _pageControl.center = CGPointMake(self.navigationController.navigationBar.center;
     _pageControl.enabled = NO;
     _pageControl.currentPage = 0;
     _pageControl.currentPageIndicatorTintColor = UIColor.whiteColor;
     _pageControl.pageIndicatorTintColor = RGBAlpha(255, 255, 255, 0.4f);
-    _pageControl.center = CGPointMake(self.navigationController.view.center.x, 20);
+    _pageControl.numberOfPages = [[self.user imagesURL] count];
     
-    [self.navigationController.view addSubview: _pageControl];
+    [self.navigationController.navigationBar insertSubview: _pageControl aboveSubview: _gradientImageView];
 }
 
 - (void) createImageScrollView {
@@ -172,12 +185,25 @@ UIButton *tapButton;
 - (void)pageChangedTo:(NSInteger)page {
     _pageControl.currentPage = page;
     
+    if (_blurredImages && page < _blurredImages.count) {
+        NSLog(@"used from memory");
+        [_nameViewBackground setImage: [_blurredImages objectAtIndex: page]];
+        return;
+    }
+    
+    if (!_blurredImages) {
+        _blurredImages = [[NSMutableArray alloc] init];
+    }
+    
     UIImageView *image = [self.imageScrollView getCurrentImage];
     if (!image) {
         NSLog(@"nil image");
         return;
     }
-    [_nameViewBackground setImage:[image.image blurredImageWithRadius:20.0f iterations:4 tintColor:[UIColor clearColor]]];
+    
+    UIImage *blurredImage = [image.image blurredImageWithRadius:20.0f iterations:4 tintColor:[UIColor clearColor]];
+    [_nameViewBackground setImage: blurredImage];
+    [_blurredImages addObject: blurredImage];
 }
 
 #pragma mark - Go Back
@@ -369,12 +395,15 @@ UIButton *tapButton;
 #pragma mark Notification Handlers
 
 - (void) initializeNotificationHandlers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createImageScrollView) name:@"updateProfile" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed:) name:@"blockPressed" object:nil];
 }
 
 
+- (void) updateProfile {
+    [self.tableView reloadData];
+}
 
 #pragma mark - Table View Delegate
 
@@ -471,6 +500,8 @@ UIButton *tapButton;
     _privateLogoImageView.alpha = MIN(1.0, (defaultLength - scrollView.contentOffset.y)/defaultLength);
     _privateLogoImageView.alpha  = MAX(_privateLogoImageView.alpha, 0);
     
+    _pageControl.alpha = _privateLogoImageView.alpha;
+    _gradientImageView.alpha = _privateLogoImageView.alpha;
     
     _nameViewBackground.alpha = MIN(1.0, lengthFraction);
     _nameViewBackground.alpha  = 1 - MAX(_nameViewBackground.alpha, 0);
