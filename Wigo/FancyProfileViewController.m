@@ -166,6 +166,7 @@ UIButton *tapButton;
     CGFloat imageScrollViewDimension = [[UIScreen mainScreen] bounds].size.width;
     self.imageScrollView = [[ImageScrollView alloc] initWithFrame: CGRectMake(0, 0, imageScrollViewDimension, imageScrollViewDimension) imageURLs:[self.user imagesURL] infoDicts: infoDicts areaDicts: [self.user imagesArea]];
     self.imageScrollView.delegate = self;
+    [self.tableView reloadData];
 }
 
 - (void)pageChangedTo:(NSInteger)page {
@@ -368,7 +369,7 @@ UIButton *tapButton;
 #pragma mark Notification Handlers
 
 - (void) initializeNotificationHandlers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createImageScrollView) name:@"updateProfile" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed:) name:@"blockPressed" object:nil];
 }
