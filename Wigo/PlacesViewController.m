@@ -929,6 +929,7 @@ viewForHeaderInSection:(NSInteger)section {
     if (eventNumber < [eventPageArray count]) {
         NSNumber *pageNumberForEvent = [eventPageArray objectAtIndex:eventNumber];
         if ([pageNumberForEvent intValue] > 0) {
+            if (!pageNumberForEvent)  pageNumberForEvent = @2;
             NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [pageNumberForEvent stringValue]];
             NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:eventNumber], @"page": pageNumberForEvent};
             [Network queryAsynchronousAPI:queryString

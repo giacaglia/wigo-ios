@@ -715,20 +715,17 @@
                 
                 UIImage *image = [[UIImage alloc] initWithData:imageData];
 
-//                NSArray *inputs = [_captureSession inputs];
-//                for (AVCaptureInput *input in inputs) {
-//                    AVCaptureDeviceInput *deviceInput = (AVCaptureDeviceInput *)input;
-//                    AVCaptureDevice *device = [deviceInput device];
-//                    if (device.position == AVCaptureDevicePositionFront) {
-//                        CIImage* coreImage = image.CIImage;
-//                        if (!coreImage) {
-//                            coreImage = [CIImage imageWithCGImage:image.CGImage];
-//                        }
-//                        coreImage = [coreImage imageByApplyingTransform:CGAffineTransformMake(1,0,0,-1,0,0)];
-//                        image = [UIImage imageWithCIImage:coreImage];
-//                        break;
-//                    }
-//                }
+                NSArray *inputs = [_captureSession inputs];
+                for (AVCaptureInput *input in inputs) {
+                    AVCaptureDeviceInput *deviceInput = (AVCaptureDeviceInput *)input;
+                    AVCaptureDevice *device = [deviceInput device];
+                    if (device.position == AVCaptureDevicePositionFront) {
+                        image = [UIImage imageWithCGImage:[image CGImage]
+                                            scale:1.0
+                                      orientation: UIImageOrientationLeftMirrored];
+                        break;
+                    }
+                }
 
                 
                 NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:outputImageURL,IQMediaURL,image,IQMediaImage,IQMediaTypeImage,IQMediaType, nil];
