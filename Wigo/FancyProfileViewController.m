@@ -12,6 +12,7 @@
 #import "ImageScrollView.h"
 #import "ChatViewController.h"
 #import "FXBlurView.h"
+#import "RWBlurPopover.h"
 
 @interface FancyProfileViewController()<ImageScrollViewDelegate> {
     UIImageView *_gradientImageView;
@@ -145,6 +146,8 @@ UIButton *tapButton;
     }
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    [self reloadViewForUserState];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -153,15 +156,16 @@ UIButton *tapButton;
 
 #pragma mark - Image Scroll View 
 - (void) createPageControl {
-    _pageControl = [[UIPageControl alloc] initWithFrame: self.navigationController.navigationBar.bounds];
-//    _pageControl.center = CGPointMake(self.navigationController.navigationBar.center;
+    _pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 20)];
     _pageControl.enabled = NO;
     _pageControl.currentPage = 0;
     _pageControl.currentPageIndicatorTintColor = UIColor.whiteColor;
     _pageControl.pageIndicatorTintColor = RGBAlpha(255, 255, 255, 0.4f);
     _pageControl.numberOfPages = [[self.user imagesURL] count];
-    
-    [self.navigationController.navigationBar insertSubview: _pageControl aboveSubview: _gradientImageView];
+  
+    _pageControl.center = CGPointMake(_nameView.center.x, _nameOfPersonLabel.frame.origin.y + _nameOfPersonLabel.frame.size.height);
+    [_nameView addSubview: _pageControl];
+//    [self.navigationController.navigationBar insertSubview: _pageControl aboveSubview: _gradientImageView];
 }
 
 - (void) createImageScrollView {
@@ -186,7 +190,6 @@ UIButton *tapButton;
     _pageControl.currentPage = page;
     
     if (_blurredImages && page < _blurredImages.count) {
-        NSLog(@"used from memory");
         dispatch_async(dispatch_get_main_queue(), ^{
             [_nameViewBackground setImage: [_blurredImages objectAtIndex: page]];
         });
@@ -199,7 +202,6 @@ UIButton *tapButton;
     
     UIImage *image = [self.imageScrollView getCurrentImage];
     if (!image) {
-        NSLog(@"nil image");
         return;
     }
     
@@ -254,7 +256,9 @@ UIButton *tapButton;
 }
 
 
-
+- (void) morePressed {
+    [[RWBlurPopover instance] presentViewController:[[MoreViewController alloc] initWithUser:self.user] withOrigin:0 andHeight:self.view.frame.size.height];
+}
 - (void) editPressed {
     self.editProfileViewController = [[EditProfileViewController alloc] init];
     self.editProfileViewController.view.backgroundColor = RGB(235, 235, 235);
@@ -283,6 +287,7 @@ UIButton *tapButton;
     _nameOfPersonLabel.textColor = [UIColor whiteColor];
     _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
     [_nameView addSubview:_nameOfPersonLabel];
+
     
     _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 9, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
@@ -304,45 +309,42 @@ UIButton *tapButton;
     [_headerButtonView.layer addSublayer: lowerBorder];
     
     [self.view addSubview: _headerButtonView];
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _leftProfileButton = [[UIButton alloc] init];
-        _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3, 70);
-        [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        UILabel *numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _leftProfileButton.frame.size.width, 25)];
-        numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
-        numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
-        numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
-        numberOfFollowersLabel.text = [(NSNumber*)[self.user objectForKey:@"num_followers"] stringValue];
-        [_leftProfileButton addSubview:numberOfFollowersLabel];
-        
-        UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _leftProfileButton.frame.size.width, 20)];
-        followersLabel.textColor = [FontProperties getOrangeColor];
-        followersLabel.font = [FontProperties scMediumFont:16];
-        followersLabel.textAlignment = NSTextAlignmentCenter;
-        followersLabel.text = @"followers";
-        [_leftProfileButton addSubview:followersLabel];
-        [_headerButtonView addSubview:_leftProfileButton];
-    }
     
+    _leftProfileButton = [[UIButton alloc] init];
+    _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3, 70);
+    [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    UILabel *numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _leftProfileButton.frame.size.width, 25)];
+    numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
+    numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
+    numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
+    numberOfFollowersLabel.text = [(NSNumber*)[self.user objectForKey:@"num_followers"] stringValue];
+    [_leftProfileButton addSubview:numberOfFollowersLabel];
+    
+    UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _leftProfileButton.frame.size.width, 20)];
+    followersLabel.textColor = [FontProperties getOrangeColor];
+    followersLabel.font = [FontProperties scMediumFont:16];
+    followersLabel.textAlignment = NSTextAlignmentCenter;
+    followersLabel.text = @"followers";
+    [_leftProfileButton addSubview:followersLabel];
+    [_headerButtonView addSubview:_leftProfileButton];
     
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70);
-        UILabel *numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _rightProfileButton.frame.size.width, 25)];
-        numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
-        numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
-        numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
-        numberOfFollowingLabel.text = [(NSNumber*)[self.user objectForKey:@"num_following"] stringValue];
-        [_rightProfileButton addSubview:numberOfFollowingLabel];
-        
-        UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _rightProfileButton.frame.size.width, 20)];
-        followingLabel.textColor = [FontProperties getOrangeColor];
-        followingLabel.font = [FontProperties scMediumFont:16.0F];
-        followingLabel.textAlignment = NSTextAlignmentCenter;
-        followingLabel.text = @"following";
-        [_rightProfileButton addSubview:followingLabel];
-    }
+    _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70);
+    UILabel *numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _rightProfileButton.frame.size.width, 25)];
+    numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
+    numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
+    numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
+    numberOfFollowingLabel.text = [(NSNumber*)[self.user objectForKey:@"num_following"] stringValue];
+    [_rightProfileButton addSubview:numberOfFollowingLabel];
+    
+    UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _rightProfileButton.frame.size.width, 20)];
+    followingLabel.textColor = [FontProperties getOrangeColor];
+    followingLabel.font = [FontProperties scMediumFont:16.0F];
+    followingLabel.textAlignment = NSTextAlignmentCenter;
+    followingLabel.text = @"following";
+    [_rightProfileButton addSubview:followingLabel];
+    
     [_headerButtonView addSubview:_rightProfileButton];
     
     UIButton *chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70)];
@@ -392,14 +394,92 @@ UIButton *tapButton;
     [self.navigationController pushViewController:chatViewController animated:YES];
 }
 
-#pragma mark Header Name View
+
+#pragma mark User State
+
+- (void) reloadViewForUserState {
+    if (self.userState == FOLLOWING_USER ||
+        self.userState == ATTENDING_EVENT_FOLLOWING_USER ||
+        self.userState == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
+        
+        _followingButton.enabled = YES;
+        _followingButton.hidden = NO;
+        _followersButton.enabled = YES;
+        _followersButton.hidden = NO;
+        _leftProfileButton.enabled = YES;
+        _leftProfileButton.hidden = NO;
+        _rightProfileButton.enabled = YES;
+        _rightProfileButton.hidden = NO;
+        _rightBarBt.enabled = YES;
+        _rightBarBt.hidden = NO;
+        
+        _followButton.enabled = NO;
+        _followButton.hidden = YES;
+        
+        _privateLogoImageView.hidden = YES;
+        _followRequestLabel.hidden = YES;
+    }
+    else if (self.userState == NOT_FOLLOWING_PUBLIC_USER ||
+             self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER ||
+             self.userState == BLOCKED_USER) {
+        _followingButton.enabled = NO;
+        _followingButton.hidden = YES;
+        _followersButton.enabled = NO;
+        _followersButton.hidden = YES;
+        _leftProfileButton.enabled = NO;
+        _leftProfileButton.hidden = YES;
+        _rightProfileButton.enabled = NO;
+        _rightProfileButton.hidden = YES;
+        
+        _followButton.enabled = YES;
+        _followButton.hidden = NO;
+        
+        if (self.userState == NOT_FOLLOWING_PUBLIC_USER) _privateLogoImageView.hidden = YES;
+        else _privateLogoImageView.hidden = NO;
+        _followRequestLabel.hidden = YES;
+    }
+    else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        _followingButton.enabled = NO;
+        _followingButton.hidden = YES;
+        _followersButton.enabled = NO;
+        _followersButton.hidden = YES;
+        _leftProfileButton.enabled = NO;
+        _leftProfileButton.hidden = YES;
+        _rightProfileButton.enabled = NO;
+        _rightProfileButton.hidden = YES;
+        
+        _followButton.enabled = NO;
+        _followButton.hidden = YES;
+        
+        _privateLogoImageView.hidden = YES;
+        _followRequestLabel.hidden = NO;
+    }
+    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
+        _followingButton.enabled = NO;
+        _followingButton.hidden = YES;
+        _followersButton.enabled = NO;
+        _followersButton.hidden = YES;
+        _followButton.enabled = NO;
+        _followButton.hidden = YES;
+        
+        _leftProfileButton.enabled = YES;
+        _leftProfileButton.hidden = NO;
+        _rightProfileButton.enabled = YES;
+        _rightProfileButton.hidden = NO;
+        
+        if (self.userState == PRIVATE_PROFILE) _privateLogoImageView.hidden = NO;
+        else _privateLogoImageView.hidden = YES;
+        _followRequestLabel.hidden = YES;
+    }
+}
+
 
 #pragma mark Notification Handlers
 
 - (void) initializeNotificationHandlers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed:) name:@"blockPressed" object:nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
+   // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed:) name:@"blockPressed" object:nil];
 }
 
 
@@ -407,20 +487,57 @@ UIButton *tapButton;
     [self.tableView reloadData];
 }
 
-#pragma mark - Table View Delegate
+#pragma mark - Table View Helpers
 
+- (BOOL) shouldShowGoOutsCell {
+    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER ||
+        self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (BOOL) shouldShowInviteCell {
+    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
+        return NO;
+    }
+    
+    if (self.userState == FOLLOWING_USER) {
+        return YES;
+    }
+
+    
+    return YES;
+}
+
+- (NSInteger) notificationCount {
+    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
+        return [_nonExpiredNotificationsParty getObjectArray].count*5;
+    }
+    
+    return 0;
+}
+
+#pragma mark - Table View Delegate
 
 #define kImageViewSection 0
 #define kNotificationsSection 1
+#define kGoOutsSection 2
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == kNotificationsSection) {
-        return [_nonExpiredNotificationsParty getObjectArray].count*10;
+    
+    if (section == kGoOutsSection) {
+        return ([self shouldShowGoOutsCell]) ? 1 : 0;
+    }
+    else if (section == kNotificationsSection) {
+        return [self notificationCount];
     }
     return 1;
 }
@@ -429,7 +546,14 @@ UIButton *tapButton;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     
-    if (indexPath.section == kNotificationsSection) {
+    if (indexPath.section == kGoOutsSection) {
+        GoOutsCell *goOutsCell = [tableView dequeueReusableCellWithIdentifier: @"GoOutsCell" forIndexPath:indexPath];
+        [goOutsCell setLabelsForUser: self.user];
+        
+        return goOutsCell;
+    }
+    
+    else if (indexPath.section == kNotificationsSection) {
         NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
         Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row] % [_nonExpiredNotificationsParty getObjectArray].count];
         if ([notification fromUserID] == (id)[NSNull null]) return notificationCell;
@@ -453,42 +577,48 @@ UIButton *tapButton;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (section == kImageViewSection) {
-        return nil;
+    if (section == kNotificationsSection) {
+        UIView *headerView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, tableView.frame.size.width, _nameView.frame.size.height + _headerButtonView.frame.size.height)];
+        
+        CGRect frame = _nameView.frame;
+        frame.origin = CGPointMake(0, 0);
+        _nameView.frame = frame;
+        [headerView addSubview: _nameView];
+        
+        frame = _headerButtonView.frame;
+        frame.origin = CGPointMake(0, _nameView.frame.size.height);
+        _headerButtonView.frame = frame;
+        [headerView addSubview: _headerButtonView];
+        
+        return headerView;
     }
     
-    UIView *headerView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, tableView.frame.size.width, _nameView.frame.size.height + _headerButtonView.frame.size.height)];
-    
-    CGRect frame = _nameView.frame;
-    frame.origin = CGPointMake(0, 0);
-    _nameView.frame = frame;
-    [headerView addSubview: _nameView];
-    
-    frame = _headerButtonView.frame;
-    frame.origin = CGPointMake(0, _nameView.frame.size.height);
-    _headerButtonView.frame = frame;
-    [headerView addSubview: _headerButtonView];
-    
-    return headerView;
+    return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (section == kImageViewSection) {
-        return 0;
+    if (section == kNotificationsSection) {
+        return _nameView.frame.size.height + _headerButtonView.frame.size.height;
     }
-    return _nameView.frame.size.height + _headerButtonView.frame.size.height;
+    return 0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kNotificationsSection) {
+    if (indexPath.section == kGoOutsSection) {
+        return [GoOutsCell rowHeight];
+    }
+    else if (indexPath.section == kNotificationsSection) {
         return 54;
-    } else if (indexPath.section == kImageViewSection) {
+    }
+    else if (indexPath.section == kImageViewSection) {
         return self.imageScrollView.frame.size.height - _nameView.frame.size.height;
     }
     
     return 0;
 
 }
+
+#pragma mark - ScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView.contentOffset.y < 0) {
@@ -655,4 +785,69 @@ UIButton *tapButton;
     self.isTapped = !self.isTapped;
 }
 
+@end
+
+@implementation GoOutsCell
+
+#define kTitleTemplate @"times %@ went out this term"
+
+- (void) awakeFromNib {
+    [self setup];
+}
+
+
++ (CGFloat)rowHeight {
+    return 100.0f;
+}
+
+- (void) setLabelsForUser: (User *) user {
+    self.numberLabel.text = [NSString stringWithFormat: @"42"];
+    self.titleLabel.text = [NSString stringWithFormat: kTitleTemplate, [user.firstName lowercaseString]];
+}
+
+- (void) setup {
+    self.numberLabel.font = [FontProperties mediumFont: 55];
+    self.numberLabel.textColor = [FontProperties getOrangeColor];
+    self.titleLabel.font = [FontProperties mediumFont: 24];
+    self.titleLabel.textColor = [UIColor lightGrayColor];
+}
+
+@end
+
+@implementation InviteCell
+
+#define kInviteTitleTemplate @"Invite %@ to join you at"
+
+- (void) awakeFromNib {
+    [self setup];
+}
+
+
++ (CGFloat)rowHeight {
+    return 70.0f;
+}
+
+- (void) setLabelsForUser: (User *) user {
+    self.titleLabel.text = [NSString stringWithFormat: kInviteTitleTemplate, [user.firstName lowercaseString]];
+}
+
+- (void) setup {
+    self.eventNameLabel.font = [FontProperties mediumFont: 18];
+    self.eventNameLabel.textColor = [FontProperties getBlueColor];
+    self.titleLabel.font = [FontProperties lightFont: 18];
+    self.titleLabel.textColor = [UIColor lightGrayColor];
+    
+    [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    self.inviteButton.titleLabel.font =  [FontProperties scMediumFont:18.0f];
+    self.inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.inviteButton.layer.borderWidth = 1;
+    self.inviteButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    self.inviteButton.layer.cornerRadius = 3;
+    
+    [self.inviteButton addTarget: self action: @selector(inviteTapped) forControlEvents: UIControlEventTouchUpInside];
+    
+}
+- (void) inviteTapped {
+    [self.delegate inviteTapped];
+}
 @end

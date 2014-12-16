@@ -723,7 +723,12 @@ int firstIndexOfNegativeEvent;
 
 - (void)showUser:(User *)user {
     shouldReloadEvents = NO;
-    [self.navigationController pushViewController:[[ReProfileViewController alloc] initWithUser:user] animated:NO];
+    
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser: user];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: fancyProfileViewController];
+    
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 - (void)showConversationForEvent:(Event *)event {

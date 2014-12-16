@@ -8,7 +8,7 @@
 
 #import "PeopleViewController.h"
 #import "Globals.h"
-#import "ProfileViewController.h"
+#import "FancyProfileViewController.h"
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
 #import "MobileContactsViewController.h"
@@ -26,7 +26,7 @@
 @property UISearchBar *searchBar;
 @property UIImageView *searchIconImageView;
 
-@property ProfileViewController *profileViewController;
+@property FancyProfileViewController *profileViewController;
 
 @property Party *everyoneParty;
 @property Party *followingParty;
@@ -188,7 +188,10 @@ NSMutableArray *suggestedArrayView;
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
-        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        
+        
+        self.profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [self.profileViewController setStateWithUser: user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }
@@ -200,7 +203,9 @@ NSMutableArray *suggestedArrayView;
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
-        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        
+        self.profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [self.profileViewController setStateWithUser: user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }
@@ -441,7 +446,10 @@ NSMutableArray *suggestedArrayView;
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:0];
-        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        
+        self.profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [self.profileViewController setStateWithUser: user];
+
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }

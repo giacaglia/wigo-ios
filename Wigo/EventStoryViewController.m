@@ -12,6 +12,8 @@
 #import "InviteViewController.h"
 #import "ReProfileViewController.h"
 #import "EventMessagesConstants.h"
+#import "FancyProfileViewController.h"
+
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 
 UIButton *sendButton;
@@ -448,9 +450,11 @@ NSDictionary *metaInfo;
 
 - (void)showUser:(User *)user {
     
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[ReProfileViewController alloc] initWithUser:user]];
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser: user];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: fancyProfileViewController];
     
-    [self presentViewController: navController animated: YES completion: nil];
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 

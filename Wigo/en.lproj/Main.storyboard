@@ -442,7 +442,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="FancyProfileViewController" automaticallyAdjustsScrollViewInsets="NO" id="4XA-L7-y6d" customClass="FancyProfileViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="NaO-eg-QbV">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -452,16 +452,84 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="GoOutsCell" rowHeight="100" id="FN0-wC-lfV" customClass="GoOutsCell">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="FN0-wC-lfV" id="8ft-gN-bs5">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="15" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PXg-2z-Kn9">
+                                            <rect key="frame" x="8" y="0.0" width="111" height="100"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="55"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="time ben went out this week" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yl5-qS-upx">
+                                            <rect key="frame" x="139" y="0.0" width="223" height="100"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="223" id="1LE-bN-4sG"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Yl5-qS-upx" firstAttribute="leading" secondItem="PXg-2z-Kn9" secondAttribute="trailing" constant="20" id="03N-zU-3yN"/>
+                                        <constraint firstItem="PXg-2z-Kn9" firstAttribute="bottom" secondItem="Yl5-qS-upx" secondAttribute="bottom" id="Wah-sh-Ext"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="Yl5-qS-upx" secondAttribute="trailing" constant="5" id="Xct-CQ-PvJ"/>
+                                        <constraint firstItem="PXg-2z-Kn9" firstAttribute="leading" secondItem="8ft-gN-bs5" secondAttribute="leadingMargin" id="caF-D7-ufP"/>
+                                        <constraint firstItem="PXg-2z-Kn9" firstAttribute="top" secondItem="8ft-gN-bs5" secondAttribute="top" id="dNZ-jI-foj"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="PXg-2z-Kn9" secondAttribute="bottom" constant="-8.5" id="nyS-ZD-X3H"/>
+                                        <constraint firstItem="PXg-2z-Kn9" firstAttribute="top" secondItem="Yl5-qS-upx" secondAttribute="top" id="vX4-8Y-gTD"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="numberLabel" destination="PXg-2z-Kn9" id="wgz-l0-0Ou"/>
+                                    <outlet property="titleLabel" destination="Yl5-qS-upx" id="OLm-rT-lFw"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="InviteCell" rowHeight="70" id="XXD-L1-pkX" customClass="InviteCell">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XXD-L1-pkX" id="hb1-ya-m85">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ggW-oB-JSu">
+                                            <rect key="frame" x="288" y="17" width="75" height="35"/>
+                                            <state key="normal" title="invite">
+                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                            </state>
+                                        </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="invite ben to join at" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IwM-ib-pII">
+                                            <rect key="frame" x="8" y="3" width="272" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Woah oah oah" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DDB-uC-ZhH">
+                                            <rect key="frame" x="8" y="23" width="272" height="44"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="eventNameLabel" destination="DDB-uC-ZhH" id="Vjn-Ej-PTN"/>
+                                    <outlet property="inviteButton" destination="ggW-oB-JSu" id="Ca9-dt-0l9"/>
+                                    <outlet property="titleLabel" destination="IwM-ib-pII" id="qdi-Z0-1aB"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="4XA-L7-y6d" id="mXj-FW-OJ4"/>
                             <outlet property="delegate" destination="4XA-L7-y6d" id="zzX-6o-scp"/>
                         </connections>
                     </tableView>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zA2-sG-0eV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3275" y="-1437"/>
+            <point key="canvasLocation" x="3164.5" y="-1598.5"/>
         </scene>
         <!--Campus Notification View Controller-->
         <scene sceneID="KRE-xI-MdA">

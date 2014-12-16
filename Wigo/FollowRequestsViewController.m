@@ -266,8 +266,13 @@
     int index = (int)((UIButton *)sender).tag;
     Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:index];
     User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-    [self.navigationController pushViewController:self.profileViewController animated:YES];
+    
+    
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser: user];
+    
+    self.profileViewController = fancyProfileViewController;
+    [self.navigationController pushViewController: self.profileViewController animated:YES];
 }
 
 #pragma mark - Network Functions

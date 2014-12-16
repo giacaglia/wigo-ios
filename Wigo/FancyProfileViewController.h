@@ -41,3 +41,25 @@
 @property (nonatomic, strong) UILabel *tapLabel;
 @property (nonatomic, strong) UIImageView *rightPostImageView;
 @end
+
+
+@interface GoOutsCell: UITableViewCell
+- (void) setLabelsForUser: (User *) user;
++ (CGFloat) rowHeight;
+@property (nonatomic, strong) IBOutlet UILabel *numberLabel;
+@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@end
+
+@protocol InviteCellDelegate
+- (void) inviteTapped;
+@end
+
+@interface InviteCell: UITableViewCell
+@property (nonatomic, assign) id<InviteCellDelegate> delegate;
+- (void) setLabelsForUser: (User *) user;
++ (CGFloat) rowHeight;
+@property (nonatomic, strong) IBOutlet UIButton *inviteButton;
+@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) IBOutlet UILabel *eventNameLabel;
+
+@end

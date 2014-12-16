@@ -10,6 +10,7 @@
 #import "Globals.h"
 #import "UIButtonAligned.h"
 #import "ProfileViewController.h"
+#import "FancyProfileViewController.h"
 
 @interface ConversationViewController ()
 
@@ -29,7 +30,7 @@
 
 NSNumber *page;
 BOOL fetching;
-ProfileViewController *profileViewController;
+FancyProfileViewController *profileViewController;
 BOOL didBeginEditing;
 
 @implementation ConversationViewController
@@ -183,8 +184,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void)profileSegue {
-    profileViewController = [[ProfileViewController alloc] initWithUser:self.user];
-    [self.navigationController pushViewController:profileViewController animated:YES];
+    
+    profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [profileViewController setStateWithUser: self.user];
+
+    [self.navigationController pushViewController: profileViewController animated:YES];
 }
 
 - (void) initializeTapHandler {
