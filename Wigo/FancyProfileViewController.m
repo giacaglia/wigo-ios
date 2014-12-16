@@ -14,7 +14,7 @@
 #import "FXBlurView.h"
 
 @interface FancyProfileViewController()<ImageScrollViewDelegate> {
-
+    BOOL animatedTitleView;
 }
 
 @property (nonatomic, strong) ImageScrollView *imageScrollView;
@@ -464,14 +464,25 @@ UIButton *tapButton;
         scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
     }
     
-    CGFloat defaultLength = self.imageScrollView.frame.size.height - _nameView.frame.size.height;
-    
-//    self.nameOfPersonLabel.alpha = MIN(1.0, (defaultLength - scrollView.contentOffset.y)/defaultLength);
-//    self.nameOfPersonLabel.alpha  = MAX(self.nameOfPersonLabel.alpha, 0);
-    
-    _nameViewBackground.alpha = MIN(1.0, (defaultLength - scrollView.contentOffset.y)/defaultLength);
-    _nameViewBackground.alpha  = 1 - MAX(_nameViewBackground.alpha, 0);
 
+    CGFloat defaultLength = self.imageScrollView.frame.size.height - _nameView.frame.size.height;
+    CGFloat lengthFraction = (defaultLength - scrollView.contentOffset.y)/defaultLength;
+    
+    _privateLogoImageView.alpha = MIN(1.0, (defaultLength - scrollView.contentOffset.y)/defaultLength);
+    _privateLogoImageView.alpha  = MAX(_privateLogoImageView.alpha, 0);
+    
+    
+    _nameViewBackground.alpha = MIN(1.0, lengthFraction);
+    _nameViewBackground.alpha  = 1 - MAX(_nameViewBackground.alpha, 0);
+    
+    
+    CGFloat minFontSize = 24.0f;
+    CGFloat maxFontSize = 30.0f;
+    
+    CGFloat currentSize = MIN(maxFontSize, maxFontSize - (maxFontSize - minFontSize)*(1 - lengthFraction));
+    currentSize = MAX(currentSize, minFontSize);
+    
+    self.nameOfPersonLabel.font = [FontProperties lightFont: currentSize];
     
 }
 
