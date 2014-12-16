@@ -331,7 +331,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     if ([datesAccessed count] == 3) {
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"Love Wigo?"
-                                  message:@"Looks like you love WiGo. The feeling is mutual. Share your love on the App Store."
+                                  message:@"Looks like you love Wigo. The feeling is mutual. Share your love on the App Store."
                                   delegate:self
                                   cancelButtonTitle:@"Not now"
                                   otherButtonTitles:@"Rate Wigo", nil];

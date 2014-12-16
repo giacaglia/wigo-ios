@@ -397,7 +397,7 @@ NSMutableArray *suggestedArrayView;
         UILabel *dateJoined = [[UILabel alloc] init];
         if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastUserRead] intValue]) {
             UILabel *mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 152, 110, 15)];
-            mutualFriendsLabel.text = @"New on WiGo";
+            mutualFriendsLabel.text = @"New on Wigo";
             mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
             mutualFriendsLabel.font = [FontProperties lightFont:12.0f];
             mutualFriendsLabel.textColor = RGB(102, 102, 102);

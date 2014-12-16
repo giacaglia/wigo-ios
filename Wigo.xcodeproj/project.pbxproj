@@ -431,7 +431,7 @@
 		C10BFB53198C24E6003CA59A /* EventAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAnalytics.m; sourceTree = "<group>"; };
 		C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Wigo.h"; sourceTree = "<group>"; };
 		C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+Wigo.m"; sourceTree = "<group>"; };
-		C12A11E119787BE700D53B1C /* WiGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WiGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C12A11E119787BE700D53B1C /* Wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12A11E219787BE800D53B1C /* wigoBlade.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = wigoBlade.plist; sourceTree = "<group>"; };
 		C16D86A919747FF6003EB336 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C18AC290198451150056957B /* autorevision.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = autorevision.sh; sourceTree = "<group>"; };
@@ -988,7 +988,7 @@
 			children = (
 				E921D6121923967D00361247 /* wigo.app */,
 				E921D6361923967D00361247 /* WigoTests.xctest */,
-				C12A11E119787BE700D53B1C /* WiGo.app */,
+				C12A11E119787BE700D53B1C /* Wigo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1862,7 +1862,7 @@
 			);
 			name = wigoBlade;
 			productName = Wigo;
-			productReference = C12A11E119787BE700D53B1C /* WiGo.app */;
+			productReference = C12A11E119787BE700D53B1C /* Wigo.app */;
 			productType = "com.apple.product-type.application";
 		};
 		E921D6111923967D00361247 /* wigo */ = {
@@ -2487,7 +2487,7 @@
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
-				PRODUCT_NAME = WiGo;
+				PRODUCT_NAME = Wigo;
 				PROVISIONING_PROFILE = "72E87B98-4DFD-4182-9EB5-CD4475603301";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2528,7 +2528,7 @@
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
-				PRODUCT_NAME = WiGo;
+				PRODUCT_NAME = Wigo;
 				PROVISIONING_PROFILE = "6184f4da-3064-4b33-9ba3-ceea7db8ac09";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2569,7 +2569,7 @@
 				PARSE_APPLICATIONID_ENTERPRISE = mgj7JdqM0akPdsEBKooC2wMhu2Ah4JHHJUioQyQP;
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
-				PRODUCT_NAME = WiGo;
+				PRODUCT_NAME = Wigo;
 				PROVISIONING_PROFILE = "6184f4da-3064-4b33-9ba3-ceea7db8ac09";
 				WRAPPER_EXTENSION = app;
 			};

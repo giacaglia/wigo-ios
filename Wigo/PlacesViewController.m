@@ -608,6 +608,10 @@ int firstIndexOfNegativeEvent;
         return sizeOfEachCell;
 
     }
+    Event *event = (Event *)[[_oldEventsParty getObjectArray] objectAtIndex:[indexPath row]];
+    if ([event containsHighlight]) {
+        return 304;
+    }
     else return 50;
 }
 
@@ -685,14 +689,31 @@ int firstIndexOfNegativeEvent;
         return cell;
     }
     else {
-        OldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventCellName];
         Event *event = (Event *)[[_oldEventsParty getObjectArray] objectAtIndex:[indexPath row]];
-        cell.oldEventLabel.text = [event name];
-        if ([event.numberOfMessages intValue] > 0) {
-            cell.chatBubbleImageView.hidden = NO;
-            cell.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [event.numberOfMessages stringValue]];
+        if ([event containsHighlight]) {
+            HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
+            cell.placesDelegate = self;
+            cell.oldEventLabel.text = [event name];
+            if ([event.numberOfMessages intValue] > 0) {
+                cell.chatBubbleImageView.hidden = NO;
+                cell.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [event.numberOfMessages stringValue]];
+            }
+            NSString *contentURL = [[[event dictionary] objectForKey:@"highlight"] objectForKey:@"media"];
+            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+            [cell.highlightImageView setImageWithURL:imageURL];
+            return cell;
         }
-        return cell;
+        else {
+            OldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventCellName];
+            cell.placesDelegate = self;
+            cell.oldEventLabel.text = [event name];
+            if ([event.numberOfMessages intValue] > 0) {
+                cell.chatBubbleImageView.hidden = NO;
+                cell.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [event.numberOfMessages stringValue]];
+            }
+            return cell;
+        }
+      
     }
   
 }
@@ -705,12 +726,19 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)showConversationForEvent:(Event *)event {
-    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
-    conversationViewController.event = event;
-    conversationViewController.index = 0;
-    conversationViewController.eventMessages = [NSMutableArray new];
-    [self presentViewController:conversationViewController animated:YES completion:nil];
+    NSString *queryString = [NSString stringWithFormat:@"eventmessages/?event=%@&ordering=id", [event eventID]];
+    [Network sendAsynchronousHTTPMethod:GET
+                            withAPIName:queryString
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                dispatch_async(dispatch_get_main_queue(), ^{                                            NSMutableArray *eventMessages = [NSMutableArray arrayWithArray:(NSArray *)[jsonResponse objectForKey:@"objects"]];
+                                    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                                    EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+                                    conversationViewController.event = event;
+                                    conversationViewController.index = 0;
+                                    conversationViewController.eventMessages = eventMessages;
+                                    [self presentViewController:conversationViewController animated:YES completion:nil];
+                                });
+                            }];
 }
 
 - (void)showStoryForEvent:(Event*)event {
@@ -1246,6 +1274,8 @@ viewForHeaderInSection:(NSInteger)section {
     self.backgroundColor = UIColor.whiteColor;
     [super setupTitleHeader];
     self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 50, self.frame.size.width - 20, 254)];
+    self.highlightImageView.clipsToBounds = YES;
+    self.highlightImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self.contentView addSubview:self.highlightImageView];
     
     UIButton *conversationButton = [[UIButton alloc] initWithFrame:self.frame];

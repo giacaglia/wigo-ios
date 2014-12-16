@@ -432,7 +432,7 @@
 
 - (NSString *)randomBioGenerator {
     NSArray *randomStrings = @[
-                               @"WiGo takes my FOMO to a whole new level",
+                               @"Wigo takes my FOMO to a whole new level",
                                @"Tap tap - who's there?",
                                @"I go, you go, Wigo",
                                @"Too busy partying to fill out my bio",
@@ -441,7 +441,7 @@
                                @"Where are Wigoing?",
                                @"If I tap you, put it on your resume",
                                @"Tap me",
-                               @"I set my alarm for 6am every day so I'm the first one going out on WiGo",
+                               @"I set my alarm for 6am every day so I'm the first one going out on Wigo",
                                @"If I don't tap you back, take the hint"
                                ];
     return [randomStrings objectAtIndex:(arc4random() % [randomStrings count])];

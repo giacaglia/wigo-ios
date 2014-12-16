@@ -38,6 +38,10 @@
 
 #pragma mark - Property methods
 
+- (BOOL)containsHighlight {
+    return [[_proxy allKeys] containsObject:@"highlight"] ? YES : NO;
+}
+
 - (NSNumber *)eventID {
     return (NSNumber *)[_proxy objectForKey:@"id"];
 }

@@ -88,7 +88,7 @@
         return @"is now following you";
     }
     else if ([[self type] isEqualToString:@"joined"]) {
-        return @"joined WiGo";
+        return @"joined Wigo";
     }
     else if ([[self type] isEqualToString:@"goingout"]) {
         return @"is going out";

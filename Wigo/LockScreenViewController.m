@@ -69,14 +69,14 @@ OnboardFollowViewController *onboardFollowViewController;
 
 - (void)initializeTopLabel {
     UILabel *topLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, self.view.frame.size.width, 20)];
-    topLabel.text = @"WiGo is better with friends.";
+    topLabel.text = @"Wigo is better with friends.";
     [self setPropertiesofLabel:topLabel];
     [self.view addSubview:topLabel];
     
     UILabel *spreadLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 60)];
     spreadLabel.numberOfLines = 0;
     spreadLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    spreadLabel.text = [NSString stringWithFormat:@"Spread the word to unlock WiGo\n at %@!", [[Profile user] groupName]];
+    spreadLabel.text = [NSString stringWithFormat:@"Spread the word to unlock Wigo\n at %@!", [[Profile user] groupName]];
     [self setPropertiesofLabel:spreadLabel];
     [self.view addSubview:spreadLabel];
 }
@@ -117,7 +117,7 @@ OnboardFollowViewController *onboardFollowViewController;
     UILabel *unlockLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 145, self.view.frame.size.width - 40, 65)];
     unlockLabel.numberOfLines = 0;
     unlockLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    unlockLabel.text = [NSString stringWithFormat:@"WiGo will unlock when %d more people from %@ sign up.", 100 - [numberOfPeopleSignedUp intValue] ,[Profile user].groupName];
+    unlockLabel.text = [NSString stringWithFormat:@"Wigo will unlock when %d more people from %@ sign up.", 100 - [numberOfPeopleSignedUp intValue] ,[Profile user].groupName];
     [self setPropertiesofLabel:unlockLabel];
     [self.view addSubview:unlockLabel];
 
@@ -126,7 +126,7 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void)initializeShareButton {
     UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 125, self.view.frame.size.height - 65, 250, 48)];
     shareButton.backgroundColor = [FontProperties getOrangeColor];
-    [shareButton setTitle:@"Share WiGo" forState:UIControlStateNormal];
+    [shareButton setTitle:@"Share Wigo" forState:UIControlStateNormal];
     [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     shareButton.titleLabel.font = [FontProperties getBigButtonFont];
     shareButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -162,7 +162,7 @@ OnboardFollowViewController *onboardFollowViewController;
 }
 - (void)sharedPressed {
     [EventAnalytics tagEvent:@"Share Pressed"];
-    NSArray *activityItems = @[@"Who is going out? #WiGo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+    NSArray *activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityVC animated:YES completion:nil];
