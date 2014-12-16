@@ -114,7 +114,7 @@ static NSString *cdnPrefix;
     else {
         cdnPrefix = [[NSUserDefaults standardUserDefaults] objectForKey:@"cdnPrefix"];
         if (cdnPrefix) return cdnPrefix;
-        return @"wigo-uploads.s3.amazonaws.com/";
+        return @"wigo-uploads.s3.amazonaws.com";
     }
 }
 

@@ -1200,7 +1200,7 @@ viewForHeaderInSection:(NSInteger)section {
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
     
-    UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(20, self.frame.size.height - 1, self.frame.size.width - 20, 1)];
+    UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 1, self.frame.size.width, 1)];
     lineSeparator.backgroundColor = [FontProperties getBlueColor];
     [self.contentView addSubview:lineSeparator];
 }
