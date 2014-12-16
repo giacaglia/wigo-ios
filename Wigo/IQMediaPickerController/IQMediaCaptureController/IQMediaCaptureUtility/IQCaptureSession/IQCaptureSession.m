@@ -714,6 +714,11 @@
                 [imageData writeToURL:outputImageURL.filePathURL atomically:YES];
                 
                 UIImage *image = [[UIImage alloc] initWithData:imageData];
+                if (image.imageOrientation == UIImageOrientationLeft) {
+                    image =  [UIImage imageWithCGImage:[image CGImage]
+                                                 scale:1.0
+                                           orientation: UIImageOrientationRight];
+                }
                 
                 NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:outputImageURL,IQMediaURL,image,IQMediaImage,IQMediaTypeImage,IQMediaType, nil];
 

@@ -692,6 +692,7 @@ int firstIndexOfNegativeEvent;
         Event *event = (Event *)[[_oldEventsParty getObjectArray] objectAtIndex:[indexPath row]];
         if ([event containsHighlight]) {
             HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
+            cell.event = event;
             cell.placesDelegate = self;
             cell.oldEventLabel.text = [event name];
             if ([event.numberOfMessages intValue] > 0) {
@@ -726,7 +727,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)showConversationForEvent:(Event *)event {
-    NSString *queryString = [NSString stringWithFormat:@"eventmessages/?event=%@&ordering=id", [event eventID]];
+    NSString *queryString = [NSString stringWithFormat:@"eventmessages/?event=%@", [event eventID]];
     [Network sendAsynchronousHTTPMethod:GET
                             withAPIName:queryString
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {
