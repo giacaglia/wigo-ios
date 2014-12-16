@@ -21,6 +21,6 @@
 
 - (instancetype)initWithFrame: (CGRect) frame imageURLs:(NSArray *)imageURLS infoDicts:(NSArray *)infoDicts areaDicts:(NSArray *)arrayDicts;
 
-- (UIImageView *) getCurrentImage;
+- (UIImage *) getCurrentImage;
 
 @end

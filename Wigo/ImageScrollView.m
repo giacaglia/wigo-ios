@@ -85,9 +85,18 @@
     [self.scrollView setContentSize:CGSizeMake((self.frame.size.width + 10) * [imageURLs count] - 10, [[UIScreen mainScreen] bounds].size.width)];
 }
 
-- (UIImageView *) getCurrentImage {
+- (UIImage *) getCurrentImage {
     if (_currentPage < self.imageViews.count) {
-        return [self.imageViews objectAtIndex: _currentPage];
+        UIImageView *imageView = ((UIImageView *)[self.imageViews objectAtIndex: _currentPage]);
+        
+        UIGraphicsBeginImageContext(CGSizeMake([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.width));
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        [imageView.layer renderInContext:context];
+        UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        return result;
+        
     }
 
     return nil;
@@ -113,8 +122,11 @@
     float fractionalPage = scrollView.contentOffset.x / pageWidth;
     NSInteger page = lround(fractionalPage);
     
-    _currentPage = page;
-    [self.delegate pageChangedTo: page];
+    if (page != _currentPage) {
+        _currentPage = page;
+        [self.delegate pageChangedTo: page];
+    }
+
 }
 
 
