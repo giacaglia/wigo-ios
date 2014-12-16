@@ -35,6 +35,7 @@
 //favorite
 @property UIButton *leftProfileButton;
 @property UIButton *rightProfileButton;
+@property UIButton *chatButton;
 
 //UI
 @property UIButtonAligned *rightBarBt;
@@ -342,34 +343,32 @@ UIButton *tapButton;
     followingLabel.textAlignment = NSTextAlignmentCenter;
     followingLabel.text = @"following";
     [_rightProfileButton addSubview:followingLabel];
-    
     [_headerButtonView addSubview:_rightProfileButton];
     
-    UIButton *chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70)];
-    [chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
-    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, chatButton.frame.size.width, 20)];
+    _chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70)];
+    [_chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
+    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _chatButton.frame.size.width, 20)];
     chatLabel.textAlignment = NSTextAlignmentCenter;
     chatLabel.text = @"chats";
     chatLabel.textColor = [FontProperties getOrangeColor];
     chatLabel.font = [FontProperties scMediumFont:16.0f];
-    [chatButton addSubview:chatLabel];
+    [_chatButton addSubview:chatLabel];
     
-    UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(chatButton.frame.size.width/2 - 10, 10, 20, 20)];
-    [chatButton addSubview:orangeChatBubbleImageView];
+    UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
+    [_chatButton addSubview:orangeChatBubbleImageView];
     UILabel *numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, orangeChatBubbleImageView.frame.size.width, orangeChatBubbleImageView.frame.size.height - 4)];
     numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
     numberOfChatsLabel.textColor = UIColor.whiteColor;
     numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
     NSNumber *unreadChats = (NSNumber *)[self.user objectForKey:@"num_unread_conversations"];
-    if (![unreadChats isEqualToNumber: @0]) {
+    if (![unreadChats isEqualToNumber: @0] && [self.user isEqualToUser:[Profile user]]) {
         orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
         numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
     } else {
         orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
     }
     [orangeChatBubbleImageView addSubview:numberOfChatsLabel];
-    
-    [_headerButtonView addSubview:chatButton];
+    [_headerButtonView addSubview:_chatButton];
     
     if (self.userState != FOLLOWING_USER) {
         
@@ -532,6 +531,8 @@ UIButton *tapButton;
         _leftProfileButton.hidden = YES;
         _rightProfileButton.enabled = NO;
         _rightProfileButton.hidden = YES;
+        _chatButton.enabled = NO;
+        _chatButton.hidden = YES;
         
         _followButton.enabled = YES;
         _followButton.hidden = NO;
@@ -936,7 +937,7 @@ UIButton *tapButton;
 
 @implementation GoOutsCell
 
-#define kTitleTemplate @"times %@ went out this term"
+#define kTitleTemplate @"times %@ went out this semester"
 
 - (void) awakeFromNib {
     [self setup];
@@ -949,11 +950,11 @@ UIButton *tapButton;
 
 - (void) setLabelsForUser: (User *) user {
     self.numberLabel.text = [NSString stringWithFormat: @"42"];
-    self.titleLabel.text = [NSString stringWithFormat: kTitleTemplate, [user.firstName lowercaseString]];
+    self.titleLabel.text = [NSString stringWithFormat: kTitleTemplate, user.firstName];
 }
 
 - (void) setup {
-    self.numberLabel.font = [FontProperties mediumFont: 55];
+    self.numberLabel.font = [FontProperties mediumFont: 44];
     self.numberLabel.textColor = [FontProperties getOrangeColor];
     self.titleLabel.font = [FontProperties mediumFont: 24];
     self.titleLabel.textColor = [UIColor lightGrayColor];

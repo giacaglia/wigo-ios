@@ -1185,7 +1185,6 @@ viewForHeaderInSection:(NSInteger)section {
     self.chatBubbleImageView.center = CGPointMake(self.chatBubbleImageView.center.x, self.eventNameLabel.center.y);
     self.chatBubbleImageView.hidden = YES;
     [self.contentView addSubview:self.chatBubbleImageView];
-    
     self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
     self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
     self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
