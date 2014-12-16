@@ -748,9 +748,11 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)showStoryForEvent:(Event*)event {
+    
     EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
     eventStoryController.placesDelegate = self;
     eventStoryController.event = event;
+    if (self.groupNumberID) eventStoryController.groupNumberID = self.groupNumberID;
     [self presentViewController:eventStoryController animated:YES completion:nil];
 }
 

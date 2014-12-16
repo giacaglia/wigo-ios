@@ -30,8 +30,10 @@ NSDictionary *metaInfo;
     self.title = self.event.name;
   
     [self loadConversationViewController];
-    [self loadEventDetails];
-    [self loadTextViewAndSendButton];
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        [self loadEventDetails];
+        [self loadTextViewAndSendButton];
+    }
     [self loadEventPeopleScrollView];
     [self loadEventTitle];
     [self setDetailViewRead];
@@ -188,7 +190,8 @@ NSDictionary *metaInfo;
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return eventMessages.count + 1;
+    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) return eventMessages.count;
+    else return eventMessages.count + 1;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
