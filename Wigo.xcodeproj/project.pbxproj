@@ -401,6 +401,9 @@
 		FA55261F1A1FDB4000101AE7 /* JBLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526191A1FDB4000101AE7 /* JBLineChartView.m */; };
 		FA5526221A1FE3D800101AE7 /* EngagementGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526211A1FE3D800101AE7 /* EngagementGraph.m */; };
 		FA5526231A1FE3D800101AE7 /* EngagementGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526211A1FE3D800101AE7 /* EngagementGraph.m */; };
+		FA8C37EA1A3FDF8C00C46B9F /* FancyProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD337F1A3B996F008FF56D /* FancyProfileViewController.m */; };
+		FA8C37EB1A3FDF9B00C46B9F /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAAF4AC41A3F7ABA0065E160 /* ImageScrollView.m */; };
+		FA8C37EC1A3FDFA500C46B9F /* FXBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33731A3B9904008FF56D /* FXBlurView.m */; };
 		FAACB6731A2508E00089FD01 /* CampusNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */; };
 		FAACB6741A2508E00089FD01 /* CampusNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */; };
 		FAAF4AC51A3F7ABA0065E160 /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAAF4AC41A3F7ABA0065E160 /* ImageScrollView.m */; };
@@ -2165,6 +2168,8 @@
 				C12A112319787BE700D53B1C /* Notification.m in Sources */,
 				C12A112419787BE700D53B1C /* PhotoViewController.m in Sources */,
 				E9ACCA2119C3A12500F3EB20 /* WigoConfirmationViewController.m in Sources */,
+				FA8C37EB1A3FDF9B00C46B9F /* ImageScrollView.m in Sources */,
+				FA8C37EA1A3FDF8C00C46B9F /* FancyProfileViewController.m in Sources */,
 				E9C63BF71A03ED35006C5DD2 /* IQMediaCaptureController.m in Sources */,
 				E9C63BD91A03ED35006C5DD2 /* IQAssetsPickerController.m in Sources */,
 				E96EF682197EE95D00F88A6D /* Time.m in Sources */,
@@ -2216,6 +2221,7 @@
 				E9DFE1701A001142003C5779 /* BatteryViewController.m in Sources */,
 				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
 				C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */,
+				FA8C37EC1A3FDFA500C46B9F /* FXBlurView.m in Sources */,
 				C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */,
 				FA55261D1A1FDB4000101AE7 /* JBChartView.m in Sources */,
 				E9D039B61A096DB100DEF094 /* AFHTTPRequestOperationManager.m in Sources */,
