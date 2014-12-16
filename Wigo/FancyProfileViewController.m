@@ -187,7 +187,9 @@ UIButton *tapButton;
     
     if (_blurredImages && page < _blurredImages.count) {
         NSLog(@"used from memory");
-        [_nameViewBackground setImage: [_blurredImages objectAtIndex: page]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_nameViewBackground setImage: [_blurredImages objectAtIndex: page]];
+        });
         return;
     }
     
@@ -195,13 +197,13 @@ UIButton *tapButton;
         _blurredImages = [[NSMutableArray alloc] init];
     }
     
-    UIImageView *image = [self.imageScrollView getCurrentImage];
+    UIImage *image = [self.imageScrollView getCurrentImage];
     if (!image) {
         NSLog(@"nil image");
         return;
     }
     
-    UIImage *blurredImage = [image.image blurredImageWithRadius:20.0f iterations:4 tintColor:[UIColor clearColor]];
+    UIImage *blurredImage = [image blurredImageWithRadius:20.0f iterations:4 tintColor:[UIColor clearColor]];
     [_nameViewBackground setImage: blurredImage];
     [_blurredImages addObject: blurredImage];
 }
