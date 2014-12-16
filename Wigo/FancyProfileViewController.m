@@ -257,7 +257,7 @@ UIButton *tapButton;
 
 
 - (void) morePressed {
-    [[RWBlurPopover instance] presentViewController:[[MoreViewController alloc] initWithUser:self.user] withOrigin:0 andHeight:self.view.frame.size.height];
+    [[RWBlurPopover instance] presentViewController:[[MoreViewController alloc] initWithUser:self.user] withOrigin:0 andHeight:self.view.frame.size.height fromViewController:self.navigationController];
 }
 - (void) editPressed {
     self.editProfileViewController = [[EditProfileViewController alloc] init];
