@@ -85,9 +85,15 @@
         [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
         
-        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage + 5, self.self.sizeOfEachImage, 25)];
+        
+        UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage + 10, self.sizeOfEachImage, 25)];
+        if ([user isEqualToUser:[Profile user]]) backgroundName.backgroundColor = [FontProperties getBlueColor];
+        else backgroundName.backgroundColor = RGBAlpha(0, 0, 0, 0.6);
+        [self addSubview:backgroundName];
+        
+        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage + 10, self.sizeOfEachImage, 20)];
         profileName.text = [user firstName];
-        profileName.textColor = [UIColor blackColor];
+        profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.font = [FontProperties lightFont:14.0f];
         [self addSubview:profileName];

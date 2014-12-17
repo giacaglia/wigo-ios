@@ -48,7 +48,7 @@ NSDictionary *metaInfo;
 #pragma mark - Loading Messages
 
 - (void)loadEventDetails {
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 220, self.view.frame.size.width - 140, 30)];
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 230, self.view.frame.size.width - 140, 30)];
     [self.inviteButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     self.inviteButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
@@ -60,7 +60,7 @@ NSDictionary *metaInfo;
     self.inviteButton.enabled = NO;
     [self.view addSubview:self.inviteButton];
     
-    self.aroundGoHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 220, 100, 30)];
+    self.aroundGoHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 230, 100, 30)];
     self.aroundGoHereButton.tag = [(NSNumber *)[self.event eventID] intValue];
     [self.aroundGoHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
     self.aroundGoHereButton.hidden = YES;
@@ -162,7 +162,7 @@ NSDictionary *metaInfo;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 250, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
+    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 260, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = UIColor.whiteColor;
     facesCollectionView.showsHorizontalScrollIndicator = NO;

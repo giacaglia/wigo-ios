@@ -23,7 +23,7 @@
 #import "EventStoryViewController.h"
 #import "FancyProfileViewController.h"
 
-#define sizeOfEachCell 180
+#define sizeOfEachCell 190
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCel @"HighlightOldEventCell"
 #define kOldEventCellName @"OldEventCell"
@@ -681,19 +681,13 @@ int firstIndexOfNegativeEvent;
         }
         [cell updateUI];
         if ([[[event dictionary] objectForKey:@"is_read"] boolValue]) {
-            cell.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
+            cell.chatBubbleImageView.hidden = YES;
         }
         else {
+            cell.chatBubbleImageView.hidden = NO;
             cell.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
         }
-        if ( ([[[Profile user] attendingEventID] intValue] < 0 && [indexPath row] == 0) ||
-            ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]])
-            ) {
-            cell.backgroundColor = [FontProperties getLightBlueColor];
-        }
-        else {
-            cell.backgroundColor = UIColor.whiteColor;
-        }
+        cell.backgroundColor = UIColor.whiteColor;
         return cell;
     }
     else {
