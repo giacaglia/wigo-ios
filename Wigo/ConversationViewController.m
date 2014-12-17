@@ -177,8 +177,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]] imageArea:[self.user coverImageArea]];
     [profileButton addSubview:profileImageView];
-    [profileButton setShowsTouchWhenHighlighted:YES];
-    [profileButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchUpInside];
+    [profileButton setShowsTouchWhenHighlighted:NO];
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.rightBarButtonItem = profileBarButton;
 }
@@ -191,14 +190,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
                             withOptions:options];
     [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)profileSegue {
-    
-    profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-    [profileViewController setStateWithUser: self.user];
-
-    [self.navigationController pushViewController: profileViewController animated:YES];
 }
 
 - (void) initializeTapHandler {
