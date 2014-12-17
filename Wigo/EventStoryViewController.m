@@ -523,9 +523,8 @@
     
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: fancyProfileViewController];
-    
-    [self presentViewController:navController animated:YES completion:nil];
+
+    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 
 
