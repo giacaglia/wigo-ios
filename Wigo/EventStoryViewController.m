@@ -332,7 +332,7 @@
     self.eventPeopleScrollView.userSelectDelegate = self;
     self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
     [self.eventPeopleScrollView updateUI];
-    self.eventPeopleScrollView.frame = CGRectMake(0, 0, self.view.frame.size.width, 140);
+    self.eventPeopleScrollView.frame = CGRectMake(7, 0, self.view.frame.size.width, 140);
     
     [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }

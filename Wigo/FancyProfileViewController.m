@@ -514,7 +514,17 @@ UIButton *tapButton;
 #pragma mark User State
 
 - (void) reloadViewForUserState {
-    if (self.userState == FOLLOWING_USER ||
+    if (self.userState == OTHER_SCHOOL_USER) {
+        _leftProfileButton.enabled = NO;
+        _leftProfileButton.hidden = YES;
+        _rightProfileButton.enabled = NO;
+        _rightProfileButton.hidden = YES;
+        _chatButton.enabled = NO;
+        _chatButton.hidden = YES;
+        _followButton.enabled = NO;
+        _followButton.hidden = YES;
+    }
+    else if (self.userState == FOLLOWING_USER ||
         self.userState == ATTENDING_EVENT_FOLLOWING_USER ||
         self.userState == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
         _leftProfileButton.enabled = YES;

@@ -67,7 +67,7 @@
 
 - (void)loadUsers {
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    self.xPosition = 12;
+    self.xPosition = 0;
     for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
         User *user = [[self.partyUser getObjectArray] objectAtIndex:i];
         if ([user isEqualToUser:[Profile user]]) {
@@ -88,7 +88,7 @@
         
         UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage + 10, self.sizeOfEachImage, 25)];
         if ([user isEqualToUser:[Profile user]]) backgroundName.backgroundColor = [FontProperties getBlueColor];
-        else backgroundName.backgroundColor = RGBAlpha(0, 0, 0, 0.6);
+        else backgroundName.backgroundColor = RGB(71, 71, 71);
         [self addSubview:backgroundName];
         
         UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage + 10, self.sizeOfEachImage, 20)];

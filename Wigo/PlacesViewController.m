@@ -30,9 +30,7 @@
 #define kHeaderOldEventCellName @"HeaderOldEventCell"
 
 
-@interface PlacesViewController () {
-    UIView *_lineView;
-}
+@interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
 @property UITextField *whereAreYouGoingTextField;
@@ -104,9 +102,7 @@ int firstIndexOfNegativeEvent;
             }
         }
     }
-    _lineView= [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
-    _lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
-    
+
     [self initializeFlashScreen];
 
     _spinnerAtCenter = YES;
@@ -131,18 +127,12 @@ int firstIndexOfNegativeEvent;
     
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    
-    //line view
-    
-    [self.navigationController.navigationBar addSubview:_lineView];
 
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
-    
-    [_lineView removeFromSuperview];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -164,6 +154,7 @@ int firstIndexOfNegativeEvent;
 - (void) initializeNavigationBar {
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.rightBarButtonItem = nil;
+    self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
 
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
         CGRect profileFrame = CGRectMake(0, 0, 30, 30);
@@ -191,19 +182,14 @@ int firstIndexOfNegativeEvent;
         
         self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
-        imageView.image = [UIImage imageNamed:@"followPlusBlue"];
+        imageView.image = [UIImage imageNamed:@"followPlusWhite"];
         [self.rightButton addTarget:self action:@selector(followPressed)
                    forControlEvents:UIControlEventTouchUpInside];
         [self.rightButton addSubview:imageView];
         [self.rightButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
         self.navigationItem.rightBarButtonItem = rightBarButton;
-        self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     }
-    else {
-        self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
-    }
-  
 
     [self updateTitleView];
 }
@@ -273,12 +259,7 @@ int firstIndexOfNegativeEvent;
     if (!self.groupName) self.groupName = [[Profile user] groupName];
     UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [schoolButton setTitle:self.groupName forState:UIControlStateNormal];
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-    }
-    else {
-        [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    }
+    [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
     schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
   
@@ -296,15 +277,8 @@ int firstIndexOfNegativeEvent;
     schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
 
     UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, 0, 6, 5)];
-    
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-        triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
-    }
-    else {
-        [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        triangleImageView.image = [UIImage imageNamed:@"whiteTriangle"];
-    }
+    [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    triangleImageView.image = [UIImage imageNamed:@"whiteTriangle"];
     [schoolButton addSubview:triangleImageView];
 
     
@@ -644,8 +618,7 @@ int firstIndexOfNegativeEvent;
             return [[_contentParty getObjectArray] count] + hasNextPage;
         }
     }
-//    else return [[_oldEventsParty getObjectArray] count];
-    else return 0;
+    else return [[_oldEventsParty getObjectArray] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -708,7 +681,11 @@ int firstIndexOfNegativeEvent;
             cell.oldEventLabel.text = [event name];
             NSString *contentURL = [[[event dictionary] objectForKey:@"highlight"] objectForKey:@"media"];
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-            [cell.highlightImageView setImageWithURL:imageURL];
+            __weak HighlightOldEventCell *weakCell = cell;
+            [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+                weakCell.highlightImageView.contentMode = UIViewContentModeScaleAspectFill;
+            }];
             return cell;
         }
         else {
@@ -722,6 +699,37 @@ int firstIndexOfNegativeEvent;
   
 }
 
+#pragma mark - Image helper
+- (UIImage *)convertImageToGrayScale:(UIImage *)image {
+    
+    // Create image rectangle with current image width/height
+    CGRect imageRect = CGRectMake(0, 0, image.size.width, image.size.height);
+    
+    // Grayscale color space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+    
+    // Create bitmap content with current image size and grayscale colorspace
+    CGContextRef context = CGBitmapContextCreate(nil, image.size.width, image.size.height, 8, 0, colorSpace, kCGImageAlphaNone);
+    
+    // Draw image into current context, with specified rectangle
+    // using previously defined context (with grayscale colorspace)
+    CGContextDrawImage(context, imageRect, [image CGImage]);
+    
+    // Create bitmap image info from pixel data in current context
+    CGImageRef imageRef = CGBitmapContextCreateImage(context);
+    
+    // Create a new UIImage object
+    UIImage *newImage = [UIImage imageWithCGImage:imageRef];
+    
+    // Release colorspace, context and bitmap information
+    CGColorSpaceRelease(colorSpace);
+    CGContextRelease(context);
+    CFRelease(imageRef);
+    
+    // Return the new grayscale image
+    return newImage;
+}
+
 #pragma mark - PlacesDelegate
 
 - (void)showUser:(User *)user {
@@ -729,6 +737,9 @@ int firstIndexOfNegativeEvent;
     
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
+    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        fancyProfileViewController.userState = OTHER_SCHOOL_USER;
+    }
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 
 }
@@ -1032,7 +1043,7 @@ viewForHeaderInSection:(NSInteger)section {
                         [Profile setLastUserJoined:lastUserJoinedNumber];
                         [self.rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
                         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
-                        imageView.image = [UIImage imageNamed:@"followPlusBlue"];
+                        imageView.image = [UIImage imageNamed:@"followPlusWhite"];
                         [self.rightButton addSubview:imageView];
                         
                         if ([lastUserRead intValue] < [lastUserJoinedNumber intValue]) {
@@ -1175,9 +1186,8 @@ viewForHeaderInSection:(NSInteger)section {
     self.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 3, self.frame.size.width - 75, 50)];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 3, self.frame.size.width - 75, 50)];
     self.eventNameLabel.numberOfLines = 2;
-
     self.eventNameLabel.font = [FontProperties scMediumFont: 20];
     self.eventNameLabel.textColor = RGB(100, 173, 215);
     [self.contentView addSubview:self.eventNameLabel];
@@ -1194,7 +1204,7 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(10, [[UIScreen mainScreen] bounds].size.width/6, self.frame.size.width - 10, 120);
+    self.eventPeopleScrollView.frame = CGRectMake(7, [[UIScreen mainScreen] bounds].size.width/6, self.frame.size.width - 7, 120);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
@@ -1233,21 +1243,19 @@ viewForHeaderInSection:(NSInteger)section {
 @implementation TitleHeaderEventCell
 
 - (void)setupTitleHeader {
-    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, self.frame.size.width - 75, 50)];
+    UILabel *lineViewAtTheTop = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 1)];
+    lineViewAtTheTop.backgroundColor = RGB(213, 213, 213);
+    [self.contentView addSubview:lineViewAtTheTop];
+    
+    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 0, self.frame.size.width - 75, 50)];
     self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
     self.oldEventLabel.font = [FontProperties mediumFont:18.0f];
     self.oldEventLabel.textColor = RGB(184, 184, 184);
     [self.contentView addSubview:self.oldEventLabel];
     
     UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 9, 14)];
-    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+    postStoryImageView.image = [UIImage imageNamed:@"grayPostStory"];
     [self.contentView addSubview:postStoryImageView];
-    
-    UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
-    borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
-    borderLabel.layer.borderWidth = 1.5f;
-    borderLabel.layer.cornerRadius = 8;
-    [self.contentView addSubview:borderLabel];
 }
 
 @end
@@ -1266,7 +1274,7 @@ viewForHeaderInSection:(NSInteger)section {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 304);
     self.backgroundColor = UIColor.whiteColor;
     [super setupTitleHeader];
-    self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 50, self.frame.size.width - 20, 254)];
+    self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 50, self.frame.size.width, 254)];
     self.highlightImageView.clipsToBounds = YES;
     self.highlightImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self.contentView addSubview:self.highlightImageView];
@@ -1311,7 +1319,7 @@ viewForHeaderInSection:(NSInteger)section {
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 49);
-    self.contentView.backgroundColor = UIColor.whiteColor;
+    self.contentView.backgroundColor = RGB(249, 249, 249);
    
     self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, self.frame.size.width, 39)];
     self.headerTitleLabel.textColor = RGB(155, 155, 155);
