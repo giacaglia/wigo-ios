@@ -102,7 +102,7 @@
         self.contentSize = CGSizeMake(self.xPosition, self.sizeOfEachImage + 10);
     }
     
-    if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]]) {
+    if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]] && self.placesDelegate.visitedProfile) {
         NSNumber *xNumber = [self.placesDelegate.eventOffsetDictionary valueForKey:[[self.event eventID] stringValue]];
         self.contentOffset = CGPointMake([xNumber intValue], 0);
     }

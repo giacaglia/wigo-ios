@@ -124,7 +124,10 @@ int firstIndexOfNegativeEvent;
         _goingSomewhereButton.hidden = YES;
         _goingSomewhereButton.enabled = NO;
     }
-    
+    if (!self.visitedProfile) {
+        self.eventOffsetDictionary = [NSMutableDictionary new];
+    }
+    self.visitedProfile = NO;
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 
@@ -659,7 +662,7 @@ int firstIndexOfNegativeEvent;
             cell.eventPeopleScrollView.groupID = nil;
         }
         cell.eventPeopleScrollView.placesDelegate = self;
-        if ([[self.eventOffsetDictionary allKeys] containsObject:[[event eventID] stringValue]]) {
+        if ([[self.eventOffsetDictionary allKeys] containsObject:[[event eventID] stringValue]] && self.visitedProfile) {
             cell.eventPeopleScrollView.contentOffset = CGPointMake([(NSNumber *)[self.eventOffsetDictionary objectForKey:[[event eventID] stringValue]] intValue],0);
         }
         [cell updateUI];
@@ -742,12 +745,13 @@ int firstIndexOfNegativeEvent;
     if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
         fancyProfileViewController.userState = OTHER_SCHOOL_USER;
     }
+    self.visitedProfile = YES;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 
 }
 
 - (void)showConversationForEvent:(Event *)event {
-    NSString *queryString = [NSString stringWithFormat:@"eventmessages/?event=%@", [event eventID]];
+    NSString *queryString = [NSString stringWithFormat:@"eventmessages/?event=%@&limit=100", [event eventID]];
     [Network sendAsynchronousHTTPMethod:GET
                             withAPIName:queryString
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {

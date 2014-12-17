@@ -441,7 +441,7 @@
             queryString = [nextAPIString substringWithRange:NSMakeRange(5, nextAPIString.length - 5)];
         }
         else {
-            queryString = [NSString stringWithFormat:@"eventmessages/?event=%@&ordering=id", [self.event eventID]];
+            queryString = [NSString stringWithFormat:@"eventmessages/?event=%@&limit=100", [self.event eventID]];
         }
         [Network sendAsynchronousHTTPMethod:GET
                                 withAPIName:queryString
