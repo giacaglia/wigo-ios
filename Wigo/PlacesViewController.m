@@ -111,8 +111,6 @@ int firstIndexOfNegativeEvent;
     _spinnerAtCenter = YES;
     [self initializeTapHandler];
     [self initializeWhereView];
-
-
 }
 
 
@@ -121,6 +119,14 @@ int firstIndexOfNegativeEvent;
     [self initializeNotificationObservers];
     [self initializeNavigationBar];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        _goingSomewhereButton.hidden = NO;
+        _goingSomewhereButton.enabled = YES;
+    }
+    else {
+        _goingSomewhereButton.hidden = YES;
+        _goingSomewhereButton.enabled = NO;
+    }
     
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
@@ -142,6 +148,7 @@ int firstIndexOfNegativeEvent;
     else {
         shouldReloadEvents = YES;
     }
+
 }
 
 
@@ -347,6 +354,7 @@ int firstIndexOfNegativeEvent;
     _yPositionOfWhereSubview = 280;
     [self addRefreshToScrollView];
     [self initializeGoingSomewhereElseButton];
+    
 }
 
 - (void)chooseEvent:(NSNotification *)notification {
