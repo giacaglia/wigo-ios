@@ -217,13 +217,22 @@ UIButton *tapButton;
         isUserBlocked = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
     }
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[UIApplication sharedApplication] setStatusBarHidden: NO];
+    
+    
+    //if presented sudo-modally
+    if (!self.navigationController || self == self.navigationController.viewControllers[0]) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+    //if presented in a stack
+    else {
+        [self.navigationController popViewControllerAnimated: YES];
+    }
 }
 
 #pragma mark - Nav Bar Buttons
 
 - (void) initializeLeftBarButton {
+    
     UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
@@ -353,6 +362,8 @@ UIButton *tapButton;
     [_chatButton addSubview:chatLabel];
     
     UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
+    orangeChatBubbleImageView.center = CGPointMake(orangeChatBubbleImageView.center.x, _chatButton.center.y - orangeChatBubbleImageView.frame.size.height/2);
+    
     [_chatButton addSubview:orangeChatBubbleImageView];
     UILabel *numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, orangeChatBubbleImageView.frame.size.width, orangeChatBubbleImageView.frame.size.height - 4)];
     numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
@@ -366,6 +377,7 @@ UIButton *tapButton;
         orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
     }
     [orangeChatBubbleImageView addSubview:numberOfChatsLabel];
+    
     [_headerButtonView addSubview:_chatButton];
     
     if (self.userState != FOLLOWING_USER) {

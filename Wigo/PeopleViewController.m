@@ -83,6 +83,7 @@ NSMutableArray *suggestedArrayView;
 
     [self initializeSearchBar];
     [self initializeTableOfPeople];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -190,7 +191,7 @@ NSMutableArray *suggestedArrayView;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
         
         
-        self.profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
         [self.profileViewController setStateWithUser: user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -204,7 +205,7 @@ NSMutableArray *suggestedArrayView;
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
 
-        self.profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
         [self.profileViewController setStateWithUser: user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -447,7 +448,7 @@ NSMutableArray *suggestedArrayView;
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:0];
         
-        self.profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
         [self.profileViewController setStateWithUser: user];
 
         [self.navigationController pushViewController:self.profileViewController animated:YES];

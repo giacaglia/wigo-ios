@@ -65,30 +65,27 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 {
     [super viewDidLoad];
 
-    
-    // Title setup
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    self.navigationController.navigationBar.barTintColor = [FontProperties getOrangeColor];
-    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
-//    self.navigationController.title = self.user.fullName;
-//    self.navigationController.tintColor = [FontProperties getOrangeColor];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [FontProperties getOrangeColor]}];
-    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[FontProperties getOrangeColor] forKey:NSForegroundColorAttributeName];
-    self.title = [self.user fullName];
-    
 
-    //    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 64)];
-//    titleLabel.textAlignment = NSTextAlignmentCenter;
-//    titleLabel.text = self.user.fullName;
-//    titleLabel.textColor = [FontProperties getOrangeColor];
-//    titleLabel.font = [FontProperties getTitleFont];
-//    self.navigationItem.titleView = titleLabel;
+
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
     [self initializeScrollView];
     [self initializeTapHandler];
     [self initializeTextBox];
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
     
+    // Title setup
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    self.navigationController.navigationBar.barTintColor = [FontProperties getOrangeColor];
+    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [FontProperties getOrangeColor]}];
+    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[FontProperties getOrangeColor] forKey:NSForegroundColorAttributeName];
+    
+    self.title = [self.user fullName];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
