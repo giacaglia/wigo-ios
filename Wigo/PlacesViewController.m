@@ -23,7 +23,7 @@
 #import "EventStoryViewController.h"
 #import "FancyProfileViewController.h"
 
-#define sizeOfEachCell 190
+#define sizeOfEachCell [[UIScreen mainScreen] bounds].size.width/1.7
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCel @"HighlightOldEventCell"
 #define kOldEventCellName @"OldEventCell"
@@ -644,7 +644,8 @@ int firstIndexOfNegativeEvent;
             return [[_contentParty getObjectArray] count] + hasNextPage;
         }
     }
-    else return [[_oldEventsParty getObjectArray] count];
+//    else return [[_oldEventsParty getObjectArray] count];
+    else return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -806,7 +807,7 @@ heightForHeaderInSection:(NSInteger)section {
 - (UIView *)tableView:(UITableView *)tableView
 viewForHeaderInSection:(NSInteger)section {
     HeaderOldEventCell *headerOldEventCell = [tableView dequeueReusableHeaderFooterViewWithIdentifier:kHeaderOldEventCellName];
-    headerOldEventCell.headerTitleLabel.text = @"Fuzzy on Yesterday? Check out ";
+    headerOldEventCell.headerTitleLabel.text = @"Recent Highlights";
     return headerOldEventCell;
 }
 
@@ -1201,13 +1202,13 @@ viewForHeaderInSection:(NSInteger)section {
     self.chatNumberLabel.textColor = [UIColor whiteColor];
     [self.chatBubbleImageView addSubview:self.chatNumberLabel];
     
-    self.postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
+    self.postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 9, 14)];
     self.postStoryImageView.center = CGPointMake(self.postStoryImageView.center.x, self.eventNameLabel.center.y);
     self.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
     [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(10, 60, self.frame.size.width - 10, 120);
+    self.eventPeopleScrollView.frame = CGRectMake(10, [[UIScreen mainScreen] bounds].size.width/6, self.frame.size.width - 10, 120);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
@@ -1217,7 +1218,7 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview: eventFeedButton];
     
     UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 1, self.frame.size.width, 1)];
-    lineSeparator.backgroundColor = [FontProperties getBlueColor];
+    lineSeparator.backgroundColor = RGBAlpha(185, 213, 230, 100);
     [self.contentView addSubview:lineSeparator];
 }
 

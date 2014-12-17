@@ -13,7 +13,7 @@
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(Event *)event {
-    if (self.sizeOfEachImage == 0) self.sizeOfEachImage = 90;
+    if (self.sizeOfEachImage == 0) self.sizeOfEachImage = (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7;
     self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.sizeOfEachImage + 10)];
     if (self) {
         self.contentSize = CGSizeMake(5, self.sizeOfEachImage + 10);
