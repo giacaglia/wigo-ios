@@ -30,7 +30,9 @@
 #define kHeaderOldEventCellName @"HeaderOldEventCell"
 
 
-@interface PlacesViewController ()
+@interface PlacesViewController () {
+    UIView *_lineView;
+}
 
 @property UIView *whereAreYouGoingView;
 @property UITextField *whereAreYouGoingTextField;
@@ -102,9 +104,8 @@ int firstIndexOfNegativeEvent;
             }
         }
     }
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
-    lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
-    [self.navigationController.navigationBar addSubview:lineView];
+    _lineView= [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
+    _lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
     
     [self initializeFlashScreen];
 
@@ -130,11 +131,18 @@ int firstIndexOfNegativeEvent;
     
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    
+    //line view
+    
+    [self.navigationController.navigationBar addSubview:_lineView];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
+    
+    [_lineView removeFromSuperview];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -433,9 +441,8 @@ int firstIndexOfNegativeEvent;
 - (void)profileSegue {
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: [Profile user]];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: fancyProfileViewController];
-    
-    [self presentViewController:navController animated:YES completion:nil];
+
+    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 
 - (void)choseProfile:(id)sender {
