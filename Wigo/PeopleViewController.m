@@ -203,7 +203,7 @@ NSMutableArray *suggestedArrayView;
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
-        
+
         self.profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
         [self.profileViewController setStateWithUser: user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];

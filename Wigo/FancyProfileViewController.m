@@ -39,8 +39,6 @@
 
 //UI
 @property UIButtonAligned *rightBarBt;
-@property UIButton *followingButton;
-@property UIButton *followersButton;
 @property UIButton *followButton;
 @property UILabel *followRequestLabel;
 
@@ -386,8 +384,11 @@ UIButton *tapButton;
 }
 
 - (void) initializeFollowButton {
-    _followButton = [[UIButton alloc] initWithFrame: _headerButtonView.bounds];
+    _followButton = [[UIButton alloc] initWithFrame:CGRectMake(25, 10, self.view.frame.size.width - 50, 50)];
     _followButton.backgroundColor = [UIColor clearColor];
+    _followButton.layer.cornerRadius = 15;
+    _followButton.layer.borderWidth = 1;
+    _followButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
     
     NSString *followText = [NSString stringWithFormat:@"Follow %@", [self.user firstName]];
@@ -504,17 +505,14 @@ UIButton *tapButton;
     if (self.userState == FOLLOWING_USER ||
         self.userState == ATTENDING_EVENT_FOLLOWING_USER ||
         self.userState == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
-        
-        _followingButton.enabled = YES;
-        _followingButton.hidden = NO;
-        _followersButton.enabled = YES;
-        _followersButton.hidden = NO;
         _leftProfileButton.enabled = YES;
         _leftProfileButton.hidden = NO;
         _rightProfileButton.enabled = YES;
         _rightProfileButton.hidden = NO;
         _rightBarBt.enabled = YES;
         _rightBarBt.hidden = NO;
+        _chatButton.enabled = YES;
+        _chatButton.hidden = NO;
         
         _followButton.enabled = NO;
         _followButton.hidden = YES;
@@ -525,10 +523,6 @@ UIButton *tapButton;
     else if (self.userState == NOT_FOLLOWING_PUBLIC_USER ||
              self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER ||
              self.userState == BLOCKED_USER) {
-        _followingButton.enabled = NO;
-        _followingButton.hidden = YES;
-        _followersButton.enabled = NO;
-        _followersButton.hidden = YES;
         _leftProfileButton.enabled = NO;
         _leftProfileButton.hidden = YES;
         _rightProfileButton.enabled = NO;
@@ -544,14 +538,12 @@ UIButton *tapButton;
         _followRequestLabel.hidden = YES;
     }
     else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) {
-        _followingButton.enabled = NO;
-        _followingButton.hidden = YES;
-        _followersButton.enabled = NO;
-        _followersButton.hidden = YES;
         _leftProfileButton.enabled = NO;
         _leftProfileButton.hidden = YES;
         _rightProfileButton.enabled = NO;
         _rightProfileButton.hidden = YES;
+        _chatButton.enabled = NO;
+        _chatButton.hidden = YES;
         
         _followButton.enabled = NO;
         _followButton.hidden = YES;
@@ -560,12 +552,10 @@ UIButton *tapButton;
         _followRequestLabel.hidden = NO;
     }
     if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
-        _followingButton.enabled = NO;
-        _followingButton.hidden = YES;
-        _followersButton.enabled = NO;
-        _followersButton.hidden = YES;
         _followButton.enabled = NO;
         _followButton.hidden = YES;
+        _chatButton.enabled = YES;
+        _chatButton.hidden = NO;
         
         _leftProfileButton.enabled = YES;
         _leftProfileButton.hidden = NO;
@@ -614,14 +604,14 @@ UIButton *tapButton;
     unblockButton.titleLabel.font = [FontProperties scMediumFont:24.0f];
     [popViewController.view addSubview:unblockButton];
     
-    [[RWBlurPopover instance] presentViewController:popViewController withOrigin:0 andHeight:popViewController.view.frame.size.height];
+    [[RWBlurPopover instance] presentViewController:popViewController withOrigin:0 andHeight:popViewController.view.frame.size.height fromViewController:self.navigationController];
 }
 
 - (void)dismissAndGoBack {
     isUserBlocked = [self.user isBlocked];
     [self.user setIsBlocked:NO];
     [self goBack];
-    [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){}];
+    [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){} ];
 }
 
 #pragma mark Notification Handlers
