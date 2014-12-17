@@ -37,8 +37,8 @@
 #pragma mark - UIViewController Delegate
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = self.event.name;
-    
+
+
     self.backgroundScrollview = [[UIScrollView alloc] initWithFrame: CGRectMake(0, kHeaderLength, self.view.frame.size.width, self.view.frame.size.height - kHeaderLength)];
     self.backgroundScrollview.delegate = self;
     self.backgroundScrollview.scrollEnabled = YES;
@@ -71,6 +71,15 @@
     [super viewWillAppear: animated];
     metaInfo = nil;
     [self fetchEventMessages];
+    
+    [self.navigationController setNavigationBarHidden: YES animated: NO];
+
+}
+
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear: animated];
+    
+    [self.navigationController setNavigationBarHidden: NO animated: NO];
 }
 
 #pragma mark - Loading Messages
@@ -523,9 +532,8 @@
     
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: fancyProfileViewController];
-    
-    [self presentViewController:navController animated:YES completion:nil];
+
+    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 
 
