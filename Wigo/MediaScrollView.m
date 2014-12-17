@@ -778,21 +778,26 @@
             NSMutableDictionary *mutableEventMessage = [NSMutableDictionary dictionaryWithDictionary:self.eventMessage];
             [mutableEventMessage setObject:@-1 forKey:@"vote"];
             NSNumber *downVotes = [mutableEventMessage objectForKey:@"down_votes"];
-            downVotes = @([downVotes intValue] + 1);
-            [mutableEventMessage setObject:downVotes forKey:@"down_votes"];
-            self.eventMessage = [NSDictionary dictionaryWithDictionary:mutableEventMessage];
-            [self updateUI];
-            [self sendVote:upvoteBool];
+            if ([downVotes isKindOfClass:[NSNumber class]]) {
+                downVotes = @([downVotes intValue] + 1);
+                [mutableEventMessage setObject:downVotes forKey:@"down_votes"];
+                self.eventMessage = [NSDictionary dictionaryWithDictionary:mutableEventMessage];
+                [self updateUI];
+                [self sendVote:upvoteBool];
+            }
+          
         }
         else {
             NSMutableDictionary *mutableEventMessage = [NSMutableDictionary dictionaryWithDictionary:self.eventMessage];
             [mutableEventMessage setObject:@1 forKey:@"vote"];
             NSNumber *upVotes = [mutableEventMessage objectForKey:@"up_votes"];
-            upVotes = @([upVotes intValue] + 1);
-            [mutableEventMessage setObject:upVotes forKey:@"up_votes"];
-            self.eventMessage = [NSDictionary dictionaryWithDictionary:mutableEventMessage];
-            [self updateUI];
-            [self sendVote:upvoteBool];
+            if ([upVotes isKindOfClass:[NSNumber class]]) {
+                upVotes = @([upVotes intValue] + 1);
+                [mutableEventMessage setObject:upVotes forKey:@"up_votes"];
+                self.eventMessage = [NSDictionary dictionaryWithDictionary:mutableEventMessage];
+                [self updateUI];
+                [self sendVote:upvoteBool];
+            }
         }
     }
     [self.mediaScrollDelegate updateEventMessage:self.eventMessage forCell:self];
