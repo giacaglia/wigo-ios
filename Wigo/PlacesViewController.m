@@ -762,7 +762,16 @@ int firstIndexOfNegativeEvent;
     eventStoryController.placesDelegate = self;
     eventStoryController.event = event;
     if (self.groupNumberID) eventStoryController.groupNumberID = self.groupNumberID;
-    [self presentViewController:eventStoryController animated:YES completion:nil];
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: eventStoryController];
+
+    
+    [navController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    navController.navigationBar.shadowImage = [UIImage new];
+    navController.navigationBar.translucent = YES;
+    
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
