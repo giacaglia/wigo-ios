@@ -170,7 +170,7 @@
                               if (!foundProfilePicturesAlbum) {
                                   _fetchingProfilePictures = NO;
                                   NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
-                                  [profilePictures addObject:_profilePic];
+                                  [profilePictures addObject:@{@"url": _profilePic}];
                                   [self saveProfilePictures:profilePictures];
                               }
                           }];
@@ -226,7 +226,7 @@
                                   }
                                 }
                                 if ([profilePictures count] == 0) {
-                                    [profilePictures addObject:@"https://api.wigo.us/static/img/wigo_profile_gray.png"];
+                                    [profilePictures addObject:@{@"url": @"https://api.wigo.us/static/img/wigo_profile_gray.png"}];
                                 }
                                 [self saveProfilePictures:profilePictures];
                           }];
@@ -318,10 +318,6 @@
         }
 
     }
-//    else if ([[[error userInfo] allKeys] containsObject:@"NSLocalizedFailureReason"]) {
-//        if ([[[error userInfo] objectForKey:@"NSLocalizedFailureReason"] isEqualToString:@"com.facebook.sdk:SystemLoginDisallowedWithoutError"])
-//            [self showErrorLoginFailed];
-//    }
     else {
         [self handleAuthError:error];
     }
