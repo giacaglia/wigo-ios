@@ -597,11 +597,13 @@ int firstIndexOfNegativeEvent;
         return sizeOfEachCell;
 
     }
-    Event *event = (Event *)[[_oldEventsParty getObjectArray] objectAtIndex:[indexPath row]];
-    if ([event containsHighlight]) {
-        return 304;
+    if (indexPath.row < [[_oldEventsParty getObjectArray] count]) {
+        Event *event = (Event *)[[_oldEventsParty getObjectArray] objectAtIndex:[indexPath row]];
+        if ([event containsHighlight]) {
+            return 304;
+        }
     }
-    else return 50;
+    return 50;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

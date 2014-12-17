@@ -675,7 +675,7 @@ UIButton *tapButton;
 
 - (NSInteger) notificationCount {
     if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
-        return [_nonExpiredNotificationsParty getObjectArray].count*2;
+        return [_nonExpiredNotificationsParty getObjectArray].count;
     }
     
     return 0;

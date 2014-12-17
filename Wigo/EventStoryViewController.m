@@ -99,7 +99,8 @@
     
     [self.backgroundScrollview addSubview:self.inviteButton];
     
-    self.aroundGoHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 230, 100, 30)];
+    
+    self.aroundGoHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, _eventPeopleScrollView.frame.origin.y + _eventPeopleScrollView.frame.size.height + 15, 100, 30)];
     self.aroundGoHereButton.tag = [(NSNumber *)[self.event eventID] intValue];
     [self.aroundGoHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
     self.aroundGoHereButton.hidden = YES;
