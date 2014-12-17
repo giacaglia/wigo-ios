@@ -13,7 +13,9 @@
 #import "UIImageCrop.h"
 #import "MobileContactsViewController.h"
 
-@interface PeopleViewController ()
+@interface PeopleViewController () {
+    UIView *_lineView;
+}
 
 //Table View of people
 @property UITableView *tableViewOfPeople;
@@ -79,6 +81,7 @@ NSMutableArray *suggestedArrayView;
     [self initializeBackBarButton];
     [self initializeRightBarButton];
     
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
 
     [self initializeSearchBar];
@@ -104,6 +107,17 @@ NSMutableArray *suggestedArrayView;
     }
     didProfileSegue = NO;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
+    
+    _lineView= [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
+    _lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
+
+    [self.navigationController.navigationBar addSubview: _lineView];
+}
+
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear: animated];
+    
+    [_lineView removeFromSuperview];
 }
 
 - (void)initializeBackBarButton {
@@ -869,12 +883,14 @@ NSMutableArray *suggestedArrayView;
                     fetching = NO;
                     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                     NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-//                    if (_suggestionsParty) {
-//                        [_everyoneParty addObjectsFromArray:arrayOfUsers notInParty:_suggestionsParty];
-//                    }
-//                    else {
+                    
+                    if (_suggestionsParty) {
+                        [_everyoneParty addObjectsFromArray:arrayOfUsers notInParty:_suggestionsParty];
+                    }
+                    else {
                         [_everyoneParty addObjectsFromArray:arrayOfUsers];
-//                    }
+                    }
+                    
                     NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                     [_everyoneParty addMetaInfo:metaDictionary];
                     [_suggestionsParty addMetaInfo:metaDictionary];
