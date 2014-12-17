@@ -690,10 +690,11 @@ int firstIndexOfNegativeEvent;
         [cell updateUI];
         if ([[[event dictionary] objectForKey:@"is_read"] boolValue]) {
             cell.chatBubbleImageView.hidden = YES;
+            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
         else {
             cell.chatBubbleImageView.hidden = NO;
-            cell.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
+            cell.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
         }
         cell.backgroundColor = UIColor.whiteColor;
         return cell;
@@ -705,10 +706,6 @@ int firstIndexOfNegativeEvent;
             cell.event = event;
             cell.placesDelegate = self;
             cell.oldEventLabel.text = [event name];
-            if ([event.numberOfMessages intValue] > 0) {
-                cell.chatBubbleImageView.hidden = NO;
-                cell.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [event.numberOfMessages stringValue]];
-            }
             NSString *contentURL = [[[event dictionary] objectForKey:@"highlight"] objectForKey:@"media"];
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
             [cell.highlightImageView setImageWithURL:imageURL];
@@ -718,10 +715,6 @@ int firstIndexOfNegativeEvent;
             OldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventCellName];
             cell.placesDelegate = self;
             cell.oldEventLabel.text = [event name];
-            if ([event.numberOfMessages intValue] > 0) {
-                cell.chatBubbleImageView.hidden = NO;
-                cell.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [event.numberOfMessages stringValue]];
-            }
             return cell;
         }
       
@@ -1190,16 +1183,10 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview:self.eventNameLabel];
     
     self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
-    self.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
+    self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
     self.chatBubbleImageView.center = CGPointMake(self.chatBubbleImageView.center.x, self.eventNameLabel.center.y);
     self.chatBubbleImageView.hidden = YES;
     [self.contentView addSubview:self.chatBubbleImageView];
-    self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
-    self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
-    self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
-
-    self.chatNumberLabel.textColor = [UIColor whiteColor];
-    [self.chatBubbleImageView addSubview:self.chatNumberLabel];
     
     self.postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 9, 14)];
     self.postStoryImageView.center = CGPointMake(self.postStoryImageView.center.x, self.eventNameLabel.center.y);
@@ -1216,7 +1203,7 @@ viewForHeaderInSection:(NSInteger)section {
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
     
-    UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 1, self.frame.size.width, 1)];
+    UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 1, self.frame.size.width, 0.5)];
     lineSeparator.backgroundColor = RGBAlpha(185, 213, 230, 100);
     [self.contentView addSubview:lineSeparator];
 }
@@ -1252,18 +1239,7 @@ viewForHeaderInSection:(NSInteger)section {
     self.oldEventLabel.textColor = RGB(184, 184, 184);
     [self.contentView addSubview:self.oldEventLabel];
     
-    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
-    self.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
-    self.chatBubbleImageView.hidden = YES;
-    [self.contentView addSubview:self.chatBubbleImageView];
-    
-    self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
-    self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
-    self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
-    self.chatNumberLabel.textColor = [UIColor whiteColor];
-    [self.chatBubbleImageView addSubview:self.chatNumberLabel];
-    
-    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 9, 14)];
     postStoryImageView.image = [UIImage imageNamed:@"postStory"];
     [self.contentView addSubview:postStoryImageView];
     
