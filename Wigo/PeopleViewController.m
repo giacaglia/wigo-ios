@@ -883,12 +883,14 @@ NSMutableArray *suggestedArrayView;
                     fetching = NO;
                     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                     NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-//                    if (_suggestionsParty) {
-//                        [_everyoneParty addObjectsFromArray:arrayOfUsers notInParty:_suggestionsParty];
-//                    }
-//                    else {
+                    
+                    if (_suggestionsParty) {
+                        [_everyoneParty addObjectsFromArray:arrayOfUsers notInParty:_suggestionsParty];
+                    }
+                    else {
                         [_everyoneParty addObjectsFromArray:arrayOfUsers];
-//                    }
+                    }
+                    
                     NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                     [_everyoneParty addMetaInfo:metaDictionary];
                     [_suggestionsParty addMetaInfo:metaDictionary];
