@@ -15,12 +15,22 @@
 #import "FancyProfileViewController.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
+#define kHeaderLength 90
 
-UIButton *sendButton;
-NSArray *eventMessages;
-UICollectionView *facesCollectionView;
-BOOL cancelFetchMessages;
-NSDictionary *metaInfo;
+@interface EventStoryViewController()<UIScrollViewDelegate> {
+    UIButton *sendButton;
+    NSArray *eventMessages;
+    UICollectionView *facesCollectionView;
+    BOOL cancelFetchMessages;
+    NSDictionary *metaInfo;
+    
+    CGPoint currentContentOffset;
+}
+
+@property (nonatomic, strong) UIScrollView *backgroundScrollview;
+
+@end
+
 
 @implementation EventStoryViewController
 
@@ -28,15 +38,33 @@ NSDictionary *metaInfo;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = self.event.name;
-  
-    [self loadConversationViewController];
+    
+    self.backgroundScrollview = [[UIScrollView alloc] initWithFrame: CGRectMake(0, kHeaderLength, self.view.frame.size.width, self.view.frame.size.height - kHeaderLength)];
+    self.backgroundScrollview.delegate = self;
+    self.backgroundScrollview.scrollEnabled = YES;
+    [self.view addSubview: self.backgroundScrollview];
+    [self.view sendSubviewToBack: self.backgroundScrollview];
+    
+    UIView *line = [[UIView alloc] initWithFrame: CGRectMake(0, kHeaderLength - 1, self.view.frame.size.width, 1)];
+    line.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f];
+    [self.view addSubview: line];
+    
+    [self loadEventTitle];
+
+    [self loadEventPeopleScrollView];
+    
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
         [self loadEventDetails];
         [self loadTextViewAndSendButton];
     }
-    [self loadEventPeopleScrollView];
-    [self loadEventTitle];
+    
+    
+    [self loadConversationViewController];
+
+    
     [self setDetailViewRead];
+    
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -48,7 +76,7 @@ NSDictionary *metaInfo;
 #pragma mark - Loading Messages
 
 - (void)loadEventDetails {
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 230, self.view.frame.size.width - 140, 30)];
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(70, _eventPeopleScrollView.frame.origin.y + _eventPeopleScrollView.frame.size.height + 15, self.view.frame.size.width - 140, 30)];
     [self.inviteButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     self.inviteButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
@@ -58,14 +86,16 @@ NSDictionary *metaInfo;
     [self.inviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
     self.inviteButton.hidden = YES;
     self.inviteButton.enabled = NO;
-    [self.view addSubview:self.inviteButton];
+
+    
+    [self.backgroundScrollview addSubview:self.inviteButton];
     
     self.aroundGoHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, 230, 100, 30)];
     self.aroundGoHereButton.tag = [(NSNumber *)[self.event eventID] intValue];
     [self.aroundGoHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
     self.aroundGoHereButton.hidden = YES;
     self.aroundGoHereButton.enabled = NO;
-    [self.view addSubview:self.aroundGoHereButton];
+    [self.backgroundScrollview addSubview:self.aroundGoHereButton];
     
     UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 85, 25)];
     goOutButton.enabled = NO;
@@ -162,7 +192,10 @@ NSDictionary *metaInfo;
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
-    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 260, self.view.frame.size.width, self.view.frame.size.height - 260) collectionViewLayout:flow];
+    CGFloat yOrigin = self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height + 10;
+    CGFloat headerEndY = _eventPeopleScrollView.frame.origin.y + _eventPeopleScrollView.frame.size.height + 15;
+    
+    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, yOrigin, self.view.frame.size.width, self.backgroundScrollview.frame.size.height - (yOrigin - headerEndY + 10)) collectionViewLayout:flow];
     
     facesCollectionView.backgroundColor = UIColor.whiteColor;
     facesCollectionView.showsHorizontalScrollIndicator = NO;
@@ -175,8 +208,15 @@ NSDictionary *metaInfo;
     facesCollectionView.dataSource = self;
     facesCollectionView.delegate = self;
     
-    [self.view addSubview:facesCollectionView];
-    [self.view sendSubviewToBack:facesCollectionView];
+    UIView *line = [[UIView alloc] initWithFrame: CGRectMake(0, yOrigin - 1, self.view.frame.size.width, 1)];
+    line.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f];
+    [self.backgroundScrollview addSubview: line];
+    
+//    [self.view addSubview:facesCollectionView];
+//    [self.view sendSubviewToBack:facesCollectionView];
+    
+    [self.backgroundScrollview addSubview: facesCollectionView];
+    [self.backgroundScrollview sendSubviewToBack:facesCollectionView];
 }
 
 
@@ -292,8 +332,9 @@ NSDictionary *metaInfo;
     self.eventPeopleScrollView.userSelectDelegate = self;
     self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
     [self.eventPeopleScrollView updateUI];
-    self.eventPeopleScrollView.frame = CGRectMake(0, 80, self.view.frame.size.width, 140);
-    [self.view addSubview:self.eventPeopleScrollView];
+    self.eventPeopleScrollView.frame = CGRectMake(0, 0, self.view.frame.size.width, 140);
+    
+    [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }
 
 - (void)loadEventTitle {
@@ -319,6 +360,7 @@ NSDictionary *metaInfo;
     self.numberGoingLabel.textAlignment = NSTextAlignmentCenter;
     self.numberGoingLabel.font = [FontProperties mediumFont:15];
     [self.view addSubview:self.numberGoingLabel];
+
 }
 
 - (void)setDetailViewRead {
@@ -448,6 +490,32 @@ NSDictionary *metaInfo;
         [facesCollectionView reloadData];
     });
 }
+#pragma mark - UIScrollViewDelegate 
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if (scrollView != facesCollectionView) {
+        return;
+    }
+    
+    CGFloat stickHeight = self.eventPeopleScrollView.frame.size.height + self.eventPeopleScrollView.frame.origin.y;
+
+    if (self.backgroundScrollview.contentOffset.y >= stickHeight && facesCollectionView.contentOffset.y > 0) {
+        self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, stickHeight);
+    }
+    else if (self.backgroundScrollview.contentOffset.y < 0 && scrollView == facesCollectionView) {
+        self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
+    }
+    else {
+        
+        self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, self.backgroundScrollview.contentOffset.y + scrollView.contentOffset.y);
+        
+        currentContentOffset = scrollView.contentOffset;
+        facesCollectionView.contentOffset = CGPointMake(0, 0);
+    }
+    
+}
+
 
 #pragma mark - Places Delegate
 
