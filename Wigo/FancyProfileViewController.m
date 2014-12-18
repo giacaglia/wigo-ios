@@ -740,7 +740,7 @@ UIButton *tapButton;
         if ([_followRequestSummary intValue] > 0) {
             indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
         }
-        Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row] % [_nonExpiredNotificationsParty getObjectArray].count];
+        Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
         if ([notification fromUserID] == (id)[NSNull null]) return notificationCell;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
         User *user = [[User alloc] initWithDictionary:[notification fromUser]];

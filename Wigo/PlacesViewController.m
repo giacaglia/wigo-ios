@@ -1480,12 +1480,17 @@ viewForHeaderInSection:(NSInteger)section {
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 49);
     self.contentView.backgroundColor = RGB(249, 249, 249);
-   
-    self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, self.frame.size.width, 39)];
+
+    self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     self.headerTitleLabel.textColor = RGB(155, 155, 155);
     self.headerTitleLabel.textAlignment = NSTextAlignmentCenter;
     self.headerTitleLabel.font = [FontProperties scMediumFont:14.0f];
     [self.contentView addSubview:self.headerTitleLabel];
+    
+    UIImage *triangles = [UIImage imageNamed: @"triangles"];
+    UIImageView *trianglesImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0, -1*triangles.size.height, self.frame.size.width, triangles.size.height)];
+    [trianglesImageView setImage: triangles];
+    [self.contentView addSubview: trianglesImageView];
 }
 @end
 
