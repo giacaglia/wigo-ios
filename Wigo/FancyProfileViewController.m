@@ -800,7 +800,7 @@ UIButton *tapButton;
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kNotificationsSection) {
         if ([self isIndexPathASummaryCell:indexPath]) {
-            [self presentViewController:[FollowRequestsViewController new] animated:YES completion:nil];
+            [self.navigationController pushViewController:[FollowRequestsViewController new] animated:YES];
         }
         else {
             if ([_followRequestSummary intValue] > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
