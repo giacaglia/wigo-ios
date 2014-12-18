@@ -15,7 +15,8 @@
 #import "FancyProfileViewController.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
-#define kHeaderLength 90
+#define kHeaderLength 50
+#define kHeaderFaceCollectionView @"headerFaceCollectionView"
 
 @interface EventStoryViewController()<UIScrollViewDelegate> {
     UIButton *sendButton;
@@ -37,17 +38,13 @@
 #pragma mark - UIViewController Delegate
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-
+    
     self.backgroundScrollview = [[UIScrollView alloc] initWithFrame: CGRectMake(0, kHeaderLength, self.view.frame.size.width, self.view.frame.size.height - kHeaderLength)];
     self.backgroundScrollview.delegate = self;
     self.backgroundScrollview.scrollEnabled = YES;
     [self.view addSubview: self.backgroundScrollview];
     [self.view sendSubviewToBack: self.backgroundScrollview];
     
-    UIView *line = [[UIView alloc] initWithFrame: CGRectMake(0, kHeaderLength - 1, self.view.frame.size.width, 1)];
-    line.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f];
-    [self.view addSubview: line];
     
     [self loadEventTitle];
 
@@ -85,7 +82,25 @@
 #pragma mark - Loading Messages
 
 - (void)loadEventDetails {
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(70, _eventPeopleScrollView.frame.origin.y + _eventPeopleScrollView.frame.size.height + 15, self.view.frame.size.width - 140, 30)];
+    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 273)];
+    backgroundView.backgroundColor = RGB(249, 249, 249);
+    [self.view addSubview:backgroundView];
+    [self.view sendSubviewToBack:backgroundView];
+    
+    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 120, 40)];
+    if ([[self.event numberAttending] intValue] > 0) {
+        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
+    }
+    else {
+        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
+    }
+
+    self.numberGoingLabel.textColor = RGB(170, 170, 170);
+    self.numberGoingLabel.textAlignment = NSTextAlignmentLeft;
+    self.numberGoingLabel.font = [FontProperties mediumFont:16];
+    [self.backgroundScrollview addSubview:self.numberGoingLabel];
+    
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 190 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 190, 40)];
     [self.inviteButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     self.inviteButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
@@ -95,28 +110,20 @@
     [self.inviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
     self.inviteButton.hidden = YES;
     self.inviteButton.enabled = NO;
-
-    
     [self.backgroundScrollview addSubview:self.inviteButton];
     
-    
-    self.aroundGoHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 50, _eventPeopleScrollView.frame.origin.y + _eventPeopleScrollView.frame.size.height + 15, 100, 30)];
-    self.aroundGoHereButton.tag = [(NSNumber *)[self.event eventID] intValue];
-    [self.aroundGoHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
-    self.aroundGoHereButton.hidden = YES;
-    self.aroundGoHereButton.enabled = NO;
-    [self.backgroundScrollview addSubview:self.aroundGoHereButton];
-    
-    UIButton *goOutButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 85, 25)];
-    goOutButton.enabled = NO;
-    [goOutButton setTitle:@"GO HERE" forState:UIControlStateNormal];
-    [goOutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    goOutButton.backgroundColor = [FontProperties getBlueColor];
-    goOutButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
-    goOutButton.layer.cornerRadius = 5;
-    goOutButton.layer.borderWidth = 1;
-    goOutButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    [self.aroundGoHereButton addSubview:goOutButton];
+    self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 190 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 190, 40)];
+    [self.goHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
+    self.goHereButton.hidden = YES;
+    self.goHereButton.enabled = NO;
+    [self.goHereButton setTitle:@"GO HERE" forState:UIControlStateNormal];
+    [self.goHereButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    self.goHereButton.backgroundColor = [FontProperties getBlueColor];
+    self.goHereButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
+    self.goHereButton.layer.cornerRadius = 5;
+    self.goHereButton.layer.borderWidth = 1;
+    self.goHereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    [self.backgroundScrollview addSubview:self.goHereButton];
 
     
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
@@ -124,8 +131,8 @@
         self.inviteButton.enabled = YES;
     }
     else {
-        self.aroundGoHereButton.hidden = NO;
-        self.aroundGoHereButton.enabled = YES;
+        self.goHereButton.hidden = NO;
+        self.goHereButton.enabled = YES;
     }
 }
 
@@ -150,11 +157,11 @@
     // Update UI
     self.eventPeopleScrollView.event = self.event;
     [self.eventPeopleScrollView updateUI];
-    self.aroundGoHereButton.hidden = YES;
-    self.aroundGoHereButton.enabled = NO;
+    self.goHereButton.hidden = YES;
+    self.goHereButton.enabled = NO;
     self.inviteButton.hidden = NO;
     self.inviteButton.enabled = YES;
-    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
+    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numberAttending stringValue]];
     
     [self presentFirstTimeGoingToEvent];
 
@@ -206,6 +213,7 @@
     CGFloat headerEndY = _eventPeopleScrollView.frame.origin.y + _eventPeopleScrollView.frame.size.height + 15;
     
     facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, yOrigin, self.view.frame.size.width, self.backgroundScrollview.frame.size.height - (yOrigin - headerEndY + 10)) collectionViewLayout:flow];
+    [facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderFaceCollectionView];
     
     facesCollectionView.backgroundColor = UIColor.whiteColor;
     facesCollectionView.showsHorizontalScrollIndicator = NO;
@@ -219,11 +227,8 @@
     facesCollectionView.delegate = self;
     
     UIView *line = [[UIView alloc] initWithFrame: CGRectMake(0, yOrigin - 1, self.view.frame.size.width, 1)];
-    line.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f];
+    line.backgroundColor = RGB(228, 228, 228);
     [self.backgroundScrollview addSubview: line];
-    
-//    [self.view addSubview:facesCollectionView];
-//    [self.view sendSubviewToBack:facesCollectionView];
     
     [self.backgroundScrollview addSubview: facesCollectionView];
     [self.backgroundScrollview sendSubviewToBack:facesCollectionView];
@@ -315,6 +320,30 @@
     [self showEventConversation:[NSNumber numberWithUnsignedInteger:indexPath.row]];
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+     return CGSizeMake(collectionView.bounds.size.width, 52);
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                    withReuseIdentifier:kHeaderFaceCollectionView
+                                                                           forIndexPath:indexPath];
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        UILabel *highlightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
+        highlightLabel.text = @"Highlights";
+        highlightLabel.textAlignment = NSTextAlignmentCenter;
+        highlightLabel.font = [FontProperties lightFont:20.0f];
+        highlightLabel.textColor = RGB(162, 162, 162);
+        [cell addSubview:highlightLabel];
+        
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 30, cell.frame.size.height - 1, 60, 1)];
+        lineView.backgroundColor = highlightLabel.textColor;
+        [cell addSubview:lineView];
+    }
+    return cell;
+}
+
+
 
 - (void)loadTextViewAndSendButton {
     sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, self.view.frame.size.height - 55, 45, 45)];
@@ -337,12 +366,11 @@
 
 - (void)loadEventPeopleScrollView {
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
-    self.eventPeopleScrollView.sizeOfEachImage = 110;
     self.eventPeopleScrollView.event = _event;
     self.eventPeopleScrollView.userSelectDelegate = self;
     self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
     [self.eventPeopleScrollView updateUI];
-    self.eventPeopleScrollView.frame = CGRectMake(7, 0, self.view.frame.size.width, 140);
+    self.eventPeopleScrollView.frame = CGRectMake(10, 10, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
     
     [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }
@@ -355,7 +383,7 @@
     backImageView.image = [UIImage imageNamed:@"blueBackIcon"];
     [aroundBackButton addSubview:backImageView];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(45, 24, self.view.frame.size.width - 90, 50)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(45, 14, self.view.frame.size.width - 90, 50)];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.numberOfLines = 0;
     titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -364,13 +392,6 @@
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
-    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(110, 65, self.view.frame.size.width - 220, 20)];
-    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numberAttending stringValue]];
-    self.numberGoingLabel.textColor = RGB(170, 170, 170);
-    self.numberGoingLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberGoingLabel.font = [FontProperties mediumFont:15];
-    [self.view addSubview:self.numberGoingLabel];
-
 }
 
 - (void)setDetailViewRead {
@@ -393,7 +414,7 @@
 #pragma mark - Button handler
 
 - (void)goBack {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)sendPressed {

@@ -32,7 +32,7 @@ typedef enum
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 @property (nonatomic, strong) UILabel *numberGoingLabel;
 @property (nonatomic, strong) UIButton *inviteButton;
-@property (nonatomic, strong) UIButton *aroundGoHereButton;
+@property (nonatomic, strong) UIButton *goHereButton;
 @property (nonatomic, strong) EventConversationViewController *conversationViewController;
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 @end

@@ -14,7 +14,7 @@
 
 - (id)initWithEvent:(Event *)event {
     if (self.sizeOfEachImage == 0) self.sizeOfEachImage = (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7;
-    self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.sizeOfEachImage + 10)];
+    self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.sizeOfEachImage + 25)];
     if (self) {
         self.contentSize = CGSizeMake(5, self.sizeOfEachImage + 10);
         self.showsHorizontalScrollIndicator = NO;
@@ -26,8 +26,6 @@
 
 
 - (void)updateUI {
-//    self.frame = CGRectMake(0, 0, 320, self.sizeOfEachImage + 10);
-//    self.contentSize = CGSizeMake(5, self.sizeOfEachImage + 10);
     [self fillEventAttendees];
     [self loadUsers];
     self.page = @2;
@@ -73,7 +71,7 @@
         if ([user isEqualToUser:[Profile user]]) {
             user = [Profile user];
         }
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, self.sizeOfEachImage, self.sizeOfEachImage)];
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 0, self.sizeOfEachImage, self.sizeOfEachImage)];
         imageButton.tag = i;
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:imageButton];
@@ -86,12 +84,12 @@
         [imageButton addSubview:imgView];
         
         
-        UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage + 10, self.sizeOfEachImage, 25)];
+        UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
         if ([user isEqualToUser:[Profile user]]) backgroundName.backgroundColor = [FontProperties getBlueColor];
         else backgroundName.backgroundColor = RGB(71, 71, 71);
         [self addSubview:backgroundName];
         
-        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage + 10, self.sizeOfEachImage, 20)];
+        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 20)];
         profileName.text = [user firstName];
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
@@ -99,7 +97,7 @@
         [self addSubview:profileName];
         
         self.xPosition += self.sizeOfEachImage + 3;
-        self.contentSize = CGSizeMake(self.xPosition, self.sizeOfEachImage + 10);
+        self.contentSize = CGSizeMake(self.xPosition, self.sizeOfEachImage + 25);
     }
     
     if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]] && self.placesDelegate.visitedProfile) {
