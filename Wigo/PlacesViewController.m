@@ -115,7 +115,7 @@ int firstIndexOfNegativeEvent;
     [super viewWillAppear:animated];
     [self initializeNotificationObservers];
     [self initializeNavigationBar];
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
+
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
         _goingSomewhereButton.hidden = NO;
         _goingSomewhereButton.enabled = YES;
@@ -136,6 +136,7 @@ int firstIndexOfNegativeEvent;
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:UIColor.whiteColor] forBarMetrics:UIBarMetricsDefault];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -152,12 +153,26 @@ int firstIndexOfNegativeEvent;
 
 }
 
-
+- (UIImage *)imageWithColor:(UIColor *)color
+{
+    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
 
 - (void) initializeNavigationBar {
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.rightBarButtonItem = nil;
     self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
 
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
         CGRect profileFrame = CGRectMake(0, 0, 30, 30);
