@@ -835,7 +835,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
         eventStoryViewController.event = event;
         eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-        [self presentViewController: eventStoryViewController animated: YES completion: nil];
+        [self.navigationController pushViewController: eventStoryViewController animated:YES];
     }
     else [self fetchEvent:event];
 }
@@ -949,7 +949,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
             eventStoryViewController.event = newEvent;
             eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-            [self presentViewController: eventStoryViewController animated: YES completion: nil];
+            [self.navigationController pushViewController: eventStoryViewController animated:YES];
         }
     });
     }];
