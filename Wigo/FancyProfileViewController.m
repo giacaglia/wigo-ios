@@ -886,7 +886,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             queryString = [_notificationsParty nextPageString];
         }
         else {
-            queryString = [NSString stringWithFormat:@"notifications/?type__ne=follow.request&page=%@" ,[_page stringValue]];
+            queryString = [NSString stringWithFormat:@"notifications/?page=%@" ,[_page stringValue]];
         }
         [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
@@ -984,7 +984,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 54);
    
-    self.numberOfRequestsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.frame.size.height/2 - 17, 35, 35)];
+    self.numberOfRequestsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.frame.size.height/2 - 22, 45, 45)];
     self.numberOfRequestsLabel.layer.cornerRadius = 5;
     self.numberOfRequestsLabel.layer.borderWidth = 0.5;
     self.numberOfRequestsLabel.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -999,7 +999,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     iconLabel.frame = CGRectMake(55, 20, 17, 12);
     [self.contentView addSubview:iconLabel];
 
-    UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 18, 200, 36)];
+    UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, self.frame.size.width - 70 - 80, 45)];
     notificationLabel.text = @"Follow requests";
     notificationLabel.font = [FontProperties getBioFont];
     [self.contentView addSubview:notificationLabel];
@@ -1093,7 +1093,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setLabelsForUser: (User *) user {
-    self.numberLabel.text = [NSString stringWithFormat: @"42"];
+    self.numberLabel.text = te[(NSNumber *)[[user dictionary] objectForKey:@"period_went_out"] stringValue];
     self.titleLabel.text = [NSString stringWithFormat: kTitleTemplate, user.firstName];
 }
 
