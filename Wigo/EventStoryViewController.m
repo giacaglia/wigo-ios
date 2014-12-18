@@ -210,9 +210,8 @@
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
     CGFloat yOrigin = self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height + 10;
-    CGFloat headerEndY = _eventPeopleScrollView.frame.origin.y + _eventPeopleScrollView.frame.size.height + 15;
     
-    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, yOrigin, self.view.frame.size.width, self.backgroundScrollview.frame.size.height - (yOrigin - headerEndY + 10)) collectionViewLayout:flow];
+    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - yOrigin + 60) collectionViewLayout:flow];
     [facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderFaceCollectionView];
     
     facesCollectionView.backgroundColor = UIColor.whiteColor;
