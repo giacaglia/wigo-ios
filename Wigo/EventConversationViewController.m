@@ -339,7 +339,10 @@
     page = MIN(page, self.eventMessages.count - 1);
     [self.mediaScrollView scrolledToPage:(int)page];
     int sizeOfCell =  ([[UIScreen mainScreen] bounds].size.width - 20)/3;
-    [self.facesCollectionView setContentOffset:CGPointMake((sizeOfCell) * (page - 1), 0.0f) animated:YES];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.facesCollectionView setContentOffset:CGPointMake((sizeOfCell) * (page - 1), 0.0f) animated:YES];
+    });
     [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:YES];
     [self hideOrShowFacesForPage:(int)page];
 }
