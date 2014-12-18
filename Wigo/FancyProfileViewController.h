@@ -18,16 +18,21 @@
 @property PeopleViewController *peopleViewController;
 @property MoreViewController *moreViewController;
 
-
 @property User *user;
 @property STATE userState;
 
 @property (nonatomic, assign) BOOL isFetchingNotifications;
-
+@property (nonatomic, strong) Party *eventsParty;
 
 -(id)initWithUser:(User *)user;
 - (void) setStateWithUser: (User *) user;
 
+@end
+
+
+#define kSummaryCellName @"summaryCellName"
+@interface SummaryCell : UITableViewCell
+@property (nonatomic, strong) UILabel *numberOfRequestsLabel;
 @end
 
 #define kNotificationCellName @"notificationCellName"

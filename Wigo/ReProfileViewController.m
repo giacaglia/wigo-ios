@@ -759,7 +759,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     User *user = [[User alloc] initWithDictionary:[notification fromUser]];
     Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
     [self presentEvent:event];
-   }
+}
 
 - (void)presentEvent:(Event *)event {
     BOOL isEventPresentInArray = NO;
@@ -776,7 +776,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
         eventStoryViewController.event = event;
         eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-//        [self.navigationController pushViewController:eventStoryViewController animated:YES];
         [self presentViewController: eventStoryViewController animated: YES completion: nil];
     }
     else [self fetchEvent:event];

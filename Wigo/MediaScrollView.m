@@ -601,7 +601,7 @@
     self.blackBackgroundLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.7);
     [self.imageView addSubview:self.blackBackgroundLabel];
     
-    self.titleTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 230, self.frame.size.width - 30, 60)];
+    self.titleTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 230, self.frame.size.width - 30, 80)];
     self.titleTextLabel.font = [FontProperties mediumFont:20.0f];
     self.titleTextLabel.textColor = UIColor.whiteColor;
     self.titleTextLabel.numberOfLines = 0;
@@ -609,7 +609,7 @@
     self.titleTextLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:self.titleTextLabel];
     
-    self.subtitleTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 270, self.frame.size.width - 30, 45)];
+    self.subtitleTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 320, self.frame.size.width - 30, 45)];
     self.subtitleTextLabel.font = [FontProperties mediumFont:18.0f];
     self.subtitleTextLabel.textColor = UIColor.whiteColor;
     self.subtitleTextLabel.numberOfLines = 0;
@@ -617,7 +617,7 @@
     self.subtitleTextLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:self.subtitleTextLabel];
 
-    self.actionButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 350, self.frame.size.width - 30, 55)];
+    self.actionButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 365, self.frame.size.width - 30, 55)];
     [self.actionButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     self.actionButton.titleLabel.font = [FontProperties mediumFont:20.0f];
     self.actionButton.layer.borderColor = UIColor.clearColor.CGColor;

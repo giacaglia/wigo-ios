@@ -418,7 +418,7 @@ int firstIndexOfNegativeEvent;
 - (void)profileSegue {
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: [Profile user]];
-
+    fancyProfileViewController.eventsParty = self.eventsParty;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 
