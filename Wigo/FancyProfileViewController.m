@@ -1093,7 +1093,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setLabelsForUser: (User *) user {
-    self.numberLabel.text = te[(NSNumber *)[[user dictionary] objectForKey:@"period_went_out"] stringValue];
+    self.numberLabel.text = [(NSNumber *)[[user dictionary] objectForKey:@"period_went_out"] stringValue];
     self.titleLabel.text = [NSString stringWithFormat: kTitleTemplate, user.firstName];
 }
 
