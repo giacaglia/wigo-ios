@@ -1338,6 +1338,7 @@ viewForHeaderInSection:(NSInteger)section {
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, sizeOfEachCell);
+    self.contentView.frame = self.frame;
     self.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -1359,7 +1360,7 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(7, [[UIScreen mainScreen] bounds].size.width/6, self.frame.size.width - 7, 120);
+    self.eventPeopleScrollView.frame = CGRectMake(7, [[UIScreen mainScreen] bounds].size.width/6, self.frame.size.width - 7, sizeOfEachCell - [[UIScreen mainScreen] bounds].size.width/6);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
