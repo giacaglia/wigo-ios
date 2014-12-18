@@ -308,6 +308,7 @@ int firstIndexOfNegativeEvent;
     [UIView animateWithDuration:0.2 animations:^{
         _placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-47);
+        _whereAreYouGoingView.alpha = 0;
     }];
     [self clearTextField];
 }

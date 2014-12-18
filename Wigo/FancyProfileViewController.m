@@ -14,6 +14,7 @@
 #import "FXBlurView.h"
 #import "RWBlurPopover.h"
 #import "EventStoryViewController.h"
+#import "FollowRequestsViewController.h"
 
 @interface FancyProfileViewController()<ImageScrollViewDelegate> {
     UIImageView *_gradientImageView;
@@ -676,6 +677,10 @@ UIButton *tapButton;
     return YES;
 }
 
+- (BOOL) isIndexPathASummaryCell:(NSIndexPath *)indexPath {
+    return (indexPath.row == 0 && [_followRequestSummary intValue] > 0);
+}
+
 - (NSInteger) notificationCount {
     if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
         int numberOfCellsForSummary = ([_followRequestSummary isEqualToNumber:@0] ? 0 : 1);
@@ -719,7 +724,7 @@ UIButton *tapButton;
     }
     
     else if (indexPath.section == kNotificationsSection) {
-        if (indexPath.row == 0 && [_followRequestSummary intValue] > 0) {
+        if ([self isIndexPathASummaryCell:indexPath]) {
             SummaryCell *summaryCell = [tableView dequeueReusableCellWithIdentifier:kSummaryCellName forIndexPath:indexPath];
             summaryCell.numberOfRequestsLabel.text = [_followRequestSummary stringValue];
             return summaryCell;
@@ -793,10 +798,19 @@ UIButton *tapButton;
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
-    User *user = [[User alloc] initWithDictionary:[notification fromUser]];
-    Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
-    [self presentEvent:event];
+    if (indexPath.section == kNotificationsSection) {
+        if ([self isIndexPathASummaryCell:indexPath]) {
+            [self presentViewController:[FollowRequestsViewController new] animated:YES completion:nil];
+        }
+        else {
+            if ([_followRequestSummary intValue] > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
+            Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:indexPath.row];
+            User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+            Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
+            [self presentEvent:event];
+        }
+    }
+  
 }
 
 - (void)presentEvent:(Event *)event {
