@@ -115,9 +115,9 @@
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
         [myCell.imageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL] ]];
         myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, you're going out to %@.", [self.event name]];
-        myCell.subtitleTextLabel.text = @"You can now add story";
+        myCell.subtitleTextLabel.text = @"You can now post inside this event";
         myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
-        [myCell.actionButton setTitle:@"ADD TO THE STORY" forState:UIControlStateNormal];
+        [myCell.actionButton setTitle:@"ADD TO THIS EVENT" forState:UIControlStateNormal];
         [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
         [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
         return myCell;
