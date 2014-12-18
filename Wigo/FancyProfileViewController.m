@@ -690,7 +690,7 @@ UIButton *tapButton;
 
 - (NSInteger) notificationCount {
     if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
-        int numberOfCellsForSummary = ([_followRequestSummary isEqualToNumber:@0] ? 0 : 1);
+        int numberOfCellsForSummary = ([_followRequestSummary isEqualToNumber:@0] || !_followRequestSummary) ? 0 : 1;
         return [_nonExpiredNotificationsParty getObjectArray].count + numberOfCellsForSummary;
     }
     
@@ -745,7 +745,7 @@ UIButton *tapButton;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
         User *user = [[User alloc] initWithDictionary:[notification fromUser]];
         [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
-        notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName] ,[notification message] ];
+        notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName] , [notification message] ];
         return notificationCell;
     }
     
