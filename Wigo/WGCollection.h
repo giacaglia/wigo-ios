@@ -17,10 +17,4 @@
 
 +(WGCollection *)initWithResponse:(NSDictionary *) jsonResponse andClass:(Class)type;
 
--(void)setHasNextPage:(BOOL)hasNextPage;
--(void)setNextPage:(NSString *)nextPage;
-
--(BOOL)hasNextPage;
--(NSString *)nextPage;
-
 @end

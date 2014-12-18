@@ -33,12 +33,10 @@
 
 -(void)setPaginationFromDictionary:(NSDictionary *)metaDictionary {
     if ([[metaDictionary allKeys] containsObject:@"has_next_page"]) {
-        BOOL hasNextPage = [(NSNumber *) [metaDictionary objectForKey:@"has_next_page"] boolValue];
-        [self setHasNextPage:hasNextPage];
+        _hasNextPage = [[metaDictionary objectForKey:@"has_next_page"] boolValue];
     }
     if ([[metaDictionary allKeys] containsObject:@"next"]) {
-        NSString *nextPage = (NSString *)[metaDictionary objectForKey:@"next"];
-        [self setNextPage:nextPage];
+        _nextPage = (NSString *)[metaDictionary objectForKey:@"next"];
     }
 }
 
