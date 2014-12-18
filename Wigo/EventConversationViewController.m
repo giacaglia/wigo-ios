@@ -346,14 +346,12 @@
 - (void)hideOrShowFacesForPage:(int)page {
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType]) {
-        self.facesHidden = YES;
         self.buttonCancel.hidden = YES;
         self.buttonCancel.enabled = NO;
         self.buttonTrash.hidden = YES;
         self.buttonTrash.enabled = NO;
-        [UIView animateWithDuration:0.5 animations:^{
-            self.facesCollectionView.alpha = 0;
-        }];
+        self.facesHidden = NO;
+        [self focusOnContent];
     }
     else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
              [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost]
@@ -362,11 +360,10 @@
         self.buttonTrash.enabled = NO;
     }
     else {
-        self.facesHidden = NO;
+        self.facesHidden = YES;
+        [self focusOnContent];
         User *user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
-        [UIView animateWithDuration:0.5 animations:^{
-            self.facesCollectionView.alpha = 1;
-        }];
+       
         self.buttonCancel.hidden = NO;
         self.buttonCancel.enabled = YES;
         if ([user isEqualToUser:[Profile user]]) {

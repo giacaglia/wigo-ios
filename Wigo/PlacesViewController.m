@@ -667,14 +667,14 @@ int firstIndexOfNegativeEvent;
             cell.eventPeopleScrollView.contentOffset = CGPointMake([(NSNumber *)[self.eventOffsetDictionary objectForKey:[[event eventID] stringValue]] intValue],0);
         }
         [cell updateUI];
-        if ([[[event dictionary] objectForKey:@"is_read"] boolValue] &&
+        if (![[[event dictionary] objectForKey:@"is_read"] boolValue] &&
             [[[event dictionary] objectForKey:@"num_messages"] intValue] > 0) {
-            cell.chatBubbleImageView.hidden = YES;
-            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-        }
-        else {
             cell.chatBubbleImageView.hidden = NO;
             cell.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
+        }
+        else {
+            cell.chatBubbleImageView.hidden = YES;
+            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
         cell.backgroundColor = UIColor.whiteColor;
         return cell;
