@@ -20,6 +20,7 @@
 @property (nonatomic, assign) BOOL visitedProfile;
 
 @property (nonatomic, assign) BOOL fetchingIsThereNewPerson;
+@property (nonatomic, strong) UILabel *leftRedDotLabel;
 @property (nonatomic, strong) UILabel *redDotLabel;
 @property (nonatomic, strong) UIButton *rightButton;
 @end

@@ -185,15 +185,21 @@ int firstIndexOfNegativeEvent;
         [profileButton addTarget:self action:@selector(profileSegue)
                 forControlEvents:UIControlEventTouchUpInside];
         [profileButton setShowsTouchWhenHighlighted:YES];
-        if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 &&
+        if (!self.leftRedDotLabel) {
+            self.leftRedDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, -5, 13, 13)];
+            self.leftRedDotLabel.backgroundColor = [FontProperties getOrangeColor];
+            self.leftRedDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
+            self.leftRedDotLabel.clipsToBounds = YES;
+            self.leftRedDotLabel.layer.borderWidth = 3;
+            self.leftRedDotLabel.layer.cornerRadius = 8;
+            [profileButton addSubview:self.leftRedDotLabel];
+        }
+        if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 ||
             [(NSNumber *)[[Profile user] objectForKey:@"num_unread_notifications"] intValue] > 0) {
-            UILabel *redDotLeftLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, 10, 10)];
-            redDotLeftLabel.backgroundColor = [UIColor redColor];
-            redDotLeftLabel.layer.borderColor = [UIColor clearColor].CGColor;
-            redDotLeftLabel.clipsToBounds = YES;
-            redDotLeftLabel.layer.borderWidth = 3;
-            redDotLeftLabel.layer.cornerRadius = 5;
-            [profileButton addSubview:redDotLeftLabel];
+            self.redDotLabel.hidden = NO;
+        }
+        else {
+            self.redDotLabel.hidden = YES;
         }
         UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
         self.navigationItem.leftBarButtonItem = profileBarButton;
@@ -913,15 +919,6 @@ int firstIndexOfNegativeEvent;
     eventStoryController.event = event;
     if (self.groupNumberID) eventStoryController.groupNumberID = self.groupNumberID;
     [self.navigationController pushViewController:eventStoryController animated:YES];
-//    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: eventStoryController];
-//
-//    
-//    [navController.navigationBar setBackgroundImage:[UIImage new]
-//                                                  forBarMetrics:UIBarMetricsDefault];
-//    navController.navigationBar.shadowImage = [UIImage new];
-//    navController.navigationBar.translucent = YES;
-    
-//    [self presentViewController:navController animated:YES completion:nil];
 }
 
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
