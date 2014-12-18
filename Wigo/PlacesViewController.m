@@ -667,7 +667,8 @@ int firstIndexOfNegativeEvent;
             cell.eventPeopleScrollView.contentOffset = CGPointMake([(NSNumber *)[self.eventOffsetDictionary objectForKey:[[event eventID] stringValue]] intValue],0);
         }
         [cell updateUI];
-        if ([[[event dictionary] objectForKey:@"is_read"] boolValue]) {
+        if ([[[event dictionary] objectForKey:@"is_read"] boolValue] &&
+            [[[event dictionary] objectForKey:@"num_messages"] intValue] > 0) {
             cell.chatBubbleImageView.hidden = YES;
             cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
@@ -690,7 +691,6 @@ int firstIndexOfNegativeEvent;
             __weak HighlightOldEventCell *weakCell = cell;
             [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                 weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
-                weakCell.highlightImageView.contentMode = UIViewContentModeScaleAspectFill;
             }];
             return cell;
         }
@@ -870,13 +870,25 @@ int firstIndexOfNegativeEvent;
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                 dispatch_async(dispatch_get_main_queue(), ^{                                            NSMutableArray *eventMessages = [NSMutableArray arrayWithArray:(NSArray *)[jsonResponse objectForKey:@"objects"]];
                                     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                                    int eventIndex = [self indexOfEvent:event inArray:eventMessages];
                                     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
                                     conversationViewController.event = event;
-                                    conversationViewController.index = 0;
+                                    conversationViewController.index = @(eventIndex);
                                     conversationViewController.eventMessages = eventMessages;
                                     [self presentViewController:conversationViewController animated:YES completion:nil];
                                 });
                             }];
+}
+
+- (int)indexOfEvent:(Event *)event inArray:(NSMutableArray *)eventMessages {
+    NSDictionary *highlightEventMessage = [[event dictionary] objectForKey:@"highlight"];
+    for (int i = 0; i < [eventMessages count]; i++) {
+        NSDictionary *eventMessage = [eventMessages objectAtIndex:i];
+        if ([[eventMessage objectForKey:@"id"] isEqualToNumber:[highlightEventMessage objectForKey:@"id"]]) {
+            return i;
+        }
+    }
+    return 0;
 }
 
 - (void)showStoryForEvent:(Event*)event {

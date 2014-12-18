@@ -985,6 +985,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.numberOfRequestsLabel.backgroundColor = RGB(254, 242, 229);
     self.numberOfRequestsLabel.textColor = [FontProperties getOrangeColor];
     self.numberOfRequestsLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberOfRequestsLabel.text = @"";
     [self.contentView addSubview:self.numberOfRequestsLabel];
 
     UIImageView *iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"addedFilled"]];
