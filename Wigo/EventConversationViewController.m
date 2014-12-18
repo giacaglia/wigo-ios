@@ -338,7 +338,8 @@
     page = MAX(page, 0);
     page = MIN(page, self.eventMessages.count - 1);
     [self.mediaScrollView scrolledToPage:(int)page];
-    [self.facesCollectionView setContentOffset:CGPointMake((sizeOfEachFaceCell) * (page - 1), 0.0f) animated:YES];
+    int sizeOfCell =  ([[UIScreen mainScreen] bounds].size.width - 20)/3;
+    [self.facesCollectionView setContentOffset:CGPointMake((sizeOfCell) * (page - 1), 0.0f) animated:YES];
     [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:YES];
     [self hideOrShowFacesForPage:(int)page];
 }
@@ -659,26 +660,27 @@
         return;
     }
     
+    int sizeOfCell =  ([[UIScreen mainScreen] bounds].size.width - 20)/3;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (isActive) {
             
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-            animation.fromValue = [NSNumber numberWithFloat:sizeOfEachFaceCell/4];
-            animation.toValue = [NSNumber numberWithFloat:0.3*sizeOfEachFaceCell];
+            animation.fromValue = [NSNumber numberWithFloat:sizeOfCell/4];
+            animation.toValue = [NSNumber numberWithFloat:0.3*sizeOfCell];
             animation.duration = 0.5;
             [self.faceImageView.layer addAnimation: animation forKey:@"cornerRadius"];
             
             [UIView animateWithDuration: 0.5 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
-                self.faceImageView.frame = CGRectMake(0.2*sizeOfEachFaceCell, 0.2*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell);
+                self.faceImageView.frame = CGRectMake(0.2*sizeOfCell, 0.2*sizeOfCell, 0.6*sizeOfCell, 0.6*sizeOfCell);
                 self.faceImageView.alpha = 1.0f;
-                self.faceImageView.layer.cornerRadius = 0.3*sizeOfEachFaceCell;
+                self.faceImageView.layer.cornerRadius = 0.3*sizeOfCell;
 
-                self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
+                self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfCell, 0.15*sizeOfCell, sizeOfCell/5, sizeOfCell/5);
                 self.mediaTypeImageView.alpha = 1.0f;
-                self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
-                self.rightLine.frame = CGRectMake(sizeOfEachFaceCell/2 + 0.3*sizeOfEachFaceCell, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2 - 0.3*sizeOfEachFaceCell, 2);
-                self.leftLine.frame = CGRectMake(0, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2- 0.3*sizeOfEachFaceCell, 2);
+                self.mediaTypeImageView.layer.cornerRadius = sizeOfCell/10;
+                self.rightLine.frame = CGRectMake(sizeOfCell/2 + 0.3*sizeOfCell, sizeOfCell/2, sizeOfCell/2 - 0.3*sizeOfCell, 2);
+                self.leftLine.frame = CGRectMake(0, sizeOfCell/2, sizeOfCell/2- 0.3*sizeOfCell, 2);
 
             } completion:^(BOOL finished) {
 

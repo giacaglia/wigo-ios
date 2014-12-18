@@ -619,7 +619,7 @@ int firstIndexOfNegativeEvent;
     if (indexPath.row < [[_oldEventsParty getObjectArray] count]) {
         Event *event = (Event *)[[_oldEventsParty getObjectArray] objectAtIndex:[indexPath row]];
         if ([event containsHighlight]) {
-            return 304;
+            return 340;
         }
     }
     return 50;
@@ -1203,7 +1203,7 @@ viewForHeaderInSection:(NSInteger)section {
                         
                         if ([lastUserRead intValue] < [lastUserJoinedNumber intValue]) {
                             self.redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, 10, 10)];
-                            self.redDotLabel.backgroundColor = [UIColor redColor];
+                            self.redDotLabel.backgroundColor = [FontProperties getOrangeColor];
                             self.redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
                             self.redDotLabel.clipsToBounds = YES;
                             self.redDotLabel.layer.borderWidth = 3;
@@ -1427,7 +1427,7 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 304);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 340);
     self.backgroundColor = UIColor.whiteColor;
     [super setupTitleHeader];
     self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 50, self.frame.size.width, 254)];
@@ -1438,6 +1438,10 @@ viewForHeaderInSection:(NSInteger)section {
     UIButton *conversationButton = [[UIButton alloc] initWithFrame:self.frame];
     [conversationButton addTarget:self action:@selector(loadConversation) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:conversationButton];
+    
+    UILabel *bottomBackground = [[UILabel alloc] initWithFrame:CGRectMake(0, 304, self.frame.size.width, 36)];
+    bottomBackground.backgroundColor = RGB(249, 249, 249);
+    [self.contentView addSubview:bottomBackground];
 }
 
 - (void)loadConversation {
