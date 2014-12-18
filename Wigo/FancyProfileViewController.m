@@ -236,7 +236,6 @@ UIButton *tapButton;
 #pragma mark - Nav Bar Buttons
 
 - (void) initializeLeftBarButton {
-    
     UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
@@ -249,21 +248,21 @@ UIButton *tapButton;
 }
 
 - (void) initializeRightBarButton {
-    UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
-    [barBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    barBt.titleLabel.font = [FontProperties getSubtitleFont];
+    _rightBarBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+    [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
     
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        [barBt setTitle:@"Edit" forState:UIControlStateNormal];
-        [barBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
+        [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
+        [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
     } else {
-        [barBt setTitle:@"More" forState:UIControlStateNormal];
-        [barBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
+        [_rightBarBt setTitle:@"More" forState:UIControlStateNormal];
+        [_rightBarBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
     }
     
-    [barBt sizeToFit];
+    [_rightBarBt sizeToFit];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
-    [barItem setCustomView:barBt];
+    [barItem setCustomView:_rightBarBt];
     self.navigationItem.rightBarButtonItem = barItem;
 }
 
@@ -519,6 +518,8 @@ UIButton *tapButton;
 
 - (void) reloadViewForUserState {
     if (self.userState == OTHER_SCHOOL_USER) {
+        _rightBarBt.enabled = NO;
+        _rightBarBt.hidden = YES;
         _leftProfileButton.enabled = NO;
         _leftProfileButton.hidden = YES;
         _rightProfileButton.enabled = NO;
@@ -531,12 +532,12 @@ UIButton *tapButton;
     else if (self.userState == FOLLOWING_USER ||
         self.userState == ATTENDING_EVENT_FOLLOWING_USER ||
         self.userState == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
+        _rightBarBt.enabled = YES;
+        _rightBarBt.hidden = NO;
         _leftProfileButton.enabled = YES;
         _leftProfileButton.hidden = NO;
         _rightProfileButton.enabled = YES;
         _rightProfileButton.hidden = NO;
-        _rightBarBt.enabled = YES;
-        _rightBarBt.hidden = NO;
         _chatButton.enabled = YES;
         _chatButton.hidden = NO;
         
@@ -549,6 +550,8 @@ UIButton *tapButton;
     else if (self.userState == NOT_FOLLOWING_PUBLIC_USER ||
              self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER ||
              self.userState == BLOCKED_USER) {
+        _rightBarBt.enabled = YES;
+        _rightBarBt.hidden = NO;
         _leftProfileButton.enabled = NO;
         _leftProfileButton.hidden = YES;
         _rightProfileButton.enabled = NO;
@@ -564,6 +567,8 @@ UIButton *tapButton;
         _followRequestLabel.hidden = YES;
     }
     else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        _rightBarBt.enabled = YES;
+        _rightBarBt.hidden = NO;
         _leftProfileButton.enabled = NO;
         _leftProfileButton.hidden = YES;
         _rightProfileButton.enabled = NO;
@@ -578,6 +583,8 @@ UIButton *tapButton;
         _followRequestLabel.hidden = NO;
     }
     if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
+        _rightBarBt.enabled = YES;
+        _rightBarBt.hidden = NO;
         _followButton.enabled = NO;
         _followButton.hidden = YES;
         _chatButton.enabled = YES;
