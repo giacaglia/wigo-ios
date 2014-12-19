@@ -720,7 +720,7 @@
 - (void) resetToInactive {
     self.faceImageView.frame = CGRectMake(0.275*sizeOfEachFaceCell, 0.275*sizeOfEachFaceCell, 0.45*sizeOfEachFaceCell, 0.45*sizeOfEachFaceCell);
     self.faceImageView.alpha = 0.5f;
-    self.faceImageView.layer.cornerRadius = sizeOfEachFaceCell/4;
+    self.faceImageView.layer.cornerRadius = 0.22*sizeOfEachFaceCell;
     
     self.mediaTypeImageView.frame = CGRectMake(0.6*sizeOfEachFaceCell, 0.25*sizeOfEachFaceCell, sizeOfEachFaceCell/6.6, sizeOfEachFaceCell/6.6);
     self.mediaTypeImageView.alpha = 0.5f;
