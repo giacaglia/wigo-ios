@@ -710,13 +710,22 @@ UIButton *tapButton;
     return YES;
 }
 
+- (BOOL)shouldShowFollowSummary {
+    if ((self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) &&
+        (![_followRequestSummary isEqualToNumber:@0] && _followRequestSummary)
+        ) {
+        return YES;
+    }
+    return NO;
+}
+
 - (BOOL) isIndexPathASummaryCell:(NSIndexPath *)indexPath {
-    return (indexPath.row == 0 && [_followRequestSummary intValue] > 0);
+    return (indexPath.row == 0 && [self shouldShowFollowSummary]);
 }
 
 - (NSInteger) notificationCount {
     if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
-        int numberOfCellsForSummary = ([_followRequestSummary isEqualToNumber:@0] || !_followRequestSummary) ? 0 : 1;
+        int numberOfCellsForSummary =  [self shouldShowFollowSummary] ? 1 : 0;
         return [_nonExpiredNotificationsParty getObjectArray].count + numberOfCellsForSummary;
     }
     return [self shouldShowInviteCell] ? 1 : 0;
