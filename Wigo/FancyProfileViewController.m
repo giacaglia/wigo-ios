@@ -1119,7 +1119,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         return;
     }
     
-    newCount = @154;
+    newCount = newCount;
     _lastCount = newCount;
     
     for (UIView *subview in self.contentView.subviews) {
