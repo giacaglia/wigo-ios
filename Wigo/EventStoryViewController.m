@@ -15,7 +15,7 @@
 #import "FancyProfileViewController.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
-#define kHeaderLength 50
+#define kHeaderLength 64
 #define kHeaderFaceCollectionView @"headerFaceCollectionView"
 #define kFooterFaceCollectionView @"footerFaceCollectionView"
 
@@ -85,7 +85,7 @@
     [self.view addSubview:backgroundView];
     [self.view sendSubviewToBack:backgroundView];
     
-    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 120, 40)];
+    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 120, 40)];
     if ([[self.event numberAttending] intValue] > 0) {
         self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
     }
@@ -102,7 +102,7 @@
 }
 
 - (void)loadInviteOrGoHereButton {
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 170, 40)];
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 170, 40)];
     [self.inviteButton setTitle:@"invite more people" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     self.inviteButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
@@ -114,7 +114,7 @@
     self.inviteButton.enabled = NO;
     [self.backgroundScrollview addSubview:self.inviteButton];
     
-    self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 170, 40)];
+    self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 170, 40)];
     [self.goHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
     self.goHereButton.hidden = YES;
     self.goHereButton.enabled = NO;
@@ -271,11 +271,13 @@
         myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
         myCell.timeLabel.text = @"Add to the\nstory";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
+        myCell.timeLabel.frame = CGRectMake(0, 0.8*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
         myCell.timeLabel.layer.shadowColor = [RGB(59, 59, 59) CGColor];
         myCell.mediaTypeImageView.hidden = YES;
         [myCell updateUIToRead:NO];
         return myCell;
     }
+    myCell.timeLabel.frame = CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
     myCell.mediaTypeImageView.hidden = NO;
     myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
     myCell.mediaTypeImageView.hidden = NO;
@@ -398,7 +400,7 @@
     self.eventPeopleScrollView.userSelectDelegate = self;
     self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
     [self.eventPeopleScrollView updateUI];
-    self.eventPeopleScrollView.frame = CGRectMake(0, 24, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 10, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
     [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }
 

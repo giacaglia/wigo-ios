@@ -60,11 +60,10 @@
 @end
 
 @interface InviteCell: UITableViewCell
-@property (nonatomic, assign) id<InviteCellDelegate> delegate;
 - (void) setLabelsForUser: (User *) user;
+@property (nonatomic, assign) id<InviteCellDelegate> delegate;
 + (CGFloat) rowHeight;
 @property (nonatomic, strong) IBOutlet UIButton *inviteButton;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
-@property (nonatomic, strong) IBOutlet UILabel *eventNameLabel;
 
 @end
