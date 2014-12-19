@@ -85,7 +85,7 @@
     [self.view addSubview:backgroundView];
     [self.view sendSubviewToBack:backgroundView];
     
-    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 120, 40)];
+    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 120, 40)];
     if ([[self.event numberAttending] intValue] > 0) {
         self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
     }
