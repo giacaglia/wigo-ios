@@ -65,6 +65,7 @@
     metaInfo = nil;
     [self fetchEventMessages];
     
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self.navigationController setNavigationBarHidden: YES animated: NO];
 
 }
@@ -367,7 +368,7 @@
 - (void)loadEventPeopleScrollView {
     self.lineViewAtTop = [[UIView alloc] initWithFrame:CGRectMake(0, 63, self.view.frame.size.width, 1)];
     self.lineViewAtTop.backgroundColor = RGB(228, 228, 228);
-    self.lineViewAtTop.hidden = NO;
+    self.lineViewAtTop.hidden = YES;
     [self.view addSubview:self.lineViewAtTop];
     
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
@@ -375,8 +376,7 @@
     self.eventPeopleScrollView.userSelectDelegate = self;
     self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
     [self.eventPeopleScrollView updateUI];
-    self.eventPeopleScrollView.frame = CGRectMake(10, 24, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
-    
+    self.eventPeopleScrollView.frame = CGRectMake(0, 24, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
     [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }
 
@@ -534,7 +534,7 @@
         return;
     }
     
-    self.lineViewAtTop.hidden = YES;
+    self.lineViewAtTop.hidden = NO;
     
     CGFloat stickHeight = self.eventPeopleScrollView.frame.size.height + self.eventPeopleScrollView.frame.origin.y;
 

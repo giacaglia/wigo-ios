@@ -16,7 +16,7 @@
     if (self.sizeOfEachImage == 0) self.sizeOfEachImage = (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7;
     self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.sizeOfEachImage + 25)];
     if (self) {
-        self.contentSize = CGSizeMake(5, self.sizeOfEachImage + 10);
+        self.contentSize = CGSizeMake(15, self.sizeOfEachImage + 10);
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
         self.event = event;
@@ -65,7 +65,8 @@
 
 - (void)loadUsers {
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    self.xPosition = 0;
+
+    self.xPosition = 10;
     for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
         User *user = [[self.partyUser getObjectArray] objectAtIndex:i];
         if ([user isEqualToUser:[Profile user]]) {
@@ -97,7 +98,7 @@
         [self addSubview:profileName];
         
         self.xPosition += self.sizeOfEachImage + 3;
-        self.contentSize = CGSizeMake(self.xPosition, self.sizeOfEachImage + 25);
+        self.contentSize = CGSizeMake(self.xPosition + 10, self.sizeOfEachImage + 25);
     }
     
     if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]] && self.placesDelegate.visitedProfile) {

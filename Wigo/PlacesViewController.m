@@ -1359,7 +1359,7 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(7, [[UIScreen mainScreen] bounds].size.width/6, self.frame.size.width - 7, sizeOfEachCell - [[UIScreen mainScreen] bounds].size.width/6);
+    self.eventPeopleScrollView.frame = CGRectMake(0, [[UIScreen mainScreen] bounds].size.width/6, self.frame.size.width, sizeOfEachCell - [[UIScreen mainScreen] bounds].size.width/6);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
@@ -1402,7 +1402,7 @@ viewForHeaderInSection:(NSInteger)section {
     lineViewAtTheTop.backgroundColor = RGB(213, 213, 213);
     [self.contentView addSubview:lineViewAtTheTop];
     
-    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 0, self.frame.size.width - 75, 50)];
+    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.frame.size.width - 75, 50)];
     self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
     self.oldEventLabel.font = [FontProperties mediumFont:18.0f];
     self.oldEventLabel.textColor = RGB(184, 184, 184);
