@@ -101,10 +101,10 @@
 }
 
 - (void)loadInviteOrGoHereButton {
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 190 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 190, 40)];
-    [self.inviteButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 170, 40)];
+    [self.inviteButton setTitle:@"invite more people" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-    self.inviteButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
+    self.inviteButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
     self.inviteButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
     self.inviteButton.layer.borderWidth = 1.0f;
     self.inviteButton.layer.cornerRadius = 5.0f;
@@ -113,14 +113,14 @@
     self.inviteButton.enabled = NO;
     [self.backgroundScrollview addSubview:self.inviteButton];
     
-    self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 190 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 190, 40)];
+    self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 170, 40)];
     [self.goHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
     self.goHereButton.hidden = YES;
     self.goHereButton.enabled = NO;
-    [self.goHereButton setTitle:@"GO HERE" forState:UIControlStateNormal];
+    [self.goHereButton setTitle:@"go here" forState:UIControlStateNormal];
     [self.goHereButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.goHereButton.backgroundColor = [FontProperties getBlueColor];
-    self.goHereButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
+    self.goHereButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
     self.goHereButton.layer.cornerRadius = 5;
     self.goHereButton.layer.borderWidth = 1;
     self.goHereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
