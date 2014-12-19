@@ -29,7 +29,7 @@
 }
 
 @property (nonatomic, strong) UIScrollView *backgroundScrollview;
-
+@property (nonatomic, strong) UIView *lineViewAtTop;
 @end
 
 
@@ -365,12 +365,17 @@
 }
 
 - (void)loadEventPeopleScrollView {
+    self.lineViewAtTop = [[UIView alloc] initWithFrame:CGRectMake(0, 63, self.view.frame.size.width, 1)];
+    self.lineViewAtTop.backgroundColor = RGB(228, 228, 228);
+    self.lineViewAtTop.hidden = NO;
+    [self.view addSubview:self.lineViewAtTop];
+    
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
     self.eventPeopleScrollView.event = _event;
     self.eventPeopleScrollView.userSelectDelegate = self;
     self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
     [self.eventPeopleScrollView updateUI];
-    self.eventPeopleScrollView.frame = CGRectMake(10, 10, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
+    self.eventPeopleScrollView.frame = CGRectMake(10, 24, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
     
     [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }
@@ -528,6 +533,8 @@
     if (scrollView != facesCollectionView) {
         return;
     }
+    
+    self.lineViewAtTop.hidden = YES;
     
     CGFloat stickHeight = self.eventPeopleScrollView.frame.size.height + self.eventPeopleScrollView.frame.origin.y;
 
