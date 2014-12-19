@@ -382,20 +382,11 @@ UIButton *tapButton;
     [orangeChatBubbleImageView addSubview:numberOfChatsLabel];
     
     [_headerButtonView addSubview:_chatButton];
-    
-    if (self.userState != FOLLOWING_USER) {
-        
-        if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) {
-            [self initializeFollowRequestLabel];
-            [_headerButtonView addSubview: _followRequestLabel];
-            [_headerButtonView bringSubviewToFront: _followRequestLabel];
-        }
-        else {
-            [self initializeFollowButton];
-            [_headerButtonView addSubview: _followButton];
-            [_headerButtonView bringSubviewToFront: _followButton];
-        }
-    }
+    [self initializeFollowRequestLabel];
+    [self initializeFollowButton];
+
+//    if (self.userState != FOLLOWING_USER && self.userState != NOT_YET_ACCEPTED_PRIVATE_USER ) {
+//    }
 }
 
 - (void) initializeFollowButton {
@@ -405,6 +396,8 @@ UIButton *tapButton;
     _followButton.layer.borderWidth = 1;
     _followButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
     [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
+    [_headerButtonView addSubview: _followButton];
+    [_headerButtonView bringSubviewToFront: _followButton];
     
     NSString *followText = [NSString stringWithFormat:@"Follow %@", [self.user firstName]];
     UIView *followLabelPlusImage = [[UIView alloc] init];
@@ -435,6 +428,8 @@ UIButton *tapButton;
     _followRequestLabel.font = [FontProperties scMediumFont:16.0f];
     if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) _followRequestLabel.hidden = NO;
     else _followRequestLabel.hidden = YES;
+    [_headerButtonView addSubview: _followRequestLabel];
+    [_headerButtonView bringSubviewToFront: _followRequestLabel];
 }
 
 #pragma mark - Action Taps
