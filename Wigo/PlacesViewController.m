@@ -22,6 +22,7 @@
 #import "ReProfileViewController.h"
 #import "EventStoryViewController.h"
 #import "FancyProfileViewController.h"
+#import "FXBlurView.h"
 
 #define sizeOfEachCell [[UIScreen mainScreen] bounds].size.width/1.6
 #define kEventCellName @"EventCell"
@@ -30,7 +31,9 @@
 #define kHeaderOldEventCellName @"HeaderOldEventCell"
 
 
-@interface PlacesViewController ()
+@interface PlacesViewController () {
+    UIView *_dimView;
+}
 
 @property UIView *whereAreYouGoingView;
 @property UITextField *whereAreYouGoingTextField;
@@ -106,7 +109,6 @@ int firstIndexOfNegativeEvent;
     [self initializeFlashScreen];
 
     _spinnerAtCenter = YES;
-    [self initializeTapHandler];
     [self initializeWhereView];
 }
 
@@ -321,7 +323,7 @@ int firstIndexOfNegativeEvent;
                                                                           action:@selector(dismissKeyboard)];
     tap.cancelsTouchesInView = NO;
     tap.delegate = self;
-    [self.view addGestureRecognizer:tap];
+    [_dimView addGestureRecognizer:tap];
 }
 
 - (void)dismissKeyboard {
@@ -329,8 +331,12 @@ int firstIndexOfNegativeEvent;
     [self.view endEditing:YES];
     [UIView animateWithDuration:0.2 animations:^{
         _placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
-        _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-47);
+        _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-50);
         _whereAreYouGoingView.alpha = 0;
+        _dimView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_dimView removeFromSuperview];
+        [self initializeNavigationBar];
     }];
     [self clearTextField];
 }
@@ -431,12 +437,72 @@ int firstIndexOfNegativeEvent;
 
 - (void) goingSomewhereElsePressed {
     [self scrollUp];
-    [self dismissKeyboard];
+
+    if (!_dimView) {
+        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, self.view.opaque, 0.0);
+        [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+        UIImage *bgImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        
+        
+        CGFloat yOrigin = self.whereAreYouGoingTextField.frame.origin.y + self.whereAreYouGoingTextField.frame.size.height;
+        _dimView = [[UIView alloc] initWithFrame: CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - self.whereAreYouGoingTextField.frame.size.height)];
+        
+        
+        UIImageView *blurredView = [[UIImageView alloc] initWithFrame: CGRectMake(_dimView.bounds.origin.x, _dimView.bounds.origin.y, _dimView.bounds.size.width, _dimView.bounds.size.height)];
+        [blurredView setImage: [bgImage blurredImageWithRadius: 20.0f iterations: 4 tintColor: [UIColor blackColor]]];
+        
+        [_dimView addSubview: blurredView];
+        
+        UIView *overlay = [[UIView alloc] initWithFrame: _dimView.bounds];
+        overlay.backgroundColor = [UIColor blackColor];
+        overlay.alpha = 0.5f;
+        
+        [_dimView addSubview: overlay];
+        
+        _dimView.alpha = 0;
+    }
+    
+    if ([self.view.subviews indexOfObject: _dimView] == NSNotFound) {
+        [self.view addSubview: _dimView];
+        [self initializeTapHandler];
+    }
+    
     [self showWhereAreYouGoingView];
-    _ungoOutButton.enabled = NO;
-    [_whereAreYouGoingTextField becomeFirstResponder];
-    _placesTableView.userInteractionEnabled = NO;
-    [self textFieldDidChange:_whereAreYouGoingTextField];
+
+    
+    [UIView animateWithDuration: 0.2 animations:^{
+        _dimView.alpha = 1.0;
+        
+        self.navigationItem.titleView.alpha = 0.0f;
+        self.navigationItem.leftBarButtonItem.customView.alpha = 0.0f;
+        self.navigationItem.rightBarButtonItem.customView.alpha = 0.0f;
+        
+        [_whereAreYouGoingTextField becomeFirstResponder];
+        self.whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0, 50);
+        //_placesTableView.transform = CGAffineTransformMakeTranslation(0, 50);
+        self.whereAreYouGoingView.alpha = 1.0f;
+        
+    } completion:^(BOOL finished) {
+        
+        [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(dismissKeyboard)] animated: NO];
+        
+        [self.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Create" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
+        
+        [self.navigationItem.leftBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+        
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+
+        //[self dismissKeyboard];
+        _ungoOutButton.enabled = NO;
+        _placesTableView.userInteractionEnabled = NO;
+        [self textFieldDidChange:_whereAreYouGoingTextField];
+    }];
+    
+
+
+
 }
 
 - (void)profileSegue {
@@ -492,16 +558,16 @@ int firstIndexOfNegativeEvent;
 #pragma mark - Where Are You Going? View and Delegate
 
 - (void)showWhereAreYouGoingView {
-    [UIView animateWithDuration:0.3 animations:^{
-        _placesTableView.transform = CGAffineTransformMakeTranslation(0, 47);
-    }];
     
-    _whereAreYouGoingView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 47)];
+    _whereAreYouGoingView = [[UIView alloc] initWithFrame:CGRectMake(0, 14, self.view.frame.size.width, 50)];
+    _whereAreYouGoingView.backgroundColor = [UIColor whiteColor];
+    _whereAreYouGoingView.alpha = 0;
+    
     [self.view addSubview:_whereAreYouGoingView];
     
-    _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 18 - 100 - 10, 47)];
-    _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"WHERE ARE YOU GOING?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
-    _whereAreYouGoingTextField.font = [FontProperties scMediumFont:15.0f];
+    _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 18 - 100 - 10, 50)];
+    _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
+    _whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
     _whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
     [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
     _whereAreYouGoingTextField.delegate = self;
@@ -509,14 +575,20 @@ int firstIndexOfNegativeEvent;
                                    action:@selector(textFieldDidChange:)
                          forControlEvents:UIControlEventEditingChanged];
     _whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
+    
     [_whereAreYouGoingView addSubview:_whereAreYouGoingTextField];
     
-    [self addCreateButtonToTextField];
+    //[self addCreateButtonToTextField];
     
     _clearButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 25 - 100, _whereAreYouGoingView.frame.size.height/2 - 9, 25, 25)];
     [_clearButton addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"clearButton"]]];
     [_clearButton addTarget:self action:@selector(clearTextField) forControlEvents:UIControlEventTouchUpInside];
-    [_whereAreYouGoingView addSubview:_clearButton];
+    //[_whereAreYouGoingView addSubview:_clearButton];
+    
+    CALayer *bottomBorder = [CALayer layer];
+    bottomBorder.frame = CGRectMake(0.0f, _whereAreYouGoingView.frame.size.height - 1, _whereAreYouGoingView.frame.size.width, 1.0f);
+    bottomBorder.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f].CGColor;
+    [_whereAreYouGoingView.layer addSublayer:bottomBorder];
 }
 
 - (void)clearTextField {
@@ -563,14 +635,20 @@ int firstIndexOfNegativeEvent;
     _filteredPartyUserArray = [[NSMutableArray alloc] init];
     if([textField.text length] != 0) {
         _isSearching = YES;
-        _createButton.hidden = NO;
-        _clearButton.hidden = NO;
+        //_createButton.hidden = NO;
+        //_clearButton.hidden = NO;
         [self searchTableList:textField.text];
+        
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+        
     }
     else {
         _isSearching = NO;
         _createButton.hidden = YES;
         _clearButton.hidden = YES;
+        
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+
     }
 
     [_placesTableView reloadData];
