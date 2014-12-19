@@ -49,19 +49,15 @@
     [self loadEventTitle];
 
     [self loadEventPeopleScrollView];
-    
+    [self loadEventDetails];
+
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        [self loadEventDetails];
+        [self loadInviteOrGoHereButton];
         [self loadTextViewAndSendButton];
     }
     
-    
     [self loadConversationViewController];
-
-    
     [self setDetailViewRead];
-    
-
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -100,6 +96,10 @@
     self.numberGoingLabel.font = [FontProperties mediumFont:16];
     [self.backgroundScrollview addSubview:self.numberGoingLabel];
     
+
+}
+
+- (void)loadInviteOrGoHereButton {
     self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 190 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 190, 40)];
     [self.inviteButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
@@ -124,7 +124,7 @@
     self.goHereButton.layer.borderWidth = 1;
     self.goHereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
     [self.backgroundScrollview addSubview:self.goHereButton];
-
+    
     
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
         self.inviteButton.hidden = NO;

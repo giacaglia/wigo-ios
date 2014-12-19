@@ -462,6 +462,18 @@ UIButton *tapButton;
     }
 }
 
+- (void)unblockPressed {
+    NSString *queryString = [NSString stringWithFormat:@"users/%@", [self.user objectForKey:@"id"]];
+    NSDictionary *options = @{@"is_blocked": @NO};
+    [Network sendAsynchronousHTTPMethod:POST
+                            withAPIName:queryString
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
+                            withOptions:options];
+    [self.user setIsBlocked:NO];
+    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){
+        self.navigationController.navigationBar.barStyle = UIBarStyleDefault;}];
+}
+
 
 - (void)followPressed {
     [self.user setIsFollowing:YES];
