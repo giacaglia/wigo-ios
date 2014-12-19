@@ -24,7 +24,9 @@
 #import "FancyProfileViewController.h"
 #import "FXBlurView.h"
 
-#define sizeOfEachCell [[UIScreen mainScreen] bounds].size.width/1.6
+//#define sizeOfEachCell [[UIScreen mainScreen] bounds].size.width/1.6
+#define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
+
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCel @"HighlightOldEventCell"
 #define kOldEventCellName @"OldEventCell"
@@ -565,7 +567,7 @@ int firstIndexOfNegativeEvent;
     
     [self.view addSubview:_whereAreYouGoingView];
     
-    _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 18 - 100 - 10, 50)];
+    _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _whereAreYouGoingView.frame.size.width - 10, 50)];
     _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
     _whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
     _whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
@@ -580,9 +582,9 @@ int firstIndexOfNegativeEvent;
     
     //[self addCreateButtonToTextField];
     
-    _clearButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 25 - 100, _whereAreYouGoingView.frame.size.height/2 - 9, 25, 25)];
-    [_clearButton addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"clearButton"]]];
-    [_clearButton addTarget:self action:@selector(clearTextField) forControlEvents:UIControlEventTouchUpInside];
+//    _clearButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 25 - 100, _whereAreYouGoingView.frame.size.height/2 - 9, 25, 25)];
+//    [_clearButton addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"clearButton"]]];
+//    [_clearButton addTarget:self action:@selector(clearTextField) forControlEvents:UIControlEventTouchUpInside];
     //[_whereAreYouGoingView addSubview:_clearButton];
     
     CALayer *bottomBorder = [CALayer layer];
@@ -1436,7 +1438,7 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(0, 64, self.frame.size.width, sizeOfEachCell - [[UIScreen mainScreen] bounds].size.width/6);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 64, self.frame.size.width, [EventPeopleScrollView containerHeight]);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     

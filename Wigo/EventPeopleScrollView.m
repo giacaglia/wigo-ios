@@ -24,6 +24,10 @@
     return self;
 }
 
++ (CGFloat) containerHeight {
+    return (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7 + 25;
+}
+
 
 - (void)updateUI {
     [self fillEventAttendees];
