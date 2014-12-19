@@ -1079,12 +1079,25 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 @end
 
+@interface GoOutsCell() {
+    NSNumber *_lastCount;
+}
+
+@end
 @implementation GoOutsCell
 
-#define kTitleTemplate @"times %@ went out this semester"
+#define kTitleTemplate @"times out this semester"
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder: aDecoder];
+    
+    _lastCount = nil;
+    
+    return self;
+}
 
 - (void) awakeFromNib {
-    [self setup];
+    
 }
 
 
@@ -1093,15 +1106,48 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setLabelsForUser: (User *) user {
-    self.numberLabel.text = [(NSNumber *)[[user dictionary] objectForKey:@"period_went_out"] stringValue];
-    self.titleLabel.text = [NSString stringWithFormat: kTitleTemplate, user.firstName];
-}
+    
+    NSNumber *newCount = (NSNumber *)[[user dictionary] objectForKey:@"period_went_out"];
+    
+    if (_lastCount && [_lastCount isEqualToNumber: newCount]) {
+        return;
+    }
+    
+    newCount = @154;
+    _lastCount = newCount;
+    
+    for (UIView *subview in self.contentView.subviews) {
+        [subview removeFromSuperview];
+    }
+    
+    
+    UIFont *numberLabelFont = [FontProperties lightFont: 55];
+    
+    NSDictionary *attributes = @{NSFontAttributeName: numberLabelFont};
+    CGSize numberSize = [[newCount stringValue] sizeWithAttributes: attributes];
 
-- (void) setup {
-    self.numberLabel.font = [FontProperties mediumFont: 44];
+    CGFloat spacerSize = 10.0f;
+    CGFloat titleWidth = 137.0f;
+
+    CGFloat contentWidth = numberSize.width + spacerSize + titleWidth;
+    CGFloat sideSpacing = (self.contentView.bounds.size.width - contentWidth)/2;
+    
+    self.numberLabel = [[UILabel alloc] initWithFrame: CGRectMake(sideSpacing, 0, numberSize.width, self.contentView.frame.size.height)];
+    self.numberLabel.text = [newCount stringValue];
+    self.numberLabel.textAlignment = NSTextAlignmentRight;
+    self.numberLabel.font = numberLabelFont;
     self.numberLabel.textColor = [FontProperties getOrangeColor];
-    self.titleLabel.font = [FontProperties mediumFont: 24];
+    
+    [self.contentView addSubview: self.numberLabel];
+
+    
+    self.titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(sideSpacing + numberSize.width + spacerSize, 0, titleWidth, self.contentView.frame.size.height)];
+    self.titleLabel.text = [NSString stringWithFormat: kTitleTemplate];
+    self.titleLabel.font = [FontProperties scLightFont: 24];
     self.titleLabel.textColor = [UIColor lightGrayColor];
+    self.titleLabel.numberOfLines = 2;
+    
+    [self.contentView addSubview: self.titleLabel];
 }
 
 @end
