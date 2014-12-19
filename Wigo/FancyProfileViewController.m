@@ -119,7 +119,7 @@ UIButton *tapButton;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    //if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
+    if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
     _page = @1;
     _followRequestSummary = @0;
     [self fetchNotifications];
@@ -643,8 +643,9 @@ UIButton *tapButton;
 - (void)dismissAndGoBack {
     isUserBlocked = [self.user isBlocked];
     [self.user setIsBlocked:NO];
-    [self goBack];
-    [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){} ];
+    [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){
+        [self goBack];
+    }];
 }
 
 #pragma mark Notification Handlers

@@ -1020,12 +1020,12 @@ viewForHeaderInSection:(NSInteger)section {
             [_eventsParty addMetaInfo:metaDictionary];
             [self fillEventAttendees];
             page = @([page intValue] + 1);
-            fetchingEventAttendees = NO;
             [eventPageArray removeAllObjects];
             for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
                 [eventPageArray addObject:@2];
             }
             [self fetchedOneParty];
+            fetchingEventAttendees = NO;
         }];
     }
 }
