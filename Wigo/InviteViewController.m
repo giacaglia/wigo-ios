@@ -12,23 +12,29 @@
 #import "MobileDelegate.h"
 #define HEIGHT_CELLS 70
 
-NSArray *mobileContacts;
-NSMutableArray *filteredMobileContacts;
-NSMutableArray *chosenPeople;
 
-UITableView *invitePeopleTableView;
-Party *everyoneParty;
-Party *filteredContentParty;
-NSNumber *page;
-NSString *eventName;
-NSNumber *eventID;
-UISearchBar *searchBar;
-BOOL isSearching;
 
-UIButton *aroundInviteButton;
-UILabel *titleLabel;
-UIButton *searchButton;
-UIButton *cancelButton;
+@interface InviteViewController() {
+    NSArray *mobileContacts;
+    NSMutableArray *filteredMobileContacts;
+    NSMutableArray *chosenPeople;
+    
+    UITableView *invitePeopleTableView;
+    Party *everyoneParty;
+    Party *filteredContentParty;
+    NSNumber *page;
+    NSString *eventName;
+    NSNumber *eventID;
+    UISearchBar *searchBar;
+    BOOL isSearching;
+    
+    UIButton *aroundInviteButton;
+    UILabel *titleLabel;
+    UIButton *searchButton;
+    UIButton *cancelButton;
+}
+
+@end
 
 @implementation InviteViewController
 
@@ -416,9 +422,11 @@ heightForHeaderInSection:(NSInteger)section
     }
     int sizeOfTable = (int)[invitePeopleTableView numberOfRowsInSection:0];
     if (sizeOfTable > 0 && tag < sizeOfTable && tag >= 0) {
-        [invitePeopleTableView beginUpdates];
-        [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
-        [invitePeopleTableView endUpdates];
+//        [invitePeopleTableView beginUpdates];
+//        [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
+//        [invitePeopleTableView endUpdates];
+        
+        [invitePeopleTableView reloadData];
     }
 }
 
