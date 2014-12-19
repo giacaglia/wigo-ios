@@ -456,37 +456,7 @@
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="FN0-wC-lfV" id="8ft-gN-bs5">
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="15" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PXg-2z-Kn9">
-                                            <rect key="frame" x="8" y="0.0" width="111" height="100"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="55"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="time ben went out this week" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yl5-qS-upx">
-                                            <rect key="frame" x="139" y="0.0" width="223" height="100"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="223" id="1LE-bN-4sG"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="Yl5-qS-upx" firstAttribute="leading" secondItem="PXg-2z-Kn9" secondAttribute="trailing" constant="20" id="03N-zU-3yN"/>
-                                        <constraint firstItem="PXg-2z-Kn9" firstAttribute="bottom" secondItem="Yl5-qS-upx" secondAttribute="bottom" id="Wah-sh-Ext"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="Yl5-qS-upx" secondAttribute="trailing" constant="5" id="Xct-CQ-PvJ"/>
-                                        <constraint firstItem="PXg-2z-Kn9" firstAttribute="leading" secondItem="8ft-gN-bs5" secondAttribute="leadingMargin" id="caF-D7-ufP"/>
-                                        <constraint firstItem="PXg-2z-Kn9" firstAttribute="top" secondItem="8ft-gN-bs5" secondAttribute="top" id="dNZ-jI-foj"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="PXg-2z-Kn9" secondAttribute="bottom" constant="-8.5" id="nyS-ZD-X3H"/>
-                                        <constraint firstItem="PXg-2z-Kn9" firstAttribute="top" secondItem="Yl5-qS-upx" secondAttribute="top" id="vX4-8Y-gTD"/>
-                                    </constraints>
                                 </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="numberLabel" destination="PXg-2z-Kn9" id="wgz-l0-0Ou"/>
-                                    <outlet property="titleLabel" destination="Yl5-qS-upx" id="OLm-rT-lFw"/>
-                                </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="InviteCell" rowHeight="70" id="XXD-L1-pkX" customClass="InviteCell">
                                 <autoresizingMask key="autoresizingMask"/>
@@ -529,7 +499,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zA2-sG-0eV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3164.5" y="-1598.5"/>
+            <point key="canvasLocation" x="3124.5" y="-1598.5"/>
         </scene>
         <!--Campus Notification View Controller-->
         <scene sceneID="KRE-xI-MdA">
