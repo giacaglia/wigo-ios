@@ -1051,7 +1051,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.profileImageView.layer.masksToBounds = YES;
     [self.contentView addSubview:self.profileImageView];
     
-    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, self.frame.size.width - 70 - 80, 45)];
+    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, self.frame.size.width - 70 - 50, 45)];
     self.descriptionLabel.textAlignment = NSTextAlignmentLeft;
     self.descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.descriptionLabel.numberOfLines = 0;
