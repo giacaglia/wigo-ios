@@ -719,8 +719,7 @@ UIButton *tapButton;
         int numberOfCellsForSummary = ([_followRequestSummary isEqualToNumber:@0] || !_followRequestSummary) ? 0 : 1;
         return [_nonExpiredNotificationsParty getObjectArray].count + numberOfCellsForSummary;
     }
-    
-    return 0;
+    return [self shouldShowInviteCell] ? 1 : 0;
 }
 
 #pragma mark - Table View Delegate
@@ -770,6 +769,13 @@ UIButton *tapButton;
             }
             
             return summaryCell;
+        }
+        if ([self shouldShowInviteCell] && indexPath.row == 0) {
+            InviteCell *inviteCell = [tableView dequeueReusableCellWithIdentifier:@"InviteCell" forIndexPath:indexPath];
+            return inviteCell;
+        }
+        if ([self shouldShowInviteCell]) {
+             indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
         }
         NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
         if ([_followRequestSummary intValue] > 0) {
@@ -1199,7 +1205,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 @implementation InviteCell
 
-#define kInviteTitleTemplate @"Invite %@ to join you at"
+#define kInviteTitleTemplate @"Tap to see out:"
 
 - (void) awakeFromNib {
     [self setup];
@@ -1210,23 +1216,19 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     return 70.0f;
 }
 
-- (void) setLabelsForUser: (User *) user {
-    self.titleLabel.text = [NSString stringWithFormat: kInviteTitleTemplate, [user.firstName lowercaseString]];
-}
 
 - (void) setup {
-    self.eventNameLabel.font = [FontProperties mediumFont: 18];
-    self.eventNameLabel.textColor = [FontProperties getBlueColor];
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
     self.titleLabel.font = [FontProperties lightFont: 18];
     self.titleLabel.textColor = [UIColor lightGrayColor];
     
-    [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-    self.inviteButton.titleLabel.font =  [FontProperties scMediumFont:18.0f];
+    self.inviteButton.frame = CGRectMake(self.frame.size.width - 55 - 35, 10, 60, 35);
+    self.inviteButton.center = CGPointMake(self.inviteButton.center.x, self.center.y);
+    self.inviteButton.titleLabel.font =  [FontProperties lightFont:18.0f];
     self.inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.inviteButton.layer.borderWidth = 1;
-    self.inviteButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    self.inviteButton.layer.cornerRadius = 3;
-    
+    self.inviteButton.layer.borderColor = UIColor.whiteColor.CGColor;
+    self.inviteButton.layer.cornerRadius = 7;
     [self.inviteButton addTarget: self action: @selector(inviteTapped) forControlEvents: UIControlEventTouchUpInside];
     
 }

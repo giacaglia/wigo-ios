@@ -699,7 +699,6 @@ int firstIndexOfNegativeEvent;
             cell.chatBubbleImageView.hidden = YES;
             cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
-        cell.backgroundColor = UIColor.whiteColor;
         return cell;
     }
     else {
@@ -1369,7 +1368,7 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview: eventFeedButton];
     
     UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 1, self.frame.size.width, 0.5)];
-    lineSeparator.backgroundColor = RGBAlpha(185, 213, 230, 100);
+    lineSeparator.backgroundColor = RGB(210, 210, 210);
     [self.contentView addSubview:lineSeparator];
 }
 
