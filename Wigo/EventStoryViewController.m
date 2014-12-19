@@ -271,11 +271,13 @@
         myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
         myCell.timeLabel.text = @"Add to the\nstory";
         myCell.timeLabel.textColor = RGB(59, 59, 59);
+        myCell.timeLabel.frame = CGRectMake(0, 0.8*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
         myCell.timeLabel.layer.shadowColor = [RGB(59, 59, 59) CGColor];
         myCell.mediaTypeImageView.hidden = YES;
         [myCell updateUIToRead:NO];
         return myCell;
     }
+    myCell.timeLabel.frame = CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
     myCell.mediaTypeImageView.hidden = NO;
     myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
     myCell.mediaTypeImageView.hidden = NO;
