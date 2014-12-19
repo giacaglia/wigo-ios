@@ -15,7 +15,7 @@
 #import "FancyProfileViewController.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
-#define kHeaderLength 50
+#define kHeaderLength 64
 #define kHeaderFaceCollectionView @"headerFaceCollectionView"
 
 @interface EventStoryViewController()<UIScrollViewDelegate> {
@@ -101,7 +101,7 @@
 }
 
 - (void)loadInviteOrGoHereButton {
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 170, 40)];
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 170, 40)];
     [self.inviteButton setTitle:@"invite more people" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     self.inviteButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
@@ -113,7 +113,7 @@
     self.inviteButton.enabled = NO;
     [self.backgroundScrollview addSubview:self.inviteButton];
     
-    self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 170, 40)];
+    self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 170, 40)];
     [self.goHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
     self.goHereButton.hidden = YES;
     self.goHereButton.enabled = NO;
@@ -376,7 +376,7 @@
     self.eventPeopleScrollView.userSelectDelegate = self;
     self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
     [self.eventPeopleScrollView updateUI];
-    self.eventPeopleScrollView.frame = CGRectMake(0, 24, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 10, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
     [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }
 
