@@ -90,7 +90,7 @@
         else backgroundName.backgroundColor = RGB(71, 71, 71);
         [self addSubview:backgroundName];
         
-        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 20)];
+        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
         profileName.text = [user firstName];
         profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
