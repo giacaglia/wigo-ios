@@ -481,7 +481,7 @@ int firstIndexOfNegativeEvent;
         
         [_whereAreYouGoingTextField becomeFirstResponder];
         self.whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0, 50);
-        _placesTableView.transform = CGAffineTransformMakeTranslation(0, 50);
+        //_placesTableView.transform = CGAffineTransformMakeTranslation(0, 50);
         self.whereAreYouGoingView.alpha = 1.0f;
         
     } completion:^(BOOL finished) {
