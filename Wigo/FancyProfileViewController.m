@@ -385,8 +385,6 @@ UIButton *tapButton;
     [self initializeFollowRequestLabel];
     [self initializeFollowButton];
 
-//    if (self.userState != FOLLOWING_USER && self.userState != NOT_YET_ACCEPTED_PRIVATE_USER ) {
-//    }
 }
 
 - (void) initializeFollowButton {

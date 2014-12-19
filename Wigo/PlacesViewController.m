@@ -129,7 +129,7 @@ int firstIndexOfNegativeEvent;
     }
     self.visitedProfile = NO;
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
 }
 
@@ -171,7 +171,8 @@ int firstIndexOfNegativeEvent;
 - (void) initializeNavigationBar {
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.rightBarButtonItem = nil;
-
+    self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
 
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
         CGRect profileFrame = CGRectMake(0, 0, 30, 30);
@@ -213,11 +214,6 @@ int firstIndexOfNegativeEvent;
         [self.rightButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
         self.navigationItem.rightBarButtonItem = rightBarButton;
-        self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
-        [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
-    }
-    else {
-        
     }
 
     [self updateTitleView];
@@ -310,10 +306,6 @@ int firstIndexOfNegativeEvent;
     triangleImageView.image = [UIImage imageNamed:@"whiteTriangle"];
     [schoolButton addSubview:triangleImageView];
 
-    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        [schoolButton setTitleColor:RGB(100, 173, 215) forState:UIControlStateNormal];
-        triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
-    }
     
     self.navigationItem.titleView = schoolButton;
 }
