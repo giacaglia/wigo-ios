@@ -60,6 +60,7 @@
 @end
 
 @interface InviteCell: UITableViewCell
+- (void) setLabelsForUser: (User *) user;
 @property (nonatomic, assign) id<InviteCellDelegate> delegate;
 + (CGFloat) rowHeight;
 @property (nonatomic, strong) IBOutlet UIButton *inviteButton;

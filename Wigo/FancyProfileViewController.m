@@ -772,6 +772,7 @@ UIButton *tapButton;
         }
         if ([self shouldShowInviteCell] && indexPath.row == 0) {
             InviteCell *inviteCell = [tableView dequeueReusableCellWithIdentifier:@"InviteCell" forIndexPath:indexPath];
+            [inviteCell setLabelsForUser:self.user];
             return inviteCell;
         }
         if ([self shouldShowInviteCell]) {
@@ -1216,6 +1217,19 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     return 70.0f;
 }
 
+- (void) setLabelsForUser: (User *) user {
+    if ([user isTapped]) {
+        self.inviteButton.hidden = YES;
+        self.titleLabel.text = @"Tapped";
+        self.titleLabel.textAlignment = NSTextAlignmentCenter;
+        self.titleLabel.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
+    }
+    else {
+        self.inviteButton.hidden = NO;
+        self.titleLabel.text = kInviteTitleTemplate;
+    }
+
+}
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
