@@ -65,6 +65,7 @@
     metaInfo = nil;
     [self fetchEventMessages];
     
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self.navigationController setNavigationBarHidden: YES animated: NO];
 
 }
@@ -100,10 +101,10 @@
 }
 
 - (void)loadInviteOrGoHereButton {
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 190 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 190, 40)];
-    [self.inviteButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 170, 40)];
+    [self.inviteButton setTitle:@"invite more people" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-    self.inviteButton.titleLabel.font = [FontProperties scMediumFont:14.0f];
+    self.inviteButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
     self.inviteButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
     self.inviteButton.layer.borderWidth = 1.0f;
     self.inviteButton.layer.cornerRadius = 5.0f;
@@ -112,14 +113,14 @@
     self.inviteButton.enabled = NO;
     [self.backgroundScrollview addSubview:self.inviteButton];
     
-    self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 190 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 190, 40)];
+    self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 170, 40)];
     [self.goHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
     self.goHereButton.hidden = YES;
     self.goHereButton.enabled = NO;
-    [self.goHereButton setTitle:@"GO HERE" forState:UIControlStateNormal];
+    [self.goHereButton setTitle:@"go here" forState:UIControlStateNormal];
     [self.goHereButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.goHereButton.backgroundColor = [FontProperties getBlueColor];
-    self.goHereButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
+    self.goHereButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
     self.goHereButton.layer.cornerRadius = 5;
     self.goHereButton.layer.borderWidth = 1;
     self.goHereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
@@ -336,7 +337,7 @@
         [cell addSubview:highlightLabel];
         
         UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 30, cell.frame.size.height - 1, 60, 1)];
-        lineView.backgroundColor = highlightLabel.textColor;
+        lineView.backgroundColor = RGB(228, 228, 228);
         [cell addSubview:lineView];
     }
     return cell;
@@ -367,7 +368,7 @@
 - (void)loadEventPeopleScrollView {
     self.lineViewAtTop = [[UIView alloc] initWithFrame:CGRectMake(0, 63, self.view.frame.size.width, 1)];
     self.lineViewAtTop.backgroundColor = RGB(228, 228, 228);
-    self.lineViewAtTop.hidden = NO;
+    self.lineViewAtTop.hidden = YES;
     [self.view addSubview:self.lineViewAtTop];
     
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
@@ -375,16 +376,15 @@
     self.eventPeopleScrollView.userSelectDelegate = self;
     self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
     [self.eventPeopleScrollView updateUI];
-    self.eventPeopleScrollView.frame = CGRectMake(10, 24, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
-    
+    self.eventPeopleScrollView.frame = CGRectMake(0, 24, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
     [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }
 
 - (void)loadEventTitle {
-    UIButton *aroundBackButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 25, 50, 50)];
+    UIButton *aroundBackButton = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 45, 60)];
     [aroundBackButton addTarget:self action:@selector(goBack) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:aroundBackButton];
-    UIImageView *backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 9, 15)];
+    UIImageView *backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 30, 9, 15)];
     backImageView.image = [UIImage imageNamed:@"blueBackIcon"];
     [aroundBackButton addSubview:backImageView];
     
@@ -534,7 +534,7 @@
         return;
     }
     
-    self.lineViewAtTop.hidden = YES;
+    self.lineViewAtTop.hidden = NO;
     
     CGFloat stickHeight = self.eventPeopleScrollView.frame.size.height + self.eventPeopleScrollView.frame.origin.y;
 
