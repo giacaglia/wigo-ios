@@ -297,20 +297,20 @@
     }
     myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
     myCell.timeLabel.textColor = RGB(59, 59, 59);
-    if ([[eventMessage allKeys] containsObject:@"loading"]) {
-        myCell.spinner.hidden = NO;
-        [myCell.spinner startAnimating];
-        myCell.faceImageView.alpha = 0.4f;
-        myCell.mediaTypeImageView.alpha = 0.4f;
-        myCell.userInteractionEnabled = NO;
-    }
-    else {
-        if (myCell.spinner.isAnimating) {
-            [myCell.spinner stopAnimating];
+//    if ([[eventMessage allKeys] containsObject:@"loading"]) {
+//        myCell.spinner.hidden = NO;
+//        [myCell.spinner startAnimating];
+//        myCell.faceImageView.alpha = 0.4f;
+//        myCell.mediaTypeImageView.alpha = 0.4f;
+//        myCell.userInteractionEnabled = NO;
+//    }
+//    else {
+//        if (myCell.spinner.isAnimating) {
+//            [myCell.spinner stopAnimating];
             myCell.faceImageView.alpha = 1.0f;
             myCell.mediaTypeImageView.alpha = 1.0f;
-        }
-    }
+//        }
+//    }
     
     if ([[eventMessage allKeys] containsObject:@"is_read"]) {
         if ([[eventMessage objectForKey:@"is_read"] boolValue]) {
