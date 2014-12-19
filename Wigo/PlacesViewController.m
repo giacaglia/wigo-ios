@@ -23,7 +23,7 @@
 #import "EventStoryViewController.h"
 #import "FancyProfileViewController.h"
 
-#define sizeOfEachCell [[UIScreen mainScreen] bounds].size.width/1.7
+#define sizeOfEachCell [[UIScreen mainScreen] bounds].size.width/1.6
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCel @"HighlightOldEventCell"
 #define kOldEventCellName @"OldEventCell"
@@ -175,7 +175,7 @@ int firstIndexOfNegativeEvent;
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
 
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        CGRect profileFrame = CGRectMake(0, 0, 30, 30);
+        CGRect profileFrame = CGRectMake(3, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -1340,7 +1340,7 @@ viewForHeaderInSection:(NSInteger)section {
     self.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 3, self.frame.size.width - 75, 50)];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.frame.size.width - 75, 64)];
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.font = [FontProperties scMediumFont: 20];
     self.eventNameLabel.textColor = RGB(100, 173, 215);
@@ -1358,7 +1358,7 @@ viewForHeaderInSection:(NSInteger)section {
     [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(0, [[UIScreen mainScreen] bounds].size.width/6, self.frame.size.width, sizeOfEachCell - [[UIScreen mainScreen] bounds].size.width/6);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 64, self.frame.size.width, sizeOfEachCell - [[UIScreen mainScreen] bounds].size.width/6);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
@@ -1367,7 +1367,7 @@ viewForHeaderInSection:(NSInteger)section {
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
     
-    UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 1, self.frame.size.width, 0.5)];
+    UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height, self.frame.size.width, 0.5)];
     lineSeparator.backgroundColor = RGB(210, 210, 210);
     [self.contentView addSubview:lineSeparator];
 }
