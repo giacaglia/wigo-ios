@@ -88,7 +88,19 @@ UIButton *tapButton;
     blockShown = NO;
     [self pageChangedTo: 0];
 
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset: UIEdgeInsetsZero];
+    }
+    
+    if ([self.tableView respondsToSelector:@selector(layoutMargins)]) {
+        [self.tableView setLayoutMargins: UIEdgeInsetsMake(0, self.view.frame.size.width, 0, 0)];
+    }
+    
+    self.tableView.separatorColor = RGB(228, 228, 228);
+    self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 0.0f];
+    
     [self.tableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
     [self.tableView registerClass:[SummaryCell class] forCellReuseIdentifier:kSummaryCellName];
     [self.tableView setTableHeaderView: self.imageScrollView];
@@ -104,6 +116,14 @@ UIButton *tapButton;
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", nil];
 
     [EventAnalytics tagEvent:@"Profile View" withDetails:options];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    if ([self.tableView respondsToSelector:@selector(layoutMargins)]) {
+        self.tableView.layoutMargins = UIEdgeInsetsZero;
+    }
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -733,6 +753,10 @@ UIButton *tapButton;
         GoOutsCell *goOutsCell = [tableView dequeueReusableCellWithIdentifier: @"GoOutsCell" forIndexPath:indexPath];
         [goOutsCell setLabelsForUser: self.user];
         
+        if ([goOutsCell respondsToSelector:@selector(layoutMargins)]) {
+            goOutsCell.layoutMargins = UIEdgeInsetsMake(0, goOutsCell.contentView.frame.size.width, 0, 0);
+        }
+        
         return goOutsCell;
     }
     
@@ -740,6 +764,11 @@ UIButton *tapButton;
         if ([self isIndexPathASummaryCell:indexPath]) {
             SummaryCell *summaryCell = [tableView dequeueReusableCellWithIdentifier:kSummaryCellName forIndexPath:indexPath];
             summaryCell.numberOfRequestsLabel.text = [_followRequestSummary stringValue];
+            
+            if ([summaryCell respondsToSelector:@selector(layoutMargins)]) {
+                summaryCell.layoutMargins = UIEdgeInsetsZero;
+            }
+            
             return summaryCell;
         }
         NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
@@ -752,6 +781,11 @@ UIButton *tapButton;
         User *user = [[User alloc] initWithDictionary:[notification fromUser]];
         [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
         notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName] , [notification message] ];
+        
+        if ([notificationCell respondsToSelector:@selector(layoutMargins)]) {
+            notificationCell.layoutMargins = UIEdgeInsetsZero;
+        }
+        
         return notificationCell;
     }
     
@@ -799,7 +833,7 @@ UIButton *tapButton;
         return [GoOutsCell rowHeight];
     }
     else if (indexPath.section == kNotificationsSection) {
-        return 54;
+        return 65;
     }
     else if (indexPath.section == kImageViewSection) {
         return self.imageScrollView.frame.size.height - _nameView.frame.size.height;
@@ -913,6 +947,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                 [_notificationsParty addMetaInfo:metaDictionary];
                 _page = @([_page intValue] + 1);
+                
+                self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
                 [self.tableView reloadData];
                 [self.tableView didFinishPullToRefresh];
                 self.isFetchingNotifications = NO;
@@ -988,9 +1024,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 54);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 65);
    
-    self.numberOfRequestsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.frame.size.height/2 - 22, 45, 45)];
+    self.numberOfRequestsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 45, 45)];
     self.numberOfRequestsLabel.layer.cornerRadius = 5;
     self.numberOfRequestsLabel.layer.borderWidth = 0.5;
     self.numberOfRequestsLabel.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -999,19 +1035,17 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.numberOfRequestsLabel.textColor = [FontProperties getOrangeColor];
     self.numberOfRequestsLabel.textAlignment = NSTextAlignmentCenter;
     self.numberOfRequestsLabel.text = @"";
+    self.numberOfRequestsLabel.center = CGPointMake(self.numberOfRequestsLabel.center.x, self.center.y);
     [self.contentView addSubview:self.numberOfRequestsLabel];
 
-    UIImageView *iconLabel = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"addedFilled"]];
-    iconLabel.frame = CGRectMake(55, 20, 17, 12);
-    [self.contentView addSubview:iconLabel];
-
-    UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, self.frame.size.width - 70 - 80, 45)];
+    UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, self.frame.size.width - 70 - 80, self.contentView.frame.size.height)];
     notificationLabel.text = @"Follow requests";
     notificationLabel.font = [FontProperties getBioFont];
     [self.contentView addSubview:notificationLabel];
 
     UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeRightArrow"]];
     rightArrowImageView.frame = CGRectMake(self.frame.size.width - 35, self.frame.size.height/2 - 9, 11, 18);
+    rightArrowImageView.center = CGPointMake(rightArrowImageView.center.x, self.center.y);
     [self.contentView addSubview:rightArrowImageView];
 }
 
@@ -1031,25 +1065,28 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 54);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 65);
     self.backgroundColor = UIColor.clearColor;
     self.selectionStyle = UITableViewCellSeparatorStyleNone;
     
-    self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, self.frame.size.height/2 - 22, 45, 45)];
+    self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 45, 45)];
     self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.profileImageView.clipsToBounds = YES;
     self.profileImageView.layer.cornerRadius = 7;
     self.profileImageView.layer.borderWidth = 0.5;
     self.profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
     self.profileImageView.layer.masksToBounds = YES;
+    self.profileImageView.center = CGPointMake(self.profileImageView.center.x, self.center.y);
     [self.contentView addSubview:self.profileImageView];
     
-    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, self.frame.size.width - 70 - 50, 45)];
+    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 0, self.frame.size.width - 70 - 50, self.frame.size.height)];
     self.descriptionLabel.textAlignment = NSTextAlignmentLeft;
     self.descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.descriptionLabel.numberOfLines = 0;
     self.descriptionLabel.font = [FontProperties lightFont:15.0f];
     self.descriptionLabel.textColor = RGB(104, 104, 104);
+    self.descriptionLabel.center = CGPointMake(self.descriptionLabel.center.x, self.center.y);
+
     [self.contentView addSubview:self.descriptionLabel];
     
     self.buttonCallback = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 27 - 14, self.frame.size.height/2  - 13, 27, 27)];
@@ -1062,6 +1099,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
     self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
+    self.rightPostImageView.center = CGPointMake(self.rightPostImageView.center.x, self.center.y);
+
     [self.contentView addSubview:self.rightPostImageView];
     
     self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 27, self.frame.size.height/2 + 13 + 3, 50, 15)];
