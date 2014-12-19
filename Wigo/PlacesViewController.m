@@ -129,7 +129,7 @@ int firstIndexOfNegativeEvent;
     }
     self.visitedProfile = NO;
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
 }
 
@@ -185,15 +185,22 @@ int firstIndexOfNegativeEvent;
         [profileButton addTarget:self action:@selector(profileSegue)
                 forControlEvents:UIControlEventTouchUpInside];
         [profileButton setShowsTouchWhenHighlighted:YES];
-        if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 &&
+        if (!self.leftRedDotLabel) {
+            self.leftRedDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, -5, 13, 13)];
+            self.leftRedDotLabel.backgroundColor = [FontProperties getOrangeColor];
+            self.leftRedDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
+            self.leftRedDotLabel.clipsToBounds = YES;
+            self.leftRedDotLabel.layer.borderWidth = 3;
+            self.leftRedDotLabel.layer.cornerRadius = 8;
+            self.leftRedDotLabel.hidden = YES;
+            [profileButton addSubview:self.leftRedDotLabel];
+        }
+        if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 ||
             [(NSNumber *)[[Profile user] objectForKey:@"num_unread_notifications"] intValue] > 0) {
-            UILabel *redDotLeftLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, 10, 10)];
-            redDotLeftLabel.backgroundColor = [UIColor redColor];
-            redDotLeftLabel.layer.borderColor = [UIColor clearColor].CGColor;
-            redDotLeftLabel.clipsToBounds = YES;
-            redDotLeftLabel.layer.borderWidth = 3;
-            redDotLeftLabel.layer.cornerRadius = 5;
-            [profileButton addSubview:redDotLeftLabel];
+            self.redDotLabel.hidden = NO;
+        }
+        else {
+            self.redDotLabel.hidden = YES;
         }
         UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
         self.navigationItem.leftBarButtonItem = profileBarButton;
@@ -403,12 +410,13 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeGoingSomewhereElseButton {
-    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, self.view.frame.size.height - 55, 45, 45)];
+    int sizeOfButton = [[UIScreen mainScreen] bounds].size.width/6.4;
+    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - sizeOfButton - 10, self.view.frame.size.height - sizeOfButton - 10, sizeOfButton, sizeOfButton)];
     [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
     _goingSomewhereButton.backgroundColor = [FontProperties getBlueColor];
     _goingSomewhereButton.layer.borderWidth = 1.0f;
     _goingSomewhereButton.layer.borderColor = [UIColor clearColor].CGColor;
-    _goingSomewhereButton.layer.cornerRadius = 20;
+    _goingSomewhereButton.layer.cornerRadius = sizeOfButton/2;
     _goingSomewhereButton.layer.shadowColor = [UIColor blackColor].CGColor;
     _goingSomewhereButton.layer.shadowOpacity = 0.4f;
     _goingSomewhereButton.layer.shadowRadius = 5.0f;
@@ -416,7 +424,7 @@ int firstIndexOfNegativeEvent;
     [self.view addSubview:_goingSomewhereButton];
     [self.view bringSubviewToFront:_goingSomewhereButton];
     
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 15, 15)];
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 7, sizeOfButton/2 - 7, 15, 15)];
     sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
     [_goingSomewhereButton addSubview:sendOvalImageView];
 }
@@ -913,15 +921,6 @@ int firstIndexOfNegativeEvent;
     eventStoryController.event = event;
     if (self.groupNumberID) eventStoryController.groupNumberID = self.groupNumberID;
     [self.navigationController pushViewController:eventStoryController animated:YES];
-//    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: eventStoryController];
-//
-//    
-//    [navController.navigationBar setBackgroundImage:[UIImage new]
-//                                                  forBarMetrics:UIBarMetricsDefault];
-//    navController.navigationBar.shadowImage = [UIImage new];
-//    navController.navigationBar.translucent = YES;
-    
-//    [self presentViewController:navController animated:YES completion:nil];
 }
 
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
@@ -1023,12 +1022,12 @@ viewForHeaderInSection:(NSInteger)section {
             [_eventsParty addMetaInfo:metaDictionary];
             [self fillEventAttendees];
             page = @([page intValue] + 1);
-            fetchingEventAttendees = NO;
             [eventPageArray removeAllObjects];
             for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
                 [eventPageArray addObject:@2];
             }
             [self fetchedOneParty];
+            fetchingEventAttendees = NO;
         }];
     }
 }

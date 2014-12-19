@@ -49,19 +49,15 @@
     [self loadEventTitle];
 
     [self loadEventPeopleScrollView];
-    
+    [self loadEventDetails];
+
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        [self loadEventDetails];
+        [self loadInviteOrGoHereButton];
         [self loadTextViewAndSendButton];
     }
     
-    
     [self loadConversationViewController];
-
-    
     [self setDetailViewRead];
-    
-
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -100,6 +96,10 @@
     self.numberGoingLabel.font = [FontProperties mediumFont:16];
     [self.backgroundScrollview addSubview:self.numberGoingLabel];
     
+
+}
+
+- (void)loadInviteOrGoHereButton {
     self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 190 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, 190, 40)];
     [self.inviteButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
@@ -124,7 +124,7 @@
     self.goHereButton.layer.borderWidth = 1;
     self.goHereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
     [self.backgroundScrollview addSubview:self.goHereButton];
-
+    
     
     if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
         self.inviteButton.hidden = NO;
@@ -345,12 +345,13 @@
 
 
 - (void)loadTextViewAndSendButton {
-    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, self.view.frame.size.height - 55, 45, 45)];
+    int sizeOfButton = [[UIScreen mainScreen] bounds].size.width/6.4;
+    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width -sizeOfButton - 10, self.view.frame.size.height - sizeOfButton - 10, sizeOfButton, sizeOfButton)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     sendButton.backgroundColor = [FontProperties getOrangeColor];
     sendButton.layer.borderWidth = 1.0f;
     sendButton.layer.borderColor = [UIColor clearColor].CGColor;
-    sendButton.layer.cornerRadius = 20.0f;
+    sendButton.layer.cornerRadius = sizeOfButton/2;
     sendButton.layer.shadowColor = [UIColor blackColor].CGColor;
     sendButton.layer.shadowOpacity = 0.4f;
     sendButton.layer.shadowRadius = 5.0f;
@@ -358,7 +359,7 @@
     [self.view addSubview:sendButton];
     [self.view bringSubviewToFront:sendButton];
 
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 15, 15)];
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 7, sizeOfButton/2 - 7, 15, 15)];
     sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
     [sendButton addSubview:sendOvalImageView];
 }

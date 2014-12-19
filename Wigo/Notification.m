@@ -101,7 +101,8 @@
 
 
 - (NSString *)type {
-    return [_proxy objectForKey:@"type"];
+    if ([[_proxy allKeys] containsObject:@"type"]) return [_proxy objectForKey:@"type"];
+    return nil;
 }
 
 - (void)setType:(NSString *)type {
