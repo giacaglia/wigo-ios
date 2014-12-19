@@ -192,6 +192,7 @@ int firstIndexOfNegativeEvent;
             self.leftRedDotLabel.clipsToBounds = YES;
             self.leftRedDotLabel.layer.borderWidth = 3;
             self.leftRedDotLabel.layer.cornerRadius = 8;
+            self.leftRedDotLabel.hidden = YES;
             [profileButton addSubview:self.leftRedDotLabel];
         }
         if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 ||
@@ -409,12 +410,13 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeGoingSomewhereElseButton {
-    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, self.view.frame.size.height - 55, 45, 45)];
+    int sizeOfButton = [[UIScreen mainScreen] bounds].size.width/6.4;
+    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - sizeOfButton - 10, self.view.frame.size.height - sizeOfButton - 10, sizeOfButton, sizeOfButton)];
     [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
     _goingSomewhereButton.backgroundColor = [FontProperties getBlueColor];
     _goingSomewhereButton.layer.borderWidth = 1.0f;
     _goingSomewhereButton.layer.borderColor = [UIColor clearColor].CGColor;
-    _goingSomewhereButton.layer.cornerRadius = 20;
+    _goingSomewhereButton.layer.cornerRadius = sizeOfButton/2;
     _goingSomewhereButton.layer.shadowColor = [UIColor blackColor].CGColor;
     _goingSomewhereButton.layer.shadowOpacity = 0.4f;
     _goingSomewhereButton.layer.shadowRadius = 5.0f;
@@ -422,7 +424,7 @@ int firstIndexOfNegativeEvent;
     [self.view addSubview:_goingSomewhereButton];
     [self.view bringSubviewToFront:_goingSomewhereButton];
     
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 15, 15)];
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 7, sizeOfButton/2 - 7, 15, 15)];
     sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
     [_goingSomewhereButton addSubview:sendOvalImageView];
 }

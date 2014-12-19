@@ -345,12 +345,13 @@
 
 
 - (void)loadTextViewAndSendButton {
-    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, self.view.frame.size.height - 55, 45, 45)];
+    int sizeOfButton = [[UIScreen mainScreen] bounds].size.width/6.4;
+    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width -sizeOfButton - 10, self.view.frame.size.height - sizeOfButton - 10, sizeOfButton, sizeOfButton)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     sendButton.backgroundColor = [FontProperties getOrangeColor];
     sendButton.layer.borderWidth = 1.0f;
     sendButton.layer.borderColor = [UIColor clearColor].CGColor;
-    sendButton.layer.cornerRadius = 20.0f;
+    sendButton.layer.cornerRadius = sizeOfButton/2;
     sendButton.layer.shadowColor = [UIColor blackColor].CGColor;
     sendButton.layer.shadowOpacity = 0.4f;
     sendButton.layer.shadowRadius = 5.0f;
@@ -358,7 +359,7 @@
     [self.view addSubview:sendButton];
     [self.view bringSubviewToFront:sendButton];
 
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 15, 15)];
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 7, sizeOfButton/2 - 7, 15, 15)];
     sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
     [sendButton addSubview:sendOvalImageView];
 }
