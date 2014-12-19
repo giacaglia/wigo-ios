@@ -337,7 +337,7 @@
         [cell addSubview:highlightLabel];
         
         UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 30, cell.frame.size.height - 1, 60, 1)];
-        lineView.backgroundColor = highlightLabel.textColor;
+        lineView.backgroundColor = RGB(228, 228, 228);
         [cell addSubview:lineView];
     }
     return cell;
