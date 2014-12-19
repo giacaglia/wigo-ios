@@ -17,6 +17,7 @@
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 #define kHeaderLength 50
 #define kHeaderFaceCollectionView @"headerFaceCollectionView"
+#define kFooterFaceCollectionView @"footerFaceCollectionView"
 
 @interface EventStoryViewController()<UIScrollViewDelegate> {
     UIButton *sendButton;
@@ -215,6 +216,8 @@
     facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - yOrigin + 60) collectionViewLayout:flow];
     [facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderFaceCollectionView];
     
+    [facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier: kFooterFaceCollectionView];
+
     facesCollectionView.backgroundColor = UIColor.whiteColor;
     facesCollectionView.showsHorizontalScrollIndicator = NO;
     facesCollectionView.showsVerticalScrollIndicator = NO;
@@ -225,6 +228,7 @@
     
     facesCollectionView.dataSource = self;
     facesCollectionView.delegate = self;
+    
     
     UIView *line = [[UIView alloc] initWithFrame: CGRectMake(0, yOrigin - 1, self.view.frame.size.width, 1)];
     line.backgroundColor = RGB(228, 228, 228);
@@ -325,10 +329,13 @@
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
-                                                                    withReuseIdentifier:kHeaderFaceCollectionView
-                                                                           forIndexPath:indexPath];
+    
+    
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                        withReuseIdentifier:kHeaderFaceCollectionView
+                                                                               forIndexPath:indexPath];
+
         UILabel *highlightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
         highlightLabel.text = @"Highlights";
         highlightLabel.textAlignment = NSTextAlignmentCenter;
@@ -339,10 +346,25 @@
         UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 30, cell.frame.size.height - 1, 60, 1)];
         lineView.backgroundColor = RGB(228, 228, 228);
         [cell addSubview:lineView];
+        
+        return cell;
+    } else if ([kind isEqualToString: UICollectionElementKindSectionFooter]) {
+        UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                        withReuseIdentifier: kFooterFaceCollectionView
+                                                                               forIndexPath:indexPath];
+     
+        cell.backgroundColor = [UIColor clearColor];
+        
+        return cell;
     }
-    return cell;
+    
+    return nil;
+    
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
+    return CGSizeMake(collectionView.bounds.size.width, 100);
+}
 
 
 - (void)loadTextViewAndSendButton {
