@@ -104,7 +104,9 @@
             [spinner startAnimating];
             [myCell.imageView setImageWithURL:imageURL
                                     completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                                        [spinner stopAnimating];
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            [spinner stopAnimating];
+                                        });
                                     }];
 
         }
