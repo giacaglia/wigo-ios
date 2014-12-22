@@ -322,7 +322,7 @@ int firstIndexOfNegativeEvent;
 
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(dismissKeyboard)];
+                                                                          action:@selector(cancelledAddEventTapped)];
     tap.cancelsTouchesInView = NO;
     tap.delegate = self;
     [_dimView addGestureRecognizer:tap];
@@ -338,7 +338,6 @@ int firstIndexOfNegativeEvent;
         _dimView.alpha = 0;
     } completion:^(BOOL finished) {
         [_dimView removeFromSuperview];
-        [self initializeNavigationBar];
     }];
     [self clearTextField];
 }
@@ -360,7 +359,7 @@ int firstIndexOfNegativeEvent;
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
     _placesTableView.showsVerticalScrollIndicator = NO;
-    [_placesTableView setSeparatorColor:UIColor.clearColor];
+    //[_placesTableView setSeparatorColor:UIColor.clearColor];
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
     [_placesTableView registerClass:[OldEventCell class] forCellReuseIdentifier:kOldEventCellName];
@@ -488,7 +487,7 @@ int firstIndexOfNegativeEvent;
         
     } completion:^(BOOL finished) {
         
-        [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(dismissKeyboard)] animated: NO];
+        [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelledAddEventTapped)] animated: NO];
         
         [self.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Create" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
         
@@ -505,6 +504,11 @@ int firstIndexOfNegativeEvent;
 
 
 
+}
+
+- (void) cancelledAddEventTapped {
+    [self initializeNavigationBar];
+    [self dismissKeyboard];
 }
 
 - (void)profileSegue {
@@ -806,6 +810,24 @@ int firstIndexOfNegativeEvent;
     }
   
 }
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Remove seperator inset
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+        [cell setSeparatorInset:UIEdgeInsetsZero];
+    }
+    
+    // Prevent the cell from inheriting the Table View's margin settings
+    if ([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
+        [cell setPreservesSuperviewLayoutMargins:NO];
+    }
+    
+    // Explictly set your cell's layout margins
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
+}
+
 
 #pragma mark - Image helper
 
