@@ -755,11 +755,53 @@
 }
 
 - (void)upvotePressed:(id)sender {
-    [self updateNumberOfVotes:YES];
+    NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
+    if (vote != nil) {
+        return;
+    }
+    
+    CGAffineTransform currentTransform = self.upVoteButton.transform;
+    
+    [UIView animateWithDuration:0.2f
+                     animations:^{
+                         self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
+                         self.upVoteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
+                     }
+                     completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.2f
+                                          animations:^{
+                                              self.upVoteButton.transform = currentTransform;
+                                              
+                                          } completion:^(BOOL finished) {
+                                              [self updateNumberOfVotes:YES];
+                                          }];
+                     }];
 }
 
 - (void)downvotePressed:(id)sender {
-    [self updateNumberOfVotes:NO];
+    
+    NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
+    if (vote != nil) {
+        return;
+    }
+    
+    
+    CGAffineTransform currentTransform = self.downVoteButton.transform;
+    
+    [UIView animateWithDuration:0.2f
+                     animations:^{
+                         self.downvoteImageView.image = [UIImage imageNamed:@"downvoteFilled"];
+                         self.downVoteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
+                     }
+                     completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.2f
+                                          animations:^{
+                                              self.downVoteButton.transform = currentTransform;
+                                              
+                                          } completion:^(BOOL finished) {
+                                              [self updateNumberOfVotes: NO];
+                                          }];
+                     }];
 }
 
 - (void)hideVotes {
