@@ -1247,7 +1247,7 @@ replacementString:(NSString *)string {
     if (_buttonToggleCamera == nil)
     {
         _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 60, 70)];
-        UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 0, 60, 60)];
+        UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 30, 37, 30)];
         cameraImageView.image = [UIImage imageNamed:@"cameraIcon"];
         [_buttonToggleCamera addSubview:cameraImageView];
         [_buttonToggleCamera addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
