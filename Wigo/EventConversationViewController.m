@@ -600,7 +600,7 @@
     
     self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x + 0.3*sizeOfEachFaceCell, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.rightLine.alpha = 0.5f;
-    self.rightLine.backgroundColor = [UIColor whiteColor];
+    self.rightLine.backgroundColor = UIColor.whiteColor;
     [self addSubview: self.rightLine];
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
@@ -661,7 +661,7 @@
         return;
     }
     
-    int sizeOfCell =  ([[UIScreen mainScreen] bounds].size.width - 20)/3;
+    float sizeOfCell =  ([[UIScreen mainScreen] bounds].size.width - 20)/3;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (isActive) {
             
@@ -679,8 +679,6 @@
 
                 self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfCell, 0.15*sizeOfCell, sizeOfCell/5, sizeOfCell/5);
                 self.mediaTypeImageView.layer.cornerRadius = sizeOfCell/10;
-                self.rightLine.frame = CGRectMake(sizeOfCell/2 + 0.3*sizeOfCell, sizeOfCell/2, sizeOfCell/2 - 0.3*sizeOfCell, 2);
-                self.leftLine.frame = CGRectMake(0, sizeOfCell/2, sizeOfCell/2- 0.3*sizeOfCell, 2);
 
             } completion:^(BOOL finished) {
 
