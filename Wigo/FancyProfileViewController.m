@@ -89,6 +89,7 @@ UIButton *tapButton;
     [self pageChangedTo: 0];
 
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame: CGRectZero];
     
     if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
         [self.tableView setSeparatorInset: UIEdgeInsetsZero];
@@ -140,12 +141,7 @@ UIButton *tapButton;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
-    _page = @1;
-    _followRequestSummary = @0;
-    [self fetchNotifications];
-    [self updateLastNotificationsRead];
-    [self updateBadge];
-    [self fetchSummaryOfFollowRequests];
+
 }
 
 
@@ -173,6 +169,13 @@ UIButton *tapButton;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     [self reloadViewForUserState];
+    
+    _page = @1;
+    _followRequestSummary = @0;
+    [self fetchNotifications];
+    [self updateLastNotificationsRead];
+    [self updateBadge];
+    [self fetchSummaryOfFollowRequests];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -858,6 +861,42 @@ UIButton *tapButton;
     
     return 0;
 
+}
+
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (indexPath.section != kGoOutsSection) {
+        // Remove seperator inset
+        if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+            [cell setSeparatorInset:UIEdgeInsetsZero];
+        }
+        
+        // Prevent the cell from inheriting the Table View's margin settings
+        if ([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
+            [cell setPreservesSuperviewLayoutMargins:NO];
+        }
+        
+        // Explictly set your cell's layout margins
+        if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+            [cell setLayoutMargins:UIEdgeInsetsZero];
+        }
+    }
+    
+    if (indexPath.section != kNotificationsSection) {
+        return;
+    }
+    
+    
+//    cell.alpha = 0;
+//    CGRect finalFrame = cell.frame;
+//    
+//    cell.frame = CGRectZero;
+//
+//    [UIView animateWithDuration: 0.2f animations:^{
+//        cell.alpha = 1;
+//        cell.frame = finalFrame;
+//    }];
+    
 }
 
 - (void)tableView:(UITableView *)tableView
