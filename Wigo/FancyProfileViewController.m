@@ -152,18 +152,19 @@ UIButton *tapButton;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
+    [_gradientImageView removeFromSuperview];
 
     if (!_gradientImageView) {
         _gradientImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0, -1*[UIApplication sharedApplication].statusBarFrame.size.height, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height)];
         [_gradientImageView setImage: [UIImage imageNamed:@"topGradientBackground"]];
-        
-        [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                      forBarMetrics:UIBarMetricsDefault];
-        self.navigationController.navigationBar.shadowImage = [UIImage new];
-        self.navigationController.navigationBar.translucent = YES;
-        
-        [self.navigationController.navigationBar insertSubview: _gradientImageView atIndex: 0];
     }
+    
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
+    
+    [self.navigationController.navigationBar insertSubview: _gradientImageView atIndex: 0];
     
     if (!_pageControl) {
         [self createPageControl];

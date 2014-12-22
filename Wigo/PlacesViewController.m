@@ -322,7 +322,7 @@ int firstIndexOfNegativeEvent;
 
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(dismissKeyboard)];
+                                                                          action:@selector(cancelledAddEventTapped)];
     tap.cancelsTouchesInView = NO;
     tap.delegate = self;
     [_dimView addGestureRecognizer:tap];
@@ -338,7 +338,6 @@ int firstIndexOfNegativeEvent;
         _dimView.alpha = 0;
     } completion:^(BOOL finished) {
         [_dimView removeFromSuperview];
-        [self initializeNavigationBar];
     }];
     [self clearTextField];
 }
@@ -488,7 +487,7 @@ int firstIndexOfNegativeEvent;
         
     } completion:^(BOOL finished) {
         
-        [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(dismissKeyboard)] animated: NO];
+        [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelledAddEventTapped)] animated: NO];
         
         [self.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Create" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
         
@@ -505,6 +504,11 @@ int firstIndexOfNegativeEvent;
 
 
 
+}
+
+- (void) cancelledAddEventTapped {
+    [self initializeNavigationBar];
+    [self dismissKeyboard];
 }
 
 - (void)profileSegue {
