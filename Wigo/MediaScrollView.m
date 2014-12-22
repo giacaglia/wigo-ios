@@ -116,8 +116,10 @@
         [myCell.imageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL] ]];
         myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, you're going out to %@.", [self.event name]];
         myCell.subtitleTextLabel.text = @"You can now post inside this event";
+        myCell.subtitleTextLabel.alpha = 0.7f;
         myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
         [myCell.actionButton setTitle:@"ADD TO THIS EVENT" forState:UIControlStateNormal];
+        [myCell.actionButton.titleLabel setFont: [FontProperties scMediumFont: 16.0]];
         [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
         [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
         return myCell;
@@ -601,7 +603,7 @@
     self.blackBackgroundLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.7);
     [self.imageView addSubview:self.blackBackgroundLabel];
     
-    self.titleTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 230, self.frame.size.width - 30, 80)];
+    self.titleTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 150, self.frame.size.width - 30, 80)];
     self.titleTextLabel.font = [FontProperties mediumFont:20.0f];
     self.titleTextLabel.textColor = UIColor.whiteColor;
     self.titleTextLabel.numberOfLines = 0;
@@ -617,17 +619,18 @@
     self.subtitleTextLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:self.subtitleTextLabel];
 
-    self.actionButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 365, self.frame.size.width - 30, 55)];
+    self.actionButton = [[UIButton alloc] initWithFrame:CGRectMake(30, 365, self.frame.size.width - 60, 55)];
     [self.actionButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    self.actionButton.titleLabel.font = [FontProperties mediumFont:20.0f];
+    self.actionButton.titleLabel.font = [FontProperties scMediumFont:20.0f];
     self.actionButton.layer.borderColor = UIColor.clearColor.CGColor;
     self.actionButton.layer.cornerRadius = 10.0f;
     self.actionButton.layer.borderWidth = 3.0f;
     [self.contentView addSubview:self.actionButton];
 
     self.avoidAction = [[UIButton alloc] initWithFrame:CGRectMake(15, self.frame.size.height - 55, self.frame.size.width - 30, 55)];
-    [self.avoidAction setTitle:@"Not Now" forState:UIControlStateNormal];
+    [self.avoidAction setTitle:@"not now" forState:UIControlStateNormal];
     [self.avoidAction setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    [self.avoidAction.titleLabel setFont: [FontProperties scMediumFont:18.0f]];
     [self.contentView addSubview:self.avoidAction];
     
     self.cameraAccessImageView = [[UIImageView alloc] initWithFrame:CGRectMake(25, 250, 224, 192)];
