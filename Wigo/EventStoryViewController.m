@@ -68,13 +68,16 @@
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self.navigationController setNavigationBarHidden: YES animated: NO];
-
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
     
-    [self.navigationController setNavigationBarHidden: NO animated: NO];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear: animated];
+    
 }
 
 #pragma mark - Loading Messages
@@ -420,7 +423,8 @@
 #pragma mark - Button handler
 
 - (void)goBack {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController setNavigationBarHidden: NO animated: NO];
+    [self.navigationController popViewControllerAnimated: YES];
 }
 
 - (void)sendPressed {
@@ -564,6 +568,8 @@
     
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
+
+    [self.navigationController setNavigationBarHidden: NO animated: NO];
 
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
