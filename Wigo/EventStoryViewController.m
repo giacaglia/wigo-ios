@@ -424,6 +424,8 @@
 }
 
 - (void)sendPressed {
+    
+    //not going here
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
@@ -432,7 +434,7 @@
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     else {
-        self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
+        self.conversationViewController.eventMessages = [self eventMessagesWithYourFace: NO];
     }
     self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
     self.conversationViewController.controllerDelegate = self;
