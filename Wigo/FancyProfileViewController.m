@@ -909,8 +909,18 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             if ([_followRequestSummary intValue] > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
             Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:indexPath.row];
             User *user = [[User alloc] initWithDictionary:[notification fromUser]];
-            Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
-            [self presentEvent:event];
+
+            if ([[notification type] isEqualToString:@"follow"]) {
+                FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+                [fancyProfileViewController setStateWithUser:user];
+                fancyProfileViewController.eventsParty = self.eventsParty;
+                [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+            }
+            else {
+                Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
+                [self presentEvent:event];
+            }
+          
         }
     }
   

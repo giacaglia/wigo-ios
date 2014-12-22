@@ -279,7 +279,6 @@
     NSString *contentURL = [eventMessage objectForKey:@"media"];
     NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
     [myCell.faceImageView setImageWithURL:imageURL];
-//    if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
     }
