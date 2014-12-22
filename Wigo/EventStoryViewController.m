@@ -249,8 +249,7 @@
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) return eventMessages.count;
-    else return eventMessages.count + 1;
+    return eventMessages.count;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -263,19 +262,8 @@
     myCell.rightLine.backgroundColor = RGB(237, 237, 237);
     myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count);
     
-    if ([indexPath row] == eventMessages.count) {
-        if ([[metaInfo objectForKey:@"has_next_page"] boolValue]) {
-            [self fetchEventMessages];
-        }
-        myCell.faceImageView.image = [UIImage imageNamed:@"addStory"];
-        myCell.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
-        myCell.timeLabel.text = @"Add to the\nstory";
-        myCell.timeLabel.textColor = RGB(59, 59, 59);
-        myCell.timeLabel.frame = CGRectMake(0, 0.8*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
-        myCell.timeLabel.layer.shadowColor = [RGB(59, 59, 59) CGColor];
-        myCell.mediaTypeImageView.hidden = YES;
-        [myCell updateUIToRead:NO];
-        return myCell;
+    if ([indexPath row] + 1 == eventMessages.count && [[metaInfo objectForKey:@"has_next_page"] boolValue]) {
+        [self fetchEventMessages];
     }
     myCell.timeLabel.frame = CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
     myCell.mediaTypeImageView.hidden = NO;
