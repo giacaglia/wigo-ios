@@ -56,6 +56,7 @@
 @property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
 - (void)focusOnContent;
 @property (nonatomic, assign) BOOL isFocusing;
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @end
 
 
