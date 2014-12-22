@@ -202,7 +202,7 @@
             for (UIView *subview in self.buttonFlash.subviews) {
                 if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
             }
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 16, 26)];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 16, 26)];
             imageView.image = [UIImage imageNamed:@"flashOn"];
             [self.buttonFlash addSubview:imageView];
             self.buttonFlash.alpha = 1.0f;
@@ -211,7 +211,7 @@
             for (UIView *subview in self.buttonFlash.subviews) {
                 if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
             }
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 26, 31)];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 26, 31)];
             imageView.image = [UIImage imageNamed:@"flashOff"];
             [self.buttonFlash addSubview:imageView];
             self.buttonFlash.alpha = 0.3f;
@@ -1221,7 +1221,7 @@ replacementString:(NSString *)string {
 {
     if (_settingsContainerView == nil)
     {
-        _settingsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 320, 44)];
+        _settingsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, [[UIScreen mainScreen] bounds].size.width, 100)];
         [_settingsContainerView addSubview:self.buttonToggleCamera];
         [_settingsContainerView addSubview:self.buttonFlash];
     }
@@ -1234,7 +1234,7 @@ replacementString:(NSString *)string {
 {
     if (_buttonFlash == nil)
     {
-        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(20, 20, 52, 62)];
+        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(10, 0, 72, 72)];
         [_buttonFlash addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -1246,8 +1246,10 @@ replacementString:(NSString *)string {
 {
     if (_buttonToggleCamera == nil)
     {
-        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 60, 0, 73, 60)];
-        [_buttonToggleCamera setImage:[UIImage imageNamed:@"cameraIcon"] forState:UIControlStateNormal];
+        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 60, 70)];
+        UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 0, 60, 60)];
+        cameraImageView.image = [UIImage imageNamed:@"cameraIcon"];
+        [_buttonToggleCamera addSubview:cameraImageView];
         [_buttonToggleCamera addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
     }
     

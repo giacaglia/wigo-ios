@@ -59,13 +59,6 @@
     [(AVCaptureVideoPreviewLayer*)self.layer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     
     _effectiveScale = 1.0;
-//    focusView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-//    focusView.alpha = 0.0;
-//    focusView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
-//    focusView.center = self.center;
-//    focusView.delegate = self;
-//    focusView.image = [UIImage imageNamed:@"IQ_focus"];
-//    [self addSubview:focusView];
     
     exposureView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
     exposureView.alpha = 0.0;
