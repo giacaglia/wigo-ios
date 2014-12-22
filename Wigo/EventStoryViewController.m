@@ -276,7 +276,10 @@
     if ([user isEqualToUser:[Profile user]]) {
         user = [Profile user];
     }
-    if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
+    NSString *contentURL = [eventMessage objectForKey:@"media"];
+    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+    [myCell.faceImageView setImageWithURL:imageURL];
+//    if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
     }
@@ -285,20 +288,7 @@
     }
     myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
     myCell.timeLabel.textColor = RGB(59, 59, 59);
-//    if ([[eventMessage allKeys] containsObject:@"loading"]) {
-//        myCell.spinner.hidden = NO;
-//        [myCell.spinner startAnimating];
-//        myCell.faceImageView.alpha = 0.4f;
-//        myCell.mediaTypeImageView.alpha = 0.4f;
-//        myCell.userInteractionEnabled = NO;
-//    }
-//    else {
-//        if (myCell.spinner.isAnimating) {
-//            [myCell.spinner stopAnimating];
-            myCell.faceImageView.alpha = 1.0f;
-            myCell.mediaTypeImageView.alpha = 1.0f;
-//        }
-//    }
+    myCell.faceAndMediaTypeView.alpha = 1.0f;
     
     if ([[eventMessage allKeys] containsObject:@"is_read"]) {
         if ([[eventMessage objectForKey:@"is_read"] boolValue]) {
