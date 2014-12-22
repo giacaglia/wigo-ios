@@ -612,8 +612,6 @@
     [self addSubview:self.faceAndMediaTypeView];
  
     self.faceAndMediaTypeView.alpha = 0.5f;
-
-    
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.2*sizeOfEachFaceCell, 0.2*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell)];
     self.faceImageView.layer.masksToBounds = YES;
     self.faceImageView.backgroundColor = [UIColor blackColor];
@@ -687,11 +685,10 @@
             
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-            animation.fromValue = [NSNumber numberWithFloat:30.0f];
-            animation.toValue = [NSNumber numberWithFloat:25.0f];
+            animation.fromValue = [NSNumber numberWithFloat: [[UIScreen mainScreen] bounds].size.width/10.33];
+            animation.toValue = [NSNumber numberWithFloat: [[UIScreen mainScreen] bounds].size.width/15];
             animation.duration = 0.5;
             [self.faceImageView.layer addAnimation: animation forKey:@"cornerRadius"];
-            
             
             [UIView animateWithDuration: 0.5 animations:^{
                 [self resetToInactive];
