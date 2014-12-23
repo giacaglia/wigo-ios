@@ -117,6 +117,9 @@ int firstIndexOfNegativeEvent;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
+
     [self initializeNotificationObservers];
     [self initializeNavigationBar];
 
@@ -144,7 +147,7 @@ int firstIndexOfNegativeEvent;
 
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Where View"];
-
+  
     [self.view endEditing:YES];
     [self fetchIsThereNewPerson];
     if (shouldReloadEvents) {
@@ -172,9 +175,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) initializeNavigationBar {
-    self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
-    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
-
+  
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
         CGRect profileFrame = CGRectMake(3, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];

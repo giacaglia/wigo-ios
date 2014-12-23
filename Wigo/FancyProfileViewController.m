@@ -140,13 +140,16 @@ UIButton *tapButton;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
+      if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
 
 }
 
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
 
     [_gradientImageView removeFromSuperview];
 
@@ -155,11 +158,8 @@ UIButton *tapButton;
         [_gradientImageView setImage: [UIImage imageNamed:@"topGradientBackground"]];
     }
     
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
+   
     self.navigationController.navigationBar.translucent = YES;
-    
     [self.navigationController.navigationBar insertSubview: _gradientImageView atIndex: 0];
     
     if (!_pageControl) {
