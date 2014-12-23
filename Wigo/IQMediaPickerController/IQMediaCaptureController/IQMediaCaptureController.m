@@ -1220,7 +1220,7 @@ replacementString:(NSString *)string {
 {
     if (_settingsContainerView == nil)
     {
-        _settingsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, [[UIScreen mainScreen] bounds].size.width, 100)];
+        _settingsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 100)];
         [_settingsContainerView addSubview:self.buttonToggleCamera];
         [_settingsContainerView addSubview:self.buttonFlash];
     }
@@ -1233,7 +1233,7 @@ replacementString:(NSString *)string {
 {
     if (_buttonFlash == nil)
     {
-        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(10, 0, 72, 72)];
+        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 72, 72)];
         [_buttonFlash addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -1245,8 +1245,8 @@ replacementString:(NSString *)string {
 {
     if (_buttonToggleCamera == nil)
     {
-        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 80, 70)];
-        self.cameraIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10, 37, 30)];
+        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 80, 80)];
+        self.cameraIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(23, 20, 37, 30)];
         self.cameraIconImageView.image = [UIImage imageNamed:@"cameraIcon"];
         [_buttonToggleCamera addSubview:self.cameraIconImageView];
         [_buttonToggleCamera addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
@@ -1260,7 +1260,7 @@ replacementString:(NSString *)string {
 {
     if (_bottomContainerView == nil)
     {
-        _bottomContainerView = [[IQBottomContainerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds)- 90, CGRectGetWidth(self.view.bounds), 90)];
+        _bottomContainerView = [[IQBottomContainerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 90, CGRectGetWidth(self.view.bounds), 90)];
         [_bottomContainerView setTopContentView:self.partitionBar];
         [_bottomContainerView setLeftContentView:self.buttonCancel];
         [_bottomContainerView setMiddleContentView:self.buttonCapture];
