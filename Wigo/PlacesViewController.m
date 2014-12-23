@@ -1551,17 +1551,17 @@ int firstIndexOfNegativeEvent;
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.frame.size.width - 75, 64)];
     self.eventNameLabel.numberOfLines = 2;
-    self.eventNameLabel.font = [FontProperties scMediumFont: 20];
+    self.eventNameLabel.font = [FontProperties mediumFont: 18];
     self.eventNameLabel.textColor = RGB(100, 173, 215);
     [self.contentView addSubview:self.eventNameLabel];
     
-    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
+    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 48, 15, 20, 20)];
     self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
     self.chatBubbleImageView.center = CGPointMake(self.chatBubbleImageView.center.x, self.eventNameLabel.center.y);
     self.chatBubbleImageView.hidden = YES;
     [self.contentView addSubview:self.chatBubbleImageView];
     
-    self.postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 9, 14)];
+    self.postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 24, 13, 9, 14)];
     self.postStoryImageView.center = CGPointMake(self.postStoryImageView.center.x, self.eventNameLabel.center.y);
     self.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
     [self.contentView addSubview:self.postStoryImageView];
@@ -1577,7 +1577,7 @@ int firstIndexOfNegativeEvent;
     [self.contentView addSubview: eventFeedButton];
     
     UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 0.5f, self.frame.size.width, 0.5)];
-    lineSeparator.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.2f];
+    lineSeparator.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.4f];
 
     [self.contentView addSubview:lineSeparator];
 }
@@ -1784,7 +1784,7 @@ int firstIndexOfNegativeEvent;
     
 
     //image view
-    self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+    self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 1)];
     self.highlightImageView.clipsToBounds = YES;
     self.highlightImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self.contentView addSubview:self.highlightImageView];
@@ -1794,13 +1794,14 @@ int firstIndexOfNegativeEvent;
     gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
     [self.contentView addSubview:gradientBackground];
     
-    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.frame.size.height - 50, self.frame.size.width - 75, 50)];
+    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.highlightImageView.bounds.size.height - 50, self.frame.size.width - 75, 50)];
+    self.oldEventLabel.numberOfLines = 2;
     self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
-    self.oldEventLabel.font = [FontProperties scMediumFont: 22.0f];
+    self.oldEventLabel.font = [FontProperties mediumFont: 18.0f];
     self.oldEventLabel.textColor = [UIColor whiteColor];
     [self.contentView addSubview:self.oldEventLabel];
     
-    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 30)];
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 20, 0, 10, 15)];
     postStoryImageView.image = [UIImage imageNamed:@"whiteForwardButton"];
     postStoryImageView.contentMode = UIViewContentModeScaleAspectFit;
     postStoryImageView.center = CGPointMake(postStoryImageView.center.x, self.oldEventLabel.center.y);
@@ -1809,11 +1810,6 @@ int firstIndexOfNegativeEvent;
     UIButton *conversationButton = [[UIButton alloc] initWithFrame:self.frame];
     [conversationButton addTarget:self action:@selector(loadConversation) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:conversationButton];
-    
-    //line view
-    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 1)];
-    lineView.backgroundColor = [UIColor whiteColor];
-    [self.contentView addSubview: lineView];
     
 }
 
