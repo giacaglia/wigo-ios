@@ -263,7 +263,7 @@
     myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
     
     myCell.rightLine.backgroundColor = RGB(237, 237, 237);
-    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count);
+    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
     
     if ([indexPath row] + 1 == eventMessages.count && [[metaInfo objectForKey:@"has_next_page"] boolValue]) {
         [self fetchEventMessages];

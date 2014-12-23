@@ -82,6 +82,8 @@
 
     [myCell resetToInactive];
 
+    myCell.faceImageView.layer.borderColor = UIColor.whiteColor.CGColor;
+    
     myCell.leftLineEnabled = (indexPath.row > 0);
     myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
     User *user;
