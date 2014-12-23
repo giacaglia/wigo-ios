@@ -40,7 +40,7 @@
 @property (nonatomic, strong) UIImageView *faceImageView;
 @property (nonatomic, strong) UIImageView *mediaTypeImageView;
 @property (nonatomic, strong) UILabel *timeLabel;
-
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UIView *leftLine;
 @property (nonatomic, strong) UIView *rightLine;
 

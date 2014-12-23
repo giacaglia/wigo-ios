@@ -263,15 +263,14 @@
     myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
     
     myCell.rightLine.backgroundColor = RGB(237, 237, 237);
-    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count);
+    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
     
     if ([indexPath row] + 1 == eventMessages.count && [[metaInfo objectForKey:@"has_next_page"] boolValue]) {
         [self fetchEventMessages];
     }
     myCell.timeLabel.frame = CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
-    myCell.mediaTypeImageView.hidden = NO;
+    myCell.mediaTypeImageView.hidden = YES;
     myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
-    myCell.mediaTypeImageView.hidden = NO;
     
     User *user;
     NSDictionary *eventMessage = [eventMessages objectAtIndex:[indexPath row]];
@@ -281,7 +280,13 @@
     }
     NSString *contentURL = [eventMessage objectForKey:@"media"];
     NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-    [myCell.faceImageView setImageWithURL:imageURL];
+    [myCell.spinner startAnimating];
+    __weak FaceCell *weakCell = myCell;
+    [myCell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakCell.spinner stopAnimating];
+        });
+    }];
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
         myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
     }

@@ -14,7 +14,7 @@
     self = [super init];
     if (self) {
         self.objectType = type;
-        self.objectArray = [[NSMutableArray alloc] initWithCapacity:0];
+        self.mutableObjectArray = [NSMutableArray new];
     }
     return self;
 }
@@ -23,7 +23,7 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.objectArray = [[NSMutableArray alloc] initWithCapacity:0];
+        self.mutableObjectArray = [NSMutableArray new];
     }
     return self;
 }
@@ -34,27 +34,27 @@
     // We'll ignore the zone for now
     Party *another = [[Party alloc] init];
     another.objectType = self.objectType;
-    another.objectArray = [self.objectArray copyWithZone:zone];
+    another.mutableObjectArray = [self.mutableObjectArray copyWithZone:zone];
     return another;
 }
 
 - (NSArray *)getObjectArray {
-    return [NSArray arrayWithArray:self.objectArray];
+    return [NSArray arrayWithArray:self.mutableObjectArray];
 }
 
 
 
 - (NSArray *)getNameArray {
-    NSMutableArray *nameArray = [[NSMutableArray alloc] initWithCapacity:[self.objectArray count]];
-    for (NSDictionary *objectDictionary in self.objectArray) {
+    NSMutableArray *nameArray = [[NSMutableArray alloc] initWithCapacity:[self.mutableObjectArray count]];
+    for (NSDictionary *objectDictionary in self.mutableObjectArray) {
         [nameArray addObject:[objectDictionary objectForKey:@"name"]];
     }
     return [nameArray copy];
 }
 
 - (NSArray *)getFullNameArray {
-    NSMutableArray *nameArray = [[NSMutableArray alloc] initWithCapacity:[self.objectArray count]];
-    for (NSDictionary *objectDictionary in self.objectArray) {
+    NSMutableArray *nameArray = [[NSMutableArray alloc] initWithCapacity:[self.mutableObjectArray count]];
+    for (NSDictionary *objectDictionary in self.mutableObjectArray) {
         if ([[objectDictionary allKeys] containsObject:@"first_name"] && [[objectDictionary allKeys] containsObject:@"last_name"])
         {
             NSString *fullName = [NSString stringWithFormat:@"%@ %@", [objectDictionary objectForKey:@"first_name"], [objectDictionary objectForKey:@"last_name"]];
@@ -68,19 +68,19 @@
     for (int i = 0; i < [newObjectArray count]; i++) {
         if (self.objectType == USER_TYPE) {
             User *newUser = [[User alloc] initWithDictionary:newObjectArray[i]];
-            [self.objectArray addObject:newUser];
+            [self.mutableObjectArray addObject:newUser];
         }
         else if (self.objectType == EVENT_TYPE) {
             Event *newEvent = [[Event alloc] initWithDictionary:newObjectArray[i]];
-            [self.objectArray addObject:newEvent];
+            [self.mutableObjectArray addObject:newEvent];
         }
         else if (self.objectType == MESSAGE_TYPE) {
             Message *newMessage = [[Message alloc] initWithDictionary:newObjectArray[i]];
-            [self.objectArray addObject:newMessage];
+            [self.mutableObjectArray addObject:newMessage];
         }
         else if (self.objectType == NOTIFICATION_TYPE) {
             Notification *newNotification = [[Notification alloc] initWithDictionary:newObjectArray[i]];
-            [self.objectArray addObject:newNotification];
+            [self.mutableObjectArray addObject:newNotification];
         }
     }
 }
@@ -92,19 +92,19 @@
         if (![arrayOfKeyOfOtherParty containsObject:[dict objectForKey:@"id"]]) {
             if (self.objectType == USER_TYPE) {
                 User *newUser = [[User alloc] initWithDictionary:dict];
-                [self.objectArray addObject:newUser];
+                [self.mutableObjectArray addObject:newUser];
             }
             else if (self.objectType == EVENT_TYPE) {
                 Event *newEvent = [[Event alloc] initWithDictionary:dict];
-                [self.objectArray addObject:newEvent];
+                [self.mutableObjectArray addObject:newEvent];
             }
             else if (self.objectType == MESSAGE_TYPE) {
                 Message *newMessage = [[Message alloc] initWithDictionary:dict];
-                [self.objectArray addObject:newMessage];
+                [self.mutableObjectArray addObject:newMessage];
             }
             else if (self.objectType == NOTIFICATION_TYPE) {
                 Notification *newNotification = [[Notification alloc] initWithDictionary:dict];
-                [self.objectArray addObject:newNotification];
+                [self.mutableObjectArray addObject:newNotification];
             }
         }
        
@@ -113,7 +113,7 @@
 
 - (void)addObject:(NSMutableDictionary *)objectDictionary {
     if ([objectDictionary isKindOfClass:[NSDictionary class]]) {
-        [self.objectArray addObject:objectDictionary];
+        [self.mutableObjectArray addObject:objectDictionary];
     }
     else {
         NSLog(@"Error adding object: %@", objectDictionary);
@@ -122,7 +122,7 @@
 
 - (void)insertObject:(NSDictionary *)object inObjectArrayAtIndex:(NSUInteger)index {
     if ([object isKindOfClass:[NSDictionary class]]) {
-        [self.objectArray insertObject:object atIndex:index];
+        [self.mutableObjectArray insertObject:object atIndex:index];
     }
     else {
         NSLog(@"Error adding object: %@", object);
@@ -133,36 +133,36 @@
     for (int i = 0; i < [newObjectArray count]; i++) {
         if (self.objectType == USER_TYPE) {
             User *newUser = [[User alloc] initWithDictionary:newObjectArray[i]];
-            [self.objectArray insertObject:newUser atIndex:0];
+            [self.mutableObjectArray insertObject:newUser atIndex:0];
         }
         else if (self.objectType == EVENT_TYPE) {
             Event *newEvent = [[Event alloc] initWithDictionary:newObjectArray[i]];
-            [self.objectArray insertObject:newEvent atIndex:0];
+            [self.mutableObjectArray insertObject:newEvent atIndex:0];
         }
         else if (self.objectType == MESSAGE_TYPE) {
             Message *newMessage = [[Message alloc] initWithDictionary:newObjectArray[i]];
-            [self.objectArray insertObject:newMessage atIndex:0];
+            [self.mutableObjectArray insertObject:newMessage atIndex:0];
         }
         else if (self.objectType == NOTIFICATION_TYPE) {
             Notification *newNotification = [[Notification alloc] initWithDictionary:newObjectArray[i]];
-            [self.objectArray insertObject:newNotification atIndex:0];
+            [self.mutableObjectArray insertObject:newNotification atIndex:0];
         }
     }
 }
 
 - (void)removeObjectAtIndex:(NSUInteger)index {
-    [self.objectArray removeObjectAtIndex:index];
+    [self.mutableObjectArray removeObjectAtIndex:index];
 }
 
 - (void)removeAllObjects {
-    self.objectArray = [[NSMutableArray alloc] init];
+    self.mutableObjectArray = [NSMutableArray new];
 }
 
 - (NSMutableDictionary *)getObjectWithId:(NSNumber *)objectID {
     if ([objectID isKindOfClass:[NSDictionary class]]) {
         return [[User alloc] initWithDictionary:(NSDictionary *)objectID];
     }
-    for (NSMutableDictionary *object in self.objectArray) {
+    for (NSMutableDictionary *object in self.mutableObjectArray) {
         if ([objectID isEqualToNumber:[object valueForKey:@"id"]]) {
             return object;
         }
@@ -171,7 +171,7 @@
 }
 
 - (BOOL)containsObject:(NSMutableDictionary *)otherObjectDictionary {
-    for (NSMutableDictionary *object in self.objectArray) {
+    for (NSMutableDictionary *object in self.mutableObjectArray) {
         if ([[otherObjectDictionary valueForKey:@"id"] isEqualToNumber:[object valueForKey:@"id"]]) {
             return YES;
         }
@@ -181,8 +181,8 @@
 
 
 - (void)removeUser:(User*)newUser {
-    for (int i = 0; i < [self.objectArray count]; i++) {
-        User *user = [self.objectArray objectAtIndex:i];
+    for (int i = 0; i < [self.mutableObjectArray count]; i++) {
+        User *user = [self.mutableObjectArray objectAtIndex:i];
         if (user && [user isEqualToUser:newUser]) {
             [self removeObjectAtIndex:i];
             break;
@@ -191,11 +191,11 @@
 }
 
 - (void)exchangeObjectAtIndex:(NSUInteger)idx1 withObjectAtIndex:(NSUInteger)idx2 {
-    [self.objectArray exchangeObjectAtIndex:idx1 withObjectAtIndex:idx2];
+    [self.mutableObjectArray exchangeObjectAtIndex:idx1 withObjectAtIndex:idx2];
 }
 
 - (void)replaceObjectAtIndex:(NSUInteger)index withObject:(id)anObject {
-    if ([self.objectArray count] > 0) [self.objectArray replaceObjectAtIndex:index withObject:anObject];
+    if ([self.mutableObjectArray count] > 0) [self.mutableObjectArray replaceObjectAtIndex:index withObject:anObject];
 }
 
 #pragma mark - Pagination Control

@@ -82,6 +82,8 @@
 
     [myCell resetToInactive];
 
+    myCell.faceImageView.layer.borderColor = UIColor.whiteColor.CGColor;
+    
     myCell.leftLineEnabled = (indexPath.row > 0);
     myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
     User *user;
@@ -96,16 +98,18 @@
         ) {
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
         myCell.mediaTypeImageView.hidden = YES;
+        myCell.faceAndMediaTypeView.alpha = 0.4f;
     }
     else {
+        myCell.faceAndMediaTypeView.alpha = 1.0f;
         if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
         if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
-            myCell.mediaTypeImageView.hidden = NO;
+            myCell.mediaTypeImageView.hidden = YES;
         }
         else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
-            myCell.mediaTypeImageView.hidden = NO;
+            myCell.mediaTypeImageView.hidden = YES;
         }
     }
     
@@ -419,14 +423,14 @@
     self.facesCollectionView.contentInset = UIEdgeInsetsMake(0, sizeOfEachFaceCell, 0, sizeOfEachFaceCell);
     self.facesCollectionView.pagingEnabled = NO;
     
-    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 86, 86, 66)];
+    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 76, 86, 66)];
     UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 30, 36, 36)];
     cancelImageView.image = [UIImage imageNamed:@"cancelCamera"];
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
     
-    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 18, self.view.frame.size.height - 56, 36, 36)];
+    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 18, self.view.frame.size.height - 46, 36, 36)];
     UIImageView *trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
     trashImageView.image = [UIImage imageNamed:@"trashIcon"];
     [self.buttonTrash addSubview:trashImageView];
@@ -596,12 +600,16 @@
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, sizeOfEachFaceCell, sizeOfEachFaceCell);
-//    self.backgroundColor = UIColor.greenColor;
     
     self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x + 0.3*sizeOfEachFaceCell, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.rightLine.alpha = 0.5f;
     self.rightLine.backgroundColor = UIColor.whiteColor;
     [self addSubview: self.rightLine];
+    
+    self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2)];
+    self.spinner.center = self.center;
+    self.spinner.activityIndicatorViewStyle = UIActionSheetStyleDefault;
+    [self addSubview:self.spinner];
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
@@ -611,7 +619,6 @@
     self.faceAndMediaTypeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2*(sizeOfEachFaceCell/3),  2*(sizeOfEachFaceCell/3))];
     [self addSubview:self.faceAndMediaTypeView];
  
-    self.faceAndMediaTypeView.alpha = 0.5f;
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.2*sizeOfEachFaceCell, 0.2*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell)];
     self.faceImageView.layer.masksToBounds = YES;
     self.faceImageView.backgroundColor = [UIColor blackColor];
@@ -626,6 +633,7 @@
     self.mediaTypeImageView.layer.borderWidth = 1.0;
     self.mediaTypeImageView.layer.borderColor = UIColor.blackColor.CGColor;
     self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.mediaTypeImageView.hidden = YES;
     [self.faceAndMediaTypeView addSubview:self.mediaTypeImageView];
     
     self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30)];

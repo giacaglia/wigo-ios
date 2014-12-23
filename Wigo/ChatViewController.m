@@ -52,11 +52,11 @@ UIButton *newChatButton;
     [self fetchFirstPageMessages];
     
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
-    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
+//    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
     
     self.navigationItem.title = @"Chats";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
+//    self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
     
     _lineView= [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
     _lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);

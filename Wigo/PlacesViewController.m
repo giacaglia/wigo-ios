@@ -122,6 +122,9 @@ int firstIndexOfNegativeEvent;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
+
     [self initializeNotificationObservers];
     [self initializeNavigationBar];
 
@@ -139,7 +142,6 @@ int firstIndexOfNegativeEvent;
     self.visitedProfile = NO;
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -150,7 +152,7 @@ int firstIndexOfNegativeEvent;
 
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Where View"];
-
+  
     [self.view endEditing:YES];
     [self fetchIsThereNewPerson];
     if (shouldReloadEvents) {
@@ -178,11 +180,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) initializeNavigationBar {
-    self.navigationItem.leftBarButtonItem = nil;
-    self.navigationItem.rightBarButtonItem = nil;
-    self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
-    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
-
+  
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
         CGRect profileFrame = CGRectMake(3, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
@@ -201,15 +199,14 @@ int firstIndexOfNegativeEvent;
             self.leftRedDotLabel.clipsToBounds = YES;
             self.leftRedDotLabel.layer.borderWidth = 3;
             self.leftRedDotLabel.layer.cornerRadius = 8;
-            self.leftRedDotLabel.hidden = YES;
-            [profileButton addSubview:self.leftRedDotLabel];
         }
+        [profileButton addSubview:self.leftRedDotLabel];
         if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 ||
             [(NSNumber *)[[Profile user] objectForKey:@"num_unread_notifications"] intValue] > 0) {
-            self.redDotLabel.hidden = NO;
+            self.leftRedDotLabel.hidden = NO;
         }
         else {
-            self.redDotLabel.hidden = YES;
+            self.leftRedDotLabel.hidden = YES;
         }
         UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
         self.navigationItem.leftBarButtonItem = profileBarButton;
@@ -223,6 +220,10 @@ int firstIndexOfNegativeEvent;
         [self.rightButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
         self.navigationItem.rightBarButtonItem = rightBarButton;
+    }
+    else {
+        self.navigationItem.leftBarButtonItem = nil;
+        self.navigationItem.rightBarButtonItem = nil;
     }
 
     [self updateTitleView];
@@ -1167,6 +1168,7 @@ int firstIndexOfNegativeEvent;
 
 - (void) fetchEventsFirstPage {
     page = @1;
+    [self fetchUserInfo];
     [self fetchEvents];
 }
 
@@ -1363,27 +1365,29 @@ int firstIndexOfNegativeEvent;
         _contentParty = _eventsParty;
         _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
         [self dismissKeyboard];
-        if ([page isEqualToNumber:@2]) [_placesTableView setContentOffset:CGPointZero animated:YES];
+
     });
 }
 
 - (void) fetchUserInfo {
-    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+    if ([[Profile user] key]) {
+        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                        User *user = [[User alloc] initWithDictionary:jsonResponse];
+                        [Profile setUser:user];
+                        [self initializeNavigationBar];
+                    }
+                }
+                else {
                     User *user = [[User alloc] initWithDictionary:jsonResponse];
                     [Profile setUser:user];
-                    [self updateTitleView];
+                    [self initializeNavigationBar];
                 }
-            }
-            else {
-                User *user = [[User alloc] initWithDictionary:jsonResponse];
-                [Profile setUser:user];
-                [self updateTitleView];
-            }
-        });
-    }];
+            });
+        }];
+    }
 }
 
 - (void) fetchIsThereNewPerson {

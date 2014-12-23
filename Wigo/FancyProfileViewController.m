@@ -1,4 +1,4 @@
-//
+
 //  ParallaxProfileViewController.m
 //  Wigo
 //
@@ -140,13 +140,16 @@ UIButton *tapButton;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
+      if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
 
 }
 
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
 
     [_gradientImageView removeFromSuperview];
 
@@ -155,11 +158,8 @@ UIButton *tapButton;
         [_gradientImageView setImage: [UIImage imageNamed:@"topGradientBackground"]];
     }
     
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
+   
     self.navigationController.navigationBar.translucent = YES;
-    
     [self.navigationController.navigationBar insertSubview: _gradientImageView atIndex: 0];
     
     if (!_pageControl) {
@@ -173,7 +173,6 @@ UIButton *tapButton;
     _page = @1;
     _followRequestSummary = @0;
     [self fetchNotifications];
-    [self updateLastNotificationsRead];
     [self updateBadge];
     [self fetchSummaryOfFollowRequests];
 }
@@ -785,6 +784,7 @@ UIButton *tapButton;
         }
         if ([self shouldShowInviteCell] && indexPath.row == 0) {
             InviteCell *inviteCell = [tableView dequeueReusableCellWithIdentifier:@"InviteCell" forIndexPath:indexPath];
+            inviteCell.delegate = self;
             [inviteCell setLabelsForUser:self.user];
             return inviteCell;
         }
@@ -802,6 +802,10 @@ UIButton *tapButton;
         [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
         notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName] , [notification message] ];
         
+        if ([user getUserState] == NOT_SENT_FOLLOWING_PRIVATE_USER || [user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+            notificationCell.rightPostImageView.hidden = YES;
+        }
+        else notificationCell.rightPostImageView.hidden = NO;
         if ([notificationCell respondsToSelector:@selector(layoutMargins)]) {
             notificationCell.layoutMargins = UIEdgeInsetsZero;
         }
@@ -886,17 +890,6 @@ UIButton *tapButton;
         return;
     }
     
-    
-//    cell.alpha = 0;
-//    CGRect finalFrame = cell.frame;
-//    
-//    cell.frame = CGRectZero;
-//
-//    [UIView animateWithDuration: 0.2f animations:^{
-//        cell.alpha = 1;
-//        cell.frame = finalFrame;
-//    }];
-    
 }
 
 - (void)tableView:(UITableView *)tableView
@@ -909,7 +902,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             if ([_followRequestSummary intValue] > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
             Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:indexPath.row];
             User *user = [[User alloc] initWithDictionary:[notification fromUser]];
-
+           
             if ([[notification type] isEqualToString:@"follow"]) {
                 FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
                 [fancyProfileViewController setStateWithUser:user];
@@ -917,10 +910,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 [self.navigationController pushViewController: fancyProfileViewController animated: YES];
             }
             else {
-                Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
-                [self presentEvent:event];
+                if ([user getUserState] != NOT_YET_ACCEPTED_PRIVATE_USER && [user getUserState] != NOT_SENT_FOLLOWING_PRIVATE_USER) {
+                    Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
+                    [self presentEvent:event];
+                }
             }
-          
+ 
+            
         }
     }
   
@@ -944,6 +940,20 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         [self.navigationController pushViewController: eventStoryViewController animated:YES];
     }
     else [self fetchEvent:event];
+}
+
+- (void)inviteTapped {
+    if ([self.user isTapped]) {
+        [self.user setIsTapped:NO];
+        [Network sendUntapToUserWithId:[self.user objectForKey:@"id"]];
+    }
+    else {
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
+        [EventAnalytics tagEvent:@"Tap User" withDetails:options];
+        [self.user setIsTapped:YES];
+        [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
+    }
+    [self.tableView reloadData];
 }
 
 #pragma mark - ScrollViewDelegate
@@ -1012,6 +1022,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 [_notificationsParty addObjectsFromArray:arrayOfNotifications];
                 NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                 [_notificationsParty addMetaInfo:metaDictionary];
+                if ([_page isEqualToNumber:@1]) [self updateLastNotificationsRead];
                 _page = @([_page intValue] + 1);
                 
                 self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
@@ -1025,16 +1036,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)updateLastNotificationsRead {
-    User *profileUser = [Profile user];
-    for (Notification *notification in [_notificationsParty getObjectArray]) {
-        if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
-            [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
-            [profileUser saveKeyAsynchronously:@"last_notification_read" withHandler:^() {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                });
-            }];
-        }
-    }
+    NSNumber *lastNotificationRead = [Profile user].lastNotificationRead;
+    [[Profile user] setStringNotificationRead:@"latest"];
+    [[Profile user] saveKeyAsynchronously:@"last_notification_read" withHandler:^() {}];
+    [[Profile user] setLastNotificationRead:lastNotificationRead];
 }
 
 - (void)updateBadge {
@@ -1166,7 +1171,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
     self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
     self.rightPostImageView.center = CGPointMake(self.rightPostImageView.center.x, self.center.y);
-
     [self.contentView addSubview:self.rightPostImageView];
     
     self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 27, self.frame.size.height/2 + 13 + 3, 50, 15)];
@@ -1295,8 +1299,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.titleLabel.font = [FontProperties lightFont: 18];
     self.titleLabel.textColor = [UIColor lightGrayColor];
     
-    self.inviteButton.frame = CGRectMake(self.frame.size.width - 55 - 35, 10, 60, 35);
-    self.inviteButton.center = CGPointMake(self.inviteButton.center.x, self.center.y);
     self.inviteButton.titleLabel.font =  [FontProperties lightFont:18.0f];
     self.inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.inviteButton.layer.borderWidth = 1;

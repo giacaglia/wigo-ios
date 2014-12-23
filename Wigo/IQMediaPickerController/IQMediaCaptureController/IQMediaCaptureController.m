@@ -62,6 +62,7 @@
 
 @property(nonatomic, strong, readonly) UIView *settingsContainerView;
 @property(nonatomic, strong, readonly) UIButton *buttonFlash, *buttonToggleCamera;
+@property(nonatomic, strong) UIImageView *cameraIconImageView;
 
 @property(nonatomic, strong, readonly) IQBottomContainerView *bottomContainerView;
 @property(nonatomic, strong, readonly) IQPartitionBar *partitionBar;
@@ -205,7 +206,6 @@
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 16, 26)];
             imageView.image = [UIImage imageNamed:@"flashOn"];
             [self.buttonFlash addSubview:imageView];
-            self.buttonFlash.alpha = 1.0f;
         }
         else if ([self session].fakeFlashMode == AVCaptureFlashModeOff) {
             for (UIView *subview in self.buttonFlash.subviews) {
@@ -214,7 +214,6 @@
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 26, 31)];
             imageView.image = [UIImage imageNamed:@"flashOff"];
             [self.buttonFlash addSubview:imageView];
-            self.buttonFlash.alpha = 0.3f;
         }
         self.buttonFlash.enabled = YES;
         
@@ -426,10 +425,10 @@
     }
     self.buttonToggleCamera.clipsToBounds = YES;
     [UIView animateWithDuration:.15f animations:^{
-        self.buttonToggleCamera.imageView.transform = CGAffineTransformMakeScale(1.5,1.5);
+        self.cameraIconImageView.transform = CGAffineTransformMakeScale(1.5,1.5);
     }completion:^(BOOL finished) {
         [UIView animateWithDuration:.15f animations:^{
-            self.buttonToggleCamera.imageView.transform = CGAffineTransformMakeScale(1.0,1.0);
+            self.cameraIconImageView.transform = CGAffineTransformMakeScale(1.0,1.0);
         }];
     }];
 }
@@ -806,7 +805,7 @@
             }
         }
         [self.buttonCancel setTitle:nil forState:UIControlStateNormal];
-        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 24, 36, 36)];
         cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
         [self.buttonCancel addSubview:cancelCamera];
         
@@ -979,7 +978,7 @@
 - (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
     if (![self session].isSessionRunning) {
         if (![self.textField isFirstResponder]) {
-            labelPoint.y = MIN(MAX(labelPoint.y, 125), 460);
+            labelPoint.y = MIN(MAX(labelPoint.y, 125), 410);
             self.textField.hidden = YES;
             self.textLabel.hidden = NO;
             self.textLabel.text = self.textField.text;
@@ -1221,7 +1220,7 @@ replacementString:(NSString *)string {
 {
     if (_settingsContainerView == nil)
     {
-        _settingsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, [[UIScreen mainScreen] bounds].size.width, 100)];
+        _settingsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 100)];
         [_settingsContainerView addSubview:self.buttonToggleCamera];
         [_settingsContainerView addSubview:self.buttonFlash];
     }
@@ -1234,7 +1233,7 @@ replacementString:(NSString *)string {
 {
     if (_buttonFlash == nil)
     {
-        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(10, 0, 72, 72)];
+        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 72, 72)];
         [_buttonFlash addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -1246,10 +1245,10 @@ replacementString:(NSString *)string {
 {
     if (_buttonToggleCamera == nil)
     {
-        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 60, 70)];
-        UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 30, 37, 30)];
-        cameraImageView.image = [UIImage imageNamed:@"cameraIcon"];
-        [_buttonToggleCamera addSubview:cameraImageView];
+        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 80, 80)];
+        self.cameraIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(23, 20, 37, 30)];
+        self.cameraIconImageView.image = [UIImage imageNamed:@"cameraIcon"];
+        [_buttonToggleCamera addSubview:self.cameraIconImageView];
         [_buttonToggleCamera addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -1261,7 +1260,7 @@ replacementString:(NSString *)string {
 {
     if (_bottomContainerView == nil)
     {
-        _bottomContainerView = [[IQBottomContainerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds)-90, CGRectGetWidth(self.view.bounds), 90)];
+        _bottomContainerView = [[IQBottomContainerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 90, CGRectGetWidth(self.view.bounds), 90)];
         [_bottomContainerView setTopContentView:self.partitionBar];
         [_bottomContainerView setLeftContentView:self.buttonCancel];
         [_bottomContainerView setMiddleContentView:self.buttonCapture];
@@ -1298,7 +1297,7 @@ replacementString:(NSString *)string {
     {
         _buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
         [_buttonCancel.titleLabel setFont:[UIFont boldSystemFontOfSize:18.0]];
-        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(0, 24, 36, 36)];
         cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
         [_buttonCancel addSubview:cancelCamera];
         [_buttonCancel addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
