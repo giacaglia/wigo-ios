@@ -134,7 +134,7 @@ int firstIndexOfNegativeEvent;
     self.visitedProfile = NO;
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-
+    [self fetchUserInfo];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -1265,22 +1265,24 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) fetchUserInfo {
-    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+    if ([[Profile user] key]) {
+        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                        User *user = [[User alloc] initWithDictionary:jsonResponse];
+                        [Profile setUser:user];
+                        [self initializeNavigationBar];
+                    }
+                }
+                else {
                     User *user = [[User alloc] initWithDictionary:jsonResponse];
                     [Profile setUser:user];
-                    [self updateTitleView];
+                    [self initializeNavigationBar];
                 }
-            }
-            else {
-                User *user = [[User alloc] initWithDictionary:jsonResponse];
-                [Profile setUser:user];
-                [self updateTitleView];
-            }
-        });
-    }];
+            });
+        }];
+    }
 }
 
 - (void) fetchIsThereNewPerson {

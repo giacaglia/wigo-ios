@@ -145,7 +145,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 handleActionWithIdentifier:(NSString *)identifier
 forRemoteNotification:(NSDictionary *)userInfo
   completionHandler:(void (^)())completionHandler {
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if ([identifier isEqualToString: @"tap_with_diff_event"]) {
         NSDictionary *event = [userInfo objectForKey:@"event"];
         NSNumber *eventID = [event objectForKey:@"id"];
@@ -161,7 +161,7 @@ forRemoteNotification:(NSDictionary *)userInfo
                         [[Profile user] setIsAttending:YES];
                         [[Profile user] setAttendingEventID:eventID];
                         [Network postGoingToEventNumber:[eventID intValue]];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
+                     
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
                     }
                 }
