@@ -101,11 +101,11 @@
         if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
         if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
-            myCell.mediaTypeImageView.hidden = NO;
+            myCell.mediaTypeImageView.hidden = YES;
         }
         else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
-            myCell.mediaTypeImageView.hidden = NO;
+            myCell.mediaTypeImageView.hidden = YES;
         }
     }
     
@@ -626,6 +626,7 @@
     self.mediaTypeImageView.layer.borderWidth = 1.0;
     self.mediaTypeImageView.layer.borderColor = UIColor.blackColor.CGColor;
     self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.mediaTypeImageView.hidden = YES;
     [self.faceAndMediaTypeView addSubview:self.mediaTypeImageView];
     
     self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30)];

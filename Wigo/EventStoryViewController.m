@@ -269,9 +269,8 @@
         [self fetchEventMessages];
     }
     myCell.timeLabel.frame = CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
-    myCell.mediaTypeImageView.hidden = NO;
+    myCell.mediaTypeImageView.hidden = YES;
     myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
-    myCell.mediaTypeImageView.hidden = NO;
     
     User *user;
     NSDictionary *eventMessage = [eventMessages objectAtIndex:[indexPath row]];
