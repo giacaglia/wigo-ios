@@ -30,7 +30,6 @@
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCel @"HighlightOldEventCell"
 #define kOldEventCellName @"OldEventCell"
-#define kHeaderOldEventCellName @"HeaderOldEventCell"
 
 
 @interface PlacesViewController () {
@@ -73,6 +72,12 @@
 @property UIButtonUngoOut *ungoOutButton;
 @property BOOL spinnerAtCenter;
 
+// Events By Days
+@property (nonatomic, strong) NSMutableArray *pastDays;
+@property (nonatomic, strong) NSMutableDictionary *dayToEventObjArray;
+
+//Go Elsewhere
+@property (nonatomic, strong) GoOutNewPlaceHeader *goElsewhereView;
 @end
 
 BOOL fetchingEventAttendees;
@@ -353,19 +358,20 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeWhereView {
-    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    _placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64) style: UITableViewStyleGrouped];
+
+    _placesTableView.sectionHeaderHeight = 0;
+    _placesTableView.sectionFooterHeight = 0;
     _placesTableView.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
     _placesTableView.showsVerticalScrollIndicator = NO;
+    [_placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     //[_placesTableView setSeparatorColor:UIColor.clearColor];
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
-    [_placesTableView registerClass:[OldEventCell class] forCellReuseIdentifier:kOldEventCellName];
-    [_placesTableView registerClass:[HeaderOldEventCell class] forHeaderFooterViewReuseIdentifier:kHeaderOldEventCellName];
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-
     _yPositionOfWhereSubview = 280;
     [self addRefreshToScrollView];
     [self initializeGoingSomewhereElseButton];
@@ -696,33 +702,21 @@ int firstIndexOfNegativeEvent;
 }
 
 #pragma mark - Tablew View Data Source
+#define kTodaySection 0
+#define kHighlightsEmptySection 1
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath section] == 0) {
-        if ([indexPath row] == [[_contentParty getObjectArray] count]) {
-            return 70;
-        }
-        if (firstIndexOfNegativeEvent >= 0 && [indexPath row] >= firstIndexOfNegativeEvent) {
-            return 70;
-        }
-        return sizeOfEachCell;
-
-    }
-    if (indexPath.row < [[_oldEventsParty getObjectArray] count]) {
-        Event *event = (Event *)[[_oldEventsParty getObjectArray] objectAtIndex:[indexPath row]];
-        if ([event containsHighlight]) {
-            return 340;
-        }
-    }
-    return 50;
-}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    if (self.pastDays.count > 0) {
+        //[Today section] [Highlighs section] (really just space for a header) + pastDays sections
+        return 1 + 1 + self.pastDays.count;
+    }
+    //just today section
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section == kTodaySection) {
         if (_isSearching) {
             return [[_filteredContentParty getObjectArray] count];
         }
@@ -731,11 +725,90 @@ int firstIndexOfNegativeEvent;
             return [[_contentParty getObjectArray] count] + hasNextPage;
         }
     }
-    else return [[_oldEventsParty getObjectArray] count];
+    else if (section == kHighlightsEmptySection) {
+        return 0;
+    }
+    else if (self.pastDays.count > 0 && section > 1) {
+        NSString *day = [self.pastDays objectAtIndex: section - 2];
+        return ((NSArray *)[self.dayToEventObjArray objectForKey: day]).count;
+    }
+
+    return 0;
 }
 
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == kTodaySection) { //today section
+        return [TodayHeader height];
+    }
+    else if (section == kHighlightsEmptySection) { //highlights section seperator
+        return [HighlightsHeader height];
+    }
+    else if (self.pastDays.count > 0 && section > 1) { //past day headers
+        return [PastDayHeader height: (section - 2 == 0)];
+    }
+    
+    return 0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == kTodaySection) {
+        return [TodayHeader initWithDay: [NSDate date]];
+    }
+    else if (section == kHighlightsEmptySection) {
+        return [HighlightsHeader init];
+    }
+    else if (self.pastDays.count > 0 && section > 1) { //past day headers
+        return [PastDayHeader initWithDay: [self.pastDays objectAtIndex: section - 2] isFirst: (section - 2) == 0];
+    }
+    
+    return nil;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    if (section == kTodaySection) {
+        self.goElsewhereView = [GoOutNewPlaceHeader init];
+        [self.goElsewhereView.addEventButton addTarget: self action: @selector(goingSomewhereElsePressed) forControlEvents: UIControlEventTouchUpInside];
+        
+        return self.goElsewhereView;
+    }
+    
+    return nil;
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if (section == kTodaySection) {
+        return [GoOutNewPlaceHeader height];
+    }
+    return 0;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([indexPath section] == kTodaySection) {
+        return sizeOfEachCell;
+
+    }
+    else if (indexPath.section == kHighlightsEmptySection) {
+        return 0;
+    }
+    else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
+        
+        NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
+        NSArray *eventObjectArray = ((NSArray *)[self.dayToEventObjArray objectForKey: day]);
+
+        Event *event = (Event *)[eventObjectArray objectAtIndex:[indexPath row]];
+        if ([event containsHighlight]) {
+            return 215;
+        }
+    }
+    
+    return 0;
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName];
 
         cell.placesDelegate = self;
@@ -785,8 +858,17 @@ int firstIndexOfNegativeEvent;
         }
         return cell;
     }
-    else {
-        Event *event = (Event *)[[_oldEventsParty getObjectArray] objectAtIndex:[indexPath row]];
+    else if (indexPath.section == kHighlightsEmptySection) {
+        return nil;
+    }
+    
+    else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
+        
+        NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
+        NSArray *eventObjectArray = ((NSArray *)[self.dayToEventObjArray objectForKey: day]);
+        
+        Event *event = (Event *)[eventObjectArray objectAtIndex:[indexPath row]];
+
         if ([event containsHighlight]) {
             HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
             cell.event = event;
@@ -800,18 +882,16 @@ int firstIndexOfNegativeEvent;
             }];
             return cell;
         }
-        else {
-            OldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventCellName];
-            cell.placesDelegate = self;
-            cell.oldEventLabel.text = [event name];
-            return cell;
-        }
       
     }
+    
+    return nil;
   
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+
     // Remove seperator inset
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
         [cell setSeparatorInset:UIEdgeInsetsZero];
@@ -826,7 +906,9 @@ int firstIndexOfNegativeEvent;
     if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
+    
 }
+
 
 
 #pragma mark - Image helper
@@ -1055,29 +1137,30 @@ int firstIndexOfNegativeEvent;
     return @{@"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex":[NSNumber numberWithInt:eventIndex]};
 }
 
-- (CGFloat)tableView:(UITableView *)tableView
-heightForHeaderInSection:(NSInteger)section {
-    if (section == 0)  return 0;
-    if ([[_oldEventsParty  getObjectArray] count] > 0) return 49;
-    else return 0;
-}
-
-- (UIView *)tableView:(UITableView *)tableView
-viewForHeaderInSection:(NSInteger)section {
-    HeaderOldEventCell *headerOldEventCell = [tableView dequeueReusableHeaderFooterViewWithIdentifier:kHeaderOldEventCellName];
-    headerOldEventCell.headerTitleLabel.text = @"Recent Highlights";
-    return headerOldEventCell;
-}
 
 
 #pragma mark - UIScrollView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView != _placesTableView)
+    if (scrollView != _placesTableView) {
         if (scrollView.contentOffset.x + self.view.frame.size.width >= scrollView.contentSize.width - sizeOfEachImage && !fetchingEventAttendees) {
             fetchingEventAttendees = YES;
             [self fetchEventAttendeesAsynchronousForEvent:(int)scrollView.tag];
         }
+        
+    }
+    else if (scrollView == _placesTableView) {
+        // convert label frame
+        CGRect comparisonFrame = [scrollView convertRect: self.goElsewhereView.frame toView:self.view];
+        // check if label is contained in self.view
+        BOOL isContainedInView = CGRectContainsRect(self.view.frame, comparisonFrame);
+        
+        
+        if (self.goingSomewhereButton.hidden == isContainedInView) {
+            //do nothing
+        }
+
+    }
 }
 
 #pragma mark - Network Asynchronous Functions
@@ -1111,6 +1194,9 @@ viewForHeaderInSection:(NSInteger)section {
                 _oldEventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
                 _contentParty = _eventsParty;
                 _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
+                
+                self.pastDays = [[NSMutableArray alloc] init];
+                self.dayToEventObjArray = [[NSMutableDictionary alloc] init];
             }
             NSArray *events = [jsonResponse objectForKey:@"objects"];
             NSDictionary *separatedEvents = [self separateEvents:events];
@@ -1118,7 +1204,24 @@ viewForHeaderInSection:(NSInteger)section {
             NSArray *newEvents = [separatedEvents objectForKey:@"newEvents"];
             [self getFirstIndexOfSuggestedEvent:events];
             [_eventsParty addObjectsFromArray:newEvents];
+            
+            //add old events to dictionary
             [_oldEventsParty addObjectsFromArray:oldEvents];
+            
+            Party *newOldEventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
+            [newOldEventsParty addObjectsFromArray: oldEvents];
+            
+            for (Event *event in [newOldEventsParty getObjectArray]) {
+                NSString *eventDate = [event expiresDate];
+                if ([self.pastDays indexOfObject: eventDate] == NSNotFound) {
+                    [self.pastDays addObject: eventDate];
+                    [self.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                }
+                
+                [[self.dayToEventObjArray objectForKey: eventDate] addObject: event];
+            }
+            
+            
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_eventsParty addMetaInfo:metaDictionary];
             [self fillEventAttendees];
@@ -1469,8 +1572,9 @@ viewForHeaderInSection:(NSInteger)section {
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
     
-    UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height, self.frame.size.width, 0.5)];
-    lineSeparator.backgroundColor = RGB(210, 210, 210);
+    UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 0.5f, self.frame.size.width, 0.5)];
+    lineSeparator.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.2f];
+
     [self.contentView addSubview:lineSeparator];
 }
 
@@ -1496,24 +1600,168 @@ viewForHeaderInSection:(NSInteger)section {
 
 @end
 
-@implementation TitleHeaderEventCell
+#pragma mark - Headers
+@implementation TodayHeader
 
-- (void)setupTitleHeader {
-    UILabel *lineViewAtTheTop = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 1)];
-    lineViewAtTheTop.backgroundColor = RGB(213, 213, 213);
-    [self.contentView addSubview:lineViewAtTheTop];
++ (instancetype) initWithDay: (NSDate *) date {
+    TodayHeader *header = [[TodayHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TodayHeader height])];
+    header.date = date;
+    [header setup];
     
-    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.frame.size.width - 75, 50)];
-    self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
-    self.oldEventLabel.font = [FontProperties mediumFont:18.0f];
-    self.oldEventLabel.textColor = RGB(184, 184, 184);
-    [self.contentView addSubview:self.oldEventLabel];
+    return header;
+}
+- (void) setup {
+    self.backgroundColor = [UIColor whiteColor];
     
-    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 9, 14)];
-    postStoryImageView.image = [UIImage imageNamed:@"grayPostStory"];
-    [self.contentView addSubview:postStoryImageView];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: self.date];
+    int weekday = (int)[comps weekday];
+    NSString *dayName = [[[NSDateFormatter alloc] init] weekdaySymbols][weekday - 1];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 30)];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.font = [FontProperties scMediumFont: 18.0f];
+    titleLabel.textColor = [FontProperties getBlueColor];
+    titleLabel.text = [dayName lowercaseString];
+    titleLabel.center = self.center;
+    [self addSubview: titleLabel];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(self.center.x - 50, self.frame.size.height - 0.5f, 100, 0.5f)];
+    lineView.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.4f];
+    [self addSubview: lineView];
+    
 }
 
++ (CGFloat) height {
+    return 50;
+}
+@end
+
+@implementation GoOutNewPlaceHeader
+
++ (instancetype) init {
+    GoOutNewPlaceHeader *header = [[GoOutNewPlaceHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [GoOutNewPlaceHeader height])];
+    [header setup];
+    
+    return header;
+}
+
+- (void) setup {
+    self.backgroundColor = RGB(241, 241, 241);
+    
+    UIImageView *backgroundView = [[UIImageView alloc] initWithFrame:self.bounds];
+    backgroundView.image = [UIImage imageNamed: @"create_bg"];
+    [self addSubview: backgroundView];
+    
+    
+    int sizeOfButton = 40;
+    UIButton *plusButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - sizeOfButton - 10, 0, sizeOfButton, sizeOfButton)];
+    plusButton.center = CGPointMake(plusButton.center.x, self.center.y - 2);
+    
+    plusButton.backgroundColor = [FontProperties getBlueColor];
+    plusButton.layer.borderWidth = 1.0f;
+    plusButton.layer.borderColor = [UIColor clearColor].CGColor;
+    plusButton.layer.cornerRadius = sizeOfButton/2;
+
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 6, sizeOfButton/2 - 6, 12, 12)];
+    sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
+    [plusButton addSubview: sendOvalImageView];
+    [self addSubview: plusButton];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(10, 0, self.frame.size.width, self.frame.size.height)];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.textAlignment = NSTextAlignmentLeft;
+    titleLabel.font = [FontProperties mediumFont: 20.0f];
+    titleLabel.textColor = [FontProperties getBlueColor];
+    titleLabel.text = @"Go somewhere else";
+    titleLabel.center = CGPointMake(titleLabel.center.x, self.center.y - 4);
+    
+    [self addSubview: titleLabel];
+    
+    self.addEventButton = [[UIButton alloc] initWithFrame: self.bounds];
+    self.addEventButton.backgroundColor = [UIColor clearColor];
+    [self addSubview: self.addEventButton];
+}
+
++ (CGFloat) height {
+    return 70;
+}
+
+@end
+
+@implementation HighlightsHeader
+
++ (instancetype) init {
+    HighlightsHeader *header = [[HighlightsHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [HighlightsHeader height])];
+    [header setup];
+    return header;
+}
+
+- (void) setup {
+    self.backgroundColor = RGB(241, 241, 241);
+
+}
+
++ (CGFloat)height {
+    return 60.0f;
+}
+
+@end
+
+@implementation PastDayHeader
+
++ (instancetype) initWithDay: (NSString *) dayText isFirst: (BOOL) isFirst {
+    PastDayHeader *header = [[PastDayHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [PastDayHeader height: isFirst])];
+    header.isFirst = isFirst;
+    header.day = dayText;
+    [header setup];
+    
+    return header;
+}
+- (void) setup {
+    self.backgroundColor = RGB(241, 241, 241);
+    
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    NSDate *date = [dateFormat dateFromString:self.day];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: date];
+    int weekday = (int)[comps weekday];
+    NSString *dayName = [dateFormat weekdaySymbols][weekday - 1];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(self.center.x - 50, 20, 100, 0.5f)];
+    lineView.backgroundColor = RGB(210, 210, 210);
+    [self addSubview: lineView];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 20.5, self.frame.size.width, self.frame.size.height - 23.5)];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.font = [FontProperties scMediumFont: 18.0f];
+    titleLabel.textColor = RGB(210, 210, 210);
+    titleLabel.text = [dayName lowercaseString];
+    titleLabel.center = CGPointMake(self.center.x, titleLabel.center.y);
+    [self addSubview: titleLabel];
+    
+    if (self.isFirst) {
+        UILabel *highlights = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 20)];
+        highlights.backgroundColor = [UIColor clearColor];
+        highlights.textAlignment = NSTextAlignmentCenter;
+        highlights.font = [FontProperties scMediumFont: 13.0f];
+        highlights.textColor = RGB(210, 210, 210);
+        highlights.text = @"Highlights From Past";
+        [self addSubview: highlights];
+        
+        lineView.center = CGPointMake(lineView.center.x, lineView.center.y + 5);
+    }
+}
+
++ (CGFloat) height: (BOOL) isFirst  {
+    if (isFirst) {
+        return 75;
+    }
+    return 70;
+}
 @end
 
 @implementation HighlightOldEventCell
@@ -1527,70 +1775,51 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 340);
-    self.backgroundColor = UIColor.whiteColor;
-    [super setupTitleHeader];
-    self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 50, self.frame.size.width, 254)];
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [HighlightOldEventCell height]);
+    self.backgroundColor = RGB(241, 241, 241);
+    
+
+    //image view
+    self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     self.highlightImageView.clipsToBounds = YES;
     self.highlightImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self.contentView addSubview:self.highlightImageView];
+    
+    //gradient, label, arrow
+    UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame: self.highlightImageView.bounds];
+    gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
+    [self.contentView addSubview:gradientBackground];
+    
+    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.frame.size.height - 50, self.frame.size.width - 75, 50)];
+    self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
+    self.oldEventLabel.font = [FontProperties scMediumFont: 22.0f];
+    self.oldEventLabel.textColor = [UIColor whiteColor];
+    [self.contentView addSubview:self.oldEventLabel];
+    
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 30)];
+    postStoryImageView.image = [UIImage imageNamed:@"whiteForwardButton"];
+    postStoryImageView.contentMode = UIViewContentModeScaleAspectFit;
+    postStoryImageView.center = CGPointMake(postStoryImageView.center.x, self.oldEventLabel.center.y);
+    [self.contentView addSubview:postStoryImageView];
     
     UIButton *conversationButton = [[UIButton alloc] initWithFrame:self.frame];
     [conversationButton addTarget:self action:@selector(loadConversation) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:conversationButton];
     
-    UILabel *bottomBackground = [[UILabel alloc] initWithFrame:CGRectMake(0, 304, self.frame.size.width, 36)];
-    bottomBackground.backgroundColor = RGB(249, 249, 249);
-    [self.contentView addSubview:bottomBackground];
+    //line view
+    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 1)];
+    lineView.backgroundColor = [UIColor whiteColor];
+    [self.contentView addSubview: lineView];
+    
 }
 
 - (void)loadConversation {
     [self.placesDelegate showConversationForEvent:self.event];
 }
 
-@end
-
-@implementation OldEventCell
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setup];
-    }
-    return self;
++ (CGFloat) height {
+    return 215;
 }
 
-- (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 50);
-    self.backgroundColor = UIColor.whiteColor;
-    [super setupTitleHeader];
-}
-
-@end
-
-@implementation HeaderOldEventCell
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithReuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
-
-- (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 49);
-    self.contentView.backgroundColor = RGB(249, 249, 249);
-
-    self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-    self.headerTitleLabel.textColor = RGB(155, 155, 155);
-    self.headerTitleLabel.textAlignment = NSTextAlignmentCenter;
-    self.headerTitleLabel.font = [FontProperties scMediumFont:14.0f];
-    [self.contentView addSubview:self.headerTitleLabel];
-    
-    UIImage *triangles = [UIImage imageNamed: @"triangles"];
-    UIImageView *trianglesImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0, -1*triangles.size.height, self.frame.size.width, triangles.size.height)];
-    [trianglesImageView setImage: triangles];
-    [self.contentView addSubview: trianglesImageView];
-}
 @end
 

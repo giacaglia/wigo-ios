@@ -22,5 +22,6 @@
 - (NSArray *)getEventAttendees;
 - (void)addUser:(User *)user;
 - (NSDictionary *)dictionary;
+- (NSString *) expiresDate;
 
 @end

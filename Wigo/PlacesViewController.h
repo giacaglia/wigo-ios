@@ -39,20 +39,38 @@
 - (void)updateUI;
 @end
 
-@interface TitleHeaderEventCell : UITableViewCell
+
+#pragma mark - Headers
+@interface TodayHeader : UIView
+@property (nonatomic, strong) NSDate *date;
++ (instancetype) initWithDay: (NSDate *) date;
++ (CGFloat) height;
+@end
+
+@interface GoOutNewPlaceHeader : UIView
+@property (nonatomic, strong) UIButton *addEventButton;
++ (instancetype) init;
++ (CGFloat) height;
+@end
+
+@interface HighlightsHeader : UIView
++ (instancetype) init;
++ (CGFloat) height;
+@end
+
+@interface PastDayHeader : UIView
+@property (nonatomic, strong) NSString *day;
+@property (nonatomic, assign) BOOL isFirst;
++ (instancetype) initWithDay: (NSString *) dayText isFirst: (BOOL) first;
++ (CGFloat) height: (BOOL) isFirst;
+@end
+
+@interface HighlightOldEventCell : UITableViewCell
+@property (nonatomic, strong) UIImageView *highlightImageView;
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
-- (void)setupTitleHeader;
 @property (nonatomic, strong) UILabel *oldEventLabel;
++ (CGFloat) height;
+
 @end
 
-@interface HighlightOldEventCell : TitleHeaderEventCell
-@property (nonatomic, strong) UIImageView *highlightImageView;
-@end
-
-@interface OldEventCell : TitleHeaderEventCell
-@end
-
-@interface HeaderOldEventCell : UITableViewHeaderFooterView
-@property (nonatomic, strong) UILabel *headerTitleLabel;
-@end

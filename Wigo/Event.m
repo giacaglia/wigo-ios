@@ -46,6 +46,11 @@
     return (NSNumber *)[_proxy objectForKey:@"id"];
 }
 
+- (NSString *) expiresDate {
+    NSString *dateString = [_proxy objectForKey: @"expires"];
+    return dateString;
+}
+
 - (void)setEventID:(NSNumber *)eventID {
     [_proxy setObject:eventID forKey:@"id"];
 }
