@@ -39,11 +39,10 @@ UIViewController *webViewController;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhotos) name:@"updatePhotos" object:nil];
     
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 625);
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 700);
     [self.view addSubview:_scrollView];
     
     self.title = @"Edit Profile";
-
 
     [self initializeBarButton];
     [self initializePhotosSection];
