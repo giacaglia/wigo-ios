@@ -20,7 +20,7 @@ static NSString * BaseURLString = @"https://api.wigo.us%@";
 
 @interface Query ()
 @property NSString *urlSuffix;
-@property NSMutableDictionary *options;
+@property id options;
 @property NSString *key;
 @end
 

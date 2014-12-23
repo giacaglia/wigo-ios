@@ -17,7 +17,7 @@
 #import "EventMessagesConstants.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
-@interface EventConversationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate>
+@interface EventConversationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, MediaScrollViewDelegate>
 @property (nonatomic, strong) UIImage *userProfileImage;
 @property (nonatomic, strong) NSIndexPath *currentActiveCell;
 @property (nonatomic, assign) CGPoint collectionViewPointNow;
@@ -144,6 +144,9 @@
     }
 }
 
+- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell {
+#warning GUILIANO FIX ME
+}
 - (void)focusOnContent {
     if (!self.facesHidden) {
         [UIView animateWithDuration:0.5 animations:^{

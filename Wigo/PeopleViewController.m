@@ -456,7 +456,7 @@ NSMutableArray *suggestedArrayView;
 
 - (void)suggestedProfileSegue:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
+    int tag = (int)buttonSender.tag;
     User *user = [self getSuggestedUser:tag];
     if (user) {
         didProfileSegue = YES;

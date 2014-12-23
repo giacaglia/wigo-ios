@@ -1040,7 +1040,7 @@ int firstIndexOfNegativeEvent;
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
     
     // Create bitmap content with current image size and grayscale colorspace
-    CGContextRef context = CGBitmapContextCreate(nil, image.size.width, image.size.height, 8, 0, colorSpace, kCGImageAlphaNone);
+    CGContextRef context = CGBitmapContextCreate(nil, image.size.width, image.size.height, 8, 0, colorSpace, (int)kCGImageAlphaNone);
     
     // Draw image into current context, with specified rectangle
     // using previously defined context (with grayscale colorspace)

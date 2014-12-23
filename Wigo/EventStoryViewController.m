@@ -173,7 +173,7 @@
 }
 
 - (void)presentFirstTimeGoingToEvent {
-    GOHERESTATE goHereState = [[NSUserDefaults standardUserDefaults] integerForKey:kGoHereState];
+    GOHERESTATE goHereState = (int)[[NSUserDefaults standardUserDefaults] integerForKey:kGoHereState];
 
     if (goHereState != DONOTPRESENTANYTHINGSTATE) {
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -195,6 +195,7 @@
     }
 }
 
+
 - (NSMutableArray *)eventMessagesWithYourFace:(BOOL)faceBool {
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -211,6 +212,7 @@
     
     return mutableEventMessages;
 }
+
 
 - (void)loadConversationViewController {
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
@@ -420,7 +422,7 @@
                                         NSLog(@"error %@", error);
                                     }
                                 }
-                                withOptions:@[[self.event eventID]]
+                                withOptions:(id)@[[self.event eventID]]
          ];
     }
 }
@@ -538,6 +540,17 @@
         [facesCollectionView reloadData];
     });
 }
+
+#pragma mark - IQMediaController Delegate
+
+- (void)mediaPickerController:(IQMediaPickerController *)controller didFinishMediaWithInfo:(NSDictionary *)info {
+    
+}
+
+- (void)mediaPickerControllerDidCancel:(IQMediaPickerController *)controller {
+    
+}
+
 #pragma mark - UIScrollViewDelegate 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

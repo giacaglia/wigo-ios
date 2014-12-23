@@ -167,7 +167,7 @@
                                     else {
                                         NSLog(@"error %@", error);
                                     }
-                                } withOptions:[self.eventMessagesIDSet allObjects]];
+                                } withOptions:(id)[self.eventMessagesIDSet allObjects]];
     }
     [self.storyDelegate readEventMessageIDArray:[self.eventMessagesIDSet allObjects]];
 }
