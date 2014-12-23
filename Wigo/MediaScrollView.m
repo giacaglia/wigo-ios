@@ -225,10 +225,12 @@
 
 - (void)removeMediaAtPage:(int)page {
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
-    NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
-    [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-    }];
-}
+    if ([[eventMessage allKeys] containsObject:@"id"]) {
+        NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
+        [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        }];
+    }
+ }
 
 #pragma mark - MediaScrollViewDelegate 
 
