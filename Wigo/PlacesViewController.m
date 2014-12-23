@@ -1260,7 +1260,7 @@ viewForHeaderInSection:(NSInteger)section {
         _contentParty = _eventsParty;
         _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
         [self dismissKeyboard];
-        if ([page isEqualToNumber:@2]) [_placesTableView setContentOffset:CGPointZero animated:YES];
+
     });
 }
 

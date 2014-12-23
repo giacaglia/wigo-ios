@@ -599,12 +599,16 @@
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, sizeOfEachFaceCell, sizeOfEachFaceCell);
-//    self.backgroundColor = UIColor.greenColor;
     
     self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x + 0.3*sizeOfEachFaceCell, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.rightLine.alpha = 0.5f;
     self.rightLine.backgroundColor = UIColor.whiteColor;
     [self addSubview: self.rightLine];
+    
+    self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2)];
+    self.spinner.center = self.center;
+    self.spinner.activityIndicatorViewStyle = UIActionSheetStyleDefault;
+    [self addSubview:self.spinner];
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
