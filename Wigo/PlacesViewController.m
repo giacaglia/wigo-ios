@@ -173,8 +173,6 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) initializeNavigationBar {
-    self.navigationItem.leftBarButtonItem = nil;
-    self.navigationItem.rightBarButtonItem = nil;
     self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
 
@@ -218,6 +216,10 @@ int firstIndexOfNegativeEvent;
         [self.rightButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
         self.navigationItem.rightBarButtonItem = rightBarButton;
+    }
+    else {
+        self.navigationItem.leftBarButtonItem = nil;
+        self.navigationItem.rightBarButtonItem = nil;
     }
 
     [self updateTitleView];

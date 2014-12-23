@@ -530,7 +530,7 @@ NSMutableArray *failedUserInfoArray;
 - (void) updateTitleView {
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     [self.navigationItem.leftBarButtonItem setTintColor:[FontProperties getOrangeColor]];
-    self.navigationItem.titleView = nil;
+//    self.navigationItem.titleView = nil;
     if ([[Profile user] isGoingOut]) {
         UIButtonUngoOut *ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
         self.navigationItem.titleView = ungoOutButton;
