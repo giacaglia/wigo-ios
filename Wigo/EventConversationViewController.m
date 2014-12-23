@@ -422,14 +422,14 @@
     self.facesCollectionView.contentInset = UIEdgeInsetsMake(0, sizeOfEachFaceCell, 0, sizeOfEachFaceCell);
     self.facesCollectionView.pagingEnabled = NO;
     
-    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 86, 86, 66)];
+    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 76, 86, 66)];
     UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 30, 36, 36)];
     cancelImageView.image = [UIImage imageNamed:@"cancelCamera"];
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
     
-    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 18, self.view.frame.size.height - 56, 36, 36)];
+    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 18, self.view.frame.size.height - 46, 36, 36)];
     UIImageView *trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
     trashImageView.image = [UIImage imageNamed:@"trashIcon"];
     [self.buttonTrash addSubview:trashImageView];

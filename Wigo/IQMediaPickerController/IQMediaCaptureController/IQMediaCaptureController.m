@@ -805,7 +805,7 @@
             }
         }
         [self.buttonCancel setTitle:nil forState:UIControlStateNormal];
-        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 24, 36, 36)];
         cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
         [self.buttonCancel addSubview:cancelCamera];
         
@@ -978,7 +978,7 @@
 - (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
     if (![self session].isSessionRunning) {
         if (![self.textField isFirstResponder]) {
-            labelPoint.y = MIN(MAX(labelPoint.y, 125), 460);
+            labelPoint.y = MIN(MAX(labelPoint.y, 125), 410);
             self.textField.hidden = YES;
             self.textLabel.hidden = NO;
             self.textLabel.text = self.textField.text;
@@ -1260,7 +1260,7 @@ replacementString:(NSString *)string {
 {
     if (_bottomContainerView == nil)
     {
-        _bottomContainerView = [[IQBottomContainerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds)-90, CGRectGetWidth(self.view.bounds), 90)];
+        _bottomContainerView = [[IQBottomContainerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds)- 90, CGRectGetWidth(self.view.bounds), 90)];
         [_bottomContainerView setTopContentView:self.partitionBar];
         [_bottomContainerView setLeftContentView:self.buttonCancel];
         [_bottomContainerView setMiddleContentView:self.buttonCapture];
@@ -1297,7 +1297,7 @@ replacementString:(NSString *)string {
     {
         _buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
         [_buttonCancel.titleLabel setFont:[UIFont boldSystemFontOfSize:18.0]];
-        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(0, 24, 36, 36)];
         cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
         [_buttonCancel addSubview:cancelCamera];
         [_buttonCancel addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
