@@ -48,6 +48,7 @@
 @end
 
 @interface GoOutNewPlaceHeader : UIView
+@property (nonatomic, strong) UIButton *plusButton;
 @property (nonatomic, strong) UIButton *addEventButton;
 + (instancetype) init;
 + (CGFloat) height;

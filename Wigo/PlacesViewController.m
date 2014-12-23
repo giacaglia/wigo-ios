@@ -34,6 +34,8 @@
 
 @interface PlacesViewController () {
     UIView *_dimView;
+    BOOL isLoaded;
+
 }
 
 @property UIView *whereAreYouGoingView;
@@ -128,14 +130,14 @@ int firstIndexOfNegativeEvent;
     [self initializeNotificationObservers];
     [self initializeNavigationBar];
 
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        _goingSomewhereButton.hidden = NO;
-        _goingSomewhereButton.enabled = YES;
-    }
-    else {
-        _goingSomewhereButton.hidden = YES;
-        _goingSomewhereButton.enabled = NO;
-    }
+//    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+//        _goingSomewhereButton.hidden = NO;
+//        _goingSomewhereButton.enabled = YES;
+//    }
+//    else {
+//        _goingSomewhereButton.hidden = YES;
+//        _goingSomewhereButton.enabled = NO;
+//    }
     if (!self.visitedProfile) {
         self.eventOffsetDictionary = [NSMutableDictionary new];
     }
@@ -435,6 +437,7 @@ int firstIndexOfNegativeEvent;
     _goingSomewhereButton.layer.shadowOpacity = 0.4f;
     _goingSomewhereButton.layer.shadowRadius = 5.0f;
     _goingSomewhereButton.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
+    
     [self.view addSubview:_goingSomewhereButton];
     [self.view bringSubviewToFront:_goingSomewhereButton];
     
@@ -907,10 +910,13 @@ int firstIndexOfNegativeEvent;
     if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
-    
 }
 
-
+- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section {
+    if (view == self.goElsewhereView) {
+        isLoaded = YES;
+    }
+}
 
 #pragma mark - Image helper
 
@@ -1154,13 +1160,37 @@ int firstIndexOfNegativeEvent;
         // convert label frame
         CGRect comparisonFrame = [scrollView convertRect: self.goElsewhereView.frame toView:self.view];
         // check if label is contained in self.view
-        BOOL isContainedInView = CGRectContainsRect(self.view.frame, comparisonFrame);
         
+        CGRect viewFrame = self.view.frame;
+        BOOL isContainedInView = CGRectContainsRect(viewFrame, comparisonFrame);
         
-        if (self.goingSomewhereButton.hidden == isContainedInView) {
-            //do nothing
+        if (!self.goElsewhereView) {
+            return;
         }
+        
+        if (isContainedInView && self.goingSomewhereButton.hidden == NO && isLoaded) {
+            self.goingSomewhereButton.hidden = YES;
+            self.goElsewhereView.plusButton.hidden = NO;
+        }
+        else if (isContainedInView == NO && self.goingSomewhereButton.hidden == YES) {
+            self.goingSomewhereButton.alpha = 0;
+            self.goingSomewhereButton.transform = CGAffineTransformMakeScale(0, 0);
+            self.goingSomewhereButton.hidden = NO;
+            self.goElsewhereView.plusButton.hidden = YES;
 
+            [UIView animateWithDuration:0.2f delay: 0.0 options: UIViewAnimationOptionCurveEaseOut animations:^{
+                self.goingSomewhereButton.alpha = 1;
+                self.goingSomewhereButton.transform = CGAffineTransformMakeScale(1.2, 1.2);
+                
+                
+            } completion:^(BOOL finished) {
+                [UIView animateWithDuration:0.05f delay: 0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+                    self.goingSomewhereButton.transform = CGAffineTransformIdentity;
+                    
+                } completion:^(BOOL finished) {
+                }];
+            }];
+        }
     }
 }
 
@@ -1173,6 +1203,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) fetchEvents {
+    
     if (!fetchingEventAttendees && [[Profile user] key]) {
         fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
@@ -1239,6 +1270,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (NSDictionary *)separateEvents:(NSArray *)events {
+    
     NSMutableArray *mutableOldEvents = [NSMutableArray new];
     NSMutableArray *newEvents = [NSMutableArray new];
     NSIndexSet *indexSet = [events indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
@@ -1617,17 +1649,17 @@ int firstIndexOfNegativeEvent;
 - (void) setup {
     self.backgroundColor = [UIColor whiteColor];
     
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: self.date];
-    int weekday = (int)[comps weekday];
-    NSString *dayName = [[[NSDateFormatter alloc] init] weekdaySymbols][weekday - 1];
+//    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+//    NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: self.date];
+//    int weekday = (int)[comps weekday];
+//    NSString *dayName = [[[NSDateFormatter alloc] init] weekdaySymbols][weekday - 1];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 30)];
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = [FontProperties scMediumFont: 18.0f];
     titleLabel.textColor = [FontProperties getBlueColor];
-    titleLabel.text = [dayName lowercaseString];
+    titleLabel.text = @"today";
     titleLabel.center = self.center;
     [self addSubview: titleLabel];
     
@@ -1660,18 +1692,18 @@ int firstIndexOfNegativeEvent;
     
     
     int sizeOfButton = 40;
-    UIButton *plusButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - sizeOfButton - 10, 0, sizeOfButton, sizeOfButton)];
-    plusButton.center = CGPointMake(plusButton.center.x, self.center.y - 2);
+    self.plusButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - sizeOfButton - 20, 0, sizeOfButton, sizeOfButton)];
+    self.plusButton.center = CGPointMake(self.plusButton.center.x, self.center.y - 2);
     
-    plusButton.backgroundColor = [FontProperties getBlueColor];
-    plusButton.layer.borderWidth = 1.0f;
-    plusButton.layer.borderColor = [UIColor clearColor].CGColor;
-    plusButton.layer.cornerRadius = sizeOfButton/2;
+    self.plusButton.backgroundColor = [FontProperties getBlueColor];
+    self.plusButton.layer.borderWidth = 1.0f;
+    self.plusButton.layer.borderColor = [UIColor clearColor].CGColor;
+    self.plusButton.layer.cornerRadius = sizeOfButton/2;
 
     UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 6, sizeOfButton/2 - 6, 12, 12)];
     sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
-    [plusButton addSubview: sendOvalImageView];
-    [self addSubview: plusButton];
+    [self.plusButton addSubview: sendOvalImageView];
+    [self addSubview: self.plusButton];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(10, 0, self.frame.size.width, self.frame.size.height)];
     titleLabel.backgroundColor = [UIColor clearColor];
