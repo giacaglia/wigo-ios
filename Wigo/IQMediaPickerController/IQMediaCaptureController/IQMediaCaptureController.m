@@ -206,7 +206,6 @@
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 16, 26)];
             imageView.image = [UIImage imageNamed:@"flashOn"];
             [self.buttonFlash addSubview:imageView];
-            self.buttonFlash.alpha = 1.0f;
         }
         else if ([self session].fakeFlashMode == AVCaptureFlashModeOff) {
             for (UIView *subview in self.buttonFlash.subviews) {
@@ -215,7 +214,6 @@
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 26, 31)];
             imageView.image = [UIImage imageNamed:@"flashOff"];
             [self.buttonFlash addSubview:imageView];
-            self.buttonFlash.alpha = 0.3f;
         }
         self.buttonFlash.enabled = YES;
         

@@ -1295,8 +1295,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.titleLabel.font = [FontProperties lightFont: 18];
     self.titleLabel.textColor = [UIColor lightGrayColor];
     
-    self.inviteButton.frame = CGRectMake(self.frame.size.width - 55 - 35, 10, 60, 35);
-    self.inviteButton.center = CGPointMake(self.inviteButton.center.x, self.center.y);
     self.inviteButton.titleLabel.font =  [FontProperties lightFont:18.0f];
     self.inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.inviteButton.layer.borderWidth = 1;

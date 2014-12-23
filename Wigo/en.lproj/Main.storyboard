@@ -471,15 +471,18 @@
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XXD-L1-pkX" id="hb1-ya-m85">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tap to see out:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IwM-ib-pII">
-                                            <rect key="frame" x="74" y="23" width="165" height="22"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap to see out:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IwM-ib-pII">
+                                            <rect key="frame" x="131" y="23" width="108" height="22"/>
                                             <fontDescription key="fontDescription" name="Whitney-Light" family="Whitney-Light" pointSize="18"/>
                                             <color key="textColor" red="0.89411764705882346" green="0.89411764705882346" blue="0.89411764705882346" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ggW-oB-JSu">
-                                            <rect key="frame" x="263" y="17" width="75" height="35"/>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ggW-oB-JSu">
+                                            <rect key="frame" x="262" y="17" width="75" height="35"/>
                                             <color key="backgroundColor" red="0.95686280729999995" green="0.58431375029999999" blue="0.1764705926" alpha="1" colorSpace="deviceRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="75" id="Z6B-dh-3U9"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" name="Whitney-MediumSC" family="Whitney-Medium SC" pointSize="18"/>
                                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <state key="normal" title="TAP">
@@ -487,6 +490,15 @@
                                             </state>
                                         </button>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="ggW-oB-JSu" firstAttribute="firstBaseline" secondItem="IwM-ib-pII" secondAttribute="baseline" id="7AL-VF-hwb"/>
+                                        <constraint firstItem="ggW-oB-JSu" firstAttribute="centerY" secondItem="hb1-ya-m85" secondAttribute="centerY" id="FU2-oi-n8T"/>
+                                        <constraint firstItem="ggW-oB-JSu" firstAttribute="top" secondItem="hb1-ya-m85" secondAttribute="topMargin" constant="9" id="MOB-gv-m5A"/>
+                                        <constraint firstItem="ggW-oB-JSu" firstAttribute="centerY" secondItem="IwM-ib-pII" secondAttribute="centerY" id="Txh-Vg-f72"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="ggW-oB-JSu" secondAttribute="trailing" constant="30" id="aE9-9p-9j0"/>
+                                        <constraint firstItem="ggW-oB-JSu" firstAttribute="leading" secondItem="IwM-ib-pII" secondAttribute="trailing" constant="23" id="fbt-AK-Buq"/>
+                                        <constraint firstItem="ggW-oB-JSu" firstAttribute="baseline" secondItem="IwM-ib-pII" secondAttribute="baseline" id="rRW-Ob-gqG"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="inviteButton" destination="ggW-oB-JSu" id="Ca9-dt-0l9"/>
