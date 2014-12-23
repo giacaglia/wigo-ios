@@ -1,4 +1,4 @@
-//
+
 //  ParallaxProfileViewController.m
 //  Wigo
 //
@@ -173,7 +173,6 @@ UIButton *tapButton;
     _page = @1;
     _followRequestSummary = @0;
     [self fetchNotifications];
-    [self updateLastNotificationsRead];
     [self updateBadge];
     [self fetchSummaryOfFollowRequests];
 }
@@ -1023,6 +1022,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 [_notificationsParty addObjectsFromArray:arrayOfNotifications];
                 NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                 [_notificationsParty addMetaInfo:metaDictionary];
+                if ([_page isEqualToNumber:@1]) [self updateLastNotificationsRead];
                 _page = @([_page intValue] + 1);
                 
                 self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];

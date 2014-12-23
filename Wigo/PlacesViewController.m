@@ -134,7 +134,6 @@ int firstIndexOfNegativeEvent;
     self.visitedProfile = NO;
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    [self fetchUserInfo];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -194,8 +193,8 @@ int firstIndexOfNegativeEvent;
             self.leftRedDotLabel.clipsToBounds = YES;
             self.leftRedDotLabel.layer.borderWidth = 3;
             self.leftRedDotLabel.layer.cornerRadius = 8;
-            [profileButton addSubview:self.leftRedDotLabel];
         }
+        [profileButton addSubview:self.leftRedDotLabel];
         if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 ||
             [(NSNumber *)[[Profile user] objectForKey:@"num_unread_notifications"] intValue] > 0) {
             self.leftRedDotLabel.hidden = NO;
@@ -1085,6 +1084,7 @@ viewForHeaderInSection:(NSInteger)section {
 
 - (void) fetchEventsFirstPage {
     page = @1;
+    [self fetchUserInfo];
     [self fetchEvents];
 }
 
