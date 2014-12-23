@@ -89,7 +89,7 @@ UIButton *tapButton;
     if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
     _page = @1;
     [self fetchNotifications];
-    [self updateLastNotificationsRead];
+//    [self updateLastNotificationsRead];
     [self updateBadge];
 }
 
@@ -835,18 +835,18 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     }
 }
 
-- (void)updateLastNotificationsRead {
-    User *profileUser = [Profile user];
-    for (Notification *notification in [_notificationsParty getObjectArray]) {
-        if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
-            [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
-            [profileUser saveKeyAsynchronously:@"last_notification_read" withHandler:^() {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                });
-            }];
-        }
-    }
-}
+//- (void)updateLastNotificationsRead {
+//    User *profileUser = [Profile user];
+//    for (Notification *notification in [_notificationsParty getObjectArray]) {
+//        if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
+//            [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
+//            [profileUser saveKeyAsynchronously:@"last_notification_read" withHandler:^() {
+//                dispatch_async(dispatch_get_main_queue(), ^(void){
+//                });
+//            }];
+//        }
+//    }
+//}
 
 - (void)updateBadge {
     int total = 0;

@@ -1036,16 +1036,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)updateLastNotificationsRead {
-    User *profileUser = [Profile user];
-    for (Notification *notification in [_notificationsParty getObjectArray]) {
-        if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
-            [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
-            [profileUser saveKeyAsynchronously:@"last_notification_read" withHandler:^() {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                });
-            }];
-        }
-    }
+    NSNumber *lastNotificationRead = [Profile user].lastNotificationRead;
+    [[Profile user] setStringNotificationRead:@"latest"];
+    [[Profile user] saveKeyAsynchronously:@"last_notification_read" withHandler:^() {}];
+    [[Profile user] setLastNotificationRead:lastNotificationRead];
 }
 
 - (void)updateBadge {

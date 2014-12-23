@@ -50,6 +50,7 @@ typedef enum
 @property BOOL emailValidated;
 @property BOOL isFavorite;
 @property BOOL isFollowing;
+- (void)setStringNotificationRead:(NSString *)notificationRead;
 @property NSNumber *lastNotificationRead;
 @property NSNumber *lastMessageRead;
 @property NSNumber *lastUserRead;

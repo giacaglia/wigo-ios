@@ -96,11 +96,12 @@
         [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
         [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost]
         ) {
-        myCell.faceAndMediaTypeView.alpha = 0.4f;
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
         myCell.mediaTypeImageView.hidden = YES;
+        myCell.faceAndMediaTypeView.alpha = 0.4f;
     }
     else {
+        myCell.faceAndMediaTypeView.alpha = 1.0f;
         if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
         if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];

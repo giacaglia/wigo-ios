@@ -673,6 +673,11 @@
     else return @0;
 }
 
+- (void)setStringNotificationRead:(NSString *)notificationRead {
+    [_proxy notNillsetObject:notificationRead forKey:@"last_notification_read"];
+    [modifiedKeys addObject:@"last_notification_read"];
+}
+
 - (void)setLastNotificationRead:(NSNumber *)lastNotificationRead {
     [_proxy notNillsetObject:lastNotificationRead forKey:@"last_notification_read"];
     [modifiedKeys addObject:@"last_notification_read"];
