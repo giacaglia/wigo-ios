@@ -62,6 +62,7 @@
 
 @property(nonatomic, strong, readonly) UIView *settingsContainerView;
 @property(nonatomic, strong, readonly) UIButton *buttonFlash, *buttonToggleCamera;
+@property(nonatomic, strong) UIImageView *cameraIconImageView;
 
 @property(nonatomic, strong, readonly) IQBottomContainerView *bottomContainerView;
 @property(nonatomic, strong, readonly) IQPartitionBar *partitionBar;
@@ -426,10 +427,10 @@
     }
     self.buttonToggleCamera.clipsToBounds = YES;
     [UIView animateWithDuration:.15f animations:^{
-        self.buttonToggleCamera.imageView.transform = CGAffineTransformMakeScale(1.5,1.5);
+        self.cameraIconImageView.transform = CGAffineTransformMakeScale(1.5,1.5);
     }completion:^(BOOL finished) {
         [UIView animateWithDuration:.15f animations:^{
-            self.buttonToggleCamera.imageView.transform = CGAffineTransformMakeScale(1.0,1.0);
+            self.cameraIconImageView.transform = CGAffineTransformMakeScale(1.0,1.0);
         }];
     }];
 }
@@ -1246,10 +1247,10 @@ replacementString:(NSString *)string {
 {
     if (_buttonToggleCamera == nil)
     {
-        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 60, 70)];
-        UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 30, 37, 30)];
-        cameraImageView.image = [UIImage imageNamed:@"cameraIcon"];
-        [_buttonToggleCamera addSubview:cameraImageView];
+        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 80, 70)];
+        self.cameraIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 10, 37, 30)];
+        self.cameraIconImageView.image = [UIImage imageNamed:@"cameraIcon"];
+        [_buttonToggleCamera addSubview:self.cameraIconImageView];
         [_buttonToggleCamera addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
     }
     
