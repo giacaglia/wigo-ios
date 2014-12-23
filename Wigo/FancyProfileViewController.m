@@ -785,6 +785,7 @@ UIButton *tapButton;
         }
         if ([self shouldShowInviteCell] && indexPath.row == 0) {
             InviteCell *inviteCell = [tableView dequeueReusableCellWithIdentifier:@"InviteCell" forIndexPath:indexPath];
+            inviteCell.delegate = self;
             [inviteCell setLabelsForUser:self.user];
             return inviteCell;
         }
@@ -886,17 +887,6 @@ UIButton *tapButton;
         return;
     }
     
-    
-//    cell.alpha = 0;
-//    CGRect finalFrame = cell.frame;
-//    
-//    cell.frame = CGRectZero;
-//
-//    [UIView animateWithDuration: 0.2f animations:^{
-//        cell.alpha = 1;
-//        cell.frame = finalFrame;
-//    }];
-    
 }
 
 - (void)tableView:(UITableView *)tableView
@@ -944,6 +934,20 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         [self.navigationController pushViewController: eventStoryViewController animated:YES];
     }
     else [self fetchEvent:event];
+}
+
+- (void)inviteTapped {
+    if ([self.user isTapped]) {
+        [self.user setIsTapped:NO];
+        [Network sendUntapToUserWithId:[self.user objectForKey:@"id"]];
+    }
+    else {
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
+        [EventAnalytics tagEvent:@"Tap User" withDetails:options];
+        [self.user setIsTapped:YES];
+        [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
+    }
+    [self.tableView reloadData];
 }
 
 #pragma mark - ScrollViewDelegate

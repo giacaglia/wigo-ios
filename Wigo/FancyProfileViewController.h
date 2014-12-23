@@ -11,7 +11,11 @@
 #import "Globals.h"
 #import "ReProfileViewController.h"
 
-@interface FancyProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
+@protocol InviteCellDelegate
+- (void) inviteTapped;
+@end
+
+@interface FancyProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
 
 @property EditProfileViewController *editProfileViewController;
 @property ConversationViewController *conversationViewController;
@@ -55,9 +59,7 @@
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @end
 
-@protocol InviteCellDelegate
-- (void) inviteTapped;
-@end
+
 
 @interface InviteCell: UITableViewCell
 - (void) setLabelsForUser: (User *) user;
