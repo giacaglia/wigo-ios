@@ -803,6 +803,10 @@ UIButton *tapButton;
         [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
         notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName] , [notification message] ];
         
+        if ([user getUserState] == NOT_SENT_FOLLOWING_PRIVATE_USER || [user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+            notificationCell.rightPostImageView.hidden = YES;
+        }
+        else notificationCell.rightPostImageView.hidden = NO;
         if ([notificationCell respondsToSelector:@selector(layoutMargins)]) {
             notificationCell.layoutMargins = UIEdgeInsetsZero;
         }
@@ -899,7 +903,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             if ([_followRequestSummary intValue] > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
             Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:indexPath.row];
             User *user = [[User alloc] initWithDictionary:[notification fromUser]];
-
+           
             if ([[notification type] isEqualToString:@"follow"]) {
                 FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
                 [fancyProfileViewController setStateWithUser:user];
@@ -907,10 +911,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 [self.navigationController pushViewController: fancyProfileViewController animated: YES];
             }
             else {
-                Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
-                [self presentEvent:event];
+                if ([user getUserState] != NOT_YET_ACCEPTED_PRIVATE_USER && [user getUserState] != NOT_SENT_FOLLOWING_PRIVATE_USER) {
+                    Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
+                    [self presentEvent:event];
+                }
             }
-          
+ 
+            
         }
     }
   
@@ -1170,7 +1177,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
     self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
     self.rightPostImageView.center = CGPointMake(self.rightPostImageView.center.x, self.center.y);
-
     [self.contentView addSubview:self.rightPostImageView];
     
     self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 27, self.frame.size.height/2 + 13 + 3, 50, 15)];

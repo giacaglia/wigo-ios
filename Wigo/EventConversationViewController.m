@@ -96,6 +96,7 @@
         [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
         [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost]
         ) {
+        myCell.faceAndMediaTypeView.alpha = 0.4f;
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
         myCell.mediaTypeImageView.hidden = YES;
     }
@@ -613,7 +614,6 @@
     self.faceAndMediaTypeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2*(sizeOfEachFaceCell/3),  2*(sizeOfEachFaceCell/3))];
     [self addSubview:self.faceAndMediaTypeView];
  
-    self.faceAndMediaTypeView.alpha = 0.5f;
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.2*sizeOfEachFaceCell, 0.2*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell)];
     self.faceImageView.layer.masksToBounds = YES;
     self.faceImageView.backgroundColor = [UIColor blackColor];
