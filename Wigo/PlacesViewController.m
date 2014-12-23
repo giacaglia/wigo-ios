@@ -194,15 +194,14 @@ int firstIndexOfNegativeEvent;
             self.leftRedDotLabel.clipsToBounds = YES;
             self.leftRedDotLabel.layer.borderWidth = 3;
             self.leftRedDotLabel.layer.cornerRadius = 8;
-            self.leftRedDotLabel.hidden = YES;
             [profileButton addSubview:self.leftRedDotLabel];
         }
         if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 ||
             [(NSNumber *)[[Profile user] objectForKey:@"num_unread_notifications"] intValue] > 0) {
-            self.redDotLabel.hidden = NO;
+            self.leftRedDotLabel.hidden = NO;
         }
         else {
-            self.redDotLabel.hidden = YES;
+            self.leftRedDotLabel.hidden = YES;
         }
         UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
         self.navigationItem.leftBarButtonItem = profileBarButton;
