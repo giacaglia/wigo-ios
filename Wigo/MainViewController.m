@@ -108,18 +108,6 @@ NSMutableArray *failedUserInfoArray;
     
     [self initializeCollectionView];
     [self initializeNotificationObservers];
-    
-    NSLog(@"TESTING NEW COLLECTION LOADING - MAIN");
-    [WGUser getUsers:^(WGCollection *collection, NSError *error) {
-        if (error) {
-            NSLog(@"ERROR: %@", error);
-            return;
-        }
-        for (WGUser *user in collection.objects) {
-            NSLog(@"User ID: %ld", (long)user.id);
-        }
-        NSLog(@"SUCCESS: collection loading success");
-    }];
 }
 
 

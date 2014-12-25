@@ -8,13 +8,22 @@
 
 #import <Foundation/Foundation.h>
 #import "NSDictionary+STHelper.h"
+#import "WGApi.h"
 
 @interface WGObject : NSObject
+
+typedef void (^ObjectResult)(WGObject *object, NSError *error);
+
+@property NSString *className;
 
 @property NSInteger id;
 
 +(WGObject *)serialize:(NSDictionary *)json;
 
 - (BOOL)isEqual:(WGObject*)object;
+
+- (void)save:(ObjectResult)handler;
+
+-(NSDictionary *)deserialize;
 
 @end

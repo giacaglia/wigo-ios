@@ -110,7 +110,7 @@ int firstIndexOfNegativeEvent;
     [self initializeTapHandler];
     [self initializeWhereView];
 
-    NSLog(@"TESTING NEW COLLECTION LOADING - PLACES");
+    NSLog(@"TESTING NEW COLLECTION LOADING");
     [WGUser getUsers:^(WGCollection *collection, NSError *error) {
         if (error) {
             NSLog(@"ERROR: %@", error);
@@ -118,6 +118,18 @@ int firstIndexOfNegativeEvent;
         }
         for (WGUser *user in collection.objects) {
             NSLog(@"User ID: %ld", (long)user.id);
+            
+            if ([user.key isEqualToString: [[NSUserDefaults standardUserDefaults] objectForKey:@"key"]]) {
+                user.firstName = @"Test";
+                NSLog(@"TESTING NEW USER SAVING");
+                [user save:^(WGObject *object, NSError *error) {
+                    if (error) {
+                        NSLog(@"ERROR: %@", error);
+                        return;
+                    }
+                    NSLog(@"SUCCESS: saving user");
+                }];
+            }
         }
         NSLog(@"SUCCESS: collection loading success");
     }];

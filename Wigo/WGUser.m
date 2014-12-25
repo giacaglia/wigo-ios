@@ -62,45 +62,68 @@ static WGUser *currentUser = nil;
 +(WGUser *)serialize:(NSDictionary *)json {
     WGUser *newWGUser = [WGUser new];
     
+    newWGUser.className =               @"user";
     newWGUser.id =                      [json st_integerForKey:kIdKey];
     newWGUser.key =                     [json st_stringForKey:kKeyKey];
     
-    if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPublicValue]) {
+    newWGUser.privacy =                 [json st_stringForKey:kPrivacyKey];
+    /* if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPublicValue]) {
         newWGUser.privacy =             PUBLIC;
     } else if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPrivateValue]) {
         newWGUser.privacy =             PRIVATE;
     } else {
         newWGUser.privacy =             OTHER;
+    } */
+    
+    newWGUser.numFollowing =            [json st_integerForKey:kNumFollowingKey];
+    
+    if ([json valueForKey:kIsFollowerKey]) {
+        newWGUser.isFollower =              [NSNumber numberWithBool: [json st_boolForKey:kIsFollowerKey]];
+    }
+    if ([json valueForKey:kIsTappedKey]) {
+        newWGUser.isTapped =                [NSNumber numberWithBool: [json st_boolForKey:kIsTappedKey]];
+    }
+    if ([json valueForKey:kIsBlockedKey]) {
+        newWGUser.isBlocked =               [NSNumber numberWithBool: [json st_boolForKey:kIsBlockedKey]];
+    }
+    if ([json valueForKey:kIsBlockingKey]) {
+        newWGUser.isBlocking =              [NSNumber numberWithBool: [json st_boolForKey:kIsBlockingKey]];
+    }
+    if ([json valueForKey:kIsBlockingKey]) {
+        newWGUser.isFollowing =             [NSNumber numberWithBool: [json st_boolForKey:kIsFollowingKey]];
+    }
+    if ([json valueForKey:kIsFavoriteKey]) {
+        newWGUser.isFavorite =              [NSNumber numberWithBool: [json st_boolForKey:kIsFavoriteKey]];
+    }
+    if ([json valueForKey:kIsFollowingKey]) {
+        newWGUser.isFollowingRequested =    [NSNumber numberWithBool: [json st_boolForKey:kIsFollowingRequestedKey]];
+    }
+    if ([json valueForKey:kIsGoingOutKey]) {
+        newWGUser.isGoingOut =              [NSNumber numberWithBool: [json st_boolForKey:kIsGoingOutKey]];
+    }
+    if ([json valueForKey:kIsAttendingKey]) {
+        newWGUser.isAttending =             [NSNumber numberWithBool: [json st_boolForKey:kIsAttendingKey]];
     }
     
-    newWGUser.isFollower =              [json st_boolForKey:kIsFollowerKey];
-    newWGUser.numFollowing =            [json st_integerForKey:kNumFollowingKey];
-    newWGUser.isTapped =                [json st_boolForKey:kIsTappedKey];
-    newWGUser.isBlocked =               [json st_boolForKey:kIsBlockedKey];
-    newWGUser.isBlocking =              [json st_boolForKey:kIsBlockingKey];
     newWGUser.bio =                     [json st_stringForKey:kBioKey];
     newWGUser.image =                   [json st_stringForKey:kImageKey];
     newWGUser.created =                 [json st_dateForKey:kCreatedKey];
-    newWGUser.isFollowing =             [json st_boolForKey:kIsFollowingKey];
     newWGUser.lastName =                [json st_stringForKey:kLastNameKey];
-    newWGUser.isFollowingRequested =    [json st_boolForKey:kIsFollowingRequestedKey];
-    newWGUser.isGoingOut =              [json st_boolForKey:kIsGoingOutKey];
     newWGUser.properties =              [json st_dictionaryForKey:kPropertiesKey];
-    newWGUser.isFavorite =              [json st_boolForKey:kIsFavoriteKey];
     newWGUser.firstName =               [json st_stringForKey:kFirstNameKey];
     
-    if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderMaleValue]) {
+    newWGUser.gender =                  [json st_stringForKey:kGenderKey];
+    /* if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderMaleValue]) {
         newWGUser.gender =              MALE;
     } else if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderFemaleValue]) {
         newWGUser.gender =              FEMALE;
     } else {
         newWGUser.gender =              UNKNOWN;
-    }
+    } */
     
     newWGUser.facebookId =              [json st_stringForKey:kFacebookIdKey];
     newWGUser.numFollowers =            [json st_integerForKey:kNumFollowersKey];
     newWGUser.username =                [json st_stringForKey:kUsernameKey];
-    newWGUser.isAttending =             [json st_boolForKey:kIsAttendingKey];
     newWGUser.group =                   [json st_dictionaryForKey:kGroupKey];
     newWGUser.groupRank =               [json st_integerForKey:kGroupRankKey];
     

@@ -8,7 +8,6 @@
 
 #import "WGObject.h"
 #import "WGCollection.h"
-#import "WGApi.h"
 
 #import "WGCollection.h"
 
@@ -42,27 +41,30 @@ typedef enum State {
 @interface WGUser : WGObject
 
 @property NSString* key;
-@property (nonatomic, assign) Privacy privacy;
-@property BOOL isFollower;
+// @property (nonatomic, assign) Privacy privacy;
+@property NSString* privacy;
+@property NSNumber* isFollower;
 @property NSInteger numFollowing;
-@property BOOL isTapped;
-@property BOOL isBlocked;
-@property BOOL isBlocking;
+@property NSNumber* isTapped;
+@property NSNumber* isBlocked;
+@property NSNumber* isBlocking;
 @property NSString* bio;
 @property NSString* image;
 @property NSDate* created;
-@property BOOL isFollowing;
+@property NSNumber* isFollowing;
 @property NSString* lastName;
-@property BOOL isFollowingRequested;
-@property BOOL isGoingOut;
+@property NSNumber* isFollowingRequested;
+@property NSNumber* isGoingOut;
 @property NSDictionary* properties;
-@property BOOL isFavorite;
+@property NSNumber* isFavorite;
 @property NSString* firstName;
-@property (nonatomic, assign) Gender gender;
+
+// @property (nonatomic, assign) Gender gender;
+@property NSString* gender;
 @property NSString* facebookId;
 @property NSInteger numFollowers;
 @property NSString* username;
-@property BOOL isAttending;
+@property NSNumber* isAttending;
 @property NSDictionary* group;
 @property NSInteger groupRank;
 
