@@ -14,9 +14,12 @@
 
 typedef void (^ObjectResult)(WGObject *object, NSError *error);
 
+@property NSMutableDictionary *parameters;
+@property NSMutableArray *modifiedKeys;
+
 @property NSString *className;
 
-@property NSInteger id;
+@property NSNumber* id;
 
 +(WGObject *)serialize:(NSDictionary *)json;
 

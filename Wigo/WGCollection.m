@@ -14,29 +14,29 @@
 
 +(WGCollection *)initWithResponse:(NSDictionary *) jsonResponse andClass:(Class)type {
     WGCollection *newCollection = [WGCollection new];
-    [newCollection setPaginationFromDictionary: [jsonResponse objectForKey:@"meta"]];
-    [newCollection setObjectsFromJson: [jsonResponse objectForKey:@"objects"] andType:type];
+    
+    [newCollection setPagination: [jsonResponse objectForKey:@"meta"]];
+    [newCollection setObjects: [jsonResponse objectForKey:@"objects"] andType:type];
+    
     return newCollection;
 }
 
 #pragma mark - Objects
 
--(void) setObjectsFromJson:(NSArray *)objects andType:(Class)type {
-    _objects = [[NSMutableArray alloc] init];
+-(void) setObjects:(NSArray *)objects andType:(Class)type {
+    self.objects = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {
         WGObject *object = [type serialize:objectDict];
-        [_objects addObject: object];
+        [self.objects addObject: object];
     }
 }
 
 #pragma mark - Pagination
 
--(void)setPaginationFromDictionary:(NSDictionary *)metaDictionary {
-    if ([[metaDictionary allKeys] containsObject:@"has_next_page"]) {
-        _hasNextPage = [[metaDictionary objectForKey:@"has_next_page"] boolValue];
-    }
-    if ([[metaDictionary allKeys] containsObject:@"next"]) {
-        _nextPage = (NSString *)[metaDictionary objectForKey:@"next"];
+-(void)setPagination:(NSDictionary *)metaDictionary {
+    self.hasNextPage = [metaDictionary objectForKey:@"has_next_page"];
+    if (self.hasNextPage && [self.hasNextPage  boolValue]) {
+        self.nextPage = [metaDictionary objectForKey:@"next"];
     }
 }
 

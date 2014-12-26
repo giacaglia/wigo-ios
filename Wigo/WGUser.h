@@ -11,8 +11,6 @@
 
 #import "WGCollection.h"
 
-typedef void (^CollectionResult)(WGCollection *collection, NSError *error);
-
 typedef enum Gender {
     MALE,
     FEMALE,
@@ -40,17 +38,19 @@ typedef enum State {
 
 @interface WGUser : WGObject
 
+typedef void (^UserResult)(WGUser *object, NSError *error);
+
 @property NSString* key;
 // @property (nonatomic, assign) Privacy privacy;
 @property NSString* privacy;
 @property NSNumber* isFollower;
-@property NSInteger numFollowing;
+@property NSNumber* numFollowing;
 @property NSNumber* isTapped;
 @property NSNumber* isBlocked;
 @property NSNumber* isBlocking;
 @property NSString* bio;
 @property NSString* image;
-@property NSDate* created;
+@property NSString* created;
 @property NSNumber* isFollowing;
 @property NSString* lastName;
 @property NSNumber* isFollowingRequested;
@@ -61,19 +61,23 @@ typedef enum State {
 
 // @property (nonatomic, assign) Gender gender;
 @property NSString* gender;
+@property NSString* email;
 @property NSString* facebookId;
-@property NSInteger numFollowers;
+@property NSString* facebookAccessToken;
+@property NSNumber* numFollowers;
 @property NSString* username;
 @property NSNumber* isAttending;
 @property NSDictionary* group;
-@property NSInteger groupRank;
+@property NSNumber* groupRank;
 
 + (WGUser *) currentUser;
 + (void) setCurrentUser: (WGUser *) user;
 
 +(WGUser *)serialize:(NSDictionary *)json;
 
--(State)getUserState;
+-(State) state;
+
++ (void)loginWithFacebookId: facebookId facebookAccessToken:facebookAccessToken email:email andHandler:(UserResult)handler;
 
 +(void)getUsers:(CollectionResult)handler;
 

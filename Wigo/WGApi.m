@@ -39,10 +39,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 +(void) post:(NSString *)endpoint withParameters:(NSDictionary *)parameters andHandler:(ApiResult)handler {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[WGApi getUrlStringForEndpoint:endpoint]]];
     
-    [request setHTTPBody:[NSJSONSerialization dataWithJSONObject:parameters
-                                                         options:NSJSONWritingPrettyPrinted
-                                                           error:nil]];
-    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:nil];
+    [request setHTTPBody:jsonData];
     unsigned long long postLength = jsonData.length;
     NSString *contentLength = [NSString stringWithFormat:@"%llu", postLength];
     [request addValue:contentLength forHTTPHeaderField:@"Content-Length"];

@@ -15,11 +15,21 @@
 
 +(WGObject *)serialize:(NSDictionary *)json {
     WGObject *newWGObject = [WGObject new];
-    
     newWGObject.className = @"class";
-    newWGObject.id = [json st_integerForKey:kIdKey];
+    
+    newWGObject.modifiedKeys = [[NSMutableArray alloc] init];
+    newWGObject.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
     
     return newWGObject;
+}
+
+-(void) setId:(NSNumber *)id {
+    [self.parameters setObject:id forKey:kIdKey];
+    [self.modifiedKeys addObject:kIdKey];
+}
+
+-(NSNumber *) id {
+    return [self.parameters objectForKey:kIdKey];
 }
 
 - (BOOL)isEqual:(WGObject*)other {
@@ -27,50 +37,23 @@
 }
 
 -(NSDictionary *) deserialize {
+    return [[NSDictionary alloc] initWithDictionary: self.parameters];
+}
+
+-(NSDictionary *) modifiedDictionary {
     NSMutableDictionary *props = [NSMutableDictionary dictionary];
     
-    // Regex to find camel case
-    NSRegularExpression *regexp = [NSRegularExpression
-                                   regularExpressionWithPattern:@"([a-z])([A-Z])"
-                                   options:0
-                                   error:NULL];
-    
-    unsigned int count, i;
-    objc_property_t *properties = class_copyPropertyList([self class], &count);
-    
-    for (i = 0; i < count; i++)
-    {
-        objc_property_t property = properties[i];
-        NSString *key = [NSString stringWithFormat:@"%s", property_getName(property)];
-        id value = [self valueForKey:(NSString *)key];
-        
-        if (value) {
-            // Convert property name (camel case) to server format (lowercase & underscores)
-            NSString *keyAddUnderscore = [regexp
-                                   stringByReplacingMatchesInString:key
-                                   options:0 
-                                   range:NSMakeRange(0, key.length)
-                                   withTemplate:@"$1_$2"];
-            NSString *lowercasedKey = [keyAddUnderscore lowercaseString];
-            
-            [props setObject:value forKey:lowercasedKey];
-        }
+    for (NSString* key in self.modifiedKeys) {
+        [props setObject:[self.parameters objectForKey:key] forKey:key];
     }
+    
     return props;
 }
 
 - (void)save:(ObjectResult)handler {
-    NSMutableDictionary *properties = (NSMutableDictionary *) [self deserialize];
-    [properties removeObjectForKey:@"facebook_id"];
-    [properties removeObjectForKey:@"id"];
-    [properties removeObjectForKey:@"key"];
-    [properties removeObjectForKey:@"group_rank"];
-    [properties removeObjectForKey:@"group"];
-    [properties removeObjectForKey:@"created"];
-    [properties removeObjectForKey:@"properties"];
-    [properties removeObjectForKey:@"is_going_out"];
+    NSMutableDictionary *properties = (NSMutableDictionary *) [self modifiedDictionary];
     
-    NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%ld", self.className, (long)self.id];
+    NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
     
     [WGApi post:thisObjectURL withParameters:properties andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {

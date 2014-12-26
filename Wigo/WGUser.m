@@ -10,6 +10,8 @@
 
 #define kIdKey @"id"
 #define kKeyKey @"key"
+#define kEmailKey @"email"
+#define kFacebookAccessTokenKey @"facebook_access_token"
 #define kPrivacyKey @"privacy" //: "public",
 #define kIsFollowerKey @"is_follower" //: false,
 #define kNumFollowingKey @"num_following" //: 10,
@@ -49,9 +51,19 @@ static WGUser *currentUser = nil;
 
 @implementation WGUser
 
++(WGUser *)serialize:(NSDictionary *)json {
+    WGUser *newWGUser = [WGUser new];
+    
+    newWGUser.className =               @"user";
+    
+    newWGUser.modifiedKeys = [[NSMutableArray alloc] init];
+    newWGUser.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
+    
+    return newWGUser;
+}
+
 + (void)setCurrentUser:(WGUser *)user {
     currentUser = user;
-#warning TODO: is this the correct way to set the key?
     [[NSUserDefaults standardUserDefaults] setObject:user.key forKey:@"key"];
 }
 
@@ -59,115 +71,315 @@ static WGUser *currentUser = nil;
     return currentUser;
 }
 
-+(WGUser *)serialize:(NSDictionary *)json {
-    WGUser *newWGUser = [WGUser new];
-    
-    newWGUser.className =               @"user";
-    newWGUser.id =                      [json st_integerForKey:kIdKey];
-    newWGUser.key =                     [json st_stringForKey:kKeyKey];
-    
-    newWGUser.privacy =                 [json st_stringForKey:kPrivacyKey];
-    /* if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPublicValue]) {
-        newWGUser.privacy =             PUBLIC;
-    } else if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPrivateValue]) {
-        newWGUser.privacy =             PRIVATE;
-    } else {
-        newWGUser.privacy =             OTHER;
-    } */
-    
-    newWGUser.numFollowing =            [json st_integerForKey:kNumFollowingKey];
-    
-    if ([json valueForKey:kIsFollowerKey]) {
-        newWGUser.isFollower =              [NSNumber numberWithBool: [json st_boolForKey:kIsFollowerKey]];
-    }
-    if ([json valueForKey:kIsTappedKey]) {
-        newWGUser.isTapped =                [NSNumber numberWithBool: [json st_boolForKey:kIsTappedKey]];
-    }
-    if ([json valueForKey:kIsBlockedKey]) {
-        newWGUser.isBlocked =               [NSNumber numberWithBool: [json st_boolForKey:kIsBlockedKey]];
-    }
-    if ([json valueForKey:kIsBlockingKey]) {
-        newWGUser.isBlocking =              [NSNumber numberWithBool: [json st_boolForKey:kIsBlockingKey]];
-    }
-    if ([json valueForKey:kIsBlockingKey]) {
-        newWGUser.isFollowing =             [NSNumber numberWithBool: [json st_boolForKey:kIsFollowingKey]];
-    }
-    if ([json valueForKey:kIsFavoriteKey]) {
-        newWGUser.isFavorite =              [NSNumber numberWithBool: [json st_boolForKey:kIsFavoriteKey]];
-    }
-    if ([json valueForKey:kIsFollowingKey]) {
-        newWGUser.isFollowingRequested =    [NSNumber numberWithBool: [json st_boolForKey:kIsFollowingRequestedKey]];
-    }
-    if ([json valueForKey:kIsGoingOutKey]) {
-        newWGUser.isGoingOut =              [NSNumber numberWithBool: [json st_boolForKey:kIsGoingOutKey]];
-    }
-    if ([json valueForKey:kIsAttendingKey]) {
-        newWGUser.isAttending =             [NSNumber numberWithBool: [json st_boolForKey:kIsAttendingKey]];
-    }
-    
-    newWGUser.bio =                     [json st_stringForKey:kBioKey];
-    newWGUser.image =                   [json st_stringForKey:kImageKey];
-    newWGUser.created =                 [json st_dateForKey:kCreatedKey];
-    newWGUser.lastName =                [json st_stringForKey:kLastNameKey];
-    newWGUser.properties =              [json st_dictionaryForKey:kPropertiesKey];
-    newWGUser.firstName =               [json st_stringForKey:kFirstNameKey];
-    
-    newWGUser.gender =                  [json st_stringForKey:kGenderKey];
-    /* if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderMaleValue]) {
-        newWGUser.gender =              MALE;
-    } else if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderFemaleValue]) {
-        newWGUser.gender =              FEMALE;
-    } else {
-        newWGUser.gender =              UNKNOWN;
-    } */
-    
-    newWGUser.facebookId =              [json st_stringForKey:kFacebookIdKey];
-    newWGUser.numFollowers =            [json st_integerForKey:kNumFollowersKey];
-    newWGUser.username =                [json st_stringForKey:kUsernameKey];
-    newWGUser.group =                   [json st_dictionaryForKey:kGroupKey];
-    newWGUser.groupRank =               [json st_integerForKey:kGroupRankKey];
-    
-    return newWGUser;
+-(void) setKey:(NSString *)key {
+    [self.parameters setObject:key forKey:kKeyKey];
+    [self.modifiedKeys addObject:kKeyKey];
 }
 
--(State)getUserState {
-    if (_isBlocked) {
+-(NSString *) key {
+    return [self.parameters objectForKey:kKeyKey];
+}
+
+-(void) setPrivacy:(NSString *)privacy {
+    /* if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPublicValue]) {
+     newWGUser.privacy =             PUBLIC;
+     } else if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPrivateValue]) {
+     newWGUser.privacy =             PRIVATE;
+     } else {
+     newWGUser.privacy =             OTHER;
+     } */
+    [self.parameters setObject:privacy forKey:kPrivacyKey];
+    [self.modifiedKeys addObject:kPrivacyKey];
+}
+
+-(NSString *) privacy {
+    return [self.parameters objectForKey:kPrivacyKey];
+}
+
+-(void) setBio:(NSString *)bio {
+    [self.parameters setObject:bio forKey:kBioKey];
+    [self.modifiedKeys addObject:kBioKey];
+}
+
+-(NSString *) bio {
+    return [self.parameters objectForKey:kBioKey];
+}
+
+-(void) setImage:(NSString *)image {
+    [self.parameters setObject:image forKey:kImageKey];
+    [self.modifiedKeys addObject:kImageKey];
+}
+
+-(NSString *) image {
+    return [self.parameters objectForKey:kImageKey];
+}
+
+-(void) setLastName:(NSString *)lastName {
+    [self.parameters setObject:lastName forKey:kLastNameKey];
+    [self.modifiedKeys addObject:kLastNameKey];
+}
+
+-(NSString *) lastName {
+    return [self.parameters objectForKey:kLastNameKey];
+}
+
+-(void) setFirstName:(NSString *)firstName {
+    [self.parameters setObject:firstName forKey:kFirstNameKey];
+    [self.modifiedKeys addObject:kFirstNameKey];
+}
+
+-(NSString *) firstName {
+    return [self.parameters objectForKey:kFirstNameKey];
+}
+
+-(void) setCreated:(NSString *)created {
+#warning TODO: make this an NSDate
+    [self.parameters setObject:created forKey:kCreatedKey];
+    [self.modifiedKeys addObject:kCreatedKey];
+}
+
+-(NSString *) created {
+    return [self.parameters objectForKey:kCreatedKey];
+}
+
+-(void) setGender:(NSString *)gender {
+    /* if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderMaleValue]) {
+     newWGUser.gender =              MALE;
+     } else if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderFemaleValue]) {
+     newWGUser.gender =              FEMALE;
+     } else {
+     newWGUser.gender =              UNKNOWN;
+     } */
+    [self.parameters setObject:gender forKey:kGenderKey];
+    [self.modifiedKeys addObject:kGenderKey];
+}
+
+-(NSString *) gender {
+    return [self.parameters objectForKey:kGenderKey];
+}
+
+-(void) setUsername:(NSString *)username {
+    [self.parameters setObject:username forKey:kUsernameKey];
+    [self.modifiedKeys addObject:kUsernameKey];
+}
+
+-(NSString *) username {
+    return [self.parameters objectForKey:kUsernameKey];
+}
+
+-(void) setEmail:(NSString *)email {
+    [self.parameters setObject:email forKey:kEmailKey];
+    [self.modifiedKeys addObject:kEmailKey];
+}
+
+-(NSString *) email {
+    return [self.parameters objectForKey:kEmailKey];
+}
+
+-(void) setFacebookId:(NSString *)facebookId {
+    [self.parameters setObject:facebookId forKey:kFacebookIdKey];
+    [self.modifiedKeys addObject:kFacebookIdKey];
+}
+
+-(NSString *) facebookId {
+    return [self.parameters objectForKey:kFacebookIdKey];
+}
+
+-(void) setFacebookAccessToken:(NSString *)facebookAccessToken {
+    [self.parameters setObject:facebookAccessToken forKey:kFacebookAccessTokenKey];
+    [self.modifiedKeys addObject:kFacebookAccessTokenKey];
+}
+
+-(NSString *) facebookAccessToken {
+    return [self.parameters objectForKey:kFacebookAccessTokenKey];
+}
+
+-(void) setNumFollowing:(NSNumber *)numFollowing {
+    [self.parameters setObject:numFollowing forKey:kNumFollowingKey];
+    [self.modifiedKeys addObject:kNumFollowingKey];
+}
+
+-(NSNumber *) numFollowing {
+    return [self.parameters objectForKey:kNumFollowingKey];
+}
+
+-(void) setNumFollowers:(NSNumber *)numFollowers {
+    [self.parameters setObject:numFollowers forKey:kNumFollowersKey];
+    [self.modifiedKeys addObject:kNumFollowersKey];
+}
+
+-(NSNumber *) numFollowers {
+    return [self.parameters objectForKey:kNumFollowersKey];
+}
+
+-(void) setGroupRank:(NSNumber *)groupRank {
+    [self.parameters setObject:groupRank forKey:kGroupRankKey];
+    [self.modifiedKeys addObject:kGroupRankKey];
+}
+
+-(NSNumber *) groupRank {
+    return [self.parameters objectForKey:kGroupRankKey];
+}
+
+-(void) setProperties:(NSDictionary *)properties {
+    [self.parameters setObject:properties forKey:kPropertiesKey];
+    [self.modifiedKeys addObject:kPropertiesKey];
+}
+
+-(NSDictionary *) properties {
+    return [self.parameters objectForKey:kPropertiesKey];
+}
+
+-(void) setGroup:(NSDictionary *)group {
+    [self.parameters setObject:group forKey:kGroupKey];
+    [self.modifiedKeys addObject:kGroupKey];
+}
+
+-(NSDictionary *) group {
+    return [self.parameters objectForKey:kGroupKey];
+}
+
+-(void) setIsAttending:(NSNumber *)isAttending {
+    [self.parameters setObject:isAttending forKey:kIsAttendingKey];
+    [self.modifiedKeys addObject:kIsAttendingKey];
+}
+
+-(NSNumber *) isAttending {
+    return [self.parameters objectForKey:kIsAttendingKey];
+}
+
+-(void) setIsBlocked:(NSNumber *)isBlocked {
+    [self.parameters setObject:isBlocked forKey:kIsBlockedKey];
+    [self.modifiedKeys addObject:kIsBlockedKey];
+}
+
+-(NSNumber *) isBlocked {
+    return [self.parameters objectForKey:kIsBlockedKey];
+}
+
+-(void) setIsBlocking:(NSNumber *)isBlocking {
+    [self.parameters setObject:isBlocking forKey:kIsBlockingKey];
+    [self.modifiedKeys addObject:kIsBlockingKey];
+}
+
+-(NSNumber *) isBlocking {
+    return [self.parameters objectForKey:kIsBlockingKey];
+}
+
+-(void) setIsFavorite:(NSNumber *)isFavorite {
+    [self.parameters setObject:isFavorite forKey:kIsFavoriteKey];
+    [self.modifiedKeys addObject:kIsFavoriteKey];
+}
+
+-(NSNumber *) isFavorite {
+    return [self.parameters objectForKey:kIsFavoriteKey];
+}
+
+-(void) setIsFollower:(NSNumber *)isFollower {
+    [self.parameters setObject:isFollower forKey:kIsFollowerKey];
+    [self.modifiedKeys addObject:kIsFollowerKey];
+}
+
+-(NSNumber *) isFollower {
+    return [self.parameters objectForKey:kIsFollowerKey];
+}
+
+-(void) setIsFollowing:(NSNumber *)isFollowing {
+    [self.parameters setObject:isFollowing forKey:kIsFollowingKey];
+    [self.modifiedKeys addObject:kIsFollowingKey];
+}
+
+-(NSNumber *) isFollowing {
+    return [self.parameters objectForKey:kIsFollowingKey];
+}
+
+-(void) setIsFollowingRequested:(NSNumber *)isFollowingRequested {
+    [self.parameters setObject:isFollowingRequested forKey:kIsFollowingRequestedKey];
+    [self.modifiedKeys addObject:kIsFollowingRequestedKey];
+}
+
+-(NSNumber *) isFollowingRequested {
+    return [self.parameters objectForKey:kIsFollowingRequestedKey];
+}
+
+-(void) setIsGoingOut:(NSNumber *)isGoingOut {
+    [self.parameters setObject:isGoingOut forKey:kIsGoingOutKey];
+    [self.modifiedKeys addObject:kIsGoingOutKey];
+}
+
+-(NSNumber *) isGoingOut {
+    return [self.parameters objectForKey:kIsGoingOutKey];
+}
+
+-(void) setIsTapped:(NSNumber *)isTapped {
+    [self.parameters setObject:isTapped forKey:kIsTappedKey];
+    [self.modifiedKeys addObject:kIsTappedKey];
+}
+
+-(NSNumber *) isTapped {
+    return [self.parameters objectForKey:kIsTappedKey];
+}
+
+-(State) state {
+    if ([self.isBlocked boolValue]) {
         return BLOCKED_USER_STATE;
     }
-    if (_privacy == PRIVATE) {
-        if (_isFollowing) {
-            if (_isAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
+    if ([self.privacy isEqualToString: @"private"]) {
+        if ([self.isFollowing boolValue]) {
+            if ([self.isAttending boolValue]) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
             return FOLLOWING_USER_STATE;
         }
-        else if (_isFollowingRequested) {
+        else if ([self.isFollowingRequested boolValue]) {
             return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
         }
         else return NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
     }
-    if (_isFollowing) {
-        if (_isAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
+    if ([self.isFollowing boolValue]) {
+        if ([self.isAttending boolValue]) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
         return FOLLOWING_USER_STATE;
     }
     return NOT_FOLLOWING_PUBLIC_USER_STATE;
 }
 
-+(void)getUsers:(CollectionResult)handler {
++ (void)loginWithFacebookId: facebookId facebookAccessToken:facebookAccessToken email:email andHandler:(UserResult)handler {
+    
+    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
+    [parameters setObject:facebookId forKey:kFacebookIdKey];
+    [parameters setObject:facebookAccessToken forKey:kFacebookAccessTokenKey];
+    [parameters setObject:email forKey:kEmailKey];
+    
+    [WGApi post:@"login" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        WGUser *user = [self.class serialize:jsonResponse];
+        user.facebookId = facebookId;
+        user.facebookAccessToken = facebookAccessToken;
+        user.email = email;
+        handler(user, error);
+    }];
+}
+
++(void) getUsers:(CollectionResult)handler {
     [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
+            return;
         }
         WGCollection *users = [WGCollection initWithResponse:jsonResponse andClass:[self class]];
         handler(users, error);
     }];
 }
 
-+(void) getCurrentUser {
++(void) getCurrentUser:(UserResult)handler {
     [WGApi get:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            NSLog(@"Error: %@", error);
+            handler(nil, error);
+            return;
         }
-        [WGUser setCurrentUser: [WGUser serialize:jsonResponse]];
-        NSLog(@"---- Set Current User -----");
+        handler([WGUser serialize:jsonResponse], error);
     }];
 }
 

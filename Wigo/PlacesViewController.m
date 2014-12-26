@@ -117,10 +117,10 @@ int firstIndexOfNegativeEvent;
             return;
         }
         for (WGUser *user in collection.objects) {
-            NSLog(@"User ID: %ld", (long)user.id);
+            NSLog(@"User ID: %@", user.id);
             
             if ([user.key isEqualToString: [[NSUserDefaults standardUserDefaults] objectForKey:@"key"]]) {
-                user.firstName = @"Test";
+                user.firstName = @"Giuliano";
                 NSLog(@"TESTING NEW USER SAVING");
                 [user save:^(WGObject *object, NSError *error) {
                     if (error) {

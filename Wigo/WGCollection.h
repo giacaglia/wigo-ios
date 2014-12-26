@@ -11,8 +11,10 @@
 
 @interface WGCollection : NSObject
 
+typedef void (^CollectionResult)(WGCollection *collection, NSError *error);
+
 @property NSMutableArray *objects;
-@property BOOL hasNextPage;
+@property NSNumber *hasNextPage;
 @property NSString *nextPage;
 
 +(WGCollection *)initWithResponse:(NSDictionary *) jsonResponse andClass:(Class)type;
