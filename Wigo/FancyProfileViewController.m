@@ -956,6 +956,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView reloadData];
 }
 
+
+
 #pragma mark - ScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -1281,17 +1283,24 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setLabelsForUser: (User *) user {
-    if ([user isTapped]) {
+    if ([self.delegate userState] == OTHER_SCHOOL_USER) {
         self.inviteButton.hidden = YES;
-        self.titleLabel.text = @"Tapped";
-        self.titleLabel.textAlignment = NSTextAlignmentCenter;
-        self.titleLabel.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
+        self.inviteButton.enabled = NO;
+        self.titleLabel.hidden = YES;
     }
     else {
-        self.inviteButton.hidden = NO;
-        self.titleLabel.text = kInviteTitleTemplate;
+        if ([user isTapped]) {
+            self.inviteButton.hidden = YES;
+            self.inviteButton.enabled = NO;
+            self.titleLabel.text = @"Tapped";
+            self.titleLabel.textAlignment = NSTextAlignmentCenter;
+            self.titleLabel.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
+        }
+        else {
+            self.inviteButton.hidden = NO;
+            self.titleLabel.text = kInviteTitleTemplate;
+        }
     }
-
 }
 
 - (void) setup {

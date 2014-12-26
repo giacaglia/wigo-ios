@@ -13,6 +13,7 @@
 
 @protocol InviteCellDelegate
 - (void) inviteTapped;
+@property STATE userState;
 @end
 
 @interface FancyProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
