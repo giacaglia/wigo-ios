@@ -151,13 +151,13 @@
 }
 
 - (void)handlePinchFrom:(UIPinchGestureRecognizer *)pinchRecognizer {
-    _effectiveScale = _beginGestureScale * pinchRecognizer.scale;
-    if (_effectiveScale >= 1 && _effectiveScale < 6) {
+    _effectiveScale = MIN(MAX(_beginGestureScale * pinchRecognizer.scale, 1), 6);
+//    if (_effectiveScale >= 1 && _effectiveScale < 6) {
         if ([self captureMode] == IQMediaCaptureControllerCaptureModePhoto) {
             self.transform = CGAffineTransformMakeScale(_effectiveScale, _effectiveScale);
             exposureView.frame = CGRectMake(0, 0, 70/_effectiveScale, 70/_effectiveScale);
         }
-    }
+//    }
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
