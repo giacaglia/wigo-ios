@@ -943,16 +943,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)inviteTapped {
-    if ([self.user isTapped]) {
-        [self.user setIsTapped:NO];
-        [Network sendUntapToUserWithId:[self.user objectForKey:@"id"]];
-    }
-    else {
-        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
-        [EventAnalytics tagEvent:@"Tap User" withDetails:options];
-        [self.user setIsTapped:YES];
-        [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
-    }
+
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
+    [EventAnalytics tagEvent:@"Tap User" withDetails:options];
+    [self.user setIsTapped:YES];
+    [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
     [self.tableView reloadData];
 }
 
@@ -1306,7 +1301,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
     self.titleLabel.font = [FontProperties lightFont: 18];
-    self.titleLabel.textColor = [UIColor lightGrayColor];
+    self.titleLabel.textColor = UIColor.lightGrayColor;
     
     self.inviteButton.titleLabel.font =  [FontProperties lightFont:18.0f];
     self.inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -1317,6 +1312,23 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
 }
 - (void) inviteTapped {
-    [self.delegate inviteTapped];
+//    UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width, 0, self.frame.size.width, self.frame.size.height)];
+//    orangeBackground.backgroundColor = [FontProperties getOrangeColor];
+//    [self.contentView sendSubviewToBack:orangeBackground];
+//    [self.contentView addSubview:orangeBackground];
+//    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+//    self.titleLabel.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
+//    self.titleLabel.text = @"Tapped";
+//    self.titleLabel.textColor = UIColor.whiteColor;
+//    [UIView animateWithDuration:1.0f animations:^{
+//        self.inviteButton.hidden = YES;
+//        self.inviteButton.enabled = NO;
+//        orangeBackground.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+//    } completion:^(BOOL finished) {
+//        [orangeBackground removeFromSuperview];
+//        self.titleLabel.textColor = UIColor.lightGrayColor;
+        [self.delegate inviteTapped];
+//    }];
+  
 }
 @end
