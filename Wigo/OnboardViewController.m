@@ -38,16 +38,16 @@ BOOL runningAnimations;
     arrayOfLabels = [NSMutableArray new];
     runningAnimations = NO;
     [self initializeScrollView];
-    [self initializeTitle];
-    [self initializeAnimatedGif];
-    [self initializePageControl];
+//    [self initializeTitle];
+//    [self initializeAnimatedGif];
+//    [self initializePageControl];
     [self initializeGetStartedButton];
 }
 
 - (void)initializeScrollView {
     scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 50)];
     scrollView.delegate = self;
-    scrollView.contentSize = CGSizeMake(self.view.frame.size.width * 4, self.view.frame.size.height - 50);
+    scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height - 50);
     scrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:scrollView];
 }
@@ -130,7 +130,7 @@ BOOL runningAnimations;
 }
 
 - (void)initializeGetStartedButton {
-    UILabel *titleLabel4 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 130, self.view.frame.size.width - 30, 100)];
+    UILabel *titleLabel4 = [[UILabel alloc] initWithFrame:CGRectMake(15, 130, self.view.frame.size.width - 30, 100)];
     titleLabel4.text = @"NO SKETCHY RANDOS";
     [self formatLabel:titleLabel4];
     titleLabel4.textColor = [FontProperties getOrangeColor];
@@ -139,7 +139,7 @@ BOOL runningAnimations;
     [scrollView addSubview:titleLabel4];
     [arrayOfLabels addObject:titleLabel4];
     
-    UILabel *titleLabel5 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 200, self.view.frame.size.width - 30, 100)];
+    UILabel *titleLabel5 = [[UILabel alloc] initWithFrame:CGRectMake(15, 200, self.view.frame.size.width - 30, 100)];
     titleLabel5.text = @"NO ADMINISTRATION";
     [self formatLabel:titleLabel5];
     titleLabel5.textColor = [FontProperties getOrangeColor];
@@ -148,7 +148,7 @@ BOOL runningAnimations;
     [scrollView addSubview:titleLabel5];
     [arrayOfLabels addObject:titleLabel5];
     
-    UILabel *titleLabel6 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 270, self.view.frame.size.width - 30, 100)];
+    UILabel *titleLabel6 = [[UILabel alloc] initWithFrame:CGRectMake(15, 270, self.view.frame.size.width - 30, 100)];
     titleLabel6.text = @"NO ADULT SUPERVISION";
     [self formatLabel:titleLabel6];
     titleLabel6.textColor = [FontProperties getOrangeColor];
@@ -157,7 +157,7 @@ BOOL runningAnimations;
     [scrollView addSubview:titleLabel6];
     [arrayOfLabels addObject:titleLabel6];
     
-    getStartedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 40, self.view.frame.size.height, self.view.frame.size.width - 80, 60)];
+    getStartedButton = [[UIButton alloc] initWithFrame:CGRectMake(40, self.view.frame.size.height, self.view.frame.size.width - 80, 60)];
     getStartedButton.hidden = YES;
     [getStartedButton setTitle:@"GET STARTED" forState:UIControlStateNormal];
     [getStartedButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];

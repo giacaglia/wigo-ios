@@ -220,7 +220,7 @@
     
     facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - yOrigin + 60) collectionViewLayout:flow];
     [facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderFaceCollectionView];
-    
+    NSLog(@"height of the facesCollection view: %f", self.view.frame.size.height - yOrigin + 60);
     [facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier: kFooterFaceCollectionView];
 
     facesCollectionView.backgroundColor = UIColor.whiteColor;
@@ -288,7 +288,7 @@
     __weak FaceCell *weakCell = myCell;
     [myCell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         dispatch_async(dispatch_get_main_queue(), ^{
-//            [weakCell.spinner stopAnimating];
+            [weakCell.spinner stopAnimating];
         });
     }];
 

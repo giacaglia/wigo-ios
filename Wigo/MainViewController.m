@@ -570,27 +570,29 @@ NSMutableArray *failedUserInfoArray;
 }
 
 - (UIImageView *)gifGoOut {
-    NSMutableArray *goOutArray = [[NSMutableArray array] init];
-    for (NSUInteger i  = 1; i <= 60; i++) {
-        NSString *fileName = [NSString stringWithFormat:@"go-out_2-%lu.png",(unsigned long)i];
-        [goOutArray addObject:[UIImage imageNamed:fileName]];
-    }
-    UIImageView *gifGoOutImageView = [[UIImageView alloc] init];
-    gifGoOutImageView.animationImages = [NSArray arrayWithArray:goOutArray];
-    [gifGoOutImageView startAnimating];
-    return gifGoOutImageView;
+//    NSMutableArray *goOutArray = [[NSMutableArray array] init];
+//    for (NSUInteger i  = 1; i <= 60; i++) {
+//        NSString *fileName = [NSString stringWithFormat:@"go-out_2-%lu.png",(unsigned long)i];
+//        [goOutArray addObject:[UIImage imageNamed:fileName]];
+//    }
+//    UIImageView *gifGoOutImageView = [[UIImageView alloc] init];
+//    gifGoOutImageView.animationImages = [NSArray arrayWithArray:goOutArray];
+//    [gifGoOutImageView startAnimating];
+//    return gifGoOutImageView;
+    return nil;
 }
 
 - (UIImageView *)gifGlowing {
-    NSMutableArray *goOutArray = [[NSMutableArray array] init];
-    for (NSUInteger i  = 0; i <= 59; i++) {
-        NSString *fileName = [NSString stringWithFormat:@"glowing-%lu.png",(unsigned long)i];
-        [goOutArray addObject:[UIImage imageNamed:fileName]];
-    }
-    UIImageView *gifGoOutImageView = [[UIImageView alloc] init];
-    gifGoOutImageView.animationImages = [NSArray arrayWithArray:goOutArray];
-    [gifGoOutImageView startAnimating];
-    return gifGoOutImageView;
+//    NSMutableArray *goOutArray = [[NSMutableArray array] init];
+//    for (NSUInteger i  = 0; i <= 59; i++) {
+//        NSString *fileName = [NSString stringWithFormat:@"glowing-%lu.png",(unsigned long)i];
+//        [goOutArray addObject:[UIImage imageNamed:fileName]];
+//    }
+//    UIImageView *gifGoOutImageView = [[UIImageView alloc] init];
+//    gifGoOutImageView.animationImages = [NSArray arrayWithArray:goOutArray];
+//    [gifGoOutImageView startAnimating];
+//    return gifGoOutImageView;
+    return nil;
 }
 
 
