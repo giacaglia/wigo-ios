@@ -271,7 +271,7 @@
         [self fetchEventMessages];
     }
     myCell.timeLabel.frame = CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
-    myCell.mediaTypeImageView.hidden = YES;
+    myCell.mediaTypeImageView.hidden = NO;
     myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
     
     User *user;
@@ -280,6 +280,8 @@
     if ([user isEqualToUser:[Profile user]]) {
         user = [Profile user];
     }
+    [myCell.mediaTypeImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL] ] imageArea:[user coverImageArea]];
+
     NSString *contentURL = [eventMessage objectForKey:@"thumbnail"];
     NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
     [myCell.spinner startAnimating];
@@ -289,12 +291,12 @@
             [weakCell.spinner stopAnimating];
         });
     }];
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
-        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
-    }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
-        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
-    }
+//    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
+//        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
+//    }
+//    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
+//        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
+//    }
     myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
     myCell.timeLabel.textColor = RGB(59, 59, 59);
     myCell.faceAndMediaTypeView.alpha = 1.0f;
