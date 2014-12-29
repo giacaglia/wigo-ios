@@ -51,12 +51,12 @@
 
     [self loadEventPeopleScrollView];
     [self loadEventDetails];
+    [self loadInviteOrGoHereButton];
 
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        [self loadInviteOrGoHereButton];
         [self loadTextViewAndSendButton];
     }
-    
+
     [self loadConversationViewController];
     [self setDetailViewRead];
 }
@@ -131,13 +131,21 @@
     [self.backgroundScrollview addSubview:self.goHereButton];
     
     
-    if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
-        self.inviteButton.hidden = NO;
-        self.inviteButton.enabled = YES;
+    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        self.inviteButton.hidden = YES;
+        self.inviteButton.enabled = NO;
+        self.goHereButton.hidden = YES;
+        self.goHereButton.enabled = NO;
     }
     else {
-        self.goHereButton.hidden = NO;
-        self.goHereButton.enabled = YES;
+        if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+            self.inviteButton.hidden = NO;
+            self.inviteButton.enabled = YES;
+        }
+        else {
+            self.goHereButton.hidden = NO;
+            self.goHereButton.enabled = YES;
+        }
     }
 }
 
