@@ -19,4 +19,19 @@ typedef void (^CollectionResult)(WGCollection *collection, NSError *error);
 
 +(WGCollection *)initWithResponse:(NSDictionary *) jsonResponse andClass:(Class)type;
 
+-(void) exchangeObjectAtIndex:(NSUInteger)id1 withObjectAtIndex:(NSUInteger)id2;
+-(void) replaceObjectAtIndex:(NSUInteger)index withObject:(WGObject *)object;
+-(void) addObjectsFromCollection:(WGCollection *)newCollection;
+-(void) addObjectsFromCollection:(WGCollection *)newCollection notInCollection:(WGCollection *)notCollection;
+-(void) addObject:(WGObject *)object;
+-(void) insertObject:(WGObject *)object atIndex:(NSUInteger)index;
+-(void) addObjectsFromCollectionToBeginning:(WGCollection *)collection;
+-(void) removeObjectAtIndex:(NSUInteger)index;
+-(void) removeAllObjects;
+-(WGObject *) objectWithID:(NSNumber *)searchID;
+-(BOOL) containsObject:(WGObject *)object;
+-(NSUInteger) count;
+
+-(void) getNextPage:(CollectionResult)handler;
+
 @end

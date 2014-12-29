@@ -11,6 +11,7 @@
 #define kIdKey @"id"
 #define kKeyKey @"key"
 #define kEmailKey @"email"
+#define kNameKey @"name"
 #define kFacebookAccessTokenKey @"facebook_access_token"
 #define kPrivacyKey @"privacy" //: "public",
 #define kIsFollowerKey @"is_follower" //: false,
@@ -21,11 +22,15 @@
 #define kBioKey @"bio" //: "I go out. But mostly in the mornings. ",
 #define kImageKey @"image" //: null,
 #define kCreatedKey @"created" //: "2014-12-14 21:41:58",
+#define kModifiedKey @"modified" //: "2014-12-14 21:41:58",
 #define kIsFollowingKey @"is_following" //: false,
 #define kLastNameKey @"last_name" //: "Elman",
 #define kIsFollowingRequestedKey @"is_following_requested" //: false,
 #define kIsGoingOutKey @"is_goingout" //: false,
 #define kPropertiesKey @"properties" //: {},
+#define kNotificationsKey @"notifications"
+#define kTapsKey @"taps"
+#define kFavoritesGoingOutKey @"favorites_going_out"
 #define kIsFavoriteKey @"is_favorite" //: false,
 #define kFirstNameKey @"first_name" //: "Josh",
 #define kGenderKey @"gender" //: "male",
@@ -55,6 +60,8 @@ static WGUser *currentUser = nil;
     WGUser *newWGUser = [WGUser new];
     
     newWGUser.className =               @"user";
+    newWGUser.dateFormatter = [[NSDateFormatter alloc] init];
+    [newWGUser.dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
     
     newWGUser.modifiedKeys = [[NSMutableArray alloc] init];
     newWGUser.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
@@ -132,14 +139,22 @@ static WGUser *currentUser = nil;
     return [self.parameters objectForKey:kFirstNameKey];
 }
 
--(void) setCreated:(NSString *)created {
-#warning TODO: make this an NSDate
-    [self.parameters setObject:created forKey:kCreatedKey];
+-(void) setCreated:(NSDate *)created {
+    [self.parameters setObject:[self.dateFormatter stringFromDate:created] forKey:kCreatedKey];
     [self.modifiedKeys addObject:kCreatedKey];
 }
 
--(NSString *) created {
-    return [self.parameters objectForKey:kCreatedKey];
+-(NSDate *) created {
+    return [self.dateFormatter dateFromString: [self.parameters objectForKey:kCreatedKey]];
+}
+
+-(void) setModified:(NSDate *)modified {
+    [self.parameters setObject:[self.dateFormatter stringFromDate:modified] forKey:kModifiedKey];
+    [self.modifiedKeys addObject:kModifiedKey];
+}
+
+-(NSDate *) modified {
+    return [self.dateFormatter dateFromString: [self.parameters objectForKey:kModifiedKey]];
 }
 
 -(void) setGender:(NSString *)gender {
@@ -239,6 +254,16 @@ static WGUser *currentUser = nil;
     return [self.parameters objectForKey:kGroupKey];
 }
 
+-(void) setGroupName:(NSString *)groupName {
+    NSMutableDictionary *groupDict = [[[NSMutableDictionary alloc] init] initWithDictionary: self.group];
+    [groupDict setObject:groupName forKey:kNameKey];
+    self.group = groupDict;
+}
+
+-(NSString *) groupName {
+    return [self.group objectForKey:kNameKey];
+}
+
 -(void) setIsAttending:(NSNumber *)isAttending {
     [self.parameters setObject:isAttending forKey:kIsAttendingKey];
     [self.modifiedKeys addObject:kIsAttendingKey];
@@ -320,6 +345,46 @@ static WGUser *currentUser = nil;
     return [self.parameters objectForKey:kIsTappedKey];
 }
 
+-(void) setIsTapPushNotificationEnabled:(NSNumber *)isTapPushNotificationEnabled {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:self.properties];
+    
+    NSMutableDictionary *notifications = [[NSMutableDictionary alloc] initWithDictionary:[properties objectForKey:kNotificationsKey]];
+    
+    [notifications setObject:isTapPushNotificationEnabled forKey:kTapsKey];
+    [properties setObject:notifications forKey:kNotificationsKey];
+    
+    self.properties = properties;
+}
+
+-(NSNumber *) isTapPushNotificationEnabled {
+    if (self.properties) {
+        if ([self.properties objectForKey:kNotificationsKey]) {
+            return [[self.properties objectForKey:kNotificationsKey] objectForKey:kTapsKey];
+        }
+    }
+    return nil;
+}
+
+-(void) setIsFavoritesGoingOutNotificationEnabled:(NSNumber *)isFavoritesGoingOutNotificationEnabled {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:self.properties];
+    
+    NSMutableDictionary *notifications = [[NSMutableDictionary alloc] initWithDictionary:[properties objectForKey:kNotificationsKey]];
+    
+    [notifications setObject:isFavoritesGoingOutNotificationEnabled forKey:kFavoritesGoingOutKey];
+    [properties setObject:notifications forKey:kNotificationsKey];
+    
+    self.properties = properties;
+}
+
+-(NSNumber *) isFavoritesGoingOutNotificationEnabled {
+    if (self.properties) {
+        if ([self.properties objectForKey:kNotificationsKey]) {
+            return [[self.properties objectForKey:kNotificationsKey] objectForKey:kFavoritesGoingOutKey];
+        }
+    }
+    return nil;
+}
+
 -(State) state {
     if ([self.isBlocked boolValue]) {
         return BLOCKED_USER_STATE;
@@ -341,12 +406,37 @@ static WGUser *currentUser = nil;
     return NOT_FOLLOWING_PUBLIC_USER_STATE;
 }
 
-+ (void)loginWithFacebookId: facebookId facebookAccessToken:facebookAccessToken email:email andHandler:(UserResult)handler {
-    
+- (void)signup:(UserResult)handler {
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-    [parameters setObject:facebookId forKey:kFacebookIdKey];
-    [parameters setObject:facebookAccessToken forKey:kFacebookAccessTokenKey];
-    [parameters setObject:email forKey:kEmailKey];
+    [parameters setObject:self.facebookId forKey:kFacebookIdKey];
+    [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
+    [parameters setObject:self.email forKey:kEmailKey];
+    if (self.firstName) {
+        [parameters setObject:self.firstName forKey:kFirstNameKey];
+    }
+    if (self.lastName) {
+        [parameters setObject:self.firstName forKey:kLastNameKey];
+    }
+    if (self.gender) {
+        [parameters setObject:self.gender forKey:kGenderKey];
+    }
+    [WGApi post:@"register" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        WGUser *user = [self.class serialize:jsonResponse];
+        handler(user, error);
+    }];
+}
+
+
+- (void)login:(UserResult)handler {
+    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
+    [parameters setObject:self.facebookId forKey:kFacebookIdKey];
+    [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
+    [parameters setObject:self.email forKey:kEmailKey];
     
     [WGApi post:@"login" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
@@ -355,9 +445,6 @@ static WGUser *currentUser = nil;
         }
         
         WGUser *user = [self.class serialize:jsonResponse];
-        user.facebookId = facebookId;
-        user.facebookAccessToken = facebookAccessToken;
-        user.email = email;
         handler(user, error);
     }];
 }

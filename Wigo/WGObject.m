@@ -61,6 +61,7 @@
             return;
         }
         
+        [self.modifiedKeys removeAllObjects];
         WGObject *object = [self.class serialize:jsonResponse];
         handler(object, error);
     }];

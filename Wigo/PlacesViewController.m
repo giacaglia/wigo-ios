@@ -110,7 +110,6 @@ int firstIndexOfNegativeEvent;
     [self initializeTapHandler];
     [self initializeWhereView];
 
-    NSLog(@"TESTING NEW COLLECTION LOADING");
     [WGUser getUsers:^(WGCollection *collection, NSError *error) {
         if (error) {
             NSLog(@"ERROR: %@", error);
@@ -120,8 +119,8 @@ int firstIndexOfNegativeEvent;
             NSLog(@"User ID: %@", user.id);
             
             if ([user.key isEqualToString: [[NSUserDefaults standardUserDefaults] objectForKey:@"key"]]) {
+                
                 user.firstName = @"Giuliano";
-                NSLog(@"TESTING NEW USER SAVING");
                 [user save:^(WGObject *object, NSError *error) {
                     if (error) {
                         NSLog(@"ERROR: %@", error);

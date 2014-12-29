@@ -19,17 +19,17 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 
 @implementation WGApi
 
-+(NSString *) getUrlStringForEndpoint:(NSString *)endpoint {
-    return [NSString stringWithFormat:baseURLString, endpoint];
++(void) get:(NSString *)endpoint withHandler:(ApiResult)handler {
+    [WGApi getURL:[WGApi getUrlStringForEndpoint:endpoint] withHandler:handler];
 }
 
-+(void) get:(NSString *)endpoint withHandler:(ApiResult)handler {
++(void) getURL:(NSString *)url withHandler:(ApiResult)handler {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     [WGApi addWigoHeaders:manager.requestSerializer];
     
-    [manager GET:[WGApi getUrlStringForEndpoint:endpoint] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         handler(responseObject, nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         handler(nil, error);
@@ -62,17 +62,21 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [operation start];
 }
 
++(NSString *) getUrlStringForEndpoint:(NSString *)endpoint {
+    return [NSString stringWithFormat:baseURLString, endpoint];
+}
+
 +(void)addWigoHeaders:(id)serializer {
     [serializer setValue:kWigoApiKey forHTTPHeaderField:@"X-Wigo-API-Key"];
 #if ENTERPRISE
     [serializer setValue:@"true" forHTTPHeaderField:@"X-Wigo-Client-Enterprise"];
 #endif
-    
     [serializer setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forHTTPHeaderField:@"X-Wigo-Client-Version"];
     [serializer setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
     [serializer setValue:API_VERSION forHTTPHeaderField:@"X-Wigo-API-Version"];
     [serializer setValue:kDeviceType forHTTPHeaderField:@"X-Wigo-Device"];
     [serializer setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+
 #warning TODO: find out how to 'actually' get the key
     
     NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];

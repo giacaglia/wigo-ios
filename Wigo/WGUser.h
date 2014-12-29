@@ -40,6 +40,8 @@ typedef enum State {
 
 typedef void (^UserResult)(WGUser *object, NSError *error);
 
+@property NSDateFormatter *dateFormatter;
+
 @property NSString* key;
 // @property (nonatomic, assign) Privacy privacy;
 @property NSString* privacy;
@@ -50,7 +52,8 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 @property NSNumber* isBlocking;
 @property NSString* bio;
 @property NSString* image;
-@property NSString* created;
+@property NSDate* created;
+@property NSDate* modified;
 @property NSNumber* isFollowing;
 @property NSString* lastName;
 @property NSNumber* isFollowingRequested;
@@ -68,7 +71,11 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 @property NSString* username;
 @property NSNumber* isAttending;
 @property NSDictionary* group;
+@property NSString* groupName;
 @property NSNumber* groupRank;
+
+@property NSNumber* isTapPushNotificationEnabled;
+@property NSNumber* isFavoritesGoingOutNotificationEnabled;
 
 + (WGUser *) currentUser;
 + (void) setCurrentUser: (WGUser *) user;
@@ -77,7 +84,7 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 
 -(State) state;
 
-+ (void)loginWithFacebookId: facebookId facebookAccessToken:facebookAccessToken email:email andHandler:(UserResult)handler;
+- (void)login:(UserResult)handler;
 
 +(void)getUsers:(CollectionResult)handler;
 
