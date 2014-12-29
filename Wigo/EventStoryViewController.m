@@ -64,6 +64,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     metaInfo = nil;
+
+    if (facesCollectionView) [facesCollectionView reloadData];
     [self fetchEventMessages];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
