@@ -583,8 +583,8 @@
 #pragma mark - Places Delegate
 
 - (void)showUser:(User *)user {
-    
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    FancyProfileViewController *fancyProfileViewController = [sb instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
 
     [self.navigationController setNavigationBarHidden: NO animated: NO];
