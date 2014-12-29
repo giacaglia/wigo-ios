@@ -156,7 +156,7 @@ int firstIndexOfNegativeEvent;
     else {
         shouldReloadEvents = YES;
     }
-//    [self shouldShowCreateButton];
+    [self shouldShowCreateButton];
 
 }
 
@@ -171,8 +171,8 @@ int firstIndexOfNegativeEvent;
     else {
         self.goElsewhereView.plusButton.hidden = NO;
         self.goElsewhereView.plusButton.enabled = YES;
-        self.goingSomewhereButton.hidden = YES;
-        self.goingSomewhereButton.enabled = NO;
+        self.goingSomewhereButton.hidden = NO;
+        self.goingSomewhereButton.enabled = YES;
         return YES;
     }
     
@@ -785,7 +785,7 @@ int firstIndexOfNegativeEvent;
     if (section == kTodaySection) {
         self.goElsewhereView = [GoOutNewPlaceHeader init];
         [self.goElsewhereView.addEventButton addTarget: self action: @selector(goingSomewhereElsePressed) forControlEvents: UIControlEventTouchUpInside];
-//        [self shouldShowCreateButton];
+        [self shouldShowCreateButton];
         return self.goElsewhereView;
     }
     
@@ -1185,10 +1185,10 @@ int firstIndexOfNegativeEvent;
         if (!self.goElsewhereView) {
             return;
         }
-//        if (![self shouldShowCreateButton]) {
-//            return;
-//        }
-//        
+        if (![self shouldShowCreateButton]) {
+            return;
+        }
+//
         if (isContainedInView && self.goingSomewhereButton.hidden == NO && isLoaded) {
             self.goingSomewhereButton.hidden = YES;
             self.goElsewhereView.plusButton.hidden = NO;
