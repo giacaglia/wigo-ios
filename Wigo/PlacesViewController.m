@@ -130,14 +130,7 @@ int firstIndexOfNegativeEvent;
     [self initializeNotificationObservers];
     [self initializeNavigationBar];
 
-//    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-//        _goingSomewhereButton.hidden = NO;
-//        _goingSomewhereButton.enabled = YES;
-//    }
-//    else {
-//        _goingSomewhereButton.hidden = YES;
-//        _goingSomewhereButton.enabled = NO;
-//    }
+
     if (!self.visitedProfile) {
         self.eventOffsetDictionary = [NSMutableDictionary new];
     }
@@ -163,7 +156,26 @@ int firstIndexOfNegativeEvent;
     else {
         shouldReloadEvents = YES;
     }
+//    [self shouldShowCreateButton];
 
+}
+
+- (BOOL) shouldShowCreateButton {
+    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        self.goElsewhereView.plusButton.hidden = YES;
+        self.goElsewhereView.plusButton.enabled = NO;
+        self.goingSomewhereButton.hidden = YES;
+        self.goingSomewhereButton.enabled = NO;
+        return NO;
+    }
+    else {
+        self.goElsewhereView.plusButton.hidden = NO;
+        self.goElsewhereView.plusButton.enabled = YES;
+        self.goingSomewhereButton.hidden = YES;
+        self.goingSomewhereButton.enabled = NO;
+        return YES;
+    }
+    
 }
 
 - (UIImage *)imageWithColor:(UIColor *)color
@@ -773,7 +785,7 @@ int firstIndexOfNegativeEvent;
     if (section == kTodaySection) {
         self.goElsewhereView = [GoOutNewPlaceHeader init];
         [self.goElsewhereView.addEventButton addTarget: self action: @selector(goingSomewhereElsePressed) forControlEvents: UIControlEventTouchUpInside];
-        
+//        [self shouldShowCreateButton];
         return self.goElsewhereView;
     }
     
@@ -1167,7 +1179,10 @@ int firstIndexOfNegativeEvent;
         if (!self.goElsewhereView) {
             return;
         }
-        
+//        if (![self shouldShowCreateButton]) {
+//            return;
+//        }
+//        
         if (isContainedInView && self.goingSomewhereButton.hidden == NO && isLoaded) {
             self.goingSomewhereButton.hidden = YES;
             self.goElsewhereView.plusButton.hidden = NO;

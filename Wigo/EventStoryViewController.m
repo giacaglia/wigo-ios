@@ -280,7 +280,7 @@
     if ([user isEqualToUser:[Profile user]]) {
         user = [Profile user];
     }
-    NSString *contentURL = [eventMessage objectForKey:@"media"];
+    NSString *contentURL = [eventMessage objectForKey:@"thumbnail"];
     NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
     [myCell.spinner startAnimating];
     __weak FaceCell *weakCell = myCell;
