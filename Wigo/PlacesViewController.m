@@ -866,7 +866,13 @@ int firstIndexOfNegativeEvent;
         if (![[[event dictionary] objectForKey:@"is_read"] boolValue] &&
             [[[event dictionary] objectForKey:@"num_messages"] intValue] > 0) {
             cell.chatBubbleImageView.hidden = NO;
+            cell.chatBubbleImageView.image = [UIImage  imageNamed:@"cameraBubble"];
             cell.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
+        }
+        else if ( [[[event dictionary] objectForKey:@"num_messages"] intValue] > 0) {
+            cell.chatBubbleImageView.hidden = NO;
+            cell.chatBubbleImageView.image = [UIImage  imageNamed:@"blueCameraBubble"];
+            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
         else {
             cell.chatBubbleImageView.hidden = YES;
@@ -1631,11 +1637,18 @@ int firstIndexOfNegativeEvent;
 
 - (void)updateUI {
     self.eventNameLabel.text = [self.event name];
-    if ([self.event.numberOfMessages intValue] > 0) {
+    if (![[[self.event dictionary] objectForKey:@"is_read"] boolValue] && [self.event.numberOfMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;
+        self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
         self.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [self.event.numberOfMessages stringValue]];
     }
-    else self.chatBubbleImageView.hidden = YES;
+    else if ([self.event.numberOfMessages intValue] > 0) {
+        self.chatBubbleImageView.hidden = NO;
+        self.chatBubbleImageView.image = [UIImage imageNamed:@"blueCameraBubble"];
+    }
+    else {
+     self.chatBubbleImageView.hidden = YES;
+    }
     self.eventPeopleScrollView.event = self.event;
     [self.eventPeopleScrollView updateUI];
 }
