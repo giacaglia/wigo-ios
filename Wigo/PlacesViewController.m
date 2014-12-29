@@ -1670,7 +1670,6 @@ int firstIndexOfNegativeEvent;
 + (instancetype) initWithDay: (NSDate *) date {
     TodayHeader *header = [[TodayHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TodayHeader height])];
     header.date = date;
-    NSLog(@"date %@", date);
     [header setup];
     
     return header;
@@ -1793,7 +1792,9 @@ int firstIndexOfNegativeEvent;
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: date];
     int weekday = (int)[comps weekday];
-    NSString *dayName = [dateFormat weekdaySymbols][weekday - 1];
+    weekday -= 2;
+    if (weekday < 0) weekday += 7;
+    NSString *dayName = [dateFormat weekdaySymbols][weekday];
     
     UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(self.center.x - 50, 20, 100, 0.5f)];
     lineView.backgroundColor = RGB(210, 210, 210);

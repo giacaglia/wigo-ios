@@ -288,7 +288,7 @@
     __weak FaceCell *weakCell = myCell;
     [myCell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [weakCell.spinner stopAnimating];
+//            [weakCell.spinner stopAnimating];
         });
     }];
 

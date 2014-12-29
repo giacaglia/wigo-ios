@@ -610,7 +610,7 @@
     [self addSubview: self.rightLine];
     
     self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2)];
-    self.spinner.center = self.center;
+//    self.spinner.frame = CGRectMake(0, 0, sizeOfEachFaceCell, sizeOfEachFaceCell);
     self.spinner.activityIndicatorViewStyle = UIActionSheetStyleDefault;
     [self addSubview:self.spinner];
     
