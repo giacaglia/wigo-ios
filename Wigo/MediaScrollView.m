@@ -720,10 +720,13 @@
     
     NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
         if (!self.numberOfVotesLabel) {
-            self.numberOfVotesLabel = [[UILabelBorder alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 46, self.frame.size.height - 75, 32, 30)];
-            self.numberOfVotesLabel.textColor = [UIColor whiteColor];
+            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 46, self.frame.size.height - 75, 32, 30)];
+            self.numberOfVotesLabel.textColor = UIColor.whiteColor;
             self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
             self.numberOfVotesLabel.font = [FontProperties mediumFont:18.0f];
+            self.numberOfVotesLabel.layer.shadowColor = UIColor.blackColor.CGColor;
+            self.numberOfVotesLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
+            self.numberOfVotesLabel.layer.shadowRadius = 0.5;
             [self.contentView addSubview:self.numberOfVotesLabel];
         }
         int votes = [[self.eventMessage objectForKey:@"up_votes"] intValue] - [[self.eventMessage objectForKey:@"down_votes"] intValue];

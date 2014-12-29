@@ -287,9 +287,9 @@
     [myCell.spinner startAnimating];
     __weak FaceCell *weakCell = myCell;
     [myCell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [weakCell.spinner stopAnimating];
-//        });
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakCell.spinner stopAnimating];
+        });
     }];
 
     myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
