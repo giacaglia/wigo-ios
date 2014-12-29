@@ -1508,14 +1508,14 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)presentGrowthHack {
-    [[Profile user] setGrowthHackPresented];
-    [[Profile user] saveKeyAsynchronously:@"properties"];
-    CATransition* transition = [CATransition animation];
-    transition.duration = 1;
-    transition.type = kCATransitionFade;
-    transition.subtype = kCATransitionFromBottom;
-    [self.view.window.layer addAnimation:transition forKey:kCATransition];
-    [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
+//    [[Profile user] setGrowthHackPresented];
+//    [[Profile user] saveKeyAsynchronously:@"properties"];
+//    CATransition* transition = [CATransition animation];
+//    transition.duration = 1;
+//    transition.type = kCATransitionFade;
+//    transition.subtype = kCATransitionFromBottom;
+//    [self.view.window.layer addAnimation:transition forKey:kCATransition];
+//    [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
 }
 
 - (void)presentContactsView {

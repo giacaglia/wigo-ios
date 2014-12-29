@@ -724,6 +724,7 @@
             self.numberOfVotesLabel.textColor = UIColor.whiteColor;
             self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
             self.numberOfVotesLabel.font = [FontProperties mediumFont:18.0f];
+            self.numberOfVotesLabel.layer.shadowOpacity = 1.0f;
             self.numberOfVotesLabel.layer.shadowColor = UIColor.blackColor.CGColor;
             self.numberOfVotesLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
             self.numberOfVotesLabel.layer.shadowRadius = 0.5;
