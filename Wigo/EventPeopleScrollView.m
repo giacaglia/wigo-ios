@@ -167,6 +167,7 @@
                                       self.eventOffset = self.contentOffset.x;
                                       [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
                                                                                    forKey:[[self.event eventID] stringValue]];
+                                      [self.placesDelegate setVisitedProfile:YES];
                                       [self loadUsers];
                                   }
                                   else {
