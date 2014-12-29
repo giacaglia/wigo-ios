@@ -534,7 +534,7 @@
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
-    self.backgroundColor = UIColor.clearColor;
+    self.backgroundColor = RGB(23, 23, 23);
     
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
