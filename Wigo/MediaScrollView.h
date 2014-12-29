@@ -11,6 +11,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "Event.h"
 #import "Delegate.h"
+#import "UILabelBorder.h"
 
 @protocol MediaScrollViewDelegate
 - (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell;
@@ -47,7 +48,7 @@
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) NSDictionary *eventMessage;
 - (void)updateUI;
-@property (nonatomic, strong) UILabel *numberOfVotesLabel;
+@property (nonatomic, strong) UILabelBorder *numberOfVotesLabel;
 @property (nonatomic, strong) UIButton *upVoteButton;
 @property (nonatomic, strong) UIImageView *upvoteImageView;
 @property (nonatomic, strong) UIButton *downVoteButton;

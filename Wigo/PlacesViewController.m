@@ -1670,6 +1670,7 @@ int firstIndexOfNegativeEvent;
 + (instancetype) initWithDay: (NSDate *) date {
     TodayHeader *header = [[TodayHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TodayHeader height])];
     header.date = date;
+    NSLog(@"date %@", date);
     [header setup];
     
     return header;
