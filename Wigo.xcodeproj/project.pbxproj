@@ -10,6 +10,7 @@
 		4544094C1A51EA0000BB3036 /* WGCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544094B1A51EA0000BB3036 /* WGCollectionView.m */; };
 		4544094F1A51EF3000BB3036 /* WGCollectionArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544094E1A51EF3000BB3036 /* WGCollectionArray.m */; };
 		454409521A51F19100BB3036 /* WGTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409511A51F19100BB3036 /* WGTableView.m */; };
+		454409551A5241FA00BB3036 /* WGEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409541A5241FA00BB3036 /* WGEvent.m */; };
 		4563F51E1A3F387700F8C9C4 /* WGApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F51D1A3F387700F8C9C4 /* WGApi.m */; };
 		4563F5211A3F3C6900F8C9C4 /* WGCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5201A3F3C6900F8C9C4 /* WGCollection.m */; };
 		4563F5241A3F436100F8C9C4 /* WGObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5231A3F436100F8C9C4 /* WGObject.m */; };
@@ -430,6 +431,8 @@
 		4544094E1A51EF3000BB3036 /* WGCollectionArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGCollectionArray.m; sourceTree = "<group>"; };
 		454409501A51F19100BB3036 /* WGTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGTableView.h; sourceTree = "<group>"; };
 		454409511A51F19100BB3036 /* WGTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGTableView.m; sourceTree = "<group>"; };
+		454409531A5241FA00BB3036 /* WGEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEvent.h; sourceTree = "<group>"; };
+		454409541A5241FA00BB3036 /* WGEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGEvent.m; sourceTree = "<group>"; };
 		4563F51C1A3F387700F8C9C4 /* WGApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGApi.h; sourceTree = "<group>"; };
 		4563F51D1A3F387700F8C9C4 /* WGApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGApi.m; sourceTree = "<group>"; };
 		4563F51F1A3F3C6900F8C9C4 /* WGCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGCollection.h; sourceTree = "<group>"; };
@@ -912,6 +915,12 @@
 			children = (
 				4563F51C1A3F387700F8C9C4 /* WGApi.h */,
 				4563F51D1A3F387700F8C9C4 /* WGApi.m */,
+				4563F5221A3F436100F8C9C4 /* WGObject.h */,
+				4563F5231A3F436100F8C9C4 /* WGObject.m */,
+				4563F5251A3F460F00F8C9C4 /* WGUser.h */,
+				4563F5261A3F460F00F8C9C4 /* WGUser.m */,
+				454409531A5241FA00BB3036 /* WGEvent.h */,
+				454409541A5241FA00BB3036 /* WGEvent.m */,
 				4563F51F1A3F3C6900F8C9C4 /* WGCollection.h */,
 				4563F5201A3F3C6900F8C9C4 /* WGCollection.m */,
 				4544094D1A51EF3000BB3036 /* WGCollectionArray.h */,
@@ -920,10 +929,6 @@
 				4544094B1A51EA0000BB3036 /* WGCollectionView.m */,
 				454409501A51F19100BB3036 /* WGTableView.h */,
 				454409511A51F19100BB3036 /* WGTableView.m */,
-				4563F5221A3F436100F8C9C4 /* WGObject.h */,
-				4563F5231A3F436100F8C9C4 /* WGObject.m */,
-				4563F5251A3F460F00F8C9C4 /* WGUser.h */,
-				4563F5261A3F460F00F8C9C4 /* WGUser.m */,
 			);
 			name = "New Core Objects";
 			sourceTree = "<group>";
@@ -2425,6 +2430,7 @@
 				E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */,
 				FA2BE9BD19FAF06500CC0E5E /* EventStoryViewController.m in Sources */,
 				E9C63BF21A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */,
+				454409551A5241FA00BB3036 /* WGEvent.m in Sources */,
 				454409521A51F19100BB3036 /* WGTableView.m in Sources */,
 				E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */,
 				E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */,

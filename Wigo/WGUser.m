@@ -27,7 +27,12 @@
 #define kLastNameKey @"last_name" //: "Elman",
 #define kIsFollowingRequestedKey @"is_following_requested" //: false,
 #define kIsGoingOutKey @"is_goingout" //: false,
+
 #define kPropertiesKey @"properties" //: {},
+#define kImagesKey @"images"
+#define kURLKey @"url"
+#define kCropKey @"crop"
+
 #define kNotificationsKey @"notifications"
 #define kTapsKey @"taps"
 #define kFavoritesGoingOutKey @"favorites_going_out"
@@ -37,9 +42,11 @@
 #define kFacebookIdKey @"facebook_id" //: "10101301503877593",
 #define kNumFollowersKey @"num_followers" //: 5,
 #define kUsernameKey @"username" //: "jelman"
-#define kIsAttendingKey @"is_attending" //: {},
+#define kIsAttendingKey @"is_attending"
+
 #define kGroupKey @"group" //: {},
 #define kGroupRankKey @"group_rank" //: 60
+#define kNumMembersKey @"num_members"
 
 #define kGenderMaleValue @"male"
 #define kGenderFemaleValue @"female"
@@ -59,7 +66,7 @@ static WGUser *currentUser = nil;
 +(WGUser *)serialize:(NSDictionary *)json {
     WGUser *newWGUser = [WGUser new];
     
-    newWGUser.className =               @"user";
+    newWGUser.className = @"user";
     newWGUser.dateFormatter = [[NSDateFormatter alloc] init];
     [newWGUser.dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
     
@@ -245,6 +252,45 @@ static WGUser *currentUser = nil;
     return [self.parameters objectForKey:kPropertiesKey];
 }
 
+-(NSArray *) images {
+    NSDictionary *properties = self.properties;
+    return [properties objectForKey:kImagesKey];
+}
+
+-(void) setImages:(NSArray *)images {
+    NSMutableDictionary *properties = [[[NSMutableDictionary alloc] init] initWithDictionary: self.properties];
+    [properties setObject:images forKey:kImagesKey];
+    self.properties = properties;
+}
+
+-(void) addImageURL:(NSString *)imageURL {
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
+    if ([imagesArray count] < 5) {
+        [imagesArray addObject: @{kURLKey : imageURL}];
+        [self setImages: imagesArray];
+    }
+}
+
+-(void) removeImageAtIndex:(NSInteger)index {
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
+    if ([imagesArray count] > 3) {
+        [imagesArray removeObjectAtIndex:index];
+        [self setImages: imagesArray];
+    }
+}
+
+-(void) makeImageCoverAtIndex:(NSInteger)index {
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
+    if (index < [imagesArray count]) {
+        [imagesArray exchangeObjectAtIndex:index withObjectAtIndex:0];
+        [self setImages: imagesArray];
+    }
+}
+
+-(NSString *) coverImageURL {
+    return [[self.images objectAtIndex:0] objectForKey:kURLKey];
+}
+
 -(void) setGroup:(NSDictionary *)group {
     [self.parameters setObject:group forKey:kGroupKey];
     [self.modifiedKeys addObject:kGroupKey];
@@ -262,6 +308,16 @@ static WGUser *currentUser = nil;
 
 -(NSString *) groupName {
     return [self.group objectForKey:kNameKey];
+}
+
+-(void) setGroupNumberMembers:(NSString *)groupNumberMembers {
+    NSMutableDictionary *groupDict = [[[NSMutableDictionary alloc] init] initWithDictionary: self.group];
+    [groupDict setObject:groupNumberMembers forKey:kNumMembersKey];
+    self.group = groupDict;
+}
+
+-(NSNumber *) groupNumberMembers {
+    return [self.group objectForKey:kNumMembersKey];
 }
 
 -(void) setIsAttending:(NSNumber *)isAttending {
@@ -455,7 +511,7 @@ static WGUser *currentUser = nil;
             handler(nil, error);
             return;
         }
-        WGCollection *users = [WGCollection initWithResponse:jsonResponse andClass:[self class]];
+        WGCollection *users = [WGCollection serialize:jsonResponse andClass:[self class]];
         handler(users, error);
     }];
 }

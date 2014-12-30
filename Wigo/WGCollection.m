@@ -12,13 +12,21 @@
 
 #pragma mark - Init
 
-+(WGCollection *)initWithResponse:(NSDictionary *) jsonResponse andClass:(Class)type {
++(WGCollection *)serialize:(NSDictionary *) jsonResponse andClass:(Class)type {
     WGCollection *newCollection = [WGCollection new];
     
     [newCollection setPagination: [jsonResponse objectForKey:@"meta"]];
     [newCollection setObjects: [jsonResponse objectForKey:@"objects"] andType:type];
     
     return newCollection;
+}
+
+-(NSArray *) deserialize {
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (WGObject *object in self.objects) {
+        [array addObject:[object deserialize]];
+    }
+    return array;
 }
 
 #pragma mark - Objects
@@ -91,6 +99,14 @@
     return [self.objects count];
 }
 
+-(NSArray *) getIDArray {
+    NSMutableArray *ids = [[NSMutableArray alloc] init];
+    for (WGObject *object in self.objects) {
+        [ids addObject:object.id];
+    }
+    return ids;
+}
+
 #pragma mark - Pagination
 
 -(void) getNextPage:(CollectionResult)handler {
@@ -103,7 +119,7 @@
             handler(nil, error);
             return;
         }
-        WGCollection *objects = [WGCollection initWithResponse:jsonResponse andClass:[self class]];
+        WGCollection *objects = [WGCollection serialize:jsonResponse andClass:[self class]];
         handler(objects, error);
     }];
 }

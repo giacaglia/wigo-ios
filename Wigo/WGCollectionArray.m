@@ -10,16 +10,24 @@
 
 @implementation WGCollectionArray
 
-+(WGCollectionArray *)initWithCollection:(WGCollection *) collection {
++(WGCollectionArray *)serializeWithCollection:(WGCollection *) collection {
     WGCollectionArray* new = [WGCollectionArray new];
     new.collections = [[NSMutableArray alloc] initWithObjects:collection, nil];
     return new;
 }
 
-+(WGCollectionArray *)initWithCollections:(NSArray *) collections {
++(WGCollectionArray *)serializeWithCollections:(NSArray *) collections {
     WGCollectionArray* new = [WGCollectionArray new];
     new.collections = [[NSMutableArray alloc] initWithArray:collections];
     return new;
+}
+
+-(NSArray *) deserialize {
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (WGCollection *collection in self.collections) {
+        [array addObject:[collection deserialize]];
+    }
+    return array;
 }
 
 #pragma mark - Data Source methods

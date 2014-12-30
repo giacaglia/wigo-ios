@@ -17,5 +17,4 @@
 +(WGTableView *) initWithCollections: (NSArray *) collections;
 +(WGTableView *) initWithCollection: (WGCollection *) collection;
 
-
 @end

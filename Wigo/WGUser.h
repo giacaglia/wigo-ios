@@ -9,8 +9,6 @@
 #import "WGObject.h"
 #import "WGCollection.h"
 
-#import "WGCollection.h"
-
 typedef enum Gender {
     MALE,
     FEMALE,
@@ -58,7 +56,10 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 @property NSString* lastName;
 @property NSNumber* isFollowingRequested;
 @property NSNumber* isGoingOut;
+
 @property NSDictionary* properties;
+@property NSArray* images;
+
 @property NSNumber* isFavorite;
 @property NSString* firstName;
 
@@ -72,16 +73,20 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 @property NSNumber* isAttending;
 @property NSDictionary* group;
 @property NSString* groupName;
+@property NSNumber* groupNumberMembers;
 @property NSNumber* groupRank;
 
 @property NSNumber* isTapPushNotificationEnabled;
 @property NSNumber* isFavoritesGoingOutNotificationEnabled;
 
-+ (WGUser *) currentUser;
-+ (void) setCurrentUser: (WGUser *) user;
++(WGUser *) currentUser;
++(void) setCurrentUser: (WGUser *)user;
 
 +(WGUser *)serialize:(NSDictionary *)json;
 
+-(void) removeImageAtIndex:(NSInteger)index;
+-(void) makeImageCoverAtIndex:(NSInteger)index;
+-(NSString *) coverImageURL;
 -(State) state;
 
 - (void)login:(UserResult)handler;
