@@ -66,6 +66,17 @@
     }
 }
 
+- (NSNumber *)numberInvited {
+    if ([[_proxy allKeys] containsObject:@"num_invites"]) return [_proxy objectForKey:@"num_invites"];
+    return @0;
+}
+
+- (void)setNumberInvited:(NSNumber *)numberInvited {
+    if ([[_proxy allKeys] containsObject:@"num_invites"]) {
+        [_proxy setObject:numberInvited forKey:@"num_invites"];
+    }
+}
+
 - (NSNumber *)numberOfMessages {
     if ([[_proxy allKeys] containsObject:@"num_messages"]) return [_proxy objectForKey:@"num_messages"];
     return @0;

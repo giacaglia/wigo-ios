@@ -943,10 +943,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)inviteTapped {
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
-    [EventAnalytics tagEvent:@"Tap User" withDetails:options];
+//    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
+//    [EventAnalytics tagEvent:@"Tap User" withDetails:options];
     [self.user setIsTapped:YES];
-    [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
+//    [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
     [self.tableView reloadData];
 }
 
@@ -1289,6 +1289,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             self.titleLabel.text = @"TAPPED";
             self.titleLabel.font = [FontProperties lightFont: 24];
             self.titleLabel.textAlignment = NSTextAlignmentCenter;
+            self.titleLabel.textColor = UIColor.lightGrayColor;
             self.titleLabel.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
         }
         else {
@@ -1312,26 +1313,25 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
 }
 - (void) inviteTapped {
-//    UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width, 0, self.frame.size.width, self.frame.size.height)];
-//    orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
-//    [self.contentView sendSubviewToBack:orangeBackground];
-//    [self.contentView addSubview:orangeBackground];
-//    self.titleLabel.textAlignment = NSTextAlignmentCenter;
-//    self.titleLabel.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
-//    self.titleLabel.text = @"TAPPED";
-//    self.titleLabel.font = [FontProperties lightFont: 24];
-//    self.titleLabel.textColor = UIColor.whiteColor;
-//    [UIView animateWithDuration:0.7f
-//                          delay:0.0f
-//                        options:UIViewAnimationOptionCurveEaseIn
-//                     animations:^{
-//        orangeBackground.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-//    } completion:^(BOOL finished) {
-//        self.inviteButton.hidden = YES;
-//        self.inviteButton.enabled = NO;
-//        [orangeBackground removeFromSuperview];
-//        self.titleLabel.textColor = UIColor.lightGrayColor;
+    UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width, 0, self.frame.size.width, self.frame.size.height)];
+    orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
+    [self.contentView sendSubviewToBack:orangeBackground];
+    [self.contentView addSubview:orangeBackground];
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.titleLabel.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
+    self.titleLabel.text = @"TAPPED";
+    self.titleLabel.font = [FontProperties lightFont: 24];
+    self.titleLabel.textColor = UIColor.whiteColor;
+    [UIView animateWithDuration:0.7f
+                          delay:0.0f
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+        orangeBackground.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    } completion:^(BOOL finished) {
+        self.inviteButton.hidden = YES;
+        self.inviteButton.enabled = NO;
+        [orangeBackground removeFromSuperview];
         [self.delegate inviteTapped];
-//    }];
+    }];
 }
 @end

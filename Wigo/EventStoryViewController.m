@@ -98,6 +98,9 @@
     else {
         self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
     }
+//    if ([self.event.numberInvited intValue] > 0) {
+//        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@/%@ invited", self.numberGoingLabel.text, [self.event.numberInvited stringValue]];
+//    }
 
     self.numberGoingLabel.textColor = RGB(170, 170, 170);
     self.numberGoingLabel.textAlignment = NSTextAlignmentLeft;

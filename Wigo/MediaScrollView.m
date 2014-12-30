@@ -228,6 +228,7 @@
     if ([[eventMessage allKeys] containsObject:@"id"]) {
         NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
         [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            NSLog(@"jsonREsponse:%@, error %@", jsonResponse,error);
         }];
     }
  }
