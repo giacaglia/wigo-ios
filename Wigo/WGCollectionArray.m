@@ -10,13 +10,13 @@
 
 @implementation WGCollectionArray
 
-+(WGCollectionArray *)serializeWithCollection:(WGCollection *) collection {
++(WGCollectionArray *) initWithCollection:(WGCollection *) collection {
     WGCollectionArray* new = [WGCollectionArray new];
     new.collections = [[NSMutableArray alloc] initWithObjects:collection, nil];
     return new;
 }
 
-+(WGCollectionArray *)serializeWithCollections:(NSArray *) collections {
++(WGCollectionArray *) initWithCollections:(NSArray *) collections {
     WGCollectionArray* new = [WGCollectionArray new];
     new.collections = [[NSMutableArray alloc] initWithArray:collections];
     return new;

@@ -13,8 +13,8 @@
 
 @property NSMutableArray *collections;
 
-+(WGCollectionArray *)serializeWithCollection:(WGCollection *) collection;
-+(WGCollectionArray *)serializeWithCollections:(NSArray *) collections;
++(WGCollectionArray *) initWithCollection:(WGCollection *) collection;
++(WGCollectionArray *) initWithCollections:(NSArray *) collections;
 
 -(NSArray *) deserialize;
 
