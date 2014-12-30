@@ -609,18 +609,13 @@
     self.rightLine.backgroundColor = UIColor.whiteColor;
     [self addSubview: self.rightLine];
     
-    self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2)];
-//    self.spinner.frame = CGRectMake(0, 0, sizeOfEachFaceCell, sizeOfEachFaceCell);
-    self.spinner.activityIndicatorViewStyle = UIActionSheetStyleDefault;
-    [self addSubview:self.spinner];
-    
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
     self.leftLine.backgroundColor = [UIColor whiteColor];
-    [self addSubview: self.leftLine];
+    [self.contentView addSubview: self.leftLine];
     
     self.faceAndMediaTypeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2*(sizeOfEachFaceCell/3),  2*(sizeOfEachFaceCell/3))];
-    [self addSubview:self.faceAndMediaTypeView];
+    [self.contentView addSubview:self.faceAndMediaTypeView];
  
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.2*sizeOfEachFaceCell, 0.2*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell)];
     self.faceImageView.layer.masksToBounds = YES;
@@ -639,6 +634,10 @@
     self.mediaTypeImageView.hidden = YES;
     [self.faceAndMediaTypeView addSubview:self.mediaTypeImageView];
     
+    self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(sizeOfEachFaceCell/4, sizeOfEachFaceCell/4, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2)];
+    self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+    [self.faceAndMediaTypeView addSubview:self.spinner];
+    
     self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30)];
     self.timeLabel.numberOfLines = 0;
     self.timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -649,8 +648,7 @@
     self.timeLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
     self.timeLabel.layer.shadowOpacity = 0.5;
     self.timeLabel.layer.shadowRadius = 0.5;
-    [self addSubview:self.timeLabel];
-    
+    [self.contentView addSubview:self.timeLabel];
 
     _isActive = NO;
 }

@@ -424,7 +424,7 @@ int firstIndexOfNegativeEvent;
     [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
     [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     [self goOutToEventNumber:[NSNumber numberWithInt:(int)buttonSender.tag]];
-    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
+//    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
 }
 
 - (void)goOutToEventNumber:(NSNumber*)eventID {
@@ -654,7 +654,7 @@ int firstIndexOfNegativeEvent;
         [profileUser setIsAttending:YES];
         [profileUser setIsGoingOut:YES];
         [profileUser setAttendingEventID:eventID];
-        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
+//        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
     }
 }
 

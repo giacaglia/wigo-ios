@@ -295,7 +295,9 @@
     }
     [myCell.mediaTypeImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL] ] imageArea:[user coverImageArea]];
 
-    NSString *contentURL = [eventMessage objectForKey:@"thumbnail"];
+    NSString *contentURL;
+    if ([[eventMessage allKeys] containsObject:@"thumbnail"]) contentURL = [eventMessage objectForKey:@"thumbnail"];
+    else  contentURL = [eventMessage objectForKey:@"media"];
     NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
     [myCell.spinner startAnimating];
     __weak FaceCell *weakCell = myCell;
