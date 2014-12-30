@@ -9,11 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "WGObject.h"
 
-@interface WGCollection : NSObject
+@interface WGCollection : NSEnumerator
 
 typedef void (^CollectionResult)(WGCollection *collection, NSError *error);
 
 @property NSMutableArray *objects;
+@property NSInteger currentPosition;
+
 @property NSNumber *hasNextPage;
 @property NSString *nextPage;
 

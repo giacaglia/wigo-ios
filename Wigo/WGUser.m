@@ -279,7 +279,7 @@ static WGUser *currentUser = nil;
     }
 }
 
--(void) makeImageCoverAtIndex:(NSInteger)index {
+-(void) makeImageAtIndexCoverImage:(NSInteger)index {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
     if (index < [imagesArray count]) {
         [imagesArray exchangeObjectAtIndex:index withObjectAtIndex:0];
@@ -287,8 +287,8 @@ static WGUser *currentUser = nil;
     }
 }
 
--(NSString *) coverImageURL {
-    return [[self.images objectAtIndex:0] objectForKey:kURLKey];
+-(NSURL *) coverImageURL {
+    return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kURLKey]];
 }
 
 -(void) setGroup:(NSDictionary *)group {

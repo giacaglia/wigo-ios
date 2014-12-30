@@ -30,6 +30,21 @@
     return array;
 }
 
+#pragma mark - Enumeration
+
+-(id) nextObject {
+    if (self.currentPosition >= [self.collections count]) {
+        self.currentPosition = 0;
+        return nil;
+    }
+    self.currentPosition += 1;
+    return [self.collections objectAtIndex: (self.currentPosition - 1)];
+}
+
+-(NSArray *) allObjects {
+    return [self.collections subarrayWithRange:NSMakeRange(self.currentPosition, [self.collections count] - self.currentPosition)];
+}
+
 #pragma mark - Data Source methods
 
 -(NSInteger) collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {

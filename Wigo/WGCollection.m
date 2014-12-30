@@ -17,6 +17,7 @@
     
     [newCollection setPagination: [jsonResponse objectForKey:@"meta"]];
     [newCollection setObjects: [jsonResponse objectForKey:@"objects"] andType:type];
+    newCollection.currentPosition = 0;
     
     return newCollection;
 }
@@ -105,6 +106,21 @@
         [ids addObject:object.id];
     }
     return ids;
+}
+
+#pragma mark - Enumeration
+
+-(id) nextObject {
+    if (self.currentPosition >= [self.objects count]) {
+        self.currentPosition = 0;
+        return nil;
+    }
+    self.currentPosition += 1;
+    return [self.objects objectAtIndex: (self.currentPosition - 1)];
+}
+
+-(NSArray *) allObjects {
+    return [self.objects subarrayWithRange:NSMakeRange(self.currentPosition, [self.objects count] - self.currentPosition)];
 }
 
 #pragma mark - Pagination

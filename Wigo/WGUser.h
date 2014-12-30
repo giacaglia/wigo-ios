@@ -85,8 +85,8 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 +(WGUser *)serialize:(NSDictionary *)json;
 
 -(void) removeImageAtIndex:(NSInteger)index;
--(void) makeImageCoverAtIndex:(NSInteger)index;
--(NSString *) coverImageURL;
+-(void) makeImageAtIndexCoverImage:(NSInteger)index;
+-(NSURL *) coverImageURL;
 -(State) state;
 
 - (void)login:(UserResult)handler;

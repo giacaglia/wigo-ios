@@ -9,9 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "WGCollection.h"
 
-@interface WGCollectionArray : NSObject <UICollectionViewDataSource, UITableViewDataSource>
+@interface WGCollectionArray : NSEnumerator <UICollectionViewDataSource, UITableViewDataSource>
 
 @property NSMutableArray *collections;
+@property NSInteger currentPosition;
 
 +(WGCollectionArray *) initWithCollection:(WGCollection *) collection;
 +(WGCollectionArray *) initWithCollections:(NSArray *) collections;

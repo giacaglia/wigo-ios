@@ -29,6 +29,8 @@
 
 #import "WGUser.h"
 
+#import "WGEvent.h"
+
 @interface PlacesViewController ()
 
 @property UIView *whereAreYouGoingView;
@@ -115,7 +117,7 @@ int firstIndexOfNegativeEvent;
             NSLog(@"ERROR: %@", error);
             return;
         }
-        for (WGUser *user in collection.objects) {
+        for (WGUser *user in collection) {
             NSLog(@"User ID: %@", user.id);
             
             if ([user.key isEqualToString: [[NSUserDefaults standardUserDefaults] objectForKey:@"key"]]) {
