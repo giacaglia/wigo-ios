@@ -21,6 +21,7 @@
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
 @property (nonatomic, strong) NSMutableSet *eventMessagesIDSet;
+@property (nonatomic, assign) BOOL shownCurrentImage;
 @end
 
 @implementation MediaScrollView
@@ -343,9 +344,13 @@
                                                                }];
     }
     
-    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
-    [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1)  withObject:mutableDict];
-    [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+    if (!self.shownCurrentImage) {
+        NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
+        [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1)  withObject:mutableDict];
+        [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+        self.shownCurrentImage = YES;
+    }
+  
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
@@ -417,17 +422,22 @@
                                          [Network sendAsynchronousHTTPMethod:POST
                                                                  withAPIName:@"eventmessages/"
                                                                  withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                                                         if (error) {
-                                                                             [self.eventConversationDelegate showErrorMessage];
-                                                                         }
-                                                                         else {
-//                                                                             NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
-//                                                                             [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:jsonResponse];
-//                                                                             [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
-                                                                             [self.eventConversationDelegate showCompletedMessage];
-                                                                         }
-                                                                     });
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [self.eventConversationDelegate showErrorMessage];
+                }
+                else {
+                    [self.eventConversationDelegate showCompletedMessage];
+                    self.shownCurrentImage = YES;
+                    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
+                    [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:jsonResponse];
+                    if (self.shownCurrentImage) {
+                        [mutableEventMessages removeLastObject];
+                    }
+                    [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+
+                }
+            });
                                                                  } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
                                      }];
                                     
