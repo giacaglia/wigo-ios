@@ -11,6 +11,9 @@
 		4544094F1A51EF3000BB3036 /* WGCollectionArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544094E1A51EF3000BB3036 /* WGCollectionArray.m */; };
 		454409521A51F19100BB3036 /* WGTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409511A51F19100BB3036 /* WGTableView.m */; };
 		454409551A5241FA00BB3036 /* WGEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409541A5241FA00BB3036 /* WGEvent.m */; };
+		454409581A537F1C00BB3036 /* WGMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409571A537F1C00BB3036 /* WGMessage.m */; };
+		4544095B1A547BCD00BB3036 /* WGNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544095A1A547BCD00BB3036 /* WGNotification.m */; };
+		4544095E1A548E5700BB3036 /* WGEventAttendee.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544095D1A548E5700BB3036 /* WGEventAttendee.m */; };
 		4563F51E1A3F387700F8C9C4 /* WGApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F51D1A3F387700F8C9C4 /* WGApi.m */; };
 		4563F5211A3F3C6900F8C9C4 /* WGCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5201A3F3C6900F8C9C4 /* WGCollection.m */; };
 		4563F5241A3F436100F8C9C4 /* WGObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5231A3F436100F8C9C4 /* WGObject.m */; };
@@ -433,6 +436,12 @@
 		454409511A51F19100BB3036 /* WGTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGTableView.m; sourceTree = "<group>"; };
 		454409531A5241FA00BB3036 /* WGEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEvent.h; sourceTree = "<group>"; };
 		454409541A5241FA00BB3036 /* WGEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGEvent.m; sourceTree = "<group>"; };
+		454409561A537F1C00BB3036 /* WGMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGMessage.h; sourceTree = "<group>"; };
+		454409571A537F1C00BB3036 /* WGMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGMessage.m; sourceTree = "<group>"; };
+		454409591A547BCD00BB3036 /* WGNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGNotification.h; sourceTree = "<group>"; };
+		4544095A1A547BCD00BB3036 /* WGNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGNotification.m; sourceTree = "<group>"; };
+		4544095C1A548E5700BB3036 /* WGEventAttendee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEventAttendee.h; sourceTree = "<group>"; };
+		4544095D1A548E5700BB3036 /* WGEventAttendee.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGEventAttendee.m; sourceTree = "<group>"; };
 		4563F51C1A3F387700F8C9C4 /* WGApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGApi.h; sourceTree = "<group>"; };
 		4563F51D1A3F387700F8C9C4 /* WGApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGApi.m; sourceTree = "<group>"; };
 		4563F51F1A3F3C6900F8C9C4 /* WGCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGCollection.h; sourceTree = "<group>"; };
@@ -921,6 +930,12 @@
 				4563F5261A3F460F00F8C9C4 /* WGUser.m */,
 				454409531A5241FA00BB3036 /* WGEvent.h */,
 				454409541A5241FA00BB3036 /* WGEvent.m */,
+				4544095C1A548E5700BB3036 /* WGEventAttendee.h */,
+				4544095D1A548E5700BB3036 /* WGEventAttendee.m */,
+				454409561A537F1C00BB3036 /* WGMessage.h */,
+				454409571A537F1C00BB3036 /* WGMessage.m */,
+				454409591A547BCD00BB3036 /* WGNotification.h */,
+				4544095A1A547BCD00BB3036 /* WGNotification.m */,
 				4563F51F1A3F3C6900F8C9C4 /* WGCollection.h */,
 				4563F5201A3F3C6900F8C9C4 /* WGCollection.m */,
 				4544094D1A51EF3000BB3036 /* WGCollectionArray.h */,
@@ -2307,6 +2322,7 @@
 				E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */,
 				FA55261A1A1FDB4000101AE7 /* JBBarChartView.m in Sources */,
 				E900C2C01961EADE00A01F50 /* UIImage+MultiFormat.m in Sources */,
+				454409581A537F1C00BB3036 /* WGMessage.m in Sources */,
 				4563F5571A3F81B900F8C9C4 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				E921D6221923967D00361247 /* main.m in Sources */,
 				E9C63C121A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m in Sources */,
@@ -2330,6 +2346,7 @@
 				4563F53E1A3F80D100F8C9C4 /* AFHTTPSessionManager.m in Sources */,
 				E9706E1819C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
 				E96F07C719BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */,
+				4544095E1A548E5700BB3036 /* WGEventAttendee.m in Sources */,
 				E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */,
 				4563F5581A3F81B900F8C9C4 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
 				E95DC77D195329B10012AA20 /* Party.m in Sources */,
@@ -2373,6 +2390,7 @@
 				E96EF681197EE95D00F88A6D /* Time.m in Sources */,
 				4544094F1A51EF3000BB3036 /* WGCollectionArray.m in Sources */,
 				E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */,
+				4544095B1A547BCD00BB3036 /* WGNotification.m in Sources */,
 				E9ACCA2019C3A12500F3EB20 /* WigoConfirmationViewController.m in Sources */,
 				E900C2BF1961EADE00A01F50 /* UIImage+GIF.m in Sources */,
 				E9C63BE01A03ED35006C5DD2 /* IQAudioPickerShadowView.m in Sources */,

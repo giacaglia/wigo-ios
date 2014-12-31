@@ -9,6 +9,8 @@
 #import "WGObject.h"
 #import "WGCollection.h"
 
+@class WGEvent;
+
 typedef enum Gender {
     MALE,
     FEMALE,
@@ -38,8 +40,6 @@ typedef enum State {
 
 typedef void (^UserResult)(WGUser *object, NSError *error);
 
-@property NSDateFormatter *dateFormatter;
-
 @property NSString* key;
 // @property (nonatomic, assign) Privacy privacy;
 @property NSString* privacy;
@@ -50,7 +50,6 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 @property NSNumber* isBlocking;
 @property NSString* bio;
 @property NSString* image;
-@property NSDate* created;
 @property NSDate* modified;
 @property NSNumber* isFollowing;
 @property NSString* lastName;
@@ -70,7 +69,7 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 @property NSString* facebookAccessToken;
 @property NSNumber* numFollowers;
 @property NSString* username;
-@property NSNumber* isAttending;
+@property WGEvent* isAttending;
 @property NSDictionary* group;
 @property NSString* groupName;
 @property NSNumber* groupNumberMembers;
@@ -79,9 +78,6 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 @property NSNumber* isTapPushNotificationEnabled;
 @property NSNumber* isFavoritesGoingOutNotificationEnabled;
 
-+(WGUser *) currentUser;
-+(void) setCurrentUser: (WGUser *)user;
-
 +(WGUser *)serialize:(NSDictionary *)json;
 
 -(void) removeImageAtIndex:(NSInteger)index;
@@ -89,8 +85,10 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 -(NSURL *) coverImageURL;
 -(State) state;
 
-- (void)login:(UserResult)handler;
+-(void) login:(UserResult)handler;
 
-+(void)getUsers:(CollectionResult)handler;
++(WGUser *) currentUser;
++(void) setCurrentUser: (WGUser *)user;
++(void) getCurrentUser:(UserResult)handler;
 
 @end

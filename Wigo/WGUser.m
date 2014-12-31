@@ -7,26 +7,25 @@
 //
 
 #import "WGUser.h"
+#import "WGEvent.h"
 
-#define kIdKey @"id"
 #define kKeyKey @"key"
 #define kEmailKey @"email"
 #define kNameKey @"name"
 #define kFacebookAccessTokenKey @"facebook_access_token"
-#define kPrivacyKey @"privacy" //: "public",
-#define kIsFollowerKey @"is_follower" //: false,
-#define kNumFollowingKey @"num_following" //: 10,
-#define kIsTappedKey @"is_tapped" //: false,
-#define kIsBlockedKey @"is_blocked" //: false,
-#define kIsBlockingKey @"is_blocking" //: false,
-#define kBioKey @"bio" //: "I go out. But mostly in the mornings. ",
-#define kImageKey @"image" //: null,
-#define kCreatedKey @"created" //: "2014-12-14 21:41:58",
-#define kModifiedKey @"modified" //: "2014-12-14 21:41:58",
-#define kIsFollowingKey @"is_following" //: false,
-#define kLastNameKey @"last_name" //: "Elman",
-#define kIsFollowingRequestedKey @"is_following_requested" //: false,
-#define kIsGoingOutKey @"is_goingout" //: false,
+#define kPrivacyKey @"privacy"
+#define kIsFollowerKey @"is_follower"
+#define kNumFollowingKey @"num_following"
+#define kIsTappedKey @"is_tapped"
+#define kIsBlockedKey @"is_blocked"
+#define kIsBlockingKey @"is_blocking"
+#define kBioKey @"bio"
+#define kImageKey @"image"
+#define kModifiedKey @"modified"
+#define kIsFollowingKey @"is_following"
+#define kLastNameKey @"last_name"
+#define kIsFollowingRequestedKey @"is_following_requested"
+#define kIsGoingOutKey @"is_goingout"
 
 #define kPropertiesKey @"properties" //: {},
 #define kImagesKey @"images"
@@ -63,35 +62,30 @@ static WGUser *currentUser = nil;
 
 @implementation WGUser
 
-+(WGUser *)serialize:(NSDictionary *)json {
++(WGUser *) serialize:(NSDictionary *)json {
     WGUser *newWGUser = [WGUser new];
     
     newWGUser.className = @"user";
-    newWGUser.dateFormatter = [[NSDateFormatter alloc] init];
-    [newWGUser.dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
-    
-    newWGUser.modifiedKeys = [[NSMutableArray alloc] init];
-    newWGUser.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
+    [newWGUser initializeWithJSON:json];
     
     return newWGUser;
 }
 
-+ (void)setCurrentUser:(WGUser *)user {
++(void) setCurrentUser:(WGUser *)user {
     currentUser = user;
     [[NSUserDefaults standardUserDefaults] setObject:user.key forKey:@"key"];
 }
 
-+ (WGUser *)currentUser {
++(WGUser *) currentUser {
     return currentUser;
 }
 
 -(void) setKey:(NSString *)key {
-    [self.parameters setObject:key forKey:kKeyKey];
-    [self.modifiedKeys addObject:kKeyKey];
+    [self setObject:key forKey:kKeyKey];
 }
 
 -(NSString *) key {
-    return [self.parameters objectForKey:kKeyKey];
+    return [self objectForKey:kKeyKey];
 }
 
 -(void) setPrivacy:(NSString *)privacy {
@@ -102,66 +96,51 @@ static WGUser *currentUser = nil;
      } else {
      newWGUser.privacy =             OTHER;
      } */
-    [self.parameters setObject:privacy forKey:kPrivacyKey];
-    [self.modifiedKeys addObject:kPrivacyKey];
+    [self setObject:privacy forKey:kPrivacyKey];
 }
 
 -(NSString *) privacy {
-    return [self.parameters objectForKey:kPrivacyKey];
+    return [self objectForKey:kPrivacyKey];
 }
 
 -(void) setBio:(NSString *)bio {
-    [self.parameters setObject:bio forKey:kBioKey];
-    [self.modifiedKeys addObject:kBioKey];
+    [self setObject:bio forKey:kBioKey];
 }
 
 -(NSString *) bio {
-    return [self.parameters objectForKey:kBioKey];
+    return [self objectForKey:kBioKey];
 }
 
 -(void) setImage:(NSString *)image {
-    [self.parameters setObject:image forKey:kImageKey];
-    [self.modifiedKeys addObject:kImageKey];
+    [self setObject:image forKey:kImageKey];
 }
 
 -(NSString *) image {
-    return [self.parameters objectForKey:kImageKey];
+    return [self objectForKey:kImageKey];
 }
 
 -(void) setLastName:(NSString *)lastName {
-    [self.parameters setObject:lastName forKey:kLastNameKey];
-    [self.modifiedKeys addObject:kLastNameKey];
+    [self setObject:lastName forKey:kLastNameKey];
 }
 
 -(NSString *) lastName {
-    return [self.parameters objectForKey:kLastNameKey];
+    return [self objectForKey:kLastNameKey];
 }
 
 -(void) setFirstName:(NSString *)firstName {
-    [self.parameters setObject:firstName forKey:kFirstNameKey];
-    [self.modifiedKeys addObject:kFirstNameKey];
+    [self setObject:firstName forKey:kFirstNameKey];
 }
 
 -(NSString *) firstName {
-    return [self.parameters objectForKey:kFirstNameKey];
-}
-
--(void) setCreated:(NSDate *)created {
-    [self.parameters setObject:[self.dateFormatter stringFromDate:created] forKey:kCreatedKey];
-    [self.modifiedKeys addObject:kCreatedKey];
-}
-
--(NSDate *) created {
-    return [self.dateFormatter dateFromString: [self.parameters objectForKey:kCreatedKey]];
+    return [self objectForKey:kFirstNameKey];
 }
 
 -(void) setModified:(NSDate *)modified {
-    [self.parameters setObject:[self.dateFormatter stringFromDate:modified] forKey:kModifiedKey];
-    [self.modifiedKeys addObject:kModifiedKey];
+    [self setObject:[self.dateFormatter stringFromDate:modified] forKey:kModifiedKey];
 }
 
 -(NSDate *) modified {
-    return [self.dateFormatter dateFromString: [self.parameters objectForKey:kModifiedKey]];
+    return [self.dateFormatter dateFromString: [self objectForKey:kModifiedKey]];
 }
 
 -(void) setGender:(NSString *)gender {
@@ -172,84 +151,75 @@ static WGUser *currentUser = nil;
      } else {
      newWGUser.gender =              UNKNOWN;
      } */
-    [self.parameters setObject:gender forKey:kGenderKey];
-    [self.modifiedKeys addObject:kGenderKey];
+    [self setObject:gender forKey:kGenderKey];
 }
 
 -(NSString *) gender {
-    return [self.parameters objectForKey:kGenderKey];
+    return [self objectForKey:kGenderKey];
 }
 
 -(void) setUsername:(NSString *)username {
-    [self.parameters setObject:username forKey:kUsernameKey];
-    [self.modifiedKeys addObject:kUsernameKey];
+    [self setObject:username forKey:kUsernameKey];
 }
 
 -(NSString *) username {
-    return [self.parameters objectForKey:kUsernameKey];
+    return [self objectForKey:kUsernameKey];
 }
 
 -(void) setEmail:(NSString *)email {
-    [self.parameters setObject:email forKey:kEmailKey];
-    [self.modifiedKeys addObject:kEmailKey];
+    [self setObject:email forKey:kEmailKey];
 }
 
 -(NSString *) email {
-    return [self.parameters objectForKey:kEmailKey];
+    return [self objectForKey:kEmailKey];
 }
 
 -(void) setFacebookId:(NSString *)facebookId {
-    [self.parameters setObject:facebookId forKey:kFacebookIdKey];
-    [self.modifiedKeys addObject:kFacebookIdKey];
+    [self setObject:facebookId forKey:kFacebookIdKey];
 }
 
 -(NSString *) facebookId {
-    return [self.parameters objectForKey:kFacebookIdKey];
+    return [self objectForKey:kFacebookIdKey];
 }
 
 -(void) setFacebookAccessToken:(NSString *)facebookAccessToken {
-    [self.parameters setObject:facebookAccessToken forKey:kFacebookAccessTokenKey];
-    [self.modifiedKeys addObject:kFacebookAccessTokenKey];
+    [self setObject:facebookAccessToken forKey:kFacebookAccessTokenKey];
 }
 
 -(NSString *) facebookAccessToken {
-    return [self.parameters objectForKey:kFacebookAccessTokenKey];
+    return [self objectForKey:kFacebookAccessTokenKey];
 }
 
 -(void) setNumFollowing:(NSNumber *)numFollowing {
-    [self.parameters setObject:numFollowing forKey:kNumFollowingKey];
-    [self.modifiedKeys addObject:kNumFollowingKey];
+    [self setObject:numFollowing forKey:kNumFollowingKey];
 }
 
 -(NSNumber *) numFollowing {
-    return [self.parameters objectForKey:kNumFollowingKey];
+    return [self objectForKey:kNumFollowingKey];
 }
 
 -(void) setNumFollowers:(NSNumber *)numFollowers {
-    [self.parameters setObject:numFollowers forKey:kNumFollowersKey];
-    [self.modifiedKeys addObject:kNumFollowersKey];
+    [self setObject:numFollowers forKey:kNumFollowersKey];
 }
 
 -(NSNumber *) numFollowers {
-    return [self.parameters objectForKey:kNumFollowersKey];
+    return [self objectForKey:kNumFollowersKey];
 }
 
 -(void) setGroupRank:(NSNumber *)groupRank {
-    [self.parameters setObject:groupRank forKey:kGroupRankKey];
-    [self.modifiedKeys addObject:kGroupRankKey];
+    [self setObject:groupRank forKey:kGroupRankKey];
 }
 
 -(NSNumber *) groupRank {
-    return [self.parameters objectForKey:kGroupRankKey];
+    return [self objectForKey:kGroupRankKey];
 }
 
 -(void) setProperties:(NSDictionary *)properties {
-    [self.parameters setObject:properties forKey:kPropertiesKey];
-    [self.modifiedKeys addObject:kPropertiesKey];
+    [self setObject:properties forKey:kPropertiesKey];
 }
 
 -(NSDictionary *) properties {
-    return [self.parameters objectForKey:kPropertiesKey];
+    return [self objectForKey:kPropertiesKey];
 }
 
 -(NSArray *) images {
@@ -292,12 +262,11 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setGroup:(NSDictionary *)group {
-    [self.parameters setObject:group forKey:kGroupKey];
-    [self.modifiedKeys addObject:kGroupKey];
+    [self setObject:group forKey:kGroupKey];
 }
 
 -(NSDictionary *) group {
-    return [self.parameters objectForKey:kGroupKey];
+    return [self objectForKey:kGroupKey];
 }
 
 -(void) setGroupName:(NSString *)groupName {
@@ -320,85 +289,76 @@ static WGUser *currentUser = nil;
     return [self.group objectForKey:kNumMembersKey];
 }
 
--(void) setIsAttending:(NSNumber *)isAttending {
-    [self.parameters setObject:isAttending forKey:kIsAttendingKey];
-    [self.modifiedKeys addObject:kIsAttendingKey];
+-(void) setIsAttending:(WGEvent *)isAttending {
+    [self setObject:[isAttending deserialize] forKey:kIsAttendingKey];
 }
 
--(NSNumber *) isAttending {
-    return [self.parameters objectForKey:kIsAttendingKey];
+-(WGEvent *) isAttending {
+    return [WGEvent serialize: [self objectForKey:kIsAttendingKey]];
 }
 
 -(void) setIsBlocked:(NSNumber *)isBlocked {
-    [self.parameters setObject:isBlocked forKey:kIsBlockedKey];
-    [self.modifiedKeys addObject:kIsBlockedKey];
+    [self setObject:isBlocked forKey:kIsBlockedKey];
 }
 
 -(NSNumber *) isBlocked {
-    return [self.parameters objectForKey:kIsBlockedKey];
+    return [self objectForKey:kIsBlockedKey];
 }
 
 -(void) setIsBlocking:(NSNumber *)isBlocking {
-    [self.parameters setObject:isBlocking forKey:kIsBlockingKey];
-    [self.modifiedKeys addObject:kIsBlockingKey];
+    [self setObject:isBlocking forKey:kIsBlockingKey];
 }
 
 -(NSNumber *) isBlocking {
-    return [self.parameters objectForKey:kIsBlockingKey];
+    return [self objectForKey:kIsBlockingKey];
 }
 
 -(void) setIsFavorite:(NSNumber *)isFavorite {
-    [self.parameters setObject:isFavorite forKey:kIsFavoriteKey];
-    [self.modifiedKeys addObject:kIsFavoriteKey];
+    [self setObject:isFavorite forKey:kIsFavoriteKey];
 }
 
 -(NSNumber *) isFavorite {
-    return [self.parameters objectForKey:kIsFavoriteKey];
+    return [self objectForKey:kIsFavoriteKey];
 }
 
 -(void) setIsFollower:(NSNumber *)isFollower {
-    [self.parameters setObject:isFollower forKey:kIsFollowerKey];
-    [self.modifiedKeys addObject:kIsFollowerKey];
+    [self setObject:isFollower forKey:kIsFollowerKey];
 }
 
 -(NSNumber *) isFollower {
-    return [self.parameters objectForKey:kIsFollowerKey];
+    return [self objectForKey:kIsFollowerKey];
 }
 
 -(void) setIsFollowing:(NSNumber *)isFollowing {
-    [self.parameters setObject:isFollowing forKey:kIsFollowingKey];
-    [self.modifiedKeys addObject:kIsFollowingKey];
+    [self setObject:isFollowing forKey:kIsFollowingKey];
 }
 
 -(NSNumber *) isFollowing {
-    return [self.parameters objectForKey:kIsFollowingKey];
+    return [self objectForKey:kIsFollowingKey];
 }
 
 -(void) setIsFollowingRequested:(NSNumber *)isFollowingRequested {
-    [self.parameters setObject:isFollowingRequested forKey:kIsFollowingRequestedKey];
-    [self.modifiedKeys addObject:kIsFollowingRequestedKey];
+    [self setObject:isFollowingRequested forKey:kIsFollowingRequestedKey];
 }
 
 -(NSNumber *) isFollowingRequested {
-    return [self.parameters objectForKey:kIsFollowingRequestedKey];
+    return [self objectForKey:kIsFollowingRequestedKey];
 }
 
 -(void) setIsGoingOut:(NSNumber *)isGoingOut {
-    [self.parameters setObject:isGoingOut forKey:kIsGoingOutKey];
-    [self.modifiedKeys addObject:kIsGoingOutKey];
+    [self setObject:isGoingOut forKey:kIsGoingOutKey];
 }
 
 -(NSNumber *) isGoingOut {
-    return [self.parameters objectForKey:kIsGoingOutKey];
+    return [self objectForKey:kIsGoingOutKey];
 }
 
 -(void) setIsTapped:(NSNumber *)isTapped {
-    [self.parameters setObject:isTapped forKey:kIsTappedKey];
-    [self.modifiedKeys addObject:kIsTappedKey];
+    [self setObject:isTapped forKey:kIsTappedKey];
 }
 
 -(NSNumber *) isTapped {
-    return [self.parameters objectForKey:kIsTappedKey];
+    return [self objectForKey:kIsTappedKey];
 }
 
 -(void) setIsTapPushNotificationEnabled:(NSNumber *)isTapPushNotificationEnabled {
@@ -447,7 +407,7 @@ static WGUser *currentUser = nil;
     }
     if ([self.privacy isEqualToString: @"private"]) {
         if ([self.isFollowing boolValue]) {
-            if ([self.isAttending boolValue]) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
+            if (self.isAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
             return FOLLOWING_USER_STATE;
         }
         else if ([self.isFollowingRequested boolValue]) {
@@ -456,13 +416,13 @@ static WGUser *currentUser = nil;
         else return NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
     }
     if ([self.isFollowing boolValue]) {
-        if ([self.isAttending boolValue]) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
+        if (self.isAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
         return FOLLOWING_USER_STATE;
     }
     return NOT_FOLLOWING_PUBLIC_USER_STATE;
 }
 
-- (void)signup:(UserResult)handler {
+-(void) signup:(UserResult)handler {
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
@@ -488,7 +448,7 @@ static WGUser *currentUser = nil;
 }
 
 
-- (void)login:(UserResult)handler {
+-(void) login:(UserResult)handler {
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
@@ -505,13 +465,13 @@ static WGUser *currentUser = nil;
     }];
 }
 
-+(void) getUsers:(CollectionResult)handler {
++(void) get:(CollectionResult)handler {
     [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
         }
-        WGCollection *users = [WGCollection serialize:jsonResponse andClass:[self class]];
+        WGCollection *users = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
         handler(users, error);
     }];
 }

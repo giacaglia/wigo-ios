@@ -10,7 +10,7 @@
 
 #define kNameKey @"name"
 
-#define kNumAttendingKey @"num_attending" //: 5,
+#define kNumAttendingKey @"num_attending"
 #define kNumMessagesKey @"num_messages"
 #define kAttendeesKey @"attendees"
 
@@ -24,78 +24,94 @@
     WGEvent *newWGEvent = [WGEvent new];
     
     newWGEvent.className = @"event";
-    newWGEvent.dateFormatter = [[NSDateFormatter alloc] init];
-    [newWGEvent.dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
-    
-    newWGEvent.modifiedKeys = [[NSMutableArray alloc] init];
-    newWGEvent.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
+    [newWGEvent initializeWithJSON:json];
     
     return newWGEvent;
 }
 
 -(void) setName:(NSString *)name {
-    [self.parameters setObject:name forKey:kNameKey];
-    [self.modifiedKeys addObject:kNameKey];
+    [self setObject:name forKey:kNameKey];
 }
 
 -(NSString *) name {
-    return [self.parameters objectForKey:kNameKey];
+    return [self objectForKey:kNameKey];
 }
 
 -(void) setNumAttending:(NSNumber *)numAttending {
-    [self.parameters setObject:numAttending forKey:kNumAttendingKey];
-    [self.modifiedKeys addObject:kNumAttendingKey];
+    [self setObject:numAttending forKey:kNumAttendingKey];
 }
 
 -(NSNumber *) numAttending {
-    return [self.parameters objectForKey:kNumAttendingKey];
+    return [self objectForKey:kNumAttendingKey];
 }
 
 -(void) setNumMessages:(NSNumber *)numMessages {
-    [self.parameters setObject:numMessages forKey:kNumMessagesKey];
-    [self.modifiedKeys addObject:kNumMessagesKey];
+    [self setObject:numMessages forKey:kNumMessagesKey];
 }
 
 -(NSNumber *) numMessages {
-    return [self.parameters objectForKey:kNumMessagesKey];
+    return [self objectForKey:kNumMessagesKey];
 }
 
 -(void) setAttendees:(WGCollection *)attendees {
-    [self.parameters setObject:[attendees deserialize] forKey:kAttendeesKey];
-    [self.modifiedKeys addObject:kAttendeesKey];
+    [self setObject:[attendees deserialize] forKey:kAttendeesKey];
 }
 
 -(WGCollection *) attendees {
-    return [WGCollection serialize:[self.parameters objectForKey:kAttendeesKey] andClass:[WGUser class]];
+    return [WGCollection serializeArray:[self objectForKey:kAttendeesKey] andClass:[WGEventAttendee class]];
 }
 
--(void) addAttendee:(WGUser *)attendee {
+-(void) addAttendee:(WGEventAttendee *)attendee {
     if (self.attendees) {
         [self.attendees addObject:attendee];
         return;
     }
     NSArray *array = [[NSArray alloc] initWithObjects:[attendee deserialize], nil];
-    self.attendees = [WGCollection serialize:@{ @"objects" : array } andClass:[WGUser class]];
+    self.attendees = [WGCollection serializeArray:array andClass:[WGEventAttendee class]];
 }
 
-+(void) getEvents:(CollectionResult)handler {
-    [WGApi get:@"events/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+-(void) setRead:(BoolResult)handler {
+    [WGApi post:@"events/read/" withParameters:@[ self.id ] andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(jsonResponse != nil, error);
+    }];
+}
+
+-(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResult)handler {
+    [WGApi post:[NSString stringWithFormat:@"events/%@/messages/read/", self.id] withParameters:[messages idArray] andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(jsonResponse != nil, error);
+    }];
+}
+
+-(void) getMessages:(CollectionResult)handler {
+    [WGApi get:[NSString stringWithFormat:@"eventmessages/?event=%@&ordering=id", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
         }
-        WGCollection *events = [WGCollection serialize:jsonResponse andClass:[self class]];
+#warning CHANGE TO EVENT_MESSAGE
+        WGCollection *events = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
         handler(events, error);
     }];
 }
 
-+(void) getEventsWithGroupNumber: (NSInteger)groupNumber andHandler:(CollectionResult)handler {
-    [WGApi get:[NSString stringWithFormat:@"events/?group=%ld&date=tonight&attendees_limit=10", (long) groupNumber] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
++(void) get:(CollectionResult)handler {
+    [WGApi get:@"events?attendees_limit=10" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
         }
-        WGCollection *events = [WGCollection serialize:jsonResponse andClass:[self class]];
+        WGCollection *events = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        handler(events, error);
+    }];
+}
+
++(void) getWithGroupNumber: (NSInteger)groupNumber andHandler:(CollectionResult)handler {
+    [WGApi get:[NSString stringWithFormat:@"events?group=%ld&date=tonight&attendees_limit=10", (long) groupNumber] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        WGCollection *events = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
         handler(events, error);
     }];
 }

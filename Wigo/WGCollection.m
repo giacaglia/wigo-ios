@@ -12,11 +12,20 @@
 
 #pragma mark - Init
 
-+(WGCollection *)serialize:(NSDictionary *) jsonResponse andClass:(Class)type {
++(WGCollection *)serializeResponse:(NSDictionary *) jsonResponse andClass:(Class)type {
     WGCollection *newCollection = [WGCollection new];
     
     [newCollection setPagination: [jsonResponse objectForKey:@"meta"]];
     [newCollection setObjects: [jsonResponse objectForKey:@"objects"] andType:type];
+    newCollection.currentPosition = 0;
+    
+    return newCollection;
+}
+
++(WGCollection *)serializeArray:(NSArray *) array andClass:(Class)type {
+    WGCollection *newCollection = [WGCollection new];
+    
+    [newCollection setObjects:array andType:type];
     newCollection.currentPosition = 0;
     
     return newCollection;
@@ -100,7 +109,7 @@
     return [self.objects count];
 }
 
--(NSArray *) getIDArray {
+-(NSArray *) idArray {
     NSMutableArray *ids = [[NSMutableArray alloc] init];
     for (WGObject *object in self.objects) {
         [ids addObject:object.id];
@@ -130,12 +139,12 @@
         handler(nil, [NSError errorWithDomain:@"WGApi" code:0 userInfo:@{}]);
         return;
     }
-    [WGApi getURL:self.nextPage withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:self.nextPage withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
         }
-        WGCollection *objects = [WGCollection serialize:jsonResponse andClass:[self class]];
+        WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
         handler(objects, error);
     }];
 }

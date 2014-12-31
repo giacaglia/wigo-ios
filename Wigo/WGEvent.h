@@ -7,14 +7,11 @@
 //
 
 #import "WGObject.h"
-#import "WGUser.h"
-#import "WGCollection.h"
+#import "WGEventAttendee.h"
 
 @interface WGEvent : WGObject
 
 typedef void (^EventResult)(WGEvent *object, NSError *error);
-
-@property NSDateFormatter *dateFormatter;
 
 @property NSString *name;
 @property NSNumber *numAttending;
@@ -23,9 +20,13 @@ typedef void (^EventResult)(WGEvent *object, NSError *error);
 
 +(WGEvent *)serialize:(NSDictionary *)json;
 
--(void) addAttendee:(WGUser *)attendee;
+-(void) addAttendee:(WGEventAttendee *)attendee;
 
-+(void) getEvents:(CollectionResult)handler;
-+(void) getEventsWithGroupNumber: (NSInteger)groupNumber andHandler:(CollectionResult)handler;
+-(void) setRead:(BoolResult)handler;
+-(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResult)handler;
+
+-(void) getMessages:(CollectionResult)handler;
+
++(void) getWithGroupNumber: (NSInteger)groupNumber andHandler:(CollectionResult)handler;
 
 @end

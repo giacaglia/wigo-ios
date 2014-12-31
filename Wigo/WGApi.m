@@ -12,12 +12,21 @@
 #define kDeviceType @"iphone"
 
 // #ifdef DEBUG
-static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
+static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 /* #else
 static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 #endif */
 
+static NSCache *myCache = nil;
+
 @implementation WGApi
+
++(NSCache *) cache {
+    if (myCache == nil) {
+        myCache = [[NSCache alloc] init];
+    }
+    return myCache;
+}
 
 +(void) get:(NSString *)endpoint withHandler:(ApiResult)handler {
     [WGApi getURL:[WGApi getUrlStringForEndpoint:endpoint] withHandler:handler];
@@ -36,7 +45,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     }];
 }
 
-+(void) post:(NSString *)endpoint withParameters:(NSDictionary *)parameters andHandler:(ApiResult)handler {
++(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResult)handler {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[WGApi getUrlStringForEndpoint:endpoint]]];
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters
@@ -73,7 +82,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 #endif
     [serializer setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forHTTPHeaderField:@"X-Wigo-Client-Version"];
     [serializer setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
-    [serializer setValue:API_VERSION forHTTPHeaderField:@"X-Wigo-API-Version"];
+    [serializer setValue:@"1.0.7 (enable_refs)" forHTTPHeaderField:@"X-Wigo-API-Version"];
     [serializer setValue:kDeviceType forHTTPHeaderField:@"X-Wigo-Device"];
     [serializer setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
 

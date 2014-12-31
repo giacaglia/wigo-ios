@@ -17,6 +17,8 @@
 +(WGCollectionArray *) initWithCollection:(WGCollection *) collection;
 +(WGCollectionArray *) initWithCollections:(NSArray *) collections;
 
+-(NSArray *) idArray;
+
 -(NSArray *) deserialize;
 
 @end

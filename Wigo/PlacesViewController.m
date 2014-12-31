@@ -27,8 +27,6 @@
 #define kHeaderOldEventCellName @"HeaderOldEventCell"
 #import "EventStoryViewController.h"
 
-#import "WGUser.h"
-
 #import "WGEvent.h"
 
 @interface PlacesViewController ()
@@ -111,8 +109,24 @@ int firstIndexOfNegativeEvent;
     _spinnerAtCenter = YES;
     [self initializeTapHandler];
     [self initializeWhereView];
+    
+    [[NSUserDefaults standardUserDefaults] setObject:@"0068HVzaTEuLVHASiUk7uaeu3i" forKey:@"key"];
 
-    [WGUser getUsers:^(WGCollection *collection, NSError *error) {
+    [WGEvent get:^(WGCollection *collection, NSError *error) {
+        if (error) {
+            NSLog(@"ERROR: %@", error);
+            return;
+        }
+        
+        for (WGEvent *event in collection) {
+            NSLog(@"Event: %@", [event name]);
+            for (WGEventAttendee *attendee in [event attendees]) {
+                NSLog(@"Attendee: %@ %@", [[attendee user] firstName], [[attendee user] lastName]);
+            };
+        }
+    }];
+    
+    /* [WGUser get:^(WGCollection *collection, NSError *error) {
         if (error) {
             NSLog(@"ERROR: %@", error);
             return;
@@ -133,7 +147,8 @@ int firstIndexOfNegativeEvent;
             }
         }
         NSLog(@"SUCCESS: collection loading success");
-    }];
+    }]; */
+    
 }
 
 

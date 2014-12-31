@@ -30,6 +30,14 @@
     return array;
 }
 
+-(NSArray *) idArray {
+    NSMutableArray *ids = [[NSMutableArray alloc] init];
+    for (WGCollection *collection in self.collections) {
+        [ids addObjectsFromArray:[collection idArray]];
+    }
+    return ids;
+}
+
 #pragma mark - Enumeration
 
 -(id) nextObject {

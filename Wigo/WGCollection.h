@@ -19,7 +19,9 @@ typedef void (^CollectionResult)(WGCollection *collection, NSError *error);
 @property NSNumber *hasNextPage;
 @property NSString *nextPage;
 
-+(WGCollection *)serialize:(NSDictionary *) jsonResponse andClass:(Class)type;
++(WGCollection *)serializeResponse:(NSDictionary *) jsonResponse andClass:(Class)type;
++(WGCollection *)serializeArray:(NSArray *) array andClass:(Class)type;
+
 -(NSArray *) deserialize;
 
 -(void) exchangeObjectAtIndex:(NSUInteger)id1 withObjectAtIndex:(NSUInteger)id2;
@@ -34,7 +36,7 @@ typedef void (^CollectionResult)(WGCollection *collection, NSError *error);
 -(WGObject *) objectWithID:(NSNumber *)searchID;
 -(BOOL) containsObject:(WGObject *)object;
 -(NSUInteger) count;
--(NSArray *) getIDArray;
+-(NSArray *) idArray;
 
 -(void) getNextPage:(CollectionResult)handler;
 
