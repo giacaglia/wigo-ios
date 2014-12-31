@@ -26,8 +26,6 @@ typedef void (^BoolResult)(BOOL success, NSError *error);
 
 @property NSNumber* id;
 @property NSDate* created;
-@property NSString* referenceId;
-@property NSString* reference;
 
 +(WGObject *)serialize:(NSDictionary *)json;
 

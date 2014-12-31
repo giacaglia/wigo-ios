@@ -7,16 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "WGParser.h"
 
 typedef void (^ApiResult)(NSDictionary *jsonResponse, NSError *error);
 
 @interface WGApi : NSObject
 
-+(NSCache *) cache;
+@property NSCache *cache;
 
 +(void) get:(NSString *)endpoint withHandler:(ApiResult)handler;
-
-+(void) getURL:(NSString *)url withHandler:(ApiResult)handler;
 
 +(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResult)handler;
 

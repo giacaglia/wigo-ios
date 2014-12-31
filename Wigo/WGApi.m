@@ -39,7 +39,8 @@ static NSCache *myCache = nil;
     [WGApi addWigoHeaders:manager.requestSerializer];
     
     [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        handler(responseObject, nil);
+        WGParser *parser = [[WGParser alloc] init];
+        handler([parser replaceReferences:responseObject], nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         handler(nil, error);
     }];
@@ -63,7 +64,8 @@ static NSCache *myCache = nil;
     operation.responseSerializer = [AFJSONResponseSerializer serializer];
     
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        handler(responseObject, nil);
+        WGParser *parser = [[WGParser alloc] init];
+        handler([parser replaceReferences:responseObject], nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         handler(nil, error);
     }];

@@ -11,8 +11,6 @@
 
 #define kIdKey @"id"
 #define kCreatedKey @"created"
-#define kReferenceIdKey @"$id"
-#define kReferenceKey @"$ref"
 
 @implementation WGObject
 
@@ -30,9 +28,6 @@
     
     self.modifiedKeys = [[NSMutableArray alloc] init];
     self.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
-    
-    [self pullFromCache];
-    [self insertIntoCache];
 }
 
 -(void) initDateFormatter {
@@ -54,22 +49,6 @@
 
 -(NSDate *) created {
     return [self.dateFormatter dateFromString: [self objectForKey:kCreatedKey]];
-}
-
--(void) setReferenceId:(NSString *)referenceId {
-    [self setObject:referenceId forKey:kReferenceIdKey];
-}
-
--(NSString *) referenceId {
-    return [self objectForKey:kReferenceIdKey];
-}
-
--(void) setReference:(NSString *)reference {
-    [self setObject:reference forKey:kReferenceKey];
-}
-
--(NSString *) reference {
-    return [self objectForKey:kReferenceKey];
 }
 
 #warning TODO: make this pretty
@@ -124,63 +103,12 @@
     }];
 }
 
--(void) insertIntoCache {
-    [[WGApi cache] setObject:[self deserialize] forKey:self.referenceId];
-}
-
--(void) pullFromCache {
-    if (self.reference) {
-        if ([[WGApi cache] objectForKey:self.reference]) {
-            self.parameters = [[NSMutableDictionary alloc] initWithDictionary: [[WGApi cache] objectForKey:self.reference]];
-        } else {
-            NSLog(@"Error: Found $ref but found no matching $id");
-        }
-    }
-    /*
-    // Loop through and replace any $ref dicts with cached objects
-    for (id key in [self.parameters allKeys]) {
-        id object = [self.parameters objectForKey:key];
-        // If this object is a dictionary
-        if ([object isKindOfClass:[NSDictionary class]]) {
-            // If this dictionary contains a $ref
-            if ([[object allKeys] containsObject:kReferenceKey]) {
-                NSString *reference = [object objectForKey:kReferenceKey];
-                // If the cache contains the $ref
-                if ([[WGApi cache] objectForKey:reference]) {
-                    // Replace the $ref with the associated dictionary
-                    NSLog(@"Success: Updating $ref to cached dictionary");
-                    NSLog(@"%@", [[WGApi cache] objectForKey:reference]);
-                    [self.parameters setObject:[[WGApi cache] objectForKey:reference] forKey:key];
-                } else {
-                    NSLog(@"Error: Found $ref but found no matching $id");
-                }
-            }
-        }
-    } */
-}
-
 -(void) setObject:(id)object forKey:(id<NSCopying>)key {
     [self.parameters setObject:object forKey:key];
     [self.modifiedKeys addObject:key];
 }
 
 -(id) objectForKey:(NSString *)key {
-    id object = [self.parameters objectForKey:key];
-    // If this object is a dictionary
-    if ([object isKindOfClass:[NSDictionary class]]) {
-        // If this dictionary contains a $ref
-        if ([[object allKeys] containsObject:kReferenceKey]) {
-            NSString *reference = [object objectForKey:kReferenceKey];
-            // If the cache contains the $ref
-            if ([[WGApi cache] objectForKey:reference]) {
-                // Replace the $ref with the associated dictionary
-                NSLog(@"Success: Updating $ref to cached dictionary");
-                [self.parameters setObject:[[WGApi cache] objectForKey:reference] forKey:key];
-            } else {
-                NSLog(@"Error: Found $ref but found no matching $id");
-            }
-        }
-    }
     return [self.parameters objectForKey:key];
 }
 

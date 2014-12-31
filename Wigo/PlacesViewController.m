@@ -119,9 +119,10 @@ int firstIndexOfNegativeEvent;
         }
         
         for (WGEvent *event in collection) {
-            NSLog(@"Event: %@", [event name]);
+            // NSLog(@"Event: %@", [event name]);
             for (WGEventAttendee *attendee in [event attendees]) {
                 NSLog(@"Attendee: %@ %@", [[attendee user] firstName], [[attendee user] lastName]);
+                NSLog(@"Event from Attendee: %@", [[[attendee user] isAttending] name]);
             };
         }
     }];
