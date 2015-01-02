@@ -76,4 +76,30 @@
     }];
 }
 
+-(void) deleteConversation:(BoolResult)handler {
+    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.toUser.id];
+    [WGApi delete:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        handler(YES, error);
+    }];
+    
+}
+
+-(void) readConversation:(BoolResult)handler {
+    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.toUser.id];
+    
+    NSDictionary *options = @{ @"read": [NSNumber numberWithBool:YES] };
+    
+    [WGApi post:queryString withParameters:options andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        handler(YES, error);
+    }];
+}
+
 @end

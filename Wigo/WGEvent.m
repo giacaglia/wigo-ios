@@ -72,13 +72,13 @@
 
 -(void) setRead:(BoolResult)handler {
     [WGApi post:@"events/read/" withParameters:@[ self.id ] andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        handler(jsonResponse != nil, error);
+        handler(error == nil, error);
     }];
 }
 
 -(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResult)handler {
     [WGApi post:[NSString stringWithFormat:@"events/%@/messages/read/", self.id] withParameters:[messages idArray] andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        handler(jsonResponse != nil, error);
+        handler(error == nil, error);
     }];
 }
 
@@ -113,6 +113,16 @@
         }
         WGCollection *events = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
         handler(events, error);
+    }];
+}
+
++(void) createEventWithName:(NSString *)name andHandler:(EventResult)handler {
+    [WGApi post:@"events/" withParameters:@{ @"name" : name } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        handler([WGEvent serialize:jsonResponse], error);
     }];
 }
 

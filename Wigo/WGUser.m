@@ -486,4 +486,134 @@ static WGUser *currentUser = nil;
     }];
 }
 
+#pragma mark Various API Calls
+
+-(void) broadcastMessage:(NSString *) message withHandler:(BoolResult)handler {
+    [WGApi post:@"school/broadcast" withParameters:@{ @"message": message } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
+}
+
+-(void) resendVerificationEmail:(BoolResult) handler {
+    [WGApi get:@"verification/resend" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
+}
+
+-(void) uploadFile:(NSData *)fileData withName:(NSString *)filename options:(NSDictionary *)options andHandler:(BoolResult) handler {
+    
+#warning Complete this - fix AWSUploader
+    
+}
+
+-(void) uploadVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumnailName options:(NSDictionary *)options andHandler:(BoolResult) handler {
+
+#warning Complete this - fix AWSUploader
+    
+}
+
+-(void) sendInvites:(NSDictionary *)numbers withHandler:(BoolResult)handler {
+    [WGApi post:@"invites/?force=true" withParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
+}
+
+-(void) unblock:(WGUser *)user withHandler:(BoolResult)handler {
+    NSString *queryString = [NSString stringWithFormat:@"users/%@", user.id];
+    
+    [WGApi post:queryString withParameters:@{ @"is_blocked" : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.isBlocked = [NSNumber numberWithBool:NO];
+        }
+        handler(error == nil, error);
+    }];
+}
+
+-(void) block:(WGUser *)user withType:(NSNumber *)type andHandler:(BoolResult)handler {
+    [WGApi post:@"blocks/" withParameters:@{ @"block" : user.id, @"type" : type } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.isBlocked = [NSNumber numberWithBool:YES];
+        }
+        handler(error == nil, error);
+    }];
+}
+
+
+-(void) tap:(WGUser *)user withHandler:(BoolResult)handler {
+    [WGApi post:@"taps" withParameters:@{ @"tapped" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.isTapped = [NSNumber numberWithBool:YES];
+        }
+        handler(error == nil, error);
+    }];
+}
+
+-(void) untap:(WGUser *)user withHandler:(BoolResult)handler {
+    NSString *queryString = [NSString stringWithFormat:@"users/%@/", user.id];
+    [WGApi post:queryString withParameters:@{ @"is_tapped" : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.isTapped = [NSNumber numberWithBool:NO];
+        }
+        handler(error == nil, error);
+    }];
+}
+
+-(void) unfollow:(WGUser *)user withHandler:(BoolResult)handler {
+#warning Can you unfollow by User ID?
+    NSString *queryString = [NSString stringWithFormat:@"follows/?user=me&follow=%@", user.id];
+    [WGApi delete:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.isFollowing = [NSNumber numberWithBool:NO];
+        }
+        handler(error == nil, error);
+    }];
+}
+
+-(void) follow:(WGUser *)user withHandler:(BoolResult)handler {
+    [WGApi post:@"follows/" withParameters:@{ @"follow" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.isFollowingRequested = [NSNumber numberWithBool:YES];
+        }
+        handler(error == nil, error);
+    }];
+}
+
+-(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResult)handler {
+    NSString *queryString = [NSString stringWithFormat:@"follows/accept?from=%@", user.id];
+    [WGApi get:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.isFollower = [NSNumber numberWithBool:YES];
+        }
+        handler(error == nil, error);
+    }];
+}
+
+-(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResult)handler {
+    NSString *queryString = [NSString stringWithFormat:@"follows/reject?from=%@", user.id];
+    [WGApi get:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.isFollower = [NSNumber numberWithBool:NO];
+        }
+        handler(error == nil, error);
+    }];
+}
+
+-(void) goingOut:(BoolResult)handler {
+    [WGApi post:@"goingouts/" withParameters:@{} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            self.isGoingOut = [NSNumber numberWithBool:YES];
+        }
+        handler(error == nil, error);
+    }];
+}
+
+-(void) goingToEvent:(WGEvent *)event withHandler:(BoolResult)handler {
+    [WGApi post:@"eventattendees/" withParameters:@{ @"event" : event.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            self.isGoingOut = [NSNumber numberWithBool:YES];
+        }
+        handler(error == nil, error);
+    }];
+}
+
 @end

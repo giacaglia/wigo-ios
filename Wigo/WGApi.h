@@ -17,6 +17,8 @@ typedef void (^ApiResult)(NSDictionary *jsonResponse, NSError *error);
 
 +(void) get:(NSString *)endpoint withHandler:(ApiResult)handler;
 
++(void) delete:(NSString *)endpoint withHandler:(ApiResult)handler;
+
 +(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResult)handler;
 
 @end

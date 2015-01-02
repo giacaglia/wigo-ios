@@ -17,16 +17,9 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 #endif */
 
-static NSCache *myCache = nil;
-
 @implementation WGApi
 
-+(NSCache *) cache {
-    if (myCache == nil) {
-        myCache = [[NSCache alloc] init];
-    }
-    return myCache;
-}
+#warning TODO: write wrapper for NSError
 
 +(void) get:(NSString *)endpoint withHandler:(ApiResult)handler {
     [WGApi getURL:[WGApi getUrlStringForEndpoint:endpoint] withHandler:handler];
@@ -39,6 +32,24 @@ static NSCache *myCache = nil;
     [WGApi addWigoHeaders:manager.requestSerializer];
     
     [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        WGParser *parser = [[WGParser alloc] init];
+        handler([parser replaceReferences:responseObject], nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        handler(nil, error);
+    }];
+}
+
++(void) delete:(NSString *)endpoint withHandler:(ApiResult)handler {
+    [WGApi deleteURL:[WGApi getUrlStringForEndpoint:endpoint] withHandler:handler];
+}
+
++(void) deleteURL:(NSString *)url withHandler:(ApiResult)handler {
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [WGApi addWigoHeaders:manager.requestSerializer];
+    
+    [manager DELETE:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         WGParser *parser = [[WGParser alloc] init];
         handler([parser replaceReferences:responseObject], nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
