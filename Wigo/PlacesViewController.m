@@ -28,6 +28,7 @@
 #import "EventStoryViewController.h"
 
 #import "WGEvent.h"
+#import "WGProfile.h"
 
 @interface PlacesViewController ()
 
@@ -110,8 +111,9 @@ int firstIndexOfNegativeEvent;
     [self initializeTapHandler];
     [self initializeWhereView];
     
-    [[NSUserDefaults standardUserDefaults] setObject:@"0068HVzaTEuLVHASiUk7uaeu3i" forKey:@"key"];
-
+    // Hack to set the user key
+    [WGProfile setCurrentUser:[WGUser serialize:@{ @"key" : @"0068HVzaTEuLVHASiUk7uaeu3i" }]];
+    
     [WGEvent get:^(WGCollection *collection, NSError *error) {
         if (error) {
             NSLog(@"ERROR: %@", error);

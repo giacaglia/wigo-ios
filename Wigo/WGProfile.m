@@ -22,7 +22,7 @@
 #define kFacebookAccessTokenKey @"facebook_access_token"
 #define kFacebookIdKey @"facebook_id"
 
-#define kDefaultCDNPrefix @"wigo-uploads.s3.amazonaws.com/"
+#define kDefaultCDNPrefix @"wigo-uploads.s3.amazonaws.com"
 
 static WGProfile *currentUser = nil;
 

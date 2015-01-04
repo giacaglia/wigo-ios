@@ -21,4 +21,8 @@ typedef void (^ApiResult)(NSDictionary *jsonResponse, NSError *error);
 
 +(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResult)handler;
 
++(void) uploadPhoto:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(ApiResult) handler;
+
++(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(ApiResult) handler;
+
 @end

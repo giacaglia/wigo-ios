@@ -7,9 +7,33 @@
 //
 
 #import "WGApi.h"
+#import "WGProfile.h"
+
+#define kWigoApiKeyKey @"X-Wigo-API-Key"
+#define kWigoClientEnterpriseKey @"X-Wigo-Client-Enterprise"
+#define kWigoClientVersionKey @"X-Wigo-Client-Version"
+#define kWigoApiVersionKey @"X-Wigo-API-Version"
+#define kWigoDeviceKey @"X-Wigo-Device"
+#define kWigoUserKey @"X-Wigo-User-Key"
+
+#define kContentLengthKey @"Content-Length"
+#define kContentTypeKey @"Content-Type"
+#define kAcceptEncodingKey @"Accept-Encoding"
 
 #define kWigoApiKey @"oi34u53205ju34ik23"
 #define kDeviceType @"iphone"
+#define kWigoApiVersion @"1.0.7 (enable_refs)"
+#define kGZip @"gzip"
+#define kTrue @"true"
+#define kPOST @"POST"
+#define kContentType @"application/json; charset=utf-8"
+
+#define kVideoKey @"video"
+#define kFieldsKey @"fields"
+#define kValueKey @"value"
+#define kNameKey @"name"
+#define kActionKey @"action"
+#define kFileKey @"file"
 
 // #ifdef DEBUG
 static NSString *baseURLString = @"https://api.wigo.us/api/%@";
@@ -64,10 +88,9 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
                                                        options:NSJSONWritingPrettyPrinted
                                                          error:nil];
     [request setHTTPBody:jsonData];
-    unsigned long long postLength = jsonData.length;
-    NSString *contentLength = [NSString stringWithFormat:@"%llu", postLength];
-    [request addValue:contentLength forHTTPHeaderField:@"Content-Length"];
-    [request setHTTPMethod:@"POST"];
+    NSString *contentLength = [NSString stringWithFormat:@"%lu", (unsigned long) jsonData.length];
+    [request addValue:contentLength forHTTPHeaderField:kContentLengthKey];
+    [request setHTTPMethod:kPOST];
     
     [WGApi addWigoHeaders:request];
     
@@ -89,27 +112,66 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 }
 
 +(void)addWigoHeaders:(id)serializer {
-    [serializer setValue:kWigoApiKey forHTTPHeaderField:@"X-Wigo-API-Key"];
+    [serializer setValue:kWigoApiKey forHTTPHeaderField:kWigoApiKeyKey];
 #if ENTERPRISE
-    [serializer setValue:@"true" forHTTPHeaderField:@"X-Wigo-Client-Enterprise"];
+    [serializer setValue:kTrue forHTTPHeaderField:kWigoClientEnterpriseKey];
 #endif
-    [serializer setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forHTTPHeaderField:@"X-Wigo-Client-Version"];
-    [serializer setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
-    [serializer setValue:@"1.0.7 (enable_refs)" forHTTPHeaderField:@"X-Wigo-API-Version"];
-    [serializer setValue:kDeviceType forHTTPHeaderField:@"X-Wigo-Device"];
-    [serializer setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    [serializer setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forHTTPHeaderField:kWigoClientVersionKey];
+    [serializer setValue:kGZip forHTTPHeaderField:kAcceptEncodingKey];
+    [serializer setValue:kWigoApiVersion forHTTPHeaderField:kWigoApiVersionKey];
+    [serializer setValue:kDeviceType forHTTPHeaderField:kWigoDeviceKey];
+    [serializer setValue:kContentType forHTTPHeaderField:kContentTypeKey];
 
 #warning TODO: find out how to 'actually' get the key
-    
-    NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
-    [serializer setValue:key forHTTPHeaderField:@"X-Wigo-User-Key"];
+
+    [serializer setValue:[WGProfile currentUser].key forHTTPHeaderField:kWigoUserKey];
 }
 
 #pragma mark AWS Uploader
 
++(void) uploadPhoto:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(ApiResult) handler {
+    [WGApi get:[NSString stringWithFormat: @"uploads/photos/?filename=%@", fileName] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        NSMutableDictionary *fields = [[NSMutableDictionary alloc] init];
+        for (NSDictionary *field in [jsonResponse objectForKey:kFieldsKey]) {
+            [fields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
+        }
+        NSString *action = [fields objectForKey:kActionKey];
+        
+        [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            handler(jsonResponse, error);
+        }];
+    }];
+}
+
++(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(ApiResult) handler {
+    [WGApi get:[NSString stringWithFormat: @"uploads/videos/?filename=%@", fileName] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        NSDictionary *video = [jsonResponse objectForKey:kVideoKey];
+        
+        NSMutableDictionary *fields = [[NSMutableDictionary alloc] init];
+        for (NSDictionary *field in [video objectForKey:kFieldsKey]) {
+            [fields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
+        }
+        NSString *action = [video objectForKey:kActionKey];
+        
+        [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            handler(jsonResponse, error);
+        }];
+    }];
+}
+
 +(void) upload:(NSString *)url fields:(NSDictionary *)fields file:(NSData *)fileData fileName:(NSString *)filename andHandler:(ApiResult)handler {
     
-    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:url parameters:fields constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { [formData appendPartWithFileData:fileData name:@"file" fileName:filename mimeType:[fields objectForKey:@"Content-Type"]];
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:kPOST  URLString:url parameters:fields constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { [formData appendPartWithFileData:fileData name:kFileKey fileName:filename mimeType:[fields objectForKey:kContentTypeKey]];
     } error:nil];
     
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
@@ -119,7 +181,6 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     }];
     
     [uploadTask resume];
-    
 }
 
 @end
