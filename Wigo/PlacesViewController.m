@@ -126,30 +126,6 @@ int firstIndexOfNegativeEvent;
             };
         }
     }];
-    
-    /* [WGUser get:^(WGCollection *collection, NSError *error) {
-        if (error) {
-            NSLog(@"ERROR: %@", error);
-            return;
-        }
-        for (WGUser *user in collection) {
-            NSLog(@"User ID: %@", user.id);
-            
-            if ([user.key isEqualToString: [[NSUserDefaults standardUserDefaults] objectForKey:@"key"]]) {
-                
-                user.firstName = @"Giuliano";
-                [user save:^(WGObject *object, NSError *error) {
-                    if (error) {
-                        NSLog(@"ERROR: %@", error);
-                        return;
-                    }
-                    NSLog(@"SUCCESS: saving user");
-                }];
-            }
-        }
-        NSLog(@"SUCCESS: collection loading success");
-    }]; */
-    
 }
 
 

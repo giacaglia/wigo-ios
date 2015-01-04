@@ -8,6 +8,7 @@
 
 #import "WGUser.h"
 #import "WGEvent.h"
+#import "WGProfile.h"
 
 #define kKeyKey @"key"
 #define kEmailKey @"email"
@@ -53,11 +54,6 @@
 #define kPrivacyPublicValue @"public"
 #define kPrivacyPrivateValue @"private"
 
-@interface WGUser()
-
-@end
-
-
 static WGUser *currentUser = nil;
 
 @implementation WGUser
@@ -71,13 +67,8 @@ static WGUser *currentUser = nil;
     return newWGUser;
 }
 
-+(void) setCurrentUser:(WGUser *)user {
-    currentUser = user;
-    [[NSUserDefaults standardUserDefaults] setObject:user.key forKey:@"key"];
-}
-
-+(WGUser *) currentUser {
-    return currentUser;
+-(BOOL) isCurrentUser {
+    return [self isEqual:[WGProfile currentUser]];
 }
 
 -(void) setKey:(NSString *)key {

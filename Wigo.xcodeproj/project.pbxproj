@@ -15,6 +15,7 @@
 		4544095B1A547BCD00BB3036 /* WGNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544095A1A547BCD00BB3036 /* WGNotification.m */; };
 		4544095E1A548E5700BB3036 /* WGEventAttendee.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544095D1A548E5700BB3036 /* WGEventAttendee.m */; };
 		454409611A54A08A00BB3036 /* WGParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409601A54A08A00BB3036 /* WGParser.m */; };
+		454409641A58D19300BB3036 /* WGProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409631A58D19300BB3036 /* WGProfile.m */; };
 		4563F51E1A3F387700F8C9C4 /* WGApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F51D1A3F387700F8C9C4 /* WGApi.m */; };
 		4563F5211A3F3C6900F8C9C4 /* WGCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5201A3F3C6900F8C9C4 /* WGCollection.m */; };
 		4563F5241A3F436100F8C9C4 /* WGObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5231A3F436100F8C9C4 /* WGObject.m */; };
@@ -445,6 +446,8 @@
 		4544095D1A548E5700BB3036 /* WGEventAttendee.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGEventAttendee.m; sourceTree = "<group>"; };
 		4544095F1A54A08A00BB3036 /* WGParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGParser.h; sourceTree = "<group>"; };
 		454409601A54A08A00BB3036 /* WGParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGParser.m; sourceTree = "<group>"; };
+		454409621A58D19300BB3036 /* WGProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGProfile.h; sourceTree = "<group>"; };
+		454409631A58D19300BB3036 /* WGProfile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGProfile.m; sourceTree = "<group>"; };
 		4563F51C1A3F387700F8C9C4 /* WGApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGApi.h; sourceTree = "<group>"; };
 		4563F51D1A3F387700F8C9C4 /* WGApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGApi.m; sourceTree = "<group>"; };
 		4563F51F1A3F3C6900F8C9C4 /* WGCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGCollection.h; sourceTree = "<group>"; };
@@ -933,6 +936,8 @@
 				4563F5231A3F436100F8C9C4 /* WGObject.m */,
 				4563F5251A3F460F00F8C9C4 /* WGUser.h */,
 				4563F5261A3F460F00F8C9C4 /* WGUser.m */,
+				454409621A58D19300BB3036 /* WGProfile.h */,
+				454409631A58D19300BB3036 /* WGProfile.m */,
 				454409531A5241FA00BB3036 /* WGEvent.h */,
 				454409541A5241FA00BB3036 /* WGEvent.m */,
 				4544095C1A548E5700BB3036 /* WGEventAttendee.h */,
@@ -2466,6 +2471,7 @@
 				4563F53D1A3F80D100F8C9C4 /* AFHTTPRequestOperationManager.m in Sources */,
 				E921D66819239ED900361247 /* MainViewController.m in Sources */,
 				E9C63BD01A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m in Sources */,
+				454409641A58D19300BB3036 /* WGProfile.m in Sources */,
 				E903C63B19BF89FA003BCF90 /* LeaderboardViewController.m in Sources */,
 				E9C63BF41A03ED35006C5DD2 /* IQSongsPlaylistViewController.m in Sources */,
 				454409611A54A08A00BB3036 /* WGParser.m in Sources */,

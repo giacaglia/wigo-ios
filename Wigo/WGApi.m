@@ -105,4 +105,21 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [serializer setValue:key forHTTPHeaderField:@"X-Wigo-User-Key"];
 }
 
+#pragma mark AWS Uploader
+
++(void) upload:(NSString *)url fields:(NSDictionary *)fields file:(NSData *)fileData fileName:(NSString *)filename andHandler:(ApiResult)handler {
+    
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:@"POST" URLString:url parameters:fields constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { [formData appendPartWithFileData:fileData name:@"file" fileName:filename mimeType:[fields objectForKey:@"Content-Type"]];
+    } error:nil];
+    
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    
+    NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithStreamedRequest:request progress:nil completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+        handler(responseObject, error);
+    }];
+    
+    [uploadTask resume];
+    
+}
+
 @end

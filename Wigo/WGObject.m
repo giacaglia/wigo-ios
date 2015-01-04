@@ -69,7 +69,7 @@
 }
 
 -(BOOL) isEqual:(WGObject*)other {
-    return self.id == other.id;
+    return [self.id isEqualToNumber:other.id];
 }
 
 -(NSDictionary *) deserialize {

@@ -85,10 +85,9 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 -(NSURL *) coverImageURL;
 -(State) state;
 
+-(BOOL) isCurrentUser;
+
 -(void) login:(UserResult)handler;
 
-+(WGUser *) currentUser;
-+(void) setCurrentUser: (WGUser *)user;
-+(void) getCurrentUser:(UserResult)handler;
 
 @end
