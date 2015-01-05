@@ -38,6 +38,10 @@
     return another;
 }
 
+- (NSUInteger)count {
+    return [self.mutableObjectArray count];
+}
+
 - (NSArray *)getObjectArray {
     return [NSArray arrayWithArray:self.mutableObjectArray];
 }

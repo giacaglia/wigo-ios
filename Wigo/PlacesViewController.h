@@ -48,6 +48,8 @@
 @end
 
 @interface GoOutNewPlaceHeader : UIView
+- (void)setupWithMoreThanOneEvent:(BOOL)moreThanOneEvent;
+@property (nonatomic, strong) UILabel *goSomewhereLabel;
 @property (nonatomic, strong) UIButton *plusButton;
 @property (nonatomic, strong) UIButton *addEventButton;
 + (instancetype) init;

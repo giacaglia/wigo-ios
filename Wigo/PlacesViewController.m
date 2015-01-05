@@ -734,11 +734,11 @@ int firstIndexOfNegativeEvent;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kTodaySection) {
         if (_isSearching) {
-            return [[_filteredContentParty getObjectArray] count];
+            return [_filteredContentParty count];
         }
         else {
             int hasNextPage = ([_eventsParty hasNextPage] ? 1 : 0);
-            return [[_contentParty getObjectArray] count] + hasNextPage;
+            return [_contentParty count] + hasNextPage;
         }
     }
     else if (section == kHighlightsEmptySection) {
@@ -784,6 +784,8 @@ int firstIndexOfNegativeEvent;
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if (section == kTodaySection) {
         self.goElsewhereView = [GoOutNewPlaceHeader init];
+        if ([_contentParty count] > 0) [self.goElsewhereView setupWithMoreThanOneEvent:YES];
+        else [self.goElsewhereView setupWithMoreThanOneEvent:NO];
         [self.goElsewhereView.addEventButton addTarget: self action: @selector(goingSomewhereElsePressed) forControlEvents: UIControlEventTouchUpInside];
         [self shouldShowCreateButton];
         return self.goElsewhereView;
@@ -829,12 +831,12 @@ int firstIndexOfNegativeEvent;
 
         cell.placesDelegate = self;
         if (_isSearching) {
-            if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
+            if (indexPath.row == [_filteredContentParty count]) {
                 return cell;
             }
         }
         else {
-            if (indexPath.row == [[_contentParty getObjectArray] count]) {
+            if (indexPath.row == [_contentParty  count]) {
                 [self fetchEvents];
                 return cell;
             }
@@ -842,12 +844,12 @@ int firstIndexOfNegativeEvent;
         
         Event *event;
         if (_isSearching) {
-            int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
+            int sizeOfArray = (int)[_filteredContentParty  count];
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
             event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
         }
         else {
-            int sizeOfArray = (int)[[_contentParty getObjectArray] count];
+            int sizeOfArray = (int)[_contentParty count];
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
             event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
         }
@@ -1140,12 +1142,12 @@ int firstIndexOfNegativeEvent;
 }
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
-    int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
+    int numberOfEvents = (int)[_eventsParty count];
     return numberOfEvents * userIndex + eventIndex;
 }
 
 - (void)updateEvent:(Event *)newEvent {
-    for (int i = 0 ; i < [[_contentParty getObjectArray] count]; i++) {
+    for (int i = 0 ; i < [_contentParty count]; i++) {
         Event *event = [[_contentParty getObjectArray] objectAtIndex:i];
         if ([[event eventID] isEqualToNumber:[newEvent eventID]]) {
             [_contentParty replaceObjectAtIndex:i withObject:newEvent];
@@ -1156,7 +1158,7 @@ int firstIndexOfNegativeEvent;
 
 - (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {
     int userIndex, eventIndex;
-    int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
+    int numberOfEvents = (int)[_eventsParty count];
     userIndex = uniqueIndex/numberOfEvents;
     eventIndex = uniqueIndex - userIndex * numberOfEvents;
     return @{@"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex":[NSNumber numberWithInt:eventIndex]};
@@ -1281,7 +1283,7 @@ int firstIndexOfNegativeEvent;
             [self fillEventAttendees];
             page = @([page intValue] + 1);
             [eventPageArray removeAllObjects];
-            for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+            for (int i = 0; i < [_eventsParty count]; i++) {
                 [eventPageArray addObject:@2];
             }
             [self fetchedOneParty];
@@ -1330,7 +1332,7 @@ int firstIndexOfNegativeEvent;
 
 - (void)fillEventAttendees {
     _partyUserArray =  [[NSMutableArray alloc] init];
-    for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+    for (int i = 0; i < [_eventsParty count]; i++) {
         Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
         NSArray *eventAttendeesArray = [event getEventAttendees];
         Party *partyUser = [[Party alloc] init];
@@ -1531,7 +1533,7 @@ int firstIndexOfNegativeEvent;
     Party *partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
     [partyUser addObject:[Profile user]];
     [_partyUserArray addObject:partyUser];
-    [_eventsParty exchangeObjectAtIndex:([[_eventsParty getObjectArray] count] - 1) withObjectAtIndex:0];
+    [_eventsParty exchangeObjectAtIndex:([_eventsParty count] - 1) withObjectAtIndex:0];
     [_partyUserArray exchangeObjectAtIndex:([_partyUserArray count] - 1) withObjectAtIndex:0];
     [self removeUserFromAnyOtherEvent:[Profile user]];
 }
@@ -1573,7 +1575,7 @@ int firstIndexOfNegativeEvent;
     for (int i = 0; i < [arrayOfEvents count]; i++) {
         Event *event = [arrayOfEvents objectAtIndex:i];
         Party *partyUser = [_partyUserArray objectAtIndex:i];
-        for (int j = 0; j < [[partyUser getObjectArray] count]; j++) {
+        for (int j = 0; j < [partyUser count]; j++) {
             User *newUser = [[partyUser getObjectArray] objectAtIndex:j];
             if ([user isEqualToUser:newUser]) {
                 [partyUser removeUser:newUser];
@@ -1711,6 +1713,11 @@ int firstIndexOfNegativeEvent;
     return header;
 }
 
+- (void)setupWithMoreThanOneEvent:(BOOL)moreThanOneEvent {
+    if (moreThanOneEvent) self.goSomewhereLabel.text = @"Go somewhere else";
+    else self.goSomewhereLabel.text = @"Get today started";
+}
+
 - (void) setup {
     self.backgroundColor = RGB(241, 241, 241);
     
@@ -1733,15 +1740,14 @@ int firstIndexOfNegativeEvent;
     [self.plusButton addSubview: sendOvalImageView];
     [self addSubview: self.plusButton];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(10, 0, self.frame.size.width, self.frame.size.height)];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.textAlignment = NSTextAlignmentLeft;
-    titleLabel.font = [FontProperties mediumFont: 20.0f];
-    titleLabel.textColor = [FontProperties getBlueColor];
-    titleLabel.text = @"Go somewhere else";
-    titleLabel.center = CGPointMake(titleLabel.center.x, self.center.y - 4);
-    
-    [self addSubview: titleLabel];
+    self.goSomewhereLabel = [[UILabel alloc] initWithFrame: CGRectMake(10, 0, self.frame.size.width, self.frame.size.height)];
+    self.goSomewhereLabel.backgroundColor = [UIColor clearColor];
+    self.goSomewhereLabel.textAlignment = NSTextAlignmentLeft;
+    self.goSomewhereLabel.font = [FontProperties mediumFont: 20.0f];
+    self.goSomewhereLabel.textColor = [FontProperties getBlueColor];
+    self.goSomewhereLabel.text = @"Go somewhere else";
+    self.goSomewhereLabel.center = CGPointMake(self.goSomewhereLabel.center.x, self.center.y - 4);
+    [self addSubview: self.goSomewhereLabel];
     
     self.addEventButton = [[UIButton alloc] initWithFrame: self.bounds];
     self.addEventButton.backgroundColor = [UIColor clearColor];
