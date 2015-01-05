@@ -110,15 +110,27 @@
     [notificationButton addSubview:labelName];
     
     UIButton *followBackPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
+    followBackPersonButton.tag = 100;
+    [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+     [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
+    
     if ([user isFollowing]) {
         followBackPersonButton.tag = -100;
         [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
     }
-    else {
+    if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        [followBackPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+        [followBackPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+        [followBackPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+        followBackPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+        followBackPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        followBackPersonButton.layer.borderWidth = 1;
+        followBackPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+        followBackPersonButton.layer.cornerRadius = 3;
         followBackPersonButton.tag = 100;
-        [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     }
-    [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
+ 
+   
     [cell.contentView addSubview:followBackPersonButton];
 
 }
