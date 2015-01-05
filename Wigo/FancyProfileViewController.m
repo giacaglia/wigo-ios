@@ -901,7 +901,7 @@ UIButton *tapButton;
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kNotificationsSection) {
+    if (indexPath.section == kNotificationsSection && [self.user isEqualToUser:[Profile user]]) {
         if ([self isIndexPathASummaryCell:indexPath]) {
             [self.navigationController pushViewController:[FollowRequestsViewController new] animated:YES];
         }
