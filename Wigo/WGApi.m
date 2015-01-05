@@ -6,8 +6,11 @@
 //  Copyright (c) 2014 Adam Eagle. All rights reserved.
 //
 
+dispatch_queue_t postQueue;
+
 #import "WGApi.h"
 #import "WGProfile.h"
+#import <dispatch/dispatch.h>
 
 #define kWigoApiKeyKey @"X-Wigo-API-Key"
 #define kWigoClientEnterpriseKey @"X-Wigo-Client-Enterprise"
@@ -155,13 +158,23 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(response, dataError);
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                handler(response, dataError);
+            });
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        handler(nil, error);
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            handler(nil, error);
+        });
     }];
     
-    [operation start];
+    if (!postQueue) {
+        postQueue = dispatch_queue_create("com.whoisgoingout.wigo.postqueue", NULL);
+    }
+    
+    dispatch_async(postQueue, ^(void) {
+        [operation start];
+    });
 }
 
 +(NSString *) getUrlStringForEndpoint:(NSString *)endpoint {

@@ -19,8 +19,6 @@
 #import "Time.h"
 
 #import "FontProperties.h"
-
-
 #import "EventAnalytics.h"
 
 #import "WiGoSpinnerView.h"
@@ -45,7 +43,6 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 #define MAX_LENGTH_BIO 110
 #define PEOPLEVIEW_HEIGHT_OF_CELLS 80
 #define kGoHereState @"goHereState"
-
 
 @protocol Globals <NSObject>
 

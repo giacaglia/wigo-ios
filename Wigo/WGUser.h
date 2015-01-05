@@ -88,7 +88,8 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(BOOL) isCurrentUser;
 
--(void) login:(WGUserResultBlock)handler;
+-(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler;
 
+-(void) login:(WGUserResultBlock)handler;
 
 @end

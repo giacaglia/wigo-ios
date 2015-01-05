@@ -592,6 +592,21 @@ static WGUser *currentUser = nil;
     }];
 }
 
+-(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler {
+    NSMutableArray *taps = [[NSMutableArray alloc] init];
+    for (WGUser *user in users) {
+        [taps addObject:@{ @"tapped" : user.id }];
+    }
+    [WGApi post:@"taps" withParameters:taps andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            for (WGUser *user in users) {
+                user.isTapped = [NSNumber numberWithBool:YES];
+            }
+        }
+        handler(error == nil, error);
+    }];
+}
+
 -(void) untap:(WGUser *)user withHandler:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"users/%@/", user.id];
     [WGApi post:queryString withParameters:@{ @"is_tapped" : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
