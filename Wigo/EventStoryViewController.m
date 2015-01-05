@@ -205,6 +205,10 @@
         self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
         self.conversationViewController.controllerDelegate = self;
         self.conversationViewController.storyDelegate = self;
+        
+        BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
+        self.conversationViewController.isPeeking = isPeeking;
+        
         [self presentViewController:self.conversationViewController animated:YES completion:nil];
     }
 }

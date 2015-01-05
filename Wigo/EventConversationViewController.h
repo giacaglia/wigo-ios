@@ -25,6 +25,7 @@
 @property (nonatomic, assign) BOOL isFocusing;
 @property (nonatomic, strong) UILabel *postingLabel;
 @property (nonatomic, strong) UIView *loadingBanner;
+@property (nonatomic, assign) BOOL isPeeking;
 @end
 
 @interface FaceCell : UICollectionViewCell

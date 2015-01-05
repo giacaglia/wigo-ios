@@ -118,6 +118,8 @@
 
         }
         [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
+        
+        myCell.isPeeking = self.isPeeking;
         return myCell;
     }
     else if ([mimeType isEqualToString:kFaceImage]) {
@@ -762,6 +764,7 @@
             [self.upVoteButton addSubview:self.upvoteImageView];
             [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
             [self.contentView addSubview:self.upVoteButton];
+            self.upVoteButton.hidden = self.isPeeking;
         }
         if (!self.downVoteButton) {
             self.downVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 52, 56, 52)];
@@ -769,6 +772,7 @@
                        [self.downVoteButton addSubview:self.downvoteImageView];
             [self.downVoteButton addTarget:self action:@selector(downvotePressed:) forControlEvents:UIControlEventTouchUpInside];
             [self.contentView addSubview:self.downVoteButton];
+            self.downVoteButton.hidden = self.isPeeking;
         }
         if ([vote intValue] == 1) self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
         else self.upvoteImageView.image = [UIImage imageNamed:@"upvote"];

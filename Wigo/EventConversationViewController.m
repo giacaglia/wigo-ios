@@ -413,7 +413,7 @@
     self.mediaScrollView.mediaDelegate = self;
     self.mediaScrollView.eventConversationDelegate = self;
     self.mediaScrollView.storyDelegate = self.storyDelegate;
-
+    self.mediaScrollView.isPeeking = self.isPeeking;
 
     self.mediaScrollView.delegate = self;
     [self.view addSubview:self.mediaScrollView];
