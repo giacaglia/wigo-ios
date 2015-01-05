@@ -450,7 +450,7 @@
                     [self.eventConversationDelegate showCompletedMessage];
                     self.shownCurrentImage = YES;
                     NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
-                    [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:jsonResponse];
+                    [mutableEventMessages replaceObjectAtIndex:(mutableEventMessages.count - 2) withObject:jsonResponse];
                     if (self.shownCurrentImage) {
                         [mutableEventMessages removeLastObject];
                     }

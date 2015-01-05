@@ -901,7 +901,7 @@ UIButton *tapButton;
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kNotificationsSection) {
+    if (indexPath.section == kNotificationsSection && [self.user isEqualToUser:[Profile user]]) {
         if ([self isIndexPathASummaryCell:indexPath]) {
             [self.navigationController pushViewController:[FollowRequestsViewController new] animated:YES];
         }
@@ -1062,13 +1062,17 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchEvent:(Event *)event {
+    NSLog(@"string: events/%@", [event eventID]);
     [Network sendAsynchronousHTTPMethod:GET withAPIName:[NSString stringWithFormat:@"events/%@", [event eventID]] withHandler:^(NSDictionary *jsonResponse, NSError *error) {        dispatch_async(dispatch_get_main_queue(), ^(void){
         if (!error) {
-            Event *newEvent = [[Event alloc] initWithDictionary:jsonResponse];
-            EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-            eventStoryViewController.event = newEvent;
-            eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-            [self.navigationController pushViewController: eventStoryViewController animated:YES];
+            if (! ([[jsonResponse allKeys] containsObject:@"code"] && [[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) ) {
+                Event *newEvent = [[Event alloc] initWithDictionary:jsonResponse];
+                EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+                eventStoryViewController.event = newEvent;
+                eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+                [self.navigationController pushViewController: eventStoryViewController animated:YES];
+
+            }
         }
     });
     }];
