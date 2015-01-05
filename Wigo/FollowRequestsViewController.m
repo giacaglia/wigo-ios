@@ -83,7 +83,7 @@
 
     Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:buttonSender.tag];
     User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
-    [Network acceptFollowRequestForUser:user];
+    [Network sendAsynchronousHTTPMethod:GET withAPIName:[NSString stringWithFormat:@"follows/accept?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]] withHandler:^(NSDictionary *jsonResponse, NSError *error) { }];
     
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width - 100, 54)];
     notificationButton.tag = tag;
