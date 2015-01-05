@@ -599,6 +599,10 @@
     FancyProfileViewController *fancyProfileViewController = [sb instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
 
+    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        fancyProfileViewController.userState = OTHER_SCHOOL_USER;
+    }
+    
     [self.navigationController setNavigationBarHidden: NO animated: NO];
 
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
