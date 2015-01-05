@@ -432,9 +432,19 @@ static WGUser *currentUser = nil;
             handler(nil, error);
             return;
         }
-        
-        WGUser *user = [self.class serialize:jsonResponse];
-        handler(user, error);
+        NSError *dataError;
+        WGUser *object;
+        @try {
+            object = [WGUser serialize:jsonResponse];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(object, dataError);
+        }
     }];
 }
 
@@ -450,9 +460,19 @@ static WGUser *currentUser = nil;
             handler(nil, error);
             return;
         }
-        
-        WGUser *user = [self.class serialize:jsonResponse];
-        handler(user, error);
+        NSError *dataError;
+        WGUser *object;
+        @try {
+            object = [WGUser serialize:jsonResponse];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(object, dataError);
+        }
     }];
 }
 
@@ -462,8 +482,19 @@ static WGUser *currentUser = nil;
             handler(nil, error);
             return;
         }
-        WGCollection *users = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
-        handler(users, error);
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
     }];
 }
 
@@ -473,7 +504,19 @@ static WGUser *currentUser = nil;
             handler(nil, error);
             return;
         }
-        handler([WGUser serialize:jsonResponse], error);
+        NSError *dataError;
+        WGUser *object;
+        @try {
+            object = [WGUser serialize:jsonResponse];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(object, dataError);
+        }
     }];
 }
 
@@ -491,16 +534,19 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) uploadFile:(NSData *)fileData withName:(NSString *)filename options:(NSDictionary *)options andHandler:(BoolResult) handler {
-    
-#warning Complete this - fix AWSUploader
+#warning TODO: make uploads save something to user or return URL
+
+-(void) uploadPhoto:(NSData *)fileData withName:(NSString *)filename options:(NSDictionary *)options andHandler:(BoolResult) handler {
+    [WGApi uploadPhoto:fileData withFileName:filename andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
     
 }
 
 -(void) uploadVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumnailName options:(NSDictionary *)options andHandler:(BoolResult) handler {
-
-#warning Complete this - fix AWSUploader
-    
+    [WGApi uploadVideo:fileData withFileName:filename andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
 }
 
 -(void) sendInvites:(NSDictionary *)numbers withHandler:(BoolResult)handler {

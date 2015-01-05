@@ -56,8 +56,20 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [WGApi addWigoHeaders:manager.requestSerializer];
     
     [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        WGParser *parser = [[WGParser alloc] init];
-        handler([parser replaceReferences:responseObject], nil);
+        NSError *dataError;
+        NSDictionary *response;
+        @try {
+            WGParser *parser = [[WGParser alloc] init];
+            response = [parser replaceReferences:responseObject];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(response, dataError);
+        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         handler(nil, error);
     }];
@@ -74,8 +86,20 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [WGApi addWigoHeaders:manager.requestSerializer];
     
     [manager DELETE:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        WGParser *parser = [[WGParser alloc] init];
-        handler([parser replaceReferences:responseObject], nil);
+        NSError *dataError;
+        NSDictionary *response;
+        @try {
+            WGParser *parser = [[WGParser alloc] init];
+            response = [parser replaceReferences:responseObject];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(response, dataError);
+        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         handler(nil, error);
     }];
@@ -98,8 +122,20 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     operation.responseSerializer = [AFJSONResponseSerializer serializer];
     
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        WGParser *parser = [[WGParser alloc] init];
-        handler([parser replaceReferences:responseObject], nil);
+        NSError *dataError;
+        NSDictionary *response;
+        @try {
+            WGParser *parser = [[WGParser alloc] init];
+            response = [parser replaceReferences:responseObject];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(response, dataError);
+        }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         handler(nil, error);
     }];
@@ -136,15 +172,30 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             return;
         }
         
-        NSMutableDictionary *fields = [[NSMutableDictionary alloc] init];
-        for (NSDictionary *field in [jsonResponse objectForKey:kFieldsKey]) {
-            [fields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
+        NSError *dataError = nil;
+        NSString *action;
+        NSMutableDictionary *fields;
+        @try {
+            fields = [[NSMutableDictionary alloc] init];
+            for (NSDictionary *field in [jsonResponse objectForKey:kFieldsKey]) {
+                [fields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
+            }
+            action = [fields objectForKey:kActionKey];
         }
-        NSString *action = [fields objectForKey:kActionKey];
-        
-        [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            handler(jsonResponse, error);
-        }];
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+             
+            dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            if (!action) {
+                handler(nil, dataError);
+                return;
+            }
+            [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                handler(jsonResponse, error);
+            }];
+        }
     }];
 }
 
@@ -155,17 +206,33 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             return;
         }
         
-        NSDictionary *video = [jsonResponse objectForKey:kVideoKey];
-        
-        NSMutableDictionary *fields = [[NSMutableDictionary alloc] init];
-        for (NSDictionary *field in [video objectForKey:kFieldsKey]) {
-            [fields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
+        NSError *dataError = nil;
+        NSDictionary *video;
+        NSString *action;
+        NSMutableDictionary *fields;
+        @try {
+            video = [jsonResponse objectForKey:kVideoKey];
+            
+            fields = [[NSMutableDictionary alloc] init];
+            for (NSDictionary *field in [video objectForKey:kFieldsKey]) {
+                [fields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
+            }
+            action = [video objectForKey:kActionKey];
         }
-        NSString *action = [video objectForKey:kActionKey];
-        
-        [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            handler(jsonResponse, error);
-        }];
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            if (!action) {
+                handler(nil, dataError);
+                return;
+            }
+            [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                handler(jsonResponse, error);
+            }];
+        }
     }];
 }
 

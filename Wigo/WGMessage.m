@@ -71,8 +71,19 @@
             handler(nil, error);
             return;
         }
-        WGCollection *messages = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
-        handler(messages, error);
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGMessage" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
     }];
 }
 

@@ -97,9 +97,20 @@
             return;
         }
         
-        [self.modifiedKeys removeAllObjects];
-        WGObject *object = [self.class serialize:jsonResponse];
-        handler(object, error);
+        NSError *dataError;
+        WGObject *object;
+        @try {
+            object = [WGObject serialize:jsonResponse];
+            [self.modifiedKeys removeAllObjects];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(object, dataError);
+        }
     }];
 }
 

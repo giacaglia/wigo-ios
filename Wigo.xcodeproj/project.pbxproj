@@ -39,6 +39,8 @@
 		4563F55E1A3F81B900F8C9C4 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5561A3F81B900F8C9C4 /* UIWebView+AFNetworking.m */; };
 		4563F5651A3F875900F8C9C4 /* NSDictionary+STHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5621A3F875900F8C9C4 /* NSDictionary+STHelper.m */; };
 		4563F5661A3F875900F8C9C4 /* NSMutableDictionary+STHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5641A3F875900F8C9C4 /* NSMutableDictionary+STHelper.m */; };
+		45DF868E1A5AE1C100DB85AE /* WGError.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF868D1A5AE1C100DB85AE /* WGError.m */; };
+		45DF86911A5AFBA000DB85AE /* WGEventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86901A5AFBA000DB85AE /* WGEventMessage.m */; };
 		C10BFB54198C24E6003CA59A /* EventAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C10BFB53198C24E6003CA59A /* EventAnalytics.m */; };
 		C10BFB55198C24E6003CA59A /* EventAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C10BFB53198C24E6003CA59A /* EventAnalytics.m */; };
 		C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */ = {isa = PBXBuildFile; fileRef = C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */; };
@@ -497,6 +499,10 @@
 		4563F5621A3F875900F8C9C4 /* NSDictionary+STHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+STHelper.m"; sourceTree = "<group>"; };
 		4563F5631A3F875900F8C9C4 /* NSMutableDictionary+STHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+STHelper.h"; sourceTree = "<group>"; };
 		4563F5641A3F875900F8C9C4 /* NSMutableDictionary+STHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+STHelper.m"; sourceTree = "<group>"; };
+		45DF868C1A5AE1C100DB85AE /* WGError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGError.h; sourceTree = "<group>"; };
+		45DF868D1A5AE1C100DB85AE /* WGError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGError.m; sourceTree = "<group>"; };
+		45DF868F1A5AFBA000DB85AE /* WGEventMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEventMessage.h; sourceTree = "<group>"; };
+		45DF86901A5AFBA000DB85AE /* WGEventMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGEventMessage.m; sourceTree = "<group>"; };
 		C10BFB52198C24E6003CA59A /* EventAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventAnalytics.h; sourceTree = "<group>"; };
 		C10BFB53198C24E6003CA59A /* EventAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAnalytics.m; sourceTree = "<group>"; };
 		C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Wigo.h"; sourceTree = "<group>"; };
@@ -930,6 +936,8 @@
 			children = (
 				4563F51C1A3F387700F8C9C4 /* WGApi.h */,
 				4563F51D1A3F387700F8C9C4 /* WGApi.m */,
+				45DF868C1A5AE1C100DB85AE /* WGError.h */,
+				45DF868D1A5AE1C100DB85AE /* WGError.m */,
 				4544095F1A54A08A00BB3036 /* WGParser.h */,
 				454409601A54A08A00BB3036 /* WGParser.m */,
 				4563F5221A3F436100F8C9C4 /* WGObject.h */,
@@ -944,6 +952,8 @@
 				4544095D1A548E5700BB3036 /* WGEventAttendee.m */,
 				454409561A537F1C00BB3036 /* WGMessage.h */,
 				454409571A537F1C00BB3036 /* WGMessage.m */,
+				45DF868F1A5AFBA000DB85AE /* WGEventMessage.h */,
+				45DF86901A5AFBA000DB85AE /* WGEventMessage.m */,
 				454409591A547BCD00BB3036 /* WGNotification.h */,
 				4544095A1A547BCD00BB3036 /* WGNotification.m */,
 				4563F51F1A3F3C6900F8C9C4 /* WGCollection.h */,
@@ -2347,6 +2357,7 @@
 				E93030C41986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
 				E93DE52A195C82B900079074 /* MessageViewController.m in Sources */,
 				E900C2C11961EADE00A01F50 /* UIImage+WebP.m in Sources */,
+				45DF868E1A5AE1C100DB85AE /* WGError.m in Sources */,
 				E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */,
 				FA5526221A1FE3D800101AE7 /* EngagementGraph.m in Sources */,
 				C10BFB54198C24E6003CA59A /* EventAnalytics.m in Sources */,
@@ -2385,6 +2396,7 @@
 				E9C63BEE1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */,
 				E9D0399D1A095C1500DEF094 /* AWSUploader.m in Sources */,
 				4563F5401A3F80D100F8C9C4 /* AFSecurityPolicy.m in Sources */,
+				45DF86911A5AFBA000DB85AE /* WGEventMessage.m in Sources */,
 				E9203B531A23C4B90086BF73 /* EventConversationViewController.m in Sources */,
 				E998C28419D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m in Sources */,
 				E9C63C001A03ED35006C5DD2 /* IQBottomContainerView.m in Sources */,

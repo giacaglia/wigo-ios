@@ -8,6 +8,7 @@
 
 #import "WGObject.h"
 #import "WGEventAttendee.h"
+#import "WGEventMessage.h"
 
 @interface WGEvent : WGObject
 

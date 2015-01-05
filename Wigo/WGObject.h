@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "NSDictionary+STHelper.h"
 #import "WGApi.h"
+#import "WGError.h"
 
 @class WGCollection;
 

@@ -88,9 +88,20 @@
             handler(nil, error);
             return;
         }
-#warning CHANGE TO EVENT_MESSAGE
-        WGCollection *events = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
-        handler(events, error);
+        
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGEventMessage class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
     }];
 }
 
@@ -100,8 +111,19 @@
             handler(nil, error);
             return;
         }
-        WGCollection *events = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
-        handler(events, error);
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
     }];
 }
 
@@ -111,8 +133,19 @@
             handler(nil, error);
             return;
         }
-        WGCollection *events = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
-        handler(events, error);
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
     }];
 }
 
@@ -122,7 +155,19 @@
             handler(nil, error);
             return;
         }
-        handler([WGEvent serialize:jsonResponse], error);
+        NSError *dataError;
+        WGEvent *object;
+        @try {
+            object = [WGEvent serialize:jsonResponse];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(object, dataError);
+        }
     }];
 }
 
