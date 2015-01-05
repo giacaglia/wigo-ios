@@ -10,6 +10,7 @@
 #import "NSDictionary+STHelper.h"
 #import "WGApi.h"
 #import "WGError.h"
+#import "NSDate+WGDate.h"
 
 @class WGCollection;
 
@@ -22,7 +23,6 @@ typedef void (^BoolResult)(BOOL success, NSError *error);
 @property NSMutableDictionary *parameters;
 @property NSMutableArray *modifiedKeys;
 
-@property NSDateFormatter *dateFormatter;
 @property NSString *className;
 
 @property NSNumber* id;
@@ -31,8 +31,6 @@ typedef void (^BoolResult)(BOOL success, NSError *error);
 +(WGObject *)serialize:(NSDictionary *)json;
 
 -(void) initializeWithJSON:(NSDictionary *)json;
-
--(BOOL) wasCreatedLastDay;
 
 -(BOOL) isEqual:(WGObject*)object;
 

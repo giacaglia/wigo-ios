@@ -136,7 +136,7 @@
 
 -(void) getNextPage:(CollectionResult)handler {
     if (!self.nextPage) {
-        handler(nil, [NSError errorWithDomain:@"WGApi" code:0 userInfo:@{}]);
+        handler(nil, [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"no next page" }]);
         return;
     }
     [WGApi get:self.nextPage withHandler:^(NSDictionary *jsonResponse, NSError *error) {

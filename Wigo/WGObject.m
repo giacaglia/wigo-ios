@@ -24,15 +24,8 @@
 }
 
 -(void) initializeWithJSON:(NSDictionary *)json {
-    [self initDateFormatter];
-    
     self.modifiedKeys = [[NSMutableArray alloc] init];
     self.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
-}
-
--(void) initDateFormatter {
-    self.dateFormatter = [[NSDateFormatter alloc] init];
-    [self.dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
 }
 
 -(void) setId:(NSNumber *)id {
@@ -44,28 +37,11 @@
 }
 
 -(void) setCreated:(NSDate *)created {
-    [self setObject:[self.dateFormatter stringFromDate:created] forKey:kCreatedKey];
+    [self setObject:[created deserialize] forKey:kCreatedKey];
 }
 
 -(NSDate *) created {
-    return [self.dateFormatter dateFromString: [self objectForKey:kCreatedKey]];
-}
-
-#warning TODO: make this pretty
--(BOOL) wasCreatedLastDay {
-    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
-    NSDate *dateInLocalTimezone = [self.created dateByAddingTimeInterval:timeZoneSeconds];
-    NSDate *nowDate = [NSDate date];
-    
-    NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit fromDate:dateInLocalTimezone];
-   
-    NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit fromDate:nowDate];
-
-    if ([today day] == [otherDay day] && [today month] == [otherDay month] && [today year] == [otherDay year]) {
-        return NO;
-    }
-    
-    return YES;
+    return [NSDate serialize:[self objectForKey:kCreatedKey]];
 }
 
 -(BOOL) isEqual:(WGObject*)other {

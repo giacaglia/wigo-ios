@@ -72,6 +72,7 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 @property WGEvent* isAttending;
 @property NSDictionary* group;
 @property NSString* groupName;
+@property NSNumber* isGroupLocked;
 @property NSNumber* groupNumberMembers;
 @property NSNumber* groupRank;
 

@@ -17,9 +17,17 @@ typedef void (^ApiResult)(NSDictionary *jsonResponse, NSError *error);
 
 +(void) get:(NSString *)endpoint withHandler:(ApiResult)handler;
 
++(void) get:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResult)handler;
+
 +(void) delete:(NSString *)endpoint withHandler:(ApiResult)handler;
 
++(void) delete:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResult)handler;
+
 +(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResult)handler;
+
++(void) post:(NSString *)endpoint withHandler:(ApiResult)handler;
+
++(void) post:(NSString *)endpoint withArguments:(NSDictionary *)arguments andParameters:(id)parameters andHandler:(ApiResult)handler;
 
 +(void) uploadPhoto:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(ApiResult) handler;
 

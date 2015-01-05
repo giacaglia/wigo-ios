@@ -83,7 +83,7 @@
 }
 
 -(void) getMessages:(CollectionResult)handler {
-    [WGApi get:[NSString stringWithFormat:@"eventmessages/?event=%@&ordering=id", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"eventmessages/" withArguments:@{ @"event" : self.id, @"ordering" : @"id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -106,7 +106,7 @@
 }
 
 +(void) get:(CollectionResult)handler {
-    [WGApi get:@"events?attendees_limit=10" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"events" withArguments:@{ @"attendees_limit" : @10 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -127,8 +127,8 @@
     }];
 }
 
-+(void) getWithGroupNumber: (NSInteger)groupNumber andHandler:(CollectionResult)handler {
-    [WGApi get:[NSString stringWithFormat:@"events?group=%ld&date=tonight&attendees_limit=10", (long) groupNumber] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
++(void) getWithGroupNumber: (NSNumber *)groupNumber andHandler:(CollectionResult)handler {
+    [WGApi get:@"events" withArguments:@{ @"group" : groupNumber, @"date" : @"tonight", @"attendees_limit" : @10 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

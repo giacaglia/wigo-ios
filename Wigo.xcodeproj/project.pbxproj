@@ -41,6 +41,8 @@
 		4563F5661A3F875900F8C9C4 /* NSMutableDictionary+STHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5641A3F875900F8C9C4 /* NSMutableDictionary+STHelper.m */; };
 		45DF868E1A5AE1C100DB85AE /* WGError.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF868D1A5AE1C100DB85AE /* WGError.m */; };
 		45DF86911A5AFBA000DB85AE /* WGEventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86901A5AFBA000DB85AE /* WGEventMessage.m */; };
+		45DF86941A5B0B5C00DB85AE /* WGAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86931A5B0B5C00DB85AE /* WGAnalytics.m */; };
+		45DF86971A5B1F8200DB85AE /* NSDate+WGDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86961A5B1F8200DB85AE /* NSDate+WGDate.m */; };
 		C10BFB54198C24E6003CA59A /* EventAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C10BFB53198C24E6003CA59A /* EventAnalytics.m */; };
 		C10BFB55198C24E6003CA59A /* EventAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C10BFB53198C24E6003CA59A /* EventAnalytics.m */; };
 		C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */ = {isa = PBXBuildFile; fileRef = C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */; };
@@ -503,6 +505,10 @@
 		45DF868D1A5AE1C100DB85AE /* WGError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGError.m; sourceTree = "<group>"; };
 		45DF868F1A5AFBA000DB85AE /* WGEventMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEventMessage.h; sourceTree = "<group>"; };
 		45DF86901A5AFBA000DB85AE /* WGEventMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGEventMessage.m; sourceTree = "<group>"; };
+		45DF86921A5B0B5C00DB85AE /* WGAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGAnalytics.h; sourceTree = "<group>"; };
+		45DF86931A5B0B5C00DB85AE /* WGAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGAnalytics.m; sourceTree = "<group>"; };
+		45DF86951A5B1F8200DB85AE /* NSDate+WGDate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+WGDate.h"; sourceTree = "<group>"; };
+		45DF86961A5B1F8200DB85AE /* NSDate+WGDate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+WGDate.m"; sourceTree = "<group>"; };
 		C10BFB52198C24E6003CA59A /* EventAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventAnalytics.h; sourceTree = "<group>"; };
 		C10BFB53198C24E6003CA59A /* EventAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAnalytics.m; sourceTree = "<group>"; };
 		C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Wigo.h"; sourceTree = "<group>"; };
@@ -940,6 +946,8 @@
 				45DF868D1A5AE1C100DB85AE /* WGError.m */,
 				4544095F1A54A08A00BB3036 /* WGParser.h */,
 				454409601A54A08A00BB3036 /* WGParser.m */,
+				45DF86921A5B0B5C00DB85AE /* WGAnalytics.h */,
+				45DF86931A5B0B5C00DB85AE /* WGAnalytics.m */,
 				4563F5221A3F436100F8C9C4 /* WGObject.h */,
 				4563F5231A3F436100F8C9C4 /* WGObject.m */,
 				4563F5251A3F460F00F8C9C4 /* WGUser.h */,
@@ -964,6 +972,8 @@
 				4544094B1A51EA0000BB3036 /* WGCollectionView.m */,
 				454409501A51F19100BB3036 /* WGTableView.h */,
 				454409511A51F19100BB3036 /* WGTableView.m */,
+				45DF86951A5B1F8200DB85AE /* NSDate+WGDate.h */,
+				45DF86961A5B1F8200DB85AE /* NSDate+WGDate.m */,
 			);
 			name = "New Core Objects";
 			sourceTree = "<group>";
@@ -2353,6 +2363,7 @@
 				4563F5411A3F80D100F8C9C4 /* AFURLConnectionOperation.m in Sources */,
 				E9C63BF61A03ED35006C5DD2 /* IQMediaCaptureController.m in Sources */,
 				E900C2BA1961EADE00A01F50 /* SDWebImageDownloader.m in Sources */,
+				45DF86971A5B1F8200DB85AE /* NSDate+WGDate.m in Sources */,
 				E9C63BDE1A03ED35006C5DD2 /* IQAudioPickerUtility.m in Sources */,
 				E93030C41986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
 				E93DE52A195C82B900079074 /* MessageViewController.m in Sources */,
@@ -2467,6 +2478,7 @@
 				E9DFE16F1A001142003C5779 /* BatteryViewController.m in Sources */,
 				E900C2BE1961EADE00A01F50 /* UIButton+WebCache.m in Sources */,
 				E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */,
+				45DF86941A5B0B5C00DB85AE /* WGAnalytics.m in Sources */,
 				E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */,
 				FA2BE9BD19FAF06500CC0E5E /* EventStoryViewController.m in Sources */,
 				E9C63BF21A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */,

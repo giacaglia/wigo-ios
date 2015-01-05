@@ -10,6 +10,8 @@
 
 @implementation WGCollectionView
 
+#warning TODO: spec this out with Dennis
+
 +(WGCollectionView *) initWithCollection: (WGCollection *) collection {
     WGCollectionView *newCollectionView = [WGCollectionView new];
     newCollectionView.collections = [WGCollectionArray initWithCollection:collection];

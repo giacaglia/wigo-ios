@@ -43,10 +43,13 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 
 @implementation WGApi
 
-#warning TODO: write wrapper for NSError
-
 +(void) get:(NSString *)endpoint withHandler:(ApiResult)handler {
     [WGApi getURL:[WGApi getUrlStringForEndpoint:endpoint] withHandler:handler];
+}
+
++(void) get:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResult)handler {
+    NSString *fullEndpoint = [WGApi getStringWithEndpoint:endpoint andArguments:arguments];
+    [WGApi getURL:[WGApi getUrlStringForEndpoint:fullEndpoint] withHandler:handler];
 }
 
 +(void) getURL:(NSString *)url withHandler:(ApiResult)handler {
@@ -79,6 +82,11 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [WGApi deleteURL:[WGApi getUrlStringForEndpoint:endpoint] withHandler:handler];
 }
 
++(void) delete:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResult)handler {
+    NSString *fullEndpoint = [WGApi getStringWithEndpoint:endpoint andArguments:arguments];
+    [WGApi deleteURL:[WGApi getUrlStringForEndpoint:fullEndpoint] withHandler:handler];
+}
+
 +(void) deleteURL:(NSString *)url withHandler:(ApiResult)handler {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
@@ -106,7 +114,20 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 }
 
 +(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResult)handler {
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[WGApi getUrlStringForEndpoint:endpoint]]];
+    [WGApi postURL:[WGApi getUrlStringForEndpoint:endpoint] withParameters:parameters andHandler:handler];
+}
+
++(void) post:(NSString *)endpoint withHandler:(ApiResult)handler {
+    [WGApi postURL:[WGApi getUrlStringForEndpoint:endpoint] withParameters:@{} andHandler:handler];
+}
+
++(void) post:(NSString *)endpoint withArguments:(NSDictionary *)arguments andParameters:(id)parameters andHandler:(ApiResult)handler {
+    NSString *fullEndpoint = [WGApi getStringWithEndpoint:endpoint andArguments:arguments];
+    [WGApi postURL:[WGApi getUrlStringForEndpoint:fullEndpoint] withParameters:parameters andHandler:handler];
+}
+
++(void) postURL:(NSString *)url withParameters:(id)parameters andHandler:(ApiResult)handler {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters
                                                        options:NSJSONWritingPrettyPrinted
@@ -147,6 +168,21 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     return [NSString stringWithFormat:baseURLString, endpoint];
 }
 
++(NSString *) getStringWithEndpoint:(NSString *)endpoint andArguments:(NSDictionary *)arguments {
+    NSString *fullEndpoint = [NSString stringWithString:endpoint];
+    BOOL first = YES;
+    for (NSString *key in [arguments allKeys]) {
+        id value = [arguments objectForKey:key];
+        if (first) {
+            fullEndpoint = [fullEndpoint stringByAppendingString:[NSString stringWithFormat:@"?%@=%@", key, value]];
+            first = NO;
+        } else {
+            fullEndpoint = [fullEndpoint stringByAppendingString:[NSString stringWithFormat:@"&%@=%@", key, value]];
+        }
+    }
+    return fullEndpoint;
+}
+
 +(void)addWigoHeaders:(id)serializer {
     [serializer setValue:kWigoApiKey forHTTPHeaderField:kWigoApiKeyKey];
 #if ENTERPRISE
@@ -157,9 +193,6 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [serializer setValue:kWigoApiVersion forHTTPHeaderField:kWigoApiVersionKey];
     [serializer setValue:kDeviceType forHTTPHeaderField:kWigoDeviceKey];
     [serializer setValue:kContentType forHTTPHeaderField:kContentTypeKey];
-
-#warning TODO: find out how to 'actually' get the key
-
     [serializer setValue:[WGProfile currentUser].key forHTTPHeaderField:kWigoUserKey];
 }
 

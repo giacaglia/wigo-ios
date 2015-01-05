@@ -45,6 +45,7 @@
 #define kIsAttendingKey @"is_attending"
 
 #define kGroupKey @"group" //: {},
+#define kGroupLockedKey @"locked"
 #define kGroupRankKey @"group_rank" //: 60
 #define kNumMembersKey @"num_members"
 
@@ -127,11 +128,11 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setModified:(NSDate *)modified {
-    [self setObject:[self.dateFormatter stringFromDate:modified] forKey:kModifiedKey];
+    [self setObject:[modified deserialize] forKey:kModifiedKey];
 }
 
 -(NSDate *) modified {
-    return [self.dateFormatter dateFromString: [self objectForKey:kModifiedKey]];
+    return [NSDate serialize:[self objectForKey:kModifiedKey]];
 }
 
 -(void) setGender:(NSString *)gender {
@@ -203,6 +204,16 @@ static WGUser *currentUser = nil;
 
 -(NSNumber *) groupRank {
     return [self objectForKey:kGroupRankKey];
+}
+
+-(void) setIsGroupLocked:(NSNumber *)isGroupLocked {
+    NSMutableDictionary *groupDict = [[[NSMutableDictionary alloc] init] initWithDictionary: self.group];
+    [groupDict setObject:isGroupLocked forKey:kGroupLockedKey];
+    self.group = groupDict;
+}
+
+-(NSNumber *) isGroupLocked {
+    return [self.group objectForKey:kGroupRankKey];
 }
 
 -(void) setProperties:(NSDictionary *)properties {
@@ -550,7 +561,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) sendInvites:(NSDictionary *)numbers withHandler:(BoolResult)handler {
-    [WGApi post:@"invites/?force=true" withParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:@"invites" withArguments:@{ @"force" : @"true" } andParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }
@@ -597,8 +608,7 @@ static WGUser *currentUser = nil;
 
 -(void) unfollow:(WGUser *)user withHandler:(BoolResult)handler {
 #warning Can you unfollow by User ID?
-    NSString *queryString = [NSString stringWithFormat:@"follows/?user=me&follow=%@", user.id];
-    [WGApi delete:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi delete:@"follows/" withArguments:@{ @"user" : @"me", @"follow" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollowing = [NSNumber numberWithBool:NO];
         }
@@ -616,8 +626,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResult)handler {
-    NSString *queryString = [NSString stringWithFormat:@"follows/accept?from=%@", user.id];
-    [WGApi get:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"follows/accept" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollower = [NSNumber numberWithBool:YES];
         }
@@ -626,8 +635,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResult)handler {
-    NSString *queryString = [NSString stringWithFormat:@"follows/reject?from=%@", user.id];
-    [WGApi get:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"follows/reject" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollower = [NSNumber numberWithBool:NO];
         }
@@ -636,7 +644,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) goingOut:(BoolResult)handler {
-    [WGApi post:@"goingouts/" withParameters:@{} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:@"goingouts/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             self.isGoingOut = [NSNumber numberWithBool:YES];
         }
