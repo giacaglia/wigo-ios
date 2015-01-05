@@ -570,7 +570,7 @@
     {
         if ([self session].captureMode == IQCameraCaptureModePhoto)
         {
-            [self setFrontFlash];
+            [self takePictureWithFrontFlash];
             [UIView animateWithDuration:0.2 delay:0 options:(UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut) animations:^{
                 [self.buttonCapture setImage:[UIImage new] forState:UIControlStateNormal];
                 for (UIView *subview in self.buttonCancel.subviews) {
@@ -675,7 +675,7 @@
     }
 }
 
-- (void)setFrontFlash {
+- (void)takePictureWithFrontFlash {
     if ([self session].cameraPosition == AVCaptureDevicePositionFront &&
         [self session].fakeFlashMode == AVCaptureFlashModeOn) {
         CGFloat oldBrightness = [UIScreen mainScreen].brightness;

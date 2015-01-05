@@ -113,13 +113,6 @@
 
 }
 
-+ (void)acceptFollowRequestForUser:(User *)user {
-    Query *query = [[Query alloc] init];
-    [query queryWithClassName:[NSString stringWithFormat:@"follows/accept?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]]];
-    [query setProfileKey:[[Profile user] key]];
-    [query sendAsynchronousHTTPMethod:GET withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
-}
-
 + (void)rejectFollowRequestForUser:(User *)user {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:[NSString stringWithFormat:@"follows/reject?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]]];

@@ -457,12 +457,14 @@
 - (void)trashPressed:(id)sender {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     // NEeds to be sequential.
-    [self.mediaScrollView removeMediaAtPage:(int)page];
-    [self.eventMessages removeObjectAtIndex:page];
-    [self.facesCollectionView reloadData];
-    self.mediaScrollView.eventMessages = self.eventMessages;
-    [self.mediaScrollView reloadData];
-    [self hideOrShowFacesForPage:(int)page];
+    if (page < self.eventMessages.count && page > 0) {
+        [self.mediaScrollView removeMediaAtPage:(int)page];
+        [self.eventMessages removeObjectAtIndex:page];
+        [self.facesCollectionView reloadData];
+        self.mediaScrollView.eventMessages = self.eventMessages;
+        [self.mediaScrollView reloadData];
+        [self hideOrShowFacesForPage:(int)page];
+    }
 }
 
 

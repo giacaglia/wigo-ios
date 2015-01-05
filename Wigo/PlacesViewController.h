@@ -77,5 +77,7 @@
 @end
 
 @interface OldEventShowHighlightsCell : UITableViewCell
+@property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UIButton *showHighlightsButton;
++ (CGFloat) height;
 @end

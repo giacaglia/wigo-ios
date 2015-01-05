@@ -545,7 +545,7 @@ NSMutableArray *failedUserInfoArray;
         [goOutButton addTarget:self action:@selector(goOutPressed) forControlEvents:UIControlEventTouchUpInside];
         self.navigationItem.titleView = goOutButton;
     }
-    [self updateUIShowingMyselfGoingOut];
+//    [self updateUIShowingMyselfGoingOut];
 }
 
 

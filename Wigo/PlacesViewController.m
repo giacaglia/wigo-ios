@@ -732,7 +732,11 @@ int firstIndexOfNegativeEvent;
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.pastDays.count > 0) {
+    if ([self shouldShowHighlights]) {
+        //[Today section] [Button show highlights]
+        return 1 + 1 + 1;
+    }
+    else if (self.pastDays.count > 0) {
         //[Today section] [Highlighs section] (really just space for a header) + pastDays sections
         return 1 + 1 + self.pastDays.count;
     }
@@ -753,6 +757,9 @@ int firstIndexOfNegativeEvent;
     else if (section == kHighlightsEmptySection) {
         return 0;
     }
+    else if ([self shouldShowHighlights] && section > 1) {
+        return 1;
+    }
     else if (self.pastDays.count > 0 && section > 1) {
         NSString *day = [self.pastDays objectAtIndex: section - 2];
         return ((NSArray *)[self.dayToEventObjArray objectForKey: day]).count;
@@ -769,6 +776,9 @@ int firstIndexOfNegativeEvent;
     else if (section == kHighlightsEmptySection) { //highlights section seperator
         return [HighlightsHeader height];
     }
+    else if ([self shouldShowHighlights] && section > 1) {
+        return 0;
+    }
     else if (self.pastDays.count > 0 && section > 1) { //past day headers
         return [PastDayHeader height: (section - 2 == 0)];
     }
@@ -782,6 +792,9 @@ int firstIndexOfNegativeEvent;
     }
     else if (section == kHighlightsEmptySection) {
         return [HighlightsHeader init];
+    }
+    else if ([self shouldShowHighlights] && section > 1) {
+        return 0;
     }
     else if (self.pastDays.count > 0 && section > 1) { //past day headers
         return [PastDayHeader initWithDay: [self.pastDays objectAtIndex: section - 2] isFirst: (section - 2) == 0];
@@ -819,15 +832,15 @@ int firstIndexOfNegativeEvent;
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
     }
+    else if ([self shouldShowHighlights] && indexPath.section > 1) {
+        return [OldEventShowHighlightsCell height];
+    }
     else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
         
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = ((NSArray *)[self.dayToEventObjArray objectForKey: day]);
 
         Event *event = (Event *)[eventObjectArray objectAtIndex:[indexPath row]];
-//        if ([self showHighlightsButtonForEvent:event] ) {
-//            return 215;
-//        }
         if ([event containsHighlight]) {
             return 215;
         }
@@ -897,18 +910,17 @@ int firstIndexOfNegativeEvent;
     else if (indexPath.section == kHighlightsEmptySection) {
         return nil;
     }
-    
+    else if ([self shouldShowHighlights] && indexPath.section > 1) {
+        OldEventShowHighlightsCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventShowHighlightsCellName];
+        cell.placesDelegate = self;
+        return cell;
+    }
     else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
         
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = ((NSArray *)[self.dayToEventObjArray objectForKey: day]);
         
         Event *event = (Event *)[eventObjectArray objectAtIndex:[indexPath row]];
-
-//        if ([self showHighlightsButtonForEvent:event]) {
-//            OldEventShowHighlightsCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventShowHighlightsCellName];
-//            return cell;
-//        }
         if ([event containsHighlight]) {
             HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
             cell.event = event;
@@ -918,7 +930,9 @@ int firstIndexOfNegativeEvent;
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
             __weak HighlightOldEventCell *weakCell = cell;
             [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+                if (image) {
+                    weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+                }
             }];
             return cell;
         }
@@ -954,9 +968,11 @@ int firstIndexOfNegativeEvent;
     }
 }
 
-- (BOOL) showHighlightsButtonForEvent:(Event *)event {
-    return YES;
+- (BOOL) shouldShowHighlights {
+    BOOL shownHighlights =  [[NSUserDefaults standardUserDefaults] boolForKey: @"shownHighlights"];
+    return !shownHighlights && self.pastDays.count;
 }
+
 
 #pragma mark - Image helper
 
@@ -1102,6 +1118,11 @@ int firstIndexOfNegativeEvent;
 }
 
 #pragma mark - PlacesDelegate
+
+- (void)showHighlights {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"shownHighlights"];
+    [_placesTableView reloadData];
+}
 
 - (void)showUser:(User *)user {
     shouldReloadEvents = NO;
@@ -1913,7 +1934,6 @@ int firstIndexOfNegativeEvent;
 
 @implementation OldEventShowHighlightsCell
 
-
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -1923,19 +1943,28 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [HighlightOldEventCell height]);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [OldEventShowHighlightsCell height]);
     self.backgroundColor = RGB(241, 241, 241);
     
-    self.showHighlightsButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, self.frame.size.width - 20, self.frame.size.height - 20)];
+    self.showHighlightsButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 0, self.frame.size.width - 90, 64)];
+    self.showHighlightsButton.backgroundColor = RGB(248, 248, 248);
     [self.showHighlightsButton setTitle:@"Show Past Highglights" forState:UIControlStateNormal];
-    [self.showHighlightsButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    [self.showHighlightsButton setTitleColor:RGB(219, 219, 219) forState:UIControlStateNormal];
+    self.showHighlightsButton.titleLabel.font = [FontProperties scMediumFont: 18];
     [self.showHighlightsButton addTarget:self action:@selector(showHighlightsPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.showHighlightsButton.layer.borderColor = RGB(210, 210, 210).CGColor;
+    self.showHighlightsButton.layer.borderWidth = 1;
     [self.contentView addSubview:self.showHighlightsButton];
 }
 
 - (void)showHighlightsPressed {
-    
+    [self.placesDelegate showHighlights];
 }
+
++ (CGFloat) height {
+    return 150;
+}
+
 
 @end
 
