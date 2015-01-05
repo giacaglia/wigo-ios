@@ -701,14 +701,9 @@ UIButton *tapButton;
 }
 
 - (BOOL) shouldShowInviteCell {
-    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
+    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE || self.userState == OTHER_SCHOOL_USER) {
         return NO;
     }
-    
-    if (self.userState == FOLLOWING_USER) {
-        return YES;
-    }
-
     
     return YES;
 }
@@ -827,19 +822,26 @@ UIButton *tapButton;
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == kNotificationsSection) {
-        UIView *headerView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, tableView.frame.size.width, _nameView.frame.size.height + _headerButtonView.frame.size.height)];
         
-        CGRect frame = _nameView.frame;
-        frame.origin = CGPointMake(0, 0);
-        _nameView.frame = frame;
-        [headerView addSubview: _nameView];
         
-        frame = _headerButtonView.frame;
-        frame.origin = CGPointMake(0, _nameView.frame.size.height);
-        _headerButtonView.frame = frame;
-        [headerView addSubview: _headerButtonView];
-        
-        return headerView;
+        if (self.userState == OTHER_SCHOOL_USER) {
+            return _nameView;
+        } else {
+            UIView *headerView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, tableView.frame.size.width, _nameView.frame.size.height + _headerButtonView.frame.size.height)];
+            
+            CGRect frame = _nameView.frame;
+            frame.origin = CGPointMake(0, 0);
+            _nameView.frame = frame;
+            [headerView addSubview: _nameView];
+            
+            frame = _headerButtonView.frame;
+            frame.origin = CGPointMake(0, _nameView.frame.size.height);
+            _headerButtonView.frame = frame;
+            [headerView addSubview: _headerButtonView];
+            
+            return headerView;
+        }
+
     }
     
     return nil;
@@ -847,6 +849,11 @@ UIButton *tapButton;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == kNotificationsSection) {
+        
+        if (self.userState == OTHER_SCHOOL_USER) {
+            return _nameView.frame.size.height;
+        }
+        
         return _nameView.frame.size.height + _headerButtonView.frame.size.height;
     }
     return 0;
@@ -1282,7 +1289,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         self.inviteButton.enabled = NO;
         self.titleLabel.hidden = YES;
         self.tappedLabel.alpha = 0;
-    }
+        }
     else {
         if ([user isTapped]) {
             self.inviteButton.hidden = YES;

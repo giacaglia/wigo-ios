@@ -161,21 +161,29 @@ int firstIndexOfNegativeEvent;
 }
 
 - (BOOL) shouldShowCreateButton {
-    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        self.goElsewhereView.plusButton.hidden = YES;
+    if ([self isPeeking]) {
+        self.goElsewhereView.hidden = YES;
         self.goElsewhereView.plusButton.enabled = NO;
         self.goingSomewhereButton.hidden = YES;
         self.goingSomewhereButton.enabled = NO;
         return NO;
     }
     else {
-        self.goElsewhereView.plusButton.hidden = NO;
+        self.goElsewhereView.hidden = NO;
+        //self.goElsewhereView.plusButton.hidden = NO;
         self.goElsewhereView.plusButton.enabled = YES;
-        self.goingSomewhereButton.hidden = NO;
+        //self.goingSomewhereButton.hidden = NO;
         self.goingSomewhereButton.enabled = YES;
         return YES;
     }
+}
+
+- (BOOL) isPeeking {
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        return NO;
+    }
     
+    return YES;
 }
 
 - (UIImage *)imageWithColor:(UIColor *)color
