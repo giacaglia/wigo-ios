@@ -457,7 +457,7 @@
 - (void)trashPressed:(id)sender {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     // NEeds to be sequential.
-    if (page < self.eventMessages.count && page > 0) {
+    if (page < self.eventMessages.count && page >= 0) {
         [self.mediaScrollView removeMediaAtPage:(int)page];
         [self.eventMessages removeObjectAtIndex:page];
         [self.facesCollectionView reloadData];
