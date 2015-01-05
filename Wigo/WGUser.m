@@ -59,13 +59,24 @@ static WGUser *currentUser = nil;
 
 @implementation WGUser
 
+-(id) init {
+    self = [super init];
+    if (self) {
+        self.className = @"user";
+    }
+    return self;
+}
+
+-(id) initWithJSON:(NSDictionary *)json {
+    self = [super initWithJSON:json];
+    if (self) {
+        self.className = @"user";
+    }
+    return self;
+}
+
 +(WGUser *) serialize:(NSDictionary *)json {
-    WGUser *newWGUser = [WGUser new];
-    
-    newWGUser.className = @"user";
-    [newWGUser initializeWithJSON:json];
-    
-    return newWGUser;
+    return [[WGUser alloc] initWithJSON:json];
 }
 
 -(BOOL) isCurrentUser {
@@ -424,7 +435,7 @@ static WGUser *currentUser = nil;
     return NOT_FOLLOWING_PUBLIC_USER_STATE;
 }
 
--(void) signup:(UserResult)handler {
+-(void) signup:(WGUserResultBlock)handler {
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
@@ -460,7 +471,7 @@ static WGUser *currentUser = nil;
 }
 
 
--(void) login:(UserResult)handler {
+-(void) login:(WGUserResultBlock)handler {
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
@@ -487,7 +498,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
-+(void) get:(CollectionResult)handler {
++(void) get:(WGCollectionResultBlock)handler {
     [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -509,7 +520,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
-+(void) getCurrentUser:(UserResult)handler {
++(void) getCurrentUser:(WGUserResultBlock)handler {
     [WGApi get:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -533,40 +544,25 @@ static WGUser *currentUser = nil;
 
 #pragma mark Various API Calls
 
--(void) broadcastMessage:(NSString *) message withHandler:(BoolResult)handler {
+-(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler {
     [WGApi post:@"school/broadcast" withParameters:@{ @"message": message } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }
 
--(void) resendVerificationEmail:(BoolResult) handler {
+-(void) resendVerificationEmail:(BoolResultBlock) handler {
     [WGApi get:@"verification/resend" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }
 
-#warning TODO: make uploads save something to user or return URL
-
--(void) uploadPhoto:(NSData *)fileData withName:(NSString *)filename options:(NSDictionary *)options andHandler:(BoolResult) handler {
-    [WGApi uploadPhoto:fileData withFileName:filename andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        handler(error == nil, error);
-    }];
-    
-}
-
--(void) uploadVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumnailName options:(NSDictionary *)options andHandler:(BoolResult) handler {
-    [WGApi uploadVideo:fileData withFileName:filename andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        handler(error == nil, error);
-    }];
-}
-
--(void) sendInvites:(NSDictionary *)numbers withHandler:(BoolResult)handler {
+-(void) sendInvites:(NSDictionary *)numbers withHandler:(BoolResultBlock)handler {
     [WGApi post:@"invites" withArguments:@{ @"force" : @"true" } andParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }
 
--(void) unblock:(WGUser *)user withHandler:(BoolResult)handler {
+-(void) unblock:(WGUser *)user withHandler:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"users/%@", user.id];
     
     [WGApi post:queryString withParameters:@{ @"is_blocked" : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
@@ -577,7 +573,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) block:(WGUser *)user withType:(NSNumber *)type andHandler:(BoolResult)handler {
+-(void) block:(WGUser *)user withType:(NSNumber *)type andHandler:(BoolResultBlock)handler {
     [WGApi post:@"blocks/" withParameters:@{ @"block" : user.id, @"type" : type } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isBlocked = [NSNumber numberWithBool:YES];
@@ -587,7 +583,7 @@ static WGUser *currentUser = nil;
 }
 
 
--(void) tap:(WGUser *)user withHandler:(BoolResult)handler {
+-(void) tap:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi post:@"taps" withParameters:@{ @"tapped" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isTapped = [NSNumber numberWithBool:YES];
@@ -596,7 +592,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) untap:(WGUser *)user withHandler:(BoolResult)handler {
+-(void) untap:(WGUser *)user withHandler:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"users/%@/", user.id];
     [WGApi post:queryString withParameters:@{ @"is_tapped" : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
@@ -606,7 +602,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) unfollow:(WGUser *)user withHandler:(BoolResult)handler {
+-(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler {
 #warning Can you unfollow by User ID?
     [WGApi delete:@"follows/" withArguments:@{ @"user" : @"me", @"follow" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
@@ -616,7 +612,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) follow:(WGUser *)user withHandler:(BoolResult)handler {
+-(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi post:@"follows/" withParameters:@{ @"follow" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollowingRequested = [NSNumber numberWithBool:YES];
@@ -625,7 +621,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResult)handler {
+-(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi get:@"follows/accept" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollower = [NSNumber numberWithBool:YES];
@@ -634,7 +630,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResult)handler {
+-(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi get:@"follows/reject" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollower = [NSNumber numberWithBool:NO];
@@ -643,7 +639,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) goingOut:(BoolResult)handler {
+-(void) goingOut:(BoolResultBlock)handler {
     [WGApi post:@"goingouts/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             self.isGoingOut = [NSNumber numberWithBool:YES];
@@ -652,7 +648,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) goingToEvent:(WGEvent *)event withHandler:(BoolResult)handler {
+-(void) goingToEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler {
     [WGApi post:@"eventattendees/" withParameters:@{ @"event" : event.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             self.isGoingOut = [NSNumber numberWithBool:YES];

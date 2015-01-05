@@ -11,7 +11,7 @@
 
 @interface WGCollection : NSEnumerator
 
-typedef void (^CollectionResult)(WGCollection *collection, NSError *error);
+typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error);
 
 @property NSMutableArray *objects;
 @property NSInteger currentPosition;
@@ -38,6 +38,6 @@ typedef void (^CollectionResult)(WGCollection *collection, NSError *error);
 -(NSUInteger) count;
 -(NSArray *) idArray;
 
--(void) getNextPage:(CollectionResult)handler;
+-(void) getNextPage:(WGCollectionResultBlock)handler;
 
 @end

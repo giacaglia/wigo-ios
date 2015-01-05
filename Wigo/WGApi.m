@@ -43,16 +43,16 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 
 @implementation WGApi
 
-+(void) get:(NSString *)endpoint withHandler:(ApiResult)handler {
++(void) get:(NSString *)endpoint withHandler:(ApiResultBlock)handler {
     [WGApi getURL:[WGApi getUrlStringForEndpoint:endpoint] withHandler:handler];
 }
 
-+(void) get:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResult)handler {
++(void) get:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResultBlock)handler {
     NSString *fullEndpoint = [WGApi getStringWithEndpoint:endpoint andArguments:arguments];
     [WGApi getURL:[WGApi getUrlStringForEndpoint:fullEndpoint] withHandler:handler];
 }
 
-+(void) getURL:(NSString *)url withHandler:(ApiResult)handler {
++(void) getURL:(NSString *)url withHandler:(ApiResultBlock)handler {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -78,16 +78,16 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     }];
 }
 
-+(void) delete:(NSString *)endpoint withHandler:(ApiResult)handler {
++(void) delete:(NSString *)endpoint withHandler:(ApiResultBlock)handler {
     [WGApi deleteURL:[WGApi getUrlStringForEndpoint:endpoint] withHandler:handler];
 }
 
-+(void) delete:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResult)handler {
++(void) delete:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResultBlock)handler {
     NSString *fullEndpoint = [WGApi getStringWithEndpoint:endpoint andArguments:arguments];
     [WGApi deleteURL:[WGApi getUrlStringForEndpoint:fullEndpoint] withHandler:handler];
 }
 
-+(void) deleteURL:(NSString *)url withHandler:(ApiResult)handler {
++(void) deleteURL:(NSString *)url withHandler:(ApiResultBlock)handler {
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -113,20 +113,20 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     }];
 }
 
-+(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResult)handler {
++(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResultBlock)handler {
     [WGApi postURL:[WGApi getUrlStringForEndpoint:endpoint] withParameters:parameters andHandler:handler];
 }
 
-+(void) post:(NSString *)endpoint withHandler:(ApiResult)handler {
++(void) post:(NSString *)endpoint withHandler:(ApiResultBlock)handler {
     [WGApi postURL:[WGApi getUrlStringForEndpoint:endpoint] withParameters:@{} andHandler:handler];
 }
 
-+(void) post:(NSString *)endpoint withArguments:(NSDictionary *)arguments andParameters:(id)parameters andHandler:(ApiResult)handler {
++(void) post:(NSString *)endpoint withArguments:(NSDictionary *)arguments andParameters:(id)parameters andHandler:(ApiResultBlock)handler {
     NSString *fullEndpoint = [WGApi getStringWithEndpoint:endpoint andArguments:arguments];
     [WGApi postURL:[WGApi getUrlStringForEndpoint:fullEndpoint] withParameters:parameters andHandler:handler];
 }
 
-+(void) postURL:(NSString *)url withParameters:(id)parameters andHandler:(ApiResult)handler {
++(void) postURL:(NSString *)url withParameters:(id)parameters andHandler:(ApiResultBlock)handler {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters
@@ -198,10 +198,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 
 #pragma mark AWS Uploader
 
-+(void) uploadPhoto:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(ApiResult) handler {
++(void) uploadPhoto:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(UploadResultBlock) handler {
     [WGApi get:[NSString stringWithFormat: @"uploads/photos/?filename=%@", fileName] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            handler(nil, nil, error);
             return;
         }
         
@@ -209,11 +209,12 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         NSString *action;
         NSMutableDictionary *fields;
         @try {
+            action = [jsonResponse objectForKey:kActionKey];
+            
             fields = [[NSMutableDictionary alloc] init];
             for (NSDictionary *field in [jsonResponse objectForKey:kFieldsKey]) {
                 [fields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
             }
-            action = [fields objectForKey:kActionKey];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -222,35 +223,33 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (!action) {
-                handler(nil, dataError);
+                handler(nil, nil, dataError);
                 return;
             }
             [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                handler(jsonResponse, error);
+                handler(jsonResponse, fields, error);
             }];
         }
     }];
 }
 
-+(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(ApiResult) handler {
++(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(UploadResultBlock) handler {
     [WGApi get:[NSString stringWithFormat: @"uploads/videos/?filename=%@", fileName] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            handler(nil, nil, error);
             return;
         }
         
         NSError *dataError = nil;
-        NSDictionary *video;
         NSString *action;
         NSMutableDictionary *fields;
         @try {
-            video = [jsonResponse objectForKey:kVideoKey];
+            action = [jsonResponse objectForKey:kActionKey];
             
             fields = [[NSMutableDictionary alloc] init];
-            for (NSDictionary *field in [video objectForKey:kFieldsKey]) {
+            for (NSDictionary *field in [jsonResponse objectForKey:kFieldsKey]) {
                 [fields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
             }
-            action = [video objectForKey:kActionKey];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -259,17 +258,17 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (!action) {
-                handler(nil, dataError);
+                handler(nil, nil, dataError);
                 return;
             }
             [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                handler(jsonResponse, error);
+                handler(jsonResponse, fields, error);
             }];
         }
     }];
 }
 
-+(void) upload:(NSString *)url fields:(NSDictionary *)fields file:(NSData *)fileData fileName:(NSString *)filename andHandler:(ApiResult)handler {
++(void) upload:(NSString *)url fields:(NSDictionary *)fields file:(NSData *)fileData fileName:(NSString *)filename andHandler:(ApiResultBlock)handler {
     
     NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:kPOST  URLString:url parameters:fields constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { [formData appendPartWithFileData:fileData name:kFileKey fileName:filename mimeType:[fields objectForKey:kContentTypeKey]];
     } error:nil];

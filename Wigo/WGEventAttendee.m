@@ -12,13 +12,24 @@
 
 @implementation WGEventAttendee
 
+-(id) init {
+    self = [super init];
+    if (self) {
+        self.className = @"eventattendee";
+    }
+    return self;
+}
+
+-(id) initWithJSON:(NSDictionary *)json {
+    self = [super initWithJSON:json];
+    if (self) {
+        self.className = @"eventattendee";
+    }
+    return self;
+}
+
 +(WGEventAttendee *)serialize:(NSDictionary *)json {
-    WGEventAttendee *newWGEventAttendee = [WGEventAttendee new];
-    
-    newWGEventAttendee.className = @"eventattendee";
-    [newWGEventAttendee initializeWithJSON:json];
-    
-    return newWGEventAttendee;
+    return [[WGEventAttendee alloc] initWithJSON:json];
 }
 
 -(void) setUser:(WGUser *)user {

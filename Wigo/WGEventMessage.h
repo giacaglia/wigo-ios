@@ -11,7 +11,7 @@
 
 @interface WGEventMessage : WGObject
 
-typedef void (^EventMessageResult)(WGEventMessage *object, NSError *error);
+typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error);
 
 @property WGUser *user;
 
@@ -24,7 +24,12 @@ typedef void (^EventMessageResult)(WGEventMessage *object, NSError *error);
 @property NSString *message;
 @property NSString *thumbnail;
 @property NSString *media;
+@property NSString *mediaMimeType;
 
 +(WGEventMessage *)serialize:(NSDictionary *)json;
+
+-(void) addPhoto:(NSData *)fileData withName:(NSString *)filename andHandler:(BoolResultBlock)handler;
+
+-(void) addVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(BoolResultBlock) handler;
 
 @end

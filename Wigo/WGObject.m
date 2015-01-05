@@ -14,18 +14,28 @@
 
 @implementation WGObject
 
-+(WGObject *) serialize:(NSDictionary *)json {
-    WGObject *newWGObject = [[WGObject alloc] init];
-    
-    newWGObject.className = @"object";
-    [newWGObject initializeWithJSON:json];
-    
-    return newWGObject;
+-(id) init {
+    self = [super init];
+    if (self) {
+        self.className = @"object";
+        self.modifiedKeys = [[NSMutableArray alloc] init];
+        self.parameters = [[NSMutableDictionary alloc] init];
+    }
+    return self;
 }
 
--(void) initializeWithJSON:(NSDictionary *)json {
-    self.modifiedKeys = [[NSMutableArray alloc] init];
-    self.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
+-(id) initWithJSON:(NSDictionary *)json {
+    self = [super init];
+    if (self) {
+        self.className = @"object";
+        self.modifiedKeys = [[NSMutableArray alloc] init];
+        self.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
+    }
+    return self;
+}
+
++(WGObject *) serialize:(NSDictionary *)json {
+    return [[WGObject alloc] initWithJSON:json];
 }
 
 -(void) setId:(NSNumber *)id {
@@ -62,7 +72,8 @@
     return props;
 }
 
--(void) save:(ObjectResult)handler {
+
+-(void) save:(WGObjectResultBlock)handler {
     NSMutableDictionary *properties = (NSMutableDictionary *) [self modifiedDictionary];
     
     NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
@@ -76,7 +87,7 @@
         NSError *dataError;
         WGObject *object;
         @try {
-            object = [WGObject serialize:jsonResponse];
+            object = [[self class] serialize:jsonResponse];
             [self.modifiedKeys removeAllObjects];
         }
         @catch (NSException *exception) {
@@ -90,6 +101,39 @@
     }];
 }
 
+-(void) create:(WGObjectResultBlock)handler {
+    NSString *classURL = [NSString stringWithFormat:@"%@s/", self.className];
+    
+    [WGApi post:classURL withParameters:self.parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        NSError *dataError;
+        WGObject *object;
+        @try {
+            object = [[self class] serialize:jsonResponse];
+            [self.modifiedKeys removeAllObjects];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(object, dataError);
+        }
+    }];
+}
+
+-(void) remove:(BoolResultBlock)handler {
+    NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
+    [WGApi delete:thisObjectURL withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
+}
+
 -(void) setObject:(id)object forKey:(id<NSCopying>)key {
     [self.parameters setObject:object forKey:key];
     [self.modifiedKeys addObject:key];
@@ -99,7 +143,7 @@
     return [self.parameters objectForKey:key];
 }
 
-+(void) get:(CollectionResult)handler {
++(void) get:(WGCollectionResultBlock)handler {
     handler(nil, nil);
 }
 

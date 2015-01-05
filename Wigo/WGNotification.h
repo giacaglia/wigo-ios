@@ -11,7 +11,7 @@
 
 @interface WGNotification : WGObject
 
-typedef void (^NotificationResult)(WGNotification *object, NSError *error);
+typedef void (^WGNotificationResultBlock)(WGNotification *object, NSError *error);
 
 @property WGUser *fromUser;
 @property NSString *type;;

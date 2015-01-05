@@ -38,7 +38,7 @@ typedef enum State {
 
 @interface WGUser : WGObject
 
-typedef void (^UserResult)(WGUser *object, NSError *error);
+typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 @property NSString* key;
 // @property (nonatomic, assign) Privacy privacy;
@@ -88,7 +88,7 @@ typedef void (^UserResult)(WGUser *object, NSError *error);
 
 -(BOOL) isCurrentUser;
 
--(void) login:(UserResult)handler;
+-(void) login:(WGUserResultBlock)handler;
 
 
 @end

@@ -28,11 +28,24 @@ static WGProfile *currentUser = nil;
 
 @implementation WGProfile
 
+-(id) init {
+    self = [super init];
+    if (self) {
+        self.className = @"user";
+    }
+    return self;
+}
+
+-(id) initWithJSON:(NSDictionary *)json {
+    self = [super initWithJSON:json];
+    if (self) {
+        self.className = @"user";
+    }
+    return self;
+}
+
 +(void) setCurrentUser:(WGUser *)user {
-    currentUser = [WGProfile new];
-    
-    currentUser.className = @"user";
-    [currentUser initializeWithJSON:[user deserialize]];
+    currentUser = [[WGProfile alloc] initWithJSON:[user deserialize]];
     
     [[NSUserDefaults standardUserDefaults] setObject:user.key forKey:kKeyKey];
     [[NSUserDefaults standardUserDefaults] setObject:user.facebookId forKey:kFacebookIdKey];

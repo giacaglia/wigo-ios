@@ -20,13 +20,24 @@
 
 @implementation WGEvent
 
+-(id) init {
+    self = [super init];
+    if (self) {
+        self.className = @"event";
+    }
+    return self;
+}
+
+-(id) initWithJSON:(NSDictionary *)json {
+    self = [super initWithJSON:json];
+    if (self) {
+        self.className = @"event";
+    }
+    return self;
+}
+
 +(WGEvent *)serialize:(NSDictionary *)json {
-    WGEvent *newWGEvent = [WGEvent new];
-    
-    newWGEvent.className = @"event";
-    [newWGEvent initializeWithJSON:json];
-    
-    return newWGEvent;
+    return [[WGEvent alloc] initWithJSON:json];
 }
 
 -(void) setName:(NSString *)name {
@@ -70,19 +81,19 @@
     self.attendees = [WGCollection serializeArray:array andClass:[WGEventAttendee class]];
 }
 
--(void) setRead:(BoolResult)handler {
+-(void) setRead:(BoolResultBlock)handler {
     [WGApi post:@"events/read/" withParameters:@[ self.id ] andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }
 
--(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResult)handler {
+-(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResultBlock)handler {
     [WGApi post:[NSString stringWithFormat:@"events/%@/messages/read/", self.id] withParameters:[messages idArray] andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }
 
--(void) getMessages:(CollectionResult)handler {
+-(void) getMessages:(WGCollectionResultBlock)handler {
     [WGApi get:@"eventmessages/" withArguments:@{ @"event" : self.id, @"ordering" : @"id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -105,7 +116,7 @@
     }];
 }
 
-+(void) get:(CollectionResult)handler {
++(void) get:(WGCollectionResultBlock)handler {
     [WGApi get:@"events" withArguments:@{ @"attendees_limit" : @10 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -127,7 +138,7 @@
     }];
 }
 
-+(void) getWithGroupNumber: (NSNumber *)groupNumber andHandler:(CollectionResult)handler {
++(void) getWithGroupNumber: (NSNumber *)groupNumber andHandler:(WGCollectionResultBlock)handler {
     [WGApi get:@"events" withArguments:@{ @"group" : groupNumber, @"date" : @"tonight", @"attendees_limit" : @10 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -149,7 +160,7 @@
     }];
 }
 
-+(void) createEventWithName:(NSString *)name andHandler:(EventResult)handler {
++(void) createEventWithName:(NSString *)name andHandler:(WGEventResultBlock)handler {
     [WGApi post:@"events/" withParameters:@{ @"name" : name } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);

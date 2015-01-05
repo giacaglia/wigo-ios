@@ -134,7 +134,7 @@
 
 #pragma mark - Pagination
 
--(void) getNextPage:(CollectionResult)handler {
+-(void) getNextPage:(WGCollectionResultBlock)handler {
     if (!self.nextPage) {
         handler(nil, [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"no next page" }]);
         return;

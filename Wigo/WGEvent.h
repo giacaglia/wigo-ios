@@ -12,7 +12,7 @@
 
 @interface WGEvent : WGObject
 
-typedef void (^EventResult)(WGEvent *object, NSError *error);
+typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 
 @property NSString *name;
 @property NSNumber *numAttending;
@@ -23,13 +23,13 @@ typedef void (^EventResult)(WGEvent *object, NSError *error);
 
 -(void) addAttendee:(WGEventAttendee *)attendee;
 
--(void) setRead:(BoolResult)handler;
--(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResult)handler;
+-(void) setRead:(BoolResultBlock)handler;
+-(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResultBlock)handler;
 
--(void) getMessages:(CollectionResult)handler;
+-(void) getMessages:(WGCollectionResultBlock)handler;
 
-+(void) getWithGroupNumber:(NSNumber *)groupNumber andHandler:(CollectionResult)handler;
++(void) getWithGroupNumber:(NSNumber *)groupNumber andHandler:(WGCollectionResultBlock)handler;
 
-+(void) createEventWithName:(NSString *)name andHandler:(EventResult)handler;
++(void) createEventWithName:(NSString *)name andHandler:(WGEventResultBlock)handler;
 
 @end

@@ -16,9 +16,9 @@
 
 @interface WGObject : NSObject
 
-typedef void (^CollectionResult)(WGCollection *collection, NSError *error);
-typedef void (^ObjectResult)(WGObject *object, NSError *error);
-typedef void (^BoolResult)(BOOL success, NSError *error);
+typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error);
+typedef void (^WGObjectResultBlock)(WGObject *object, NSError *error);
+typedef void (^BoolResultBlock)(BOOL success, NSError *error);
 
 @property NSMutableDictionary *parameters;
 @property NSMutableArray *modifiedKeys;
@@ -28,19 +28,20 @@ typedef void (^BoolResult)(BOOL success, NSError *error);
 @property NSNumber* id;
 @property NSDate* created;
 
-+(WGObject *)serialize:(NSDictionary *)json;
+-(id) init;
+-(id) initWithJSON:(NSDictionary *)json;
 
--(void) initializeWithJSON:(NSDictionary *)json;
++(WGObject *)serialize:(NSDictionary *)json;
+-(NSDictionary *) deserialize;
 
 -(BOOL) isEqual:(WGObject*)object;
-
--(void) save:(ObjectResult)handler;
-
--(NSDictionary *) deserialize;
 
 -(void) setObject:(id)object forKey:(id<NSCopying>)key;
 -(id) objectForKey:(NSString *)key;
 
-+(void) get:(CollectionResult)handler;
+-(void) save:(WGObjectResultBlock)handler;
+-(void) remove:(BoolResultBlock)handler;
++(void) get:(WGCollectionResultBlock)handler;
+-(void) create:(WGObjectResultBlock)handler;
 
 @end

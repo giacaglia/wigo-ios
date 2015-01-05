@@ -13,13 +13,24 @@
 
 @implementation WGNotification
 
+-(id) init {
+    self = [super init];
+    if (self) {
+        self.className = @"notification";
+    }
+    return self;
+}
+
+-(id) initWithJSON:(NSDictionary *)json {
+    self = [super initWithJSON:json];
+    if (self) {
+        self.className = @"notification";
+    }
+    return self;
+}
+
 +(WGNotification *)serialize:(NSDictionary *)json {
-    WGNotification *newWGNotification = [WGNotification new];
-    
-    newWGNotification.className = @"notification";
-    [newWGNotification initializeWithJSON:json];
-    
-    return newWGNotification;
+    return [[WGNotification alloc] initWithJSON:json];
 }
 
 -(void) setType:(NSString *)type {
@@ -61,7 +72,7 @@
     return @"";
 }
 
-+(void) get:(CollectionResult)handler {
++(void) get:(WGCollectionResultBlock)handler {
     [WGApi get:@"notifications/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);

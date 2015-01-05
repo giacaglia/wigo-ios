@@ -11,7 +11,7 @@
 
 @interface WGMessage : WGObject
 
-typedef void (^MessageResult)(WGMessage *object, NSError *error);
+typedef void (^WGMessageResultBlock)(WGMessage *object, NSError *error);
 
 @property WGUser *user;
 @property WGUser *toUser;

@@ -16,13 +16,24 @@
 
 @implementation WGMessage
 
+-(id) init {
+    self = [super init];
+    if (self) {
+        self.className = @"message";
+    }
+    return self;
+}
+
+-(id) initWithJSON:(NSDictionary *)json {
+    self = [super initWithJSON:json];
+    if (self) {
+        self.className = @"message";
+    }
+    return self;
+}
+
 +(WGMessage *)serialize:(NSDictionary *)json {
-    WGMessage *newWGMessage = [WGMessage new];
-    
-    newWGMessage.className = @"message";
-    [newWGMessage initializeWithJSON:json];
-    
-    return newWGMessage;
+    return [[WGMessage alloc] initWithJSON:json];
 }
 
 -(void) setMessage:(NSString *)message {
@@ -65,7 +76,7 @@
     return [WGUser serialize:[self objectForKey:kToUserKey]];
 }
 
-+(void) get:(CollectionResult)handler {
++(void) get:(WGCollectionResultBlock)handler {
     [WGApi get:@"messages/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -87,7 +98,7 @@
     }];
 }
 
--(void) deleteConversation:(BoolResult)handler {
+-(void) deleteConversation:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.toUser.id];
     [WGApi delete:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
@@ -99,7 +110,7 @@
     
 }
 
--(void) readConversation:(BoolResult)handler {
+-(void) readConversation:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.toUser.id];
     
     NSDictionary *options = @{ @"read": [NSNumber numberWithBool:YES] };
