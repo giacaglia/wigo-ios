@@ -30,7 +30,7 @@
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCel @"HighlightOldEventCell"
 #define kOldEventCellName @"OldEventCell"
-
+#define kOldEventShowHighlightsCellName @"OldEventShowHighlightsCellName"
 
 @interface PlacesViewController () {
     UIView *_dimView;
@@ -394,6 +394,7 @@ int firstIndexOfNegativeEvent;
     //[_placesTableView setSeparatorColor:UIColor.clearColor];
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
+    [_placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _yPositionOfWhereSubview = 280;
     [self addRefreshToScrollView];
@@ -824,6 +825,9 @@ int firstIndexOfNegativeEvent;
         NSArray *eventObjectArray = ((NSArray *)[self.dayToEventObjArray objectForKey: day]);
 
         Event *event = (Event *)[eventObjectArray objectAtIndex:[indexPath row]];
+//        if ([self showHighlightsButtonForEvent:event] ) {
+//            return 215;
+//        }
         if ([event containsHighlight]) {
             return 215;
         }
@@ -901,6 +905,10 @@ int firstIndexOfNegativeEvent;
         
         Event *event = (Event *)[eventObjectArray objectAtIndex:[indexPath row]];
 
+//        if ([self showHighlightsButtonForEvent:event]) {
+//            OldEventShowHighlightsCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventShowHighlightsCellName];
+//            return cell;
+//        }
         if ([event containsHighlight]) {
             HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
             cell.event = event;
@@ -944,6 +952,10 @@ int firstIndexOfNegativeEvent;
     if (view == self.goElsewhereView) {
         isLoaded = YES;
     }
+}
+
+- (BOOL) showHighlightsButtonForEvent:(Event *)event {
+    return YES;
 }
 
 #pragma mark - Image helper
@@ -1895,6 +1907,34 @@ int firstIndexOfNegativeEvent;
 
 + (CGFloat) height {
     return 215;
+}
+
+@end
+
+@implementation OldEventShowHighlightsCell
+
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [HighlightOldEventCell height]);
+    self.backgroundColor = RGB(241, 241, 241);
+    
+    self.showHighlightsButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, self.frame.size.width - 20, self.frame.size.height - 20)];
+    [self.showHighlightsButton setTitle:@"Show Past Highglights" forState:UIControlStateNormal];
+    [self.showHighlightsButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    [self.showHighlightsButton addTarget:self action:@selector(showHighlightsPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:self.showHighlightsButton];
+}
+
+- (void)showHighlightsPressed {
+    
 }
 
 @end

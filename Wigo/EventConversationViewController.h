@@ -28,7 +28,6 @@
 @end
 
 @interface FaceCell : UICollectionViewCell
-
 - (void) resetToInactive;
 - (void)setToActiveWithNoAnimation;
 - (void)updateUIToRead:(BOOL)read;
@@ -43,8 +42,6 @@
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UIView *leftLine;
 @property (nonatomic, strong) UIView *rightLine;
-
-
 @end
 
 @interface FaceFlowLayout : UICollectionViewFlowLayout

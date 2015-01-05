@@ -74,6 +74,8 @@
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UILabel *oldEventLabel;
 + (CGFloat) height;
-
 @end
 
+@interface OldEventShowHighlightsCell : UITableViewCell
+@property (nonatomic, strong) UIButton *showHighlightsButton;
+@end
