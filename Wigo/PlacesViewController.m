@@ -930,7 +930,9 @@ int firstIndexOfNegativeEvent;
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
             __weak HighlightOldEventCell *weakCell = cell;
             [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+                if (image) {
+                    weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+                }
             }];
             return cell;
         }
