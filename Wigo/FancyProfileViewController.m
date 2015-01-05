@@ -928,8 +928,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     for (int i = 0; i < [eventsArray count]; i++) {
         Event *newEvent = [eventsArray objectAtIndex:i];
         if ([[newEvent eventID] isEqualToNumber:[event eventID]]) {
-            event = newEvent;
-            isEventPresentInArray = YES;
+            if ([newEvent getEventAttendees].count > 0) {
+                event = newEvent;
+                isEventPresentInArray = YES;
+            }
             break;
         }
     }
