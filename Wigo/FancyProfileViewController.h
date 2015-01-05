@@ -56,8 +56,8 @@
 @interface GoOutsCell: UITableViewCell
 - (void) setLabelsForUser: (User *) user;
 + (CGFloat) rowHeight;
-@property (nonatomic, strong) IBOutlet UILabel *numberLabel;
-@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *numberLabel;
+@property (nonatomic, strong) UILabel *titleLabel;
 @end
 
 
@@ -68,5 +68,6 @@
 + (CGFloat) rowHeight;
 @property (nonatomic, strong) IBOutlet UIButton *inviteButton;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *tappedLabel;
 
 @end

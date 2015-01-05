@@ -336,7 +336,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap to see out:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IwM-ib-pII">
-                                            <rect key="frame" x="131.5" y="24" width="107.5" height="20.5"/>
+                                            <rect key="frame" x="131" y="24" width="108" height="21"/>
                                             <fontDescription key="fontDescription" name="Whitney-Light" family="Whitney-Light" pointSize="18"/>
                                             <color key="textColor" red="0.89411764705882346" green="0.89411764705882346" blue="0.89411764705882346" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
