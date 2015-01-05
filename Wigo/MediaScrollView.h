@@ -25,7 +25,9 @@
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
 @property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
+@property (nonatomic, assign) int minPage;
 @property (nonatomic, strong) NSNumber *index;
+@property (nonatomic, assign) int maxPage;
 @property (nonatomic, assign) BOOL isFocusing;
 - (void)closeView;
 -(void)scrolledToPage:(int)page;

@@ -443,8 +443,7 @@
     [self.view addSubview:self.buttonTrash];
     
     if (self.index) {
-        [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-//         [self.facesCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+        [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];      
     }
 }
 
@@ -452,6 +451,7 @@
     [self.mediaScrollView closeView];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
 
 // Needs to load faster.
 - (void)trashPressed:(id)sender {

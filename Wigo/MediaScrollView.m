@@ -43,6 +43,14 @@
     [self registerClass:[ImageCell class] forCellWithReuseIdentifier:@"ImageCell"];
     [self registerClass:[PromptCell class] forCellWithReuseIdentifier:@"PromptCell"];
     [self registerClass:[CameraCell class] forCellWithReuseIdentifier:@"CameraCell"];
+    if (self.index) {
+        self.minPage = [self.index intValue];
+        self.maxPage = [self.index intValue];
+    }
+    else {
+        self.minPage = 0;
+        self.maxPage = 0;
+    }
     
 }
 
@@ -158,6 +166,9 @@
     if (self.lastMoviePlayer) {
         [self.lastMoviePlayer stop];
     }
+    for (int i = self.minPage; i <= self.maxPage; i++) {
+        [self addReadPage:i];
+    }
     if (self.eventMessagesIDSet.count > 0) {
         [Network sendAsynchronousHTTPMethod:POST
                                 withAPIName:[NSString stringWithFormat:@"events/%@/messages/read/", [self.event eventID]]
@@ -183,13 +194,14 @@
 
 
 -(void)scrolledToPage:(int)page {
+    if (page < self.minPage) self.minPage = page;
+    if (page > self.maxPage) self.maxPage = page;
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
         for (int i = 0 ; i < self.eventMessages.count; i++) {
             [self.pageViews addObject:[NSNull null]];
         }
     }
-    [self addReadPage:page];
 
     [self performBlock:^(void){[self playVideoAtPage:page];}
             afterDelay:0.5
