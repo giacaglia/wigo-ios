@@ -64,14 +64,14 @@ NSMutableArray *failedUserInfoArray;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [EventAnalytics tagEvent:@"Who View"];
-    if (!didProfileSegue) {
-        [self performBlock:^(void){[self fetchUserInfo];}
-                afterDelay:0.1
-     cancelPreviousRequest:YES];
-        [self fetchFirstPageFollowing];
-        [self fetchIsThereNewPerson];
-        [self fetchSummaryGoingOut];
-    }
+//    if (!didProfileSegue) {
+//        [self performBlock:^(void){[self fetchUserInfo];}
+//                afterDelay:0.1
+//     cancelPreviousRequest:YES];
+//        [self fetchFirstPageFollowing];
+//        [self fetchIsThereNewPerson];
+//        [self fetchSummaryGoingOut];
+//    }
     didProfileSegue = NO;
     userInt = -1;
 }
@@ -117,13 +117,13 @@ NSMutableArray *failedUserInfoArray;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
     _fetchingUserInfo = NO;
     _fetchingIsThereNewPerson = NO;
-    _numberFetchedMyInfoAndEveryoneElse = 0;
-    [self fetchFirstPageFollowing];
-    [self performBlock:^(void){[self fetchUserInfo];}
-            afterDelay:0.1
- cancelPreviousRequest:YES];
-    [self fetchIsThereNewPerson];
-    [self fetchSummaryGoingOut];
+//    _numberFetchedMyInfoAndEveryoneElse = 0;
+//    [self fetchFirstPageFollowing];
+//    [self performBlock:^(void){[self fetchUserInfo];}
+//            afterDelay:0.1
+// cancelPreviousRequest:YES];
+//    [self fetchIsThereNewPerson];
+//    [self fetchSummaryGoingOut];
     
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
@@ -532,7 +532,7 @@ NSMutableArray *failedUserInfoArray;
 - (void) updateTitleView {
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
     [self.navigationItem.leftBarButtonItem setTintColor:[FontProperties getOrangeColor]];
-    self.navigationItem.titleView = nil;
+//    self.navigationItem.titleView = nil;
     if ([[Profile user] isGoingOut]) {
         UIButtonUngoOut *ungoOutButton = [[UIButtonUngoOut alloc] initWithFrame:CGRectMake(0, 0, 180, 30)];
         self.navigationItem.titleView = ungoOutButton;

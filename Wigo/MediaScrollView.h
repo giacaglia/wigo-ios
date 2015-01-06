@@ -56,6 +56,7 @@
 @property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
 - (void)focusOnContent;
 @property (nonatomic, assign) BOOL isFocusing;
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @end
 
 
@@ -66,6 +67,7 @@
 @property (nonatomic, strong) UIButton *actionButton;
 @property (nonatomic, strong) UIButton *avoidAction;
 @property (nonatomic, strong) UILabel *blackBackgroundLabel;
+@property (nonatomic, strong) UIImageView *cameraAccessImageView;
 @end
 
 @interface ImageCell : MediaCell

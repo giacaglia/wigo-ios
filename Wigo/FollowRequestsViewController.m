@@ -32,8 +32,16 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _page = @1;
-    self.title = @"Follow Requests";
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+   
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.textColor = [FontProperties getOrangeColor];
+    titleLabel.font = [FontProperties getTitleFont];
+    titleLabel.text = @"Follow Requests";
+    [titleLabel sizeToFit];
+    [self.navigationItem setTitleView:titleLabel];
+
+
     [self initializeLeftBarButton];
     [self initializeFollowRequestTable];
     _followRequestsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
@@ -266,8 +274,28 @@
     int index = (int)((UIButton *)sender).tag;
     Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:index];
     User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
-    self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
-    [self.navigationController pushViewController:self.profileViewController animated:YES];
+    
+    
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser: user];
+    
+    self.profileViewController = fancyProfileViewController;
+    [self.navigationController pushViewController: self.profileViewController animated:YES];
+}
+
+- (UIImage *)imageWithColor:(UIColor *)color
+{
+    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
 }
 
 #pragma mark - Network Functions

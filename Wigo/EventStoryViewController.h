@@ -24,6 +24,7 @@ typedef enum
 } GOHERESTATE;
 
 @interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate, StoryDelegate, UserSelectDelegate>
+@property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) NSData *fileData;
@@ -31,7 +32,7 @@ typedef enum
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 @property (nonatomic, strong) UILabel *numberGoingLabel;
 @property (nonatomic, strong) UIButton *inviteButton;
-@property (nonatomic, strong) UIButton *aroundGoHereButton;
+@property (nonatomic, strong) UIButton *goHereButton;
 @property (nonatomic, strong) EventConversationViewController *conversationViewController;
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 @end

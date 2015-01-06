@@ -47,7 +47,7 @@ NSMutableArray *failedUserInfoArray;
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                         failedUserInfoArray = [NSMutableArray new];
                                     }
-                                    withOptions:failedUserInfoArray
+                                    withOptions:(id)failedUserInfoArray
              ];
         }
         if (completedBlock) completedBlock(image, error, cacheType);
@@ -67,7 +67,7 @@ NSMutableArray *failedUserInfoArray;
                                     withHandler:^(NSDictionary *jsonResponse, NSError *error) {
                                         failedUserInfoArray = [NSMutableArray new];
                                     }
-                                    withOptions:failedUserInfoArray
+                                    withOptions:(id)failedUserInfoArray
              ];
         }
         if (completedBlock) completedBlock(image, error, cacheType);

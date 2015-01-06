@@ -45,7 +45,7 @@
 + (void)sendAsynchronousHTTPMethod:(NSString *)httpMethod
                        withAPIName:(NSString *)apiName
                        withHandler:(QueryResult)handler
-                       withOptions:(NSDictionary *)options
+                       withOptions:(id)options
 {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:apiName];

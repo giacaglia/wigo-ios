@@ -134,7 +134,7 @@
         NSArray *images = [[Profile user] images];
         [[Profile user] setEmail:emailString];
         NSString *response = [[Profile user] signUp];
-        if ([response isEqualToString:@"error"]) {
+        if ([response isEqualToString:@"x`"]) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email" message:@"Enter a valid email address" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [alert show];
         }

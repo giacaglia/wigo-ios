@@ -34,7 +34,7 @@
                               peopleMutable,
                               CFRangeMake(0, n),
                               (CFComparatorFunction) ABPersonComparePeopleByName,
-                              (void*) ABPersonGetSortOrdering()
+                              (void *)(unsigned long)ABPersonGetSortOrdering()
                               );
             NSMutableArray* data = [NSMutableArray arrayWithArray: (__bridge NSArray*) peopleMutable];
             

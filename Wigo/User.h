@@ -21,7 +21,8 @@ typedef enum
     NOT_YET_ACCEPTED_PRIVATE_USER,
     ACCEPTED_PRIVATE_USER,
     ATTENDING_EVENT_ACCEPTED_PRIVATE_USER,
-    BLOCKED_USER
+    BLOCKED_USER,
+    OTHER_SCHOOL_USER
 } STATE;
 
 
@@ -49,6 +50,7 @@ typedef enum
 @property BOOL emailValidated;
 @property BOOL isFavorite;
 @property BOOL isFollowing;
+- (void)setStringNotificationRead:(NSString *)notificationRead;
 @property NSNumber *lastNotificationRead;
 @property NSNumber *lastMessageRead;
 @property NSNumber *lastUserRead;

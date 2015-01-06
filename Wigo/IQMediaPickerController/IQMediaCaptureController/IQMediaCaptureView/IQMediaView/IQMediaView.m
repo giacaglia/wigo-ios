@@ -44,7 +44,6 @@
     UIPanGestureRecognizer *_panRecognizer;
     UITapGestureRecognizer *_tapRecognizer;
     UILongPressGestureRecognizer *_longPressRecognizer;
-    float beginGestureScale, effectiveScale;
     BOOL editing;
     MPMoviePlayerController *repeatPlayer;
 }
@@ -59,20 +58,14 @@
     self.backgroundColor = [UIColor blackColor];
     [(AVCaptureVideoPreviewLayer*)self.layer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     
-    effectiveScale = 1.0;
-//    focusView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-//    focusView.alpha = 0.0;
-//    focusView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
-//    focusView.center = self.center;
-//    focusView.delegate = self;
-//    focusView.image = [UIImage imageNamed:@"IQ_focus"];
-//    [self addSubview:focusView];
+    _effectiveScale = 1.0;
     
     exposureView = [[IQFeatureOverlay alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
     exposureView.alpha = 0.0;
     exposureView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
     exposureView.center = self.center;
     exposureView.delegate = self;
+    exposureView.contentMode = UIViewContentModeScaleAspectFit;
     exposureView.image = [UIImage imageNamed:@"exposureIcon"];
     [self addSubview:exposureView];
     
@@ -158,18 +151,20 @@
 }
 
 - (void)handlePinchFrom:(UIPinchGestureRecognizer *)pinchRecognizer {
-    effectiveScale = beginGestureScale * pinchRecognizer.scale;
-    if (effectiveScale >= 1 && effectiveScale < 6) {
+    _effectiveScale = _beginGestureScale * pinchRecognizer.scale;
+    if (_effectiveScale >= 1 && _effectiveScale < 6) {
         if ([self captureMode] == IQMediaCaptureControllerCaptureModePhoto) {
-            self.transform = CGAffineTransformMakeScale(effectiveScale, effectiveScale);
+            self.transform = CGAffineTransformMakeScale(_effectiveScale, _effectiveScale);
+            exposureView.frame = CGRectMake(0, 0, 70/_effectiveScale, 70/_effectiveScale);
         }
     }
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
+//    NSLog(@"hareeuahr");
     if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
-        beginGestureScale = effectiveScale;
+        _beginGestureScale = _effectiveScale;
     }
     if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] &&
         [gestureRecognizer.view isKindOfClass:[repeatPlayer.view class]]) {
@@ -180,6 +175,7 @@
 
 -(void)tapGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
+//    NSLog(@"sup?");
     CGPoint center = [recognizer locationInView:self];
     [exposureView setCenter:center];
     if (recognizer.state == UIGestureRecognizerStateEnded  &&
@@ -210,6 +206,7 @@
 -(void)panGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
 //    [exposureView setCenter:center];
+//    NSLog(@"pan gesture recognizer");
     CGPoint translation = [recognizer translationInView:self];
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         [self.delegate mediaView:self stopTranslateAt:translation];

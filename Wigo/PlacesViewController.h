@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ProfileViewController.h"
 #import "Event.h"
 #import "Delegate.h"
 #import "UIButtonAligned.h"
@@ -15,12 +14,13 @@
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate >
 
-@property ProfileViewController *profileViewController;
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) NSString *groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
+@property (nonatomic, assign) BOOL visitedProfile;
 
 @property (nonatomic, assign) BOOL fetchingIsThereNewPerson;
+@property (nonatomic, strong) UILabel *leftRedDotLabel;
 @property (nonatomic, strong) UILabel *redDotLabel;
 @property (nonatomic, strong) UIButton *rightButton;
 @end
@@ -39,12 +39,39 @@
 - (void)updateUI;
 @end
 
-@interface OldEventCell : UITableViewCell
-@property (nonatomic, strong) UILabel *oldEventLabel;
-@property (nonatomic, strong) UIImageView *chatBubbleImageView;
-@property (nonatomic, strong) UILabel *chatNumberLabel;
+
+#pragma mark - Headers
+@interface TodayHeader : UIView
+@property (nonatomic, strong) NSDate *date;
++ (instancetype) initWithDay: (NSDate *) date;
++ (CGFloat) height;
 @end
 
-@interface HeaderOldEventCell : UITableViewHeaderFooterView
-@property (nonatomic, strong) UILabel *headerTitleLabel;
+@interface GoOutNewPlaceHeader : UIView
+@property (nonatomic, strong) UIButton *plusButton;
+@property (nonatomic, strong) UIButton *addEventButton;
++ (instancetype) init;
++ (CGFloat) height;
 @end
+
+@interface HighlightsHeader : UIView
++ (instancetype) init;
++ (CGFloat) height;
+@end
+
+@interface PastDayHeader : UIView
+@property (nonatomic, strong) NSString *day;
+@property (nonatomic, assign) BOOL isFirst;
++ (instancetype) initWithDay: (NSString *) dayText isFirst: (BOOL) first;
++ (CGFloat) height: (BOOL) isFirst;
+@end
+
+@interface HighlightOldEventCell : UITableViewCell
+@property (nonatomic, strong) UIImageView *highlightImageView;
+@property (nonatomic, strong) Event *event;
+@property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) UILabel *oldEventLabel;
++ (CGFloat) height;
+
+@end
+

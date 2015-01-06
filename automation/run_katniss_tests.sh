@@ -48,6 +48,12 @@ open -a "iOS Simulator" --args -CurrentDeviceUDID ${SIMULATOR_NAME_OR_DEVICE_UDI
 
 sleep 10
 
+function cleanup {
+  osascript -e 'tell app "iOS Simulator" to quit'
+}
+
+trap cleanup EXIT
+
 # ---------- DO NOT EDIT ANYTHING BELOW THIS LINE, UNLESS YOU KNOW WHAT YOU'RE DOING -----------
 
 "$AUTOMATION_RUNNER_SCRIPT_PATH" \
@@ -56,5 +62,3 @@ sleep 10
     "$JAVASCRIPT_TEST_FILE" \
     "$JAVASCRIPT_TEST_FILES_DIRECTORY" \
     "$TEST_RESULTS_OUTPUT_PATH"
-
-osascript -e 'tell app "iOS Simulator" to quit'

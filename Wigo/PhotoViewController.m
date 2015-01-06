@@ -30,13 +30,13 @@
 {
     [super viewDidLoad];
     
-    UIImageView *photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, 0, 248, 248)];
+    UIImageView *photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, [[UIScreen mainScreen] bounds].size.height - [[UIScreen mainScreen] bounds].size.width - 130, [[UIScreen mainScreen] bounds].size.width - 70, [[UIScreen mainScreen] bounds].size.width - 70)];
     photoImageView.contentMode = UIViewContentModeScaleAspectFill;
     photoImageView.clipsToBounds = YES;
     [photoImageView setImageWithURL:[_image objectForKey:@"url"] imageArea:[_image objectForKey:@"crop"]];
     [self.view addSubview:photoImageView];
     
-    UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
+    UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(35, photoImageView.frame.origin.y + photoImageView.frame.size.height + 24, [[UIScreen mainScreen] bounds].size.width - 70, 42)];
     makeCoverButton.backgroundColor = RGB(246, 143, 30);
     [makeCoverButton addTarget:self action:@selector(makeCoverPressed) forControlEvents:UIControlEventTouchUpInside];
     [makeCoverButton setTitle:@"MAKE COVER" forState:UIControlStateNormal];
@@ -44,7 +44,7 @@
     makeCoverButton.titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:makeCoverButton];
     
-    UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12, 248, 42)];
+    UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(35, photoImageView.frame.origin.y + photoImageView.frame.size.height + 78, [[UIScreen mainScreen] bounds].size.width - 70, 42)];
     deleteButton.backgroundColor = RGB(214, 45, 58);
     [deleteButton addTarget:self action:@selector(deletePressed) forControlEvents:UIControlEventTouchUpInside];
     [deleteButton setTitle:@"DELETE" forState:UIControlStateNormal];
@@ -52,7 +52,7 @@
     deleteButton.titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:deleteButton];
     
-    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12 + 42 + 12, 248, 42)];
+    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, photoImageView.frame.origin.y + photoImageView.frame.size.height + 132, [[UIScreen mainScreen] bounds].size.width - 70, 42)];
     cancelButton.backgroundColor = [UIColor whiteColor];
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];

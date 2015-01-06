@@ -17,9 +17,11 @@
 @end
 
 @protocol PlacesDelegate <UserSelectDelegate>
-- (void)showConversationForEvent:(Event*)event;
+- (void)showConversationForEvent:(Event *)event;
+- (void)showStoryForEvent:(Event*)event;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
+@property (nonatomic, assign) BOOL visitedProfile;
 - (void)updateEvent:(Event *)newEvent;
 @end
 

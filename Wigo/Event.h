@@ -16,10 +16,12 @@
 @property NSNumber *numberAttending;
 @property NSNumber *numberOfMessages;
 
+- (BOOL)containsHighlight;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
 - (void)addEventAttendees:(NSArray *)newEventAttendees;
 - (NSArray *)getEventAttendees;
 - (void)addUser:(User *)user;
 - (NSDictionary *)dictionary;
+- (NSString *) expiresDate;
 
 @end

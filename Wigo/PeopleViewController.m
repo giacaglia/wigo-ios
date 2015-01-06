@@ -8,12 +8,14 @@
 
 #import "PeopleViewController.h"
 #import "Globals.h"
-#import "ProfileViewController.h"
+#import "FancyProfileViewController.h"
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
 #import "MobileContactsViewController.h"
 
-@interface PeopleViewController ()
+@interface PeopleViewController () {
+    UIView *_lineView;
+}
 
 //Table View of people
 @property UITableView *tableViewOfPeople;
@@ -26,7 +28,7 @@
 @property UISearchBar *searchBar;
 @property UIImageView *searchIconImageView;
 
-@property ProfileViewController *profileViewController;
+@property FancyProfileViewController *profileViewController;
 
 @property Party *everyoneParty;
 @property Party *followingParty;
@@ -34,7 +36,7 @@
 @property Party *suggestionsParty;
 
 @property NSNumber *page;
-@property NSNumber *currentTab;
+
 @end
 
 BOOL didProfileSegue;
@@ -52,7 +54,7 @@ NSMutableArray *suggestedArrayView;
     self = [super init];
     if (self) {
         self.user = user;
-        _currentTab = tab;
+        self.currentTab = tab;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -79,17 +81,17 @@ NSMutableArray *suggestedArrayView;
     [self initializeBackBarButton];
     [self initializeRightBarButton];
     
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
 
     [self initializeSearchBar];
     [self initializeTableOfPeople];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [EventAnalytics tagEvent:@"People View"];
-
-
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -98,16 +100,24 @@ NSMutableArray *suggestedArrayView;
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
 
     if (!didProfileSegue) {
-        if ([[self.user allKeys] containsObject:@"tabNumber"]) {
-            _currentTab = [self.user objectForKey:@"tabNumber"];
-        }
-        else if (!_currentTab) _currentTab = @2;
+        if (!self.currentTab) self.currentTab = @2;
         _contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
         _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
         [self loadTableView];
     }
     didProfileSegue = NO;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
+    
+    _lineView= [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
+    _lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
+
+    [self.navigationController.navigationBar addSubview: _lineView];
+}
+
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear: animated];
+    
+    [_lineView removeFromSuperview];
 }
 
 - (void)initializeBackBarButton {
@@ -193,7 +203,10 @@ NSMutableArray *suggestedArrayView;
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
-        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        
+        
+        self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [self.profileViewController setStateWithUser: user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }
@@ -205,7 +218,9 @@ NSMutableArray *suggestedArrayView;
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
-        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+
+        self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [self.profileViewController setStateWithUser: user];
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }
@@ -265,7 +280,7 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (UIView *)initializeSecondPart {
-    if ([_currentTab isEqualToNumber:@2]) {
+    if ([self.currentTab isEqualToNumber:@2]) {
         UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 223)];
         
         UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 14, 21)];
@@ -293,7 +308,7 @@ NSMutableArray *suggestedArrayView;
         [suggestedScrollView addSubview:inviteButton];
         
         UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
-        inviteMoreFriendsLabel.text = @"Invite more friends\nto WiGo";
+        inviteMoreFriendsLabel.text = @"Invite more friends\nto Wigo";
         inviteMoreFriendsLabel.textAlignment = NSTextAlignmentCenter;
         inviteMoreFriendsLabel.font = [FontProperties mediumFont:12.0f];
         inviteMoreFriendsLabel.numberOfLines = 0;
@@ -320,10 +335,10 @@ NSMutableArray *suggestedArrayView;
         lateToThePartyLabel.textColor = RGB(102, 102, 102);
         [secondPartSubview addSubview:lateToThePartyLabel];
         
-        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 29, 229, 30)];
+        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 29, self.view.frame.size.width - 90, 30)];
         [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         inviteButton.backgroundColor = [FontProperties getOrangeColor];
-        [inviteButton setTitle:@"Invite More Friends To WiGo" forState:UIControlStateNormal];
+        [inviteButton setTitle:@"Invite More Friends To Wigo" forState:UIControlStateNormal];
         [inviteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         inviteButton.titleLabel.font = [FontProperties scMediumFont:16.0f];
         inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -402,7 +417,7 @@ NSMutableArray *suggestedArrayView;
         UILabel *dateJoined = [[UILabel alloc] init];
         if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastUserRead] intValue]) {
             UILabel *mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 152, 110, 15)];
-            mutualFriendsLabel.text = @"New on WiGo";
+            mutualFriendsLabel.text = @"New on Wigo";
             mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
             mutualFriendsLabel.font = [FontProperties lightFont:12.0f];
             mutualFriendsLabel.textColor = RGB(102, 102, 102);
@@ -441,12 +456,15 @@ NSMutableArray *suggestedArrayView;
 
 - (void)suggestedProfileSegue:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
+    int tag = (int)buttonSender.tag;
     User *user = [self getSuggestedUser:tag];
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:0];
-        self.profileViewController = [[ProfileViewController alloc] initWithUser:user];
+        
+        self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [self.profileViewController setStateWithUser: user];
+
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }
@@ -471,15 +489,15 @@ NSMutableArray *suggestedArrayView;
 
 - (void)loadTableView {
     self.navigationItem.titleView = nil;
-    if ([_currentTab isEqualToNumber:@2]) {
+    if ([self.currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageSuggestions];
         self.title = [[Profile user] groupName];
     }
-    else if ([_currentTab isEqualToNumber:@3]) {
+    else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
         self.title = @"Followers";
     }
-    else if ([_currentTab isEqualToNumber:@4]) {
+    else if ([self.currentTab isEqualToNumber:@4]) {
         [self fetchFirstPageFollowing];
         self.title = @"Following";
     }
@@ -489,8 +507,8 @@ NSMutableArray *suggestedArrayView;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == 0) {
-        if ([_currentTab isEqualToNumber:@2]) return 233;
-        else if ([_currentTab isEqualToNumber:@4]) return 95;
+        if ([self.currentTab isEqualToNumber:@2]) return 233;
+        else if ([self.currentTab isEqualToNumber:@4]) return 95;
         else return 0;
     }
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
@@ -527,11 +545,12 @@ NSMutableArray *suggestedArrayView;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
+    cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
     
     if ([indexPath section] == 0) {
-        if ([_currentTab isEqualToNumber:@2])
+        if ([self.currentTab isEqualToNumber:@2])
             [cell.contentView addSubview:secondPartSubview];
-        else if ([_currentTab isEqualToNumber:@4])
+        else if ([self.currentTab isEqualToNumber:@4])
             [cell.contentView addSubview:secondPartSubview];
         return cell;
     }
@@ -612,7 +631,7 @@ NSMutableArray *suggestedArrayView;
     }
     [clickableView addSubview:goingOutLabel];
     
-    if ([_currentTab isEqualToNumber:@2]) {
+    if ([self.currentTab isEqualToNumber:@2]) {
         UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140 - 15, PEOPLEVIEW_HEIGHT_OF_CELLS - 15, 140, 12)];
         timeLabel.text = [user joinedDate];
         timeLabel.textAlignment = NSTextAlignmentRight;
@@ -773,7 +792,7 @@ NSMutableArray *suggestedArrayView;
 - (void)updateUserAtTable:(NSNotification*)notification {
     NSDictionary* userInfo = [notification userInfo];
     User *user = [[User alloc] initWithDictionary:userInfo];
-    int userInt = [userIndex row];
+    int userInt = (int)[userIndex row];
 
     if (user) {
         if ([userIndex section] == 0) {
@@ -817,13 +836,13 @@ NSMutableArray *suggestedArrayView;
 #pragma mark - Network functions
 
 - (void)loadNextPage {
-    if ([_currentTab isEqualToNumber:@2]) {
+    if ([self.currentTab isEqualToNumber:@2]) {
         [self fetchEveryone];
     }
-    else if ([_currentTab isEqualToNumber:@3]) {
+    else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFollowers];
     }
-    else if ([_currentTab isEqualToNumber:@4]) {
+    else if ([self.currentTab isEqualToNumber:@4]) {
         [self fetchFollowing];
     }
 }
@@ -864,12 +883,14 @@ NSMutableArray *suggestedArrayView;
                     fetching = NO;
                     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                     NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-//                    if (_suggestionsParty) {
-//                        [_everyoneParty addObjectsFromArray:arrayOfUsers notInParty:_suggestionsParty];
-//                    }
-//                    else {
+                    
+                    if (_suggestionsParty) {
+                        [_everyoneParty addObjectsFromArray:arrayOfUsers notInParty:_suggestionsParty];
+                    }
+                    else {
                         [_everyoneParty addObjectsFromArray:arrayOfUsers];
-//                    }
+                    }
+                    
                     NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
                     [_everyoneParty addMetaInfo:metaDictionary];
                     [_suggestionsParty addMetaInfo:metaDictionary];
@@ -1018,11 +1039,11 @@ NSMutableArray *suggestedArrayView;
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     _page = @1;
-    if ([_currentTab isEqualToNumber:@2]) {
+    if ([self.currentTab isEqualToNumber:@2]) {
         NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[_page stringValue], searchString];
         [self searchUsersWithString:queryString andObjectType:USER_TYPE];
     }
-    else if ([_currentTab isEqualToNumber:@3]) {
+    else if ([self.currentTab isEqualToNumber:@3]) {
         NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&page=%@&text=%@" ,[[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
         [self searchUsersWithString:queryString andObjectType:FOLLOW_TYPE];
     }
@@ -1047,7 +1068,7 @@ NSMutableArray *suggestedArrayView;
                                   arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
                                   for (NSDictionary *object in arrayOfFollowObjects) {
                                       NSDictionary *userDictionary;
-                                      if ([_currentTab isEqualToNumber:@3]) userDictionary = [object objectForKey:@"user"];
+                                      if ([self.currentTab isEqualToNumber:@3]) userDictionary = [object objectForKey:@"user"];
                                       else userDictionary = [object objectForKey:@"follow"];
                                       if ([userDictionary isKindOfClass:[NSDictionary class]]) {
                                           if ([Profile isUserDictionaryProfileUser:userDictionary]) {

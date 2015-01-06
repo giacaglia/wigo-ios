@@ -11,11 +11,12 @@
 
 @interface PeopleViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
--(id)initWithUser:(User *)user;
+- (id)initWithUser:(User *)user andTab:(NSNumber *)tab;
+- (id)initWithUser:(User *)user;
 
 @property (nonatomic) UIBarButtonItem *sidebarButton;
 @property User *user;
 @property int tabNumber;
-
+@property (nonatomic, strong) NSNumber *currentTab;
 
 @end

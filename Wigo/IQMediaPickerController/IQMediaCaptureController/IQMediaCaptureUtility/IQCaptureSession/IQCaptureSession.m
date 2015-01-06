@@ -714,6 +714,19 @@
                 [imageData writeToURL:outputImageURL.filePathURL atomically:YES];
                 
                 UIImage *image = [[UIImage alloc] initWithData:imageData];
+
+                NSArray *inputs = [_captureSession inputs];
+                for (AVCaptureInput *input in inputs) {
+                    AVCaptureDeviceInput *deviceInput = (AVCaptureDeviceInput *)input;
+                    AVCaptureDevice *device = [deviceInput device];
+                    if (device.position == AVCaptureDevicePositionFront) {
+                        image = [UIImage imageWithCGImage:[image CGImage]
+                                            scale:1.0
+                                      orientation: UIImageOrientationLeftMirrored];
+                        break;
+                    }
+                }
+
                 
                 NSDictionary *dict = [[NSDictionary alloc] initWithObjectsAndKeys:outputImageURL,IQMediaURL,image,IQMediaImage,IQMediaTypeImage,IQMediaType, nil];
 

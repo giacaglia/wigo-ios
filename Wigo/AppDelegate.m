@@ -142,7 +142,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 handleActionWithIdentifier:(NSString *)identifier
 forRemoteNotification:(NSDictionary *)userInfo
   completionHandler:(void (^)())completionHandler {
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if ([identifier isEqualToString: @"tap_with_diff_event"]) {
         NSDictionary *event = [userInfo objectForKey:@"event"];
         NSNumber *eventID = [event objectForKey:@"id"];
@@ -158,7 +158,7 @@ forRemoteNotification:(NSDictionary *)userInfo
                         [[Profile user] setIsAttending:YES];
                         [[Profile user] setAttendingEventID:eventID];
                         [Network postGoingToEventNumber:[eventID intValue]];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
+                     
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
                     }
                 }
@@ -328,7 +328,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     if ([datesAccessed count] == 3) {
         UIAlertView *alertView = [[UIAlertView alloc]
                                   initWithTitle:@"Love Wigo?"
-                                  message:@"Looks like you love WiGo. The feeling is mutual. Share your love on the App Store."
+                                  message:@"Looks like you love Wigo. The feeling is mutual. Share your love on the App Store."
                                   delegate:self
                                   cancelButtonTitle:@"Not now"
                                   otherButtonTitles:@"Rate Wigo", nil];

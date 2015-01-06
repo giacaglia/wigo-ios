@@ -14,6 +14,7 @@
 #import "UIImageCrop.h"
 #import "RWBlurPopover.h"
 #import "ChatViewController.h"
+#import "EventStoryViewController.h"
 #import <Parse/Parse.h>
 
 @interface ReProfileViewController ()
@@ -29,7 +30,6 @@
 
 //UIScrollView
 @property UIPageControl *pageControl;
-@property BOOL isSeingImages;
 @property UIScrollView *scrollView;
 @property CGPoint pointNow;
 @property NSMutableArray *profileImagesArray;
@@ -79,7 +79,6 @@ UIButton *tapButton;
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
     _pageControl.hidden = YES;
-    
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
 }
 
@@ -90,7 +89,7 @@ UIButton *tapButton;
     if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
     _page = @1;
     [self fetchNotifications];
-    [self updateLastNotificationsRead];
+//    [self updateLastNotificationsRead];
     [self updateBadge];
 }
 
@@ -105,23 +104,19 @@ UIButton *tapButton;
     
     [EventAnalytics tagEvent:@"Profile View" withDetails:options];
     
-    _isSeingImages = NO;
     _profileImagesArray = [[NSMutableArray alloc] initWithCapacity:0];
    
     [self initializeNotificationHandlers];
-    [self initializeFollowingAndFollowers];
     [self initializeFollowButton];
     [self initializeFollowRequestLabel];
-    [self initializeLeftProfileButton];
-    [self initializeMiddleProfileButton];
+    [self initializeHeaderButtonView];
     [self initializeBottomTableView];
     [self reloadView];
 }
 
 - (void) initializeNotificationHandlers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProfile) name:@"updateProfile" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chooseImage) name:@"chooseImage" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
+       [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unfollowPressed) name:@"unfollowPressed" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(blockPressed:) name:@"blockPressed" object:nil];
 }
 
@@ -204,6 +199,7 @@ UIButton *tapButton;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self initializeProfileImage];
+    [self initializeTopGradient];
     [self initializeNameOfPerson];
     [self initializeTapButton];
     
@@ -266,31 +262,6 @@ UIButton *tapButton;
 
 
 
-- (void) initializeFollowingAndFollowers {
-    _followingButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/4, self.view.frame.size.width + 50, self.view.frame.size.width/2, 50)];
-    [_followingButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followingButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
-    followingLabel.textColor = [FontProperties getOrangeColor];
-    followingLabel.textAlignment = NSTextAlignmentCenter;
-    followingLabel.text = [NSString stringWithFormat:@"Following (%d)", [(NSNumber*)[self.user objectForKey:@"num_following"] intValue]];
-    followingLabel.font = [FontProperties getTitleFont];
-    followingLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    followingLabel.numberOfLines = 0;
-    [_followingButton addSubview:followingLabel];
-    [self.view addSubview:_followingButton];
-    
-    _followersButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/4, self.view.frame.size.width, self.view.frame.size.width/2, 50)];
-    [_followersButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, _followersButton.frame.size.height/2 - 12, _followingButton.frame.size.width, 24)];
-    followersLabel.textColor = [FontProperties getOrangeColor];
-    followersLabel.font = [FontProperties getTitleFont];
-    followersLabel.textAlignment = NSTextAlignmentCenter;
-    followersLabel.text = [NSString stringWithFormat:@"Followers (%d)", [(NSNumber*)[self.user objectForKey:@"num_followers"] intValue]];
-    followersLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    followersLabel.numberOfLines = 0;
-    [_followersButton addSubview:followersLabel];
-    [self.view addSubview:_followersButton];
-}
 
 - (void) editPressed {
     self.editProfileViewController = [[EditProfileViewController alloc] init];
@@ -358,8 +329,7 @@ UIButton *tapButton;
 }
 
 - (void)morePressed {
-    self.moreViewController = [[MoreViewController alloc] initWithUser:self.user];
-    [[RWBlurPopover instance] presentViewController:self.moreViewController withOrigin:0 andHeight:self.view.frame.size.height];
+    [[RWBlurPopover instance] presentViewController:[[MoreViewController alloc] initWithUser:self.user] withOrigin:0 andHeight:self.view.frame.size.height];
 }
 
 
@@ -372,9 +342,6 @@ UIButton *tapButton;
     [_scrollView setShowsHorizontalScrollIndicator:NO];
     _scrollView.layer.borderWidth = 1;
     _scrollView.backgroundColor = RGB(23,23,23);
-    _tapScrollView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(chooseImage)];
-    _tapScrollView.cancelsTouchesInView = NO;
-    [_scrollView addGestureRecognizer:_tapScrollView];
     _scrollView.delegate = self;
     
     // DISPLAY CONTENT PROPERLY (Scroll View)
@@ -473,171 +440,29 @@ UIButton *tapButton;
     [self.view addSubview:_followRequestLabel];
 }
 
-
-- (void)chooseImage {
-    [self setNeedsStatusBarAppearanceUpdate];
-    if (!_isSeingImages) {
-        _isSeingImages = YES;
-        _lastLineView.hidden = NO;
-        
-        [UIView animateWithDuration:0.2
-                              delay:0
-                            options:UIViewAnimationOptionCurveLinear
-                         animations:^{
-                             _nameOfPersonBackground.transform =  CGAffineTransformMakeTranslation(0, _nameOfPersonBackground.frame.size.height);
-                             self.view.backgroundColor = RGB(23, 23, 23);
-                             
-                             _followButton.hidden = YES;
-                             _leftProfileButton.hidden = YES;
-                             _rightProfileButton.hidden = YES;
-                             _followingButton.hidden = YES;
-                             _followersButton.hidden = YES;
-                         
-                         }
-                         completion:nil
-         ];
-    }
-    else {
-        _tapScrollView.enabled = YES;
-        _isSeingImages = NO;
-        _lastLineView.hidden = YES;
-        [UIView animateWithDuration:0.2
-                         animations:^{
-                             _nameOfPersonBackground.transform =  CGAffineTransformMakeTranslation(0, 0);
-                             [self.view bringSubviewToFront:_nameOfPersonBackground];
-                             self.view.backgroundColor = [UIColor whiteColor];
-                             self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-                             [self reloadView];
-                             
-                         } completion:^(BOOL finished) {
-                             
-                         }];
-    }
-}
-
-- (void)initializeNameOfPerson {
+- (void)initializeTopGradient {
     UIImageView *topGradientBackground =[[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
     topGradientBackground.image = [UIImage imageNamed:@"topGradientBackground"];
     [self.view addSubview:topGradientBackground];
     [self.view bringSubviewToFront:topGradientBackground];
     [self.view bringSubviewToFront:_pageControl];
-    
-//    UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 65, 44)];
-//    [backButton setImage:[UIImage imageNamed:@"whiteBackButton"] forState:UIControlStateNormal];
-//    [backButton setTitle:@" Back" forState:UIControlStateNormal];
-//    [backButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-//    backButton.titleLabel.font = [FontProperties getSubtitleFont];
-//    [backButton addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:backButton];
-    
-//    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 75, 0, 65, 44)];
-//    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-//        [rightButton setTitle:@"Edit" forState:UIControlStateNormal];
-//        [rightButton addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
-//        
-//    }
-//    else  {
-//        [rightButton setTitle:@"More" forState:UIControlStateNormal];
-//        [rightButton addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
-//    }
-//    rightButton.titleLabel.font = [FontProperties getSubtitleFont];
-//    [self.view addSubview:rightButton];
+}
 
-    _nameOfPersonBackground = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
+- (void)initializeNameOfPerson {
+    UIView *nameOfPersonView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
+    [self.view bringSubviewToFront:nameOfPersonView];
+    [self.view addSubview:nameOfPersonView];
+    
     UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
     gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
-    [_nameOfPersonBackground addSubview:gradientBackground];
-    
+    [nameOfPersonView addSubview:gradientBackground];
+
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
-    if ([self.user getUserState] == ATTENDING_EVENT_FOLLOWING_USER ||
-        [self.user getUserState] == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
-        _nameOfPersonLabel.numberOfLines = 0;
-        _nameOfPersonLabel.textAlignment = NSTextAlignmentLeft;
-        if ([[Profile user] isAttending] && [[self.user attendingEventID] isEqualToNumber:[[Profile user] attendingEventID]]) {
-            NSString *textOfLabel = [NSString stringWithFormat:@"%@ is also going to: %@", [self.user fullName], [self.user attendingEventName]];
-            NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
-            [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
-            [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
-            NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-            style.lineSpacing = 5;
-            [style setAlignment:NSTextAlignmentCenter];
-            [string addAttribute:NSParagraphStyleAttributeName
-                           value:style
-                           range:NSMakeRange(0, [string length])];
-            _nameOfPersonLabel.attributedText = string;
-        }
-        else {
-            NSString *textOfLabel = [NSString stringWithFormat:@"%@ is going to: %@", [self.user fullName], [self.user attendingEventName]];
-            NSMutableString *cutOffText;
-            if (textOfLabel.length > 67) {
-                cutOffText = [NSMutableString stringWithString:[textOfLabel substringWithRange: NSMakeRange(0, MIN(64, textOfLabel.length))]];
-                [cutOffText appendString:@"..."];
-            }
-            else {
-                cutOffText = [NSMutableString stringWithString:textOfLabel];
-            }
-            
-            NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:cutOffText];
-            [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
-            [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
-            NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-            style.lineSpacing = 5;
-            [string addAttribute:NSParagraphStyleAttributeName
-                           value:style
-                           range:NSMakeRange(0, [string length])];
-            _nameOfPersonLabel.attributedText = string;
-            
-            UIButton *goHereTooButton = [[UIButton alloc] init];
-            [goHereTooButton setTitle:@"GO HERE" forState:UIControlStateNormal];
-            [goHereTooButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            goHereTooButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            goHereTooButton.titleLabel.font = [FontProperties getSmallPhotoFont];
-            goHereTooButton.layer.borderColor = RGB(201, 202, 204).CGColor;
-            goHereTooButton.layer.borderWidth = 1;
-            goHereTooButton.layer.cornerRadius = 4;
-            [goHereTooButton addTarget:self action:@selector(goThereTooPressed) forControlEvents:UIControlEventTouchUpInside];
-            
-            CGFloat requiredWidth =  [_nameOfPersonLabel.text sizeWithAttributes:@{NSFontAttributeName:[FontProperties getSmallFont]}].width;
-            if (requiredWidth < self.view.frame.size.width - 14 - 10) {
-                CGRect frame = _nameOfPersonLabel.frame;
-                frame.origin.y -= 10;
-                _nameOfPersonLabel.frame = frame;
-                _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-                goHereTooButton.frame = CGRectMake(self.view.frame.size.width/2 - 48, 45, 95, 25);
-                [_nameOfPersonBackground addSubview:goHereTooButton];
-                
-            }
-            else {
-                goHereTooButton.frame = CGRectMake(_nameOfPersonBackground.frame.size.width - 95 - 7, _nameOfPersonLabel.frame.origin.y + _nameOfPersonLabel.frame.size.height - 25, 95, 25);
-                [_nameOfPersonBackground addSubview:goHereTooButton];
-            }
-            
-        }
-    }
-    else if ([self.user isGoingOut] && ![self.user isEqualToUser:[Profile user]]) {
-        _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-        NSString *textOfLabel = [NSString stringWithFormat:@"%@ is going out", [self.user fullName]];
-        NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:textOfLabel];
-        [string addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor] range:NSMakeRange(0, [self.user fullName].length)];
-        [string addAttribute:NSForegroundColorAttributeName value:RGB(201, 202, 204) range:NSMakeRange([self.user fullName].length, string.length - [self.user fullName].length)];
-        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
-        style.lineSpacing = 5;
-        [style setAlignment:NSTextAlignmentCenter];
-        [string addAttribute:NSParagraphStyleAttributeName
-                       value:style
-                       range:NSMakeRange(0, [string length])];
-        _nameOfPersonLabel.attributedText = string;
-    }
-    else {
-        _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-        _nameOfPersonLabel.text = [self.user fullName];
-        _nameOfPersonLabel.textColor = [UIColor whiteColor];
-        _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
-    }
-    
-    [_nameOfPersonBackground addSubview:_nameOfPersonLabel];
-    [self.view addSubview:_nameOfPersonBackground];
-    [self.view bringSubviewToFront:_nameOfPersonBackground];
+    _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
+    _nameOfPersonLabel.text = [self.user fullName];
+    _nameOfPersonLabel.textColor = [UIColor whiteColor];
+    _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
+    [nameOfPersonView addSubview:_nameOfPersonLabel];
     
     _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 9, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
@@ -645,9 +470,7 @@ UIButton *tapButton;
         _privateLogoImageView.hidden = NO;
     }
     else _privateLogoImageView.hidden = YES;
-    [_nameOfPersonBackground addSubview:_privateLogoImageView];
-    [_nameOfPersonBackground bringSubviewToFront:_privateLogoImageView];
-    
+    [nameOfPersonView addSubview:_privateLogoImageView];
 }
 
 - (void) initializeTapButton {
@@ -686,7 +509,6 @@ UIButton *tapButton;
 - (void)goThereTooPressed {
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Go Here Source", nil];
     [EventAnalytics tagEvent:@"Go Here" withDetails:options];
-    if (_isSeingImages) [self chooseImage];
     [self.navigationController popToRootViewControllerAnimated:NO];
     [[Profile user] setIsAttending:YES];
     [[Profile user] setIsGoingOut:YES];
@@ -697,11 +519,15 @@ UIButton *tapButton;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
 }
 
-- (void)initializeLeftProfileButton {
-    _leftProfileButton = [[UIButton alloc] init];
-    
+
+#pragma mark - HeaderButtonView
+
+- (void)initializeHeaderButtonView {
+    UIView *headerButtonView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width, 70)];
+    [self.view addSubview:headerButtonView];
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _leftProfileButton.frame = CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width/3, 70);
+        _leftProfileButton = [[UIButton alloc] init];
+        _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3, 70);
         [_leftProfileButton addTarget:self action:@selector(leftProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         UILabel *numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _leftProfileButton.frame.size.width, 25)];
         numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
@@ -716,24 +542,14 @@ UIButton *tapButton;
         followersLabel.textAlignment = NSTextAlignmentCenter;
         followersLabel.text = @"followers";
         [_leftProfileButton addSubview:followersLabel];
+        [headerButtonView addSubview:_leftProfileButton];
     }
-
-    [self.view addSubview:_leftProfileButton];
-}
-
-- (void)leftProfileButtonPressed {
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        [self followersButtonPressed];
-    }
-}
-
-- (void)initializeMiddleProfileButton {
-    _rightProfileButton = [[UIButton alloc] init];
-    [_rightProfileButton addTarget:self action:@selector(rightProfileButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     
+    
+    _rightProfileButton = [[UIButton alloc] init];
+    [_rightProfileButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, self.view.frame.size.width, self.view.frame.size.width/3, 70);
-        
+        _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70);
         UILabel *numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _rightProfileButton.frame.size.width, 25)];
         numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
         numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
@@ -747,23 +563,10 @@ UIButton *tapButton;
         followingLabel.textAlignment = NSTextAlignmentCenter;
         followingLabel.text = @"following";
         [_rightProfileButton addSubview:followingLabel];
-        
     }
-    else {
-        _rightProfileButton.frame = CGRectMake(3*self.view.frame.size.width/4, self.view.frame.size.width, self.view.frame.size.width/4, 100);
-        UIImageView *chatImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chatImage"]];
-        chatImageView.frame = CGRectMake(_rightProfileButton.frame.size.width/2 - 12, _rightProfileButton.frame.size.height/2 - 12 - 11, 24, 24);
-        UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(_rightProfileButton.frame.size.width/2 - 20, _rightProfileButton.frame.size.height/2 + 12 - 3, 40, 15)];
-        chatLabel.textAlignment = NSTextAlignmentCenter;
-        chatLabel.text = @"Chat";
-        chatLabel.textColor = [FontProperties getOrangeColor];
-        chatLabel.font = [FontProperties getSubtitleFont];
-        [_rightProfileButton addSubview:chatLabel];
-        [_rightProfileButton addSubview:chatImageView];
-    }
-    [self.view addSubview:_rightProfileButton];
-    
-    UIButton *chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, self.view.frame.size.width, self.view.frame.size.width/3, 70)];
+    [headerButtonView addSubview:_rightProfileButton];
+
+    UIButton *chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70)];
     [chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
     UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, chatButton.frame.size.width, 20)];
     chatLabel.textAlignment = NSTextAlignmentCenter;
@@ -774,46 +577,34 @@ UIButton *tapButton;
     
     UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(chatButton.frame.size.width/2 - 10, 10, 20, 20)];
     [chatButton addSubview:orangeChatBubbleImageView];
-
     UILabel *numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, orangeChatBubbleImageView.frame.size.width, orangeChatBubbleImageView.frame.size.height - 4)];
     numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
     numberOfChatsLabel.textColor = UIColor.whiteColor;
     numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
-    
     NSNumber *unreadChats = (NSNumber *)[self.user objectForKey:@"num_unread_conversations"];
-    
     if (![unreadChats isEqualToNumber: @0]) {
         orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
         numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
     } else {
         orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
     }
-    
     [orangeChatBubbleImageView addSubview:numberOfChatsLabel];
     
-    [self.view addSubview:chatButton];
+    [headerButtonView addSubview:chatButton];
+}
+
+- (void)leftProfileButtonPressed {
+    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
+        [self followersButtonPressed];
+    }
 }
 
 - (void)followersButtonPressed {
-    [self.user setObject:@3 forKey:@"tabNumber"];
-    self.peopleViewController = [[PeopleViewController alloc] initWithUser:self.user];
-    [self.navigationController pushViewController:self.peopleViewController animated:YES];
+    [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:self.user andTab:@3] animated:YES];
 }
 
 - (void)followingButtonPressed {
-    [self.user setObject:@4 forKey:@"tabNumber"];
-    self.peopleViewController = [[PeopleViewController alloc] initWithUser:self.user];
-    [self.navigationController pushViewController:self.peopleViewController animated:YES];
-}
-
-- (void)rightProfileButtonPressed {
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
-        [self followingButtonPressed];
-    }
-    else {
-        self.conversationViewController = [[ConversationViewController alloc] initWithUser:self.user];
-        [self.navigationController pushViewController:self.conversationViewController animated:YES];
-    }
+    [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:self.user andTab:@4] animated:YES];
 }
 
 - (void)chatPressed {
@@ -927,26 +718,18 @@ UIButton *tapButton;
 #pragma mark - Notifications bottom
 
 - (void)initializeBottomTableView {
-    UILabel *wantToSeeLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, self.view.frame.size.width + 60, self.view.frame.size.width - 24, 22)];
-    wantToSeeLabel.text = @"Want to see you out tonight:";
-    wantToSeeLabel.textAlignment = NSTextAlignmentLeft;
-    wantToSeeLabel.textColor = RGB(180, 180, 180);
-    wantToSeeLabel.font = [FontProperties lightFont:20.0f];
-    [self.view addSubview:wantToSeeLabel];
-    
-    
-    _notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width + 92, self.view.frame.size.width, self.view.frame.size.height - 412)];
+    _notificationsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width + 60, self.view.frame.size.width, self.view.frame.size.height - 412)];
     _notificationsTableView.delegate = self;
     _notificationsTableView.dataSource = self;
     _notificationsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [_notificationsTableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
+    [_notificationsTableView registerClass:[NotificationCell_old class] forCellReuseIdentifier:kNotificationCellName_old];
     [self.view addSubview:_notificationsTableView];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
+    NotificationCell_old *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName_old forIndexPath:indexPath];
     Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
     if ([notification fromUserID] == (id)[NSNull null]) return notificationCell;
     if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
@@ -969,6 +752,48 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
  numberOfRowsInSection:(NSInteger)section {
     return [_nonExpiredNotificationsParty getObjectArray].count;
 }
+
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
+    User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+    Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
+    [self presentEvent:event];
+}
+
+- (void)presentEvent:(Event *)event {
+    BOOL isEventPresentInArray = NO;
+    NSArray *eventsArray = [self.eventsParty getObjectArray];
+    for (int i = 0; i < [eventsArray count]; i++) {
+        Event *newEvent = [eventsArray objectAtIndex:i];
+        if ([[newEvent eventID] isEqualToNumber:[event eventID]]) {
+            event = newEvent;
+            isEventPresentInArray = YES;
+            break;
+        }
+    }
+    if (isEventPresentInArray) {
+        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+        eventStoryViewController.event = event;
+        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+        [self presentViewController: eventStoryViewController animated: YES completion: nil];
+    }
+    else [self fetchEvent:event];
+}
+
+- (void)fetchEvent:(Event *)event {
+    [Network sendAsynchronousHTTPMethod:GET withAPIName:[NSString stringWithFormat:@"events/%@", [event eventID]] withHandler:^(NSDictionary *jsonResponse, NSError *error) {        dispatch_async(dispatch_get_main_queue(), ^(void){
+            if (!error) {
+                Event *newEvent = [[Event alloc] initWithDictionary:jsonResponse];
+                EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+                eventStoryViewController.event = newEvent;
+                eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+                [self presentViewController: eventStoryViewController animated: YES completion: nil];
+            }
+        });
+    }];
+}
+
 
 #pragma mark - Notifications Network requests
 
@@ -1010,18 +835,18 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     }
 }
 
-- (void)updateLastNotificationsRead {
-    User *profileUser = [Profile user];
-    for (Notification *notification in [_notificationsParty getObjectArray]) {
-        if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
-            [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
-            [profileUser saveKeyAsynchronously:@"last_notification_read" withHandler:^() {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                });
-            }];
-        }
-    }
-}
+//- (void)updateLastNotificationsRead {
+//    User *profileUser = [Profile user];
+//    for (Notification *notification in [_notificationsParty getObjectArray]) {
+//        if ([(NSNumber *)[notification objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastNotificationRead] intValue]) {
+//            [profileUser setLastNotificationRead:[notification objectForKey:@"id"]];
+//            [profileUser saveKeyAsynchronously:@"last_notification_read" withHandler:^() {
+//                dispatch_async(dispatch_get_main_queue(), ^(void){
+//                });
+//            }];
+//        }
+//    }
+//}
 
 - (void)updateBadge {
     int total = 0;
@@ -1038,7 +863,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 @end
 
 
-@implementation NotificationCell
+@implementation NotificationCell_old
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -1063,7 +888,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.profileImageView.layer.masksToBounds = YES;
     [self.contentView addSubview:self.profileImageView];
     
-    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, 175, 45)];
+    self.descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, self.frame.size.width - 70 - 80, 45)];
     self.descriptionLabel.textAlignment = NSTextAlignmentLeft;
     self.descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.descriptionLabel.numberOfLines = 0;
@@ -1079,9 +904,8 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.buttonCallback.hidden = YES;
     [self.contentView addSubview:self.buttonCallback];
     
-    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 41, self.frame.size.height/2 - 7, 9, 15)];
+    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
     self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
-//    self.rightPostImageView.hidden = YES;
     [self.contentView addSubview:self.rightPostImageView];
     
     self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 27, self.frame.size.height/2 + 13 + 3, 50, 15)];

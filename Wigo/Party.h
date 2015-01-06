@@ -24,7 +24,7 @@ typedef enum
 @interface Party : NSObject
 
 @property OBJECT_TYPE objectType;
-@property NSMutableArray *objectArray;
+@property NSMutableArray *mutableObjectArray;
 @property NSDictionary *metaDictionary;
 
 - (id)initWithObjectType:(OBJECT_TYPE)type;

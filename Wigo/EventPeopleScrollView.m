@@ -13,10 +13,10 @@
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(Event *)event {
-    if (self.sizeOfEachImage == 0) self.sizeOfEachImage = 90;
-    self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.sizeOfEachImage + 10)];
+    if (self.sizeOfEachImage == 0) self.sizeOfEachImage = (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7;
+    self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.sizeOfEachImage + 25)];
     if (self) {
-        self.contentSize = CGSizeMake(5, self.sizeOfEachImage + 10);
+        self.contentSize = CGSizeMake(15, self.sizeOfEachImage + 10);
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
         self.event = event;
@@ -24,10 +24,12 @@
     return self;
 }
 
++ (CGFloat) containerHeight {
+    return (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7 + 25;
+}
+
 
 - (void)updateUI {
-//    self.frame = CGRectMake(0, 0, 320, self.sizeOfEachImage + 10);
-//    self.contentSize = CGSizeMake(5, self.sizeOfEachImage + 10);
     [self fillEventAttendees];
     [self loadUsers];
     self.page = @2;
@@ -67,13 +69,14 @@
 
 - (void)loadUsers {
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    self.xPosition = 12;
+
+    self.xPosition = 10;
     for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
         User *user = [[self.partyUser getObjectArray] objectAtIndex:i];
         if ([user isEqualToUser:[Profile user]]) {
             user = [Profile user];
         }
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 10, self.sizeOfEachImage, self.sizeOfEachImage)];
+        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 0, self.sizeOfEachImage, self.sizeOfEachImage)];
         imageButton.tag = i;
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:imageButton];
@@ -85,18 +88,24 @@
         [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
         
-        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage + 5, self.self.sizeOfEachImage, 25)];
+        
+        UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
+        if ([user isEqualToUser:[Profile user]]) backgroundName.backgroundColor = [FontProperties getBlueColor];
+        else backgroundName.backgroundColor = RGB(71, 71, 71);
+        [self addSubview:backgroundName];
+        
+        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
         profileName.text = [user firstName];
-        profileName.textColor = [UIColor blackColor];
+        profileName.textColor = [UIColor whiteColor];
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.font = [FontProperties lightFont:14.0f];
         [self addSubview:profileName];
         
         self.xPosition += self.sizeOfEachImage + 3;
-        self.contentSize = CGSizeMake(self.xPosition, self.sizeOfEachImage + 10);
+        self.contentSize = CGSizeMake(self.xPosition + 10, self.sizeOfEachImage + 25);
     }
     
-    if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]]) {
+    if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]] && self.placesDelegate.visitedProfile) {
         NSNumber *xNumber = [self.placesDelegate.eventOffsetDictionary valueForKey:[[self.event eventID] stringValue]];
         self.contentOffset = CGPointMake([xNumber intValue], 0);
     }
@@ -124,7 +133,8 @@
         self.fetchingEventAttendees = YES;
         NSString *queryString;
         if (self.groupID) {
-              queryString = [NSString stringWithFormat:@"eventattendees/?group=%@&event=%@&limit=10&page=%@", [self.groupID stringValue] , [eventId stringValue], [self.page stringValue]];
+            if (!self.page) self.page = @2;
+            queryString = [NSString stringWithFormat:@"eventattendees/?group=%@&event=%@&limit=10&page=%@", [self.groupID stringValue] , [eventId stringValue], [self.page stringValue]];
         }
         else {
             queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [self.page stringValue]];

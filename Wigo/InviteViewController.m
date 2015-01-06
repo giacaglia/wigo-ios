@@ -12,23 +12,29 @@
 #import "MobileDelegate.h"
 #define HEIGHT_CELLS 70
 
-NSArray *mobileContacts;
-NSMutableArray *filteredMobileContacts;
-NSMutableArray *chosenPeople;
 
-UITableView *invitePeopleTableView;
-Party *everyoneParty;
-Party *filteredContentParty;
-NSNumber *page;
-NSString *eventName;
-NSNumber *eventID;
-UISearchBar *searchBar;
-BOOL isSearching;
 
-UIButton *aroundInviteButton;
-UILabel *titleLabel;
-UIButton *searchButton;
-UIButton *cancelButton;
+@interface InviteViewController() {
+    NSArray *mobileContacts;
+    NSMutableArray *filteredMobileContacts;
+    NSMutableArray *chosenPeople;
+    
+    UITableView *invitePeopleTableView;
+    Party *everyoneParty;
+    Party *filteredContentParty;
+    NSNumber *page;
+    NSString *eventName;
+    NSNumber *eventID;
+    UISearchBar *searchBar;
+    BOOL isSearching;
+    
+    UIButton *aroundInviteButton;
+    UILabel *titleLabel;
+    UIButton *searchButton;
+    UIButton *cancelButton;
+}
+
+@end
 
 @implementation InviteViewController
 
@@ -94,9 +100,6 @@ UIButton *cancelButton;
     
     UIImageView *searchImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 35, 15, 16)];
     searchImageView.image = [UIImage imageNamed:@"searchIcon"];
-//    searchButton = [[UIButton alloc] initWithFrame:CGRectMake(14, 35, 15, 16)];
-//    [searchButton setBackgroundImage:[UIImage imageNamed:@"searchIcon"] forState:UIControlStateNormal];
-//    [searchButton setShowsTouchWhenHighlighted:YES];
     [searchButton addSubview:searchImageView];
 }
 
@@ -192,6 +195,7 @@ UIButton *cancelButton;
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
+    cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, HEIGHT_CELLS);
     if ([indexPath section] == 0) {
         int tag = (int)[indexPath row];
         User *user;
@@ -416,11 +420,13 @@ heightForHeaderInSection:(NSInteger)section
     if (tag < [[everyoneParty getObjectArray] count]) {
         [everyoneParty replaceObjectAtIndex:tag withObject:user];
     }
-    int sizeOfTable = [invitePeopleTableView numberOfRowsInSection:0];
+    int sizeOfTable = (int)[invitePeopleTableView numberOfRowsInSection:0];
     if (sizeOfTable > 0 && tag < sizeOfTable && tag >= 0) {
-        [invitePeopleTableView beginUpdates];
-        [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
-        [invitePeopleTableView endUpdates];
+//        [invitePeopleTableView beginUpdates];
+//        [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
+//        [invitePeopleTableView endUpdates];
+        
+        [invitePeopleTableView reloadData];
     }
 }
 
