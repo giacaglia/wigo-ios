@@ -9,7 +9,6 @@
 #import "Globals.h"
 
 #import "SignViewController.h"
-#import "MainViewController.h"
 #import "OnboardViewController.h"
 #import "BatteryViewController.h"
 #import "KeychainItemWrapper.h"

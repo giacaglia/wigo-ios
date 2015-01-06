@@ -11,7 +11,6 @@
 #import "IQMediaPickerController.h"
 #import "AWSUploader.h"
 #import "InviteViewController.h"
-#import "ReProfileViewController.h"
 #import "EventMessagesConstants.h"
 #import "FancyProfileViewController.h"
 

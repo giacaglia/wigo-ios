@@ -41,7 +41,6 @@
 		C12A112419787BE700D53B1C /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD4739194B9AD600AEA17D /* PhotoViewController.m */; };
 		C12A112519787BE700D53B1C /* UIImage+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2AA1961EADE00A01F50 /* UIImage+GIF.m */; };
 		C12A112619787BE700D53B1C /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */; };
-		C12A112719787BE700D53B1C /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9147B6B1925123C00C25C9A /* ProfileViewController.m */; };
 		C12A112819787BE700D53B1C /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2991961EADE00A01F50 /* SDImageCache.m */; };
 		C12A112919787BE700D53B1C /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		C12A112A19787BE700D53B1C /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = E95DC77F19538A270012AA20 /* Event.m */; };
@@ -61,8 +60,6 @@
 		C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
 		C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */; };
 		C12A113A19787BE700D53B1C /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2951961EADE00A01F50 /* MKAnnotationView+WebCache.m */; };
-		C12A113B19787BE700D53B1C /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D66119239ED900361247 /* MainViewController.m */; };
-		C12A113C19787BE700D53B1C /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBB193CBE810069F700 /* NotificationsViewController.m */; };
 		C12A113E19787BE700D53B1C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */; };
 		C12A113F19787BE700D53B1C /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E90AA8A71976C8B60055D74B /* Crashlytics.framework */; };
 		C12A114019787BE700D53B1C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DA19255DBC00E39FC8 /* Security.framework */; };
@@ -108,10 +105,7 @@
 		E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B01961EADE00A01F50 /* UIImageView+HighlightedWebCache.m */; };
 		E900C2C31961EADE00A01F50 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */; };
 		E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */; };
-		E903C63B19BF89FA003BCF90 /* LeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E903C63A19BF89FA003BCF90 /* LeaderboardViewController.m */; };
-		E903C63D19BF8C2E003BCF90 /* LeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E903C63A19BF89FA003BCF90 /* LeaderboardViewController.m */; };
 		E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E90AA8A71976C8B60055D74B /* Crashlytics.framework */; };
-		E9147B6C1925123C00C25C9A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9147B6B1925123C00C25C9A /* ProfileViewController.m */; };
 		E9203B531A23C4B90086BF73 /* EventConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9203B521A23C4B90086BF73 /* EventConversationViewController.m */; };
 		E9203B541A23C4B90086BF73 /* EventConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9203B521A23C4B90086BF73 /* EventConversationViewController.m */; };
 		E921D6161923967D00361247 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6151923967D00361247 /* Foundation.framework */; };
@@ -124,7 +118,6 @@
 		E921D63A1923967D00361247 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6191923967D00361247 /* UIKit.framework */; };
 		E921D6421923967D00361247 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E921D6401923967D00361247 /* InfoPlist.strings */; };
 		E921D6441923967D00361247 /* WigoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6431923967D00361247 /* WigoTests.m */; };
-		E921D66819239ED900361247 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D66119239ED900361247 /* MainViewController.m */; };
 		E93030C41986A07F00FFC4F8 /* ContactUsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E93030C31986A07F00FFC4F8 /* ContactUsViewController.m */; };
 		E93030C51986A07F00FFC4F8 /* ContactUsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E93030C31986A07F00FFC4F8 /* ContactUsViewController.m */; };
 		E93DE52A195C82B900079074 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E93DE529195C82B900079074 /* MessageViewController.m */; };
@@ -163,8 +156,6 @@
 		E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */; };
 		E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
-		E980C20319EC29550088EBF4 /* Footer.xib in Resources */ = {isa = PBXBuildFile; fileRef = E980C20219EC29550088EBF4 /* Footer.xib */; };
-		E980C20419EC29550088EBF4 /* Footer.xib in Resources */ = {isa = PBXBuildFile; fileRef = E980C20219EC29550088EBF4 /* Footer.xib */; };
 		E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
 		E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */; };
 		E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */; };
@@ -204,7 +195,6 @@
 		E9A31E651982B965008A711B /* WigoSearchBarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
 		E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */; };
-		E9AAAFBC193CBE810069F700 /* NotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBB193CBE810069F700 /* NotificationsViewController.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		E9ACCA2019C3A12500F3EB20 /* WigoConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA1F19C3A12500F3EB20 /* WigoConfirmationViewController.m */; };
@@ -227,8 +217,6 @@
 		E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */; };
 		E9BF59E81A3B40EB00AF8AFE /* UILabelBorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */; };
 		E9BF59E91A3B40EB00AF8AFE /* UILabelBorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */; };
-		E9C14E611A2E201D00E20B15 /* ReProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */; };
-		E9C14E621A2E201D00E20B15 /* ReProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */; };
 		E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
 		E9C3057019F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
 		E9C34A6F19F86FAB00D7E9D3 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */; };
@@ -365,8 +353,6 @@
 		E9EA951919E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */; };
 		E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */; };
 		E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */; };
-		E9EA951D19EAE592003C79F0 /* LineHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9EA951C19EAE592003C79F0 /* LineHeader.xib */; };
-		E9EA951E19EAE592003C79F0 /* LineHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9EA951C19EAE592003C79F0 /* LineHeader.xib */; };
 		E9ECFF80196D917F00384252 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
 		E9F7995219D4C727001D5BFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A695C619B0C7840071067B /* CoreData.framework */; };
@@ -467,11 +453,7 @@
 		E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		E900C2B31961EADE00A01F50 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
-		E903C63919BF89FA003BCF90 /* LeaderboardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeaderboardViewController.h; sourceTree = "<group>"; };
-		E903C63A19BF89FA003BCF90 /* LeaderboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeaderboardViewController.m; sourceTree = "<group>"; };
 		E90AA8A71976C8B60055D74B /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
-		E9147B6A1925123C00C25C9A /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
-		E9147B6B1925123C00C25C9A /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
 		E9203B521A23C4B90086BF73 /* EventConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventConversationViewController.m; sourceTree = "<group>"; };
 		E921D6121923967D00361247 /* wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E921D6151923967D00361247 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -487,8 +469,6 @@
 		E921D63F1923967D00361247 /* WigoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WigoTests-Info.plist"; sourceTree = "<group>"; };
 		E921D6411923967D00361247 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E921D6431923967D00361247 /* WigoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WigoTests.m; sourceTree = "<group>"; };
-		E921D66019239ED900361247 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		E921D66119239ED900361247 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		E93030C21986A07F00FFC4F8 /* ContactUsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactUsViewController.h; sourceTree = "<group>"; };
 		E93030C31986A07F00FFC4F8 /* ContactUsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactUsViewController.m; sourceTree = "<group>"; };
 		E93DE528195C829E00079074 /* MessageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageViewController.h; sourceTree = "<group>"; };
@@ -533,7 +513,6 @@
 		E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoCustomCell.m; sourceTree = "<group>"; };
 		E9798F9819901EC100A97AE9 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		E97999D019759A2900C617E3 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
-		E980C20219EC29550088EBF4 /* Footer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Footer.xib; sourceTree = "<group>"; };
 		E98C185B1924176500EF60F8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookAlbumTableViewController.h; sourceTree = "<group>"; };
 		E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookAlbumTableViewController.m; sourceTree = "<group>"; };
@@ -573,8 +552,6 @@
 		E9A695C619B0C7840071067B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
 		E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlacesViewController.m; sourceTree = "<group>"; };
-		E9AAAFBA193CBE810069F700 /* NotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationsViewController.h; sourceTree = "<group>"; };
-		E9AAAFBB193CBE810069F700 /* NotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationsViewController.m; sourceTree = "<group>"; };
 		E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileViewController.h; sourceTree = "<group>"; };
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
 		E9AAAFC7193E357E0069F700 /* UIButtonAligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonAligned.h; sourceTree = "<group>"; };
@@ -599,8 +576,6 @@
 		E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-MediumSC.ttf"; sourceTree = "<group>"; };
 		E9BF59E61A3B40EB00AF8AFE /* UILabelBorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UILabelBorder.h; sourceTree = "<group>"; };
 		E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UILabelBorder.m; sourceTree = "<group>"; };
-		E9C14E5F1A2E201D00E20B15 /* ReProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReProfileViewController.h; sourceTree = "<group>"; };
-		E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReProfileViewController.m; sourceTree = "<group>"; };
 		E9C14E631A30B07C00E20B15 /* Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Delegate.h; sourceTree = "<group>"; };
 		E9C3056D19F8341600F9564D /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
@@ -743,7 +718,6 @@
 		E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSStickyHeaderFlowLayout.m; sourceTree = "<group>"; };
 		E9EA951619E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSStickyHeaderFlowLayoutAttributes.h; sourceTree = "<group>"; };
 		E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSStickyHeaderFlowLayoutAttributes.m; sourceTree = "<group>"; };
-		E9EA951C19EAE592003C79F0 /* LineHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LineHeader.xib; sourceTree = "<group>"; };
 		E9ECFF7F196D917F00384252 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
 		E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpViewController.m; sourceTree = "<group>"; };
@@ -909,15 +883,6 @@
 			path = autorevision;
 			sourceTree = "<group>";
 		};
-		E900C25A1961B97900A01F50 /* NavigationController */ = {
-			isa = PBXGroup;
-			children = (
-				E900C2551961AE3600A01F50 /* SignNavigationViewController.h */,
-				E900C2581961B96000A01F50 /* SignNavigationViewController.m */,
-			);
-			name = NavigationController;
-			sourceTree = "<group>";
-		};
 		E900C2931961EADE00A01F50 /* SDWebImage */ = {
 			isa = PBXGroup;
 			children = (
@@ -1068,12 +1033,10 @@
 		E921D6531923973800361247 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				E9AAAFCC193E3DDB0069F700 /* OnboardingViews */,
-				E9AAAFBD193D0E160069F700 /* 4MainViews */,
-				E9AAAFCA193E3DC40069F700 /* ProfileViews */,
-				E9AAAFCB193E3DCE0069F700 /* ChatViews */,
-				FA2BE9BA19FAEAFC00CC0E5E /* EventMessages */,
-				E96EF678197DC94A00F88A6D /* NotificationViews */,
+				E9AAAFCC193E3DDB0069F700 /* Signup/Login/Onboard */,
+				FA85ED991A5C3F93004B0465 /* Main Flow */,
+				E94A2850196C6BC50027D3BA /* Facebook Photos */,
+				E99EC28B1986B6A400CBFA59 /* Popup Helpers */,
 				E9ACCA2619C4CC0600F3EB20 /* GrowthHackViews */,
 			);
 			name = ViewControllers;
@@ -1107,7 +1070,7 @@
 			name = Library;
 			sourceTree = "<group>";
 		};
-		E94A2850196C6BC50027D3BA /* FacebookIntegration */ = {
+		E94A2850196C6BC50027D3BA /* Facebook Photos */ = {
 			isa = PBXGroup;
 			children = (
 				E9902989196B4E0700192FF2 /* FacebookImagesViewController.h */,
@@ -1117,7 +1080,7 @@
 				E96F07AA19B8F65900E858D7 /* ErrorViewController.h */,
 				E96F07AB19B8F65900E858D7 /* ErrorViewController.m */,
 			);
-			name = FacebookIntegration;
+			name = "Facebook Photos";
 			sourceTree = "<group>";
 		};
 		E9681C6A194F7BCD00182E0E /* WigoSpinnerView */ = {
@@ -1184,15 +1147,13 @@
 			name = GKImagePicker;
 			sourceTree = "<group>";
 		};
-		E96EF678197DC94A00F88A6D /* NotificationViews */ = {
+		E96EF678197DC94A00F88A6D /* Follow Request */ = {
 			isa = PBXGroup;
 			children = (
 				E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */,
 				E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */,
-				E903C63919BF89FA003BCF90 /* LeaderboardViewController.h */,
-				E903C63A19BF89FA003BCF90 /* LeaderboardViewController.m */,
 			);
-			name = NotificationViews;
+			name = "Follow Request";
 			sourceTree = "<group>";
 		};
 		E9706E1A19C22B1400A21DE0 /* WigoCustomCell */ = {
@@ -1205,16 +1166,7 @@
 			name = WigoCustomCell;
 			sourceTree = "<group>";
 		};
-		E980C20519EC2AA50088EBF4 /* Cell */ = {
-			isa = PBXGroup;
-			children = (
-				E9EA951C19EAE592003C79F0 /* LineHeader.xib */,
-				E980C20219EC29550088EBF4 /* Footer.xib */,
-			);
-			name = Cell;
-			sourceTree = "<group>";
-		};
-		E99EC28B1986B6A400CBFA59 /* DropUpMenus */ = {
+		E99EC28B1986B6A400CBFA59 /* Popup Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				E9CD4738194B9AD600AEA17D /* PhotoViewController.h */,
@@ -1223,61 +1175,41 @@
 				E93030C31986A07F00FFC4F8 /* ContactUsViewController.m */,
 				E99EC2871986B69C00CBFA59 /* MoreViewController.h */,
 				E99EC2881986B69C00CBFA59 /* MoreViewController.m */,
+				E96EF678197DC94A00F88A6D /* Follow Request */,
 			);
-			name = DropUpMenus;
+			name = "Popup Helpers";
 			sourceTree = "<group>";
 		};
-		E9AAAFBD193D0E160069F700 /* 4MainViews */ = {
+		E9AAAFCA193E3DC40069F700 /* User Profiles */ = {
 			isa = PBXGroup;
 			children = (
-				E921D66019239ED900361247 /* MainViewController.h */,
-				E921D66119239ED900361247 /* MainViewController.m */,
-				E980C20519EC2AA50088EBF4 /* Cell */,
-				E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */,
-				E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */,
-				E9D906C319253A1D00E39FC8 /* ChatViewController.h */,
-				E9D906C419253A1D00E39FC8 /* ChatViewController.m */,
-				E9AAAFBA193CBE810069F700 /* NotificationsViewController.h */,
-				E9AAAFBB193CBE810069F700 /* NotificationsViewController.m */,
-			);
-			name = 4MainViews;
-			sourceTree = "<group>";
-		};
-		E9AAAFCA193E3DC40069F700 /* ProfileViews */ = {
-			isa = PBXGroup;
-			children = (
-				E9147B6A1925123C00C25C9A /* ProfileViewController.h */,
-				E9147B6B1925123C00C25C9A /* ProfileViewController.m */,
-				E9C14E5F1A2E201D00E20B15 /* ReProfileViewController.h */,
-				E9C14E601A2E201D00E20B15 /* ReProfileViewController.m */,
 				FABD337E1A3B996F008FF56D /* FancyProfileViewController.h */,
 				FABD337F1A3B996F008FF56D /* FancyProfileViewController.m */,
 				E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */,
 				E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */,
 				FA55260E1A1FCB0C00101AE7 /* Ambassador */,
-				E9D906BC19252DA900E39FC8 /* PeopleViewController.h */,
-				E9D906BD19252DA900E39FC8 /* PeopleViewController.m */,
-				E99EC28B1986B6A400CBFA59 /* DropUpMenus */,
-				E94A2850196C6BC50027D3BA /* FacebookIntegration */,
 			);
-			name = ProfileViews;
+			name = "User Profiles";
 			sourceTree = "<group>";
 		};
-		E9AAAFCB193E3DCE0069F700 /* ChatViews */ = {
+		E9AAAFCB193E3DCE0069F700 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				E9D906C319253A1D00E39FC8 /* ChatViewController.h */,
+				E9D906C419253A1D00E39FC8 /* ChatViewController.m */,
 				E93DE528195C829E00079074 /* MessageViewController.h */,
 				E93DE529195C82B900079074 /* MessageViewController.m */,
 				E9A50CFB19350F13009B73EA /* ConversationViewController.h */,
 				E9A50CFC19350F13009B73EA /* ConversationViewController.m */,
 			);
-			name = ChatViews;
+			name = Chat;
 			sourceTree = "<group>";
 		};
-		E9AAAFCC193E3DDB0069F700 /* OnboardingViews */ = {
+		E9AAAFCC193E3DDB0069F700 /* Signup/Login/Onboard */ = {
 			isa = PBXGroup;
 			children = (
-				E900C25A1961B97900A01F50 /* NavigationController */,
+				E900C2551961AE3600A01F50 /* SignNavigationViewController.h */,
+				E900C2581961B96000A01F50 /* SignNavigationViewController.m */,
 				E9D906C619255BB000E39FC8 /* SignViewController.h */,
 				E9D906C719255BB000E39FC8 /* SignViewController.m */,
 				E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */,
@@ -1290,19 +1222,14 @@
 				E9444C0719F00FCC004E7925 /* OnboardViewController.m */,
 				E9DFE1711A00114A003C5779 /* LockScreen */,
 			);
-			name = OnboardingViews;
+			name = Signup/Login/Onboard;
 			sourceTree = "<group>";
 		};
 		E9ACCA2619C4CC0600F3EB20 /* GrowthHackViews */ = {
 			isa = PBXGroup;
 			children = (
-				E9C34A7119F9868300D7E9D3 /* MobileDelegates */,
 				E9ACCA1E19C3A12500F3EB20 /* WigoConfirmationViewController.h */,
 				E9ACCA1F19C3A12500F3EB20 /* WigoConfirmationViewController.m */,
-				E9ACCA2219C4CBFB00F3EB20 /* MobileContactsViewController.h */,
-				E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */,
-				E998C27E19D1BF7D0012BF51 /* InviteViewController.h */,
-				E998C27F19D1BF7D0012BF51 /* InviteViewController.m */,
 				E998C28619D342C50012BF51 /* PopViewController.h */,
 				E998C28719D342C50012BF51 /* PopViewController.m */,
 			);
@@ -1329,15 +1256,6 @@
 				E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */,
 			);
 			name = KeychainWrapper;
-			sourceTree = "<group>";
-		};
-		E9C34A7119F9868300D7E9D3 /* MobileDelegates */ = {
-			isa = PBXGroup;
-			children = (
-				E9C34A7619F98A2C00D7E9D3 /* MobileDelegate.h */,
-				E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */,
-			);
-			name = MobileDelegates;
 			sourceTree = "<group>";
 		};
 		E9C63B741A03ED35006C5DD2 /* IQMediaPickerController */ = {
@@ -1743,7 +1661,7 @@
 			name = GoogleAnalytics;
 			sourceTree = "<group>";
 		};
-		FA2BE9BA19FAEAFC00CC0E5E /* EventMessages */ = {
+		FA2BE9BA19FAEAFC00CC0E5E /* EventStory */ = {
 			isa = PBXGroup;
 			children = (
 				E9A0F9AF1A1E5CBE001A66DF /* EventMessagesConstants.h */,
@@ -1756,10 +1674,8 @@
 				E9203B521A23C4B90086BF73 /* EventConversationViewController.m */,
 				E9D039C61A09886A00DEF094 /* MediaScrollView.h */,
 				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
-				E99D0ADA1A2CCA3300384A73 /* PeekViewController.h */,
-				E99D0ADB1A2CCA3300384A73 /* PeekViewController.m */,
 			);
-			name = EventMessages;
+			name = EventStory;
 			sourceTree = "<group>";
 		};
 		FA55260E1A1FCB0C00101AE7 /* Ambassador */ = {
@@ -1788,6 +1704,44 @@
 				FA5526191A1FDB4000101AE7 /* JBLineChartView.m */,
 			);
 			path = JBBarChart;
+			sourceTree = "<group>";
+		};
+		FA85ED981A5C3F50004B0465 /* Peek */ = {
+			isa = PBXGroup;
+			children = (
+				E99D0ADA1A2CCA3300384A73 /* PeekViewController.h */,
+				E99D0ADB1A2CCA3300384A73 /* PeekViewController.m */,
+			);
+			name = Peek;
+			sourceTree = "<group>";
+		};
+		FA85ED991A5C3F93004B0465 /* Main Flow */ = {
+			isa = PBXGroup;
+			children = (
+				E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */,
+				E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */,
+				E9AAAFCA193E3DC40069F700 /* User Profiles */,
+				FA85ED9A1A5C406A004B0465 /* Inviting */,
+				FA2BE9BA19FAEAFC00CC0E5E /* EventStory */,
+				FA85ED981A5C3F50004B0465 /* Peek */,
+				E9AAAFCB193E3DCE0069F700 /* Chat */,
+			);
+			name = "Main Flow";
+			sourceTree = "<group>";
+		};
+		FA85ED9A1A5C406A004B0465 /* Inviting */ = {
+			isa = PBXGroup;
+			children = (
+				E9D906BC19252DA900E39FC8 /* PeopleViewController.h */,
+				E9D906BD19252DA900E39FC8 /* PeopleViewController.m */,
+				E9ACCA2219C4CBFB00F3EB20 /* MobileContactsViewController.h */,
+				E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */,
+				E9C34A7619F98A2C00D7E9D3 /* MobileDelegate.h */,
+				E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */,
+				E998C27E19D1BF7D0012BF51 /* InviteViewController.h */,
+				E998C27F19D1BF7D0012BF51 /* InviteViewController.m */,
+			);
+			name = Inviting;
 			sourceTree = "<group>";
 		};
 		FAAF4AC21A3F7AA00065E160 /* ImageScrollview */ = {
@@ -1947,8 +1901,6 @@
 				E9C63C0F1A03ED35006C5DD2 /* mic.svg in Resources */,
 				E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
-				E980C20419EC29550088EBF4 /* Footer.xib in Resources */,
-				E9EA951E19EAE592003C79F0 /* LineHeader.xib in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
 				E9C63BDD1A03ED35006C5DD2 /* IQAudioPickerController.xcassets in Resources */,
@@ -1961,7 +1913,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */,
-				E980C20319EC29550088EBF4 /* Footer.xib in Resources */,
 				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
 				E9C63BF81A03ED35006C5DD2 /* IQMediaCaptureController.xcassets in Resources */,
 				E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
@@ -1971,7 +1922,6 @@
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
-				E9EA951D19EAE592003C79F0 /* LineHeader.xib in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
 				E9C63C0E1A03ED35006C5DD2 /* mic.svg in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
@@ -2153,7 +2103,6 @@
 				E9C63BE71A03ED35006C5DD2 /* IQSongsListTableHeaderView.m in Sources */,
 				E9C63BE11A03ED35006C5DD2 /* IQAudioPickerShadowView.m in Sources */,
 				FA55260D1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,
-				C12A112719787BE700D53B1C /* ProfileViewController.m in Sources */,
 				E9C63BFB1A03ED35006C5DD2 /* IQAudioSession.m in Sources */,
 				C12A112819787BE700D53B1C /* SDImageCache.m in Sources */,
 				C12A112919787BE700D53B1C /* UIButtonAligned.m in Sources */,
@@ -2162,7 +2111,6 @@
 				C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */,
 				C12A112C19787BE700D53B1C /* Query.m in Sources */,
 				E9A31E651982B965008A711B /* WigoSearchBarDelegate.m in Sources */,
-				E9C14E621A2E201D00E20B15 /* ReProfileViewController.m in Sources */,
 				C12A112D19787BE700D53B1C /* PlacesViewController.m in Sources */,
 				C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */,
 				E9C63BDB1A03ED35006C5DD2 /* IQAudioPickerController.m in Sources */,
@@ -2201,9 +2149,6 @@
 				E9ACDC6A19AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
 				C12A113A19787BE700D53B1C /* MKAnnotationView+WebCache.m in Sources */,
 				E998C28919D342C50012BF51 /* PopViewController.m in Sources */,
-				C12A113B19787BE700D53B1C /* MainViewController.m in Sources */,
-				E903C63D19BF8C2E003BCF90 /* LeaderboardViewController.m in Sources */,
-				C12A113C19787BE700D53B1C /* NotificationsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2300,7 +2245,6 @@
 				E9C63BE01A03ED35006C5DD2 /* IQAudioPickerShadowView.m in Sources */,
 				E900C2C31961EADE00A01F50 /* UIImageView+WebCache.m in Sources */,
 				E9C63BEA1A03ED35006C5DD2 /* IQSongsArtistListViewController.m in Sources */,
-				E9147B6C1925123C00C25C9A /* ProfileViewController.m in Sources */,
 				FA438EA119F196DA00AD74C2 /* EventMessage.m in Sources */,
 				FABD337D1A3B9904008FF56D /* JPBParallaxTableViewController.m in Sources */,
 				FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */,
@@ -2322,7 +2266,6 @@
 				E9D039B51A096DB100DEF094 /* AFHTTPRequestOperationManager.m in Sources */,
 				E900C2BB1961EADE00A01F50 /* SDWebImageDownloaderOperation.m in Sources */,
 				E9D039B31A096DB100DEF094 /* AFHTTPRequestOperation.m in Sources */,
-				E9C14E611A2E201D00E20B15 /* ReProfileViewController.m in Sources */,
 				E9C63C0C1A03ED35006C5DD2 /* IQ_PocketSVG.m in Sources */,
 				E9C63C061A03ED35006C5DD2 /* IQPartitionBar.m in Sources */,
 				E9C63C101A03ED35006C5DD2 /* IQMediaPickerController.m in Sources */,
@@ -2358,12 +2301,9 @@
 				E900C2B51961EADE00A01F50 /* MKAnnotationView+WebCache.m in Sources */,
 				E9C63BD61A03ED35006C5DD2 /* IQCheckmarkView.m in Sources */,
 				E998C28819D342C50012BF51 /* PopViewController.m in Sources */,
-				E921D66819239ED900361247 /* MainViewController.m in Sources */,
 				E9C63BD01A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m in Sources */,
 				E9D039BB1A096DB100DEF094 /* AFSecurityPolicy.m in Sources */,
-				E903C63B19BF89FA003BCF90 /* LeaderboardViewController.m in Sources */,
 				E9C63BF41A03ED35006C5DD2 /* IQSongsPlaylistViewController.m in Sources */,
-				E9AAAFBC193CBE810069F700 /* NotificationsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
