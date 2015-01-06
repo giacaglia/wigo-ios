@@ -63,6 +63,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
+    [EventAnalytics tagEvent: @"Event Story View"];
     metaInfo = nil;
 
     if (facesCollectionView) [facesCollectionView reloadData];

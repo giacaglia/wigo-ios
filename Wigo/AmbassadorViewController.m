@@ -85,6 +85,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
+    [EventAnalytics tagEvent:@"Ambassador View"];
     [self loadStats];
 }
 
