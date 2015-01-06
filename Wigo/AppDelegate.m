@@ -101,8 +101,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     currentInstallation[@"api_version"] = API_VERSION;
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
-    
-    }
+}
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     if (error.code == 3010) {
@@ -134,6 +133,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                 }
             }
         }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     }
     else { // If it's was at the background or inactive
     }
@@ -209,50 +209,6 @@ forRemoteNotification:(NSDictionary *)userInfo
     return wasHandled;
 }
 
-- (void)areThereNotificationsWithHandler:(IsThereResult)handler {
-    if ([Profile user] && [[Profile user] key]) {
-        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                        User *user = [[User alloc] initWithDictionary:jsonResponse];
-                        [Profile setUser:user];
-                        numberOfNewMessages = (NSNumber *)[user objectForKey:@"num_unread_conversations"];
-                        numberOfNewNotifications = (NSNumber *)[user objectForKey:@"num_unread_notifications"];
-                        [self updateBadge];
-                        handler(numberOfNewMessages, numberOfNewNotifications);
-                    }
-                }
-                else {
-                    User *user = [[User alloc] initWithDictionary:jsonResponse];
-                    [Profile setUser:user];
-                    numberOfNewMessages = (NSNumber *)[user objectForKey:@"num_unread_conversations"];
-                    numberOfNewNotifications =  (NSNumber *)[user objectForKey:@"num_unread_notifications"];
-                    [self updateBadge];
-                    handler(numberOfNewMessages, numberOfNewNotifications);
-                }
-            });
-        }];
-    }
-}
-
-#pragma mark - Notification Tab Bar
-
-
-- (void)updateBadge {
-//    int total = [numberOfNewMessages intValue] + [numberOfNewNotifications intValue];
-    int total = 0;
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    if (currentInstallation.badge != 0) {
-        currentInstallation.badge = total;
-        [currentInstallation setValue:@"ios" forKey:@"deviceType"];
-        currentInstallation[@"api_version"] = API_VERSION;
-        [currentInstallation saveEventually];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:total];
-    }
-
-}
-
 
 #pragma mark - Save the time
 
@@ -289,7 +245,6 @@ forRemoteNotification:(NSDictionary *)userInfo
 - (void)reloadAllData {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchFollowing" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     [self logFirstTimeLoading];
 }

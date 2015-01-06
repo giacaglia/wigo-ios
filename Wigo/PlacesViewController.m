@@ -82,6 +82,7 @@
 @end
 
 BOOL fetchingEventAttendees;
+BOOL fetchingUserInfo;
 BOOL shouldAnimate;
 BOOL presentedMobileContacts;
 NSNumber *page;
@@ -97,9 +98,12 @@ int firstIndexOfNegativeEvent;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchUserInfo) name:@"fetchUserInfo" object:nil];
+    
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
+    fetchingUserInfo = NO;
     fetchingEventAttendees = NO;
     shouldAnimate = NO;
     presentedMobileContacts = NO;
@@ -1465,7 +1469,8 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) fetchUserInfo {
-    if ([[Profile user] key]) {
+    if (!fetchingUserInfo && [[Profile user] key]) {
+        fetchingUserInfo = YES;
         [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if ([[jsonResponse allKeys] containsObject:@"status"]) {
@@ -1480,6 +1485,7 @@ int firstIndexOfNegativeEvent;
                     [Profile setUser:user];
                     [self initializeNavigationBar];
                 }
+                fetchingUserInfo = NO;
             });
         }];
     }
