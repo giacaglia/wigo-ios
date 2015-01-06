@@ -44,7 +44,7 @@
 -(void) setObjects:(NSArray *)objects andType:(Class)type {
     self.objects = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {
-        WGObject *object = [type serialize:objectDict];
+        WGObject *object = [[type alloc] initWithJSON:objectDict];
         [self.objects addObject: object];
     }
 }

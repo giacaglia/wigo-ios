@@ -62,8 +62,6 @@ static WGError *sharedWGErrorInstance = nil;
     if ([error.domain isEqualToString:kServerErrorDomain]) {
         long httpStatus = [[[error userInfo] objectForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
         
-#warning TODO: decide how/if to get specific messages (e.g. 'Missing facebook id or token')
-        
         if (httpStatus == kNotFoundStatusCode) {
             messageString = kServerConnectionFailedMessage;
             moreString    = KUnknownErrorMore;

@@ -23,19 +23,46 @@
 
 #warning TODO: make sure this is correct
 -(BOOL) isFromLastDay {
+    NSDate *nowDate = [NSDate date];
+    
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     NSDate *dateInLocalTimezone = [self dateByAddingTimeInterval:timeZoneSeconds];
-    NSDate *nowDate = [NSDate date];
     
     NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit fromDate:dateInLocalTimezone];
     
     NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit fromDate:nowDate];
     
-    if ([today day] == [otherDay day] && [today month] == [otherDay month] && [today year] == [otherDay year]) {
+    NSDateComponents *differenceDateComponents = [self differenceBetweenDates:nowDate];
+    
+    if ([otherDay hour] >= 6 && [today day] == [otherDay day] && [today month] == [otherDay month] && [today year] == [otherDay year]) {
+        return NO;
+    }
+    if ([today hour] < 6 && [today month] == [otherDay month] && [today year] == [otherDay year] && [differenceDateComponents day] == 1) {
         return NO;
     }
     
     return YES;
+}
+
+-(NSDateComponents *) differenceBetweenDates:(NSDate *)date {
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    unsigned int flags = NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSWeekOfYearCalendarUnit |NSDayCalendarUnit | NSHourCalendarUnit;
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    NSDateComponents *otherDay=  [gregorianCalendar
+                                  components:flags
+                                  fromDate:[self dateByAddingTimeInterval:-3600*6]];
+    NSDateComponents *nowDay = [gregorianCalendar
+                                components:flags
+                                fromDate:[date dateByAddingTimeInterval:-3600*6]];
+    NSDate *otherDayDate = [calendar dateFromComponents:otherDay];
+    NSDate *nowDayDate = [calendar dateFromComponents:nowDay];
+    
+    NSDateComponents *differenceDateComponents = [gregorianCalendar
+                                                  components:flags
+                                                  fromDate:otherDayDate
+                                                  toDate:nowDayDate
+                                                  options:0];
+    return differenceDateComponents;
 }
 
 - (BOOL) isSameDayWithDate:(NSDate*)date {

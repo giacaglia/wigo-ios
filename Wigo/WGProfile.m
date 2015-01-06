@@ -32,6 +32,10 @@ static WGProfile *currentUser = nil;
     self = [super init];
     if (self) {
         self.className = @"user";
+        
+        [[NSUserDefaults standardUserDefaults] setObject:self.key forKey:kKeyKey];
+        [[NSUserDefaults standardUserDefaults] setObject:self.facebookId forKey:kFacebookIdKey];
+        [[NSUserDefaults standardUserDefaults] setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
     }
     return self;
 }
@@ -40,16 +44,16 @@ static WGProfile *currentUser = nil;
     self = [super initWithJSON:json];
     if (self) {
         self.className = @"user";
+        
+        [[NSUserDefaults standardUserDefaults] setObject:self.key forKey:kKeyKey];
+        [[NSUserDefaults standardUserDefaults] setObject:self.facebookId forKey:kFacebookIdKey];
+        [[NSUserDefaults standardUserDefaults] setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
     }
     return self;
 }
 
 +(void) setCurrentUser:(WGUser *)user {
     currentUser = [[WGProfile alloc] initWithJSON:[user deserialize]];
-    
-    [[NSUserDefaults standardUserDefaults] setObject:user.key forKey:kKeyKey];
-    [[NSUserDefaults standardUserDefaults] setObject:user.facebookId forKey:kFacebookIdKey];
-    [[NSUserDefaults standardUserDefaults] setObject:user.facebookAccessToken forKey:kFacebookAccessTokenKey];
 }
 
 +(WGProfile *) currentUser {
@@ -61,14 +65,35 @@ static WGProfile *currentUser = nil;
     [[NSUserDefaults standardUserDefaults] setObject:key forKey:kKeyKey];
 }
 
+-(NSString *) key {
+    if ([self objectForKey:kKeyKey]) {
+        return [self objectForKey:kKeyKey];
+    }
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kKeyKey];
+}
+
 -(void) setFacebookId:(NSString *)facebookId {
     [self setObject:facebookId forKey:kFacebookIdKey];
     [[NSUserDefaults standardUserDefaults] setObject:facebookId forKey:kFacebookIdKey];
 }
 
+-(NSString *) facebookId {
+    if ([self objectForKey:kFacebookIdKey]) {
+        return [self objectForKey:kFacebookIdKey];
+    }
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kFacebookIdKey];
+}
+
 -(void) setFacebookAccessToken:(NSString *)facebookAccessToken {
     [self setObject:facebookAccessToken forKey:kFacebookAccessTokenKey];
     [[NSUserDefaults standardUserDefaults] setObject:facebookAccessToken forKey:kFacebookAccessTokenKey];
+}
+
+-(NSString *) facebookAccessToken {
+    if ([self objectForKey:kFacebookAccessTokenKey]) {
+        return [self objectForKey:kFacebookAccessTokenKey];
+    }
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kFacebookAccessTokenKey];
 }
 
 -(void) setAwsKey:(NSString *)awsKey {
