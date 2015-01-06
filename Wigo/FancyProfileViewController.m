@@ -46,6 +46,8 @@
 
 @property UILabel *nameOfPersonLabel;
 @property UIImageView *privateLogoImageView;
+@property UILabel *numberOfChatsLabel;
+@property UIImageView *orangeChatBubbleImageView;
 
 @end
 
@@ -140,8 +142,8 @@ UIButton *tapButton;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-      if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
-
+    if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
+    if ([self.user isEqualToUser:[Profile user]]) [self fetchUserInfo];
 }
 
 
@@ -387,27 +389,32 @@ UIButton *tapButton;
     chatLabel.font = [FontProperties scMediumFont:16.0f];
     [_chatButton addSubview:chatLabel];
     
-    UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
-    orangeChatBubbleImageView.center = CGPointMake(orangeChatBubbleImageView.center.x, _chatButton.center.y - orangeChatBubbleImageView.frame.size.height/2);
+    _orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
+    _orangeChatBubbleImageView.center = CGPointMake(_orangeChatBubbleImageView.center.x, _chatButton.center.y - _orangeChatBubbleImageView.frame.size.height/2);
     
-    [_chatButton addSubview:orangeChatBubbleImageView];
-    UILabel *numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, orangeChatBubbleImageView.frame.size.width, orangeChatBubbleImageView.frame.size.height - 8)];
-    numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
-    numberOfChatsLabel.textColor = UIColor.whiteColor;
-    numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
-    NSNumber *unreadChats = (NSNumber *)[self.user objectForKey:@"num_unread_conversations"];
-    if (![unreadChats isEqualToNumber: @0] && [self.user isEqualToUser:[Profile user]]) {
-        orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
-        numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
-    } else {
-        orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
-    }
-    [orangeChatBubbleImageView addSubview:numberOfChatsLabel];
+    [_chatButton addSubview:_orangeChatBubbleImageView];
+    _numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _orangeChatBubbleImageView.frame.size.width, _orangeChatBubbleImageView.frame.size.height - 8)];
+    _numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
+    _numberOfChatsLabel.textColor = UIColor.whiteColor;
+    _numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
+    [_orangeChatBubbleImageView addSubview:_numberOfChatsLabel];
+    [self updateNumberOfChats];
+
     
     [_headerButtonView addSubview:_chatButton];
     [self initializeFollowRequestLabel];
     [self initializeFollowButton];
 
+}
+
+- (void)updateNumberOfChats {
+    NSNumber *unreadChats = (NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"];
+    if (![unreadChats isEqualToNumber: @0] && [self.user isEqualToUser:[Profile user]]) {
+        _orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
+        _numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
+    } else {
+        _orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
+    }
 }
 
 - (void) initializeFollowButton {
@@ -1000,6 +1007,26 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 #pragma mark - Notifications Network requests
 
+- (void) fetchUserInfo {
+    if ([[Profile user] key]) {
+        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                        User *user = [[User alloc] initWithDictionary:jsonResponse];
+                        [Profile setUser:user];
+                        [self updateNumberOfChats];
+                    }
+                }
+                else {
+                    User *user = [[User alloc] initWithDictionary:jsonResponse];
+                    [Profile setUser:user];
+                    [self updateNumberOfChats];
+                }
+            });
+        }];
+    }
+}
 - (void)fetchNotifications {
     if (!self.isFetchingNotifications) {
         self.isFetchingNotifications = YES;
