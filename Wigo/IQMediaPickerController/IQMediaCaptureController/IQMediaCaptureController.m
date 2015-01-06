@@ -1021,7 +1021,7 @@
                 self.startXPoint = scrollView.contentOffset.x;
             }
             if (translatePoint.x > 0) {
-                float fractionalPage = (self.startXPoint - translatePoint.x)/320;
+                float fractionalPage = (self.startXPoint - translatePoint.x)/[[UIScreen mainScreen] bounds].size.width;
                 int page;
                 if (fractionalPage - floor(fractionalPage) < 0.8) {
                     page = floor(fractionalPage);
@@ -1029,7 +1029,6 @@
                 else {
                     page = ceil(fractionalPage);
                 }
-//                NSLog(@"page %d", page);
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"notificationHighlightPage"
                                                                     object:nil
                                                                   userInfo:@{@"page": [NSNumber numberWithInt:page]}];
