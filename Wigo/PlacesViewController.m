@@ -920,22 +920,19 @@ int firstIndexOfNegativeEvent;
         NSArray *eventObjectArray = ((NSArray *)[self.dayToEventObjArray objectForKey: day]);
         
         Event *event = (Event *)[eventObjectArray objectAtIndex:[indexPath row]];
-        if ([event containsHighlight]) {
-            HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
-            cell.event = event;
-            cell.placesDelegate = self;
-            cell.oldEventLabel.text = [event name];
-            NSString *contentURL = [[[event dictionary] objectForKey:@"highlight"] objectForKey:@"media"];
-            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-            __weak HighlightOldEventCell *weakCell = cell;
-            [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                if (image) {
-                    weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
-                }
-            }];
-            return cell;
-        }
-      
+        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
+        cell.event = event;
+        cell.placesDelegate = self;
+        cell.oldEventLabel.text = [event name];
+        NSString *contentURL = [[[event dictionary] objectForKey:@"highlight"] objectForKey:@"media"];
+        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+        __weak HighlightOldEventCell *weakCell = cell;
+        [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            if (image) {
+                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+            }
+        }];
+        return cell;
     }
     
     return nil;
@@ -1308,6 +1305,11 @@ int firstIndexOfNegativeEvent;
             [newOldEventsParty addObjectsFromArray: oldEvents];
             
             for (Event *event in [newOldEventsParty getObjectArray]) {
+                
+                if ([event containsHighlight] == NO) {
+                    continue;
+                }
+                
                 NSString *eventDate = [event expiresDate];
                 if ([self.pastDays indexOfObject: eventDate] == NSNotFound) {
                     [self.pastDays addObject: eventDate];
