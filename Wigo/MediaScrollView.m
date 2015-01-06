@@ -897,6 +897,8 @@
         }
     }
     [self.mediaScrollDelegate updateEventMessage:self.eventMessage forCell:self];
+
+
 }
 
 
