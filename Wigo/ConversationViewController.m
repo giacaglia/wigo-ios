@@ -9,7 +9,6 @@
 #import "ConversationViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
-#import "ProfileViewController.h"
 #import "FancyProfileViewController.h"
 
 @interface ConversationViewController ()
@@ -330,7 +329,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         [self.view addSubview:_viewForEmptyConversation];
         
         UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , self.view.frame.size.width, 30)];
-        everyDayLabel.text = @"Every day on Wigo is a new day.";
+        everyDayLabel.text = @"Start a new chat today.";
         everyDayLabel.textColor = [FontProperties getOrangeColor];
         everyDayLabel.textAlignment = NSTextAlignmentCenter;
         everyDayLabel.font = [FontProperties getBigButtonFont];

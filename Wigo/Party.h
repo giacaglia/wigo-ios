@@ -27,6 +27,7 @@ typedef enum
 @property NSMutableArray *mutableObjectArray;
 @property NSDictionary *metaDictionary;
 
+@property (readonly) NSUInteger count;
 - (id)initWithObjectType:(OBJECT_TYPE)type;
 - (NSArray *)getObjectArray;
 - (NSArray *)getNameArray;

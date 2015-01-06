@@ -25,8 +25,11 @@
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
 @property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
+@property (nonatomic, assign) int minPage;
 @property (nonatomic, strong) NSNumber *index;
+@property (nonatomic, assign) int maxPage;
 @property (nonatomic, assign) BOOL isFocusing;
+@property (nonatomic, assign) BOOL isPeeking;
 - (void)closeView;
 -(void)scrolledToPage:(int)page;
 - (void)removeMediaAtPage:(int)page;
@@ -56,6 +59,7 @@
 @property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
 - (void)focusOnContent;
 @property (nonatomic, assign) BOOL isFocusing;
+@property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @end
 

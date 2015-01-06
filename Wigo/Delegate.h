@@ -17,6 +17,7 @@
 @end
 
 @protocol PlacesDelegate <UserSelectDelegate>
+- (void)showHighlights;
 - (void)showConversationForEvent:(Event *)event;
 - (void)showStoryForEvent:(Event*)event;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;

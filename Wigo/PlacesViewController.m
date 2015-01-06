@@ -19,7 +19,6 @@
 #import "SignViewController.h"
 #import "SignNavigationViewController.h"
 #import "PeekViewController.h"
-#import "ReProfileViewController.h"
 #import "EventStoryViewController.h"
 #import "FancyProfileViewController.h"
 #import "FXBlurView.h"
@@ -33,6 +32,8 @@
 
 #import "WGEvent.h"
 #import "WGProfile.h"
+
+#define kOldEventShowHighlightsCellName @"OldEventShowHighlightsCellName"
 
 @interface PlacesViewController () {
     UIView *_dimView;
@@ -177,14 +178,7 @@ int firstIndexOfNegativeEvent;
     [self initializeNotificationObservers];
     [self initializeNavigationBar];
 
-//    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-//        _goingSomewhereButton.hidden = NO;
-//        _goingSomewhereButton.enabled = YES;
-//    }
-//    else {
-//        _goingSomewhereButton.hidden = YES;
-//        _goingSomewhereButton.enabled = NO;
-//    }
+
     if (!self.visitedProfile) {
         self.eventOffsetDictionary = [NSMutableDictionary new];
     }
@@ -210,7 +204,34 @@ int firstIndexOfNegativeEvent;
     else {
         shouldReloadEvents = YES;
     }
+    [self shouldShowCreateButton];
 
+}
+
+- (BOOL) shouldShowCreateButton {
+    if ([self isPeeking]) {
+        self.goElsewhereView.hidden = YES;
+        self.goElsewhereView.plusButton.enabled = NO;
+        self.goingSomewhereButton.hidden = YES;
+        self.goingSomewhereButton.enabled = NO;
+        return NO;
+    }
+    else {
+        self.goElsewhereView.hidden = NO;
+        //self.goElsewhereView.plusButton.hidden = NO;
+        self.goElsewhereView.plusButton.enabled = YES;
+        //self.goingSomewhereButton.hidden = NO;
+        self.goingSomewhereButton.enabled = YES;
+        return YES;
+    }
+}
+
+- (BOOL) isPeeking {
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (UIImage *)imageWithColor:(UIColor *)color
@@ -421,6 +442,7 @@ int firstIndexOfNegativeEvent;
     //[_placesTableView setSeparatorColor:UIColor.clearColor];
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
+    [_placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _yPositionOfWhereSubview = 280;
     [self addRefreshToScrollView];
@@ -459,7 +481,7 @@ int firstIndexOfNegativeEvent;
     [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
     [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     [self goOutToEventNumber:[NSNumber numberWithInt:(int)buttonSender.tag]];
-    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
+//    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
 }
 
 - (void)goOutToEventNumber:(NSNumber*)eventID {
@@ -689,7 +711,7 @@ int firstIndexOfNegativeEvent;
         [profileUser setIsAttending:YES];
         [profileUser setIsGoingOut:YES];
         [profileUser setAttendingEventID:eventID];
-        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
+//        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
     }
 }
 
@@ -758,7 +780,11 @@ int firstIndexOfNegativeEvent;
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.pastDays.count > 0) {
+    if ([self shouldShowHighlights]) {
+        //[Today section] [Button show highlights]
+        return 1 + 1 + 1;
+    }
+    else if (self.pastDays.count > 0) {
         //[Today section] [Highlighs section] (really just space for a header) + pastDays sections
         return 1 + 1 + self.pastDays.count;
     }
@@ -769,15 +795,18 @@ int firstIndexOfNegativeEvent;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kTodaySection) {
         if (_isSearching) {
-            return [[_filteredContentParty getObjectArray] count];
+            return [_filteredContentParty count];
         }
         else {
             int hasNextPage = ([_eventsParty hasNextPage] ? 1 : 0);
-            return [[_contentParty getObjectArray] count] + hasNextPage;
+            return [_contentParty count] + hasNextPage;
         }
     }
     else if (section == kHighlightsEmptySection) {
         return 0;
+    }
+    else if ([self shouldShowHighlights] && section > 1) {
+        return 1;
     }
     else if (self.pastDays.count > 0 && section > 1) {
         NSString *day = [self.pastDays objectAtIndex: section - 2];
@@ -795,6 +824,9 @@ int firstIndexOfNegativeEvent;
     else if (section == kHighlightsEmptySection) { //highlights section seperator
         return [HighlightsHeader height];
     }
+    else if ([self shouldShowHighlights] && section > 1) {
+        return 0;
+    }
     else if (self.pastDays.count > 0 && section > 1) { //past day headers
         return [PastDayHeader height: (section - 2 == 0)];
     }
@@ -809,6 +841,9 @@ int firstIndexOfNegativeEvent;
     else if (section == kHighlightsEmptySection) {
         return [HighlightsHeader init];
     }
+    else if ([self shouldShowHighlights] && section > 1) {
+        return 0;
+    }
     else if (self.pastDays.count > 0 && section > 1) { //past day headers
         return [PastDayHeader initWithDay: [self.pastDays objectAtIndex: section - 2] isFirst: (section - 2) == 0];
     }
@@ -819,8 +854,10 @@ int firstIndexOfNegativeEvent;
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if (section == kTodaySection) {
         self.goElsewhereView = [GoOutNewPlaceHeader init];
+        if ([_contentParty count] > 0) [self.goElsewhereView setupWithMoreThanOneEvent:YES];
+        else [self.goElsewhereView setupWithMoreThanOneEvent:NO];
         [self.goElsewhereView.addEventButton addTarget: self action: @selector(goingSomewhereElsePressed) forControlEvents: UIControlEventTouchUpInside];
-        
+        [self shouldShowCreateButton];
         return self.goElsewhereView;
     }
     
@@ -843,6 +880,9 @@ int firstIndexOfNegativeEvent;
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
     }
+    else if ([self shouldShowHighlights] && indexPath.section > 1) {
+        return [OldEventShowHighlightsCell height];
+    }
     else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
         
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
@@ -864,12 +904,12 @@ int firstIndexOfNegativeEvent;
 
         cell.placesDelegate = self;
         if (_isSearching) {
-            if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
+            if (indexPath.row == [_filteredContentParty count]) {
                 return cell;
             }
         }
         else {
-            if (indexPath.row == [[_contentParty getObjectArray] count]) {
+            if (indexPath.row == [_contentParty  count]) {
                 [self fetchEvents];
                 return cell;
             }
@@ -877,12 +917,12 @@ int firstIndexOfNegativeEvent;
         
         Event *event;
         if (_isSearching) {
-            int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
+            int sizeOfArray = (int)[_filteredContentParty  count];
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
             event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
         }
         else {
-            int sizeOfArray = (int)[[_contentParty getObjectArray] count];
+            int sizeOfArray = (int)[_contentParty count];
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
             event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
         }
@@ -901,7 +941,13 @@ int firstIndexOfNegativeEvent;
         if (![[[event dictionary] objectForKey:@"is_read"] boolValue] &&
             [[[event dictionary] objectForKey:@"num_messages"] intValue] > 0) {
             cell.chatBubbleImageView.hidden = NO;
+            cell.chatBubbleImageView.image = [UIImage  imageNamed:@"cameraBubble"];
             cell.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
+        }
+        else if ( [[[event dictionary] objectForKey:@"num_messages"] intValue] > 0) {
+            cell.chatBubbleImageView.hidden = NO;
+            cell.chatBubbleImageView.image = [UIImage  imageNamed:@"blueCameraBubble"];
+            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
         else {
             cell.chatBubbleImageView.hidden = YES;
@@ -912,14 +958,17 @@ int firstIndexOfNegativeEvent;
     else if (indexPath.section == kHighlightsEmptySection) {
         return nil;
     }
-    
+    else if ([self shouldShowHighlights] && indexPath.section > 1) {
+        OldEventShowHighlightsCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventShowHighlightsCellName];
+        cell.placesDelegate = self;
+        return cell;
+    }
     else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
         
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = ((NSArray *)[self.dayToEventObjArray objectForKey: day]);
         
         Event *event = (Event *)[eventObjectArray objectAtIndex:[indexPath row]];
-
         if ([event containsHighlight]) {
             HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
             cell.event = event;
@@ -929,7 +978,9 @@ int firstIndexOfNegativeEvent;
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
             __weak HighlightOldEventCell *weakCell = cell;
             [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+                if (image) {
+                    weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+                }
             }];
             return cell;
         }
@@ -964,6 +1015,12 @@ int firstIndexOfNegativeEvent;
         isLoaded = YES;
     }
 }
+
+- (BOOL) shouldShowHighlights {
+    BOOL shownHighlights =  [[NSUserDefaults standardUserDefaults] boolForKey: @"shownHighlights"];
+    return !shownHighlights && self.pastDays.count;
+}
+
 
 #pragma mark - Image helper
 
@@ -1110,6 +1167,11 @@ int firstIndexOfNegativeEvent;
 
 #pragma mark - PlacesDelegate
 
+- (void)showHighlights {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"shownHighlights"];
+    [_placesTableView reloadData];
+}
+
 - (void)showUser:(User *)user {
     shouldReloadEvents = NO;
     
@@ -1169,12 +1231,12 @@ int firstIndexOfNegativeEvent;
 }
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
-    int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
+    int numberOfEvents = (int)[_eventsParty count];
     return numberOfEvents * userIndex + eventIndex;
 }
 
 - (void)updateEvent:(Event *)newEvent {
-    for (int i = 0 ; i < [[_contentParty getObjectArray] count]; i++) {
+    for (int i = 0 ; i < [_contentParty count]; i++) {
         Event *event = [[_contentParty getObjectArray] objectAtIndex:i];
         if ([[event eventID] isEqualToNumber:[newEvent eventID]]) {
             [_contentParty replaceObjectAtIndex:i withObject:newEvent];
@@ -1185,7 +1247,7 @@ int firstIndexOfNegativeEvent;
 
 - (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {
     int userIndex, eventIndex;
-    int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
+    int numberOfEvents = (int)[_eventsParty count];
     userIndex = uniqueIndex/numberOfEvents;
     eventIndex = uniqueIndex - userIndex * numberOfEvents;
     return @{@"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex":[NSNumber numberWithInt:eventIndex]};
@@ -1214,7 +1276,10 @@ int firstIndexOfNegativeEvent;
         if (!self.goElsewhereView) {
             return;
         }
-        
+        if (![self shouldShowCreateButton]) {
+            return;
+        }
+//
         if (isContainedInView && self.goingSomewhereButton.hidden == NO && isLoaded) {
             self.goingSomewhereButton.hidden = YES;
             self.goElsewhereView.plusButton.hidden = NO;
@@ -1307,7 +1372,7 @@ int firstIndexOfNegativeEvent;
             [self fillEventAttendees];
             page = @([page intValue] + 1);
             [eventPageArray removeAllObjects];
-            for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+            for (int i = 0; i < [_eventsParty count]; i++) {
                 [eventPageArray addObject:@2];
             }
             [self fetchedOneParty];
@@ -1356,7 +1421,7 @@ int firstIndexOfNegativeEvent;
 
 - (void)fillEventAttendees {
     _partyUserArray =  [[NSMutableArray alloc] init];
-    for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+    for (int i = 0; i < [_eventsParty count]; i++) {
         Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
         NSArray *eventAttendeesArray = [event getEventAttendees];
         Party *partyUser = [[Party alloc] init];
@@ -1534,14 +1599,14 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)presentGrowthHack {
-    [[Profile user] setGrowthHackPresented];
-    [[Profile user] saveKeyAsynchronously:@"properties"];
-    CATransition* transition = [CATransition animation];
-    transition.duration = 1;
-    transition.type = kCATransitionFade;
-    transition.subtype = kCATransitionFromBottom;
-    [self.view.window.layer addAnimation:transition forKey:kCATransition];
-    [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
+//    [[Profile user] setGrowthHackPresented];
+//    [[Profile user] saveKeyAsynchronously:@"properties"];
+//    CATransition* transition = [CATransition animation];
+//    transition.duration = 1;
+//    transition.type = kCATransitionFade;
+//    transition.subtype = kCATransitionFromBottom;
+//    [self.view.window.layer addAnimation:transition forKey:kCATransition];
+//    [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
 }
 
 - (void)presentContactsView {
@@ -1557,7 +1622,7 @@ int firstIndexOfNegativeEvent;
     Party *partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
     [partyUser addObject:[Profile user]];
     [_partyUserArray addObject:partyUser];
-    [_eventsParty exchangeObjectAtIndex:([[_eventsParty getObjectArray] count] - 1) withObjectAtIndex:0];
+    [_eventsParty exchangeObjectAtIndex:([_eventsParty count] - 1) withObjectAtIndex:0];
     [_partyUserArray exchangeObjectAtIndex:([_partyUserArray count] - 1) withObjectAtIndex:0];
     [self removeUserFromAnyOtherEvent:[Profile user]];
 }
@@ -1599,7 +1664,7 @@ int firstIndexOfNegativeEvent;
     for (int i = 0; i < [arrayOfEvents count]; i++) {
         Event *event = [arrayOfEvents objectAtIndex:i];
         Party *partyUser = [_partyUserArray objectAtIndex:i];
-        for (int j = 0; j < [[partyUser getObjectArray] count]; j++) {
+        for (int j = 0; j < [partyUser count]; j++) {
             User *newUser = [[partyUser getObjectArray] objectAtIndex:j];
             if ([user isEqualToUser:newUser]) {
                 [partyUser removeUser:newUser];
@@ -1663,11 +1728,18 @@ int firstIndexOfNegativeEvent;
 
 - (void)updateUI {
     self.eventNameLabel.text = [self.event name];
-    if ([self.event.numberOfMessages intValue] > 0) {
+    if (![[[self.event dictionary] objectForKey:@"is_read"] boolValue] && [self.event.numberOfMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;
+        self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
         self.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [self.event.numberOfMessages stringValue]];
     }
-    else self.chatBubbleImageView.hidden = YES;
+    else if ([self.event.numberOfMessages intValue] > 0) {
+        self.chatBubbleImageView.hidden = NO;
+        self.chatBubbleImageView.image = [UIImage imageNamed:@"blueCameraBubble"];
+    }
+    else {
+     self.chatBubbleImageView.hidden = YES;
+    }
     self.eventPeopleScrollView.event = self.event;
     [self.eventPeopleScrollView updateUI];
 }
@@ -1730,6 +1802,11 @@ int firstIndexOfNegativeEvent;
     return header;
 }
 
+- (void)setupWithMoreThanOneEvent:(BOOL)moreThanOneEvent {
+    if (moreThanOneEvent) self.goSomewhereLabel.text = @"Go somewhere else";
+    else self.goSomewhereLabel.text = @"Get today started";
+}
+
 - (void) setup {
     self.backgroundColor = RGB(241, 241, 241);
     
@@ -1752,15 +1829,14 @@ int firstIndexOfNegativeEvent;
     [self.plusButton addSubview: sendOvalImageView];
     [self addSubview: self.plusButton];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(10, 0, self.frame.size.width, self.frame.size.height)];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.textAlignment = NSTextAlignmentLeft;
-    titleLabel.font = [FontProperties mediumFont: 20.0f];
-    titleLabel.textColor = [FontProperties getBlueColor];
-    titleLabel.text = @"Go somewhere else";
-    titleLabel.center = CGPointMake(titleLabel.center.x, self.center.y - 4);
-    
-    [self addSubview: titleLabel];
+    self.goSomewhereLabel = [[UILabel alloc] initWithFrame: CGRectMake(10, 0, self.frame.size.width, self.frame.size.height)];
+    self.goSomewhereLabel.backgroundColor = [UIColor clearColor];
+    self.goSomewhereLabel.textAlignment = NSTextAlignmentLeft;
+    self.goSomewhereLabel.font = [FontProperties mediumFont: 20.0f];
+    self.goSomewhereLabel.textColor = [FontProperties getBlueColor];
+    self.goSomewhereLabel.text = @"Go somewhere else";
+    self.goSomewhereLabel.center = CGPointMake(self.goSomewhereLabel.center.x, self.center.y - 4);
+    [self addSubview: self.goSomewhereLabel];
     
     self.addEventButton = [[UIButton alloc] initWithFrame: self.bounds];
     self.addEventButton.backgroundColor = [UIColor clearColor];
@@ -1811,7 +1887,9 @@ int firstIndexOfNegativeEvent;
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: date];
     int weekday = (int)[comps weekday];
-    NSString *dayName = [dateFormat weekdaySymbols][weekday - 1];
+    weekday -= 2;
+    if (weekday < 0) weekday += 7;
+    NSString *dayName = [dateFormat weekdaySymbols][weekday];
     
     UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(self.center.x - 50, 20, 100, 0.5f)];
     lineView.backgroundColor = RGB(210, 210, 210);
@@ -1899,6 +1977,43 @@ int firstIndexOfNegativeEvent;
 + (CGFloat) height {
     return 215;
 }
+
+@end
+
+@implementation OldEventShowHighlightsCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [OldEventShowHighlightsCell height]);
+    self.backgroundColor = RGB(241, 241, 241);
+    
+    self.showHighlightsButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 0, self.frame.size.width - 90, 64)];
+    self.showHighlightsButton.backgroundColor = RGB(248, 248, 248);
+    [self.showHighlightsButton setTitle:@"Show Past Highglights" forState:UIControlStateNormal];
+    [self.showHighlightsButton setTitleColor:RGB(160, 160, 160) forState:UIControlStateNormal];
+    self.showHighlightsButton.titleLabel.font = [FontProperties scMediumFont: 18];
+    [self.showHighlightsButton addTarget:self action:@selector(showHighlightsPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.showHighlightsButton.layer.borderColor = RGB(210, 210, 210).CGColor;
+    self.showHighlightsButton.layer.borderWidth = 1;
+    self.showHighlightsButton.layer.cornerRadius = 8;
+    [self.contentView addSubview:self.showHighlightsButton];
+}
+
+- (void)showHighlightsPressed {
+    [self.placesDelegate showHighlights];
+}
+
++ (CGFloat) height {
+    return 150;
+}
+
 
 @end
 

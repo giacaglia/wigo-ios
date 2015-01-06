@@ -1,3 +1,4 @@
+
 //
 //  EventStoryViewController.m
 //  Wigo
@@ -10,7 +11,6 @@
 #import "IQMediaPickerController.h"
 #import "AWSUploader.h"
 #import "InviteViewController.h"
-#import "ReProfileViewController.h"
 #import "EventMessagesConstants.h"
 #import "FancyProfileViewController.h"
 
@@ -51,12 +51,12 @@
 
     [self loadEventPeopleScrollView];
     [self loadEventDetails];
+    [self loadInviteOrGoHereButton];
 
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        [self loadInviteOrGoHereButton];
         [self loadTextViewAndSendButton];
     }
-    
+
     [self loadConversationViewController];
     [self setDetailViewRead];
 }
@@ -64,6 +64,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     metaInfo = nil;
+
+    if (facesCollectionView) [facesCollectionView reloadData];
     [self fetchEventMessages];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
@@ -95,6 +97,9 @@
     else {
         self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
     }
+//    if ([self.event.numberInvited intValue] > 0) {
+//        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@/%@ invited", self.numberGoingLabel.text, [self.event.numberInvited stringValue]];
+//    }
 
     self.numberGoingLabel.textColor = RGB(170, 170, 170);
     self.numberGoingLabel.textAlignment = NSTextAlignmentLeft;
@@ -131,13 +136,21 @@
     [self.backgroundScrollview addSubview:self.goHereButton];
     
     
-    if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
-        self.inviteButton.hidden = NO;
-        self.inviteButton.enabled = YES;
+    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        self.inviteButton.hidden = YES;
+        self.inviteButton.enabled = NO;
+        self.goHereButton.hidden = YES;
+        self.goHereButton.enabled = NO;
     }
     else {
-        self.goHereButton.hidden = NO;
-        self.goHereButton.enabled = YES;
+        if ([self.event eventID] && [[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+            self.inviteButton.hidden = NO;
+            self.inviteButton.enabled = YES;
+        }
+        else {
+            self.goHereButton.hidden = NO;
+            self.goHereButton.enabled = YES;
+        }
     }
 }
 
@@ -191,6 +204,10 @@
         self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
         self.conversationViewController.controllerDelegate = self;
         self.conversationViewController.storyDelegate = self;
+        
+        BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
+        self.conversationViewController.isPeeking = isPeeking;
+        
         [self presentViewController:self.conversationViewController animated:YES completion:nil];
     }
 }
@@ -220,7 +237,6 @@
     
     facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - yOrigin + 60) collectionViewLayout:flow];
     [facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderFaceCollectionView];
-    
     [facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier: kFooterFaceCollectionView];
 
     facesCollectionView.backgroundColor = UIColor.whiteColor;
@@ -271,7 +287,7 @@
         [self fetchEventMessages];
     }
     myCell.timeLabel.frame = CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
-    myCell.mediaTypeImageView.hidden = YES;
+    myCell.mediaTypeImageView.hidden = NO;
     myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
     
     User *user;
@@ -280,7 +296,11 @@
     if ([user isEqualToUser:[Profile user]]) {
         user = [Profile user];
     }
-    NSString *contentURL = [eventMessage objectForKey:@"media"];
+    [myCell.mediaTypeImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL] ] imageArea:[user coverImageArea]];
+
+    NSString *contentURL;
+    if ([[eventMessage allKeys] containsObject:@"thumbnail"]) contentURL = [eventMessage objectForKey:@"thumbnail"];
+    else  contentURL = [eventMessage objectForKey:@"media"];
     NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
     [myCell.spinner startAnimating];
     __weak FaceCell *weakCell = myCell;
@@ -289,12 +309,7 @@
             [weakCell.spinner stopAnimating];
         });
     }];
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
-        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
-    }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
-        myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
-    }
+
     myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
     myCell.timeLabel.textColor = RGB(59, 59, 59);
     myCell.faceAndMediaTypeView.alpha = 1.0f;
@@ -450,6 +465,10 @@
     self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
     self.conversationViewController.controllerDelegate = self;
     self.conversationViewController.storyDelegate = self;
+    
+    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
+    self.conversationViewController.isPeeking = isPeeking;
+
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
 }
 
@@ -517,6 +536,10 @@
     else {
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
+    
+    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
+    self.conversationViewController.isPeeking = isPeeking;
+
     self.conversationViewController.storyDelegate = self;
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
 }
@@ -583,10 +606,14 @@
 #pragma mark - Places Delegate
 
 - (void)showUser:(User *)user {
-    
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    FancyProfileViewController *fancyProfileViewController = [sb instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
 
+    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        fancyProfileViewController.userState = OTHER_SCHOOL_USER;
+    }
+    
     [self.navigationController setNavigationBarHidden: NO animated: NO];
 
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];

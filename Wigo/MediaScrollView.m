@@ -22,6 +22,7 @@
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
 @property (nonatomic, strong) NSMutableSet *eventMessagesIDSet;
+@property (nonatomic, assign) BOOL shownCurrentImage;
 @end
 
 @implementation MediaScrollView
@@ -43,6 +44,14 @@
     [self registerClass:[ImageCell class] forCellWithReuseIdentifier:@"ImageCell"];
     [self registerClass:[PromptCell class] forCellWithReuseIdentifier:@"PromptCell"];
     [self registerClass:[CameraCell class] forCellWithReuseIdentifier:@"CameraCell"];
+    if (self.index) {
+        self.minPage = [self.index intValue];
+        self.maxPage = [self.index intValue];
+    }
+    else {
+        self.minPage = 0;
+        self.maxPage = 0;
+    }
     
 }
 
@@ -73,6 +82,8 @@
             myCell.titleTextLabel.text = @"Please Give WiGo an access to camera to add to the story:";
             myCell.avoidAction.hidden = YES;
             myCell.cameraAccessImageView.hidden = NO;
+            myCell.isPeeking = self.isPeeking;
+
             return myCell;
         }
         else {
@@ -92,6 +103,7 @@
         ImageCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ImageCell" forIndexPath: indexPath];
         myCell.mediaScrollDelegate = self;
         myCell.eventMessage = eventMessage;
+        myCell.isPeeking = self.isPeeking;
         [myCell updateUI];
         NSURL *imageURL;
         if ([contentURL isKindOfClass:[UIImage class]]) {
@@ -110,6 +122,7 @@
 
         }
         [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
+        
         return myCell;
     }
     else if ([mimeType isEqualToString:kFaceImage]) {
@@ -123,6 +136,7 @@
         [myCell.actionButton.titleLabel setFont: [FontProperties scMediumFont: 16.0]];
         [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
         [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
+        myCell.isPeeking = self.isPeeking;
         return myCell;
     }
     else if ([mimeType isEqualToString:kNotAbleToPost]) {
@@ -130,12 +144,15 @@
         [myCell.imageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL] ]];
         myCell.titleTextLabel.text = @"To add a highlight you must be going here.";
         myCell.avoidAction.hidden = YES;
+        myCell.isPeeking = self.isPeeking;
         return myCell;
     }
     else {
         VideoCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VideoCell" forIndexPath: indexPath];
         myCell.mediaScrollDelegate = self;
         myCell.eventMessage = eventMessage;
+        myCell.isPeeking = self.isPeeking;
+
         [myCell updateUI];
         NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
         if (![thumbnailURL isKindOfClass:[NSNull class]]) {
@@ -157,6 +174,9 @@
 - (void)closeView {
     if (self.lastMoviePlayer) {
         [self.lastMoviePlayer stop];
+    }
+    for (int i = self.minPage; i <= self.maxPage; i++) {
+        [self addReadPage:i];
     }
     if (self.eventMessagesIDSet.count > 0) {
         [Network sendAsynchronousHTTPMethod:POST
@@ -183,13 +203,14 @@
 
 
 -(void)scrolledToPage:(int)page {
+    if (page < self.minPage) self.minPage = page;
+    if (page > self.maxPage) self.maxPage = page;
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
         for (int i = 0 ; i < self.eventMessages.count; i++) {
             [self.pageViews addObject:[NSNull null]];
         }
     }
-    [self addReadPage:page];
 
     [self performBlock:^(void){[self playVideoAtPage:page];}
             afterDelay:0.5
@@ -229,6 +250,7 @@
     if ([[eventMessage allKeys] containsObject:@"id"]) {
         NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
         [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            NSLog(@"jsonREsponse:%@, error %@", jsonResponse,error);
         }];
     }
  }
@@ -343,9 +365,13 @@
                                                                }];
     }
     
-    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
-    [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1)  withObject:mutableDict];
-    [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+    if (!self.shownCurrentImage) {
+        NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
+        [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1)  withObject:mutableDict];
+        [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+        self.shownCurrentImage = YES;
+    }
+  
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
@@ -417,17 +443,22 @@
                                          [Network sendAsynchronousHTTPMethod:POST
                                                                  withAPIName:@"eventmessages/"
                                                                  withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                                                         if (error) {
-                                                                             [self.eventConversationDelegate showErrorMessage];
-                                                                         }
-                                                                         else {
-//                                                                             NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
-//                                                                             [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:jsonResponse];
-//                                                                             [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
-                                                                             [self.eventConversationDelegate showCompletedMessage];
-                                                                         }
-                                                                     });
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    [self.eventConversationDelegate showErrorMessage];
+                }
+                else {
+                    [self.eventConversationDelegate showCompletedMessage];
+                    self.shownCurrentImage = YES;
+                    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
+                    [mutableEventMessages replaceObjectAtIndex:(mutableEventMessages.count - 2) withObject:jsonResponse];
+                    if (self.shownCurrentImage) {
+                        [mutableEventMessages removeLastObject];
+                    }
+                    [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+
+                }
+            });
                                                                  } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
                                      }];
                                     
@@ -535,7 +566,7 @@
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
-    self.backgroundColor = UIColor.clearColor;
+    self.backgroundColor = RGB(23, 23, 23);
     
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
@@ -722,27 +753,41 @@
     NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
         if (!self.numberOfVotesLabel) {
             self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 46, self.frame.size.height - 75, 32, 30)];
-            self.numberOfVotesLabel.textColor = [UIColor whiteColor];
+            self.numberOfVotesLabel.textColor = UIColor.whiteColor;
             self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
             self.numberOfVotesLabel.font = [FontProperties mediumFont:18.0f];
+            self.numberOfVotesLabel.layer.shadowOpacity = 1.0f;
+            self.numberOfVotesLabel.layer.shadowColor = UIColor.blackColor.CGColor;
+            self.numberOfVotesLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
+            self.numberOfVotesLabel.layer.shadowRadius = 0.5;
             [self.contentView addSubview:self.numberOfVotesLabel];
         }
         int votes = [[self.eventMessage objectForKey:@"up_votes"] intValue] - [[self.eventMessage objectForKey:@"down_votes"] intValue];
         self.numberOfVotesLabel.text = [[NSNumber numberWithInt:votes] stringValue];
-        
+
         if (!self.upVoteButton) {
             self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 118, 56, 52)];
             self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 32, 32)];
             [self.upVoteButton addSubview:self.upvoteImageView];
-            [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
             [self.contentView addSubview:self.upVoteButton];
+
+            if (self.isPeeking) {
+                self.upVoteButton.alpha = 0.2;
+            } else {
+                [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
+            }
         }
         if (!self.downVoteButton) {
             self.downVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 52, 56, 52)];
             self.downvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 32, 32)];
                        [self.downVoteButton addSubview:self.downvoteImageView];
-            [self.downVoteButton addTarget:self action:@selector(downvotePressed:) forControlEvents:UIControlEventTouchUpInside];
             [self.contentView addSubview:self.downVoteButton];
+            
+            if (self.isPeeking) {
+                self.downVoteButton.alpha = 0.2;
+            } else {
+                [self.downVoteButton addTarget:self action:@selector(downvotePressed:) forControlEvents:UIControlEventTouchUpInside];
+            }
         }
         if ([vote intValue] == 1) self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
         else self.upvoteImageView.image = [UIImage imageNamed:@"upvote"];

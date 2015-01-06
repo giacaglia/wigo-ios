@@ -12,7 +12,6 @@
 
 @interface FollowRequestsViewController ()
 
-@property UITableView *followRequestTableView;
 @property Party *followRequestsParty;
 @property NSNumber *page;
 @end
@@ -54,12 +53,9 @@
 }
 
 - (void) initializeFollowRequestTable {
-    _followRequestTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 49)];
-    _followRequestTableView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:_followRequestTableView];
-    _followRequestTableView.dataSource = self;
-    _followRequestTableView.delegate = self;
-    _followRequestTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.tableView.backgroundColor = [UIColor whiteColor];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.tableView reloadData];
 }
 
 - (void) initializeLeftBarButton {
@@ -78,12 +74,12 @@
     [EventAnalytics tagEvent:@"Follow Request Accepted"];
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
-    UITableViewCell *cell = [_followRequestTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
     Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:buttonSender.tag];
     User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
-    [Network acceptFollowRequestForUser:user];
+    [Network sendAsynchronousHTTPMethod:GET withAPIName:[NSString stringWithFormat:@"follows/accept?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]] withHandler:^(NSDictionary *jsonResponse, NSError *error) { }];
     
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width - 100, 54)];
     notificationButton.tag = tag;
@@ -110,15 +106,27 @@
     [notificationButton addSubview:labelName];
     
     UIButton *followBackPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
+    followBackPersonButton.tag = 100;
+    [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+     [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
+    
     if ([user isFollowing]) {
         followBackPersonButton.tag = -100;
         [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
     }
-    else {
+    if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        [followBackPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+        [followBackPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+        [followBackPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+        followBackPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+        followBackPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        followBackPersonButton.layer.borderWidth = 1;
+        followBackPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+        followBackPersonButton.layer.cornerRadius = 3;
         followBackPersonButton.tag = 100;
-        [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     }
-    [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
+ 
+   
     [cell.contentView addSubview:followBackPersonButton];
 
 }
@@ -126,7 +134,7 @@
 - (void)rejectUser:(id)sender {
     [EventAnalytics tagEvent:@"Follow Request Rejected"];
     UIButton *buttonSender = (UIButton *)sender;
-    UITableViewCell *cell = [_followRequestTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
     for (UIView *subview in [cell.contentView subviews]) {
         if ([subview isKindOfClass:[UIButton class]]) {
             [subview removeFromSuperview];
@@ -139,8 +147,8 @@
 
 - (void)followedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton*)sender;
-    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_followRequestTableView];
-    NSIndexPath *indexPath = [_followRequestTableView indexPathForRowAtPoint:buttonOriginInTableView];
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:buttonOriginInTableView];
     User *user = [self getUserAtIndex:(int)[indexPath row]];
     if (user) {
         if (buttonSender.tag == 50) {
@@ -252,7 +260,7 @@
     labelName.textAlignment = NSTextAlignmentLeft;
     [notificationButton addSubview:labelName];
     
-    UIButton *acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 86, 27 - 13, 30, 30)];
+    UIButton *acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 2*30 - 20, 27 - 13, 30, 30)];
     UIImageView *acceptImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"acceptFollowRequest"]];
     acceptImageView.frame = CGRectMake(0, 0, 30, 30);
     [acceptButton addSubview:acceptImageView];
@@ -260,7 +268,7 @@
     [acceptButton addTarget:self action:@selector(acceptUser:) forControlEvents:UIControlEventTouchUpInside];
     [cell.contentView addSubview:acceptButton];
     
-    UIButton *rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.frame.size.width - 43 , 27 - 13, 30, 30)];
+    UIButton *rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 10 - 30 , 27 - 13, 30, 30)];
     UIImageView *rejectImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rejectFollowRequest"]];
     rejectImageView.frame = CGRectMake(0, 0, 30, 30);
     [rejectButton addSubview:rejectImageView];
@@ -310,7 +318,7 @@
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_followRequestsParty addMetaInfo:metaDictionary];
             _page = @([_page intValue] + 1);
-            [_followRequestTableView reloadData];
+            [self.tableView reloadData];
         });
     }];
 }

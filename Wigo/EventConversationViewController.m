@@ -139,7 +139,6 @@
         [cell setIsActive: YES];
         
         self.currentActiveCell = indexPath;
-        
         [self highlightCellAtPage:indexPath.row ];
     }
 }
@@ -320,7 +319,6 @@
         CGFloat pageWidth = sizeOfEachFaceCell; // you need to have a **iVar** with getter for scrollView
         fractionalPage = (self.facesCollectionView.contentOffset.x + sizeOfEachFaceCell) / pageWidth;
     }
-    
     NSInteger page;
     if (leftBoolean) {
         if (fractionalPage - floor(fractionalPage) < 0.8) {
@@ -413,7 +411,7 @@
     self.mediaScrollView.mediaDelegate = self;
     self.mediaScrollView.eventConversationDelegate = self;
     self.mediaScrollView.storyDelegate = self.storyDelegate;
-
+    self.mediaScrollView.isPeeking = self.isPeeking;
 
     self.mediaScrollView.delegate = self;
     [self.view addSubview:self.mediaScrollView];
@@ -443,8 +441,7 @@
     [self.view addSubview:self.buttonTrash];
     
     if (self.index) {
-        [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-//         [self.facesCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+        [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];      
     }
 }
 
@@ -453,16 +450,19 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+
 // Needs to load faster.
 - (void)trashPressed:(id)sender {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     // NEeds to be sequential.
-    [self.mediaScrollView removeMediaAtPage:(int)page];
-    [self.eventMessages removeObjectAtIndex:page];
-    [self.facesCollectionView reloadData];
-    self.mediaScrollView.eventMessages = self.eventMessages;
-    [self.mediaScrollView reloadData];
-    [self hideOrShowFacesForPage:(int)page];
+    if (page < self.eventMessages.count && page >= 0) {
+        [self.mediaScrollView removeMediaAtPage:(int)page];
+        [self.eventMessages removeObjectAtIndex:page];
+        [self.facesCollectionView reloadData];
+        self.mediaScrollView.eventMessages = self.eventMessages;
+        [self.mediaScrollView reloadData];
+        [self hideOrShowFacesForPage:(int)page];
+    }
 }
 
 
@@ -609,18 +609,13 @@
     self.rightLine.backgroundColor = UIColor.whiteColor;
     [self addSubview: self.rightLine];
     
-    self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2)];
-    self.spinner.center = self.center;
-    self.spinner.activityIndicatorViewStyle = UIActionSheetStyleDefault;
-    [self addSubview:self.spinner];
-    
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
     self.leftLine.backgroundColor = [UIColor whiteColor];
-    [self addSubview: self.leftLine];
+    [self.contentView addSubview: self.leftLine];
     
     self.faceAndMediaTypeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2*(sizeOfEachFaceCell/3),  2*(sizeOfEachFaceCell/3))];
-    [self addSubview:self.faceAndMediaTypeView];
+    [self.contentView addSubview:self.faceAndMediaTypeView];
  
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.2*sizeOfEachFaceCell, 0.2*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell)];
     self.faceImageView.layer.masksToBounds = YES;
@@ -639,6 +634,10 @@
     self.mediaTypeImageView.hidden = YES;
     [self.faceAndMediaTypeView addSubview:self.mediaTypeImageView];
     
+    self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(sizeOfEachFaceCell/4, sizeOfEachFaceCell/4, sizeOfEachFaceCell/2, sizeOfEachFaceCell/2)];
+    self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
+    [self.faceAndMediaTypeView addSubview:self.spinner];
+    
     self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30)];
     self.timeLabel.numberOfLines = 0;
     self.timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -649,8 +648,7 @@
     self.timeLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
     self.timeLabel.layer.shadowOpacity = 0.5;
     self.timeLabel.layer.shadowRadius = 0.5;
-    [self addSubview:self.timeLabel];
-    
+    [self.contentView addSubview:self.timeLabel];
 
     _isActive = NO;
 }

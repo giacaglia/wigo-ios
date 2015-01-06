@@ -14,6 +14,7 @@
 @property NSString *name;
 @property NSNumber* eventID;
 @property NSNumber *numberAttending;
+@property NSNumber *numberInvited;
 @property NSNumber *numberOfMessages;
 
 - (BOOL)containsHighlight;

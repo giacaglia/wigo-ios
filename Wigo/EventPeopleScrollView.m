@@ -32,7 +32,8 @@
 - (void)updateUI {
     [self fillEventAttendees];
     [self loadUsers];
-    self.page = @2;
+    // HACK
+    self.page = @(ceil((float)[[self.partyUser getObjectArray] count]/(float)10) + 1);
 }
 
 
@@ -167,6 +168,7 @@
                                       self.eventOffset = self.contentOffset.x;
                                       [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
                                                                                    forKey:[[self.event eventID] stringValue]];
+                                      [self.placesDelegate setVisitedProfile:YES];
                                       [self loadUsers];
                                   }
                                   else {

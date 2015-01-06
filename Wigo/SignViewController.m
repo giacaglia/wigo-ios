@@ -9,7 +9,6 @@
 #import "Globals.h"
 
 #import "SignViewController.h"
-#import "MainViewController.h"
 #import "OnboardViewController.h"
 #import "BatteryViewController.h"
 #import "KeychainItemWrapper.h"
@@ -69,14 +68,14 @@
 }
 
 - (void)showOnboard {
-    BOOL showedOnboardView = [[NSUserDefaults standardUserDefaults] boolForKey:@"showedOnboardView"];
-    if (showedOnboardView) {
+//    BOOL showedOnboardView = [[NSUserDefaults standardUserDefaults] boolForKey:@"showedOnboardView"];
+//    if (showedOnboardView) {
         [self getFacebookTokensAndLoginORSignUp];
-    }
-    else {
-        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showedOnboardView"];
-    }
+//    }
+//    else {
+//        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
+//        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showedOnboardView"];
+//    }
 }
 
 - (void) changeAlertToNotShown {

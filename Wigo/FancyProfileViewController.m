@@ -46,6 +46,8 @@
 
 @property UILabel *nameOfPersonLabel;
 @property UIImageView *privateLogoImageView;
+@property UILabel *numberOfChatsLabel;
+@property UIImageView *orangeChatBubbleImageView;
 
 @end
 
@@ -140,8 +142,8 @@ UIButton *tapButton;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-      if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
-
+    if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
+    if ([self.user isEqualToUser:[Profile user]]) [self fetchUserInfo];
 }
 
 
@@ -387,27 +389,32 @@ UIButton *tapButton;
     chatLabel.font = [FontProperties scMediumFont:16.0f];
     [_chatButton addSubview:chatLabel];
     
-    UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
-    orangeChatBubbleImageView.center = CGPointMake(orangeChatBubbleImageView.center.x, _chatButton.center.y - orangeChatBubbleImageView.frame.size.height/2);
+    _orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
+    _orangeChatBubbleImageView.center = CGPointMake(_orangeChatBubbleImageView.center.x, _chatButton.center.y - _orangeChatBubbleImageView.frame.size.height/2);
     
-    [_chatButton addSubview:orangeChatBubbleImageView];
-    UILabel *numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, orangeChatBubbleImageView.frame.size.width, orangeChatBubbleImageView.frame.size.height - 8)];
-    numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
-    numberOfChatsLabel.textColor = UIColor.whiteColor;
-    numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
-    NSNumber *unreadChats = (NSNumber *)[self.user objectForKey:@"num_unread_conversations"];
-    if (![unreadChats isEqualToNumber: @0] && [self.user isEqualToUser:[Profile user]]) {
-        orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
-        numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
-    } else {
-        orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
-    }
-    [orangeChatBubbleImageView addSubview:numberOfChatsLabel];
+    [_chatButton addSubview:_orangeChatBubbleImageView];
+    _numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _orangeChatBubbleImageView.frame.size.width, _orangeChatBubbleImageView.frame.size.height - 8)];
+    _numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
+    _numberOfChatsLabel.textColor = UIColor.whiteColor;
+    _numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
+    [_orangeChatBubbleImageView addSubview:_numberOfChatsLabel];
+    [self updateNumberOfChats];
+
     
     [_headerButtonView addSubview:_chatButton];
     [self initializeFollowRequestLabel];
     [self initializeFollowButton];
 
+}
+
+- (void)updateNumberOfChats {
+    NSNumber *unreadChats = (NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"];
+    if (![unreadChats isEqualToNumber: @0] && [self.user isEqualToUser:[Profile user]]) {
+        _orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
+        _numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
+    } else {
+        _orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
+    }
 }
 
 - (void) initializeFollowButton {
@@ -701,14 +708,9 @@ UIButton *tapButton;
 }
 
 - (BOOL) shouldShowInviteCell {
-    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
+    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE || self.userState == OTHER_SCHOOL_USER) {
         return NO;
     }
-    
-    if (self.userState == FOLLOWING_USER) {
-        return YES;
-    }
-
     
     return YES;
 }
@@ -827,19 +829,26 @@ UIButton *tapButton;
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == kNotificationsSection) {
-        UIView *headerView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, tableView.frame.size.width, _nameView.frame.size.height + _headerButtonView.frame.size.height)];
         
-        CGRect frame = _nameView.frame;
-        frame.origin = CGPointMake(0, 0);
-        _nameView.frame = frame;
-        [headerView addSubview: _nameView];
         
-        frame = _headerButtonView.frame;
-        frame.origin = CGPointMake(0, _nameView.frame.size.height);
-        _headerButtonView.frame = frame;
-        [headerView addSubview: _headerButtonView];
-        
-        return headerView;
+        if (self.userState == OTHER_SCHOOL_USER) {
+            return _nameView;
+        } else {
+            UIView *headerView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, tableView.frame.size.width, _nameView.frame.size.height + _headerButtonView.frame.size.height)];
+            
+            CGRect frame = _nameView.frame;
+            frame.origin = CGPointMake(0, 0);
+            _nameView.frame = frame;
+            [headerView addSubview: _nameView];
+            
+            frame = _headerButtonView.frame;
+            frame.origin = CGPointMake(0, _nameView.frame.size.height);
+            _headerButtonView.frame = frame;
+            [headerView addSubview: _headerButtonView];
+            
+            return headerView;
+        }
+
     }
     
     return nil;
@@ -847,6 +856,11 @@ UIButton *tapButton;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == kNotificationsSection) {
+        
+        if (self.userState == OTHER_SCHOOL_USER) {
+            return _nameView.frame.size.height;
+        }
+        
         return _nameView.frame.size.height + _headerButtonView.frame.size.height;
     }
     return 0;
@@ -894,7 +908,7 @@ UIButton *tapButton;
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kNotificationsSection) {
+    if (indexPath.section == kNotificationsSection && [self.user isEqualToUser:[Profile user]]) {
         if ([self isIndexPathASummaryCell:indexPath]) {
             [self.navigationController pushViewController:[FollowRequestsViewController new] animated:YES];
         }
@@ -903,7 +917,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:indexPath.row];
             User *user = [[User alloc] initWithDictionary:[notification fromUser]];
            
-            if ([[notification type] isEqualToString:@"follow"]) {
+            if ([[notification type] isEqualToString:@"follow"] || [[notification type] isEqualToString:@"follow.accepted"]) {
                 FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
                 [fancyProfileViewController setStateWithUser:user];
                 fancyProfileViewController.eventsParty = self.eventsParty;
@@ -928,8 +942,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     for (int i = 0; i < [eventsArray count]; i++) {
         Event *newEvent = [eventsArray objectAtIndex:i];
         if ([[newEvent eventID] isEqualToNumber:[event eventID]]) {
-            event = newEvent;
-            isEventPresentInArray = YES;
+            if ([newEvent getEventAttendees].count > 0) {
+                event = newEvent;
+                isEventPresentInArray = YES;
+            }
             break;
         }
     }
@@ -943,18 +959,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)inviteTapped {
-    if ([self.user isTapped]) {
-        [self.user setIsTapped:NO];
-        [Network sendUntapToUserWithId:[self.user objectForKey:@"id"]];
-    }
-    else {
-        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
-        [EventAnalytics tagEvent:@"Tap User" withDetails:options];
-        [self.user setIsTapped:YES];
-        [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
-    }
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
+    [EventAnalytics tagEvent:@"Tap User" withDetails:options];
+
+    [self.user setIsTapped:YES];
+    [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
     [self.tableView reloadData];
 }
+
+
 
 #pragma mark - ScrollViewDelegate
 
@@ -994,6 +1007,26 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 #pragma mark - Notifications Network requests
 
+- (void) fetchUserInfo {
+    if ([[Profile user] key]) {
+        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                        User *user = [[User alloc] initWithDictionary:jsonResponse];
+                        [Profile setUser:user];
+                        [self updateNumberOfChats];
+                    }
+                }
+                else {
+                    User *user = [[User alloc] initWithDictionary:jsonResponse];
+                    [Profile setUser:user];
+                    [self updateNumberOfChats];
+                }
+            });
+        }];
+    }
+}
 - (void)fetchNotifications {
     if (!self.isFetchingNotifications) {
         self.isFetchingNotifications = YES;
@@ -1056,13 +1089,17 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchEvent:(Event *)event {
+    NSLog(@"string: events/%@", [event eventID]);
     [Network sendAsynchronousHTTPMethod:GET withAPIName:[NSString stringWithFormat:@"events/%@", [event eventID]] withHandler:^(NSDictionary *jsonResponse, NSError *error) {        dispatch_async(dispatch_get_main_queue(), ^(void){
         if (!error) {
-            Event *newEvent = [[Event alloc] initWithDictionary:jsonResponse];
-            EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-            eventStoryViewController.event = newEvent;
-            eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-            [self.navigationController pushViewController: eventStoryViewController animated:YES];
+            if (! ([[jsonResponse allKeys] containsObject:@"code"] && [[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) ) {
+                Event *newEvent = [[Event alloc] initWithDictionary:jsonResponse];
+                EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+                eventStoryViewController.event = newEvent;
+                eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+                [self.navigationController pushViewController: eventStoryViewController animated:YES];
+
+            }
         }
     });
     }];
@@ -1252,16 +1289,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.numberLabel.textAlignment = NSTextAlignmentRight;
     self.numberLabel.font = numberLabelFont;
     self.numberLabel.textColor = [FontProperties getOrangeColor];
-    
     [self.contentView addSubview: self.numberLabel];
 
-    
     self.titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(sideSpacing + numberSize.width + spacerSize, 0, titleWidth, self.contentView.frame.size.height)];
     self.titleLabel.text = [NSString stringWithFormat: kTitleTemplate];
-    self.titleLabel.font = [FontProperties scLightFont: 24];
+    self.titleLabel.font = [FontProperties lightFont: 24];
     self.titleLabel.textColor = [UIColor lightGrayColor];
     self.titleLabel.numberOfLines = 2;
-    
     [self.contentView addSubview: self.titleLabel];
 }
 
@@ -1281,23 +1315,33 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setLabelsForUser: (User *) user {
-    if ([user isTapped]) {
+    if ([self.delegate userState] == OTHER_SCHOOL_USER) {
         self.inviteButton.hidden = YES;
-        self.titleLabel.text = @"Tapped";
-        self.titleLabel.textAlignment = NSTextAlignmentCenter;
-        self.titleLabel.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
-    }
+        self.inviteButton.enabled = NO;
+        self.titleLabel.hidden = YES;
+        self.tappedLabel.alpha = 0;
+        }
     else {
-        self.inviteButton.hidden = NO;
-        self.titleLabel.text = kInviteTitleTemplate;
-    }
+        if ([user isTapped]) {
+            self.inviteButton.hidden = YES;
+            self.inviteButton.enabled = NO;
+            self.titleLabel.hidden = YES;
+            self.tappedLabel.alpha = 1;
 
+        }
+        else {
+            self.inviteButton.hidden = NO;
+            self.titleLabel.hidden = NO;
+            self.titleLabel.text = kInviteTitleTemplate;
+            self.tappedLabel.alpha = 0;
+        }
+    }
 }
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
     self.titleLabel.font = [FontProperties lightFont: 18];
-    self.titleLabel.textColor = [UIColor lightGrayColor];
+    self.titleLabel.textColor = UIColor.lightGrayColor;
     
     self.inviteButton.titleLabel.font =  [FontProperties lightFont:18.0f];
     self.inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -1306,8 +1350,41 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.inviteButton.layer.cornerRadius = 7;
     [self.inviteButton addTarget: self action: @selector(inviteTapped) forControlEvents: UIControlEventTouchUpInside];
     
+    self.tappedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f)];
+    self.tappedLabel.text = @"TAPPED";
+    self.tappedLabel.font = [FontProperties lightFont: 24];
+    self.tappedLabel.textColor = UIColor.lightGrayColor;
+    self.tappedLabel.textAlignment = NSTextAlignmentCenter;
+    self.tappedLabel.alpha = 0;
+    [self.contentView addSubview:self.tappedLabel];
+    
 }
 - (void) inviteTapped {
-    [self.delegate inviteTapped];
+    UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width, self.frame.size.height)];
+    orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
+    [self.contentView sendSubviewToBack:orangeBackground];
+    [self.contentView addSubview:orangeBackground];
+    self.titleLabel.hidden = YES;
+    
+    self.tappedLabel.textColor = UIColor.whiteColor;
+    self.tappedLabel.alpha = 1;
+    [self.contentView bringSubviewToFront:self.tappedLabel];
+    
+    self.inviteButton.enabled = NO;
+    [UIView animateWithDuration:0.2f
+                          delay:0.0f
+                        options:UIViewAnimationOptionCurveEaseIn
+                     animations:^{
+        self.inviteButton.alpha = 0.0f;
+        orangeBackground.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        self.tappedLabel.alpha = 1;
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.5f animations:^{
+            self.tappedLabel.textColor = UIColor.lightGrayColor;
+            orangeBackground.alpha = 0.0f;
+        } completion:^(BOOL finished) {
+            [self.delegate inviteTapped];
+        }];
+    }];
 }
 @end

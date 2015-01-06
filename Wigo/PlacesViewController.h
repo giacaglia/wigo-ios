@@ -48,6 +48,8 @@
 @end
 
 @interface GoOutNewPlaceHeader : UIView
+- (void)setupWithMoreThanOneEvent:(BOOL)moreThanOneEvent;
+@property (nonatomic, strong) UILabel *goSomewhereLabel;
 @property (nonatomic, strong) UIButton *plusButton;
 @property (nonatomic, strong) UIButton *addEventButton;
 + (instancetype) init;
@@ -72,6 +74,10 @@
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UILabel *oldEventLabel;
 + (CGFloat) height;
-
 @end
 
+@interface OldEventShowHighlightsCell : UITableViewCell
+@property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) UIButton *showHighlightsButton;
++ (CGFloat) height;
+@end
