@@ -115,10 +115,6 @@ UIButton *tapButton;
     [self initializeNameOfPerson];
     [self initializeHeaderButtonView];
     
-    NSString *isCurrentUser = (self.user == [Profile user]) ? @"Yes" : @"No";
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", nil];
-
-    [EventAnalytics tagEvent:@"Profile View" withDetails:options];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -150,7 +146,12 @@ UIButton *tapButton;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [EventAnalytics tagEvent:@"Profile View"];
+    NSString *isCurrentUser = (self.user == [Profile user]) ? @"Yes" : @"No";
+    NSString *isPeeking = (self.userState == OTHER_SCHOOL_USER) ? @"Yes" : @"No";
+
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", isPeeking, @"isPeeking", nil];
+    
+    [EventAnalytics tagEvent:@"Profile View" withDetails:options];
 
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];

@@ -127,6 +127,11 @@ int firstIndexOfNegativeEvent;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    NSString *isPeeking = ([self isPeeking]) ? @"Yes" : @"No";
+
+    [EventAnalytics tagEvent:@"Where View" withDetails: @{@"isPeeking": isPeeking}];
+
     self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
 
@@ -149,7 +154,6 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) viewDidAppear:(BOOL)animated {
-    [EventAnalytics tagEvent:@"Where View"];
   
     [self.view endEditing:YES];
     [self fetchIsThereNewPerson];

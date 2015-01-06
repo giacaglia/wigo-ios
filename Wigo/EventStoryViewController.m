@@ -63,7 +63,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    [EventAnalytics tagEvent: @"Event Story View"];
+    
+    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
+
+    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    
+    [EventAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
+
     metaInfo = nil;
 
     if (facesCollectionView) [facesCollectionView reloadData];

@@ -60,6 +60,11 @@
     
     [self highlightCellAtPage:[self.index intValue]];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
+
+    
+    NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
+    
+    [EventAnalytics tagEvent:@"Event Story Detail View" withDetails: @{@"isPeeking": isPeekingString}];
 }
 
 - (void)didReceiveMemoryWarning {
