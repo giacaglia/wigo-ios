@@ -1954,6 +1954,7 @@ int firstIndexOfNegativeEvent;
     [self.showHighlightsButton addTarget:self action:@selector(showHighlightsPressed) forControlEvents:UIControlEventTouchUpInside];
     self.showHighlightsButton.layer.borderColor = RGB(210, 210, 210).CGColor;
     self.showHighlightsButton.layer.borderWidth = 1;
+    self.showHighlightsButton.layer.cornerRadius = 8.0f;
     [self.contentView addSubview:self.showHighlightsButton];
 }
 
