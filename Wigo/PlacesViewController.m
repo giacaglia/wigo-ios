@@ -1961,7 +1961,7 @@ int firstIndexOfNegativeEvent;
     
     self.showHighlightsButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 0, self.frame.size.width - 90, 64)];
     self.showHighlightsButton.backgroundColor = RGB(248, 248, 248);
-    [self.showHighlightsButton setTitle:@"Show Past Highglights" forState:UIControlStateNormal];
+    [self.showHighlightsButton setTitle:@"Show Past Highlights" forState:UIControlStateNormal];
     [self.showHighlightsButton setTitleColor:RGB(160, 160, 160) forState:UIControlStateNormal];
     self.showHighlightsButton.titleLabel.font = [FontProperties scMediumFont: 18];
     [self.showHighlightsButton addTarget:self action:@selector(showHighlightsPressed) forControlEvents:UIControlEventTouchUpInside];
