@@ -19,7 +19,6 @@
 #import "SignViewController.h"
 #import "SignNavigationViewController.h"
 #import "PeekViewController.h"
-#import "ReProfileViewController.h"
 #import "EventStoryViewController.h"
 #import "FancyProfileViewController.h"
 #import "FXBlurView.h"

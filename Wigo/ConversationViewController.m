@@ -9,7 +9,6 @@
 #import "ConversationViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
-#import "ProfileViewController.h"
 #import "FancyProfileViewController.h"
 
 @interface ConversationViewController ()

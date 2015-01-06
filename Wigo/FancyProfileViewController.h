@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "JPBParallaxTableViewController.h"
 #import "Globals.h"
-#import "ReProfileViewController.h"
+#import "EditProfileViewController.h"
+#import "MoreViewController.h"
+#import "PeopleViewController.h"
+#import "ConversationViewController.h"
 
 @protocol InviteCellDelegate
 - (void) inviteTapped;
