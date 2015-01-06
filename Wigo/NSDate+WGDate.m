@@ -14,11 +14,12 @@
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     NSDate *dateInLocalTimezone = [self dateByAddingTimeInterval:timeZoneSeconds];
     
-    NSDateComponents *dayJoined = [[NSCalendar currentCalendar] components:NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:dateInLocalTimezone];
-    NSArray *monthsArray = @[@"Jan", @"Feb", @"Mar", @"Apr", @"May", @"Jun", @"Jul", @"Aug", @"Sep", @"Oct", @"Nov", @"Dec"];
-    NSString *month = monthsArray[(int)[dayJoined month] - 1];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone localTimeZone]];
+    [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
     
-    return  [NSString stringWithFormat:@"Joined %@ %ld, %ld", month, (long)[dayJoined day], (long)[dayJoined year]];
+    return [NSString stringWithFormat:@"Joined %@", [dateFormatter stringFromDate:self]];
 }
 
 #warning TODO: make sure this is correct
@@ -90,13 +91,13 @@
 
 -(NSString *) deserialize {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     return [dateFormatter stringFromDate:self];
 }
 
 +(NSDate *) serialize:(NSString *)dateString {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     return [dateFormatter dateFromString:dateString];
 }
 

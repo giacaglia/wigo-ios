@@ -48,8 +48,8 @@
     [tracker set:[GAIFields customDimensionForIndex:4] value:goingOut];
     
     // Gender
-    [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:profile.gender forKey:@"Gender"]];
-    [tracker set:[GAIFields customDimensionForIndex:1] value:profile.gender];
+    [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:[profile genderName] forKey:@"Gender"]];
+    [tracker set:[GAIFields customDimensionForIndex:1] value:[profile genderName]];
     
     // Following/Followers
     NSString *followingBucket = [self bucketizeUsers:[profile.numFollowing intValue]];

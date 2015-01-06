@@ -62,6 +62,9 @@ static WGError *sharedWGErrorInstance = nil;
     if ([error.domain isEqualToString:kServerErrorDomain]) {
         long httpStatus = [[[error userInfo] objectForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
         
+        NSString *customMessage = [[error userInfo] objectForKey:@"wigoMessage"];
+        NSLog(@"Custom message for error: %@", customMessage);
+        
         if (httpStatus == kNotFoundStatusCode) {
             messageString = kServerConnectionFailedMessage;
             moreString    = KUnknownErrorMore;

@@ -138,6 +138,7 @@ int firstIndexOfNegativeEvent;
                 return;
             }
             NSLog(@"%@", [WGProfile currentUser].firstName);
+            NSLog(@"%@", [[WGProfile currentUser].created joinedString]);
         }];
     }];
     

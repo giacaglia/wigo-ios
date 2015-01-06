@@ -41,8 +41,7 @@ typedef enum State {
 typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 @property NSString* key;
-// @property (nonatomic, assign) Privacy privacy;
-@property NSString* privacy;
+@property (nonatomic, assign) Privacy privacy;
 @property NSNumber* isFollower;
 @property NSNumber* numFollowing;
 @property NSNumber* isTapped;
@@ -62,8 +61,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSNumber* isFavorite;
 @property NSString* firstName;
 
-// @property (nonatomic, assign) Gender gender;
-@property NSString* gender;
+@property (nonatomic, assign) Gender gender;
 @property NSString* email;
 @property NSString* facebookId;
 @property NSString* facebookAccessToken;
@@ -80,6 +78,9 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSNumber* isFavoritesGoingOutNotificationEnabled;
 
 +(WGUser *)serialize:(NSDictionary *)json;
+
+-(NSString *) privacyName;
+-(NSString *) genderName;
 
 -(void) removeImageAtIndex:(NSInteger)index;
 -(void) makeImageAtIndexCoverImage:(NSInteger)index;

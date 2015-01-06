@@ -10,6 +10,9 @@
 #import "WGEvent.h"
 #import "WGProfile.h"
 
+#define kUserKey @"user"
+#define kMeKey @"me"
+
 #define kKeyKey @"key"
 #define kEmailKey @"email"
 #define kNameKey @"name"
@@ -91,19 +94,24 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kKeyKey];
 }
 
--(void) setPrivacy:(NSString *)privacy {
-    /* if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPublicValue]) {
-     newWGUser.privacy =             PUBLIC;
-     } else if ([[json st_stringForKey:kPrivacyKey] isEqualToString:kPrivacyPrivateValue]) {
-     newWGUser.privacy =             PRIVATE;
-     } else {
-     newWGUser.privacy =             OTHER;
-     } */
-    [self setObject:privacy forKey:kPrivacyKey];
+-(void) setPrivacy:(Privacy)privacy {
+    NSString *privacyName = nil;
+    if ([self privacyNames].count > privacy) {
+        privacyName = [[self privacyNames] objectAtIndex:privacy];
+    }
+    [self setObject:privacyName forKey:kPrivacyKey];
 }
 
--(NSString *) privacy {
-    return [self objectForKey:kPrivacyKey];
+-(Privacy) privacy {
+    return (Privacy) [[self privacyNames] indexOfObject:[self objectForKey: kPrivacyKey]];
+}
+
+-(NSArray *) privacyNames {
+    return @[kPrivacyPublicValue, kPrivacyPrivateValue];
+}
+
+-(NSString *) privacyName {
+    return [[self privacyNames] objectAtIndex: self.privacy];
 }
 
 -(void) setBio:(NSString *)bio {
@@ -146,19 +154,24 @@ static WGUser *currentUser = nil;
     return [NSDate serialize:[self objectForKey:kModifiedKey]];
 }
 
--(void) setGender:(NSString *)gender {
-    /* if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderMaleValue]) {
-     newWGUser.gender =              MALE;
-     } else if ([[json st_stringForKey:kGenderKey] isEqualToString:kGenderFemaleValue]) {
-     newWGUser.gender =              FEMALE;
-     } else {
-     newWGUser.gender =              UNKNOWN;
-     } */
-    [self setObject:gender forKey:kGenderKey];
+-(void) setGender:(Gender)gender {
+    NSString *genderName = nil;
+    if ([self genderNames].count > gender) {
+        genderName = [[self genderNames] objectAtIndex:gender];
+    }
+    [self setObject:genderName forKey:kGenderKey];
 }
 
--(NSString *) gender {
-    return [self objectForKey:kGenderKey];
+-(Gender) gender {
+    return (Gender) [[self genderNames] indexOfObject:[self objectForKey: kGenderKey]];
+}
+
+-(NSArray *) genderNames {
+    return @[kGenderMaleValue, kGenderFemaleValue];
+}
+
+-(NSString *) genderName {
+    return [[self genderNames] objectAtIndex: self.gender];
 }
 
 -(void) setUsername:(NSString *)username {
@@ -418,7 +431,7 @@ static WGUser *currentUser = nil;
     if ([self.isBlocked boolValue]) {
         return BLOCKED_USER_STATE;
     }
-    if ([self.privacy isEqualToString: @"private"]) {
+    if (self.privacy == PRIVATE) {
         if ([self.isFollowing boolValue]) {
             if (self.isAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
             return FOLLOWING_USER_STATE;
@@ -440,6 +453,7 @@ static WGUser *currentUser = nil;
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
     [parameters setObject:self.email forKey:kEmailKey];
+    
     if (self.firstName) {
         [parameters setObject:self.firstName forKey:kFirstNameKey];
     }
@@ -447,14 +461,14 @@ static WGUser *currentUser = nil;
         [parameters setObject:self.firstName forKey:kLastNameKey];
     }
     if (self.gender) {
-        [parameters setObject:self.gender forKey:kGenderKey];
+        [parameters setObject:[self genderName] forKey:kGenderKey];
     }
     [WGApi post:@"register" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             
             NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
             [newInfo setObject:[jsonResponse objectForKey:@"message"] forKey:@"wigoMessage"];
-            handler(nil, [NSError errorWithDomain:error.domain code:error.code userInfo: newInfo]);
+            handler(nil, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);
             
             return;
         }
@@ -539,7 +553,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) sendInvites:(NSDictionary *)numbers withHandler:(BoolResultBlock)handler {
-    [WGApi post:@"invites" withArguments:@{ @"force" : @"true" } andParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:@"invites" withArguments:@{ @"force" : @YES } andParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }
@@ -547,7 +561,7 @@ static WGUser *currentUser = nil;
 -(void) unblock:(WGUser *)user withHandler:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"users/%@", user.id];
     
-    [WGApi post:queryString withParameters:@{ @"is_blocked" : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:queryString withParameters:@{ kIsBlockedKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isBlocked = [NSNumber numberWithBool:NO];
         }
@@ -591,7 +605,7 @@ static WGUser *currentUser = nil;
 
 -(void) untap:(WGUser *)user withHandler:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"users/%@/", user.id];
-    [WGApi post:queryString withParameters:@{ @"is_tapped" : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:queryString withParameters:@{ kIsTappedKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isTapped = [NSNumber numberWithBool:NO];
         }
@@ -600,8 +614,8 @@ static WGUser *currentUser = nil;
 }
 
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler {
-#warning Can you unfollow by User ID?
-    [WGApi delete:@"follows/" withArguments:@{ @"user" : @"me", @"follow" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    NSString *queryString = [NSString stringWithFormat:@"users/%@/", user.id];
+    [WGApi delete:queryString withArguments:@{ kIsFollowingKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollowing = [NSNumber numberWithBool:NO];
         }
