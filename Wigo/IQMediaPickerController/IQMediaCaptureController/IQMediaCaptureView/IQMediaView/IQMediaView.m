@@ -152,17 +152,14 @@
 
 - (void)handlePinchFrom:(UIPinchGestureRecognizer *)pinchRecognizer {
     _effectiveScale = MIN(MAX(_beginGestureScale * pinchRecognizer.scale, 1), 6);
-//    if (_effectiveScale >= 1 && _effectiveScale < 6) {
-        if ([self captureMode] == IQMediaCaptureControllerCaptureModePhoto) {
-            self.transform = CGAffineTransformMakeScale(_effectiveScale, _effectiveScale);
-            exposureView.frame = CGRectMake(0, 0, 70/_effectiveScale, 70/_effectiveScale);
-        }
-//    }
+    if ([self captureMode] == IQMediaCaptureControllerCaptureModePhoto) {
+        self.transform = CGAffineTransformMakeScale(_effectiveScale, _effectiveScale);
+        exposureView.frame = CGRectMake(0, 0, 70/_effectiveScale, 70/_effectiveScale);
+    }
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
-//    NSLog(@"hareeuahr");
     if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
         _beginGestureScale = _effectiveScale;
     }
@@ -175,7 +172,6 @@
 
 -(void)tapGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
-//    NSLog(@"sup?");
     CGPoint center = [recognizer locationInView:self];
     [exposureView setCenter:center];
     if (recognizer.state == UIGestureRecognizerStateEnded  &&
@@ -205,8 +201,6 @@
 
 -(void)panGestureRecognizer:(UIPanGestureRecognizer*)recognizer
 {
-//    [exposureView setCenter:center];
-//    NSLog(@"pan gesture recognizer");
     CGPoint translation = [recognizer translationInView:self];
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         [self.delegate mediaView:self stopTranslateAt:translation];
