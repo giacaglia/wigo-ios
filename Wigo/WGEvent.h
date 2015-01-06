@@ -29,7 +29,6 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 -(void) getMessages:(WGCollectionResultBlock)handler;
 
 +(void) getWithGroupNumber:(NSNumber *)groupNumber andHandler:(WGCollectionResultBlock)handler;
-
 +(void) createEventWithName:(NSString *)name andHandler:(WGEventResultBlock)handler;
 
 @end

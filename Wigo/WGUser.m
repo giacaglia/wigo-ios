@@ -435,7 +435,7 @@ static WGUser *currentUser = nil;
     return NOT_FOLLOWING_PUBLIC_USER_STATE;
 }
 
--(void) signup:(WGUserResultBlock)handler {
+-(void) signup:(BoolResultBlock)handler {
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
@@ -451,13 +451,17 @@ static WGUser *currentUser = nil;
     }
     [WGApi post:@"register" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            
+            NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
+            [newInfo setObject:[jsonResponse objectForKey:@"message"] forKey:@"wigoMessage"];
+            handler(nil, [NSError errorWithDomain:error.domain code:error.code userInfo: newInfo]);
+            
             return;
         }
         NSError *dataError;
-        WGUser *object;
         @try {
-            object = [WGUser serialize:jsonResponse];
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self.modifiedKeys removeAllObjects];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -465,13 +469,13 @@ static WGUser *currentUser = nil;
             dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(object, dataError);
+            handler(dataError == nil, dataError);
         }
     }];
 }
 
 
--(void) login:(WGUserResultBlock)handler {
+-(void) login:(BoolResultBlock)handler {
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
@@ -483,9 +487,9 @@ static WGUser *currentUser = nil;
             return;
         }
         NSError *dataError;
-        WGUser *object;
         @try {
-            object = [WGUser serialize:jsonResponse];
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self.modifiedKeys removeAllObjects];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -493,7 +497,7 @@ static WGUser *currentUser = nil;
             dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(object, dataError);
+            handler(dataError == nil, dataError);
         }
     }];
 }
@@ -516,28 +520,6 @@ static WGUser *currentUser = nil;
         }
         @finally {
             handler(objects, dataError);
-        }
-    }];
-}
-
-+(void) getCurrentUser:(WGUserResultBlock)handler {
-    [WGApi get:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-            handler(nil, error);
-            return;
-        }
-        NSError *dataError;
-        WGUser *object;
-        @try {
-            object = [WGUser serialize:jsonResponse];
-        }
-        @catch (NSException *exception) {
-            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
-            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-        }
-        @finally {
-            handler(object, dataError);
         }
     }];
 }

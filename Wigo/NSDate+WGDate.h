@@ -14,8 +14,11 @@
 
 -(BOOL) isFromLastDay;
 
--(NSString *) deserialize;
+-(BOOL) isSameDayWithDate:(NSDate*)date;
 
+-(BOOL) isNextDayWithDate:(NSDate*)date;
+
+-(NSString *) deserialize;
 +(NSDate *) serialize:(NSString *)dateString;
 
 @end

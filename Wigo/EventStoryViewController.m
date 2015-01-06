@@ -12,6 +12,7 @@
 #import "InviteViewController.h"
 #import "ReProfileViewController.h"
 #import "EventMessagesConstants.h"
+
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 
 UIButton *sendButton;

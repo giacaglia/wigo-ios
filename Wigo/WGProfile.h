@@ -24,6 +24,7 @@
 
 +(void) setCurrentUser:(WGUser *)user;
 +(WGProfile *) currentUser;
++(void) reload:(BoolResultBlock)handler;
 
 -(void) addChosenPerson:(WGUser *)person;
 -(void) addChosenPeople:(WGCollection *)people;

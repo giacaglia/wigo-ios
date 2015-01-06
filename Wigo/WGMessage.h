@@ -21,4 +21,7 @@ typedef void (^WGMessageResultBlock)(WGMessage *object, NSError *error);
 
 +(WGMessage *)serialize:(NSDictionary *)json;
 
+-(void) deleteConversation:(BoolResultBlock)handler;
+-(void) readConversation:(BoolResultBlock)handler;
+
 @end

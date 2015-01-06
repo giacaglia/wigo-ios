@@ -11,7 +11,7 @@
 #define kDismiss 0
 #define kRetryButton 1
 
-#define kErrorTitles @[@"Post failed", @"Search failed", @"Delete failed", @"Submit failed", @"Request failed", @"Failed to load", @"Cancel Request failed", @"Failed to contact", @"Ignore failed", @"Login failed", @"Failed to create", @"Could not save", @"Classy cannot connect to the internet"]
+#define kErrorTitles @[@"Post failed", @"Search failed", @"Delete failed", @"Submit failed", @"Request failed", @"Failed to load", @"Cancel Request failed", @"Failed to contact", @"Ignore failed", @"Login failed", @"Failed to create", @"Could not save", @"Wigo cannot connect to the internet"]
 
 #define kMessageKey @"message"
 
@@ -21,7 +21,7 @@
 #define kNotFoundStatusCode 404
 #define kBadRequestStatusCode 400
 
-#define kServerConnectionFailedMessage @"The Classy server could not be reached."
+#define kServerConnectionFailedMessage @"The Wigo server could not be reached."
 
 #define kNoInternetConnectionMessage   @"The internet connection appears to be offline."
 #define kServerTimeoutMessage          @"Timeout occured."

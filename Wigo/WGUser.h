@@ -88,8 +88,22 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(BOOL) isCurrentUser;
 
+-(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler;
+-(void) untap:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void) sendInvites:(NSDictionary *)numbers withHandler:(BoolResultBlock)handler;
+-(void) unblock:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void) block:(WGUser *)user withType:(NSNumber *)type andHandler:(BoolResultBlock)handler;
 
--(void) login:(WGUserResultBlock)handler;
+-(void) goingOut:(BoolResultBlock)handler;
+-(void) goingToEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler;
+
+-(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler;
+-(void) resendVerificationEmail:(BoolResultBlock) handler;
+-(void) login:(BoolResultBlock)handler;
+-(void) signup:(BoolResultBlock)handler;
 
 @end

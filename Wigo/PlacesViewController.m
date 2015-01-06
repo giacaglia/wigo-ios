@@ -114,7 +114,22 @@ int firstIndexOfNegativeEvent;
     // Hack to set the user key
     [WGProfile setCurrentUser:[WGUser serialize:@{ @"key" : @"0068HVzaTEuLVHASiUk7uaeu3i" }]];
     
-    [WGEvent get:^(WGCollection *collection, NSError *error) {
+    [WGProfile reload:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            return;
+        }
+        [WGProfile currentUser].firstName = [[WGProfile currentUser].firstName stringByAppendingString:@"1"];
+        [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
+            NSLog(@"%@", [WGProfile currentUser].firstName);
+        }];
+    }];
+    
+    /* [WGEvent get:^(WGCollection *collection, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             return;
@@ -122,10 +137,10 @@ int firstIndexOfNegativeEvent;
         
         for (WGEvent *event in collection) {
             NSLog(@"Event: %@", event.id);
-            /* for (WGEventAttendee *attendee in event.attendees) {
+            for (WGEventAttendee *attendee in event.attendees) {
                 NSLog(@"Attendee: %@ %@", attendee.user.firstName, attendee.user.lastName);
                 NSLog(@"Event from Attendee: %@", attendee.user.isAttending.name);
-            }; */
+            };
             [event getMessages:^(WGCollection *collection, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
@@ -139,7 +154,7 @@ int firstIndexOfNegativeEvent;
                 };
             }];
         }
-    }];
+    }]; */
 }
 
 

@@ -200,9 +200,9 @@ static WGProfile *currentUser = nil;
     NSDate *currentDay = [self.datesAccessed firstObject];
     
     for (NSDate *date in self.datesAccessed) {
-        if ([self isSameDayWithDate:currentDay andDate:date]) {
+        if ([currentDay isSameDayWithDate:date]) {
             // Don't count this as a day in a row
-        } else if ([self isNextDayWithDate:currentDay andDate:date]) {
+        } else if ([currentDay isNextDayWithDate:date]) {
             // This is the next day, so set the current day to this date
             dayCount += 1;
         } else {
@@ -217,27 +217,25 @@ static WGProfile *currentUser = nil;
     return NO;
 }
 
-- (BOOL) isSameDayWithDate:(NSDate*)date1 andDate:(NSDate*)date2 {
-    NSCalendar* calendar = [NSCalendar currentCalendar];
-    
-    unsigned unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit;
-    NSDateComponents* comp1 = [calendar components:unitFlags fromDate:date1];
-    NSDateComponents* comp2 = [calendar components:unitFlags fromDate:date2];
-    
-    return [comp1 day] == [comp2 day] &&
-    [comp1 month] == [comp2 month] &&
-    [comp1 year]  == [comp2 year];
-}
-
-- (BOOL) isNextDayWithDate:(NSDate*)date1 andDate:(NSDate*)date2 {
-    NSCalendar* calendar = [NSCalendar currentCalendar];
-    
-    NSDateComponents *differenceDateComponents = [calendar
-                                                  components:NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekOfYearCalendarUnit|NSDayCalendarUnit |NSMinuteCalendarUnit
-                                                  fromDate:date1
-                                                  toDate:date2
-                                                  options:0];
-    return [differenceDateComponents day] == 1;
++(void) reload:(BoolResultBlock)handler {
+    [WGApi get:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        @try {
+            [WGProfile setCurrentUser:[WGUser serialize:jsonResponse]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
 }
 
 @end

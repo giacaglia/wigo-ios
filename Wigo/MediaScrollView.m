@@ -11,6 +11,7 @@
 #import "EventMessagesConstants.h"
 #import "IQMediaCaptureController.h"
 #import "AWSUploader.h"
+#import "WGEventMessage.h"
 
 @interface MediaScrollView() {}
 @property (nonatomic, strong) NSMutableArray *pageViews;

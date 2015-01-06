@@ -73,7 +73,7 @@
 }
 
 
--(void) save:(WGObjectResultBlock)handler {
+-(void) save:(BoolResultBlock)handler {
     NSMutableDictionary *properties = (NSMutableDictionary *) [self modifiedDictionary];
     
     NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
@@ -85,9 +85,8 @@
         }
         
         NSError *dataError;
-        WGObject *object;
         @try {
-            object = [[self class] serialize:jsonResponse];
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
             [self.modifiedKeys removeAllObjects];
         }
         @catch (NSException *exception) {
@@ -96,12 +95,12 @@
             dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(object, dataError);
+            handler(dataError == nil, dataError);
         }
     }];
 }
 
--(void) create:(WGObjectResultBlock)handler {
+-(void) create:(BoolResultBlock)handler {
     NSString *classURL = [NSString stringWithFormat:@"%@s/", self.className];
     
     [WGApi post:classURL withParameters:self.parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
@@ -111,9 +110,8 @@
         }
         
         NSError *dataError;
-        WGObject *object;
         @try {
-            object = [[self class] serialize:jsonResponse];
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
             [self.modifiedKeys removeAllObjects];
         }
         @catch (NSException *exception) {
@@ -122,7 +120,7 @@
             dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(object, dataError);
+            handler(dataError == nil, dataError);
         }
     }];
 }

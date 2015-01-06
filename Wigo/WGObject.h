@@ -39,9 +39,9 @@ typedef void (^BoolResultBlock)(BOOL success, NSError *error);
 -(void) setObject:(id)object forKey:(id<NSCopying>)key;
 -(id) objectForKey:(NSString *)key;
 
--(void) save:(WGObjectResultBlock)handler;
+-(void) save:(BoolResultBlock)handler;
 -(void) remove:(BoolResultBlock)handler;
 +(void) get:(WGCollectionResultBlock)handler;
--(void) create:(WGObjectResultBlock)handler;
+-(void) create:(BoolResultBlock)handler;
 
 @end
