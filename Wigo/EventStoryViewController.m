@@ -144,7 +144,7 @@
         self.goHereButton.enabled = NO;
     }
     else {
-        if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+        if ([self.event eventID] && [[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
             self.inviteButton.hidden = NO;
             self.inviteButton.enabled = YES;
         }

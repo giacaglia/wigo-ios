@@ -46,6 +46,7 @@
 - (void)notificationHighlightPage:(NSNotification *) notification {
     NSDictionary *userInfo = [notification userInfo];
     NSNumber *pageNumber = (NSNumber *)[userInfo objectForKey:@"page"];
+    NSLog(@"here2");
     [self highlightCellAtPage:[pageNumber integerValue]];
 }
 
@@ -58,6 +59,7 @@
         self.currentActiveCell = nil;
     }
     
+    NSLog(@"here3");
     [self highlightCellAtPage:[self.index intValue]];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
 }
@@ -139,7 +141,7 @@
         [cell setIsActive: YES];
         
         self.currentActiveCell = indexPath;
-        
+        NSLog(@"here4");
         [self highlightCellAtPage:indexPath.row ];
     }
 }
@@ -307,6 +309,7 @@
         width = sizeOfEachFaceCell;
     }
     NSInteger page = [self getPageForScrollView:scrollView toLeft:leftBoolean];
+    NSLog(@"here");
     [self highlightCellAtPage:page];
 }
 
@@ -320,7 +323,7 @@
         CGFloat pageWidth = sizeOfEachFaceCell; // you need to have a **iVar** with getter for scrollView
         fractionalPage = (self.facesCollectionView.contentOffset.x + sizeOfEachFaceCell) / pageWidth;
     }
-    
+    NSLog(@"fractional page: %f", fractionalPage);
     NSInteger page;
     if (leftBoolean) {
         if (fractionalPage - floor(fractionalPage) < 0.8) {
@@ -342,8 +345,10 @@
 }
 
 - (void)highlightCellAtPage:(NSInteger)page {
+    NSLog(@"first page %ld", (long)page);
     page = MAX(page, 0);
     page = MIN(page, self.eventMessages.count - 1);
+    NSLog(@"second page %ld", (long)page);
     [self.mediaScrollView scrolledToPage:(int)page];
     int sizeOfCell =  ([[UIScreen mainScreen] bounds].size.width - 20)/3;
     
