@@ -35,6 +35,7 @@ typedef enum
 @property (nonatomic, strong) UIButton *goHereButton;
 @property (nonatomic, strong) EventConversationViewController *conversationViewController;
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
+- (void)presentFirstTimeGoingToEvent;
 @end
 
 @interface StoryFlowLayout : UICollectionViewFlowLayout

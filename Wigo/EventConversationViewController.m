@@ -143,9 +143,9 @@
     }
 }
 
-- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell {
-#warning GUILIANO FIX ME
-}
+//- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell {
+//#warning GUILIANO FIX ME
+//}
 - (void)focusOnContent {
     if (!self.facesHidden) {
         [UIView animateWithDuration:0.5 animations:^{

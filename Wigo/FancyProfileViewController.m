@@ -917,7 +917,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:indexPath.row];
             User *user = [[User alloc] initWithDictionary:[notification fromUser]];
            
-            if ([[notification type] isEqualToString:@"follow"] || [[notification type] isEqualToString:@"follow.accepted"]) {
+            if ([notification.type isEqualToString:@"follow"] || [notification.type isEqualToString:@"follow.accepted"] || [notification.type isEqualToString:@"facebook.follow"]) {
                 FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
                 [fancyProfileViewController setStateWithUser:user];
                 fancyProfileViewController.eventsParty = self.eventsParty;

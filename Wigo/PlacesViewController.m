@@ -82,6 +82,7 @@
 @end
 
 BOOL fetchingEventAttendees;
+BOOL fetchingUserInfo;
 BOOL shouldAnimate;
 BOOL presentedMobileContacts;
 NSNumber *page;
@@ -97,9 +98,12 @@ int firstIndexOfNegativeEvent;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchUserInfo) name:@"fetchUserInfo" object:nil];
+    
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
+    fetchingUserInfo = NO;
     fetchingEventAttendees = NO;
     shouldAnimate = NO;
     presentedMobileContacts = NO;
@@ -394,6 +398,7 @@ int firstIndexOfNegativeEvent;
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
     [_placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
+    _placesTableView.backgroundColor = RGB(241, 241, 241);
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _yPositionOfWhereSubview = 280;
     [self addRefreshToScrollView];
@@ -432,7 +437,6 @@ int firstIndexOfNegativeEvent;
     [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
     [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     [self goOutToEventNumber:[NSNumber numberWithInt:(int)buttonSender.tag]];
-//    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
 }
 
 - (void)goOutToEventNumber:(NSNumber*)eventID {
@@ -1467,7 +1471,8 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) fetchUserInfo {
-    if ([[Profile user] key]) {
+    if (!fetchingUserInfo && [[Profile user] key]) {
+        fetchingUserInfo = YES;
         [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if ([[jsonResponse allKeys] containsObject:@"status"]) {
@@ -1482,6 +1487,7 @@ int firstIndexOfNegativeEvent;
                     [Profile setUser:user];
                     [self initializeNavigationBar];
                 }
+                fetchingUserInfo = NO;
             });
         }];
     }
@@ -1529,7 +1535,9 @@ int firstIndexOfNegativeEvent;
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView withHandler:^{
+    [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView
+                           withBackgroundColor:RGB(241, 241, 241)
+                                   withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];
     }];
