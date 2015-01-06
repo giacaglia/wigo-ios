@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ProfileViewController.h"
+#import "FancyProfileViewController.h"
 
-@interface FollowRequestsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface FollowRequestsViewController : UITableViewController
 
-@property ProfileViewController *profileViewController;
+@property FancyProfileViewController *profileViewController;
 
 @end

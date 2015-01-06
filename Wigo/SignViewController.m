@@ -9,7 +9,6 @@
 #import "Globals.h"
 
 #import "SignViewController.h"
-#import "MainViewController.h"
 #import "OnboardViewController.h"
 #import "BatteryViewController.h"
 #import "KeychainItemWrapper.h"
@@ -69,14 +68,14 @@
 }
 
 - (void)showOnboard {
-    BOOL showedOnboardView = [[NSUserDefaults standardUserDefaults] boolForKey:@"showedOnboardView"];
-    if (showedOnboardView) {
+//    BOOL showedOnboardView = [[NSUserDefaults standardUserDefaults] boolForKey:@"showedOnboardView"];
+//    if (showedOnboardView) {
         [self getFacebookTokensAndLoginORSignUp];
-    }
-    else {
-        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showedOnboardView"];
-    }
+//    }
+//    else {
+//        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
+//        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showedOnboardView"];
+//    }
 }
 
 - (void) changeAlertToNotShown {
@@ -170,7 +169,7 @@
                               if (!foundProfilePicturesAlbum) {
                                   _fetchingProfilePictures = NO;
                                   NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
-                                  [profilePictures addObject:_profilePic];
+                                  [profilePictures addObject:@{@"url": _profilePic}];
                                   [self saveProfilePictures:profilePictures];
                               }
                           }];
@@ -226,7 +225,7 @@
                                   }
                                 }
                                 if ([profilePictures count] == 0) {
-                                    [profilePictures addObject:@"https://api.wigo.us/static/img/wigo_profile_gray.png"];
+                                    [profilePictures addObject:@{@"url": @"https://api.wigo.us/static/img/wigo_profile_gray.png"}];
                                 }
                                 [self saveProfilePictures:profilePictures];
                           }];
@@ -318,10 +317,6 @@
         }
 
     }
-//    else if ([[[error userInfo] allKeys] containsObject:@"NSLocalizedFailureReason"]) {
-//        if ([[[error userInfo] objectForKey:@"NSLocalizedFailureReason"] isEqualToString:@"com.facebook.sdk:SystemLoginDisallowedWithoutError"])
-//            [self showErrorLoginFailed];
-//    }
     else {
         [self handleAuthError:error];
     }

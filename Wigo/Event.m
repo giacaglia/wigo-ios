@@ -38,8 +38,17 @@
 
 #pragma mark - Property methods
 
+- (BOOL)containsHighlight {
+    return [[_proxy allKeys] containsObject:@"highlight"] ? YES : NO;
+}
+
 - (NSNumber *)eventID {
     return (NSNumber *)[_proxy objectForKey:@"id"];
+}
+
+- (NSString *) expiresDate {
+    NSString *dateString = [_proxy objectForKey: @"expires"];
+    return dateString;
 }
 
 - (void)setEventID:(NSNumber *)eventID {
@@ -54,6 +63,17 @@
 - (void)setNumberAttending:(NSNumber *)numberAttending {
     if ([[_proxy allKeys] containsObject:@"num_attending"]) {
         [_proxy setObject:numberAttending forKey:@"num_attending"];
+    }
+}
+
+- (NSNumber *)numberInvited {
+    if ([[_proxy allKeys] containsObject:@"num_invites"]) return [_proxy objectForKey:@"num_invites"];
+    return @0;
+}
+
+- (void)setNumberInvited:(NSNumber *)numberInvited {
+    if ([[_proxy allKeys] containsObject:@"num_invites"]) {
+        [_proxy setObject:numberInvited forKey:@"num_invites"];
     }
 }
 

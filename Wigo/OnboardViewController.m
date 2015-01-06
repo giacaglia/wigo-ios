@@ -38,16 +38,16 @@ BOOL runningAnimations;
     arrayOfLabels = [NSMutableArray new];
     runningAnimations = NO;
     [self initializeScrollView];
-    [self initializeTitle];
-    [self initializeAnimatedGif];
-    [self initializePageControl];
+//    [self initializeTitle];
+//    [self initializeAnimatedGif];
+//    [self initializePageControl];
     [self initializeGetStartedButton];
 }
 
 - (void)initializeScrollView {
     scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 50)];
     scrollView.delegate = self;
-    scrollView.contentSize = CGSizeMake(self.view.frame.size.width * 4, self.view.frame.size.height - 50);
+    scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height - 50);
     scrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:scrollView];
 }
@@ -91,7 +91,7 @@ BOOL runningAnimations;
     UIView *containerTitleLabel = [[UIView alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 80)];
     containerTitleLabel.clipsToBounds = YES;
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width - 30, 80)];
-    titleLabel.text = @"See who at your school\nis going out tonight";
+    titleLabel.text = @"See who at your school\nis going out";
     [self formatLabel:titleLabel];
     [scrollView addSubview:containerTitleLabel];
     [containerTitleLabel addSubview:titleLabel];
@@ -130,35 +130,35 @@ BOOL runningAnimations;
 }
 
 - (void)initializeGetStartedButton {
-    UILabel *titleLabel4 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 130, self.view.frame.size.width - 30, 100)];
+    UILabel *titleLabel4 = [[UILabel alloc] initWithFrame:CGRectMake(15, 130, self.view.frame.size.width - 30, 100)];
     titleLabel4.text = @"NO SKETCHY RANDOS";
     [self formatLabel:titleLabel4];
     titleLabel4.textColor = [FontProperties getOrangeColor];
     titleLabel4.font = [FontProperties mediumFont:21.0f];
-    titleLabel4.hidden = YES;
+//    titleLabel4.hidden = YES;
     [scrollView addSubview:titleLabel4];
     [arrayOfLabels addObject:titleLabel4];
     
-    UILabel *titleLabel5 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 200, self.view.frame.size.width - 30, 100)];
+    UILabel *titleLabel5 = [[UILabel alloc] initWithFrame:CGRectMake(15, 200, self.view.frame.size.width - 30, 100)];
     titleLabel5.text = @"NO ADMINISTRATION";
     [self formatLabel:titleLabel5];
     titleLabel5.textColor = [FontProperties getOrangeColor];
     titleLabel5.font = [FontProperties mediumFont:21.0f];
-    titleLabel5.hidden = YES;
+//    titleLabel5.hidden = YES;
     [scrollView addSubview:titleLabel5];
     [arrayOfLabels addObject:titleLabel5];
     
-    UILabel *titleLabel6 = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 15, 270, self.view.frame.size.width - 30, 100)];
+    UILabel *titleLabel6 = [[UILabel alloc] initWithFrame:CGRectMake(15, 270, self.view.frame.size.width - 30, 100)];
     titleLabel6.text = @"NO ADULT SUPERVISION";
     [self formatLabel:titleLabel6];
     titleLabel6.textColor = [FontProperties getOrangeColor];
     titleLabel6.font = [FontProperties mediumFont:21.0f];
-    titleLabel6.hidden = YES;
+//    titleLabel6.hidden = YES;
     [scrollView addSubview:titleLabel6];
     [arrayOfLabels addObject:titleLabel6];
     
-    getStartedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width * 3 + 40, self.view.frame.size.height, self.view.frame.size.width - 80, 60)];
-    getStartedButton.hidden = YES;
+    getStartedButton = [[UIButton alloc] initWithFrame:CGRectMake(40, self.view.frame.size.height - 120, self.view.frame.size.width - 80, 60)];
+//    getStartedButton.hidden = YES;
     [getStartedButton setTitle:@"GET STARTED" forState:UIControlStateNormal];
     [getStartedButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
     getStartedButton.titleLabel.font = [FontProperties getBigButtonFont];
@@ -291,10 +291,10 @@ BOOL runningAnimations;
                     runningAnimations = NO;
                     if (weakIndex < [arrayOfLabels count]) [self animateLabelAtIndex:weakIndex];
                     else {
-                        getStartedButton.hidden = NO;
-                        [UIView animateWithDuration:0.7 animations:^{
-                            getStartedButton.frame = CGRectMake(self.view.frame.size.width * 3 + 40, self.view.frame.size.height - 120, self.view.frame.size.width - 80, 60);
-                        }];
+//                        getStartedButton.hidden = NO;
+//                        [UIView animateWithDuration:0.7 animations:^{
+//                            getStartedButton.frame = CGRectMake(40, self.view.frame.size.height - 120, self.view.frame.size.width - 80, 60);
+//                        }];
                     }
                 }];
             }];

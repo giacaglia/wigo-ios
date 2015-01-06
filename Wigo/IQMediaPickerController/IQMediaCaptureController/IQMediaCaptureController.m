@@ -23,13 +23,13 @@
 
 
 #import "IQMediaCaptureController.h"
-#import "IQMediaView.h"
 #import "IQFileManager.h"
 #import "IQPartitionBar.h"
 #import "IQBottomContainerView.h"
 #import "IQMediaPickerControllerConstants.h"
 #import "Globals.h"
 #import "LLACircularProgressView.h"
+#import "IQMediaView.h"
 
 #define kVideoTimeoutMax 8.0
 
@@ -62,6 +62,7 @@
 
 @property(nonatomic, strong, readonly) UIView *settingsContainerView;
 @property(nonatomic, strong, readonly) UIButton *buttonFlash, *buttonToggleCamera;
+@property(nonatomic, strong) UIImageView *cameraIconImageView;
 
 @property(nonatomic, strong, readonly) IQBottomContainerView *bottomContainerView;
 @property(nonatomic, strong, readonly) IQPartitionBar *partitionBar;
@@ -202,19 +203,17 @@
             for (UIView *subview in self.buttonFlash.subviews) {
                 if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
             }
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 16, 26)];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 16, 26)];
             imageView.image = [UIImage imageNamed:@"flashOn"];
             [self.buttonFlash addSubview:imageView];
-            self.buttonFlash.alpha = 1.0f;
         }
         else if ([self session].fakeFlashMode == AVCaptureFlashModeOff) {
             for (UIView *subview in self.buttonFlash.subviews) {
                 if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
             }
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 26, 31)];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 26, 31)];
             imageView.image = [UIImage imageNamed:@"flashOff"];
             [self.buttonFlash addSubview:imageView];
-            self.buttonFlash.alpha = 0.3f;
         }
         self.buttonFlash.enabled = YES;
         
@@ -426,10 +425,10 @@
     }
     self.buttonToggleCamera.clipsToBounds = YES;
     [UIView animateWithDuration:.15f animations:^{
-        self.buttonToggleCamera.imageView.transform = CGAffineTransformMakeScale(1.5,1.5);
+        self.cameraIconImageView.transform = CGAffineTransformMakeScale(1.5,1.5);
     }completion:^(BOOL finished) {
         [UIView animateWithDuration:.15f animations:^{
-            self.buttonToggleCamera.imageView.transform = CGAffineTransformMakeScale(1.0,1.0);
+            self.cameraIconImageView.transform = CGAffineTransformMakeScale(1.0,1.0);
         }];
     }];
 }
@@ -571,7 +570,7 @@
     {
         if ([self session].captureMode == IQCameraCaptureModePhoto)
         {
-            [self setFrontFlash];
+            [self takePictureWithFrontFlash];
             [UIView animateWithDuration:0.2 delay:0 options:(UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut) animations:^{
                 [self.buttonCapture setImage:[UIImage new] forState:UIControlStateNormal];
                 for (UIView *subview in self.buttonCancel.subviews) {
@@ -676,7 +675,7 @@
     }
 }
 
-- (void)setFrontFlash {
+- (void)takePictureWithFrontFlash {
     if ([self session].cameraPosition == AVCaptureDevicePositionFront &&
         [self session].fakeFlashMode == AVCaptureFlashModeOn) {
         CGFloat oldBrightness = [UIScreen mainScreen].brightness;
@@ -806,7 +805,7 @@
             }
         }
         [self.buttonCancel setTitle:nil forState:UIControlStateNormal];
-        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 24, 36, 36)];
         cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
         [self.buttonCancel addSubview:cancelCamera];
         
@@ -979,7 +978,7 @@
 - (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
     if (![self session].isSessionRunning) {
         if (![self.textField isFirstResponder]) {
-            labelPoint.y = MIN(MAX(labelPoint.y, 110), 460);
+            labelPoint.y = MIN(MAX(labelPoint.y, 125), 410);
             self.textField.hidden = YES;
             self.textLabel.hidden = NO;
             self.textLabel.text = self.textField.text;
@@ -995,6 +994,7 @@
 
 -(void)mediaView:(IQMediaView*)mediaView translate:(CGPoint)translationPoint
 {
+//    NSLog(@"translate");
     if ([[self session] isSessionRunning]){
         UIView *topSuperView = (UIView *)(UIView *)(UIView *)(UIView *)(UIView *)self.view.superview.superview.superview.superview.superview.superview;
         if ([topSuperView isKindOfClass:[UIScrollView class]]) {
@@ -1011,6 +1011,7 @@
 }
 
 - (void)mediaView:(IQMediaView *)mediaView stopTranslateAt:(CGPoint)translatePoint {
+//    NSLog(@"stop translate");
     if ([self session].isSessionRunning) {
         UIView *topSuperView = (UIView *)(UIView *)(UIView *)(UIView *)(UIView *)self.view.superview.superview.superview.superview.superview.superview;
         if ([topSuperView isKindOfClass:[UIScrollView class]]) {
@@ -1020,7 +1021,7 @@
                 self.startXPoint = scrollView.contentOffset.x;
             }
             if (translatePoint.x > 0) {
-                float fractionalPage = (self.startXPoint - translatePoint.x)/320;
+                float fractionalPage = (self.startXPoint - translatePoint.x)/[[UIScreen mainScreen] bounds].size.width;
                 int page;
                 if (fractionalPage - floor(fractionalPage) < 0.8) {
                     page = floor(fractionalPage);
@@ -1174,6 +1175,10 @@ replacementString:(NSString *)string {
     }
 }
 
+-(float)effectiveScale {
+    return _mediaView.effectiveScale;
+}
+
 #pragma mark - IQPartitionBar Delegate
 -(void)partitionBar:(IQPartitionBar*)bar didSelectPartitionIndex:(NSUInteger)index
 {
@@ -1214,7 +1219,7 @@ replacementString:(NSString *)string {
 {
     if (_settingsContainerView == nil)
     {
-        _settingsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 320, 44)];
+        _settingsContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 100)];
         [_settingsContainerView addSubview:self.buttonToggleCamera];
         [_settingsContainerView addSubview:self.buttonFlash];
     }
@@ -1227,7 +1232,7 @@ replacementString:(NSString *)string {
 {
     if (_buttonFlash == nil)
     {
-        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(20, 20, 52, 62)];
+        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 72, 72)];
         [_buttonFlash addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -1239,8 +1244,10 @@ replacementString:(NSString *)string {
 {
     if (_buttonToggleCamera == nil)
     {
-        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 60, 0, 73, 60)];
-        [_buttonToggleCamera setImage:[UIImage imageNamed:@"cameraIcon"] forState:UIControlStateNormal];
+        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 80, 80)];
+        self.cameraIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(23, 20, 37, 30)];
+        self.cameraIconImageView.image = [UIImage imageNamed:@"cameraIcon"];
+        [_buttonToggleCamera addSubview:self.cameraIconImageView];
         [_buttonToggleCamera addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -1252,7 +1259,7 @@ replacementString:(NSString *)string {
 {
     if (_bottomContainerView == nil)
     {
-        _bottomContainerView = [[IQBottomContainerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds)-90, CGRectGetWidth(self.view.bounds), 90)];
+        _bottomContainerView = [[IQBottomContainerView alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.view.bounds) - 90, CGRectGetWidth(self.view.bounds), 90)];
         [_bottomContainerView setTopContentView:self.partitionBar];
         [_bottomContainerView setLeftContentView:self.buttonCancel];
         [_bottomContainerView setMiddleContentView:self.buttonCapture];
@@ -1289,7 +1296,7 @@ replacementString:(NSString *)string {
     {
         _buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
         [_buttonCancel.titleLabel setFont:[UIFont boldSystemFontOfSize:18.0]];
-        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 36, 36)];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(0, 24, 36, 36)];
         cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
         [_buttonCancel addSubview:cancelCamera];
         [_buttonCancel addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];

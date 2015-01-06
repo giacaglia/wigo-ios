@@ -12,7 +12,9 @@
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
 
-@interface ChatViewController ()
+@interface ChatViewController () {
+    UIView *_lineView;
+}
 
 @property UITableView *tableViewOfPeople;
 @property Party * messageParty;
@@ -38,33 +40,34 @@ UIButton *newChatButton;
             }
         }
     }
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
-    lineView.backgroundColor = RGBAlpha(244, 149, 45, 0.1f);
-    [self.navigationController.navigationBar addSubview:lineView];
+    
     [WiGoSpinnerView addDancingGToCenterView:self.view];
     [self initializeNewChatButton];
     [self initializeTableOfChats];
     [self initializeLeftBarButton];
-
+    [self initializeRightBarButtonItem];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     [self fetchFirstPageMessages];
     
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
-    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
+//    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
+    
+    self.navigationItem.title = @"Chats";
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+//    self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
+    
+    _lineView= [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
+    _lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
+
+    [self.navigationController.navigationBar addSubview: _lineView];
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Chat View"];
-    
-    self.navigationItem.title = @"Chats";
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
-    
 
-    [self initializeRightBarButtonItem];
 }
 
 - (void) goBack {
@@ -84,6 +87,8 @@ UIButton *newChatButton;
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    [_lineView removeFromSuperview];
 }
 
 - (void)scrollUp {
@@ -119,7 +124,7 @@ UIButton *newChatButton;
 }
 
 - (void)initializeTableOfChats {
-    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
+    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     _tableViewOfPeople.delegate = self;
     _tableViewOfPeople.dataSource = self;
     _tableViewOfPeople.backgroundColor = [UIColor clearColor];

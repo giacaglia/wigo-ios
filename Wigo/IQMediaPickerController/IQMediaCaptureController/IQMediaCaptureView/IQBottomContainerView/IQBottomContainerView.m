@@ -48,7 +48,7 @@
         leftContainerView.backgroundColor = [UIColor clearColor];
         [self addSubview:leftContainerView];
         
-        middleContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
+        middleContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 10, 70, 70)];
         middleContainerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
         center = middleContainerView.center;
         center.x = CGRectGetMidX(frame);

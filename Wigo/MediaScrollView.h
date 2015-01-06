@@ -13,8 +13,9 @@
 #import "Delegate.h"
 
 @protocol MediaScrollViewDelegate
-- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell;
 - (void)focusOnContent;
+@optional
+- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell;
 @end
 
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate, IQMediaPickerControllerDelegate>
@@ -25,8 +26,11 @@
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
 @property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
+@property (nonatomic, assign) int minPage;
 @property (nonatomic, strong) NSNumber *index;
+@property (nonatomic, assign) int maxPage;
 @property (nonatomic, assign) BOOL isFocusing;
+@property (nonatomic, assign) BOOL isPeeking;
 - (void)closeView;
 -(void)scrolledToPage:(int)page;
 - (void)removeMediaAtPage:(int)page;
@@ -56,6 +60,8 @@
 @property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
 - (void)focusOnContent;
 @property (nonatomic, assign) BOOL isFocusing;
+@property (nonatomic, assign) BOOL isPeeking;
+@property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @end
 
 
@@ -66,6 +72,7 @@
 @property (nonatomic, strong) UIButton *actionButton;
 @property (nonatomic, strong) UIButton *avoidAction;
 @property (nonatomic, strong) UILabel *blackBackgroundLabel;
+@property (nonatomic, strong) UIImageView *cameraAccessImageView;
 @end
 
 @interface ImageCell : MediaCell

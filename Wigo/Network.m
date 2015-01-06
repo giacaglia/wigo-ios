@@ -45,7 +45,7 @@
 + (void)sendAsynchronousHTTPMethod:(NSString *)httpMethod
                        withAPIName:(NSString *)apiName
                        withHandler:(QueryResult)handler
-                       withOptions:(NSDictionary *)options
+                       withOptions:(id)options
 {
     Query *query = [[Query alloc] init];
     [query queryWithClassName:apiName];
@@ -111,13 +111,6 @@
     [query setValue:[user objectForKey:@"id"] forKey:@"follow"];
     [query sendAsynchronousHTTPMethod:POST withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
 
-}
-
-+ (void)acceptFollowRequestForUser:(User *)user {
-    Query *query = [[Query alloc] init];
-    [query queryWithClassName:[NSString stringWithFormat:@"follows/accept?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]]];
-    [query setProfileKey:[[Profile user] key]];
-    [query sendAsynchronousHTTPMethod:GET withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
 }
 
 + (void)rejectFollowRequestForUser:(User *)user {

@@ -13,7 +13,7 @@
 #import "IQMediaPickerController.h"
 #import "Delegate.h"
 
-@interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, MediaScrollViewDelegate, EventConversationDelegate>
+@interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, EventConversationDelegate>
 - (void)highlightCellAtPage:(NSInteger)page;
 @property (nonatomic, strong) Event *event;
 @property (nonatomic, strong) NSMutableArray *eventMessages;
@@ -25,10 +25,10 @@
 @property (nonatomic, assign) BOOL isFocusing;
 @property (nonatomic, strong) UILabel *postingLabel;
 @property (nonatomic, strong) UIView *loadingBanner;
+@property (nonatomic, assign) BOOL isPeeking;
 @end
 
 @interface FaceCell : UICollectionViewCell
-
 - (void) resetToInactive;
 - (void)setToActiveWithNoAnimation;
 - (void)updateUIToRead:(BOOL)read;
@@ -36,15 +36,13 @@
 @property (nonatomic, assign) BOOL leftLineEnabled;
 
 @property (nonatomic, assign) BOOL isActive;
+@property (nonatomic, strong) UIView *faceAndMediaTypeView;
 @property (nonatomic, strong) UIImageView *faceImageView;
 @property (nonatomic, strong) UIImageView *mediaTypeImageView;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
-
 @property (nonatomic, strong) UIView *leftLine;
 @property (nonatomic, strong) UIView *rightLine;
-
-
 @end
 
 @interface FaceFlowLayout : UICollectionViewFlowLayout

@@ -88,7 +88,7 @@
         return @"is now following you";
     }
     else if ([[self type] isEqualToString:@"joined"]) {
-        return @"joined WiGo";
+        return @"joined Wigo";
     }
     else if ([[self type] isEqualToString:@"goingout"]) {
         return @"is going out";
@@ -101,7 +101,8 @@
 
 
 - (NSString *)type {
-    return [_proxy objectForKey:@"type"];
+    if ([[_proxy allKeys] containsObject:@"type"]) return [_proxy objectForKey:@"type"];
+    return nil;
 }
 
 - (void)setType:(NSString *)type {

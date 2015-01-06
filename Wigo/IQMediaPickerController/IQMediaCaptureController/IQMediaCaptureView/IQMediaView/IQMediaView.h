@@ -55,6 +55,9 @@
 @property(nonatomic, assign) CGPoint focusPointOfInterest;
 @property(nonatomic, assign) CGPoint exposurePointOfInterest;
 
+@property (assign) float beginGestureScale;
+@property (assign) float effectiveScale;
+
 @property(nonatomic, assign) IQMediaCaptureControllerCaptureMode captureMode;
 - (void)replayVideoAtPath:(NSURL *)url;
 - (void)stopReplayVideo;

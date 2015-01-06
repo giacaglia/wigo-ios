@@ -24,9 +24,10 @@ typedef enum
 @interface Party : NSObject
 
 @property OBJECT_TYPE objectType;
-@property NSMutableArray *objectArray;
+@property NSMutableArray *mutableObjectArray;
 @property NSDictionary *metaDictionary;
 
+@property (readonly) NSUInteger count;
 - (id)initWithObjectType:(OBJECT_TYPE)type;
 - (NSArray *)getObjectArray;
 - (NSArray *)getNameArray;

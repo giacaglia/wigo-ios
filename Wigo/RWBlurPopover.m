@@ -108,30 +108,34 @@
     return image;
 }
 
-- (void)prepareBlurredImage
-{
-    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+- (void)prepareBlurredImageWithViewController:(UIViewController *)viewController {
     
     // add a cover on top of rootViewController.view, to disable user interactions
-    self.coverView = [[UIView alloc] initWithFrame:rootViewController.view.bounds];
+    self.coverView = [[UIView alloc] initWithFrame:viewController.view.bounds];
     self.coverView.backgroundColor = [UIColor clearColor];
     UIImageView *coverImageView = [[UIImageView alloc] initWithFrame:self.coverView.bounds];
     coverImageView.backgroundColor = [UIColor clearColor];
     [self.coverView addSubview:coverImageView];
-    [rootViewController.view addSubview:self.coverView];
+    [viewController.view addSubview:self.coverView];
     
     if (![self shouldWorkOnThisDevice])
     {
         return;
     }
     
-    self.origImage = [self imageFromView:rootViewController.view];
+    self.origImage = [self imageFromView:viewController.view];
     coverImageView.image = self.origImage;
     
-    self.blurredImageView = [[UIImageView alloc] initWithFrame:rootViewController.view.bounds];
+    self.blurredImageView = [[UIImageView alloc] initWithFrame:viewController.view.bounds];
     self.blurredImageView.backgroundColor = [UIColor clearColor];
     self.blurredImageView.alpha = 0;
-    [rootViewController.view addSubview:self.blurredImageView];
+    [viewController.view addSubview:self.blurredImageView];
+}
+
+- (void)prepareBlurredImage
+{
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [self prepareBlurredImageWithViewController:rootViewController];
 }
 
 - (void)presentBlurredViewAnimated:(BOOL)animated
@@ -182,76 +186,83 @@
     }
 }
 
-- (void)presentViewController:(UIViewController *)viewController withFrame:(CGRect)frame {
-    [self prepareBlurredImage];
+- (void)presentViewController:(UIViewController *)viewController withFrame:(CGRect)frame fromViewController:(UIViewController *)fromViewController {
+    [self prepareBlurredImageWithViewController:fromViewController];
     [self presentBlurredViewAnimated:YES];
     
-    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
     self.contentViewController = viewController;
     
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
         self.contentViewController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [rootViewController presentViewController:self.contentViewController animated:YES completion:^{}];
+        [fromViewController presentViewController:self.contentViewController animated:YES completion:^{}];
     }
     else
     {
         self.contentViewController.view.frame = frame;
         
-        [rootViewController addChildViewController:self.contentViewController];
-        [rootViewController.view addSubview:self.contentViewController.view];
+        [fromViewController addChildViewController:self.contentViewController];
+        [fromViewController.view addSubview:self.contentViewController.view];
         
         [UIView animateWithDuration:0.4 animations:^{
             CGRect newRect = CGRectMake(10,
-            rootViewController.view.bounds.size.height,
-            rootViewController.view.bounds.size.width - 20,
-            frame.size.height
-            );
+                                        fromViewController.view.bounds.size.height,
+                                        fromViewController.view.bounds.size.width - 20,
+                                        frame.size.height
+                                        );
             newRect.origin.y -= (frame.origin.y + frame.size.height);
             self.contentViewController.view.frame = newRect;
         } completion:^(BOOL finished) {
-            [self.contentViewController didMoveToParentViewController:rootViewController];
+            [self.contentViewController didMoveToParentViewController:fromViewController];
         }];
     }
-    
 }
 
-- (void)presentViewController:(UIViewController *)viewController withOrigin:(CGFloat)origin andHeight:(CGFloat)height
-{
-    [self prepareBlurredImage];
-    [self presentBlurredViewAnimated:YES];
-
+- (void)presentViewController:(UIViewController *)viewController withFrame:(CGRect)frame {
     UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [self presentViewController:viewController withFrame:frame fromViewController:rootViewController];
+}
+
+- (void)presentViewController:(UIViewController *)viewController withOrigin:(CGFloat)origin andHeight:(CGFloat)height fromViewController:(UIViewController *)fromViewController {
+    [self prepareBlurredImageWithViewController:fromViewController];
+    [self presentBlurredViewAnimated:YES];
+    
     self.contentViewController = viewController;
     
- 
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
         self.contentViewController.modalPresentationStyle = UIModalPresentationFormSheet;
-        [rootViewController presentViewController:self.contentViewController animated:YES completion:^{}];
+        [fromViewController presentViewController:self.contentViewController animated:YES completion:^{}];
     }
     else
     {
         CGRect rect = CGRectMake(0,
-                                 rootViewController.view.bounds.size.height,
-                                 rootViewController.view.bounds.size.width,
+                                 fromViewController.view.bounds.size.height,
+                                 fromViewController.view.bounds.size.width,
                                  height
                                  );
         self.contentViewController.view.frame = rect;
         
-        [rootViewController addChildViewController:self.contentViewController];
-        [rootViewController.view addSubview:self.contentViewController.view];
+        [fromViewController addChildViewController:self.contentViewController];
+        [fromViewController.view addSubview:self.contentViewController.view];
         
         [UIView animateWithDuration:0.4 animations:^{
             CGRect newRect = rect;
             newRect.origin.y -= (origin + height);
             self.contentViewController.view.frame = newRect;
         } completion:^(BOOL finished) {
-            [self.contentViewController didMoveToParentViewController:rootViewController];
+            [self.contentViewController didMoveToParentViewController:fromViewController];
         }];
     }
-    
+
+}
+
+- (void)presentViewController:(UIViewController *)viewController withOrigin:(CGFloat)origin andHeight:(CGFloat)height
+{
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    [self presentViewController:viewController withOrigin:origin andHeight:height fromViewController:rootViewController];
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion

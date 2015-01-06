@@ -73,7 +73,8 @@
 /*!
  @deprecated use objectDescription instead
  */
-@property (retain, nonatomic) id                    description __attribute__ ((deprecated("use objectDescription instead")));
+#pragma GCC diagnostic ignored "-Wsemantic-issue"
+@property (copy, atomic) id                    description __attribute__ ((deprecated("use objectDescription instead")));
 
 /*!
  @abstract Typed access to the object's description property.

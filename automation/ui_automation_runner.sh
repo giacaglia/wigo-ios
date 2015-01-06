@@ -114,14 +114,20 @@ main() {
     fi
 
     # We're now calling the function that runs the actual instruments command:
+    # since Instruments DOESN'T return a distinguished exit status when the tests fail
+    # we have to capture the output and examine it for signs of failure.  This sucks.
+    tmp_output_file=$(mktemp -t test_automation)
     _run_automation_instrument ${TEST_APP_NAME} \
         ${JAVASCRIPT_TEST_FILES_DIRECTORY} \
         ${JAVASCRIPT_TEST_FILE_NAME} \
         ${simulator_path} \
         ${SIMULATOR_NAME_OR_DEVICE_UDID} \
-        ${TEST_RESULTS_OUTPUT_PATH}
-
+        ${TEST_RESULTS_OUTPUT_PATH} | tee ${tmp_output_file}
     _restore_prior_interal_field_separator
+    if grep --quiet 'Fail: ' ${tmp_output_file}; then
+      # echo "Fail found in '"${tmp_output_file}"'."
+      exit 1
+    fi
 }
 
 

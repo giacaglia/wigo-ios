@@ -32,7 +32,7 @@
 @end
 
 @implementation IQMediaPickerController
-
+@synthesize session;
 - (instancetype)init
 {
     self = [super init];

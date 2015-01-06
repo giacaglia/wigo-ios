@@ -9,7 +9,7 @@
 #import "ConversationViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
-#import "ProfileViewController.h"
+#import "FancyProfileViewController.h"
 
 @interface ConversationViewController ()
 
@@ -29,7 +29,7 @@
 
 NSNumber *page;
 BOOL fetching;
-ProfileViewController *profileViewController;
+FancyProfileViewController *profileViewController;
 BOOL didBeginEditing;
 
 @implementation ConversationViewController
@@ -64,17 +64,27 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 {
     [super viewDidLoad];
 
-    
-    // Title setup
-    self.title = [self.user fullName];
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    
+
+
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
     [self initializeScrollView];
     [self initializeTapHandler];
     [self initializeTextBox];
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
     
+    // Title setup
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    self.navigationController.navigationBar.barTintColor = [FontProperties getOrangeColor];
+    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [FontProperties getOrangeColor]}];
+    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[FontProperties getOrangeColor] forKey:NSForegroundColorAttributeName];
+    
+    self.title = [self.user fullName];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -166,8 +176,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     profileImageView.clipsToBounds = YES;
     [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]] imageArea:[self.user coverImageArea]];
     [profileButton addSubview:profileImageView];
-    [profileButton setShowsTouchWhenHighlighted:YES];
-    [profileButton addTarget:self action:@selector(profileSegue) forControlEvents:UIControlEventTouchUpInside];
+    [profileButton setShowsTouchWhenHighlighted:NO];
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.rightBarButtonItem = profileBarButton;
 }
@@ -180,11 +189,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                             withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
                             withOptions:options];
     [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)profileSegue {
-    profileViewController = [[ProfileViewController alloc] initWithUser:self.user];
-    [self.navigationController pushViewController:profileViewController animated:YES];
 }
 
 - (void) initializeTapHandler {
@@ -325,7 +329,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         [self.view addSubview:_viewForEmptyConversation];
         
         UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , self.view.frame.size.width, 30)];
-        everyDayLabel.text = @"Every day on WiGo is a new day.";
+        everyDayLabel.text = @"Start a new chat today.";
         everyDayLabel.textColor = [FontProperties getOrangeColor];
         everyDayLabel.textAlignment = NSTextAlignmentCenter;
         everyDayLabel.font = [FontProperties getBigButtonFont];

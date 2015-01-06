@@ -14,12 +14,15 @@
 @property NSString *name;
 @property NSNumber* eventID;
 @property NSNumber *numberAttending;
+@property NSNumber *numberInvited;
 @property NSNumber *numberOfMessages;
 
+- (BOOL)containsHighlight;
 - (id)initWithDictionary:(NSDictionary *)otherDictionary;
 - (void)addEventAttendees:(NSArray *)newEventAttendees;
 - (NSArray *)getEventAttendees;
 - (void)addUser:(User *)user;
 - (NSDictionary *)dictionary;
+- (NSString *) expiresDate;
 
 @end

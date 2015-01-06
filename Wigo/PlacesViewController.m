@@ -19,15 +19,23 @@
 #import "SignViewController.h"
 #import "SignNavigationViewController.h"
 #import "PeekViewController.h"
-#import "ReProfileViewController.h"
-
-#define sizeOfEachCell 180
-#define kEventCellName @"EventCell"
-#define kOldEventCellName @"OldEventCell"
-#define kHeaderOldEventCellName @"HeaderOldEventCell"
 #import "EventStoryViewController.h"
+#import "FancyProfileViewController.h"
+#import "FXBlurView.h"
 
-@interface PlacesViewController ()
+//#define sizeOfEachCell [[UIScreen mainScreen] bounds].size.width/1.6
+#define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
+
+#define kEventCellName @"EventCell"
+#define kHighlightOldEventCel @"HighlightOldEventCell"
+#define kOldEventCellName @"OldEventCell"
+#define kOldEventShowHighlightsCellName @"OldEventShowHighlightsCellName"
+
+@interface PlacesViewController () {
+    UIView *_dimView;
+    BOOL isLoaded;
+
+}
 
 @property UIView *whereAreYouGoingView;
 @property UITextField *whereAreYouGoingTextField;
@@ -58,15 +66,23 @@
 
 // Events Summary
 @property Party *eventsParty;
+@property Party *oldEventsParty;
 @property NSMutableArray *partyUserArray;
 
 // Go OUT Button
 @property UIButtonUngoOut *ungoOutButton;
 @property BOOL spinnerAtCenter;
 
+// Events By Days
+@property (nonatomic, strong) NSMutableArray *pastDays;
+@property (nonatomic, strong) NSMutableDictionary *dayToEventObjArray;
+
+//Go Elsewhere
+@property (nonatomic, strong) GoOutNewPlaceHeader *goElsewhereView;
 @end
 
 BOOL fetchingEventAttendees;
+BOOL fetchingUserInfo;
 BOOL shouldAnimate;
 BOOL presentedMobileContacts;
 NSNumber *page;
@@ -82,9 +98,12 @@ int firstIndexOfNegativeEvent;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchUserInfo) name:@"fetchUserInfo" object:nil];
+    
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
+    fetchingUserInfo = NO;
     fetchingEventAttendees = NO;
     shouldAnimate = NO;
     presentedMobileContacts = NO;
@@ -98,36 +117,41 @@ int firstIndexOfNegativeEvent;
             }
         }
     }
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
-    lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
-    [self.navigationController.navigationBar addSubview:lineView];
-    
+
     [self initializeFlashScreen];
 
     _spinnerAtCenter = YES;
-    [self initializeTapHandler];
     [self initializeWhereView];
-
-
 }
 
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
+
     [self initializeNotificationObservers];
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    
+    [self initializeNavigationBar];
+
+
+    if (!self.visitedProfile) {
+        self.eventOffsetDictionary = [NSMutableDictionary new];
+    }
+    self.visitedProfile = NO;
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+}
 
-
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:UIColor.whiteColor] forBarMetrics:UIBarMetricsDefault];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [EventAnalytics tagEvent:@"Where View"];
-
+  
     [self.view endEditing:YES];
-    [self initializeNavigationBar];
     [self fetchIsThereNewPerson];
     if (shouldReloadEvents) {
         [self fetchEventsFirstPage];
@@ -135,47 +159,99 @@ int firstIndexOfNegativeEvent;
     else {
         shouldReloadEvents = YES;
     }
+    [self shouldShowCreateButton];
+
 }
 
+- (BOOL) shouldShowCreateButton {
+    if ([self isPeeking]) {
+        self.goElsewhereView.hidden = YES;
+        self.goElsewhereView.plusButton.enabled = NO;
+        self.goingSomewhereButton.hidden = YES;
+        self.goingSomewhereButton.enabled = NO;
+        return NO;
+    }
+    else {
+        self.goElsewhereView.hidden = NO;
+        //self.goElsewhereView.plusButton.hidden = NO;
+        self.goElsewhereView.plusButton.enabled = YES;
+        //self.goingSomewhereButton.hidden = NO;
+        self.goingSomewhereButton.enabled = YES;
+        return YES;
+    }
+}
 
+- (BOOL) isPeeking {
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (UIImage *)imageWithColor:(UIColor *)color
+{
+    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
 
 - (void) initializeNavigationBar {
-    self.navigationItem.rightBarButtonItem = nil;
-    
-    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
-    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[[Profile user] coverImageArea]];
-    [profileButton addSubview:profileImageView];
-    [profileButton addTarget:self action:@selector(profileSegue)
-            forControlEvents:UIControlEventTouchUpInside];
-    [profileButton setShowsTouchWhenHighlighted:YES];
-    if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 &&
-        [(NSNumber *)[[Profile user] objectForKey:@"num_unread_notifications"] intValue] > 0) {
-        UILabel *redDotLeftLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, 10, 10)];
-        redDotLeftLabel.backgroundColor = [UIColor redColor];
-        redDotLeftLabel.layer.borderColor = [UIColor clearColor].CGColor;
-        redDotLeftLabel.clipsToBounds = YES;
-        redDotLeftLabel.layer.borderWidth = 3;
-        redDotLeftLabel.layer.cornerRadius = 5;
-        [profileButton addSubview:redDotLeftLabel];
+  
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        CGRect profileFrame = CGRectMake(3, 0, 30, 30);
+        UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
+        UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
+        profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+        profileImageView.clipsToBounds = YES;
+        [profileImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[[Profile user] coverImageArea]];
+        [profileButton addSubview:profileImageView];
+        [profileButton addTarget:self action:@selector(profileSegue)
+                forControlEvents:UIControlEventTouchUpInside];
+        [profileButton setShowsTouchWhenHighlighted:YES];
+        if (!self.leftRedDotLabel) {
+            self.leftRedDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, -5, 13, 13)];
+            self.leftRedDotLabel.backgroundColor = [FontProperties getOrangeColor];
+            self.leftRedDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
+            self.leftRedDotLabel.clipsToBounds = YES;
+            self.leftRedDotLabel.layer.borderWidth = 3;
+            self.leftRedDotLabel.layer.cornerRadius = 8;
+        }
+        [profileButton addSubview:self.leftRedDotLabel];
+        if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"] intValue] > 0 ||
+            [(NSNumber *)[[Profile user] objectForKey:@"num_unread_notifications"] intValue] > 0) {
+            self.leftRedDotLabel.hidden = NO;
+        }
+        else {
+            self.leftRedDotLabel.hidden = YES;
+        }
+        UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
+        self.navigationItem.leftBarButtonItem = profileBarButton;
+        
+        self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
+        imageView.image = [UIImage imageNamed:@"followPlusWhite"];
+        [self.rightButton addTarget:self action:@selector(followPressed)
+                   forControlEvents:UIControlEventTouchUpInside];
+        [self.rightButton addSubview:imageView];
+        [self.rightButton setShowsTouchWhenHighlighted:YES];
+        UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
+        self.navigationItem.rightBarButtonItem = rightBarButton;
     }
-    UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
-    self.navigationItem.leftBarButtonItem = profileBarButton;
-    
-    self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
-    imageView.image = [UIImage imageNamed:@"followPlusBlue"];
-    [self.rightButton addTarget:self action:@selector(followPressed)
-           forControlEvents:UIControlEventTouchUpInside];
-    [self.rightButton addSubview:imageView];
-    [self.rightButton setShowsTouchWhenHighlighted:YES];
-    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
-    self.navigationItem.rightBarButtonItem = rightBarButton;
+    else {
+        self.navigationItem.leftBarButtonItem = nil;
+        self.navigationItem.rightBarButtonItem = nil;
+    }
 
-    [self updatedTitleView];
+    [self updateTitleView];
 }
 
 - (void)initializeFlashScreen {
@@ -235,15 +311,15 @@ int firstIndexOfNegativeEvent;
 
 - (void) updateViewNotGoingOut {
     [[Profile user] setIsGoingOut:NO];
-    [self updatedTitleView];
+    [self updateTitleView];
     [self fetchEventsFirstPage];
 }
 
-- (void) updatedTitleView {
+- (void) updateTitleView {
     if (!self.groupName) self.groupName = [[Profile user] groupName];
     UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [schoolButton setTitle:self.groupName forState:UIControlStateNormal];
-    [schoolButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
     schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
   
@@ -261,8 +337,10 @@ int firstIndexOfNegativeEvent;
     schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
 
     UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, 0, 6, 5)];
-    triangleImageView.image = [UIImage imageNamed:@"blueTriangle"];
+    [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    triangleImageView.image = [UIImage imageNamed:@"whiteTriangle"];
     [schoolButton addSubview:triangleImageView];
+
     
     self.navigationItem.titleView = schoolButton;
 }
@@ -275,10 +353,10 @@ int firstIndexOfNegativeEvent;
 
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(dismissKeyboard)];
+                                                                          action:@selector(cancelledAddEventTapped)];
     tap.cancelsTouchesInView = NO;
     tap.delegate = self;
-    [self.view addGestureRecognizer:tap];
+    [_dimView addGestureRecognizer:tap];
 }
 
 - (void)dismissKeyboard {
@@ -286,7 +364,11 @@ int firstIndexOfNegativeEvent;
     [self.view endEditing:YES];
     [UIView animateWithDuration:0.2 animations:^{
         _placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
-        _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-47);
+        _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-50);
+        _whereAreYouGoingView.alpha = 0;
+        _dimView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_dimView removeFromSuperview];
     }];
     [self clearTextField];
 }
@@ -302,21 +384,26 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeWhereView {
-    _placesTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    _placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64) style: UITableViewStyleGrouped];
+
+    _placesTableView.sectionHeaderHeight = 0;
+    _placesTableView.sectionFooterHeight = 0;
     _placesTableView.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:_placesTableView];
     _placesTableView.dataSource = self;
     _placesTableView.delegate = self;
     _placesTableView.showsVerticalScrollIndicator = NO;
-    [_placesTableView setSeparatorColor:[FontProperties getBlueColor]];
+    [_placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    //[_placesTableView setSeparatorColor:UIColor.clearColor];
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
-    [_placesTableView registerClass:[OldEventCell class] forCellReuseIdentifier:kOldEventCellName];
-    [_placesTableView registerClass:[HeaderOldEventCell class] forHeaderFooterViewReuseIdentifier:kHeaderOldEventCellName];
+    [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
+    [_placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
+    _placesTableView.backgroundColor = RGB(241, 241, 241);
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-
     _yPositionOfWhereSubview = 280;
     [self addRefreshToScrollView];
     [self initializeGoingSomewhereElseButton];
+    
 }
 
 - (void)chooseEvent:(NSNotification *)notification {
@@ -350,52 +437,119 @@ int firstIndexOfNegativeEvent;
     [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
     [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     [self goOutToEventNumber:[NSNumber numberWithInt:(int)buttonSender.tag]];
-    if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
 }
 
 - (void)goOutToEventNumber:(NSNumber*)eventID {
     User *profileUser = [Profile user];
     [profileUser setIsGoingOut:YES];
     [profileUser setAttendingEventID:eventID];
-    [self updatedTitleView];
+    [self updateTitleView];
     [[Profile user] setEventID:eventID];
     [Network postGoingToEventNumber:[eventID intValue]];
     [self fetchEventsFirstPage];
 }
 
 - (void)initializeGoingSomewhereElseButton {
-    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 55, self.view.frame.size.height - 55, 45, 45)];
+    int sizeOfButton = [[UIScreen mainScreen] bounds].size.width/6.4;
+    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - sizeOfButton - 10, self.view.frame.size.height - sizeOfButton - 10, sizeOfButton, sizeOfButton)];
     [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
     _goingSomewhereButton.backgroundColor = [FontProperties getBlueColor];
     _goingSomewhereButton.layer.borderWidth = 1.0f;
     _goingSomewhereButton.layer.borderColor = [UIColor clearColor].CGColor;
-    _goingSomewhereButton.layer.cornerRadius = 20;
+    _goingSomewhereButton.layer.cornerRadius = sizeOfButton/2;
     _goingSomewhereButton.layer.shadowColor = [UIColor blackColor].CGColor;
     _goingSomewhereButton.layer.shadowOpacity = 0.4f;
     _goingSomewhereButton.layer.shadowRadius = 5.0f;
     _goingSomewhereButton.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
+    
     [self.view addSubview:_goingSomewhereButton];
     [self.view bringSubviewToFront:_goingSomewhereButton];
     
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 15, 15)];
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 7, sizeOfButton/2 - 7, 15, 15)];
     sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
     [_goingSomewhereButton addSubview:sendOvalImageView];
 }
 
 - (void) goingSomewhereElsePressed {
     [self scrollUp];
-    [self dismissKeyboard];
+
+    if (!_dimView) {
+        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, self.view.opaque, 0.0);
+        [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+        UIImage *bgImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        
+        
+        CGFloat yOrigin = self.whereAreYouGoingTextField.frame.origin.y + self.whereAreYouGoingTextField.frame.size.height;
+        _dimView = [[UIView alloc] initWithFrame: CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - self.whereAreYouGoingTextField.frame.size.height)];
+        
+        
+        UIImageView *blurredView = [[UIImageView alloc] initWithFrame: CGRectMake(_dimView.bounds.origin.x, _dimView.bounds.origin.y, _dimView.bounds.size.width, _dimView.bounds.size.height)];
+        [blurredView setImage: [bgImage blurredImageWithRadius: 20.0f iterations: 4 tintColor: [UIColor blackColor]]];
+        
+        [_dimView addSubview: blurredView];
+        
+        UIView *overlay = [[UIView alloc] initWithFrame: _dimView.bounds];
+        overlay.backgroundColor = [UIColor blackColor];
+        overlay.alpha = 0.5f;
+        
+        [_dimView addSubview: overlay];
+        
+        _dimView.alpha = 0;
+    }
+    
+    if ([self.view.subviews indexOfObject: _dimView] == NSNotFound) {
+        [self.view addSubview: _dimView];
+        [self initializeTapHandler];
+    }
+    
     [self showWhereAreYouGoingView];
-    _ungoOutButton.enabled = NO;
-    [_whereAreYouGoingTextField becomeFirstResponder];
-    _placesTableView.userInteractionEnabled = NO;
-    [self textFieldDidChange:_whereAreYouGoingTextField];
+
+    
+    [UIView animateWithDuration: 0.2 animations:^{
+        _dimView.alpha = 1.0;
+        
+        self.navigationItem.titleView.alpha = 0.0f;
+        self.navigationItem.leftBarButtonItem.customView.alpha = 0.0f;
+        self.navigationItem.rightBarButtonItem.customView.alpha = 0.0f;
+        
+        [_whereAreYouGoingTextField becomeFirstResponder];
+        self.whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0, 50);
+        //_placesTableView.transform = CGAffineTransformMakeTranslation(0, 50);
+        self.whereAreYouGoingView.alpha = 1.0f;
+        
+    } completion:^(BOOL finished) {
+        
+        [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelledAddEventTapped)] animated: NO];
+        
+        [self.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Create" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
+        
+        [self.navigationItem.leftBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+        
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+
+        //[self dismissKeyboard];
+        _ungoOutButton.enabled = NO;
+        _placesTableView.userInteractionEnabled = NO;
+        [self textFieldDidChange:_whereAreYouGoingTextField];
+    }];
+    
+
+
+
+}
+
+- (void) cancelledAddEventTapped {
+    [self initializeNavigationBar];
+    [self dismissKeyboard];
 }
 
 - (void)profileSegue {
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [[ReProfileViewController alloc] initWithUser:[Profile user]]];
-    
-    [self presentViewController:navController animated:YES completion:nil];
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser: [Profile user]];
+    fancyProfileViewController.eventsParty = self.eventsParty;
+    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 
 - (void)choseProfile:(id)sender {
@@ -444,16 +598,16 @@ int firstIndexOfNegativeEvent;
 #pragma mark - Where Are You Going? View and Delegate
 
 - (void)showWhereAreYouGoingView {
-    [UIView animateWithDuration:0.3 animations:^{
-        _placesTableView.transform = CGAffineTransformMakeTranslation(0, 47);
-    }];
     
-    _whereAreYouGoingView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 47)];
+    _whereAreYouGoingView = [[UIView alloc] initWithFrame:CGRectMake(0, 14, self.view.frame.size.width, 50)];
+    _whereAreYouGoingView.backgroundColor = [UIColor whiteColor];
+    _whereAreYouGoingView.alpha = 0;
+    
     [self.view addSubview:_whereAreYouGoingView];
     
-    _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 18 - 100 - 10, 47)];
-    _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"WHERE ARE YOU GOING?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
-    _whereAreYouGoingTextField.font = [FontProperties scMediumFont:15.0f];
+    _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _whereAreYouGoingView.frame.size.width - 10, 50)];
+    _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
+    _whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
     _whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
     [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
     _whereAreYouGoingTextField.delegate = self;
@@ -461,14 +615,20 @@ int firstIndexOfNegativeEvent;
                                    action:@selector(textFieldDidChange:)
                          forControlEvents:UIControlEventEditingChanged];
     _whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
+    
     [_whereAreYouGoingView addSubview:_whereAreYouGoingTextField];
     
-    [self addCreateButtonToTextField];
+    //[self addCreateButtonToTextField];
     
-    _clearButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 25 - 100, _whereAreYouGoingView.frame.size.height/2 - 9, 25, 25)];
-    [_clearButton addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"clearButton"]]];
-    [_clearButton addTarget:self action:@selector(clearTextField) forControlEvents:UIControlEventTouchUpInside];
-    [_whereAreYouGoingView addSubview:_clearButton];
+//    _clearButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 25 - 100, _whereAreYouGoingView.frame.size.height/2 - 9, 25, 25)];
+//    [_clearButton addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"clearButton"]]];
+//    [_clearButton addTarget:self action:@selector(clearTextField) forControlEvents:UIControlEventTouchUpInside];
+    //[_whereAreYouGoingView addSubview:_clearButton];
+    
+    CALayer *bottomBorder = [CALayer layer];
+    bottomBorder.frame = CGRectMake(0.0f, _whereAreYouGoingView.frame.size.height - 1, _whereAreYouGoingView.frame.size.width, 1.0f);
+    bottomBorder.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f].CGColor;
+    [_whereAreYouGoingView.layer addSublayer:bottomBorder];
 }
 
 - (void)clearTextField {
@@ -499,14 +659,14 @@ int firstIndexOfNegativeEvent;
         [self createEventWithName:_whereAreYouGoingTextField.text];
         [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
         NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
-        [self updatedTitleView];
+        [self updateTitleView];
         [self fetchEventsFirstPage];
         [Network postGoingToEventNumber:[eventID intValue]];
         User *profileUser = [Profile user];
         [profileUser setIsAttending:YES];
         [profileUser setIsGoingOut:YES];
         [profileUser setAttendingEventID:eventID];
-        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
+//        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
     }
 }
 
@@ -515,14 +675,20 @@ int firstIndexOfNegativeEvent;
     _filteredPartyUserArray = [[NSMutableArray alloc] init];
     if([textField.text length] != 0) {
         _isSearching = YES;
-        _createButton.hidden = NO;
-        _clearButton.hidden = NO;
+        //_createButton.hidden = NO;
+        //_clearButton.hidden = NO;
         [self searchTableList:textField.text];
+        
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+        
     }
     else {
         _isSearching = NO;
         _createButton.hidden = YES;
         _clearButton.hidden = YES;
+        
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+
     }
 
     [_placesTableView reloadData];
@@ -564,50 +730,141 @@ int firstIndexOfNegativeEvent;
 }
 
 #pragma mark - Tablew View Data Source
+#define kTodaySection 0
+#define kHighlightsEmptySection 1
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath section] == 0) {
-        if ([indexPath row] == [[_contentParty getObjectArray] count]) {
-            return 70;
-        }
-        if (firstIndexOfNegativeEvent >= 0 && [indexPath row] >= firstIndexOfNegativeEvent) {
-            return 70;
-        }
-        return sizeOfEachCell;
-
-    }
-    else return 50;
-}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    if ([self shouldShowHighlights]) {
+        //[Today section] [Button show highlights]
+        return 1 + 1 + 1;
+    }
+    else if (self.pastDays.count > 0) {
+        //[Today section] [Highlighs section] (really just space for a header) + pastDays sections
+        return 1 + 1 + self.pastDays.count;
+    }
+    //just today section
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section == kTodaySection) {
         if (_isSearching) {
-            return [[_filteredContentParty getObjectArray] count];
+            return [_filteredContentParty count];
         }
         else {
             int hasNextPage = ([_eventsParty hasNextPage] ? 1 : 0);
-            return [[_contentParty getObjectArray] count] + hasNextPage;
+            return [_contentParty count] + hasNextPage;
         }
     }
-    else return 1;
+    else if (section == kHighlightsEmptySection) {
+        return 0;
+    }
+    else if ([self shouldShowHighlights] && section > 1) {
+        return 1;
+    }
+    else if (self.pastDays.count > 0 && section > 1) {
+        NSString *day = [self.pastDays objectAtIndex: section - 2];
+        return ((NSArray *)[self.dayToEventObjArray objectForKey: day]).count;
+    }
+
+    return 0;
 }
 
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == kTodaySection) { //today section
+        return [TodayHeader height];
+    }
+    else if (section == kHighlightsEmptySection) { //highlights section seperator
+        return [HighlightsHeader height];
+    }
+    else if ([self shouldShowHighlights] && section > 1) {
+        return 0;
+    }
+    else if (self.pastDays.count > 0 && section > 1) { //past day headers
+        return [PastDayHeader height: (section - 2 == 0)];
+    }
+    
+    return 0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    if (section == kTodaySection) {
+        return [TodayHeader initWithDay: [NSDate date]];
+    }
+    else if (section == kHighlightsEmptySection) {
+        return [HighlightsHeader init];
+    }
+    else if ([self shouldShowHighlights] && section > 1) {
+        return 0;
+    }
+    else if (self.pastDays.count > 0 && section > 1) { //past day headers
+        return [PastDayHeader initWithDay: [self.pastDays objectAtIndex: section - 2] isFirst: (section - 2) == 0];
+    }
+    
+    return nil;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    if (section == kTodaySection) {
+        self.goElsewhereView = [GoOutNewPlaceHeader init];
+        if ([_contentParty count] > 0) [self.goElsewhereView setupWithMoreThanOneEvent:YES];
+        else [self.goElsewhereView setupWithMoreThanOneEvent:NO];
+        [self.goElsewhereView.addEventButton addTarget: self action: @selector(goingSomewhereElsePressed) forControlEvents: UIControlEventTouchUpInside];
+        [self shouldShowCreateButton];
+        return self.goElsewhereView;
+    }
+    
+    return nil;
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if (section == kTodaySection) {
+        return [GoOutNewPlaceHeader height];
+    }
+    return 0;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([indexPath section] == kTodaySection) {
+        return sizeOfEachCell;
+
+    }
+    else if (indexPath.section == kHighlightsEmptySection) {
+        return 0;
+    }
+    else if ([self shouldShowHighlights] && indexPath.section > 1) {
+        return [OldEventShowHighlightsCell height];
+    }
+    else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
+        
+        NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
+        NSArray *eventObjectArray = ((NSArray *)[self.dayToEventObjArray objectForKey: day]);
+
+        Event *event = (Event *)[eventObjectArray objectAtIndex:[indexPath row]];
+        if ([event containsHighlight]) {
+            return 215;
+        }
+    }
+    
+    return 0;
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName];
 
         cell.placesDelegate = self;
         if (_isSearching) {
-            if (indexPath.row == [[_filteredContentParty getObjectArray] count]) {
+            if (indexPath.row == [_filteredContentParty count]) {
                 return cell;
             }
         }
         else {
-            if (indexPath.row == [[_contentParty getObjectArray] count]) {
+            if (indexPath.row == [_contentParty  count]) {
                 [self fetchEvents];
                 return cell;
             }
@@ -615,12 +872,12 @@ int firstIndexOfNegativeEvent;
         
         Event *event;
         if (_isSearching) {
-            int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
+            int sizeOfArray = (int)[_filteredContentParty  count];
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
             event = [[Event alloc] initWithDictionary:[[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]]];
         }
         else {
-            int sizeOfArray = (int)[[_contentParty getObjectArray] count];
+            int sizeOfArray = (int)[_contentParty count];
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
             event = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
         }
@@ -632,65 +889,306 @@ int firstIndexOfNegativeEvent;
             cell.eventPeopleScrollView.groupID = nil;
         }
         cell.eventPeopleScrollView.placesDelegate = self;
-        if ([[self.eventOffsetDictionary allKeys] containsObject:[[event eventID] stringValue]]) {
+        if ([[self.eventOffsetDictionary allKeys] containsObject:[[event eventID] stringValue]] && self.visitedProfile) {
             cell.eventPeopleScrollView.contentOffset = CGPointMake([(NSNumber *)[self.eventOffsetDictionary objectForKey:[[event eventID] stringValue]] intValue],0);
         }
         [cell updateUI];
-        if ([[[event dictionary] objectForKey:@"is_read"] boolValue]) {
-            cell.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
+        if (![[[event dictionary] objectForKey:@"is_read"] boolValue] &&
+            [[[event dictionary] objectForKey:@"num_messages"] intValue] > 0) {
+            cell.chatBubbleImageView.hidden = NO;
+            cell.chatBubbleImageView.image = [UIImage  imageNamed:@"cameraBubble"];
+            cell.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
+        }
+        else if ( [[[event dictionary] objectForKey:@"num_messages"] intValue] > 0) {
+            cell.chatBubbleImageView.hidden = NO;
+            cell.chatBubbleImageView.image = [UIImage  imageNamed:@"blueCameraBubble"];
+            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
         else {
-            cell.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
-        }
-        if ( ([[[Profile user] attendingEventID] intValue] < 0 && [indexPath row] == 0) ||
-            ([[Profile user] isGoingOut] && [[Profile user] isAttending] && [[[Profile user] attendingEventID] isEqualToNumber:[event eventID]])
-            ) {
-            cell.backgroundColor = [FontProperties getLightBlueColor];
-        }
-        else {
-            cell.backgroundColor = UIColor.whiteColor;
+            cell.chatBubbleImageView.hidden = YES;
+            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
         return cell;
+    }
+    else if (indexPath.section == kHighlightsEmptySection) {
+        return nil;
+    }
+    else if ([self shouldShowHighlights] && indexPath.section > 1) {
+        OldEventShowHighlightsCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventShowHighlightsCellName];
+        cell.placesDelegate = self;
+        return cell;
+    }
+    else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
+        
+        NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
+        NSArray *eventObjectArray = ((NSArray *)[self.dayToEventObjArray objectForKey: day]);
+        
+        Event *event = (Event *)[eventObjectArray objectAtIndex:[indexPath row]];
+        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
+        cell.event = event;
+        cell.placesDelegate = self;
+        cell.oldEventLabel.text = [event name];
+        NSString *contentURL = [[[event dictionary] objectForKey:@"highlight"] objectForKey:@"media"];
+        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+        __weak HighlightOldEventCell *weakCell = cell;
+        [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            if (image) {
+                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+            }
+        }];
+        return cell;
+    }
+    
+    return nil;
+  
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+
+    // Remove seperator inset
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+        [cell setSeparatorInset:UIEdgeInsetsZero];
+    }
+    
+    // Prevent the cell from inheriting the Table View's margin settings
+    if ([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
+        [cell setPreservesSuperviewLayoutMargins:NO];
+    }
+    
+    // Explictly set your cell's layout margins
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section {
+    if (view == self.goElsewhereView) {
+        isLoaded = YES;
+    }
+}
+
+- (BOOL) shouldShowHighlights {
+    BOOL shownHighlights =  [[NSUserDefaults standardUserDefaults] boolForKey: @"shownHighlights"];
+    return !shownHighlights && self.pastDays.count;
+}
+
+
+#pragma mark - Image helper
+
+- (UIImage *)rotateImage:(UIImage *)image {
+    
+    int kMaxResolution = 320; // Or whatever
+    
+    CGImageRef imgRef = image.CGImage;
+    
+    CGFloat width = CGImageGetWidth(imgRef);
+    CGFloat height = CGImageGetHeight(imgRef);
+    
+    
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    CGRect bounds = CGRectMake(0, 0, width, height);
+    if (width > kMaxResolution || height > kMaxResolution) {
+        CGFloat ratio = width/height;
+        if (ratio > 1) {
+            bounds.size.width = kMaxResolution;
+            bounds.size.height = bounds.size.width / ratio;
+        }
+        else {
+            bounds.size.height = kMaxResolution;
+            bounds.size.width = bounds.size.height * ratio;
+        }
+    }
+    
+    CGFloat scaleRatio = bounds.size.width / width;
+    CGSize imageSize = CGSizeMake(CGImageGetWidth(imgRef), CGImageGetHeight(imgRef));
+    CGFloat boundHeight;
+    UIImageOrientation orient = image.imageOrientation;
+    switch(orient) {
+            
+        case UIImageOrientationUp: //EXIF = 1
+            transform = CGAffineTransformIdentity;
+            break;
+            
+        case UIImageOrientationUpMirrored: //EXIF = 2
+            transform = CGAffineTransformMakeTranslation(imageSize.width, 0.0);
+            transform = CGAffineTransformScale(transform, -1.0, 1.0);
+            break;
+            
+        case UIImageOrientationDown: //EXIF = 3
+            transform = CGAffineTransformMakeTranslation(imageSize.width, imageSize.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationDownMirrored: //EXIF = 4
+            transform = CGAffineTransformMakeTranslation(0.0, imageSize.height);
+            transform = CGAffineTransformScale(transform, 1.0, -1.0);
+            break;
+            
+        case UIImageOrientationLeftMirrored: //EXIF = 5
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(imageSize.height, imageSize.width);
+            transform = CGAffineTransformScale(transform, -1.0, 1.0);
+            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationLeft: //EXIF = 6
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(0.0, imageSize.width);
+            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationRightMirrored: //EXIF = 7
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationRight: //EXIF = 8
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(imageSize.height, 0.0);
+            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
+            break;
+            
+        default:
+            [NSException raise:NSInternalInconsistencyException format:@"Invalid image orientation"];
+            
+    }
+    
+    UIGraphicsBeginImageContext(bounds.size);
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    if (orient == UIImageOrientationRight || orient == UIImageOrientationLeft) {
+        CGContextScaleCTM(context, -scaleRatio, scaleRatio);
+        CGContextTranslateCTM(context, -height, 0);
     }
     else {
-        OldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventCellName];
-        cell.oldEventLabel.text = @"That long cool party name";
-        cell.chatBubbleImageView.hidden = NO;
-        cell.chatNumberLabel.text = @"36";
-        return cell;
+        CGContextScaleCTM(context, scaleRatio, -scaleRatio);
+        CGContextTranslateCTM(context, 0, -height);
     }
-  
+    
+    CGContextConcatCTM(context, transform);
+    
+    CGContextDrawImage(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, width, height), imgRef);
+    UIImage *imageCopy = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return imageCopy;
+}
+
+- (UIImage *)convertImageToGrayScale:(UIImage *)image {
+    
+    image = [self rotateImage:image];//THIS IS WHERE REPAIR THE ROTATION PROBLEM
+    
+    // Create image rectangle with current image width/height
+    CGRect imageRect = CGRectMake(0, 0, image.size.width, image.size.height);
+    
+    // Grayscale color space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+    
+    // Create bitmap content with current image size and grayscale colorspace
+    CGContextRef context = CGBitmapContextCreate(nil, image.size.width, image.size.height, 8, 0, colorSpace, (int)kCGImageAlphaNone);
+    
+    // Draw image into current context, with specified rectangle
+    // using previously defined context (with grayscale colorspace)
+    CGContextDrawImage(context, imageRect, [image CGImage]);
+    
+    // Create bitmap image info from pixel data in current context
+    CGImageRef imageRef = CGBitmapContextCreateImage(context);
+    
+    // Create a new UIImage object
+    UIImage *newImage = [UIImage imageWithCGImage:imageRef];
+    
+    // Release colorspace, context and bitmap information
+    CGColorSpaceRelease(colorSpace);
+    CGContextRelease(context);
+    CFRelease(imageRef);
+    
+    // Return the new grayscale image
+    return newImage;
 }
 
 #pragma mark - PlacesDelegate
 
-- (void)showUser:(User *)user {
-    shouldReloadEvents = NO;
-    [self.navigationController pushViewController:[[ProfileViewController alloc] initWithUser:user] animated:NO];
+- (void)showHighlights {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"shownHighlights"];
+    [_placesTableView reloadData];
 }
 
-- (void)showConversationForEvent:(Event*)event {
+- (void)showUser:(User *)user {
+    shouldReloadEvents = NO;
+    
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser: user];
+    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+        fancyProfileViewController.userState = OTHER_SCHOOL_USER;
+    }
+    self.visitedProfile = YES;
+    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+
+}
+
+- (void)showConversationForEvent:(Event *)event {
+    NSString *queryString = [NSString stringWithFormat:@"eventmessages/?event=%@&limit=100", [event eventID]];
+    [Network sendAsynchronousHTTPMethod:GET
+                            withAPIName:queryString
+                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                dispatch_async(dispatch_get_main_queue(), ^{                                            NSMutableArray *eventMessages = [NSMutableArray arrayWithArray:(NSArray *)[jsonResponse objectForKey:@"objects"]];
+                                    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                                    int eventIndex = [self indexOfEvent:event inArray:eventMessages];
+                                    EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+                                    conversationViewController.event = event;
+                                    conversationViewController.index = @(eventIndex);
+                                    conversationViewController.eventMessages = eventMessages;
+                                    [self presentViewController:conversationViewController animated:YES completion:nil];
+                                });
+                            }];
+}
+
+- (int)indexOfEvent:(Event *)event inArray:(NSMutableArray *)eventMessages {
+    NSDictionary *highlightEventMessage = [[event dictionary] objectForKey:@"highlight"];
+    for (int i = 0; i < [eventMessages count]; i++) {
+        NSDictionary *eventMessage = [eventMessages objectAtIndex:i];
+        if ([[eventMessage objectForKey:@"id"] isEqualToNumber:[highlightEventMessage objectForKey:@"id"]]) {
+            return i;
+        }
+    }
+    return 0;
+}
+
+- (void)showStoryForEvent:(Event*)event {
+    
     EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
     eventStoryController.placesDelegate = self;
     eventStoryController.event = event;
-    [self presentViewController:eventStoryController animated:YES completion:nil];
+    if (self.groupNumberID) eventStoryController.groupNumberID = self.groupNumberID;
+    [self.navigationController pushViewController:eventStoryController animated:YES];
 }
 
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
     self.eventOffsetDictionary = [NSMutableDictionary new];
     self.groupNumberID = groupID;
     self.groupName = groupName;
-    [self updatedTitleView];
+    [self updateTitleView];
     [self fetchEventsFirstPage];
 }
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
-    int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
+    int numberOfEvents = (int)[_eventsParty count];
     return numberOfEvents * userIndex + eventIndex;
 }
 
 - (void)updateEvent:(Event *)newEvent {
-    for (int i = 0 ; i < [[_contentParty getObjectArray] count]; i++) {
+    for (int i = 0 ; i < [_contentParty count]; i++) {
         Event *event = [[_contentParty getObjectArray] objectAtIndex:i];
         if ([[event eventID] isEqualToNumber:[newEvent eventID]]) {
             [_contentParty replaceObjectAtIndex:i withObject:newEvent];
@@ -701,57 +1199,88 @@ int firstIndexOfNegativeEvent;
 
 - (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {
     int userIndex, eventIndex;
-    int numberOfEvents = (int)[[_eventsParty getObjectArray] count];
+    int numberOfEvents = (int)[_eventsParty count];
     userIndex = uniqueIndex/numberOfEvents;
     eventIndex = uniqueIndex - userIndex * numberOfEvents;
     return @{@"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex":[NSNumber numberWithInt:eventIndex]};
 }
 
-- (CGFloat)tableView:(UITableView *)tableView
-heightForHeaderInSection:(NSInteger)section {
-    if (section == 0)  return 0;
-    return 49;
-}
-
-- (UIView *)tableView:(UITableView *)tableView
-viewForHeaderInSection:(NSInteger)section {
-    HeaderOldEventCell *headerOldEventCell = [tableView dequeueReusableHeaderFooterViewWithIdentifier:kHeaderOldEventCellName];
-    headerOldEventCell.headerTitleLabel.text = @"Fuzzy on Yesterday? Check out ";
-    return headerOldEventCell;
-}
 
 
 #pragma mark - UIScrollView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView != _placesTableView)
+    if (scrollView != _placesTableView) {
         if (scrollView.contentOffset.x + self.view.frame.size.width >= scrollView.contentSize.width - sizeOfEachImage && !fetchingEventAttendees) {
             fetchingEventAttendees = YES;
             [self fetchEventAttendeesAsynchronousForEvent:(int)scrollView.tag];
         }
+        
+    }
+    else if (scrollView == _placesTableView) {
+        // convert label frame
+        CGRect comparisonFrame = [scrollView convertRect: self.goElsewhereView.frame toView:self.view];
+        // check if label is contained in self.view
+        
+        CGRect viewFrame = self.view.frame;
+        BOOL isContainedInView = CGRectContainsRect(viewFrame, comparisonFrame);
+        
+        if (!self.goElsewhereView) {
+            return;
+        }
+        if (![self shouldShowCreateButton]) {
+            return;
+        }
+//
+        if (isContainedInView && self.goingSomewhereButton.hidden == NO && isLoaded) {
+            self.goingSomewhereButton.hidden = YES;
+            self.goElsewhereView.plusButton.hidden = NO;
+        }
+        else if (isContainedInView == NO && self.goingSomewhereButton.hidden == YES) {
+            self.goingSomewhereButton.alpha = 0;
+            self.goingSomewhereButton.transform = CGAffineTransformMakeScale(0, 0);
+            self.goingSomewhereButton.hidden = NO;
+            self.goElsewhereView.plusButton.hidden = YES;
+
+            [UIView animateWithDuration:0.2f delay: 0.0 options: UIViewAnimationOptionCurveEaseOut animations:^{
+                self.goingSomewhereButton.alpha = 1;
+                self.goingSomewhereButton.transform = CGAffineTransformMakeScale(1.2, 1.2);
+                
+                
+            } completion:^(BOOL finished) {
+                [UIView animateWithDuration:0.05f delay: 0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+                    self.goingSomewhereButton.transform = CGAffineTransformIdentity;
+                    
+                } completion:^(BOOL finished) {
+                }];
+            }];
+        }
+    }
 }
 
 #pragma mark - Network Asynchronous Functions
 
 - (void) fetchEventsFirstPage {
     page = @1;
+    [self fetchUserInfo];
     [self fetchEvents];
 }
 
 - (void) fetchEvents {
+    
     if (!fetchingEventAttendees && [[Profile user] key]) {
         fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString;
         if (self.groupNumberID) {
-             queryString = [NSString stringWithFormat:@"events/?group=%@&date=tonight&page=%@&attendees_limit=10", [self.groupNumberID stringValue], [page stringValue]];
+             queryString = [NSString stringWithFormat:@"events/?group=%@&page=%@&attendees_limit=10", [self.groupNumberID stringValue], [page stringValue]];
         }
         else {
             if (![page isEqualToNumber:@1] && [_eventsParty nextPageString]) {
                 queryString = [_eventsParty nextPageString];
             }
             else {
-                queryString = [NSString stringWithFormat:@"events/?date=tonight&page=%@&attendees_limit=10", [page stringValue]];
+                queryString = [NSString stringWithFormat:@"events/?page=%@&attendees_limit=10", [page stringValue]];
             }
 
         }
@@ -759,24 +1288,78 @@ viewForHeaderInSection:(NSInteger)section {
             if ([page isEqualToNumber:@1]) {
                 numberOfFetchedParties = 0;
                 _eventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
+                _oldEventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
                 _contentParty = _eventsParty;
                 _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
+                
+                self.pastDays = [[NSMutableArray alloc] init];
+                self.dayToEventObjArray = [[NSMutableDictionary alloc] init];
             }
             NSArray *events = [jsonResponse objectForKey:@"objects"];
+            NSDictionary *separatedEvents = [self separateEvents:events];
+            NSArray *oldEvents = [separatedEvents objectForKey:@"oldEvents"];
+            NSArray *newEvents = [separatedEvents objectForKey:@"newEvents"];
             [self getFirstIndexOfSuggestedEvent:events];
-            [_eventsParty addObjectsFromArray:events];
+            [_eventsParty addObjectsFromArray:newEvents];
+            
+            //add old events to dictionary
+            [_oldEventsParty addObjectsFromArray:oldEvents];
+            
+            Party *newOldEventsParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
+            [newOldEventsParty addObjectsFromArray: oldEvents];
+            
+            for (Event *event in [newOldEventsParty getObjectArray]) {
+                
+                if ([event containsHighlight] == NO) {
+                    continue;
+                }
+                
+                NSString *eventDate = [event expiresDate];
+                if ([self.pastDays indexOfObject: eventDate] == NSNotFound) {
+                    [self.pastDays addObject: eventDate];
+                    [self.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                }
+                
+                [[self.dayToEventObjArray objectForKey: eventDate] addObject: event];
+            }
+            
+            
             NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
             [_eventsParty addMetaInfo:metaDictionary];
             [self fillEventAttendees];
             page = @([page intValue] + 1);
-            fetchingEventAttendees = NO;
             [eventPageArray removeAllObjects];
-            for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+            for (int i = 0; i < [_eventsParty count]; i++) {
                 [eventPageArray addObject:@2];
             }
             [self fetchedOneParty];
+            fetchingEventAttendees = NO;
         }];
     }
+}
+
+- (NSDictionary *)separateEvents:(NSArray *)events {
+    
+    NSMutableArray *mutableOldEvents = [NSMutableArray new];
+    NSMutableArray *newEvents = [NSMutableArray new];
+    NSIndexSet *indexSet = [events indexesOfObjectsPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        NSDictionary *eventDictionary = (NSDictionary *)obj;
+        if ([[eventDictionary objectForKey:@"is_expired"] boolValue]) {
+            return YES;
+        }
+        else return NO;
+    }];
+    for (int i = 0; i < [events count]; i++) {
+        if ([indexSet containsIndex:(NSUInteger)i]) {
+            [mutableOldEvents addObject:[events objectAtIndex:i]];
+        }
+        else {
+            [newEvents addObject:[events objectAtIndex:i]];
+        }
+    }
+    return @{@"oldEvents": [NSArray arrayWithArray:mutableOldEvents],
+             @"newEvents": [NSArray arrayWithArray:newEvents]
+             };
 }
 
 - (void)getFirstIndexOfSuggestedEvent:(NSArray *)events {
@@ -795,7 +1378,7 @@ viewForHeaderInSection:(NSInteger)section {
 
 - (void)fillEventAttendees {
     _partyUserArray =  [[NSMutableArray alloc] init];
-    for (int i = 0; i < [[_eventsParty getObjectArray] count]; i++) {
+    for (int i = 0; i < [_eventsParty count]; i++) {
         Event *event = [[_eventsParty getObjectArray] objectAtIndex:i];
         NSArray *eventAttendeesArray = [event getEventAttendees];
         Party *partyUser = [[Party alloc] init];
@@ -827,6 +1410,7 @@ viewForHeaderInSection:(NSInteger)section {
     if (eventNumber < [eventPageArray count]) {
         NSNumber *pageNumberForEvent = [eventPageArray objectAtIndex:eventNumber];
         if ([pageNumberForEvent intValue] > 0) {
+            if (!pageNumberForEvent)  pageNumberForEvent = @2;
             NSString *queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [pageNumberForEvent stringValue]];
             NSDictionary *inputDictionary = @{@"i": [NSNumber numberWithInt:eventNumber], @"page": pageNumberForEvent};
             [Network queryAsynchronousAPI:queryString
@@ -882,27 +1466,31 @@ viewForHeaderInSection:(NSInteger)section {
         _contentParty = _eventsParty;
         _filteredContentParty = [[Party alloc] initWithObjectType:EVENT_TYPE];
         [self dismissKeyboard];
-        if ([page isEqualToNumber:@2]) [_placesTableView setContentOffset:CGPointZero animated:YES];
+
     });
 }
 
 - (void) fetchUserInfo {
-    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+    if (!fetchingUserInfo && [[Profile user] key]) {
+        fetchingUserInfo = YES;
+        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if ([[jsonResponse allKeys] containsObject:@"status"]) {
+                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
+                        User *user = [[User alloc] initWithDictionary:jsonResponse];
+                        [Profile setUser:user];
+                        [self initializeNavigationBar];
+                    }
+                }
+                else {
                     User *user = [[User alloc] initWithDictionary:jsonResponse];
                     [Profile setUser:user];
-                    [self updatedTitleView];
+                    [self initializeNavigationBar];
                 }
-            }
-            else {
-                User *user = [[User alloc] initWithDictionary:jsonResponse];
-                [Profile setUser:user];
-                [self updatedTitleView];
-            }
-        });
-    }];
+                fetchingUserInfo = NO;
+            });
+        }];
+    }
 }
 
 - (void) fetchIsThereNewPerson {
@@ -920,12 +1508,12 @@ viewForHeaderInSection:(NSInteger)section {
                         [Profile setLastUserJoined:lastUserJoinedNumber];
                         [self.rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
                         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
-                        imageView.image = [UIImage imageNamed:@"followPlusBlue"];
+                        imageView.image = [UIImage imageNamed:@"followPlusWhite"];
                         [self.rightButton addSubview:imageView];
                         
                         if ([lastUserRead intValue] < [lastUserJoinedNumber intValue]) {
                             self.redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, 10, 10)];
-                            self.redDotLabel.backgroundColor = [UIColor redColor];
+                            self.redDotLabel.backgroundColor = [FontProperties getOrangeColor];
                             self.redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
                             self.redDotLabel.clipsToBounds = YES;
                             self.redDotLabel.layer.borderWidth = 3;
@@ -947,7 +1535,9 @@ viewForHeaderInSection:(NSInteger)section {
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView withHandler:^{
+    [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView
+                           withBackgroundColor:RGB(241, 241, 241)
+                                   withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];
     }];
@@ -970,14 +1560,14 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void)presentGrowthHack {
-    [[Profile user] setGrowthHackPresented];
-    [[Profile user] saveKeyAsynchronously:@"properties"];
-    CATransition* transition = [CATransition animation];
-    transition.duration = 1;
-    transition.type = kCATransitionFade;
-    transition.subtype = kCATransitionFromBottom;
-    [self.view.window.layer addAnimation:transition forKey:kCATransition];
-    [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
+//    [[Profile user] setGrowthHackPresented];
+//    [[Profile user] saveKeyAsynchronously:@"properties"];
+//    CATransition* transition = [CATransition animation];
+//    transition.duration = 1;
+//    transition.type = kCATransitionFade;
+//    transition.subtype = kCATransitionFromBottom;
+//    [self.view.window.layer addAnimation:transition forKey:kCATransition];
+//    [self presentViewController:[WigoConfirmationViewController new] animated:NO completion:nil];
 }
 
 - (void)presentContactsView {
@@ -993,7 +1583,7 @@ viewForHeaderInSection:(NSInteger)section {
     Party *partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
     [partyUser addObject:[Profile user]];
     [_partyUserArray addObject:partyUser];
-    [_eventsParty exchangeObjectAtIndex:([[_eventsParty getObjectArray] count] - 1) withObjectAtIndex:0];
+    [_eventsParty exchangeObjectAtIndex:([_eventsParty count] - 1) withObjectAtIndex:0];
     [_partyUserArray exchangeObjectAtIndex:([_partyUserArray count] - 1) withObjectAtIndex:0];
     [self removeUserFromAnyOtherEvent:[Profile user]];
 }
@@ -1035,7 +1625,7 @@ viewForHeaderInSection:(NSInteger)section {
     for (int i = 0; i < [arrayOfEvents count]; i++) {
         Event *event = [arrayOfEvents objectAtIndex:i];
         Party *partyUser = [_partyUserArray objectAtIndex:i];
-        for (int j = 0; j < [[partyUser getObjectArray] count]; j++) {
+        for (int j = 0; j < [partyUser count]; j++) {
             User *newUser = [[partyUser getObjectArray] objectAtIndex:j];
             if ([user isEqualToUser:newUser]) {
                 [partyUser removeUser:newUser];
@@ -1059,37 +1649,30 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 175);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, sizeOfEachCell);
+    self.contentView.frame = self.frame;
     self.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 3, self.frame.size.width - 75, 50)];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.frame.size.width - 75, 64)];
     self.eventNameLabel.numberOfLines = 2;
-
-    self.eventNameLabel.font = [FontProperties scMediumFont: 20];
+    self.eventNameLabel.font = [FontProperties mediumFont: 18];
     self.eventNameLabel.textColor = RGB(100, 173, 215);
     [self.contentView addSubview:self.eventNameLabel];
     
-    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
-    self.chatBubbleImageView.image = [UIImage imageNamed:@"chatBubble"];
+    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 48, 15, 20, 20)];
+    self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
     self.chatBubbleImageView.center = CGPointMake(self.chatBubbleImageView.center.x, self.eventNameLabel.center.y);
     self.chatBubbleImageView.hidden = YES;
     [self.contentView addSubview:self.chatBubbleImageView];
     
-    self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
-    self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
-    self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
-
-    self.chatNumberLabel.textColor = [UIColor whiteColor];
-    [self.chatBubbleImageView addSubview:self.chatNumberLabel];
-    
-    self.postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
+    self.postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 24, 13, 9, 14)];
     self.postStoryImageView.center = CGPointMake(self.postStoryImageView.center.x, self.eventNameLabel.center.y);
     self.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
     [self.contentView addSubview:self.postStoryImageView];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(10, 60, self.frame.size.width - 10, 120);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 64, self.frame.size.width, [EventPeopleScrollView containerHeight]);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
@@ -1097,15 +1680,27 @@ viewForHeaderInSection:(NSInteger)section {
     eventFeedButton.backgroundColor = [UIColor clearColor];
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
+    
+    UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 0.5f, self.frame.size.width, 0.5)];
+    lineSeparator.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.4f];
+
+    [self.contentView addSubview:lineSeparator];
 }
 
 - (void)updateUI {
     self.eventNameLabel.text = [self.event name];
-    if ([self.event.numberOfMessages intValue] > 0) {
+    if (![[[self.event dictionary] objectForKey:@"is_read"] boolValue] && [self.event.numberOfMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;
+        self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
         self.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [self.event.numberOfMessages stringValue]];
     }
-    else self.chatBubbleImageView.hidden = YES;
+    else if ([self.event.numberOfMessages intValue] > 0) {
+        self.chatBubbleImageView.hidden = NO;
+        self.chatBubbleImageView.image = [UIImage imageNamed:@"blueCameraBubble"];
+    }
+    else {
+     self.chatBubbleImageView.hidden = YES;
+    }
     self.eventPeopleScrollView.event = self.event;
     [self.eventPeopleScrollView updateUI];
 }
@@ -1116,13 +1711,182 @@ viewForHeaderInSection:(NSInteger)section {
 
 
 - (void)showEventConversation {
-    shouldReloadEvents = NO;
-    [self.placesDelegate showConversationForEvent:self.event];
+    [self.placesDelegate showStoryForEvent:self.event];
 }
 
 @end
 
-@implementation OldEventCell
+#pragma mark - Headers
+@implementation TodayHeader
+
++ (instancetype) initWithDay: (NSDate *) date {
+    TodayHeader *header = [[TodayHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TodayHeader height])];
+    header.date = date;
+    [header setup];
+    
+    return header;
+}
+- (void) setup {
+    self.backgroundColor = [UIColor whiteColor];
+    
+//    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+//    NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: self.date];
+//    int weekday = (int)[comps weekday];
+//    NSString *dayName = [[[NSDateFormatter alloc] init] weekdaySymbols][weekday - 1];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 30)];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.font = [FontProperties scMediumFont: 18.0f];
+    titleLabel.textColor = [FontProperties getBlueColor];
+    titleLabel.text = @"today";
+    titleLabel.center = self.center;
+    [self addSubview: titleLabel];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(self.center.x - 50, self.frame.size.height - 0.5f, 100, 0.5f)];
+    lineView.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.4f];
+    [self addSubview: lineView];
+    
+}
+
++ (CGFloat) height {
+    return 50;
+}
+@end
+
+@implementation GoOutNewPlaceHeader
+
++ (instancetype) init {
+    GoOutNewPlaceHeader *header = [[GoOutNewPlaceHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [GoOutNewPlaceHeader height])];
+    [header setup];
+    
+    return header;
+}
+
+- (void)setupWithMoreThanOneEvent:(BOOL)moreThanOneEvent {
+    if (moreThanOneEvent) self.goSomewhereLabel.text = @"Go somewhere else";
+    else self.goSomewhereLabel.text = @"Get today started";
+}
+
+- (void) setup {
+    self.backgroundColor = RGB(241, 241, 241);
+    
+    UIImageView *backgroundView = [[UIImageView alloc] initWithFrame:self.bounds];
+    backgroundView.image = [UIImage imageNamed: @"create_bg"];
+    [self addSubview: backgroundView];
+    
+    
+    int sizeOfButton = 40;
+    self.plusButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - sizeOfButton - 20, 0, sizeOfButton, sizeOfButton)];
+    self.plusButton.center = CGPointMake(self.plusButton.center.x, self.center.y - 2);
+    
+    self.plusButton.backgroundColor = [FontProperties getBlueColor];
+    self.plusButton.layer.borderWidth = 1.0f;
+    self.plusButton.layer.borderColor = [UIColor clearColor].CGColor;
+    self.plusButton.layer.cornerRadius = sizeOfButton/2;
+
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 6, sizeOfButton/2 - 6, 12, 12)];
+    sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
+    [self.plusButton addSubview: sendOvalImageView];
+    [self addSubview: self.plusButton];
+    
+    self.goSomewhereLabel = [[UILabel alloc] initWithFrame: CGRectMake(10, 0, self.frame.size.width, self.frame.size.height)];
+    self.goSomewhereLabel.backgroundColor = [UIColor clearColor];
+    self.goSomewhereLabel.textAlignment = NSTextAlignmentLeft;
+    self.goSomewhereLabel.font = [FontProperties mediumFont: 20.0f];
+    self.goSomewhereLabel.textColor = [FontProperties getBlueColor];
+    self.goSomewhereLabel.text = @"Go somewhere else";
+    self.goSomewhereLabel.center = CGPointMake(self.goSomewhereLabel.center.x, self.center.y - 4);
+    [self addSubview: self.goSomewhereLabel];
+    
+    self.addEventButton = [[UIButton alloc] initWithFrame: self.bounds];
+    self.addEventButton.backgroundColor = [UIColor clearColor];
+    [self addSubview: self.addEventButton];
+}
+
++ (CGFloat) height {
+    return 70;
+}
+
+@end
+
+@implementation HighlightsHeader
+
++ (instancetype) init {
+    HighlightsHeader *header = [[HighlightsHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [HighlightsHeader height])];
+    [header setup];
+    return header;
+}
+
+- (void) setup {
+    self.backgroundColor = RGB(241, 241, 241);
+
+}
+
++ (CGFloat)height {
+    return 60.0f;
+}
+
+@end
+
+@implementation PastDayHeader
+
++ (instancetype) initWithDay: (NSString *) dayText isFirst: (BOOL) isFirst {
+    PastDayHeader *header = [[PastDayHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [PastDayHeader height: isFirst])];
+    header.isFirst = isFirst;
+    header.day = dayText;
+    [header setup];
+    
+    return header;
+}
+- (void) setup {
+    self.backgroundColor = RGB(241, 241, 241);
+    
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    NSDate *date = [dateFormat dateFromString:self.day];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: date];
+    int weekday = (int)[comps weekday];
+    weekday -= 2;
+    if (weekday < 0) weekday += 7;
+    NSString *dayName = [dateFormat weekdaySymbols][weekday];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(self.center.x - 50, 20, 100, 0.5f)];
+    lineView.backgroundColor = RGB(210, 210, 210);
+    [self addSubview: lineView];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 20.5, self.frame.size.width, self.frame.size.height - 23.5)];
+    titleLabel.backgroundColor = [UIColor clearColor];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.font = [FontProperties scMediumFont: 18.0f];
+    titleLabel.textColor = RGB(210, 210, 210);
+    titleLabel.text = [dayName lowercaseString];
+    titleLabel.center = CGPointMake(self.center.x, titleLabel.center.y);
+    [self addSubview: titleLabel];
+    
+    if (self.isFirst) {
+        UILabel *highlights = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 20)];
+        highlights.backgroundColor = [UIColor clearColor];
+        highlights.textAlignment = NSTextAlignmentCenter;
+        highlights.font = [FontProperties scMediumFont: 13.0f];
+        highlights.textColor = RGB(210, 210, 210);
+        highlights.text = @"Highlights From Past";
+        [self addSubview: highlights];
+        
+        lineView.center = CGPointMake(lineView.center.x, lineView.center.y + 5);
+    }
+}
+
++ (CGFloat) height: (BOOL) isFirst  {
+    if (isFirst) {
+        return 75;
+    }
+    return 70;
+}
+@end
+
+@implementation HighlightOldEventCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -1133,42 +1897,54 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 50);
-    self.backgroundColor = UIColor.whiteColor;
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [HighlightOldEventCell height]);
+    self.backgroundColor = RGB(241, 241, 241);
     
-    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, self.frame.size.width - 75, self.frame.size.height)];
-    self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
-    self.oldEventLabel.font = [FontProperties mediumFont:18.0f];
-    self.oldEventLabel.textColor = RGB(184, 184, 184);
-    [self.contentView addSubview:self.oldEventLabel];
-   
-    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 55, 15, 20, 20)];
-    self.chatBubbleImageView.image = [UIImage imageNamed:@"grayChatBubble"];
-    self.chatBubbleImageView.hidden = YES;
-    [self.contentView addSubview:self.chatBubbleImageView];
-    
-    self.chatNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 15)];
-    self.chatNumberLabel.textAlignment = NSTextAlignmentCenter;
-    self.chatNumberLabel.font = [FontProperties mediumFont:12.0f];
-    self.chatNumberLabel.textColor = [UIColor whiteColor];
-    [self.chatBubbleImageView addSubview:self.chatNumberLabel];
-    
-    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 13, 13, 22)];
-    postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-    [self.contentView addSubview:postStoryImageView];
 
-    UILabel *borderLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, self.frame.size.width - 20, self.frame.size.height - 10)];
-    borderLabel.layer.borderColor = RGB(176, 209, 228).CGColor;
-    borderLabel.layer.borderWidth = 1.5f;
-    borderLabel.layer.cornerRadius = 8;
-    [self.contentView addSubview:borderLabel];
+    //image view
+    self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 1)];
+    self.highlightImageView.clipsToBounds = YES;
+    self.highlightImageView.contentMode = UIViewContentModeScaleAspectFill;
+    [self.contentView addSubview:self.highlightImageView];
+    
+    //gradient, label, arrow
+    UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame: self.highlightImageView.bounds];
+    gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
+    [self.contentView addSubview:gradientBackground];
+    
+    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.highlightImageView.bounds.size.height - 50, self.frame.size.width - 75, 50)];
+    self.oldEventLabel.numberOfLines = 2;
+    self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
+    self.oldEventLabel.font = [FontProperties mediumFont: 18.0f];
+    self.oldEventLabel.textColor = [UIColor whiteColor];
+    [self.contentView addSubview:self.oldEventLabel];
+    
+    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 20, 0, 10, 15)];
+    postStoryImageView.image = [UIImage imageNamed:@"whiteForwardButton"];
+    postStoryImageView.contentMode = UIViewContentModeScaleAspectFit;
+    postStoryImageView.center = CGPointMake(postStoryImageView.center.x, self.oldEventLabel.center.y);
+    [self.contentView addSubview:postStoryImageView];
+    
+    UIButton *conversationButton = [[UIButton alloc] initWithFrame:self.frame];
+    [conversationButton addTarget:self action:@selector(loadConversation) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:conversationButton];
+    
+}
+
+- (void)loadConversation {
+    [self.placesDelegate showConversationForEvent:self.event];
+}
+
++ (CGFloat) height {
+    return 215;
 }
 
 @end
 
-@implementation HeaderOldEventCell
-- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithReuseIdentifier:reuseIdentifier];
+@implementation OldEventShowHighlightsCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self setup];
     }
@@ -1176,14 +1952,29 @@ viewForHeaderInSection:(NSInteger)section {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 49);
-    self.contentView.backgroundColor = UIColor.whiteColor;
-   
-    self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, self.frame.size.width, 39)];
-    self.headerTitleLabel.textColor = RGB(155, 155, 155);
-    self.headerTitleLabel.textAlignment = NSTextAlignmentCenter;
-    self.headerTitleLabel.font = [FontProperties scMediumFont:14.0f];
-    [self.contentView addSubview:self.headerTitleLabel];
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [OldEventShowHighlightsCell height]);
+    self.backgroundColor = RGB(241, 241, 241);
+    
+    self.showHighlightsButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 0, self.frame.size.width - 90, 64)];
+    self.showHighlightsButton.backgroundColor = RGB(248, 248, 248);
+    [self.showHighlightsButton setTitle:@"Show Past Highglights" forState:UIControlStateNormal];
+    [self.showHighlightsButton setTitleColor:RGB(160, 160, 160) forState:UIControlStateNormal];
+    self.showHighlightsButton.titleLabel.font = [FontProperties scMediumFont: 18];
+    [self.showHighlightsButton addTarget:self action:@selector(showHighlightsPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.showHighlightsButton.layer.borderColor = RGB(210, 210, 210).CGColor;
+    self.showHighlightsButton.layer.borderWidth = 1;
+    self.showHighlightsButton.layer.cornerRadius = 8;
+    [self.contentView addSubview:self.showHighlightsButton];
 }
+
+- (void)showHighlightsPressed {
+    [self.placesDelegate showHighlights];
+}
+
++ (CGFloat) height {
+    return 150;
+}
+
+
 @end
 

@@ -12,15 +12,16 @@
 #import "Delegate.h"
 
 @interface EventPeopleScrollView : UIScrollView <UIScrollViewDelegate>
-- (id)initWithEvent:(Event*)event;
-@property (nonatomic, assign) id <UserSelectDelegate> userSelectDelegate;
 
+- (id)initWithEvent:(Event*)event;
+- (void)updateUI;
++ (CGFloat) containerHeight;
+
+@property (nonatomic, assign) id <UserSelectDelegate> userSelectDelegate;
 @property (nonatomic, assign) id <PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) Party *partyUser;
 @property (nonatomic, strong) NSNumber *groupID;
-- (void)updateUI;
 @property (nonatomic, assign) int eventOffset;
-
 @property (nonatomic, assign) BOOL fetchingEventAttendees;
 @property (nonatomic, strong) NSNumber *page;
 @property (nonatomic, assign) int xPosition;
