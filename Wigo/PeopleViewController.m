@@ -184,10 +184,10 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (void) goBack {
-    [self updateLastUserRead];
+    [Profile.user setStringLastUserRead:@"s"];
+    [Profile.user saveKeyAsynchronously:@"last_user_read"];
     [self.navigationController popViewControllerAnimated:YES];
 }
-
 
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -777,16 +777,6 @@ NSMutableArray *suggestedArrayView;
 }
 
 
-#pragma mark - Last User Read 
-- (void)updateLastUserRead {
-    User *profileUser = [Profile user];
-    for (User *user in [_everyoneParty getObjectArray]) {
-        if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastUserRead] intValue]) {
-            [profileUser setStringLastUserRead:@"latest"];
-            [profileUser saveKeyAsynchronously:@"last_user_read"];
-        }
-    }
-}
 
 #pragma mark - Update User Info
 - (void)updateUserAtTable:(NSNotification*)notification {
