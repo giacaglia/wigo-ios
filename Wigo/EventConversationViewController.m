@@ -135,6 +135,8 @@
             return;
         }
         
+        [EventAnalytics tagEvent: @"Event Conversation Face Tapped"];
+
         FaceCell *cell = (FaceCell *)[collectionView cellForItemAtIndexPath: indexPath];
         
         if (self.currentActiveCell) {

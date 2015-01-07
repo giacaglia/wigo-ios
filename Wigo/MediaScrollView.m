@@ -202,6 +202,8 @@
 
 
 -(void)scrolledToPage:(int)page {
+    [EventAnalytics tagEvent: @"Event Conversation Scrolled Highlight"];
+
     if (page < self.minPage) self.minPage = page;
     if (page > self.maxPage) self.maxPage = page;
     if (!self.pageViews) {
@@ -264,6 +266,9 @@
 
 - (void)mediaPickerController:(IQMediaPickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
+    
+    [EventAnalytics tagEvent: @"Event Conversation Captured Picture"];
+
     [self.eventConversationDelegate addLoadingBanner];
     NSString *type = @"";
     

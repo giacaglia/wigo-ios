@@ -494,6 +494,8 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) goingSomewhereElsePressed {
+    [EventAnalytics tagEvent:@"Go Somewhere Else Tapped"];
+
     [self scrollUp];
 
     if (!_dimView) {
@@ -564,6 +566,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) cancelledAddEventTapped {
+    
     [self initializeNavigationBar];
     [self dismissKeyboard];
 }
