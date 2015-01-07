@@ -127,7 +127,7 @@
     else if ([mimeType isEqualToString:kFaceImage]) {
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
         [myCell.imageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL] ]];
-        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, you're going out to %@.", [self.event name]];
+        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, you're going out to %@", [self.event name]];
         myCell.subtitleTextLabel.text = @"You can now post inside this event";
         myCell.subtitleTextLabel.alpha = 0.7f;
         myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
