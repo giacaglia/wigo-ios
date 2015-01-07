@@ -156,7 +156,6 @@ int firstIndexOfNegativeEvent;
 - (void) viewDidAppear:(BOOL)animated {
   
     [self.view endEditing:YES];
-    [self fetchIsThereNewPerson];
     if (shouldReloadEvents) {
         [self fetchEventsFirstPage];
     }
@@ -249,6 +248,26 @@ int firstIndexOfNegativeEvent;
         [self.rightButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
         self.navigationItem.rightBarButtonItem = rightBarButton;
+        
+        [self.rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+        UIImageView *followPlusWhiteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
+        followPlusWhiteImageView.image = [UIImage imageNamed:@"followPlusWhite"];
+        [self.rightButton addSubview:followPlusWhiteImageView];
+
+        if ([(NSNumber *)[[Profile user] objectForKey:@"num_unread_users"] intValue] > 0) {
+            self.redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, 10, 10)];
+            self.redDotLabel.backgroundColor = [FontProperties getOrangeColor];
+            self.redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
+            self.redDotLabel.clipsToBounds = YES;
+            self.redDotLabel.layer.borderWidth = 3;
+            self.redDotLabel.layer.cornerRadius = 5;
+            [self.rightButton addSubview:self.redDotLabel];
+        }
+        else {
+            if (self.redDotLabel) [self.redDotLabel removeFromSuperview];
+        }
+
+        
     }
     else {
         self.navigationItem.leftBarButtonItem = nil;
@@ -670,7 +689,14 @@ int firstIndexOfNegativeEvent;
         [profileUser setIsAttending:YES];
         [profileUser setIsGoingOut:YES];
         [profileUser setAttendingEventID:eventID];
-//        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
+        Event *eventCreated = [[Event alloc] initWithDictionary:@{
+                                                                  @"attendees": @[@{@"user": Profile.user.dictionary}],
+                                                                  @"name": _whereAreYouGoingTextField.text,
+                                                                  @"num_attending": @1,
+                                                                  @"id": eventID,
+                                                                 }];
+        [self showStoryForEvent:eventCreated];
+        
     }
 }
 
@@ -1496,45 +1522,6 @@ int firstIndexOfNegativeEvent;
         }];
     }
 }
-
-- (void) fetchIsThereNewPerson {
-    if (!self.fetchingIsThereNewPerson && [[Profile user] key]) {
-        self.fetchingIsThereNewPerson = YES;
-        [Network queryAsynchronousAPI:@"users/?limit=1" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-            NSArray *objects = [jsonResponse objectForKey:@"objects"];
-            if ([objects isKindOfClass:[NSArray class]]) {
-                User *lastUserJoined = [[User alloc] initWithDictionary:[objects objectAtIndex:0]];
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    User *profileUser = [Profile user];
-                    if (profileUser) {
-                        NSNumber *lastUserRead = [profileUser lastUserRead];
-                        NSNumber *lastUserJoinedNumber = (NSNumber *)[lastUserJoined objectForKey:@"id"];
-                        [Profile setLastUserJoined:lastUserJoinedNumber];
-                        [self.rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-                        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
-                        imageView.image = [UIImage imageNamed:@"followPlusWhite"];
-                        [self.rightButton addSubview:imageView];
-                        
-                        if ([lastUserRead intValue] < [lastUserJoinedNumber intValue]) {
-                            self.redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, 10, 10)];
-                            self.redDotLabel.backgroundColor = [FontProperties getOrangeColor];
-                            self.redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
-                            self.redDotLabel.clipsToBounds = YES;
-                            self.redDotLabel.layer.borderWidth = 3;
-                            self.redDotLabel.layer.cornerRadius = 5;
-                            [self.rightButton addSubview:self.redDotLabel];
-                        }
-                        else {
-                            if (self.redDotLabel) [self.redDotLabel removeFromSuperview];
-                        }
-                    }
-                    self.fetchingIsThereNewPerson = NO;
-                });
-            }
-        }];
-    }
-}
-
 
 #pragma mark - Refresh Control
 

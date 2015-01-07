@@ -127,7 +127,7 @@
         123./255., 125/255., 132./255., 1.
     };
 	
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(320, 54), YES, 0.0);
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake([[UIScreen mainScreen] bounds].size.width, 54), YES, 0.0);
 	
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -220,7 +220,7 @@
     [super viewWillLayoutSubviews];
     
     self.imageCropView.frame = self.view.bounds;
-    self.toolbar.frame = CGRectMake(0, CGRectGetHeight(self.view.frame) - 54, 320, 54);
+    self.toolbar.frame = CGRectMake(0, CGRectGetHeight(self.view.frame) - 54, [[UIScreen mainScreen] bounds].size.width, 54);
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

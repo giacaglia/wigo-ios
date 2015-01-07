@@ -53,6 +53,7 @@ typedef enum
 - (void)setStringNotificationRead:(NSString *)notificationRead;
 @property NSNumber *lastNotificationRead;
 @property NSNumber *lastMessageRead;
+- (void)setStringLastUserRead:(NSString *)lastUserRead;
 @property NSNumber *lastUserRead;
 @property BOOL isFollowingRequested;
 @property BOOL isTapped;
