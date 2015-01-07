@@ -168,6 +168,7 @@ forRemoteNotification:(NSDictionary *)userInfo
             }
         }
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     completionHandler();
 }
 
