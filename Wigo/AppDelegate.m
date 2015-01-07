@@ -132,8 +132,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+//    [self popToNavController];
+//    [self dismissViewController];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
-//    while ([self popToNavController] || [self dismissViewController]) {}
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if ([aps isKindOfClass:[NSDictionary class]]) {
