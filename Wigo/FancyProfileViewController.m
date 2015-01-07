@@ -144,6 +144,8 @@ UIButton *tapButton;
         [self fetchUserInfo];
         _pageControl.numberOfPages = [[self.user imagesURL] count];
         [self createImageScrollView];
+        if ([self.user getUserState] == PRIVATE_PROFILE || [self.user getUserState] == NOT_SENT_FOLLOWING_PRIVATE_USER) _privateLogoImageView.hidden = NO;
+        else _privateLogoImageView.hidden = YES;
     }
 
 }
