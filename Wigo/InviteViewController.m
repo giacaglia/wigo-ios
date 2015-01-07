@@ -145,8 +145,12 @@
     else {
         [[NSUserDefaults standardUserDefaults] setValue:chosenPeople forKey:@"chosenPeople"];
     }
+    NSMutableSet *differenceChosenPeople = [NSMutableSet setWithArray:chosenPeople];
+    for (NSString *record in savedChosenPeople) {
+        [differenceChosenPeople removeObject:record];
+    }
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [MobileDelegate sendChosenPeople:chosenPeople forContactList:mobileContacts];
+    [MobileDelegate sendChosenPeople:[differenceChosenPeople allObjects] forContactList:mobileContacts];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -501,26 +505,8 @@ heightForHeaderInSection:(NSInteger)section
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-//    _searchIconImageView.hidden = YES;
     isSearching = YES;
 }
-
-//- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-//    if (![searchBar.text isEqualToString:@""]) {
-//        [UIView animateWithDuration:0.01 animations:^{
-//            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
-//        }  completion:^(BOOL finished){
-//            _searchIconImageView.hidden = NO;
-//        }];
-//    }
-//    else {
-//        [UIView animateWithDuration:0.01 animations:^{
-//            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
-//        }  completion:^(BOOL finished){
-//            _searchIconImageView.hidden = NO;
-//        }];
-//    }
-//}
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if([searchText length] != 0) {
