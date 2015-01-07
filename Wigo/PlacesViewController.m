@@ -689,7 +689,14 @@ int firstIndexOfNegativeEvent;
         [profileUser setIsAttending:YES];
         [profileUser setIsGoingOut:YES];
         [profileUser setAttendingEventID:eventID];
-//        if ([self shouldPresentGrowthHack]) [self presentGrowthHack];
+        Event *eventCreated = [[Event alloc] initWithDictionary:@{
+                                                                  @"attendees": @[@{@"user": Profile.user.dictionary}],
+                                                                  @"name": _whereAreYouGoingTextField.text,
+                                                                  @"num_attending": @1,
+                                                                  @"id": eventID,
+                                                                 }];
+        [self showStoryForEvent:eventCreated];
+        
     }
 }
 
