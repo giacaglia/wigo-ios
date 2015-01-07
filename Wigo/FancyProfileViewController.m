@@ -139,7 +139,13 @@ UIButton *tapButton;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
-    if ([self.user isEqualToUser:[Profile user]]) [self fetchUserInfo];
+    if ([self.user isEqualToUser:Profile.user]) {
+        self.user = Profile.user;
+        [self fetchUserInfo];
+        _pageControl.numberOfPages = [[self.user imagesURL] count];
+        [self createImageScrollView];
+    }
+
 }
 
 
@@ -201,13 +207,14 @@ UIButton *tapButton;
 }
 
 - (void) createImageScrollView {
-    
     NSMutableArray *infoDicts = [[NSMutableArray alloc] init];
-    
     for (int i = 0; i < [[self.user imagesURL] count]; i++) {
-        NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithDictionary: @{@"user": self.user,
-                                                                                       @"images": [self.user images],
-                                                                                       @"index": [NSNumber numberWithInt: i]}];
+        NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithDictionary:
+                                        @{
+                                          @"user": self.user,
+                                          @"images": [self.user images],
+                                          @"index": [NSNumber numberWithInt: i]
+                                          }];
         [infoDicts addObject: info];
     }
     

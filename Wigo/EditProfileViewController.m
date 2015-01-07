@@ -86,10 +86,8 @@ UIViewController *webViewController;
 
 - (void)saveDataAndGoBack {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    User *profileUser = [Profile user];
-//    [profileUser setBioString:_bioTextView.text];
-    [profileUser setIsPrivate:_privacySwitch.on];
-    [profileUser save];
+    [Profile.user setIsPrivate:_privacySwitch.on];
+    [Profile.user save];
     [WiGoSpinnerView hideSpinnerForView:self.view];
     
     [self dismissViewControllerAnimated: YES  completion: nil];

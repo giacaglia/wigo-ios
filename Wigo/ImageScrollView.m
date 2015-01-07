@@ -41,8 +41,6 @@
 }
 
 - (void) addImages:(NSArray *)imageURLs infoDicts:(NSArray *)infoDicts areaDicts:(NSArray *)areaDicts {
-    
-
     [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     self.imageViews = [[NSMutableArray alloc] init];
     for (int i = 0; i < [imageURLs count]; i++) {
