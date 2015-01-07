@@ -782,7 +782,7 @@ NSMutableArray *suggestedArrayView;
     User *profileUser = [Profile user];
     for (User *user in [_everyoneParty getObjectArray]) {
         if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastUserRead] intValue]) {
-            [profileUser setLastUserRead:[user objectForKey:@"id"]];
+            [profileUser setStringLastUserRead:@"latest"];
             [profileUser saveKeyAsynchronously:@"last_user_read"];
         }
     }
