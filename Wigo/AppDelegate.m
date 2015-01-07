@@ -113,6 +113,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if ([aps isKindOfClass:[NSDictionary class]]) {
@@ -133,7 +134,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                 }
             }
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     }
     else { // If it's was at the background or inactive
     }
