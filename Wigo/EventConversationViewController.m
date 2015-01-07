@@ -135,6 +135,9 @@
             return;
         }
         
+        NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
+        [EventAnalytics tagEvent:@"Event Conversation Face Tapped" withDetails: @{@"isPeeking": isPeekingString}];
+
         FaceCell *cell = (FaceCell *)[collectionView cellForItemAtIndexPath: indexPath];
         
         if (self.currentActiveCell) {
@@ -451,6 +454,8 @@
 }
 
 - (void)cancelPressed:(id)sender {
+    [EventAnalytics tagEvent: @"Close Highlights Tapped"];
+
     [self.mediaScrollView closeView];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -461,6 +466,8 @@
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     // NEeds to be sequential.
     if (page < self.eventMessages.count && page >= 0) {
+        [EventAnalytics tagEvent: @"Delete Highlight Tapped"];
+        
         [self.mediaScrollView removeMediaAtPage:(int)page];
         [self.eventMessages removeObjectAtIndex:page];
         [self.facesCollectionView reloadData];
@@ -535,7 +542,11 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+
 - (void)promptCamera {
+    self.mediaScrollView.cameraPromptAddToStory = true;
+    [EventAnalytics tagEvent: @"Go Here, Then Add to Story Tapped"];
+    
     [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kGoHereState];
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:self.eventMessages];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];

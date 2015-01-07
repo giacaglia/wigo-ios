@@ -12,6 +12,9 @@
 #import "Event.h"
 #import "Delegate.h"
 
+
+
+
 @protocol MediaScrollViewDelegate
 - (void)focusOnContent;
 @optional
@@ -31,6 +34,8 @@
 @property (nonatomic, assign) int maxPage;
 @property (nonatomic, assign) BOOL isFocusing;
 @property (nonatomic, assign) BOOL isPeeking;
+@property (nonatomic, assign) BOOL cameraPromptAddToStory;
+
 - (void)closeView;
 -(void)scrolledToPage:(int)page;
 - (void)removeMediaAtPage:(int)page;

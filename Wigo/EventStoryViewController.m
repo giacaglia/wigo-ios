@@ -162,12 +162,15 @@
 }
 
 - (void)invitePressed {
+    [EventAnalytics tagEvent: @"Event Story Invite Tapped"];
     [self presentViewController:[[InviteViewController alloc] initWithEventName:self.event.name andID:[self.event eventID]]
                        animated:YES
                      completion:nil];
 }
 
 - (void)goHerePressed {
+    [EventAnalytics tagEvent: @"Event Story Go Here Tapped"];
+    
     // Update data
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
     [EventAnalytics tagEvent:@"Go Here" withDetails:options];
@@ -458,6 +461,8 @@
 
 - (void)sendPressed {
     
+    [EventAnalytics tagEvent: @"Event Story Create Highlight Tapped"];
+
     //not going here
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
@@ -532,6 +537,12 @@
 
 
 - (void)showEventConversation:(NSNumber *)index {
+    
+    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
+
+    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    [EventAnalytics tagEvent:@"Event Story Highlight Tapped" withDetails: @{@"isPeeking": isPeekingString}];
+
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
@@ -544,7 +555,6 @@
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
     self.conversationViewController.isPeeking = isPeeking;
 
     self.conversationViewController.storyDelegate = self;

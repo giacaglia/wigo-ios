@@ -202,6 +202,10 @@
 
 
 -(void)scrolledToPage:(int)page {
+    
+    NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
+    [EventAnalytics tagEvent:@"Event Conversation Scrolled Highlight" withDetails: @{@"isPeeking": isPeekingString}];
+    
     if (page < self.minPage) self.minPage = page;
     if (page > self.maxPage) self.maxPage = page;
     if (!self.pageViews) {
@@ -264,6 +268,14 @@
 
 - (void)mediaPickerController:(IQMediaPickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
+    
+    if (self.cameraPromptAddToStory) {
+        [EventAnalytics tagEvent: @"Go Here, Then Add to Story, Then Picture Captured"];
+        self.cameraPromptAddToStory = false;
+    } else {
+        [EventAnalytics tagEvent: @"Event Conversation Captured Picture"];
+    }
+
     [self.eventConversationDelegate addLoadingBanner];
     NSString *type = @"";
     
@@ -293,6 +305,7 @@
                          @"properties": properties,
                          @"media_mime_type": type
                          };
+            [EventAnalytics tagEvent: @"Event Conversation Added Text"];
         }
         else {
             self.options =  @{
