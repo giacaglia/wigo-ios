@@ -135,7 +135,8 @@
             return;
         }
         
-        [EventAnalytics tagEvent: @"Event Conversation Face Tapped"];
+        NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
+        [EventAnalytics tagEvent:@"Event Conversation Face Tapped" withDetails: @{@"isPeeking": isPeekingString}];
 
         FaceCell *cell = (FaceCell *)[collectionView cellForItemAtIndexPath: indexPath];
         

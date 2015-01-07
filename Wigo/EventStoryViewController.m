@@ -537,7 +537,11 @@
 
 
 - (void)showEventConversation:(NSNumber *)index {
-    [EventAnalytics tagEvent: @"Event Story Highlight Tapped"];
+    
+    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
+
+    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    [EventAnalytics tagEvent:@"Event Story Highlight Tapped" withDetails: @{@"isPeeking": isPeekingString}];
 
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
@@ -551,7 +555,6 @@
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
     self.conversationViewController.isPeeking = isPeeking;
 
     self.conversationViewController.storyDelegate = self;

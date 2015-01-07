@@ -202,8 +202,10 @@
 
 
 -(void)scrolledToPage:(int)page {
-    [EventAnalytics tagEvent: @"Event Conversation Scrolled Highlight"];
-
+    
+    NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
+    [EventAnalytics tagEvent:@"Event Conversation Scrolled Highlight" withDetails: @{@"isPeeking": isPeekingString}];
+    
     if (page < self.minPage) self.minPage = page;
     if (page > self.maxPage) self.maxPage = page;
     if (!self.pageViews) {
