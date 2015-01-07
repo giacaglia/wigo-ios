@@ -81,6 +81,25 @@ NSDate *firstLoggedTime;
 
 }
 
+- (BOOL)popToNavController {
+    UINavigationController *navController = (UINavigationController*)self.window.rootViewController;
+    if (navController) {
+        [navController popToRootViewControllerAnimated:YES];
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)dismissViewController {
+    UINavigationController *navigationController = (id) self.window.rootViewController;
+    if ([navigationController presentedViewController]) {
+        [[navigationController presentedViewController] dismissViewControllerAnimated:YES
+                                                                           completion:^{}];
+        return YES;
+    }
+    return NO;
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
@@ -114,6 +133,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
+//    while ([self popToNavController] || [self dismissViewController]) {}
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if ([aps isKindOfClass:[NSDictionary class]]) {
