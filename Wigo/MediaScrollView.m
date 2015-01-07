@@ -807,6 +807,8 @@
         return;
     }
     
+    [EventAnalytics tagEvent:@"Up Vote Tapped"];
+    
     CGAffineTransform currentTransform = self.upVoteButton.transform;
     
     [UIView animateWithDuration:0.2f
@@ -832,6 +834,8 @@
         return;
     }
     
+    [EventAnalytics tagEvent:@"Down Vote Tapped"];
+
     
     CGAffineTransform currentTransform = self.downVoteButton.transform;
     

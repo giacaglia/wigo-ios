@@ -127,6 +127,11 @@ int firstIndexOfNegativeEvent;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    NSString *isPeeking = ([self isPeeking]) ? @"Yes" : @"No";
+
+    [EventAnalytics tagEvent:@"Where View" withDetails: @{@"isPeeking": isPeeking}];
+
     self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
 
@@ -149,7 +154,6 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) viewDidAppear:(BOOL)animated {
-    [EventAnalytics tagEvent:@"Where View"];
   
     [self.view endEditing:YES];
     if (shouldReloadEvents) {
@@ -1937,7 +1941,7 @@ int firstIndexOfNegativeEvent;
     
     self.showHighlightsButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 0, self.frame.size.width - 90, 64)];
     self.showHighlightsButton.backgroundColor = RGB(248, 248, 248);
-    [self.showHighlightsButton setTitle:@"Show Past Highglights" forState:UIControlStateNormal];
+    [self.showHighlightsButton setTitle:@"Show Past Highlights" forState:UIControlStateNormal];
     [self.showHighlightsButton setTitleColor:RGB(160, 160, 160) forState:UIControlStateNormal];
     self.showHighlightsButton.titleLabel.font = [FontProperties scMediumFont: 18];
     [self.showHighlightsButton addTarget:self action:@selector(showHighlightsPressed) forControlEvents:UIControlEventTouchUpInside];

@@ -1038,6 +1038,7 @@
 				E94A2850196C6BC50027D3BA /* Facebook Photos */,
 				E99EC28B1986B6A400CBFA59 /* Popup Helpers */,
 				E9ACCA2619C4CC0600F3EB20 /* GrowthHackViews */,
+				C14378D119915D6300D29264 /* Analytics */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -1058,7 +1059,6 @@
 				E9F7994719D4C633001D5BFC /* GoogleAnalytics */,
 				E96E0C1519B6171D001E6E37 /* GKImagePicker */,
 				E9CD537F1993C29800206B75 /* FLAnimatedImage */,
-				C14378D119915D6300D29264 /* Analytics */,
 				E9DBB04D197813F900DDACDE /* CHGifRefreshControl */,
 				E900C2931961EADE00A01F50 /* SDWebImage */,
 				E9CD472D194B88A200AEA17D /* BlurImage */,

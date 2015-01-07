@@ -75,8 +75,11 @@
         [tracker set:[GAIFields customDimensionForIndex:7] value:tapped];
     }
     
-    [data addEntriesFromDictionary:details];
-   
+    
+    //check if is peeking
+    if ([[details objectForKey: @"isPeeking"] isEqualToString: @"Yes"]) {
+        [tracker set:[GAIFields customDimensionForIndex:8] value:@"Yes"];
+    }
 
     [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"ui_action"     // Event category (required)
                                                           action:name  // Event action (required)
