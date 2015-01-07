@@ -539,6 +539,8 @@
 }
 
 - (void)promptCamera {
+    [EventAnalytics tagEvent: @"Go Here, Then Add to Story Tapped"];
+    
     [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kGoHereState];
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:self.eventMessages];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
