@@ -93,6 +93,10 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self fetchFirstPageMessages];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    didBeginEditing = NO;
+}
 
 - (void) initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -126,7 +130,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
             [self addMessageFromReceiver:message];
         }
     }
-    if ([[_messageParty getObjectArray] count] == 0) {
+    if (_messageParty.count == 0) {
         [self initializeMessageForEmptyConversation];
     }
     [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:NO];
@@ -496,7 +500,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView.contentOffset.y == 0)
-        if ([[_messageParty getObjectArray] count] > 0 && [_messageParty hasNextPage]) {
+        if (_messageParty.count > 0 && [_messageParty hasNextPage]) {
             [self fetchMessages];
         }
 }
