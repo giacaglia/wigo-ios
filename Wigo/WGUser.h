@@ -104,6 +104,9 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 +(void) getNotMe:(WGCollectionResultBlock)handler;
 +(void) getNewestUser:(WGUserResultBlock)handler;
++(void) getOnboarding:(WGCollectionResultBlock)handler;
++(void) searchUsers:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
++(void) getSuggestions:(WGCollectionResultBlock)handler;
 
 -(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;

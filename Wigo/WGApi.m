@@ -235,7 +235,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            if (!action) {
+            if (dataError) {
                 handler(nil, nil, dataError);
                 return;
             }
@@ -270,7 +270,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            if (!action) {
+            if (dataError) {
                 handler(nil, nil, dataError);
                 return;
             }
@@ -293,6 +293,41 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     }];
     
     [uploadTask resume];
+}
+
++(void) startup:(WGStartupResult)handler {
+    [WGApi get:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, nil, nil, error);
+            return;
+        }
+        NSString *cdnPrefix;
+        NSNumber *googleAnalyticsEnabled;
+        NSNumber *schoolStatistics;
+        NSError *dataError;
+        @try {
+            NSDictionary *cdn = [jsonResponse objectForKey:@"cdn"];
+            cdnPrefix = [cdn objectForKey:@"uploads"];
+            
+            NSDictionary *analytics = [jsonResponse objectForKey:@"analytics"];
+            googleAnalyticsEnabled = [analytics objectForKey:@"gAnalytics"];
+            
+            NSDictionary *provisioning = [jsonResponse objectForKey:@"provisioning"];
+            schoolStatistics = [provisioning objectForKey:@"school_statistics"];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            if (dataError) {
+                handler(nil, nil, nil, dataError);
+                return;
+            }
+            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, dataError);
+        }
+    }];
 }
 
 @end

@@ -36,8 +36,7 @@
 		45DF86B31A5C5DEB00DB85AE /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86A91A5C5DEB00DB85AE /* AFURLResponseSerialization.m */; };
 		45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86AB1A5C5DEB00DB85AE /* AFURLSessionManager.m */; };
 		45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF11A5DA86500A5170F /* WGGroup.m */; };
-		C10BFB54198C24E6003CA59A /* EventAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C10BFB53198C24E6003CA59A /* EventAnalytics.m */; };
-		C10BFB55198C24E6003CA59A /* EventAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C10BFB53198C24E6003CA59A /* EventAnalytics.m */; };
+		45F74FF51A5E3F9100A5170F /* WGFollow.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF41A5E3F9100A5170F /* WGFollow.m */; };
 		C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */ = {isa = PBXBuildFile; fileRef = C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */; };
 		C12A110819787BE700D53B1C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C61194F745300182E0E /* User.m */; };
 		C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
@@ -472,8 +471,8 @@
 		45DF86AB1A5C5DEB00DB85AE /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
 		45F74FF01A5DA86500A5170F /* WGGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGGroup.h; sourceTree = "<group>"; };
 		45F74FF11A5DA86500A5170F /* WGGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGGroup.m; sourceTree = "<group>"; };
-		C10BFB52198C24E6003CA59A /* EventAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventAnalytics.h; sourceTree = "<group>"; };
-		C10BFB53198C24E6003CA59A /* EventAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAnalytics.m; sourceTree = "<group>"; };
+		45F74FF31A5E3F9100A5170F /* WGFollow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGFollow.h; sourceTree = "<group>"; };
+		45F74FF41A5E3F9100A5170F /* WGFollow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGFollow.m; sourceTree = "<group>"; };
 		C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Wigo.h"; sourceTree = "<group>"; };
 		C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+Wigo.m"; sourceTree = "<group>"; };
 		C12A11E119787BE700D53B1C /* Wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -971,6 +970,8 @@
 				454409631A58D19300BB3036 /* WGProfile.m */,
 				454409531A5241FA00BB3036 /* WGEvent.h */,
 				454409541A5241FA00BB3036 /* WGEvent.m */,
+				45F74FF31A5E3F9100A5170F /* WGFollow.h */,
+				45F74FF41A5E3F9100A5170F /* WGFollow.m */,
 				4544095C1A548E5700BB3036 /* WGEventAttendee.h */,
 				4544095D1A548E5700BB3036 /* WGEventAttendee.m */,
 				454409561A537F1C00BB3036 /* WGMessage.h */,
@@ -1032,15 +1033,6 @@
 				E998C28319D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m */,
 			);
 			name = Categories;
-			sourceTree = "<group>";
-		};
-		C14378D119915D6300D29264 /* Analytics */ = {
-			isa = PBXGroup;
-			children = (
-				C10BFB52198C24E6003CA59A /* EventAnalytics.h */,
-				C10BFB53198C24E6003CA59A /* EventAnalytics.m */,
-			);
-			name = Analytics;
 			sourceTree = "<group>";
 		};
 		C18AC28F198451150056957B /* autorevision */ = {
@@ -1229,7 +1221,6 @@
 				E9F7994719D4C633001D5BFC /* GoogleAnalytics */,
 				E96E0C1519B6171D001E6E37 /* GKImagePicker */,
 				E9CD537F1993C29800206B75 /* FLAnimatedImage */,
-				C14378D119915D6300D29264 /* Analytics */,
 				E9DBB04D197813F900DDACDE /* CHGifRefreshControl */,
 				E900C2931961EADE00A01F50 /* SDWebImage */,
 				E9CD472D194B88A200AEA17D /* BlurImage */,
@@ -2188,7 +2179,6 @@
 				C12A111719787BE700D53B1C /* SignViewController.m in Sources */,
 				E9C63BEF1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */,
 				E9AEAE541A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */,
-				C10BFB55198C24E6003CA59A /* EventAnalytics.m in Sources */,
 				C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */,
 				E9C63BD51A03ED35006C5DD2 /* IQAssetsPickerShadowView.m in Sources */,
 				E9C63C091A03ED35006C5DD2 /* IQPartitionView.m in Sources */,
@@ -2330,7 +2320,6 @@
 				45DF868E1A5AE1C100DB85AE /* WGError.m in Sources */,
 				E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */,
 				FA5526221A1FE3D800101AE7 /* EngagementGraph.m in Sources */,
-				C10BFB54198C24E6003CA59A /* EventAnalytics.m in Sources */,
 				E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */,
 				4563F5211A3F3C6900F8C9C4 /* WGCollection.m in Sources */,
 				45DF86AC1A5C5DEB00DB85AE /* AFHTTPRequestOperation.m in Sources */,
@@ -2383,6 +2372,7 @@
 				E96EF681197EE95D00F88A6D /* Time.m in Sources */,
 				4544094F1A51EF3000BB3036 /* WGCollectionArray.m in Sources */,
 				E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */,
+				45F74FF51A5E3F9100A5170F /* WGFollow.m in Sources */,
 				4544095B1A547BCD00BB3036 /* WGNotification.m in Sources */,
 				E9ACCA2019C3A12500F3EB20 /* WigoConfirmationViewController.m in Sources */,
 				E900C2BF1961EADE00A01F50 /* UIImage+GIF.m in Sources */,

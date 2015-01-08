@@ -346,47 +346,13 @@ forRemoteNotification:(NSDictionary *)userInfo
 - (void)fetchAppStart {
     BOOL canFetchAppStartUp = [[NSUserDefaults standardUserDefaults] boolForKey:@"canFetchAppStartup"];
     if (canFetchAppStartUp && [self shouldFetchAppStartup] && [WGProfile currentUser]) {
-        
-        [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if (!error) {
-                    if ([[jsonResponse allKeys] containsObject:@"cdn"]) {
-                        NSDictionary *cdnDictionary = [jsonResponse objectForKey:@"cdn"];
-                        if ([[cdnDictionary allKeys] containsObject:@"uploads"]) {
-                            NSString *cdn = [cdnDictionary objectForKey:@"uploads"];
-                            [Profile setCDNPrefix:cdn];
-                        }
-                    }
-                    if ([[jsonResponse allKeys] containsObject:@"analytics"]) {
-                        NSDictionary *analytics = [jsonResponse objectForKey:@"analytics"];
-                        if (analytics) {
-                            BOOL gAnalytics = YES;
-                            NSNumber *gval = [analytics objectForKey:@"gAnalytics"];
-                            if (gval) {
-                                gAnalytics = [gval boolValue];
-                            }
-                            
-                            [Profile setGoogleAnalyticsEnabled:gAnalytics];
-                            [[NSUserDefaults standardUserDefaults] setBool:gAnalytics forKey:@"googleAnalyticsEnabled"];
-                            [[NSUserDefaults standardUserDefaults] synchronize];
-                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            if (gAnalytics) [appDelegate initializeGoogleAnalytics];
-                        }
-                    }
-                    if ([[jsonResponse allKeys] containsObject:@"provisioning"]) {
-                        NSDictionary *provisioning = [jsonResponse objectForKey:@"provisioning"];
-                        if ([provisioning isKindOfClass:[NSDictionary class]] &&
-                            [[provisioning allKeys] containsObject:@"school_statistics"]) {
-                            NSNumber *schoolVal = [provisioning objectForKey:@"school_statistics"];
-                            if (schoolVal) {
-                                BOOL schoolStats = [schoolVal boolValue];
-                                [[NSUserDefaults standardUserDefaults] setBool:schoolStats forKey:@"school_statistics"];
-                                [[NSUserDefaults standardUserDefaults] synchronize];
-                            }
-                        }
-                    }
-                }
-            });
+        [WGApi startup:^(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSError *error) {
+            if (error) {
+                return;
+            }
+            [WGProfile currentUser].cdnPrefix = cdnPrefix;
+            [WGProfile currentUser].googleAnalyticsEnabled = googleAnalyticsEnabled;
+            [WGProfile currentUser].schoolStatistics = schoolStatistics;
         }];
     }
 }

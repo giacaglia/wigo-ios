@@ -12,9 +12,8 @@
 
 UISearchBar *searchBar;
 UITableView *tableViewOfPeople;
-NSNumber *page;
-Party *contentParty;
-Party *filteredContentParty;
+WGCollection *users;
+WGCollection *filteredUsers;
 BOOL isSearching;
 UIImageView *searchIconImageView;
 UIViewController *popViewController;
@@ -188,11 +187,11 @@ BOOL initializedPopScreen;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (isSearching) {
-        return [[filteredContentParty getObjectArray] count];
+        return [filteredUsers count];
     }
     else {
-        int hasNextPage = ([contentParty hasNextPage] ? 1 : 0);
-        return [[contentParty getObjectArray] count] + hasNextPage;
+        int hasNextPage = ([users hasNextPage] ? 1 : 0);
+        return [users count] + hasNextPage;
     }
 }
 
@@ -206,8 +205,8 @@ BOOL initializedPopScreen;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
-    if ([[contentParty getObjectArray] count] == 0) return cell;
-    if ([indexPath row] == [[contentParty getObjectArray] count]) {
+    if ([users count] == 0) return cell;
+    if ([indexPath row] == [users count]) {
         [self fetchEveryone];
         return cell;
     }
@@ -271,19 +270,17 @@ BOOL initializedPopScreen;
     return cell;
 }
 
-#warning SWITCH TO WGCOLLECTION
-
-- (WGUser *)getUserAtIndex:(int)index {
+-(WGUser *) getUserAtIndex:(int)index {
     WGUser *user;
     if (isSearching) {
-        int sizeOfArray = (int)[[filteredContentParty getObjectArray] count];
+        int sizeOfArray = (int)[filteredUsers count];
         if (sizeOfArray > 0 && sizeOfArray > index)
-            user = [[filteredContentParty getObjectArray] objectAtIndex:index];
+            user = (WGUser *)[filteredUsers objectAtIndex:index];
     }
     else {
-        int sizeOfArray = (int)[[contentParty getObjectArray] count];
+        int sizeOfArray = (int)[users count];
         if (sizeOfArray > 0 && sizeOfArray > index)
-            user = [[contentParty getObjectArray] objectAtIndex:index];
+            user = (WGUser *)[users objectAtIndex:index];
     }
     return user;
 }
@@ -292,11 +289,11 @@ BOOL initializedPopScreen;
     //Get Index Path
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:tableViewOfPeople];
     NSIndexPath *indexPath = [tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
-    User *user = [self getUserAtIndex:(int)[indexPath row]];
+    WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
     
     UIButton *senderButton = (UIButton*)sender;
     if (senderButton.tag == -100) {
-        if ([user isPrivate]) {
+        if (user.privacy == PRIVATE) {
             [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
             [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
             [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -305,24 +302,30 @@ BOOL initializedPopScreen;
             senderButton.layer.borderWidth = 1;
             senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             senderButton.layer.cornerRadius = 3;
-            [user setIsFollowingRequested:YES];
+            user.isFollowingRequested = [NSNumber numberWithBool:YES];
         }
         else {
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            [user setIsFollowing:YES];
+            user.isFollowing = [NSNumber numberWithBool:YES];
         }
         senderButton.tag = 100;
-        [Network followUser:user];
-        [contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
+        [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
+            // Do nothing!
+        }];
+        [users replaceObjectAtIndex:[indexPath row] withObject:user];
     }
     else {
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
-        [Network unfollowUser:user];
-        [user setIsFollowing:NO];
-        [user setIsFollowingRequested:NO];
-        [contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
+        
+        [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
+            // Do nothing!
+        }];
+        
+        user.isFollowing = [NSNumber numberWithBool:NO];
+        user.isFollowingRequested = [NSNumber numberWithBool:NO];
+        [users replaceObjectAtIndex:[indexPath row] withObject:user];
     }
 }
 
@@ -334,23 +337,32 @@ BOOL initializedPopScreen;
 #pragma mark - Network functions
 
 - (void)fetchFirstPageEveryone {
-    page = @1;
-    contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self fetchEveryone];
 }
 
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?query=onboarding&page=%@",[page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        [contentParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [contentParty addMetaInfo:metaDictionary];
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            page = @([page intValue] + 1);
-            [tableViewOfPeople reloadData];
-        });
-    }];
+    if (!users) {
+        [WGUser getOnboarding:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                users = collection;
+                [tableViewOfPeople reloadData];
+            });
+        }];
+    } else if ([users hasNextPage]) {
+        [users addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                [tableViewOfPeople reloadData];
+            });
+        }];
+    }
 }
 
 #pragma mark - UISearchBarDelegate
@@ -378,7 +390,7 @@ BOOL initializedPopScreen;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    [filteredContentParty removeAllObjects];
+    [filteredUsers removeAllObjects];
     
     if([searchText length] != 0) {
         isSearching = YES;
@@ -398,30 +410,20 @@ BOOL initializedPopScreen;
  cancelPreviousRequest:YES];
 }
 
-
 - (void)searchTableList {
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
-    page = @1;
-    NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[page stringValue], searchString];
-    [self searchUsersWithString:queryString andObjectType:USER_TYPE];
-}
-
-- (void)searchUsersWithString:(NSString *)queryString andObjectType:(OBJECT_TYPE)type {
-    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        if ([page isEqualToNumber:@1]) filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-        NSMutableArray *arrayOfUsers;
-        arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        [filteredContentParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [filteredContentParty addMetaInfo:metaDictionary];
+    
+    [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            page = @([page intValue] + 1);
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionSearch retryHandler:nil];
+                return;
+            }
+            users = collection;
             [tableViewOfPeople reloadData];
         });
     }];
 }
-
-
 
 @end

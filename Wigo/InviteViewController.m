@@ -173,7 +173,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
         if (isSearching) {
-            return [[filteredContentParty getObjectArray] count];
+            return [[filteredUsers getObjectArray] count];
         }
         else {
             int hasNextPage = ([everyoneParty hasNextPage] ? 1 : 0);
@@ -200,17 +200,17 @@
         int tag = (int)[indexPath row];
         User *user;
         if (isSearching) {
-            if ([[filteredContentParty getObjectArray] count] == 0) return cell;
-            if (tag < [[filteredContentParty getObjectArray] count]) {
-                user = [[filteredContentParty getObjectArray] objectAtIndex:tag];
+            if ([[filteredUsers getObjectArray] count] == 0) return cell;
+            if (tag < [[filteredUsers getObjectArray] count]) {
+                user = [[filteredUsers getObjectArray] objectAtIndex:tag];
             }
-            if ([[filteredContentParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
-                if (tag == [[filteredContentParty getObjectArray] count] - 5) {
+            if ([[filteredUsers getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
+                if (tag == [[filteredUsers getObjectArray] count] - 5) {
                     [self fetchEveryone];
                 }
             }
             else {
-                if (tag == [[filteredContentParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
+                if (tag == [[filteredUsers getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
                     [self fetchEveryone];
                     return cell;
                 }

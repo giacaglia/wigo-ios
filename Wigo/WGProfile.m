@@ -9,6 +9,7 @@
 #import "WGProfile.h"
 
 #define kKeyKey @"key"
+#define kSchoolStatisticsKey @"school_statistics"
 #define kGoogleAnalyticsEnabledKey @"googleAnalyticsEnabled"
 #define kCanFetchAppStartupKey @"canFetchAppStartup"
 #define kTriedToRegisterKey @"triedToRegister"
@@ -129,6 +130,14 @@ static WGProfile *currentUser = nil;
 
 -(NSNumber *) showedOnboardView {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kShowedOnboardView];
+}
+
+-(void) setSchoolStatistics:(NSNumber *)schoolStatistics {
+    [[NSUserDefaults standardUserDefaults] setObject:schoolStatistics forKey:kSchoolStatisticsKey];
+}
+
+-(NSNumber *) schoolStatistics {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kSchoolStatisticsKey];
 }
 
 -(void) setGoogleAnalyticsEnabled:(NSNumber *)googleAnalyticsEnabled {
