@@ -36,7 +36,9 @@
 
 //favorite
 @property UIButton *leftProfileButton;
-@property UIButton *rightProfileButton;
+@property (nonatomic, strong) UILabel *numberOfFollowersLabel;
+@property (nonatomic, strong) UIButton *rightProfileButton;
+@property (nonatomic, strong) UILabel *numberOfFollowingLabel;
 @property UIButton *chatButton;
 
 //UI
@@ -360,12 +362,12 @@ UIButton *tapButton;
     _leftProfileButton = [[UIButton alloc] init];
     _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3, 70);
     [_leftProfileButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    UILabel *numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _leftProfileButton.frame.size.width, 25)];
-    numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
-    numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
-    numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
-    numberOfFollowersLabel.text = [(NSNumber*)[self.user objectForKey:@"num_followers"] stringValue];
-    [_leftProfileButton addSubview:numberOfFollowersLabel];
+    _numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _leftProfileButton.frame.size.width, 25)];
+    _numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
+    _numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
+    _numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
+    _numberOfFollowersLabel.text = [(NSNumber*)[self.user objectForKey:@"num_followers"] stringValue];
+    [_leftProfileButton addSubview:_numberOfFollowersLabel];
     
     UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _leftProfileButton.frame.size.width, 20)];
     followersLabel.textColor = [FontProperties getOrangeColor];
@@ -378,12 +380,12 @@ UIButton *tapButton;
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70);
-    UILabel *numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _rightProfileButton.frame.size.width, 25)];
-    numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
-    numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
-    numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
-    numberOfFollowingLabel.text = [(NSNumber*)[self.user objectForKey:@"num_following"] stringValue];
-    [_rightProfileButton addSubview:numberOfFollowingLabel];
+    _numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _rightProfileButton.frame.size.width, 25)];
+    _numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
+    _numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
+    _numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
+    _numberOfFollowingLabel.text = [(NSNumber*)[self.user objectForKey:@"num_following"] stringValue];
+    [_rightProfileButton addSubview:_numberOfFollowingLabel];
     
     UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _rightProfileButton.frame.size.width, 20)];
     followingLabel.textColor = [FontProperties getOrangeColor];
@@ -1029,12 +1031,17 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                         User *user = [[User alloc] initWithDictionary:jsonResponse];
                         [Profile setUser:user];
                         [self updateNumberOfChats];
+                        _numberOfFollowersLabel.text = [(NSNumber*)[Profile.user objectForKey:@"num_followers"] stringValue];
+                        _numberOfFollowingLabel.text = [(NSNumber*)[self.user objectForKey:@"num_following"] stringValue];
+
                     }
                 }
                 else {
                     User *user = [[User alloc] initWithDictionary:jsonResponse];
                     [Profile setUser:user];
                     [self updateNumberOfChats];
+                    _numberOfFollowersLabel.text = [(NSNumber*)[Profile.user objectForKey:@"num_followers"] stringValue];
+                    _numberOfFollowingLabel.text = [(NSNumber*)[self.user objectForKey:@"num_following"] stringValue];
                 }
             });
         }];
