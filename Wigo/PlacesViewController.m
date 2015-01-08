@@ -139,7 +139,9 @@ int firstIndexOfNegativeEvent;
 
     [self initializeNavigationBar];
 
-
+    if (Profile.user.key) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
+    }
     if (!self.visitedProfile) {
         self.eventOffsetDictionary = [NSMutableDictionary new];
     }
@@ -1320,7 +1322,6 @@ int firstIndexOfNegativeEvent;
 - (void) fetchEvents {
     
     if (!fetchingEventAttendees && [[Profile user] key]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
         fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString;
