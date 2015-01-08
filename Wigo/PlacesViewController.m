@@ -130,7 +130,6 @@ int firstIndexOfNegativeEvent;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
     NSString *isPeeking = ([self isPeeking]) ? @"Yes" : @"No";
 
     [EventAnalytics tagEvent:@"Where View" withDetails: @{@"isPeeking": isPeeking}];
@@ -1321,6 +1320,7 @@ int firstIndexOfNegativeEvent;
 - (void) fetchEvents {
     
     if (!fetchingEventAttendees && [[Profile user] key]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
         fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         NSString *queryString;
