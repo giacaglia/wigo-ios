@@ -530,7 +530,7 @@ NSMutableArray *suggestedArrayView;
         return (int)[_filteredUsers count];
     }
     else {
-        int hasNextPage = ([_users hasNextPage] ? 1 : 0);
+        int hasNextPage = ([_users.hasNextPage boolValue] ? 1 : 0);
         return (int)[_users count] + hasNextPage;
     }
 }
@@ -562,7 +562,7 @@ NSMutableArray *suggestedArrayView;
     
     if ([_users count] == 0) return cell;
     if ([_users count] > 5) {
-        if ([_users hasNextPage] && tag == [_users count] - 5) {
+        if ([_users.hasNextPage boolValue] && tag == [_users count] - 5) {
             [self loadNextPage];
         }
     }
@@ -577,8 +577,8 @@ NSMutableArray *suggestedArrayView;
  
     if (!user) {
         BOOL loading = NO;
-        if (_isSearching && [_filteredUsers hasNextPage]) loading = YES;
-        if (!_isSearching && [_users hasNextPage]) loading = YES;
+        if (_isSearching && [_filteredUsers.hasNextPage boolValue]) loading = YES;
+        if (!_isSearching && [_users.hasNextPage boolValue]) loading = YES;
         if (loading) {
             UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
             spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
@@ -889,7 +889,7 @@ NSMutableArray *suggestedArrayView;
                     [_tableViewOfPeople reloadData];
                 });
             }];
-        } else if ([_everyone hasNextPage]) {
+        } else if ([_everyone.hasNextPage boolValue]) {
             [_everyone getNextPage:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     fetching = NO;
@@ -921,6 +921,7 @@ NSMutableArray *suggestedArrayView;
 
 -(void) fetchFirstPageFollowers {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
+    fetching = NO;
     [self fetchFollowers];
 }
 
@@ -937,11 +938,14 @@ NSMutableArray *suggestedArrayView;
                         return;
                     }
                     _followers = collection;
-                    _users = _followers;
+                    _users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in _followers) {
+                        [_users addObject:follow.user];
+                    }
                     [_tableViewOfPeople reloadData];
                 });
             }];
-        } else if ([_followers hasNextPage]) {
+        } else if ([_followers.hasNextPage boolValue]) {
             [_followers addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     fetching = NO;
@@ -951,6 +955,10 @@ NSMutableArray *suggestedArrayView;
                         return;
                     }
                     _users = _followers;
+                    _users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in _followers) {
+                        [_users addObject:follow.user];
+                    }
                     [_tableViewOfPeople reloadData];
                 });
             }];
@@ -980,11 +988,14 @@ NSMutableArray *suggestedArrayView;
                         return;
                     }
                     _following = collection;
-                    _users = _following;
+                    _users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in _following) {
+                        [_users addObject:follow.follow];
+                    }
                     [_tableViewOfPeople reloadData];
                 });
             }];
-        } else if ([_following hasNextPage]) {
+        } else if ([_following.hasNextPage boolValue]) {
             [_following addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     fetching = NO;
@@ -993,7 +1004,10 @@ NSMutableArray *suggestedArrayView;
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
-                    _users = _following;
+                    _users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in _following) {
+                        [_users addObject:follow.follow];
+                    }
                     [_tableViewOfPeople reloadData];
                 });
             }];

@@ -485,7 +485,7 @@
     if (!cancelFetchMessages) {
         cancelFetchMessages = YES;
 
-        if ([eventMessages hasNextPage]) {
+        if ([eventMessages.hasNextPage boolValue]) {
             [eventMessages addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     cancelFetchMessages = NO;

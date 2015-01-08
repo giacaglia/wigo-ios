@@ -190,7 +190,7 @@ BOOL initializedPopScreen;
         return [filteredUsers count];
     }
     else {
-        int hasNextPage = ([users hasNextPage] ? 1 : 0);
+        int hasNextPage = ([users.hasNextPage boolValue] ? 1 : 0);
         return [users count] + hasNextPage;
     }
 }
@@ -352,7 +352,7 @@ BOOL initializedPopScreen;
                 [tableViewOfPeople reloadData];
             });
         }];
-    } else if ([users hasNextPage]) {
+    } else if ([users.hasNextPage boolValue]) {
         [users addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 if (error) {

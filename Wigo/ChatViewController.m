@@ -174,7 +174,7 @@ UIButton *newChatButton;
             });
 
         }];
-    } else if ([_messages hasNextPage]) {
+    } else if ([_messages.hasNextPage boolValue]) {
         [_messages addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 _tableViewOfPeople.hidden = NO;
@@ -206,7 +206,7 @@ UIButton *newChatButton;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    int hasNextPage = ([_messages hasNextPage] ? 1 : 0);
+    int hasNextPage = ([_messages.hasNextPage boolValue] ? 1 : 0);
     return [_messages count] + hasNextPage;
 }
 

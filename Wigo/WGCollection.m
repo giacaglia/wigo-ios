@@ -15,6 +15,7 @@
 -(id) initWithType:(Class)type {
     self = [super init];
     if (self) {
+        self.objects = [[NSMutableArray alloc] init];
         self.type = type;
         self.currentPosition = 0;
     }

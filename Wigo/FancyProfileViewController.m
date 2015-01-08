@@ -69,7 +69,7 @@ UIButton *tapButton;
 - (void) setStateWithUser: (WGUser *) user {
     if ([WGProfile currentUser] && user) {
         self.user = user;
-        self.userState = self.user.privacy == PRIVATE ? PRIVATE_PROFILE : PUBLIC_PROFILE;
+        self.userState = self.user.privacy == PRIVATE ? PRIVATE_STATE : PUBLIC_STATE;
         self.view.backgroundColor = [UIColor whiteColor];
         [self createImageScrollView];
     }
@@ -134,7 +134,7 @@ UIButton *tapButton;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if ([self.user state] == BLOCKED_USER) [self presentBlockPopView:self.user];
+    if ([self.user state] == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if ([self.user isCurrentUser]) [self fetchUserInfo];
 }
 
@@ -269,7 +269,7 @@ UIButton *tapButton;
     [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
     
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
+    if (self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) {
         [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
         [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
     } else {
@@ -319,7 +319,7 @@ UIButton *tapButton;
     
     _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 9, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
-    if (self.userState == ACCEPTED_PRIVATE_USER || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER || self.userState == PRIVATE_PROFILE) {
+    if (self.userState == ACCEPTED_PRIVATE_USER_STATE || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE || self.userState == PRIVATE_STATE) {
         _privateLogoImageView.hidden = NO;
     }
     else _privateLogoImageView.hidden = YES;
@@ -446,7 +446,7 @@ UIButton *tapButton;
     _followRequestLabel.textAlignment = NSTextAlignmentCenter;
     _followRequestLabel.textColor = [FontProperties getOrangeColor];
     _followRequestLabel.font = [FontProperties scMediumFont:16.0f];
-    if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) _followRequestLabel.hidden = NO;
+    if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) _followRequestLabel.hidden = NO;
     else _followRequestLabel.hidden = YES;
     [_headerButtonView addSubview: _followRequestLabel];
     [_headerButtonView bringSubviewToFront: _followRequestLabel];
@@ -490,12 +490,12 @@ UIButton *tapButton;
 - (void)followPressed {
     self.user.isFollowing = [NSNumber numberWithBool:YES];
     [self.user save:^(BOOL success, NSError *error) {
-        if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) {
-            self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
+        if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
+            self.userState = NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
             self.user.isFollowingRequested = [NSNumber numberWithBool:YES];
         }
         else {
-            self.userState = FOLLOWING_USER;
+            self.userState = FOLLOWING_USER_STATE;
             self.user.isFollowing = [NSNumber numberWithBool:YES];
         }
         [self reloadViewForUserState];
@@ -506,10 +506,10 @@ UIButton *tapButton;
     self.user.isFollowing = [NSNumber numberWithBool:YES];
     
     [self.user save:^(BOOL success, NSError *error) {
-        if (self.userState == ACCEPTED_PRIVATE_USER) {
-            self.userState = NOT_SENT_FOLLOWING_PRIVATE_USER;
+        if (self.userState == ACCEPTED_PRIVATE_USER_STATE) {
+            self.userState = NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
         } else {
-            self.userState = NOT_FOLLOWING_PUBLIC_USER;
+            self.userState = NOT_FOLLOWING_PUBLIC_USER_STATE;
         }
 
         [self reloadViewForUserState];
@@ -526,7 +526,7 @@ UIButton *tapButton;
 }
 
 - (void)chatPressed {
-    if (self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) {
+    if (self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) {
         ChatViewController *chatViewController = [ChatViewController new];
         chatViewController.view.backgroundColor = UIColor.whiteColor;
         [self.navigationController pushViewController:chatViewController animated:YES];
@@ -542,7 +542,7 @@ UIButton *tapButton;
 #pragma mark User State
 
 - (void) reloadViewForUserState {
-    if (self.userState == OTHER_SCHOOL_USER) {
+    if (self.userState == OTHER) {
         _rightBarBt.enabled = NO;
         _rightBarBt.hidden = YES;
         _leftProfileButton.enabled = NO;
@@ -554,9 +554,9 @@ UIButton *tapButton;
         _followButton.enabled = NO;
         _followButton.hidden = YES;
     }
-    else if (self.userState == FOLLOWING_USER ||
-        self.userState == ATTENDING_EVENT_FOLLOWING_USER ||
-        self.userState == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
+    else if (self.userState == FOLLOWING_USER_STATE ||
+        self.userState == ATTENDING_EVENT_FOLLOWING_USER_STATE ||
+        self.userState == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE) {
         _rightBarBt.enabled = YES;
         _rightBarBt.hidden = NO;
         _leftProfileButton.enabled = YES;
@@ -572,9 +572,9 @@ UIButton *tapButton;
         _privateLogoImageView.hidden = YES;
         _followRequestLabel.hidden = YES;
     }
-    else if (self.userState == NOT_FOLLOWING_PUBLIC_USER ||
-             self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER ||
-             self.userState == BLOCKED_USER) {
+    else if (self.userState == NOT_FOLLOWING_PUBLIC_USER_STATE ||
+             self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
+             self.userState == BLOCKED_USER_STATE) {
         _rightBarBt.enabled = YES;
         _rightBarBt.hidden = NO;
         _leftProfileButton.enabled = NO;
@@ -587,11 +587,11 @@ UIButton *tapButton;
         _followButton.enabled = YES;
         _followButton.hidden = NO;
         
-        if (self.userState == NOT_FOLLOWING_PUBLIC_USER) _privateLogoImageView.hidden = YES;
+        if (self.userState == NOT_FOLLOWING_PUBLIC_USER_STATE) _privateLogoImageView.hidden = YES;
         else _privateLogoImageView.hidden = NO;
         _followRequestLabel.hidden = YES;
     }
-    else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) {
+    else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
         _rightBarBt.enabled = YES;
         _rightBarBt.hidden = NO;
         _leftProfileButton.enabled = NO;
@@ -607,7 +607,7 @@ UIButton *tapButton;
         _privateLogoImageView.hidden = YES;
         _followRequestLabel.hidden = NO;
     }
-    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
+    if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE) {
         _rightBarBt.enabled = YES;
         _rightBarBt.hidden = NO;
         _followButton.enabled = NO;
@@ -620,7 +620,7 @@ UIButton *tapButton;
         _rightProfileButton.enabled = YES;
         _rightProfileButton.hidden = NO;
         
-        if (self.userState == PRIVATE_PROFILE) _privateLogoImageView.hidden = NO;
+        if (self.userState == PRIVATE) _privateLogoImageView.hidden = NO;
         else _privateLogoImageView.hidden = YES;
         _followRequestLabel.hidden = YES;
     }
@@ -689,8 +689,8 @@ UIButton *tapButton;
 #pragma mark - Table View Helpers
 
 - (BOOL) shouldShowGoOutsCell {
-    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER ||
-        self.userState == NOT_YET_ACCEPTED_PRIVATE_USER) {
+    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
+        self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
         return NO;
     }
     
@@ -698,7 +698,7 @@ UIButton *tapButton;
 }
 
 - (BOOL) shouldShowInviteCell {
-    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE || self.userState == OTHER_SCHOOL_USER) {
+    if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE || self.userState == OTHER_SCHOOL_USER_STATE) {
         return NO;
     }
     
@@ -706,7 +706,7 @@ UIButton *tapButton;
 }
 
 - (BOOL)shouldShowFollowSummary {
-    if ((self.userState == PRIVATE_PROFILE || self.userState == PUBLIC_PROFILE) &&
+    if ((self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) &&
         (![_followRequestSummary isEqualToNumber:@0] && _followRequestSummary)
         ) {
         return YES;
@@ -719,7 +719,7 @@ UIButton *tapButton;
 }
 
 - (NSInteger) notificationCount {
-    if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
+    if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE) {
         int numberOfCellsForSummary =  [self shouldShowFollowSummary] ? 1 : 0;
         return _unexpiredNotifications.count + numberOfCellsForSummary;
     }
@@ -794,7 +794,7 @@ UIButton *tapButton;
         [notificationCell.profileImageView setImageWithURL:user.coverImageURL];
         notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName], [notification message]];
         
-        if ([user state] == NOT_SENT_FOLLOWING_PRIVATE_USER || [user state] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        if ([user state] == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE || [user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
             notificationCell.rightPostImageView.hidden = YES;
         }
         else notificationCell.rightPostImageView.hidden = NO;
@@ -821,7 +821,7 @@ UIButton *tapButton;
     if (section == kNotificationsSection) {
         
         
-        if (self.userState == OTHER_SCHOOL_USER) {
+        if (self.userState == OTHER_SCHOOL_USER_STATE) {
             return _nameView;
         } else {
             UIView *headerView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, tableView.frame.size.width, _nameView.frame.size.height + _headerButtonView.frame.size.height)];
@@ -847,7 +847,7 @@ UIButton *tapButton;
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == kNotificationsSection) {
         
-        if (self.userState == OTHER_SCHOOL_USER) {
+        if (self.userState == OTHER_SCHOOL_USER_STATE) {
             return _nameView.frame.size.height;
         }
         
@@ -914,9 +914,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 [self.navigationController pushViewController: fancyProfileViewController animated: YES];
             }
             else {
-                if ([user state] != NOT_YET_ACCEPTED_PRIVATE_USER && [user state] != NOT_SENT_FOLLOWING_PRIVATE_USER) {
-                    WGEvent *event = [WGEvent serialize:[user objectForKey:@"is_attending"]];
-                    [self presentEvent:event];
+                if ([user state] != NOT_YET_ACCEPTED_PRIVATE_USER_STATE && [user state] != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
+                    [self presentEvent:user.eventAttending];
                 }
             }
         }
@@ -1014,7 +1013,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                     self.isFetchingNotifications = NO;
                 });
             }];
-        } else if ([_notifications hasNextPage]) {
+        } else if ([_notifications.hasNextPage boolValue]) {
             [_notifications getNextPage:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
                     self.isFetchingNotifications = NO;
@@ -1229,9 +1228,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     return 100.0f;
 }
 
-- (void) setLabelsForUser: (User *) user {
+- (void) setLabelsForUser: (WGUser *) user {
     
-    NSNumber *newCount = (NSNumber *)[[user dictionary] objectForKey:@"period_went_out"];
+    NSNumber *newCount = (NSNumber *)[user objectForKey:@"period_went_out"];
     
     if (_lastCount && [_lastCount isEqualToNumber: newCount]) {
         return;
@@ -1287,7 +1286,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setLabelsForUser: (WGUser *) user {
-    if ([self.delegate userState] == OTHER_SCHOOL_USER) {
+    if ([self.delegate userState] == OTHER_SCHOOL_USER_STATE) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
         self.titleLabel.hidden = YES;

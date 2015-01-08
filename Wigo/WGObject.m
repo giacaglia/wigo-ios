@@ -62,6 +62,9 @@
 }
 
 -(BOOL) isEqual:(WGObject*)other {
+    if (!other) {
+        return NO;
+    }
     return [self.id isEqualToNumber:other.id];
 }
 

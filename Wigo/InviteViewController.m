@@ -174,7 +174,7 @@
             return [filteredContent count];
         }
         else {
-            int hasNextPage = ([content hasNextPage] ? 1 : 0);
+            int hasNextPage = ([content.hasNextPage boolValue] ? 1 : 0);
             return [content count] + hasNextPage;
         }
     }
@@ -202,7 +202,7 @@
             if (tag < [filteredContent count]) {
                 user = [filteredContent objectAtIndex:tag];
             }
-            if ([filteredContent count] > 5 && [content hasNextPage]) {
+            if ([filteredContent count] > 5 && [content.hasNextPage boolValue]) {
                 if (tag == [filteredContent count] - 5) {
                     [self fetchEveryone];
                 }
@@ -219,7 +219,7 @@
             if (tag < [content count]) {
                 user = [content objectAtIndex:tag];
             }
-            if ([content count] > 5 && [content hasNextPage]) {
+            if ([content count] > 5 && [content.hasNextPage boolValue]) {
                 if (tag == [content count] - 5) {
                     [self fetchEveryone];
                 }
@@ -563,7 +563,7 @@ heightForHeaderInSection:(NSInteger)section
                 [invitePeopleTableView reloadData];
             });
         }];
-    } else {
+    } else if ([filteredContent.hasNextPage boolValue]) {
         [filteredContent addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 if (error) {
@@ -599,7 +599,7 @@ heightForHeaderInSection:(NSInteger)section
                 [invitePeopleTableView reloadData];
             });
         }];
-    } else {
+    } else if ([content.hasNextPage boolValue]) {
         [content addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 if (error) {

@@ -21,6 +21,8 @@
 }
 
 -(id) replaceReferences:(id) object {
+    [self addReferencesToCache:object];
+    
     if ([object isKindOfClass:[NSDictionary class]]) {
         return [self replaceReferencesInDictionary:object];
     } else if ([object isKindOfClass:[NSArray class]]) {
@@ -30,23 +32,59 @@
     }
 }
 
--(NSDictionary *) replaceReferencesInDictionary:(NSDictionary *) dictionary {
-    NSMutableDictionary *newDict = [[NSMutableDictionary alloc] init];
-    
+-(void) addReferencesToCache:(id) object {
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        [self addReferencesInDictionary:object];
+    } else if ([object isKindOfClass:[NSArray class]]) {
+        [self addReferencesInArray:object];
+    }
+}
+
+-(void) addReferencesInDictionary:(NSDictionary *)dictionary {
     if ([dictionary objectForKey:kReferenceIdKey]) {
         [self.cache setObject:dictionary forKey:[dictionary objectForKey:kReferenceIdKey]];
-    } else if ([dictionary objectForKey:kReferenceKey]) {
+    }
+    for (id key in [dictionary allKeys]) {
+        id object = [dictionary objectForKey:key];
+        if (object) {
+            if ([object isKindOfClass:[NSDictionary class]]) {
+                [self addReferencesInDictionary:object];
+            } else if ([object isKindOfClass:[NSArray class]]) {
+                [self addReferencesInArray:object];
+            }
+        }
+    }
+}
+
+-(void) addReferencesInArray:(NSArray *) array {
+    for (int i = 0; i < [array count]; i++) {
+        id object = [array objectAtIndex:i];
+        if (object) {
+            if ([object isKindOfClass:[NSDictionary class]]) {
+                [self addReferencesInDictionary:object];
+            } else if ([object isKindOfClass:[NSArray class]]) {
+                [self addReferencesInArray:object];
+            }
+        }
+    }
+}
+
+-(NSDictionary *) replaceReferencesInDictionary:(NSDictionary *) dictionary {
+    NSMutableDictionary *newDict = [[NSMutableDictionary alloc] init];
+    if ([dictionary objectForKey:kReferenceKey]) {
         return [self.cache objectForKey:[dictionary objectForKey:kReferenceKey]];
     }
     
     for (id key in [dictionary allKeys]) {
         id object = [dictionary objectForKey:key];
-        if ([object isKindOfClass:[NSDictionary class]]) {
-            [newDict setObject:[self replaceReferencesInDictionary: object] forKey:key];
-        } else if ([object isKindOfClass:[NSArray class]]) {
-            [newDict setObject:[self replaceReferencesInArray: object] forKey:key];
-        } else {
-            [newDict setObject:object forKey:key];
+        if (object) {
+            if ([object isKindOfClass:[NSDictionary class]]) {
+                [newDict setObject:[self replaceReferencesInDictionary: object] forKey:key];
+            } else if ([object isKindOfClass:[NSArray class]]) {
+                [newDict setObject:[self replaceReferencesInArray: object] forKey:key];
+            } else {
+                [newDict setObject:object forKey:key];
+            }
         }
     }
     
@@ -57,12 +95,14 @@
     NSMutableArray *newArray = [[NSMutableArray alloc] init];
     for (int i = 0; i < [array count]; i++) {
         id object = [array objectAtIndex:i];
-        if ([object isKindOfClass:[NSDictionary class]]) {
-            [newArray addObject:[self replaceReferencesInDictionary: object]];
-        } else if ([object isKindOfClass:[NSArray class]]) {
-            [newArray addObject:[self replaceReferencesInArray: object]];
-        } else {
-            [newArray addObject:object];
+        if (object) {
+            if ([object isKindOfClass:[NSDictionary class]]) {
+                [newArray addObject:[self replaceReferencesInDictionary: object]];
+            } else if ([object isKindOfClass:[NSArray class]]) {
+                [newArray addObject:[self replaceReferencesInArray: object]];
+            } else {
+                [newArray addObject:object];
+            }
         }
     }
     return newArray;

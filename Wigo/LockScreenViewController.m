@@ -185,7 +185,7 @@ OnboardFollowViewController *onboardFollowViewController;
                 _everyone = collection;
             });
         }];
-    } else if ([_everyone hasNextPage]) {
+    } else if ([_everyone.hasNextPage boolValue]) {
         [_everyone addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if (error) {

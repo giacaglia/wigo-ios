@@ -491,7 +491,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView.contentOffset.y == 0)
-        if ([_messages count] > 0 && [_messages hasNextPage]) {
+        if ([_messages count] > 0 && [_messages.hasNextPage boolValue]) {
             [self fetchMessages];
         }
 }
@@ -521,7 +521,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                     [WiGoSpinnerView hideSpinnerForView:self.view];
                 });
             }];
-        } else if ([_messages hasNextPage]) {
+        } else if ([_messages.hasNextPage boolValue]) {
             [_messages getNextPage:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void){
                     if (error) {

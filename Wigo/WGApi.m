@@ -56,6 +56,8 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 }
 
 +(void) getURL:(NSString *)url withHandler:(ApiResultBlock)handler {
+    NSLog(@"GET %@", url);
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -91,6 +93,8 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 }
 
 +(void) deleteURL:(NSString *)url withHandler:(ApiResultBlock)handler {
+    NSLog(@"DELETE %@", url);
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -130,6 +134,8 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 }
 
 +(void) postURL:(NSString *)url withParameters:(id)parameters andHandler:(ApiResultBlock)handler {
+    NSLog(@"POST %@, %@", url, parameters);
+    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters

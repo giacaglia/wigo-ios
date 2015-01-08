@@ -132,7 +132,7 @@ BOOL isFetchingEveryone;
                     isFetchingEveryone = NO;
                 });
             }];
-        } else {
+        } else if ([_content.hasNextPage boolValue]) {
             [_content addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (error) {
@@ -157,7 +157,7 @@ BOOL isFetchingEveryone;
     if (_isSearching) {
         return [_filteredContent count];
     }
-    int hasNextPage = ([_content hasNextPage] ? 1 : 0);
+    int hasNextPage = ([_content.hasNextPage boolValue] ? 1 : 0);
     return [_content count] + hasNextPage;
 }
 
@@ -171,7 +171,7 @@ BOOL isFetchingEveryone;
     
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     if ([_content count] > 5) {
-        if ([_content hasNextPage] && [indexPath row] == [_content count] - 5) {
+        if ([_content.hasNextPage boolValue] && [indexPath row] == [_content count] - 5) {
             [self fetchEveryone];
         }
     }
@@ -376,7 +376,7 @@ BOOL isFetchingEveryone;
                 isFetchingEveryone = NO;
             });
         }];
-    } else {
+    } else if ([_filteredContent.hasNextPage boolValue]) {
         [_filteredContent addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 if (error) {

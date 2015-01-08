@@ -63,10 +63,10 @@
 @property CGPoint scrollViewPoint;
 
 // Events Summary
+@property WGCollection *allEvents;
 @property WGCollection *events;
 @property WGCollection *oldEvents;
 @property WGCollection *filteredEvents;
-@property WGCollectionArray *filteredEventsUsersArray;
 @property WGCollectionArray *userArray;
 
 // Go OUT Button
@@ -672,7 +672,6 @@ int firstIndexOfNegativeEvent;
 
 - (void)textFieldDidChange:(UITextField *)textField {
     [_filteredEvents removeAllObjects];
-    [_filteredEventsUsersArray removeAllCollections];
     
     if([textField.text length] != 0) {
         _isSearching = YES;
@@ -1273,18 +1272,28 @@ int firstIndexOfNegativeEvent;
         fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         
-        if (_events) {
-            if ([_events.hasNextPage boolValue]) {
-                [_events addNextPage:^(BOOL success, NSError *error) {
+        if (_allEvents) {
+            if ([_allEvents.hasNextPage boolValue]) {
+                [_allEvents addNextPage:^(BOOL success, NSError *error) {
                     dispatch_async(dispatch_get_main_queue(), ^(void){
                         [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                         fetchingEventAttendees = NO;
                         if (error) {
                             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         }
-                        
+                        self.pastDays = [[NSMutableArray alloc] init];
+                        self.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+                        _events = [[WGCollection alloc] initWithType:[WGEvent class]];
                         _oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                         _filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                        
+                        for (WGEvent *event in _allEvents) {
+                            if ([event.isExpired boolValue]) {
+                                [_oldEvents addObject:event];
+                            } else {
+                                [_events addObject:event];
+                            }
+                        }
                         
                         for (WGEvent *event in _oldEvents) {
                             if (![event highlight]) {
@@ -1313,10 +1322,20 @@ int firstIndexOfNegativeEvent;
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
-                    _events = collection;
-                    
+                    _allEvents = collection;
+                    self.pastDays = [[NSMutableArray alloc] init];
+                    self.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+                    _events = [[WGCollection alloc] initWithType:[WGEvent class]];
                     _oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                     _filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    
+                    for (WGEvent *event in _allEvents) {
+                        if ([event.isExpired boolValue]) {
+                            [_oldEvents addObject:event];
+                        } else {
+                            [_events addObject:event];
+                        }
+                    }
                     
                     for (WGEvent *event in _oldEvents) {
                         if (![event highlight]) {
@@ -1344,11 +1363,20 @@ int firstIndexOfNegativeEvent;
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
+                    _allEvents = collection;
                     self.pastDays = [[NSMutableArray alloc] init];
                     self.dayToEventObjArray = [[NSMutableDictionary alloc] init];
-                    _events = collection;
+                    _events = [[WGCollection alloc] initWithType:[WGEvent class]];
                     _oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                     _filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    
+                    for (WGEvent *event in _allEvents) {
+                        if ([event.isExpired boolValue]) {
+                            [_oldEvents addObject:event];
+                        } else {
+                            [_events addObject:event];
+                        }
+                    }
                     
                     for (WGEvent *event in _oldEvents) {
                         if (![event highlight]) {
@@ -1371,7 +1399,7 @@ int firstIndexOfNegativeEvent;
     }
 }
 
--(void) handleNewEvents:(WGCollection *) newEvents {
+/* -(void) handleNewEvents:(WGCollection *) newEvents {
     if (!_events) {
         self.pastDays = [[NSMutableArray alloc] init];
         self.dayToEventObjArray = [[NSMutableDictionary alloc] init];
@@ -1399,7 +1427,7 @@ int firstIndexOfNegativeEvent;
     [self fetchedOneParty];
     
     fetchingEventAttendees = NO;
-}
+} */
 
 - (void)fetchEventAttendeesAsynchronousForEvent:(int)eventNumber {
     WGEvent *event = (WGEvent *)[_events objectAtIndex:eventNumber];

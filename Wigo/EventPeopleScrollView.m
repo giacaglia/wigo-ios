@@ -12,7 +12,7 @@
 
 @implementation EventPeopleScrollView
 
-- (id)initWithEvent:(Event *)event {
+- (id)initWithEvent:(WGEvent *)event {
     if (self.sizeOfEachImage == 0) self.sizeOfEachImage = (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7;
     self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.sizeOfEachImage + 25)];
     if (self) {
@@ -32,8 +32,6 @@
 - (void)updateUI {
     [self fillEventAttendees];
     [self loadUsers];
-    // HACK
-    self.page = @(ceil((float)[[self.partyUser getObjectArray] count]/(float)10) + 1);
 }
 
 
@@ -48,38 +46,21 @@
 }
 
 - (void)fillEventAttendees {
-#warning replace data structure with WGCollection of WGEventAttendees
-    /* NSArray *eventAttendeesArray = [self.event getEventAttendees];
-    self.partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
-    for (int j = 0; j < [eventAttendeesArray count]; j++) {
-        NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
-        NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
-        User *user;
-        if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-            if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                user = [Profile user];
-            }
-            else {
-                user = [[User alloc] initWithDictionary:userDictionary];
-            }
-        }
-        [user setValue:[eventAttendee objectForKey:@"event_owner"] forKey:@"event_owner"];
-        [self.partyUser addObject:user];
-    } */
+    self.attendees = self.event.attendees;
 }
 
 
 - (void)loadUsers {
-    /* [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
     self.xPosition = 10;
-    for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
-        User *user = [[self.partyUser getObjectArray] objectAtIndex:i];
-        if ([user isCurrentUser]) {
-            user = [Profile user];
-        }
+    int index = 0;
+    for (WGEventAttendee *attendee in self.attendees) {
+        WGUser *user = attendee.user;
+
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 0, self.sizeOfEachImage, self.sizeOfEachImage)];
-        imageButton.tag = i;
+        imageButton.tag = index;
+        index += 1;
         [imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:imageButton];
         
@@ -107,79 +88,48 @@
         self.contentSize = CGSizeMake(self.xPosition + 10, self.sizeOfEachImage + 25);
     }
     
-    if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]] && self.placesDelegate.visitedProfile) {
-        NSNumber *xNumber = [self.placesDelegate.eventOffsetDictionary valueForKey:[[self.event eventID] stringValue]];
+    if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[self.event.id stringValue]] && self.placesDelegate.visitedProfile) {
+        NSNumber *xNumber = [self.placesDelegate.eventOffsetDictionary valueForKey:[self.event.id stringValue]];
         self.contentOffset = CGPointMake([xNumber intValue], 0);
-    } */
+    }
 }
 
 - (void)chooseUser:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
-    User *user = [[self.partyUser getObjectArray] objectAtIndex:tag];
+    WGEventAttendee *attendee = (WGEventAttendee *)[self.attendees objectAtIndex:tag];
     self.eventOffset = self.contentOffset.x;
     if (self.userSelectDelegate) {
-        [self.userSelectDelegate showUser: user];
+        [self.userSelectDelegate showUser: attendee.user];
     }
     else {
         [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
-                                                     forKey:[[self.event eventID] stringValue]];
-        [self.placesDelegate showUser:user];
+                                                     forKey:[self.event.id stringValue]];
+        [self.placesDelegate showUser:attendee.user];
     }
 }
 
 
 - (void)fetchEventAttendeesAsynchronous {
-    /* NSNumber *eventId = [self.event eventID];
-    if (!self.fetchingEventAttendees && ![self.page isEqualToNumber:@-1]) {
+    if (!self.fetchingEventAttendees) {
         self.fetchingEventAttendees = YES;
-        NSString *queryString;
-        if (self.groupID) {
-            if (!self.page) self.page = @2;
-            queryString = [NSString stringWithFormat:@"eventattendees/?group=%@&event=%@&limit=10&page=%@", [self.groupID stringValue] , [eventId stringValue], [self.page stringValue]];
-        }
-        else {
-            queryString = [NSString stringWithFormat:@"eventattendees/?event=%@&limit=10&page=%@", [eventId stringValue], [self.page stringValue]];
-        }
-       
-        [Network queryAsynchronousAPI:queryString
-                          withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                              dispatch_async(dispatch_get_main_queue(), ^(void){
-                                  NSArray *eventAttendeesArray = [jsonResponse objectForKey:@"objects"];
-                                  [self.event addEventAttendees:eventAttendeesArray];
-                                  if (self.placesDelegate) {
-                                      [self.placesDelegate updateEvent:self.event];
-                                  }
-                                  for (int j = 0; j < [eventAttendeesArray count]; j++) {
-                                      NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
-                                      NSDictionary *userDictionary = [eventAttendee objectForKey:@"user"];
-                                      User *user;
-                                      if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                                          if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                                              user = [Profile user];
-                                          }
-                                          else {
-                                              user = [[User alloc] initWithDictionary:userDictionary];
-                                          }
-                                      }
-                                      [self.partyUser addObject:user];
-                                  }
-                                  if ([eventAttendeesArray count] > 0) {
-                                      self.page = @([self.page intValue] + 1);
-                                      self.eventOffset = self.contentOffset.x;
-                                      [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
-                                                                                   forKey:[[self.event eventID] stringValue]];
-                                      [self.placesDelegate setVisitedProfile:YES];
-                                      [self loadUsers];
-                                  }
-                                  else {
-                                      self.page = @-1;
-                                  }
-                                  self.fetchingEventAttendees = NO;
-                              });
+        [self.event getMoreAttendees:^(BOOL success, NSError *error) {
+            self.fetchingEventAttendees = NO;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
+            if ([self.event.attendees count] - [self.attendees count] > 0) {
+                self.attendees = self.event.attendees;
+                
+                self.eventOffset = self.contentOffset.x;
+                [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
+                                                             forKey:[self.event.id stringValue]];
+                [self.placesDelegate setVisitedProfile:YES];
+                [self loadUsers];
+            }
         }];
     }
-    else self.fetchingEventAttendees = NO; */
 }
 
 @end

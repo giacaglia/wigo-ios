@@ -88,7 +88,7 @@ static WGUser *currentUser = nil;
 
 +(WGUser *) serialize:(NSDictionary *)json {
     WGUser *new = [[WGUser alloc] initWithJSON:json];
-    if ([new isCurrentUser]) {
+    if ([new isCurrentUser] && [WGProfile currentUser].key) {
         return [WGProfile currentUser];
     }
     return new;
