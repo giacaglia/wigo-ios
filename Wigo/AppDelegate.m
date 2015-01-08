@@ -15,6 +15,7 @@
 #import "GAI.h"
 #import "Time.h"
 #import "PopViewController.h"
+#import "PlacesViewController.h"
 
 NSNumber *numberOfNewMessages;
 NSNumber *numberOfNewNotifications;
@@ -84,7 +85,7 @@ NSDate *firstLoggedTime;
 - (BOOL)popToNavController {
     UINavigationController *navController = (UINavigationController*)self.window.rootViewController;
     if (navController) {
-        [navController popToRootViewControllerAnimated:YES];
+        [navController popToRootViewControllerAnimated:NO];
         return YES;
     }
     return NO;
@@ -93,7 +94,7 @@ NSDate *firstLoggedTime;
 - (BOOL)dismissViewController {
     UINavigationController *navigationController = (id) self.window.rootViewController;
     if ([navigationController presentedViewController]) {
-        [[navigationController presentedViewController] dismissViewControllerAnimated:YES
+        [[navigationController presentedViewController] dismissViewControllerAnimated:NO
                                                                            completion:^{}];
         return YES;
     }
@@ -130,10 +131,37 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     }
 }
 
+- (UIViewController*) topMostController
+{
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
+}
+
+- (BOOL)isModal:(UIViewController *)vc {
+    return vc.presentingViewController.presentedViewController == vc
+    || vc.navigationController.presentingViewController.presentedViewController == vc.navigationController
+    || [vc.tabBarController.presentingViewController isKindOfClass:[UITabBarController class]];
+}
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//    [self popToNavController];
-//    [self dismissViewController];
+//    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UINavigationController *navController = ((UINavigationController *)self.window.rootViewController);
+    UIViewController *topViewController = navController.visibleViewController;
+     while (![topViewController isKindOfClass:[PlacesViewController class]]) {
+         if ([self isModal:topViewController]) {
+              [navController popViewControllerAnimated:NO];
+         } else {
+             [topViewController dismissViewControllerAnimated:NO completion:nil];
+         }
+        navController = ((UINavigationController *)self.window.rootViewController);
+        topViewController = navController.visibleViewController;
+     }
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
