@@ -81,12 +81,11 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
-    
+    [self.navigationController setNavigationBarHidden: NO animated: NO];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear: animated];
-    
 }
 
 #pragma mark - Loading Messages
@@ -455,9 +454,9 @@
 #pragma mark - Button handler
 
 - (void)goBack {
-    [self.navigationController setNavigationBarHidden: NO animated: NO];
     [self.navigationController popViewControllerAnimated: YES];
 }
+
 
 - (void)sendPressed {
     
@@ -631,8 +630,6 @@
         fancyProfileViewController.userState = OTHER_SCHOOL_USER;
     }
     
-    [self.navigationController setNavigationBarHidden: NO animated: NO];
-
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 

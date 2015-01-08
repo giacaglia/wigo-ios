@@ -82,25 +82,21 @@ NSDate *firstLoggedTime;
 
 }
 
-- (BOOL)popToNavController {
-    UINavigationController *navController = (UINavigationController*)self.window.rootViewController;
-    if (navController) {
-        [navController popToRootViewControllerAnimated:NO];
-        return YES;
+- (void) dismissEverything {
+    UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    UIViewController *presentedController = [navController presentedViewController];
+    UIViewController *visibleController = [navController topViewController];
+    
+    if (visibleController != navController) {
+        if (presentedController != nil) {
+            [presentedController dismissViewControllerAnimated:YES completion:^{[self dismissEverything];}];
+        } else {
+            [navController popViewControllerAnimated:NO];
+            [self dismissEverything];
+        }
     }
-    return NO;
+    
 }
-
-- (BOOL)dismissViewController {
-    UINavigationController *navigationController = (id) self.window.rootViewController;
-    if ([navigationController presentedViewController]) {
-        [[navigationController presentedViewController] dismissViewControllerAnimated:NO
-                                                                           completion:^{}];
-        return YES;
-    }
-    return NO;
-}
-
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
@@ -149,19 +145,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    UINavigationController *navController = ((UINavigationController *)self.window.rootViewController);
-    UIViewController *topViewController = navController.visibleViewController;
-     while (![topViewController isKindOfClass:[PlacesViewController class]]) {
-         if ([self isModal:topViewController]) {
-              [navController popViewControllerAnimated:NO];
-         } else {
-             [topViewController dismissViewControllerAnimated:NO completion:nil];
-         }
-        navController = ((UINavigationController *)self.window.rootViewController);
-        topViewController = navController.visibleViewController;
-     }
-    
+//    [self dismissEverything];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
