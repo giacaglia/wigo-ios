@@ -176,6 +176,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                             [dictionary setObject:[fromUserDict objectForKey:@"id"] forKey:@"id"];
                         }
                     }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:[NSDictionary dictionaryWithDictionary:dictionary]];
                 }
                 
             }
