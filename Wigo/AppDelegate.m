@@ -86,17 +86,17 @@ NSDate *firstLoggedTime;
     UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
     UIViewController *presentedController = [navController presentedViewController];
     UIViewController *visibleController = [navController topViewController];
-    
-    if (visibleController != navController) {
+
+    if (![visibleController isKindOfClass:[PlacesViewController class]]) {
         if (presentedController != nil) {
-            [presentedController dismissViewControllerAnimated:YES completion:^{[self dismissEverything];}];
+            [presentedController dismissViewControllerAnimated:NO completion:^{[self dismissEverything];}];
         } else {
             [navController popViewControllerAnimated:NO];
             [self dismissEverything];
         }
     }
-    
 }
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
