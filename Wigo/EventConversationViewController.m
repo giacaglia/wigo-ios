@@ -8,7 +8,7 @@
 
 #import "EventConversationViewController.h"
 #import "FontProperties.h"
-#import "EventMessage.h"
+#import "WGEventMessage.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "WGProfile.h"
@@ -86,9 +86,9 @@
     
     myCell.leftLineEnabled = (indexPath.row > 0);
     myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
-    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:[indexPath row]];
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
     
-    WGUser *user = [WGUser serialize:[eventMessage objectForKey:@"user"]];
+    WGUser *user = eventMessage.user;
     
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
         [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
@@ -111,7 +111,7 @@
         }
     }
     
-    myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
+    myCell.timeLabel.text = [eventMessage.created getUTCTimeStringToLocalTimeString];
     if ([indexPath compare:self.currentActiveCell] == NSOrderedSame) {
         myCell.isActive = YES;
     } else {
@@ -141,9 +141,9 @@
     }
 }
 
-- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell {
-#warning GUILIANO FIX ME
-}
+//- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell {
+//#warning GUILIANO FIX ME
+//}
 - (void)focusOnContent {
     if (!self.facesHidden) {
         [UIView animateWithDuration:0.5 animations:^{

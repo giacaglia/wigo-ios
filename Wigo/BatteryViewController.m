@@ -10,8 +10,8 @@
 #import "Globals.h"
 
 UIImageView *orangeImageView;
-NSNumber *total;
-NSNumber *numGroups;
+NSNumber *currentTotal;
+NSNumber *currentNumGroups;
 int widthShared;
 
 @implementation BatteryViewController
@@ -112,15 +112,15 @@ int widthShared;
     joinLabel.textColor = [UIColor whiteColor];
     joinLabel.font = [FontProperties mediumFont:19.0f];
    
-    if (numGroups) {
-        NSString *string =[NSString stringWithFormat:@"Join %@ schools already on Wigo", [numGroups stringValue]];
+    if (currentNumGroups) {
+        NSString *string =[NSString stringWithFormat:@"Join %@ schools already on Wigo", [currentNumGroups stringValue]];
         NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
         [text addAttribute:NSForegroundColorAttributeName
                      value:[UIColor whiteColor]
                      range:NSMakeRange(0, string.length)];
         [text addAttribute:NSForegroundColorAttributeName
                      value:RGB(238, 122, 11)
-                     range:NSMakeRange(5, [numGroups stringValue].length)];
+                     range:NSMakeRange(5, [currentNumGroups stringValue].length)];
         joinLabel.attributedText = text;
     }
     [self.view addSubview:joinLabel];
@@ -143,8 +143,8 @@ int widthShared;
 - (void)sharedPressed {
     [WGAnalytics tagEvent:@"Share Pressed"];
     NSArray *activityItems;
-    if ([WGProfile currentUser].group.name && numGroups) {
-        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[WGProfile currentUser].group.name uppercaseString], [numGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
+    if ([WGProfile currentUser].group.name && currentNumGroups) {
+        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[WGProfile currentUser].group.name uppercaseString], [currentNumGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
     }
     else {
         activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
@@ -175,14 +175,14 @@ int widthShared;
 
 
 - (void) fetchSummaryGoingOut {
-    [Network queryAsynchronousAPI:@"groups/summary/" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+    [WGGroup getGroupSummary:^(NSNumber *total, NSNumber *numGroups, NSNumber *private, NSNumber *public, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            if ([[jsonResponse allKeys] containsObject:@"total"]) {
-                total = [jsonResponse objectForKey:@"total"];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
             }
-            if ([[jsonResponse allKeys] containsObject:@"num_groups"]) {
-                numGroups = [jsonResponse objectForKey:@"num_groups"];
-            }
+            currentTotal = total;
+            currentNumGroups = numGroups;
             [self initializeJoinLabel];
             [self chargeBattery];
         });
@@ -190,8 +190,8 @@ int widthShared;
 }
 
 - (void)chargeBattery {
-    if (total) {
-        float percentage = MIN([total floatValue]/500, 1);
+    if (currentTotal) {
+        float percentage = MIN([currentTotal floatValue]/500, 1);
         int width = 40 + percentage * (138 - 40);
         [UIView animateWithDuration:3
                               delay:0

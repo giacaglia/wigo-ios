@@ -82,6 +82,7 @@
 @end
 
 BOOL fetchingEventAttendees;
+BOOL fetchingUserInfo;
 BOOL shouldAnimate;
 BOOL presentedMobileContacts;
 NSNumber *page;
@@ -95,9 +96,12 @@ int firstIndexOfNegativeEvent;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchUserInfo) name:@"fetchUserInfo" object:nil];
+    
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
+    fetchingUserInfo = NO;
     fetchingEventAttendees = NO;
     shouldAnimate = NO;
     presentedMobileContacts = NO;
@@ -391,6 +395,7 @@ int firstIndexOfNegativeEvent;
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
     [_placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
+    _placesTableView.backgroundColor = RGB(241, 241, 241);
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _yPositionOfWhereSubview = 280;
     [self addRefreshToScrollView];
@@ -652,8 +657,12 @@ int firstIndexOfNegativeEvent;
         [self createEventWithName:_whereAreYouGoingTextField.text];
         [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
         
-        NSNumber *eventID = [Network createEventWithName:_whereAreYouGoingTextField.text];
-        [self goOutToEventNumber:eventID];
+        [WGEvent createEventWithName:_whereAreYouGoingTextField.text andHandler:^(WGEvent *object, NSError *error) {
+            if (error) {
+                return;
+            }
+            [self goOutToEventNumber:object.id];
+        }];
     }
 }
 
@@ -924,30 +933,24 @@ int firstIndexOfNegativeEvent;
     else if (self.pastDays.count > 0 && indexPath.section > 1) { // past day rows
         
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
-        NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey: day];
+        NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
         
         WGEvent *event = [eventObjectArray objectAtIndex:[indexPath row]];
-        
-        if (event.highlight) {
-            HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
-            cell.event = event;
-            cell.placesDelegate = self;
-            cell.oldEventLabel.text = [event name];
-            NSString *contentURL = event.highlight.media;
-            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
-            __weak HighlightOldEventCell *weakCell = cell;
-            [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                if (image) {
-                    weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
-                }
-            }];
-            return cell;
-        }
-      
+        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
+        cell.event = event;
+        cell.placesDelegate = self;
+        cell.oldEventLabel.text = [event name];
+        NSString *contentURL = event.highlight.media;
+        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [[WGProfile currentUser] cdnPrefix], contentURL]];
+        __weak HighlightOldEventCell *weakCell = cell;
+        [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            if (image) {
+                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+            }
+        }];
+        return cell;
     }
-    
     return nil;
-  
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -1263,6 +1266,8 @@ int firstIndexOfNegativeEvent;
     [self fetchEvents];
 }
 
+#warning THIS ALL NEEDS TO BE FIXED
+
 - (void) fetchEvents {
     if (!fetchingEventAttendees && [WGProfile currentUser].key) {
         fetchingEventAttendees = YES;
@@ -1277,6 +1282,25 @@ int firstIndexOfNegativeEvent;
                         if (error) {
                             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         }
+                        
+                        _oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                        _filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                        
+                        for (WGEvent *event in _oldEvents) {
+                            if (![event highlight]) {
+                                continue;
+                            }
+                            NSString *eventDate = [event expires];
+                            if ([self.pastDays indexOfObject: eventDate] == NSNotFound) {
+                                [self.pastDays addObject: eventDate];
+                                [self.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                            }
+                            [[self.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                        }
+                        
+                        [eventPageArray removeAllObjects];
+                        [self fetchedOneParty];
+                        fetchingEventAttendees = NO;
                     });
                 }];
             }
@@ -1290,6 +1314,25 @@ int firstIndexOfNegativeEvent;
                         return;
                     }
                     _events = collection;
+                    
+                    _oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    _filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    
+                    for (WGEvent *event in _oldEvents) {
+                        if (![event highlight]) {
+                            continue;
+                        }
+                        NSString *eventDate = [event expires];
+                        if ([self.pastDays indexOfObject: eventDate] == NSNotFound) {
+                            [self.pastDays addObject: eventDate];
+                            [self.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                        }
+                        [[self.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                    }
+                    
+                    [eventPageArray removeAllObjects];
+                    [self fetchedOneParty];
+                    fetchingEventAttendees = NO;
                 });
             }];
         } else {
@@ -1301,7 +1344,27 @@ int firstIndexOfNegativeEvent;
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
+                    self.pastDays = [[NSMutableArray alloc] init];
+                    self.dayToEventObjArray = [[NSMutableDictionary alloc] init];
                     _events = collection;
+                    _oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    _filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    
+                    for (WGEvent *event in _oldEvents) {
+                        if (![event highlight]) {
+                            continue;
+                        }
+                        NSString *eventDate = [event expires];
+                        if ([self.pastDays indexOfObject: eventDate] == NSNotFound) {
+                            [self.pastDays addObject: eventDate];
+                            [self.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                        }
+                        [[self.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                    }
+                    
+                    [eventPageArray removeAllObjects];
+                    [self fetchedOneParty];
+                    fetchingEventAttendees = NO;
                 });
             }];
         }
@@ -1367,20 +1430,22 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) fetchUserInfo {
-    if ([WGProfile currentUser].key) {
+    if (!fetchingUserInfo && [WGProfile currentUser].key) {
+        fetchingUserInfo = YES;
         [WGProfile reload:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if (error) {
                     return;
                 }
                 [self initializeNavigationBar];
+                fetchingUserInfo = NO;
             });
         }];
     }
 }
 
 - (void) fetchIsThereNewPerson {
-    if (!self.fetchingIsThereNewPerson && [[Profile user] key]) {
+    if (!self.fetchingIsThereNewPerson && [[WGProfile currentUser] key]) {
         self.fetchingIsThereNewPerson = YES;
         [WGUser getNewestUser:^(WGUser *object, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -1420,7 +1485,9 @@ int firstIndexOfNegativeEvent;
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView withHandler:^{
+    [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView
+                           withBackgroundColor:RGB(241, 241, 241)
+                                   withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];
     }];
@@ -1819,6 +1886,4 @@ int firstIndexOfNegativeEvent;
     return 150;
 }
 
-
 @end
-

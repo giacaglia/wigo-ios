@@ -62,7 +62,18 @@
 	}
 }
 
+
+
 #pragma mark - Dancing G at Top of ScrollView
+
++ (void)addDancingGToUIScrollView:(UIScrollView *)scrollView withBackgroundColor:(UIColor *)backgroundColor withHandler:(void (^)(void))handler {
+    __weak UIScrollView *tempScrollView = scrollView;
+    [tempScrollView addPullToRefreshWithDrawingImgs:[WiGoSpinnerView getDrawingImgs] andLoadingImgs:[WiGoSpinnerView getLoadingImgs] andActionHandler:^{
+        handler();
+    }];
+    scrollView.refreshControl.backgroundColor = backgroundColor;
+    
+}
 
 + (void)addDancingGToUIScrollView:(UIScrollView *)scrollView withHandler:(void (^)(void))handler {
     __weak UIScrollView *tempScrollView = scrollView;

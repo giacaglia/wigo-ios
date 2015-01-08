@@ -89,8 +89,7 @@
 
     NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
     if (key.length > 0) {
-        User *user = [[User alloc] initWithDictionary:@{@"key": key}];
-        [Profile setUser:user];
+        [WGProfile setCurrentUser:[WGUser serialize:@{ @"key" : key}]];
         [self fetchUserInfo];
     }
     else {

@@ -14,10 +14,10 @@
 
 -(NSString *) getUTCTimeStringToLocalTimeString;
 
+-(NSDateComponents *) differenceBetweenDates:(NSDate *)date;
+
 -(BOOL) isFromLastDay;
-
 -(BOOL) isSameDayWithDate:(NSDate*)date;
-
 -(BOOL) isNextDayWithDate:(NSDate*)date;
 
 -(NSString *) deserialize;

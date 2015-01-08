@@ -109,7 +109,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchSchools {
-    [Network queryAsynchronousAPI:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+#warning clean this eventually
+    [WGApi get:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.schoolSections = [jsonResponse objectForKey:@"sections"];

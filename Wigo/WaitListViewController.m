@@ -9,7 +9,7 @@
 #import "WaitListViewController.h"
 #import "Globals.h"
 
-NSArray *groupArray;
+WGCollection *groups;
 
 @implementation WaitListViewController
 
@@ -111,18 +111,18 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     }
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     
-    NSDictionary *school = [groupArray objectAtIndex:[indexPath row]];
+    WGGroup *school = (WGGroup *)[groups objectAtIndex:[indexPath row]];
     BOOL mySchool = NO;
     
     UILabel *rankingSchool = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 55, 25)];
-    rankingSchool.text = [NSString stringWithFormat:@"%@.", [school objectForKey:@"rank"] ];
+    rankingSchool.text = [NSString stringWithFormat:@"%@.", school.rank];
     rankingSchool.textColor = RGBAlpha(212, 212, 212, 100);
     rankingSchool.textAlignment = NSTextAlignmentLeft;
     rankingSchool.font = [FontProperties mediumFont:20.0f];
     [cell.contentView addSubview:rankingSchool];
     
     UILabel *nameOfSchool = [[UILabel alloc] initWithFrame:CGRectMake(55, 0, self.view.frame.size.width - 40, 25)];
-    nameOfSchool.text = [school objectForKey:@"name"];
+    nameOfSchool.text = school.name;
     nameOfSchool.textAlignment = NSTextAlignmentLeft;
     nameOfSchool.font = [FontProperties mediumFont:20.0f];
     if (mySchool) nameOfSchool.textColor = [FontProperties getOrangeColor];
@@ -143,12 +143,13 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Network function
 
 - (void) fetchGroupsWaitlist {
-    [Network queryAsynchronousAPI:@"groups/?query=waitlist" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+    [WGGroup getWaitlist:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            if ([[jsonResponse allKeys] containsObject:@"objects"]) {
-                groupArray = [jsonResponse objectForKey:@"objects"];
-                [self initializeTableViewOfSchools];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
             }
+            groups = collection;
         });
     }];
 }

@@ -16,7 +16,7 @@
 
 @protocol InviteCellDelegate
 - (void) inviteTapped;
-@property STATE userState;
+@property State userState;
 @end
 
 @interface FancyProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
@@ -27,7 +27,7 @@
 @property MoreViewController *moreViewController;
 
 @property WGUser *user;
-@property STATE userState;
+@property State userState;
 
 @property (nonatomic, assign) BOOL isFetchingNotifications;
 @property (nonatomic, strong) WGCollection *events;

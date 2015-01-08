@@ -117,7 +117,7 @@
         followBackPersonButton.tag = -100;
         [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
     }
-    if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+    if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
         [followBackPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
         [followBackPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
         [followBackPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];

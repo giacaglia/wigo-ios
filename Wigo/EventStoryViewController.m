@@ -304,7 +304,7 @@
     NSString *contentURL;
     if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
     else  contentURL = eventMessage.media;
-    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
     [myCell.spinner startAnimating];
     __weak FaceCell *weakCell = myCell;
     [myCell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -312,8 +312,7 @@
             [weakCell.spinner stopAnimating];
         });
     }];
-
-    myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
+    myCell.timeLabel.text = [eventMessage.created getUTCTimeStringToLocalTimeString];
     myCell.timeLabel.textColor = RGB(59, 59, 59);
     myCell.faceAndMediaTypeView.alpha = 1.0f;
     

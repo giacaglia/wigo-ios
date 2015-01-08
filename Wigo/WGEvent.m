@@ -174,7 +174,7 @@
                 dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
             }
             @finally {
-                handler(dataError != nil, dataError);
+                handler(dataError == nil, dataError);
             }
         }];
     } else if ([self.attendees.hasNextPage boolValue]) {

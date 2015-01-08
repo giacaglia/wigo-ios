@@ -9,18 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "IQMediaPickerController.h"
 #import <MediaPlayer/MediaPlayer.h>
-#import "Event.h"
+#import "WGEvent.h"
 #import "Delegate.h"
 
 @protocol MediaScrollViewDelegate
-- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell;
 - (void)focusOnContent;
+@optional
+- (void)updateEventMessage:(WGEventMessage *)eventMessage forCell:(UICollectionViewCell *)cell;
 @end
 
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate, IQMediaPickerControllerDelegate>
 
-@property (nonatomic, strong) Event *event;
-@property (nonatomic, strong) NSMutableArray *eventMessages;
+@property (nonatomic, strong) WGEvent *event;
+@property (nonatomic, strong) WGCollection *eventMessages;
 @property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
 @property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
@@ -48,7 +49,7 @@
 @interface MediaCell : UICollectionViewCell
 @property (nonatomic, assign) id <MediaScrollViewDelegate> mediaScrollDelegate;
 @property (nonatomic, strong) UILabel *label;
-@property (nonatomic, strong) NSDictionary *eventMessage;
+@property (nonatomic, strong) WGEventMessage *eventMessage;
 - (void)updateUI;
 @property (nonatomic, strong) UILabel *numberOfVotesLabel;
 @property (nonatomic, strong) UIButton *upVoteButton;

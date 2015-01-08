@@ -21,6 +21,7 @@
 #define kCDNPrefix @"cdnPrefix"
 #define kShowedOnboardView @"showedOnboardView"
 #define kFacebookAccessTokenKey @"facebook_access_token"
+#define kAccessToken @"accessToken"
 #define kFacebookIdKey @"facebook_id"
 #define kLastNotificationReadKey @"last_notification_read"
 
@@ -89,11 +90,14 @@ static WGProfile *currentUser = nil;
 -(void) setFacebookAccessToken:(NSString *)facebookAccessToken {
     [self setObject:facebookAccessToken forKey:kFacebookAccessTokenKey];
     [[NSUserDefaults standardUserDefaults] setObject:facebookAccessToken forKey:kFacebookAccessTokenKey];
+    [[NSUserDefaults standardUserDefaults] setObject:facebookAccessToken forKey:kAccessToken];
 }
 
 -(NSString *) facebookAccessToken {
     if ([self objectForKey:kFacebookAccessTokenKey]) {
         return [self objectForKey:kFacebookAccessTokenKey];
+    } else if ([self objectForKey:kAccessToken]) {
+        return [self objectForKey:kAccessToken];
     }
     return [[NSUserDefaults standardUserDefaults] objectForKey:kFacebookAccessTokenKey];
 }

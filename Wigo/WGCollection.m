@@ -178,7 +178,7 @@
             dataError = [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(dataError != nil, dataError);
+            handler(dataError == nil, dataError);
         }
     }];
 }

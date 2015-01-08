@@ -9,21 +9,22 @@
 #ifndef Wigo_Delegate_h
 #define Wigo_Delegate_h
 
-#import "User.h"
-#import "Event.h"
+#import "WGUser.h"
+#import "WGCollection.h"
+#import "WGEvent.h"
 
 @protocol UserSelectDelegate <NSObject>
-- (void)showUser:(User *)user;
+- (void)showUser:(WGUser *)user;
 @end
 
 @protocol PlacesDelegate <UserSelectDelegate>
 - (void)showHighlights;
-- (void)showConversationForEvent:(Event *)event;
-- (void)showStoryForEvent:(Event*)event;
+- (void)showConversationForEvent:(WGEvent *)event;
+- (void)showStoryForEvent:(WGEvent*)event;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 @property (nonatomic, assign) BOOL visitedProfile;
-- (void)updateEvent:(Event *)newEvent;
+- (void)updateEvent:(WGEvent *)newEvent;
 @end
 
 @protocol StoryDelegate <NSObject>
@@ -33,7 +34,7 @@
 @protocol EventConversationDelegate <NSObject>
 - (void)focusOnContent;
 @property (nonatomic, assign) BOOL isFocusing;
-- (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages;
+- (void)reloadUIForEventMessages:(WGCollection *)eventMessages;
 - (void)addLoadingBanner;
 - (void)showErrorMessage;
 - (void)showCompletedMessage;

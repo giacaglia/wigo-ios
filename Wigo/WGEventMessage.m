@@ -11,9 +11,11 @@
 #define kUserKey @"user"
 #define kMessageKey @"message"
 #define kThumbnailKey @"thumbnail"
+#define kPropertiesKey @"properties"
 #define kMediaKey @"media"
 #define kIsReadKey @"is_read"
 #define kEventOwnerKey @"event_owner"
+#define kVoteKey @"vote"
 #define kDownVotesKey @"down_votes"
 #define kUpVotesKey @"up_votes"
 #define kMediaMimeType @"media_mime_type"
@@ -49,6 +51,14 @@
 
 -(NSString *) message {
     return [self objectForKey:kMessageKey];
+}
+
+-(void) setProperties:(NSDictionary *)properties {
+    [self setObject:properties forKey:kPropertiesKey];
+}
+
+-(NSDictionary *) properties {
+    return [self objectForKey:kPropertiesKey];
 }
 
 -(void) setMedia:(NSString *)media {
@@ -97,6 +107,14 @@
 
 -(NSNumber *) downVotes {
     return [self objectForKey:kDownVotesKey];
+}
+
+-(void) setVote:(NSNumber *)vote {
+    [self setObject:vote forKey:kVoteKey];
+}
+
+-(NSNumber *) vote {
+    return [self objectForKey:kVoteKey];
 }
 
 -(void) setUpVotes:(NSNumber *)upVotes {
@@ -180,6 +198,12 @@
                 }
             }];
         }
+    }];
+}
+
+-(void) vote:(BOOL)upVote withHandler:(BoolResultBlock)handler {
+    [WGApi post:@"eventmessagevotes/" withParameters:@{ @"message" : self.id, @"up_vote": @(upVote) } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
     }];
 }
 

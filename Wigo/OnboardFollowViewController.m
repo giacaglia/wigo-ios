@@ -254,7 +254,7 @@ BOOL initializedPopScreen;
             [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             followPersonButton.tag = 100;
         }
-        if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
             [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];

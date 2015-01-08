@@ -384,7 +384,7 @@ NSMutableArray *suggestedArrayView;
         followPersonButton.tag = -100;
         [followPersonButton addTarget:self action:@selector(suggestedFollowedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cellOfUser addSubview:followPersonButton];
-        if ([user state] == BLOCKED_USER) {
+        if ([user state] == BLOCKED_USER_STATE) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
             [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -400,7 +400,7 @@ NSMutableArray *suggestedArrayView;
                 [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 followPersonButton.tag = 100;
             }
-            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
                 [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
                 [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
                 [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -645,7 +645,7 @@ NSMutableArray *suggestedArrayView;
         followPersonButton.tag = -100;
         [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:followPersonButton];
-        if ([user state] == BLOCKED_USER) {
+        if ([user state] == BLOCKED_USER_STATE) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
             [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -661,7 +661,7 @@ NSMutableArray *suggestedArrayView;
                 [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 followPersonButton.tag = 100;
             }
-            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
                 [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
                 [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
                 [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];

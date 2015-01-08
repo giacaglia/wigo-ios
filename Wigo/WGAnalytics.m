@@ -69,6 +69,13 @@
     [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:tapped forKey:@"Tapped"]];
     [tracker set:[GAIFields customDimensionForIndex:7] value:tapped];
     
+    //check if is peeking
+    if ([[details objectForKey: @"isPeeking"] isEqualToString: @"Yes"]) {
+        [tracker set:[GAIFields customDimensionForIndex:8] value:@"Yes"];
+    } else {
+        [tracker set:[GAIFields customDimensionForIndex:8] value:@"No"];
+    }
+    
     [data addEntriesFromDictionary:details];
     
     [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"ui_action"   // Event category (required)

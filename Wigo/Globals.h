@@ -10,12 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIImageView+ImageArea.h"
 
-#import "User.h"
-#import "Party.h"
-#import "Event.h"
-#import "Message.h"
-#import "Time.h"
-
 #import "FontProperties.h"
 #import "WGAnalytics.h"
 

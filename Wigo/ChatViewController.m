@@ -193,13 +193,9 @@ UIButton *newChatButton;
 }
 
 - (void)markMessageAsRead:(WGMessage *)message {
-    NSString *idString = [(NSNumber*)[[message otherUser] objectForKey:@"id"] stringValue];
-    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", idString];
-    NSDictionary *options = @{@"read": [NSNumber numberWithBool:YES]};
-    [Network sendAsynchronousHTTPMethod:POST
-                            withAPIName:queryString
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                            withOptions:options];
+    [message.otherUser readConversation:^(BOOL success, NSError *error) {
+        // Do nothing!
+    }];
 }
 
 

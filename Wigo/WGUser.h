@@ -102,11 +102,15 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(BOOL) isCurrentUser;
 
++(void) getOrderedById:(WGCollectionResultBlock)handler;
 +(void) getNotMe:(WGCollectionResultBlock)handler;
++(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 +(void) getNewestUser:(WGUserResultBlock)handler;
 +(void) getOnboarding:(WGCollectionResultBlock)handler;
 +(void) searchUsers:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 +(void) getSuggestions:(WGCollectionResultBlock)handler;
++(void) getInvites:(WGCollectionResultBlock)handler;
++(void) searchInvites:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 
 -(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;
@@ -115,7 +119,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler;
 -(void) untap:(WGUser *)user withHandler:(BoolResultBlock)handler;
--(void) sendInvites:(NSDictionary *)numbers withHandler:(BoolResultBlock)handler;
+-(void) sendInvites:(NSArray *)numbers withHandler:(BoolResultBlock)handler;
 -(void) unblock:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) block:(WGUser *)user withType:(NSString *)type andHandler:(BoolResultBlock)handler;
 -(void) goingOut:(BoolResultBlock)handler;

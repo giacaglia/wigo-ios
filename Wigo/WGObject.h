@@ -36,6 +36,8 @@ typedef void (^BoolResultBlock)(BOOL success, NSError *error);
 
 -(BOOL) isEqual:(WGObject*)object;
 
+-(BOOL) expired;
+
 -(void) setObject:(id)object forKey:(id<NSCopying>)key;
 -(id) objectForKey:(NSString *)key;
 

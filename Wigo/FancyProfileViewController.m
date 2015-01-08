@@ -29,9 +29,9 @@
 
 @property UIPageControl *pageControl;
 
-@property Party *notificationsParty;
+@property WGCollection *notifications;
 @property NSNumber *page;
-@property Party *nonExpiredNotificationsParty;
+@property WGCollection *unexpiredNotifications;
 @property NSNumber *followRequestSummary;
 
 //favorite
@@ -721,7 +721,7 @@ UIButton *tapButton;
 - (NSInteger) notificationCount {
     if (self.userState == PUBLIC_PROFILE || self.userState == PRIVATE_PROFILE) {
         int numberOfCellsForSummary =  [self shouldShowFollowSummary] ? 1 : 0;
-        return [_nonExpiredNotificationsParty getObjectArray].count + numberOfCellsForSummary;
+        return _unexpiredNotifications.count + numberOfCellsForSummary;
     }
     return [self shouldShowInviteCell] ? 1 : 0;
 }
@@ -787,12 +787,12 @@ UIButton *tapButton;
         if ([_followRequestSummary intValue] > 0) {
             indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
         }
-        Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
-        if ([notification fromUserID] == (id)[NSNull null]) return notificationCell;
+        WGNotification *notification = (WGNotification *)[_unexpiredNotifications objectAtIndex:[indexPath row]];
+        if (!notification.fromUser.id) return notificationCell;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
-        WGUser *user = [WGUser serialize:[notification fromUser]];
+        WGUser *user = notification.fromUser;
         [notificationCell.profileImageView setImageWithURL:user.coverImageURL];
-        notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName] , [notification message] ];
+        notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName], [notification message]];
         
         if ([user state] == NOT_SENT_FOLLOWING_PRIVATE_USER || [user state] == NOT_YET_ACCEPTED_PRIVATE_USER) {
             notificationCell.rightPostImageView.hidden = YES;
@@ -904,10 +904,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         }
         else {
             if ([_followRequestSummary intValue] > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
-            Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:indexPath.row];
-            WGUser *user = [WGUser serialize:[notification fromUser]];
+            WGNotification *notification = (WGNotification *)[_unexpiredNotifications objectAtIndex:indexPath.row];
+            WGUser *user = notification.fromUser;
            
-            if ([[notification type] isEqualToString:@"follow"] || [[notification type] isEqualToString:@"follow.accepted"]) {
+            if ([notification.type isEqualToString:@"follow"] || [notification.type isEqualToString:@"follow.accepted"] || [notification.type isEqualToString:@"facebook.follow"]) {
                 FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
                 [fancyProfileViewController setStateWithUser:user];
                 fancyProfileViewController.events = self.events;
@@ -919,11 +919,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                     [self presentEvent:event];
                 }
             }
- 
-            
         }
     }
-  
 }
 
 - (void)presentEvent:(WGEvent *)event {
@@ -997,41 +994,49 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)fetchNotifications {
     if (!self.isFetchingNotifications) {
         self.isFetchingNotifications = YES;
-        NSString *queryString;
-        if (![_page isEqualToNumber:@1] && [_notificationsParty nextPageString]) {
-            queryString = [_notificationsParty nextPageString];
-        }
-        else {
-            queryString = [NSString stringWithFormat:@"notifications/?page=%@" ,[_page stringValue]];
-        }
-        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if ([_page isEqualToNumber:@1]) {
-                    _notificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
-                    _nonExpiredNotificationsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
-                }
-                NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
-                Notification *notification;
-                for (int i = 0; i < [arrayOfNotifications count]; i++) {
-                    NSDictionary *notificationDictionary = [arrayOfNotifications objectAtIndex:i];
-                    notification = [[Notification alloc] initWithDictionary:notificationDictionary];
-                    if (![notification expired]) {
-                        [_nonExpiredNotificationsParty addObject:(NSMutableDictionary *)notification];
+        if (!_notifications || _notifications.hasNextPage == nil) {
+            [WGNotification get:^(WGCollection *collection, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    self.isFetchingNotifications = NO;
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
                     }
-                }
-                [_notificationsParty addObjectsFromArray:arrayOfNotifications];
-                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-                [_notificationsParty addMetaInfo:metaDictionary];
-                if ([_page isEqualToNumber:@1]) [self updateLastNotificationsRead];
-                _page = @([_page intValue] + 1);
-                
-                self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
-                [self.tableView reloadData];
-                [self.tableView didFinishPullToRefresh];
-                self.isFetchingNotifications = NO;
-            });
-        }];
-        
+                    _notifications = collection;
+                    for (WGNotification *notification in _notifications) {
+                        if (![notification expired]) {
+                            [_unexpiredNotifications addObject:notification];
+                        }
+                    }
+                    self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
+                    [self.tableView reloadData];
+                    [self.tableView didFinishPullToRefresh];
+                    self.isFetchingNotifications = NO;
+                });
+            }];
+        } else if ([_notifications hasNextPage]) {
+            [_notifications getNextPage:^(WGCollection *collection, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    self.isFetchingNotifications = NO;
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    for (WGNotification *notification in collection) {
+                        [_notifications addObject:notification];
+                        if (![notification expired]) {
+                            [_unexpiredNotifications addObject:notification];
+                        }
+                    }
+                    self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
+                    [self.tableView reloadData];
+                    [self.tableView didFinishPullToRefresh];
+                    self.isFetchingNotifications = NO;
+                });
+            }];
+        } else {
+            self.isFetchingNotifications = NO;
+        }
     }
 }
 
@@ -1061,6 +1066,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
             }
             EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
             eventStoryViewController.event = event;
@@ -1072,12 +1078,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 
 - (void)fetchSummaryOfFollowRequests {
-    [Network queryAsynchronousAPI:@"notifications/summary/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGNotification getFollowSummary:^(NSNumber *follow, NSNumber *followRequest, NSNumber *total, NSNumber *tap, NSNumber *facebookFollow, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
-            if ([[jsonResponse allKeys] containsObject:@"follow.request"])
-                _followRequestSummary = (NSNumber *)[jsonResponse objectForKey:@"follow.request"];
-            else
-                _followRequestSummary = @0;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
+            _followRequestSummary = followRequest;
             [self.tableView reloadData];
         });
     }];

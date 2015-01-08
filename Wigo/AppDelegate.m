@@ -12,7 +12,6 @@
 #import <Crashlytics/Crashlytics.h>
 #import "FontProperties.h"
 #import "GAI.h"
-#import "Time.h"
 #import "PopViewController.h"
 #import "WGProfile.h"
 #import "WGEvent.h"
@@ -96,8 +95,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     currentInstallation[@"api_version"] = API_VERSION;
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
-    
-    }
+}
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     if (error.code == 3010) {
@@ -129,6 +127,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                 }
             }
         }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     }
     else { // If it's was at the background or inactive
     }
@@ -202,24 +201,6 @@ forRemoteNotification:(NSDictionary *)userInfo
     return wasHandled;
 }
 
-#pragma mark - Notification Tab Bar
-
-
-- (void)updateBadge {
-//    int total = [numberOfNewMessages intValue] + [numberOfNewNotifications intValue];
-    int total = 0;
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    if (currentInstallation.badge != 0) {
-        currentInstallation.badge = total;
-        [currentInstallation setValue:@"ios" forKey:@"deviceType"];
-        currentInstallation[@"api_version"] = API_VERSION;
-        [currentInstallation saveEventually];
-        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:total];
-    }
-
-}
-
-
 #pragma mark - Save the time
 
 #warning THIS SEEMS WRONG
@@ -249,7 +230,6 @@ forRemoteNotification:(NSDictionary *)userInfo
 - (void)reloadAllData {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchFollowing" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     [self logFirstTimeLoading];
 }
@@ -367,7 +347,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     }
     else {
         NSDate *newDate = [NSDate date];
-        NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:dateAccessed toDate:newDate];
+        NSDateComponents *differenceDateComponents = [dateAccessed differenceBetweenDates:newDate];
         if ([differenceDateComponents hour] > 0 || [differenceDateComponents day] > 0 || [differenceDateComponents weekOfYear] > 0 || [differenceDateComponents month] > 0) {
             [[NSUserDefaults standardUserDefaults] setObject:newDate forKey: @"lastTimeAccessed"];
             [[NSUserDefaults standardUserDefaults] synchronize];

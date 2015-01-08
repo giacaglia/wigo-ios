@@ -22,9 +22,8 @@
 @property UITableView *tableView;
 //@property NSArray *contentList;
 @property NSNumber *page;
-@property Party *everyoneParty;
-@property Party *contentParty;
-@property Party *filteredContentParty;
+@property WGCollection *content;
+@property WGCollection *filteredContent;
 
 @end
 
@@ -46,9 +45,8 @@ BOOL isFetchingEveryone;
 {
     [super viewDidLoad];
     queryQueueInt = 0;
-    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    _contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    _content = [[WGCollection alloc] initWithType:[WGUser class]];
+    _filteredContent = [[WGCollection alloc] initWithType:[WGUser class]];
     isFetchingEveryone = NO;
     
     // Title setup
@@ -114,31 +112,38 @@ BOOL isFetchingEveryone;
 
 #pragma Network Functions
 
-#warning SWITCH TO WGCOLLECTION
-
 - (void) fetchFirstPageEveryone {
-    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    _page = @1;
     [self fetchEveryone];
 }
 
 - (void) fetchEveryone {
     if (!isFetchingEveryone) {
         isFetchingEveryone = YES;
-        NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&ordering=is_goingout&page=%@" , [WGProfile currentUser].id, [_page stringValue]];
-        [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-            NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-            [_everyoneParty addObjectsFromArray:arrayOfUsers];
-            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-            [_everyoneParty addMetaInfo:metaDictionary];
-            [_everyoneParty removeUser:[Profile user]];
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                _page = @([_page intValue] + 1);
-                _contentParty = _everyoneParty;
-                [_tableView reloadData];
-                isFetchingEveryone = NO;
-            });
-        }];
+        
+        if (!_content || _content.hasNextPage == nil) {
+            [WGUser getNotMe:^(WGCollection *collection, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    _content = collection;
+                    [_tableView reloadData];
+                    isFetchingEveryone = NO;
+                });
+            }];
+        } else {
+            [_content addNextPage:^(BOOL success, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    [_tableView reloadData];
+                    isFetchingEveryone = NO;
+                });
+            }];
+        }
     }
 }
 
@@ -150,10 +155,10 @@ BOOL isFetchingEveryone;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (_isSearching) {
-        return [[_filteredContentParty getObjectArray] count];
+        return [_filteredContent count];
     }
-    int hasNextPage = ([_everyoneParty hasNextPage] ? 1 : 0);
-    return [[_contentParty getObjectArray] count] + hasNextPage;
+    int hasNextPage = ([_content hasNextPage] ? 1 : 0);
+    return [_content count] + hasNextPage;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -165,12 +170,12 @@ BOOL isFetchingEveryone;
     }
     
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    if ([[_contentParty getObjectArray] count] > 5) {
-        if ([_contentParty hasNextPage] && [indexPath row] == [[_contentParty getObjectArray] count] - 5) {
+    if ([_content count] > 5) {
+        if ([_content hasNextPage] && [indexPath row] == [_content count] - 5) {
             [self fetchEveryone];
         }
     }
-    if ([indexPath row] == [[_contentParty getObjectArray] count] && [[_contentParty getObjectArray] count] != 0) {
+    if ([indexPath row] == [_content count] && [_content count] != 0) {
         [self fetchEveryone];
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
@@ -180,18 +185,18 @@ BOOL isFetchingEveryone;
         return cell;
     }
     
-    User *user;
+    WGUser *user;
     if (_isSearching) {
-        if ([[_filteredContentParty getObjectArray] count] == 0) return cell;
-        if ([indexPath row] < [[_filteredContentParty getObjectArray] count]) {
-            user = [[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
+        if ([_filteredContent count] == 0) return cell;
+        if ([indexPath row] < [_filteredContent count]) {
+            user = (WGUser *)[_filteredContent objectAtIndex:[indexPath row]];
         }
         else return cell;
     }
     else {
-        if ([[_contentParty getObjectArray] count] == 0) return cell;
-        if ([indexPath row] < [[_contentParty getObjectArray] count]) {
-            user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
+        if ([_content count] == 0) return cell;
+        if ([indexPath row] < [_content count]) {
+            user = (WGUser *)[_content objectAtIndex:[indexPath row]];
         }
         else return cell;
     }
@@ -229,16 +234,16 @@ BOOL isFetchingEveryone;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    User *user;
+    WGUser *user;
     if (_isSearching) {
-        int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
+        int sizeOfArray = (int)[_filteredContent count];
         if (sizeOfArray > 0 && sizeOfArray > [indexPath row])
-            user = [[_filteredContentParty getObjectArray] objectAtIndex:[indexPath row]];
+            user = (WGUser *)[_filteredContent objectAtIndex:[indexPath row]];
     }
     else {
-        int sizeOfArray = (int)[[_contentParty getObjectArray] count];
+        int sizeOfArray = (int)[_content count];
         if (sizeOfArray > 0 && sizeOfArray > [indexPath row])
-            user = [[_contentParty getObjectArray] objectAtIndex:[indexPath row]];
+            user = (WGUser *)[_content objectAtIndex:[indexPath row]];
     }
     if (user) {
         self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
@@ -334,7 +339,7 @@ BOOL isFetchingEveryone;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    [_filteredContentParty removeAllObjects];
+    [_filteredContent removeAllObjects];
     if([searchText length] != 0) {
         _isSearching = YES;
         [self performBlock:^(void){[self searchTableList];}
@@ -356,15 +361,35 @@ BOOL isFetchingEveryone;
 - (void)searchTableList {
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
-    if ([oldString isEqualToString:@"Initiate meltdown"]) {
+    /* if ([oldString isEqualToString:@"Initiate meltdown"]) {
         [self showMeltdown];
+    } */
+    if (!_filteredContent || _filteredContent.hasNextPage == nil) {
+        [WGUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                _filteredContent = collection;
+                [_tableView reloadData];
+                isFetchingEveryone = NO;
+            });
+        }];
+    } else {
+        [_filteredContent addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                [_tableView reloadData];
+                isFetchingEveryone = NO;
+            });
+        }];
     }
-    _page = @1;
-    NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&page=%@&text=%@", [WGProfile currentUser].id, [_page stringValue], searchString];
-    [self searchUsersWithString:queryString ];
-    
 }
-
+/*
 - (void)showMeltdown {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Meltdown"
                                                                    message:nil
@@ -394,28 +419,5 @@ BOOL isFetchingEveryone;
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
 }
-
-
-- (void)searchUsersWithString:(NSString *)queryString {
-    queryQueueInt += 1;
-    NSDictionary *inputDictionary = @{@"queryInt": [NSNumber numberWithInt:queryQueueInt]};
-    [Network queryAsynchronousAPI:queryString
-              withInputDictionary:inputDictionary
-                      withHandler:^(NSDictionary *input, NSDictionary *jsonResponse, NSError *error) {
-                          if ([[input objectForKey:@"queryInt"] intValue] == queryQueueInt) {
-                                if ([_page isEqualToNumber:@1]) _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-                                NSMutableArray *arrayOfUsers;
-                                arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-                                
-                                [_filteredContentParty addObjectsFromArray:arrayOfUsers];
-                                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-                                [_filteredContentParty addMetaInfo:metaDictionary];
-                                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                    _page = @([_page intValue] + 1);
-                                    [_tableView reloadData];
-                                });
-                          }
-    }];
-}
-
+*/
 @end

@@ -95,7 +95,7 @@ static WGUser *currentUser = nil;
 }
 
 -(BOOL) isCurrentUser {
-    return [self isCurrentUser];
+    return [self isEqual:[WGProfile currentUser]];
 }
 
 -(void) setKey:(NSString *)key {
@@ -630,6 +630,28 @@ static WGUser *currentUser = nil;
     }];
 }
 
++(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"id__ne" : [WGProfile currentUser].id, @"ordering" : @"is_goingout", @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
 +(void) getOnboarding:(WGCollectionResultBlock)handler {
     [WGApi get:@"users/" withArguments:@{ @"query" : @"onboarding" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
@@ -650,6 +672,73 @@ static WGUser *currentUser = nil;
             handler(objects, dataError);
         }
     }];
+}
+
++(void) getOrderedById:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"ordering" : @"id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
++(void) getInvites:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"following" : @"true", @"ordering" : @"invite" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
++(void) searchInvites:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"following" : @"true", @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+
 }
 
 +(void) getSuggestions:(WGCollectionResultBlock)handler {
@@ -732,8 +821,8 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) sendInvites:(NSDictionary *)numbers withHandler:(BoolResultBlock)handler {
-    [WGApi post:@"invites" withArguments:@{ @"force" : @YES } andParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+-(void) sendInvites:(NSArray *)numbers withHandler:(BoolResultBlock)handler {
+    [WGApi post:@"invites/" withArguments:@{ @"force" : @YES } andParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }

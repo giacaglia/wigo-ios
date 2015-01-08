@@ -13,7 +13,7 @@
 #import "OnboardFollowViewController.h"
 
 @interface LockScreenViewController ()
-@property Party *everyoneParty;
+@property WGCollection *everyone;
 @end
 
 SLComposeViewController *mySLComposerSheet;
@@ -41,7 +41,6 @@ OnboardFollowViewController *onboardFollowViewController;
 {
     [super viewDidLoad];
     numberOfPeopleSignedUp = [WGProfile currentUser].group.numMembers;
-    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self initializeTopLabel];
     [self initializeShareButton];
     [self initializeLockPeopleButtons];
@@ -144,10 +143,10 @@ OnboardFollowViewController *onboardFollowViewController;
         if ([subview isMemberOfClass:[UIImageViewShake class]]) {
             UIImageViewShake *imageView = (UIImageViewShake *)subview;
             int i = (int)imageView.tag - 1;
-            int numberOfPeopleInParty = (int)[[_everyoneParty getObjectArray] count];
+            int numberOfPeopleInParty = (int)[_everyone count];
             if (i < numberOfPeopleInParty) {
-                if (numberOfPeopleInParty != 0 && numberOfPeopleSignedUp > 0 && [_everyoneParty getObjectArray]) {
-                    User *user = [[_everyoneParty getObjectArray] objectAtIndex:i];
+                if (numberOfPeopleInParty != 0 && numberOfPeopleSignedUp > 0 && _everyone) {
+                    WGUser *user = (WGUser *)[_everyone objectAtIndex:i];
                     [imageView setImageWithURL:user.coverImageURL imageArea:[user coverImageArea]];
                     imageView.backgroundColor = [FontProperties getOrangeColor];
                     imageView.layer.borderWidth = 1;
@@ -175,47 +174,39 @@ OnboardFollowViewController *onboardFollowViewController;
     label.font = [FontProperties getSmallFont];
 }
 
-#warning replace with WGCollection
-
 - (void)fetchEveryone {
-    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=id&limit=%@",numberOfPeopleSignedUp];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-        }
-        else {
-            NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-            [_everyoneParty addObjectsFromArray:arrayOfUsers];
-            [_everyoneParty removeUser:[Profile user]];
-        }
-    }];
+    if (!_everyone) {
+        [WGUser getOrderedById:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                _everyone = collection;
+            });
+        }];
+    } else if ([_everyone hasNextPage]) {
+        [_everyone addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+            });
+        }];
+    }
 }
 
 
 - (void) fetchUserInfo {
-    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if ([[jsonResponse allKeys] containsObject:@"status"]) {
-            if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                User *user = [[User alloc] initWithDictionary:jsonResponse];
-                if ([user key]) {
-                    [Profile setUser:user];
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
-                        [self dismissIfGroupUnlocked];
-                    });
-                }
-                
+    [WGProfile reload:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
             }
-        }
-        else {
-            User *user = [[User alloc] initWithDictionary:jsonResponse];
-            if ([user key]) {
-                [Profile setUser:user];
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [self dismissIfGroupUnlocked];
-                });
-            }
-        }
-       
+            [self dismissIfGroupUnlocked];
+        });
     }];
 }
 

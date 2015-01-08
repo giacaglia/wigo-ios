@@ -27,17 +27,10 @@
 @implementation GroupStats
 
 
-+ (void)doGet:(QueryResult)handler {
-    //NSURL *url = [NSURL URLWithString: [NSString stringWithFormat: kStatsApiUrl, @"1231"]];
-    NSURL *url = [NSURL URLWithString: [NSString stringWithFormat: kStatsApiUrl, [WGProfile currentUser].group.id]];
-    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL: url];
-    [req setHTTPMethod:GET];
-    [NSURLConnection sendAsynchronousRequest:req queue:[[NSOperationQueue alloc] init]  completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        NSDictionary* json;
-        if (data) {
-            json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-        }
-        handler(json, error);
++ (void)doGet:(ApiResultBlock)handler {
+    NSString *url = [NSString stringWithFormat: kStatsApiUrl, [WGProfile currentUser].group.id];
+    [WGApi get:url withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(jsonResponse, error);
     }];
 }
 

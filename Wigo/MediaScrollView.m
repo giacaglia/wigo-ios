@@ -12,16 +12,19 @@
 #import "IQMediaCaptureController.h"
 #import "AWSUploader.h"
 #import "WGEventMessage.h"
+#import "WGCollection.h"
 
 @interface MediaScrollView() {}
 @property (nonatomic, strong) NSMutableArray *pageViews;
+
+@property (nonatomic, strong) WGCollection *eventMessagesRead;
 
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) NSMutableDictionary *thumbnails;
 
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
-@property (nonatomic, strong) NSMutableSet *eventMessagesIDSet;
+
 @property (nonatomic, assign) BOOL shownCurrentImage;
 @end
 
@@ -70,9 +73,9 @@
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
     }
-    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:indexPath.row];
-    NSString *mimeType = [eventMessage objectForKey:@"media_mime_type"];
-    NSString *contentURL = [eventMessage objectForKey:@"media"];
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:indexPath.row];
+    NSString *mimeType = eventMessage.mediaMimeType;
+    NSString *contentURL = eventMessage.media;
     if ([mimeType isEqualToString:kCameraType]) {
         AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         if (authStatus == AVAuthorizationStatusDenied) {
@@ -110,7 +113,7 @@
             myCell.imageView.image = (UIImage *)contentURL;
         }
         else {
-            imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+            imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
             [myCell.spinner startAnimating];
             __weak ImageCell *weakCell = myCell;
             [myCell.imageView setImageWithURL:imageURL
@@ -156,17 +159,17 @@
         [myCell updateUI];
         NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
         if (![thumbnailURL isKindOfClass:[NSNull class]]) {
-            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], thumbnailURL]];
+            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
             [myCell.thumbnailImageView setImageWithURL:imageURL];
         }
-        NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+        NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
         myCell.moviePlayer.contentURL = videoURL;
         [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
         return myCell;
     }
 }
 
-- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell {
+- (void)updateEventMessage:(WGEventMessage *)eventMessage forCell:(UICollectionViewCell *)cell {
     NSIndexPath *indexPath = [self indexPathForCell:cell];
     [self.eventMessages replaceObjectAtIndex:[indexPath row] withObject:eventMessage];
 }
@@ -178,19 +181,15 @@
     for (int i = self.minPage; i <= self.maxPage; i++) {
         [self addReadPage:i];
     }
-    if (self.eventMessagesIDSet.count > 0) {
-        [Network sendAsynchronousHTTPMethod:POST
-                                withAPIName:[NSString stringWithFormat:@"events/%@/messages/read/", [self.event eventID]]
-                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                    if (!error) {
-                                        NSLog(@"json response %@", jsonResponse);
-                                    }
-                                    else {
-                                        NSLog(@"error %@", error);
-                                    }
-                                } withOptions:(id)[self.eventMessagesIDSet allObjects]];
+    if (self.eventMessagesRead.count > 0) {
+        [self.event setMessagesRead:self.eventMessagesRead andHandler:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                return;
+            }
+            [self.storyDelegate readEventMessageIDArray:[self.eventMessagesRead idArray]];
+        }];
     }
-    [self.storyDelegate readEventMessageIDArray:[self.eventMessagesIDSet allObjects]];
 }
 
 - (void)dismissView {
@@ -231,28 +230,22 @@
 }
 
 - (void)addReadPage:(int)page {
-    if (!self.eventMessagesIDSet) {
-        self.eventMessagesIDSet = [NSMutableSet new];
+    if (!self.eventMessagesRead) {
+        self.eventMessagesRead = [[WGCollection alloc] initWithType:[WGEventMessage class]];
     }
     if ((int)page < self.eventMessages.count) {
-        NSMutableDictionary *eventMessage = [NSMutableDictionary dictionaryWithDictionary:[self.eventMessages objectAtIndex:page]];
-        if ([[eventMessage allKeys] containsObject:@"id"] && [[eventMessage allKeys] containsObject:@"is_read"] && ![[eventMessage objectForKey:@"is_read"] boolValue]) {
-            [self.eventMessagesIDSet addObject:[eventMessage objectForKey:@"id"]];
-            [eventMessage setValue:@YES forKey:@"is_read"];
-            [self.eventMessages replaceObjectAtIndex:page withObject:eventMessage];
-        }
+        WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+        
+        
+            eventMessage.isRead = [NSNumber numberWithBool:YES];
     }
-  
 }
 
 - (void)removeMediaAtPage:(int)page {
-    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
-    if ([[eventMessage allKeys] containsObject:@"id"]) {
-        NSNumber *eventMessageID = [eventMessage objectForKey:@"id"];
-        [Network sendAsynchronousHTTPMethod:DELETE withAPIName:[NSString stringWithFormat:@"eventmessages/%@", eventMessageID] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            NSLog(@"jsonREsponse:%@, error %@", jsonResponse,error);
-        }];
-    }
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+    [eventMessage remove:^(BOOL success, NSError *error) {
+        // Do nothing!
+    }];
  }
 
 #pragma mark - MediaScrollViewDelegate 
@@ -289,7 +282,7 @@
             NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
             NSDictionary *properties = @{@"yPosition": yPosition};
             self.options =  @{
-                         @"event": [self.event eventID],
+                         @"event": self.event.id,
                          @"message": text,
                          @"properties": properties,
                          @"media_mime_type": type
@@ -297,7 +290,7 @@
         }
         else {
             self.options =  @{
-                         @"event": [self.event eventID],
+                         @"event": self.event.id,
                          @"media_mime_type": type
                          };
         }
@@ -329,7 +322,7 @@
             NSNumber *yPosition = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPosition];
             NSDictionary *properties = @{@"yPosition": yPosition};
             self.options =  @{
-                              @"event": [self.event eventID],
+                              @"event": self.event.id,
                               @"message": text,
                               @"properties": properties,
                               @"media_mime_type": type
@@ -337,7 +330,7 @@
         }
         else {
             self.options =  @{
-                              @"event": [self.event eventID],
+                              @"event": self.event.id,
                               @"media_mime_type": type
                               };
         }
@@ -360,10 +353,11 @@
                                                                }];
     }
     
+    WGEventMessage *newEventMessage = [WGEventMessage serialize:mutableDict];
+    
     if (!self.shownCurrentImage) {
-        NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
-        [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1)  withObject:mutableDict];
-        [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
+        [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:newEventMessage];
+        [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
         self.shownCurrentImage = YES;
     }
   
@@ -422,90 +416,62 @@
                   andFileName:(NSString *)filename
                    andOptions:(NSDictionary *)options
 {
-    [Network sendAsynchronousHTTPMethod:GET
-                            withAPIName:[NSString stringWithFormat: @"uploads/photos/?filename=%@", filename]
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    NSArray *fields = [jsonResponse objectForKey:@"fields"];
-                                    NSString *actionString = [jsonResponse objectForKey:@"action"];
-                                    [AWSUploader uploadFields:fields
-                                                withActionURL:actionString
-                                                     withFile:fileData
-                                                  andFileName:filename
-                                     withCompletion:^{
-                                         NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
-                                         [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"media"];
-                                         [Network sendAsynchronousHTTPMethod:POST
-                                                                 withAPIName:@"eventmessages/"
-                                                                 withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (error) {
-                    [self.eventConversationDelegate showErrorMessage];
-                }
-                else {
+    WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
+    [newEventMessage addPhoto:fileData withName:filename andHandler:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                [self.eventConversationDelegate showErrorMessage];
+                return;
+            }
+            [newEventMessage save:^(BOOL success, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        [self.eventConversationDelegate showErrorMessage];
+                        return;
+                    }
                     [self.eventConversationDelegate showCompletedMessage];
                     self.shownCurrentImage = YES;
-                    NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:self.eventMessages];
-                    [mutableEventMessages replaceObjectAtIndex:(mutableEventMessages.count - 2) withObject:jsonResponse];
+                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:newEventMessage];
                     if (self.shownCurrentImage) {
-                        [mutableEventMessages removeLastObject];
+                        [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
                     }
-                    [self.eventConversationDelegate reloadUIForEventMessages:mutableEventMessages];
-
-                }
-            });
-                                                                 } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
-                                     }];
-                                    
-                                });
-                                
-                            }];
+                    [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+                });
+            }];
+        });
+    }];
 }
 
 - (void)uploadVideo:(NSData *)fileData
       withVideoName:(NSString *)filename
         andThumnail:(NSData *)thumbnailData
-    andThumnailName:(NSString *)thumnailFilename
+    andThumnailName:(NSString *)thumbnailFilename
          andOptions:(NSDictionary *)options
 {
-    [Network sendAsynchronousHTTPMethod:GET
-                            withAPIName:[NSString stringWithFormat: @"uploads/videos/?filename=%@", filename]
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                    NSDictionary *videoDictionary = [jsonResponse objectForKey:@"video"];
-                                    NSArray *videoFields = [videoDictionary objectForKey:@"fields"];
-                                    NSString *videoActionString = [videoDictionary objectForKey:@"action"];
-                                    
-                                    [AWSUploader uploadFields:videoFields
-                                                withActionURL:videoActionString
-                                                     withFile:fileData
-                                                  andFileName:filename
-                                               withCompletion:^{
-                                                   NSDictionary *thumbnailDictionary = [jsonResponse objectForKey:@"thumbnail"];
-                                                   NSArray *fields = [thumbnailDictionary objectForKey:@"fields"];
-                                                   NSString *actionString = [thumbnailDictionary objectForKey:@"action"];
-                                                   [AWSUploader uploadFields:fields
-                                                               withActionURL:actionString
-                                                                    withFile:thumbnailData
-                                                                 andFileName:thumnailFilename];
-                                                   
-                                                   NSDictionary *eventMessageOptions = [[NSMutableDictionary alloc] initWithDictionary:options];
-                                                   [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:videoFields] forKey:@"media"];
-                                                   [eventMessageOptions setValue:[AWSUploader valueOfFieldWithName:@"key" ofDictionary:fields] forKey:@"thumbnail"];
-                                                   [Network sendAsynchronousHTTPMethod:POST
-                                                                           withAPIName:@"eventmessages/"
-                                                                           withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                                                               if (!error) {
-                                                                                   NSLog(@"fjahefi Response: %@", jsonResponse);
-
-                                                                               }
-                                                                               else {
-                                                                                   NSLog(@"jerhj error: %@", error);
-                                                                               }
-                                                                           } withOptions:[NSDictionary dictionaryWithDictionary:eventMessageOptions]];
-                                               }];
-                                });
-                            }];
+    WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
+    [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumbnailFilename andHandler:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                [self.eventConversationDelegate showErrorMessage];
+                return;
+            }
+            [newEventMessage save:^(BOOL success, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (error) {
+                        [self.eventConversationDelegate showErrorMessage];
+                        return;
+                    }
+                    [self.eventConversationDelegate showCompletedMessage];
+                    self.shownCurrentImage = YES;
+                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:newEventMessage];
+                    if (self.shownCurrentImage) {
+                        [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
+                    }
+                    [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+                });
+            }];
+        });
+    }];
 }
 
 
@@ -726,26 +692,25 @@
 @implementation MediaCell
 
 - (void)updateUI {
-    if ([[self.eventMessage allKeys] containsObject:@"message"]) {
-        NSString *message = [self.eventMessage objectForKey:@"message"];
+    if (self.eventMessage.message) {
+        NSString *message = self.eventMessage.message;
         if (message && [message isKindOfClass:[NSString class]]) {
             self.label.hidden = NO;
-            self.label.text = message;
+            self.label.text = self.eventMessage.message;
         }
         else self.label.hidden = YES;
-        if ([[self.eventMessage allKeys] containsObject:@"properties"]) {
-            NSDictionary *properties = [self.eventMessage objectForKey:@"properties"];
-            if (properties &&
-                [properties isKindOfClass:[NSDictionary class]] &&
-                [[properties allKeys] containsObject:@"yPosition"]) {
-                NSNumber *yPosition = [properties objectForKey:@"yPosition"];
+        if (self.eventMessage.properties) {
+            if (self.eventMessage.properties &&
+                [self.eventMessage.properties isKindOfClass:[NSDictionary class]] &&
+                [[self.eventMessage.properties allKeys] containsObject:@"yPosition"]) {
+                NSNumber *yPosition = [self.eventMessage.properties objectForKey:@"yPosition"];
                 self.label.frame = CGRectMake(0, [yPosition intValue], self.frame.size.width, 40);
             }
         }
     }
     else self.label.hidden = YES;
     
-    NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
+    NSNumber *vote = self.eventMessage.vote;
         if (!self.numberOfVotesLabel) {
             self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 46, self.frame.size.height - 75, 32, 30)];
             self.numberOfVotesLabel.textColor = UIColor.whiteColor;
@@ -757,7 +722,7 @@
             self.numberOfVotesLabel.layer.shadowRadius = 0.5;
             [self.contentView addSubview:self.numberOfVotesLabel];
         }
-        int votes = [[self.eventMessage objectForKey:@"up_votes"] intValue] - [[self.eventMessage objectForKey:@"down_votes"] intValue];
+        int votes = [self.eventMessage.upVotes intValue] - [self.eventMessage.downVotes intValue];
         self.numberOfVotesLabel.text = [[NSNumber numberWithInt:votes] stringValue];
 
         if (!self.upVoteButton) {
@@ -867,43 +832,24 @@
     NSNumber *votedUpNumber = [self.eventMessage objectForKey:@"vote"];
     if (!votedUpNumber) {
         if (!upvoteBool) {
-            NSMutableDictionary *mutableEventMessage = [NSMutableDictionary dictionaryWithDictionary:self.eventMessage];
-            [mutableEventMessage setObject:@-1 forKey:@"vote"];
-            NSNumber *downVotes = [mutableEventMessage objectForKey:@"down_votes"];
-            if ([downVotes isKindOfClass:[NSNumber class]]) {
-                downVotes = @([downVotes intValue] + 1);
-                [mutableEventMessage setObject:downVotes forKey:@"down_votes"];
-                self.eventMessage = [NSDictionary dictionaryWithDictionary:mutableEventMessage];
-                [self updateUI];
-                [self sendVote:upvoteBool];
-            }
-          
+            self.eventMessage.vote = @-1;
+            self.eventMessage.downVotes = @([self.eventMessage.downVotes intValue] + 1);
         }
         else {
-            NSMutableDictionary *mutableEventMessage = [NSMutableDictionary dictionaryWithDictionary:self.eventMessage];
-            [mutableEventMessage setObject:@1 forKey:@"vote"];
-            NSNumber *upVotes = [mutableEventMessage objectForKey:@"up_votes"];
-            if ([upVotes isKindOfClass:[NSNumber class]]) {
-                upVotes = @([upVotes intValue] + 1);
-                [mutableEventMessage setObject:upVotes forKey:@"up_votes"];
-                self.eventMessage = [NSDictionary dictionaryWithDictionary:mutableEventMessage];
-                [self updateUI];
-                [self sendVote:upvoteBool];
-            }
+            self.eventMessage.vote = @1;
+            self.eventMessage.upVotes = @([self.eventMessage.upVotes intValue] + 1);
         }
+        [self updateUI];
+        [self sendVote:upvoteBool];
     }
     [self.mediaScrollDelegate updateEventMessage:self.eventMessage forCell:self];
 }
 
 
 - (void)sendVote:(BOOL)upvoteBool {
-    NSNumber *eventMessageID = [self.eventMessage objectForKey:@"id"];
-    NSDictionary *options = @{@"message" : eventMessageID, @"up_vote": @(upvoteBool)};
-    [Network sendAsynchronousHTTPMethod:POST withAPIName:@"eventmessagevotes/"
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                            }
-                            withOptions:options];
-
+    [self.eventMessage vote:upvoteBool withHandler:^(BOOL success, NSError *error) {
+        // Do nothing!
+    }];
 }
 
 - (void)focusOnContent {

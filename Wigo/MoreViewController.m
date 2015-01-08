@@ -12,15 +12,15 @@
 
 
 BOOL once;
-User *user;
-STATE state;
+WGUser *user;
+State state;
 UIButton *unfollowButton;
 UIButton *blockButton;
 UIButton *cancelButton;
 
 @implementation MoreViewController
 
-- (id)initWithState:(STATE)newState
+- (id)initWithState:(State)newState
 {
     self = [super init];
     if (self) {
@@ -29,11 +29,11 @@ UIButton *cancelButton;
     return self;
 }
 
-- (id)initWithUser:(User *)newUser {
+- (id)initWithUser:(WGUser *)newUser {
     self = [super init];
     if (self) {
         user = newUser;
-        state = [user getUserState];
+        state = [user state];
     }
     return self;
 }
@@ -49,10 +49,10 @@ UIButton *cancelButton;
     once = YES;
     [super viewDidLoad];
     
-    if (state == FOLLOWING_USER ||
-        state == ACCEPTED_PRIVATE_USER ||
-        state == ATTENDING_EVENT_FOLLOWING_USER ||
-        state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER) {
+    if (state == FOLLOWING_USER_STATE ||
+        state == ACCEPTED_PRIVATE_USER_STATE ||
+        state == ATTENDING_EVENT_FOLLOWING_USER_STATE ||
+        state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE) {
         unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60 - 2*54, self.view.frame.size.width - 70, 42)];
         unfollowButton.backgroundColor = RGB(246, 143, 30);
         [unfollowButton setTitle:@"UNFOLLOW" forState:UIControlStateNormal];
@@ -112,8 +112,8 @@ UIButton *cancelButton;
         once = NO;
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void) {
             int type = (int)((int)blockButton.tag / 10)  - 1;
-            NSDictionary *userInfo = @{@"user": [user dictionary], @"type":[NSNumber numberWithInt:type]};
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil userInfo:userInfo];
+            NSDictionary *userInfo = @{@"user": [user deserialize], @"type":[NSNumber numberWithInt:type]};
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil userInfo:userInfo]; 
         }];
     }
 }

@@ -18,6 +18,9 @@ typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error
 @property NSNumber *eventOwner;
 @property NSNumber *isRead;
 
+@property NSDictionary *properties;
+
+@property NSNumber *vote;
 @property NSNumber *downVotes;
 @property NSNumber *upVotes;
 
@@ -31,5 +34,7 @@ typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error
 -(void) addPhoto:(NSData *)fileData withName:(NSString *)filename andHandler:(BoolResultBlock)handler;
 
 -(void) addVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(BoolResultBlock) handler;
+
+-(void) vote:(BOOL)upVote withHandler:(BoolResultBlock)handler;
 
 @end

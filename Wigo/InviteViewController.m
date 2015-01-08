@@ -12,16 +12,14 @@
 #import "MobileDelegate.h"
 #define HEIGHT_CELLS 70
 
-
-
 @interface InviteViewController() {
     NSArray *mobileContacts;
     NSMutableArray *filteredMobileContacts;
     NSMutableArray *chosenPeople;
     
     UITableView *invitePeopleTableView;
-    Party *everyoneParty;
-    Party *filteredContentParty;
+    WGCollection *content;
+    WGCollection *filteredContent;
     NSNumber *page;
     NSString *eventName;
     NSNumber *eventID;
@@ -173,11 +171,11 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
         if (isSearching) {
-            return [[filteredUsers getObjectArray] count];
+            return [filteredContent count];
         }
         else {
-            int hasNextPage = ([everyoneParty hasNextPage] ? 1 : 0);
-            return [[everyoneParty getObjectArray] count] + hasNextPage;
+            int hasNextPage = ([content hasNextPage] ? 1 : 0);
+            return [content count] + hasNextPage;
         }
     }
     else {
@@ -200,34 +198,34 @@
         int tag = (int)[indexPath row];
         User *user;
         if (isSearching) {
-            if ([[filteredUsers getObjectArray] count] == 0) return cell;
-            if (tag < [[filteredUsers getObjectArray] count]) {
-                user = [[filteredUsers getObjectArray] objectAtIndex:tag];
+            if ([filteredContent count] == 0) return cell;
+            if (tag < [filteredContent count]) {
+                user = [filteredContent objectAtIndex:tag];
             }
-            if ([[filteredUsers getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
-                if (tag == [[filteredUsers getObjectArray] count] - 5) {
+            if ([filteredContent count] > 5 && [content hasNextPage]) {
+                if (tag == [filteredContent count] - 5) {
                     [self fetchEveryone];
                 }
             }
             else {
-                if (tag == [[filteredUsers getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
+                if (tag == [filteredContent count] && [content count] != 0) {
                     [self fetchEveryone];
                     return cell;
                 }
             }
         }
         else {
-            if ([[everyoneParty getObjectArray] count] == 0) return cell;
-            if (tag < [[everyoneParty getObjectArray] count]) {
-                user = [[everyoneParty getObjectArray] objectAtIndex:tag];
+            if ([content count] == 0) return cell;
+            if (tag < [content count]) {
+                user = [content objectAtIndex:tag];
             }
-            if ([[everyoneParty getObjectArray] count] > 5 && [everyoneParty hasNextPage]) {
-                if (tag == [[everyoneParty getObjectArray] count] - 5) {
+            if ([content count] > 5 && [content hasNextPage]) {
+                if (tag == [content count] - 5) {
                     [self fetchEveryone];
                 }
             }
             else {
-                if (tag == [[everyoneParty getObjectArray] count] && [[everyoneParty getObjectArray] count] != 0) {
+                if (tag == [content count] && [content count] != 0) {
                     [self fetchEveryone];
                     return cell;
                 }
@@ -395,30 +393,35 @@ heightForHeaderInSection:(NSInteger)section
 - (void) tapPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
-    User *user;
+    WGUser *user;
     if (isSearching) {
-        if (tag < [[filteredContentParty getObjectArray] count]) {
-            user = [[filteredContentParty getObjectArray] objectAtIndex:tag];
+        if (tag < [filteredContent count]) {
+            user = (WGUser *)[filteredContent objectAtIndex:tag];
         }
     }
     else {
-        if (tag < [[everyoneParty getObjectArray] count]) {
-            user = [[everyoneParty getObjectArray] objectAtIndex:tag];
+        if (tag < [content count]) {
+            user = (WGUser *)[content objectAtIndex:tag];
         }
     }
     
     if ([user isTapped]) {
-        [Network sendUntapToUserWithId:[user objectForKey:@"id"]];
-        [user setIsTapped:NO];
+        [[WGProfile currentUser] untap:user withHandler:^(BOOL success, NSError *error) {
+            // Do nothing!
+        }];
+        user.isTapped = [NSNumber numberWithBool:NO];
     }
     else {
-        [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
-        [user setIsTapped:YES];
+#warning group these taps!
+        [[WGProfile currentUser] tapUser:user withHandler:^(BOOL success, NSError *error) {
+            // Do nothing!
+        }];
+        user.isTapped = [NSNumber numberWithBool:YES];
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
         [WGAnalytics tagEvent:@"Tap User" withDetails:options];
     }
-    if (tag < [[everyoneParty getObjectArray] count]) {
-        [everyoneParty replaceObjectAtIndex:tag withObject:user];
+    if (tag < [content count]) {
+        [content replaceObjectAtIndex:tag withObject:user];
     }
     int sizeOfTable = (int)[invitePeopleTableView numberOfRowsInSection:0];
     if (sizeOfTable > 0 && tag < sizeOfTable && tag >= 0) {
@@ -547,54 +550,67 @@ heightForHeaderInSection:(NSInteger)section
     // Normal users
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
-    page = @1;
-    NSString *queryString = [NSString stringWithFormat:@"users/?following=true&page=%@&text=%@" ,[page stringValue], searchString];
-    [self searchUsersWithString:queryString];
+    
+    if (!filteredContent || filteredContent.hasNextPage == nil) {
+        [WGUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                filteredContent = collection;
+                [filteredContent removeObject:[WGProfile currentUser]];
+                [invitePeopleTableView reloadData];
+            });
+        }];
+    } else {
+        [filteredContent addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                [filteredContent removeObject:[WGProfile currentUser]];
+                [invitePeopleTableView reloadData];
+            });
+        }];
+    }
     
     // Mobile contacts
     filteredMobileContacts = [NSMutableArray arrayWithArray:[MobileDelegate filterArray:mobileContacts withText:searchBar.text]];
 }
 
-- (void)searchUsersWithString:(NSString *)queryString {
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if ([page isEqualToNumber:@1]) filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-        NSMutableArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        [filteredContentParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [filteredContentParty addMetaInfo:metaDictionary];
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            page = @([page intValue] + 1);
-            [invitePeopleTableView reloadData];
-        });
-    }];
-}
-
-
-
 #pragma mark - Network requests
 
-
 - (void) fetchFirstPageEveryone {
-    everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    page = @1;
     [self fetchEveryone];
 }
 
-#warning TODO: switch to WGCollection
-
 - (void) fetchEveryone {
-    NSString *queryString = [NSString stringWithFormat:@"users/?following=true&ordering=invite&page=%@", [page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
-        NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-        [everyoneParty addObjectsFromArray:arrayOfUsers];
-        NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-        [everyoneParty addMetaInfo:metaDictionary];
-        [everyoneParty removeUser:[Profile user]];
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            page = @([page intValue] + 1);
-            [invitePeopleTableView reloadData];
-        });
-    }];
+    if (!content || content.hasNextPage == nil) {
+        [WGUser getInvites:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                content = collection;
+                [content removeObject:[WGProfile currentUser]];
+                [invitePeopleTableView reloadData];
+            });
+        }];
+    } else {
+        [content addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                [content removeObject:[WGProfile currentUser]];
+                [invitePeopleTableView reloadData];
+            });
+        }];
+    }
 }
 
 #pragma mark - Mobile
@@ -604,7 +620,5 @@ heightForHeaderInSection:(NSInteger)section
         mobileContacts = mobileArray;
     }];
 }
-
-
 
 @end

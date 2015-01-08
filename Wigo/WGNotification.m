@@ -53,9 +53,9 @@
     NSString *type = self.type;
     if ([type isEqualToString:@"tap"]) {
         if ([self.created isFromLastDay]) {
-            // if ([self.fromUser isAttending] && [self.fromUser attendingEventName]) {
-            //    return [NSString stringWithFormat:@"wants to see you out at %@", [fromUser attendingEventName]];
-            // }
+            if (self.fromUser.eventAttending.name) {
+                return [NSString stringWithFormat:@"wants to see you out at %@", self.fromUser.eventAttending.name];
+            }
             return @"wants to see you out";
         } else {
             return @"wanted to see you out";
@@ -112,6 +112,36 @@
         }
         @finally {
             handler(objects, dataError);
+        }
+    }];
+}
+
++(void) getFollowSummary:(WGNotificationSummaryResultBlock)handler {
+    [WGApi get:@"notifications/summary" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, nil, nil, nil, nil, error);
+            return;
+        }
+        NSError *dataError;
+        NSNumber *follow;
+        NSNumber *followRequest;
+        NSNumber *total;
+        NSNumber *tap;
+        NSNumber *facebookFollow;
+        @try {
+            follow = [jsonResponse objectForKey:@"follow"];
+            followRequest = [jsonResponse objectForKey:@"follow.request"];
+            total = [jsonResponse objectForKey:@"total"];
+            tap = [jsonResponse objectForKey:@"tap"];
+            facebookFollow = [jsonResponse objectForKey:@"facebook.follow"];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGNotification" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(follow, followRequest, total, tap, facebookFollow, dataError);
         }
     }];
 }

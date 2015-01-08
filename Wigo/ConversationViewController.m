@@ -235,7 +235,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 
-- (void)addMessageFromSender:(Message *)message {
+- (void)addMessageFromSender:(WGMessage *)message {
     UIView *messageWrapper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
     messageWrapper.backgroundColor = RGB(250, 233, 212);
     [messageWrapper.layer setCornerRadius:5];
@@ -244,7 +244,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
     // Add text to the wrapper
     UILabel *messageFromSender = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3, 50)];
-    messageFromSender.text = [message messageString];
+    messageFromSender.text = [message message];
     messageFromSender.textAlignment = NSTextAlignmentRight;
     messageFromSender.font = [FontProperties lightFont:15.0f];
     messageFromSender.numberOfLines = 0;
@@ -336,12 +336,18 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void)sendMessage {
     if (![_messageTextView.text isEqualToString:@""]) {
-        Message *message = [[Message alloc] init];
-        [message setMessageString:_messageTextView.text];
-        [message setTimeOfCreation:[NSDate nowStringUTC]];
-        [message setToUser:[self.user objectForKey:@"id"]];
-        [self addMessageFromSender:message];
-        [message saveAsynchronously];
+        WGMessage *message = [[WGMessage alloc] init];
+        message.message = _messageTextView.text;
+        message.created = [NSDate date];
+        message.toUser = self.user;
+        [message create:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+                return;
+            }
+            [self addMessageFromSender:message];
+        }];
+        
         _messageTextView.text = @"";
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [self textView:_messageTextView shouldChangeTextInRange:NSMakeRange(0, [_messageTextView.text length]) replacementText:@""];
@@ -353,9 +359,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
 }
 
-- (void)updateLastMessagesRead:(Message *)message {
-    if ([[message objectForKey:@"id"] intValue] > [[WGProfile currentUser].lastMessageRead intValue]) {
-        [WGProfile currentUser].lastMessageRead = [message objectForKey:@"id"];
+- (void)updateLastMessagesRead:(WGMessage *)message {
+    if ([message.id intValue] > [[WGProfile currentUser].lastMessageRead intValue]) {
+        [WGProfile currentUser].lastMessageRead = message.id;
     }
 }
 
@@ -435,9 +441,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     NSNumber *fromUserID = [[notification userInfo] valueForKey:@"id"];
     if (fromUserID && [fromUserID isEqualToNumber:[self.user objectForKey:@"id"]]) {
         NSString *messageString = [[notification userInfo] valueForKey:@"message"];
-        Message *message = [[Message alloc] init];
-        [message setMessageString:messageString];
-        [message setTimeOfCreation:[NSDate nowStringUTC]];
+        
+        WGMessage *message = [[WGMessage alloc] init];
+        message.message = messageString;
+        message.created = [NSDate date];
+
         [self addMessageFromReceiver:message];
         CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
         [_scrollView setContentOffset:bottomOffset animated:YES];

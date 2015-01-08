@@ -57,6 +57,10 @@
     return [NSDate serialize:[self objectForKey:kCreatedKey]];
 }
 
+-(BOOL) expired {
+    return [self.created isFromLastDay];
+}
+
 -(BOOL) isEqual:(WGObject*)other {
     return [self.id isEqualToNumber:other.id];
 }
