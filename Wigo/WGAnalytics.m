@@ -36,7 +36,7 @@
     WGProfile *profile = [WGProfile currentUser];
     
     // School
-    NSString *groupName = profile.groupName;
+    NSString *groupName = profile.group.name;
     if (groupName != nil) {
         [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:groupName forKey:@"School"]];
         [tracker set:[GAIFields customDimensionForIndex:5] value:groupName];
@@ -60,7 +60,7 @@
     [tracker set:[GAIFields customDimensionForIndex:3] value:followersBucket];
     
     // is Group Locked
-    NSString *locked = [profile.isGroupLocked boolValue] ? @"Yes" : @"No";
+    NSString *locked = [profile.group.locked boolValue] ? @"Yes" : @"No";
     [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:locked forKey:@"Locked"]];
     [tracker set:[GAIFields customDimensionForIndex:6] value:locked];
     
@@ -96,7 +96,7 @@
     // Note that this is vulnerable to Ben renaming schools via the admin dashboard, but the
     // alternative of having us have all the reports be by school ID as a string seems far too
     // painful to contemplate.
-    [tracker set:[GAIFields customDimensionForIndex:5] value:user.groupName];
+    [tracker set:[GAIFields customDimensionForIndex:5] value:user.group.name];
 }
 
 @end

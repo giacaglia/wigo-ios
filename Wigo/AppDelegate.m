@@ -11,10 +11,11 @@
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
 #import "FontProperties.h"
-#import "Network.h"
 #import "GAI.h"
 #import "Time.h"
 #import "PopViewController.h"
+#import "WGProfile.h"
+#import "WGEvent.h"
 
 NSNumber *numberOfNewMessages;
 NSNumber *numberOfNewNotifications;
@@ -32,11 +33,8 @@ NSDate *firstLoggedTime;
 {
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"canFetchAppStartup"];
     [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
-    BOOL googleAnalyticsEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"googleAnalyticsEnabled"];
-    [Profile setGoogleAnalyticsEnabled:googleAnalyticsEnabled];
-    
 
-    if ([Profile googleAnalyticsEnabled]) {
+    if ([[WGProfile currentUser].googleAnalyticsEnabled boolValue]) {
         [self initializeGoogleAnalytics];
     }
     
@@ -145,23 +143,21 @@ forRemoteNotification:(NSDictionary *)userInfo
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if ([identifier isEqualToString: @"tap_with_diff_event"]) {
         NSDictionary *event = [userInfo objectForKey:@"event"];
-        NSNumber *eventID = [event objectForKey:@"id"];
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
-        if (eventID  && [aps isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *alert = [aps objectForKey:@"alert"];
-            if ([alert isKindOfClass:[NSDictionary class]]) {
-                NSString *locKeyString = [alert objectForKey:@"loc-key"];
-                if ([locKeyString isEqualToString:@"T"]) {
-                    if ([Profile user] && [Profile user].key) {
-                        [[Profile user] setIsGoingOut:YES];
-                        [[Profile user] setEventID:eventID];
-                        [[Profile user] setIsAttending:YES];
-                        [[Profile user] setAttendingEventID:eventID];
-                        [Network postGoingToEventNumber:[eventID intValue]];
-                     
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
-                    }
-                }
+        NSDictionary *alert = [aps objectForKey:@"alert"];
+        NSString *locKeyString = [alert objectForKey:@"loc-key"];
+        if ([locKeyString isEqualToString:@"T"]) {
+            if ([WGProfile currentUser].key) {
+                [WGProfile currentUser].isGoingOut = [NSNumber numberWithBool:YES];
+                WGEvent *attendingEvent = [WGEvent serialize:event];
+                [WGProfile currentUser].eventAttending = attendingEvent;
+                
+                [[WGProfile currentUser] goingToEvent:attendingEvent withHandler:^(BOOL success, NSError *error) {
+                    completionHandler();
+                }];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
+                return;
             }
         }
     }
@@ -206,33 +202,6 @@ forRemoteNotification:(NSDictionary *)userInfo
     return wasHandled;
 }
 
-- (void)areThereNotificationsWithHandler:(IsThereResult)handler {
-    if ([Profile user] && [[Profile user] key]) {
-        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                        User *user = [[User alloc] initWithDictionary:jsonResponse];
-                        [Profile setUser:user];
-                        numberOfNewMessages = (NSNumber *)[user objectForKey:@"num_unread_conversations"];
-                        numberOfNewNotifications = (NSNumber *)[user objectForKey:@"num_unread_notifications"];
-                        [self updateBadge];
-                        handler(numberOfNewMessages, numberOfNewNotifications);
-                    }
-                }
-                else {
-                    User *user = [[User alloc] initWithDictionary:jsonResponse];
-                    [Profile setUser:user];
-                    numberOfNewMessages = (NSNumber *)[user objectForKey:@"num_unread_conversations"];
-                    numberOfNewNotifications =  (NSNumber *)[user objectForKey:@"num_unread_notifications"];
-                    [self updateBadge];
-                    handler(numberOfNewMessages, numberOfNewNotifications);
-                }
-            });
-        }];
-    }
-}
-
 #pragma mark - Notification Tab Bar
 
 
@@ -253,17 +222,11 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 #pragma mark - Save the time
 
-
+#warning THIS SEEMS WRONG
 - (void) logFirstTimeLoading {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSString *utcTimeString = [dateFormatter stringFromDate:[NSDate date]];
-    
     NSDateFormatter *utcDateFormat = [[NSDateFormatter alloc] init];
     [utcDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *dateInUTC = [utcDateFormat dateFromString:utcTimeString];
+    NSDate *dateInUTC = [utcDateFormat dateFromString:[NSDate nowStringUTC]];
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     firstLoggedTime = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
     [self saveDatesAccessed];
@@ -382,7 +345,8 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 - (void)fetchAppStart {
     BOOL canFetchAppStartUp = [[NSUserDefaults standardUserDefaults] boolForKey:@"canFetchAppStartup"];
-    if (canFetchAppStartUp && [self shouldFetchAppStartup] && [Profile user]) {
+    if (canFetchAppStartUp && [self shouldFetchAppStartup] && [WGProfile currentUser]) {
+        
         [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
                 if (!error) {

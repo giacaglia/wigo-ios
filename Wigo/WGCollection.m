@@ -12,21 +12,29 @@
 
 #pragma mark - Init
 
+-(id) initWithType:(Class)type {
+    self = [super init];
+    if (self) {
+        self.type = type;
+        self.currentPosition = 0;
+    }
+    return self;
+}
+
 +(WGCollection *)serializeResponse:(NSDictionary *) jsonResponse andClass:(Class)type {
-    WGCollection *newCollection = [WGCollection new];
+    WGCollection *newCollection = [[WGCollection alloc] initWithType:type];
     
     [newCollection setPagination: [jsonResponse objectForKey:@"meta"]];
-    [newCollection setObjects: [jsonResponse objectForKey:@"objects"] andType:type];
-    newCollection.currentPosition = 0;
+    [newCollection initObjects: [jsonResponse objectForKey:@"objects"]];
     
     return newCollection;
 }
 
 +(WGCollection *)serializeArray:(NSArray *) array andClass:(Class)type {
-    WGCollection *newCollection = [WGCollection new];
+   WGCollection *newCollection = [[WGCollection alloc] initWithType:type];
     
-    [newCollection setObjects:array andType:type];
-    newCollection.currentPosition = 0;
+    newCollection.type = type;
+    [newCollection initObjects:array];
     
     return newCollection;
 }
@@ -41,10 +49,10 @@
 
 #pragma mark - Objects
 
--(void) setObjects:(NSArray *)objects andType:(Class)type {
+-(void) initObjects:(NSArray *)objects {
     self.objects = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {
-        WGObject *object = [[type alloc] initWithJSON:objectDict];
+        WGObject *object = [[self.type alloc] initWithJSON:objectDict];
         [self.objects addObject: object];
     }
 }
@@ -79,9 +87,13 @@
 }
 
 -(void) addObjectsFromCollectionToBeginning:(WGCollection *)collection {
-    for (int i = 0; i < [collection.objects count]; i++) {
-        [self insertObject:[collection.objects objectAtIndex:i] atIndex:0];
+    for (WGObject *object in collection) {
+        [self insertObject:object atIndex:0];
     }
+}
+
+-(WGObject *) objectAtIndex:(NSInteger)index {
+    return [self.objects objectAtIndex:index];
 }
 
 -(void) removeObjectAtIndex:(NSUInteger)index {
@@ -90,6 +102,7 @@
 
 -(void) removeAllObjects {
     self.objects = [[NSMutableArray alloc] init];
+    self.currentPosition = 0;
 }
 
 -(WGObject *) objectWithID:(NSNumber *)searchID {
@@ -101,8 +114,16 @@
     return nil;
 }
 
+-(NSInteger) indexOfObject:(WGObject *)object {
+    return [self.objects indexOfObject:object];
+}
+
 -(BOOL) containsObject:(WGObject *)object {
     return [self.objects containsObject:object];
+}
+
+-(void) removeObject:(WGObject *)object {
+    [self.objects removeObject:object];
 }
 
 -(NSUInteger) count {
@@ -133,6 +154,34 @@
 }
 
 #pragma mark - Pagination
+
+-(void) addNextPage:(BoolResultBlock)handler {
+    if (!self.nextPage) {
+        handler(nil, [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"no next page" }]);
+        return;
+    }
+    [WGApi get:self.nextPage withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        @try {
+            WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+            [self addObjectsFromCollection:objects];
+            self.hasNextPage = objects.hasNextPage;
+            self.nextPage = objects.nextPage;
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError != nil, dataError);
+        }
+    }];
+}
 
 -(void) getNextPage:(WGCollectionResultBlock)handler {
     if (!self.nextPage) {

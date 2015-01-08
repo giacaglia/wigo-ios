@@ -19,7 +19,10 @@ typedef void (^WGMessageResultBlock)(WGMessage *object, NSError *error);
 @property NSNumber *isRead;
 @property NSNumber *expired;
 
+-(WGUser *) otherUser;
+
 +(WGMessage *)serialize:(NSDictionary *)json;
++(void) getConversations:(WGCollectionResultBlock)handler;
 
 -(void) deleteConversation:(BoolResultBlock)handler;
 -(void) readConversation:(BoolResultBlock)handler;

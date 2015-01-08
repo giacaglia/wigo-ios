@@ -12,6 +12,8 @@
 
 -(NSString *) joinedString;
 
+-(NSString *) getUTCTimeStringToLocalTimeString;
+
 -(BOOL) isFromLastDay;
 
 -(BOOL) isSameDayWithDate:(NSDate*)date;
@@ -20,5 +22,7 @@
 
 -(NSString *) deserialize;
 +(NSDate *) serialize:(NSString *)dateString;
+
++(NSString *) nowStringUTC;
 
 @end

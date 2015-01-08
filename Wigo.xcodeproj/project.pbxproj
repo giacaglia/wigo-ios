@@ -35,6 +35,7 @@
 		45DF86B21A5C5DEB00DB85AE /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86A71A5C5DEB00DB85AE /* AFURLRequestSerialization.m */; };
 		45DF86B31A5C5DEB00DB85AE /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86A91A5C5DEB00DB85AE /* AFURLResponseSerialization.m */; };
 		45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86AB1A5C5DEB00DB85AE /* AFURLSessionManager.m */; };
+		45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF11A5DA86500A5170F /* WGGroup.m */; };
 		C10BFB54198C24E6003CA59A /* EventAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C10BFB53198C24E6003CA59A /* EventAnalytics.m */; };
 		C10BFB55198C24E6003CA59A /* EventAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C10BFB53198C24E6003CA59A /* EventAnalytics.m */; };
 		C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */ = {isa = PBXBuildFile; fileRef = C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */; };
@@ -61,7 +62,6 @@
 		C12A111C19787BE700D53B1C /* NSMutableURLRequest+Wigo.m in Sources */ = {isa = PBXBuildFile; fileRef = C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */; };
 		C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C29D1961EADE00A01F50 /* SDWebImageDecoder.m */; };
 		C12A111E19787BE700D53B1C /* SDWebImagePrefetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A61961EADE00A01F50 /* SDWebImagePrefetcher.m */; };
-		C12A111F19787BE700D53B1C /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A17C6F195C761E0057C89A /* Network.m */; };
 		C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD4728194B889800AEA17D /* RWBlurImage.m */; };
 		C12A112119787BE700D53B1C /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C250195DCC4100A01F50 /* Message.m */; };
 		C12A112219787BE700D53B1C /* FontProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BE8C48192A48F1008BB84C /* FontProperties.m */; };
@@ -212,7 +212,6 @@
 		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
 		E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */; };
 		E9A0F9B21A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */; };
-		E9A17C70195C761E0057C89A /* Network.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A17C6F195C761E0057C89A /* Network.m */; };
 		E9A1EAAF199CFD25003A744C /* boyVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9A1EAAE199CFD25003A744C /* boyVoice.caf */; };
 		E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9A1EAAE199CFD25003A744C /* boyVoice.caf */; };
 		E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
@@ -471,6 +470,8 @@
 		45DF86A91A5C5DEB00DB85AE /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
 		45DF86AA1A5C5DEB00DB85AE /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
 		45DF86AB1A5C5DEB00DB85AE /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
+		45F74FF01A5DA86500A5170F /* WGGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGGroup.h; sourceTree = "<group>"; };
+		45F74FF11A5DA86500A5170F /* WGGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGGroup.m; sourceTree = "<group>"; };
 		C10BFB52198C24E6003CA59A /* EventAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventAnalytics.h; sourceTree = "<group>"; };
 		C10BFB53198C24E6003CA59A /* EventAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAnalytics.m; sourceTree = "<group>"; };
 		C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Wigo.h"; sourceTree = "<group>"; };
@@ -608,8 +609,6 @@
 		E99F46AE199012F0007408C1 /* LockScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LockScreenViewController.m; sourceTree = "<group>"; };
 		E9A0F9AF1A1E5CBE001A66DF /* EventMessagesConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventMessagesConstants.h; sourceTree = "<group>"; };
 		E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventMessagesConstants.m; sourceTree = "<group>"; };
-		E9A17C6E195C761E0057C89A /* Network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Network.h; sourceTree = "<group>"; };
-		E9A17C6F195C761E0057C89A /* Network.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Network.m; sourceTree = "<group>"; };
 		E9A1EAAE199CFD25003A744C /* boyVoice.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = boyVoice.caf; sourceTree = "<group>"; };
 		E9A31E451980AB25008A711B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		E9A31E471980AB9B008A711B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
@@ -964,6 +963,8 @@
 			children = (
 				4563F5221A3F436100F8C9C4 /* WGObject.h */,
 				4563F5231A3F436100F8C9C4 /* WGObject.m */,
+				45F74FF01A5DA86500A5170F /* WGGroup.h */,
+				45F74FF11A5DA86500A5170F /* WGGroup.m */,
 				4563F5251A3F460F00F8C9C4 /* WGUser.h */,
 				4563F5261A3F460F00F8C9C4 /* WGUser.m */,
 				454409621A58D19300BB3036 /* WGProfile.h */,
@@ -1281,8 +1282,6 @@
 				E95DC77F19538A270012AA20 /* Event.m */,
 				E9681CB31950AA3B00182E0E /* Query.h */,
 				E9681CB41950AA3B00182E0E /* Query.m */,
-				E9A17C6E195C761E0057C89A /* Network.h */,
-				E9A17C6F195C761E0057C89A /* Network.m */,
 				E96EF67F197EE95D00F88A6D /* Time.h */,
 				E96EF680197EE95D00F88A6D /* Time.m */,
 			);
@@ -2210,7 +2209,6 @@
 				C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */,
 				C12A111E19787BE700D53B1C /* SDWebImagePrefetcher.m in Sources */,
 				E9C63BD31A03ED35006C5DD2 /* IQAssetsCell.m in Sources */,
-				C12A111F19787BE700D53B1C /* Network.m in Sources */,
 				E9C63BE91A03ED35006C5DD2 /* IQSongsAlbumListViewController.m in Sources */,
 				E998C28119D1BF7D0012BF51 /* InviteViewController.m in Sources */,
 				E9203B541A23C4B90086BF73 /* EventConversationViewController.m in Sources */,
@@ -2355,7 +2353,6 @@
 				45DF86B11A5C5DEB00DB85AE /* AFURLConnectionOperation.m in Sources */,
 				E900C2B91961EADE00A01F50 /* SDWebImageDecoder.m in Sources */,
 				E900C2BD1961EADE00A01F50 /* SDWebImagePrefetcher.m in Sources */,
-				E9A17C70195C761E0057C89A /* Network.m in Sources */,
 				E9CD472B194B889800AEA17D /* RWBlurImage.m in Sources */,
 				E998C28019D1BF7D0012BF51 /* InviteViewController.m in Sources */,
 				E900C251195DCC4100A01F50 /* Message.m in Sources */,
@@ -2394,6 +2391,7 @@
 				E9C63BEA1A03ED35006C5DD2 /* IQSongsArtistListViewController.m in Sources */,
 				FA438EA119F196DA00AD74C2 /* EventMessage.m in Sources */,
 				FABD337D1A3B9904008FF56D /* JPBParallaxTableViewController.m in Sources */,
+				45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */,
 				FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */,
 				45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */,
 				E9C63C081A03ED35006C5DD2 /* IQPartitionView.m in Sources */,

@@ -30,6 +30,19 @@
     return array;
 }
 
+-(WGCollection *) collectionAtIndex:(NSInteger)index {
+    return [self.collections objectAtIndex:index];
+}
+
+-(void) addCollection:(WGCollection *) collection {
+    [self.collections addObject:collection];
+}
+
+-(void) removeAllCollections {
+    self.collections = [[NSMutableArray alloc] init];
+    self.currentPosition = 0;
+}
+
 -(NSArray *) idArray {
     NSMutableArray *ids = [[NSMutableArray alloc] init];
     for (WGCollection *collection in self.collections) {

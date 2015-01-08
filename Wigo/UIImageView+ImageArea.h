@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <SDWebImage/UIImageView+WebCache.h>
-#import "User.h"
+#import "WGUser.h"
 
 @interface UIImageView (ImageArea)
 
-- (void)setSmallImageForUser:(User *)user completed:(SDWebImageCompletedBlock)completedBlock;
-- (void)setCoverImageForUser:(User *)user completed:(SDWebImageCompletedBlock)completedBlock;
+- (void)setSmallImageForUser:(WGUser *)user completed:(SDWebImageCompletedBlock)completedBlock;
+- (void)setCoverImageForUser:(WGUser *)user completed:(SDWebImageCompletedBlock)completedBlock;
 - (void)setImageWithURL:(NSURL *)url imageArea:(NSDictionary *)area;
 - (void)setImageWithURL:(NSURL *)url imageArea:(NSDictionary*)area completed:(SDWebImageCompletedBlock)completedBlock;
 - (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder imageArea:(NSDictionary *)area;

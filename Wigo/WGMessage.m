@@ -60,6 +60,13 @@
     return [self objectForKey:kExpiredKey];
 }
 
+-(WGUser *) otherUser {
+    if ([self.user isCurrentUser]) {
+        return self.toUser;
+    }
+    return self.user;
+}
+
 -(void) setUser:(WGUser *)user {
     [self setObject:[user deserialize] forKey:kUserKey];
 }
@@ -78,6 +85,28 @@
 
 +(void) get:(WGCollectionResultBlock)handler {
     [WGApi get:@"messages/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGMessage" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
++(void) getConversations:(WGCollectionResultBlock)handler {
+    [WGApi get:@"conversations/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

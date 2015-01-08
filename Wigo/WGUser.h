@@ -8,6 +8,7 @@
 
 #import "WGObject.h"
 #import "WGCollection.h"
+#import "WGGroup.h"
 
 @class WGEvent;
 
@@ -47,6 +48,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSNumber* isTapped;
 @property NSNumber* isBlocked;
 @property NSNumber* isBlocking;
+@property NSNumber* emailValidated;
 @property NSString* bio;
 @property NSString* image;
 @property NSDate* modified;
@@ -54,6 +56,9 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSString* lastName;
 @property NSNumber* isFollowingRequested;
 @property NSNumber* isGoingOut;
+@property NSNumber* lastMessageRead;
+@property NSNumber* lastNotificationRead;
+@property NSNumber* lastUserRead;
 
 @property NSDictionary* properties;
 @property NSArray* images;
@@ -67,40 +72,53 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSString* facebookAccessToken;
 @property NSNumber* numFollowers;
 @property NSString* username;
-@property WGEvent* isAttending;
-@property NSDictionary* group;
-@property NSString* groupName;
-@property NSNumber* isGroupLocked;
-@property NSNumber* groupNumberMembers;
+@property WGEvent* eventAttending;
+@property WGGroup* group;
 @property NSNumber* groupRank;
 
 @property NSNumber* isTapPushNotificationEnabled;
 @property NSNumber* isFavoritesGoingOutNotificationEnabled;
 
+@property NSNumber* numUnreadConversations;
+@property NSNumber* numUnreadNotifications;
+
 +(WGUser *)serialize:(NSDictionary *)json;
 
 -(NSString *) privacyName;
 -(NSString *) genderName;
++(Gender) genderFromName:(NSString *)name;
+-(NSString *) fullName;
 
 -(void) removeImageAtIndex:(NSInteger)index;
 -(void) makeImageAtIndexCoverImage:(NSInteger)index;
 -(NSURL *) coverImageURL;
+-(NSDictionary *) coverImageArea;
+-(NSArray *) imagesArea;
+-(NSArray *) imagesURL;
+-(void) addImageURL:(NSString *)imageURL;
+-(void) addImageDictionary:(NSDictionary *)imageDictionary;
+
 -(State) state;
 
 -(BOOL) isCurrentUser;
+
++(void) getNotMe:(WGCollectionResultBlock)handler;
++(void) getNewestUser:(WGUserResultBlock)handler;
 
 -(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler;
 -(void) untap:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) sendInvites:(NSDictionary *)numbers withHandler:(BoolResultBlock)handler;
 -(void) unblock:(WGUser *)user withHandler:(BoolResultBlock)handler;
--(void) block:(WGUser *)user withType:(NSNumber *)type andHandler:(BoolResultBlock)handler;
-
+-(void) block:(WGUser *)user withType:(NSString *)type andHandler:(BoolResultBlock)handler;
 -(void) goingOut:(BoolResultBlock)handler;
 -(void) goingToEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler;
+-(void) readConversation:(BoolResultBlock)handler;
+-(void) getConversation:(WGCollectionResultBlock)handler;
 
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler;
 -(void) resendVerificationEmail:(BoolResultBlock) handler;

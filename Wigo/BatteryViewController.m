@@ -48,9 +48,9 @@ int widthShared;
 }
 
 - (void)initializeNameOfSchool {
-    if ([[Profile user] groupName]) {
+    if ([WGProfile currentUser].group.name) {
         UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 60, self.view.frame.size.width - 44, 60)];
-        schoolLabel.text = [[Profile user] groupName];
+        schoolLabel.text = [WGProfile currentUser].group.name;
         schoolLabel.textAlignment = NSTextAlignmentCenter;
         schoolLabel.numberOfLines = 0;
         schoolLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -141,10 +141,10 @@ int widthShared;
 }
 
 - (void)sharedPressed {
-    [EventAnalytics tagEvent:@"Share Pressed"];
+    [WGAnalytics tagEvent:@"Share Pressed"];
     NSArray *activityItems;
-    if ([[Profile user] groupName] && numGroups) {
-        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[[Profile user] groupName] uppercaseString], [numGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
+    if ([WGProfile currentUser].group.name && numGroups) {
+        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[WGProfile currentUser].group.name uppercaseString], [numGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
     }
     else {
         activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];

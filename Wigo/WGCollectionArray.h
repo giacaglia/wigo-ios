@@ -19,6 +19,10 @@
 
 -(NSArray *) idArray;
 
+-(void) addCollection:(WGCollection *)collection;
+-(WGCollection *) collectionAtIndex:(NSInteger)index;
+-(void) removeAllCollections;
+
 -(NSArray *) deserialize;
 
 @end

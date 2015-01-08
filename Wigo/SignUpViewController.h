@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Profile.h"
 #import "EmailConfirmationViewController.h"
 
 @interface SignUpViewController : UIViewController

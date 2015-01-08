@@ -30,6 +30,8 @@
 
 @property FancyProfileViewController *profileViewController;
 
+#warning UPDATE WITH WGCOLLECTION
+
 @property Party *everyoneParty;
 @property Party *followingParty;
 @property Party *followersParty;
@@ -50,7 +52,7 @@ NSMutableArray *suggestedArrayView;
 
 @implementation PeopleViewController
 
-- (id)initWithUser:(User *)user andTab:(NSNumber *)tab {
+- (id)initWithUser:(WGUser *)user andTab:(NSNumber *)tab {
     self = [super init];
     if (self) {
         self.user = user;
@@ -60,7 +62,7 @@ NSMutableArray *suggestedArrayView;
     return self;
 }
 
-- (id)initWithUser:(User *)user {
+- (id)initWithUser:(WGUser *)user {
     self = [super init];
     if (self) {
         self.user = user;
@@ -91,7 +93,7 @@ NSMutableArray *suggestedArrayView;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"People View"];
+    [WGAnalytics tagEvent:@"People View"];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -133,14 +135,14 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (void) initializeRightBarButton {
-    if (![self.user isEqualToUser:[Profile user]]) {
+    if (![self.user isCurrentUser]) {
         CGRect profileFrame = CGRectMake(0, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
         profileButton.userInteractionEnabled = NO;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
-        [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]] imageArea:[self.user coverImageArea]];
+        [profileImageView setImageWithURL:self.user.coverImageURL imageArea:[self.user coverImageArea]];
         [profileButton addSubview:profileImageView];
         [profileButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
@@ -199,7 +201,7 @@ NSMutableArray *suggestedArrayView;
 - (void)tappedView:(UITapGestureRecognizer*)tapSender {
     UIView *viewSender = (UIView *)tapSender.view;
     int tag = (int)viewSender.tag;
-    User *user = [self getUserAtIndex:tag];
+    WGUser *user = [self getUserAtIndex:tag];
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
@@ -214,7 +216,7 @@ NSMutableArray *suggestedArrayView;
 - (void)tappedButton:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
-    User *user = [self getUserAtIndex:tag];
+    WGUser *user = [self getUserAtIndex:tag];
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
@@ -294,7 +296,7 @@ NSMutableArray *suggestedArrayView;
         [secondPartSubview addSubview:suggestedScrollView];
         int xPosition = 10;
         for (int i = 0; i < MIN(10,[[_suggestionsParty getObjectArray] count]); i++) {
-            User *user = [[_suggestionsParty getObjectArray] objectAtIndex:i];
+            WGUser *user = [[_suggestionsParty getObjectArray] objectAtIndex:i];
             UIView *cellView = [self cellOfUser:user atXPosition:xPosition];
             [suggestedScrollView addSubview:cellView];
             [suggestedArrayView addObject:cellView];
@@ -356,7 +358,7 @@ NSMutableArray *suggestedArrayView;
     [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
 }
 
-- (UIView *)cellOfUser:(User *)user atXPosition:(int)xPosition {
+- (UIView *)cellOfUser:(WGUser *)user atXPosition:(int)xPosition {
     UIView *cellOfUser = [[UIView alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 175)];
     
     UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
@@ -366,7 +368,7 @@ NSMutableArray *suggestedArrayView;
     [profileImageView setCoverImageForUser:user completed:nil];
     [profileButton addSubview:profileImageView];
     profileButton.tag = (int)((xPosition - 10)/130);
-    if (![user isEqualToUser:[Profile user]]) {
+    if (![user isCurrentUser]) {
         [profileButton addTarget:self action:@selector(suggestedProfileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     [cellOfUser addSubview:profileButton];
@@ -379,13 +381,13 @@ NSMutableArray *suggestedArrayView;
     nameOfPersonLabel.font = [FontProperties lightFont:16.0f];
     [cellOfUser addSubview:nameOfPersonLabel];
     
-    if (![user isEqualToUser:[Profile user]]) {
+    if (![user isCurrentUser]) {
         UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(30, 120, 49, 30)];
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = -100;
         [followPersonButton addTarget:self action:@selector(suggestedFollowedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cellOfUser addSubview:followPersonButton];
-        if ([user getUserState] == BLOCKED_USER) {
+        if ([user state] == BLOCKED_USER) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
             [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -397,11 +399,11 @@ NSMutableArray *suggestedArrayView;
             followPersonButton.tag = 50;
         }
         else {
-            if ([user isFollowing]) {
+            if ([user.isFollowing boolValue]) {
                 [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 followPersonButton.tag = 100;
             }
-            if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER) {
                 [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
                 [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
                 [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -415,7 +417,7 @@ NSMutableArray *suggestedArrayView;
         }
         
         UILabel *dateJoined = [[UILabel alloc] init];
-        if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastUserRead] intValue]) {
+        if ([user.id intValue] > [[WGProfile currentUser].lastUserRead intValue]) {
             UILabel *mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 152, 110, 15)];
             mutualFriendsLabel.text = @"New on Wigo";
             mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
@@ -429,7 +431,7 @@ NSMutableArray *suggestedArrayView;
             dateJoined.frame = CGRectMake(0, 152, 110, 12);
         }
     
-        dateJoined.text = [user joinedDate];
+        dateJoined.text = [user.created joinedString];
         dateJoined.textColor = RGB(201, 202, 204);
         dateJoined.textAlignment = NSTextAlignmentCenter;
         dateJoined.font = [FontProperties lightFont:10.0f];
@@ -491,7 +493,7 @@ NSMutableArray *suggestedArrayView;
     self.navigationItem.titleView = nil;
     if ([self.currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageSuggestions];
-        self.title = [[Profile user] groupName];
+        self.title = [WGProfile currentUser].group.name;
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
@@ -574,7 +576,7 @@ NSMutableArray *suggestedArrayView;
         }
     }
    
-    User *user = [self getUserAtIndex:tag];
+    WGUser *user = [self getUserAtIndex:tag];
  
     if (!user) {
         BOOL loading = NO;
@@ -592,7 +594,7 @@ NSMutableArray *suggestedArrayView;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
     UIView *clickableView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 15 - 79, PEOPLEVIEW_HEIGHT_OF_CELLS - 5)];
-    if (![user isEqualToUser:[Profile user]]) [clickableView addGestureRecognizer:tap];
+    if (![user isCurrentUser]) [clickableView addGestureRecognizer:tap];
     clickableView.userInteractionEnabled = YES;
     clickableView.tag = tag;
     [cell.contentView addSubview:clickableView];
@@ -604,7 +606,7 @@ NSMutableArray *suggestedArrayView;
     [profileImageView setCoverImageForUser:user completed:nil];
     [profileButton addSubview:profileImageView];
     profileButton.tag = tag;
-    if (![user isEqualToUser:[Profile user]]) {
+    if (![user isCurrentUser]) {
         [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
     }
     [cell.contentView addSubview:profileButton];
@@ -633,20 +635,20 @@ NSMutableArray *suggestedArrayView;
     
     if ([self.currentTab isEqualToNumber:@2]) {
         UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140 - 15, PEOPLEVIEW_HEIGHT_OF_CELLS - 15, 140, 12)];
-        timeLabel.text = [user joinedDate];
+        timeLabel.text = [user.created joinedString];
         timeLabel.textAlignment = NSTextAlignmentRight;
         timeLabel.font = [FontProperties getSmallPhotoFont];
         timeLabel.textColor = RGB(201, 202, 204);
         [cell.contentView addSubview:timeLabel];
     }
     
-    if (![user isEqualToUser:[Profile user]]) {
+    if (![user isCurrentUser]) {
         UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 15, 49, 30)];
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = -100;
         [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:followPersonButton];
-        if ([user getUserState] == BLOCKED_USER) {
+        if ([user state] == BLOCKED_USER) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
             [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -662,7 +664,7 @@ NSMutableArray *suggestedArrayView;
                 [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 followPersonButton.tag = 100;
             }
-            if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER) {
                 [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
                 [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
                 [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -675,7 +677,7 @@ NSMutableArray *suggestedArrayView;
             }
         }
     }
-    if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastUserRead] intValue]) {
+    if ([[user objectForKey:@"id"] intValue] > [[WGProfile currentUser].lastUserRead intValue]) {
         cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
     }
     
@@ -689,20 +691,20 @@ NSMutableArray *suggestedArrayView;
 - (void) followedPersonPressed:(id)sender {
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
     NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
-    User *user = [self getUserAtIndex:(int)[indexPath row]];
+    WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
     if (user) [self updateButton:sender withUser:user];
     if ([indexPath row] < [[_contentParty getObjectArray] count]) {
         [_contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
     }
 }
 
-- (void)updateButton:(id)sender withUser:(User *)user {
+- (void)updateButton:(id)sender withUser:(WGUser *)user {
     UIButton *senderButton = (UIButton*)sender;
     if (senderButton.tag == 50) {
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
-        [user setIsBlocked:NO];
+        user.isBlocked = [NSNumber numberWithBool:NO];
         
         NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
         NSDictionary *options = @{@"is_blocked": @NO};
@@ -714,7 +716,7 @@ NSMutableArray *suggestedArrayView;
     else if (senderButton.tag == -100) {
         int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
         
-        if ([user isPrivate]) {
+        if (user.privacy == PRIVATE) {
             [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
             [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
             [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -723,46 +725,49 @@ NSMutableArray *suggestedArrayView;
             senderButton.layer.borderWidth = 1;
             senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             senderButton.layer.cornerRadius = 3;
-            [user setIsFollowingRequested:YES];
+            user.isFollowingRequested = [NSNumber numberWithBool:YES];
         }
         else {
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             [_followingParty addObject:user];
             num_following += 1;
-            [user setIsFollowing:YES];
+            user.isFollowing = [NSNumber numberWithBool:YES];
         }
         senderButton.tag = 100;
         [self updatedCachedProfileUser:num_following];
-        [Network followUser:user];
+        [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
+            // Do nothing
+        }];
     }
     else {
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
         int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
-        [user setIsFollowing:NO];
-        [user setIsFollowingRequested:NO];
-        if (![user isPrivate] && user) {
+        user.isFollowing = [NSNumber numberWithBool:NO];
+        user.isFollowingRequested = [NSNumber numberWithBool:NO];
+        if (user.privacy != PRIVATE && user) {
             [_followingParty removeUser:user];
             num_following -= 1;
         }
         [self updatedCachedProfileUser:num_following];
-        [Network unfollowUser:user];
+        [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
+            // Do nothing
+        }];
     }
     
 
 }
 
 - (void) updatedCachedProfileUser:(int)num_following {
-    User *profileUser = [Profile user];
-    if (profileUser == self.user) {
-        [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
-        [Profile setFollowingParty:_followingParty];
+    if ([self.user isCurrentUser]) {
+        [WGProfile currentUser].numFollowing = [NSNumber numberWithInt:num_following];
+        // [Profile setFollowingParty:_followingParty];
     }
 }
 
-- (User *)getUserAtIndex:(int)index {
-    User *user;
+- (WGUser *)getUserAtIndex:(int)index {
+    WGUser *user;
     if (_isSearching) {
         int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
         if (sizeOfArray > 0 && sizeOfArray > index)
@@ -929,7 +934,7 @@ NSMutableArray *suggestedArrayView;
                     NSDictionary *userDictionary = [object objectForKey:@"user"];
                     if ([userDictionary isKindOfClass:[NSDictionary class]]) {
                         if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                            [arrayOfUsers addObject:[[Profile user] dictionary]];
+                            [arrayOfUsers addObject:[[WGProfile currentUser] deserialize]];
                         }
                         else {
                             [arrayOfUsers addObject:userDictionary];
@@ -968,7 +973,7 @@ NSMutableArray *suggestedArrayView;
                     NSDictionary *userDictionary = [object objectForKey:@"follow"];
                     if ([userDictionary isKindOfClass:[NSDictionary class]]) {
                         if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                            [arrayOfUsers addObject:[[Profile user] dictionary]];
+                            [arrayOfUsers addObject:[[WGProfile currentUser] deserialize]];
                         }
                         else {
                             [arrayOfUsers addObject:userDictionary];
@@ -1072,7 +1077,7 @@ NSMutableArray *suggestedArrayView;
                                       else userDictionary = [object objectForKey:@"follow"];
                                       if ([userDictionary isKindOfClass:[NSDictionary class]]) {
                                           if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                                              [arrayOfUsers addObject:[[Profile user] dictionary]];
+                                              [arrayOfUsers addObject:[[WGProfile currentUser] deserialize]];
                                           }
                                           else {
                                               [arrayOfUsers addObject:userDictionary];

@@ -19,8 +19,45 @@
     [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
     [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
     
-    return [NSString stringWithFormat:@"Joined %@", [dateFormatter stringFromDate:self]];
+    return [NSString stringWithFormat:@"Joined %@", [dateFormatter stringFromDate:dateInLocalTimezone]];
 }
+
+-(NSString *) getUTCTimeStringToLocalTimeString {
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    NSDate *dateInLocalTimezone = [self dateByAddingTimeInterval:timeZoneSeconds];
+    
+    if (![dateInLocalTimezone isFromLastDay]) {
+        NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
+        [localTimeFormat setDateFormat:@"h:mm a"];
+        return [localTimeFormat stringFromDate:dateInLocalTimezone];
+    }
+    else {
+        NSDate *nowDate = [NSDate date];
+        NSDateComponents *differenceDateComponents = [dateInLocalTimezone differenceBetweenDates:nowDate];
+        if ([differenceDateComponents weekOfYear] == 0 && [differenceDateComponents month] == 0) {
+            if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
+                return @"1 day ago";
+            }
+            return [NSString stringWithFormat:@"%ld days ago", (long)[differenceDateComponents day]];
+        }
+        else {
+            if ([differenceDateComponents month] == 0) {
+                if ([differenceDateComponents weekOfYear] == 1) {
+                    return @"1 week ago";
+                }
+                return [NSString stringWithFormat:@"%ld weeks ago", (long)[differenceDateComponents weekOfYear]];
+            }
+            else {
+                if ([differenceDateComponents month] == 1) {
+                    return @"1 month ago";
+                }
+                return [NSString stringWithFormat:@"%ld months ago", (long)[differenceDateComponents month]];
+            }
+            
+        }
+    }
+}
+
 
 #warning TODO: make sure this is correct
 -(BOOL) isFromLastDay {
@@ -99,6 +136,14 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     return [dateFormatter dateFromString:dateString];
+}
+
++(NSString *) nowStringUTC {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    return [dateFormatter stringFromDate:[NSDate date]];
 }
 
 @end

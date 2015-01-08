@@ -65,15 +65,19 @@
 
 
 - (void)makeCoverPressed {
-    [[Profile user] makeImageURLCover:[_image objectForKey:@"url"]];
-    [[Profile user] save];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
-    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+    [[WGProfile currentUser] makeImageAtIndexCoverImage:[[WGProfile currentUser].imagesURL indexOfObject:[_image objectForKey:@"url"]]];
+    
+    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
+        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+    }];
 }
 
 - (void)deletePressed {
-    NSString *message = [[Profile user] removeImageURL:[_image objectForKey:@"url"]];
-    if ([message isEqualToString:@"Error"]) {
+    if ([WGProfile currentUser].images.count < 4) {
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bummer"
                                                             message:@"You need a minimum of 3 photos"
@@ -84,15 +88,19 @@
 
     }
     else {
-        [[Profile user] save];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
-        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+        [[WGProfile currentUser] removeImageAtIndex:[[WGProfile currentUser].imagesURL indexOfObject:[_image objectForKey:@"url"]]];
+        [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
+            [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+        }];
     }
 }
 
 - (void)cancelPressed {
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
 }
-
 
 @end

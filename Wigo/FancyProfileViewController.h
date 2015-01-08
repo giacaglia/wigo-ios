@@ -26,14 +26,14 @@
 @property PeopleViewController *peopleViewController;
 @property MoreViewController *moreViewController;
 
-@property User *user;
+@property WGUser *user;
 @property STATE userState;
 
 @property (nonatomic, assign) BOOL isFetchingNotifications;
-@property (nonatomic, strong) Party *eventsParty;
+@property (nonatomic, strong) WGCollection *events;
 
--(id)initWithUser:(User *)user;
-- (void) setStateWithUser: (User *) user;
+-(id)initWithUser:(WGUser *)user;
+- (void) setStateWithUser: (WGUser *) user;
 
 @end
 
@@ -57,7 +57,7 @@
 
 
 @interface GoOutsCell: UITableViewCell
-- (void) setLabelsForUser: (User *) user;
+- (void) setLabelsForUser: (WGUser *) user;
 + (CGFloat) rowHeight;
 @property (nonatomic, strong) UILabel *numberLabel;
 @property (nonatomic, strong) UILabel *titleLabel;
@@ -66,7 +66,7 @@
 
 
 @interface InviteCell: UITableViewCell
-- (void) setLabelsForUser: (User *) user;
+- (void) setLabelsForUser: (WGUser *) user;
 @property (nonatomic, assign) id<InviteCellDelegate> delegate;
 + (CGFloat) rowHeight;
 @property (nonatomic, strong) IBOutlet UIButton *inviteButton;

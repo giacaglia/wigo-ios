@@ -51,7 +51,7 @@ BOOL initializedPopScreen;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 //    if (!initializedPopScreen) [self initializePopScreen];
-    [EventAnalytics tagEvent:@"Onboard Follow View"];
+    [WGAnalytics tagEvent:@"Onboard Follow View"];
 }
 
 - (void)initializePopScreen {
@@ -212,12 +212,12 @@ BOOL initializedPopScreen;
         return cell;
     }
     
-    User *user = [self getUserAtIndex:(int)[indexPath row]];
+    WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
     
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+    [profileImageView setImageWithURL:user.coverImageURL imageArea:[user coverImageArea]];
     [cell.contentView addSubview:profileImageView];
     
     if ([user isFavorite]) {
@@ -244,7 +244,7 @@ BOOL initializedPopScreen;
     [cell.contentView addSubview:goingOutLabel];
     
     
-    if (![user isEqualToUser:[Profile user]]) {
+    if (![user isCurrentUser]) {
         UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 15, 49, 30)];
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = -100;
@@ -255,7 +255,7 @@ BOOL initializedPopScreen;
             [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             followPersonButton.tag = 100;
         }
-        if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
             [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -271,8 +271,10 @@ BOOL initializedPopScreen;
     return cell;
 }
 
-- (User *)getUserAtIndex:(int)index {
-    User *user;
+#warning SWITCH TO WGCOLLECTION
+
+- (WGUser *)getUserAtIndex:(int)index {
+    WGUser *user;
     if (isSearching) {
         int sizeOfArray = (int)[[filteredContentParty getObjectArray] count];
         if (sizeOfArray > 0 && sizeOfArray > index)

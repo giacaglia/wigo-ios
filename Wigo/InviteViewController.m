@@ -66,7 +66,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"Invite View"];
+    [WGAnalytics tagEvent:@"Invite View"];
 }
 
 
@@ -244,7 +244,7 @@
             UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
             profileImageView.contentMode = UIViewContentModeScaleAspectFill;
             profileImageView.clipsToBounds = YES;
-            [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+            [profileImageView setImageWithURL:user.coverImageURL imageArea:[user coverImageArea]];
             [aroundTapButton addSubview:profileImageView];
             
             UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
@@ -415,7 +415,7 @@ heightForHeaderInSection:(NSInteger)section
         [Network sendAsynchronousTapToUserWithIndex:[user objectForKey:@"id"]];
         [user setIsTapped:YES];
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
-        [EventAnalytics tagEvent:@"Tap User" withDetails:options];
+        [WGAnalytics tagEvent:@"Tap User" withDetails:options];
     }
     if (tag < [[everyoneParty getObjectArray] count]) {
         [everyoneParty replaceObjectAtIndex:tag withObject:user];
@@ -579,6 +579,8 @@ heightForHeaderInSection:(NSInteger)section
     page = @1;
     [self fetchEveryone];
 }
+
+#warning TODO: switch to WGCollection
 
 - (void) fetchEveryone {
     NSString *queryString = [NSString stringWithFormat:@"users/?following=true&ordering=invite&page=%@", [page stringValue]];

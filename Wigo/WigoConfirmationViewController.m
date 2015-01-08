@@ -30,7 +30,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"Confirmation View"];
+    [WGAnalytics tagEvent:@"Confirmation View"];
 }
 
 - (void) initializeTitle {

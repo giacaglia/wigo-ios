@@ -54,7 +54,7 @@ UIViewController *webViewController;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"Edit Profile View"];
+    [WGAnalytics tagEvent:@"Edit Profile View"];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -86,13 +86,12 @@ UIViewController *webViewController;
 
 - (void)saveDataAndGoBack {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    User *profileUser = [Profile user];
-//    [profileUser setBioString:_bioTextView.text];
-    [profileUser setIsPrivate:_privacySwitch.on];
-    [profileUser save];
-    [WiGoSpinnerView hideSpinnerForView:self.view];
     
-    [self dismissViewControllerAnimated: YES  completion: nil];
+    [WGProfile currentUser].privacy = _privacySwitch.on ? PRIVATE : PUBLIC;
+    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+        [WiGoSpinnerView hideSpinnerForView:self.view];
+        [self dismissViewControllerAnimated:YES  completion: nil];
+    }];
 }
 
 
@@ -120,8 +119,9 @@ UIViewController *webViewController;
 - (void)updatePhotos {
     [_photosScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
-    NSArray *imageArrayURL = [[Profile user] imagesURL];
-    NSArray *imageAreaArray = [[Profile user] imagesArea];
+    NSArray *imageArrayURL = [[WGProfile currentUser] imagesURL];
+    NSArray *imageAreaArray = [[WGProfile currentUser] imagesArea];
+    
     NSMutableArray *photosArray = [[NSMutableArray alloc] initWithCapacity:[imageArrayURL count] + 1];
     for (int i = 0; i < [imageArrayURL count]; i++) {
         NSString *imageURL = [imageArrayURL objectAtIndex:i];
@@ -166,7 +166,7 @@ UIViewController *webViewController;
     }
     else {
         [self.view endEditing:YES];
-        self.photoViewController = [[PhotoViewController alloc] initWithImage:[[[Profile user] images] objectAtIndex:buttonSender.tag]];
+        self.photoViewController = [[PhotoViewController alloc] initWithImage:[[WGProfile currentUser].images objectAtIndex:buttonSender.tag]];
         [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:0 andHeight:[[UIScreen mainScreen] bounds].size.height fromViewController:self.navigationController];
     }
 }
@@ -185,7 +185,7 @@ UIViewController *webViewController;
     publicLabel.font = [FontProperties getNormalFont];
     [publicView addSubview:publicLabel];
     _privacySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 60, 10, 40, 20)];
-    _privacySwitch.on = [[Profile user] isPrivate];
+    _privacySwitch.on = [WGProfile currentUser].privacy == PRIVATE;
     
     [publicView addSubview:_privacySwitch];
     [_scrollView addSubview:publicView];
@@ -340,16 +340,18 @@ UIViewController *webViewController;
 
 - (void)tapsSwitchPressed:(id)sender {
     BOOL state = [sender isOn];
-    User *profileUser = [Profile user];
-    [profileUser setIsTapPushNotificationEnabled:state];
-    [profileUser saveKeyAsynchronously:@"properties"];
+    [WGProfile currentUser].isTapPushNotificationEnabled = [NSNumber numberWithBool:state];
+    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+        [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+    }];
 }
 
 - (void)favoritesSwitchPressed:(id)sender {
     BOOL state = [sender isOn];
-    User *profileUser = [Profile user];
-    [profileUser setIsFavoritesGoingOutNotificationEnabled:state];
-    [profileUser saveKeyAsynchronously:@"properties"];
+    [WGProfile currentUser].isFavoritesGoingOutNotificationEnabled = [NSNumber numberWithBool:state];
+    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+        [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+    }];
 }
 
 #pragma mark - UITextView Delegate methods

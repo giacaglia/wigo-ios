@@ -15,9 +15,13 @@
 typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 
 @property NSString *name;
+@property NSString *expires;
+@property NSNumber *isRead;
+@property NSNumber *isExpired;
 @property NSNumber *numAttending;
 @property NSNumber *numMessages;
 @property WGCollection *attendees;
+@property WGEventMessage *highlight;
 
 +(WGEvent *)serialize:(NSDictionary *)json;
 
@@ -27,6 +31,7 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 -(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResultBlock)handler;
 
 -(void) getMessages:(WGCollectionResultBlock)handler;
+-(void) getMoreAttendees:(BoolResultBlock)handler;
 
 +(void) getWithGroupNumber:(NSNumber *)groupNumber andHandler:(WGCollectionResultBlock)handler;
 +(void) createEventWithName:(NSString *)name andHandler:(WGEventResultBlock)handler;

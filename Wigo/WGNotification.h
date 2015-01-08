@@ -17,5 +17,6 @@ typedef void (^WGNotificationResultBlock)(WGNotification *object, NSError *error
 @property NSString *type;;
 
 +(WGNotification *)serialize:(NSDictionary *)json;
++(void) getFollowRequests:(WGCollectionResultBlock)handler;
 
 @end

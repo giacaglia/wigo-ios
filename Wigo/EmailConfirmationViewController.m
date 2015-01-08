@@ -41,7 +41,7 @@ OnboardFollowViewController *onboardFollowViewController;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"Email Confirmation View"];
+    [WGAnalytics tagEvent:@"Email Confirmation View"];
     [self login];
 }
 
@@ -61,7 +61,7 @@ OnboardFollowViewController *onboardFollowViewController;
     UIImageView *faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 47, 47)];
     faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     faceImageView.clipsToBounds = YES;
-    [faceImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] imageArea:[[Profile user] coverImageArea]];
+    [faceImageView setImageWithURL:[WGProfile currentUser].coverImageURL imageArea:[WGProfile currentUser].coverImageArea];
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;
     faceImageView.layer.borderColor = [UIColor clearColor].CGColor;
@@ -71,7 +71,7 @@ OnboardFollowViewController *onboardFollowViewController;
     
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75, 24, 200, 22)];
     nameLabel.textAlignment = NSTextAlignmentLeft;
-    nameLabel.text = [[Profile user] fullName];
+    nameLabel.text = [[WGProfile currentUser] fullName];
     nameLabel.font = [FontProperties getSmallFont];
     [faceAndNameView addSubview:nameLabel];
     
@@ -93,7 +93,7 @@ OnboardFollowViewController *onboardFollowViewController;
     
     emailTextField = [[UITextField alloc] initWithFrame:CGRectMake(40, 285, self.view.frame.size.width - 80, 30)];
     emailTextField.textAlignment = NSTextAlignmentCenter;
-    emailTextField.text = [[Profile user] email];
+    emailTextField.text = [WGProfile currentUser].email;
     emailTextField.font = [FontProperties lightFont:22.0f];
     emailTextField.textColor = [FontProperties getOrangeColor];
     emailTextField.enabled = NO;
@@ -159,60 +159,45 @@ OnboardFollowViewController *onboardFollowViewController;
 #pragma mark - Login
 
 - (void) login {
-    User *profileUser = [Profile user];
-    
-    if (profileUser && [profileUser key]) {
-        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    if ([WGProfile currentUser].key) {
+        [WGProfile reload:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void){
-                if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                        [self transitionProfileUser:(NSDictionary *)jsonResponse];
-                    }
+                if (error) {
+                    return;
                 }
-                else {
-                    [self transitionProfileUser:(NSDictionary *)jsonResponse];
+                if ([WGProfile currentUser].emailValidated) {
+                    if ([[WGProfile currentUser].group.locked boolValue]) {
+                        [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
+                    } else {
+                        onboardFollowViewController = [OnboardFollowViewController new];
+                        [self.navigationController pushViewController:onboardFollowViewController animated:YES];
+                    }
                 }
             });
         }];
     }
-        
-}
-
-
-- (void)transitionProfileUser:(NSDictionary *)jsonResponse {
-    User *user = [[User alloc] initWithDictionary:jsonResponse];
-    [Profile setUser:user];
-    if ([[Profile user] emailValidated]) {
-        if ([[Profile user] isGroupLocked]) {
-            [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
-        }
-        else {
-            onboardFollowViewController = [OnboardFollowViewController new];
-            [self.navigationController pushViewController:onboardFollowViewController animated:YES];
-        }
-    }
-   
 }
 
 - (void)resendEmail {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     [WiGoSpinnerView addDancingGToCenterView:self.view];
-    [Network sendAsynchronousHTTPMethod:GET
-                            withAPIName:@"verification/resend"
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                dispatch_async(dispatch_get_main_queue(), ^(void){
-                                    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-                                    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-                                    if (!error) {
-                                        UIAlertView *alertView = [[UIAlertView alloc]
-                                            initWithTitle:@"You're good"
-                                                  message:@"We just resent you a new verification email."
-                                                 delegate:nil
-                                        cancelButtonTitle:@"OK"
-                                        otherButtonTitles:nil];
-                                        [alertView show];
-                                    }
-                                });
+    
+    [[WGProfile currentUser] resendVerificationEmail:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+                return;
+            }
+            UIAlertView *alertView = [[UIAlertView alloc]
+                                      initWithTitle:@"You're good"
+                                      message:@"We just resent you a new verification email."
+                                      delegate:nil
+                                      cancelButtonTitle:@"OK"
+                                      otherButtonTitles:nil];
+            [alertView show];
+        });
     }];
 }
 
@@ -231,9 +216,12 @@ OnboardFollowViewController *onboardFollowViewController;
 }
 
 - (void)changeEmail:(NSString *)emailString {
-    User *profileUser = [Profile user];
-    [profileUser setEmail:emailString];
-    [profileUser saveKeyAsynchronously:@"email"];
+    [WGProfile currentUser].email = emailString;
+    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+        }
+    }];
 }
 
 

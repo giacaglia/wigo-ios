@@ -18,7 +18,7 @@
     ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, &error);
     ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
         if (granted && addressBookRef) {
-            [EventAnalytics tagEvent:@"Accepted Apple Contacts"];
+            [WGAnalytics tagEvent:@"Accepted Apple Contacts"];
             
             
             CFArrayRef all = ABAddressBookCopyArrayOfAllPeople(addressBookRef);
@@ -54,7 +54,7 @@
         }
         else {
             
-            [EventAnalytics tagEvent:@"Decline Apple Contacts"];
+            [WGAnalytics tagEvent:@"Decline Apple Contacts"];
             mobileArray([NSArray new]);
         }
     });

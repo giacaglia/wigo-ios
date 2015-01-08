@@ -9,7 +9,6 @@
 #import "Message.h"
 #import "Profile.h"
 #import "Time.h"
-#import "Network.h"
 
 @implementation Message{
     NSMutableDictionary* _proxy;

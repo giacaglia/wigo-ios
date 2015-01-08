@@ -48,7 +48,8 @@
 }
 
 - (void)fillEventAttendees {
-    NSArray *eventAttendeesArray = [self.event getEventAttendees];
+#warning replace data structure with WGCollection of WGEventAttendees
+    /* NSArray *eventAttendeesArray = [self.event getEventAttendees];
     self.partyUser = [[Party alloc] initWithObjectType:USER_TYPE];
     for (int j = 0; j < [eventAttendeesArray count]; j++) {
         NSDictionary *eventAttendee = [eventAttendeesArray objectAtIndex:j];
@@ -64,17 +65,17 @@
         }
         [user setValue:[eventAttendee objectForKey:@"event_owner"] forKey:@"event_owner"];
         [self.partyUser addObject:user];
-    }
+    } */
 }
 
 
 - (void)loadUsers {
-    [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    /* [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
     self.xPosition = 10;
     for (int i = 0; i < [[self.partyUser getObjectArray] count]; i++) {
         User *user = [[self.partyUser getObjectArray] objectAtIndex:i];
-        if ([user isEqualToUser:[Profile user]]) {
+        if ([user isCurrentUser]) {
             user = [Profile user];
         }
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPosition, 0, self.sizeOfEachImage, self.sizeOfEachImage)];
@@ -86,12 +87,12 @@
         imgView.frame = CGRectMake(0, 0, self.sizeOfEachImage, self.sizeOfEachImage);
         imgView.contentMode = UIViewContentModeScaleAspectFill;
         imgView.clipsToBounds = YES;
-        [imgView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+        [imgView setImageWithURL:user.coverImageURL imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
         
         
         UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
-        if ([user isEqualToUser:[Profile user]]) backgroundName.backgroundColor = [FontProperties getBlueColor];
+        if ([user isCurrentUser]) backgroundName.backgroundColor = [FontProperties getBlueColor];
         else backgroundName.backgroundColor = RGB(71, 71, 71);
         [self addSubview:backgroundName];
         
@@ -109,7 +110,7 @@
     if ([[self.placesDelegate.eventOffsetDictionary allKeys] containsObject:[[self.event eventID] stringValue]] && self.placesDelegate.visitedProfile) {
         NSNumber *xNumber = [self.placesDelegate.eventOffsetDictionary valueForKey:[[self.event eventID] stringValue]];
         self.contentOffset = CGPointMake([xNumber intValue], 0);
-    }
+    } */
 }
 
 - (void)chooseUser:(id)sender {
@@ -129,7 +130,7 @@
 
 
 - (void)fetchEventAttendeesAsynchronous {
-    NSNumber *eventId = [self.event eventID];
+    /* NSNumber *eventId = [self.event eventID];
     if (!self.fetchingEventAttendees && ![self.page isEqualToNumber:@-1]) {
         self.fetchingEventAttendees = YES;
         NSString *queryString;
@@ -178,7 +179,7 @@
                               });
         }];
     }
-    else self.fetchingEventAttendees = NO;
+    else self.fetchingEventAttendees = NO; */
 }
 
 @end

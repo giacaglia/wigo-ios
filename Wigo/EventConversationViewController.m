@@ -11,7 +11,7 @@
 #import "EventMessage.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import "Profile.h"
+#import "WGProfile.h"
 #import "MediaScrollView.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "EventMessagesConstants.h"
@@ -86,12 +86,10 @@
     
     myCell.leftLineEnabled = (indexPath.row > 0);
     myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
-    User *user;
     NSDictionary *eventMessage = [self.eventMessages objectAtIndex:[indexPath row]];
-    user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
-    if ([user isEqualToUser:[Profile user]]) {
-        user = [Profile user];
-    }
+    
+    WGUser *user = [WGUser serialize:[eventMessage objectForKey:@"user"]];
+    
     if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
         [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
         [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost]
@@ -371,11 +369,11 @@
     else {
         self.facesHidden = YES;
         [self focusOnContent];
-        User *user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
-       
+        
+        WGUser *user = [WGUser serialize:[eventMessage objectForKey:@"user"]];
         self.buttonCancel.hidden = NO;
         self.buttonCancel.enabled = YES;
-        if ([user isEqualToUser:[Profile user]]) {
+        if ([user isCurrentUser]) {
             self.buttonTrash.hidden = NO;
             self.buttonTrash.enabled = YES;
         }
@@ -533,14 +531,10 @@
 - (void)promptCamera {
     [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kGoHereState];
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:self.eventMessages];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
     [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:@{
-                                      @"user": [[Profile user] dictionary],
-                                      @"created": [dateFormatter stringFromDate:[NSDate date]],
+                                      @"user": [[WGProfile currentUser] deserialize],
+                                      @"created": [NSDate nowStringUTC],
                                       @"media_mime_type": kCameraType,
                                       @"media": @""
                                       }];
@@ -557,14 +551,10 @@
 
 - (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages {
     NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    
+
     [mutableEventMessages addObject:@{
-                                      @"user": [[Profile user] dictionary],
-                                      @"created": [dateFormatter stringFromDate:[NSDate date]],
+                                      @"user": [[WGProfile currentUser] deserialize],
+                                      @"created": [NSDate nowStringUTC],
                                       @"media_mime_type": kCameraType,
                                       @"media": @""
                                       }];

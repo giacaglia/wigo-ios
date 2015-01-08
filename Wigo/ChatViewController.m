@@ -17,7 +17,7 @@
 }
 
 @property UITableView *tableViewOfPeople;
-@property Party * messageParty;
+@property WGCollection *messages;
 @property NSNumber *page;
 @property BOOL fetchingFirstPage;
 @end
@@ -66,7 +66,7 @@ UIButton *newChatButton;
 
 
 - (void) viewDidAppear:(BOOL)animated {
-    [EventAnalytics tagEvent:@"Chat View"];
+    [WGAnalytics tagEvent:@"Chat View"];
 
 }
 
@@ -146,45 +146,53 @@ UIButton *newChatButton;
 - (void)fetchFirstPageMessages {
     if (!_fetchingFirstPage) {
         _fetchingFirstPage = YES;
-        _page = @1;
         [self fetchMessages];
     }
 }
 
 - (void)fetchMessages {
-    NSString *queryString = [NSString stringWithFormat:@"conversations/?page=%@", [_page stringValue]];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            if ([_page isEqualToNumber:@1])  _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
-            NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
-            [_messageParty addObjectsFromArray:arrayOfMessages];
-            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-            [_messageParty addMetaInfo:metaDictionary];
-            if ([_page isEqualToNumber:@1]) _fetchingFirstPage = NO;
-            _page = @([_page intValue] + 1);
-            if ([[_messageParty getObjectArray] count] == 0) {
-                _tableViewOfPeople.hidden = YES;
-                newChatButton.hidden = NO;
-            }
-            else {
+    if (_fetchingFirstPage) {
+        [WGMessage getConversations:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                _messages = collection;
+                _fetchingFirstPage = NO;
+                
+                if ([_messages count] == 0) {
+                    _tableViewOfPeople.hidden = YES;
+                    newChatButton.hidden = NO;
+                } else {
+                    _tableViewOfPeople.hidden = NO;
+                    newChatButton.hidden = YES;
+                }
+                [_tableViewOfPeople reloadData];
+                [_tableViewOfPeople didFinishPullToRefresh];
+            });
+
+        }];
+    } else if ([_messages hasNextPage]) {
+        [_messages addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
                 _tableViewOfPeople.hidden = NO;
                 newChatButton.hidden = YES;
-            }
-            [_tableViewOfPeople reloadData];
-            [_tableViewOfPeople didFinishPullToRefresh];
-        });
+                [_tableViewOfPeople reloadData];
+                [_tableViewOfPeople didFinishPullToRefresh];
+            });
+        }];
+    }
+}
+
+- (void)deleteConversationAsynchronusly:(WGMessage *)message {
+    [message.otherUser readConversation:^(BOOL success, NSError *error) {
+        // Do nothing
     }];
-    
 }
 
-- (void)deleteConversationAsynchronusly:(Message *)message {
-    NSString *idString = [(NSNumber*)[[message otherUser] objectForKey:@"id"] stringValue];
-    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", idString];
-    [Network sendAsynchronousHTTPMethod:DELETE withAPIName:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {}];
-}
-
-- (void)markMessageAsRead:(Message *)message {
+- (void)markMessageAsRead:(WGMessage *)message {
     NSString *idString = [(NSNumber*)[[message otherUser] objectForKey:@"id"] stringValue];
     NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", idString];
     NSDictionary *options = @{@"read": [NSNumber numberWithBool:YES]};
@@ -202,8 +210,8 @@ UIButton *newChatButton;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    int hasNextPage = ([_messageParty hasNextPage] ? 1 : 0);
-    return [[_messageParty getObjectArray] count] + hasNextPage;
+    int hasNextPage = ([_messages hasNextPage] ? 1 : 0);
+    return [_messages count] + hasNextPage;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -216,22 +224,19 @@ UIButton *newChatButton;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
 
-    if ([indexPath row] == [[_messageParty getObjectArray] count]) {
+    if ([indexPath row] == [_messages count]) {
         [self fetchMessages];
         return cell;
     }
     
-    if ([[_messageParty getObjectArray] count] == 0) return cell;
-    Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
-    User *user = [message otherUser];
-    if (!user) {
-        user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
-    }
+    if ([_messages count] == 0) return cell;
+    WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
+    WGUser *user = [message otherUser];
     
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+    [profileImageView setImageWithURL:user.coverImageURL imageArea:[user coverImageArea]];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
@@ -241,7 +246,7 @@ UIButton *newChatButton;
     
     UIImageView *lastMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(85, 25, 150, 40)];
     UILabel *lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 40)];
-    lastMessageLabel.text = [message messageString];
+    lastMessageLabel.text = [message message];
     lastMessageLabel.font = [FontProperties lightFont:13.0f];
     lastMessageLabel.textColor = [UIColor blackColor];
     lastMessageLabel.textAlignment = NSTextAlignmentLeft;
@@ -250,12 +255,12 @@ UIButton *newChatButton;
 
     if ([message expired]) {
         lastMessageLabel.textColor = RGB(150, 150, 150);
-        lastMessageLabel.text = [message messageString];
+        lastMessageLabel.text = [message message];
         [lastMessageImageView addSubview:lastMessageLabel];
-        UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[message messageString]];
+        UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[message message]];
         if (!blurredImage) {
             blurredImage = [UIImageCrop blurredImageFromImageView:lastMessageImageView withRadius:3.0f];
-            [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:[message messageString]];
+            [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:[message message]];
         }
         lastMessageImageView.image = blurredImage;
         [lastMessageLabel removeFromSuperview];
@@ -267,7 +272,7 @@ UIButton *newChatButton;
 
     UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, 10, 80, 20)];
     timeStampLabel.font = [FontProperties lightFont:15.0f];
-    timeStampLabel.text = [message timeOfCreation];
+    timeStampLabel.text = [message.created getUTCTimeStringToLocalTimeString];
     timeStampLabel.textColor = RGB(179, 179, 179);
     timeStampLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:timeStampLabel];
@@ -292,14 +297,11 @@ UIButton *newChatButton;
 
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (![[_messageParty getObjectArray] count] == 0) {
-        Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
-        [message setIsRead:YES];
+    if (![_messages count] == 0) {
+        WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
+        message.isRead = [NSNumber numberWithBool:YES];
         [self markMessageAsRead:message];
-        User *user = [message otherUser];
-        if (!user) {
-            user = [[User alloc] initWithDictionary:[message objectForKey:@"to_user"]];
-        }
+        WGUser *user = [message otherUser];
         self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
         [self.navigationController pushViewController:self.conversationViewController animated:YES];
     }
@@ -307,9 +309,9 @@ UIButton *newChatButton;
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        Message *message = [[_messageParty getObjectArray] objectAtIndex:[indexPath row]];
+        WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
         [self deleteConversationAsynchronusly:message];
-        [_messageParty removeObjectAtIndex:[indexPath row]];
+        [_messages removeObjectAtIndex:[indexPath row]];
         [tableView reloadData];
     }
 }

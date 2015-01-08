@@ -21,6 +21,7 @@
 #define kShowedOnboardView @"showedOnboardView"
 #define kFacebookAccessTokenKey @"facebook_access_token"
 #define kFacebookIdKey @"facebook_id"
+#define kLastNotificationReadKey @"last_notification_read"
 
 #define kDefaultCDNPrefix @"wigo-uploads.s3.amazonaws.com"
 
@@ -256,6 +257,28 @@ static WGProfile *currentUser = nil;
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
             
             dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
+}
+
+-(void) setLastNotificationReadToLatest:(BoolResultBlock)handler {
+    [WGApi post:@"users/me" withParameters:@{ kLastNotificationReadKey : @"latest" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        NSError *dataError;
+        @try {
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
             handler(dataError == nil, dataError);

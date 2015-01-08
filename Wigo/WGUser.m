@@ -9,12 +9,14 @@
 #import "WGUser.h"
 #import "WGEvent.h"
 #import "WGProfile.h"
+#import "WGMessage.h"
 
 #define kUserKey @"user"
 #define kMeKey @"me"
 
 #define kKeyKey @"key"
 #define kEmailKey @"email"
+#define kEmailValidatedKey @"email_validated"
 #define kNameKey @"name"
 #define kFacebookAccessTokenKey @"facebook_access_token"
 #define kPrivacyKey @"privacy"
@@ -30,6 +32,9 @@
 #define kLastNameKey @"last_name"
 #define kIsFollowingRequestedKey @"is_following_requested"
 #define kIsGoingOutKey @"is_goingout"
+#define kLastMessageReadKey @"last_message_read"
+#define kLastNotificationReadKey @"last_notification_read"
+#define kLastUserReadKey @"last_user_read"
 
 #define kPropertiesKey @"properties" //: {},
 #define kImagesKey @"images"
@@ -51,6 +56,9 @@
 #define kGroupLockedKey @"locked"
 #define kGroupRankKey @"group_rank" //: 60
 #define kNumMembersKey @"num_members"
+
+#define kNumUnreadConversationsKey @"num_unread_conversations"
+#define kNumUnreadNotificationsKey @"num_unread_notifications"
 
 #define kGenderMaleValue @"male"
 #define kGenderFemaleValue @"female"
@@ -79,11 +87,15 @@ static WGUser *currentUser = nil;
 }
 
 +(WGUser *) serialize:(NSDictionary *)json {
-    return [[WGUser alloc] initWithJSON:json];
+    WGUser *new = [[WGUser alloc] initWithJSON:json];
+    if ([new isCurrentUser]) {
+        return [WGProfile currentUser];
+    }
+    return new;
 }
 
 -(BOOL) isCurrentUser {
-    return [self isEqual:[WGProfile currentUser]];
+    return [self isCurrentUser];
 }
 
 -(void) setKey:(NSString *)key {
@@ -146,6 +158,10 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kFirstNameKey];
 }
 
+-(NSString *) fullName {
+    return [NSString stringWithFormat:@"%@ %@", self.firstName, self.lastName];
+}
+
 -(void) setModified:(NSDate *)modified {
     [self setObject:[modified deserialize] forKey:kModifiedKey];
 }
@@ -154,24 +170,52 @@ static WGUser *currentUser = nil;
     return [NSDate serialize:[self objectForKey:kModifiedKey]];
 }
 
+-(void) setLastMessageRead:(NSNumber *)lastMessageRead {
+    [self setObject:lastMessageRead forKey:kLastMessageReadKey];
+}
+
+-(NSNumber *) lastMessageRead {
+    return [self objectForKey:kLastMessageReadKey];
+}
+
+-(void) setLastNotificationRead:(NSNumber *)lastNotificationRead {
+    [self setObject:lastNotificationRead forKey:kLastNotificationReadKey];
+}
+
+-(NSNumber *) lastNotificationRead {
+    return [self objectForKey:kLastNotificationReadKey];
+}
+
+-(void) setLastUserRead:(NSNumber *)lastUserRead {
+    [self setObject:lastUserRead forKey:kLastUserReadKey];
+}
+
+-(NSNumber *) lastUserRead {
+    return [self objectForKey:kLastUserReadKey];
+}
+
 -(void) setGender:(Gender)gender {
     NSString *genderName = nil;
-    if ([self genderNames].count > gender) {
-        genderName = [[self genderNames] objectAtIndex:gender];
+    if ([WGUser genderNames].count > gender) {
+        genderName = [[WGUser genderNames] objectAtIndex:gender];
     }
     [self setObject:genderName forKey:kGenderKey];
 }
 
 -(Gender) gender {
-    return (Gender) [[self genderNames] indexOfObject:[self objectForKey: kGenderKey]];
+    return (Gender) [[WGUser genderNames] indexOfObject:[self objectForKey: kGenderKey]];
 }
 
--(NSArray *) genderNames {
++(Gender) genderFromName:(NSString *)name {
+    return (Gender) [[WGUser genderNames] indexOfObject:name];
+}
+
++(NSArray *) genderNames {
     return @[kGenderMaleValue, kGenderFemaleValue];
 }
 
 -(NSString *) genderName {
-    return [[self genderNames] objectAtIndex: self.gender];
+    return [[WGUser genderNames] objectAtIndex: self.gender];
 }
 
 -(void) setUsername:(NSString *)username {
@@ -230,16 +274,6 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kGroupRankKey];
 }
 
--(void) setIsGroupLocked:(NSNumber *)isGroupLocked {
-    NSMutableDictionary *groupDict = [[[NSMutableDictionary alloc] init] initWithDictionary: self.group];
-    [groupDict setObject:isGroupLocked forKey:kGroupLockedKey];
-    self.group = groupDict;
-}
-
--(NSNumber *) isGroupLocked {
-    return [self.group objectForKey:kGroupRankKey];
-}
-
 -(void) setProperties:(NSDictionary *)properties {
     [self setObject:properties forKey:kPropertiesKey];
 }
@@ -267,6 +301,14 @@ static WGUser *currentUser = nil;
     }
 }
 
+-(void) addImageDictionary:(NSDictionary *)imageDictionary {
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
+    if ([imagesArray count] < 5) {
+        [imagesArray addObject: imageDictionary];
+        [self setImages: imagesArray];
+    }
+}
+
 -(void) removeImageAtIndex:(NSInteger)index {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
     if ([imagesArray count] > 3) {
@@ -287,40 +329,52 @@ static WGUser *currentUser = nil;
     return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kURLKey]];
 }
 
--(void) setGroup:(NSDictionary *)group {
-    [self setObject:group forKey:kGroupKey];
+-(NSArray *) imagesArea {
+    if (self.properties && [[self.properties allKeys] containsObject:kImagesKey]) {
+        NSArray *images = [self.properties objectForKey:kImagesKey];
+        return [images valueForKey:kCropKey];
+    }
+    else return [[NSArray alloc] init];
 }
 
--(NSDictionary *) group {
-    return [self objectForKey:kGroupKey];
+-(NSArray *) imagesURL {
+    if (self.properties && [[self.properties allKeys] containsObject:kImagesKey]) {
+        NSArray *images = [self.properties objectForKey:kImagesKey];
+        return [images valueForKey:kURLKey];
+    }
+    else return [[NSArray alloc] init];
 }
 
--(void) setGroupName:(NSString *)groupName {
-    NSMutableDictionary *groupDict = [[[NSMutableDictionary alloc] init] initWithDictionary: self.group];
-    [groupDict setObject:groupName forKey:kNameKey];
-    self.group = groupDict;
+-(NSDictionary *) coverImageArea {
+    NSArray *imagesArea = [self imagesArea];
+    if (imagesArea && [imagesArea count] > 0) {
+        return [imagesArea objectAtIndex:0];
+    }
+    return [[NSDictionary alloc] init];
 }
 
--(NSString *) groupName {
-    return [self.group objectForKey:kNameKey];
+-(void) setGroup:(WGGroup *)group {
+    [self setObject:[group deserialize] forKey:kGroupKey];
 }
 
--(void) setGroupNumberMembers:(NSString *)groupNumberMembers {
-    NSMutableDictionary *groupDict = [[[NSMutableDictionary alloc] init] initWithDictionary: self.group];
-    [groupDict setObject:groupNumberMembers forKey:kNumMembersKey];
-    self.group = groupDict;
+-(WGGroup *) group {
+    return [WGGroup serialize:[self objectForKey:kGroupKey]];
 }
 
--(NSNumber *) groupNumberMembers {
-    return [self.group objectForKey:kNumMembersKey];
+-(void) setEmailValidated:(NSNumber *)emailValidated {
+    [self setObject:emailValidated forKey:kEmailValidatedKey];
 }
 
--(void) setIsAttending:(WGEvent *)isAttending {
-    [self setObject:[isAttending deserialize] forKey:kIsAttendingKey];
+-(NSNumber *) emailValidated {
+    return [self objectForKey:kEmailValidatedKey];
 }
 
--(WGEvent *) isAttending {
-    return [WGEvent serialize: [self objectForKey:kIsAttendingKey]];
+-(void) setEventAttending:(WGEvent *)eventAttending {
+    [self setObject:[eventAttending deserialize] forKey:kIsAttendingKey];
+}
+
+-(WGEvent *) eventAttending {
+    return [WGEvent serialize:[self objectForKey:kIsAttendingKey]];
 }
 
 -(void) setIsBlocked:(NSNumber *)isBlocked {
@@ -387,6 +441,22 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kIsTappedKey];
 }
 
+-(void) setNumUnreadConversations:(NSNumber *)numUnreadConversations {
+    [self setObject:numUnreadConversations forKey:kNumUnreadConversationsKey];
+}
+
+-(NSNumber *) numUnreadConversations {
+    return [self objectForKey:kNumUnreadConversationsKey];
+}
+
+-(void) setNumUnreadNotifications:(NSNumber *)numUnreadNotifications {
+    [self setObject:numUnreadNotifications forKey:kNumUnreadNotificationsKey];
+}
+
+-(NSNumber *) numUnreadNotifications {
+    return [self objectForKey:kNumUnreadNotificationsKey];
+}
+
 -(void) setIsTapPushNotificationEnabled:(NSNumber *)isTapPushNotificationEnabled {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:self.properties];
     
@@ -433,7 +503,7 @@ static WGUser *currentUser = nil;
     }
     if (self.privacy == PRIVATE) {
         if ([self.isFollowing boolValue]) {
-            if (self.isAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
+            if (self.eventAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
             return FOLLOWING_USER_STATE;
         }
         else if ([self.isFollowingRequested boolValue]) {
@@ -442,7 +512,7 @@ static WGUser *currentUser = nil;
         else return NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
     }
     if ([self.isFollowing boolValue]) {
-        if (self.isAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
+        if (self.eventAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
         return FOLLOWING_USER_STATE;
     }
     return NOT_FOLLOWING_PUBLIC_USER_STATE;
@@ -538,6 +608,50 @@ static WGUser *currentUser = nil;
     }];
 }
 
++(void) getNotMe:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"id__ne" : [WGProfile currentUser].id, @"ordering" : @"is_goingout" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
++(void) getNewestUser:(WGUserResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"limit" : @1 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGUser *user;
+        @try {
+            user = (WGUser *)[[WGCollection serializeResponse:jsonResponse andClass:[self class]] objectAtIndex:0];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(user, dataError);
+        }
+    }];
+}
+
 #pragma mark Various API Calls
 
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler {
@@ -569,7 +683,7 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) block:(WGUser *)user withType:(NSNumber *)type andHandler:(BoolResultBlock)handler {
+-(void) block:(WGUser *)user withType:(NSString *)type andHandler:(BoolResultBlock)handler {
     [WGApi post:@"blocks/" withParameters:@{ @"block" : user.id, @"type" : type } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isBlocked = [NSNumber numberWithBool:YES];
@@ -579,7 +693,7 @@ static WGUser *currentUser = nil;
 }
 
 
--(void) tap:(WGUser *)user withHandler:(BoolResultBlock)handler {
+-(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi post:@"taps" withParameters:@{ @"tapped" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isTapped = [NSNumber numberWithBool:YES];
@@ -663,8 +777,45 @@ static WGUser *currentUser = nil;
     [WGApi post:@"eventattendees/" withParameters:@{ @"event" : event.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             self.isGoingOut = [NSNumber numberWithBool:YES];
+            self.eventAttending = event;
         }
         handler(error == nil, error);
+    }];
+}
+
+-(void) readConversation:(BoolResultBlock)handler {
+    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.id];
+    
+    NSDictionary *options = @{ @"read": [NSNumber numberWithBool:YES] };
+    
+    [WGApi post:queryString withParameters:options andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        handler(YES, error);
+    }];
+}
+
+-(void) getConversation:(WGCollectionResultBlock)handler {
+    [WGApi get:@"messages/" withArguments:@{ @"conversation" : self.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGMessage class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGMessage" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
     }];
 }
 

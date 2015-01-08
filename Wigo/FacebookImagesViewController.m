@@ -51,7 +51,7 @@ NSMutableArray *imagesArray;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"Facebook Images View"];
+    [WGAnalytics tagEvent:@"Facebook Images View"];
 }
 
 
@@ -238,20 +238,25 @@ NSMutableArray *imagesArray;
 }
 
 - (void)didFinishWithCroppedArea:(CGRect)croppedArea {
-    User *profileUser = [Profile user];
+    
     NSMutableDictionary *imageDictionary = [NSMutableDictionary dictionaryWithDictionary:chosenPhoto];
     [imageDictionary addEntriesFromDictionary:@{@"crop":
-                                                    @{@"x": @(MAX(0,(int)roundf(croppedArea.origin.x))),
-                                                      @"y": @(MAX((int)roundf(croppedArea.origin.y),0)),
-                                                      @"width": @((int)roundf(croppedArea.size.width)),
-                                                      @"height": @((int)roundf(croppedArea.size.height))}
-                                                 }];
-    [profileUser addImageDictionary:[NSDictionary dictionaryWithDictionary:imageDictionary]];
-//    [profileUser addImageWithURL:[chosenPhoto objectForKey:@"id"] andArea:croppedArea];
-    [profileUser save];
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
-    [self.navigationController popViewControllerAnimated:YES];
+                                                @{@"x": @(MAX(0,(int)roundf(croppedArea.origin.x))),
+                                                @"y": @(MAX((int)roundf(croppedArea.origin.y),0)),
+                                                @"width": @((int)roundf(croppedArea.size.width)),
+                                                @"height": @((int)roundf(croppedArea.size.height))}
+                                                }];
+    
+    [[WGProfile currentUser] addImageDictionary:imageDictionary];
+    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            return;
+        }
+        [self dismissViewControllerAnimated:YES completion:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
+        [self.navigationController popViewControllerAnimated:YES];
+    }];
 }
 
 @end

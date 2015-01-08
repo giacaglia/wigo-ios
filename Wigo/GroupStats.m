@@ -29,7 +29,7 @@
 
 + (void)doGet:(QueryResult)handler {
     //NSURL *url = [NSURL URLWithString: [NSString stringWithFormat: kStatsApiUrl, @"1231"]];
-    NSURL *url = [NSURL URLWithString: [NSString stringWithFormat: kStatsApiUrl, [Profile user].groupID]];
+    NSURL *url = [NSURL URLWithString: [NSString stringWithFormat: kStatsApiUrl, [WGProfile currentUser].group.id]];
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL: url];
     [req setHTTPMethod:GET];
     [NSURLConnection sendAsynchronousRequest:req queue:[[NSOperationQueue alloc] init]  completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {

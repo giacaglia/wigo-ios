@@ -84,7 +84,7 @@ BOOL isFetchingEveryone;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"New Chat View"];
+    [WGAnalytics tagEvent:@"New Chat View"];
 }
 
 - (void)initializeTapHandler {
@@ -114,6 +114,8 @@ BOOL isFetchingEveryone;
 
 #pragma Network Functions
 
+#warning SWITCH TO WGCOLLECTION
+
 - (void) fetchFirstPageEveryone {
     _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
     _page = @1;
@@ -123,7 +125,7 @@ BOOL isFetchingEveryone;
 - (void) fetchEveryone {
     if (!isFetchingEveryone) {
         isFetchingEveryone = YES;
-        NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&ordering=is_goingout&page=%@" , [[Profile user] objectForKey:@"id"], [_page stringValue]];
+        NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&ordering=is_goingout&page=%@" , [WGProfile currentUser].id, [_page stringValue]];
         [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
             NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
             [_everyoneParty addObjectsFromArray:arrayOfUsers];
@@ -197,7 +199,7 @@ BOOL isFetchingEveryone;
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+    [profileImageView setImageWithURL:user.coverImageURL imageArea:[user coverImageArea]];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
@@ -358,7 +360,7 @@ BOOL isFetchingEveryone;
         [self showMeltdown];
     }
     _page = @1;
-    NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&page=%@&text=%@", [[Profile user] objectForKey:@"id"], [_page stringValue], searchString];
+    NSString *queryString = [NSString stringWithFormat:@"users/?id__ne=%@&page=%@&text=%@", [WGProfile currentUser].id, [_page stringValue], searchString];
     [self searchUsersWithString:queryString ];
     
 }

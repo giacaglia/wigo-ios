@@ -9,6 +9,7 @@
 #import "WGEventAttendee.h"
 
 #define kUserKey @"user"
+#define kEventOwnerKey @"event_owner"
 
 @implementation WGEventAttendee
 
@@ -38,6 +39,14 @@
 
 -(WGUser *) user {
     return [WGUser serialize: [self objectForKey:kUserKey]];
+}
+
+-(void) setEventOwner:(NSNumber *)eventOwner {
+    [self setObject:eventOwner forKey:kEventOwnerKey];
+}
+
+-(NSNumber *) eventOwner {
+    return [self objectForKey:kEventOwnerKey];
 }
 
 @end

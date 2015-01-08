@@ -10,22 +10,30 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIImageView+ImageArea.h"
 
-#import "Profile.h"
 #import "User.h"
 #import "Party.h"
-#import "Network.h"
 #import "Event.h"
 #import "Message.h"
 #import "Time.h"
 
 #import "FontProperties.h"
-#import "EventAnalytics.h"
+#import "WGAnalytics.h"
 
 #import "WiGoSpinnerView.h"
 #import "FLAnimatedImage.h"
 #import "FLAnimatedImageView.h"
 #import "NSString+URLEncoding.h"
 #import "NSObject-CancelableScheduledBlock.h"
+
+#import "WGProfile.h"
+#import "WGEvent.h"
+#import "WGEventAttendee.h"
+#import "WGEventMessage.h"
+#import "WGMessage.h"
+#import "WGNotification.h"
+#import "WGCollection.h"
+#import "WGCollectionArray.h"
+#import "NSDate+WGDate.h"
 
 #if !defined(StringOrEmpty)
 #define StringOrEmpty(A)  ({ __typeof__(A) __a = (A); __a ? __a : @""; })

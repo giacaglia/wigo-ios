@@ -25,6 +25,9 @@
 }
 
 -(id) initWithJSON:(NSDictionary *)json {
+    if (json == nil || ![json isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
     self = [super init];
     if (self) {
         self.className = @"object";
@@ -72,13 +75,37 @@
     return props;
 }
 
-
 -(void) save:(BoolResultBlock)handler {
     NSMutableDictionary *properties = (NSMutableDictionary *) [self modifiedDictionary];
     
     NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
     
     [WGApi post:thisObjectURL withParameters:properties andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        NSError *dataError;
+        @try {
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self.modifiedKeys removeAllObjects];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
+}
+
+-(void) refresh:(BoolResultBlock)handler {
+    NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
+    
+    [WGApi get:thisObjectURL withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

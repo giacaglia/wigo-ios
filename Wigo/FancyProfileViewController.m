@@ -51,8 +51,6 @@
 
 @end
 
-
-
 BOOL isUserBlocked;
 BOOL blockShown;
 UIButton *tapButton;
@@ -60,7 +58,7 @@ UIButton *tapButton;
 @implementation FancyProfileViewController
 
 #pragma  mark - Init
-- (id)initWithUser:(User *)user {
+- (id)initWithUser:(WGUser *)user {
     self = [super init];
     if (self) {
         [self setStateWithUser: user];
@@ -68,16 +66,10 @@ UIButton *tapButton;
     return self;
 }
 
-- (void) setStateWithUser: (User *) user {
-    if ([Profile user] && user) {
-        if ([user isEqualToUser:[Profile user]]) {
-            self.user = [Profile user];
-            self.userState = [self.user isPrivate] ? PRIVATE_PROFILE : PUBLIC_PROFILE;
-        }
-        else {
-            self.user = user;
-            self.userState = [user getUserState];
-        }
+- (void) setStateWithUser: (WGUser *) user {
+    if ([WGProfile currentUser] && user) {
+        self.user = user;
+        self.userState = self.user.privacy == PRIVATE ? PRIVATE_PROFILE : PUBLIC_PROFILE;
         self.view.backgroundColor = [UIColor whiteColor];
         [self createImageScrollView];
     }
@@ -115,10 +107,10 @@ UIButton *tapButton;
     [self initializeNameOfPerson];
     [self initializeHeaderButtonView];
     
-    NSString *isCurrentUser = (self.user == [Profile user]) ? @"Yes" : @"No";
+    NSString *isCurrentUser = ([self.user isCurrentUser]) ? @"Yes" : @"No";
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", nil];
 
-    [EventAnalytics tagEvent:@"Profile View" withDetails:options];
+    [WGAnalytics tagEvent:@"Profile View" withDetails:options];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -142,8 +134,8 @@ UIButton *tapButton;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if ([self.user getUserState] == BLOCKED_USER) [self presentBlockPopView:self.user];
-    if ([self.user isEqualToUser:[Profile user]]) [self fetchUserInfo];
+    if ([self.user state] == BLOCKED_USER) [self presentBlockPopView:self.user];
+    if ([self.user isCurrentUser]) [self fetchUserInfo];
 }
 
 
@@ -240,9 +232,9 @@ UIButton *tapButton;
 
 #pragma mark - Go Back
 - (void) goBack {
-    if (![self.user isEqualToUser:[Profile user]]) {
-        NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[self.user dictionary]];
-        if (isUserBlocked) [userInfo setObject:[NSNumber numberWithBool:isUserBlocked] forKey:@"is_blocked"];
+    if (![self.user isCurrentUser]) {
+        if (isUserBlocked) self.user.isBlocked = [NSNumber numberWithBool:isUserBlocked];
+        NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[self.user deserialize]];
         isUserBlocked = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
     }
@@ -408,8 +400,8 @@ UIButton *tapButton;
 }
 
 - (void)updateNumberOfChats {
-    NSNumber *unreadChats = (NSNumber *)[[Profile user] objectForKey:@"num_unread_conversations"];
-    if (![unreadChats isEqualToNumber: @0] && [self.user isEqualToUser:[Profile user]]) {
+    NSNumber *unreadChats = [WGProfile currentUser].numUnreadConversations;
+    if (![unreadChats isEqualToNumber: @0] && [self.user isCurrentUser]) {
         _orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
         _numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
     } else {
@@ -465,65 +457,63 @@ UIButton *tapButton;
 - (void)blockPressed:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
     
-    User *sentUser = [[User alloc] initWithDictionary:[userInfo objectForKey:@"user"]];
+    WGUser *sentUser = [WGUser serialize:[userInfo objectForKey:@"user"]];
     NSNumber *typeNumber = (NSNumber *)[userInfo objectForKey:@"type"];
     NSArray *blockTypeArray = @[@"annoying", @"not_student", @"abusive"];
     NSString *blockType = [blockTypeArray objectAtIndex:[typeNumber intValue]];
     if (!blockShown) {
         blockShown = YES;
-        if (![sentUser isEqualToUser:[Profile user]]) {
-            NSString *queryString = @"blocks/";
-            NSDictionary *options = @{@"block": [sentUser objectForKey:@"id"], @"type": blockType};
-            [Network sendAsynchronousHTTPMethod:POST
-                                    withAPIName:queryString
-                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                                    withOptions:options];
-            [sentUser setIsBlocked:YES];
-            [self presentBlockPopView:sentUser];
+        if (![sentUser isCurrentUser]) {
+            [[WGProfile currentUser] block:sentUser withType:blockType andHandler:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+                }
+                sentUser.isBlocked = [NSNumber numberWithBool:YES];
+                [self presentBlockPopView:sentUser];
+            }];
         }
-        
     }
 }
 
 - (void)unblockPressed {
-    NSString *queryString = [NSString stringWithFormat:@"users/%@", [self.user objectForKey:@"id"]];
-    NSDictionary *options = @{@"is_blocked": @NO};
-    [Network sendAsynchronousHTTPMethod:POST
-                            withAPIName:queryString
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                            withOptions:options];
-    [self.user setIsBlocked:NO];
-    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){
-        self.navigationController.navigationBar.barStyle = UIBarStyleDefault;}];
+    [[WGProfile currentUser] unblock:self.user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+        }
+        self.user.isBlocked = [NSNumber numberWithBool:NO];
+        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){
+            self.navigationController.navigationBar.barStyle = UIBarStyleDefault;}];
+    }];
 }
 
 
 - (void)followPressed {
-    [self.user setIsFollowing:YES];
-    [self.user saveKeyAsynchronously:@"is_following"];
-    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) {
-        self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
-        [self.user setIsFollowingRequested:YES];
-    }
-    else {
-        self.userState = FOLLOWING_USER;
-        [self.user setIsFollowing:YES];
-    }
-    [self reloadViewForUserState];
-    
+    self.user.isFollowing = [NSNumber numberWithBool:YES];
+    [self.user save:^(BOOL success, NSError *error) {
+        if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER) {
+            self.userState = NOT_YET_ACCEPTED_PRIVATE_USER;
+            self.user.isFollowingRequested = [NSNumber numberWithBool:YES];
+        }
+        else {
+            self.userState = FOLLOWING_USER;
+            self.user.isFollowing = [NSNumber numberWithBool:YES];
+        }
+        [self reloadViewForUserState];
+    }];
 }
 
 - (void)unfollowPressed {
-    if (self.userState == ACCEPTED_PRIVATE_USER) {
-        self.userState = NOT_SENT_FOLLOWING_PRIVATE_USER;
-    } else {
-        self.userState = NOT_FOLLOWING_PUBLIC_USER;
-    }
+    self.user.isFollowing = [NSNumber numberWithBool:YES];
     
-    [self.user setIsFollowing:NO];
-    [self.user saveKeyAsynchronously:@"is_following"];
-    
-    [self reloadViewForUserState];
+    [self.user save:^(BOOL success, NSError *error) {
+        if (self.userState == ACCEPTED_PRIVATE_USER) {
+            self.userState = NOT_SENT_FOLLOWING_PRIVATE_USER;
+        } else {
+            self.userState = NOT_FOLLOWING_PUBLIC_USER;
+        }
+
+        [self reloadViewForUserState];
+    }];
 }
 
 
@@ -640,7 +630,7 @@ UIButton *tapButton;
 
 #pragma mark - Block View
 
-- (void)presentBlockPopView:(User *)user {
+- (void)presentBlockPopView:(WGUser *)user {
     UIViewController *popViewController = [[UIViewController alloc] init];
     popViewController.view.frame = self.view.frame;
     popViewController.view.backgroundColor = RGBAlpha(244,149,45, 0.8f);
@@ -676,8 +666,8 @@ UIButton *tapButton;
 }
 
 - (void)dismissAndGoBack {
-    isUserBlocked = [self.user isBlocked];
-    [self.user setIsBlocked:NO];
+    isUserBlocked = [self.user.isBlocked boolValue];
+    self.user.isBlocked = [NSNumber numberWithBool:NO];
     [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){
         [self goBack];
     }];
@@ -800,11 +790,11 @@ UIButton *tapButton;
         Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:[indexPath row]];
         if ([notification fromUserID] == (id)[NSNull null]) return notificationCell;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
-        User *user = [[User alloc] initWithDictionary:[notification fromUser]];
-        [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+        WGUser *user = [WGUser serialize:[notification fromUser]];
+        [notificationCell.profileImageView setImageWithURL:user.coverImageURL];
         notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName] , [notification message] ];
         
-        if ([user getUserState] == NOT_SENT_FOLLOWING_PRIVATE_USER || [user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+        if ([user state] == NOT_SENT_FOLLOWING_PRIVATE_USER || [user state] == NOT_YET_ACCEPTED_PRIVATE_USER) {
             notificationCell.rightPostImageView.hidden = YES;
         }
         else notificationCell.rightPostImageView.hidden = NO;
@@ -908,24 +898,24 @@ UIButton *tapButton;
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kNotificationsSection && [self.user isEqualToUser:[Profile user]]) {
+    if (indexPath.section == kNotificationsSection && [self.user isCurrentUser]) {
         if ([self isIndexPathASummaryCell:indexPath]) {
             [self.navigationController pushViewController:[FollowRequestsViewController new] animated:YES];
         }
         else {
             if ([_followRequestSummary intValue] > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
             Notification *notification = [[_nonExpiredNotificationsParty getObjectArray] objectAtIndex:indexPath.row];
-            User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+            WGUser *user = [WGUser serialize:[notification fromUser]];
            
             if ([[notification type] isEqualToString:@"follow"] || [[notification type] isEqualToString:@"follow.accepted"]) {
                 FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
                 [fancyProfileViewController setStateWithUser:user];
-                fancyProfileViewController.eventsParty = self.eventsParty;
+                fancyProfileViewController.events = self.events;
                 [self.navigationController pushViewController: fancyProfileViewController animated: YES];
             }
             else {
-                if ([user getUserState] != NOT_YET_ACCEPTED_PRIVATE_USER && [user getUserState] != NOT_SENT_FOLLOWING_PRIVATE_USER) {
-                    Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
+                if ([user state] != NOT_YET_ACCEPTED_PRIVATE_USER && [user state] != NOT_SENT_FOLLOWING_PRIVATE_USER) {
+                    WGEvent *event = [WGEvent serialize:[user objectForKey:@"is_attending"]];
                     [self presentEvent:event];
                 }
             }
@@ -936,20 +926,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   
 }
 
-- (void)presentEvent:(Event *)event {
-    BOOL isEventPresentInArray = NO;
-    NSArray *eventsArray = [self.eventsParty getObjectArray];
-    for (int i = 0; i < [eventsArray count]; i++) {
-        Event *newEvent = [eventsArray objectAtIndex:i];
-        if ([[newEvent eventID] isEqualToNumber:[event eventID]]) {
-            if ([newEvent getEventAttendees].count > 0) {
-                event = newEvent;
-                isEventPresentInArray = YES;
-            }
-            break;
-        }
-    }
-    if (isEventPresentInArray) {
+- (void)presentEvent:(WGEvent *)event {
+    if ([self.events containsObject:event]) {
         EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
         eventStoryViewController.event = event;
         eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
@@ -960,14 +938,16 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)inviteTapped {
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
-    [EventAnalytics tagEvent:@"Tap User" withDetails:options];
+    [WGAnalytics tagEvent:@"Tap User" withDetails:options];
 
-    [self.user setIsTapped:YES];
-    [Network sendAsynchronousTapToUserWithIndex:[self.user objectForKey:@"id"]];
-    [self.tableView reloadData];
+    self.user.isTapped = [NSNumber numberWithBool:YES];
+    [[WGProfile currentUser] tapUser:self.user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+        }
+        [self.tableView reloadData];
+    }];
 }
-
-
 
 #pragma mark - ScrollViewDelegate
 
@@ -1008,22 +988,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Notifications Network requests
 
 - (void) fetchUserInfo {
-    if ([[Profile user] key]) {
-        [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if ([[jsonResponse allKeys] containsObject:@"status"]) {
-                    if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                        User *user = [[User alloc] initWithDictionary:jsonResponse];
-                        [Profile setUser:user];
-                        [self updateNumberOfChats];
-                    }
-                }
-                else {
-                    User *user = [[User alloc] initWithDictionary:jsonResponse];
-                    [Profile setUser:user];
-                    [self updateNumberOfChats];
-                }
-            });
+    if ([WGProfile currentUser].key) {
+        [WGProfile reload:^(BOOL success, NSError *error) {
+            [self updateNumberOfChats];
         }];
     }
 }
@@ -1069,10 +1036,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)updateLastNotificationsRead {
-    NSNumber *lastNotificationRead = [Profile user].lastNotificationRead;
-    [[Profile user] setStringNotificationRead:@"latest"];
-    [[Profile user] saveKeyAsynchronously:@"last_notification_read" withHandler:^() {}];
-    [[Profile user] setLastNotificationRead:lastNotificationRead];
+    [[WGProfile currentUser] setLastNotificationReadToLatest:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+        }
+    }];
 }
 
 - (void)updateBadge {
@@ -1088,20 +1056,17 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
 }
 
-- (void)fetchEvent:(Event *)event {
-    NSLog(@"string: events/%@", [event eventID]);
-    [Network sendAsynchronousHTTPMethod:GET withAPIName:[NSString stringWithFormat:@"events/%@", [event eventID]] withHandler:^(NSDictionary *jsonResponse, NSError *error) {        dispatch_async(dispatch_get_main_queue(), ^(void){
-        if (!error) {
-            if (! ([[jsonResponse allKeys] containsObject:@"code"] && [[jsonResponse objectForKey:@"code"] isEqualToString:@"does_not_exist"]) ) {
-                Event *newEvent = [[Event alloc] initWithDictionary:jsonResponse];
-                EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-                eventStoryViewController.event = newEvent;
-                eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-                [self.navigationController pushViewController: eventStoryViewController animated:YES];
-
+- (void)fetchEvent:(WGEvent *)event {
+    [event refresh:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             }
-        }
-    });
+            EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+            eventStoryViewController.event = event;
+            eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+            [self.navigationController pushViewController: eventStoryViewController animated:YES];
+        });
     }];
 }
 
@@ -1314,7 +1279,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     return 70.0f;
 }
 
-- (void) setLabelsForUser: (User *) user {
+- (void) setLabelsForUser: (WGUser *) user {
     if ([self.delegate userState] == OTHER_SCHOOL_USER) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
@@ -1322,7 +1287,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         self.tappedLabel.alpha = 0;
         }
     else {
-        if ([user isTapped]) {
+        if ([user.isTapped boolValue]) {
             self.inviteButton.hidden = YES;
             self.inviteButton.enabled = NO;
             self.titleLabel.hidden = YES;

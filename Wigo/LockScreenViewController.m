@@ -40,7 +40,7 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    numberOfPeopleSignedUp = [[Profile user] numberOfGroupMembers];
+    numberOfPeopleSignedUp = [WGProfile currentUser].group.numMembers;
     _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
     [self initializeTopLabel];
     [self initializeShareButton];
@@ -54,11 +54,11 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self fetchUserInfo];
-    [EventAnalytics tagEvent:@"Lock Screen View"];
+    [WGAnalytics tagEvent:@"Lock Screen View"];
 }
 
 - (void)dismissIfGroupUnlocked {
-    if (![[Profile user] isGroupLocked] && !pushed) {
+    if (![[WGProfile currentUser].group.locked boolValue] && !pushed) {
         onboardFollowViewController = [OnboardFollowViewController new];
         [self.navigationController pushViewController:onboardFollowViewController animated:YES];
         pushed = YES;
@@ -76,7 +76,7 @@ OnboardFollowViewController *onboardFollowViewController;
     UILabel *spreadLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 60)];
     spreadLabel.numberOfLines = 0;
     spreadLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    spreadLabel.text = [NSString stringWithFormat:@"Spread the word to unlock Wigo\n at %@!", [[Profile user] groupName]];
+    spreadLabel.text = [NSString stringWithFormat:@"Spread the word to unlock Wigo\n at %@!", [WGProfile currentUser].group.name];
     [self setPropertiesofLabel:spreadLabel];
     [self.view addSubview:spreadLabel];
 }
@@ -88,7 +88,7 @@ OnboardFollowViewController *onboardFollowViewController;
             UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width - 10, origin.height - 10, 15 + 20, 15 + 20)];
             UIImageViewShake *lockPersonImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15 + 20, 15 + 20)];
             lockPersonImageView.tag = i;
-            [lockPersonImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] imageArea:[[Profile user] coverImageArea]];
+            [lockPersonImageView setImageWithURL:[WGProfile currentUser].coverImageURL imageArea:[WGProfile currentUser].coverImageArea];
             lockPersonImageView.layer.borderWidth = 1;
             lockPersonImageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             lockPersonImageView.layer.cornerRadius = 17;
@@ -117,7 +117,7 @@ OnboardFollowViewController *onboardFollowViewController;
     UILabel *unlockLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 145, self.view.frame.size.width - 40, 65)];
     unlockLabel.numberOfLines = 0;
     unlockLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    unlockLabel.text = [NSString stringWithFormat:@"Wigo will unlock when %d more people from %@ sign up.", 100 - [numberOfPeopleSignedUp intValue] ,[Profile user].groupName];
+    unlockLabel.text = [NSString stringWithFormat:@"Wigo will unlock when %d more people from %@ sign up.", 100 - [numberOfPeopleSignedUp intValue], [WGProfile currentUser].group.name];
     [self setPropertiesofLabel:unlockLabel];
     [self.view addSubview:unlockLabel];
 
@@ -148,7 +148,7 @@ OnboardFollowViewController *onboardFollowViewController;
             if (i < numberOfPeopleInParty) {
                 if (numberOfPeopleInParty != 0 && numberOfPeopleSignedUp > 0 && [_everyoneParty getObjectArray]) {
                     User *user = [[_everyoneParty getObjectArray] objectAtIndex:i];
-                    [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+                    [imageView setImageWithURL:user.coverImageURL imageArea:[user coverImageArea]];
                     imageView.backgroundColor = [FontProperties getOrangeColor];
                     imageView.layer.borderWidth = 1;
                     imageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
@@ -161,7 +161,7 @@ OnboardFollowViewController *onboardFollowViewController;
     }
 }
 - (void)sharedPressed {
-    [EventAnalytics tagEvent:@"Share Pressed"];
+    [WGAnalytics tagEvent:@"Share Pressed"];
     NSArray *activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
@@ -174,6 +174,8 @@ OnboardFollowViewController *onboardFollowViewController;
     label.textAlignment = NSTextAlignmentCenter;
     label.font = [FontProperties getSmallFont];
 }
+
+#warning replace with WGCollection
 
 - (void)fetchEveryone {
     _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];

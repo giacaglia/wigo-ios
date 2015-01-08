@@ -10,9 +10,13 @@
 
 #define kNameKey @"name"
 
+#define kIsReadKey @"is_read"
+#define kIsExpiredKey @"is_expired"
+#define kExpiresKey @"expires"
 #define kNumAttendingKey @"num_attending"
 #define kNumMessagesKey @"num_messages"
 #define kAttendeesKey @"attendees"
+#define kHighlightKey @"highlight"
 
 @interface WGEvent()
 
@@ -48,6 +52,16 @@
     return [self objectForKey:kNameKey];
 }
 
+#warning TODO: make this NSDate
+
+-(void) setExpires:(NSString *)expires {
+    [self setObject:expires forKey:kExpiresKey];
+}
+
+-(NSString *) expires {
+    return [self objectForKey:kExpiresKey];
+}
+
 -(void) setNumAttending:(NSNumber *)numAttending {
     [self setObject:numAttending forKey:kNumAttendingKey];
 }
@@ -56,12 +70,36 @@
     return [self objectForKey:kNumAttendingKey];
 }
 
+-(void) setIsRead:(NSNumber *)isRead {
+    [self setObject:isRead forKey:kIsReadKey];
+}
+
+-(NSNumber *) isRead {
+    return [self objectForKey:kIsReadKey];
+}
+
+-(void) setIsExpired:(NSNumber *)isExpired {
+    [self setObject:isExpired forKey:kIsExpiredKey];
+}
+
+-(NSNumber *) isExpired {
+    return [self objectForKey:kIsExpiredKey];
+}
+
 -(void) setNumMessages:(NSNumber *)numMessages {
     [self setObject:numMessages forKey:kNumMessagesKey];
 }
 
 -(NSNumber *) numMessages {
     return [self objectForKey:kNumMessagesKey];
+}
+
+-(void) setHighlight:(WGEventMessage *)highlight {
+    [self setObject:[highlight deserialize] forKey:kHighlightKey];
+}
+
+-(WGEventMessage *) highlight {
+    return [WGEventMessage serialize:[self objectForKey:kHighlightKey]];
 }
 
 -(void) setAttendees:(WGCollection *)attendees {
@@ -114,6 +152,38 @@
             handler(objects, dataError);
         }
     }];
+}
+
+-(void) getMoreAttendees:(BoolResultBlock)handler {
+    if (self.attendees.hasNextPage == nil) {
+        [WGApi get:@"eventattendees/" withArguments:@{ @"event" : self.id, @"limit" : @"10", @"page" : @2 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            if (error) {
+                handler(nil, error);
+                return;
+            }
+            
+            NSError *dataError;
+            @try {
+                WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:[WGEventAttendee class]];
+                [objects addObjectsFromCollectionToBeginning:self.attendees];
+                self.attendees = objects;
+            }
+            @catch (NSException *exception) {
+                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                
+                dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            }
+            @finally {
+                handler(dataError != nil, dataError);
+            }
+        }];
+    } else if ([self.attendees.hasNextPage boolValue]) {
+        [self.attendees addNextPage:^(BOOL success, NSError *error) {
+            handler(success, error);
+        }];
+    } else {
+        handler(NO, nil);
+    }
 }
 
 +(void) get:(WGCollectionResultBlock)handler {

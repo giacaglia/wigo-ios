@@ -12,6 +12,7 @@
 @interface WGEventAttendee : WGObject
 
 @property WGUser *user;
+@property NSNumber* eventOwner;
 
 +(WGEventAttendee *)serialize:(NSDictionary *)json;
 
