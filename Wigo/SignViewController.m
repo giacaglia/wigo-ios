@@ -70,7 +70,7 @@
 - (void)showOnboard {
 //    BOOL showedOnboardView = [[NSUserDefaults standardUserDefaults] boolForKey:@"showedOnboardView"];
 //    if (showedOnboardView) {
-        [self getFacebookTokensAndLoginORSignUp];
+    [self getFacebookTokensAndLoginORSignUp];
 //    }
 //    else {
 //        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
@@ -383,7 +383,8 @@
 
 - (void) loginUserAsynchronous {
     // Set object FbID and access token to be saved locally
-    [Crashlytics setUserIdentifier:_fbID];
+#warning disable crashlytics
+    // [Crashlytics setUserIdentifier:_fbID];
     
     [WGProfile currentUser].facebookId = _fbID;
     [WGProfile currentUser].facebookAccessToken = _accessToken;

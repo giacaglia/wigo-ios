@@ -169,7 +169,7 @@
     
     // [WGProfile currentUser].isAttending = [WGEvent serialize:nil];
     [WGProfile currentUser].isGoingOut = [NSNumber numberWithBool:YES];
-    [[WGProfile currentUser] goingToEvent:[WGEvent serialize:nil] withHandler:^(BOOL success, NSError *error) {
+    [[WGProfile currentUser] goingToEvent:self.event withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             return;

@@ -563,7 +563,9 @@ static WGUser *currentUser = nil;
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
-    [parameters setObject:self.email forKey:kEmailKey];
+    if (self.email) {
+        [parameters setObject:self.email forKey:kEmailKey];
+    }
     
     [WGApi post:@"login" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {

@@ -433,10 +433,11 @@ int firstIndexOfNegativeEvent;
     UIButton *buttonSender = (UIButton *)sender;
     [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
     [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-    [self goOutToEventNumber:[NSNumber numberWithInt:(int)buttonSender.tag]];
+    [self goOutToEventNumber:[NSNumber numberWithInt:(int) buttonSender.tag]];
 }
 
 - (void)goOutToEventNumber:(NSNumber*)eventID {
+    NSLog(@"goOutToEventNumber: %@", eventID);
     [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : eventID }] withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];

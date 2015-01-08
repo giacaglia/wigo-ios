@@ -60,6 +60,9 @@ static WGProfile *currentUser = nil;
 }
 
 +(WGProfile *) currentUser {
+    if (!currentUser) {
+        currentUser = [[WGProfile alloc] init];
+    }
     return currentUser;
 }
 
