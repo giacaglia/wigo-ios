@@ -22,6 +22,7 @@
 #import "EventStoryViewController.h"
 #import "FancyProfileViewController.h"
 #import "FXBlurView.h"
+#import "ChatViewController.h"
 
 //#define sizeOfEachCell [[UIScreen mainScreen] bounds].size.width/1.6
 #define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
@@ -98,7 +99,9 @@ int firstIndexOfNegativeEvent;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchUserInfo) name:@"fetchUserInfo" object:nil];
+    [self initializeNotificationObservers];
+
+
     
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
@@ -135,7 +138,6 @@ int firstIndexOfNegativeEvent;
     self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
 
-    [self initializeNotificationObservers];
     [self initializeNavigationBar];
 
 
@@ -319,6 +321,11 @@ int firstIndexOfNegativeEvent;
                                              selector:@selector(loadViewAfterSigningUser)
                                                  name:@"loadViewAfterSigningUser"
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(goToChat)
+                                                 name:@"goToChat"
+                                               object:nil];
 
 }
 
@@ -327,6 +334,18 @@ int firstIndexOfNegativeEvent;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
 }
 
+
+- (void)goToChat {
+    NSLog(@"bhfabefbh");
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser:Profile.user];
+    fancyProfileViewController.eventsParty = self.eventsParty;
+    [self.navigationController pushViewController: fancyProfileViewController animated:NO];
+    
+    ChatViewController *chatViewController = [ChatViewController new];
+    chatViewController.view.backgroundColor = UIColor.whiteColor;
+    [self.navigationController pushViewController:chatViewController animated:YES];
+}
 
 - (void)scrollUp {
     [_placesTableView setContentOffset:CGPointZero animated:YES];
