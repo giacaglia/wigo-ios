@@ -322,10 +322,10 @@ int firstIndexOfNegativeEvent;
                                                  name:@"loadViewAfterSigningUser"
                                                object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(goToChat)
-                                                 name:@"goToChat"
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(goToChat)
+//                                                 name:@"goToChat"
+//                                               object:nil];
 
 }
 
