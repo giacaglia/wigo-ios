@@ -941,7 +941,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             else {
                 if ([user getUserState] != NOT_YET_ACCEPTED_PRIVATE_USER && [user getUserState] != NOT_SENT_FOLLOWING_PRIVATE_USER) {
                     Event *event = [[Event alloc] initWithDictionary:[user objectForKey:@"is_attending"]];
-                    [self presentEvent:event];
+                    if (event) [self presentEvent:event];
                 }
             }
  
@@ -956,7 +956,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *eventsArray = [self.eventsParty getObjectArray];
     for (int i = 0; i < [eventsArray count]; i++) {
         Event *newEvent = [eventsArray objectAtIndex:i];
-        if ([[newEvent eventID] isEqualToNumber:[event eventID]]) {
+        if (newEvent && [newEvent.eventID isEqualToNumber:event.eventID]) {
             if ([newEvent getEventAttendees].count > 0) {
                 event = newEvent;
                 isEventPresentInArray = YES;

@@ -212,7 +212,9 @@ int firstIndexOfNegativeEvent;
 
 - (void) initializeNavigationBar {
   
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+    if (!self.groupNumberID ||
+        (Profile.user.groupID  && [self.groupNumberID isEqualToNumber:Profile.user.groupID])
+        ) {
         CGRect profileFrame = CGRectMake(3, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
