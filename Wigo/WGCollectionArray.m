@@ -13,12 +13,14 @@
 +(WGCollectionArray *) initWithCollection:(WGCollection *) collection {
     WGCollectionArray* new = [WGCollectionArray new];
     new.collections = [[NSMutableArray alloc] initWithObjects:collection, nil];
+    new.currentPosition = 0;
     return new;
 }
 
 +(WGCollectionArray *) initWithCollections:(NSArray *) collections {
     WGCollectionArray* new = [WGCollectionArray new];
     new.collections = [[NSMutableArray alloc] initWithArray:collections];
+    new.currentPosition = 0;
     return new;
 }
 
@@ -49,6 +51,10 @@
         [ids addObjectsFromArray:[collection idArray]];
     }
     return ids;
+}
+
+-(NSInteger) count {
+    return [self.collections count];
 }
 
 #pragma mark - Enumeration

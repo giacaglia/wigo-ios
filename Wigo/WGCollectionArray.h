@@ -22,6 +22,7 @@
 -(void) addCollection:(WGCollection *)collection;
 -(WGCollection *) collectionAtIndex:(NSInteger)index;
 -(void) removeAllCollections;
+-(NSInteger) count;
 
 -(NSArray *) deserialize;
 

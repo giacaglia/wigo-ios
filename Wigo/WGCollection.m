@@ -80,10 +80,18 @@
 }
 
 -(void) addObject:(WGObject *)object {
+    if (!object) {
+        NSLog(@"Tried to add nil object to WGCollection");
+        return;
+    }
     [self.objects addObject:object];
 }
 
 -(void) insertObject:(WGObject *)object atIndex:(NSUInteger)index {
+    if (!object) {
+        NSLog(@"Tried to insert nil object to WGCollection at index %lu", index);
+        return;
+    }
     [self.objects insertObject:object atIndex:index];
 }
 
@@ -168,7 +176,7 @@
         }
         NSError *dataError;
         @try {
-            WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+            WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:self.type];
             [self addObjectsFromCollection:objects];
             self.hasNextPage = objects.hasNextPage;
             self.nextPage = objects.nextPage;
@@ -197,7 +205,7 @@
         NSError *dataError;
         WGCollection *objects;
         @try {
-            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+            objects = [WGCollection serializeResponse:jsonResponse andClass:self.type];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -214,6 +222,7 @@
     self.hasNextPage = [metaDictionary objectForKey:@"has_next_page"];
     if (self.hasNextPage && [self.hasNextPage  boolValue]) {
         self.nextPage = [metaDictionary objectForKey:@"next"];
+        self.nextPage = [self.nextPage substringFromIndex:5];
     }
 }
 

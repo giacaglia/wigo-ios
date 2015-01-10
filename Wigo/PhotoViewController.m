@@ -99,7 +99,7 @@
     }
 }
 
-- (void)cancelPressed {
+-(void)cancelPressed {
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
 }
 

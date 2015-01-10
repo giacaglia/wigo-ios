@@ -103,7 +103,7 @@
         NSError *dataError;
         WGCollection *objects;
         @try {
-            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGUser class]];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -139,7 +139,7 @@
 }
 
 +(void) searchFollows:(NSString *)query forUser:(WGUser *)user withHandler:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"user" : user.id, @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"follows/" withArguments:@{ @"user" : user.id, @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -147,7 +147,7 @@
         NSError *dataError;
         WGCollection *objects;
         @try {
-            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGFollow class]];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];

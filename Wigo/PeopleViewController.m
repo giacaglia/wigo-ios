@@ -507,6 +507,7 @@ NSMutableArray *suggestedArrayView;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == 0) {
         if ([self.currentTab isEqualToNumber:@2]) return 233;
+#warning why is this not 0?
         else if ([self.currentTab isEqualToNumber:@4]) return 95;
         else return 0;
     }
@@ -574,7 +575,6 @@ NSMutableArray *suggestedArrayView;
     }
    
     WGUser *user = [self getUserAtIndex:tag];
- 
     if (!user) {
         BOOL loading = NO;
         if (_isSearching && [_filteredUsers.hasNextPage boolValue]) loading = YES;
@@ -708,7 +708,7 @@ NSMutableArray *suggestedArrayView;
         }];
     }
     else if (senderButton.tag == -100) {
-        int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+        int numFollowing = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
         
         if (user.privacy == PRIVATE) {
             [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
@@ -723,12 +723,12 @@ NSMutableArray *suggestedArrayView;
         }
         else {
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            [_following addObject:user];
-            num_following += 1;
+            [_users addObject:user];
+            numFollowing += 1;
             user.isFollowing = [NSNumber numberWithBool:YES];
         }
         senderButton.tag = 100;
-        [self updatedCachedProfileUser:num_following];
+        [self updatedCachedProfileUser:numFollowing];
         [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
             // Do nothing
         }];
@@ -737,14 +737,14 @@ NSMutableArray *suggestedArrayView;
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
-        int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+        int numFollowing = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
         user.isFollowing = [NSNumber numberWithBool:NO];
         user.isFollowingRequested = [NSNumber numberWithBool:NO];
         if (user.privacy != PRIVATE && user) {
-            [_following removeObject:user];
-            num_following -= 1;
+            [_users removeObject:user];
+            numFollowing -= 1;
         }
-        [self updatedCachedProfileUser:num_following];
+        [self updatedCachedProfileUser:numFollowing];
         [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
             // Do nothing
         }];
@@ -753,10 +753,9 @@ NSMutableArray *suggestedArrayView;
 
 }
 
-- (void) updatedCachedProfileUser:(int)num_following {
+- (void) updatedCachedProfileUser:(int)numFollowing {
     if ([self.user isCurrentUser]) {
-        [WGProfile currentUser].numFollowing = [NSNumber numberWithInt:num_following];
-        // [Profile setFollowingParty:_followingParty];
+        [WGProfile currentUser].numFollowing = [NSNumber numberWithInt:numFollowing];
     }
 }
 
@@ -868,6 +867,8 @@ NSMutableArray *suggestedArrayView;
 
 - (void)fetchFirstPageEveryone {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
+    _everyone = nil;
+    fetching = NO;
     [self fetchEveryone];
 }
 
@@ -922,6 +923,7 @@ NSMutableArray *suggestedArrayView;
 -(void) fetchFirstPageFollowers {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
     fetching = NO;
+    _followers = nil;
     [self fetchFollowers];
 }
 
@@ -971,6 +973,8 @@ NSMutableArray *suggestedArrayView;
 
 -(void) fetchFirstPageFollowing {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
+    _following = nil;
+    fetching = NO;
     [self fetchFollowing];
 }
 
@@ -990,9 +994,11 @@ NSMutableArray *suggestedArrayView;
                     _following = collection;
                     _users = [[WGCollection alloc] initWithType:[WGUser class]];
                     for (WGFollow *follow in _following) {
+                        NSLog(@"%@", [follow.follow fullName]);
                         [_users addObject:follow.follow];
                     }
                     [_tableViewOfPeople reloadData];
+                    secondPartSubview = [self initializeSecondPart];
                 });
             }];
         } else if ([_following.hasNextPage boolValue]) {
@@ -1009,6 +1015,7 @@ NSMutableArray *suggestedArrayView;
                         [_users addObject:follow.follow];
                     }
                     [_tableViewOfPeople reloadData];
+                    secondPartSubview = [self initializeSecondPart];
                 });
             }];
         } else {
@@ -1077,7 +1084,6 @@ NSMutableArray *suggestedArrayView;
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-
                 _filteredUsers = collection;
                 [_tableViewOfPeople reloadData];
             });
@@ -1092,11 +1098,7 @@ NSMutableArray *suggestedArrayView;
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                WGCollection *users = [[WGCollection alloc] initWithType:[WGUser class]];
-                for (WGFollow *follow in collection) {
-                    [users addObject:follow.user];
-                }
-                _filteredUsers = users;
+                _filteredUsers = collection;
                 [_tableViewOfPeople reloadData];
             });
         }];
@@ -1110,11 +1112,11 @@ NSMutableArray *suggestedArrayView;
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                WGCollection *users = [[WGCollection alloc] initWithType:[WGUser class]];
+                
+                _filteredUsers = [[WGCollection alloc] initWithType:[WGUser class]];
                 for (WGFollow *follow in collection) {
-                    [users addObject:follow.follow];
+                    [_filteredUsers addObject:follow.follow];
                 }
-                _filteredUsers = users;
                 [_tableViewOfPeople reloadData];
             });
         }];

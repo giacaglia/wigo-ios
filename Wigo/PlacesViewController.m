@@ -1262,11 +1262,12 @@ int firstIndexOfNegativeEvent;
 #pragma mark - Network Asynchronous Functions
 
 - (void) fetchEventsFirstPage {
+    if (self.groupNumberID) {
+        _allEvents = nil;
+    }
     [self fetchUserInfo];
     [self fetchEvents];
 }
-
-#warning THIS ALL NEEDS TO BE FIXED
 
 - (void) fetchEvents {
     if (!fetchingEventAttendees && [WGProfile currentUser].key) {
