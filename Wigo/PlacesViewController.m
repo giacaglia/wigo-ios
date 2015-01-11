@@ -582,7 +582,6 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) cancelledAddEventTapped {
-    
     [self initializeNavigationBar];
     [self dismissKeyboard];
 }
@@ -698,14 +697,34 @@ int firstIndexOfNegativeEvent;
 
 - (void)createPressed {
     if ([_whereAreYouGoingTextField.text length] != 0) {
-        [self createEventWithName:_whereAreYouGoingTextField.text];
-        [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
         [WGEvent createEventWithName:_whereAreYouGoingTextField.text andHandler:^(WGEvent *object, NSError *error) {
             if (error) {
                 return;
             }
-            [self goOutToEventNumber:object.id];
-            [self showStoryForEvent:object];
+            [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : object.id }] withHandler:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                    return;
+                }
+                
+                [self removeProfileUserFromAnyOtherEvent];
+                
+                [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                
+                [self dismissKeyboard];
+                [self fetchEventsFirstPage];
+                [self updateTitleView];
+                
+                [WGProfile currentUser].isGoingOut = @YES;
+                [WGProfile currentUser].eventAttending = object;
+                [WGProfile currentUser].isGoingOut = @YES;
+                
+                WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [[WGProfile currentUser] deserialize] }];
+                WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
+                object.attendees = eventAttendees;
+                
+                [self showStoryForEvent:object];
+            }];
         }];
     }
 }
@@ -1257,14 +1276,15 @@ int firstIndexOfNegativeEvent;
 #pragma mark - UIScrollView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView != _placesTableView) {
+    /* if (scrollView != _placesTableView) {
         if (scrollView.contentOffset.x + self.view.frame.size.width >= scrollView.contentSize.width - sizeOfEachImage && !fetchingEventAttendees) {
             fetchingEventAttendees = YES;
             [self fetchEventAttendeesAsynchronousForEvent:(int)scrollView.tag];
         }
         
     }
-    else if (scrollView == _placesTableView) {
+    else if (scrollView == _placesTableView) { */
+    if (scrollView == _placesTableView) {
         // convert label frame
         CGRect comparisonFrame = [scrollView convertRect: self.goElsewhereView.frame toView:self.view];
         // check if label is contained in self.view
@@ -1305,9 +1325,7 @@ int firstIndexOfNegativeEvent;
 #pragma mark - Network Asynchronous Functions
 
 - (void) fetchEventsFirstPage {
-    if (self.groupNumberID) {
-        _allEvents = nil;
-    }
+    _allEvents = nil;
     fetchingEventAttendees = NO;
     [self fetchEvents];
 }
@@ -1442,26 +1460,6 @@ int firstIndexOfNegativeEvent;
             }];
         }
     }
-}
-
-- (void)fetchEventAttendeesAsynchronousForEvent:(int)eventNumber {
-    WGEvent *event = (WGEvent *)[_events objectAtIndex:eventNumber];
-    
-    [WGEventAttendee getForEvent:event withHandler:^(WGCollection *collection, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            fetchingEventAttendees = NO;
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                return;
-            }
-            
-            
-            [_placesTableView beginUpdates];
-            [_placesTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:eventNumber inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-            [_placesTableView endUpdates];
-        });
-    }];
 }
 
 - (void)fetchedOneParty {
