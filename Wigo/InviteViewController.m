@@ -200,11 +200,11 @@
     cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, HEIGHT_CELLS);
     if ([indexPath section] == 0) {
         int tag = (int)[indexPath row];
-        User *user;
+        WGUser *user;
         if (isSearching) {
             if ([filteredContent count] == 0) return cell;
             if (tag < [filteredContent count]) {
-                user = [filteredContent objectAtIndex:tag];
+                user = (WGUser *)[filteredContent objectAtIndex:tag];
             }
             if ([filteredContent count] > 5 && [content.hasNextPage boolValue]) {
                 if (tag == [filteredContent count] - 5) {
@@ -221,7 +221,7 @@
         else {
             if ([content count] == 0) return cell;
             if (tag < [content count]) {
-                user = [content objectAtIndex:tag];
+                user = (WGUser *)[content objectAtIndex:tag];
             }
             if ([content count] > 5 && [content.hasNextPage boolValue]) {
                 if (tag == [content count] - 5) {
@@ -259,8 +259,8 @@
             goingOutLabel.textAlignment = NSTextAlignmentLeft;
             goingOutLabel.textColor = [FontProperties getBlueColor];
             if ([user isGoingOut]) {
-                if ([user isAttending] && [user attendingEventName]) {
-                    goingOutLabel.text = [NSString stringWithFormat:@"Going out to %@", [user attendingEventName]];
+                if (user.eventAttending.name) {
+                    goingOutLabel.text = [NSString stringWithFormat:@"Going out to %@", user.eventAttending.name];
                 }
                 else {
                     goingOutLabel.text = @"Going Out";
@@ -268,7 +268,7 @@
             }
             [aroundTapButton addSubview:goingOutLabel];
             
-            UIImageView *tapImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS/2 - 15, 30, 30)];
+            UIImageView *tapImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS / 2 - 15, 30, 30)];
             if ([user isTapped]) {
                 [tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
             }
@@ -284,7 +284,7 @@
         [aroundCellButton addTarget:self action:@selector(inviteMobilePressed:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:aroundCellButton];
         
-        UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
+        UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS / 2 - 30, 60, 60)];
         profileImageView.tag = -1;
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
@@ -536,28 +536,30 @@ heightForHeaderInSection:(NSInteger)section
     // Normal users
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
-    
+    __weak typeof(self) weakSelf = self;
     if (!filteredContent || filteredContent.hasNextPage == nil) {
         [WGUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                filteredContent = collection;
-                [filteredContent removeObject:[WGProfile currentUser]];
-                [invitePeopleTableView reloadData];
+                strongSelf->filteredContent = collection;
+                [strongSelf->filteredContent removeObject:[WGProfile currentUser]];
+                [strongSelf->invitePeopleTableView reloadData];
             });
         }];
     } else if ([filteredContent.hasNextPage boolValue]) {
         [filteredContent addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                [filteredContent removeObject:[WGProfile currentUser]];
-                [invitePeopleTableView reloadData];
+                [strongSelf->filteredContent removeObject:[WGProfile currentUser]];
+                [strongSelf->invitePeopleTableView reloadData];
             });
         }];
     }
@@ -573,27 +575,30 @@ heightForHeaderInSection:(NSInteger)section
 }
 
 - (void) fetchEveryone {
+    __weak typeof(self) weakSelf = self;
     if (!content || content.hasNextPage == nil) {
         [WGUser getInvites:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                content = collection;
-                [content removeObject:[WGProfile currentUser]];
-                [invitePeopleTableView reloadData];
+                strongSelf->content = collection;
+                [strongSelf->content removeObject:[WGProfile currentUser]];
+                [strongSelf->invitePeopleTableView reloadData];
             });
         }];
     } else if ([content.hasNextPage boolValue]) {
         [content addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                [content removeObject:[WGProfile currentUser]];
-                [invitePeopleTableView reloadData];
+                [strongSelf->content removeObject:[WGProfile currentUser]];
+                [strongSelf->invitePeopleTableView reloadData];
             });
         }];
     }

@@ -15,7 +15,7 @@
 typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 
 @property NSString *name;
-@property NSString *expires;
+@property NSDate *expires;
 @property NSNumber *isRead;
 @property NSNumber *isExpired;
 @property NSNumber *numAttending;

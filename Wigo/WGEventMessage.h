@@ -31,9 +31,9 @@ typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error
 
 +(WGEventMessage *)serialize:(NSDictionary *)json;
 
--(void) addPhoto:(NSData *)fileData withName:(NSString *)filename andHandler:(BoolResultBlock)handler;
+-(void) addPhoto:(NSData *)fileData withName:(NSString *)filename andHandler:(WGEventMessageResultBlock)handler;
 
--(void) addVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(BoolResultBlock) handler;
+-(void) addVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(WGEventMessageResultBlock) handler;
 
 -(void) vote:(BOOL)upVote withHandler:(BoolResultBlock)handler;
 

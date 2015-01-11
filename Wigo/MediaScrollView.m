@@ -432,15 +432,13 @@
                    andOptions:(NSDictionary *)options
 {
     WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
-    __weak typeof(newEventMessage) weakNewEventMessage = newEventMessage;
-    [newEventMessage addPhoto:fileData withName:filename andHandler:^(BOOL success, NSError *error) {
+    [newEventMessage addPhoto:fileData withName:filename andHandler:^(WGEventMessage *object, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            __strong typeof(newEventMessage) strongNewEventMessage = weakNewEventMessage;
             if (error) {
                 [self.eventConversationDelegate showErrorMessage];
                 return;
             }
-            [strongNewEventMessage save:^(BOOL success, NSError *error) {
+            [object create:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         [self.eventConversationDelegate showErrorMessage];
@@ -448,7 +446,7 @@
                     }
                     [self.eventConversationDelegate showCompletedMessage];
                     self.shownCurrentImage = YES;
-                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:strongNewEventMessage];
+                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
                     if (self.shownCurrentImage) {
                         [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
                     }
@@ -466,15 +464,14 @@
          andOptions:(NSDictionary *)options
 {
     WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
-    __weak typeof(newEventMessage) weakNewEventMessage = newEventMessage;
-    [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumbnailFilename andHandler:^(BOOL success, NSError *error) {
+    __unsafe_unretained WGEventMessage *weakNewEventMessage = newEventMessage;
+    [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumbnailFilename andHandler:^(WGEventMessage *object, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            __strong typeof(newEventMessage) strongNewEventMessage = weakNewEventMessage;
             if (error) {
                 [self.eventConversationDelegate showErrorMessage];
                 return;
             }
-            [strongNewEventMessage save:^(BOOL success, NSError *error) {
+            [object create:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         [self.eventConversationDelegate showErrorMessage];
@@ -482,7 +479,7 @@
                     }
                     [self.eventConversationDelegate showCompletedMessage];
                     self.shownCurrentImage = YES;
-                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:strongNewEventMessage];
+                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
                     if (self.shownCurrentImage) {
                         [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
                     }

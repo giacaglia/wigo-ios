@@ -1363,7 +1363,7 @@ int firstIndexOfNegativeEvent;
                             if (![event highlight]) {
                                 continue;
                             }
-                            NSString *eventDate = [event expires];
+                            NSString *eventDate = [[event expires] deserialize];
                             if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
                                 [strongSelf.pastDays addObject: eventDate];
                                 [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
@@ -1405,7 +1405,7 @@ int firstIndexOfNegativeEvent;
                         if (![event highlight]) {
                             continue;
                         }
-                        NSString *eventDate = [event expires];
+                        NSString *eventDate = [[event expires] deserialize];
                         if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
                             [strongSelf.pastDays addObject: eventDate];
                             [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
@@ -1446,7 +1446,7 @@ int firstIndexOfNegativeEvent;
                         if (![event highlight]) {
                             continue;
                         }
-                        NSString *eventDate = [event expires];
+                        NSString *eventDate = [[event expires] deserialize];
                         if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
                             [strongSelf.pastDays addObject: eventDate];
                             [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];

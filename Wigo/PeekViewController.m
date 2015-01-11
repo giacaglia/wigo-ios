@@ -114,7 +114,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchSchools {
-#warning clean this eventually
     [WGApi get:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             dispatch_async(dispatch_get_main_queue(), ^{

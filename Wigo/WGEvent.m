@@ -53,14 +53,12 @@
     return [self objectForKey:kNameKey];
 }
 
-#warning TODO: make this NSDate
-
--(void) setExpires:(NSString *)expires {
-    [self setObject:expires forKey:kExpiresKey];
+-(void) setExpires:(NSDate *)expires {
+    [self setObject:[expires deserialize] forKey:kExpiresKey];
 }
 
--(NSString *) expires {
-    return [self objectForKey:kExpiresKey];
+-(NSDate *) expires {
+    return [NSDate serialize:[self objectForKey:kExpiresKey]];
 }
 
 -(void) setNumAttending:(NSNumber *)numAttending {

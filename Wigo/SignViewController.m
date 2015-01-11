@@ -382,7 +382,6 @@
 #pragma mark - Asynchronous methods
 
 - (void) loginUserAsynchronous {
-    // Set object FbID and access token to be saved locally
 #warning disable crashlytics
     // [Crashlytics setUserIdentifier:_fbID];
     

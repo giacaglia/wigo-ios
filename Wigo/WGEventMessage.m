@@ -136,11 +136,11 @@
 
 #warning verify that these work
 
--(void) addPhoto:(NSData *)fileData withName:(NSString *)filename andHandler:(BoolResultBlock)handler {
+-(void) addPhoto:(NSData *)fileData withName:(NSString *)filename andHandler:(WGEventMessageResultBlock)handler {
     [WGApi uploadPhoto:fileData withFileName:filename andHandler:^(NSDictionary *jsonResponse, NSDictionary *fields, NSError *error) {
         NSError *dataError;
         if (error) {
-            handler(NO, error);
+            handler(nil, error);
             return;
         }
         @try {
@@ -153,17 +153,17 @@
             dataError = [NSError errorWithDomain: @"WGEventMessage" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(dataError == nil, dataError);
+            handler(self, dataError);
         }
     }];
 
 }
 
--(void) addVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(BoolResultBlock) handler {
+-(void) addVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(WGEventMessageResultBlock) handler {
     [WGApi uploadVideo:fileData withFileName:filename andHandler:^(NSDictionary *jsonResponse, NSDictionary *fields, NSError *error) {
         NSError *dataError;
         if (error) {
-            handler(NO, error);
+            handler(nil, error);
             return;
         }
         @try {
@@ -177,13 +177,13 @@
         }
         @finally {
             if (dataError) {
-                handler(NO, dataError);
+                handler(nil, dataError);
                 return;
             }
             [WGApi uploadPhoto:thumbnailData withFileName:thumbnailName andHandler:^(NSDictionary *jsonResponse, NSDictionary *fields, NSError *error) {
                 NSError *dataError;
                 if (error) {
-                    handler(NO, error);
+                    handler(nil, error);
                     return;
                 }
                 @try {
@@ -195,7 +195,7 @@
                     dataError = [NSError errorWithDomain: @"WGEventMessage" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
                 }
                 @finally {
-                    handler(dataError == nil, dataError);
+                    handler(self, dataError);
                 }
             }];
         }

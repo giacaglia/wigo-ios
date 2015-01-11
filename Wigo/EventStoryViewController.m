@@ -232,6 +232,8 @@
 
 -(WGCollection *) eventMessagesWithYourFace:(BOOL)faceBool {
     WGCollection *newEventMessages =  [[WGCollection alloc] initWithType:[WGEventMessage class]];
+    
+    [newEventMessages addObjectsFromCollection:eventMessages];
 
     NSString *type = faceBool ? kFaceImage : kNotAbleToPost;
     WGEventMessage *eventMessage = [WGEventMessage serialize:@{
@@ -479,6 +481,8 @@
 - (WGCollection *)eventMessagesWithCamera {
     WGCollection *newEventMessages =  [[WGCollection alloc] initWithType:[WGEventMessage class]];
     
+    [newEventMessages addObjectsFromCollection:eventMessages];
+    
     WGEventMessage *eventMessage = [WGEventMessage serialize:@{
                                                                @"user": [[WGProfile currentUser] deserialize],
                                                                @"created": [NSDate nowStringUTC],
@@ -495,16 +499,30 @@
 - (void)fetchEventMessages {
     if (!cancelFetchMessages) {
         cancelFetchMessages = YES;
-
-        if ([eventMessages.hasNextPage boolValue]) {
-            [eventMessages addNextPage:^(BOOL success, NSError *error) {
+        __weak typeof(self) weakSelf = self;
+        if (!eventMessages) {
+            [self.event getMessages:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    cancelFetchMessages = NO;
+                    __strong typeof(self) strongSelf = weakSelf;
+                    strongSelf->cancelFetchMessages = NO;
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
-                    [facesCollectionView reloadData];
+                    strongSelf->eventMessages = collection;
+                    [strongSelf->facesCollectionView reloadData];
+                });
+            }];
+        } else if ([eventMessages.hasNextPage boolValue]) {
+            [eventMessages addNextPage:^(BOOL success, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    __strong typeof(self) strongSelf = weakSelf;
+                    strongSelf->cancelFetchMessages = NO;
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    [strongSelf->facesCollectionView reloadData];
                 });
             }];
         }
@@ -524,7 +542,7 @@
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
     self.conversationViewController.index = index;
-    if (!eventMessages) self.conversationViewController.eventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
+    
     if (![[WGProfile currentUser].eventAttending.id isEqualToNumber:self.event.id]) {
          self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:NO];
     }
@@ -543,8 +561,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         for (int i = 0; i < [eventMessageIDArray count]; i++) {
             NSNumber *eventMessageID = [eventMessageIDArray objectAtIndex:i];
-            for (int j = 0; j < [eventMessages count]; j++) {
-                WGEventMessage *eventMessage = (WGEventMessage *)[eventMessages objectAtIndex:j];
+            for (WGEventMessage *eventMessage in eventMessages) {
                 if ([eventMessage.id isEqualToNumber:eventMessageID]) {
                     eventMessage.isRead = @YES;
                     break;

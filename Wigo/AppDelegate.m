@@ -266,7 +266,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 #pragma mark - Save the time
 
-#warning THIS SEEMS WRONG
+#warning This seems wrong...
 - (void) logFirstTimeLoading {
     NSDateFormatter *utcDateFormat = [[NSDateFormatter alloc] init];
     [utcDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];

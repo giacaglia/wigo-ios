@@ -113,33 +113,36 @@
 - (void)fetchEventAttendeesAsynchronous {
     if (!self.fetchingEventAttendees) {
         self.fetchingEventAttendees = YES;
+        __weak typeof(self) weakSelf = self;
         if (self.attendees.hasNextPage == nil) {
             [WGEventAttendee getForEvent:self.event withHandler:^(WGCollection *collection, NSError *error) {
-                self.fetchingEventAttendees = NO;
+                __strong typeof(self) strongSelf = weakSelf;
+                strongSelf.fetchingEventAttendees = NO;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                self.attendees = collection;
+                strongSelf.attendees = collection;
                 
-                self.eventOffset = self.contentOffset.x;
-                [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
+                strongSelf.eventOffset = self.contentOffset.x;
+                [strongSelf.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
                                                              forKey:[self.event.id stringValue]];
-                [self.placesDelegate setVisitedProfile:YES];
-                [self loadUsers];
+                [strongSelf.placesDelegate setVisitedProfile:YES];
+                [strongSelf loadUsers];
             }];
         } else if ([self.attendees.hasNextPage boolValue]) {
             [self.attendees addNextPage:^(BOOL success, NSError *error) {
-                self.fetchingEventAttendees = NO;
+                __strong typeof(self) strongSelf = weakSelf;
+                strongSelf.fetchingEventAttendees = NO;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                self.eventOffset = self.contentOffset.x;
-                [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
-                                                             forKey:[self.event.id stringValue]];
-                [self.placesDelegate setVisitedProfile:YES];
-                [self loadUsers];
+                strongSelf.eventOffset = strongSelf.contentOffset.x;
+                [strongSelf.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:strongSelf.contentOffset.x]
+                                                             forKey:[strongSelf.event.id stringValue]];
+                [strongSelf.placesDelegate setVisitedProfile:YES];
+                [strongSelf loadUsers];
             }];
         } else {
             self.fetchingEventAttendees = NO;
