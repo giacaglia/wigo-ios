@@ -182,12 +182,14 @@
         [self addReadPage:i];
     }
     if (self.eventMessagesRead.count > 0) {
+        __weak typeof(self) weakSelf = self;
         [self.event setMessagesRead:self.eventMessagesRead andHandler:^(BOOL success, NSError *error) {
+            __strong typeof(self) strongSelf = weakSelf;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                 return;
             }
-            [self.storyDelegate readEventMessageIDArray:[self.eventMessagesRead idArray]];
+            [strongSelf.storyDelegate readEventMessageIDArray:[strongSelf.eventMessagesRead idArray]];
         }];
     }
 }
@@ -202,6 +204,10 @@
 
 
 -(void)scrolledToPage:(int)page {
+    
+    NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
+    [WGAnalytics tagEvent:@"Event Conversation Scrolled Highlight" withDetails: @{@"isPeeking": isPeekingString}];
+    
     if (page < self.minPage) self.minPage = page;
     if (page > self.maxPage) self.maxPage = page;
     if (!self.pageViews) {
@@ -258,6 +264,14 @@
 
 - (void)mediaPickerController:(IQMediaPickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
+    
+    if (self.cameraPromptAddToStory) {
+        [WGAnalytics tagEvent: @"Go Here, Then Add to Story, Then Picture Captured"];
+        self.cameraPromptAddToStory = false;
+    } else {
+        [WGAnalytics tagEvent: @"Event Conversation Captured Picture"];
+    }
+
     [self.eventConversationDelegate addLoadingBanner];
     NSString *type = @"";
     
@@ -287,6 +301,7 @@
                          @"properties": properties,
                          @"media_mime_type": type
                          };
+            [WGAnalytics tagEvent: @"Event Conversation Added Text"];
         }
         else {
             self.options =  @{
@@ -417,13 +432,15 @@
                    andOptions:(NSDictionary *)options
 {
     WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
+    __weak typeof(newEventMessage) weakNewEventMessage = newEventMessage;
     [newEventMessage addPhoto:fileData withName:filename andHandler:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            __strong typeof(newEventMessage) strongNewEventMessage = weakNewEventMessage;
             if (error) {
                 [self.eventConversationDelegate showErrorMessage];
                 return;
             }
-            [newEventMessage save:^(BOOL success, NSError *error) {
+            [strongNewEventMessage save:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         [self.eventConversationDelegate showErrorMessage];
@@ -431,7 +448,7 @@
                     }
                     [self.eventConversationDelegate showCompletedMessage];
                     self.shownCurrentImage = YES;
-                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:newEventMessage];
+                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:strongNewEventMessage];
                     if (self.shownCurrentImage) {
                         [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
                     }
@@ -449,13 +466,15 @@
          andOptions:(NSDictionary *)options
 {
     WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
+    __weak typeof(newEventMessage) weakNewEventMessage = newEventMessage;
     [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumbnailFilename andHandler:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            __strong typeof(newEventMessage) strongNewEventMessage = weakNewEventMessage;
             if (error) {
                 [self.eventConversationDelegate showErrorMessage];
                 return;
             }
-            [newEventMessage save:^(BOOL success, NSError *error) {
+            [strongNewEventMessage save:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (error) {
                         [self.eventConversationDelegate showErrorMessage];
@@ -463,7 +482,7 @@
                     }
                     [self.eventConversationDelegate showCompletedMessage];
                     self.shownCurrentImage = YES;
-                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:newEventMessage];
+                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:strongNewEventMessage];
                     if (self.shownCurrentImage) {
                         [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
                     }
@@ -768,6 +787,8 @@
         return;
     }
     
+    [WGAnalytics tagEvent:@"Up Vote Tapped"];
+    
     CGAffineTransform currentTransform = self.upVoteButton.transform;
     
     [UIView animateWithDuration:0.2f
@@ -793,6 +814,8 @@
         return;
     }
     
+    [WGAnalytics tagEvent:@"Down Vote Tapped"];
+
     
     CGAffineTransform currentTransform = self.downVoteButton.transform;
     

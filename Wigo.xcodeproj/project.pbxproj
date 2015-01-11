@@ -1163,6 +1163,7 @@
 				E94A2850196C6BC50027D3BA /* Facebook Photos */,
 				E99EC28B1986B6A400CBFA59 /* Popup Helpers */,
 				E9ACCA2619C4CC0600F3EB20 /* GrowthHackViews */,
+				C14378D119915D6300D29264 /* Analytics */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";

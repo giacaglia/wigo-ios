@@ -58,7 +58,6 @@
     }
 }
 
-
 #warning TODO: make sure this is correct
 -(BOOL) isFromLastDay {
     NSDate *nowDate = [NSDate date];

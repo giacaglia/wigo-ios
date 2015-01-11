@@ -86,7 +86,6 @@ UIViewController *webViewController;
 
 - (void)saveDataAndGoBack {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-    
     [WGProfile currentUser].privacy = _privacySwitch.on ? PRIVATE : PUBLIC;
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         [WiGoSpinnerView hideSpinnerForView:self.view];

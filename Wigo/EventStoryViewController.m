@@ -65,6 +65,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
+    
+    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
+
+    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    
+    [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
+
     metaInfo = nil;
 
     if (facesCollectionView) [facesCollectionView reloadData];
@@ -76,12 +83,11 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
-    
+    [self.navigationController setNavigationBarHidden: NO animated: NO];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear: animated];
-    
 }
 
 #pragma mark - Loading Messages
@@ -157,12 +163,15 @@
 }
 
 - (void)invitePressed {
+    [WGAnalytics tagEvent: @"Event Story Invite Tapped"];
     [self presentViewController:[[InviteViewController alloc] initWithEventName:self.event.name andID:self.event.id]
                        animated:YES
                      completion:nil];
 }
 
 - (void)goHerePressed {
+    [WGAnalytics tagEvent: @"Event Story Go Here Tapped"];
+    
     // Update data
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
     [WGAnalytics tagEvent:@"Go Here" withDetails:options];
@@ -438,12 +447,14 @@
 #pragma mark - Button handler
 
 - (void)goBack {
-    [self.navigationController setNavigationBarHidden: NO animated: NO];
     [self.navigationController popViewControllerAnimated: YES];
 }
 
+
 - (void)sendPressed {
     
+    [WGAnalytics tagEvent: @"Event Story Create Highlight Tapped"];
+
     //not going here
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
@@ -503,6 +514,12 @@
 
 
 - (void)showEventConversation:(NSNumber *)index {
+    
+    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
+
+    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    [WGAnalytics tagEvent:@"Event Story Highlight Tapped" withDetails: @{ @"isPeeking": isPeekingString }];
+
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
@@ -515,7 +532,6 @@
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
     self.conversationViewController.isPeeking = isPeeking;
 
     self.conversationViewController.storyDelegate = self;
@@ -589,8 +605,6 @@
         fancyProfileViewController.userState = OTHER_SCHOOL_USER;
     }
     
-    [self.navigationController setNavigationBarHidden: NO animated: NO];
-
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 

@@ -59,6 +59,7 @@
 
 #define kNumUnreadConversationsKey @"num_unread_conversations"
 #define kNumUnreadNotificationsKey @"num_unread_notifications"
+#define kNumUnreadUsersKey @"num_unread_users"
 
 #define kGenderMaleValue @"male"
 #define kGenderFemaleValue @"female"
@@ -455,6 +456,14 @@ static WGUser *currentUser = nil;
 
 -(NSNumber *) numUnreadNotifications {
     return [self objectForKey:kNumUnreadNotificationsKey];
+}
+
+-(void) setNumUnreadUsers:(NSNumber *)numUnreadUsers {
+    [self setObject:numUnreadUsers forKey:kNumUnreadUsersKey];
+}
+
+-(NSNumber *) numUnreadUsers {
+    return [self objectForKey:kNumUnreadUsersKey];
 }
 
 -(void) setIsTapPushNotificationEnabled:(NSNumber *)isTapPushNotificationEnabled {

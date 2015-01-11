@@ -130,7 +130,6 @@
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     BOOL isEmail = [emailTest evaluateWithObject:emailString];
     if (isEmail) {
-        // NEED TO save the url's before signing up
         NSArray *images = [[WGProfile currentUser] images];
         [WGProfile currentUser].email = emailString;
         

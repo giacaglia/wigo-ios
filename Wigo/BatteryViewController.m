@@ -13,6 +13,7 @@ UIImageView *orangeImageView;
 NSNumber *currentTotal;
 NSNumber *currentNumGroups;
 int widthShared;
+UIImageView *batteryImageView;
 
 @implementation BatteryViewController
 
@@ -70,17 +71,21 @@ int widthShared;
     youAreAlmostThereLabel.font = [FontProperties mediumFont:15.0f];
     [self.view addSubview:youAreAlmostThereLabel];
     
-    UILabel *orangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, self.view.frame.size.height/2 - 51, 14, 48)];
+    batteryImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"batteryImage"]];
+    batteryImageView.frame = CGRectMake(76, self.view.frame.size.height/2 - 55, 168, 57);
+    batteryImageView.center = CGPointMake(self.view.center.x, batteryImageView.center.y);
+    [self.view addSubview:batteryImageView];
+
+    
+    UILabel *orangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(batteryImageView.frame.origin.x+4, self.view.frame.size.height/2 - 51, 14, 48)];
     orangeLabel.backgroundColor = [FontProperties getOrangeColor];
     [self.view addSubview:orangeLabel];
     
-    orangeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(84, self.view.frame.size.height/2 - 53, 20, 54)];
+    orangeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(batteryImageView.frame.origin.x+10, self.view.frame.size.height/2 - 53, 20, 54)];
     orangeImageView.image = [UIImage imageNamed:@"batteryRectangle"];
     [self.view addSubview:orangeImageView];
     
-    UIImageView *batteryImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"batteryImage"]];
-    batteryImageView.frame = CGRectMake(76, self.view.frame.size.height/2 - 55, 168, 57);
-    [self.view addSubview:batteryImageView];
+    [self.view bringSubviewToFront: batteryImageView];
     
   
 }
@@ -197,7 +202,7 @@ int widthShared;
                               delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
-                             orangeImageView.frame = CGRectMake(84, self.view.frame.size.height/2 - 53, width, 54);
+                             orangeImageView.frame = CGRectMake(orangeImageView.frame.origin.x, self.view.frame.size.height/2 - 53, width, 54);
                          }
                          completion:nil];
     }

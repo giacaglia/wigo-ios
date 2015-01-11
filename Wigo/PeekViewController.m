@@ -18,6 +18,11 @@
 
 @implementation PeekViewController
 
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
+    
+    [WGAnalytics tagEvent: @"Peek View"];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.schoolSections = [NSArray new];

@@ -7,6 +7,7 @@
 //
 
 #import "WGEventAttendee.h"
+#import "WGEvent.h"
 
 #define kUserKey @"user"
 #define kEventOwnerKey @"event_owner"
@@ -47,6 +48,29 @@
 
 -(NSNumber *) eventOwner {
     return [self objectForKey:kEventOwnerKey];
+}
+
++(void) getForEvent:(WGEvent *)event withHandler:(WGCollectionResultBlock)handler {
+    [WGApi get:@"eventattendees/" withArguments:@{ @"event" : event.id, @"limit" : @"10" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGEventAttendee class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
 }
 
 @end

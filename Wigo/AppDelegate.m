@@ -15,6 +15,7 @@
 #import "PopViewController.h"
 #import "WGProfile.h"
 #import "WGEvent.h"
+#import "PlacesViewController.h"
 
 NSNumber *numberOfNewMessages;
 NSNumber *numberOfNewNotifications;
@@ -78,6 +79,33 @@ NSDate *firstLoggedTime;
 
 }
 
+- (void) dismissEverythingWithUserInfo:(NSDictionary *)userInfo {
+    UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    UIViewController *presentedController = [navController presentedViewController];
+    UIViewController *visibleController = [navController topViewController];
+
+    if (![visibleController isKindOfClass:[PlacesViewController class]]) {
+        if (presentedController != nil) {
+            [presentedController dismissViewControllerAnimated:NO completion:^{[self dismissEverythingWithUserInfo:userInfo];}];
+        } else {
+            [navController popViewControllerAnimated:NO];
+            [self dismissEverythingWithUserInfo:userInfo];
+        }
+        NSLog(@"here");
+    }
+    else {
+        [self doneWithUserInfo:userInfo];
+    }
+}
+
+- (void) doneWithUserInfo:(NSDictionary *)userInfo {
+    NSLog(@"111");
+    if ([self doesUserInfo:userInfo hasString:@"M"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"goToChat" object:nil];
+
+    }
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
@@ -106,8 +134,27 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     }
 }
 
+- (UIViewController*) topMostController
+{
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
+}
+
+- (BOOL)isModal:(UIViewController *)vc {
+    return vc.presentingViewController.presentedViewController == vc
+    || vc.navigationController.presentingViewController.presentedViewController == vc.navigationController
+    || [vc.tabBarController.presentingViewController isKindOfClass:[UITabBarController class]];
+}
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+//    [self dismissEverythingWithUserInfo:userInfo];
+  
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if ([aps isKindOfClass:[NSDictionary class]]) {
@@ -126,12 +173,26 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                     }
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:[NSDictionary dictionaryWithDictionary:dictionary]];
                 }
+                
             }
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     }
     else { // If it's was at the background or inactive
     }
+}
+
+- (BOOL)doesUserInfo:(NSDictionary *)userInfo hasString:(NSString *)checkString {
+    NSDictionary *aps = [userInfo objectForKey:@"aps"];
+    if ([aps isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *alert = [aps objectForKey:@"alert"];
+        if ([alert isKindOfClass:[NSDictionary class]]) {
+            NSString *locKeyString = [alert objectForKey:@"loc-key"];
+            if ([locKeyString isEqualToString:checkString]) {
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 
 #pragma mark - Custom actions
@@ -161,6 +222,7 @@ forRemoteNotification:(NSDictionary *)userInfo
             }
         }
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     completionHandler();
 }
 

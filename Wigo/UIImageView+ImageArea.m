@@ -78,7 +78,7 @@ NSMutableArray *failedUserInfoArray;
               imageArea:(NSDictionary *)area
                withInfo:(NSDictionary *)info
               completed:(SDWebImageCompletedBlock)completedBlock {
-    __block NSDictionary *blockInfo = info;
+    // __block NSDictionary *blockInfo = info;
     
     [self setImageWithURL:url withArea:area placeholderImage:nil options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         /* if (error) {

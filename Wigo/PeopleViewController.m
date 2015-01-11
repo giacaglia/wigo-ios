@@ -184,10 +184,14 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (void) goBack {
-    [self updateLastUserRead];
-    [self.navigationController popViewControllerAnimated:YES];
+    [[WGProfile currentUser] saveKey:@"last_user_read" withValue:@"s" andHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            return;
+        }
+        [self.navigationController popViewControllerAnimated:YES];
+    }];
 }
-
 
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -507,7 +511,6 @@ NSMutableArray *suggestedArrayView;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == 0) {
         if ([self.currentTab isEqualToNumber:@2]) return 233;
-#warning why is this not 0?
         else if ([self.currentTab isEqualToNumber:@4]) return 95;
         else return 0;
     }
@@ -774,24 +777,6 @@ NSMutableArray *suggestedArrayView;
     return user;
 }
 
-
-#pragma mark - Last User Read 
-- (void)updateLastUserRead {
-    int maxID = 0;
-    for (WGUser *user in _everyone) {
-        if ([user.id intValue] > maxID) {
-            maxID = [user.id intValue];
-        }
-    }
-    if (maxID > [[WGProfile currentUser].lastUserRead intValue]) {
-        WGUser *user = (WGUser *)[_everyone objectWithID:[NSNumber numberWithInt:maxID]];
-        [WGProfile currentUser].lastUserRead = user.id;
-        [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
-            // Do nothing
-        }];
-    }
-}
-
 #pragma mark - Update User Info
 - (void)updateUserAtTable:(NSNotification*)notification {
     NSDictionary* userInfo = [notification userInfo];
@@ -928,40 +913,42 @@ NSMutableArray *suggestedArrayView;
 }
 
 -(void) fetchFollowers {
+    __weak typeof(self) weakSelf = self;
     if (!fetching) {
         fetching = YES;
         if (!_followers) {
             [WGFollow getFollowsForFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    __strong typeof(self) strongSelf = weakSelf;
                     fetching = NO;
-                    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
-                    _followers = collection;
-                    _users = [[WGCollection alloc] initWithType:[WGUser class]];
-                    for (WGFollow *follow in _followers) {
-                        [_users addObject:follow.user];
+                    strongSelf.followers = collection;
+                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in strongSelf.followers) {
+                        [strongSelf.users addObject:follow.user];
                     }
-                    [_tableViewOfPeople reloadData];
+                    [strongSelf.tableViewOfPeople reloadData];
                 });
             }];
         } else if ([_followers.hasNextPage boolValue]) {
             [_followers addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    __strong typeof(self) strongSelf = weakSelf;
                     fetching = NO;
-                    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
-                    _users = _followers;
-                    _users = [[WGCollection alloc] initWithType:[WGUser class]];
-                    for (WGFollow *follow in _followers) {
-                        [_users addObject:follow.user];
+                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in strongSelf.followers) {
+                        [strongSelf.users addObject:follow.user];
                     }
-                    [_tableViewOfPeople reloadData];
+                    [strongSelf.tableViewOfPeople reloadData];
                 });
             }];
         } else {
@@ -981,41 +968,42 @@ NSMutableArray *suggestedArrayView;
 -(void) fetchFollowing {
     if (!fetching) {
         fetching = YES;
-        
+        __weak typeof(self) weakSelf = self;
         if (!_following) {
             [WGFollow getFollowsForUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    __strong typeof(self) strongSelf = weakSelf;
                     fetching = NO;
-                    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
-                    _following = collection;
-                    _users = [[WGCollection alloc] initWithType:[WGUser class]];
-                    for (WGFollow *follow in _following) {
-                        NSLog(@"%@", [follow.follow fullName]);
-                        [_users addObject:follow.follow];
+                    strongSelf.following = collection;
+                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in strongSelf.following) {
+                        [strongSelf.users addObject:follow.follow];
                     }
-                    [_tableViewOfPeople reloadData];
-                    secondPartSubview = [self initializeSecondPart];
+                    [strongSelf.tableViewOfPeople reloadData];
+                    secondPartSubview = [strongSelf initializeSecondPart];
                 });
             }];
         } else if ([_following.hasNextPage boolValue]) {
             [_following addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    __strong typeof(self) strongSelf = weakSelf;
                     fetching = NO;
-                    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
-                    _users = [[WGCollection alloc] initWithType:[WGUser class]];
-                    for (WGFollow *follow in _following) {
-                        [_users addObject:follow.follow];
+                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in strongSelf.following) {
+                        [strongSelf.users addObject:follow.follow];
                     }
-                    [_tableViewOfPeople reloadData];
-                    secondPartSubview = [self initializeSecondPart];
+                    [strongSelf.tableViewOfPeople reloadData];
+                    secondPartSubview = [strongSelf initializeSecondPart];
                 });
             }];
         } else {

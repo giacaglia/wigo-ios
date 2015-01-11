@@ -7,6 +7,7 @@
 //
 
 #import "WGEventMessage.h"
+#import "WGEvent.h"
 
 #define kUserKey @"user"
 #define kMessageKey @"message"

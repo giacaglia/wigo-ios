@@ -119,27 +119,29 @@ BOOL isFetchingEveryone;
 - (void) fetchEveryone {
     if (!isFetchingEveryone) {
         isFetchingEveryone = YES;
-        
+        __weak typeof(self) weakSelf = self;
         if (!_content || _content.hasNextPage == nil) {
             [WGUser getNotMe:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    __strong typeof(self) strongSelf = weakSelf;
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
-                    _content = collection;
-                    [_tableView reloadData];
+                    strongSelf.content = collection;
+                    [strongSelf.tableView reloadData];
                     isFetchingEveryone = NO;
                 });
             }];
         } else if ([_content.hasNextPage boolValue]) {
             [_content addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    __strong typeof(self) strongSelf = weakSelf;
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         return;
                     }
-                    [_tableView reloadData];
+                    [strongSelf.tableView reloadData];
                     isFetchingEveryone = NO;
                 });
             }];
@@ -361,29 +363,32 @@ BOOL isFetchingEveryone;
 - (void)searchTableList {
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
+    __weak typeof(self) weakSelf = self;
     /* if ([oldString isEqualToString:@"Initiate meltdown"]) {
         [self showMeltdown];
     } */
     if (!_filteredContent || _filteredContent.hasNextPage == nil) {
         [WGUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                _filteredContent = collection;
-                [_tableView reloadData];
+                strongSelf.filteredContent = collection;
+                [strongSelf.tableView reloadData];
                 isFetchingEveryone = NO;
             });
         }];
     } else if ([_filteredContent.hasNextPage boolValue]) {
         [_filteredContent addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                [_tableView reloadData];
+                [strongSelf.tableView reloadData];
                 isFetchingEveryone = NO;
             });
         }];

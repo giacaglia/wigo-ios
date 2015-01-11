@@ -7,6 +7,7 @@
 //
 
 #import "WGEvent.h"
+#import "WGProfile.h"
 
 #define kNameKey @"name"
 
@@ -152,38 +153,6 @@
             handler(objects, dataError);
         }
     }];
-}
-
--(void) getMoreAttendees:(BoolResultBlock)handler {
-    if (self.attendees.hasNextPage == nil) {
-        [WGApi get:@"eventattendees/" withArguments:@{ @"event" : self.id, @"limit" : @"10", @"page" : @2 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            if (error) {
-                handler(nil, error);
-                return;
-            }
-            
-            NSError *dataError;
-            @try {
-                WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:[WGEventAttendee class]];
-                [objects addObjectsFromCollectionToBeginning:self.attendees];
-                self.attendees = objects;
-            }
-            @catch (NSException *exception) {
-                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-                
-                dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-            }
-            @finally {
-                handler(dataError == nil, dataError);
-            }
-        }];
-    } else if ([self.attendees.hasNextPage boolValue]) {
-        [self.attendees addNextPage:^(BOOL success, NSError *error) {
-            handler(success, error);
-        }];
-    } else {
-        handler(NO, nil);
-    }
 }
 
 +(void) get:(WGCollectionResultBlock)handler {

@@ -82,6 +82,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 @property NSNumber* numUnreadConversations;
 @property NSNumber* numUnreadNotifications;
+@property NSNumber* numUnreadUsers;
 
 +(WGUser *)serialize:(NSDictionary *)json;
 

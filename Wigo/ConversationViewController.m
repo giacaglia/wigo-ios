@@ -93,6 +93,10 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self fetchFirstPageMessages];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    didBeginEditing = NO;
+}
 
 - (void) initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self

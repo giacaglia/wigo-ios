@@ -113,22 +113,37 @@
 - (void)fetchEventAttendeesAsynchronous {
     if (!self.fetchingEventAttendees) {
         self.fetchingEventAttendees = YES;
-        [self.event getMoreAttendees:^(BOOL success, NSError *error) {
-            self.fetchingEventAttendees = NO;
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                return;
-            }
-            if ([self.event.attendees count] - [self.attendees count] > 0) {
-                self.attendees = self.event.attendees;
+        if (self.attendees.hasNextPage == nil) {
+            [WGEventAttendee getForEvent:self.event withHandler:^(WGCollection *collection, NSError *error) {
+                self.fetchingEventAttendees = NO;
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                self.attendees = collection;
                 
                 self.eventOffset = self.contentOffset.x;
                 [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
                                                              forKey:[self.event.id stringValue]];
                 [self.placesDelegate setVisitedProfile:YES];
                 [self loadUsers];
-            }
-        }];
+            }];
+        } else if ([self.attendees.hasNextPage boolValue]) {
+            [self.attendees addNextPage:^(BOOL success, NSError *error) {
+                self.fetchingEventAttendees = NO;
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                self.eventOffset = self.contentOffset.x;
+                [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
+                                                             forKey:[self.event.id stringValue]];
+                [self.placesDelegate setVisitedProfile:YES];
+                [self loadUsers];
+            }];
+        } else {
+            self.fetchingEventAttendees = NO;
+        }
     }
 }
 

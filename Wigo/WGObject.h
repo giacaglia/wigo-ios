@@ -43,6 +43,7 @@ typedef void (^BoolResultBlock)(BOOL success, NSError *error);
 
 -(void) refresh:(BoolResultBlock)handler;
 -(void) save:(BoolResultBlock)handler;
+-(void) saveKey:(NSString *)key withValue:(id)value andHandler:(BoolResultBlock)handler;
 -(void) remove:(BoolResultBlock)handler;
 +(void) get:(WGCollectionResultBlock)handler;
 -(void) create:(BoolResultBlock)handler;

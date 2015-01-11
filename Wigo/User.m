@@ -668,6 +668,11 @@
     }
 }
 
+- (void)setStringLastUserRead:(NSString *)lastUserRead {
+    [_proxy notNillsetObject:lastUserRead forKey:@"last_user_read"];
+    [modifiedKeys addObject:@"last_user_read"];
+}
+
 - (NSNumber *)lastUserRead {
     if ([[_proxy allKeys] containsObject:@"last_user_read"]) return (NSNumber *)[_proxy objectForKey:@"last_user_read"];
     else return @0;

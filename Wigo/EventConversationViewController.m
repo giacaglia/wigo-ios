@@ -60,6 +60,11 @@
     
     [self highlightCellAtPage:[self.index intValue]];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
+
+    
+    NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
+    
+    [WGAnalytics tagEvent:@"Event Story Detail View" withDetails: @{@"isPeeking": isPeekingString}];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -128,6 +133,9 @@
             return;
         }
         
+        NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
+        [WGAnalytics tagEvent:@"Event Conversation Face Tapped" withDetails: @{@"isPeeking": isPeekingString}];
+
         FaceCell *cell = (FaceCell *)[collectionView cellForItemAtIndexPath: indexPath];
         
         if (self.currentActiveCell) {
@@ -351,8 +359,8 @@
 }
 
 - (void)hideOrShowFacesForPage:(int)page {
-    NSDictionary *eventMessage = [self.eventMessages objectAtIndex:page];
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType]) {
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+    if ([eventMessage.mediaMimeType isEqualToString:kCameraType]) {
         self.buttonCancel.hidden = YES;
         self.buttonCancel.enabled = NO;
         self.buttonTrash.hidden = YES;
@@ -360,8 +368,8 @@
         self.facesHidden = NO;
         [self focusOnContent];
     }
-    else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
-             [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost]
+    else if ([eventMessage.mediaMimeType isEqualToString:kFaceImage] ||
+             [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost]
              ) {
         self.buttonTrash.hidden = YES;
         self.buttonTrash.enabled = NO;
@@ -444,6 +452,8 @@
 }
 
 - (void)cancelPressed:(id)sender {
+    [WGAnalytics tagEvent: @"Close Highlights Tapped"];
+
     [self.mediaScrollView closeView];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -454,6 +464,8 @@
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     // NEeds to be sequential.
     if (page < self.eventMessages.count && page >= 0) {
+        [WGAnalytics tagEvent: @"Delete Highlight Tapped"];
+        
         [self.mediaScrollView removeMediaAtPage:(int)page];
         [self.eventMessages removeObjectAtIndex:page];
         [self.facesCollectionView reloadData];
@@ -528,17 +540,20 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+
 - (void)promptCamera {
-    [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kGoHereState];
-    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:self.eventMessages];
+    self.mediaScrollView.cameraPromptAddToStory = true;
+    [WGAnalytics tagEvent: @"Go Here, Then Add to Story Tapped"];
     
-    [mutableEventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:@{
-                                      @"user": [[WGProfile currentUser] deserialize],
-                                      @"created": [NSDate nowStringUTC],
-                                      @"media_mime_type": kCameraType,
-                                      @"media": @""
-                                      }];
-    self.eventMessages = mutableEventMessages;
+    [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kGoHereState];
+    // TODO: Does this need to be saved???
+    WGEventMessage *newEventMessage = [WGEventMessage serialize:@{
+                                                                  @"user": [[WGProfile currentUser] deserialize],
+                                                                  @"created": [NSDate nowStringUTC],
+                                                                  @"media_mime_type": kCameraType,
+                                                                  @"media": @""
+                                                                  }];
+    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:newEventMessage];
     [self.facesCollectionView reloadData];
     self.mediaScrollView.eventMessages = self.eventMessages;
     [self.mediaScrollView reloadData];
@@ -550,15 +565,15 @@
 #pragma mark - EventConversationDelegate
 
 - (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages {
-    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
+    WGEventMessage *newEventMessage = [WGEventMessage serialize:@{
+                                                                  @"user": [[WGProfile currentUser] deserialize],
+                                                                  @"created": [NSDate nowStringUTC],
+                                                                  @"media_mime_type": kCameraType,
+                                                                  @"media": @""
+                                                                  }];
 
-    [mutableEventMessages addObject:@{
-                                      @"user": [[WGProfile currentUser] deserialize],
-                                      @"created": [NSDate nowStringUTC],
-                                      @"media_mime_type": kCameraType,
-                                      @"media": @""
-                                      }];
-    self.eventMessages = mutableEventMessages;
+    [self.eventMessages addObject:newEventMessage];
+    
     [self.facesCollectionView reloadData];
     self.mediaScrollView.eventMessages = self.eventMessages;
     [self.mediaScrollView reloadData];

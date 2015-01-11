@@ -109,6 +109,34 @@
     }];
 }
 
+-(void) saveKey:(NSString *)key withValue:(id)value andHandler:(BoolResultBlock)handler {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+    [properties setObject:value forKey:key];
+    
+    NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
+    
+    [WGApi post:thisObjectURL withParameters:properties andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        NSError *dataError;
+        @try {
+            [self.parameters setObject:value forKey:key];
+            [self.modifiedKeys removeObject:key];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
+}
+
 -(void) refresh:(BoolResultBlock)handler {
     NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
     
