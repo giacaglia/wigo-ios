@@ -25,7 +25,7 @@
 }
 
 +(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details {
-    if (![WGProfile currentUser] || [[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
+    if (![[WGProfile currentUser] isFetched] || [[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
         return;
     }
     
@@ -85,7 +85,7 @@
 }
 
 +(void) tagScreen:(NSString *)name {
-    if (![WGProfile currentUser] || [[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
+    if (![[WGProfile currentUser] isFetched] || [[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
         return;
     }
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
@@ -94,7 +94,7 @@
 }
 
 +(void) setUser:(WGUser *)user {
-    if (![WGProfile currentUser] || [[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
+    if (![[WGProfile currentUser] isFetched] || [[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
         return;
     }
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];

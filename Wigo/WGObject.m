@@ -57,6 +57,10 @@
     return [NSDate serialize:[self objectForKey:kCreatedKey]];
 }
 
+-(BOOL) isFetched {
+    return self.id && [self.id intValue] > 0;
+}
+
 -(BOOL) isExpired {
     return [self.created isFromLastDay];
 }

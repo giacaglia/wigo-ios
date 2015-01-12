@@ -32,8 +32,7 @@ NSDate *firstLoggedTime;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"canFetchAppStartup"];
-#warning disable crashlytics for testing
-    /* [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"]; */
+    [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
 
     if ([[WGProfile currentUser].googleAnalyticsEnabled boolValue]) {
         [self initializeGoogleAnalytics];
