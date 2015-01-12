@@ -39,24 +39,23 @@
 
 }
 
-@property UIView *whereAreYouGoingView;
-@property UITextField *whereAreYouGoingTextField;
-@property UIButton *clearButton;
-@property UIButton *createButton;
+@property (nonatomic, strong) UIView *loadingView;
+@property (nonatomic, strong) UIView *whereAreYouGoingView;
+@property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
 
-@property int tagInteger;
+@property (nonatomic, assign) int tagInteger;
 
 //@property NSMutableArray *filteredContentList;
-@property BOOL isSearching;
-@property NSMutableArray *placeSubviewArray;
-@property UIImageView *searchIconImageView;
-@property UIView *searchBarBorderView;
+@property (nonatomic, assign) BOOL isSearching;
+@property (nonatomic, strong) NSMutableArray *placeSubviewArray;
+@property (nonatomic, strong) UIImageView *searchIconImageView;
+@property (nonatomic, strong) UIView *searchBarBorderView;
 
-@property UIImageView *whereImageView;
-@property UILabel *whereLabel;
-@property int yPositionOfWhereSubview;
+@property (nonatomic, strong) UIImageView *whereImageView;
+@property (nonatomic, strong) UILabel *whereLabel;
+@property (nonatomic, assign) int yPositionOfWhereSubview;
 
-@property UITableView *placesTableView;
+@property (nonatomic, strong) UITableView *placesTableView;
 
 //private pressed
 @property UIScrollView *scrollViewSender;
@@ -406,9 +405,6 @@ int firstIndexOfNegativeEvent;
     if (touch.view == _whereAreYouGoingView) {
         return NO;
     }
-    if (touch.view == _createButton) {
-        [self createPressed];
-    }
     return YES;
 }
 
@@ -651,12 +647,6 @@ int firstIndexOfNegativeEvent;
     
     [_whereAreYouGoingView addSubview:_whereAreYouGoingTextField];
     
-    //[self addCreateButtonToTextField];
-    
-//    _clearButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 25 - 100, _whereAreYouGoingView.frame.size.height/2 - 9, 25, 25)];
-//    [_clearButton addSubview:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"clearButton"]]];
-//    [_clearButton addTarget:self action:@selector(clearTextField) forControlEvents:UIControlEventTouchUpInside];
-    //[_whereAreYouGoingView addSubview:_clearButton];
     
     CALayer *bottomBorder = [CALayer layer];
     bottomBorder.frame = CGRectMake(0.0f, _whereAreYouGoingView.frame.size.height - 1, _whereAreYouGoingView.frame.size.width, 1.0f);
@@ -671,24 +661,9 @@ int firstIndexOfNegativeEvent;
 }
 
 
-- (void) addCreateButtonToTextField {
-    _createButton = [[UIButton alloc] initWithFrame:CGRectMake(_whereAreYouGoingView.frame.size.width - 90, _whereAreYouGoingView.frame.size.height/2 - 12, 80, 25)];
-    [_createButton setTitle:@"CREATE" forState:UIControlStateNormal];
-    _createButton.isAccessibilityElement = YES;
-    _createButton.accessibilityLabel = @"Create";
-    [_createButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    _createButton.backgroundColor = [FontProperties getBlueColor];
-    [_createButton addTarget:self action:@selector(createPressed) forControlEvents:UIControlEventTouchUpInside];
-    _createButton.titleLabel.font = [FontProperties scMediumFont:12.0f];
-    _createButton.layer.cornerRadius = 5;
-    _createButton.layer.borderWidth = 1;
-    _createButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    [_whereAreYouGoingView addSubview:_createButton];
-    [_whereAreYouGoingView bringSubviewToFront:_createButton];
-}
-
 - (void)createPressed {
     if ([_whereAreYouGoingTextField.text length] != 0) {
+        [self addLoadingIndicator];
         [WGEvent createEventWithName:_whereAreYouGoingTextField.text andHandler:^(WGEvent *object, NSError *error) {
             if (error) {
                 return;
@@ -721,6 +696,27 @@ int firstIndexOfNegativeEvent;
     }
 }
 
+- (void)addLoadingIndicator {
+    _loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, _whereAreYouGoingView.frame.size.height - 5, _whereAreYouGoingView.frame.size.width - 20, 5)];
+    _loadingView.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    _loadingView.layer.borderWidth = 1.0f;
+    _loadingView.layer.cornerRadius = 3.0f;
+    
+    UIView *loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    loadingIndicator.backgroundColor = [FontProperties getBlueColor];
+    [_loadingView addSubview:loadingIndicator];
+    [UIView animateWithDuration:1.0f animations:^{
+        loadingIndicator.frame = _loadingView.frame;
+    }];
+//    loadingIndicator
+    [_whereAreYouGoingView addSubview:_loadingView];
+    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(addLoadingView) userInfo:nil repeats:YES];
+}
+
+- (void)addLoadingView {
+    
+}
+
 -(void)updateEvent:(WGEvent *)newEvent {
     [_events replaceObjectAtIndex:[_events indexOfObject:newEvent] withObject:newEvent];
 }
@@ -730,16 +726,12 @@ int firstIndexOfNegativeEvent;
     
     if([textField.text length] != 0) {
         _isSearching = YES;
-        //_createButton.hidden = NO;
-        //_clearButton.hidden = NO;
         [self searchTableList: textField.text];
         
         [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
         
     } else {
         _isSearching = NO;
-        _createButton.hidden = YES;
-        _clearButton.hidden = YES;
         
         [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
 

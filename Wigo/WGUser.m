@@ -542,7 +542,8 @@ static WGUser *currentUser = nil;
 
 -(State) state {
     if ([self isCurrentUser]) {
-        return FOLLOWING_USER_STATE;
+        if (self.privacy == PRIVATE) return PRIVATE_STATE;
+        else return PUBLIC_STATE;
     }
     if ([self.isBlocked boolValue]) {
         return BLOCKED_USER_STATE;
