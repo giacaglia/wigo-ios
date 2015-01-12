@@ -697,7 +697,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)addLoadingIndicator {
-    _loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, _whereAreYouGoingView.frame.size.height - 5, _whereAreYouGoingView.frame.size.width - 20, 5)];
+    _loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, _whereAreYouGoingView.frame.size.height - 10, _whereAreYouGoingView.frame.size.width - 20, 5)];
     _loadingView.layer.borderColor = [FontProperties getBlueColor].CGColor;
     _loadingView.layer.borderWidth = 1.0f;
     _loadingView.layer.cornerRadius = 3.0f;
@@ -706,16 +706,14 @@ int firstIndexOfNegativeEvent;
     loadingIndicator.backgroundColor = [FontProperties getBlueColor];
     [_loadingView addSubview:loadingIndicator];
     [UIView animateWithDuration:1.0f animations:^{
-        loadingIndicator.frame = _loadingView.frame;
-    }];
-//    loadingIndicator
+        loadingIndicator.frame = CGRectMake(0, 0, _loadingView.frame.size.width, _loadingView.frame.size.height);
+    } completion:^(BOOL finished) {
+        if (finished) [_loadingView removeFromSuperview];
+    }
+     ];
     [_whereAreYouGoingView addSubview:_loadingView];
-    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(addLoadingView) userInfo:nil repeats:YES];
 }
 
-- (void)addLoadingView {
-    
-}
 
 -(void)updateEvent:(WGEvent *)newEvent {
     [_events replaceObjectAtIndex:[_events indexOfObject:newEvent] withObject:newEvent];

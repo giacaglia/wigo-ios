@@ -196,7 +196,7 @@
     [WGAnalytics tagEvent:@"Event Conversation Scrolled Highlight" withDetails: @{@"isPeeking": isPeekingString}];
     
     if (page < self.minPage) self.minPage = page;
-    if (page > self.maxPage) self.maxPage = page;
+    if (page > self.maxPage && page < self.eventMessages.count) self.maxPage = page;
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
         for (int i = 0 ; i < self.eventMessages.count; i++) {
