@@ -749,6 +749,7 @@ UIButton *tapButton;
         return ([self shouldShowGoOutsCell]) ? 1 : 0;
     }
     else if (section == kNotificationsSection) {
+        NSLog(@"number of notifications: %d", [self notificationCount]);
         return [self notificationCount];
     }
     return 1;
@@ -827,8 +828,6 @@ UIButton *tapButton;
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == kNotificationsSection) {
-        
-        
         if (self.userState == OTHER_SCHOOL_USER_STATE) {
             return _nameView;
         } else {
@@ -1015,6 +1014,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                         return;
                     }
                     _notifications = collection;
+                    if (!_unexpiredNotifications) _unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
                     for (WGNotification *notification in _notifications) {
                         if (![notification isFromLastDay]) {
                             [_unexpiredNotifications addObject:notification];
