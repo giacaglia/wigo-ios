@@ -8,6 +8,7 @@
 
 #import <objc/runtime.h>
 #import "WGObject.h"
+#import "WGCollection.h"
 
 #define kIdKey @"id"
 #define kCreatedKey @"created"
@@ -33,8 +34,13 @@
         self.className = @"object";
         self.modifiedKeys = [[NSMutableArray alloc] init];
         self.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
+        [self replaceReferences];
     }
     return self;
+}
+
+-(void) replaceReferences {
+    // Nothing to replace!
 }
 
 +(WGObject *) serialize:(NSDictionary *)json {
@@ -73,14 +79,30 @@
 }
 
 -(NSDictionary *) deserialize {
-    return [[NSDictionary alloc] initWithDictionary: self.parameters];
+    NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    
+    for (NSString* key in [self.parameters allKeys]) {
+        id value = [self.parameters objectForKey:key];
+        if ([value isKindOfClass:[WGObject class]] || [value isKindOfClass:[WGObject class]]) {
+            [props setObject:[value deserialize] forKey:key];
+        } else {
+            [props setObject:value forKey:key];
+        }
+    }
+    
+    return props;
 }
 
 -(NSDictionary *) modifiedDictionary {
     NSMutableDictionary *props = [NSMutableDictionary dictionary];
     
     for (NSString* key in self.modifiedKeys) {
-        [props setObject:[self.parameters objectForKey:key] forKey:key];
+        id value = [self.parameters objectForKey:key];
+        if ([value isKindOfClass:[WGObject class]] || [value isKindOfClass:[WGCollection class]]) {
+            [props setObject:[value deserialize] forKey:key];
+        } else {
+            [props setObject:value forKey:key];
+        }
     }
     
     return props;
@@ -100,6 +122,7 @@
         NSError *dataError;
         @try {
             self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self replaceReferences];
             [self.modifiedKeys removeAllObjects];
         }
         @catch (NSException *exception) {
@@ -115,7 +138,11 @@
 
 -(void) saveKey:(NSString *)key withValue:(id)value andHandler:(BoolResultBlock)handler {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
-    [properties setObject:value forKey:key];
+    if ([value isKindOfClass:[WGObject class]]) {
+        [properties setObject:[value deserialize] forKey:key];
+    } else {
+        [properties setObject:value forKey:key];
+    }
     
     NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
     
@@ -153,6 +180,7 @@
         NSError *dataError;
         @try {
             self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self replaceReferences];
             [self.modifiedKeys removeAllObjects];
         }
         @catch (NSException *exception) {
@@ -188,6 +216,7 @@
         NSError *dataError;
         @try {
             self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self replaceReferences];
             [self.modifiedKeys removeAllObjects];
         }
         @catch (NSException *exception) {

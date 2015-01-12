@@ -29,6 +29,11 @@
     return self;
 }
 
+-(void) replaceReferences {
+    [super replaceReferences];
+    [self setObject:[WGUser serialize:[self objectForKey:kFromUserKey]] forKey:kFromUserKey];
+}
+
 +(WGNotification *)serialize:(NSDictionary *)json {
     return [[WGNotification alloc] initWithJSON:json];
 }
@@ -42,11 +47,11 @@
 }
 
 -(void) setFromUser:(WGUser *)fromUser {
-    [self setObject:[fromUser deserialize] forKey:kFromUserKey];
+    [self setObject:fromUser forKey:kFromUserKey];
 }
 
 -(WGUser *) fromUser {
-    return [WGUser serialize:[self objectForKey:kFromUserKey]];
+    return [self objectForKey:kFromUserKey];
 }
 
 -(NSString *) message {

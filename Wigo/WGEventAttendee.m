@@ -30,16 +30,21 @@
     return self;
 }
 
+-(void) replaceReferences {
+    [super replaceReferences];
+    [self setObject:[WGUser serialize:[self objectForKey:kUserKey]] forKey:kUserKey];
+}
+
 +(WGEventAttendee *)serialize:(NSDictionary *)json {
     return [[WGEventAttendee alloc] initWithJSON:json];
 }
 
 -(void) setUser:(WGUser *)user {
-    [self setObject:[user deserialize] forKey:kUserKey];
+    [self setObject:user forKey:kUserKey];
 }
 
 -(WGUser *) user {
-    return [WGUser serialize: [self objectForKey:kUserKey]];
+    return [self objectForKey:kUserKey];
 }
 
 -(void) setEventOwner:(NSNumber *)eventOwner {

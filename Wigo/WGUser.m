@@ -88,6 +88,16 @@ static WGUser *currentUser = nil;
     return self;
 }
 
+-(void) replaceReferences {
+    [super replaceReferences];
+    if ([self objectForKey:kGroupKey]) {
+        [self setObject:[WGGroup serialize:[self objectForKey:kGroupKey]] forKey:kGroupKey];
+    }
+    if ([self objectForKey:kIsAttendingKey]) {
+        [self setObject:[WGEvent serialize:[self objectForKey:kIsAttendingKey]] forKey:kIsAttendingKey];
+    }
+}
+
 +(WGUser *) serialize:(NSDictionary *)json {
     WGUser *new = [[WGUser alloc] initWithJSON:json];
     if ([new isCurrentUser] && [WGProfile currentUser].key) {
@@ -379,11 +389,11 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setGroup:(WGGroup *)group {
-    [self setObject:[group deserialize] forKey:kGroupKey];
+    [self setObject:group forKey:kGroupKey];
 }
 
 -(WGGroup *) group {
-    return [WGGroup serialize:[self objectForKey:kGroupKey]];
+    return [self objectForKey:kGroupKey];
 }
 
 -(void) setEmailValidated:(NSNumber *)emailValidated {
@@ -395,11 +405,11 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setEventAttending:(WGEvent *)eventAttending {
-    [self setObject:[eventAttending deserialize] forKey:kIsAttendingKey];
+    [self setObject:eventAttending forKey:kIsAttendingKey];
 }
 
 -(WGEvent *) eventAttending {
-    return [WGEvent serialize:[self objectForKey:kIsAttendingKey]];
+    return [self objectForKey:kIsAttendingKey];
 }
 
 -(void) setIsBlocked:(NSNumber *)isBlocked {

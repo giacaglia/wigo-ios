@@ -53,8 +53,7 @@
 -(void) initObjects:(NSArray *)objects {
     self.objects = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {
-        WGObject *object = [[self.type alloc] initWithJSON:objectDict];
-        [self.objects addObject: object];
+        [self.objects addObject: [[self.type alloc] initWithJSON:objectDict]];
     }
 }
 

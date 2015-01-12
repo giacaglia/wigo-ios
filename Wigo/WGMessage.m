@@ -32,6 +32,12 @@
     return self;
 }
 
+-(void) replaceReferences {
+    [super replaceReferences];
+    [self setObject:[WGUser serialize:[self objectForKey:kUserKey]] forKey:kUserKey];
+    [self setObject:[WGUser serialize:[self objectForKey:kToUserKey]] forKey:kToUserKey];
+}
+
 +(WGMessage *)serialize:(NSDictionary *)json {
     return [[WGMessage alloc] initWithJSON:json];
 }
@@ -68,19 +74,19 @@
 }
 
 -(void) setUser:(WGUser *)user {
-    [self setObject:[user deserialize] forKey:kUserKey];
+    [self setObject:user forKey:kUserKey];
 }
 
 -(WGUser *) user {
-    return [WGUser serialize:[self objectForKey:kUserKey]];
+    return [self objectForKey:kUserKey];
 }
 
 -(void) setToUser:(WGUser *)toUser {
-    [self setObject:[toUser deserialize] forKey:kToUserKey];
+    [self setObject:toUser forKey:kToUserKey];
 }
 
 -(WGUser *) toUser {
-    return [WGUser serialize:[self objectForKey:kToUserKey]];
+    return [self objectForKey:kToUserKey];
 }
 
 +(void) get:(WGCollectionResultBlock)handler {

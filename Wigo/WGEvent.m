@@ -41,6 +41,16 @@
     return self;
 }
 
+-(void) replaceReferences {
+    [super replaceReferences];
+    if ([self objectForKey:kAttendeesKey]) {
+        [self setObject:[WGCollection serializeArray:[self objectForKey:kAttendeesKey] andClass:[WGEventAttendee class]] forKey:kAttendeesKey];
+    }
+    if ([self objectForKey:kHighlightKey]) {
+        [self setObject:[WGEventMessage serialize:[self objectForKey:kHighlightKey]] forKey:kHighlightKey];
+    }
+}
+
 +(WGEvent *)serialize:(NSDictionary *)json {
     return [[WGEvent alloc] initWithJSON:json];
 }
@@ -94,19 +104,19 @@
 }
 
 -(void) setHighlight:(WGEventMessage *)highlight {
-    [self setObject:[highlight deserialize] forKey:kHighlightKey];
+    [self setObject:highlight forKey:kHighlightKey];
 }
 
 -(WGEventMessage *) highlight {
-    return [WGEventMessage serialize:[self objectForKey:kHighlightKey]];
+    return [self objectForKey:kHighlightKey];
 }
 
 -(void) setAttendees:(WGCollection *)attendees {
-    [self setObject:[attendees deserialize] forKey:kAttendeesKey];
+    [self setObject:attendees forKey:kAttendeesKey];
 }
 
 -(WGCollection *) attendees {
-    return [WGCollection serializeArray:[self objectForKey:kAttendeesKey] andClass:[WGEventAttendee class]];
+    return [self objectForKey:kAttendeesKey];
 }
 
 -(void) addAttendee:(WGEventAttendee *)attendee {

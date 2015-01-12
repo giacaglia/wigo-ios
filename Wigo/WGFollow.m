@@ -29,24 +29,30 @@
     return self;
 }
 
+-(void) replaceReferences {
+    [super replaceReferences];
+    [self setObject:[WGUser serialize:[self objectForKey:kUserKey]] forKey:kUserKey];
+    [self setObject:[WGUser serialize:[self objectForKey:kFollowKey]] forKey:kFollowKey];
+}
+
 +(WGFollow *)serialize:(NSDictionary *)json {
     return [[WGFollow alloc] initWithJSON:json];
 }
 
 -(void) setUser:(WGUser *)user {
-    [self setObject:[user deserialize] forKey:kUserKey];
+    [self setObject:user forKey:kUserKey];
 }
 
 -(WGUser *) user {
-    return [WGUser serialize: [self objectForKey:kUserKey]];
+    return [self objectForKey:kUserKey];
 }
 
 -(void) setFollow:(WGUser *)follow {
-    [self setObject:[follow deserialize] forKey:kFollowKey];
+    [self setObject:follow forKey:kFollowKey];
 }
 
 -(WGUser *) follow {
-    return [WGUser serialize: [self objectForKey:kFollowKey]];
+    return [self objectForKey:kFollowKey];
 }
 
 +(void) get:(WGCollectionResultBlock)handler {
