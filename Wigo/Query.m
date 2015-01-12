@@ -11,11 +11,11 @@
 #define WIGO_API_KEY @"oi34u53205ju34ik23"
 
 
-//#ifdef DEBUG
-//static NSString * BaseURLString = @"https://dev-api.wigo.us%@";
-//#else
+#ifdef DEBUG
+static NSString * BaseURLString = @"https://dev-api.wigo.us%@";
+#else
 static NSString * BaseURLString = @"https://api.wigo.us%@";
-//#endif
+#endif
 
 
 @interface Query ()
