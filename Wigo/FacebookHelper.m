@@ -30,8 +30,7 @@
     // If the photo was fetched then returned it else return biggest res photo
     if (minHeight > 0) {
         return returnedPhoto;
-    }
-    else {
+    } else {
         int maxHeight = 0;
         for (FBGraphObject *fbPhoto in photoArray) {
             int heightPhoto = [[fbPhoto objectForKey:@"height"] intValue];

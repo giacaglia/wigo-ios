@@ -477,7 +477,7 @@ UIButton *tapButton;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
                 }
-                sentUser.isBlocked = [NSNumber numberWithBool:YES];
+                sentUser.isBlocked = @YES;
                 [self presentBlockPopView:sentUser];
             }];
         }
@@ -489,7 +489,7 @@ UIButton *tapButton;
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
         }
-        self.user.isBlocked = [NSNumber numberWithBool:NO];
+        self.user.isBlocked = @NO;
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){
             self.navigationController.navigationBar.barStyle = UIBarStyleDefault;}];
     }];
@@ -497,22 +497,21 @@ UIButton *tapButton;
 
 
 - (void)followPressed {
-    self.user.isFollowing = [NSNumber numberWithBool:YES];
+    self.user.isFollowing = @YES;
     [self.user save:^(BOOL success, NSError *error) {
         if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
             self.userState = NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
-            self.user.isFollowingRequested = [NSNumber numberWithBool:YES];
-        }
-        else {
+            self.user.isFollowingRequested = @YES;
+        } else {
             self.userState = FOLLOWING_USER_STATE;
-            self.user.isFollowing = [NSNumber numberWithBool:YES];
+            self.user.isFollowing = @YES;
         }
         [self reloadViewForUserState];
     }];
 }
 
 - (void)unfollowPressed {
-    self.user.isFollowing = [NSNumber numberWithBool:YES];
+    self.user.isFollowing = @YES;
     
     [self.user save:^(BOOL success, NSError *error) {
         if (self.userState == ACCEPTED_PRIVATE_USER_STATE) {
@@ -674,7 +673,7 @@ UIButton *tapButton;
 
 - (void)dismissAndGoBack {
     isUserBlocked = [self.user.isBlocked boolValue];
-    self.user.isBlocked = [NSNumber numberWithBool:NO];
+    self.user.isBlocked = @NO;
     [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){
         [self goBack];
     }];
@@ -910,8 +909,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kNotificationsSection && [self.user isCurrentUser]) {
         if ([self isIndexPathASummaryCell:indexPath]) {
             [self.navigationController pushViewController:[FollowRequestsViewController new] animated:YES];
-        }
-        else {
+        } else {
             if ([_followRequestSummary intValue] > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
             WGNotification *notification = (WGNotification *)[_unexpiredNotifications objectAtIndex:indexPath.row];
             WGUser *user = notification.fromUser;
@@ -943,7 +941,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
     [WGAnalytics tagEvent:@"Tap User" withDetails:options];
 
-    self.user.isTapped = [NSNumber numberWithBool:YES];
+    self.user.isTapped = @YES;
     [[WGProfile currentUser] tapUser:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
@@ -1018,7 +1016,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                     }
                     _notifications = collection;
                     for (WGNotification *notification in _notifications) {
-                        if (![notification isExpired]) {
+                        if (![notification isFromLastDay]) {
                             [_unexpiredNotifications addObject:notification];
                         }
                     }
@@ -1038,7 +1036,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                     }
                     for (WGNotification *notification in collection) {
                         [_notifications addObject:notification];
-                        if (![notification isExpired]) {
+                        if (![notification isFromLastDay]) {
                             [_unexpiredNotifications addObject:notification];
                         }
                     }
@@ -1208,8 +1206,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)tapPressed {
     if (self.isTapped) {
         self.tapImageView.image = [UIImage imageNamed:@"tapUnselectedNotification"];
-    }
-    else {
+    } else {
         self.tapImageView.image = [UIImage imageNamed:@"tapSelectedNotification"];
     }
     self.isTapped = !self.isTapped;
@@ -1314,16 +1311,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         self.inviteButton.enabled = NO;
         self.titleLabel.hidden = YES;
         self.tappedLabel.alpha = 0;
-        }
-    else {
+        } else {
         if ([user.isTapped boolValue]) {
             self.inviteButton.hidden = YES;
             self.inviteButton.enabled = NO;
             self.titleLabel.hidden = YES;
             self.tappedLabel.alpha = 1;
 
-        }
-        else {
+        } else {
             self.inviteButton.hidden = NO;
             self.titleLabel.hidden = NO;
             self.titleLabel.text = kInviteTitleTemplate;

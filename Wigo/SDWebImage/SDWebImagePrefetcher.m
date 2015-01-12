@@ -65,8 +65,7 @@
                 self.progressBlock(self.finishedCount,[self.prefetchURLs count]);
             }
             NSLog(@"Prefetched %@ out of %@", @(self.finishedCount), @(self.prefetchURLs.count));
-        }
-        else {
+        } else {
             if (self.progressBlock) {
                 self.progressBlock(self.finishedCount,[self.prefetchURLs count]);
             }

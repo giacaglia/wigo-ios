@@ -53,8 +53,7 @@ UIScrollView *scrollView;
     }
     else if (itemNumber == 3) {
         textLabel.frame = CGRectMake(itemNumber * (170), 284 + 5, 160, 50);
-    }
-    else {
+    } else {
         textLabel.frame = CGRectMake(itemNumber * (170), 284 + 5, 160, 100);
     }
     textLabel.text = text;

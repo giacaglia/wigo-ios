@@ -161,8 +161,7 @@ static CGFloat IMAGE_HEIGHT = 320.0f;
             _contentView.contentOffset = CGPointMake (0, delta - backgroundScrollViewLimit);
             CGFloat contentOffsetY = -backgroundScrollViewLimit * 0.5f;
             [_backgroundScrollView setContentOffset:(CGPoint){0,contentOffsetY} animated:NO];
-        }
-        else {
+        } else {
             _backgroundScrollView.frame = rect;
             _floatingHeaderView.frame = rect;
             _scrollViewContainer.frame = (CGRect){.origin = {0, CGRectGetMinY(rect) + CGRectGetHeight(rect)}, .size = _scrollViewContainer.frame.size };
@@ -323,16 +322,13 @@ static CGFloat IMAGE_HEIGHT = 320.0f;
     if (leftBoolean) {
         if (fractionalPage - floor(fractionalPage) < 0.8) {
             page = floor(fractionalPage);
-        }
-        else {
+        } else {
             page = ceil(fractionalPage);
         }
-    }
-    else {
+    } else {
         if (fractionalPage - floor(fractionalPage) < 0.2) {
             page = floor(fractionalPage);
-        }
-        else {
+        } else {
             page = ceil(fractionalPage);
         }
     }

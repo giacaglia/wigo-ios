@@ -162,8 +162,7 @@ UIViewController *webViewController;
     UIButton*buttonSender = (UIButton *)sender;
     if (buttonSender.tag == -1) {
         [self.navigationController pushViewController:[FacebookAlbumTableViewController new] animated:YES];
-    }
-    else {
+    } else {
         [self.view endEditing:YES];
         self.photoViewController = [[PhotoViewController alloc] initWithImage:[[WGProfile currentUser].images objectAtIndex:buttonSender.tag]];
         [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:0 andHeight:[[UIScreen mainScreen] bounds].size.height fromViewController:self.navigationController];

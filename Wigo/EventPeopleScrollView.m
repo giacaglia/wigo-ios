@@ -101,8 +101,7 @@
     self.eventOffset = self.contentOffset.x;
     if (self.userSelectDelegate) {
         [self.userSelectDelegate showUser: attendee.user];
-    }
-    else {
+    } else {
         [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
                                                      forKey:[self.event.id stringValue]];
         [self.placesDelegate showUser:attendee.user];

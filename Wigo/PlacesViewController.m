@@ -169,8 +169,7 @@ int firstIndexOfNegativeEvent;
         self.goingSomewhereButton.hidden = YES;
         self.goingSomewhereButton.enabled = NO;
         return NO;
-    }
-    else {
+    } else {
         self.goElsewhereView.hidden = NO;
         self.goElsewhereView.plusButton.enabled = YES;
         self.goingSomewhereButton.enabled = YES;
@@ -224,8 +223,7 @@ int firstIndexOfNegativeEvent;
         [profileButton addSubview:self.leftRedDotLabel];
         if ([[WGProfile currentUser].numUnreadConversations intValue] > 0) {
             self.leftRedDotLabel.hidden = NO;
-        }
-        else {
+        } else {
             self.leftRedDotLabel.hidden = YES;
         }
         UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
@@ -254,14 +252,12 @@ int firstIndexOfNegativeEvent;
             self.redDotLabel.layer.borderWidth = 3;
             self.redDotLabel.layer.cornerRadius = 5;
             [self.rightButton addSubview:self.redDotLabel];
-        }
-        else {
+        } else {
             if (self.redDotLabel) [self.redDotLabel removeFromSuperview];
         }
 
         
-    }
-    else {
+    } else {
         self.navigationItem.leftBarButtonItem = nil;
         self.navigationItem.rightBarButtonItem = nil;
     }
@@ -342,7 +338,7 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void) updateViewNotGoingOut {
-    [WGProfile currentUser].isGoingOut = [NSNumber numberWithBool:NO];
+    [WGProfile currentUser].isGoingOut = @NO;
     [self updateTitleView];
     [self fetchEventsFirstPage];
 }
@@ -734,8 +730,7 @@ int firstIndexOfNegativeEvent;
         
         [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
         
-    }
-    else {
+    } else {
         _isSearching = NO;
         
         [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
@@ -812,8 +807,7 @@ int firstIndexOfNegativeEvent;
     if (section == kTodaySection) {
         if (_isSearching) {
             return [_filteredEvents count];
-        }
-        else {
+        } else {
             int hasNextPage = ([_events.hasNextPage boolValue] ? 1 : 0);
             return [_events count] + hasNextPage;
         }
@@ -924,8 +918,7 @@ int firstIndexOfNegativeEvent;
             if (indexPath.row == [_filteredEvents count]) {
                 return cell;
             }
-        }
-        else {
+        } else {
             if (indexPath.row == [_events count]) {
                 [self fetchEvents];
                 return cell;
@@ -937,8 +930,7 @@ int firstIndexOfNegativeEvent;
             int sizeOfArray = (int)[_filteredEvents  count];
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
             event = (WGEvent *)[_filteredEvents objectAtIndex:[indexPath row]];
-        }
-        else {
+        } else {
             int sizeOfArray = (int)[_events count];
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
             event = (WGEvent *)[_events objectAtIndex:[indexPath row]];
@@ -946,8 +938,7 @@ int firstIndexOfNegativeEvent;
         cell.event = event;
         if (self.groupNumberID) {
             cell.eventPeopleScrollView.groupID = self.groupNumberID;
-        }
-        else {
+        } else {
             cell.eventPeopleScrollView.groupID = nil;
         }
         cell.eventPeopleScrollView.placesDelegate = self;
@@ -965,8 +956,7 @@ int firstIndexOfNegativeEvent;
             cell.chatBubbleImageView.hidden = NO;
             cell.chatBubbleImageView.image = [UIImage  imageNamed:@"blueCameraBubble"];
             cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-        }
-        else {
+        } else {
             cell.chatBubbleImageView.hidden = YES;
             cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
@@ -1053,8 +1043,7 @@ int firstIndexOfNegativeEvent;
         if (ratio > 1) {
             bounds.size.width = kMaxResolution;
             bounds.size.height = bounds.size.width / ratio;
-        }
-        else {
+        } else {
             bounds.size.height = kMaxResolution;
             bounds.size.width = bounds.size.height * ratio;
         }
@@ -1130,8 +1119,7 @@ int firstIndexOfNegativeEvent;
     if (orient == UIImageOrientationRight || orient == UIImageOrientationLeft) {
         CGContextScaleCTM(context, -scaleRatio, scaleRatio);
         CGContextTranslateCTM(context, -height, 0);
-    }
-    else {
+    } else {
         CGContextScaleCTM(context, scaleRatio, -scaleRatio);
         CGContextTranslateCTM(context, 0, -height);
     }
@@ -1603,8 +1591,7 @@ int firstIndexOfNegativeEvent;
     else if ([self.event.numMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;
         self.chatBubbleImageView.image = [UIImage imageNamed:@"blueCameraBubble"];
-    }
-    else {
+    } else {
      self.chatBubbleImageView.hidden = YES;
     }
     self.eventPeopleScrollView.event = self.event;

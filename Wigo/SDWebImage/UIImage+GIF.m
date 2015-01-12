@@ -24,8 +24,7 @@
 
     if (count <= 1) {
         animatedImage = [[UIImage alloc] initWithData:data];
-    }
-    else {
+    } else {
         NSMutableArray *images = [NSMutableArray array];
 
         NSTimeInterval duration = 0.0f;
@@ -61,8 +60,7 @@
     NSNumber *delayTimeUnclampedProp = gifProperties[(NSString *)kCGImagePropertyGIFUnclampedDelayTime];
     if (delayTimeUnclampedProp) {
         frameDuration = [delayTimeUnclampedProp floatValue];
-    }
-    else {
+    } else {
 
         NSNumber *delayTimeProp = gifProperties[(NSString *)kCGImagePropertyGIFDelayTime];
         if (delayTimeProp) {
@@ -104,8 +102,7 @@
         }
 
         return [UIImage imageNamed:name];
-    }
-    else {
+    } else {
         NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"gif"];
 
         NSData *data = [NSData dataWithContentsOfFile:path];

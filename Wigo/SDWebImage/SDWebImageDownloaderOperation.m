@@ -101,8 +101,7 @@
             // Note: we use a timeout to work around an issue with NSURLConnection cancel under iOS 5
             //       not waking up the runloop, leading to dead threads (see https://github.com/rs/SDWebImage/issues/466)
             CFRunLoopRunInMode(kCFRunLoopDefaultMode, 10, false);
-        }
-        else {
+        } else {
             CFRunLoopRun();
         }
 
@@ -110,8 +109,7 @@
             [self.connection cancel];
             [self connection:self.connection didFailWithError:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorTimedOut userInfo:@{NSURLErrorFailingURLErrorKey : self.request.URL}]];
         }
-    }
-    else {
+    } else {
         if (self.completedBlock) {
             self.completedBlock(nil, nil, [NSError errorWithDomain:NSURLErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Connection can't be initialized"}], YES);
         }
@@ -129,8 +127,7 @@
     @synchronized (self) {
         if (self.thread) {
             [self performSelector:@selector(cancelInternalAndStop) onThread:self.thread withObject:nil waitUntilDone:NO];
-        }
-        else {
+        } else {
             [self cancelInternal];
         }
     }
@@ -212,8 +209,7 @@
         }
 
         self.imageData = [[NSMutableData alloc] initWithCapacity:expected];
-    }
-    else {
+    } else {
         [self.connection cancel];
 
         [[NSNotificationCenter defaultCenter] postNotificationName:SDWebImageDownloadStopNotification object:nil];
@@ -277,8 +273,7 @@
                     CGImageRelease(partialImageRef);
                     partialImageRef = CGBitmapContextCreateImage(bmContext);
                     CGContextRelease(bmContext);
-                }
-                else {
+                } else {
                     CGImageRelease(partialImageRef);
                     partialImageRef = nil;
                 }
@@ -351,8 +346,7 @@
             completionBlock(nil, nil, nil, YES);
             self.completionBlock = nil;
             [self done];
-        }
-        else {
+        } else {
 
             UIImage *image = [UIImage sd_imageWithData:self.imageData];
 
@@ -373,8 +367,7 @@
             self.completionBlock = nil;
             [self done];
         }
-    }
-    else {
+    } else {
         [self done];
     }
 }
@@ -395,8 +388,7 @@
     if (self.request.cachePolicy == NSURLRequestReloadIgnoringLocalCacheData) {
         // Prevents caching of responses
         return nil;
-    }
-    else {
+    } else {
         return cachedResponse;
     }
 }

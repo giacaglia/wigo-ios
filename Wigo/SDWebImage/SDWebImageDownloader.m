@@ -82,8 +82,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
 - (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field {
     if (value) {
         self.HTTPHeaders[field] = value;
-    }
-    else {
+    } else {
         [self.HTTPHeaders removeObjectForKey:field];
     }
 }
@@ -120,8 +119,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         request.HTTPShouldUsePipelining = YES;
         if (wself.headersFilter) {
             request.allHTTPHeaderFields = wself.headersFilter(url, [wself.HTTPHeaders copy]);
-        }
-        else {
+        } else {
             request.allHTTPHeaderFields = wself.HTTPHeaders;
         }
         operation = [[SDWebImageDownloaderOperation alloc] initWithRequest:request

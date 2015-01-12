@@ -161,16 +161,13 @@
     if (leftBoolean) {
         if (fractionalPage - floor(fractionalPage) < 0.8) {
             page = floor(fractionalPage);
-        }
-        else {
+        } else {
             page = ceil(fractionalPage);
         }
-    }
-    else {
+    } else {
         if (fractionalPage - floor(fractionalPage) < 0.2) {
             page = floor(fractionalPage);
-        }
-        else {
+        } else {
             page = ceil(fractionalPage);
         }
     }

@@ -134,7 +134,5 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler;
 -(void) resendVerificationEmail:(BoolResultBlock) handler;
--(void) login:(BoolResultBlock)handler;
--(void) signup:(BoolResultBlock)handler;
 
 @end

@@ -68,14 +68,7 @@
 }
 
 - (void)showOnboard {
-//    BOOL showedOnboardView = [[NSUserDefaults standardUserDefaults] boolForKey:@"showedOnboardView"];
-//    if (showedOnboardView) {
     [self getFacebookTokensAndLoginORSignUp];
-//    }
-//    else {
-//        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
-//        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"showedOnboardView"];
-//    }
 }
 
 - (void) changeAlertToNotShown {
@@ -84,19 +77,17 @@
 }
 
 - (void) getFacebookTokensAndLoginORSignUp {
-    _fbID = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"]);
-    _accessToken = StringOrEmpty([[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"]);
+    _fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"];
+    _accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
 
     NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
-    if (key.length > 0) {
+    if (key && key.length > 0) {
         [WGProfile setCurrentUser:[WGUser serialize:@{ @"key" : key, @"id" : @0 }]];
         [self fetchUserInfo];
-    }
-    else {
-        if ([_fbID isEqualToString:@""] || [_accessToken isEqualToString:@""]) {
+    } else {
+        if (!_fbID || !_accessToken) {
             [self fetchTokensFromFacebook];
-        }
-        else {
+        } else {
             [self loginUserAsynchronous];
         }
     }
@@ -317,8 +308,7 @@
             [self showErrorNoConnection];
         }
 
-    }
-    else {
+    } else {
         [self handleAuthError:error];
     }
 }
@@ -392,7 +382,7 @@
         dispatch_async(dispatch_get_main_queue(), ^(void){
             if (error) {
                 _fetchingProfilePictures = YES;
-                if ([error.userInfo objectForKey:@"wigoCode"] && [[error.userInfo objectForKey:@"wigoCode"] isEqualToString:@"does_not_exist"]) {
+                if (error.userInfo && [error.userInfo objectForKey:@"wigoCode"] && [[error.userInfo objectForKey:@"wigoCode"] isEqualToString:@"does_not_exist"]) {
                     [self fetchTokensFromFacebook];
                     [self fetchProfilePicturesAlbumFacebook];
                     return;
@@ -452,8 +442,7 @@
         if ([error code] == NSURLErrorTimedOut) {
             if (logging) [self loginUserAsynchronous];
             else [self fetchUserInfo];
-        }
-        else {
+        } else {
             [self showErrorNoConnection];
         }
     }
@@ -467,8 +456,7 @@
             self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
             [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
         }
-    }
-    else {
+    } else {
         [Profile setUser:user];
         PFInstallation *currentInstallation = [PFInstallation currentInstallation];
 
@@ -494,11 +482,15 @@
     [WiGoSpinnerView addDancingGToCenterView:self.view];
     [WGProfile reload:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
+                if (!_fbID || !_accessToken) {
+                    [self fetchTokensFromFacebook];
+                } else {
+                    [self loginUserAsynchronous];
+                }
                 return;
             }
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
             [self navigate];
         });
     }];

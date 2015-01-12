@@ -145,8 +145,7 @@ NSMutableArray *suggestedArrayView;
         [profileButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
         self.navigationItem.rightBarButtonItem = profileBarButton;
-    }
-    else {
+    } else {
         UIButtonAligned *searchButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 15, 16) andType:@2];
         [searchButton setBackgroundImage:[UIImage imageNamed:@"orangeSearchIcon"] forState:UIControlStateNormal];
         [searchButton addTarget:self action:@selector(searchPressed)
@@ -327,8 +326,7 @@ NSMutableArray *suggestedArrayView;
         [secondPartSubview addSubview:line];
 
         return secondPartSubview;
-    }
-    else {
+    } else {
         UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 90)];
         
         UILabel *lateToThePartyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, 21)];
@@ -398,8 +396,7 @@ NSMutableArray *suggestedArrayView;
             followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             followPersonButton.layer.cornerRadius = 3;
             followPersonButton.tag = 50;
-        }
-        else {
+        } else {
             if ([user.isFollowing boolValue]) {
                 [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 followPersonButton.tag = 100;
@@ -427,8 +424,7 @@ NSMutableArray *suggestedArrayView;
             [cellOfUser addSubview:mutualFriendsLabel];
             
             dateJoined.frame = CGRectMake(0, 165, 110, 12);
-        }
-        else {
+        } else {
             dateJoined.frame = CGRectMake(0, 152, 110, 12);
         }
     
@@ -532,8 +528,7 @@ NSMutableArray *suggestedArrayView;
 - (int)numberOfRowsWithNoShare {
     if (_isSearching) {
         return (int)[_filteredUsers count];
-    }
-    else {
+    } else {
         int hasNextPage = ([_users.hasNextPage boolValue] ? 1 : 0);
         return (int)[_users count] + hasNextPage;
     }
@@ -569,8 +564,7 @@ NSMutableArray *suggestedArrayView;
         if ([_users.hasNextPage boolValue] && tag == [_users count] - 5) {
             [self loadNextPage];
         }
-    }
-    else {
+    } else {
         if (tag == [_users count]) {
             [self loadNextPage];
             return cell;
@@ -611,7 +605,7 @@ NSMutableArray *suggestedArrayView;
     }
     [cell.contentView addSubview:profileButton];
     
-    if ([user isFavorite]) {
+    if ([user.isFavorite boolValue]) {
         UIImageView *favoriteSmall = [[UIImageView alloc] initWithFrame:CGRectMake(6, profileButton.frame.size.height - 16, 10, 10)];
         favoriteSmall.image = [UIImage imageNamed:@"favoriteSmall"];
         [profileButton addSubview:favoriteSmall];
@@ -627,7 +621,7 @@ NSMutableArray *suggestedArrayView;
     UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
     goingOutLabel.font =  [FontProperties mediumFont:15.0f];
     goingOutLabel.textAlignment = NSTextAlignmentLeft;
-    if ([user isGoingOut]) {
+    if ([user.isGoingOut boolValue]) {
         goingOutLabel.text = @"Going Out";
         goingOutLabel.textColor = [FontProperties getOrangeColor];
     }
@@ -658,9 +652,8 @@ NSMutableArray *suggestedArrayView;
             followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             followPersonButton.layer.cornerRadius = 3;
             followPersonButton.tag = 50;
-        }
-        else {
-            if ([user isFollowing]) {
+        } else {
+            if ([user.isFollowing boolValue]) {
                 [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 followPersonButton.tag = 100;
             }
@@ -704,7 +697,7 @@ NSMutableArray *suggestedArrayView;
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
-        user.isBlocked = [NSNumber numberWithBool:NO];
+        user.isBlocked = @NO;
         
         [[WGProfile currentUser] unblock:user withHandler:^(BOOL success, NSError *error) {
             // Do nothing
@@ -722,27 +715,25 @@ NSMutableArray *suggestedArrayView;
             senderButton.layer.borderWidth = 1;
             senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             senderButton.layer.cornerRadius = 3;
-            user.isFollowingRequested = [NSNumber numberWithBool:YES];
-        }
-        else {
+            user.isFollowingRequested = @YES;
+        } else {
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             [_users addObject:user];
             numFollowing += 1;
-            user.isFollowing = [NSNumber numberWithBool:YES];
+            user.isFollowing = @YES;
         }
         senderButton.tag = 100;
         [self updatedCachedProfileUser:numFollowing];
         [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
             // Do nothing
         }];
-    }
-    else {
+    } else {
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
         int numFollowing = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
-        user.isFollowing = [NSNumber numberWithBool:NO];
-        user.isFollowingRequested = [NSNumber numberWithBool:NO];
+        user.isFollowing = @NO;
+        user.isFollowingRequested = @NO;
         if (user.privacy != PRIVATE && user) {
             [_users removeObject:user];
             numFollowing -= 1;
@@ -768,8 +759,7 @@ NSMutableArray *suggestedArrayView;
         int sizeOfArray = (int)[_filteredUsers count];
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = (WGUser *)[_filteredUsers objectAtIndex:index];
-    }
-    else {
+    } else {
         int sizeOfArray = (int)[_users count];
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = (WGUser *)[_users objectAtIndex:index];
@@ -794,8 +784,7 @@ NSMutableArray *suggestedArrayView;
                 [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
                 [_tableViewOfPeople endUpdates];
             }
-        }
-        else {
+        } else {
             if (_isSearching) {
                 int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
                 int sizeOfArray = (int)[_filteredUsers count];
@@ -844,8 +833,18 @@ NSMutableArray *suggestedArrayView;
                 return;
             }
             _suggestions = collection;
-            secondPartSubview = [self initializeSecondPart];
-            [self fetchFirstPageEveryone];
+            [_suggestions getNextPage:^(WGCollection *collection, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    _everyone = collection;
+                    _users = _everyone;
+                    secondPartSubview = [self initializeSecondPart];
+                    [_tableViewOfPeople reloadData];
+                });
+            }];
         });
     }];
 }
@@ -1029,8 +1028,7 @@ NSMutableArray *suggestedArrayView;
         }  completion:^(BOOL finished){
             _searchIconImageView.hidden = NO;
         }];
-    }
-    else {
+    } else {
         [UIView animateWithDuration:0.01 animations:^{
             _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
         }  completion:^(BOOL finished){
@@ -1045,8 +1043,7 @@ NSMutableArray *suggestedArrayView;
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.3
      cancelPreviousRequest:YES];
-    }
-    else {
+    } else {
         _isSearching = NO;
         [_tableViewOfPeople reloadData];
     }
@@ -1090,8 +1087,7 @@ NSMutableArray *suggestedArrayView;
                 [_tableViewOfPeople reloadData];
             });
         }];
-    }
-    else {
+    } else {
         [WGFollow searchFollows:searchString forUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 fetching = NO;

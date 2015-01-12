@@ -51,8 +51,7 @@
                 }
             }
             mobileArray([NSArray arrayWithArray:mutableMobileArray]);
-        }
-        else {
+        } else {
             
             [WGAnalytics tagEvent:@"Decline Apple Contacts"];
             mobileArray([NSArray new]);
@@ -141,8 +140,7 @@
                 [filteredPeopleContactList addObject:(__bridge id)(contactPerson)];
             }
         }
-    }
-    else {
+    } else {
         for (int i = 0 ; i < [array count]; i++) {
             ABRecordRef contactPerson = (__bridge ABRecordRef)([array objectAtIndex:i]);
             NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));

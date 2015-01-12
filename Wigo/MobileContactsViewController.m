@@ -179,8 +179,7 @@ NSMutableArray *chosenPeople;
         recordID = ABRecordGetRecordID(contactPerson);
         tag = [MobileDelegate changeTag:tag fromArray:filteredPeopleContactList toArray:peopleContactList];
        
-    }
-    else {
+    } else {
         contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:tag]);
         recordID = ABRecordGetRecordID(contactPerson);
     }

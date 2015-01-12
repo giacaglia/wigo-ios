@@ -62,8 +62,7 @@ static char imageURLKey;
                             wself.image = [UIImage imageWithCGImage:imageRef];
                             [wself setNeedsLayout];
                             CGImageRelease(imageRef);
-                        }
-                        else {
+                        } else {
                             wself.image = image;
                             [wself setNeedsLayout];
                         }

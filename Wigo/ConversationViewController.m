@@ -124,8 +124,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     for (WGMessage *message in _messages) {
         if ([message.user isCurrentUser]) {
             [self addMessageFromSender:message];
-        }
-        else {
+        } else {
             [self addMessageFromReceiver:message];
         }
     }

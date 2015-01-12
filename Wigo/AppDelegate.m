@@ -91,8 +91,7 @@ NSDate *firstLoggedTime;
             [self dismissEverythingWithUserInfo:userInfo];
         }
         NSLog(@"here");
-    }
-    else {
+    } else {
         [self doneWithUserInfo:userInfo];
     }
 }
@@ -175,8 +174,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                 
             }
         }
-    }
-    else { // If it's was at the background or inactive
+    } else { // If it's was at the background or inactive
     }
 }
 
@@ -208,7 +206,7 @@ forRemoteNotification:(NSDictionary *)userInfo
         NSString *locKeyString = [alert objectForKey:@"loc-key"];
         if ([locKeyString isEqualToString:@"T"]) {
             if ([WGProfile currentUser].key) {
-                [WGProfile currentUser].isGoingOut = [NSNumber numberWithBool:YES];
+                [WGProfile currentUser].isGoingOut = @YES;
                 WGEvent *attendingEvent = [WGEvent serialize:event];
                 [WGProfile currentUser].eventAttending = attendingEvent;
                 
@@ -281,8 +279,7 @@ forRemoteNotification:(NSDictionary *)userInfo
         NSDateComponents *nowTime = [[NSCalendar currentCalendar] components: NSDayCalendarUnit|NSHourCalendarUnit fromDate:[NSDate date]];
         if ([nowTime day] == [firstLoggedDay day]) {
             if ([firstLoggedDay hour] < 6 && [nowTime hour] >= 6) [self reloadAllData];
-        }
-        else {
+        } else {
             [self reloadAllData];
         }
     }
@@ -363,8 +360,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 #endif
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"triedToRegister"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    else {
+    } else {
         if ((int)buttonIndex == 1) {
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/wigo-who-is-going-out/id689401759?mt=8"]];
         }
@@ -406,8 +402,7 @@ forRemoteNotification:(NSDictionary *)userInfo
         [[NSUserDefaults standardUserDefaults] setObject:firstSaveDate forKey: @"lastTimeAccessed"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         return YES;
-    }
-    else {
+    } else {
         NSDate *newDate = [NSDate date];
         NSDateComponents *differenceDateComponents = [dateAccessed differenceBetweenDates:newDate];
         if ([differenceDateComponents hour] > 0 || [differenceDateComponents day] > 0 || [differenceDateComponents weekOfYear] > 0 || [differenceDateComponents month] > 0) {
