@@ -21,8 +21,8 @@
 @property UITableView *tableViewOfPeople;
 
 // Search Bar Content
-@property Party *contentParty;
-@property Party *filteredContentParty;
+@property WGCollection *users;
+@property WGCollection *filteredUsers;
 
 @property BOOL isSearching;
 @property UISearchBar *searchBar;
@@ -30,10 +30,10 @@
 
 @property FancyProfileViewController *profileViewController;
 
-@property Party *everyoneParty;
-@property Party *followingParty;
-@property Party *followersParty;
-@property Party *suggestionsParty;
+@property WGCollection *everyone;
+@property WGCollection *following;
+@property WGCollection *followers;
+@property WGCollection *suggestions;
 
 @property NSNumber *page;
 
@@ -50,7 +50,7 @@ NSMutableArray *suggestedArrayView;
 
 @implementation PeopleViewController
 
-- (id)initWithUser:(User *)user andTab:(NSNumber *)tab {
+- (id)initWithUser:(WGUser *)user andTab:(NSNumber *)tab {
     self = [super init];
     if (self) {
         self.user = user;
@@ -60,7 +60,7 @@ NSMutableArray *suggestedArrayView;
     return self;
 }
 
-- (id)initWithUser:(User *)user {
+- (id)initWithUser:(WGUser *)user {
     self = [super init];
     if (self) {
         self.user = user;
@@ -91,7 +91,7 @@ NSMutableArray *suggestedArrayView;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"People View"];
+    [WGAnalytics tagEvent:@"People View"];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -101,8 +101,8 @@ NSMutableArray *suggestedArrayView;
 
     if (!didProfileSegue) {
         if (!self.currentTab) self.currentTab = @2;
-        _contentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-        _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
+        _users = [[WGCollection alloc] initWithType:[WGUser class]];
+        _filteredUsers = [[WGCollection alloc] initWithType:[WGUser class]];
         [self loadTableView];
     }
     didProfileSegue = NO;
@@ -133,14 +133,14 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (void) initializeRightBarButton {
-    if (![self.user isEqualToUser:[Profile user]]) {
+    if (![self.user isCurrentUser]) {
         CGRect profileFrame = CGRectMake(0, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
         profileButton.userInteractionEnabled = NO;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
-        [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]] imageArea:[self.user coverImageArea]];
+        [profileImageView setImageWithURL:self.user.smallCoverImageURL imageArea:[self.user smallCoverImageArea]];
         [profileButton addSubview:profileImageView];
         [profileButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
@@ -184,10 +184,14 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (void) goBack {
-    [self updateLastUserRead];
-    [self.navigationController popViewControllerAnimated:YES];
+    [[WGProfile currentUser] saveKey:@"last_user_read" withValue:@"s" andHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            return;
+        }
+        [self.navigationController popViewControllerAnimated:YES];
+    }];
 }
-
 
 - (void)initializeTapHandler {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -199,14 +203,13 @@ NSMutableArray *suggestedArrayView;
 - (void)tappedView:(UITapGestureRecognizer*)tapSender {
     UIView *viewSender = (UIView *)tapSender.view;
     int tag = (int)viewSender.tag;
-    User *user = [self getUserAtIndex:tag];
+    WGUser *user = [self getUserAtIndex:tag];
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
         
-        
         self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-        [self.profileViewController setStateWithUser: user];
+        self.profileViewController.user = user;
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }
@@ -214,13 +217,13 @@ NSMutableArray *suggestedArrayView;
 - (void)tappedButton:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
-    User *user = [self getUserAtIndex:tag];
+    WGUser *user = [self getUserAtIndex:tag];
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
 
         self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-        [self.profileViewController setStateWithUser: user];
+        self.profileViewController.user = user;
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }
@@ -293,8 +296,8 @@ NSMutableArray *suggestedArrayView;
         suggestedScrollView.showsHorizontalScrollIndicator = NO;
         [secondPartSubview addSubview:suggestedScrollView];
         int xPosition = 10;
-        for (int i = 0; i < MIN(10,[[_suggestionsParty getObjectArray] count]); i++) {
-            User *user = [[_suggestionsParty getObjectArray] objectAtIndex:i];
+        for (int i = 0; i < MIN(10,[_suggestions count]); i++) {
+            WGUser *user = (WGUser *)[_suggestions objectAtIndex:i];
             UIView *cellView = [self cellOfUser:user atXPosition:xPosition];
             [suggestedScrollView addSubview:cellView];
             [suggestedArrayView addObject:cellView];
@@ -356,7 +359,7 @@ NSMutableArray *suggestedArrayView;
     [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
 }
 
-- (UIView *)cellOfUser:(User *)user atXPosition:(int)xPosition {
+- (UIView *)cellOfUser:(WGUser *)user atXPosition:(int)xPosition {
     UIView *cellOfUser = [[UIView alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 175)];
     
     UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
@@ -366,7 +369,7 @@ NSMutableArray *suggestedArrayView;
     [profileImageView setCoverImageForUser:user completed:nil];
     [profileButton addSubview:profileImageView];
     profileButton.tag = (int)((xPosition - 10)/130);
-    if (![user isEqualToUser:[Profile user]]) {
+    if (![user isCurrentUser]) {
         [profileButton addTarget:self action:@selector(suggestedProfileSegue:) forControlEvents:UIControlEventTouchUpInside];
     }
     [cellOfUser addSubview:profileButton];
@@ -379,13 +382,13 @@ NSMutableArray *suggestedArrayView;
     nameOfPersonLabel.font = [FontProperties lightFont:16.0f];
     [cellOfUser addSubview:nameOfPersonLabel];
     
-    if (![user isEqualToUser:[Profile user]]) {
+    if (![user isCurrentUser]) {
         UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(30, 120, 49, 30)];
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = -100;
         [followPersonButton addTarget:self action:@selector(suggestedFollowedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cellOfUser addSubview:followPersonButton];
-        if ([user getUserState] == BLOCKED_USER) {
+        if ([user state] == BLOCKED_USER_STATE) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
             [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -397,11 +400,11 @@ NSMutableArray *suggestedArrayView;
             followPersonButton.tag = 50;
         }
         else {
-            if ([user isFollowing]) {
+            if ([user.isFollowing boolValue]) {
                 [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 followPersonButton.tag = 100;
             }
-            if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
                 [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
                 [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
                 [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -415,7 +418,7 @@ NSMutableArray *suggestedArrayView;
         }
         
         UILabel *dateJoined = [[UILabel alloc] init];
-        if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastUserRead] intValue]) {
+        if ([user.id intValue] > [[WGProfile currentUser].lastUserRead intValue]) {
             UILabel *mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 152, 110, 15)];
             mutualFriendsLabel.text = @"New on Wigo";
             mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
@@ -429,7 +432,7 @@ NSMutableArray *suggestedArrayView;
             dateJoined.frame = CGRectMake(0, 152, 110, 12);
         }
     
-        dateJoined.text = [user joinedDate];
+        dateJoined.text = [user.created joinedString];
         dateJoined.textColor = RGB(201, 202, 204);
         dateJoined.textAlignment = NSTextAlignmentCenter;
         dateJoined.font = [FontProperties lightFont:10.0f];
@@ -441,10 +444,10 @@ NSMutableArray *suggestedArrayView;
 - (void)suggestedFollowedPersonPressed:(id)sender {
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:suggestedScrollView];
     int indexOfPerson = (buttonOriginInTableView.x - 40)/130 ;
-    User *user;
-    int sizeOfArray = (int)[[_suggestionsParty getObjectArray] count];
+    WGUser *user;
+    int sizeOfArray = (int)[_suggestions count];
     if (sizeOfArray > 0 && sizeOfArray > indexOfPerson) {
-        user = [[_suggestionsParty getObjectArray] objectAtIndex:indexOfPerson];
+        user = (WGUser *)[_suggestions objectAtIndex:indexOfPerson];
         UIView *viewOfUser = [suggestedArrayView objectAtIndex:indexOfPerson];
         CGRect frame = viewOfUser.frame;
         [UIView animateWithDuration:0.1 animations:^{
@@ -457,23 +460,23 @@ NSMutableArray *suggestedArrayView;
 - (void)suggestedProfileSegue:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
-    User *user = [self getSuggestedUser:tag];
+    WGUser *user = [self getSuggestedUser:tag];
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:0];
         
         self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-        [self.profileViewController setStateWithUser: user];
+        self.profileViewController.user = user;
 
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }
 
-- (User *)getSuggestedUser:(int)tag {
-    User *user;
-    int sizeOfArray = (int)[[_suggestionsParty getObjectArray] count];
+- (WGUser *)getSuggestedUser:(int)tag {
+    WGUser *user;
+    int sizeOfArray = (int)[_suggestions count];
     if (sizeOfArray > 0 && sizeOfArray > tag)
-        user = [[_suggestionsParty getObjectArray] objectAtIndex:tag];
+        user = (WGUser *)[_suggestions objectAtIndex:tag];
     return user;
 }
 
@@ -491,7 +494,7 @@ NSMutableArray *suggestedArrayView;
     self.navigationItem.titleView = nil;
     if ([self.currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageSuggestions];
-        self.title = [[Profile user] groupName];
+        self.title = [WGProfile currentUser].group.name;
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
@@ -528,11 +531,11 @@ NSMutableArray *suggestedArrayView;
 
 - (int)numberOfRowsWithNoShare {
     if (_isSearching) {
-        return (int)[[_filteredContentParty getObjectArray] count];
+        return (int)[_filteredUsers count];
     }
     else {
-        int hasNextPage = ([_contentParty hasNextPage] ? 1 : 0);
-        return (int)[[_contentParty getObjectArray] count] + hasNextPage;
+        int hasNextPage = ([_users.hasNextPage boolValue] ? 1 : 0);
+        return (int)[_users count] + hasNextPage;
     }
 }
 
@@ -561,25 +564,24 @@ NSMutableArray *suggestedArrayView;
     
     int tag = (int)[indexPath row];
     
-    if ([[_contentParty getObjectArray] count] == 0) return cell;
-    if ([[_contentParty getObjectArray] count] > 5) {
-        if ([_contentParty hasNextPage] && tag == [[_contentParty getObjectArray] count] - 5) {
+    if ([_users count] == 0) return cell;
+    if ([_users count] > 5) {
+        if ([_users.hasNextPage boolValue] && tag == [_users count] - 5) {
             [self loadNextPage];
         }
     }
     else {
-        if (tag == [[_contentParty getObjectArray] count]) {
+        if (tag == [_users count]) {
             [self loadNextPage];
             return cell;
         }
     }
    
-    User *user = [self getUserAtIndex:tag];
- 
+    WGUser *user = [self getUserAtIndex:tag];
     if (!user) {
         BOOL loading = NO;
-        if (_isSearching && [_filteredContentParty hasNextPage]) loading = YES;
-        if (!_isSearching && [_contentParty hasNextPage]) loading = YES;
+        if (_isSearching && [_filteredUsers.hasNextPage boolValue]) loading = YES;
+        if (!_isSearching && [_users.hasNextPage boolValue]) loading = YES;
         if (loading) {
             UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
             spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
@@ -592,7 +594,7 @@ NSMutableArray *suggestedArrayView;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
     UIView *clickableView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 15 - 79, PEOPLEVIEW_HEIGHT_OF_CELLS - 5)];
-    if (![user isEqualToUser:[Profile user]]) [clickableView addGestureRecognizer:tap];
+    if (![user isCurrentUser]) [clickableView addGestureRecognizer:tap];
     clickableView.userInteractionEnabled = YES;
     clickableView.tag = tag;
     [cell.contentView addSubview:clickableView];
@@ -604,7 +606,7 @@ NSMutableArray *suggestedArrayView;
     [profileImageView setCoverImageForUser:user completed:nil];
     [profileButton addSubview:profileImageView];
     profileButton.tag = tag;
-    if (![user isEqualToUser:[Profile user]]) {
+    if (![user isCurrentUser]) {
         [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
     }
     [cell.contentView addSubview:profileButton];
@@ -633,20 +635,20 @@ NSMutableArray *suggestedArrayView;
     
     if ([self.currentTab isEqualToNumber:@2]) {
         UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140 - 15, PEOPLEVIEW_HEIGHT_OF_CELLS - 15, 140, 12)];
-        timeLabel.text = [user joinedDate];
+        timeLabel.text = [user.created joinedString];
         timeLabel.textAlignment = NSTextAlignmentRight;
         timeLabel.font = [FontProperties getSmallPhotoFont];
         timeLabel.textColor = RGB(201, 202, 204);
         [cell.contentView addSubview:timeLabel];
     }
     
-    if (![user isEqualToUser:[Profile user]]) {
+    if (![user isCurrentUser]) {
         UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 15, 49, 30)];
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = -100;
         [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:followPersonButton];
-        if ([user getUserState] == BLOCKED_USER) {
+        if ([user state] == BLOCKED_USER_STATE) {
             [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
             [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -662,7 +664,7 @@ NSMutableArray *suggestedArrayView;
                 [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 followPersonButton.tag = 100;
             }
-            if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
                 [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
                 [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
                 [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -675,7 +677,7 @@ NSMutableArray *suggestedArrayView;
             }
         }
     }
-    if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastUserRead] intValue]) {
+    if ([user.id intValue] > [[WGProfile currentUser].lastUserRead intValue]) {
         cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
     }
     
@@ -689,32 +691,29 @@ NSMutableArray *suggestedArrayView;
 - (void) followedPersonPressed:(id)sender {
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
     NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
-    User *user = [self getUserAtIndex:(int)[indexPath row]];
+    WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
     if (user) [self updateButton:sender withUser:user];
-    if ([indexPath row] < [[_contentParty getObjectArray] count]) {
-        [_contentParty replaceObjectAtIndex:[indexPath row] withObject:user];
+    if ([indexPath row] < [_users count]) {
+        [_users replaceObjectAtIndex:[indexPath row] withObject:user];
     }
 }
 
-- (void)updateButton:(id)sender withUser:(User *)user {
+- (void)updateButton:(id)sender withUser:(WGUser *)user {
     UIButton *senderButton = (UIButton*)sender;
     if (senderButton.tag == 50) {
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
-        [user setIsBlocked:NO];
+        user.isBlocked = [NSNumber numberWithBool:NO];
         
-        NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
-        NSDictionary *options = @{@"is_blocked": @NO};
-        [Network sendAsynchronousHTTPMethod:POST
-                                withAPIName:queryString
-                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                                withOptions:options];
+        [[WGProfile currentUser] unblock:user withHandler:^(BOOL success, NSError *error) {
+            // Do nothing
+        }];
     }
     else if (senderButton.tag == -100) {
-        int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+        int numFollowing = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
         
-        if ([user isPrivate]) {
+        if (user.privacy == PRIVATE) {
             [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
             [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
             [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -723,83 +722,73 @@ NSMutableArray *suggestedArrayView;
             senderButton.layer.borderWidth = 1;
             senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             senderButton.layer.cornerRadius = 3;
-            [user setIsFollowingRequested:YES];
+            user.isFollowingRequested = [NSNumber numberWithBool:YES];
         }
         else {
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            [_followingParty addObject:user];
-            num_following += 1;
-            [user setIsFollowing:YES];
+            [_users addObject:user];
+            numFollowing += 1;
+            user.isFollowing = [NSNumber numberWithBool:YES];
         }
         senderButton.tag = 100;
-        [self updatedCachedProfileUser:num_following];
-        [Network followUser:user];
+        [self updatedCachedProfileUser:numFollowing];
+        [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
+            // Do nothing
+        }];
     }
     else {
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
-        int num_following = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
-        [user setIsFollowing:NO];
-        [user setIsFollowingRequested:NO];
-        if (![user isPrivate] && user) {
-            [_followingParty removeUser:user];
-            num_following -= 1;
+        int numFollowing = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+        user.isFollowing = [NSNumber numberWithBool:NO];
+        user.isFollowingRequested = [NSNumber numberWithBool:NO];
+        if (user.privacy != PRIVATE && user) {
+            [_users removeObject:user];
+            numFollowing -= 1;
         }
-        [self updatedCachedProfileUser:num_following];
-        [Network unfollowUser:user];
+        [self updatedCachedProfileUser:numFollowing];
+        [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
+            // Do nothing
+        }];
     }
     
 
 }
 
-- (void) updatedCachedProfileUser:(int)num_following {
-    User *profileUser = [Profile user];
-    if (profileUser == self.user) {
-        [profileUser setObject:[NSNumber numberWithInt:num_following] forKey:@"num_following"];
-        [Profile setFollowingParty:_followingParty];
+- (void) updatedCachedProfileUser:(int)numFollowing {
+    if ([self.user isCurrentUser]) {
+        [WGProfile currentUser].numFollowing = [NSNumber numberWithInt:numFollowing];
     }
 }
 
-- (User *)getUserAtIndex:(int)index {
-    User *user;
+- (WGUser *)getUserAtIndex:(int)index {
+    WGUser *user;
     if (_isSearching) {
-        int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
+        int sizeOfArray = (int)[_filteredUsers count];
         if (sizeOfArray > 0 && sizeOfArray > index)
-            user = [[_filteredContentParty getObjectArray] objectAtIndex:index];
+            user = (WGUser *)[_filteredUsers objectAtIndex:index];
     }
     else {
-        int sizeOfArray = (int)[[_contentParty getObjectArray] count];
+        int sizeOfArray = (int)[_users count];
         if (sizeOfArray > 0 && sizeOfArray > index)
-            user = [[_contentParty getObjectArray] objectAtIndex:index];
+            user = (WGUser *)[_users objectAtIndex:index];
     }
     return user;
-}
-
-
-#pragma mark - Last User Read 
-- (void)updateLastUserRead {
-    User *profileUser = [Profile user];
-    for (User *user in [_everyoneParty getObjectArray]) {
-        if ([(NSNumber *)[user objectForKey:@"id"] intValue] > [(NSNumber *)[profileUser lastUserRead] intValue]) {
-            [profileUser setLastUserRead:[user objectForKey:@"id"]];
-            [profileUser saveKeyAsynchronously:@"last_user_read"];
-        }
-    }
 }
 
 #pragma mark - Update User Info
 - (void)updateUserAtTable:(NSNotification*)notification {
     NSDictionary* userInfo = [notification userInfo];
-    User *user = [[User alloc] initWithDictionary:userInfo];
+    WGUser *user = [WGUser serialize:userInfo];
     int userInt = (int)[userIndex row];
 
     if (user) {
         if ([userIndex section] == 0) {
             int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:0];
-            int sizeOfArray = (int)[[_suggestionsParty getObjectArray] count];
+            int sizeOfArray = (int)[_suggestions count];
             if (numberOfRows > 0 && userInt >= 0 && sizeOfArray > userInt) {
-                [_suggestionsParty replaceObjectAtIndex:userInt withObject:user];
+                [_suggestions replaceObjectAtIndex:userInt withObject:user];
                 secondPartSubview = [self initializeSecondPart];
                 [_tableViewOfPeople beginUpdates];
                 [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -809,9 +798,9 @@ NSMutableArray *suggestedArrayView;
         else {
             if (_isSearching) {
                 int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
-                int sizeOfArray = (int)[[_filteredContentParty getObjectArray] count];
+                int sizeOfArray = (int)[_filteredUsers count];
                 if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
-                    [_filteredContentParty replaceObjectAtIndex:userInt withObject:user];
+                    [_filteredUsers replaceObjectAtIndex:userInt withObject:user];
                     [_tableViewOfPeople beginUpdates];
                     [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
                     [_tableViewOfPeople endUpdates];
@@ -819,9 +808,9 @@ NSMutableArray *suggestedArrayView;
             }
             else {
                 int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
-                int sizeOfArray = (int)[[_contentParty getObjectArray] count];
+                int sizeOfArray = (int)[_users count];
                 if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
-                    [_contentParty replaceObjectAtIndex:userInt withObject:user];
+                    [_users replaceObjectAtIndex:userInt withObject:user];
                     [_tableViewOfPeople beginUpdates];
                     [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
                     [_tableViewOfPeople endUpdates];
@@ -848,13 +837,13 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (void)fetchFirstPageSuggestions {
-    _suggestionsParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    [Network queryAsynchronousAPI:@"users/suggestions/" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+    [WGUser getSuggestions:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-            [_suggestionsParty addObjectsFromArray:arrayOfUsers];
-            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-            [_suggestionsParty addMetaInfo:metaDictionary];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
+            _suggestions = collection;
             secondPartSubview = [self initializeSecondPart];
             [self fetchFirstPageEveryone];
         });
@@ -863,130 +852,165 @@ NSMutableArray *suggestedArrayView;
 
 - (void)fetchFirstPageEveryone {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
-    _page = @1;
-    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    _everyone = nil;
+    fetching = NO;
     [self fetchEveryone];
 }
 
 - (void) fetchEveryone {
     if (!fetching) {
         fetching = YES;
-        NSString *queryString;
-        if ([_suggestionsParty hasNextPage]) {
-            queryString = [_suggestionsParty nextPageString];
         
-//        else {
-//            queryString = [NSString stringWithFormat:@"users/?page=%@" ,[_page stringValue]];
-//        }
-            [Network queryAsynchronousAPI:queryString withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+        if (!_everyone) {
+            [WGUser get:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     fetching = NO;
                     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-                    NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-                    
-                    if (_suggestionsParty) {
-                        [_everyoneParty addObjectsFromArray:arrayOfUsers notInParty:_suggestionsParty];
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
                     }
-                    else {
-                        [_everyoneParty addObjectsFromArray:arrayOfUsers];
+                    _everyone = collection;
+                    _users = _everyone;
+                    [_tableViewOfPeople reloadData];
+                });
+            }];
+        } else if ([_everyone.hasNextPage boolValue]) {
+            [_everyone getNextPage:^(WGCollection *collection, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    fetching = NO;
+                    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
                     }
                     
-                    NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-                    [_everyoneParty addMetaInfo:metaDictionary];
-                    [_suggestionsParty addMetaInfo:metaDictionary];
-                    _page = @([_page intValue] + 1);
-                    _contentParty = _everyoneParty;
+                    if (_suggestions) {
+                        [_everyone addObjectsFromCollection:collection notInCollection:_suggestions];
+                    } else {
+                        [_everyone addObjectsFromCollection:collection];
+                    }
+                    _everyone.hasNextPage = collection.hasNextPage;
+                    _everyone.nextPage = collection.nextPage;
+                    
+                    _users = _everyone;
                     [_tableViewOfPeople reloadData];
                     secondPartSubview = [self initializeSecondPart];
                 });
             }];
-        }
-        else {
+        } else {
             fetching = NO;
             [WiGoSpinnerView removeDancingGFromCenterView:self.view];
         }
     }
 }
 
-- (void)fetchFirstPageFollowers {
+-(void) fetchFirstPageFollowers {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
-    _page = @1;
-    _followersParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    fetching = NO;
+    _followers = nil;
     [self fetchFollowers];
 }
 
-- (void)fetchFollowers {
+-(void) fetchFollowers {
+    __weak typeof(self) weakSelf = self;
     if (!fetching) {
         fetching = YES;
-        NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
-        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                fetching = NO;
-                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-                NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-                NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-                for (NSDictionary *object in arrayOfFollowObjects) {
-                    NSDictionary *userDictionary = [object objectForKey:@"user"];
-                    if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                        if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                            [arrayOfUsers addObject:[[Profile user] dictionary]];
-                        }
-                        else {
-                            [arrayOfUsers addObject:userDictionary];
-                        }
+        if (!_followers) {
+            [WGFollow getFollowsForFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    __strong typeof(self) strongSelf = weakSelf;
+                    fetching = NO;
+                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
                     }
-                }
-                [_followersParty addObjectsFromArray:arrayOfUsers];
-                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-                [_followersParty addMetaInfo:metaDictionary];
-                _page = @([_page intValue] + 1);
-                _contentParty = _followersParty;
-                [_tableViewOfPeople reloadData];
-            });
-        }];
+                    strongSelf.followers = collection;
+                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in strongSelf.followers) {
+                        [strongSelf.users addObject:follow.user];
+                    }
+                    [strongSelf.tableViewOfPeople reloadData];
+                });
+            }];
+        } else if ([_followers.hasNextPage boolValue]) {
+            [_followers addNextPage:^(BOOL success, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    __strong typeof(self) strongSelf = weakSelf;
+                    fetching = NO;
+                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in strongSelf.followers) {
+                        [strongSelf.users addObject:follow.user];
+                    }
+                    [strongSelf.tableViewOfPeople reloadData];
+                });
+            }];
+        } else {
+            fetching = NO;
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        }
     }
 }
 
-- (void)fetchFirstPageFollowing {
+-(void) fetchFirstPageFollowing {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
-    _page = @1;
-    _followingParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    _following = nil;
+    fetching = NO;
     [self fetchFollowing];
 }
 
-- (void)fetchFollowing {
+-(void) fetchFollowing {
     if (!fetching) {
         fetching = YES;
-        NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&page=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue]];
-        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                fetching = NO;
-                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-                NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-                NSMutableArray *arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-                for (NSDictionary *object in arrayOfFollowObjects) {
-                    NSDictionary *userDictionary = [object objectForKey:@"follow"];
-                    if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                        if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                            [arrayOfUsers addObject:[[Profile user] dictionary]];
-                        }
-                        else {
-                            [arrayOfUsers addObject:userDictionary];
-                        }
+        __weak typeof(self) weakSelf = self;
+        if (!_following) {
+            [WGFollow getFollowsForUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    __strong typeof(self) strongSelf = weakSelf;
+                    fetching = NO;
+                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
                     }
-                }
-                [_followingParty addObjectsFromArray:arrayOfUsers];
-                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-                [_followingParty addMetaInfo:metaDictionary];
-                _page = @([_page intValue] + 1);
-                _contentParty = _followingParty;
-                [_tableViewOfPeople reloadData];
-                secondPartSubview = [self initializeSecondPart];
-            });
-        }];
+                    strongSelf.following = collection;
+                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in strongSelf.following) {
+                        [strongSelf.users addObject:follow.follow];
+                    }
+                    [strongSelf.tableViewOfPeople reloadData];
+                    secondPartSubview = [strongSelf initializeSecondPart];
+                });
+            }];
+        } else if ([_following.hasNextPage boolValue]) {
+            [_following addNextPage:^(BOOL success, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    __strong typeof(self) strongSelf = weakSelf;
+                    fetching = NO;
+                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                    for (WGFollow *follow in strongSelf.following) {
+                        [strongSelf.users addObject:follow.follow];
+                    }
+                    [strongSelf.tableViewOfPeople reloadData];
+                    secondPartSubview = [strongSelf initializeSecondPart];
+                });
+            }];
+        } else {
+            fetching = NO;
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        }
     }
-
-    
 }
 
 
@@ -1040,62 +1064,51 @@ NSMutableArray *suggestedArrayView;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     _page = @1;
     if ([self.currentTab isEqualToNumber:@2]) {
-        NSString *queryString = [NSString stringWithFormat:@"users/?page=%@&text=%@" ,[_page stringValue], searchString];
-        [self searchUsersWithString:queryString andObjectType:USER_TYPE];
+        [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                fetching = NO;
+                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                _filteredUsers = collection;
+                [_tableViewOfPeople reloadData];
+            });
+        }];
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
-        NSString *queryString = [NSString stringWithFormat:@"follows/?follow=%d&page=%@&text=%@" ,[[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
-        [self searchUsersWithString:queryString andObjectType:FOLLOW_TYPE];
+        [WGFollow searchFollows:searchString forFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                fetching = NO;
+                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                _filteredUsers = collection;
+                [_tableViewOfPeople reloadData];
+            });
+        }];
     }
     else {
-        NSString *queryString = [NSString stringWithFormat:@"follows/?user=%d&page=%@&text=%@", [[self.user objectForKey:@"id"] intValue], [_page stringValue], searchString];
-        [self searchUsersWithString:queryString andObjectType:FOLLOW_TYPE];
+        [WGFollow searchFollows:searchString forUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                fetching = NO;
+                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                
+                _filteredUsers = [[WGCollection alloc] initWithType:[WGUser class]];
+                for (WGFollow *follow in collection) {
+                    [_filteredUsers addObject:follow.follow];
+                }
+                [_tableViewOfPeople reloadData];
+            });
+        }];
     }
 }
-
-- (void)searchUsersWithString:(NSString *)queryString andObjectType:(OBJECT_TYPE)type {
-    queryQueueInt += 1;
-    NSDictionary *inputDictionary = @{@"queryInt": [NSNumber numberWithInt:queryQueueInt]};
-    [Network queryAsynchronousAPI:queryString
-              withInputDictionary:inputDictionary
-                      withHandler: ^(NSDictionary *input, NSDictionary *jsonResponse, NSError *error) {
-                          // If it's last query
-                          if ([[input objectForKey:@"queryInt"] intValue] == queryQueueInt) {
-                              if ([_page isEqualToNumber:@1]) _filteredContentParty = [[Party alloc] initWithObjectType:USER_TYPE];
-                              NSMutableArray *arrayOfUsers;
-                              if (type == FOLLOW_TYPE) {
-                                  NSArray *arrayOfFollowObjects = [jsonResponse objectForKey:@"objects"];
-                                  arrayOfUsers = [[NSMutableArray alloc] initWithCapacity:[arrayOfFollowObjects count]];
-                                  for (NSDictionary *object in arrayOfFollowObjects) {
-                                      NSDictionary *userDictionary;
-                                      if ([self.currentTab isEqualToNumber:@3]) userDictionary = [object objectForKey:@"user"];
-                                      else userDictionary = [object objectForKey:@"follow"];
-                                      if ([userDictionary isKindOfClass:[NSDictionary class]]) {
-                                          if ([Profile isUserDictionaryProfileUser:userDictionary]) {
-                                              [arrayOfUsers addObject:[[Profile user] dictionary]];
-                                          }
-                                          else {
-                                              [arrayOfUsers addObject:userDictionary];
-                                          }
-                                      }
-                                  }
-                              }
-                              else {
-                                  arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-                              }
-                              
-                              [_filteredContentParty addObjectsFromArray:arrayOfUsers];
-                              NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-                              [_filteredContentParty addMetaInfo:metaDictionary];
-                              dispatch_async(dispatch_get_main_queue(), ^(void) {
-                                  _page = @([_page intValue] + 1);
-                                  [_tableViewOfPeople reloadData];
-                              });
-                          }
-       
-    }];
-}
-
-
 
 @end

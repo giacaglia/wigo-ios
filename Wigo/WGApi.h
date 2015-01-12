@@ -7,16 +7,34 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AFNetworking.h"
+#import "WGParser.h"
 
-typedef void (^ApiResult)(NSDictionary *jsonResponse, NSError *error);
+typedef void (^ApiResultBlock)(NSDictionary *jsonResponse, NSError *error);
+typedef void (^UploadResultBlock)(NSDictionary *jsonResponse, NSDictionary *fields, NSError *error);
+typedef void (^WGStartupResult)(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSError *error);
 
 @interface WGApi : NSObject
 
-+(NSString *) getUrlStringForEndpoint:(NSString *)endpoint;
+@property NSCache *cache;
 
-+(void) get:(NSString *)endpoint withHandler:(ApiResult)handler;
++(void) get:(NSString *)endpoint withHandler:(ApiResultBlock)handler;
 
-+(void) post:(NSString *)endpoint withParameters:(NSDictionary *)parameters andHandler:(ApiResult)handler;
++(void) get:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResultBlock)handler;
+
++(void) delete:(NSString *)endpoint withHandler:(ApiResultBlock)handler;
+
++(void) delete:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResultBlock)handler;
+
++(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResultBlock)handler;
+
++(void) post:(NSString *)endpoint withHandler:(ApiResultBlock)handler;
+
++(void) post:(NSString *)endpoint withArguments:(NSDictionary *)arguments andParameters:(id)parameters andHandler:(ApiResultBlock)handler;
+
++(void) uploadPhoto:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(UploadResultBlock) handler;
+
++(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(UploadResultBlock) handler;
+
++(void) startup:(WGStartupResult)handler;
 
 @end

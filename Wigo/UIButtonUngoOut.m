@@ -51,15 +51,17 @@
 }
 
 - (void) stayInPressed {
-    User *profileUser = [Profile user];
-    [profileUser setIsGoingOut:NO];
-    [profileUser saveKeyAsynchronously:@"is_goingout" withHandler:^(void) {
+    [WGProfile currentUser].isGoingOut = @NO;
+    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                return;
+            }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"updateViewNotGoingOut" object:nil];
             [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
         });
     }];
-
 }
 
 - (void) cancel {

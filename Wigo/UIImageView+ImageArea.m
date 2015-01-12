@@ -7,8 +7,8 @@
 //
 
 #import "UIImageView+ImageArea.h"
-#import "Network.h"
 #import "NSObject-CancelableScheduledBlock.h"
+#import "WGProfile.h"
 
 NSMutableArray *failedUserInfoArray;
 
@@ -34,9 +34,9 @@ NSMutableArray *failedUserInfoArray;
     }];
 }
 
-- (void)setSmallImageForUser:(User *)user completed:(SDWebImageCompletedBlock)completedBlock {
-    [self setImageWithURL:[NSURL URLWithString:[user smallImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        if (error) {
+- (void)setSmallImageForUser:(WGUser *)user completed:(SDWebImageCompletedBlock)completedBlock {
+    [self setImageWithURL:[user smallCoverImageURL] placeholderImage:[[UIImage alloc] init] imageArea:[user smallCoverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        /* if (error) {
             if (!failedUserInfoArray) failedUserInfoArray = [NSMutableArray new];
             
             if (![[failedUserInfoArray valueForKey:@"user_id"] containsObject:[user objectForKey:@"id"]]) {
@@ -49,15 +49,15 @@ NSMutableArray *failedUserInfoArray;
                                     }
                                     withOptions:(id)failedUserInfoArray
              ];
-        }
+        } */
         if (completedBlock) completedBlock(image, error, cacheType);
     }];
 }
 
-- (void)setCoverImageForUser:(User *)user completed:(SDWebImageCompletedBlock)completedBlock {
-    [self setImageWithURL:[NSURL URLWithString:[user coverImageURL]] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+- (void)setCoverImageForUser:(WGUser *)user completed:(SDWebImageCompletedBlock)completedBlock {
+    [self setImageWithURL:[user smallCoverImageURL] placeholderImage:[[UIImage alloc] init] imageArea:[user smallCoverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         if (error) {
-            if (!failedUserInfoArray) failedUserInfoArray = [NSMutableArray new];
+            /* if (!failedUserInfoArray) failedUserInfoArray = [NSMutableArray new];
             
             if (![[failedUserInfoArray valueForKey:@"user_id"] containsObject:[user objectForKey:@"id"]]) {
                 [failedUserInfoArray addObject:@{@"user_id": [user objectForKey:@"id"], @"image_type": @"facebook"}];
@@ -68,7 +68,7 @@ NSMutableArray *failedUserInfoArray;
                                         failedUserInfoArray = [NSMutableArray new];
                                     }
                                     withOptions:(id)failedUserInfoArray
-             ];
+             ]; */
         }
         if (completedBlock) completedBlock(image, error, cacheType);
     }];
@@ -78,10 +78,10 @@ NSMutableArray *failedUserInfoArray;
               imageArea:(NSDictionary *)area
                withInfo:(NSDictionary *)info
               completed:(SDWebImageCompletedBlock)completedBlock {
-    __block NSDictionary *blockInfo = info;
+    // __block NSDictionary *blockInfo = info;
     
     [self setImageWithURL:url withArea:area placeholderImage:nil options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        if (error) {
+        /* if (error) {
             User *user = [blockInfo objectForKey:@"user"];
             NSArray *images = (NSArray *)[info objectForKey:@"images"];
             NSString *imageID;
@@ -102,14 +102,14 @@ NSMutableArray *failedUserInfoArray;
                                                  @"image_type": @"facebook"}
                  ];
             }
-//            [Network sendAsynchronousHTTPMethod:POST
-//                                    withAPIName:@"images/failed/"
-//                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-//                                        failedUserInfoArray = [NSMutableArray new];
-//                                    }
-//                                    withOptions:failedUserInfoArray
-//             ];
-        }
+            [Network sendAsynchronousHTTPMethod:POST
+                                    withAPIName:@"images/failed/"
+                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                        failedUserInfoArray = [NSMutableArray new];
+                                    }
+                                    withOptions:failedUserInfoArray
+             ];
+        } */
         if (completedBlock) completedBlock(image, error, cacheType);
     }];
 }

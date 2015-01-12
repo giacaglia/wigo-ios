@@ -18,6 +18,11 @@
 
 @implementation PeekViewController
 
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
+    
+    [WGAnalytics tagEvent: @"Peek View"];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.schoolSections = [NSArray new];
@@ -109,7 +114,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchSchools {
-    [Network queryAsynchronousAPI:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.schoolSections = [jsonResponse objectForKey:@"sections"];

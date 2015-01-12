@@ -10,9 +10,10 @@
 #import "Globals.h"
 
 UIImageView *orangeImageView;
-NSNumber *total;
-NSNumber *numGroups;
+NSNumber *currentTotal;
+NSNumber *currentNumGroups;
 int widthShared;
+UIImageView *batteryImageView;
 
 @implementation BatteryViewController
 
@@ -48,9 +49,9 @@ int widthShared;
 }
 
 - (void)initializeNameOfSchool {
-    if ([[Profile user] groupName]) {
+    if ([WGProfile currentUser].group.name) {
         UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 60, self.view.frame.size.width - 44, 60)];
-        schoolLabel.text = [[Profile user] groupName];
+        schoolLabel.text = [WGProfile currentUser].group.name;
         schoolLabel.textAlignment = NSTextAlignmentCenter;
         schoolLabel.numberOfLines = 0;
         schoolLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -70,17 +71,21 @@ int widthShared;
     youAreAlmostThereLabel.font = [FontProperties mediumFont:15.0f];
     [self.view addSubview:youAreAlmostThereLabel];
     
-    UILabel *orangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, self.view.frame.size.height/2 - 51, 14, 48)];
+    batteryImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"batteryImage"]];
+    batteryImageView.frame = CGRectMake(76, self.view.frame.size.height/2 - 55, 168, 57);
+    batteryImageView.center = CGPointMake(self.view.center.x, batteryImageView.center.y);
+    [self.view addSubview:batteryImageView];
+
+    
+    UILabel *orangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(batteryImageView.frame.origin.x+4, self.view.frame.size.height/2 - 51, 14, 48)];
     orangeLabel.backgroundColor = [FontProperties getOrangeColor];
     [self.view addSubview:orangeLabel];
     
-    orangeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(84, self.view.frame.size.height/2 - 53, 20, 54)];
+    orangeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(batteryImageView.frame.origin.x+10, self.view.frame.size.height/2 - 53, 20, 54)];
     orangeImageView.image = [UIImage imageNamed:@"batteryRectangle"];
     [self.view addSubview:orangeImageView];
     
-    UIImageView *batteryImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"batteryImage"]];
-    batteryImageView.frame = CGRectMake(76, self.view.frame.size.height/2 - 55, 168, 57);
-    [self.view addSubview:batteryImageView];
+    [self.view bringSubviewToFront: batteryImageView];
     
   
 }
@@ -112,15 +117,15 @@ int widthShared;
     joinLabel.textColor = [UIColor whiteColor];
     joinLabel.font = [FontProperties mediumFont:19.0f];
    
-    if (numGroups) {
-        NSString *string =[NSString stringWithFormat:@"Join %@ schools already on Wigo", [numGroups stringValue]];
+    if (currentNumGroups) {
+        NSString *string =[NSString stringWithFormat:@"Join %@ schools already on Wigo", [currentNumGroups stringValue]];
         NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
         [text addAttribute:NSForegroundColorAttributeName
                      value:[UIColor whiteColor]
                      range:NSMakeRange(0, string.length)];
         [text addAttribute:NSForegroundColorAttributeName
                      value:RGB(238, 122, 11)
-                     range:NSMakeRange(5, [numGroups stringValue].length)];
+                     range:NSMakeRange(5, [currentNumGroups stringValue].length)];
         joinLabel.attributedText = text;
     }
     [self.view addSubview:joinLabel];
@@ -141,10 +146,10 @@ int widthShared;
 }
 
 - (void)sharedPressed {
-    [EventAnalytics tagEvent:@"Share Pressed"];
+    [WGAnalytics tagEvent:@"Share Pressed"];
     NSArray *activityItems;
-    if ([[Profile user] groupName] && numGroups) {
-        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[[Profile user] groupName] uppercaseString], [numGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
+    if ([WGProfile currentUser].group.name && currentNumGroups) {
+        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[WGProfile currentUser].group.name uppercaseString], [currentNumGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
     }
     else {
         activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
@@ -175,14 +180,14 @@ int widthShared;
 
 
 - (void) fetchSummaryGoingOut {
-    [Network queryAsynchronousAPI:@"groups/summary/" withHandler: ^(NSDictionary *jsonResponse, NSError *error) {
+    [WGGroup getGroupSummary:^(NSNumber *total, NSNumber *numGroups, NSNumber *private, NSNumber *public, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            if ([[jsonResponse allKeys] containsObject:@"total"]) {
-                total = [jsonResponse objectForKey:@"total"];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
             }
-            if ([[jsonResponse allKeys] containsObject:@"num_groups"]) {
-                numGroups = [jsonResponse objectForKey:@"num_groups"];
-            }
+            currentTotal = total;
+            currentNumGroups = numGroups;
             [self initializeJoinLabel];
             [self chargeBattery];
         });
@@ -190,14 +195,14 @@ int widthShared;
 }
 
 - (void)chargeBattery {
-    if (total) {
-        float percentage = MIN([total floatValue]/500, 1);
+    if (currentTotal) {
+        float percentage = MIN([currentTotal floatValue]/500, 1);
         int width = 40 + percentage * (138 - 40);
         [UIView animateWithDuration:3
                               delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^{
-                             orangeImageView.frame = CGRectMake(84, self.view.frame.size.height/2 - 53, width, 54);
+                             orangeImageView.frame = CGRectMake(orangeImageView.frame.origin.x, self.view.frame.size.height/2 - 53, width, 54);
                          }
                          completion:nil];
     }

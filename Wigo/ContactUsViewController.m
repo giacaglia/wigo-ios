@@ -58,7 +58,7 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"Contact Us View"];
+    [WGAnalytics tagEvent:@"Contact Us View"];
 }
 
 - (void)sendEmail {

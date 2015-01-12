@@ -18,7 +18,7 @@
     ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, &error);
     ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
         if (granted && addressBookRef) {
-            [EventAnalytics tagEvent:@"Accepted Apple Contacts"];
+            [WGAnalytics tagEvent:@"Accepted Apple Contacts"];
             
             
             CFArrayRef all = ABAddressBookCopyArrayOfAllPeople(addressBookRef);
@@ -54,7 +54,7 @@
         }
         else {
             
-            [EventAnalytics tagEvent:@"Decline Apple Contacts"];
+            [WGAnalytics tagEvent:@"Decline Apple Contacts"];
             mobileArray([NSArray new]);
         }
     });
@@ -92,17 +92,21 @@
                         break;
                     }
                 }
-                
+                ABMutableMultiValueRef multi = ABRecordCopyValue(contactPerson, kABPersonEmailProperty);
+                if (ABMultiValueGetCount(multi) > 0) {
+                    CFStringRef emailRef = ABMultiValueCopyValueAtIndex(multi, 0);
+                    NSMutableDictionary *newNumber = [NSMutableDictionary dictionaryWithDictionary:[numbers lastObject]];
+                    [newNumber addEntriesFromDictionary:@{@"email": (__bridge NSString *)emailRef}];
+                    unsigned long lastIndex = numbers.count - 1;
+                    [numbers replaceObjectAtIndex:lastIndex withObject:[NSDictionary dictionaryWithDictionary:newNumber]];
+                }
             }
         }
     }
     if ([numbers count] > 0) {
-        NSDictionary *options = (NSDictionary *)numbers;
-        [Network sendAsynchronousHTTPMethod:POST
-                                withAPIName:@"invites/?force=true"
-                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                                withOptions:options];
-        
+        [[WGProfile currentUser] sendInvites:numbers withHandler:^(BOOL success, NSError *error) {
+            // Do nothing!
+        }];
     }
 }
 

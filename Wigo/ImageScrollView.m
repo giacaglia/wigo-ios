@@ -41,8 +41,6 @@
 }
 
 - (void) addImages:(NSArray *)imageURLs infoDicts:(NSArray *)infoDicts areaDicts:(NSArray *)areaDicts {
-    
-
     [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     self.imageViews = [[NSMutableArray alloc] init];
     for (int i = 0; i < [imageURLs count]; i++) {
@@ -69,9 +67,9 @@
                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                                   [weakSpinner stopAnimating];
                                   
-                                  if (i == 0) {
+                                  if (i == 0 && self.delegate) {
                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                          [self.delegate pageChangedTo: 0];
+                                          [self.delegate pageChangedTo:i];
                                       });
                                   }
                               }];

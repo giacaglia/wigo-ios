@@ -20,8 +20,8 @@
 @property UITextView *messageTextView;
 
 @property UIButton *sendButton;
-@property User *user;
-@property Party *messageParty;
+@property WGUser *user;
+@property WGCollection *messages;
 @property UIView *viewForEmptyConversation;
 @property UILabel *whiteLabelForTextField;
 
@@ -39,7 +39,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     return (UIViewAnimationOptions)curve << 16;
 }
 
-- (id)initWithUser: (User *)user
+- (id)initWithUser: (WGUser *)user
 {
     self = [super init];
     if (self) {
@@ -89,10 +89,14 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"Conversation View"];
+    [WGAnalytics tagEvent:@"Conversation View"];
     [self fetchFirstPageMessages];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    didBeginEditing = NO;
+}
 
 - (void) initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -117,28 +121,27 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     _positionOfLastMessage = 5;
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage + 50);
     [[_scrollView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    for (Message *message in [_messageParty getObjectArray]) {
-        
-        if ([[message fromUser] isEqualToUser:[Profile user]]) {
+    for (WGMessage *message in _messages) {
+        if ([message.user isCurrentUser]) {
             [self addMessageFromSender:message];
         }
         else {
             [self addMessageFromReceiver:message];
         }
     }
-    if ([[_messageParty getObjectArray] count] == 0) {
+    if ([_messages count] == 0) {
         [self initializeMessageForEmptyConversation];
     }
     [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:NO];
 }
 
-- (void) addMessages:(Party *)messageParty {
+- (void) addMessages:(WGCollection *)messages {
     int oldContentSize = _scrollView.contentSize.height;
     _positionOfLastMessage = 5;
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
-    for (Message *message in [messageParty getObjectArray]) {
+    for (WGMessage *message in messages) {
         _positionOfLastMessage = 0;
-        if ([[message fromUser] isEqualToUser:[Profile user]])
+        if ([message.user isCurrentUser])
             [self addMessageFromSender:message];
         else
             [self addMessageFromReceiver:message];
@@ -174,7 +177,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[self.user coverImageURL]] imageArea:[self.user coverImageArea]];
+    [profileImageView setImageWithURL:self.user.smallCoverImageURL imageArea:[self.user smallCoverImageArea]];
     [profileButton addSubview:profileImageView];
     [profileButton setShowsTouchWhenHighlighted:NO];
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
@@ -182,12 +185,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 - (void) goBack {
-    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", [self.user objectForKey:@"id"]];
-    NSDictionary *options = @{@"read": [NSNumber numberWithBool:YES]};
-    [Network sendAsynchronousHTTPMethod:POST
-                            withAPIName:queryString
-                            withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                            withOptions:options];
+    [self.user readConversation:^(BOOL success, NSError *error) {
+        // Do nothing?
+    }];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -202,7 +202,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     [self.view endEditing:YES];
 }
 
-- (void)addMessageFromReceiver:(Message *)message {
+- (void)addMessageFromReceiver:(WGMessage *)message {
     UIView *messageWrapper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
     messageWrapper.backgroundColor = RGB(234, 234, 234);
     [messageWrapper.layer setCornerRadius:5];
@@ -212,7 +212,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     // Add text to the wrapper
     UILabel *messageFromReceiver = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3 , 50)];
     messageFromReceiver.backgroundColor = RGB(234, 234, 234);
-    messageFromReceiver.text = [message messageString];
+    messageFromReceiver.text = [message message];
     messageFromReceiver.font = [FontProperties lightFont:15.0f];
     messageFromReceiver.numberOfLines = 0;
     messageFromReceiver.lineBreakMode = NSLineBreakByWordWrapping;
@@ -239,7 +239,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 
-- (void)addMessageFromSender:(Message *)message {
+- (void)addMessageFromSender:(WGMessage *)message {
     UIView *messageWrapper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
     messageWrapper.backgroundColor = RGB(250, 233, 212);
     [messageWrapper.layer setCornerRadius:5];
@@ -248,7 +248,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
     // Add text to the wrapper
     UILabel *messageFromSender = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3, 50)];
-    messageFromSender.text = [message messageString];
+    messageFromSender.text = [message message];
     messageFromSender.textAlignment = NSTextAlignmentRight;
     messageFromSender.font = [FontProperties lightFont:15.0f];
     messageFromSender.numberOfLines = 0;
@@ -276,11 +276,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 }
 
 
-- (void) addTimerOfMessage:(Message *)message ToView:(UIView *)messageWrapper {
+- (void) addTimerOfMessage:(WGMessage *)message ToView:(UIView *)messageWrapper {
     messageWrapper.frame = CGRectMake(messageWrapper.frame.origin.x, messageWrapper.frame.origin.y, messageWrapper.frame.size.width, messageWrapper.frame.size.height + 20);
     
     UILabel *timerLabel = [[UILabel alloc] initWithFrame:CGRectMake(messageWrapper.frame.size.width - 110, messageWrapper.frame.size.height - 28, 100, 20)];
-    timerLabel.text = [message timeOfCreation];
+    timerLabel.text = [message.created getUTCTimeStringToLocalTimeString];
     timerLabel.font = [FontProperties mediumFont:15.0f];
     timerLabel.textAlignment = NSTextAlignmentRight;
     timerLabel.textColor = RGB(179, 179, 179);
@@ -340,16 +340,18 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void)sendMessage {
     if (![_messageTextView.text isEqualToString:@""]) {
-        Message *message = [[Message alloc] init];
-        [message setMessageString:_messageTextView.text];
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-        [dateFormatter setTimeZone:timeZone];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-        [message setTimeOfCreation:[dateFormatter stringFromDate:[NSDate date]]];
-        [message setToUser:[self.user objectForKey:@"id"]];
+        WGMessage *message = [[WGMessage alloc] init];
+        message.message = _messageTextView.text;
+        message.created = [NSDate date];
+        message.toUser = self.user;
+        [message create:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+                return;
+            }
+        }];
+        
         [self addMessageFromSender:message];
-        [message saveAsynchronously];
         _messageTextView.text = @"";
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [self textView:_messageTextView shouldChangeTextInRange:NSMakeRange(0, [_messageTextView.text length]) replacementText:@""];
@@ -361,10 +363,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     
 }
 
-- (void)updateLastMessagesRead:(Message *)message {
-    User *profileUser = [Profile user];
-    if ([(NSNumber *)[message objectForKey:@"id"] intValue] > [(NSNumber *)[[Profile user] lastMessageRead] intValue]) {
-        [profileUser setLastMessageRead:[message objectForKey:@"id"]];
+- (void)updateLastMessagesRead:(WGMessage *)message {
+    if ([message.id intValue] > [[WGProfile currentUser].lastMessageRead intValue]) {
+        [WGProfile currentUser].lastMessageRead = message.id;
     }
 }
 
@@ -442,15 +443,13 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void)addMessage:(NSNotification *)notification {
     NSNumber *fromUserID = [[notification userInfo] valueForKey:@"id"];
-    if (fromUserID && [fromUserID isEqualToNumber:[self.user objectForKey:@"id"]]) {
+    if (fromUserID && [fromUserID isEqualToNumber:self.user.id]) {
         NSString *messageString = [[notification userInfo] valueForKey:@"message"];
-        Message *message = [[Message alloc] init];
-        [message setMessageString:messageString];
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-        [dateFormatter setTimeZone:timeZone];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-        [message setTimeOfCreation:[dateFormatter stringFromDate:[NSDate date]]];
+        
+        WGMessage *message = [[WGMessage alloc] init];
+        message.message = messageString;
+        message.created = [NSDate date];
+        
         [self addMessageFromReceiver:message];
         CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
         [_scrollView setContentOffset:bottomOffset animated:YES];
@@ -496,7 +495,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView.contentOffset.y == 0)
-        if ([[_messageParty getObjectArray] count] > 0 && [_messageParty hasNextPage]) {
+        if ([_messages count] > 0 && [_messages.hasNextPage boolValue]) {
             [self fetchMessages];
         }
 }
@@ -505,9 +504,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 # pragma mark - Network functions
 
 - (void)fetchFirstPageMessages {
-    page = @1;
     fetching = NO;
-    _messageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
     [self fetchMessages];
 }
 
@@ -515,23 +512,40 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     if (!fetching) {
         fetching = YES;
         [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
-        NSString *queryString = [NSString stringWithFormat:@"messages/?conversation=%@&page=%@", [self.user objectForKey:@"id"], [page stringValue]];
-        [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                page = @([page intValue] + 1);
-                [WiGoSpinnerView hideSpinnerForView:self.view];
-                NSArray *arrayOfMessages = [jsonResponse objectForKey:@"objects"];
-                [_messageParty insertObjectsFromArrayAtBeginning:arrayOfMessages];
-                Party *newMessageParty = [[Party alloc] initWithObjectType:MESSAGE_TYPE];
-                [newMessageParty addObjectsFromArray:arrayOfMessages];
-                NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-                [_messageParty addMetaInfo:metaDictionary];
-                fetching = NO;
-                if ([page isEqualToNumber:@2]) [self addFirstPageMessages];
-                else [self addMessages:newMessageParty];
-            });
-        }];
-
+        if (!_messages) {
+            [self.user getConversation:^(WGCollection *collection, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    _messages = collection;
+                    fetching = NO;
+                    [self addFirstPageMessages];
+                    [WiGoSpinnerView hideSpinnerForView:self.view];
+                });
+            }];
+        } else if ([_messages.hasNextPage boolValue]) {
+            [_messages getNextPage:^(WGCollection *collection, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^(void){
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    fetching = NO;
+                    
+                    [_messages addObjectsFromCollection:collection];
+                    _messages.hasNextPage = collection.hasNextPage;
+                    _messages.nextPage = collection.nextPage;
+                    
+                    [self addMessages:collection];
+                    [WiGoSpinnerView hideSpinnerForView:self.view];
+                });
+            }];
+        } else {
+            fetching = NO;
+            [WiGoSpinnerView hideSpinnerForView:self.view];
+        }
     }
 }
         

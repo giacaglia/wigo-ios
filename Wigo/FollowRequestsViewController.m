@@ -12,7 +12,7 @@
 
 @interface FollowRequestsViewController ()
 
-@property Party *followRequestsParty;
+@property WGCollection *followRequests;
 @property NSNumber *page;
 @end
 
@@ -43,13 +43,13 @@
 
     [self initializeLeftBarButton];
     [self initializeFollowRequestTable];
-    _followRequestsParty = [[Party alloc] initWithObjectType:NOTIFICATION_TYPE];
+    _followRequests = [[WGCollection alloc] initWithType:[WGNotification class]];
     [self fetchFollowRequests];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"Follow Requests View"];
+    [WGAnalytics tagEvent:@"Follow Requests View"];
 }
 
 - (void) initializeFollowRequestTable {
@@ -71,15 +71,18 @@
 }
 
 - (void)acceptUser:(id)sender {
-    [EventAnalytics tagEvent:@"Follow Request Accepted"];
+    [WGAnalytics tagEvent:@"Follow Request Accepted"];
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
-    Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:buttonSender.tag];
-    User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
-    [Network sendAsynchronousHTTPMethod:GET withAPIName:[NSString stringWithFormat:@"follows/accept?from=%d", [(NSNumber*)[user objectForKey:@"id"] intValue]] withHandler:^(NSDictionary *jsonResponse, NSError *error) { }];
+    WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:buttonSender.tag];
+    WGUser *user = notification.fromUser;
+    
+    [[WGProfile currentUser] acceptFollowRequestForUser:user withHandler:^(BOOL success, NSError *error) {
+        // Do nothing!
+    }];
     
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width - 100, 54)];
     notificationButton.tag = tag;
@@ -91,7 +94,7 @@
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+    [profileImageView setImageWithURL:user.smallCoverImageURL imageArea:[user smallCoverImageArea]];
     profileImageView.layer.cornerRadius = 5;
     profileImageView.layer.borderWidth = 0.5;
     profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -110,11 +113,11 @@
     [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
      [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
     
-    if ([user isFollowing]) {
+    if ([user.isFollowing boolValue]) {
         followBackPersonButton.tag = -100;
         [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
     }
-    if ([user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
+    if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
         [followBackPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
         [followBackPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
         [followBackPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -132,7 +135,7 @@
 }
 
 - (void)rejectUser:(id)sender {
-    [EventAnalytics tagEvent:@"Follow Request Rejected"];
+    [WGAnalytics tagEvent:@"Follow Request Rejected"];
     UIButton *buttonSender = (UIButton *)sender;
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
     for (UIView *subview in [cell.contentView subviews]) {
@@ -140,31 +143,30 @@
             [subview removeFromSuperview];
         }
     }
-    Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:buttonSender.tag];
-    User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
-    [Network rejectFollowRequestForUser:user];
+    WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:buttonSender.tag];
+    [[WGProfile currentUser] rejectFollowRequestForUser:notification.fromUser withHandler:^(BOOL success, NSError *error) {
+        // Do nothing!
+    }];
 }
 
 - (void)followedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton*)sender;
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:buttonOriginInTableView];
-    User *user = [self getUserAtIndex:(int)[indexPath row]];
+    WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
     if (user) {
         if (buttonSender.tag == 50) {
             [buttonSender setTitle:nil forState:UIControlStateNormal];
             [buttonSender setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
             buttonSender.tag = -100;
-            [user setIsBlocked:NO];
-            NSString *queryString = [NSString stringWithFormat:@"users/%@", [user objectForKey:@"id"]];
-            NSDictionary *options = @{@"is_blocked": @NO};
-            [Network sendAsynchronousHTTPMethod:POST
-                                    withAPIName:queryString
-                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {}
-                                    withOptions:options];
+            user.isBlocked = [NSNumber numberWithBool:NO];
+            
+            [[WGProfile currentUser] unblock:user withHandler:^(BOOL success, NSError *error) {
+                // Do nothing!
+            }];
         }
         else if (buttonSender.tag == -100) {
-            if ([user isPrivate]) {
+            if (user.privacy == PRIVATE) {
                 [buttonSender setBackgroundImage:nil forState:UIControlStateNormal];
                 [buttonSender setTitle:@"Pending" forState:UIControlStateNormal];
                 [buttonSender setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -173,32 +175,40 @@
                 buttonSender.layer.borderWidth = 1;
                 buttonSender.layer.borderColor = [FontProperties getOrangeColor].CGColor;
                 buttonSender.layer.cornerRadius = 3;
-                [user setIsFollowingRequested:YES];
+                user.isFollowingRequested = [NSNumber numberWithBool:YES];
             }
             else {
                 [buttonSender setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-                [user setIsFollowing:YES];
+                user.isFollowing = [NSNumber numberWithBool:YES];
             }
             buttonSender.tag = 100;
-            [Network followUser:user];
+            [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                }
+            }];
         }
         else {
             [buttonSender setTitle:nil forState:UIControlStateNormal];
             [buttonSender setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
             buttonSender.tag = -100;
-            [user setIsFollowing:NO];
-            [user setIsFollowingRequested:NO];
-            [Network unfollowUser:user];
+            user.isFollowing = [NSNumber numberWithBool:NO];
+            user.isFollowingRequested = [NSNumber numberWithBool:NO];
+            [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                }
+            }];
         }
     }
 }
 
 
-- (User *)getUserAtIndex:(int)index {
-    User *user;
-    if (index >= 0 && index < [[_followRequestsParty getObjectArray] count]) {
-        Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:index];
-        user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
+- (WGUser *)getUserAtIndex:(int)index {
+    WGUser *user;
+    if (index >= 0 && index < [_followRequests count]) {
+        WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:index];
+        user = notification.fromUser;
     }
     return user;
 }
@@ -218,7 +228,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[_followRequestsParty getObjectArray] count];
+    return [_followRequests count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -231,10 +241,10 @@
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
 
     
-    if ([[_followRequestsParty getObjectArray] count] == 0) return cell;
+    if ([_followRequests count] == 0) return cell;
 
-    Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:[indexPath row]];
-    User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
+    WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:[indexPath row]];
+    WGUser *user = notification.fromUser;
     
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width - 100, 54)];
     notificationButton.tag = [indexPath row];
@@ -246,7 +256,7 @@
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+    [profileImageView setImageWithURL:user.smallCoverImageURL imageArea:[user smallCoverImageArea]];
     profileImageView.layer.cornerRadius = 5;
     profileImageView.layer.borderWidth = 0.5;
     profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -280,9 +290,8 @@
 
 - (void)profileSegue:(id)sender {
     int index = (int)((UIButton *)sender).tag;
-    Notification *notification = [[_followRequestsParty getObjectArray] objectAtIndex:index];
-    User *user = [[User alloc] initWithDictionary:[notification objectForKey:@"from_user"]];
-    
+    WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:index];
+    WGUser *user = notification.fromUser;
     
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
@@ -308,18 +317,11 @@
 
 #pragma mark - Network Functions
 
-
 - (void)fetchFollowRequests {
-    NSString *queryString = @"notifications/?type=follow.request";
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            NSArray *arrayOfNotifications = [jsonResponse objectForKey:@"objects"];
-            [_followRequestsParty addObjectsFromArray:arrayOfNotifications];
-            NSDictionary *metaDictionary = [jsonResponse objectForKey:@"meta"];
-            [_followRequestsParty addMetaInfo:metaDictionary];
-            _page = @([_page intValue] + 1);
-            [self.tableView reloadData];
-        });
+    [WGNotification getFollowRequests:^(WGCollection *collection, NSError *error) {
+        _followRequests = collection;
+        _page = @([_page intValue] + 1);
+        [self.tableView reloadData];
     }];
 }
 

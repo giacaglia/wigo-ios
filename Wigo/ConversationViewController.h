@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "User.h"
+#import "WGUser.h"
 
 @interface ConversationViewController : UIViewController  <UITextViewDelegate, UIScrollViewDelegate>
 
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;
-- (id)initWithUser: (User *)user;
+- (id)initWithUser: (WGUser *)user;
+
 @end

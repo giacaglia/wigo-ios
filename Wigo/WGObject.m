@@ -6,41 +6,215 @@
 //  Copyright (c) 2014 Adam Eagle. All rights reserved.
 //
 
+#import <objc/runtime.h>
 #import "WGObject.h"
 
 #define kIdKey @"id"
+#define kCreatedKey @"created"
 
 @implementation WGObject
 
-+(WGObject *)serialize:(NSDictionary *)json {
-    WGObject *newWGObject = [WGObject new];
+-(id) init {
+    self = [super init];
+    if (self) {
+        self.className = @"object";
+        self.modifiedKeys = [[NSMutableArray alloc] init];
+        self.parameters = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
+
+-(id) initWithJSON:(NSDictionary *)json {
+    if (json == nil || ![json isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    self = [super init];
+    if (self) {
+        self.className = @"object";
+        self.modifiedKeys = [[NSMutableArray alloc] init];
+        self.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
+    }
+    return self;
+}
+
++(WGObject *) serialize:(NSDictionary *)json {
+    return [[WGObject alloc] initWithJSON:json];
+}
+
+-(void) setId:(NSNumber *)id {
+    [self setObject:id forKey:kIdKey];
+}
+
+-(NSNumber *) id {
+    return [self objectForKey:kIdKey];
+}
+
+-(void) setCreated:(NSDate *)created {
+    [self setObject:[created deserialize] forKey:kCreatedKey];
+}
+
+-(NSDate *) created {
+    return [NSDate serialize:[self objectForKey:kCreatedKey]];
+}
+
+-(BOOL) expired {
+    return [self.created isFromLastDay];
+}
+
+-(BOOL) isEqual:(WGObject*)other {
+    if (!other || !self.id || !other.id) {
+        return NO;
+    }
+    return [self.id isEqualToNumber:other.id];
+}
+
+-(NSDictionary *) deserialize {
+    return [[NSDictionary alloc] initWithDictionary: self.parameters];
+}
+
+-(NSDictionary *) modifiedDictionary {
+    NSMutableDictionary *props = [NSMutableDictionary dictionary];
     
-    for (id key in [json allKeys])
-    {
-        [newWGObject setValue:[[json objectForKey:key] mutableCopy] forKey:key];
+    for (NSString* key in self.modifiedKeys) {
+        [props setObject:[self.parameters objectForKey:key] forKey:key];
     }
     
-    newWGObject.id = [newWGObject numberAtKey:kIdKey];
+    return props;
+}
+
+-(void) save:(BoolResultBlock)handler {
+    NSMutableDictionary *properties = (NSMutableDictionary *) [self modifiedDictionary];
     
-    return newWGObject;
+    NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
+    
+    [WGApi post:thisObjectURL withParameters:properties andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        
+        NSError *dataError;
+        @try {
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self.modifiedKeys removeAllObjects];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
 }
 
--(NSNumber *) numberAtKey:(NSString *)key {
-    return (NSNumber *) [self objectForKey:key];
+-(void) saveKey:(NSString *)key withValue:(id)value andHandler:(BoolResultBlock)handler {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
+    [properties setObject:value forKey:key];
+    
+    NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
+    
+    [WGApi post:thisObjectURL withParameters:properties andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        
+        NSError *dataError;
+        @try {
+            [self.parameters setObject:value forKey:key];
+            [self.modifiedKeys removeObject:key];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
 }
 
--(NSString *) stringAtKey:(NSString *)key {
-    return (NSString *) [self objectForKey:key];
+-(void) refresh:(BoolResultBlock)handler {
+    NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
+    
+    [WGApi get:thisObjectURL withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        
+        NSError *dataError;
+        @try {
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self.modifiedKeys removeAllObjects];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
 }
 
--(NSDictionary *) dictionaryAtKey:(NSString *)key {
-    return (NSDictionary *) [self objectForKey:key];
+-(void) create:(BoolResultBlock)handler {
+    NSString *classURL = [NSString stringWithFormat:@"%@s/", self.className];
+    
+    NSMutableDictionary *parametersWithIds = [[NSMutableDictionary alloc] init];
+    for (NSString *key in [self.parameters allKeys]) {
+        id value = [self.parameters objectForKey:key];
+        if ([value isKindOfClass:[NSDictionary class]] && [value objectForKey:@"id"]) {
+            [parametersWithIds setObject:[value objectForKey:@"id"] forKey:key];
+        } else {
+            [parametersWithIds setObject:value forKey:key];
+        }
+    }
+    
+    [WGApi post:classURL withParameters:parametersWithIds andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        
+        NSError *dataError;
+        @try {
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self.modifiedKeys removeAllObjects];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
 }
 
--(NSDate *) dateAtKey:(NSString *)key {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
-    return [dateFormatter dateFromString: [self stringAtKey:key]];
+-(void) remove:(BoolResultBlock)handler {
+    NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
+    [WGApi delete:thisObjectURL withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
+}
+
+-(void) setObject:(id)object forKey:(id<NSCopying>)key {
+    [self.parameters setObject:object forKey:key];
+    [self.modifiedKeys addObject:key];
+}
+
+-(id) objectForKey:(NSString *)key {
+    return [self.parameters objectForKey:key];
+}
+
++(void) get:(WGCollectionResultBlock)handler {
+    handler(nil, nil);
 }
 
 @end

@@ -63,6 +63,11 @@
     
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
+    [WGAnalytics tagEvent:@"Campus Notification View"];
+}
+
 - (void) initializeLeftBarButton {
     UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
@@ -87,28 +92,20 @@
     }
     
     [WiGoSpinnerView addDancingGToCenterView:self.view];
-
-    [Network sendAsynchronousHTTPMethod: POST withAPIName: @"school/broadcast" withHandler:
-     ^(NSDictionary *jsonResponse, NSError *error) {
-         [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-
-         if (error) {
-             UIAlertView *errAlert = [[UIAlertView alloc] initWithTitle: @"Error" message: @"Something went wrong, sorry about that! Please try again." delegate: self cancelButtonTitle: @"OK" otherButtonTitles: nil];
-             [errAlert show];
-             return;
-         }
-         
-         UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle: @"Sent!" message: @"Thanks! We'll send it out to your school asap!" delegate: self cancelButtonTitle: @"OK" otherButtonTitles: nil];
-         successAlert.tag = kSuccessAlertTag;
-         successAlert.delegate = self;
-         
-         dispatch_async(dispatch_get_main_queue(), ^{
-             [successAlert show];
-         });
-
-         
-     } withOptions: @{@"message": self.notificationTextView.text}];
-
+    
+    [[WGProfile currentUser] broadcastMessage:self.notificationTextView.text withHandler:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+                return;
+            }
+            UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle: @"Sent!" message: @"Thanks! We'll send it out to your school asap!" delegate: self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+            successAlert.tag = kSuccessAlertTag;
+            successAlert.delegate = self;
+            
+            [successAlert show];
+        });
+    }];
 }
 
 #pragma mark - UIAlertViewDelegate

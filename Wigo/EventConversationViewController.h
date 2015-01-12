@@ -13,10 +13,11 @@
 #import "IQMediaPickerController.h"
 #import "Delegate.h"
 
+
 @interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, EventConversationDelegate>
 - (void)highlightCellAtPage:(NSInteger)page;
-@property (nonatomic, strong) Event *event;
-@property (nonatomic, strong) NSMutableArray *eventMessages;
+@property (nonatomic, strong) WGEvent *event;
+@property (nonatomic, strong) WGCollection *eventMessages;
 @property (nonatomic, strong) MediaScrollView *mediaScrollView;
 @property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
 @property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;

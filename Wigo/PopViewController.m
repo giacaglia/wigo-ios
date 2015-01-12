@@ -37,7 +37,7 @@ UILabel *emojiLabel;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self animateEmoji];
-    [EventAnalytics tagEvent:@"Pop View"];
+    [WGAnalytics tagEvent:@"Pop View"];
 
 }
 
@@ -110,14 +110,14 @@ UILabel *emojiLabel;
 }
 
 - (void)acceptGoingOut {
-    [EventAnalytics tagEvent:@"Pop Go Out"];
+    [WGAnalytics tagEvent:@"Pop Go Out"];
     [self dismissViewControllerAnimated:NO completion:^{
         [[NSNotificationCenter defaultCenter] postNotificationName:@"popGoOutPressed" object:nil];
     }];
 }
 
 - (void)dimissView {
-    [EventAnalytics tagEvent:@"Pop Not Yet"];
+    [WGAnalytics tagEvent:@"Pop Not Yet"];
     [self dismissViewControllerAnimated:YES completion:^{}];
 
 }

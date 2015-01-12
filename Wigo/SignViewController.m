@@ -70,7 +70,7 @@
 - (void)showOnboard {
 //    BOOL showedOnboardView = [[NSUserDefaults standardUserDefaults] boolForKey:@"showedOnboardView"];
 //    if (showedOnboardView) {
-        [self getFacebookTokensAndLoginORSignUp];
+    [self getFacebookTokensAndLoginORSignUp];
 //    }
 //    else {
 //        [self presentViewController:[OnboardViewController new] animated:YES completion:nil];
@@ -89,8 +89,7 @@
 
     NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
     if (key.length > 0) {
-        User *user = [[User alloc] initWithDictionary:@{@"key": key}];
-        [Profile setUser:user];
+        [WGProfile setCurrentUser:[WGUser serialize:@{ @"key" : key, @"id" : @0 }]];
         [self fetchUserInfo];
     }
     else {
@@ -216,7 +215,7 @@
                                       }
                                       [profilePictures addObject:newImage];
                                       if ([profilePictures count] == 1) {
-                                          [[Profile user] setValue:[profilePictures objectAtIndex:0] forKey:@"image"];
+                                          [WGProfile currentUser].image = [profilePictures objectAtIndex:0];
                                       }
                                       if ([profilePictures count] >= 3) {
                                           break;
@@ -234,7 +233,7 @@
 
 
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
-    [[Profile user] setImages:profilePictures];
+    [WGProfile currentUser].images = profilePictures;
     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
     if (!_pushed) {
         _pushed = YES;
@@ -296,11 +295,13 @@
         _fbID = [fbGraphUser objectID];
         _profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", [fbGraphUser objectForKey:@"id"]];
         _accessToken = [FBSession activeSession].accessTokenData.accessToken;
-        [[Profile user] setFirstName:fbGraphUser[@"first_name"]];
-        [[Profile user] setLastName:fbGraphUser[@"last_name"]];
-        NSDictionary *userResponse = (NSDictionary *)fbGraphUser;
+        
+        [WGProfile currentUser].firstName = fbGraphUser[@"first_name"];
+        [WGProfile currentUser].lastName = fbGraphUser[@"last_name"];
+        
+        NSDictionary *userResponse = (NSDictionary *) fbGraphUser;
         if ([[userResponse allKeys] containsObject:@"gender"]) {
-            [[Profile user] setObject:[userResponse objectForKey:@"gender"] forKey:@"gender"];
+            [WGProfile currentUser].gender = [WGUser genderFromName:[userResponse objectForKey:@"gender"]];
         }
         
         if (!_alertShown && !_fetchingProfilePictures) {
@@ -377,29 +378,61 @@
     }
 }
 
-
 #pragma mark - Asynchronous methods
 
 - (void) loginUserAsynchronous {
-    // Set object FbID and access token to be saved locally
-    [[NSUserDefaults standardUserDefaults] setObject:_fbID forKey: @"facebook_id"];
-    [[NSUserDefaults standardUserDefaults] setObject:_accessToken forKey: @"accessToken"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
     [Crashlytics setUserIdentifier:_fbID];
     
-    User *profileUser = [Profile user];
-    [profileUser setObject:_fbID forKey:@"facebook_id"];
-    [profileUser setAccessToken:_accessToken];
+    [WGProfile currentUser].facebookId = _fbID;
+    [WGProfile currentUser].facebookAccessToken = _accessToken;
+    
     [WiGoSpinnerView addDancingGToCenterView:self.view];
-    [profileUser loginWithHandler:^(NSDictionary *jsonResponse, NSError *error) {
+
+    [[WGProfile currentUser] login:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            if (error) {
+                _fetchingProfilePictures = YES;
+                if ([error.userInfo objectForKey:@"wigoCode"] && [[error.userInfo objectForKey:@"wigoCode"] isEqualToString:@"does_not_exist"]) {
+                    [self fetchTokensFromFacebook];
+                    [self fetchProfilePicturesAlbumFacebook];
+                    return;
+                }
+                [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
+                return;
+            }
             [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            [self handleJsonResponse:jsonResponse andError:error isLoggingIn:YES];
+            [self navigate];
         });
     }];
 }
 
-- (void)handleJsonResponse:(NSDictionary *)jsonResponse andError:(NSError *)error isLoggingIn:(BOOL)logging{
+-(void) navigate {
+    if (![[WGProfile currentUser].emailValidated boolValue]) {
+        if (!_pushed) {
+            _pushed = YES;
+            self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
+            [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+        }
+    } else {
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        
+        currentInstallation[@"api_version"] = API_VERSION;
+        currentInstallation[@"wigo_id"] = [WGProfile currentUser].id;
+        [currentInstallation saveInBackground];
+        
+        if (!_pushed) {
+            _pushed = YES;
+            if ([[WGProfile currentUser].group.locked boolValue]) {
+                [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
+            } else {
+                [self loadMainViewController];
+            }
+            
+        }
+    }
+}
+
+/* - (void)handleJsonResponse:(NSDictionary *)jsonResponse andError:(NSError *)error isLoggingIn:(BOOL)logging{
     User *user;
     if ([jsonResponse isKindOfClass:[NSDictionary class]]) {
         user = [[User alloc] initWithDictionary:jsonResponse];
@@ -455,28 +488,28 @@
             
         }
     }
-}
+} */
 
-- (void)fetchUserInfo {
+-(void) fetchUserInfo {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
-    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGProfile reload:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
+                return;
+            }
             [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            [self handleJsonResponse:jsonResponse andError:error isLoggingIn:NO];
+            [self navigate];
         });
     }];
 }
 
-
 - (void)loadMainViewController {
-    if ([[[Profile user] numEvents] intValue] >= 3) {
+    if ([[WGProfile currentUser].group.numEvents intValue] >= 3) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabs" object:self];
     }
     [self dismissViewControllerAnimated:YES  completion:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
 }
-
-
-
 
 @end

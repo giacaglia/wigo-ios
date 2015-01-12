@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "User.h"
+#import "WGUser.h"
 
 @interface MoreViewController : UIViewController
 
-- (id)initWithState:(STATE)state;
-- (id)initWithUser:(User *)newUser;
+-(id)initWithState:(State)state;
+-(id)initWithUser:(WGUser *)newUser;
 
 @end

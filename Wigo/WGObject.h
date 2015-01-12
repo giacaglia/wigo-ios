@@ -7,16 +7,45 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NSDictionary+STHelper.h"
+#import "WGApi.h"
+#import "WGError.h"
+#import "NSDate+WGDate.h"
 
-@interface WGObject : NSMutableDictionary
+@class WGCollection;
 
-+(WGObject *)serialize:(NSDictionary *)json;
+@interface WGObject : NSObject
 
--(NSNumber *) numberAtKey:(NSString *)key;
--(NSString *) stringAtKey:(NSString *)key;
--(NSDictionary *) dictionaryAtKey:(NSString *)key;
--(NSDate *) dateAtKey:(NSString *)key;
+typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error);
+typedef void (^WGObjectResultBlock)(WGObject *object, NSError *error);
+typedef void (^BoolResultBlock)(BOOL success, NSError *error);
+
+@property NSMutableDictionary *parameters;
+@property NSMutableArray *modifiedKeys;
+
+@property NSString *className;
 
 @property NSNumber* id;
+@property NSDate* created;
+
+-(id) init;
+-(id) initWithJSON:(NSDictionary *)json;
+
++(WGObject *)serialize:(NSDictionary *)json;
+-(NSDictionary *) deserialize;
+
+-(BOOL) isEqual:(WGObject*)object;
+
+-(BOOL) expired;
+
+-(void) setObject:(id)object forKey:(id<NSCopying>)key;
+-(id) objectForKey:(NSString *)key;
+
+-(void) refresh:(BoolResultBlock)handler;
+-(void) save:(BoolResultBlock)handler;
+-(void) saveKey:(NSString *)key withValue:(id)value andHandler:(BoolResultBlock)handler;
+-(void) remove:(BoolResultBlock)handler;
++(void) get:(WGCollectionResultBlock)handler;
+-(void) create:(BoolResultBlock)handler;
 
 @end

@@ -39,7 +39,7 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [EventAnalytics tagEvent:@"Sign Up View"];
+    [WGAnalytics tagEvent:@"Sign Up View"];
 }
 
 - (void) initializeSignUpLabel {
@@ -58,7 +58,7 @@
     UIImageView *faceImageView = [[UIImageView alloc] init];
     faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     faceImageView.clipsToBounds = YES;
-    [faceImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]]];
+    [faceImageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL];
     faceImageView.frame = CGRectMake(15, 10, 47, 47);
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;
@@ -68,7 +68,7 @@
     
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75, 24, 200, 22)];
     nameLabel.textAlignment = NSTextAlignmentLeft;
-    nameLabel.text = [[Profile user] fullName];
+    nameLabel.text = [[WGProfile currentUser] fullName];
     nameLabel.font = [FontProperties getSmallFont];
     [faceAndNameView addSubview:nameLabel];
     
@@ -126,30 +126,30 @@
 
 - (void)continuePressed {
     NSString *emailString = _studentTextField.text;
+    emailString = [emailString stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     BOOL isEmail = [emailTest evaluateWithObject:emailString];
     if (isEmail) {
-        // NEED TO save the url's before signing up
-        NSArray *images = [[Profile user] images];
-        [[Profile user] setEmail:emailString];
-        NSString *response = [[Profile user] signUp];
-        if ([response isEqualToString:@"x`"]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email" message:@"Enter a valid email address" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
-        }
-        else if ([response isEqualToString:@"no_network"]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network" message:@"No network connection" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
-        }
-        else {
-            [[Profile user] setImages:images];
-            [[Profile user] save];
-            self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-            [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
-        }
-    }
-    else {
+        NSArray *images = [[WGProfile currentUser] images];
+        [WGProfile currentUser].email = emailString;
+        
+        [[WGProfile currentUser] signup:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionCreate retryHandler:nil];
+                return;
+            }
+            [WGProfile currentUser].images = images;
+            [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionCreate retryHandler:nil];
+                    return;
+                }
+                self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
+                [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+            }];
+        }];
+    } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email" message:@"Enter a valid email address" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
     }    

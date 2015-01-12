@@ -13,7 +13,7 @@
 #import "OnboardFollowViewController.h"
 
 @interface LockScreenViewController ()
-@property Party *everyoneParty;
+@property WGCollection *everyone;
 @end
 
 SLComposeViewController *mySLComposerSheet;
@@ -40,8 +40,7 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    numberOfPeopleSignedUp = [[Profile user] numberOfGroupMembers];
-    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
+    numberOfPeopleSignedUp = [WGProfile currentUser].group.numMembers;
     [self initializeTopLabel];
     [self initializeShareButton];
     [self initializeLockPeopleButtons];
@@ -54,11 +53,11 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self fetchUserInfo];
-    [EventAnalytics tagEvent:@"Lock Screen View"];
+    [WGAnalytics tagEvent:@"Lock Screen View"];
 }
 
 - (void)dismissIfGroupUnlocked {
-    if (![[Profile user] isGroupLocked] && !pushed) {
+    if (![[WGProfile currentUser].group.locked boolValue] && !pushed) {
         onboardFollowViewController = [OnboardFollowViewController new];
         [self.navigationController pushViewController:onboardFollowViewController animated:YES];
         pushed = YES;
@@ -76,7 +75,7 @@ OnboardFollowViewController *onboardFollowViewController;
     UILabel *spreadLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 60)];
     spreadLabel.numberOfLines = 0;
     spreadLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    spreadLabel.text = [NSString stringWithFormat:@"Spread the word to unlock Wigo\n at %@!", [[Profile user] groupName]];
+    spreadLabel.text = [NSString stringWithFormat:@"Spread the word to unlock Wigo\n at %@!", [WGProfile currentUser].group.name];
     [self setPropertiesofLabel:spreadLabel];
     [self.view addSubview:spreadLabel];
 }
@@ -88,7 +87,7 @@ OnboardFollowViewController *onboardFollowViewController;
             UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width - 10, origin.height - 10, 15 + 20, 15 + 20)];
             UIImageViewShake *lockPersonImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15 + 20, 15 + 20)];
             lockPersonImageView.tag = i;
-            [lockPersonImageView setImageWithURL:[NSURL URLWithString:[[Profile user] coverImageURL]] imageArea:[[Profile user] coverImageArea]];
+            [lockPersonImageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL imageArea:[WGProfile currentUser].smallCoverImageArea];
             lockPersonImageView.layer.borderWidth = 1;
             lockPersonImageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             lockPersonImageView.layer.cornerRadius = 17;
@@ -117,7 +116,7 @@ OnboardFollowViewController *onboardFollowViewController;
     UILabel *unlockLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 145, self.view.frame.size.width - 40, 65)];
     unlockLabel.numberOfLines = 0;
     unlockLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    unlockLabel.text = [NSString stringWithFormat:@"Wigo will unlock when %d more people from %@ sign up.", 100 - [numberOfPeopleSignedUp intValue] ,[Profile user].groupName];
+    unlockLabel.text = [NSString stringWithFormat:@"Wigo will unlock when %d more people from %@ sign up.", 100 - [numberOfPeopleSignedUp intValue], [WGProfile currentUser].group.name];
     [self setPropertiesofLabel:unlockLabel];
     [self.view addSubview:unlockLabel];
 
@@ -144,11 +143,11 @@ OnboardFollowViewController *onboardFollowViewController;
         if ([subview isMemberOfClass:[UIImageViewShake class]]) {
             UIImageViewShake *imageView = (UIImageViewShake *)subview;
             int i = (int)imageView.tag - 1;
-            int numberOfPeopleInParty = (int)[[_everyoneParty getObjectArray] count];
+            int numberOfPeopleInParty = (int)[_everyone count];
             if (i < numberOfPeopleInParty) {
-                if (numberOfPeopleInParty != 0 && numberOfPeopleSignedUp > 0 && [_everyoneParty getObjectArray]) {
-                    User *user = [[_everyoneParty getObjectArray] objectAtIndex:i];
-                    [imageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
+                if (numberOfPeopleInParty != 0 && numberOfPeopleSignedUp > 0 && _everyone) {
+                    WGUser *user = (WGUser *)[_everyone objectAtIndex:i];
+                    [imageView setImageWithURL:user.smallCoverImageURL imageArea:[user smallCoverImageArea]];
                     imageView.backgroundColor = [FontProperties getOrangeColor];
                     imageView.layer.borderWidth = 1;
                     imageView.layer.borderColor = [FontProperties getOrangeColor].CGColor;
@@ -161,7 +160,7 @@ OnboardFollowViewController *onboardFollowViewController;
     }
 }
 - (void)sharedPressed {
-    [EventAnalytics tagEvent:@"Share Pressed"];
+    [WGAnalytics tagEvent:@"Share Pressed"];
     NSArray *activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
@@ -176,44 +175,38 @@ OnboardFollowViewController *onboardFollowViewController;
 }
 
 - (void)fetchEveryone {
-    _everyoneParty = [[Party alloc] initWithObjectType:USER_TYPE];
-    NSString *queryString = [NSString stringWithFormat:@"users/?ordering=id&limit=%@",numberOfPeopleSignedUp];
-    [Network queryAsynchronousAPI:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-        }
-        else {
-            NSArray *arrayOfUsers = [jsonResponse objectForKey:@"objects"];
-            [_everyoneParty addObjectsFromArray:arrayOfUsers];
-            [_everyoneParty removeUser:[Profile user]];
-        }
-    }];
+    if (!_everyone) {
+        [WGUser getOrderedById:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                _everyone = collection;
+            });
+        }];
+    } else if ([_everyone.hasNextPage boolValue]) {
+        [_everyone addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void){
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+            });
+        }];
+    }
 }
 
 
 - (void) fetchUserInfo {
-    [Network queryAsynchronousAPI:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if ([[jsonResponse allKeys] containsObject:@"status"]) {
-            if (![[jsonResponse objectForKey:@"status"] isEqualToString:@"error"]) {
-                User *user = [[User alloc] initWithDictionary:jsonResponse];
-                if ([user key]) {
-                    [Profile setUser:user];
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
-                        [self dismissIfGroupUnlocked];
-                    });
-                }
-                
+    [WGProfile reload:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void){
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
             }
-        }
-        else {
-            User *user = [[User alloc] initWithDictionary:jsonResponse];
-            if ([user key]) {
-                [Profile setUser:user];
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    [self dismissIfGroupUnlocked];
-                });
-            }
-        }
-       
+            [self dismissIfGroupUnlocked];
+        });
     }];
 }
 

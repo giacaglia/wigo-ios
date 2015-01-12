@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Event.h"
+#import "WGEvent.h"
 #import "Delegate.h"
 #import "UIButtonAligned.h"
 
@@ -25,12 +25,11 @@
 @property (nonatomic, strong) UIButton *rightButton;
 @end
 
-#import "Event.h"
 #import "EventPeopleScrollView.h"
 
 @interface EventCell : UITableViewCell
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
-@property (nonatomic, strong) Event *event;
+@property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UIImageView *chatBubbleImageView;
 @property (nonatomic, strong) UILabel *chatNumberLabel;
@@ -70,7 +69,7 @@
 
 @interface HighlightOldEventCell : UITableViewCell
 @property (nonatomic, strong) UIImageView *highlightImageView;
-@property (nonatomic, strong) Event *event;
+@property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UILabel *oldEventLabel;
 + (CGFloat) height;

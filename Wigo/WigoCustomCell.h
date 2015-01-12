@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "UIImageViewShake.h"
-#import "User.h"
 
 @protocol WigoCustomCellDelegate
 - (void)profileSegue:(id)sender;

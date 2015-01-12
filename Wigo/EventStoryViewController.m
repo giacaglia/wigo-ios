@@ -9,10 +9,11 @@
 
 #import "EventStoryViewController.h"
 #import "IQMediaPickerController.h"
-#import "AWSUploader.h"
 #import "InviteViewController.h"
 #import "EventMessagesConstants.h"
 #import "FancyProfileViewController.h"
+#import "WGProfile.h"
+#import "WGEvent.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 #define kHeaderLength 64
@@ -21,10 +22,9 @@
 
 @interface EventStoryViewController()<UIScrollViewDelegate> {
     UIButton *sendButton;
-    NSArray *eventMessages;
+    WGCollection *eventMessages;
     UICollectionView *facesCollectionView;
     BOOL cancelFetchMessages;
-    NSDictionary *metaInfo;
     
     CGPoint currentContentOffset;
 }
@@ -53,7 +53,7 @@
     [self loadEventDetails];
     [self loadInviteOrGoHereButton];
 
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
         [self loadTextViewAndSendButton];
     }
 
@@ -63,9 +63,16 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    metaInfo = nil;
+    
+    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
+
+    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    
+    [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
 
     if (facesCollectionView) [facesCollectionView reloadData];
+    
+    eventMessages = nil;
     [self fetchEventMessages];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
@@ -74,12 +81,11 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
-    
+    [self.navigationController setNavigationBarHidden: NO animated: NO];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear: animated];
-    
 }
 
 #pragma mark - Loading Messages
@@ -91,11 +97,11 @@
     [self.view sendSubviewToBack:backgroundView];
     
     self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 120, 40)];
-    if ([[self.event numberAttending] intValue] > 0) {
-        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numberAttending stringValue]];
+    if ([self.event.numAttending intValue] > 0) {
+        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numAttending stringValue]];
     }
     else {
-        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numberAttending stringValue]];
+        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numAttending stringValue]];
     }
 //    if ([self.event.numberInvited intValue] > 0) {
 //        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@/%@ invited", self.numberGoingLabel.text, [self.event.numberInvited stringValue]];
@@ -136,14 +142,14 @@
     [self.backgroundScrollview addSubview:self.goHereButton];
     
     
-    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
+    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
         self.goHereButton.hidden = YES;
         self.goHereButton.enabled = NO;
     }
     else {
-        if ([self.event eventID] && [[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+        if (self.event.id && [[WGProfile currentUser].eventAttending.id isEqualToNumber:self.event.id]) {
             self.inviteButton.hidden = NO;
             self.inviteButton.enabled = YES;
         }
@@ -155,34 +161,43 @@
 }
 
 - (void)invitePressed {
-    [self presentViewController:[[InviteViewController alloc] initWithEventName:self.event.name andID:[self.event eventID]]
+    [WGAnalytics tagEvent: @"Event Story Invite Tapped"];
+    [self presentViewController:[[InviteViewController alloc] initWithEvent:self.event]
                        animated:YES
                      completion:nil];
 }
 
 - (void)goHerePressed {
+    [WGAnalytics tagEvent: @"Event Story Go Here Tapped"];
+    
     // Update data
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
-    [EventAnalytics tagEvent:@"Go Here" withDetails:options];
-    [[Profile user] setIsAttending:YES];
-    [[Profile user] setIsGoingOut:YES];
-    [[Profile user] setAttendingEventID:[self.event eventID]];
-    [[Profile user] setEventID:[self.event eventID]];
-    [Network postGoingToEventNumber:[[self.event eventID] intValue]];
-    [self.event addUser:[Profile user]];
-    [self.event setNumberAttending:@([self.event.numberAttending intValue] + 1)];
-
-    // Update UI
-    self.eventPeopleScrollView.event = self.event;
-    [self.eventPeopleScrollView updateUI];
-    self.goHereButton.hidden = YES;
-    self.goHereButton.enabled = NO;
-    self.inviteButton.hidden = NO;
-    self.inviteButton.enabled = YES;
-    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numberAttending stringValue]];
+    [WGAnalytics tagEvent:@"Go Here" withDetails:options];
     
-    [self presentFirstTimeGoingToEvent];
-
+    // [WGProfile currentUser].isAttending = [WGEvent serialize:nil];
+    [WGProfile currentUser].isGoingOut = [NSNumber numberWithBool:YES];
+    [[WGProfile currentUser] goingToEvent:self.event withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            return;
+        }
+        
+        WGEventAttendee *newAttendee = [[WGEventAttendee alloc] init];
+        newAttendee.user = [WGProfile currentUser];
+        [self.event addAttendee:newAttendee];
+        self.event.numAttending = @([self.event.numAttending intValue] + 1);
+        
+        // Update UI
+        self.eventPeopleScrollView.event = self.event;
+        [self.eventPeopleScrollView updateUI];
+        self.goHereButton.hidden = YES;
+        self.goHereButton.enabled = NO;
+        self.inviteButton.hidden = NO;
+        self.inviteButton.enabled = YES;
+        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numAttending stringValue]];
+        
+        [self presentFirstTimeGoingToEvent];
+    }];
 }
 
 - (void)presentFirstTimeGoingToEvent {
@@ -192,7 +207,7 @@
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
         self.conversationViewController.event = self.event;
-        if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
+        if (!eventMessages) self.conversationViewController.eventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
         if (goHereState == PRESENTFACESTATE) {
             if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
         }
@@ -205,7 +220,7 @@
         self.conversationViewController.controllerDelegate = self;
         self.conversationViewController.storyDelegate = self;
         
-        BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
+        BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
         self.conversationViewController.isPeeking = isPeeking;
         
         [self presentViewController:self.conversationViewController animated:YES completion:nil];
@@ -213,21 +228,22 @@
 }
 
 
-- (NSMutableArray *)eventMessagesWithYourFace:(BOOL)faceBool {
-    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+-(WGCollection *) eventMessagesWithYourFace:(BOOL)faceBool {
+    WGCollection *newEventMessages =  [[WGCollection alloc] initWithType:[WGEventMessage class]];
+    
+    [newEventMessages addObjectsFromCollection:eventMessages];
+
     NSString *type = faceBool ? kFaceImage : kNotAbleToPost;
-    [mutableEventMessages addObject:@{
-                                      @"user": [[Profile user] dictionary],
-                                      @"created": [dateFormatter stringFromDate:[NSDate date]],
+    WGEventMessage *eventMessage = [WGEventMessage serialize:@{
+                                      @"user": [[WGProfile currentUser] deserialize],
+                                      @"created": [NSDate nowStringUTC],
                                       @"media_mime_type": type,
                                       @"media": @""
                                       }];
     
-    return mutableEventMessages;
+    [newEventMessages addObject:eventMessage];
+    
+    return newEventMessages;
 }
 
 
@@ -283,25 +299,21 @@
     myCell.rightLine.backgroundColor = RGB(237, 237, 237);
     myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
     
-    if ([indexPath row] + 1 == eventMessages.count && [[metaInfo objectForKey:@"has_next_page"] boolValue]) {
+    if ([indexPath row] + 1 == eventMessages.count && [eventMessages.hasNextPage boolValue]) {
         [self fetchEventMessages];
     }
     myCell.timeLabel.frame = CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
     myCell.mediaTypeImageView.hidden = NO;
     myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
     
-    User *user;
-    NSDictionary *eventMessage = [eventMessages objectAtIndex:[indexPath row]];
-    user = [[User alloc] initWithDictionary:[eventMessage objectForKey:@"user"]];
-    if ([user isEqualToUser:[Profile user]]) {
-        user = [Profile user];
-    }
-    [myCell.mediaTypeImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL] ] imageArea:[user coverImageArea]];
+    WGEventMessage *eventMessage = (WGEventMessage *)[eventMessages objectAtIndex:[indexPath row]];
+    WGUser *user = eventMessage.user;
+    [myCell.mediaTypeImageView setImageWithURL:user.smallCoverImageURL imageArea:[user smallCoverImageArea]];
 
     NSString *contentURL;
-    if ([[eventMessage allKeys] containsObject:@"thumbnail"]) contentURL = [eventMessage objectForKey:@"thumbnail"];
-    else  contentURL = [eventMessage objectForKey:@"media"];
-    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [Profile cdnPrefix], contentURL]];
+    if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
+    else  contentURL = eventMessage.media;
+    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
     [myCell.spinner startAnimating];
     __weak FaceCell *weakCell = myCell;
     [myCell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -309,13 +321,12 @@
             [weakCell.spinner stopAnimating];
         });
     }];
-
-    myCell.timeLabel.text = [Time getUTCTimeStringToLocalTimeString:[eventMessage objectForKey:@"created"]];
+    myCell.timeLabel.text = [eventMessage.created getUTCTimeStringToLocalTimeString];
     myCell.timeLabel.textColor = RGB(59, 59, 59);
     myCell.faceAndMediaTypeView.alpha = 1.0f;
     
-    if ([[eventMessage allKeys] containsObject:@"is_read"]) {
-        if ([[eventMessage objectForKey:@"is_read"] boolValue]) {
+    if (eventMessage.isRead) {
+        if ([eventMessage.isRead boolValue]) {
             [myCell updateUIToRead:YES];
         }
         else [myCell updateUIToRead:NO];
@@ -426,37 +437,30 @@
 }
 
 - (void)setDetailViewRead {
-    if (![[[self.event dictionary] objectForKey:@"is_read"] boolValue]) {
-        [Network sendAsynchronousHTTPMethod:POST
-                                withAPIName:@"events/read/"
-                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                    if (!error) {
-                                        NSLog(@"json response %@", jsonResponse);
-                                    }
-                                    else {
-                                        NSLog(@"error %@", error);
-                                    }
-                                }
-                                withOptions:(id)@[[self.event eventID]]
-         ];
+    if (![self.event.isRead boolValue]) {
+        [self.event setRead:^(BOOL success, NSError *error) {
+            // Do nothing!
+        }];
     }
 }
 
 #pragma mark - Button handler
 
 - (void)goBack {
-    [self.navigationController setNavigationBarHidden: NO animated: NO];
     [self.navigationController popViewControllerAnimated: YES];
 }
 
+
 - (void)sendPressed {
     
+    [WGAnalytics tagEvent: @"Event Story Create Highlight Tapped"];
+
     //not going here
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
-    if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
-    if ([[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+    if (!eventMessages) self.conversationViewController.eventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
+    if ([[WGProfile currentUser].eventAttending.id isEqualToNumber:self.event.id]) {
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     else {
@@ -466,78 +470,83 @@
     self.conversationViewController.controllerDelegate = self;
     self.conversationViewController.storyDelegate = self;
     
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
+    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
     self.conversationViewController.isPeeking = isPeeking;
 
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
 }
 
-- (NSMutableArray *)eventMessagesWithCamera {
-    NSMutableArray *mutableEventMessages =  [NSMutableArray arrayWithArray:eventMessages];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+- (WGCollection *)eventMessagesWithCamera {
+    WGCollection *newEventMessages =  [[WGCollection alloc] initWithType:[WGEventMessage class]];
     
-    [mutableEventMessages addObject:@{
-                                      @"user": [[Profile user] dictionary],
-                                      @"created": [dateFormatter stringFromDate:[NSDate date]],
-                                      @"media_mime_type": kCameraType,
-                                      @"media": @""
-                                      }];
-
-    return mutableEventMessages;
+    [newEventMessages addObjectsFromCollection:eventMessages];
+    
+    WGEventMessage *eventMessage = [WGEventMessage serialize:@{
+                                                               @"user": [[WGProfile currentUser] deserialize],
+                                                               @"created": [NSDate nowStringUTC],
+                                                               @"media_mime_type": kCameraType,
+                                                               @"media": @""
+                                                               }];
+    
+    [newEventMessages addObject:eventMessage];
+    
+    return newEventMessages;
 }
-
 
 - (void)fetchEventMessages {
     if (!cancelFetchMessages) {
         cancelFetchMessages = YES;
-        NSString *queryString;
-        
-        if ([[metaInfo objectForKey:@"has_next_page"] boolValue]) {
-            NSString *nextAPIString = (NSString *)[metaInfo objectForKey:@"next"] ;
-            queryString = [nextAPIString substringWithRange:NSMakeRange(5, nextAPIString.length - 5)];
+        __weak typeof(self) weakSelf = self;
+        if (!eventMessages) {
+            [self.event getMessages:^(WGCollection *collection, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    __strong typeof(self) strongSelf = weakSelf;
+                    strongSelf->cancelFetchMessages = NO;
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    strongSelf->eventMessages = collection;
+                    [strongSelf->facesCollectionView reloadData];
+                });
+            }];
+        } else if ([eventMessages.hasNextPage boolValue]) {
+            [eventMessages addNextPage:^(BOOL success, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    __strong typeof(self) strongSelf = weakSelf;
+                    strongSelf->cancelFetchMessages = NO;
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        return;
+                    }
+                    [strongSelf->facesCollectionView reloadData];
+                });
+            }];
         }
-        else {
-            queryString = [NSString stringWithFormat:@"eventmessages/?event=%@&limit=100", [self.event eventID]];
-        }
-        [Network sendAsynchronousHTTPMethod:GET
-                                withAPIName:queryString
-                                withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        if (metaInfo) {
-                                            NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
-                                            [mutableEventMessages addObjectsFromArray:(NSArray *)[jsonResponse objectForKey:@"objects"]];
-                                            eventMessages = [NSArray arrayWithArray:mutableEventMessages];
-                                        }
-                                        else {
-                                            eventMessages = [NSMutableArray arrayWithArray:(NSArray *)[jsonResponse objectForKey:@"objects"]];
-                                        }
-                                        metaInfo = [jsonResponse objectForKey:@"meta"];
-                                        [facesCollectionView reloadData];
-                                        cancelFetchMessages = NO;
-                                    });
-                                }];
     }
 }
 
 
 
 - (void)showEventConversation:(NSNumber *)index {
+    
+    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
+
+    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    [WGAnalytics tagEvent:@"Event Story Highlight Tapped" withDetails: @{ @"isPeeking": isPeekingString }];
+
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
     self.conversationViewController.index = index;
-    if (!eventMessages) self.conversationViewController.eventMessages = [NSMutableArray new];
-    if (![[[Profile user] attendingEventID] isEqualToNumber:[self.event eventID]]) {
+    
+    if (![[WGProfile currentUser].eventAttending.id isEqualToNumber:self.event.id]) {
          self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:NO];
     }
     else {
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]);
     self.conversationViewController.isPeeking = isPeeking;
 
     self.conversationViewController.storyDelegate = self;
@@ -547,19 +556,15 @@
 
 - (void)readEventMessageIDArray:(NSArray *)eventMessageIDArray {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSMutableArray *mutableEventMessages = [NSMutableArray arrayWithArray:eventMessages];
         for (int i = 0; i < [eventMessageIDArray count]; i++) {
             NSNumber *eventMessageID = [eventMessageIDArray objectAtIndex:i];
-            for (int j = 0; j < [eventMessages count]; j++) {
-                NSMutableDictionary *eventMessage = [NSMutableDictionary dictionaryWithDictionary:[eventMessages objectAtIndex:j]];
-                if ([[eventMessage objectForKey:@"id"] isEqualToNumber:eventMessageID]) {
-                    [eventMessage setObject:@YES forKey:@"is_read"];
-                    [mutableEventMessages setObject:eventMessage atIndexedSubscript:i];
+            for (WGEventMessage *eventMessage in eventMessages) {
+                if ([eventMessage.id isEqualToNumber:eventMessageID]) {
+                    eventMessage.isRead = @YES;
                     break;
                 }
             }
         }
-        eventMessages = [NSArray arrayWithArray:mutableEventMessages];
         [facesCollectionView reloadData];
     });
 }
@@ -605,17 +610,15 @@
 
 #pragma mark - Places Delegate
 
-- (void)showUser:(User *)user {
+- (void)showUser:(WGUser *)user {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     FancyProfileViewController *fancyProfileViewController = [sb instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
 
-    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[[Profile user] groupID]]) {
-        fancyProfileViewController.userState = OTHER_SCHOOL_USER;
+    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
+        fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
     }
     
-    [self.navigationController setNavigationBarHidden: NO animated: NO];
-
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 

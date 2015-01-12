@@ -9,12 +9,43 @@
 #import <Foundation/Foundation.h>
 #import "WGObject.h"
 
-@interface WGCollection : NSMutableArray
+@interface WGCollection : NSEnumerator
 
--(void)setHasNextPage:(BOOL)hasNextPage;
--(void)setNextPage:(NSString *)nextPage;
+typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error);
 
--(BOOL)hasNextPage;
--(NSString *)nextPage;
+@property Class type;
+
+@property NSMutableArray *objects;
+@property NSInteger currentPosition;
+
+@property NSNumber *hasNextPage;
+@property NSString *nextPage;
+
+-(id) initWithType:(Class)type;
+
++(WGCollection *)serializeResponse:(NSDictionary *) jsonResponse andClass:(Class)type;
++(WGCollection *)serializeArray:(NSArray *) array andClass:(Class)type;
+
+-(NSArray *) deserialize;
+
+-(void) exchangeObjectAtIndex:(NSUInteger)id1 withObjectAtIndex:(NSUInteger)id2;
+-(void) replaceObjectAtIndex:(NSUInteger)index withObject:(WGObject *)object;
+-(void) addObjectsFromCollection:(WGCollection *)newCollection;
+-(void) addObjectsFromCollection:(WGCollection *)newCollection notInCollection:(WGCollection *)notCollection;
+-(void) addObject:(WGObject *)object;
+-(WGObject *) objectAtIndex:(NSInteger)index;
+-(NSInteger) indexOfObject:(WGObject *)object;
+-(void) insertObject:(WGObject *)object atIndex:(NSUInteger)index;
+-(void) addObjectsFromCollectionToBeginning:(WGCollection *)collection;
+-(void) removeObjectAtIndex:(NSUInteger)index;
+-(void) removeAllObjects;
+-(void) removeObject:(WGObject *)object;
+-(WGObject *) objectWithID:(NSNumber *)searchID;
+-(BOOL) containsObject:(WGObject *)object;
+-(NSUInteger) count;
+-(NSArray *) idArray;
+
+-(void) addNextPage:(BoolResultBlock)handler;
+-(void) getNextPage:(WGCollectionResultBlock)handler;
 
 @end

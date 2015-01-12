@@ -11,15 +11,15 @@
 #import <Parse/Parse.h>
 #import <Crashlytics/Crashlytics.h>
 #import "FontProperties.h"
-#import "Network.h"
 #import "GAI.h"
-#import "Time.h"
 #import "PopViewController.h"
+#import "WGProfile.h"
+#import "WGEvent.h"
+#import "PlacesViewController.h"
 
 NSNumber *numberOfNewMessages;
 NSNumber *numberOfNewNotifications;
 NSDate *firstLoggedTime;
-
 
 @implementation AppDelegate
 
@@ -32,12 +32,10 @@ NSDate *firstLoggedTime;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"canFetchAppStartup"];
-    [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
-    BOOL googleAnalyticsEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"googleAnalyticsEnabled"];
-    [Profile setGoogleAnalyticsEnabled:googleAnalyticsEnabled];
-    
+#warning disable crashlytics for testing
+    /* [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"]; */
 
-    if ([Profile googleAnalyticsEnabled]) {
+    if ([[WGProfile currentUser].googleAnalyticsEnabled boolValue]) {
         [self initializeGoogleAnalytics];
     }
     
@@ -81,16 +79,41 @@ NSDate *firstLoggedTime;
 
 }
 
+- (void) dismissEverythingWithUserInfo:(NSDictionary *)userInfo {
+    UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    UIViewController *presentedController = [navController presentedViewController];
+    UIViewController *visibleController = [navController topViewController];
+
+    if (![visibleController isKindOfClass:[PlacesViewController class]]) {
+        if (presentedController != nil) {
+            [presentedController dismissViewControllerAnimated:NO completion:^{[self dismissEverythingWithUserInfo:userInfo];}];
+        } else {
+            [navController popViewControllerAnimated:NO];
+            [self dismissEverythingWithUserInfo:userInfo];
+        }
+        NSLog(@"here");
+    }
+    else {
+        [self doneWithUserInfo:userInfo];
+    }
+}
+
+- (void) doneWithUserInfo:(NSDictionary *)userInfo {
+    NSLog(@"111");
+    if ([self doesUserInfo:userInfo hasString:@"M"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"goToChat" object:nil];
+
+    }
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-
 }
 
 - (void)application:(UIApplication *)application
@@ -111,8 +134,27 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     }
 }
 
+- (UIViewController*) topMostController
+{
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    return topController;
+}
+
+- (BOOL)isModal:(UIViewController *)vc {
+    return vc.presentingViewController.presentedViewController == vc
+    || vc.navigationController.presentingViewController.presentedViewController == vc.navigationController
+    || [vc.tabBarController.presentingViewController isKindOfClass:[UITabBarController class]];
+}
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+//    [self dismissEverythingWithUserInfo:userInfo];
+  
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if ([aps isKindOfClass:[NSDictionary class]]) {
@@ -131,12 +173,26 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                     }
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:[NSDictionary dictionaryWithDictionary:dictionary]];
                 }
+                
             }
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     }
     else { // If it's was at the background or inactive
     }
+}
+
+- (BOOL)doesUserInfo:(NSDictionary *)userInfo hasString:(NSString *)checkString {
+    NSDictionary *aps = [userInfo objectForKey:@"aps"];
+    if ([aps isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *alert = [aps objectForKey:@"alert"];
+        if ([alert isKindOfClass:[NSDictionary class]]) {
+            NSString *locKeyString = [alert objectForKey:@"loc-key"];
+            if ([locKeyString isEqualToString:checkString]) {
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 
 #pragma mark - Custom actions
@@ -148,26 +204,25 @@ forRemoteNotification:(NSDictionary *)userInfo
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if ([identifier isEqualToString: @"tap_with_diff_event"]) {
         NSDictionary *event = [userInfo objectForKey:@"event"];
-        NSNumber *eventID = [event objectForKey:@"id"];
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
-        if (eventID  && [aps isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *alert = [aps objectForKey:@"alert"];
-            if ([alert isKindOfClass:[NSDictionary class]]) {
-                NSString *locKeyString = [alert objectForKey:@"loc-key"];
-                if ([locKeyString isEqualToString:@"T"]) {
-                    if ([Profile user] && [Profile user].key) {
-                        [[Profile user] setIsGoingOut:YES];
-                        [[Profile user] setEventID:eventID];
-                        [[Profile user] setIsAttending:YES];
-                        [[Profile user] setAttendingEventID:eventID];
-                        [Network postGoingToEventNumber:[eventID intValue]];
-                     
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
-                    }
-                }
+        NSDictionary *alert = [aps objectForKey:@"alert"];
+        NSString *locKeyString = [alert objectForKey:@"loc-key"];
+        if ([locKeyString isEqualToString:@"T"]) {
+            if ([WGProfile currentUser].key) {
+                [WGProfile currentUser].isGoingOut = [NSNumber numberWithBool:YES];
+                WGEvent *attendingEvent = [WGEvent serialize:event];
+                [WGProfile currentUser].eventAttending = attendingEvent;
+                
+                [[WGProfile currentUser] goingToEvent:attendingEvent withHandler:^(BOOL success, NSError *error) {
+                    completionHandler();
+                }];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
+                return;
             }
         }
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     completionHandler();
 }
 
@@ -209,20 +264,13 @@ forRemoteNotification:(NSDictionary *)userInfo
     return wasHandled;
 }
 
-
 #pragma mark - Save the time
 
-
+#warning This seems wrong...
 - (void) logFirstTimeLoading {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
-    [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSString *utcTimeString = [dateFormatter stringFromDate:[NSDate date]];
-    
     NSDateFormatter *utcDateFormat = [[NSDateFormatter alloc] init];
     [utcDateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *dateInUTC = [utcDateFormat dateFromString:utcTimeString];
+    NSDate *dateInUTC = [utcDateFormat dateFromString:[NSDate nowStringUTC]];
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     firstLoggedTime = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
     [self saveDatesAccessed];
@@ -340,47 +388,14 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 - (void)fetchAppStart {
     BOOL canFetchAppStartUp = [[NSUserDefaults standardUserDefaults] boolForKey:@"canFetchAppStartup"];
-    if (canFetchAppStartUp && [self shouldFetchAppStartup] && [Profile user]) {
-        [Network queryAsynchronousAPI:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if (!error) {
-                    if ([[jsonResponse allKeys] containsObject:@"cdn"]) {
-                        NSDictionary *cdnDictionary = [jsonResponse objectForKey:@"cdn"];
-                        if ([[cdnDictionary allKeys] containsObject:@"uploads"]) {
-                            NSString *cdn = [cdnDictionary objectForKey:@"uploads"];
-                            [Profile setCDNPrefix:cdn];
-                        }
-                    }
-                    if ([[jsonResponse allKeys] containsObject:@"analytics"]) {
-                        NSDictionary *analytics = [jsonResponse objectForKey:@"analytics"];
-                        if (analytics) {
-                            BOOL gAnalytics = YES;
-                            NSNumber *gval = [analytics objectForKey:@"gAnalytics"];
-                            if (gval) {
-                                gAnalytics = [gval boolValue];
-                            }
-                            
-                            [Profile setGoogleAnalyticsEnabled:gAnalytics];
-                            [[NSUserDefaults standardUserDefaults] setBool:gAnalytics forKey:@"googleAnalyticsEnabled"];
-                            [[NSUserDefaults standardUserDefaults] synchronize];
-                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            if (gAnalytics) [appDelegate initializeGoogleAnalytics];
-                        }
-                    }
-                    if ([[jsonResponse allKeys] containsObject:@"provisioning"]) {
-                        NSDictionary *provisioning = [jsonResponse objectForKey:@"provisioning"];
-                        if ([provisioning isKindOfClass:[NSDictionary class]] &&
-                            [[provisioning allKeys] containsObject:@"school_statistics"]) {
-                            NSNumber *schoolVal = [provisioning objectForKey:@"school_statistics"];
-                            if (schoolVal) {
-                                BOOL schoolStats = [schoolVal boolValue];
-                                [[NSUserDefaults standardUserDefaults] setBool:schoolStats forKey:@"school_statistics"];
-                                [[NSUserDefaults standardUserDefaults] synchronize];
-                            }
-                        }
-                    }
-                }
-            });
+    if (canFetchAppStartUp && [self shouldFetchAppStartup] && [WGProfile currentUser]) {
+        [WGApi startup:^(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSError *error) {
+            if (error) {
+                return;
+            }
+            [WGProfile currentUser].cdnPrefix = cdnPrefix;
+            [WGProfile currentUser].googleAnalyticsEnabled = googleAnalyticsEnabled;
+            [WGProfile currentUser].schoolStatistics = schoolStatistics;
         }];
     }
 }
@@ -395,7 +410,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     }
     else {
         NSDate *newDate = [NSDate date];
-        NSDateComponents *differenceDateComponents = [Time differenceBetweenFromDate:dateAccessed toDate:newDate];
+        NSDateComponents *differenceDateComponents = [dateAccessed differenceBetweenDates:newDate];
         if ([differenceDateComponents hour] > 0 || [differenceDateComponents day] > 0 || [differenceDateComponents weekOfYear] > 0 || [differenceDateComponents month] > 0) {
             [[NSUserDefaults standardUserDefaults] setObject:newDate forKey: @"lastTimeAccessed"];
             [[NSUserDefaults standardUserDefaults] synchronize];

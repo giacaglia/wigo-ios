@@ -7,15 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "User.h"
+#import "WGUser.h"
 
 @interface PeopleViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
-- (id)initWithUser:(User *)user andTab:(NSNumber *)tab;
-- (id)initWithUser:(User *)user;
+- (id)initWithUser:(WGUser *)user andTab:(NSNumber *)tab;
+- (id)initWithUser:(WGUser *)user;
 
 @property (nonatomic) UIBarButtonItem *sidebarButton;
-@property User *user;
+@property WGUser *user;
 @property int tabNumber;
 @property (nonatomic, strong) NSNumber *currentTab;
 
