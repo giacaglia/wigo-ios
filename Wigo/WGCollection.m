@@ -53,8 +53,7 @@
 -(void) initObjects:(NSArray *)objects {
     self.objects = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {
-        WGObject *object = [[self.type alloc] initWithJSON:objectDict];
-        [self.objects addObject: object];
+        [self.objects addObject: [[self.type alloc] initWithJSON:objectDict]];
     }
 }
 
@@ -142,6 +141,10 @@
 -(NSArray *) idArray {
     NSMutableArray *ids = [[NSMutableArray alloc] init];
     for (WGObject *object in self.objects) {
+        if (!object.id) {
+            NSLog(@"No Object ID for object: %@", object);
+            continue;
+        }
         [ids addObject:object.id];
     }
     return ids;

@@ -7,12 +7,15 @@
 //
 
 #import "WGProfile.h"
+#import "WGEvent.h"
 
 #define kKeyKey @"key"
 #define kEmailKey @"email"
 #define kFirstNameKey @"first_name"
 #define kLastNameKey @"last_name"
 #define kGenderKey @"gender"
+#define kGroupKey @"group"
+#define kIsAttendingKey @"is_attending"
 #define kSchoolStatisticsKey @"school_statistics"
 #define kGoogleAnalyticsEnabledKey @"googleAnalyticsEnabled"
 #define kCanFetchAppStartupKey @"canFetchAppStartup"
@@ -57,6 +60,10 @@ static WGProfile *currentUser = nil;
         [[NSUserDefaults standardUserDefaults] setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
     }
     return self;
+}
+
+-(void) replaceReferences {
+    [super replaceReferences];
 }
 
 +(void) setCurrentUser:(WGUser *)user {
