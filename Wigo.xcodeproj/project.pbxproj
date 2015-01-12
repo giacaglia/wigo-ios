@@ -38,7 +38,6 @@
 		45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF11A5DA86500A5170F /* WGGroup.m */; };
 		45F74FF51A5E3F9100A5170F /* WGFollow.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF41A5E3F9100A5170F /* WGFollow.m */; };
 		45F74FF61A5EF4A100A5170F /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
-		C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */ = {isa = PBXBuildFile; fileRef = C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */; };
 		C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
 		C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6251923967D00361247 /* AppDelegate.m */; };
 		C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A31961EADE00A01F50 /* SDWebImageManager.m */; };
@@ -57,7 +56,6 @@
 		C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
 		C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */; };
 		C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B01961EADE00A01F50 /* UIImageView+HighlightedWebCache.m */; };
-		C12A111C19787BE700D53B1C /* NSMutableURLRequest+Wigo.m in Sources */ = {isa = PBXBuildFile; fileRef = C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */; };
 		C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C29D1961EADE00A01F50 /* SDWebImageDecoder.m */; };
 		C12A111E19787BE700D53B1C /* SDWebImagePrefetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A61961EADE00A01F50 /* SDWebImagePrefetcher.m */; };
 		C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD4728194B889800AEA17D /* RWBlurImage.m */; };
@@ -451,8 +449,6 @@
 		45F74FF11A5DA86500A5170F /* WGGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGGroup.m; sourceTree = "<group>"; };
 		45F74FF31A5E3F9100A5170F /* WGFollow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGFollow.h; sourceTree = "<group>"; };
 		45F74FF41A5E3F9100A5170F /* WGFollow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGFollow.m; sourceTree = "<group>"; };
-		C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Wigo.h"; sourceTree = "<group>"; };
-		C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+Wigo.m"; sourceTree = "<group>"; };
 		C12A11E119787BE700D53B1C /* Wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12A11E219787BE800D53B1C /* wigoBlade.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = wigoBlade.plist; sourceTree = "<group>"; };
 		C16D86A919747FF6003EB336 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -977,8 +973,6 @@
 			isa = PBXGroup;
 			children = (
 				E9706E1A19C22B1400A21DE0 /* WigoCustomCell */,
-				C12A1103197878FE00D53B1C /* NSMutableURLRequest+Wigo.h */,
-				C12A1104197878FE00D53B1C /* NSMutableURLRequest+Wigo.m */,
 				E994111019AA8D9200D76379 /* NSString+URLEncoding.h */,
 				E994111119AA8D9200D76379 /* NSString+URLEncoding.m */,
 				E9ACDC6719AB7559004B0349 /* NSObject-CancelableScheduledBlock.h */,
@@ -2108,7 +2102,6 @@
 				C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */,
 				E96F07BE19BA654600E858D7 /* GKCropBorderView.m in Sources */,
 				E9C63BE31A03ED35006C5DD2 /* IQSongsAlbumViewCell.m in Sources */,
-				C12A111C19787BE700D53B1C /* NSMutableURLRequest+Wigo.m in Sources */,
 				E9BF59E91A3B40EB00AF8AFE /* UILabelBorder.m in Sources */,
 				E9C63BED1A03ED35006C5DD2 /* IQSongsCompilationsViewController.m in Sources */,
 				C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */,
@@ -2241,7 +2234,6 @@
 				E9C63BD41A03ED35006C5DD2 /* IQAssetsPickerShadowView.m in Sources */,
 				E9C63BF01A03ED35006C5DD2 /* IQSongsGenreViewController.m in Sources */,
 				E9C63BD21A03ED35006C5DD2 /* IQAssetsCell.m in Sources */,
-				C12A1105197878FE00D53B1C /* NSMutableURLRequest+Wigo.m in Sources */,
 				E96F07BD19BA654600E858D7 /* GKCropBorderView.m in Sources */,
 				45DF86B11A5C5DEB00DB85AE /* AFURLConnectionOperation.m in Sources */,
 				E900C2B91961EADE00A01F50 /* SDWebImageDecoder.m in Sources */,
