@@ -418,7 +418,6 @@
     self.mediaScrollView.eventConversationDelegate = self;
     self.mediaScrollView.storyDelegate = self.storyDelegate;
     self.mediaScrollView.isPeeking = self.isPeeking;
-
     self.mediaScrollView.delegate = self;
     [self.view addSubview:self.mediaScrollView];
     [self.view sendSubviewToBack:self.mediaScrollView];
@@ -447,7 +446,10 @@
     [self.view addSubview:self.buttonTrash];
     
     if (self.index) {
-        [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];      
+        [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+        self.mediaScrollView.index = self.index;
+        self.mediaScrollView.minPage = [self.index intValue];
+        self.mediaScrollView.maxPage = [self.index intValue];
     }
 }
 
