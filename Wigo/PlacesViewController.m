@@ -40,6 +40,7 @@
 }
 
 @property (nonatomic, strong) UIView *loadingView;
+@property (nonatomic, strong) UIView *loadingIndicator;
 @property (nonatomic, strong) UIView *whereAreYouGoingView;
 @property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
 
@@ -663,34 +664,45 @@ int firstIndexOfNegativeEvent;
 
 - (void)createPressed {
     if ([_whereAreYouGoingTextField.text length] != 0) {
+        _whereAreYouGoingTextField.enabled = NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
         [self addLoadingIndicator];
         [WGEvent createEventWithName:_whereAreYouGoingTextField.text andHandler:^(WGEvent *object, NSError *error) {
-            if (error) {
-                return;
-            }
-            [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : object.id }] withHandler:^(BOOL success, NSError *error) {
+            [UIView animateWithDuration:0.2f animations:^{
+                _loadingIndicator.frame = CGRectMake(0, 0, _loadingView.frame.size.width, _loadingView.frame.size.height);
+            } completion:^(BOOL finished) {
+                if (finished) [_loadingView removeFromSuperview];
+                
+                _whereAreYouGoingTextField.enabled = YES;
+                self.navigationItem.rightBarButtonItem.enabled = YES;
                 if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                     return;
                 }
-                
-                [self removeProfileUserFromAnyOtherEvent];
-                
-                [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-                
-                [self dismissKeyboard];
-                [self fetchEventsFirstPage];
-                [self updateTitleView];
-                
-                [WGProfile currentUser].isGoingOut = @YES;
-                [WGProfile currentUser].eventAttending = object;
-                [WGProfile currentUser].isGoingOut = @YES;
-                
-                WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [[WGProfile currentUser] deserialize] }];
-                WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
-                object.attendees = eventAttendees;
-                
-                [self showStoryForEvent:object];
+                [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : object.id }] withHandler:^(BOOL success, NSError *error) {
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                        return;
+                    }
+                    
+                    [self removeProfileUserFromAnyOtherEvent];
+                    
+                    [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                    
+                    [self dismissKeyboard];
+                    [self fetchEventsFirstPage];
+                    [self updateTitleView];
+                    
+                    [WGProfile currentUser].isGoingOut = @YES;
+                    [WGProfile currentUser].eventAttending = object;
+                    [WGProfile currentUser].isGoingOut = @YES;
+                    
+                    WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [[WGProfile currentUser] deserialize] }];
+                    WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
+                    object.attendees = eventAttendees;
+                    
+                    [self showStoryForEvent:object];
+                }];
+
             }];
         }];
     }
@@ -702,15 +714,12 @@ int firstIndexOfNegativeEvent;
     _loadingView.layer.borderWidth = 1.0f;
     _loadingView.layer.cornerRadius = 3.0f;
     
-    UIView *loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, _loadingView.frame.size.height)];
-    loadingIndicator.backgroundColor = [FontProperties getBlueColor];
-    [_loadingView addSubview:loadingIndicator];
-    [UIView animateWithDuration:1.0f animations:^{
-        loadingIndicator.frame = CGRectMake(0, 0, _loadingView.frame.size.width, _loadingView.frame.size.height);
-    } completion:^(BOOL finished) {
-        if (finished) [_loadingView removeFromSuperview];
-    }
-     ];
+    _loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, _loadingView.frame.size.height)];
+    _loadingIndicator.backgroundColor = [FontProperties getBlueColor];
+    [_loadingView addSubview:_loadingIndicator];
+    [UIView animateWithDuration:0.8f animations:^{
+        _loadingIndicator.frame = CGRectMake(0, 0, _loadingView.frame.size.width*0.7, _loadingView.frame.size.height);
+    }];
     [_whereAreYouGoingView addSubview:_loadingView];
 }
 
