@@ -61,7 +61,7 @@ OnboardFollowViewController *onboardFollowViewController;
     UIImageView *faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 47, 47)];
     faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     faceImageView.clipsToBounds = YES;
-    [faceImageView setImageWithURL:[WGProfile currentUser].coverImageURL imageArea:[WGProfile currentUser].coverImageArea];
+    [faceImageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL imageArea:[WGProfile currentUser].smallCoverImageArea];
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;
     faceImageView.layer.borderColor = [UIColor clearColor].CGColor;

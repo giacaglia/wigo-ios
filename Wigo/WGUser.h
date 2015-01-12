@@ -91,16 +91,18 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 +(Gender) genderFromName:(NSString *)name;
 -(NSString *) fullName;
 
+-(State) state;
+
 -(void) removeImageAtIndex:(NSInteger)index;
 -(void) makeImageAtIndexCoverImage:(NSInteger)index;
 -(NSURL *) coverImageURL;
+-(NSURL *) smallCoverImageURL;
 -(NSDictionary *) coverImageArea;
+-(NSDictionary *) smallCoverImageArea;
 -(NSArray *) imagesArea;
 -(NSArray *) imagesURL;
 -(void) addImageURL:(NSString *)imageURL;
 -(void) addImageDictionary:(NSDictionary *)imageDictionary;
-
--(State) state;
 
 -(BOOL) isCurrentUser;
 
@@ -127,6 +129,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) goingOut:(BoolResultBlock)handler;
 -(void) goingToEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler;
 -(void) readConversation:(BoolResultBlock)handler;
+-(void) deleteConversation:(BoolResultBlock)handler;
 -(void) getConversation:(WGCollectionResultBlock)handler;
 
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler;

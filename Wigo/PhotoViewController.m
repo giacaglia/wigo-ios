@@ -86,8 +86,7 @@
                                                   otherButtonTitles:nil];
         [alertView show];
 
-    }
-    else {
+    } else {
         [[WGProfile currentUser] removeImageAtIndex:[[WGProfile currentUser].imagesURL indexOfObject:[_image objectForKey:@"url"]]];
         [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
             if (error) {

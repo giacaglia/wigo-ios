@@ -35,7 +35,7 @@ NSMutableArray *failedUserInfoArray;
 }
 
 - (void)setSmallImageForUser:(WGUser *)user completed:(SDWebImageCompletedBlock)completedBlock {
-    [self setImageWithURL:[user coverImageURL] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+    [self setImageWithURL:[user smallCoverImageURL] placeholderImage:[[UIImage alloc] init] imageArea:[user smallCoverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         /* if (error) {
             if (!failedUserInfoArray) failedUserInfoArray = [NSMutableArray new];
             
@@ -55,7 +55,7 @@ NSMutableArray *failedUserInfoArray;
 }
 
 - (void)setCoverImageForUser:(WGUser *)user completed:(SDWebImageCompletedBlock)completedBlock {
-    [self setImageWithURL:[user coverImageURL] placeholderImage:[[UIImage alloc] init] imageArea:[user coverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+    [self setImageWithURL:[user smallCoverImageURL] placeholderImage:[[UIImage alloc] init] imageArea:[user smallCoverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         if (error) {
             /* if (!failedUserInfoArray) failedUserInfoArray = [NSMutableArray new];
             

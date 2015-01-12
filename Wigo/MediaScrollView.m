@@ -79,7 +79,7 @@
         AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         if (authStatus == AVAuthorizationStatusDenied) {
             PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
-            [myCell.imageView setImageWithURL:[WGProfile currentUser].coverImageURL];
+            [myCell.imageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL];
              myCell.titleTextLabel.frame = CGRectMake(15, 160, self.frame.size.width - 30, 60);
             myCell.titleTextLabel.text = @"Please Give WiGo an access to camera to add to the story:";
             myCell.avoidAction.hidden = YES;
@@ -129,7 +129,7 @@
     }
     else if ([mimeType isEqualToString:kFaceImage]) {
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
-        [myCell.imageView setImageWithURL:[WGProfile currentUser].coverImageURL];
+        [myCell.imageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL];
         myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, you're going out to %@.", [self.event name]];
         myCell.subtitleTextLabel.text = @"You can now post inside this event";
         myCell.subtitleTextLabel.alpha = 0.7f;
@@ -143,7 +143,7 @@
     }
     else if ([mimeType isEqualToString:kNotAbleToPost]) {
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
-        [myCell.imageView setImageWithURL:[WGProfile currentUser].coverImageURL];
+        [myCell.imageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL];
         myCell.titleTextLabel.text = @"To add a highlight you must be going here.";
         myCell.avoidAction.hidden = YES;
         myCell.isPeeking = self.isPeeking;
@@ -463,7 +463,6 @@
          andOptions:(NSDictionary *)options
 {
     WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
-    __unsafe_unretained WGEventMessage *weakNewEventMessage = newEventMessage;
     [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumbnailFilename andHandler:^(WGEventMessage *object, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (error) {

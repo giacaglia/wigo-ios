@@ -39,6 +39,7 @@
 #define kPropertiesKey @"properties" //: {},
 #define kImagesKey @"images"
 #define kURLKey @"url"
+#define kSmallKey @"small"
 #define kCropKey @"crop"
 
 #define kNotificationsKey @"notifications"
@@ -289,7 +290,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setImages:(NSArray *)images {
-    NSMutableDictionary *properties = [[[NSMutableDictionary alloc] init] initWithDictionary: self.properties];
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
     [properties setObject:images forKey:kImagesKey];
     self.properties = properties;
 }
@@ -330,6 +331,13 @@ static WGUser *currentUser = nil;
     return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kURLKey]];
 }
 
+-(NSURL *) smallCoverImageURL {
+    if ([[self.images objectAtIndex:0] objectForKey:kSmallKey]) {
+        return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kSmallKey]];
+    }
+    return [self coverImageURL];
+}
+
 -(NSArray *) imagesArea {
     if (self.properties && [[self.properties allKeys] containsObject:kImagesKey]) {
         NSArray *images = [self.properties objectForKey:kImagesKey];
@@ -350,6 +358,22 @@ static WGUser *currentUser = nil;
     NSArray *imagesArea = [self imagesArea];
     if (imagesArea && [imagesArea count] > 0) {
         return [imagesArea objectAtIndex:0];
+    }
+    return [[NSDictionary alloc] init];
+}
+
+-(NSDictionary *) smallCoverImageArea {
+    NSArray *imagesArea = [self imagesArea];
+    if (imagesArea && [imagesArea count] > 0) {
+        NSDictionary *area = [imagesArea objectAtIndex:0];
+        if (area && ![area isEqual:[NSNull null]]) {
+            NSMutableDictionary *smallArea = [[NSMutableDictionary alloc] init];
+            for (id key in [area allKeys]) {
+                int resizedValue = ([[area objectForKey:key] intValue] / 3);
+                [smallArea setObject:[NSNumber numberWithInt:resizedValue] forKey:key];
+            }
+            return smallArea;
+        }
     }
     return [[NSDictionary alloc] init];
 }
@@ -507,6 +531,9 @@ static WGUser *currentUser = nil;
 }
 
 -(State) state {
+    if ([self isCurrentUser]) {
+        return FOLLOWING_USER_STATE;
+    }
     if ([self.isBlocked boolValue]) {
         return BLOCKED_USER_STATE;
     }
@@ -544,11 +571,9 @@ static WGUser *currentUser = nil;
     }
     [WGApi post:@"register" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            
             NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
             [newInfo setObject:[jsonResponse objectForKey:@"message"] forKey:@"wigoMessage"];
-            handler(nil, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);
-            
+            handler(NO, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);
             return;
         }
         NSError *dataError;
@@ -578,7 +603,9 @@ static WGUser *currentUser = nil;
     
     [WGApi post:@"login" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
+            [newInfo setObject:[jsonResponse objectForKey:@"code"] forKey:@"wigoCode"];
+            handler(NO, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);
             return;
         }
         NSError *dataError;
@@ -955,6 +982,18 @@ static WGUser *currentUser = nil;
     NSDictionary *options = @{ @"read": [NSNumber numberWithBool:YES] };
     
     [WGApi post:queryString withParameters:options andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        handler(YES, error);
+    }];
+}
+
+-(void) deleteConversation:(BoolResultBlock)handler {
+    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.id];
+    
+    [WGApi delete:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(NO, error);
             return;

@@ -216,7 +216,7 @@ BOOL initializedPopScreen;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:user.coverImageURL imageArea:[user coverImageArea]];
+    [profileImageView setImageWithURL:user.smallCoverImageURL imageArea:[user smallCoverImageArea]];
     [cell.contentView addSubview:profileImageView];
     
     if ([user isFavorite]) {

@@ -25,7 +25,6 @@
     WGCollection *eventMessages;
     UICollectionView *facesCollectionView;
     BOOL cancelFetchMessages;
-    NSDictionary *metaInfo;
     
     CGPoint currentContentOffset;
 }
@@ -70,8 +69,6 @@
     NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
     
     [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
-
-    metaInfo = nil;
 
     if (facesCollectionView) [facesCollectionView reloadData];
     
@@ -302,7 +299,7 @@
     myCell.rightLine.backgroundColor = RGB(237, 237, 237);
     myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
     
-    if ([indexPath row] + 1 == eventMessages.count && [[metaInfo objectForKey:@"has_next_page"] boolValue]) {
+    if ([indexPath row] + 1 == eventMessages.count && [eventMessages.hasNextPage boolValue]) {
         [self fetchEventMessages];
     }
     myCell.timeLabel.frame = CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
@@ -311,7 +308,7 @@
     
     WGEventMessage *eventMessage = (WGEventMessage *)[eventMessages objectAtIndex:[indexPath row]];
     WGUser *user = eventMessage.user;
-    [myCell.mediaTypeImageView setImageWithURL:[user coverImageURL] imageArea:[user coverImageArea]];
+    [myCell.mediaTypeImageView setImageWithURL:user.smallCoverImageURL imageArea:[user smallCoverImageArea]];
 
     NSString *contentURL;
     if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;

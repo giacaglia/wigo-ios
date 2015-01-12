@@ -79,7 +79,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             handler(response, dataError);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        handler(nil, error);
+        handler(operation.responseObject, error);
     }];
 }
 
@@ -116,7 +116,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             handler(response, dataError);
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        handler(nil, error);
+        handler(operation.responseObject, error);
     }];
 }
 
@@ -170,7 +170,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            handler(nil, error);
+            handler(operation.responseObject, error);
         });
     }];
     
@@ -220,7 +220,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 +(void) uploadPhoto:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(UploadResultBlock) handler {
     [WGApi get:[NSString stringWithFormat: @"uploads/photos/?filename=%@", fileName] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, nil, error);
+            handler(jsonResponse, nil, error);
             return;
         }
         
@@ -242,7 +242,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (dataError) {
-                handler(nil, nil, dataError);
+                handler(jsonResponse, fields, dataError);
                 return;
             }
             [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
@@ -255,7 +255,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 +(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(UploadResultBlock) handler {
     [WGApi get:[NSString stringWithFormat: @"uploads/videos/?filename=%@", fileName] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, nil, error);
+            handler(jsonResponse, nil, error);
             return;
         }
         
@@ -277,7 +277,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (dataError) {
-                handler(nil, nil, dataError);
+                handler(jsonResponse, fields, dataError);
                 return;
             }
             [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
@@ -328,7 +328,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (dataError) {
-                handler(nil, nil, nil, dataError);
+                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, dataError);
                 return;
             }
             handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, dataError);

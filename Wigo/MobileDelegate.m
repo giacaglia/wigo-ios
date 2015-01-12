@@ -92,7 +92,14 @@
                         break;
                     }
                 }
-                
+                ABMutableMultiValueRef multi = ABRecordCopyValue(contactPerson, kABPersonEmailProperty);
+                if (ABMultiValueGetCount(multi) > 0) {
+                    CFStringRef emailRef = ABMultiValueCopyValueAtIndex(multi, 0);
+                    NSMutableDictionary *newNumber = [NSMutableDictionary dictionaryWithDictionary:[numbers lastObject]];
+                    [newNumber addEntriesFromDictionary:@{@"email": (__bridge NSString *)emailRef}];
+                    unsigned long lastIndex = numbers.count - 1;
+                    [numbers replaceObjectAtIndex:lastIndex withObject:[NSDictionary dictionaryWithDictionary:newNumber]];
+                }
             }
         }
     }

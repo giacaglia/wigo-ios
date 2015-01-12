@@ -262,7 +262,7 @@ static WGProfile *currentUser = nil;
 +(void) reload:(BoolResultBlock)handler {
     [WGApi get:@"users/me" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            handler(NO, error);
             return;
         }
         NSError *dataError;
@@ -272,7 +272,7 @@ static WGProfile *currentUser = nil;
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
             
-            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            dataError = [NSError errorWithDomain: @"WGProfile" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
             handler(dataError == nil, dataError);
@@ -283,7 +283,7 @@ static WGProfile *currentUser = nil;
 -(void) setLastNotificationReadToLatest:(BoolResultBlock)handler {
     [WGApi post:@"users/me" withParameters:@{ kLastNotificationReadKey : @"latest" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            handler(NO, error);
             return;
         }
         
@@ -294,7 +294,7 @@ static WGProfile *currentUser = nil;
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
             
-            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            dataError = [NSError errorWithDomain: @"WGProfile" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
             handler(dataError == nil, dataError);

@@ -99,7 +99,7 @@
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
             
-            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            dataError = [NSError errorWithDomain: @"WGGroup" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
             handler(objects, dataError);
@@ -127,7 +127,7 @@
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
             
-            dataError = [NSError errorWithDomain: @"WGNotification" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            dataError = [NSError errorWithDomain: @"WGGroup" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
             handler(total, numGroups, private, public, dataError);

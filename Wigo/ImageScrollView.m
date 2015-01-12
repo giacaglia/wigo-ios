@@ -67,9 +67,9 @@
                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                                   [weakSpinner stopAnimating];
                                   
-                                  if (i == 0) {
+                                  if (i == 0 && self.delegate) {
                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                          [self.delegate pageChangedTo: 0];
+                                          [self.delegate pageChangedTo:i];
                                       });
                                   }
                               }];

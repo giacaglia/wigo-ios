@@ -378,21 +378,25 @@
     }
 }
 
-
 #pragma mark - Asynchronous methods
 
 - (void) loginUserAsynchronous {
-#warning disable crashlytics
-    // [Crashlytics setUserIdentifier:_fbID];
+    [Crashlytics setUserIdentifier:_fbID];
     
     [WGProfile currentUser].facebookId = _fbID;
     [WGProfile currentUser].facebookAccessToken = _accessToken;
     
     [WiGoSpinnerView addDancingGToCenterView:self.view];
-    
+
     [[WGProfile currentUser] login:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void){
             if (error) {
+                _fetchingProfilePictures = YES;
+                if ([error.userInfo objectForKey:@"wigoCode"] && [[error.userInfo objectForKey:@"wigoCode"] isEqualToString:@"does_not_exist"]) {
+                    [self fetchTokensFromFacebook];
+                    [self fetchProfilePicturesAlbumFacebook];
+                    return;
+                }
                 [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
                 return;
             }
@@ -427,8 +431,8 @@
         }
     }
 }
-/*
-- (void)handleJsonResponse:(NSDictionary *)jsonResponse andError:(NSError *)error isLoggingIn:(BOOL)logging{
+
+/* - (void)handleJsonResponse:(NSDictionary *)jsonResponse andError:(NSError *)error isLoggingIn:(BOOL)logging{
     User *user;
     if ([jsonResponse isKindOfClass:[NSDictionary class]]) {
         user = [[User alloc] initWithDictionary:jsonResponse];
@@ -484,8 +488,8 @@
             
         }
     }
-}
-*/
+} */
+
 -(void) fetchUserInfo {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
     [WGProfile reload:^(BOOL success, NSError *error) {
@@ -500,7 +504,6 @@
     }];
 }
 
-
 - (void)loadMainViewController {
     if ([[WGProfile currentUser].group.numEvents intValue] >= 3) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabs" object:self];
@@ -508,8 +511,5 @@
     [self dismissViewControllerAnimated:YES  completion:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
 }
-
-
-
 
 @end

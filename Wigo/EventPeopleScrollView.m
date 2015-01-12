@@ -68,7 +68,7 @@
         imgView.frame = CGRectMake(0, 0, self.sizeOfEachImage, self.sizeOfEachImage);
         imgView.contentMode = UIViewContentModeScaleAspectFill;
         imgView.clipsToBounds = YES;
-        [imgView setImageWithURL:user.coverImageURL imageArea:[user coverImageArea]];
+        [imgView setImageWithURL:user.smallCoverImageURL imageArea:[user smallCoverImageArea]];
         [imageButton addSubview:imgView];
         
         

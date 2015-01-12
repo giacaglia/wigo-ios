@@ -89,7 +89,7 @@
 
 -(void) insertObject:(WGObject *)object atIndex:(NSUInteger)index {
     if (!object) {
-        NSLog(@"Tried to insert nil object to WGCollection at index %lu", index);
+        NSLog(@"Tried to insert nil object to WGCollection at index %lu", (unsigned long)index);
         return;
     }
     [self.objects insertObject:object atIndex:index];
@@ -166,12 +166,12 @@
 
 -(void) addNextPage:(BoolResultBlock)handler {
     if (!self.nextPage) {
-        handler(nil, [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"no next page" }]);
+        handler(NO, [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"no next page" }]);
         return;
     }
     [WGApi get:self.nextPage withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            handler(NO, error);
             return;
         }
         NSError *dataError;

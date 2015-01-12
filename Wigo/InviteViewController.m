@@ -243,7 +243,7 @@
             UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, HEIGHT_CELLS/2 - 30, 60, 60)];
             profileImageView.contentMode = UIViewContentModeScaleAspectFill;
             profileImageView.clipsToBounds = YES;
-            [profileImageView setImageWithURL:user.coverImageURL imageArea:[user coverImageArea]];
+            [profileImageView setImageWithURL:user.smallCoverImageURL imageArea:[user smallCoverImageArea]];
             [aroundTapButton addSubview:profileImageView];
             
             UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];

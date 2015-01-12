@@ -89,7 +89,7 @@
     
     [WGApi post:thisObjectURL withParameters:properties andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            handler(NO, error);
             return;
         }
         
@@ -117,7 +117,7 @@
     
     [WGApi post:thisObjectURL withParameters:properties andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            handler(NO, error);
             return;
         }
         
@@ -142,7 +142,7 @@
     
     [WGApi get:thisObjectURL withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            handler(NO, error);
             return;
         }
         
@@ -177,7 +177,7 @@
     
     [WGApi post:classURL withParameters:parametersWithIds andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            handler(NO, error);
             return;
         }
         

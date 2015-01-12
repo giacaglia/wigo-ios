@@ -140,7 +140,7 @@ NSMutableArray *suggestedArrayView;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
-        [profileImageView setImageWithURL:self.user.coverImageURL imageArea:[self.user coverImageArea]];
+        [profileImageView setImageWithURL:self.user.smallCoverImageURL imageArea:[self.user smallCoverImageArea]];
         [profileButton addSubview:profileImageView];
         [profileButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
@@ -209,7 +209,7 @@ NSMutableArray *suggestedArrayView;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
         
         self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-        [self.profileViewController setStateWithUser: user];
+        self.profileViewController.user = user;
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }
@@ -223,7 +223,7 @@ NSMutableArray *suggestedArrayView;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
 
         self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-        [self.profileViewController setStateWithUser: user];
+        self.profileViewController.user = user;
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
 }
@@ -466,7 +466,7 @@ NSMutableArray *suggestedArrayView;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:0];
         
         self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-        [self.profileViewController setStateWithUser: user];
+        self.profileViewController.user = user;
 
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }

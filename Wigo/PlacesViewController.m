@@ -213,7 +213,7 @@ int firstIndexOfNegativeEvent;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
-        [profileImageView setImageWithURL:[WGProfile currentUser].coverImageURL placeholderImage:[[UIImage alloc] init] imageArea:[WGProfile currentUser].coverImageArea];
+        [profileImageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL placeholderImage:[[UIImage alloc] init] imageArea:[WGProfile currentUser].smallCoverImageArea];
         [profileButton addSubview:profileImageView];
         [profileButton addTarget:self action:@selector(profileSegue)
                 forControlEvents:UIControlEventTouchUpInside];

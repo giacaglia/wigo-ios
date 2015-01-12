@@ -58,7 +58,7 @@
     UIImageView *faceImageView = [[UIImageView alloc] init];
     faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     faceImageView.clipsToBounds = YES;
-    [faceImageView setImageWithURL:[WGProfile currentUser].coverImageURL];
+    [faceImageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL];
     faceImageView.frame = CGRectMake(15, 10, 47, 47);
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;
@@ -126,6 +126,7 @@
 
 - (void)continuePressed {
     NSString *emailString = _studentTextField.text;
+    emailString = [emailString stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     BOOL isEmail = [emailTest evaluateWithObject:emailString];

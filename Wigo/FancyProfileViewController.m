@@ -71,7 +71,7 @@ UIButton *tapButton;
 - (void) setStateWithUser: (WGUser *) user {
     if ([WGProfile currentUser] && user) {
         self.user = user;
-        self.userState = self.user.privacy == PRIVATE ? PRIVATE_STATE : PUBLIC_STATE;
+        self.userState = self.user.state;
         self.view.backgroundColor = [UIColor whiteColor];
         [self createImageScrollView];
     }
@@ -134,10 +134,6 @@ UIButton *tapButton;
     if ([self.user state] == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if ([self.user isCurrentUser]) {
         [self fetchUserInfo];
-        _pageControl.numberOfPages = [[self.user imagesURL] count];
-        [self createImageScrollView];
-        if ([self.user state] == PRIVATE_STATE || [self.user state] == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) _privateLogoImageView.hidden = NO;
-        else _privateLogoImageView.hidden = YES;
     }
 }
 
@@ -331,7 +327,7 @@ UIButton *tapButton;
     
     _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 9, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
-    if (self.userState == ACCEPTED_PRIVATE_USER_STATE || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE || self.userState == PRIVATE_STATE) {
+    if (![self.user isCurrentUser] && (self.userState == ACCEPTED_PRIVATE_USER_STATE || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE || self.userState == PRIVATE_STATE)) {
         _privateLogoImageView.hidden = NO;
     }
     else _privateLogoImageView.hidden = YES;
@@ -538,13 +534,11 @@ UIButton *tapButton;
 }
 
 - (void)chatPressed {
-    if (self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) {
+    if ([self.user isCurrentUser]) {
         ChatViewController *chatViewController = [ChatViewController new];
         chatViewController.view.backgroundColor = UIColor.whiteColor;
         [self.navigationController pushViewController:chatViewController animated:YES];
-    }
-    else {
-       
+    } else {
         [self.navigationController pushViewController: [[ConversationViewController alloc] initWithUser:self.user] animated:YES];
     }
    
@@ -710,7 +704,7 @@ UIButton *tapButton;
 }
 
 - (BOOL) shouldShowInviteCell {
-    if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE || self.userState == OTHER_SCHOOL_USER_STATE) {
+    if ([self.user isCurrentUser] || self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE || self.userState == OTHER_SCHOOL_USER_STATE) {
         return NO;
     }
     
@@ -762,8 +756,6 @@ UIButton *tapButton;
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    
     if (indexPath.section == kGoOutsSection) {
         GoOutsCell *goOutsCell = [tableView dequeueReusableCellWithIdentifier: @"GoOutsCell" forIndexPath:indexPath];
         [goOutsCell setLabelsForUser: self.user];
@@ -773,9 +765,7 @@ UIButton *tapButton;
         }
         
         return goOutsCell;
-    }
-    
-    else if (indexPath.section == kNotificationsSection) {
+    } else if (indexPath.section == kNotificationsSection) {
         if ([self isIndexPathASummaryCell:indexPath]) {
             SummaryCell *summaryCell = [tableView dequeueReusableCellWithIdentifier:kSummaryCellName forIndexPath:indexPath];
             summaryCell.numberOfRequestsLabel.text = [_followRequestSummary stringValue];
@@ -802,22 +792,28 @@ UIButton *tapButton;
         WGNotification *notification = (WGNotification *)[_unexpiredNotifications objectAtIndex:[indexPath row]];
         if (!notification.fromUser.id) return notificationCell;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
+
         WGUser *user = notification.fromUser;
-        [notificationCell.profileImageView setImageWithURL:user.coverImageURL];
+        if ([notification.id intValue] > [[WGProfile currentUser].lastNotificationRead intValue]) {
+            notificationCell.backgroundColor = [FontProperties getLightOrangeColor];
+        } else {
+            notificationCell.backgroundColor = UIColor.whiteColor;
+        }
+        [notificationCell.profileImageView setImageWithURL:user.smallCoverImageURL];
         notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName], [notification message]];
         
         if ([user state] == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE || [user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
             notificationCell.rightPostImageView.hidden = YES;
+        } else {
+            notificationCell.rightPostImageView.hidden = NO;
         }
-        else notificationCell.rightPostImageView.hidden = NO;
+        
         if ([notificationCell respondsToSelector:@selector(layoutMargins)]) {
             notificationCell.layoutMargins = UIEdgeInsetsZero;
         }
         
         return notificationCell;
-    }
-    
-    else if (indexPath.section == kImageViewSection) {
+    } else if (indexPath.section == kImageViewSection) {
         UITableViewCell *imageCell =[tableView dequeueReusableCellWithIdentifier: @"ImageScrollViewCell" forIndexPath:indexPath];
         
         [self.imageScrollView removeFromSuperview];
@@ -996,9 +992,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void) fetchUserInfo {
     if ([WGProfile currentUser].key) {
         [WGProfile reload:^(BOOL success, NSError *error) {
-            _numberOfFollowersLabel.text = [[WGProfile currentUser].numFollowers stringValue];
-            _numberOfFollowingLabel.text = [[WGProfile currentUser].numFollowing stringValue];
+            self.user = [WGProfile currentUser];
+            _numberOfFollowersLabel.text = [self.user.numFollowers stringValue];
+            _numberOfFollowingLabel.text = [self.user.numFollowing stringValue];
             [self updateNumberOfChats];
+            _pageControl.numberOfPages = [[self.user imagesURL] count];
+            [self createImageScrollView];
+            if ([self.user state] == PRIVATE_STATE || [self.user state] == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) _privateLogoImageView.hidden = NO;
+            else _privateLogoImageView.hidden = YES;
         }];
     }
 }
@@ -1299,6 +1300,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setLabelsForUser: (WGUser *) user {
+    if ([user isCurrentUser]) {
+        self.inviteButton.hidden = YES;
+        self.inviteButton.enabled = NO;
+        self.titleLabel.hidden = YES;
+        self.tappedLabel.alpha = 0;
+        return;
+    }
+    
     if ([self.delegate userState] == OTHER_SCHOOL_USER_STATE) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
@@ -1340,6 +1349,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.tappedLabel.textColor = UIColor.lightGrayColor;
     self.tappedLabel.textAlignment = NSTextAlignmentCenter;
     self.tappedLabel.alpha = 0;
+    
     [self.contentView addSubview:self.tappedLabel];
     
 }
