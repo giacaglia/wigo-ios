@@ -165,7 +165,17 @@
 -(void) create:(BoolResultBlock)handler {
     NSString *classURL = [NSString stringWithFormat:@"%@s/", self.className];
     
-    [WGApi post:classURL withParameters:self.parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    NSMutableDictionary *parametersWithIds = [[NSMutableDictionary alloc] init];
+    for (NSString *key in [self.parameters allKeys]) {
+        id value = [self.parameters objectForKey:key];
+        if ([value isKindOfClass:[NSDictionary class]] && [value objectForKey:@"id"]) {
+            [parametersWithIds setObject:[value objectForKey:@"id"] forKey:key];
+        } else {
+            [parametersWithIds setObject:value forKey:key];
+        }
+    }
+    
+    [WGApi post:classURL withParameters:parametersWithIds andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

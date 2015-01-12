@@ -459,7 +459,7 @@ int firstIndexOfNegativeEvent;
 
 - (void)invitePressed {
     if ([WGProfile currentUser].eventAttending.id) {
-        [self presentViewController:[[InviteViewController alloc] initWithEventName:[WGProfile currentUser].eventAttending.name andID:[WGProfile currentUser].eventAttending.id] animated:YES completion:nil];
+        [self presentViewController:[[InviteViewController alloc] initWithEvent:[WGProfile currentUser].eventAttending] animated:YES completion:nil];
     }
 
 }
@@ -1202,7 +1202,7 @@ int firstIndexOfNegativeEvent;
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
     if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
-        fancyProfileViewController.userState = OTHER_SCHOOL_USER;
+        fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
     }
     self.visitedProfile = YES;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];

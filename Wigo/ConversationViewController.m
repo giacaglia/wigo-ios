@@ -349,9 +349,9 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                 [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
                 return;
             }
-            [self addMessageFromSender:message];
         }];
         
+        [self addMessageFromSender:message];
         _messageTextView.text = @"";
         [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [self textView:_messageTextView shouldChangeTextInRange:NSMakeRange(0, [_messageTextView.text length]) replacementText:@""];
@@ -443,13 +443,13 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 
 - (void)addMessage:(NSNotification *)notification {
     NSNumber *fromUserID = [[notification userInfo] valueForKey:@"id"];
-    if (fromUserID && [fromUserID isEqualToNumber:[self.user objectForKey:@"id"]]) {
+    if (fromUserID && [fromUserID isEqualToNumber:self.user.id]) {
         NSString *messageString = [[notification userInfo] valueForKey:@"message"];
         
         WGMessage *message = [[WGMessage alloc] init];
         message.message = messageString;
         message.created = [NSDate date];
-
+        
         [self addMessageFromReceiver:message];
         CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
         [_scrollView setContentOffset:bottomOffset animated:YES];

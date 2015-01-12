@@ -25,7 +25,6 @@
 @property (nonatomic, strong) UIButton *rightButton;
 @end
 
-#import "Event.h"
 #import "EventPeopleScrollView.h"
 
 @interface EventCell : UITableViewCell

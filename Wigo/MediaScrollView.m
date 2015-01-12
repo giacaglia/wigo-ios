@@ -10,7 +10,6 @@
 #import "Globals.h"
 #import "EventMessagesConstants.h"
 #import "IQMediaCaptureController.h"
-#import "AWSUploader.h"
 #import "WGEventMessage.h"
 #import "WGCollection.h"
 

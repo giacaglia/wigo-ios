@@ -203,8 +203,6 @@
 		E9A31E481980AB9B008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
 		E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
 		E9A31E4A1980ABB5008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
-		E9A31E641982B965008A711B /* WigoSearchBarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */; };
-		E9A31E651982B965008A711B /* WigoSearchBarDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
 		E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
@@ -318,8 +316,6 @@
 		E9CD53891993C2DD00206B75 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E900C2901961E0B800A01F50 /* ImageIO.framework */; };
 		E9CD53931993C73900206B75 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9CD53921993C73900206B75 /* Images.xcassets */; };
 		E9CD53941993C73900206B75 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9CD53921993C73900206B75 /* Images.xcassets */; };
-		E9D0399D1A095C1500DEF094 /* AWSUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D0399C1A095C1500DEF094 /* AWSUploader.m */; };
-		E9D0399E1A095C1500DEF094 /* AWSUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D0399C1A095C1500DEF094 /* AWSUploader.m */; };
 		E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */; };
 		E9D039C81A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
 		E9D039C91A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
@@ -579,8 +575,6 @@
 		E9A1EAAE199CFD25003A744C /* boyVoice.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = boyVoice.caf; sourceTree = "<group>"; };
 		E9A31E451980AB25008A711B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		E9A31E471980AB9B008A711B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		E9A31E621982B965008A711B /* WigoSearchBarDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WigoSearchBarDelegate.h; sourceTree = "<group>"; };
-		E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoSearchBarDelegate.m; sourceTree = "<group>"; };
 		E9A50CFB19350F13009B73EA /* ConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationViewController.h; sourceTree = "<group>"; };
 		E9A50CFC19350F13009B73EA /* ConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationViewController.m; sourceTree = "<group>"; };
 		E9A695C619B0C7840071067B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -698,8 +692,6 @@
 		E9CD53821993C29800206B75 /* FLAnimatedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLAnimatedImageView.h; sourceTree = "<group>"; };
 		E9CD53831993C29800206B75 /* FLAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLAnimatedImageView.m; sourceTree = "<group>"; };
 		E9CD53921993C73900206B75 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		E9D0399B1A095C1500DEF094 /* AWSUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSUploader.h; sourceTree = "<group>"; };
-		E9D0399C1A095C1500DEF094 /* AWSUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSUploader.m; sourceTree = "<group>"; };
 		E9D039C61A09886A00DEF094 /* MediaScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaScrollView.h; sourceTree = "<group>"; };
 		E9D039C71A09886A00DEF094 /* MediaScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaScrollView.m; sourceTree = "<group>"; };
 		E9D7D5331926539C00E1ED10 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Wigo/en.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -1163,7 +1155,6 @@
 				E94A2850196C6BC50027D3BA /* Facebook Photos */,
 				E99EC28B1986B6A400CBFA59 /* Popup Helpers */,
 				E9ACCA2619C4CC0600F3EB20 /* GrowthHackViews */,
-				C14378D119915D6300D29264 /* Analytics */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -1177,7 +1168,6 @@
 				FABD33711A3B98ED008FF56D /* ParallaxHeaderTV */,
 				FA5526131A1FDB4000101AE7 /* JBBarChart */,
 				FADD072D1A0D296900492369 /* LLACircularProgressView */,
-				E9D0399A1A095BC600DEF094 /* AWS */,
 				E9C63B741A03ED35006C5DD2 /* IQMediaPickerController */,
 				E9CB091219FB061F00B548A6 /* FacebookHelper */,
 				E9C3056819F831CA00F9564D /* KeychainWrapper */,
@@ -1629,8 +1619,6 @@
 				E9681C7A195084B700182E0E /* UIButtonUngoOut.m */,
 				E93DE52E195C99F600079074 /* UIImageCrop.h */,
 				E93DE52F195C99F600079074 /* UIImageCrop.m */,
-				E9A31E621982B965008A711B /* WigoSearchBarDelegate.h */,
-				E9A31E631982B965008A711B /* WigoSearchBarDelegate.m */,
 				E9BF59E61A3B40EB00AF8AFE /* UILabelBorder.h */,
 				E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */,
 			);
@@ -1673,15 +1661,6 @@
 				E9BE4999198C402500F9AF74 /* girlVoice.caf */,
 			);
 			name = Music;
-			sourceTree = "<group>";
-		};
-		E9D0399A1A095BC600DEF094 /* AWS */ = {
-			isa = PBXGroup;
-			children = (
-				E9D0399B1A095C1500DEF094 /* AWSUploader.h */,
-				E9D0399C1A095C1500DEF094 /* AWSUploader.m */,
-			);
-			name = AWS;
 			sourceTree = "<group>";
 		};
 		E9DBB04D197813F900DDACDE /* CHGifRefreshControl */ = {
@@ -2157,7 +2136,6 @@
 				FADD07311A0D296900492369 /* LLACircularProgressView.m in Sources */,
 				C12A112519787BE700D53B1C /* UIImage+GIF.m in Sources */,
 				C12A112619787BE700D53B1C /* UIImageView+WebCache.m in Sources */,
-				E9D0399E1A095C1500DEF094 /* AWSUploader.m in Sources */,
 				FA5526121A1FCB3700101AE7 /* GroupStats.m in Sources */,
 				E9C63BCF1A03ED35006C5DD2 /* IQAlbumAssetsViewController.m in Sources */,
 				E9C63BE71A03ED35006C5DD2 /* IQSongsListTableHeaderView.m in Sources */,
@@ -2168,7 +2146,6 @@
 				C12A112919787BE700D53B1C /* UIButtonAligned.m in Sources */,
 				E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
 				C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */,
-				E9A31E651982B965008A711B /* WigoSearchBarDelegate.m in Sources */,
 				C12A112D19787BE700D53B1C /* PlacesViewController.m in Sources */,
 				C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */,
 				E9C63BDB1A03ED35006C5DD2 /* IQAudioPickerController.m in Sources */,
@@ -2281,7 +2258,6 @@
 				E9BE8C49192A48F1008BB84C /* FontProperties.m in Sources */,
 				E9C63BDA1A03ED35006C5DD2 /* IQAudioPickerController.m in Sources */,
 				E9C63BEE1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */,
-				E9D0399D1A095C1500DEF094 /* AWSUploader.m in Sources */,
 				45DF86911A5AFBA000DB85AE /* WGEventMessage.m in Sources */,
 				E9203B531A23C4B90086BF73 /* EventConversationViewController.m in Sources */,
 				E998C28419D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m in Sources */,
@@ -2315,7 +2291,6 @@
 				E9C63C041A03ED35006C5DD2 /* IQMediaView.m in Sources */,
 				FA55260C1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,
 				E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */,
-				E9A31E641982B965008A711B /* WigoSearchBarDelegate.m in Sources */,
 				E9C63BFA1A03ED35006C5DD2 /* IQAudioSession.m in Sources */,
 				4563F5241A3F436100F8C9C4 /* WGObject.m in Sources */,
 				E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */,
@@ -2581,7 +2556,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 			};

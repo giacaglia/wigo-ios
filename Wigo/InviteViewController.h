@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Event.h"
+#import "WGEvent.h"
 
 @interface InviteViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
-- (id)initWithEventName:(NSString *)eventName andID:(NSNumber *)eventID;
+- (id)initWithEvent:(WGEvent *)newEvent;
 
 @end

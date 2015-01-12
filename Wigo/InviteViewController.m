@@ -20,9 +20,7 @@
     UITableView *invitePeopleTableView;
     WGCollection *content;
     WGCollection *filteredContent;
-    NSNumber *page;
-    NSString *eventName;
-    NSNumber *eventID;
+    WGEvent *event;
     UISearchBar *searchBar;
     BOOL isSearching;
     
@@ -36,11 +34,10 @@
 
 @implementation InviteViewController
 
-- (id)initWithEventName:(NSString *)newEventName andID:(NSNumber *)newEventID {
+- (id)initWithEvent:(WGEvent *)newEvent {
     self = [super init];
     if (self) {
-        eventID = newEventID;
-        eventName = newEventName;
+        event = newEvent;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -108,21 +105,21 @@
     tapPeopleLabel.textAlignment = NSTextAlignmentCenter;
     NSString *string;
   
-    if (eventName.length > 0 ) {
-        string = [NSString stringWithFormat:@"Tap people you want to see out \nat %@", eventName];
+    if (event.name.length > 0 ) {
+        string = [NSString stringWithFormat:@"Tap people you want to see out \nat %@", event.name];
     }
     else {
         string = @"Tap people you want to see out";
     }
     NSMutableAttributedString * attString = [[NSMutableAttributedString alloc]
                                              initWithString:string];
-    if (35 + eventName.length <= string.length) {
+    if (35 + event.name.length <= string.length) {
         [attString addAttribute:NSFontAttributeName
                           value:[FontProperties lightFont:18.0f]
-                          range:NSMakeRange(0, 35 + eventName.length)];
+                          range:NSMakeRange(0, 35 + event.name.length)];
         [attString addAttribute:NSForegroundColorAttributeName
                           value:[FontProperties getBlueColor]
-                          range:NSMakeRange(35, eventName.length)];
+                          range:NSMakeRange(35, event.name.length)];
     }
     tapPeopleLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:attString];
     [self.view addSubview:tapPeopleLabel];

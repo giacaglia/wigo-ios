@@ -9,7 +9,6 @@
 
 #import "EventStoryViewController.h"
 #import "IQMediaPickerController.h"
-#import "AWSUploader.h"
 #import "InviteViewController.h"
 #import "EventMessagesConstants.h"
 #import "FancyProfileViewController.h"
@@ -75,6 +74,8 @@
     metaInfo = nil;
 
     if (facesCollectionView) [facesCollectionView reloadData];
+    
+    eventMessages = nil;
     [self fetchEventMessages];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
@@ -164,7 +165,7 @@
 
 - (void)invitePressed {
     [WGAnalytics tagEvent: @"Event Story Invite Tapped"];
-    [self presentViewController:[[InviteViewController alloc] initWithEventName:self.event.name andID:self.event.id]
+    [self presentViewController:[[InviteViewController alloc] initWithEvent:self.event]
                        animated:YES
                      completion:nil];
 }
@@ -495,7 +496,6 @@
     return newEventMessages;
 }
 
-
 - (void)fetchEventMessages {
     if (!cancelFetchMessages) {
         cancelFetchMessages = YES;
@@ -619,7 +619,7 @@
     [fancyProfileViewController setStateWithUser: user];
 
     if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
-        fancyProfileViewController.userState = OTHER_SCHOOL_USER;
+        fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
     }
     
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
