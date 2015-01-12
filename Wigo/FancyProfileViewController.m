@@ -816,7 +816,7 @@ UIButton *tapButton;
         if ([notification fromUserID] == (id)[NSNull null]) return notificationCell;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
         User *user = [[User alloc] initWithDictionary:[notification fromUser]];
-        [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]]];
+        [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName] , [notification message] ];
         
         if ([user getUserState] == NOT_SENT_FOLLOWING_PRIVATE_USER || [user getUserState] == NOT_YET_ACCEPTED_PRIVATE_USER) {
