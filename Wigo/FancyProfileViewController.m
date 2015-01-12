@@ -1017,7 +1017,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                     }
                     _notifications = collection;
                     for (WGNotification *notification in _notifications) {
-                        if (![notification expired]) {
+                        if (![notification isExpired]) {
                             [_unexpiredNotifications addObject:notification];
                         }
                     }
@@ -1037,7 +1037,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                     }
                     for (WGNotification *notification in collection) {
                         [_notifications addObject:notification];
-                        if (![notification expired]) {
+                        if (![notification isExpired]) {
                             [_unexpiredNotifications addObject:notification];
                         }
                     }
