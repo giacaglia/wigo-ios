@@ -30,7 +30,6 @@
 @property UIPageControl *pageControl;
 
 @property WGCollection *notifications;
-@property NSNumber *page;
 @property WGCollection *unexpiredNotifications;
 @property NSNumber *followRequestSummary;
 
@@ -171,11 +170,13 @@ UIButton *tapButton;
     
     [self reloadViewForUserState];
     
-    _page = @1;
-    _followRequestSummary = @0;
-    [self fetchNotifications];
-    [self updateBadge];
-    [self fetchSummaryOfFollowRequests];
+    if ([self.user isEqual:WGProfile.currentUser]) {
+        _followRequestSummary = @0;
+        [self fetchNotifications];
+        [self updateBadge];
+        [self fetchSummaryOfFollowRequests];
+    }
+
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {

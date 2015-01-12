@@ -55,7 +55,6 @@
 @property UIImageView *whereImageView;
 @property UILabel *whereLabel;
 @property int yPositionOfWhereSubview;
-@property  UIButton *goingSomewhereButton;
 
 @property UITableView *placesTableView;
 
@@ -161,7 +160,7 @@ int firstIndexOfNegativeEvent;
         shouldReloadEvents = YES;
     }
     [self shouldShowCreateButton];
-
+    [self showOnlyOnePlusButton];
 }
 
 - (BOOL) shouldShowCreateButton {
@@ -173,9 +172,7 @@ int firstIndexOfNegativeEvent;
         return NO;
     } else {
         self.goElsewhereView.hidden = NO;
-        //self.goElsewhereView.plusButton.hidden = NO;
         self.goElsewhereView.plusButton.enabled = YES;
-        //self.goingSomewhereButton.hidden = NO;
         self.goingSomewhereButton.enabled = YES;
         return YES;
     }
@@ -485,23 +482,23 @@ int firstIndexOfNegativeEvent;
 
 - (void)initializeGoingSomewhereElseButton {
     int sizeOfButton = [[UIScreen mainScreen] bounds].size.width/6.4;
-    _goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - sizeOfButton - 10, self.view.frame.size.height - sizeOfButton - 10, sizeOfButton, sizeOfButton)];
-    [_goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
-    _goingSomewhereButton.backgroundColor = [FontProperties getBlueColor];
-    _goingSomewhereButton.layer.borderWidth = 1.0f;
-    _goingSomewhereButton.layer.borderColor = [UIColor clearColor].CGColor;
-    _goingSomewhereButton.layer.cornerRadius = sizeOfButton/2;
-    _goingSomewhereButton.layer.shadowColor = [UIColor blackColor].CGColor;
-    _goingSomewhereButton.layer.shadowOpacity = 0.4f;
-    _goingSomewhereButton.layer.shadowRadius = 5.0f;
-    _goingSomewhereButton.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
+    self.goingSomewhereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - sizeOfButton - 10, self.view.frame.size.height - sizeOfButton - 10, sizeOfButton, sizeOfButton)];
+    [self.goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
+    self.goingSomewhereButton.backgroundColor = [FontProperties getBlueColor];
+    self.goingSomewhereButton.layer.borderWidth = 1.0f;
+    self.goingSomewhereButton.layer.borderColor = [UIColor clearColor].CGColor;
+    self.goingSomewhereButton.layer.cornerRadius = sizeOfButton/2;
+    self.goingSomewhereButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.goingSomewhereButton.layer.shadowOpacity = 0.4f;
+    self.goingSomewhereButton.layer.shadowRadius = 5.0f;
+    self.goingSomewhereButton.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
     
-    [self.view addSubview:_goingSomewhereButton];
-    [self.view bringSubviewToFront:_goingSomewhereButton];
+    [self.view addSubview:self.goingSomewhereButton];
+    [self.view bringSubviewToFront:self.goingSomewhereButton];
     
     UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 7, sizeOfButton/2 - 7, 15, 15)];
     sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
-    [_goingSomewhereButton addSubview:sendOvalImageView];
+    [self.goingSomewhereButton addSubview:sendOvalImageView];
 }
 
 - (void) goingSomewhereElsePressed {
@@ -1272,12 +1269,6 @@ int firstIndexOfNegativeEvent;
     }
     else if (scrollView == _placesTableView) { */
     if (scrollView == _placesTableView) {
-        // convert label frame
-        CGRect comparisonFrame = [scrollView convertRect: self.goElsewhereView.frame toView:self.view];
-        // check if label is contained in self.view
-        
-        CGRect viewFrame = self.view.frame;
-        BOOL isContainedInView = CGRectContainsRect(viewFrame, comparisonFrame);
         
         if (!self.goElsewhereView) {
             return;
@@ -1286,29 +1277,38 @@ int firstIndexOfNegativeEvent;
             return;
         }
 //
-        if (isContainedInView && self.goingSomewhereButton.hidden == NO && isLoaded) {
-            self.goingSomewhereButton.hidden = YES;
-            self.goElsewhereView.plusButton.hidden = NO;
-        }
-        else if (isContainedInView == NO && self.goingSomewhereButton.hidden == YES) {
-            self.goingSomewhereButton.alpha = 0;
-            self.goingSomewhereButton.transform = CGAffineTransformMakeScale(0, 0);
-            self.goingSomewhereButton.hidden = NO;
-            self.goElsewhereView.plusButton.hidden = YES;
-
-            [UIView animateWithDuration:0.2f delay: 0.0 options: UIViewAnimationOptionCurveEaseOut animations:^{
-                self.goingSomewhereButton.alpha = 1;
-                self.goingSomewhereButton.transform = CGAffineTransformMakeScale(1.2, 1.2);
-            } completion:^(BOOL finished) {
-                [UIView animateWithDuration:0.05f delay: 0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
-                    self.goingSomewhereButton.transform = CGAffineTransformIdentity;
-                } completion:^(BOOL finished) {
-                }];
-            }];
-        }
+        [self showOnlyOnePlusButton];
     }
 }
 
+- (void)showOnlyOnePlusButton {
+    // convert label frame
+    CGRect comparisonFrame = [_placesTableView convertRect: self.goElsewhereView.frame toView:self.view];
+    // check if label is contained in self.view
+    
+    CGRect viewFrame = self.view.frame;
+    BOOL isContainedInView = CGRectContainsRect(viewFrame, comparisonFrame);
+    if (isContainedInView && self.goingSomewhereButton.hidden == NO && isLoaded) {
+        self.goingSomewhereButton.hidden = YES;
+        self.goElsewhereView.plusButton.hidden = NO;
+    }
+    else if (isContainedInView == NO && self.goingSomewhereButton.hidden == YES) {
+        self.goingSomewhereButton.alpha = 0;
+        self.goingSomewhereButton.transform = CGAffineTransformMakeScale(0, 0);
+        self.goingSomewhereButton.hidden = NO;
+        self.goElsewhereView.plusButton.hidden = YES;
+        
+        [UIView animateWithDuration:0.2f delay: 0.0 options: UIViewAnimationOptionCurveEaseOut animations:^{
+            self.goingSomewhereButton.alpha = 1;
+            self.goingSomewhereButton.transform = CGAffineTransformMakeScale(1.2, 1.2);
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.05f delay: 0.0 options: UIViewAnimationOptionCurveEaseInOut animations:^{
+                self.goingSomewhereButton.transform = CGAffineTransformIdentity;
+            } completion:^(BOOL finished) {
+            }];
+        }];
+    }
+}
 #pragma mark - Network Asynchronous Functions
 
 - (void) fetchEventsFirstPage {

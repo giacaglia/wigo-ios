@@ -46,14 +46,6 @@
     [self registerClass:[ImageCell class] forCellWithReuseIdentifier:@"ImageCell"];
     [self registerClass:[PromptCell class] forCellWithReuseIdentifier:@"PromptCell"];
     [self registerClass:[CameraCell class] forCellWithReuseIdentifier:@"CameraCell"];
-    if (self.index) {
-        self.minPage = [self.index intValue];
-        self.maxPage = [self.index intValue];
-    } else {
-        self.minPage = 0;
-        self.maxPage = 0;
-    }
-    
 }
 
 #pragma mark - UICollectionView Data Source
@@ -236,7 +228,10 @@
     }
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-        eventMessage.isRead = @YES;
+        if (![eventMessage.isRead boolValue]) {
+            eventMessage.isRead = @YES;
+            [self.eventMessagesRead addObject:eventMessage];
+        }
     }
 }
 
