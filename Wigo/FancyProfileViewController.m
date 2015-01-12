@@ -133,6 +133,7 @@ UIButton *tapButton;
     if ([self.user state] == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if ([self.user isCurrentUser]) {
         [self fetchUserInfo];
+        [self updateLastNotificationsRead];
     }
 }
 
@@ -749,7 +750,6 @@ UIButton *tapButton;
         return ([self shouldShowGoOutsCell]) ? 1 : 0;
     }
     else if (section == kNotificationsSection) {
-        NSLog(@"number of notifications: %d", [self notificationCount]);
         return [self notificationCount];
     }
     return 1;
@@ -796,7 +796,7 @@ UIButton *tapButton;
 
         WGUser *user = notification.fromUser;
         if ([notification.id intValue] > [[WGProfile currentUser].lastNotificationRead intValue]) {
-            notificationCell.backgroundColor = [FontProperties getLightOrangeColor];
+            notificationCell.backgroundColor = [FontProperties getBackgroundLightOrange];
         } else {
             notificationCell.backgroundColor = UIColor.whiteColor;
         }
