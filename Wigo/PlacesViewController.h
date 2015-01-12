@@ -23,6 +23,8 @@
 @property (nonatomic, strong) UILabel *leftRedDotLabel;
 @property (nonatomic, strong) UILabel *redDotLabel;
 @property (nonatomic, strong) UIButton *rightButton;
+@property (nonatomic, strong) UIButton *goingSomewhereButton;
+
 @end
 
 #import "EventPeopleScrollView.h"
