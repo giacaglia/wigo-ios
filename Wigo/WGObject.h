@@ -34,6 +34,8 @@ typedef void (^BoolResultBlock)(BOOL success, NSError *error);
 +(WGObject *)serialize:(NSDictionary *)json;
 -(NSDictionary *) deserialize;
 
+-(BOOL) isFetched;
+
 -(BOOL) isEqual:(WGObject*)object;
 
 -(BOOL) expired;

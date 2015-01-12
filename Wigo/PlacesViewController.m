@@ -99,8 +99,6 @@ int firstIndexOfNegativeEvent;
     [super viewDidLoad];
     [self initializeNotificationObservers];
 
-
-    
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
@@ -118,13 +116,12 @@ int firstIndexOfNegativeEvent;
             }
         }
     }
-
+    
     [self initializeFlashScreen];
 
     _spinnerAtCenter = YES;
     [self initializeWhereView];
 }
-
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
