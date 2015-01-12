@@ -83,7 +83,7 @@
     
     for (NSString* key in [self.parameters allKeys]) {
         id value = [self.parameters objectForKey:key];
-        if ([value isKindOfClass:[WGObject class]] || [value isKindOfClass:[WGObject class]]) {
+        if ([value isKindOfClass:[WGObject class]] || [value isKindOfClass:[WGCollection class]]) {
             [props setObject:[value deserialize] forKey:key];
         } else {
             [props setObject:value forKey:key];

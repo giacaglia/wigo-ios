@@ -702,7 +702,7 @@ int firstIndexOfNegativeEvent;
     _loadingView.layer.borderWidth = 1.0f;
     _loadingView.layer.cornerRadius = 3.0f;
     
-    UIView *loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    UIView *loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, _loadingView.frame.size.height)];
     loadingIndicator.backgroundColor = [FontProperties getBlueColor];
     [_loadingView addSubview:loadingIndicator];
     [UIView animateWithDuration:1.0f animations:^{
