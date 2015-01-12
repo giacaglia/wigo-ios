@@ -150,8 +150,7 @@ UIImageView *batteryImageView;
     NSArray *activityItems;
     if ([WGProfile currentUser].group.name && currentNumGroups) {
         activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[WGProfile currentUser].group.name uppercaseString], [currentNumGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
-    }
-    else {
+    } else {
         activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
     }
     

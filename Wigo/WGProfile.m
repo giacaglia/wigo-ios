@@ -9,6 +9,10 @@
 #import "WGProfile.h"
 
 #define kKeyKey @"key"
+#define kEmailKey @"email"
+#define kFirstNameKey @"first_name"
+#define kLastNameKey @"last_name"
+#define kGenderKey @"gender"
 #define kSchoolStatisticsKey @"school_statistics"
 #define kGoogleAnalyticsEnabledKey @"googleAnalyticsEnabled"
 #define kCanFetchAppStartupKey @"canFetchAppStartup"
@@ -279,6 +283,84 @@ static WGProfile *currentUser = nil;
         }
     }];
 }
+
+-(void) login:(BoolResultBlock)handler {
+    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
+    [parameters setObject:self.facebookId forKey:kFacebookIdKey];
+    [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
+    if (self.email) {
+        [parameters setObject:self.email forKey:kEmailKey];
+    }
+    
+    [WGApi post:@"login" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
+            if ([jsonResponse objectForKey:@"code"]) {
+                [newInfo setObject:[jsonResponse objectForKey:@"code"] forKey:@"wigoCode"];
+            }
+            handler(NO, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);
+            return;
+        }
+        NSError *dataError;
+        @try {
+            if ([jsonResponse objectForKey:kKeyKey]) {
+                self.key = [jsonResponse objectForKey:kKeyKey];
+            }
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self.modifiedKeys removeAllObjects];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
+}
+
+-(void) signup:(BoolResultBlock)handler {
+    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
+    [parameters setObject:self.facebookId forKey:kFacebookIdKey];
+    [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
+    [parameters setObject:self.email forKey:kEmailKey];
+    
+    if (self.firstName) {
+        [parameters setObject:self.firstName forKey:kFirstNameKey];
+    }
+    if (self.lastName) {
+        [parameters setObject:self.firstName forKey:kLastNameKey];
+    }
+    if (self.gender) {
+        [parameters setObject:[self genderName] forKey:kGenderKey];
+    }
+    [WGApi post:@"register" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
+            [newInfo setObject:[jsonResponse objectForKey:@"message"] forKey:@"wigoMessage"];
+            handler(NO, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);
+            return;
+        }
+        NSError *dataError;
+        @try {
+            if ([jsonResponse objectForKey:kKeyKey]) {
+                self.key = [jsonResponse objectForKey:kKeyKey];
+            }
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self.modifiedKeys removeAllObjects];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
+}
+
 
 -(void) setLastNotificationReadToLatest:(BoolResultBlock)handler {
     [WGApi post:@"users/me" withParameters:@{ kLastNotificationReadKey : @"latest" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {

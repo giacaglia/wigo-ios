@@ -171,8 +171,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
 
                 if (imageIsPng) {
                     data = UIImagePNGRepresentation(image);
-                }
-                else {
+                } else {
                     data = UIImageJPEGRepresentation(image, (CGFloat)1.0);
                 }
 #else
@@ -254,8 +253,7 @@ BOOL ImageDataHasPNGPreffix(NSData *data) {
         image = [self scaledImageForKey:key image:image];
         image = [UIImage decodedImageWithImage:image];
         return image;
-    }
-    else {
+    } else {
         return nil;
     }
 }

@@ -191,8 +191,7 @@
                     [exposureView animate];
                 }
             }
-        }
-        else {
+        } else {
             [self.delegate doneWithEditingMediaView:self];
         }
         editing = !editing;
@@ -204,8 +203,7 @@
     CGPoint translation = [recognizer translationInView:self];
     if (recognizer.state == UIGestureRecognizerStateEnded) {
         [self.delegate mediaView:self stopTranslateAt:translation];
-    }
-    else {
+    } else {
         [self.delegate mediaView:self translate:translation];
     }
 

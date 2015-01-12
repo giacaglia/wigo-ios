@@ -111,8 +111,7 @@
         eduAddressLabel.frame = CGRectMake(40, 150, self.view.frame.size.width - 80, 50);
         _studentTextField.frame = CGRectMake(40, 210, self.view.frame.size.width - 80, 47);
         continueButton.frame = CGRectMake(37, 270, self.view.frame.size.width - 77, 47);
-    }
-    else {
+    } else {
         eduAddressLabel.frame = CGRectMake(40, 130, self.view.frame.size.width - 80, 50);
         _studentTextField.frame = CGRectMake(40, 180, self.view.frame.size.width - 80, 37);
         continueButton.frame = CGRectMake(37, 225, self.view.frame.size.width - 77, 37);

@@ -61,7 +61,7 @@
     return self.id && [self.id intValue] > 0;
 }
 
--(BOOL) isExpired {
+-(BOOL) isFromLastDay {
     return [self.created isFromLastDay];
 }
 

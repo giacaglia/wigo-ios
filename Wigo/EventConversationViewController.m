@@ -102,8 +102,7 @@
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
         myCell.mediaTypeImageView.hidden = YES;
         myCell.faceAndMediaTypeView.alpha = 0.4f;
-    }
-    else {
+    } else {
         myCell.faceAndMediaTypeView.alpha = 1.0f;
         if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
         if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
@@ -164,8 +163,7 @@
         } completion:^(BOOL finished) {
             self.facesHidden = YES;
         }];
-    }
-    else {
+    } else {
         [UIView animateWithDuration:0.5 animations:^{
             self.facesCollectionView.alpha = 1;
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,0);
@@ -307,8 +305,7 @@
     float width;
     if (scrollView == self.mediaScrollView) {
         width = [[UIScreen mainScreen] bounds].size.width;
-    }
-    else {
+    } else {
         width = sizeOfEachFaceCell;
     }
     NSInteger page = [self getPageForScrollView:scrollView toLeft:leftBoolean];
@@ -320,8 +317,7 @@
     if (scrollView == self.mediaScrollView) {
         CGFloat pageWidth = [[UIScreen mainScreen] bounds].size.width;
         fractionalPage = (self.mediaScrollView.contentOffset.x) / pageWidth;
-    }
-    else {
+    } else {
         CGFloat pageWidth = sizeOfEachFaceCell; // you need to have a **iVar** with getter for scrollView
         fractionalPage = (self.facesCollectionView.contentOffset.x + sizeOfEachFaceCell) / pageWidth;
     }
@@ -329,16 +325,13 @@
     if (leftBoolean) {
         if (fractionalPage - floor(fractionalPage) < 0.8) {
             page = floor(fractionalPage);
-        }
-        else {
+        } else {
             page = ceil(fractionalPage);
         }
-    }
-    else {
+    } else {
         if (fractionalPage - floor(fractionalPage) < 0.2) {
             page = floor(fractionalPage);
-        }
-        else {
+        } else {
             page = ceil(fractionalPage);
         }
     }
@@ -373,8 +366,7 @@
              ) {
         self.buttonTrash.hidden = YES;
         self.buttonTrash.enabled = NO;
-    }
-    else {
+    } else {
         self.facesHidden = YES;
         [self focusOnContent];
         
@@ -384,8 +376,7 @@
         if ([user isCurrentUser]) {
             self.buttonTrash.hidden = NO;
             self.buttonTrash.enabled = YES;
-        }
-        else {
+        } else {
             self.buttonTrash.hidden = YES;
             self.buttonTrash.enabled = NO;
         }
@@ -738,8 +729,7 @@
 - (void)updateUIToRead:(BOOL)read {
     if (read) {
         self.faceAndMediaTypeView.alpha = 0.4f;
-    }
-    else {
+    } else {
         self.faceAndMediaTypeView.alpha = 1.0f;
     }
 }

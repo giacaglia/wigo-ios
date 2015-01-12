@@ -30,8 +30,7 @@
         NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
         [localTimeFormat setDateFormat:@"h:mm a"];
         return [localTimeFormat stringFromDate:dateInLocalTimezone];
-    }
-    else {
+    } else {
         NSDate *nowDate = [NSDate date];
         NSDateComponents *differenceDateComponents = [dateInLocalTimezone differenceBetweenDates:nowDate];
         if ([differenceDateComponents weekOfYear] == 0 && [differenceDateComponents month] == 0) {
@@ -39,8 +38,7 @@
                 return @"1 day ago";
             }
             return [NSString stringWithFormat:@"%ld days ago", (long)[differenceDateComponents day]];
-        }
-        else {
+        } else {
             if ([differenceDateComponents month] == 0) {
                 if ([differenceDateComponents weekOfYear] == 1) {
                     return @"1 week ago";

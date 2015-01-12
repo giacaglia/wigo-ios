@@ -68,8 +68,7 @@
     BOOL gmailInstalled = [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlegmail://requests"]];
     if (gmailInstalled) {
         path = [NSString stringWithFormat:@"googlegmail:/co?to=%@&subject=%@", toField, subject];
-    }
-    else {
+    } else {
         path = [NSString stringWithFormat:@"mailto:?to=%@&subject=%@", toField, subject];
     }
     NSURL *url = [NSURL URLWithString:[path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];

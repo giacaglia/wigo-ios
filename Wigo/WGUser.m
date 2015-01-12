@@ -554,76 +554,6 @@ static WGUser *currentUser = nil;
     return NOT_FOLLOWING_PUBLIC_USER_STATE;
 }
 
--(void) signup:(BoolResultBlock)handler {
-    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-    [parameters setObject:self.facebookId forKey:kFacebookIdKey];
-    [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
-    [parameters setObject:self.email forKey:kEmailKey];
-    
-    if (self.firstName) {
-        [parameters setObject:self.firstName forKey:kFirstNameKey];
-    }
-    if (self.lastName) {
-        [parameters setObject:self.firstName forKey:kLastNameKey];
-    }
-    if (self.gender) {
-        [parameters setObject:[self genderName] forKey:kGenderKey];
-    }
-    [WGApi post:@"register" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-            NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
-            [newInfo setObject:[jsonResponse objectForKey:@"message"] forKey:@"wigoMessage"];
-            handler(NO, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);
-            return;
-        }
-        NSError *dataError;
-        @try {
-            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
-            [self.modifiedKeys removeAllObjects];
-        }
-        @catch (NSException *exception) {
-            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
-            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-        }
-        @finally {
-            handler(dataError == nil, dataError);
-        }
-    }];
-}
-
-
--(void) login:(BoolResultBlock)handler {
-    NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
-    [parameters setObject:self.facebookId forKey:kFacebookIdKey];
-    [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
-    if (self.email) {
-        [parameters setObject:self.email forKey:kEmailKey];
-    }
-    
-    [WGApi post:@"login" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-            NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
-            [newInfo setObject:[jsonResponse objectForKey:@"code"] forKey:@"wigoCode"];
-            handler(NO, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);
-            return;
-        }
-        NSError *dataError;
-        @try {
-            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
-            [self.modifiedKeys removeAllObjects];
-        }
-        @catch (NSException *exception) {
-            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
-            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-        }
-        @finally {
-            handler(dataError == nil, dataError);
-        }
-    }];
-}
-
 +(void) get:(WGCollectionResultBlock)handler {
     [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
@@ -870,7 +800,7 @@ static WGUser *currentUser = nil;
     
     [WGApi post:queryString withParameters:@{ kIsBlockedKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isBlocked = [NSNumber numberWithBool:NO];
+            user.isBlocked = @NO;
         }
         handler(error == nil, error);
     }];
@@ -879,7 +809,7 @@ static WGUser *currentUser = nil;
 -(void) block:(WGUser *)user withType:(NSString *)type andHandler:(BoolResultBlock)handler {
     [WGApi post:@"blocks/" withParameters:@{ @"block" : user.id, @"type" : type } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isBlocked = [NSNumber numberWithBool:YES];
+            user.isBlocked = @YES;
         }
         handler(error == nil, error);
     }];
@@ -889,7 +819,7 @@ static WGUser *currentUser = nil;
 -(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi post:@"taps" withParameters:@{ @"tapped" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isTapped = [NSNumber numberWithBool:YES];
+            user.isTapped = @YES;
         }
         handler(error == nil, error);
     }];
@@ -903,7 +833,7 @@ static WGUser *currentUser = nil;
     [WGApi post:@"taps" withParameters:taps andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             for (WGUser *user in users) {
-                user.isTapped = [NSNumber numberWithBool:YES];
+                user.isTapped = @YES;
             }
         }
         handler(error == nil, error);
@@ -914,7 +844,7 @@ static WGUser *currentUser = nil;
     NSString *queryString = [NSString stringWithFormat:@"users/%@/", user.id];
     [WGApi post:queryString withParameters:@{ kIsTappedKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isTapped = [NSNumber numberWithBool:NO];
+            user.isTapped = @NO;
         }
         handler(error == nil, error);
     }];
@@ -924,7 +854,7 @@ static WGUser *currentUser = nil;
     NSString *queryString = [NSString stringWithFormat:@"users/%@/", user.id];
     [WGApi delete:queryString withArguments:@{ kIsFollowingKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFollowing = [NSNumber numberWithBool:NO];
+            user.isFollowing = @NO;
         }
         handler(error == nil, error);
     }];
@@ -933,7 +863,7 @@ static WGUser *currentUser = nil;
 -(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi post:@"follows/" withParameters:@{ @"follow" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFollowingRequested = [NSNumber numberWithBool:YES];
+            user.isFollowingRequested = @YES;
         }
         handler(error == nil, error);
     }];
@@ -942,7 +872,7 @@ static WGUser *currentUser = nil;
 -(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi get:@"follows/accept" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFollower = [NSNumber numberWithBool:YES];
+            user.isFollower = @YES;
         }
         handler(error == nil, error);
     }];
@@ -951,7 +881,7 @@ static WGUser *currentUser = nil;
 -(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi get:@"follows/reject" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFollower = [NSNumber numberWithBool:NO];
+            user.isFollower = @NO;
         }
         handler(error == nil, error);
     }];
@@ -960,7 +890,7 @@ static WGUser *currentUser = nil;
 -(void) goingOut:(BoolResultBlock)handler {
     [WGApi post:@"goingouts/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            self.isGoingOut = [NSNumber numberWithBool:YES];
+            self.isGoingOut = @YES;
         }
         handler(error == nil, error);
     }];
@@ -969,7 +899,7 @@ static WGUser *currentUser = nil;
 -(void) goingToEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler {
     [WGApi post:@"eventattendees/" withParameters:@{ @"event" : event.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            self.isGoingOut = [NSNumber numberWithBool:YES];
+            self.isGoingOut = @YES;
             self.eventAttending = event;
         }
         handler(error == nil, error);
@@ -979,7 +909,7 @@ static WGUser *currentUser = nil;
 -(void) readConversation:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.id];
     
-    NSDictionary *options = @{ @"read": [NSNumber numberWithBool:YES] };
+    NSDictionary *options = @{ @"read": @YES };
     
     [WGApi post:queryString withParameters:options andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {

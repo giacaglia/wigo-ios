@@ -39,7 +39,7 @@ dispatch_queue_t postQueue;
 #define kFileKey @"file"
 
 #ifdef DEBUG
-static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
+static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 #else
 static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 #endif

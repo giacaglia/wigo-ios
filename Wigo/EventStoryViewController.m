@@ -99,8 +99,7 @@
     self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 120, 40)];
     if ([self.event.numAttending intValue] > 0) {
         self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numAttending stringValue]];
-    }
-    else {
+    } else {
         self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numAttending stringValue]];
     }
 //    if ([self.event.numberInvited intValue] > 0) {
@@ -147,13 +146,11 @@
         self.inviteButton.enabled = NO;
         self.goHereButton.hidden = YES;
         self.goHereButton.enabled = NO;
-    }
-    else {
+    } else {
         if (self.event.id && [[WGProfile currentUser].eventAttending.id isEqualToNumber:self.event.id]) {
             self.inviteButton.hidden = NO;
             self.inviteButton.enabled = YES;
-        }
-        else {
+        } else {
             self.goHereButton.hidden = NO;
             self.goHereButton.enabled = YES;
         }
@@ -175,7 +172,7 @@
     [WGAnalytics tagEvent:@"Go Here" withDetails:options];
     
     // [WGProfile currentUser].isAttending = [WGEvent serialize:nil];
-    [WGProfile currentUser].isGoingOut = [NSNumber numberWithBool:YES];
+    [WGProfile currentUser].isGoingOut = @YES;
     [[WGProfile currentUser] goingToEvent:self.event withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
@@ -210,8 +207,7 @@
         if (!eventMessages) self.conversationViewController.eventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
         if (goHereState == PRESENTFACESTATE) {
             if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
-        }
-        else {
+        } else {
             if (goHereState == FIRSTTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:SECONDTIMEPRESENTCAMERASTATE forKey:kGoHereState];
             if (goHereState == SECONDTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:DONOTPRESENTANYTHINGSTATE forKey:kGoHereState];
             if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
@@ -462,8 +458,7 @@
     if (!eventMessages) self.conversationViewController.eventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
     if ([[WGProfile currentUser].eventAttending.id isEqualToNumber:self.event.id]) {
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
-    }
-    else {
+    } else {
         self.conversationViewController.eventMessages = [self eventMessagesWithYourFace: NO];
     }
     self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
@@ -542,8 +537,7 @@
     
     if (![[WGProfile currentUser].eventAttending.id isEqualToNumber:self.event.id]) {
          self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:NO];
-    }
-    else {
+    } else {
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     
@@ -596,8 +590,7 @@
     }
     else if (self.backgroundScrollview.contentOffset.y < 0 && scrollView == facesCollectionView) {
         self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
-    }
-    else {
+    } else {
         
         self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, self.backgroundScrollview.contentOffset.y + scrollView.contentOffset.y);
         

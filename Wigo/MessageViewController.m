@@ -194,8 +194,7 @@ BOOL isFetchingEveryone;
             user = (WGUser *)[_filteredContent objectAtIndex:[indexPath row]];
         }
         else return cell;
-    }
-    else {
+    } else {
         if ([_content count] == 0) return cell;
         if ([indexPath row] < [_content count]) {
             user = (WGUser *)[_content objectAtIndex:[indexPath row]];
@@ -217,7 +216,7 @@ BOOL isFetchingEveryone;
     UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
     goingOutLabel.font = [FontProperties mediumFont:13.0f];
     goingOutLabel.textAlignment = NSTextAlignmentLeft;
-    if ([user isGoingOut]) {
+    if ([user.isGoingOut boolValue]) {
         goingOutLabel.text = @"Going Out";
         goingOutLabel.textColor = [FontProperties getOrangeColor];
     }
@@ -241,8 +240,7 @@ BOOL isFetchingEveryone;
         int sizeOfArray = (int)[_filteredContent count];
         if (sizeOfArray > 0 && sizeOfArray > [indexPath row])
             user = (WGUser *)[_filteredContent objectAtIndex:[indexPath row]];
-    }
-    else {
+    } else {
         int sizeOfArray = (int)[_content count];
         if (sizeOfArray > 0 && sizeOfArray > [indexPath row])
             user = (WGUser *)[_content objectAtIndex:[indexPath row]];
@@ -330,8 +328,7 @@ BOOL isFetchingEveryone;
         }  completion:^(BOOL finished){
             _searchIconImageView.hidden = NO;
         }];
-    }
-    else {
+    } else {
         [UIView animateWithDuration:0.01 animations:^{
             _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
         }  completion:^(BOOL finished){
@@ -347,8 +344,7 @@ BOOL isFetchingEveryone;
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.25
      cancelPreviousRequest:YES];
-    }
-    else {
+    } else {
         _isSearching = NO;
     }
     [_tableView reloadData];

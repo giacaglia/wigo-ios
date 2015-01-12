@@ -706,8 +706,7 @@
                  [UIView commitAnimations];
              }
          }];
-    }
-    else {
+    } else {
         [[self session] takePicture];
     }
 }
@@ -967,8 +966,7 @@
         self.textField.hidden = NO;
         self.labelPoint = labelPoint;
         [self.textField becomeFirstResponder];
-    }
-    else {
+    } else {
         self.textField.hidden = YES;
         self.textLabel.hidden = YES;
     }
@@ -985,8 +983,7 @@
             self.textLabel.frame =  CGRectMake(0, labelPoint.y, self.view.frame.size.width, 40);
             self.labelPoint = labelPoint;
         }
-    }
-    else {
+    } else {
         self.textField.hidden = YES;
         self.textLabel.hidden = YES;
     }
@@ -1025,8 +1022,7 @@
                 int page;
                 if (fractionalPage - floor(fractionalPage) < 0.8) {
                     page = floor(fractionalPage);
-                }
-                else {
+                } else {
                     page = ceil(fractionalPage);
                 }
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"notificationHighlightPage"

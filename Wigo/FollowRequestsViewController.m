@@ -159,7 +159,7 @@
             [buttonSender setTitle:nil forState:UIControlStateNormal];
             [buttonSender setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
             buttonSender.tag = -100;
-            user.isBlocked = [NSNumber numberWithBool:NO];
+            user.isBlocked = @NO;
             
             [[WGProfile currentUser] unblock:user withHandler:^(BOOL success, NSError *error) {
                 // Do nothing!
@@ -175,11 +175,11 @@
                 buttonSender.layer.borderWidth = 1;
                 buttonSender.layer.borderColor = [FontProperties getOrangeColor].CGColor;
                 buttonSender.layer.cornerRadius = 3;
-                user.isFollowingRequested = [NSNumber numberWithBool:YES];
+                user.isFollowingRequested = @YES;
             }
             else {
                 [buttonSender setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-                user.isFollowing = [NSNumber numberWithBool:YES];
+                user.isFollowing = @YES;
             }
             buttonSender.tag = 100;
             [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
@@ -187,13 +187,12 @@
                     [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                 }
             }];
-        }
-        else {
+        } else {
             [buttonSender setTitle:nil forState:UIControlStateNormal];
             [buttonSender setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
             buttonSender.tag = -100;
-            user.isFollowing = [NSNumber numberWithBool:NO];
-            user.isFollowingRequested = [NSNumber numberWithBool:NO];
+            user.isFollowing = @NO;
+            user.isFollowingRequested = @NO;
             [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];

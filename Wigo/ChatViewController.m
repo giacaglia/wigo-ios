@@ -264,8 +264,7 @@ UIButton *newChatButton;
         }
         lastMessageImageView.image = blurredImage;
         [lastMessageLabel removeFromSuperview];
-    }
-    else {
+    } else {
         [lastMessageImageView addSubview:lastMessageLabel];
     }
     [cell.contentView addSubview:lastMessageImageView];
@@ -277,7 +276,7 @@ UIButton *newChatButton;
     timeStampLabel.textAlignment = NSTextAlignmentRight;
     [cell.contentView addSubview:timeStampLabel];
 
-    if (![message isRead]) cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
+    if (![message.isRead boolValue]) cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
     
     return cell;
 }
@@ -299,7 +298,7 @@ UIButton *newChatButton;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (![_messages count] == 0) {
         WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
-        message.isRead = [NSNumber numberWithBool:YES];
+        message.isRead = @YES;
         [self markMessageAsRead:message];
         WGUser *user = [message otherUser];
         self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];

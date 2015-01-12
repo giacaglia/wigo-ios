@@ -96,8 +96,7 @@ OnboardFollowViewController *onboardFollowViewController;
             lockPersonImageView.clipsToBounds = YES;
             [lockPersonIconButton addSubview:lockPersonImageView];
             [self.view addSubview:lockPersonIconButton];
-        }
-        else {
+        } else {
             UIButton *lockPersonIconButton = [[UIButton alloc] initWithFrame:CGRectMake(origin.width, origin.height, 15 + 4, 15 + 4)];
             UIImageViewShake *lockPersonImageView = [[UIImageViewShake alloc] initWithFrame:CGRectMake(0, 0, 15, 15)];
             lockPersonImageView.tag = i;

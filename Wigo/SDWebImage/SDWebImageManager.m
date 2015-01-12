@@ -54,8 +54,7 @@
 - (NSString *)cacheKeyForURL:(NSURL *)url {
     if (self.cacheKeyFilter) {
         return self.cacheKeyFilter(url);
-    }
-    else {
+    } else {
         return [url absoluteString];
     }
 }
@@ -159,8 +158,7 @@
                             [self.failedURLs addObject:url];
                         }
                     }
-                }
-                else {
+                } else {
                     BOOL cacheOnDisk = !(options & SDWebImageCacheMemoryOnly);
 
                     if (options & SDWebImageRefreshCached && image && !downloadedImage) {
@@ -213,8 +211,7 @@
             @synchronized (self.runningOperations) {
                 [self.runningOperations removeObject:operation];
             }
-        }
-        else {
+        } else {
             // Image not in cache and download disallowed by delegate
             dispatch_main_sync_safe(^{
                 completedBlock(nil, nil, SDImageCacheTypeNone, YES, url);
@@ -254,8 +251,7 @@
 - (void)setCancelBlock:(void (^)())cancelBlock {
     if (self.isCancelled) {
         if (cancelBlock) cancelBlock();
-    }
-    else {
+    } else {
         _cancelBlock = [cancelBlock copy];
     }
 }

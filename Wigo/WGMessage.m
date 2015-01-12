@@ -142,7 +142,7 @@
 -(void) readConversation:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.toUser.id];
     
-    NSDictionary *options = @{ @"read": [NSNumber numberWithBool:YES] };
+    NSDictionary *options = @{ @"read": @YES };
     
     [WGApi post:queryString withParameters:options andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {

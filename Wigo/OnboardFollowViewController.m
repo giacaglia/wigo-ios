@@ -188,8 +188,7 @@ BOOL initializedPopScreen;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (isSearching) {
         return [filteredUsers count];
-    }
-    else {
+    } else {
         int hasNextPage = ([users.hasNextPage boolValue] ? 1 : 0);
         return [users count] + hasNextPage;
     }
@@ -219,7 +218,7 @@ BOOL initializedPopScreen;
     [profileImageView setImageWithURL:user.smallCoverImageURL imageArea:[user smallCoverImageArea]];
     [cell.contentView addSubview:profileImageView];
     
-    if ([user isFavorite]) {
+    if ([user.isFavorite boolValue]) {
         UIImageView *favoriteSmall = [[UIImageView alloc] initWithFrame:CGRectMake(6, profileImageView.frame.size.height - 16, 10, 10)];
         favoriteSmall.image = [UIImage imageNamed:@"favoriteSmall"];
         [profileImageView addSubview:favoriteSmall];
@@ -236,7 +235,7 @@ BOOL initializedPopScreen;
     UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
     goingOutLabel.font =  [FontProperties mediumFont:15.0f];
     goingOutLabel.textAlignment = NSTextAlignmentLeft;
-    if ([user isGoingOut]) {
+    if ([user.isGoingOut boolValue]) {
         goingOutLabel.text = @"Going Out";
         goingOutLabel.textColor = [FontProperties getOrangeColor];
     }
@@ -250,7 +249,7 @@ BOOL initializedPopScreen;
         [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [cell.contentView addSubview:followPersonButton];
         
-        if ([user isFollowing]) {
+        if ([user.isFollowing boolValue]) {
             [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             followPersonButton.tag = 100;
         }
@@ -276,8 +275,7 @@ BOOL initializedPopScreen;
         int sizeOfArray = (int)[filteredUsers count];
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = (WGUser *)[filteredUsers objectAtIndex:index];
-    }
-    else {
+    } else {
         int sizeOfArray = (int)[users count];
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = (WGUser *)[users objectAtIndex:index];
@@ -302,19 +300,17 @@ BOOL initializedPopScreen;
             senderButton.layer.borderWidth = 1;
             senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             senderButton.layer.cornerRadius = 3;
-            user.isFollowingRequested = [NSNumber numberWithBool:YES];
-        }
-        else {
+            user.isFollowingRequested = @YES;
+        } else {
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            user.isFollowing = [NSNumber numberWithBool:YES];
+            user.isFollowing = @YES;
         }
         senderButton.tag = 100;
         [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
             // Do nothing!
         }];
         [users replaceObjectAtIndex:[indexPath row] withObject:user];
-    }
-    else {
+    } else {
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
@@ -323,8 +319,8 @@ BOOL initializedPopScreen;
             // Do nothing!
         }];
         
-        user.isFollowing = [NSNumber numberWithBool:NO];
-        user.isFollowingRequested = [NSNumber numberWithBool:NO];
+        user.isFollowing = @NO;
+        user.isFollowingRequested = @NO;
         [users replaceObjectAtIndex:[indexPath row] withObject:user];
     }
 }
@@ -379,8 +375,7 @@ BOOL initializedPopScreen;
         }  completion:^(BOOL finished){
             searchIconImageView.hidden = NO;
         }];
-    }
-    else {
+    } else {
         [UIView animateWithDuration:0.01 animations:^{
             searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
         }  completion:^(BOOL finished){
@@ -397,8 +392,7 @@ BOOL initializedPopScreen;
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.25
      cancelPreviousRequest:YES];
-    }
-    else {
+    } else {
         isSearching = NO;
     }
     [tableViewOfPeople reloadData];

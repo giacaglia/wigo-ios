@@ -107,8 +107,7 @@
   
     if (event.name.length > 0 ) {
         string = [NSString stringWithFormat:@"Tap people you want to see out \nat %@", event.name];
-    }
-    else {
+    } else {
         string = @"Tap people you want to see out";
     }
     NSMutableAttributedString * attString = [[NSMutableAttributedString alloc]
@@ -136,8 +135,7 @@
         NSMutableSet *newChosenPeople = [NSMutableSet setWithArray:savedChosenPeople];
         [newChosenPeople addObjectsFromArray:chosenPeople];
         [[NSUserDefaults standardUserDefaults] setValue:[newChosenPeople allObjects] forKey:@"chosenPeople"];
-    }
-    else {
+    } else {
         [[NSUserDefaults standardUserDefaults] setValue:chosenPeople forKey:@"chosenPeople"];
     }
     NSMutableSet *differenceChosenPeople = [NSMutableSet setWithArray:chosenPeople];
@@ -173,13 +171,11 @@
     if (section == 0) {
         if (isSearching) {
             return [filteredContent count];
-        }
-        else {
+        } else {
             int hasNextPage = ([content.hasNextPage boolValue] ? 1 : 0);
             return [content count] + hasNextPage;
         }
-    }
-    else {
+    } else {
         if (isSearching) return [filteredMobileContacts count];
         return [mobileContacts count];
     }
@@ -214,8 +210,7 @@
                     return cell;
                 }
             }
-        }
-        else {
+        } else {
             if ([content count] == 0) return cell;
             if (tag < [content count]) {
                 user = (WGUser *)[content objectAtIndex:tag];
@@ -255,18 +250,17 @@
             goingOutLabel.font = [FontProperties mediumFont:13.0f];
             goingOutLabel.textAlignment = NSTextAlignmentLeft;
             goingOutLabel.textColor = [FontProperties getBlueColor];
-            if ([user isGoingOut]) {
+            if ([user.isGoingOut boolValue]) {
                 if (user.eventAttending.name) {
                     goingOutLabel.text = [NSString stringWithFormat:@"Going out to %@", user.eventAttending.name];
-                }
-                else {
+                } else {
                     goingOutLabel.text = @"Going Out";
                 }
             }
             [aroundTapButton addSubview:goingOutLabel];
             
             UIImageView *tapImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 15 - 25, HEIGHT_CELLS / 2 - 15, 30, 30)];
-            if ([user isTapped]) {
+            if ([user.isTapped boolValue]) {
                 [tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
             }
             else {
@@ -342,8 +336,7 @@
         contactPerson = (__bridge ABRecordRef)([filteredMobileContacts objectAtIndex:tag]);
         recordID = ABRecordGetRecordID(contactPerson);
         tag = [MobileDelegate changeTag:tag fromArray:filteredMobileContacts toArray:mobileContacts];
-    }
-    else {
+    } else {
         contactPerson = (__bridge ABRecordRef)([mobileContacts objectAtIndex:tag]);
         recordID = ABRecordGetRecordID(contactPerson);
     }
@@ -366,8 +359,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         return [[UIView alloc ] init];
-    }
-    else {
+    } else {
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
         headerView.backgroundColor = [UIColor whiteColor];
         
@@ -399,25 +391,23 @@ heightForHeaderInSection:(NSInteger)section
         if (tag < [filteredContent count]) {
             user = (WGUser *)[filteredContent objectAtIndex:tag];
         }
-    }
-    else {
+    } else {
         if (tag < [content count]) {
             user = (WGUser *)[content objectAtIndex:tag];
         }
     }
     
-    if ([user isTapped]) {
+    if ([user.isTapped boolValue]) {
         [[WGProfile currentUser] untap:user withHandler:^(BOOL success, NSError *error) {
             // Do nothing!
         }];
-        user.isTapped = [NSNumber numberWithBool:NO];
-    }
-    else {
+        user.isTapped = @NO;
+    } else {
 #warning group these taps!
         [[WGProfile currentUser] tapUser:user withHandler:^(BOOL success, NSError *error) {
             // Do nothing!
         }];
-        user.isTapped = [NSNumber numberWithBool:YES];
+        user.isTapped = @YES;
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
         [WGAnalytics tagEvent:@"Tap User" withDetails:options];
     }
@@ -514,8 +504,7 @@ heightForHeaderInSection:(NSInteger)section
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.25
      cancelPreviousRequest:YES];
-    }
-    else {
+    } else {
 //        [self.view endEditing:YES];
 //        isSearching = NO;
     }

@@ -49,8 +49,7 @@
     if (self.index) {
         self.minPage = [self.index intValue];
         self.maxPage = [self.index intValue];
-    }
-    else {
+    } else {
         self.minPage = 0;
         self.maxPage = 0;
     }
@@ -87,8 +86,7 @@
             myCell.isPeeking = self.isPeeking;
 
             return myCell;
-        }
-        else {
+        } else {
             CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
             [cameraCell setControllerDelegate:self];
             NSArray *arrayViewContollers = (NSArray *)cameraCell.controller.viewControllers;
@@ -110,8 +108,7 @@
         NSURL *imageURL;
         if ([contentURL isKindOfClass:[UIImage class]]) {
             myCell.imageView.image = (UIImage *)contentURL;
-        }
-        else {
+        } else {
             imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
             [myCell.spinner startAnimating];
             __weak ImageCell *weakCell = myCell;
@@ -148,8 +145,7 @@
         myCell.avoidAction.hidden = YES;
         myCell.isPeeking = self.isPeeking;
         return myCell;
-    }
-    else {
+    } else {
         VideoCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VideoCell" forIndexPath: indexPath];
         myCell.mediaScrollDelegate = self;
         myCell.eventMessage = eventMessage;
@@ -238,11 +234,9 @@
     if (!self.eventMessagesRead) {
         self.eventMessagesRead = [[WGCollection alloc] initWithType:[WGEventMessage class]];
     }
-    if ((int)page < self.eventMessages.count) {
+    if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-        
-        
-            eventMessage.isRead = [NSNumber numberWithBool:YES];
+        eventMessage.isRead = @YES;
     }
 }
 
@@ -301,8 +295,7 @@
                          @"media_mime_type": type
                          };
             [WGAnalytics tagEvent: @"Event Conversation Added Text"];
-        }
-        else {
+        } else {
             self.options =  @{
                          @"event": self.event.id,
                          @"media_mime_type": type
@@ -341,8 +334,7 @@
                               @"properties": properties,
                               @"media_mime_type": type
                               };
-        }
-        else {
+        } else {
             self.options =  @{
                               @"event": self.event.id,
                               @"media_mime_type": type
@@ -852,8 +844,7 @@
         if (!upvoteBool) {
             self.eventMessage.vote = @-1;
             self.eventMessage.downVotes = @([self.eventMessage.downVotes intValue] + 1);
-        }
-        else {
+        } else {
             self.eventMessage.vote = @1;
             self.eventMessage.upVotes = @([self.eventMessage.upVotes intValue] + 1);
         }

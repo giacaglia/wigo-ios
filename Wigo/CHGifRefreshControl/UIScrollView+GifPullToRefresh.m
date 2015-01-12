@@ -147,8 +147,7 @@ static char UIScrollViewGifPullToRefresh;
     if (_state != GifPullToRefreshStateLoading) {
         if (self.scrollView.isDragging && self.scrollView.contentOffset.y + self.originalContentInsectY < -GifRefreshControlHeight && !_isTrigged) {
             _isTrigged = YES;
-        }
-        else {
+        } else {
             if (self.scrollView.isDragging && self.scrollView.contentOffset.y + self.originalContentInsectY > -GifRefreshControlHeight) {
                 _isTrigged = NO;
             }
