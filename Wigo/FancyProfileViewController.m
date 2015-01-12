@@ -816,6 +816,12 @@ UIButton *tapButton;
         if ([notification fromUserID] == (id)[NSNull null]) return notificationCell;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
         User *user = [[User alloc] initWithDictionary:[notification fromUser]];
+        if ([[notification objectForKey:@"id"] intValue] > [[Profile.user lastNotificationRead] intValue]) {
+            notificationCell.backgroundColor = [FontProperties getLightOrangeColor];
+        }
+        else {
+            notificationCell.backgroundColor = UIColor.whiteColor;
+        }
         [notificationCell.profileImageView setImageWithURL:[NSURL URLWithString:[user coverImageURL]] imageArea:[user coverImageArea]];
         notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName] , [notification message] ];
         
