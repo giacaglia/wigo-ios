@@ -57,7 +57,7 @@
 -(NSString *) message {
     NSString *type = self.type;
     if ([type isEqualToString:@"tap"]) {
-        if ([self.created isFromLastDay]) {
+        if (![self.created isFromLastDay]) {
             if (self.fromUser.eventAttending.name) {
                 return [NSString stringWithFormat:@"wants to see you out at %@", self.fromUser.eventAttending.name];
             }
