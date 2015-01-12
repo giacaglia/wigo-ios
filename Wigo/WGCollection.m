@@ -141,6 +141,10 @@
 -(NSArray *) idArray {
     NSMutableArray *ids = [[NSMutableArray alloc] init];
     for (WGObject *object in self.objects) {
+        if (!object.id) {
+            NSLog(@"No Object ID for object: %@", object);
+            continue;
+        }
         [ids addObject:object.id];
     }
     return ids;
