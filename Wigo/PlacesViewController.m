@@ -1169,21 +1169,19 @@ int firstIndexOfNegativeEvent;
 - (void)showConversationForEvent:(WGEvent *)event {
     
     [event getMessages:^(WGCollection *collection, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                return;
-            }
-            UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            int eventIndex = [self indexOfEvent:event inCollection:collection];
-            
-            EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
-            conversationViewController.event = event;
-            conversationViewController.index = @(eventIndex);
-            conversationViewController.eventMessages = collection;
-            
-            [self presentViewController:conversationViewController animated:YES completion:nil];
-        });
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            return;
+        }
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        int eventIndex = [self indexOfEvent:event inCollection:collection];
+        
+        EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+        conversationViewController.event = event;
+        conversationViewController.index = @(eventIndex);
+        conversationViewController.eventMessages = collection;
+        
+        [self presentViewController:conversationViewController animated:YES completion:nil];
     }];
 }
 

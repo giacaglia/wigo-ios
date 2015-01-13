@@ -57,47 +57,47 @@
     
     // Load Albums into assetGroups
     dispatch_async(dispatch_get_main_queue(), ^{
-                       // Group enumerator Block
-                       void (^assetGroupEnumerator)(ALAssetsGroup *, BOOL *) = ^(ALAssetsGroup *group, BOOL *stop)
-                       {
-                           if (group == nil)
-                           {
-                               return;
-                           }
-                           
-                           NSString *sGroupPropertyName = (NSString *)[group valueForProperty:ALAssetsGroupPropertyName];
-                           NSUInteger nType = [[group valueForProperty:ALAssetsGroupPropertyType] intValue];
-                           if (self.pickerType == IQAssetsPickerControllerAssetTypePhoto)
-                           {
-                               [group setAssetsFilter:[ALAssetsFilter allPhotos]];
-                           }
-                           else if (self.pickerType == IQAssetsPickerControllerAssetTypeVideo)
-                           {
-                               [group setAssetsFilter:[ALAssetsFilter allVideos]];
-                           }
-                           
-                           if ([[sGroupPropertyName lowercaseString] isEqualToString:@"camera roll"] && nType == ALAssetsGroupSavedPhotos) {
-                               [_assetGroups insertObject:group atIndex:0];
-                           }
-                           else {
-                               if (group.numberOfAssets != 0) {
-                                   [_assetGroups addObject:group];
-                               }
-                           }
+       // Group enumerator Block
+       void (^assetGroupEnumerator)(ALAssetsGroup *, BOOL *) = ^(ALAssetsGroup *group, BOOL *stop)
+       {
+           if (group == nil)
+           {
+               return;
+           }
+           
+           NSString *sGroupPropertyName = (NSString *)[group valueForProperty:ALAssetsGroupPropertyName];
+           NSUInteger nType = [[group valueForProperty:ALAssetsGroupPropertyType] intValue];
+           if (self.pickerType == IQAssetsPickerControllerAssetTypePhoto)
+           {
+               [group setAssetsFilter:[ALAssetsFilter allPhotos]];
+           }
+           else if (self.pickerType == IQAssetsPickerControllerAssetTypeVideo)
+           {
+               [group setAssetsFilter:[ALAssetsFilter allVideos]];
+           }
+           
+           if ([[sGroupPropertyName lowercaseString] isEqualToString:@"camera roll"] && nType == ALAssetsGroupSavedPhotos) {
+               [_assetGroups insertObject:group atIndex:0];
+           }
+           else {
+               if (group.numberOfAssets != 0) {
+                   [_assetGroups addObject:group];
+               }
+           }
 
-                           [self.tableView reloadData];
-                           [self.navigationItem setTitle:@"Albums"];
+           [self.tableView reloadData];
+           [self.navigationItem setTitle:@"Albums"];
 
-                       };
-        
-                       // Group Enumerator Failure Block
-                       void (^assetGroupEnumberatorFailure)(NSError *) = ^(NSError *error) {
-                           UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-                           [alert show];
-                       };
-        
-                       [self.assetLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:assetGroupEnumerator failureBlock:assetGroupEnumberatorFailure];
-                   });
+       };
+
+       // Group Enumerator Failure Block
+       void (^assetGroupEnumberatorFailure)(NSError *) = ^(NSError *error) {
+           UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+           [alert show];
+       };
+
+       [self.assetLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:assetGroupEnumerator failureBlock:assetGroupEnumberatorFailure];
+   });
 }
 
 - (void)viewWillAppear:(BOOL)animated

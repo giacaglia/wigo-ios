@@ -494,28 +494,24 @@
         __weak typeof(self) weakSelf = self;
         if (!eventMessages) {
             [self.event getMessages:^(WGCollection *collection, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    __strong typeof(self) strongSelf = weakSelf;
-                    strongSelf->cancelFetchMessages = NO;
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        return;
-                    }
-                    strongSelf->eventMessages = collection;
-                    [strongSelf->facesCollectionView reloadData];
-                });
+                __strong typeof(self) strongSelf = weakSelf;
+                strongSelf->cancelFetchMessages = NO;
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                strongSelf->eventMessages = collection;
+                [strongSelf->facesCollectionView reloadData];
             }];
         } else if ([eventMessages.hasNextPage boolValue]) {
             [eventMessages addNextPage:^(BOOL success, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    __strong typeof(self) strongSelf = weakSelf;
-                    strongSelf->cancelFetchMessages = NO;
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        return;
-                    }
-                    [strongSelf->facesCollectionView reloadData];
-                });
+                __strong typeof(self) strongSelf = weakSelf;
+                strongSelf->cancelFetchMessages = NO;
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                [strongSelf->facesCollectionView reloadData];
             }];
         }
     }

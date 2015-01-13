@@ -78,10 +78,14 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(response, dataError);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                handler(response, dataError);
+            });
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        handler(operation.responseObject, error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            handler(operation.responseObject, error);
+        });
     }];
 }
 
@@ -115,10 +119,14 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(response, dataError);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                handler(response, dataError);
+            });
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        handler(operation.responseObject, error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            handler(operation.responseObject, error);
+        });
     }];
 }
 

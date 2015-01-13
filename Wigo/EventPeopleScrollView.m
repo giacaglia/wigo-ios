@@ -37,9 +37,8 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     // Add 3 images
-    if (scrollView.contentOffset.x + [[UIScreen mainScreen] bounds].size.width  + 3 * self.sizeOfEachImage >= scrollView.contentSize.width - self.sizeOfEachImage &&
-
-        !self.fetchingEventAttendees) {
+    if (scrollView.contentOffset.x + [[UIScreen mainScreen] bounds].size.width + 4 * self.sizeOfEachImage >= scrollView.contentSize.width && !self.fetchingEventAttendees) {
+        NSLog(@"%f %f %f", scrollView.contentOffset.x, [[UIScreen mainScreen] bounds].size.width, scrollView.contentSize.width);
         [self fetchEventAttendeesAsynchronous];
     }
 
@@ -48,7 +47,6 @@
 - (void)fillEventAttendees {
     self.attendees = self.event.attendees;
 }
-
 
 - (void)loadUsers {
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
