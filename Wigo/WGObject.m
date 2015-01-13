@@ -221,6 +221,9 @@
         id value = [self.parameters objectForKey:key];
         if ([value isKindOfClass:[NSDictionary class]] && [value objectForKey:@"id"]) {
             [parametersWithIds setObject:[value objectForKey:@"id"] forKey:key];
+        } else if ([value isKindOfClass:[WGObject class]]) {
+            WGObject *valueObject = (WGObject *)value;
+            [parametersWithIds setObject:valueObject.id forKey:key];
         } else {
             [parametersWithIds setObject:value forKey:key];
         }
