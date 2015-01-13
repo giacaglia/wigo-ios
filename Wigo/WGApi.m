@@ -40,11 +40,11 @@ dispatch_queue_t postQueue;
 #define kReferenceIdKey @"$id"
 #define kReferenceKey @"$ref"
 
-//#ifdef DEBUG
-//static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
-//#else
+#ifdef DEBUG
+static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
+#else
 static NSString *baseURLString = @"https://api.wigo.us/api/%@";
-//#endif
+#endif
 
 @implementation WGApi
 

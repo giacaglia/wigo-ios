@@ -28,7 +28,8 @@
         self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.scrollView.autoresizesSubviews = YES;
         self.scrollView.delegate = self;
-        self.scrollView.backgroundColor = [UIColor blackColor];
+        self.scrollView.backgroundColor = UIColor.blackColor;
+        self.scrollView.showsHorizontalScrollIndicator = NO;
     
         [self addSubview: self.scrollView];
         

@@ -109,12 +109,12 @@
     [notificationButton addSubview:labelName];
     
     UIButton *followBackPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
-    followBackPersonButton.tag = 100;
+    followBackPersonButton.tag = -100;
     [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
     
     if ([user.isFollowing boolValue]) {
-        followBackPersonButton.tag = -100;
+        followBackPersonButton.tag = 100;
         [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
     }
     if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
@@ -160,7 +160,6 @@
             [buttonSender setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
             buttonSender.tag = -100;
             user.isBlocked = @NO;
-            
             [[WGProfile currentUser] unblock:user withHandler:^(BOOL success, NSError *error) {
                 // Do nothing!
             }];
