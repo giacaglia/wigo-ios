@@ -130,7 +130,7 @@ UIButton *tapButton;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if ([self.user state] == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
+    if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if ([self.user isCurrentUser]) {
         [self fetchUserInfo];
         [self updateLastNotificationsRead];
@@ -499,30 +499,27 @@ UIButton *tapButton;
 
 - (void)followPressed {
     self.user.isFollowing = @YES;
-    [self.user save:^(BOOL success, NSError *error) {
-        if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
-            self.userState = NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
-            self.user.isFollowingRequested = @YES;
-        } else {
-            self.userState = FOLLOWING_USER_STATE;
-            self.user.isFollowing = @YES;
-        }
-        [self reloadViewForUserState];
-    }];
+    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
+        self.userState = NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
+        self.user.isFollowingRequested = @YES;
+    } else {
+        self.userState = FOLLOWING_USER_STATE;
+        self.user.isFollowing = @YES;
+    }
+    [self reloadViewForUserState];
+    [self.user save:^(BOOL success, NSError *error) {}];
 }
 
 - (void)unfollowPressed {
-    self.user.isFollowing = @YES;
+    self.user.isFollowing = @NO;
+    if (self.user.privacy == PRIVATE) {
+        self.userState = NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
+    } else {
+        self.userState = NOT_FOLLOWING_PUBLIC_USER_STATE;
+    }
     
-    [self.user save:^(BOOL success, NSError *error) {
-        if (self.userState == ACCEPTED_PRIVATE_USER_STATE) {
-            self.userState = NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
-        } else {
-            self.userState = NOT_FOLLOWING_PUBLIC_USER_STATE;
-        }
-
-        [self reloadViewForUserState];
-    }];
+    [self reloadViewForUserState];
+    [self.user save:^(BOOL success, NSError *error) {}];
 }
 
 
