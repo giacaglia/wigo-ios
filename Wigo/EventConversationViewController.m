@@ -370,10 +370,9 @@
         self.facesHidden = YES;
         [self focusOnContent];
         
-        WGUser *user = [WGUser serialize:[eventMessage objectForKey:@"user"]];
         self.buttonCancel.hidden = NO;
         self.buttonCancel.enabled = YES;
-        if ([user isCurrentUser]) {
+        if ([eventMessage.user isCurrentUser]) {
             self.buttonTrash.hidden = NO;
             self.buttonTrash.enabled = YES;
         } else {
