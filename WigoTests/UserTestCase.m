@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import "User.h"
+#import "WGUser.h"
 
 @interface UserTestCase : XCTestCase
-@property User *katniss;
-@property User *peeta;
+@property WGUser *katniss;
+@property WGUser *peeta;
 
 @end
 
@@ -23,8 +23,8 @@
     // this might be a stupid way of setting up the users here.
     NSDictionary *kdict = [[NSDictionary alloc] initWithObjectsAndKeys:@1234, @"id", nil];
     NSDictionary *pdict = [[NSDictionary alloc] initWithObjectsAndKeys:@4321, @"id", nil];
-    self.katniss = [[User alloc] initWithDictionary:kdict];
-    self.peeta = [[User alloc] initWithDictionary:pdict];
+    self.katniss = [WGUser serialize:kdict];
+    self.peeta = [WGUser serialize:pdict];
 }
 
 - (void) tearDown {
@@ -39,7 +39,7 @@
 }
 
 - (void) testUserEqualToOtherUser {
-    XCTAssert(![self.katniss isEqualToUser:self.peeta], @"Pass");
+    XCTAssert(![self.katniss isEqual:self.peeta], @"Pass");
 }
 
 @end
