@@ -111,7 +111,7 @@
     UIButton *followBackPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, 27 - 15, 49, 30)];
     followBackPersonButton.tag = 100;
     [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-     [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
+    [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
     
     if ([user.isFollowing boolValue]) {
         followBackPersonButton.tag = -100;
