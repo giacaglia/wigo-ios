@@ -508,7 +508,7 @@ NSMutableArray *suggestedArrayView;
     if ([indexPath section] == 0) {
         if ([self.currentTab isEqualToNumber:@2]) return 233;
         else if ([self.currentTab isEqualToNumber:@4]) return 95;
-        else return 0;
+        // else return 0;
     }
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
 }
@@ -564,11 +564,9 @@ NSMutableArray *suggestedArrayView;
         if ([_users.hasNextPage boolValue] && tag == [_users count] - 5) {
             [self loadNextPage];
         }
-    } else {
-        if (tag == [_users count]) {
-            [self loadNextPage];
-            return cell;
-        }
+    } else if (tag == [_users count]) {
+        [self loadNextPage];
+        return cell;
     }
    
     WGUser *user = [self getUserAtIndex:tag];
@@ -586,9 +584,10 @@ NSMutableArray *suggestedArrayView;
         return cell;
     }
     
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
+    // UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
     UIView *clickableView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 15 - 79, PEOPLEVIEW_HEIGHT_OF_CELLS - 5)];
-    if (![user isCurrentUser]) [clickableView addGestureRecognizer:tap];
+    
+    // if (![user isCurrentUser]) [clickableView addGestureRecognizer:tap];
     clickableView.userInteractionEnabled = YES;
     clickableView.tag = tag;
     [cell.contentView addSubview:clickableView];
@@ -637,7 +636,7 @@ NSMutableArray *suggestedArrayView;
     }
     
     if (![user isCurrentUser]) {
-        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 15, 49, 30)];
+        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 15, 49, 30)];
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = -100;
         [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];

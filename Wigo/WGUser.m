@@ -863,7 +863,7 @@ static WGUser *currentUser = nil;
 
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"users/%@/", user.id];
-    [WGApi delete:queryString withArguments:@{ kIsFollowingKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:queryString withParameters:@{ kIsFollowingKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollowing = @NO;
         }

@@ -1302,9 +1302,9 @@ int firstIndexOfNegativeEvent;
                         __strong typeof(self) strongSelf = weakSelf;
                         [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                         fetchingEventAttendees = NO;
-                        if (error) {
+                        /* if (error) {
                             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        }
+                        } */
                         strongSelf.pastDays = [[NSMutableArray alloc] init];
                         strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
                         strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];

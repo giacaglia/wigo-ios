@@ -141,8 +141,6 @@
     return [self objectForKey:kUserKey];
 }
 
-#warning verify that these work
-
 -(void) addPhoto:(NSData *)fileData withName:(NSString *)filename andHandler:(WGEventMessageResultBlock)handler {
     [WGApi uploadPhoto:fileData withFileName:filename andHandler:^(NSDictionary *jsonResponse, NSDictionary *fields, NSError *error) {
         NSError *dataError;

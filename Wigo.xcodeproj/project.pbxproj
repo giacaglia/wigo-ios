@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4544094C1A51EA0000BB3036 /* WGCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544094B1A51EA0000BB3036 /* WGCollectionView.m */; };
 		4544094F1A51EF3000BB3036 /* WGCollectionArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544094E1A51EF3000BB3036 /* WGCollectionArray.m */; };
-		454409521A51F19100BB3036 /* WGTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409511A51F19100BB3036 /* WGTableView.m */; };
 		454409551A5241FA00BB3036 /* WGEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409541A5241FA00BB3036 /* WGEvent.m */; };
 		454409581A537F1C00BB3036 /* WGMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409571A537F1C00BB3036 /* WGMessage.m */; };
 		4544095B1A547BCD00BB3036 /* WGNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544095A1A547BCD00BB3036 /* WGNotification.m */; };
@@ -387,12 +385,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4544094A1A51EA0000BB3036 /* WGCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGCollectionView.h; sourceTree = "<group>"; };
-		4544094B1A51EA0000BB3036 /* WGCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGCollectionView.m; sourceTree = "<group>"; };
 		4544094D1A51EF3000BB3036 /* WGCollectionArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGCollectionArray.h; sourceTree = "<group>"; };
 		4544094E1A51EF3000BB3036 /* WGCollectionArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGCollectionArray.m; sourceTree = "<group>"; };
-		454409501A51F19100BB3036 /* WGTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGTableView.h; sourceTree = "<group>"; };
-		454409511A51F19100BB3036 /* WGTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGTableView.m; sourceTree = "<group>"; };
 		454409531A5241FA00BB3036 /* WGEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEvent.h; sourceTree = "<group>"; };
 		454409541A5241FA00BB3036 /* WGEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGEvent.m; sourceTree = "<group>"; };
 		454409561A537F1C00BB3036 /* WGMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGMessage.h; sourceTree = "<group>"; };
@@ -852,7 +846,6 @@
 				45DF86B51A5C6E7900DB85AE /* Networking */,
 				45DF86B81A5C6EAF00DB85AE /* Analytics */,
 				45DF86B61A5C6E8A00DB85AE /* Data Model */,
-				45DF86B71A5C6E9600DB85AE /* UI */,
 				45DF86B91A5C6EC100DB85AE /* Categories */,
 			);
 			name = "New Core Objects";
@@ -938,17 +931,6 @@
 				4544094E1A51EF3000BB3036 /* WGCollectionArray.m */,
 			);
 			name = "Data Model";
-			sourceTree = "<group>";
-		};
-		45DF86B71A5C6E9600DB85AE /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				4544094A1A51EA0000BB3036 /* WGCollectionView.h */,
-				4544094B1A51EA0000BB3036 /* WGCollectionView.m */,
-				454409501A51F19100BB3036 /* WGTableView.h */,
-				454409511A51F19100BB3036 /* WGTableView.m */,
-			);
-			name = UI;
 			sourceTree = "<group>";
 		};
 		45DF86B81A5C6EAF00DB85AE /* Analytics */ = {
@@ -2229,7 +2211,6 @@
 				FABD337B1A3B9904008FF56D /* JPBFloatingTextViewController.m in Sources */,
 				E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */,
 				E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */,
-				4544094C1A51EA0000BB3036 /* WGCollectionView.m in Sources */,
 				E9C63BE61A03ED35006C5DD2 /* IQSongsListTableHeaderView.m in Sources */,
 				E9C63BD41A03ED35006C5DD2 /* IQAssetsPickerShadowView.m in Sources */,
 				E9C63BF01A03ED35006C5DD2 /* IQSongsGenreViewController.m in Sources */,
@@ -2321,7 +2302,6 @@
 				45DF86B01A5C5DEB00DB85AE /* AFSecurityPolicy.m in Sources */,
 				E9C63BF21A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */,
 				454409551A5241FA00BB3036 /* WGEvent.m in Sources */,
-				454409521A51F19100BB3036 /* WGTableView.m in Sources */,
 				E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */,
 				E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */,
 				FA55261C1A1FDB4000101AE7 /* JBChartView.m in Sources */,
