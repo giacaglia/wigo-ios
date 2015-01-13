@@ -353,7 +353,7 @@ UIButton *tapButton;
     _numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
     _numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
     _numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
-    _numberOfFollowersLabel.text = [(NSNumber*)[self.user objectForKey:@"num_followers"] stringValue];
+    _numberOfFollowersLabel.text = [self.user.numFollowers stringValue];
     [_leftProfileButton addSubview:_numberOfFollowersLabel];
     
     UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _leftProfileButton.frame.size.width, 20)];
@@ -371,7 +371,7 @@ UIButton *tapButton;
     _numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
     _numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
     _numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
-    _numberOfFollowingLabel.text = [(NSNumber*)[self.user objectForKey:@"num_following"] stringValue];
+    _numberOfFollowingLabel.text = [self.user.numFollowing stringValue];
     [_rightProfileButton addSubview:_numberOfFollowingLabel];
     
     UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _rightProfileButton.frame.size.width, 20)];

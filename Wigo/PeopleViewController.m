@@ -183,7 +183,7 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (void) goBack {
-    [[WGProfile currentUser] saveKey:@"last_user_read" withValue:@"s" andHandler:^(BOOL success, NSError *error) {
+    [[WGProfile currentUser] saveKey:@"last_user_read" withValue:@"latest" andHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             return;
