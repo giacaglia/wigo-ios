@@ -159,6 +159,7 @@ int firstIndexOfNegativeEvent;
     } else {
         shouldReloadEvents = YES;
     }
+    [self fetchUserInfo];
     [self shouldShowCreateButton];
     [self showOnlyOnePlusButton];
 }

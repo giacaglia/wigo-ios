@@ -561,7 +561,7 @@ UIButton *tapButton;
 #pragma mark User State
 
 - (void) reloadViewForUserState {
-    if (self.userState == OTHER) {
+    if (self.userState == OTHER_SCHOOL_USER_STATE) {
         _rightBarBt.enabled = NO;
         _rightBarBt.hidden = YES;
         _leftProfileButton.enabled = NO;
