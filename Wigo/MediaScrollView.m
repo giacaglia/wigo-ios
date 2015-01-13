@@ -711,7 +711,7 @@
     
     NSNumber *vote = self.eventMessage.vote;
         if (!self.numberOfVotesLabel) {
-            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 46, self.frame.size.height - 75, 32, 30)];
+            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 42, self.frame.size.height - 75, 32, 30)];
             self.numberOfVotesLabel.textColor = UIColor.whiteColor;
             self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
             self.numberOfVotesLabel.font = [FontProperties mediumFont:18.0f];
@@ -726,7 +726,7 @@
 
         if (!self.upVoteButton) {
             self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 118, 56, 52)];
-            self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 32, 32)];
+            self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 10, 32, 32)];
             [self.upVoteButton addSubview:self.upvoteImageView];
             [self.contentView addSubview:self.upVoteButton];
 
@@ -738,7 +738,7 @@
         }
         if (!self.downVoteButton) {
             self.downVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 52, 56, 52)];
-            self.downvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 32, 32)];
+            self.downvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 10, 32, 32)];
                        [self.downVoteButton addSubview:self.downvoteImageView];
             [self.contentView addSubview:self.downVoteButton];
             
