@@ -62,15 +62,26 @@ static WGError *sharedWGErrorInstance = nil;
     if ([error.domain isEqualToString:kServerErrorDomain]) {
         long httpStatus = [[[error userInfo] objectForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
         
-        NSString *customMessage = [[error userInfo] objectForKey:@"wigoMessage"];
-        NSLog(@"Custom message for error: %@", customMessage);
+        NSString *invalidField = [error.userInfo objectForKey:@"wigoField"];
         
         if (httpStatus == kNotFoundStatusCode) {
-            messageString = kServerConnectionFailedMessage;
-            moreString    = KUnknownErrorMore;
+            if (invalidField) {
+                titleString = [NSString stringWithFormat:@"Invalid %@", invalidField];
+                messageString = [NSString stringWithFormat:@"Please enter a valid %@", invalidField];
+            } else {
+                titleString    = kUnknownErrorMessage;
+                messageString  = KUnknownErrorMore;
+            }
+            moreString = @"";
         } else if (httpStatus == kBadRequestStatusCode) {
-            messageString = kUnknownErrorMessage;
-            moreString    = KUnknownErrorMore;
+            if (invalidField) {
+                titleString = [NSString stringWithFormat:@"Invalid %@", invalidField];
+                messageString = [NSString stringWithFormat:@"Please enter a valid %@", invalidField];
+            } else {
+                titleString    = kUnknownErrorMessage;
+                messageString  = KUnknownErrorMore;
+            }
+            moreString = @"";
         } else {
             messageString = kUnknownErrorMessage;
             moreString    = KUnknownErrorMore;

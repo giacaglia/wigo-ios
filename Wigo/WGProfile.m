@@ -346,7 +346,10 @@ static WGProfile *currentUser = nil;
     [WGApi post:@"register" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
-            [newInfo setObject:[jsonResponse objectForKey:@"message"] forKey:@"wigoMessage"];
+            if ([jsonResponse objectForKey:@"message"]) {
+                [newInfo setObject:[jsonResponse objectForKey:@"message"] forKey:@"wigoMessage"];
+                [newInfo setObject:[jsonResponse objectForKey:@"field"] forKey:@"wigoField"];
+            }
             handler(NO, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);
             return;
         }
@@ -372,25 +375,8 @@ static WGProfile *currentUser = nil;
 
 
 -(void) setLastNotificationReadToLatest:(BoolResultBlock)handler {
-    [WGApi post:@"users/me" withParameters:@{ kLastNotificationReadKey : @"latest" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-            handler(NO, error);
-            return;
-        }
-        
-        NSError *dataError;
-        @try {
-            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
-            [self replaceReferences];
-        }
-        @catch (NSException *exception) {
-            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
-            dataError = [NSError errorWithDomain: @"WGProfile" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-        }
-        @finally {
-            handler(dataError == nil, dataError);
-        }
+    [self saveKey:kLastNotificationReadKey withValue:@"latest" andHandler:^(BOOL success, NSError *error) {
+        handler(success, error);
     }];
 }
 

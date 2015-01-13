@@ -228,4 +228,31 @@
     }];
 }
 
+-(void) refresh:(BoolResultBlock)handler {
+    NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@?attendees_limit=10", self.className, self.id];
+    
+    [WGApi get:thisObjectURL withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        
+        NSError *dataError;
+        @try {
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self replaceReferences];
+            [self.modifiedKeys removeAllObjects];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGObject" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
+}
+
+
 @end

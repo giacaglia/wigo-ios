@@ -743,7 +743,7 @@ static WGUser *currentUser = nil;
 }
 
 +(void) searchUsers:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/" withArguments:@{ @"text" : query, @"id__ne" : [WGProfile currentUser].id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -951,6 +951,10 @@ static WGUser *currentUser = nil;
             handler(objects, dataError);
         }
     }];
+}
+
+-(void) remove:(BoolResultBlock)handler {
+    handler(NO, [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"cannot delete user" }]);
 }
 
 @end

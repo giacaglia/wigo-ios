@@ -164,7 +164,7 @@ OnboardFollowViewController *onboardFollowViewController;
             if (error) {
                 return;
             }
-            if ([WGProfile currentUser].emailValidated) {
+            if ([[WGProfile currentUser].emailValidated boolValue]) {
                 if ([[WGProfile currentUser].group.locked boolValue]) {
                     [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
                 } else {

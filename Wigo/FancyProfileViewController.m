@@ -937,7 +937,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)presentEvent:(WGEvent *)event {
-    if ([self.events containsObject:event] && event.attendees.count > 0) {
+    if ([self.events containsObject:event] && event.attendees && event.attendees.count > 0) {
         EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
         eventStoryViewController.event = event;
         eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
