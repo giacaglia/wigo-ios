@@ -373,19 +373,22 @@ static WGUser *currentUser = nil;
 }
 
 -(NSDictionary *) smallCoverImageArea {
-    NSArray *imagesArea = [self imagesArea];
-    if (imagesArea && [imagesArea count] > 0) {
-        NSDictionary *area = [imagesArea objectAtIndex:0];
-        if (area && ![area isEqual:[NSNull null]]) {
-            NSMutableDictionary *smallArea = [[NSMutableDictionary alloc] init];
-            for (id key in [area allKeys]) {
-                int resizedValue = ([[area objectForKey:key] intValue] / 3);
-                [smallArea setObject:[NSNumber numberWithInt:resizedValue] forKey:key];
+    if ([[self.images objectAtIndex:0] objectForKey:kSmallKey]) {
+        NSArray *imagesArea = [self imagesArea];
+        if (imagesArea && [imagesArea count] > 0) {
+            NSDictionary *area = [imagesArea objectAtIndex:0];
+            if (area && ![area isEqual:[NSNull null]]) {
+                NSMutableDictionary *smallArea = [[NSMutableDictionary alloc] init];
+                for (id key in [area allKeys]) {
+                    int resizedValue = ([[area objectForKey:key] intValue] / 3);
+                    [smallArea setObject:[NSNumber numberWithInt:resizedValue] forKey:key];
+                }
+                return smallArea;
             }
-            return smallArea;
         }
+        return [[NSDictionary alloc] init];
     }
-    return [[NSDictionary alloc] init];
+    return [self coverImageArea];
 }
 
 -(void) setGroup:(WGGroup *)group {

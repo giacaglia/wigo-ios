@@ -36,10 +36,24 @@ UIImageView *batteryImageView;
     [self initializeShareLabel];
     [self initializeBattery];
     [self initializeShareButton];
+    
+    [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(checkIfGroupIsUnlocked) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [self checkIfGroupIsUnlocked];
+}
+
+-(void) checkIfGroupIsUnlocked {
+    [WGProfile reload:^(BOOL success, NSError *error) {
+        if (error) {
+            return;
+        }
+        if ([WGProfile currentUser].group.locked && ![[WGProfile currentUser].group.locked boolValue]) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }];
 }
 
 - (void)initializeBackground {

@@ -37,6 +37,7 @@ OnboardFollowViewController *onboardFollowViewController;
     [self initializeEmailLabel];
     [self initializeOtherButtons];
 //    [self initializeNumberOfPeopleLabel];
+    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(login) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

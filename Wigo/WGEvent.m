@@ -185,7 +185,7 @@
 }
 
 +(void) getWithGroupNumber: (NSNumber *)groupNumber andHandler:(WGCollectionResultBlock)handler {
-    [WGApi get:@"events" withArguments:@{ @"group" : groupNumber, @"date" : @"tonight", @"attendees_limit" : @10 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"events" withArguments:@{ @"group" : groupNumber, @"attendees_limit" : @10 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
