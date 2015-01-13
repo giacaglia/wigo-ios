@@ -63,13 +63,17 @@ static char imageURLKey;
                             [wself setNeedsLayout];
                             CGImageRelease(imageRef);
                         } else {
-                            wself.image = image;
+                            CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, MIN(image.size.width, image.size.height), MIN(image.size.width, image.size.height)));
+                            wself.image = [UIImage imageWithCGImage:imageRef];
                             [wself setNeedsLayout];
+                            CGImageRelease(imageRef);
                         }
                     }
                     else {
-                        wself.image = image;
+                        CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, MIN(image.size.width, image.size.height), MIN(image.size.width, image.size.height)));
+                        wself.image = [UIImage imageWithCGImage:imageRef];
                         [wself setNeedsLayout];
+                        CGImageRelease(imageRef);
                     }
                 } else {
                     if ((options & SDWebImageDelayPlaceholder)) {

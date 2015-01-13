@@ -428,6 +428,13 @@ int firstIndexOfNegativeEvent;
     _placesTableView.backgroundColor = RGB(241, 241, 241);
     _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _yPositionOfWhereSubview = 280;
+    
+    CGRect frame = _placesTableView.bounds;
+    frame.origin.y = -frame.size.height;
+    UIView* grayView = [[UIView alloc] initWithFrame:frame];
+    grayView.backgroundColor = UIColor.whiteColor;
+    [_placesTableView addSubview:grayView];
+    
     [self addRefreshToScrollView];
     [self initializeGoingSomewhereElseButton];
     
@@ -1441,7 +1448,6 @@ int firstIndexOfNegativeEvent;
 
 - (void)addRefreshToScrollView {
     [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView
-                           withBackgroundColor:RGB(241, 241, 241)
                                    withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];
