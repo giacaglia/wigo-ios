@@ -924,16 +924,19 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             WGUser *user = notification.fromUser;
            
             if ([notification.type isEqualToString:@"follow"] || [notification.type isEqualToString:@"follow.accepted"] || [notification.type isEqualToString:@"facebook.follow"]) {
-                FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-                [fancyProfileViewController setStateWithUser:user];
-                fancyProfileViewController.events = self.events;
-                [self.navigationController pushViewController: fancyProfileViewController animated: YES];
-            }
-            else if ([user state] != NOT_YET_ACCEPTED_PRIVATE_USER_STATE && [user state] != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE && user.eventAttending) {
+                [self presentUser:user];
+            } else if ([user state] != NOT_YET_ACCEPTED_PRIVATE_USER_STATE && [user state] != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE && user.eventAttending) {
                 [self presentEvent:user.eventAttending];
             }
         }
     }
+}
+
+-(void) presentUser:(WGUser *)user {
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser:user];
+    fancyProfileViewController.events = self.events;
+    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 
 - (void)presentEvent:(WGEvent *)event {
