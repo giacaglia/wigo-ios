@@ -431,9 +431,9 @@ int firstIndexOfNegativeEvent;
     
     CGRect frame = _placesTableView.bounds;
     frame.origin.y = -frame.size.height;
-    UIView* grayView = [[UIView alloc] initWithFrame:frame];
-    grayView.backgroundColor = UIColor.whiteColor;
-    [_placesTableView addSubview:grayView];
+    UIView* whiteView = [[UIView alloc] initWithFrame:frame];
+    whiteView.backgroundColor = UIColor.whiteColor;
+    [_placesTableView addSubview:whiteView];
     
     [self addRefreshToScrollView];
     [self initializeGoingSomewhereElseButton];
