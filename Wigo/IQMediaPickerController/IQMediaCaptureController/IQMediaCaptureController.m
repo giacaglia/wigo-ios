@@ -876,7 +876,7 @@
 
             NSDictionary *dict = @{
                                    IQMediaText: self.textField.text,
-                                   IQMediaYPosition:@(self.labelPoint.y)
+                                   IQMediaYPercentage:@((float)self.labelPoint.y/[[UIScreen mainScreen] bounds].size.height)
                                    };
             [textMedias addObject:dict];
 
@@ -976,7 +976,7 @@
 - (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
     if (![self session].isSessionRunning) {
         if (![self.textField isFirstResponder]) {
-            labelPoint.y = MIN(MAX(labelPoint.y, 125), 410);
+            labelPoint.y = MIN(MAX(labelPoint.y, 125), [[UIScreen mainScreen] bounds].size.height - 158);
             self.textField.hidden = YES;
             self.textLabel.hidden = NO;
             self.textLabel.text = self.textField.text;
