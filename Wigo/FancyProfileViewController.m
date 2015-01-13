@@ -133,6 +133,7 @@ UIButton *tapButton;
     if ([self.user state] == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if ([self.user isCurrentUser]) {
         [self fetchUserInfo];
+        [self updateLastNotificationsRead];
     }
 }
 
@@ -795,7 +796,7 @@ UIButton *tapButton;
 
         WGUser *user = notification.fromUser;
         if ([notification.id intValue] > [[WGProfile currentUser].lastNotificationRead intValue]) {
-            notificationCell.backgroundColor = [FontProperties getLightOrangeColor];
+            notificationCell.backgroundColor = [FontProperties getBackgroundLightOrange];
         } else {
             notificationCell.backgroundColor = UIColor.whiteColor;
         }
@@ -827,8 +828,6 @@ UIButton *tapButton;
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == kNotificationsSection) {
-        
-        
         if (self.userState == OTHER_SCHOOL_USER_STATE) {
             return _nameView;
         } else {
@@ -1015,6 +1014,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                         return;
                     }
                     _notifications = collection;
+                    if (!_unexpiredNotifications) _unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
                     for (WGNotification *notification in _notifications) {
                         if (![notification isFromLastDay]) {
                             [_unexpiredNotifications addObject:notification];

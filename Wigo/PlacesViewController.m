@@ -40,6 +40,7 @@
 }
 
 @property (nonatomic, strong) UIView *loadingView;
+@property (nonatomic, strong) UIView *loadingIndicator;
 @property (nonatomic, strong) UIView *whereAreYouGoingView;
 @property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
 
@@ -207,7 +208,7 @@ int firstIndexOfNegativeEvent;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
-        [profileImageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL placeholderImage:[[UIImage alloc] init] imageArea:[WGProfile currentUser].smallCoverImageArea];
+        [profileImageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL imageArea:[WGProfile currentUser].smallCoverImageArea];
         [profileButton addSubview:profileImageView];
         [profileButton addTarget:self action:@selector(profileSegue)
                 forControlEvents:UIControlEventTouchUpInside];
@@ -663,61 +664,65 @@ int firstIndexOfNegativeEvent;
 
 - (void)createPressed {
     if ([_whereAreYouGoingTextField.text length] != 0) {
+        _whereAreYouGoingTextField.enabled = NO;
+        self.navigationItem.rightBarButtonItem.enabled = NO;
         [self addLoadingIndicator];
         [WGEvent createEventWithName:_whereAreYouGoingTextField.text andHandler:^(WGEvent *object, NSError *error) {
-            if (error) {
-                return;
-            }
-            [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : object.id }] withHandler:^(BOOL success, NSError *error) {
+            [UIView animateWithDuration:0.2f animations:^{
+                _loadingIndicator.frame = CGRectMake(0, 0, _loadingView.frame.size.width, _loadingView.frame.size.height);
+            } completion:^(BOOL finished) {
+                if (finished) [_loadingView removeFromSuperview];
+                
+                _whereAreYouGoingTextField.enabled = YES;
+                self.navigationItem.rightBarButtonItem.enabled = YES;
                 if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                     return;
                 }
                 
-                [self removeProfileUserFromAnyOtherEvent];
-                
-                [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-                
-                [self dismissKeyboard];
-                [self fetchEventsFirstPage];
-                [self updateTitleView];
-                
-                [WGProfile currentUser].isGoingOut = @YES;
-                [WGProfile currentUser].eventAttending = object;
-                [WGProfile currentUser].isGoingOut = @YES;
-                
-                WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [WGProfile currentUser] }];
-                
-                WGCollection *eventAttendees = [[WGCollection alloc] initWithType:[WGEventAttendee class]];
-                [eventAttendees addObject:attendee];
-                object.attendees = eventAttendees;
-                
-                [self showStoryForEvent:object];
+                [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : object.id }] withHandler:^(BOOL success, NSError *error) {
+                    if (error) {
+                        [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                        return;
+                    }
+                    
+                    [self removeProfileUserFromAnyOtherEvent];
+                    
+                    [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                    
+                    [self dismissKeyboard];
+                    [self fetchEventsFirstPage];
+                    [self updateTitleView];
+                    
+                    [WGProfile currentUser].isGoingOut = @YES;
+                    [WGProfile currentUser].eventAttending = object;
+                    [WGProfile currentUser].isGoingOut = @YES;
+                    
+                    WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [[WGProfile currentUser] deserialize] }];
+                    WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
+                    object.attendees = eventAttendees;
+                    
+                    [self showStoryForEvent:object];
+                }];
             }];
         }];
     }
 }
 
 - (void)addLoadingIndicator {
-    _loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, _whereAreYouGoingView.frame.size.height - 5, _whereAreYouGoingView.frame.size.width - 20, 5)];
+    _loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, _whereAreYouGoingView.frame.size.height - 10, _whereAreYouGoingView.frame.size.width - 20, 5)];
     _loadingView.layer.borderColor = [FontProperties getBlueColor].CGColor;
     _loadingView.layer.borderWidth = 1.0f;
     _loadingView.layer.cornerRadius = 3.0f;
     
-    UIView *loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, 0)];
-    loadingIndicator.backgroundColor = [FontProperties getBlueColor];
-    [_loadingView addSubview:loadingIndicator];
-    [UIView animateWithDuration:1.0f animations:^{
-        loadingIndicator.frame = _loadingView.frame;
+    _loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, _loadingView.frame.size.height)];
+    _loadingIndicator.backgroundColor = [FontProperties getBlueColor];
+    [_loadingView addSubview:_loadingIndicator];
+    [UIView animateWithDuration:0.8f animations:^{
+        _loadingIndicator.frame = CGRectMake(0, 0, _loadingView.frame.size.width*0.7, _loadingView.frame.size.height);
     }];
-//    loadingIndicator
     [_whereAreYouGoingView addSubview:_loadingView];
-    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(addLoadingView) userInfo:nil repeats:YES];
 }
 
-- (void)addLoadingView {
-    
-}
 
 -(void)updateEvent:(WGEvent *)newEvent {
     [_events replaceObjectAtIndex:[_events indexOfObject:newEvent] withObject:newEvent];

@@ -35,7 +35,6 @@
         self.modifiedKeys = [[NSMutableArray alloc] init];
         self.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
         [self replaceReferences];
-        [WGApi addToCache:self];
     }
     return self;
 }
