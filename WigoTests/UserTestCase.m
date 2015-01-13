@@ -21,10 +21,8 @@
 - (void) setUp {
     [super setUp];
     // this might be a stupid way of setting up the users here.
-    NSDictionary *kdict = [[NSDictionary alloc] initWithObjectsAndKeys:@1234, @"id", nil];
-    NSDictionary *pdict = [[NSDictionary alloc] initWithObjectsAndKeys:@4321, @"id", nil];
-    self.katniss = [WGUser serialize:kdict];
-    self.peeta = [WGUser serialize:pdict];
+    self.katniss = [WGUser serialize:@{ @"id" : @1234 }];
+    self.peeta = [WGUser serialize:@{ @"id" : @4321 }];
 }
 
 - (void) tearDown {

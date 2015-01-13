@@ -444,11 +444,6 @@ NSMutableArray *suggestedArrayView;
     int sizeOfArray = (int)[_suggestions count];
     if (sizeOfArray > 0 && sizeOfArray > indexOfPerson) {
         user = (WGUser *)[_suggestions objectAtIndex:indexOfPerson];
-        UIView *viewOfUser = [suggestedArrayView objectAtIndex:indexOfPerson];
-        CGRect frame = viewOfUser.frame;
-        [UIView animateWithDuration:0.1 animations:^{
-            viewOfUser.frame = CGRectMake(frame.origin.x, frame.origin.y - 100, frame.size.width, frame.size.height);
-        }];
     }
     if (user) [self updateButton:sender withUser:user];
 }
