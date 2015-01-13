@@ -154,38 +154,33 @@ UIButton *newChatButton;
     __weak typeof(self) weakSelf = self;
     if (_fetchingFirstPage) {
         [WGMessage getConversations:^(WGCollection *collection, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                __strong typeof(self) strongSelf = weakSelf;
-                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    return;
-                }
-                strongSelf.messages = collection;
-                strongSelf.fetchingFirstPage = NO;
-                
-                if ([strongSelf.messages count] == 0) {
-                    strongSelf.tableViewOfPeople.hidden = YES;
-                    newChatButton.hidden = NO;
-                } else {
-                    strongSelf.tableViewOfPeople.hidden = NO;
-                    newChatButton.hidden = YES;
-                }
-                _fetchingFirstPage = NO;
-                [strongSelf.tableViewOfPeople reloadData];
-                [strongSelf.tableViewOfPeople didFinishPullToRefresh];
-            });
-
+            __strong typeof(self) strongSelf = weakSelf;
+            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
+            strongSelf.messages = collection;
+            strongSelf.fetchingFirstPage = NO;
+            
+            if ([strongSelf.messages count] == 0) {
+                strongSelf.tableViewOfPeople.hidden = YES;
+                newChatButton.hidden = NO;
+            } else {
+                strongSelf.tableViewOfPeople.hidden = NO;
+                newChatButton.hidden = YES;
+            }
+            _fetchingFirstPage = NO;
+            [strongSelf.tableViewOfPeople reloadData];
+            [strongSelf.tableViewOfPeople didFinishPullToRefresh];
         }];
     } else if ([_messages.hasNextPage boolValue]) {
         [_messages addNextPage:^(BOOL success, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                __strong typeof(self) strongSelf = weakSelf;
-                strongSelf.tableViewOfPeople.hidden = NO;
-                newChatButton.hidden = YES;
-                [strongSelf.tableViewOfPeople reloadData];
-                [strongSelf.tableViewOfPeople didFinishPullToRefresh];
-            });
+            __strong typeof(self) strongSelf = weakSelf;
+            strongSelf.tableViewOfPeople.hidden = NO;
+            newChatButton.hidden = YES;
+            [strongSelf.tableViewOfPeople reloadData];
+            [strongSelf.tableViewOfPeople didFinishPullToRefresh];
         }];
     }
 }

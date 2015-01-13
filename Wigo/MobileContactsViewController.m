@@ -80,16 +80,14 @@ NSMutableArray *chosenPeople;
 
 - (void)getContactAccess {
    [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
-       dispatch_async(dispatch_get_main_queue(), ^(void){
-           if ([mobileArray count] > 0) {
-               peopleContactList = [NSMutableArray arrayWithArray:mobileArray];
-               [contactsTableView reloadData];
-           }
-           else {
-               [WGAnalytics tagEvent:@"Decline Apple Contacts"];
-               [self dismissViewControllerAnimated:NO completion:nil];
-           }
-       });
+       if ([mobileArray count] > 0) {
+           peopleContactList = [NSMutableArray arrayWithArray:mobileArray];
+           [contactsTableView reloadData];
+       }
+       else {
+           [WGAnalytics tagEvent:@"Decline Apple Contacts"];
+           [self dismissViewControllerAnimated:NO completion:nil];
+       }
    }];
 }
 

@@ -176,22 +176,18 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void)fetchEveryone {
     if (!_everyone) {
         [WGUser getOrderedById:^(WGCollection *collection, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    return;
-                }
-                _everyone = collection;
-            });
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
+            _everyone = collection;
         }];
     } else if ([_everyone.hasNextPage boolValue]) {
         [_everyone addNextPage:^(BOOL success, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    return;
-                }
-            });
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
         }];
     }
 }
@@ -199,13 +195,11 @@ OnboardFollowViewController *onboardFollowViewController;
 
 - (void) fetchUserInfo {
     [WGProfile reload:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                return;
-            }
-            [self dismissIfGroupUnlocked];
-        });
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            return;
+        }
+        [self dismissIfGroupUnlocked];
     }];
 }
 

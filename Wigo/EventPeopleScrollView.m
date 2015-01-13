@@ -38,7 +38,6 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     // Add 3 images
     if (scrollView.contentOffset.x + [[UIScreen mainScreen] bounds].size.width + 4 * self.sizeOfEachImage >= scrollView.contentSize.width && !self.fetchingEventAttendees) {
-        NSLog(@"%f %f %f", scrollView.contentOffset.x, [[UIScreen mainScreen] bounds].size.width, scrollView.contentSize.width);
         [self fetchEventAttendeesAsynchronous];
     }
 
@@ -114,9 +113,9 @@
         if (self.attendees.hasNextPage == nil) {
             [WGEventAttendee getForEvent:self.event withHandler:^(WGCollection *collection, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
-                strongSelf.fetchingEventAttendees = NO;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    strongSelf.fetchingEventAttendees = NO;
                     return;
                 }
                 strongSelf.attendees = collection;
@@ -126,13 +125,14 @@
                                                              forKey:[self.event.id stringValue]];
                 [strongSelf.placesDelegate setVisitedProfile:YES];
                 [strongSelf loadUsers];
+                strongSelf.fetchingEventAttendees = NO;
             }];
         } else if ([self.attendees.hasNextPage boolValue]) {
             [self.attendees addNextPage:^(BOOL success, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
-                strongSelf.fetchingEventAttendees = NO;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    strongSelf.fetchingEventAttendees = NO;
                     return;
                 }
                 strongSelf.eventOffset = strongSelf.contentOffset.x;
@@ -140,6 +140,7 @@
                                                              forKey:[strongSelf.event.id stringValue]];
                 [strongSelf.placesDelegate setVisitedProfile:YES];
                 [strongSelf loadUsers];
+                strongSelf.fetchingEventAttendees = NO;
             }];
         } else {
             self.fetchingEventAttendees = NO;

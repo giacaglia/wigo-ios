@@ -513,33 +513,31 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
         if (!_messages) {
             [self.user getConversation:^(WGCollection *collection, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        return;
-                    }
-                    _messages = collection;
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     fetching = NO;
-                    [self addFirstPageMessages];
-                    [WiGoSpinnerView hideSpinnerForView:self.view];
-                });
+                    return;
+                }
+                _messages = collection;
+                [self addFirstPageMessages];
+                [WiGoSpinnerView hideSpinnerForView:self.view];
+                fetching = NO;
             }];
         } else if ([_messages.hasNextPage boolValue]) {
             [_messages getNextPage:^(WGCollection *collection, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        return;
-                    }
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     fetching = NO;
-                    
-                    [_messages addObjectsFromCollection:collection];
-                    _messages.hasNextPage = collection.hasNextPage;
-                    _messages.nextPage = collection.nextPage;
-                    
-                    [self addMessages:collection];
-                    [WiGoSpinnerView hideSpinnerForView:self.view];
-                });
+                    return;
+                }
+                
+                [_messages addObjectsFromCollection:collection];
+                _messages.hasNextPage = collection.hasNextPage;
+                _messages.nextPage = collection.nextPage;
+                
+                [self addMessages:collection];
+                [WiGoSpinnerView hideSpinnerForView:self.view];
+                fetching = NO;
             }];
         } else {
             fetching = NO;
