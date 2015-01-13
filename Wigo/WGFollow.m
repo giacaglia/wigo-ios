@@ -31,8 +31,12 @@
 
 -(void) replaceReferences {
     [super replaceReferences];
-    [self setObject:[WGUser serialize:[self objectForKey:kUserKey]] forKey:kUserKey];
-    [self setObject:[WGUser serialize:[self objectForKey:kFollowKey]] forKey:kFollowKey];
+    if ([self objectForKey:kUserKey] && [[self objectForKey:kUserKey] isKindOfClass:[NSDictionary class]]) {
+        [self setObject:[WGUser serialize:[self objectForKey:kUserKey]] forKey:kUserKey];
+    }
+    if ([self objectForKey:kFollowKey] && [[self objectForKey:kFollowKey] isKindOfClass:[NSDictionary class]]) {
+        [self setObject:[WGUser serialize:[self objectForKey:kFollowKey]] forKey:kFollowKey];
+    }
 }
 
 +(WGFollow *)serialize:(NSDictionary *)json {

@@ -686,8 +686,10 @@ int firstIndexOfNegativeEvent;
                 [WGProfile currentUser].eventAttending = object;
                 [WGProfile currentUser].isGoingOut = @YES;
                 
-                WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [[WGProfile currentUser] deserialize] }];
-                WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
+                WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [WGProfile currentUser] }];
+                
+                WGCollection *eventAttendees = [[WGCollection alloc] initWithType:[WGEventAttendee class]];
+                [eventAttendees addObject:attendee];
                 object.attendees = eventAttendees;
                 
                 [self showStoryForEvent:object];
@@ -757,32 +759,6 @@ int firstIndexOfNegativeEvent;
         
         index += 1;
     }
-    
-    /* if ([searchArray count] > 1) {
-        for (int i = 0; i < [eventNames count]; i++) {
-            NSString *eventName = [eventNames objectAtIndex:i];
-            
-            NSComparisonResult result = [eventName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
-            
-            if (result == NSOrderedSame && ![_filteredEvents containsObject:[_events objectAtIndex:i]]) {
-                [_filteredEvents addObject: [_events objectAtIndex:i]];
-                [_filteredEventsUsersArray addCollection:[_userArray collectionAtIndex:i]];
-            }
-        }
-    } else {
-        for (int i = 0; i < [eventNames count]; i++) {
-            NSString *eventName = [eventNames objectAtIndex:i];
-            NSArray *firstAndLastNameArray = [tempStr componentsSeparatedByString:@" "];
-            for (NSString *firstOrLastName in firstAndLastNameArray) {
-                NSComparisonResult result = [firstOrLastName compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
-                if (result == NSOrderedSame && ![[_filteredContentParty getNameArray] containsObject:tempStr]) {
-                    [_filteredContentParty addObject: [[[_contentParty getObjectArray] objectAtIndex:i] dictionary]];
-                    [_filteredPartyUserArray addObject:[_partyUserArray objectAtIndex:i]];
-                }
-            }
-        }
-    } */
-
 }
 
 #pragma mark - Tablew View Data Source

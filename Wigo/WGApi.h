@@ -13,6 +13,8 @@ typedef void (^ApiResultBlock)(NSDictionary *jsonResponse, NSError *error);
 typedef void (^UploadResultBlock)(NSDictionary *jsonResponse, NSDictionary *fields, NSError *error);
 typedef void (^WGStartupResult)(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSError *error);
 
+@class WGObject;
+
 @interface WGApi : NSObject
 
 @property NSCache *cache;

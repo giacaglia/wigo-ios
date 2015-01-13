@@ -31,7 +31,9 @@
 
 -(void) replaceReferences {
     [super replaceReferences];
-    [self setObject:[WGUser serialize:[self objectForKey:kFromUserKey]] forKey:kFromUserKey];
+    if ([self objectForKey:kFromUserKey] && [[self objectForKey:kFromUserKey] isKindOfClass:[NSDictionary class]]) {
+        [self setObject:[WGUser serialize:[self objectForKey:kFromUserKey]] forKey:kFromUserKey];
+    }
 }
 
 +(WGNotification *)serialize:(NSDictionary *)json {

@@ -34,8 +34,12 @@
 
 -(void) replaceReferences {
     [super replaceReferences];
-    [self setObject:[WGUser serialize:[self objectForKey:kUserKey]] forKey:kUserKey];
-    [self setObject:[WGUser serialize:[self objectForKey:kToUserKey]] forKey:kToUserKey];
+    if ([self objectForKey:kUserKey] && [[self objectForKey:kUserKey] isKindOfClass:[NSDictionary class]]) {
+        [self setObject:[WGUser serialize:[self objectForKey:kUserKey]] forKey:kUserKey];
+    }
+    if ([self objectForKey:kToUserKey] && [[self objectForKey:kToUserKey] isKindOfClass:[NSDictionary class]]) {
+        [self setObject:[WGUser serialize:[self objectForKey:kToUserKey]] forKey:kToUserKey];
+    }
 }
 
 +(WGMessage *)serialize:(NSDictionary *)json {

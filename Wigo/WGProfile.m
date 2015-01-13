@@ -314,6 +314,7 @@ static WGProfile *currentUser = nil;
                 self.key = [jsonResponse objectForKey:kKeyKey];
             }
             self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self replaceReferences];
             [self.modifiedKeys removeAllObjects];
         }
         @catch (NSException *exception) {
@@ -355,6 +356,7 @@ static WGProfile *currentUser = nil;
                 self.key = [jsonResponse objectForKey:kKeyKey];
             }
             self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self replaceReferences];
             [self.modifiedKeys removeAllObjects];
         }
         @catch (NSException *exception) {
@@ -379,6 +381,7 @@ static WGProfile *currentUser = nil;
         NSError *dataError;
         @try {
             self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            [self replaceReferences];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];

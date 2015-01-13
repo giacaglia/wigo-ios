@@ -541,7 +541,7 @@
     [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kGoHereState];
     // TODO: Does this need to be saved???
     WGEventMessage *newEventMessage = [WGEventMessage serialize:@{
-                                                                  @"user": [[WGProfile currentUser] deserialize],
+                                                                  @"user": [WGProfile currentUser],
                                                                   @"created": [NSDate nowStringUTC],
                                                                   @"media_mime_type": kCameraType,
                                                                   @"media": @""

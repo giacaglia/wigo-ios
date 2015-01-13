@@ -35,6 +35,7 @@
         self.modifiedKeys = [[NSMutableArray alloc] init];
         self.parameters = [[NSMutableDictionary alloc] initWithDictionary: json];
         [self replaceReferences];
+        [WGApi addToCache:self];
     }
     return self;
 }
@@ -78,12 +79,29 @@
     return [self.id isEqualToNumber:other.id];
 }
 
+-(NSDictionary *) deserializeShallow {
+    NSMutableDictionary *props = [NSMutableDictionary dictionary];
+    
+    for (NSString* key in [self.parameters allKeys]) {
+        id value = [self.parameters objectForKey:key];
+        if ([value isKindOfClass:[WGCollection class]]) {
+            [props setObject:[value deserialize] forKey:key];
+        } else if (![value isKindOfClass:[WGObject class]]) {
+            [props setObject:value forKey:key];
+        }
+    }
+    
+    return props;
+}
+
 -(NSDictionary *) deserialize {
     NSMutableDictionary *props = [NSMutableDictionary dictionary];
     
     for (NSString* key in [self.parameters allKeys]) {
         id value = [self.parameters objectForKey:key];
-        if ([value isKindOfClass:[WGObject class]] || [value isKindOfClass:[WGObject class]]) {
+        if ([value isKindOfClass:[WGObject class]]) {
+            [props setObject:[value deserializeShallow] forKey:key];
+        } else if ([value isKindOfClass:[WGCollection class]]) {
             [props setObject:[value deserialize] forKey:key];
         } else {
             [props setObject:value forKey:key];
@@ -98,7 +116,9 @@
     
     for (NSString* key in self.modifiedKeys) {
         id value = [self.parameters objectForKey:key];
-        if ([value isKindOfClass:[WGObject class]] || [value isKindOfClass:[WGCollection class]]) {
+        if ([value isKindOfClass:[WGObject class]]) {
+            [props setObject:[value deserializeShallow] forKey:key];
+        } else if ([value isKindOfClass:[WGCollection class]]) {
             [props setObject:[value deserialize] forKey:key];
         } else {
             [props setObject:value forKey:key];

@@ -341,14 +341,14 @@
 
     if ([[info allKeys] containsObject:IQMediaTypeImage]) {
         [mutableDict addEntriesFromDictionary:@{
-                                                @"user": [[WGProfile currentUser] deserialize],
+                                                @"user": [WGProfile currentUser],
                                                 @"created": [NSDate nowStringUTC],
                                                 @"media": zoomedImage
                                                 }];
     }
     else if ( [[info allKeys] containsObject:IQMediaTypeVideo]) {
             [mutableDict addEntriesFromDictionary:@{
-                                                    @"user": [[WGProfile currentUser] deserialize],
+                                                    @"user": [WGProfile currentUser],
                                                     @"created": [NSDate nowStringUTC],
                                                     @"media": [[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaImage],
                                                                }];

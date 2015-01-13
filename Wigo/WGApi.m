@@ -37,6 +37,8 @@ dispatch_queue_t postQueue;
 #define kNameKey @"name"
 #define kActionKey @"action"
 #define kFileKey @"file"
+#define kReferenceIdKey @"$id"
+#define kReferenceKey @"$ref"
 
 //#ifdef DEBUG
 //static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
