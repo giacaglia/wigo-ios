@@ -103,6 +103,41 @@
 		C16D86A819747FF6003EB336 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
 		C18AC292198451150056957B /* autorevision.sh in Resources */ = {isa = PBXBuildFile; fileRef = C18AC290198451150056957B /* autorevision.sh */; };
 		C18AC293198451150056957B /* process_info_plist.sh in Resources */ = {isa = PBXBuildFile; fileRef = C18AC291198451150056957B /* process_info_plist.sh */; };
+		C1F5B3C21A6549E000CAFD95 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA819F19F2200AD74C2 /* AVFoundation.framework */; };
+		C1F5B3C31A6549E000CAFD95 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */; };
+		C1F5B3C41A654A4200CAFD95 /* WGApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F51D1A3F387700F8C9C4 /* WGApi.m */; };
+		C1F5B3C51A654A4200CAFD95 /* WGError.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF868D1A5AE1C100DB85AE /* WGError.m */; };
+		C1F5B3C61A654A4200CAFD95 /* WGParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409601A54A08A00BB3036 /* WGParser.m */; };
+		C1F5B3C71A654A5B00CAFD95 /* WGAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86931A5B0B5C00DB85AE /* WGAnalytics.m */; };
+		C1F5B3C81A654A5B00CAFD95 /* WGObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5231A3F436100F8C9C4 /* WGObject.m */; };
+		C1F5B3C91A654A5B00CAFD95 /* WGGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF11A5DA86500A5170F /* WGGroup.m */; };
+		C1F5B3CA1A654AC800CAFD95 /* WGUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5261A3F460F00F8C9C4 /* WGUser.m */; };
+		C1F5B3CB1A654AC800CAFD95 /* WGProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409631A58D19300BB3036 /* WGProfile.m */; };
+		C1F5B3CC1A654AC800CAFD95 /* WGEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409541A5241FA00BB3036 /* WGEvent.m */; };
+		C1F5B3CD1A654AC800CAFD95 /* WGFollow.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF41A5E3F9100A5170F /* WGFollow.m */; };
+		C1F5B3CE1A654AC800CAFD95 /* WGEventAttendee.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544095D1A548E5700BB3036 /* WGEventAttendee.m */; };
+		C1F5B3CF1A654AC800CAFD95 /* WGMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409571A537F1C00BB3036 /* WGMessage.m */; };
+		C1F5B3D01A654AC800CAFD95 /* WGEventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86901A5AFBA000DB85AE /* WGEventMessage.m */; };
+		C1F5B3D11A654AC800CAFD95 /* WGNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544095A1A547BCD00BB3036 /* WGNotification.m */; };
+		C1F5B3D21A654AC800CAFD95 /* WGCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5201A3F3C6900F8C9C4 /* WGCollection.m */; };
+		C1F5B3D31A654AC800CAFD95 /* WGCollectionArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544094E1A51EF3000BB3036 /* WGCollectionArray.m */; };
+		C1F5B3D41A654AC800CAFD95 /* WGCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544094B1A51EA0000BB3036 /* WGCollectionView.m */; };
+		C1F5B3D51A654AC800CAFD95 /* WGTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409511A51F19100BB3036 /* WGTableView.m */; };
+		C1F5B3D61A654AE300CAFD95 /* NSDate+WGDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86961A5B1F8200DB85AE /* NSDate+WGDate.m */; };
+		C1F5B3D71A654B4D00CAFD95 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF869A1A5C5DEB00DB85AE /* AFHTTPRequestOperation.m */; };
+		C1F5B3D81A654B4D00CAFD95 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF869C1A5C5DEB00DB85AE /* AFHTTPRequestOperationManager.m */; };
+		C1F5B3D91A654B4D00CAFD95 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF869E1A5C5DEB00DB85AE /* AFHTTPSessionManager.m */; };
+		C1F5B3DA1A654B4D00CAFD95 /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86A11A5C5DEB00DB85AE /* AFNetworkReachabilityManager.m */; };
+		C1F5B3DB1A654B4D00CAFD95 /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86A31A5C5DEB00DB85AE /* AFSecurityPolicy.m */; };
+		C1F5B3DC1A654B4D00CAFD95 /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86A51A5C5DEB00DB85AE /* AFURLConnectionOperation.m */; };
+		C1F5B3DD1A654B4D00CAFD95 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86A71A5C5DEB00DB85AE /* AFURLRequestSerialization.m */; };
+		C1F5B3DE1A654B4D00CAFD95 /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86A91A5C5DEB00DB85AE /* AFURLResponseSerialization.m */; };
+		C1F5B3DF1A654B4D00CAFD95 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86AB1A5C5DEB00DB85AE /* AFURLSessionManager.m */; };
+		C1F5B3E01A654B8800CAFD95 /* NSDictionary+STHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5621A3F875900F8C9C4 /* NSDictionary+STHelper.m */; };
+		C1F5B3E11A654B8800CAFD95 /* NSMutableDictionary+STHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5641A3F875900F8C9C4 /* NSMutableDictionary+STHelper.m */; };
+		C1F5B3E21A654B8800CAFD95 /* JPBFloatingTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33751A3B9904008FF56D /* JPBFloatingTextViewController.m */; };
+		C1F5B3E31A654B8800CAFD95 /* JPBParallaxBlurViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33771A3B9904008FF56D /* JPBParallaxBlurViewController.m */; };
+		C1F5B3E41A654B8800CAFD95 /* JPBParallaxTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33791A3B9904008FF56D /* JPBParallaxTableViewController.m */; };
 		C1FE7D9E1A2D1DD10016F82A /* UserTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FE7D9D1A2D1DD10016F82A /* UserTestCase.m */; };
 		C1FE7DB41A2D22EA0016F82A /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2581961B96000A01F50 /* SignNavigationViewController.m */; };
@@ -797,6 +832,8 @@
 				C12A114A19787BE700D53B1C /* UIKit.framework in Frameworks */,
 				C12A114B19787BE700D53B1C /* Foundation.framework in Frameworks */,
 				C12A114C19787BE700D53B1C /* FacebookSDK.framework in Frameworks */,
+				C1F5B3C21A6549E000CAFD95 /* AVFoundation.framework in Frameworks */,
+				C1F5B3C31A6549E000CAFD95 /* MediaPlayer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2049,6 +2086,39 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1F5B3E01A654B8800CAFD95 /* NSDictionary+STHelper.m in Sources */,
+				C1F5B3E11A654B8800CAFD95 /* NSMutableDictionary+STHelper.m in Sources */,
+				C1F5B3E21A654B8800CAFD95 /* JPBFloatingTextViewController.m in Sources */,
+				C1F5B3E31A654B8800CAFD95 /* JPBParallaxBlurViewController.m in Sources */,
+				C1F5B3E41A654B8800CAFD95 /* JPBParallaxTableViewController.m in Sources */,
+				C1F5B3D71A654B4D00CAFD95 /* AFHTTPRequestOperation.m in Sources */,
+				C1F5B3D81A654B4D00CAFD95 /* AFHTTPRequestOperationManager.m in Sources */,
+				C1F5B3D91A654B4D00CAFD95 /* AFHTTPSessionManager.m in Sources */,
+				C1F5B3DA1A654B4D00CAFD95 /* AFNetworkReachabilityManager.m in Sources */,
+				C1F5B3DB1A654B4D00CAFD95 /* AFSecurityPolicy.m in Sources */,
+				C1F5B3DC1A654B4D00CAFD95 /* AFURLConnectionOperation.m in Sources */,
+				C1F5B3DD1A654B4D00CAFD95 /* AFURLRequestSerialization.m in Sources */,
+				C1F5B3DE1A654B4D00CAFD95 /* AFURLResponseSerialization.m in Sources */,
+				C1F5B3DF1A654B4D00CAFD95 /* AFURLSessionManager.m in Sources */,
+				C1F5B3D61A654AE300CAFD95 /* NSDate+WGDate.m in Sources */,
+				C1F5B3CA1A654AC800CAFD95 /* WGUser.m in Sources */,
+				C1F5B3CB1A654AC800CAFD95 /* WGProfile.m in Sources */,
+				C1F5B3CC1A654AC800CAFD95 /* WGEvent.m in Sources */,
+				C1F5B3CD1A654AC800CAFD95 /* WGFollow.m in Sources */,
+				C1F5B3CE1A654AC800CAFD95 /* WGEventAttendee.m in Sources */,
+				C1F5B3CF1A654AC800CAFD95 /* WGMessage.m in Sources */,
+				C1F5B3D01A654AC800CAFD95 /* WGEventMessage.m in Sources */,
+				C1F5B3D11A654AC800CAFD95 /* WGNotification.m in Sources */,
+				C1F5B3D21A654AC800CAFD95 /* WGCollection.m in Sources */,
+				C1F5B3D31A654AC800CAFD95 /* WGCollectionArray.m in Sources */,
+				C1F5B3D41A654AC800CAFD95 /* WGCollectionView.m in Sources */,
+				C1F5B3D51A654AC800CAFD95 /* WGTableView.m in Sources */,
+				C1F5B3C71A654A5B00CAFD95 /* WGAnalytics.m in Sources */,
+				C1F5B3C81A654A5B00CAFD95 /* WGObject.m in Sources */,
+				C1F5B3C91A654A5B00CAFD95 /* WGGroup.m in Sources */,
+				C1F5B3C41A654A4200CAFD95 /* WGApi.m in Sources */,
+				C1F5B3C51A654A4200CAFD95 /* WGError.m in Sources */,
+				C1F5B3C61A654A4200CAFD95 /* WGParser.m in Sources */,
 				E994111319AA8D9200D76379 /* NSString+URLEncoding.m in Sources */,
 				E9C63BFD1A03ED35006C5DD2 /* IQCaptureSession.m in Sources */,
 				E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */,
