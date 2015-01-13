@@ -8,6 +8,7 @@
 
 #import "BatteryViewController.h"
 #import "Globals.h"
+#import "OnboardFollowViewController.h"
 
 UIImageView *orangeImageView;
 NSNumber *currentTotal;
@@ -51,7 +52,7 @@ UIImageView *batteryImageView;
             return;
         }
         if ([WGProfile currentUser].group.locked && ![[WGProfile currentUser].group.locked boolValue]) {
-            [self.navigationController popViewControllerAnimated:YES];
+            [self.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
         }
     }];
 }
