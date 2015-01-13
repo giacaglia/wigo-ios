@@ -697,7 +697,7 @@ int firstIndexOfNegativeEvent;
                     [WGProfile currentUser].eventAttending = object;
                     [WGProfile currentUser].isGoingOut = @YES;
                     
-                    WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [[WGProfile currentUser] deserialize] }];
+                    WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [WGProfile currentUser] }];
                     WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
                     object.attendees = eventAttendees;
                     

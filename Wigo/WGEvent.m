@@ -44,10 +44,10 @@
 -(void) replaceReferences {
     [super replaceReferences];
     if ([self objectForKey:kAttendeesKey]  && [[self objectForKey:kAttendeesKey] isKindOfClass:[NSArray class]]) {
-        [self setObject:[WGCollection serializeArray:[self objectForKey:kAttendeesKey] andClass:[WGEventAttendee class]] forKey:kAttendeesKey];
+        [self.parameters setObject:[WGCollection serializeArray:[self objectForKey:kAttendeesKey] andClass:[WGEventAttendee class]] forKey:kAttendeesKey];
     }
     if ([self objectForKey:kHighlightKey]  && [[self objectForKey:kHighlightKey] isKindOfClass:[NSDictionary class]]) {
-        [self setObject:[WGEventMessage serialize:[self objectForKey:kHighlightKey]] forKey:kHighlightKey];
+        [self.parameters setObject:[WGEventMessage serialize:[self objectForKey:kHighlightKey]] forKey:kHighlightKey];
     }
 }
 
@@ -124,8 +124,7 @@
         [self.attendees addObject:attendee];
         return;
     }
-    NSArray *array = [[NSArray alloc] initWithObjects:[attendee deserialize], nil];
-    self.attendees = [WGCollection serializeArray:array andClass:[WGEventAttendee class]];
+    self.attendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
 }
 
 -(void) setRead:(BoolResultBlock)handler {

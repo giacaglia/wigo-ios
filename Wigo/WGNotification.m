@@ -32,7 +32,7 @@
 -(void) replaceReferences {
     [super replaceReferences];
     if ([self objectForKey:kFromUserKey] && [[self objectForKey:kFromUserKey] isKindOfClass:[NSDictionary class]]) {
-        [self setObject:[WGUser serialize:[self objectForKey:kFromUserKey]] forKey:kFromUserKey];
+        [self.parameters setObject:[WGUser serialize:[self objectForKey:kFromUserKey]] forKey:kFromUserKey];
     }
 }
 

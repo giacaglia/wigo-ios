@@ -559,7 +559,7 @@
 
 - (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages {
     WGEventMessage *newEventMessage = [WGEventMessage serialize:@{
-                                                                  @"user": [[WGProfile currentUser] deserialize],
+                                                                  @"user": [WGProfile currentUser],
                                                                   @"created": [NSDate nowStringUTC],
                                                                   @"media_mime_type": kCameraType,
                                                                   @"media": @""

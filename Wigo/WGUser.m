@@ -90,14 +90,11 @@ static WGUser *currentUser = nil;
 
 -(void) replaceReferences {
     [super replaceReferences];
-    if ([self isCurrentUser]) {
-        
-    }
     if ([self objectForKey:kGroupKey] && [[self objectForKey:kGroupKey] isKindOfClass:[NSDictionary class]]) {
-        [self setObject:[WGGroup serialize:[self objectForKey:kGroupKey]] forKey:kGroupKey];
+        [self.parameters setObject:[WGGroup serialize:[self objectForKey:kGroupKey]] forKey:kGroupKey];
     }
     if ([self objectForKey:kIsAttendingKey] && [[self objectForKey:kIsAttendingKey] isKindOfClass:[NSDictionary class]]) {
-        [self setObject:[WGEvent serialize:[self objectForKey:kIsAttendingKey]] forKey:kIsAttendingKey];
+        [self.parameters setObject:[WGEvent serialize:[self objectForKey:kIsAttendingKey]] forKey:kIsAttendingKey];
     }
 }
 
