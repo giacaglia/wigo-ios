@@ -207,6 +207,7 @@ NSMutableArray *suggestedArrayView;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
         
         self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [self.profileViewController setStateWithUser: user];
         self.profileViewController.user = user;
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -221,6 +222,7 @@ NSMutableArray *suggestedArrayView;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
 
         self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [self.profileViewController setStateWithUser: user];
         self.profileViewController.user = user;
         [self.navigationController pushViewController:self.profileViewController animated:YES];
     }
@@ -456,6 +458,7 @@ NSMutableArray *suggestedArrayView;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:0];
         
         self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [self.profileViewController setStateWithUser: user];
         self.profileViewController.user = user;
 
         [self.navigationController pushViewController:self.profileViewController animated:YES];
@@ -698,7 +701,7 @@ NSMutableArray *suggestedArrayView;
         }];
     }
     else if (senderButton.tag == -100) {
-        int numFollowing = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+        int numFollowing = [self.user.numFollowing intValue];
         
         if (user.privacy == PRIVATE) {
             [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
@@ -725,7 +728,7 @@ NSMutableArray *suggestedArrayView;
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         senderButton.tag = -100;
-        int numFollowing = [(NSNumber*)[self.user objectForKey:@"num_following"] intValue];
+        int numFollowing = [self.user.numFollowing intValue];
         user.isFollowing = @NO;
         user.isFollowingRequested = @NO;
         if (user.privacy != PRIVATE && user) {

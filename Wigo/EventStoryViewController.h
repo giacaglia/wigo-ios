@@ -36,6 +36,11 @@ typedef enum
 @property (nonatomic, strong) EventConversationViewController *conversationViewController;
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 - (void)presentFirstTimeGoingToEvent;
+
+@property (nonatomic, assign) BOOL cancelFetchMessages;
+@property (nonatomic, strong) WGCollection *eventMessages;
+@property (nonatomic, strong) UICollectionView *facesCollectionView;
+
 @end
 
 @interface StoryFlowLayout : UICollectionViewFlowLayout

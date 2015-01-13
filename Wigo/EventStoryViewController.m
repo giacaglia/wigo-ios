@@ -22,12 +22,10 @@
 
 @interface EventStoryViewController()<UIScrollViewDelegate> {
     UIButton *sendButton;
-    WGCollection *eventMessages;
-    UICollectionView *facesCollectionView;
-    BOOL cancelFetchMessages;
     
     CGPoint currentContentOffset;
 }
+
 
 @property (nonatomic, strong) UIScrollView *backgroundScrollview;
 @property (nonatomic, strong) UIView *lineViewAtTop;
@@ -70,9 +68,9 @@
     
     [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
 
-    if (facesCollectionView) [facesCollectionView reloadData];
+    if (self.facesCollectionView) [self.facesCollectionView reloadData];
     
-    eventMessages = nil;
+    self.eventMessages = nil;
     [self fetchEventMessages];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
@@ -204,13 +202,13 @@
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
         self.conversationViewController.event = self.event;
-        if (!eventMessages) self.conversationViewController.eventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
+        if (!self.eventMessages) self.conversationViewController.eventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
         if (goHereState == PRESENTFACESTATE) {
-            if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
+            if (self.eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
         } else {
             if (goHereState == FIRSTTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:SECONDTIMEPRESENTCAMERASTATE forKey:kGoHereState];
             if (goHereState == SECONDTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:DONOTPRESENTANYTHINGSTATE forKey:kGoHereState];
-            if (eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
+            if (self.eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
         }
         self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
         self.conversationViewController.controllerDelegate = self;
@@ -227,7 +225,7 @@
 -(WGCollection *) eventMessagesWithYourFace:(BOOL)faceBool {
     WGCollection *newEventMessages =  [[WGCollection alloc] initWithType:[WGEventMessage class]];
     
-    [newEventMessages addObjectsFromCollection:eventMessages];
+    [newEventMessages addObjectsFromCollection:self.eventMessages];
 
     NSString *type = faceBool ? kFaceImage : kNotAbleToPost;
     WGEventMessage *eventMessage = [WGEventMessage serialize:@{
@@ -247,28 +245,28 @@
     StoryFlowLayout *flow = [[StoryFlowLayout alloc] init];
     CGFloat yOrigin = self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height + 10;
     
-    facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - yOrigin + 60) collectionViewLayout:flow];
-    [facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderFaceCollectionView];
-    [facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier: kFooterFaceCollectionView];
+    self.facesCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - yOrigin + 60) collectionViewLayout:flow];
+    [self.facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHeaderFaceCollectionView];
+    [self.facesCollectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier: kFooterFaceCollectionView];
 
-    facesCollectionView.backgroundColor = UIColor.whiteColor;
-    facesCollectionView.showsHorizontalScrollIndicator = NO;
-    facesCollectionView.showsVerticalScrollIndicator = NO;
+    self.facesCollectionView.backgroundColor = UIColor.whiteColor;
+    self.facesCollectionView.showsHorizontalScrollIndicator = NO;
+    self.facesCollectionView.showsVerticalScrollIndicator = NO;
     
-    [facesCollectionView setCollectionViewLayout: flow];
-    facesCollectionView.pagingEnabled = NO;
-    [facesCollectionView registerClass:[FaceCell class] forCellWithReuseIdentifier:@"FaceCell"];
+    [self.facesCollectionView setCollectionViewLayout: flow];
+    self.facesCollectionView.pagingEnabled = NO;
+    [self.facesCollectionView registerClass:[FaceCell class] forCellWithReuseIdentifier:@"FaceCell"];
     
-    facesCollectionView.dataSource = self;
-    facesCollectionView.delegate = self;
+    self.facesCollectionView.dataSource = self;
+    self.facesCollectionView.delegate = self;
     
     
     UIView *line = [[UIView alloc] initWithFrame: CGRectMake(0, yOrigin - 1, self.view.frame.size.width, 1)];
     line.backgroundColor = RGB(228, 228, 228);
     [self.backgroundScrollview addSubview: line];
     
-    [self.backgroundScrollview addSubview: facesCollectionView];
-    [self.backgroundScrollview sendSubviewToBack:facesCollectionView];
+    [self.backgroundScrollview addSubview: self.facesCollectionView];
+    [self.backgroundScrollview sendSubviewToBack:self.facesCollectionView];
 }
 
 
@@ -282,7 +280,7 @@
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return eventMessages.count;
+    return self.eventMessages.count;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -293,16 +291,16 @@
     myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
     
     myCell.rightLine.backgroundColor = RGB(237, 237, 237);
-    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < eventMessages.count - 1);
+    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < self.eventMessages.count - 1);
     
-    if ([indexPath row] + 1 == eventMessages.count && [eventMessages.hasNextPage boolValue]) {
+    if ([indexPath row] + 1 == self.eventMessages.count && [self.eventMessages.hasNextPage boolValue]) {
         [self fetchEventMessages];
     }
     myCell.timeLabel.frame = CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30);
     myCell.mediaTypeImageView.hidden = NO;
     myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
     
-    WGEventMessage *eventMessage = (WGEventMessage *)[eventMessages objectAtIndex:[indexPath row]];
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
     WGUser *user = eventMessage.user;
     [myCell.mediaTypeImageView setImageWithURL:user.smallCoverImageURL imageArea:[user smallCoverImageArea]];
 
@@ -455,7 +453,7 @@
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     self.conversationViewController.event = self.event;
-    if (!eventMessages) self.conversationViewController.eventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
+    if (!self.eventMessages) self.conversationViewController.eventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
     if ([[WGProfile currentUser].eventAttending.id isEqualToNumber:self.event.id]) {
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     } else {
@@ -474,7 +472,7 @@
 - (WGCollection *)eventMessagesWithCamera {
     WGCollection *newEventMessages =  [[WGCollection alloc] initWithType:[WGEventMessage class]];
     
-    [newEventMessages addObjectsFromCollection:eventMessages];
+    [newEventMessages addObjectsFromCollection:self.eventMessages];
     
     WGEventMessage *eventMessage = [WGEventMessage serialize:@{
                                                                @"user": [WGProfile currentUser],
@@ -489,29 +487,29 @@
 }
 
 - (void)fetchEventMessages {
-    if (!cancelFetchMessages) {
-        cancelFetchMessages = YES;
+    if (!self.cancelFetchMessages) {
+        self.cancelFetchMessages = YES;
         __weak typeof(self) weakSelf = self;
-        if (!eventMessages) {
+        if (!self.eventMessages) {
             [self.event getMessages:^(WGCollection *collection, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
-                strongSelf->cancelFetchMessages = NO;
+                strongSelf.cancelFetchMessages = NO;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                strongSelf->eventMessages = collection;
-                [strongSelf->facesCollectionView reloadData];
+                strongSelf.eventMessages = collection;
+                [strongSelf.facesCollectionView reloadData];
             }];
-        } else if ([eventMessages.hasNextPage boolValue]) {
-            [eventMessages addNextPage:^(BOOL success, NSError *error) {
+        } else if ([self.eventMessages.hasNextPage boolValue]) {
+            [self.eventMessages addNextPage:^(BOOL success, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
-                strongSelf->cancelFetchMessages = NO;
+                strongSelf.cancelFetchMessages = NO;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                [strongSelf->facesCollectionView reloadData];
+                [strongSelf.facesCollectionView reloadData];
             }];
         }
     }
@@ -548,14 +546,14 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         for (int i = 0; i < [eventMessageIDArray count]; i++) {
             NSNumber *eventMessageID = [eventMessageIDArray objectAtIndex:i];
-            for (WGEventMessage *eventMessage in eventMessages) {
+            for (WGEventMessage *eventMessage in self.eventMessages) {
                 if ([eventMessage.id isEqualToNumber:eventMessageID]) {
                     eventMessage.isRead = @YES;
                     break;
                 }
             }
         }
-        [facesCollectionView reloadData];
+        [self.facesCollectionView reloadData];
     });
 }
 
@@ -573,7 +571,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    if (scrollView != facesCollectionView) {
+    if (scrollView != self.facesCollectionView) {
         return;
     }
     
@@ -581,17 +579,17 @@
     
     CGFloat stickHeight = self.eventPeopleScrollView.frame.size.height + self.eventPeopleScrollView.frame.origin.y;
 
-    if (self.backgroundScrollview.contentOffset.y >= stickHeight && facesCollectionView.contentOffset.y > 0) {
+    if (self.backgroundScrollview.contentOffset.y >= stickHeight && self.facesCollectionView.contentOffset.y > 0) {
         self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, stickHeight);
     }
-    else if (self.backgroundScrollview.contentOffset.y < 0 && scrollView == facesCollectionView) {
+    else if (self.backgroundScrollview.contentOffset.y < 0 && scrollView == self.facesCollectionView) {
         self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
     } else {
         
         self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, self.backgroundScrollview.contentOffset.y + scrollView.contentOffset.y);
         
         currentContentOffset = scrollView.contentOffset;
-        facesCollectionView.contentOffset = CGPointMake(0, 0);
+        self.facesCollectionView.contentOffset = CGPointMake(0, 0);
     }
     
 }

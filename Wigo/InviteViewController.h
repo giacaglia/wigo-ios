@@ -13,4 +13,8 @@
 
 - (id)initWithEvent:(WGEvent *)newEvent;
 
+@property (nonatomic, strong) UITableView *invitePeopleTableView;
+@property (nonatomic, strong) WGCollection *content;
+@property (nonatomic, strong) WGCollection *filteredContent;
+
 @end

@@ -16,10 +16,6 @@
     NSArray *mobileContacts;
     NSMutableArray *filteredMobileContacts;
     NSMutableArray *chosenPeople;
-    
-    UITableView *invitePeopleTableView;
-    WGCollection *content;
-    WGCollection *filteredContent;
     WGEvent *event;
     UISearchBar *searchBar;
     BOOL isSearching;
@@ -148,12 +144,12 @@
 }
 
 - (void)initializeTableInvite {
-    invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 75, self.view.frame.size.width, self.view.frame.size.height - 64 - 75)];
-    [self.view addSubview:invitePeopleTableView];
-    invitePeopleTableView.dataSource = self;
-    invitePeopleTableView.delegate = self;
-    [invitePeopleTableView setSeparatorColor:[FontProperties getBlueColor]];
-    invitePeopleTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 75, self.view.frame.size.width, self.view.frame.size.height - 64 - 75)];
+    [self.view addSubview:self.invitePeopleTableView];
+    self.invitePeopleTableView.dataSource = self;
+    self.invitePeopleTableView.delegate = self;
+    [self.invitePeopleTableView setSeparatorColor:[FontProperties getBlueColor]];
+    self.invitePeopleTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 
@@ -170,10 +166,10 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
         if (isSearching) {
-            return [filteredContent count];
+            return [self.filteredContent count];
         } else {
-            int hasNextPage = ([content.hasNextPage boolValue] ? 1 : 0);
-            return [content count] + hasNextPage;
+            int hasNextPage = ([self.content.hasNextPage boolValue] ? 1 : 0);
+            return [self.content count] + hasNextPage;
         }
     } else {
         if (isSearching) return [filteredMobileContacts count];
@@ -195,33 +191,33 @@
         int tag = (int)[indexPath row];
         WGUser *user;
         if (isSearching) {
-            if ([filteredContent count] == 0) return cell;
-            if (tag < [filteredContent count]) {
-                user = (WGUser *)[filteredContent objectAtIndex:tag];
+            if ([self.filteredContent count] == 0) return cell;
+            if (tag < [self.filteredContent count]) {
+                user = (WGUser *)[self.filteredContent objectAtIndex:tag];
             }
-            if ([filteredContent count] > 5 && [content.hasNextPage boolValue]) {
-                if (tag == [filteredContent count] - 5) {
+            if ([self.filteredContent count] > 5 && [self.content.hasNextPage boolValue]) {
+                if (tag == [self.filteredContent count] - 5) {
                     [self fetchEveryone];
                 }
             }
             else {
-                if (tag == [filteredContent count] && [content count] != 0) {
+                if (tag == [self.filteredContent count] && [self.content count] != 0) {
                     [self fetchEveryone];
                     return cell;
                 }
             }
         } else {
-            if ([content count] == 0) return cell;
-            if (tag < [content count]) {
-                user = (WGUser *)[content objectAtIndex:tag];
+            if ([self.content count] == 0) return cell;
+            if (tag < [self.content count]) {
+                user = (WGUser *)[self.content objectAtIndex:tag];
             }
-            if ([content count] > 5 && [content.hasNextPage boolValue]) {
-                if (tag == [content count] - 5) {
+            if ([self.content count] > 5 && [self.content.hasNextPage boolValue]) {
+                if (tag == [self.content count] - 5) {
                     [self fetchEveryone];
                 }
             }
             else {
-                if (tag == [content count] && [content count] != 0) {
+                if (tag == [self.content count] && [self.content count] != 0) {
                     [self fetchEveryone];
                     return cell;
                 }
@@ -388,12 +384,12 @@ heightForHeaderInSection:(NSInteger)section
     int tag = (int)buttonSender.tag;
     WGUser *user;
     if (isSearching) {
-        if (tag < [filteredContent count]) {
-            user = (WGUser *)[filteredContent objectAtIndex:tag];
+        if (tag < [self.filteredContent count]) {
+            user = (WGUser *)[self.filteredContent objectAtIndex:tag];
         }
     } else {
-        if (tag < [content count]) {
-            user = (WGUser *)[content objectAtIndex:tag];
+        if (tag < [self.content count]) {
+            user = (WGUser *)[self.content objectAtIndex:tag];
         }
     }
     
@@ -410,16 +406,16 @@ heightForHeaderInSection:(NSInteger)section
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
         [WGAnalytics tagEvent:@"Tap User" withDetails:options];
     }
-    if (tag < [content count]) {
-        [content replaceObjectAtIndex:tag withObject:user];
+    if (tag < [self.content count]) {
+        [self.content replaceObjectAtIndex:tag withObject:user];
     }
-    int sizeOfTable = (int)[invitePeopleTableView numberOfRowsInSection:0];
+    int sizeOfTable = (int)[self.invitePeopleTableView numberOfRowsInSection:0];
     if (sizeOfTable > 0 && tag < sizeOfTable && tag >= 0) {
 //        [invitePeopleTableView beginUpdates];
 //        [invitePeopleTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:tag inSection:0]] withRowAnimation: UITableViewRowAnimationNone];
 //        [invitePeopleTableView endUpdates];
         
-        [invitePeopleTableView reloadData];
+        [self.invitePeopleTableView reloadData];
     }
 }
 
@@ -429,7 +425,7 @@ heightForHeaderInSection:(NSInteger)section
     aroundInviteButton.hidden = YES;
     titleLabel.hidden = YES;
     searchButton.hidden = YES;
-    [invitePeopleTableView setContentOffset:invitePeopleTableView.contentOffset animated:NO];
+    [self.invitePeopleTableView setContentOffset:self.invitePeopleTableView.contentOffset animated:NO];
 
     searchBar.hidden = NO;
     [self.view addSubview:searchBar];
@@ -455,7 +451,7 @@ heightForHeaderInSection:(NSInteger)section
     searchBar.text = @"";
     searchBar.hidden = YES;
     
-    [invitePeopleTableView reloadData];
+    [self.invitePeopleTableView reloadData];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -507,7 +503,7 @@ heightForHeaderInSection:(NSInteger)section
 //        [self.view endEditing:YES];
 //        isSearching = NO;
     }
-    [invitePeopleTableView reloadData];
+    [self.invitePeopleTableView reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -522,7 +518,7 @@ heightForHeaderInSection:(NSInteger)section
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     __weak typeof(self) weakSelf = self;
-    if (!filteredContent || filteredContent.hasNextPage == nil) {
+    if (!self.filteredContent || self.filteredContent.hasNextPage == nil) {
         [WGUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 __strong typeof(self) strongSelf = weakSelf;
@@ -530,21 +526,21 @@ heightForHeaderInSection:(NSInteger)section
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                strongSelf->filteredContent = collection;
-                [strongSelf->filteredContent removeObject:[WGProfile currentUser]];
-                [strongSelf->invitePeopleTableView reloadData];
+                strongSelf.filteredContent = collection;
+                [strongSelf.filteredContent removeObject:[WGProfile currentUser]];
+                [strongSelf.invitePeopleTableView reloadData];
             });
         }];
-    } else if ([filteredContent.hasNextPage boolValue]) {
-        [filteredContent addNextPage:^(BOOL success, NSError *error) {
+    } else if ([self.filteredContent.hasNextPage boolValue]) {
+        [self.filteredContent addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                [strongSelf->filteredContent removeObject:[WGProfile currentUser]];
-                [strongSelf->invitePeopleTableView reloadData];
+                [strongSelf.filteredContent removeObject:[WGProfile currentUser]];
+                [strongSelf.invitePeopleTableView reloadData];
             });
         }];
     }
@@ -561,7 +557,7 @@ heightForHeaderInSection:(NSInteger)section
 
 - (void) fetchEveryone {
     __weak typeof(self) weakSelf = self;
-    if (!content || content.hasNextPage == nil) {
+    if (!self.content || self.content.hasNextPage == nil) {
         [WGUser getInvites:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 __strong typeof(self) strongSelf = weakSelf;
@@ -569,21 +565,21 @@ heightForHeaderInSection:(NSInteger)section
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                strongSelf->content = collection;
-                [strongSelf->content removeObject:[WGProfile currentUser]];
-                [strongSelf->invitePeopleTableView reloadData];
+                strongSelf.content = collection;
+                [strongSelf.content removeObject:[WGProfile currentUser]];
+                [strongSelf.invitePeopleTableView reloadData];
             });
         }];
-    } else if ([content.hasNextPage boolValue]) {
-        [content addNextPage:^(BOOL success, NSError *error) {
+    } else if ([self.content.hasNextPage boolValue]) {
+        [self.content addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                [strongSelf->content removeObject:[WGProfile currentUser]];
-                [strongSelf->invitePeopleTableView reloadData];
+                [strongSelf.content removeObject:[WGProfile currentUser]];
+                [strongSelf.invitePeopleTableView reloadData];
             });
         }];
     }
