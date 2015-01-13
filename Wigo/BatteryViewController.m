@@ -14,6 +14,7 @@ NSNumber *currentTotal;
 NSNumber *currentNumGroups;
 int widthShared;
 UIImageView *batteryImageView;
+NSTimer *fetchTimer;
 
 @implementation BatteryViewController
 
@@ -37,7 +38,7 @@ UIImageView *batteryImageView;
     [self initializeBattery];
     [self initializeShareButton];
     
-    [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(checkIfGroupIsUnlocked) userInfo:nil repeats:YES];
+    fetchTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(checkIfGroupIsUnlocked) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -52,6 +53,8 @@ UIImageView *batteryImageView;
         }
         if ([WGProfile currentUser].group.locked && ![[WGProfile currentUser].group.locked boolValue]) {
             [self.navigationController popViewControllerAnimated:YES];
+            [fetchTimer invalidate];
+            fetchTimer = nil;
         }
     }];
 }

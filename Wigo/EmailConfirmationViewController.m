@@ -13,6 +13,7 @@
 
 UITextField *emailTextField;
 OnboardFollowViewController *onboardFollowViewController;
+NSTimer *fetchTimer;
 
 @implementation EmailConfirmationViewController
 
@@ -36,8 +37,7 @@ OnboardFollowViewController *onboardFollowViewController;
     [self initializeFaceAndNameLabel];
     [self initializeEmailLabel];
     [self initializeOtherButtons];
-//    [self initializeNumberOfPeopleLabel];
-    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(login) userInfo:nil repeats:YES];
+    fetchTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(login) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -166,6 +166,8 @@ OnboardFollowViewController *onboardFollowViewController;
                 return;
             }
             if ([[WGProfile currentUser].emailValidated boolValue]) {
+                [fetchTimer invalidate];
+                fetchTimer = nil;
                 if ([[WGProfile currentUser].group.locked boolValue]) {
                     [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
                 } else {
