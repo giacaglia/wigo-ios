@@ -40,27 +40,21 @@
         topContainerView.backgroundColor = [UIColor clearColor];
         [self addSubview:topContainerView];
         
-        leftContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 80, 70)];
+        leftContainerView = [[UIView alloc] initWithFrame:CGRectMake(20, 0, 80, 70)];
         leftContainerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
-        CGPoint center = leftContainerView.center;
-        center.x = CGRectGetMidX(frame)/3;
-        leftContainerView.center = center;
         leftContainerView.backgroundColor = [UIColor clearColor];
         [self addSubview:leftContainerView];
         
-        middleContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 10, 70, 70)];
+        middleContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 3, 70, 70)];
         middleContainerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
-        center = middleContainerView.center;
+        CGPoint center = middleContainerView.center;
         center.x = CGRectGetMidX(frame);
         middleContainerView.center = center;
         middleContainerView.backgroundColor = [UIColor clearColor];
         [self addSubview:middleContainerView];
         
-        rightContainerView = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 70, 70)];
+        rightContainerView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetWidth(frame) - 70 - 20, 0, 70, 70)];
         rightContainerView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleLeftMargin;
-        center = rightContainerView.center;
-        center.x = CGRectGetMidX(frame)+CGRectGetMidX(frame)*2/3;
-        rightContainerView.center = center;
         rightContainerView.backgroundColor = [UIColor clearColor];
         [self addSubview:rightContainerView];
     }

@@ -228,8 +228,6 @@
 		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
 		E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */; };
 		E9A0F9B21A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */; };
-		E9A1EAAF199CFD25003A744C /* boyVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9A1EAAE199CFD25003A744C /* boyVoice.caf */; };
-		E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9A1EAAE199CFD25003A744C /* boyVoice.caf */; };
 		E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
 		E9A31E481980AB9B008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
 		E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
@@ -597,7 +595,6 @@
 		E99F46AE199012F0007408C1 /* LockScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LockScreenViewController.m; sourceTree = "<group>"; };
 		E9A0F9AF1A1E5CBE001A66DF /* EventMessagesConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventMessagesConstants.h; sourceTree = "<group>"; };
 		E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventMessagesConstants.m; sourceTree = "<group>"; };
-		E9A1EAAE199CFD25003A744C /* boyVoice.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = boyVoice.caf; sourceTree = "<group>"; };
 		E9A31E451980AB25008A711B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		E9A31E471980AB9B008A711B /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		E9A50CFB19350F13009B73EA /* ConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationViewController.h; sourceTree = "<group>"; };
@@ -1670,7 +1667,6 @@
 		E9CD53911993C49000206B75 /* Music */ = {
 			isa = PBXGroup;
 			children = (
-				E9A1EAAE199CFD25003A744C /* boyVoice.caf */,
 				E9BE4999198C402500F9AF74 /* girlVoice.caf */,
 			);
 			name = Music;
@@ -1963,7 +1959,6 @@
 				E9C63BF91A03ED35006C5DD2 /* IQMediaCaptureController.xcassets in Resources */,
 				E96F07D719BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				E9C63C0F1A03ED35006C5DD2 /* mic.svg in Resources */,
-				E9A1EAB0199CFD25003A744C /* boyVoice.caf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
@@ -1980,7 +1975,6 @@
 				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
 				E9C63BF81A03ED35006C5DD2 /* IQMediaCaptureController.xcassets in Resources */,
 				E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
-				E9A1EAAF199CFD25003A744C /* boyVoice.caf in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,

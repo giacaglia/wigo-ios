@@ -203,7 +203,7 @@
             for (UIView *subview in self.buttonFlash.subviews) {
                 if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
             }
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 16, 26)];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 16, 26)];
             imageView.image = [UIImage imageNamed:@"flashOn"];
             [self.buttonFlash addSubview:imageView];
         }
@@ -211,7 +211,7 @@
             for (UIView *subview in self.buttonFlash.subviews) {
                 if ([subview isKindOfClass:[UIImageView class]]) [subview removeFromSuperview];
             }
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 26, 31)];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 26, 31)];
             imageView.image = [UIImage imageNamed:@"flashOff"];
             [self.buttonFlash addSubview:imageView];
         }
@@ -580,10 +580,12 @@
                 }
                 self.buttonCancel.titleLabel.font = [FontProperties mediumFont:20.0f];
                 [self.buttonCancel setTitle:@"< Cancel" forState:UIControlStateNormal];
-                self.buttonCancel.titleLabel.layer.shadowColor = [[UIColor blackColor] CGColor];
+                self.buttonCancel.titleLabel.layer.shadowColor = UIColor.blackColor.CGColor;
                 self.buttonCancel.titleLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
                 self.buttonCancel.titleLabel.layer.shadowOpacity = 0.5;
                 self.buttonCancel.titleLabel.layer.shadowRadius = 0.5;
+                self.buttonCancel.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+                self.buttonCancel.contentVerticalAlignment = UIControlContentVerticalAlignmentBottom;
                 self.settingsContainerView.alpha = 0.0;
             } completion:NULL];
 
@@ -804,7 +806,7 @@
             }
         }
         [self.buttonCancel setTitle:nil forState:UIControlStateNormal];
-        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(10, 24, 36, 36)];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(0, 34, 36, 36)];
         cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
         [self.buttonCancel addSubview:cancelCamera];
         
@@ -876,7 +878,7 @@
 
             NSDictionary *dict = @{
                                    IQMediaText: self.textField.text,
-                                   IQMediaYPosition:@(self.labelPoint.y)
+                                   IQMediaYPercentage:@((float)self.labelPoint.y/[[UIScreen mainScreen] bounds].size.height)
                                    };
             [textMedias addObject:dict];
 
@@ -976,7 +978,7 @@
 - (void)mediaView:(IQMediaView *)mediaView labelPointOfInterest:(CGPoint)labelPoint {
     if (![self session].isSessionRunning) {
         if (![self.textField isFirstResponder]) {
-            labelPoint.y = MIN(MAX(labelPoint.y, 125), 410);
+            labelPoint.y = MIN(MAX(labelPoint.y, 125), [[UIScreen mainScreen] bounds].size.height - 158);
             self.textField.hidden = YES;
             self.textLabel.hidden = NO;
             self.textLabel.text = self.textField.text;
@@ -1228,7 +1230,7 @@ replacementString:(NSString *)string {
 {
     if (_buttonFlash == nil)
     {
-        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 72, 72)];
+        _buttonFlash = [[UIButton alloc] initWithFrame:CGRectMake(20, 20, 72, 72)];
         [_buttonFlash addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -1240,8 +1242,8 @@ replacementString:(NSString *)string {
 {
     if (_buttonToggleCamera == nil)
     {
-        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 80, 80)];
-        self.cameraIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(23, 20, 37, 30)];
+        _buttonToggleCamera = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 100, 20, 80, 80)];
+        self.cameraIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_buttonToggleCamera.frame.size.width - 37, 0, 37, 30)];
         self.cameraIconImageView.image = [UIImage imageNamed:@"cameraIcon"];
         [_buttonToggleCamera addSubview:self.cameraIconImageView];
         [_buttonToggleCamera addTarget:self action:@selector(toggleCameraAction) forControlEvents:UIControlEventTouchUpInside];
@@ -1292,7 +1294,7 @@ replacementString:(NSString *)string {
     {
         _buttonCancel = [UIButton buttonWithType:UIButtonTypeCustom];
         [_buttonCancel.titleLabel setFont:[UIFont boldSystemFontOfSize:18.0]];
-        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(0, 24, 36, 36)];
+        UIImageView *cancelCamera = [[UIImageView alloc] initWithFrame:CGRectMake(0, 34, 36, 36)];
         cancelCamera.image = [UIImage imageNamed:@"cancelCamera"];
         [_buttonCancel addSubview:cancelCamera];
         [_buttonCancel addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -1335,10 +1337,12 @@ replacementString:(NSString *)string {
         _buttonSelect = [UIButton buttonWithType:UIButtonTypeCustom];
         [_buttonSelect.titleLabel setFont:[FontProperties mediumFont:20.0f]];
         [_buttonSelect setTitle:@"Post >" forState:UIControlStateNormal];
-        _buttonSelect.titleLabel.layer.shadowColor = [[UIColor blackColor] CGColor];
+        _buttonSelect.titleLabel.layer.shadowColor = UIColor.blackColor.CGColor;
          _buttonSelect.titleLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
          _buttonSelect.titleLabel.layer.shadowOpacity = 0.5;
         _buttonSelect.titleLabel.layer.shadowRadius = 0.5;
+        _buttonSelect.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+        _buttonSelect.contentVerticalAlignment = UIControlContentVerticalAlignmentBottom;
         [_buttonSelect setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [_buttonSelect addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
     }
