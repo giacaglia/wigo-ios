@@ -51,16 +51,13 @@
 }
 
 - (void) stayInPressed {
-    [WGProfile currentUser].isGoingOut = @NO;
-    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
+    [[WGProfile currentUser] saveKey:@"is_going_out" withValue:@NO andHandler:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                 return;
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"updateViewNotGoingOut" object:nil];
             [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
-        });
     }];
 }
 

@@ -116,10 +116,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)fetchSchools {
     [WGApi get:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.schoolSections = [jsonResponse objectForKey:@"sections"];
-                [self.schoolsTableView reloadData];
-            });
+            self.schoolSections = [jsonResponse objectForKey:@"sections"];
+            [self.schoolsTableView reloadData];
         }
     }];
 }

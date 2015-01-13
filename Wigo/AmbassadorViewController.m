@@ -278,21 +278,13 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     [WiGoSpinnerView addDancingGToCenterView: self.navigationController.view];
     
     [GroupStats loadStats:^(GroupStats *groupStats, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [WiGoSpinnerView removeDancingGFromCenterView: self.navigationController.view];
-        });
-        
+        [WiGoSpinnerView removeDancingGFromCenterView: self.navigationController.view];
         if (error) {
-            
             //FIXME:Put alert here
             return;
         }
         self.groupStats = groupStats;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self changeDataForPeriod: self.period];
-        });
-        
+        [self changeDataForPeriod: self.period];
     }];
 }
 

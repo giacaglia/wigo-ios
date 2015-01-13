@@ -1169,21 +1169,19 @@ int firstIndexOfNegativeEvent;
 - (void)showConversationForEvent:(WGEvent *)event {
     
     [event getMessages:^(WGCollection *collection, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                return;
-            }
-            UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            int eventIndex = [self indexOfEvent:event inCollection:collection];
-            
-            EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
-            conversationViewController.event = event;
-            conversationViewController.index = @(eventIndex);
-            conversationViewController.eventMessages = collection;
-            
-            [self presentViewController:conversationViewController animated:YES completion:nil];
-        });
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            return;
+        }
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        int eventIndex = [self indexOfEvent:event inCollection:collection];
+        
+        EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+        conversationViewController.event = event;
+        conversationViewController.index = @(eventIndex);
+        conversationViewController.eventMessages = collection;
+        
+        [self presentViewController:conversationViewController animated:YES completion:nil];
     }];
 }
 
@@ -1298,150 +1296,142 @@ int firstIndexOfNegativeEvent;
         if (_allEvents) {
             if ([_allEvents.hasNextPage boolValue]) {
                 [_allEvents addNextPage:^(BOOL success, NSError *error) {
-                    dispatch_async(dispatch_get_main_queue(), ^(void){
-                        __strong typeof(self) strongSelf = weakSelf;
-                        [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
-                        fetchingEventAttendees = NO;
-                        /* if (error) {
-                            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        } */
-                        strongSelf.pastDays = [[NSMutableArray alloc] init];
-                        strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
-                        strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
-                        strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                        strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                        
-                        for (WGEvent *event in strongSelf.allEvents) {
-                            if ([event.isExpired boolValue]) {
-                                [strongSelf.oldEvents addObject:event];
-                            } else {
-                                [strongSelf.events addObject:event];
-                            }
+                    __strong typeof(self) strongSelf = weakSelf;
+                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    
+                    strongSelf.pastDays = [[NSMutableArray alloc] init];
+                    strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+                    strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    
+                    for (WGEvent *event in strongSelf.allEvents) {
+                        if ([event.isExpired boolValue]) {
+                            [strongSelf.oldEvents addObject:event];
+                        } else {
+                            [strongSelf.events addObject:event];
                         }
-                        
-                        for (WGEvent *event in strongSelf.oldEvents) {
-                            if (![event highlight]) {
-                                continue;
-                            }
-                            NSString *eventDate = [[event expires] deserialize];
-                            if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                                [strongSelf.pastDays addObject: eventDate];
-                                [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
-                            }
-                            [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                    }
+                    
+                    for (WGEvent *event in strongSelf.oldEvents) {
+                        if (![event highlight]) {
+                            continue;
                         }
-                        
-                        [eventPageArray removeAllObjects];
-                        [strongSelf fetchedOneParty];
-                    });
+                        NSString *eventDate = [[event expires] deserialize];
+                        if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                            [strongSelf.pastDays addObject: eventDate];
+                            [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                        }
+                        [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                    }
+                    
+                    [eventPageArray removeAllObjects];
+                    [strongSelf fetchedOneParty];
+                    fetchingEventAttendees = NO;
                 }];
             }
         } else if (self.groupNumberID) {
             [WGEvent getWithGroupNumber:self.groupNumberID andHandler:^(WGCollection *collection, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    __strong typeof(self) strongSelf = weakSelf;
-                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                __strong typeof(self) strongSelf = weakSelf;
+                [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     fetchingEventAttendees = NO;
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        return;
+                    return;
+                }
+                strongSelf.allEvents = collection;
+                strongSelf.pastDays = [[NSMutableArray alloc] init];
+                strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+                strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+                strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                
+                for (WGEvent *event in strongSelf.allEvents) {
+                    if ([event.isExpired boolValue]) {
+                        [strongSelf.oldEvents addObject:event];
+                    } else {
+                        [strongSelf.events addObject:event];
                     }
-                    strongSelf.allEvents = collection;
-                    strongSelf.pastDays = [[NSMutableArray alloc] init];
-                    strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
-                    strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    
-                    for (WGEvent *event in strongSelf.allEvents) {
-                        if ([event.isExpired boolValue]) {
-                            [strongSelf.oldEvents addObject:event];
-                        } else {
-                            [strongSelf.events addObject:event];
-                        }
+                }
+                
+                for (WGEvent *event in strongSelf.oldEvents) {
+                    if (![event highlight]) {
+                        continue;
                     }
-                    
-                    for (WGEvent *event in strongSelf.oldEvents) {
-                        if (![event highlight]) {
-                            continue;
-                        }
-                        NSString *eventDate = [[event expires] deserialize];
-                        if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                            [strongSelf.pastDays addObject: eventDate];
-                            [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
-                        }
-                        [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                    NSString *eventDate = [[event expires] deserialize];
+                    if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                        [strongSelf.pastDays addObject: eventDate];
+                        [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
                     }
-                    
-                    [eventPageArray removeAllObjects];
-                    [strongSelf fetchedOneParty];
-                });
+                    [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                }
+                
+                [eventPageArray removeAllObjects];
+                [strongSelf fetchedOneParty];
+                fetchingEventAttendees = NO;
             }];
         } else {
             [WGEvent get:^(WGCollection *collection, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    __strong typeof(self) strongSelf = weakSelf;
-                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                __strong typeof(self) strongSelf = weakSelf;
+                [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     fetchingEventAttendees = NO;
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        return;
+                    return;
+                }
+                strongSelf.allEvents = collection;
+                strongSelf.pastDays = [[NSMutableArray alloc] init];
+                strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+                strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+                strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                
+                for (WGEvent *event in strongSelf.allEvents) {
+                    if ([event.isExpired boolValue]) {
+                        [strongSelf.oldEvents addObject:event];
+                    } else {
+                        [strongSelf.events addObject:event];
                     }
-                    strongSelf.allEvents = collection;
-                    strongSelf.pastDays = [[NSMutableArray alloc] init];
-                    strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
-                    strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    
-                    for (WGEvent *event in strongSelf.allEvents) {
-                        if ([event.isExpired boolValue]) {
-                            [strongSelf.oldEvents addObject:event];
-                        } else {
-                            [strongSelf.events addObject:event];
-                        }
+                }
+                
+                for (WGEvent *event in strongSelf.oldEvents) {
+                    if (![event highlight]) {
+                        continue;
                     }
-                    
-                    for (WGEvent *event in strongSelf.oldEvents) {
-                        if (![event highlight]) {
-                            continue;
-                        }
-                        NSString *eventDate = [[event expires] deserialize];
-                        if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                            [strongSelf.pastDays addObject: eventDate];
-                            [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
-                        }
-                        [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                    NSString *eventDate = [[event expires] deserialize];
+                    if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                        [strongSelf.pastDays addObject: eventDate];
+                        [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
                     }
-                    
-                    [eventPageArray removeAllObjects];
-                    [strongSelf fetchedOneParty];
-                });
+                    [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                }
+                
+                [eventPageArray removeAllObjects];
+                [strongSelf fetchedOneParty];
+                fetchingEventAttendees = NO;
             }];
         }
     }
 }
 
 - (void)fetchedOneParty {
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-        _spinnerAtCenter ? [WiGoSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
-         _spinnerAtCenter = NO;
-        _filteredEvents = [WGCollection serializeArray:@[] andClass:[WGEvent class]];
-        [self dismissKeyboard];
-    });
+    _spinnerAtCenter ? [WiGoSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
+     _spinnerAtCenter = NO;
+    _filteredEvents = [WGCollection serializeArray:@[] andClass:[WGEvent class]];
+    [self dismissKeyboard];
 }
 
 - (void) fetchUserInfo {
     if (!fetchingUserInfo && [WGProfile currentUser].key) {
         fetchingUserInfo = YES;
         [WGProfile reload:^(BOOL success, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if (error) {
-                    return;
-                }
-                [self initializeNavigationBar];
+            if (error) {
                 fetchingUserInfo = NO;
-            });
+                return;
+            }
+            [self initializeNavigationBar];
+            fetchingUserInfo = NO;
         }];
     }
 }

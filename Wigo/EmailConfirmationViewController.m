@@ -161,19 +161,17 @@ OnboardFollowViewController *onboardFollowViewController;
 - (void) login {
     if ([WGProfile currentUser].key) {
         [WGProfile reload:^(BOOL success, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void){
-                if (error) {
-                    return;
+            if (error) {
+                return;
+            }
+            if ([WGProfile currentUser].emailValidated) {
+                if ([[WGProfile currentUser].group.locked boolValue]) {
+                    [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
+                } else {
+                    onboardFollowViewController = [OnboardFollowViewController new];
+                    [self.navigationController pushViewController:onboardFollowViewController animated:YES];
                 }
-                if ([WGProfile currentUser].emailValidated) {
-                    if ([[WGProfile currentUser].group.locked boolValue]) {
-                        [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
-                    } else {
-                        onboardFollowViewController = [OnboardFollowViewController new];
-                        [self.navigationController pushViewController:onboardFollowViewController animated:YES];
-                    }
-                }
-            });
+            }
         }];
     }
 }
@@ -183,21 +181,19 @@ OnboardFollowViewController *onboardFollowViewController;
     [WiGoSpinnerView addDancingGToCenterView:self.view];
     
     [[WGProfile currentUser] resendVerificationEmail:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
-                return;
-            }
-            UIAlertView *alertView = [[UIAlertView alloc]
-                                      initWithTitle:@"You're good"
-                                      message:@"We just resent you a new verification email."
-                                      delegate:nil
-                                      cancelButtonTitle:@"OK"
-                                      otherButtonTitles:nil];
-            [alertView show];
-        });
+        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            return;
+        }
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"You're good"
+                                  message:@"We just resent you a new verification email."
+                                  delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
     }];
 }
 

@@ -379,20 +379,18 @@
     [WiGoSpinnerView addDancingGToCenterView:self.view];
 
     [[WGProfile currentUser] login:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if (error) {
-                _fetchingProfilePictures = YES;
-                if (error.userInfo && [error.userInfo objectForKey:@"wigoCode"] && [[error.userInfo objectForKey:@"wigoCode"] isEqualToString:@"does_not_exist"]) {
-                    [self fetchTokensFromFacebook];
-                    [self fetchProfilePicturesAlbumFacebook];
-                    return;
-                }
-                [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
+        if (error) {
+            _fetchingProfilePictures = YES;
+            if (error.userInfo && [error.userInfo objectForKey:@"wigoCode"] && [[error.userInfo objectForKey:@"wigoCode"] isEqualToString:@"does_not_exist"]) {
+                [self fetchTokensFromFacebook];
+                [self fetchProfilePicturesAlbumFacebook];
                 return;
             }
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            [self navigate];
-        });
+            [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
+            return;
+        }
+        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        [self navigate];
     }];
 }
 
@@ -481,18 +479,16 @@
 -(void) fetchUserInfo {
     [WiGoSpinnerView addDancingGToCenterView:self.view];
     [WGProfile reload:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-            if (error) {
-                if (!_fbID || !_accessToken) {
-                    [self fetchTokensFromFacebook];
-                } else {
-                    [self loginUserAsynchronous];
-                }
-                return;
+        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        if (error) {
+            if (!_fbID || !_accessToken) {
+                [self fetchTokensFromFacebook];
+            } else {
+                [self loginUserAsynchronous];
             }
-            [self navigate];
-        });
+            return;
+        }
+        [self navigate];
     }];
 }
 

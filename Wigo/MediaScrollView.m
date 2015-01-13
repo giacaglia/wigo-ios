@@ -425,27 +425,23 @@
 {
     WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
     [newEventMessage addPhoto:fileData withName:filename andHandler:^(WGEventMessage *object, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        if (error) {
+            [self.eventConversationDelegate showErrorMessage];
+            return;
+        }
+        [object create:^(BOOL success, NSError *error) {
             if (error) {
                 [self.eventConversationDelegate showErrorMessage];
                 return;
             }
-            [object create:^(BOOL success, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (error) {
-                        [self.eventConversationDelegate showErrorMessage];
-                        return;
-                    }
-                    [self.eventConversationDelegate showCompletedMessage];
-                    self.shownCurrentImage = YES;
-                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
-                    if (self.shownCurrentImage) {
-                        [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
-                    }
-                    [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
-                });
-            }];
-        });
+            [self.eventConversationDelegate showCompletedMessage];
+            self.shownCurrentImage = YES;
+            [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
+            if (self.shownCurrentImage) {
+                [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
+            }
+            [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+        }];
     }];
 }
 
@@ -457,27 +453,23 @@
 {
     WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
     [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumbnailFilename andHandler:^(WGEventMessage *object, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (error) {
-                [self.eventConversationDelegate showErrorMessage];
-                return;
-            }
-            [object create:^(BOOL success, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    if (error) {
-                        [self.eventConversationDelegate showErrorMessage];
-                        return;
-                    }
-                    [self.eventConversationDelegate showCompletedMessage];
-                    self.shownCurrentImage = YES;
-                    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
-                    if (self.shownCurrentImage) {
-                        [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
-                    }
-                    [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
-                });
-            }];
-        });
+        if (error) {
+            [self.eventConversationDelegate showErrorMessage];
+            return;
+        }
+        [object create:^(BOOL success, NSError *error) {
+                if (error) {
+                    [self.eventConversationDelegate showErrorMessage];
+                    return;
+                }
+                [self.eventConversationDelegate showCompletedMessage];
+                self.shownCurrentImage = YES;
+                [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
+                if (self.shownCurrentImage) {
+                    [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
+                }
+                [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+        }];
     }];
 }
 

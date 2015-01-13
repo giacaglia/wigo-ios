@@ -937,7 +937,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)presentEvent:(WGEvent *)event {
-    if ([self.events containsObject:event]) {
+    if ([self.events containsObject:event] && event.attendees.count > 0) {
         EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
         eventStoryViewController.event = event;
         eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
@@ -1017,44 +1017,40 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         self.isFetchingNotifications = YES;
         if (!_notifications || _notifications.hasNextPage == nil) {
             [WGNotification get:^(WGCollection *collection, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    self.isFetchingNotifications = NO;
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        return;
+                self.isFetchingNotifications = NO;
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                _notifications = collection;
+                if (!_unexpiredNotifications) _unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
+                for (WGNotification *notification in _notifications) {
+                    if (![notification isFromLastDay]) {
+                        [_unexpiredNotifications addObject:notification];
                     }
-                    _notifications = collection;
-                    if (!_unexpiredNotifications) _unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
-                    for (WGNotification *notification in _notifications) {
-                        if (![notification isFromLastDay]) {
-                            [_unexpiredNotifications addObject:notification];
-                        }
-                    }
-                    self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
-                    [self.tableView reloadData];
-                    [self.tableView didFinishPullToRefresh];
-                    self.isFetchingNotifications = NO;
-                });
+                }
+                self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
+                [self.tableView reloadData];
+                [self.tableView didFinishPullToRefresh];
+                self.isFetchingNotifications = NO;
             }];
         } else if ([_notifications.hasNextPage boolValue]) {
             [_notifications getNextPage:^(WGCollection *collection, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void){
-                    self.isFetchingNotifications = NO;
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        return;
+                self.isFetchingNotifications = NO;
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    return;
+                }
+                for (WGNotification *notification in collection) {
+                    [_notifications addObject:notification];
+                    if (![notification isFromLastDay]) {
+                        [_unexpiredNotifications addObject:notification];
                     }
-                    for (WGNotification *notification in collection) {
-                        [_notifications addObject:notification];
-                        if (![notification isFromLastDay]) {
-                            [_unexpiredNotifications addObject:notification];
-                        }
-                    }
-                    self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
-                    [self.tableView reloadData];
-                    [self.tableView didFinishPullToRefresh];
-                    self.isFetchingNotifications = NO;
-                });
+                }
+                self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
+                [self.tableView reloadData];
+                [self.tableView didFinishPullToRefresh];
+                self.isFetchingNotifications = NO;
             }];
         } else {
             self.isFetchingNotifications = NO;
@@ -1085,30 +1081,26 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)fetchEvent:(WGEvent *)event {
     [event refresh:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                return;
-            }
-            EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-            eventStoryViewController.event = event;
-            eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-            [self.navigationController pushViewController: eventStoryViewController animated:YES];
-        });
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            return;
+        }
+        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+        eventStoryViewController.event = event;
+        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+        [self.navigationController pushViewController: eventStoryViewController animated:YES];
     }];
 }
 
 
 - (void)fetchSummaryOfFollowRequests {
     [WGNotification getFollowSummary:^(NSNumber *follow, NSNumber *followRequest, NSNumber *total, NSNumber *tap, NSNumber *facebookFollow, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void){
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                return;
-            }
-            _followRequestSummary = followRequest;
-            [self.tableView reloadData];
-        });
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            return;
+        }
+        _followRequestSummary = followRequest;
+        [self.tableView reloadData];
     }];
 }
 

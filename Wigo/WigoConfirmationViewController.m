@@ -23,9 +23,7 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    dispatch_async(dispatch_get_main_queue(), ^(void){
-        [self initializeTitle];
-    });
+    [self initializeTitle];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

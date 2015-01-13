@@ -861,24 +861,25 @@ NSMutableArray *suggestedArrayView;
         if (!_everyone) {
             [WGUser get:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    fetching = NO;
                     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        fetching = NO;
                         return;
                     }
                     _everyone = collection;
                     _users = _everyone;
                     [_tableViewOfPeople reloadData];
+                    fetching = NO;
                 });
             }];
         } else if ([_everyone.hasNextPage boolValue]) {
             [_everyone getNextPage:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    fetching = NO;
                     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        fetching = NO;
                         return;
                     }
                     
@@ -893,6 +894,7 @@ NSMutableArray *suggestedArrayView;
                     _users = _everyone;
                     [_tableViewOfPeople reloadData];
                     secondPartSubview = [self initializeSecondPart];
+                    fetching = NO;
                 });
             }];
         } else {
@@ -917,10 +919,10 @@ NSMutableArray *suggestedArrayView;
             [WGFollow getFollowsForFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
-                    fetching = NO;
                     [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        fetching = NO;
                         return;
                     }
                     strongSelf.followers = collection;
@@ -929,16 +931,17 @@ NSMutableArray *suggestedArrayView;
                         [strongSelf.users addObject:follow.user];
                     }
                     [strongSelf.tableViewOfPeople reloadData];
+                    fetching = NO;
                 });
             }];
         } else if ([_followers.hasNextPage boolValue]) {
             [_followers addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
-                    fetching = NO;
                     [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        fetching = NO;
                         return;
                     }
                     strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
@@ -946,6 +949,7 @@ NSMutableArray *suggestedArrayView;
                         [strongSelf.users addObject:follow.user];
                     }
                     [strongSelf.tableViewOfPeople reloadData];
+                    fetching = NO;
                 });
             }];
         } else {
@@ -970,10 +974,10 @@ NSMutableArray *suggestedArrayView;
             [WGFollow getFollowsForUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
-                    fetching = NO;
                     [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        fetching = NO;
                         return;
                     }
                     strongSelf.following = collection;
@@ -983,16 +987,17 @@ NSMutableArray *suggestedArrayView;
                     }
                     [strongSelf.tableViewOfPeople reloadData];
                     secondPartSubview = [strongSelf initializeSecondPart];
+                    fetching = NO;
                 });
             }];
         } else if ([_following.hasNextPage boolValue]) {
             [_following addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
-                    fetching = NO;
                     [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        fetching = NO;
                         return;
                     }
                     strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
@@ -1001,6 +1006,7 @@ NSMutableArray *suggestedArrayView;
                     }
                     [strongSelf.tableViewOfPeople reloadData];
                     secondPartSubview = [strongSelf initializeSecondPart];
+                    fetching = NO;
                 });
             }];
         } else {
@@ -1057,41 +1063,42 @@ NSMutableArray *suggestedArrayView;
 - (void)searchTableList {
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
-    _page = @1;
     if ([self.currentTab isEqualToNumber:@2]) {
         [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                fetching = NO;
                 [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    fetching = NO;
                     return;
                 }
                 _filteredUsers = collection;
                 [_tableViewOfPeople reloadData];
+                fetching = NO;
             });
         }];
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
         [WGFollow searchFollows:searchString forFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                fetching = NO;
                 [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    fetching = NO;
                     return;
                 }
                 _filteredUsers = collection;
                 [_tableViewOfPeople reloadData];
+                fetching = NO;
             });
         }];
     } else {
         [WGFollow searchFollows:searchString forUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
-                fetching = NO;
                 [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    fetching = NO;
                     return;
                 }
                 
@@ -1100,6 +1107,7 @@ NSMutableArray *suggestedArrayView;
                     [_filteredUsers addObject:follow.follow];
                 }
                 [_tableViewOfPeople reloadData];
+                fetching = NO;
             });
         }];
     }

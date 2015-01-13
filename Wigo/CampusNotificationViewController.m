@@ -94,17 +94,15 @@
     [WiGoSpinnerView addDancingGToCenterView:self.view];
     
     [[WGProfile currentUser] broadcastMessage:self.notificationTextView.text withHandler:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
-                return;
-            }
-            UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle: @"Sent!" message: @"Thanks! We'll send it out to your school asap!" delegate: self cancelButtonTitle: @"OK" otherButtonTitles: nil];
-            successAlert.tag = kSuccessAlertTag;
-            successAlert.delegate = self;
-            
-            [successAlert show];
-        });
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            return;
+        }
+        UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle: @"Sent!" message: @"Thanks! We'll send it out to your school asap!" delegate: self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+        successAlert.tag = kSuccessAlertTag;
+        successAlert.delegate = self;
+        
+        [successAlert show];
     }];
 }
 
