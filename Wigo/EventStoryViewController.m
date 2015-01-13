@@ -179,7 +179,7 @@
         
         WGEventAttendee *newAttendee = [[WGEventAttendee alloc] init];
         newAttendee.user = [WGProfile currentUser];
-        [self.event addAttendee:newAttendee];
+        [self.event.attendees insertObject:newAttendee atIndex:0];
         self.event.numAttending = @([self.event.numAttending intValue] + 1);
         
         // Update UI

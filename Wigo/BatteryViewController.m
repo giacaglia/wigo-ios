@@ -40,7 +40,7 @@ UIImageView *batteryImageView;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-   }
+}
 
 - (void)initializeBackground {
     UIImageView *batteryBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"batteryBackground"]];

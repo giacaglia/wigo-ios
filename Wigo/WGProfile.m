@@ -278,7 +278,7 @@ static WGProfile *currentUser = nil;
         }
         NSError *dataError;
         @try {
-            [WGProfile setCurrentUser:[WGUser serialize:jsonResponse]];
+            [WGProfile setCurrentUser:[[WGUser alloc] initWithJSON:jsonResponse]];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
