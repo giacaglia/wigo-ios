@@ -807,12 +807,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) unblock:(WGUser *)user withHandler:(BoolResultBlock)handler {
-    NSString *queryString = [NSString stringWithFormat:@"users/%@", user.id];
-    
-    [WGApi post:queryString withParameters:@{ kIsBlockedKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (!error) {
-            user.isBlocked = @NO;
-        }
+    [user saveKey:kIsBlockedKey withValue:@NO andHandler:^(BOOL success, NSError *error) {
         handler(error == nil, error);
     }];
 }
@@ -852,28 +847,20 @@ static WGUser *currentUser = nil;
 }
 
 -(void) untap:(WGUser *)user withHandler:(BoolResultBlock)handler {
-    NSString *queryString = [NSString stringWithFormat:@"users/%@/", user.id];
-    [WGApi post:queryString withParameters:@{ kIsTappedKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (!error) {
-            user.isTapped = @NO;
-        }
+    [user saveKey:kIsTappedKey withValue:@NO andHandler:^(BOOL success, NSError *error) {
         handler(error == nil, error);
     }];
 }
 
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler {
-    NSString *queryString = [NSString stringWithFormat:@"users/%@/", user.id];
-    [WGApi post:queryString withParameters:@{ kIsFollowingKey : @NO } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (!error) {
-            user.isFollowing = @NO;
-        }
+    [user saveKey:kIsFollowingKey withValue:@NO andHandler:^(BOOL success, NSError *error) {
         handler(error == nil, error);
     }];
 }
 
 -(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler {
-    [WGApi post:@"follows/" withParameters:@{ @"follow" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (!error) {
+    [user saveKey:kIsFollowingKey withValue:@YES andHandler:^(BOOL success, NSError *error) {
+        if (!error && user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
             user.isFollowingRequested = @YES;
         }
         handler(error == nil, error);
@@ -884,6 +871,7 @@ static WGUser *currentUser = nil;
     [WGApi get:@"follows/accept" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollower = @YES;
+            self.numFollowers = @([self.numFollowers intValue] + 1);
         }
         handler(error == nil, error);
     }];

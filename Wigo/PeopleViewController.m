@@ -503,6 +503,7 @@ NSMutableArray *suggestedArrayView;
     if ([indexPath section] == 0) {
         if ([self.currentTab isEqualToNumber:@2]) return 233;
         else if ([self.currentTab isEqualToNumber:@4]) return 95;
+        else if ([self.currentTab isEqualToNumber:@3]) return 0;
         // else return 0;
     }
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;

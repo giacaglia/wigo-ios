@@ -119,8 +119,8 @@
 		C1F5B3D11A654AC800CAFD95 /* WGNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544095A1A547BCD00BB3036 /* WGNotification.m */; };
 		C1F5B3D21A654AC800CAFD95 /* WGCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F5201A3F3C6900F8C9C4 /* WGCollection.m */; };
 		C1F5B3D31A654AC800CAFD95 /* WGCollectionArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544094E1A51EF3000BB3036 /* WGCollectionArray.m */; };
-		C1F5B3D41A654AC800CAFD95 /* WGCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4544094B1A51EA0000BB3036 /* WGCollectionView.m */; };
-		C1F5B3D51A654AC800CAFD95 /* WGTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 454409511A51F19100BB3036 /* WGTableView.m */; };
+		C1F5B3D41A654AC800CAFD95 /* (null) in Sources */ = {isa = PBXBuildFile; };
+		C1F5B3D51A654AC800CAFD95 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		C1F5B3D61A654AE300CAFD95 /* NSDate+WGDate.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86961A5B1F8200DB85AE /* NSDate+WGDate.m */; };
 		C1F5B3D71A654B4D00CAFD95 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF869A1A5C5DEB00DB85AE /* AFHTTPRequestOperation.m */; };
 		C1F5B3D81A654B4D00CAFD95 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF869C1A5C5DEB00DB85AE /* AFHTTPRequestOperationManager.m */; };
@@ -1134,8 +1134,8 @@
 				E921D61D1923967D00361247 /* Wigo-Info.plist */,
 				C12A11E219787BE800D53B1C /* wigoBlade.plist */,
 				E921D61E1923967D00361247 /* InfoPlist.strings */,
-				E921D6211923967D00361247 /* main.m */,
 				E921D6231923967D00361247 /* Wigo-Prefix.pch */,
+				E921D6211923967D00361247 /* main.m */,
 				C16D86AA19747FF6003EB336 /* Localizable.strings */,
 			);
 			name = "Supporting Files";
@@ -2093,8 +2093,8 @@
 				C1F5B3D11A654AC800CAFD95 /* WGNotification.m in Sources */,
 				C1F5B3D21A654AC800CAFD95 /* WGCollection.m in Sources */,
 				C1F5B3D31A654AC800CAFD95 /* WGCollectionArray.m in Sources */,
-				C1F5B3D41A654AC800CAFD95 /* WGCollectionView.m in Sources */,
-				C1F5B3D51A654AC800CAFD95 /* WGTableView.m in Sources */,
+				C1F5B3D41A654AC800CAFD95 /* (null) in Sources */,
+				C1F5B3D51A654AC800CAFD95 /* (null) in Sources */,
 				C1F5B3C71A654A5B00CAFD95 /* WGAnalytics.m in Sources */,
 				C1F5B3C81A654A5B00CAFD95 /* WGObject.m in Sources */,
 				C1F5B3C91A654A5B00CAFD95 /* WGGroup.m in Sources */,
@@ -2737,7 +2737,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "WigoTests/WigoTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2764,7 +2764,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
 				INFOPLIST_FILE = "WigoTests/WigoTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2866,7 +2866,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wigo/Wigo-Prefix.pch";
 				INFOPLIST_FILE = "WigoTests/WigoTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

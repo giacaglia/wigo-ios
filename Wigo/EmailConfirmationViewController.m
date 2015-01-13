@@ -216,8 +216,7 @@ OnboardFollowViewController *onboardFollowViewController;
 }
 
 - (void)changeEmail:(NSString *)emailString {
-    [WGProfile currentUser].email = emailString;
-    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+    [[WGProfile currentUser] saveKey:@"email" withValue:emailString andHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
         }

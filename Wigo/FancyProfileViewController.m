@@ -467,6 +467,10 @@ UIButton *tapButton;
 - (void)blockPressed:(NSNotification *)notification {
     NSDictionary *userInfo = [notification userInfo];
     
+    self.user.isBlocked = @YES;
+    self.userState = self.user.state;
+    [self reloadViewForUserState];
+    
     WGUser *sentUser = [WGUser serialize:[userInfo objectForKey:@"user"]];
     NSNumber *typeNumber = (NSNumber *)[userInfo objectForKey:@"type"];
     NSArray *blockTypeArray = @[@"annoying", @"not_student", @"abusive"];
@@ -478,7 +482,8 @@ UIButton *tapButton;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
                 }
-                sentUser.isBlocked = @YES;
+                self.userState = self.user.state;
+                [self reloadViewForUserState];
                 [self presentBlockPopView:sentUser];
             }];
         }
@@ -486,40 +491,50 @@ UIButton *tapButton;
 }
 
 - (void)unblockPressed {
+    self.user.isBlocked = @NO;
+    self.userState = self.user.state;
+    [self reloadViewForUserState];
+    
     [[WGProfile currentUser] unblock:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
         }
-        self.user.isBlocked = @NO;
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){
             self.navigationController.navigationBar.barStyle = UIBarStyleDefault;}];
+        self.userState = self.user.state;
+        [self reloadViewForUserState];
     }];
 }
 
 
 - (void)followPressed {
     self.user.isFollowing = @YES;
-    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
-        self.userState = NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
-        self.user.isFollowingRequested = @YES;
-    } else {
-        self.userState = FOLLOWING_USER_STATE;
-        self.user.isFollowing = @YES;
-    }
+    self.userState = self.user.state;
     [self reloadViewForUserState];
-    [self.user save:^(BOOL success, NSError *error) {}];
+    
+    [[WGProfile currentUser] follow:self.user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            return;
+        }
+        self.userState = self.user.state;
+        [self reloadViewForUserState];
+    }];
 }
 
 - (void)unfollowPressed {
     self.user.isFollowing = @NO;
-    if (self.user.privacy == PRIVATE) {
-        self.userState = NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
-    } else {
-        self.userState = NOT_FOLLOWING_PUBLIC_USER_STATE;
-    }
-    
+    self.userState = self.user.state;
     [self reloadViewForUserState];
-    [self.user save:^(BOOL success, NSError *error) {}];
+    
+    [[WGProfile currentUser] unfollow:self.user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            return;
+        }
+        self.userState = self.user.state;
+        [self reloadViewForUserState];
+    }];
 }
 
 
@@ -870,9 +885,7 @@ UIButton *tapButton;
     else if (indexPath.section == kImageViewSection) {
         return self.imageScrollView.frame.size.height - _nameView.frame.size.height;
     }
-    
     return 0;
-
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
