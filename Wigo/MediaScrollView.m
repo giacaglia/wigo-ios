@@ -97,20 +97,26 @@
         myCell.eventMessage = eventMessage;
         myCell.isPeeking = self.isPeeking;
         [myCell updateUI];
-        NSURL *imageURL;
         if ([contentURL isKindOfClass:[UIImage class]]) {
             myCell.imageView.image = (UIImage *)contentURL;
         } else {
-            imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
-            [myCell.spinner startAnimating];
+            
+            NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
             __weak ImageCell *weakCell = myCell;
-            [myCell.imageView setImageWithURL:imageURL
-                                    completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                            [weakCell.spinner stopAnimating];
-                                        });
-                                    }];
-
+            if (![thumbnailURL isKindOfClass:[NSNull class]]) {
+                NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
+                [myCell.imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                         NSURL *realURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
+                        [weakCell.spinner startAnimating];
+                        [weakCell.imageView setImageWithURL:realURL
+                                           placeholderImage:image
+                                                  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                                                    [weakCell.spinner stopAnimating];
+                                                }];
+                    });
+                }];
+            }
         }
         [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
         

@@ -78,38 +78,9 @@ NSMutableArray *failedUserInfoArray;
               imageArea:(NSDictionary *)area
                withInfo:(NSDictionary *)info
               completed:(SDWebImageCompletedBlock)completedBlock {
-    // __block NSDictionary *blockInfo = info;
     
     [self setImageWithURL:url withArea:area placeholderImage:nil options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        /* if (error) {
-            User *user = [blockInfo objectForKey:@"user"];
-            NSArray *images = (NSArray *)[info objectForKey:@"images"];
-            NSString *imageID;
-            if ([images isKindOfClass:[NSArray class]] && images.count > 0) {
-                NSDictionary *image = [images objectAtIndex:[(NSNumber *)[info objectForKey:@"index"] intValue]];
-                if ([[image allKeys] containsObject:@"id"]) {
-                    imageID = [image objectForKey:@"id"];
-                }
-            }
-            if (!failedUserInfoArray) failedUserInfoArray = [NSMutableArray new];
-            if (![[failedUserInfoArray valueForKey:@"user_id"] containsObject:[user objectForKey:@"id"]]) {
-                if (imageID) {
-                    [failedUserInfoArray addObject:@{@"user_id": [user objectForKey:@"id"],
-                                                    @"image_type": @"facebook",
-                                                     @"image_id": imageID }];
-                }
-                [failedUserInfoArray addObject:@{@"user_id": [user objectForKey:@"id"],
-                                                 @"image_type": @"facebook"}
-                 ];
-            }
-            [Network sendAsynchronousHTTPMethod:POST
-                                    withAPIName:@"images/failed/"
-                                    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                                        failedUserInfoArray = [NSMutableArray new];
-                                    }
-                                    withOptions:failedUserInfoArray
-             ];
-        } */
+
         if (completedBlock) completedBlock(image, error, cacheType);
     }];
 }
