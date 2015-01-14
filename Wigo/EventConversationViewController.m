@@ -86,7 +86,6 @@
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
 
-    NSLog(@"Index: %d set to INACTIVE ", indexPath.item);
     [myCell resetToInactive];
 
     myCell.faceImageView.layer.borderColor = UIColor.whiteColor.CGColor;
@@ -387,10 +386,8 @@
     if (![activeIndexPath isEqual:self.currentActiveCell]) {
         // Set old face inactive and new one active.
         if (self.currentActiveCell) {
-            NSLog(@"Index: %d set to INACTIVE", activeIndexPath.item);
             [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:NO];
         }
-        NSLog(@"Index: %d set to ACTIVE", activeIndexPath.item);
         [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: activeIndexPath] setIsActive:YES];
         
         self.currentActiveCell = activeIndexPath;
@@ -616,7 +613,7 @@
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, newSizeOfEachFaceCell, newSizeOfEachFaceCell);
+    self.frame = CGRectMake(0, 0, newSizeOfEachFaceCell, sizeOfEachFaceCell);
     self.contentView.frame = self.frame;
     
     self.faceAndMediaTypeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2*(sizeOfEachFaceCell/3),  2*(sizeOfEachFaceCell/3))];
@@ -655,7 +652,8 @@
     self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
     [self.faceAndMediaTypeView addSubview:self.spinner];
     
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0.75*sizeOfEachFaceCell + 3, sizeOfEachFaceCell, 30)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.faceImageView.frame.origin.y + self.faceImageView.frame.size.height, self.contentView.frame.size.width, 20)];
+    self.timeLabel.center = CGPointMake(self.contentView.center.x, self.timeLabel.center.y);
     self.timeLabel.numberOfLines = 0;
     self.timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.timeLabel.textAlignment = NSTextAlignmentCenter;
@@ -783,7 +781,7 @@
 
 - (void)setup
 {
-    self.itemSize = CGSizeMake(newSizeOfEachFaceCell, newSizeOfEachFaceCell);
+    self.itemSize = CGSizeMake(newSizeOfEachFaceCell, sizeOfEachFaceCell);
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     self.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     self.minimumInteritemSpacing = 0.0;
