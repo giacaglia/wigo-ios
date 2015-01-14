@@ -360,7 +360,7 @@
                                                     @"user": [WGProfile currentUser],
                                                     @"created": [NSDate nowStringUTC],
                                                     @"media": [[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaImage],
-              å                                                 }];
+                                                               }];
     }
     
     WGEventMessage *newEventMessage = [WGEventMessage serialize:mutableDict];
