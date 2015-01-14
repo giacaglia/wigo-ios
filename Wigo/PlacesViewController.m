@@ -310,10 +310,15 @@ int firstIndexOfNegativeEvent;
                                                  name:@"loadViewAfterSigningUser"
                                                object:nil];
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(goToChat)
-//                                                 name:@"goToChat"
-//                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(goToChat)
+                                                 name:@"goToChat"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(goToProfile)
+                                                 name:@"goToProfile"
+                                               object:nil];
 
 }
 
@@ -324,15 +329,21 @@ int firstIndexOfNegativeEvent;
 
 
 - (void)goToChat {
-    NSLog(@"bhfabefbh");
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-    [fancyProfileViewController setStateWithUser:[WGProfile currentUser]];
+    [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
-    [self.navigationController pushViewController: fancyProfileViewController animated:NO];
-    
+    [self.navigationController pushViewController: fancyProfileViewController animated: NO];
+
     ChatViewController *chatViewController = [ChatViewController new];
     chatViewController.view.backgroundColor = UIColor.whiteColor;
-    [self.navigationController pushViewController:chatViewController animated:YES];
+    [fancyProfileViewController.navigationController pushViewController:chatViewController animated:YES];
+}
+
+- (void)goToProfile {
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
+    fancyProfileViewController.events = self.events;
+    [self.navigationController pushViewController: fancyProfileViewController animated: NO];
 }
 
 - (void)scrollUp {
@@ -1205,7 +1216,6 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)showStoryForEvent:(WGEvent*)event {
-    
     EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
     eventStoryController.placesDelegate = self;
     eventStoryController.event = event;
