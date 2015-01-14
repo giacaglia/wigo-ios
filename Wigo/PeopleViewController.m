@@ -583,15 +583,8 @@ NSMutableArray *suggestedArrayView;
         return cell;
     }
     
-    // UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedView:)];
-    UIView *clickableView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 15 - 79, PEOPLEVIEW_HEIGHT_OF_CELLS - 5)];
     
-    // if (![user isCurrentUser]) [clickableView addGestureRecognizer:tap];
-    clickableView.userInteractionEnabled = YES;
-    clickableView.tag = tag;
-    [cell.contentView addSubview:clickableView];
-    
-    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
+    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, self.view.frame.size.width - 15 - 79 - 15, 60)];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
@@ -614,7 +607,7 @@ NSMutableArray *suggestedArrayView;
     labelName.text = [user fullName];
     labelName.textAlignment = NSTextAlignmentLeft;
     labelName.userInteractionEnabled = YES;
-    [clickableView addSubview:labelName];
+    [cell.contentView addSubview:labelName];
     
     UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
     goingOutLabel.font =  [FontProperties mediumFont:15.0f];
@@ -623,7 +616,7 @@ NSMutableArray *suggestedArrayView;
         goingOutLabel.text = @"Going Out";
         goingOutLabel.textColor = [FontProperties getOrangeColor];
     }
-    [clickableView addSubview:goingOutLabel];
+    [cell.contentView addSubview:goingOutLabel];
     
     if ([self.currentTab isEqualToNumber:@2]) {
         UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140 - 15, PEOPLEVIEW_HEIGHT_OF_CELLS - 15, 140, 12)];
