@@ -101,7 +101,16 @@ NSDate *firstLoggedTime;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"goToChat" object:nil];
     }
     if ([self doesUserInfo:userInfo hasString:@"T"]) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"goToProfile" object:nil userInfo:[userInfo objectForKey:@"event"]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"goToProfile" object:nil userInfo:[userInfo objectForKey:@"event"]];
+    }
+    if ([[userInfo allKeys] containsObject:@"navigate"]) {
+        NSString *place = [userInfo objectForKey:@"navigate"];
+        NSArray *parsedString = [place componentsSeparatedByString:@"/"];
+        NSLog(@"parsed string: %@", parsedString);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"goToEvent"
+                                                            object:nil
+                                                          userInfo:@{@"id": [parsedString objectAtIndex:1]}];
+
     }
 }
 
