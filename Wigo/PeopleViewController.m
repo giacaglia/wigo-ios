@@ -183,12 +183,13 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (void) goBack {
-    [[WGProfile currentUser] setLastNotificationReadToLatest:^(BOOL success, NSError *error) {
+    [[WGProfile currentUser] setLastUserReadToLatest:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
         }
-        [self.navigationController popViewControllerAnimated:YES];
     }];
+    [self.navigationController popViewControllerAnimated:YES];
+
 }
 
 - (void)initializeTapHandler {
