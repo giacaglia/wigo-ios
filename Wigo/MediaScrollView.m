@@ -244,7 +244,10 @@
 - (void)removeMediaAtPage:(int)page {
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
     [eventMessage remove:^(BOOL success, NSError *error) {
-        // Do nothing!
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionDelete retryHandler:nil];
+            nil;
+        }
     }];
  }
 

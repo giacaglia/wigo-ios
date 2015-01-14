@@ -1307,6 +1307,12 @@ int firstIndexOfNegativeEvent;
                     __strong typeof(self) strongSelf = weakSelf;
                     [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     
+                    if (error) {
+                        fetchingEventAttendees = NO;
+                        shouldReloadEvents = YES;
+                        return;
+                    }
+                    
                     strongSelf.pastDays = [[NSMutableArray alloc] init];
                     strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
                     strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
@@ -1336,6 +1342,7 @@ int firstIndexOfNegativeEvent;
                     [eventPageArray removeAllObjects];
                     [strongSelf fetchedOneParty];
                     fetchingEventAttendees = NO;
+                    shouldReloadEvents = YES;
                 }];
             }
         } else if (self.groupNumberID) {
@@ -1344,8 +1351,8 @@ int firstIndexOfNegativeEvent;
                 [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
 
                 if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     fetchingEventAttendees = NO;
+                    shouldReloadEvents = YES;
                     return;
                 }
                 strongSelf.allEvents = collection;
@@ -1384,7 +1391,7 @@ int firstIndexOfNegativeEvent;
                 __strong typeof(self) strongSelf = weakSelf;
                 [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                 if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    // [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     fetchingEventAttendees = NO;
                     return;
                 }

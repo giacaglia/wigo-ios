@@ -86,6 +86,16 @@
     [super viewDidDisappear: animated];
 }
 
+#pragma mark - Refresh Control
+
+- (void)addRefreshToScrollView {
+    [WiGoSpinnerView addDancingGToUIScrollView:self.facesCollectionView
+                                   withHandler:^{
+                                       self.eventMessages = nil;
+                                       [self fetchEventMessages];
+                                   }];
+}
+
 #pragma mark - Loading Messages
 
 - (void)loadEventDetails {
@@ -169,30 +179,41 @@
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
     [WGAnalytics tagEvent:@"Go Here" withDetails:options];
     
-    // [WGProfile currentUser].isAttending = [WGEvent serialize:nil];
-    [WGProfile currentUser].isGoingOut = @YES;
     [[WGProfile currentUser] goingToEvent:self.event withHandler:^(BOOL success, NSError *error) {
         if (error) {
+            [self.event.attendees removeObjectAtIndex:0];
+            self.event.numAttending = @([self.event.numAttending intValue] - 1);
+            self.eventPeopleScrollView.event = self.event;
+            [self.eventPeopleScrollView updateUI];
+            
+            self.goHereButton.hidden = NO;
+            self.goHereButton.enabled = YES;
+            self.inviteButton.hidden = YES;
+            self.inviteButton.enabled = NO;
+            self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numAttending stringValue]];
+            
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             return;
         }
-        
-        WGEventAttendee *newAttendee = [[WGEventAttendee alloc] init];
-        newAttendee.user = [WGProfile currentUser];
-        [self.event.attendees insertObject:newAttendee atIndex:0];
-        self.event.numAttending = @([self.event.numAttending intValue] + 1);
-        
-        // Update UI
-        self.eventPeopleScrollView.event = self.event;
-        [self.eventPeopleScrollView updateUI];
-        self.goHereButton.hidden = YES;
-        self.goHereButton.enabled = NO;
-        self.inviteButton.hidden = NO;
-        self.inviteButton.enabled = YES;
-        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numAttending stringValue]];
-        
-        [self presentFirstTimeGoingToEvent];
     }];
+    
+    [WGProfile currentUser].eventAttending = self.event;
+    [WGProfile currentUser].isGoingOut = @YES;
+    WGEventAttendee *newAttendee = [[WGEventAttendee alloc] init];
+    newAttendee.user = [WGProfile currentUser];
+    [self.event.attendees insertObject:newAttendee atIndex:0];
+    self.event.numAttending = @([self.event.numAttending intValue] + 1);
+    
+    // Update UI
+    self.eventPeopleScrollView.event = self.event;
+    [self.eventPeopleScrollView updateUI];
+    self.goHereButton.hidden = YES;
+    self.goHereButton.enabled = NO;
+    self.inviteButton.hidden = NO;
+    self.inviteButton.enabled = YES;
+    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numAttending stringValue]];
+    
+    [self presentFirstTimeGoingToEvent];
 }
 
 - (void)presentFirstTimeGoingToEvent {
@@ -267,6 +288,19 @@
     
     [self.backgroundScrollview addSubview: self.facesCollectionView];
     [self.backgroundScrollview sendSubviewToBack:self.facesCollectionView];
+    
+    CGRect frame = self.facesCollectionView.bounds;
+    frame.origin.y = -frame.size.height;
+    UIView* whiteView = [[UIView alloc] initWithFrame:frame];
+    whiteView.backgroundColor = UIColor.whiteColor;
+    [self.facesCollectionView addSubview:whiteView];
+    
+    self.facesCollectionView.showsVerticalScrollIndicator = NO;
+    self.facesCollectionView.scrollEnabled = YES;
+    self.facesCollectionView.alwaysBounceVertical = YES;
+    self.facesCollectionView.bounces = YES;
+    
+    [self addRefreshToScrollView];
 }
 
 
@@ -494,6 +528,7 @@
             [self.event getMessages:^(WGCollection *collection, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 strongSelf.cancelFetchMessages = NO;
+                [strongSelf.facesCollectionView didFinishPullToRefresh];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
@@ -505,12 +540,16 @@
             [self.eventMessages addNextPage:^(BOOL success, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 strongSelf.cancelFetchMessages = NO;
+                [strongSelf.facesCollectionView didFinishPullToRefresh];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
                 [strongSelf.facesCollectionView reloadData];
             }];
+        } else {
+            self.cancelFetchMessages = NO;
+            [self.facesCollectionView didFinishPullToRefresh];
         }
     }
 }
@@ -570,19 +609,21 @@
 #pragma mark - UIScrollViewDelegate 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
     if (scrollView != self.facesCollectionView) {
         return;
     }
     
     self.lineViewAtTop.hidden = NO;
     
+    if (self.facesCollectionView.contentOffset.y < 0 && self.backgroundScrollview.contentOffset.y == 0) {
+        return;
+    }
+    
     CGFloat stickHeight = self.eventPeopleScrollView.frame.size.height + self.eventPeopleScrollView.frame.origin.y;
 
     if (self.backgroundScrollview.contentOffset.y >= stickHeight && self.facesCollectionView.contentOffset.y > 0) {
         self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, stickHeight);
-    }
-    else if (self.backgroundScrollview.contentOffset.y < 0 && scrollView == self.facesCollectionView) {
+    } else if (self.backgroundScrollview.contentOffset.y < 0 && scrollView == self.facesCollectionView) {
         self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
     } else {
         
@@ -591,7 +632,6 @@
         currentContentOffset = scrollView.contentOffset;
         self.facesCollectionView.contentOffset = CGPointMake(0, 0);
     }
-    
 }
 
 

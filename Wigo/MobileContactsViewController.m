@@ -79,16 +79,17 @@ NSMutableArray *chosenPeople;
 }
 
 - (void)getContactAccess {
-   [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
-       if ([mobileArray count] > 0) {
-           peopleContactList = [NSMutableArray arrayWithArray:mobileArray];
-           [contactsTableView reloadData];
-       }
-       else {
-           [WGAnalytics tagEvent:@"Decline Apple Contacts"];
-           [self dismissViewControllerAnimated:NO completion:nil];
-       }
-   }];
+    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
+        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        if ([mobileArray count] > 0) {
+            peopleContactList = [NSMutableArray arrayWithArray:mobileArray];
+            [contactsTableView reloadData];
+        } else {
+            [WGAnalytics tagEvent:@"Decline Apple Contacts"];
+            [self dismissViewControllerAnimated:NO completion:nil];
+        }
+    }];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

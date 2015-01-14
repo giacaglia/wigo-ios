@@ -24,7 +24,7 @@
 @property (nonatomic, assign) CGPoint collectionViewPointNow;
 @property (nonatomic, assign) CGPoint imagesScrollViewPointNow;
 @property (nonatomic, assign) BOOL facesHidden;
-@property (nonatomic, strong) UIButton * buttonCancel;
+@property (nonatomic, strong) UIButton *buttonCancel;
 @property (nonatomic, strong) UIButton *buttonTrash;
 @end
 
@@ -452,20 +452,35 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-
-// Needs to load faster.
 - (void)trashPressed:(id)sender {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
-    // NEeds to be sequential.
+    
     if (page < self.eventMessages.count && page >= 0) {
         [WGAnalytics tagEvent: @"Delete Highlight Tapped"];
         
-        [self.mediaScrollView removeMediaAtPage:(int)page];
-        [self.eventMessages removeObjectAtIndex:page];
-        [self.facesCollectionView reloadData];
-        self.mediaScrollView.eventMessages = self.eventMessages;
-        [self.mediaScrollView reloadData];
-        [self hideOrShowFacesForPage:(int)page];
+        WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+        [eventMessage remove:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionDelete retryHandler:nil];
+                return;
+            }
+            [self.eventMessages removeObject:eventMessage];
+            [self.mediaScrollView.eventMessages removeObject:eventMessage];
+            
+            if (self.eventMessages.count == 0) {
+                if ([self.event.isExpired boolValue]) {
+                    [self.mediaScrollView closeView];
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                } else {
+                    [self.facesCollectionView reloadData];
+                    [self.mediaScrollView reloadData];
+                }
+            } else {
+                // [self hideOrShowFacesForPage:(int)page];
+                [self.facesCollectionView reloadData];
+                [self.mediaScrollView reloadData];
+            }
+        }];
     }
 }
 
