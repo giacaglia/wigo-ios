@@ -12,7 +12,7 @@
 #import "UIButtonAligned.h"
 
 
-@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate >
+@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate>
 
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) NSString *groupName;

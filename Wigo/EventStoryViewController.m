@@ -86,6 +86,16 @@
     [super viewDidDisappear: animated];
 }
 
+#pragma mark - Refresh Control
+
+- (void)addRefreshToScrollView {
+    [WiGoSpinnerView addDancingGToUIScrollView:self.facesCollectionView
+                                   withHandler:^{
+                                       self.eventMessages = nil;
+                                       [self fetchEventMessages];
+                                   }];
+}
+
 #pragma mark - Loading Messages
 
 - (void)loadEventDetails {
@@ -267,6 +277,19 @@
     
     [self.backgroundScrollview addSubview: self.facesCollectionView];
     [self.backgroundScrollview sendSubviewToBack:self.facesCollectionView];
+    
+    CGRect frame = self.facesCollectionView.bounds;
+    frame.origin.y = -frame.size.height;
+    UIView* whiteView = [[UIView alloc] initWithFrame:frame];
+    whiteView.backgroundColor = UIColor.whiteColor;
+    [self.facesCollectionView addSubview:whiteView];
+    
+    self.facesCollectionView.showsVerticalScrollIndicator = NO;
+    self.facesCollectionView.scrollEnabled = YES;
+    self.facesCollectionView.alwaysBounceVertical = YES;
+    self.facesCollectionView.bounces = YES;
+    
+    [self addRefreshToScrollView];
 }
 
 
@@ -494,6 +517,7 @@
             [self.event getMessages:^(WGCollection *collection, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 strongSelf.cancelFetchMessages = NO;
+                [strongSelf.facesCollectionView didFinishPullToRefresh];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
@@ -505,12 +529,16 @@
             [self.eventMessages addNextPage:^(BOOL success, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 strongSelf.cancelFetchMessages = NO;
+                [strongSelf.facesCollectionView didFinishPullToRefresh];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
                 [strongSelf.facesCollectionView reloadData];
             }];
+        } else {
+            self.cancelFetchMessages = NO;
+            [self.facesCollectionView didFinishPullToRefresh];
         }
     }
 }
@@ -570,7 +598,7 @@
 #pragma mark - UIScrollViewDelegate 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
+    /*
     if (scrollView != self.facesCollectionView) {
         return;
     }
@@ -591,7 +619,7 @@
         currentContentOffset = scrollView.contentOffset;
         self.facesCollectionView.contentOffset = CGPointMake(0, 0);
     }
-    
+    */
 }
 
 
