@@ -107,9 +107,12 @@ NSDate *firstLoggedTime;
         NSString *place = [userInfo objectForKey:@"navigate"];
         NSArray *parsedString = [place componentsSeparatedByString:@"/"];
         NSLog(@"parsed string: %@", parsedString);
+        NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
+        [f setNumberStyle:NSNumberFormatterDecimalStyle];
+        NSNumber * numberID = [f numberFromString:[parsedString objectAtIndex:2]];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"goToEvent"
                                                             object:nil
-                                                          userInfo:@{@"id": [parsedString objectAtIndex:1]}];
+                                                          userInfo:@{@"id": numberID}];
 
     }
 }
