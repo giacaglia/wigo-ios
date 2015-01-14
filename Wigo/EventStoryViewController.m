@@ -29,6 +29,7 @@
 
 @property (nonatomic, strong) UIScrollView *backgroundScrollview;
 @property (nonatomic, strong) UIView *lineViewAtTop;
+@property (nonatomic, assign) BOOL movingForward;
 @end
 
 
@@ -79,7 +80,10 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
-    [self.navigationController setNavigationBarHidden: NO animated: NO];
+    if (!_movingForward) {
+        [self.navigationController setNavigationBarHidden: NO animated: NO];
+    }
+    _movingForward = NO;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -237,7 +241,7 @@
         
         BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
         self.conversationViewController.isPeeking = isPeeking;
-        
+        _movingForward = YES;
         [self presentViewController:self.conversationViewController animated:YES completion:nil];
     }
 }
@@ -500,6 +504,7 @@
     BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
     self.conversationViewController.isPeeking = isPeeking;
 
+    _movingForward = YES;
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
 }
 
@@ -577,6 +582,7 @@
     self.conversationViewController.isPeeking = isPeeking;
 
     self.conversationViewController.storyDelegate = self;
+    _movingForward = YES;
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
 }
 
