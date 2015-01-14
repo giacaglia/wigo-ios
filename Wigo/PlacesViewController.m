@@ -142,6 +142,8 @@ int firstIndexOfNegativeEvent;
     self.visitedProfile = NO;
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    [self fetchEventsFirstPage];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

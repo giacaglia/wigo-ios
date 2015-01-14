@@ -179,30 +179,30 @@
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
     [WGAnalytics tagEvent:@"Go Here" withDetails:options];
     
-    // [WGProfile currentUser].isAttending = [WGEvent serialize:nil];
-    [WGProfile currentUser].isGoingOut = @YES;
     [[WGProfile currentUser] goingToEvent:self.event withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             return;
         }
-        
-        WGEventAttendee *newAttendee = [[WGEventAttendee alloc] init];
-        newAttendee.user = [WGProfile currentUser];
-        [self.event.attendees insertObject:newAttendee atIndex:0];
-        self.event.numAttending = @([self.event.numAttending intValue] + 1);
-        
-        // Update UI
-        self.eventPeopleScrollView.event = self.event;
-        [self.eventPeopleScrollView updateUI];
-        self.goHereButton.hidden = YES;
-        self.goHereButton.enabled = NO;
-        self.inviteButton.hidden = NO;
-        self.inviteButton.enabled = YES;
-        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numAttending stringValue]];
-        
-        [self presentFirstTimeGoingToEvent];
     }];
+    
+    [WGProfile currentUser].eventAttending = self.event;
+    [WGProfile currentUser].isGoingOut = @YES;
+    WGEventAttendee *newAttendee = [[WGEventAttendee alloc] init];
+    newAttendee.user = [WGProfile currentUser];
+    [self.event.attendees insertObject:newAttendee atIndex:0];
+    self.event.numAttending = @([self.event.numAttending intValue] + 1);
+    
+    // Update UI
+    self.eventPeopleScrollView.event = self.event;
+    [self.eventPeopleScrollView updateUI];
+    self.goHereButton.hidden = YES;
+    self.goHereButton.enabled = NO;
+    self.inviteButton.hidden = NO;
+    self.inviteButton.enabled = YES;
+    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numAttending stringValue]];
+    
+    [self presentFirstTimeGoingToEvent];
 }
 
 - (void)presentFirstTimeGoingToEvent {
@@ -598,7 +598,6 @@
 #pragma mark - UIScrollViewDelegate 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    /*
     if (scrollView != self.facesCollectionView) {
         return;
     }
@@ -619,7 +618,6 @@
         currentContentOffset = scrollView.contentOffset;
         self.facesCollectionView.contentOffset = CGPointMake(0, 0);
     }
-    */
 }
 
 
