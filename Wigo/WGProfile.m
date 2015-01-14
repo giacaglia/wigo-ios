@@ -31,6 +31,7 @@
 #define kAccessToken @"accessToken"
 #define kFacebookIdKey @"facebook_id"
 #define kLastNotificationReadKey @"last_notification_read"
+#define kLastUserReadKey @"last_user_read"
 
 #define kDefaultCDNPrefix @"wigo-uploads.s3.amazonaws.com"
 
@@ -379,5 +380,12 @@ static WGProfile *currentUser = nil;
         handler(success, error);
     }];
 }
+
+-(void) setLastUserReadToLatest:(BoolResultBlock)handler {
+    [self saveKey:kLastUserReadKey withValue:@"latest" andHandler:^(BOOL success, NSError *error) {
+        handler(success, error);
+    }];
+}
+
 
 @end

@@ -29,6 +29,7 @@
 -(void) signup:(BoolResultBlock)handler;
 +(void) reload:(BoolResultBlock)handler;
 -(void) setLastNotificationReadToLatest:(BoolResultBlock)handler;
+-(void) setLastUserReadToLatest:(BoolResultBlock)handler;
 
 -(void) addChosenPerson:(WGUser *)person;
 -(void) addChosenPeople:(WGCollection *)people;

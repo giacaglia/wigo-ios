@@ -17,6 +17,7 @@
 #import "EventMessagesConstants.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
+#define newSizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/4
 @interface EventConversationViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, MediaScrollViewDelegate>
 @property (nonatomic, strong) UIImage *userProfileImage;
 @property (nonatomic, strong) NSIndexPath *currentActiveCell;
@@ -599,7 +600,7 @@
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, sizeOfEachFaceCell, sizeOfEachFaceCell);
+    self.frame = CGRectMake(0, 0, newSizeOfEachFaceCell, newSizeOfEachFaceCell);
     
     self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.center.x + 0.3*sizeOfEachFaceCell, self.center.y, self.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.rightLine.alpha = 0.5f;
@@ -762,7 +763,7 @@
 
 - (void)setup
 {
-    self.itemSize = CGSizeMake(sizeOfEachFaceCell, sizeOfEachFaceCell);
+    self.itemSize = CGSizeMake(newSizeOfEachFaceCell, newSizeOfEachFaceCell);
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     self.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     self.minimumInteritemSpacing = 0.0;
