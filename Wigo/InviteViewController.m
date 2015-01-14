@@ -399,6 +399,7 @@ heightForHeaderInSection:(NSInteger)section
         }];
         user.isTapped = @NO;
     } else {
+#warning Group these
         [[WGProfile currentUser] tapUser:user withHandler:^(BOOL success, NSError *error) {
             // Do nothing!
         }];

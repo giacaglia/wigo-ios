@@ -12,13 +12,14 @@
 
 @interface EventPeopleScrollView : UIScrollView <UIScrollViewDelegate>
 
-- (id)initWithEvent:(WGEvent*)event;
-- (void)updateUI;
-+ (CGFloat) containerHeight;
+-(id) initWithEvent:(WGEvent*)event;
+-(void) updateUI;
++(CGFloat) containerHeight;
+-(void) scrollToSavedPosition;
+-(void) saveScrollPosition;
 
 @property (nonatomic, assign) id <UserSelectDelegate> userSelectDelegate;
 @property (nonatomic, assign) id <PlacesDelegate> placesDelegate;
-@property (nonatomic, strong) WGCollection *attendees;
 @property (nonatomic, strong) NSNumber *groupID;
 @property (nonatomic, assign) int eventOffset;
 @property (nonatomic, assign) BOOL fetchingEventAttendees;

@@ -17,7 +17,6 @@
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) NSString *groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
-@property (nonatomic, assign) BOOL visitedProfile;
 
 @property (nonatomic, assign) BOOL fetchingIsThereNewPerson;
 @property (nonatomic, strong) UILabel *leftRedDotLabel;

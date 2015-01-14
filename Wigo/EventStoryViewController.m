@@ -475,6 +475,7 @@
 #pragma mark - Button handler
 
 - (void)goBack {
+    [self.eventPeopleScrollView saveScrollPosition];
     [self.navigationController popViewControllerAnimated: YES];
 }
 

@@ -23,7 +23,7 @@
 - (void)showStoryForEvent:(WGEvent*)event;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
-@property (nonatomic, assign) BOOL visitedProfile;
+
 - (void)updateEvent:(WGEvent *)newEvent;
 @end
 

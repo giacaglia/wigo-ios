@@ -132,14 +132,11 @@ int firstIndexOfNegativeEvent;
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
 
     [self initializeNavigationBar];
+    [_placesTableView reloadData];
 
     if ([WGProfile currentUser].key) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
     }
-    if (!self.visitedProfile) {
-        self.eventOffsetDictionary = [NSMutableDictionary new];
-    }
-    self.visitedProfile = NO;
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
@@ -931,10 +928,11 @@ int firstIndexOfNegativeEvent;
             cell.eventPeopleScrollView.groupID = nil;
         }
         cell.eventPeopleScrollView.placesDelegate = self;
-        if ([[self.eventOffsetDictionary allKeys] containsObject:[event.id stringValue]] && self.visitedProfile) {
-            cell.eventPeopleScrollView.contentOffset = CGPointMake([(NSNumber *)[self.eventOffsetDictionary objectForKey:[event.id stringValue]] intValue], 0);
-        }
+        /* if ([self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
+            cell.eventPeopleScrollView.contentOffset = CGPointMake([[self.eventOffsetDictionary objectForKey:[event.id stringValue]] intValue], 0);
+        } */
         [cell updateUI];
+        
         if (![event.isRead boolValue] &&
             [event.numMessages intValue] > 0) {
             cell.chatBubbleImageView.hidden = NO;
@@ -982,7 +980,7 @@ int firstIndexOfNegativeEvent;
     return nil;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     
 
     // Remove seperator inset
@@ -1169,7 +1167,6 @@ int firstIndexOfNegativeEvent;
     if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
         fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
     }
-    self.visitedProfile = YES;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 
 }
@@ -1205,10 +1202,10 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)showStoryForEvent:(WGEvent*)event {
-    
     EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
     eventStoryController.placesDelegate = self;
     eventStoryController.event = event;
+    
     if (self.groupNumberID) eventStoryController.groupNumberID = self.groupNumberID;
     [self.navigationController pushViewController:eventStoryController animated:YES];
 }
@@ -1343,6 +1340,8 @@ int firstIndexOfNegativeEvent;
                     [strongSelf fetchedOneParty];
                     fetchingEventAttendees = NO;
                     shouldReloadEvents = YES;
+                    
+                    [_placesTableView reloadData];
                 }];
             }
         } else if (self.groupNumberID) {
@@ -1385,6 +1384,8 @@ int firstIndexOfNegativeEvent;
                 [eventPageArray removeAllObjects];
                 [strongSelf fetchedOneParty];
                 fetchingEventAttendees = NO;
+                
+                [_placesTableView reloadData];
             }];
         } else {
             [WGEvent get:^(WGCollection *collection, NSError *error) {
@@ -1425,6 +1426,8 @@ int firstIndexOfNegativeEvent;
                 [eventPageArray removeAllObjects];
                 [strongSelf fetchedOneParty];
                 fetchingEventAttendees = NO;
+                
+                [_placesTableView reloadData];
             }];
         }
     }
@@ -1587,8 +1590,8 @@ int firstIndexOfNegativeEvent;
     
 }
 
-
 - (void)showEventConversation {
+    [self.eventPeopleScrollView saveScrollPosition];
     [self.placesDelegate showStoryForEvent:self.event];
 }
 
