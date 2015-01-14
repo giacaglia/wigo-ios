@@ -307,11 +307,20 @@ int firstIndexOfNegativeEvent;
                                                  name:@"loadViewAfterSigningUser"
                                                object:nil];
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(goToChat)
-//                                                 name:@"goToChat"
-//                                               object:nil];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(goToChat)
+                                                 name:@"goToChat"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(goToProfile)
+                                                 name:@"goToProfile"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(goToEvent:)
+                                                 name:@"goToEvent"
+                                               object:nil];
 }
 
 - (void)loadViewAfterSigningUser {
@@ -321,15 +330,46 @@ int firstIndexOfNegativeEvent;
 
 
 - (void)goToChat {
-    NSLog(@"bhfabefbh");
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-    [fancyProfileViewController setStateWithUser:[WGProfile currentUser]];
+    [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
-    [self.navigationController pushViewController: fancyProfileViewController animated:NO];
-    
+    [self.navigationController pushViewController: fancyProfileViewController animated: NO];
+
     ChatViewController *chatViewController = [ChatViewController new];
     chatViewController.view.backgroundColor = UIColor.whiteColor;
-    [self.navigationController pushViewController:chatViewController animated:YES];
+    [fancyProfileViewController.navigationController pushViewController:chatViewController animated:YES];
+}
+
+- (void)goToProfile {
+    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
+    fancyProfileViewController.events = self.events;
+    [self.navigationController pushViewController: fancyProfileViewController animated: NO];
+}
+
+- (void)goToEvent:(NSNotification *)notification {
+    NSDictionary *eventInfo = notification.userInfo;
+    NSLog(@"event info: %@", eventInfo);
+    WGEvent *newEvent = [[WGEvent alloc] initWithJSON:eventInfo];
+    if ([self.events containsObject:newEvent]) {
+        WGEvent *presentEvent = (WGEvent *)[self.events objectAtIndex:[self.events indexOfObject:newEvent]];
+        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+        eventStoryViewController.event = presentEvent;
+        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+        [self.navigationController pushViewController: eventStoryViewController animated:YES];
+    }
+    else {
+        [newEvent refresh:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
+            EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+            eventStoryViewController.event = newEvent;
+            eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+            [self.navigationController pushViewController: eventStoryViewController animated:YES];
+        }];
+    }
 }
 
 - (void)scrollUp {

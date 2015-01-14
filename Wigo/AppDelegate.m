@@ -79,6 +79,7 @@ NSDate *firstLoggedTime;
 }
 
 - (void) dismissEverythingWithUserInfo:(NSDictionary *)userInfo {
+//    NSLog(@"dismiss Everything");
     UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
     UIViewController *presentedController = [navController presentedViewController];
     UIViewController *visibleController = [navController topViewController];
@@ -90,16 +91,28 @@ NSDate *firstLoggedTime;
             [navController popViewControllerAnimated:NO];
             [self dismissEverythingWithUserInfo:userInfo];
         }
-        NSLog(@"here");
     } else {
         [self doneWithUserInfo:userInfo];
     }
 }
 
 - (void) doneWithUserInfo:(NSDictionary *)userInfo {
-    NSLog(@"111");
     if ([self doesUserInfo:userInfo hasString:@"M"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"goToChat" object:nil];
+    }
+    if ([self doesUserInfo:userInfo hasString:@"T"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"goToProfile" object:nil userInfo:[userInfo objectForKey:@"event"]];
+    }
+    if ([[userInfo allKeys] containsObject:@"navigate"]) {
+        NSString *place = [userInfo objectForKey:@"navigate"];
+        NSArray *parsedString = [place componentsSeparatedByString:@"/"];
+        NSLog(@"parsed string: %@", parsedString);
+        NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
+        [f setNumberStyle:NSNumberFormatterDecimalStyle];
+        NSNumber * numberID = [f numberFromString:[parsedString objectAtIndex:2]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"goToEvent"
+                                                            object:nil
+                                                          userInfo:@{@"id": numberID}];
 
     }
 }
@@ -150,8 +163,10 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//    [self dismissEverythingWithUserInfo:userInfo];
-  
+    if (application.applicationState == UIApplicationStateInactive) {
+        [self dismissEverythingWithUserInfo:userInfo];
+    }
+
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
