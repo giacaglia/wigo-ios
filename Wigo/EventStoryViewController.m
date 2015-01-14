@@ -181,6 +181,17 @@
     
     [[WGProfile currentUser] goingToEvent:self.event withHandler:^(BOOL success, NSError *error) {
         if (error) {
+            [self.event.attendees removeObjectAtIndex:0];
+            self.event.numAttending = @([self.event.numAttending intValue] - 1);
+            self.eventPeopleScrollView.event = self.event;
+            [self.eventPeopleScrollView updateUI];
+            
+            self.goHereButton.hidden = NO;
+            self.goHereButton.enabled = YES;
+            self.inviteButton.hidden = YES;
+            self.inviteButton.enabled = NO;
+            self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numAttending stringValue]];
+            
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             return;
         }
@@ -604,12 +615,15 @@
     
     self.lineViewAtTop.hidden = NO;
     
+    if (self.facesCollectionView.contentOffset.y < 0 && self.backgroundScrollview.contentOffset.y == 0) {
+        return;
+    }
+    
     CGFloat stickHeight = self.eventPeopleScrollView.frame.size.height + self.eventPeopleScrollView.frame.origin.y;
 
     if (self.backgroundScrollview.contentOffset.y >= stickHeight && self.facesCollectionView.contentOffset.y > 0) {
         self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, stickHeight);
-    }
-    else if (self.backgroundScrollview.contentOffset.y < 0 && scrollView == self.facesCollectionView) {
+    } else if (self.backgroundScrollview.contentOffset.y < 0 && scrollView == self.facesCollectionView) {
         self.backgroundScrollview.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
     } else {
         
