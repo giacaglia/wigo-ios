@@ -1344,7 +1344,7 @@ int firstIndexOfNegativeEvent;
                 [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
 
                 if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    // [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     fetchingEventAttendees = NO;
                     return;
                 }
@@ -1384,7 +1384,7 @@ int firstIndexOfNegativeEvent;
                 __strong typeof(self) strongSelf = weakSelf;
                 [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
                 if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    // [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     fetchingEventAttendees = NO;
                     return;
                 }
