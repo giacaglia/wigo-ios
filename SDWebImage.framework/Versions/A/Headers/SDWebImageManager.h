@@ -72,6 +72,8 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageOptions) {
 };
 
 typedef void(^SDWebImageCompletedBlock)(UIImage *image, NSError *error, SDImageCacheType cacheType);
+typedef void(^SDWebImageCompletedBlockWithDictionary)(UIImage *image, NSError *error, SDImageCacheType cacheType, NSDictionary *outputDictionary);
+
 
 typedef void(^SDWebImageCompletedWithFinishedBlock)(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished);
 

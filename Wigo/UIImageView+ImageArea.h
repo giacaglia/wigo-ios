@@ -17,6 +17,13 @@
 - (void)setImageWithURL:(NSURL *)url imageArea:(NSDictionary *)area;
 - (void)setImageWithURL:(NSURL *)url imageArea:(NSDictionary*)area completed:(SDWebImageCompletedBlock)completedBlock;
 - (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder imageArea:(NSDictionary *)area;
+
+- (void)setImageWithURL:(NSURL *)url
+              imageArea:(NSDictionary *)area
+               withInfo:(NSDictionary *)info
+       outputDictionary:(NSDictionary *)outputDict
+completedWithDictionary:(SDWebImageCompletedBlockWithDictionary)completedDictionary;
+
 - (void)setImageWithURL:(NSURL *)url
               imageArea:(NSDictionary *)area
                withInfo:(NSDictionary *)info

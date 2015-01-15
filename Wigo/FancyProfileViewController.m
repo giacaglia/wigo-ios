@@ -218,7 +218,6 @@ UIButton *tapButton;
 
 - (void)pageChangedTo:(NSInteger)page {
     _pageControl.currentPage = page;
-    
     if (_blurredImages && page < _blurredImages.count) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [_nameViewBackground setImage: [_blurredImages objectAtIndex: page]];
