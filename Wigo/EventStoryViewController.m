@@ -171,6 +171,7 @@
 
 - (void)invitePressed {
     [WGAnalytics tagEvent: @"Event Story Invite Tapped"];
+    _movingForward = YES;
     [self presentViewController:[[InviteViewController alloc] initWithEvent:self.event]
                        animated:YES
                      completion:nil];

@@ -1054,6 +1054,7 @@ NSMutableArray *suggestedArrayView;
 
 
 - (void)searchTableList {
+    NSLog(@"here");
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     if ([self.currentTab isEqualToNumber:@2]) {
