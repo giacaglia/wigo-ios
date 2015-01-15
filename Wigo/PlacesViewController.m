@@ -1341,8 +1341,7 @@ int firstIndexOfNegativeEvent;
         if (_allEvents) {
             if ([_allEvents.hasNextPage boolValue]) {
                 [_allEvents addNextPage:^(BOOL success, NSError *error) {
-                    __strong typeof(self) strongSelf = weakSelf;
-                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    [WiGoSpinnerView removeDancingGFromCenterView:weakSelf.view];
                     
                     if (error) {
                         fetchingEventAttendees = NO;
@@ -1350,124 +1349,122 @@ int firstIndexOfNegativeEvent;
                         return;
                     }
                     
-                    strongSelf.pastDays = [[NSMutableArray alloc] init];
-                    strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
-                    strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    weakSelf.pastDays = [[NSMutableArray alloc] init];
+                    weakSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+                    weakSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    weakSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    weakSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                     
-                    for (WGEvent *event in strongSelf.allEvents) {
+                    for (WGEvent *event in weakSelf.allEvents) {
                         if ([event.isExpired boolValue]) {
-                            [strongSelf.oldEvents addObject:event];
+                            [weakSelf.oldEvents addObject:event];
                         } else {
-                            [strongSelf.events addObject:event];
+                            [weakSelf.events addObject:event];
                         }
                     }
                     
-                    for (WGEvent *event in strongSelf.oldEvents) {
+                    for (WGEvent *event in weakSelf.oldEvents) {
                         if (![event highlight]) {
                             continue;
                         }
                         NSString *eventDate = [[event expires] deserialize];
-                        if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                            [strongSelf.pastDays addObject: eventDate];
-                            [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                        if ([weakSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                            [weakSelf.pastDays addObject: eventDate];
+                            [weakSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
                         }
-                        [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                        [[weakSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                     }
                     
                     [eventPageArray removeAllObjects];
-                    [strongSelf fetchedOneParty];
+                    [weakSelf fetchedOneParty];
                     fetchingEventAttendees = NO;
                     shouldReloadEvents = YES;
                     
-                    [_placesTableView reloadData];
+                    [weakSelf.placesTableView reloadData];
                 }];
             }
         } else if (self.groupNumberID) {
             [WGEvent getWithGroupNumber:self.groupNumberID andHandler:^(WGCollection *collection, NSError *error) {
-                __strong typeof(self) strongSelf = weakSelf;
-                [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                [WiGoSpinnerView removeDancingGFromCenterView:weakSelf.view];
 
                 if (error) {
                     fetchingEventAttendees = NO;
                     shouldReloadEvents = YES;
                     return;
                 }
-                strongSelf.allEvents = collection;
-                strongSelf.pastDays = [[NSMutableArray alloc] init];
-                strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
-                strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
-                strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                weakSelf.allEvents = collection;
+                weakSelf.pastDays = [[NSMutableArray alloc] init];
+                weakSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+                weakSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+                weakSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                weakSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                 
-                for (WGEvent *event in strongSelf.allEvents) {
+                for (WGEvent *event in weakSelf.allEvents) {
                     if ([event.isExpired boolValue]) {
-                        [strongSelf.oldEvents addObject:event];
+                        [weakSelf.oldEvents addObject:event];
                     } else {
-                        [strongSelf.events addObject:event];
+                        [weakSelf.events addObject:event];
                     }
                 }
                 
-                for (WGEvent *event in strongSelf.oldEvents) {
+                for (WGEvent *event in weakSelf.oldEvents) {
                     if (![event highlight]) {
                         continue;
                     }
                     NSString *eventDate = [[event expires] deserialize];
-                    if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                        [strongSelf.pastDays addObject: eventDate];
-                        [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                    if ([weakSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                        [weakSelf.pastDays addObject: eventDate];
+                        [weakSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
                     }
-                    [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                    [[weakSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                 }
                 
                 [eventPageArray removeAllObjects];
-                [strongSelf fetchedOneParty];
+                [weakSelf fetchedOneParty];
                 fetchingEventAttendees = NO;
                 
-                [_placesTableView reloadData];
+                [weakSelf.placesTableView reloadData];
             }];
         } else {
             [WGEvent get:^(WGCollection *collection, NSError *error) {
-                __strong typeof(self) strongSelf = weakSelf;
-                [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                [WiGoSpinnerView removeDancingGFromCenterView:weakSelf.view];
                 if (error) {
                     // [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     fetchingEventAttendees = NO;
                     return;
                 }
-                strongSelf.allEvents = collection;
-                strongSelf.pastDays = [[NSMutableArray alloc] init];
-                strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
-                strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
-                strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                weakSelf.allEvents = collection;
+                weakSelf.pastDays = [[NSMutableArray alloc] init];
+                weakSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+                weakSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+                weakSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                weakSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                 
-                for (WGEvent *event in strongSelf.allEvents) {
+                for (WGEvent *event in weakSelf.allEvents) {
                     if ([event.isExpired boolValue]) {
-                        [strongSelf.oldEvents addObject:event];
+                        [weakSelf.oldEvents addObject:event];
                     } else {
-                        [strongSelf.events addObject:event];
+                        [weakSelf.events addObject:event];
                     }
                 }
                 
-                for (WGEvent *event in strongSelf.oldEvents) {
+                for (WGEvent *event in weakSelf.oldEvents) {
                     if (![event highlight]) {
                         continue;
                     }
                     NSString *eventDate = [[event expires] deserialize];
-                    if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                        [strongSelf.pastDays addObject: eventDate];
-                        [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                    if ([weakSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                        [weakSelf.pastDays addObject: eventDate];
+                        [weakSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
                     }
-                    [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                    [[weakSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                 }
                 
                 [eventPageArray removeAllObjects];
-                [strongSelf fetchedOneParty];
+                [weakSelf fetchedOneParty];
                 fetchingEventAttendees = NO;
                 
-                [_placesTableView reloadData];
+                [weakSelf.placesTableView reloadData];
             }];
         }
     }

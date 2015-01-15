@@ -63,7 +63,11 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [WGApi addWigoHeaders:manager.requestSerializer];
+    
+    // Hack for Ambassador View
+    BOOL shouldPassKey = [url containsString:@"key="];
+    
+    [WGApi addWigoHeaders:manager.requestSerializer passKey:shouldPassKey];
     
     [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSError *dataError;
@@ -104,7 +108,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [WGApi addWigoHeaders:manager.requestSerializer];
+    [WGApi addWigoHeaders:manager.requestSerializer passKey:NO];
     
     [manager DELETE:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSError *dataError;
@@ -156,7 +160,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [request addValue:contentLength forHTTPHeaderField:kContentLengthKey];
     [request setHTTPMethod:kPOST];
     
-    [WGApi addWigoHeaders:request];
+    [WGApi addWigoHeaders:request passKey:NO];
     
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -212,8 +216,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     return fullEndpoint;
 }
 
-+(void)addWigoHeaders:(id)serializer {
-    [serializer setValue:kWigoApiKey forHTTPHeaderField:kWigoApiKeyKey];
++(void)addWigoHeaders:(id)serializer passKey:(BOOL) shouldPassKey {
 #if ENTERPRISE
     [serializer setValue:kTrue forHTTPHeaderField:kWigoClientEnterpriseKey];
 #endif
@@ -222,7 +225,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [serializer setValue:kWigoApiVersion forHTTPHeaderField:kWigoApiVersionKey];
     [serializer setValue:kDeviceType forHTTPHeaderField:kWigoDeviceKey];
     [serializer setValue:kContentType forHTTPHeaderField:kContentTypeKey];
-    [serializer setValue:[WGProfile currentUser].key forHTTPHeaderField:kWigoUserKey];
+    if (!shouldPassKey) {
+        [serializer setValue:kWigoApiKey forHTTPHeaderField:kWigoApiKeyKey];
+        [serializer setValue:[WGProfile currentUser].key forHTTPHeaderField:kWigoUserKey];
+    }
 }
 
 #pragma mark AWS Uploader

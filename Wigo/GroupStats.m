@@ -8,7 +8,7 @@
 
 #import "GroupStats.h"
 
-#define kStatsApiUrl @"https://api.wigo.us/api/analytics/school/%@/school_page?key=q2up893ijea24joi"
+#define kStatsApiUrl @"analytics/school/%@/school_page"
 
 
 #define kEngagmentKey @"engagement"
@@ -28,8 +28,7 @@
 
 
 + (void)doGet:(ApiResultBlock)handler {
-    NSString *url = [NSString stringWithFormat: kStatsApiUrl, [WGProfile currentUser].group.id];
-    [WGApi get:url withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:[NSString stringWithFormat: kStatsApiUrl, [WGProfile currentUser].group.id] withArguments:@{ @"key" : @"q2up893ijea24joi" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(jsonResponse, error);
     }];
 }
