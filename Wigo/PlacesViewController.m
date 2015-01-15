@@ -1304,7 +1304,7 @@ int firstIndexOfNegativeEvent;
     
     CGRect viewFrame = self.view.frame;
     BOOL isContainedInView = CGRectContainsRect(viewFrame, comparisonFrame);
-    if (isContainedInView && self.goingSomewhereButton.hidden == NO && isLoaded) {
+    if ([self isPeeking] || (isContainedInView && self.goingSomewhereButton.hidden == NO && isLoaded)) {
         self.goingSomewhereButton.hidden = YES;
         self.goElsewhereView.plusButton.hidden = NO;
     }
