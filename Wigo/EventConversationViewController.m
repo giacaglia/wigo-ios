@@ -85,8 +85,9 @@
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
-
-    [myCell resetToInactive];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [myCell resetToInactive];
+    });
 
     myCell.faceImageView.layer.borderColor = UIColor.whiteColor.CGColor;
     
@@ -626,6 +627,7 @@
     self.faceImageView.backgroundColor = [UIColor blackColor];
     self.faceImageView.layer.borderWidth = 1.0;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
@@ -657,9 +659,9 @@
     self.timeLabel.numberOfLines = 0;
     self.timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.timeLabel.textAlignment = NSTextAlignmentCenter;
-    self.timeLabel.textColor = [UIColor whiteColor];
     self.timeLabel.font = [FontProperties lightFont:12];
-    self.timeLabel.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.timeLabel.textColor = UIColor.whiteColor;
+    self.timeLabel.layer.shadowColor = UIColor.blackColor.CGColor;
     self.timeLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
     self.timeLabel.layer.shadowOpacity = 0.5;
     self.timeLabel.layer.shadowRadius = 0.5;
@@ -690,10 +692,12 @@
 //            animation.toValue = [NSNumber numberWithFloat:0.22*(float)sizeOfEachFaceCell];
 //            animation.duration = 0.5;
 //            [self.faceImageView.layer addAnimation: animation forKey:@"cornerRadius"];
-
-             [UIView animateWithDuration:0.5 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
-                 [self setToActiveWithNoAnimation];
-             } completion:^(BOOL finished) {}];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration:0.5 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
+                    [self setToActiveWithNoAnimation];
+                } completion:^(BOOL finished) {}];
+            });
 
         } else {
 //            CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
@@ -703,45 +707,48 @@
 //            animation.duration = 0.5;
 //            [self.faceImageView.layer addAnimation: animation forKey:@"cornerRadius"];
             
-            [UIView animateWithDuration: 3 animations:^{
-                [self resetToInactive];
-            }];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView animateWithDuration: 0.5    animations:^{
+                    [self resetToInactive];
+                }];
+            });
+
         }
     _isActive = isActive;
 
 }
 
 - (void)setToActiveWithNoAnimation {
-    dispatch_async(dispatch_get_main_queue(), ^{
         self.faceAndMediaTypeView.alpha = 1.0f;
-        self.faceImageView.frame = CGRectMake(0, 0, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell);
-        self.faceImageView.center = self.contentView.center;
-        self.faceImageView.layer.cornerRadius = 0.3*sizeOfEachFaceCell;
+        
+    //    self.faceImageView.frame = CGRectMake(0, 0, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell);
+    //    self.faceImageView.center = self.contentView.center;
+    //    self.faceImageView.layer.cornerRadius = 0.3*sizeOfEachFaceCell;
+
+        self.faceImageView.transform = CGAffineTransformIdentity;
         
         self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
         self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
         
         self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
         self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
-
-    });
 }
 
 - (void) resetToInactive {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.faceAndMediaTypeView.alpha = 0.5f;
-        
-        self.faceImageView.frame = CGRectMake(0, 0, 0.45*sizeOfEachFaceCell, 0.45*sizeOfEachFaceCell);
-        self.faceImageView.center = self.contentView.center;
-        self.faceImageView.layer.cornerRadius = 0.22*sizeOfEachFaceCell;
-        
-        self.mediaTypeImageView.frame = CGRectMake(0.6*sizeOfEachFaceCell, 0.25*sizeOfEachFaceCell, sizeOfEachFaceCell/6.6, sizeOfEachFaceCell/6.6);
-        self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
-        
-        self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-        self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-    });
-   
+
+    self.faceAndMediaTypeView.alpha = 0.5f;
+    
+//    self.faceImageView.frame = CGRectMake(0, 0, 0.45*sizeOfEachFaceCell, 0.45*sizeOfEachFaceCell);
+//    self.faceImageView.center = self.contentView.center;
+//    self.faceImageView.layer.cornerRadius = 0.22*sizeOfEachFaceCell;
+    
+    self.faceImageView.transform = CGAffineTransformMakeScale(0.75, 0.75);
+
+    self.mediaTypeImageView.frame = CGRectMake(0.6*sizeOfEachFaceCell, 0.25*sizeOfEachFaceCell, sizeOfEachFaceCell/6.6, sizeOfEachFaceCell/6.6);
+    self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
+    
+    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
+    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
 }
 
 - (void)updateUIToRead:(BOOL)read {

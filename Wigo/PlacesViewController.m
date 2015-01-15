@@ -220,7 +220,7 @@ int firstIndexOfNegativeEvent;
             self.leftRedDotLabel.layer.cornerRadius = 8;
         }
         [profileButton addSubview:self.leftRedDotLabel];
-        if ([[WGProfile currentUser].numUnreadConversations intValue] > 0) {
+        if ([[WGProfile currentUser].numUnreadNotifications intValue] > 0) {
             self.leftRedDotLabel.hidden = NO;
         } else {
             self.leftRedDotLabel.hidden = YES;
@@ -1378,8 +1378,7 @@ int firstIndexOfNegativeEvent;
                     [eventPageArray removeAllObjects];
                     [weakSelf fetchedOneParty];
                     fetchingEventAttendees = NO;
-                    shouldReloadEvents = YES;
-                    
+                    shouldReloadEvents = YES; 
                     [weakSelf.placesTableView reloadData];
                 }];
             }
@@ -1422,7 +1421,6 @@ int firstIndexOfNegativeEvent;
                 [eventPageArray removeAllObjects];
                 [weakSelf fetchedOneParty];
                 fetchingEventAttendees = NO;
-                
                 [weakSelf.placesTableView reloadData];
             }];
         } else {
@@ -1463,7 +1461,6 @@ int firstIndexOfNegativeEvent;
                 [eventPageArray removeAllObjects];
                 [weakSelf fetchedOneParty];
                 fetchingEventAttendees = NO;
-                
                 [weakSelf.placesTableView reloadData];
             }];
         }

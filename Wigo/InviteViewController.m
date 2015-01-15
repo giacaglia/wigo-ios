@@ -197,12 +197,12 @@
             }
             if ([self.filteredContent count] > 5 && [self.content.hasNextPage boolValue]) {
                 if (tag == [self.filteredContent count] - 5) {
-                    [self fetchEveryone];
+                    [self getNextPageForFilteredContent];
                 }
             }
             else {
                 if (tag == [self.filteredContent count] && [self.content count] != 0) {
-                    [self fetchEveryone];
+                    [self getNextPageForFilteredContent];
                     return cell;
                 }
             }
@@ -519,35 +519,36 @@ heightForHeaderInSection:(NSInteger)section
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     __weak typeof(self) weakSelf = self;
-    if (!self.filteredContent || self.filteredContent.hasNextPage == nil) {
-        [WGUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    return;
-                }
-                strongSelf.filteredContent = collection;
-                [strongSelf.filteredContent removeObject:[WGProfile currentUser]];
-                [strongSelf.invitePeopleTableView reloadData];
-            });
-        }];
-    } else if ([self.filteredContent.hasNextPage boolValue]) {
-        [self.filteredContent addNextPage:^(BOOL success, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    return;
-                }
-                [strongSelf.filteredContent removeObject:[WGProfile currentUser]];
-                [strongSelf.invitePeopleTableView reloadData];
-            });
-        }];
-    }
+    [WGUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
+            strongSelf.filteredContent = collection;
+            [strongSelf.filteredContent removeObject:[WGProfile currentUser]];
+            [strongSelf.invitePeopleTableView reloadData];
+        });
+    }];
     
     // Mobile contacts
     filteredMobileContacts = [NSMutableArray arrayWithArray:[MobileDelegate filterArray:mobileContacts withText:searchBar.text]];
+}
+
+- (void) getNextPageForFilteredContent {
+    __weak typeof(self) weakSelf = self;
+    [self.filteredContent addNextPage:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
+            [strongSelf.filteredContent removeObject:[WGProfile currentUser]];
+            [strongSelf.invitePeopleTableView reloadData];
+        });
+    }];
 }
 
 #pragma mark - Network requests

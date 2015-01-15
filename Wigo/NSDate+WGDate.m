@@ -59,10 +59,10 @@
 -(BOOL) isFromLastDay {
     NSDate *nowDate = [NSDate date];
     
-    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
-    NSDate *dateInLocalTimezone = [self dateByAddingTimeInterval:timeZoneSeconds];
-    
-    NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit fromDate:dateInLocalTimezone];
+//    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+//    nowDate = [nowDate dateByAddingTimeInterval:timeZoneSeconds];
+//
+    NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit fromDate:self];
     
     NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit fromDate:nowDate];
     
@@ -131,6 +131,7 @@
 +(NSDate *) serialize:(NSString *)dateString {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+//    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
     return [dateFormatter dateFromString:dateString];
 }
 

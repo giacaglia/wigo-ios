@@ -377,6 +377,10 @@
 		E9F7995519D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */; };
 		E9F7995619D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */; };
 		E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
+		FA2BC2061A68268700055F7C /* TopSchoolViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BC2051A68268700055F7C /* TopSchoolViewController.m */; };
+		FA2BC2071A68268700055F7C /* TopSchoolViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BC2051A68268700055F7C /* TopSchoolViewController.m */; };
+		FA2BC20A1A6826FE00055F7C /* TopSchool.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BC2091A6826FE00055F7C /* TopSchool.m */; };
+		FA2BC20B1A6826FE00055F7C /* TopSchool.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BC2091A6826FE00055F7C /* TopSchool.m */; };
 		FA2BE9BD19FAF06500CC0E5E /* EventStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */; };
 		FA438EA719F1998A00AD74C2 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */; };
 		FA438EA919F19F2200AD74C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA819F19F2200AD74C2 /* AVFoundation.framework */; };
@@ -759,6 +763,10 @@
 		E9F7995019D4C646001D5BFC /* GAITrackedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITrackedViewController.h; sourceTree = "<group>"; };
 		E9F7995119D4C646001D5BFC /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
 		E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
+		FA2BC2041A68268700055F7C /* TopSchoolViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopSchoolViewController.h; sourceTree = "<group>"; };
+		FA2BC2051A68268700055F7C /* TopSchoolViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopSchoolViewController.m; sourceTree = "<group>"; };
+		FA2BC2081A6826FE00055F7C /* TopSchool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopSchool.h; sourceTree = "<group>"; };
+		FA2BC2091A6826FE00055F7C /* TopSchool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopSchool.m; sourceTree = "<group>"; };
 		FA2BE9BB19FAF06500CC0E5E /* EventStoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventStoryViewController.h; sourceTree = "<group>"; };
 		FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventStoryViewController.m; sourceTree = "<group>"; };
 		FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventConversationViewController.h; sourceTree = "<group>"; };
@@ -1746,8 +1754,12 @@
 				FA5526211A1FE3D800101AE7 /* EngagementGraph.m */,
 				FA55260F1A1FCB3700101AE7 /* GroupStats.h */,
 				FA5526101A1FCB3700101AE7 /* GroupStats.m */,
+				FA2BC2081A6826FE00055F7C /* TopSchool.h */,
+				FA2BC2091A6826FE00055F7C /* TopSchool.m */,
 				FA55260A1A1FCAFF00101AE7 /* AmbassadorViewController.h */,
 				FA55260B1A1FCAFF00101AE7 /* AmbassadorViewController.m */,
+				FA2BC2041A68268700055F7C /* TopSchoolViewController.h */,
+				FA2BC2051A68268700055F7C /* TopSchoolViewController.m */,
 				FAACB6711A2508E00089FD01 /* CampusNotificationViewController.h */,
 				FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */,
 			);
@@ -2128,6 +2140,7 @@
 				C12A111319787BE700D53B1C /* FacebookAlbumTableViewController.m in Sources */,
 				C12A111419787BE700D53B1C /* SDWebImageDownloader.m in Sources */,
 				E93030C51986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
+				FA2BC2071A68268700055F7C /* TopSchoolViewController.m in Sources */,
 				FA5526231A1FE3D800101AE7 /* EngagementGraph.m in Sources */,
 				C12A111519787BE700D53B1C /* MessageViewController.m in Sources */,
 				C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */,
@@ -2145,6 +2158,7 @@
 				E9C63C031A03ED35006C5DD2 /* IQFeatureOverlay.m in Sources */,
 				E9C63BF31A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */,
 				E9C63C0D1A03ED35006C5DD2 /* IQ_PocketSVG.m in Sources */,
+				FA2BC20B1A6826FE00055F7C /* TopSchool.m in Sources */,
 				C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */,
 				E96F07BE19BA654600E858D7 /* GKCropBorderView.m in Sources */,
 				E9C63BE31A03ED35006C5DD2 /* IQSongsAlbumViewCell.m in Sources */,
@@ -2297,6 +2311,7 @@
 				E9C63BEE1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */,
 				45DF86911A5AFBA000DB85AE /* WGEventMessage.m in Sources */,
 				E9203B531A23C4B90086BF73 /* EventConversationViewController.m in Sources */,
+				FA2BC20A1A6826FE00055F7C /* TopSchool.m in Sources */,
 				E998C28419D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m in Sources */,
 				E9C63C001A03ED35006C5DD2 /* IQBottomContainerView.m in Sources */,
 				E9AEAE531A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */,
@@ -2346,6 +2361,7 @@
 				E9C63C0A1A03ED35006C5DD2 /* IQ_DPMeterView.m in Sources */,
 				E900C2B61961EADE00A01F50 /* NSData+ImageContentType.m in Sources */,
 				E9C63C021A03ED35006C5DD2 /* IQFeatureOverlay.m in Sources */,
+				FA2BC2061A68268700055F7C /* TopSchoolViewController.m in Sources */,
 				FABD337A1A3B9904008FF56D /* FXBlurView.m in Sources */,
 				E99D0ADC1A2CCA3300384A73 /* PeekViewController.m in Sources */,
 				E9C34A6F19F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
