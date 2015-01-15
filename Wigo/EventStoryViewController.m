@@ -323,7 +323,8 @@
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
-    [myCell setToActiveWithNoAnimation];
+    //[myCell setToActiveWithNoAnimation];
+
 
     myCell.leftLine.backgroundColor = RGB(237, 237, 237);
     myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
