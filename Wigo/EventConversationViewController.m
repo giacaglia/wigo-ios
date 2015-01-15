@@ -85,8 +85,9 @@
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
-
-    [myCell resetToInactive];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [myCell resetToInactive];
+    });
 
     myCell.faceImageView.layer.borderColor = UIColor.whiteColor.CGColor;
     
@@ -718,22 +719,23 @@
 }
 
 - (void)setToActiveWithNoAnimation {
-    self.faceAndMediaTypeView.alpha = 1.0f;
-    
-//    self.faceImageView.frame = CGRectMake(0, 0, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell);
-//    self.faceImageView.center = self.contentView.center;
-//    self.faceImageView.layer.cornerRadius = 0.3*sizeOfEachFaceCell;
+        self.faceAndMediaTypeView.alpha = 1.0f;
+        
+    //    self.faceImageView.frame = CGRectMake(0, 0, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell);
+    //    self.faceImageView.center = self.contentView.center;
+    //    self.faceImageView.layer.cornerRadius = 0.3*sizeOfEachFaceCell;
 
-    self.faceImageView.transform = CGAffineTransformIdentity;
-    
-    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-    
-    self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
-    self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
+        self.faceImageView.transform = CGAffineTransformIdentity;
+        
+        self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
+        self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
+        
+        self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
+        self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
 }
 
 - (void) resetToInactive {
+
     self.faceAndMediaTypeView.alpha = 0.5f;
     
 //    self.faceImageView.frame = CGRectMake(0, 0, 0.45*sizeOfEachFaceCell, 0.45*sizeOfEachFaceCell);
