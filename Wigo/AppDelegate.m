@@ -398,7 +398,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 - (void)fetchAppStart {
     BOOL canFetchAppStartUp = [[NSUserDefaults standardUserDefaults] boolForKey:@"canFetchAppStartup"];
-    if (canFetchAppStartUp && [self shouldFetchAppStartup] && [WGProfile currentUser]) {
+    if (TRUE || (canFetchAppStartUp && [self shouldFetchAppStartup] && [WGProfile currentUser])) {
         [WGApi startup:^(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSError *error) {
             if (error) {
                 return;
