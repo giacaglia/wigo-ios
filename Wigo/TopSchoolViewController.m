@@ -53,6 +53,10 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void) goBack {
+    [self.navigationController popViewControllerAnimated: YES];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -88,6 +92,7 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle: style reuseIdentifier: reuseIdentifier];
     
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
     CGFloat height = [TopSchoolCell rowHeight];
 

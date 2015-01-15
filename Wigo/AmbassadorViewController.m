@@ -351,7 +351,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     
     TopSchool *school = [TopSchool initWithDictionary: @{@"name": @"Coastal Carolina", @"registered": @5145}];
     
-    topSchools.topSchools = @[school];
+    topSchools.topSchools = @[school, school, school];
     
     [self.navigationController pushViewController: topSchools animated: true];
 }
