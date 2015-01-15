@@ -1338,6 +1338,7 @@ int firstIndexOfNegativeEvent;
         fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         __weak typeof(self) weakSelf = self;
+        __weak UITableView *weakPlacesTableView = _placesTableView;
         if (_allEvents) {
             if ([_allEvents.hasNextPage boolValue]) {
                 [_allEvents addNextPage:^(BOOL success, NSError *error) {
@@ -1380,8 +1381,8 @@ int firstIndexOfNegativeEvent;
                     [strongSelf fetchedOneParty];
                     fetchingEventAttendees = NO;
                     shouldReloadEvents = YES;
-                    
-                    [_placesTableView reloadData];
+                    __strong typeof(_placesTableView) strongPlacesTableView = weakPlacesTableView;
+                    [strongPlacesTableView reloadData];
                 }];
             }
         } else if (self.groupNumberID) {

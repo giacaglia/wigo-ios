@@ -657,9 +657,9 @@
     self.timeLabel.numberOfLines = 0;
     self.timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.timeLabel.textAlignment = NSTextAlignmentCenter;
-    self.timeLabel.textColor = [UIColor whiteColor];
     self.timeLabel.font = [FontProperties lightFont:12];
-    self.timeLabel.layer.shadowColor = [[UIColor blackColor] CGColor];
+    self.timeLabel.textColor = UIColor.whiteColor;
+    self.timeLabel.layer.shadowColor = UIColor.blackColor.CGColor;
     self.timeLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
     self.timeLabel.layer.shadowOpacity = 0.5;
     self.timeLabel.layer.shadowRadius = 0.5;
