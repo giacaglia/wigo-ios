@@ -10,10 +10,11 @@
 #import "UIButtonAligned.h"
 #import "MobileContactsViewController.h"
 #import "CampusNotificationViewController.h"
-
+#import "TopSchoolViewController.h"
 #import "JBChartView.h"
 #import "JBBarChartView.h"
 #import "JBLineChartView.h"
+#import "TopSchool.h"
 
 #define kNewUsersPrefix @"New users %@"
 
@@ -344,7 +345,15 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 }
 
 - (IBAction)inviteFrendsTapped:(id)sender {
-    [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
+    //[self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
+    TopSchoolViewController *topSchools = [[TopSchoolViewController alloc] init];
+    topSchools.view.frame = self.view.frame;
+    
+    TopSchool *school = [TopSchool initWithDictionary: @{@"name": @"Coastal Carolina", @"registered": @5145}];
+    
+    topSchools.topSchools = @[school];
+    
+    [self.navigationController pushViewController: topSchools animated: true];
 }
 
 - (IBAction) sendCampusNotificationTapped {
