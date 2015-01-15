@@ -14,9 +14,11 @@
 - (id)initWithUser:(WGUser *)user andTab:(NSNumber *)tab;
 - (id)initWithUser:(WGUser *)user;
 
-@property (nonatomic) UIBarButtonItem *sidebarButton;
-@property WGUser *user;
-@property int tabNumber;
+@property (nonatomic, strong) UIBarButtonItem *sidebarButton;
+@property (nonatomic, strong) WGUser *user;
+@property (nonatomic, assign) int tabNumber;
 @property (nonatomic, strong) NSNumber *currentTab;
+@property (nonatomic, strong) UITableView *tableViewOfPeople;
+
 
 @end

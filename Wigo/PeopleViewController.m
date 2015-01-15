@@ -17,9 +17,6 @@
     UIView *_lineView;
 }
 
-//Table View of people
-@property UITableView *tableViewOfPeople;
-
 // Search Bar Content
 @property WGCollection *users;
 @property WGCollection *filteredUsers;
@@ -161,7 +158,7 @@ NSMutableArray *suggestedArrayView;
     self.navigationItem.titleView = _searchBar;
     [_searchBar becomeFirstResponder];
     [self.navigationItem setHidesBackButton:YES animated:YES];
-    [_tableViewOfPeople setContentOffset:_tableViewOfPeople.contentOffset animated:NO];
+    [self.tableViewOfPeople setContentOffset:self.tableViewOfPeople.contentOffset animated:NO];
 
     
     UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
@@ -232,12 +229,12 @@ NSMutableArray *suggestedArrayView;
 
 - (void)initializeTableOfPeople {
     self.automaticallyAdjustsScrollViewInsets = NO;
-    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    _tableViewOfPeople.delegate = self;
-    _tableViewOfPeople.dataSource = self;
-    _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    _tableViewOfPeople.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [self.view addSubview:_tableViewOfPeople];
+    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    self.tableViewOfPeople.delegate = self;
+    self.tableViewOfPeople.dataSource = self;
+    self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.tableViewOfPeople.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.view addSubview:self.tableViewOfPeople];
 }
 
 
@@ -557,17 +554,29 @@ NSMutableArray *suggestedArrayView;
     [cell.contentView addSubview:line];
     
     int tag = (int)[indexPath row];
-    
-    if ([_users count] == 0) return cell;
-    if ([_users count] > 5) {
-        if ([_users.hasNextPage boolValue] && tag == [_users count] - 5) {
+    if (!_isSearching) {
+        if ([_users count] == 0) return cell;
+        if ([_users count] > 5) {
+            if ([_users.hasNextPage boolValue] && tag == [_users count] - 5) {
+                [self loadNextPage];
+            }
+        } else if (tag == [_users count]) {
             [self loadNextPage];
+            return cell;
         }
-    } else if (tag == [_users count]) {
-        [self loadNextPage];
-        return cell;
     }
-   
+    else {
+        if ([_filteredUsers count] == 0) return cell;
+        if ([_filteredUsers count] > 5) {
+            if ([_filteredUsers.hasNextPage boolValue] && tag == [_filteredUsers count] - 5) {
+                [self getNextPageForFilteredContent];
+            }
+        } else if (tag == [_filteredUsers count]) {
+            [self getNextPageForFilteredContent];
+            return cell;
+        }
+    }
+    
     WGUser *user = [self getUserAtIndex:tag];
     if (!user) {
         BOOL loading = NO;
@@ -673,8 +682,8 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (void) followedPersonPressed:(id)sender {
-    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:_tableViewOfPeople];
-    NSIndexPath *indexPath = [_tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:self.tableViewOfPeople];
+    NSIndexPath *indexPath = [self.tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
     WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
     if (user) [self updateButton:sender withUser:user];
     if ([indexPath row] < [_users count]) {
@@ -766,34 +775,34 @@ NSMutableArray *suggestedArrayView;
 
     if (user) {
         if ([userIndex section] == 0) {
-            int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:0];
+            int numberOfRows = (int)[self.tableViewOfPeople numberOfRowsInSection:0];
             int sizeOfArray = (int)[_suggestions count];
             if (numberOfRows > 0 && userInt >= 0 && sizeOfArray > userInt) {
                 [_suggestions replaceObjectAtIndex:userInt withObject:user];
                 secondPartSubview = [self initializeSecondPart];
-                [_tableViewOfPeople beginUpdates];
-                [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-                [_tableViewOfPeople endUpdates];
+                [self.tableViewOfPeople beginUpdates];
+                [self.tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableViewOfPeople endUpdates];
             }
         } else {
             if (_isSearching) {
-                int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
+                int numberOfRows = (int)[self.tableViewOfPeople numberOfRowsInSection:1];
                 int sizeOfArray = (int)[_filteredUsers count];
                 if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
                     [_filteredUsers replaceObjectAtIndex:userInt withObject:user];
-                    [_tableViewOfPeople beginUpdates];
-                    [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
-                    [_tableViewOfPeople endUpdates];
+                    [self.tableViewOfPeople beginUpdates];
+                    [self.tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [self.tableViewOfPeople endUpdates];
                 }
             }
             else {
-                int numberOfRows = (int)[_tableViewOfPeople numberOfRowsInSection:1];
+                int numberOfRows = (int)[self.tableViewOfPeople numberOfRowsInSection:1];
                 int sizeOfArray = (int)[_users count];
                 if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
                     [_users replaceObjectAtIndex:userInt withObject:user];
-                    [_tableViewOfPeople beginUpdates];
-                    [_tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
-                    [_tableViewOfPeople endUpdates];
+                    [self.tableViewOfPeople beginUpdates];
+                    [self.tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    [self.tableViewOfPeople endUpdates];
                 }
             }
 
@@ -833,7 +842,7 @@ NSMutableArray *suggestedArrayView;
                     _everyone = collection;
                     _users = _everyone;
                     secondPartSubview = [self initializeSecondPart];
-                    [_tableViewOfPeople reloadData];
+                    [self.tableViewOfPeople reloadData];
                 });
             }];
         });
@@ -850,9 +859,10 @@ NSMutableArray *suggestedArrayView;
 - (void) fetchEveryone {
     if (!fetching) {
         fetching = YES;
-        
+        __weak typeof(self) weakSelf = self;
         if (!_everyone) {
             [WGUser get:^(WGCollection *collection, NSError *error) {
+                __strong typeof(self) strongSelf = weakSelf;
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                     if (error) {
@@ -862,12 +872,13 @@ NSMutableArray *suggestedArrayView;
                     }
                     _everyone = collection;
                     _users = _everyone;
-                    [_tableViewOfPeople reloadData];
+                    [strongSelf.tableViewOfPeople reloadData];
                     fetching = NO;
                 });
             }];
         } else if ([_everyone.hasNextPage boolValue]) {
             [_everyone getNextPage:^(WGCollection *collection, NSError *error) {
+                __strong typeof(self) strongSelf = weakSelf;
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                     if (error) {
@@ -885,7 +896,7 @@ NSMutableArray *suggestedArrayView;
                     _everyone.nextPage = collection.nextPage;
                     
                     _users = _everyone;
-                    [_tableViewOfPeople reloadData];
+                    [strongSelf.tableViewOfPeople reloadData];
                     secondPartSubview = [self initializeSecondPart];
                     fetching = NO;
                 });
@@ -1042,7 +1053,7 @@ NSMutableArray *suggestedArrayView;
      cancelPreviousRequest:YES];
     } else {
         _isSearching = NO;
-        [_tableViewOfPeople reloadData];
+        [self.tableViewOfPeople reloadData];
     }
 }
 
@@ -1054,12 +1065,13 @@ NSMutableArray *suggestedArrayView;
 
 
 - (void)searchTableList {
-    NSLog(@"here");
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     if ([self.currentTab isEqualToNumber:@2]) {
+        __weak typeof(self) weakSelf = self;
         [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
                 [WiGoSpinnerView removeDancingGFromCenterView:self.view];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
@@ -1067,44 +1079,26 @@ NSMutableArray *suggestedArrayView;
                     return;
                 }
                 _filteredUsers = collection;
-                [_tableViewOfPeople reloadData];
-                fetching = NO;
-            });
-        }];
-    }
-    else if ([self.currentTab isEqualToNumber:@3]) {
-        [WGFollow searchFollows:searchString forFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    fetching = NO;
-                    return;
-                }
-                _filteredUsers = collection;
-                [_tableViewOfPeople reloadData];
-                fetching = NO;
-            });
-        }];
-    } else {
-        [WGFollow searchFollows:searchString forUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    fetching = NO;
-                    return;
-                }
-                
-                _filteredUsers = [[WGCollection alloc] initWithType:[WGUser class]];
-                for (WGFollow *follow in collection) {
-                    [_filteredUsers addObject:follow.follow];
-                }
-                [_tableViewOfPeople reloadData];
+                [strongSelf.tableViewOfPeople reloadData];
                 fetching = NO;
             });
         }];
     }
 }
+
+- (void) getNextPageForFilteredContent {
+    __weak typeof(self) weakSelf = self;
+    [_filteredUsers addNextPage:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                return;
+            }
+            [strongSelf.tableViewOfPeople reloadData];
+        });
+    }];
+}
+
 
 @end
