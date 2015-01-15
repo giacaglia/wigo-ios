@@ -22,7 +22,7 @@
 
 @interface EventStoryViewController()<UIScrollViewDelegate> {
     UIButton *sendButton;
-    
+    UILabel *highlightLabel;
     CGPoint currentContentOffset;
 }
 
@@ -323,7 +323,8 @@
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
-    [myCell setToActiveWithNoAnimation];
+    //[myCell setToActiveWithNoAnimation];
+
 
     myCell.leftLine.backgroundColor = RGB(237, 237, 237);
     myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
@@ -383,17 +384,21 @@
                                                                         withReuseIdentifier:kHeaderFaceCollectionView
                                                                                forIndexPath:indexPath];
 
-        UILabel *highlightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
-        highlightLabel.text = @"Highlights";
-        highlightLabel.textAlignment = NSTextAlignmentCenter;
-        highlightLabel.font = [FontProperties lightFont:20.0f];
-        highlightLabel.textColor = RGB(162, 162, 162);
-        [cell addSubview:highlightLabel];
         
-        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 30, cell.frame.size.height - 1, 60, 1)];
-        lineView.backgroundColor = RGB(228, 228, 228);
-        [cell addSubview:lineView];
+        if (highlightLabel == nil) {
+            highlightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
+            highlightLabel.text = @"Highlights";
+            highlightLabel.textAlignment = NSTextAlignmentCenter;
+            highlightLabel.font = [FontProperties lightFont:20.0f];
+            highlightLabel.textColor = RGB(162, 162, 162);
+            [cell addSubview:highlightLabel];
+            
+            UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 30, cell.frame.size.height - 1, 60, 1)];
+            lineView.backgroundColor = RGB(228, 228, 228);
+            [cell addSubview:lineView];
+        }
         
+
         return cell;
     } else if ([kind isEqualToString: UICollectionElementKindSectionFooter]) {
         UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
