@@ -433,7 +433,7 @@ heightForHeaderInSection:(NSInteger)section
     [searchBar becomeFirstResponder];
     
     cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 65 - 15, 20, 65, 44)];
-    [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+    [cancelButton setTitle:@"Done" forState:UIControlStateNormal];
     [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
     cancelButton.titleLabel.font = [FontProperties getSubtitleFont];
