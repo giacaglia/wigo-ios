@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Giuliano Giacaglia. All rights reserved.
 //
 
-import <Foundation/Foundation.h> # still broken
+#import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 #import "UIImageView+ImageArea.h"
 
