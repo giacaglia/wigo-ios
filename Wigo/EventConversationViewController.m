@@ -640,10 +640,10 @@
     self.rightLine.backgroundColor = UIColor.whiteColor;
     [self.contentView addSubview: self.rightLine];
     
-    self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfEachFaceCell/2 + 12, sizeOfEachFaceCell/5, sizeOfEachFaceCell/6, sizeOfEachFaceCell/6)];
+    self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.faceImageView.frame.origin.x + self.faceImageView.frame.size.width, sizeOfEachFaceCell/5, sizeOfEachFaceCell/6, sizeOfEachFaceCell/6)];
     self.mediaTypeImageView.layer.masksToBounds = YES;
     self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
-    self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
+    self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell*0.08;
     self.mediaTypeImageView.layer.borderWidth = 1.0;
     self.mediaTypeImageView.layer.borderColor = UIColor.blackColor.CGColor;
     self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
