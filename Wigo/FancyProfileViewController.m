@@ -720,7 +720,9 @@ UIButton *tapButton;
 }
 
 - (BOOL) shouldShowInviteCell {
-    if ([self.user isCurrentUser] || self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE || self.userState == OTHER_SCHOOL_USER_STATE) {
+    if ([self.user isCurrentUser] || self.userState ==  NOT_FOLLOWING_PUBLIC_USER_STATE ||
+        self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE ||
+        self.userState == BLOCKED_USER_STATE || self.userState == OTHER_SCHOOL_USER_STATE) {
         return NO;
     }
     
