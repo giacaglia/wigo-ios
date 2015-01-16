@@ -670,7 +670,8 @@ NSMutableArray *suggestedArrayView;
             }
         }
     }
-    if ([user.id intValue] > [[WGProfile currentUser].lastUserRead intValue]) {
+    if ([self.currentTab isEqualToNumber:@2] &&
+        [user.id intValue] > [[WGProfile currentUser].lastUserRead intValue]) {
         cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
     }
     
