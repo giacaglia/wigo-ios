@@ -12,6 +12,7 @@
 #import "GKImageCropViewController.h"
 #import "ErrorViewController.h"
 #import "FacebookHelper.h"
+#import "UIButtonAligned.h"
 
 @interface FacebookImagesViewController ()<GKImageCropControllerDelegate>
 @property NSString *profilePicturesAlbumId;
@@ -46,12 +47,29 @@ NSMutableArray *imagesArray;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initializeBackBarButton];
     [self initializeScrollView];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [WGAnalytics tagEvent:@"Facebook Images View"];
+}
+
+- (void)initializeBackBarButton {
+    UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
+    [barBt setTitle:@" Back" forState:UIControlStateNormal];
+    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    barBt.titleLabel.font = [FontProperties getSubtitleFont];
+    [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
+    [barItem setCustomView:barBt];
+    self.navigationItem.leftBarButtonItem = barItem;
+}
+
+- (void)goBack {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 

@@ -9,6 +9,7 @@
 #import "FacebookAlbumTableViewController.h"
 #import "FacebookImagesViewController.h"
 #import "Globals.h"
+#import "UIButtonAligned.h"
 
 @interface FacebookAlbumTableViewController ()
 
@@ -39,21 +40,42 @@ NSMutableArray *coverAlbumArray;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self initializeBackBarButton];
+    [self getFacebookAlbums];
+}
+
+- (void)initializeBackBarButton {
+    UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
+    [barBt setTitle:@" Back" forState:UIControlStateNormal];
+    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    barBt.titleLabel.font = [FontProperties getSubtitleFont];
+    [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
+    [barItem setCustomView:barBt];
+    self.navigationItem.leftBarButtonItem = barItem;
+}
+
+- (void)goBack {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)getFacebookAlbums {
     [FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"email", @"user_friends", @"user_photos"]
                                        allowLoginUI:YES
                                   completionHandler:^(FBSession *session,
                                                       FBSessionState state,
                                                       NSError *error) {
                                       dispatch_async(dispatch_get_main_queue(), ^{
-
-                                      if (error) {
-                                          UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                                              message:error.localizedDescription
-                                                                                             delegate:nil
-                                                                                    cancelButtonTitle:@"OK"
-                                                                                    otherButtonTitles:nil];
-                                          [alertView show];
-                                      } else if (session.isOpen) {
+                                          
+                                          if (error) {
+                                              UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                                  message:error.localizedDescription
+                                                                                                 delegate:nil
+                                                                                        cancelButtonTitle:@"OK"
+                                                                                        otherButtonTitles:nil];
+                                              [alertView show];
+                                          } else if (session.isOpen) {
                                               [FBRequestConnection startWithGraphPath:@"/me/albums"
                                                                            parameters:nil
                                                                            HTTPMethod:@"GET"
@@ -75,17 +97,16 @@ NSMutableArray *coverAlbumArray;
                                                                                 }
                                                                             }
                                                                             _albumArray = [NSArray arrayWithArray:cleanAlbums];
-
+                                                                            
                                                                             [self getAlbumDetails];
                                                                             [self.tableView reloadData];
                                                                         });
                                                                     }];
-                                      }
+                                          }
                                       });
                                   }];
-    
-}
 
+}
 - (void)getAlbumDetails {
     for (int k = 0; k < [coverIDArray count]; k++) {
         [coverAlbumArray addObject:@""];
