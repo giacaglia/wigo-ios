@@ -438,9 +438,6 @@
 }
 
 - (void)loadMainViewController {
-    if ([[WGProfile currentUser].group.numEvents intValue] >= 3) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeTabs" object:self];
-    }
     [self dismissViewControllerAnimated:YES  completion:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
 }
