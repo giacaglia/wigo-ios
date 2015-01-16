@@ -328,7 +328,7 @@ UIButton *tapButton;
     
     _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 9, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
-    if (![self.user isCurrentUser] && (self.userState == ACCEPTED_PRIVATE_USER_STATE || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE || self.userState == PRIVATE_STATE)) {
+    if ((self.userState == ACCEPTED_PRIVATE_USER_STATE || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE || self.userState == PRIVATE_STATE)) {
         _privateLogoImageView.hidden = NO;
     }
     else _privateLogoImageView.hidden = YES;
@@ -605,8 +605,9 @@ UIButton *tapButton;
         _followButton.enabled = YES;
         _followButton.hidden = NO;
         
-        if (self.userState == NOT_FOLLOWING_PUBLIC_USER_STATE) _privateLogoImageView.hidden = YES;
-        else _privateLogoImageView.hidden = NO;
+        if (self.userState == NOT_FOLLOWING_PUBLIC_USER_STATE) {
+            _privateLogoImageView.hidden = YES;
+        }
         _followRequestLabel.hidden = YES;
     }
     else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
@@ -638,9 +639,12 @@ UIButton *tapButton;
         _rightProfileButton.enabled = YES;
         _rightProfileButton.hidden = NO;
         
-        if (self.userState == PRIVATE) _privateLogoImageView.hidden = NO;
-        else _privateLogoImageView.hidden = YES;
-        _followRequestLabel.hidden = YES;
+        if (self.userState == PRIVATE_STATE) {
+            _privateLogoImageView.hidden = NO;
+        }
+        else {
+            _followRequestLabel.hidden = YES;
+        }
     }
     
     [self.tableView reloadData];
@@ -1008,8 +1012,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             [self updateNumberOfChats];
             _pageControl.numberOfPages = [[self.user imagesURL] count];
             [self createImageScrollView];
-            if ([self.user state] == PRIVATE_STATE || [self.user state] == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) _privateLogoImageView.hidden = NO;
-            else _privateLogoImageView.hidden = YES;
+//            if ([self.user state] == PRIVATE_STATE || [self.user state] == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) _privateLogoImageView.hidden = NO;
+//            else _privateLogoImageView.hidden = YES;
         }];
     }
 }

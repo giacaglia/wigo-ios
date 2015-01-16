@@ -1495,6 +1495,7 @@ int firstIndexOfNegativeEvent;
                                    withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];
+        [self fetchUserInfo];
     }];
 }
 
