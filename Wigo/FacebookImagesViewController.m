@@ -273,7 +273,7 @@ NSMutableArray *imagesArray;
         }
         [self dismissViewControllerAnimated:YES completion:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
-        [self.navigationController popViewControllerAnimated:YES];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     }];
 }
 
