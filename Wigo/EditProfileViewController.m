@@ -165,6 +165,7 @@ UIViewController *webViewController;
     } else {
         [self.view endEditing:YES];
         self.photoViewController = [[PhotoViewController alloc] initWithImage:[[WGProfile currentUser].images objectAtIndex:buttonSender.tag]];
+        self.photoViewController.indexOfImage = (int)buttonSender.tag;
         [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:0 andHeight:[[UIScreen mainScreen] bounds].size.height fromViewController:self.navigationController];
     }
 }

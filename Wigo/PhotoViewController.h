@@ -11,5 +11,6 @@
 @interface PhotoViewController : UIViewController
 
 - (id)initWithImage:(NSDictionary *)image;
+@property (nonatomic, assign) int indexOfImage;
 
 @end

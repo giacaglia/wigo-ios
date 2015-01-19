@@ -93,6 +93,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(State) state;
 
+-(void) setImageDictionary:(NSDictionary *)imageDictionary forIndex:(NSInteger)index;
 -(void) removeImageAtIndex:(NSInteger)index;
 -(void) makeImageAtIndexCoverImage:(NSInteger)index;
 -(NSURL *) coverImageURL;

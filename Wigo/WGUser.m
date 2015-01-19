@@ -321,6 +321,14 @@ static WGUser *currentUser = nil;
     }
 }
 
+-(void) setImageDictionary:(NSDictionary *)imageDictionary forIndex:(NSInteger)index {
+    NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
+    if (index >= 0 && index < [imagesArray count]) {
+        [imagesArray replaceObjectAtIndex:index withObject:imageDictionary];
+        [self setImages: imagesArray];
+    }
+}
+
 -(void) removeImageAtIndex:(NSInteger)index {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
     if ([imagesArray count] > 3) {
@@ -328,6 +336,7 @@ static WGUser *currentUser = nil;
         [self setImages: imagesArray];
     }
 }
+
 
 -(void) makeImageAtIndexCoverImage:(NSInteger)index {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
