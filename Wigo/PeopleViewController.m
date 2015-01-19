@@ -525,8 +525,20 @@ NSMutableArray *suggestedArrayView;
     if (_isSearching) {
         return (int)[_filteredUsers count];
     } else {
-        int hasNextPage = ([_users.hasNextPage boolValue] ? 1 : 0);
+        int hasNextPage = [self isThereANextPage] ? 1 : 0;
         return (int)[_users count] + hasNextPage;
+    }
+}
+
+- (BOOL)isThereANextPage {
+    if ([self.currentTab isEqual:@2]) {
+        return [_users.hasNextPage boolValue];
+    }
+    else if ([self.currentTab isEqual:@3]) {
+       return [_followers.hasNextPage boolValue];
+    }
+    else {
+       return [_following.hasNextPage boolValue];
     }
 }
 
@@ -557,7 +569,7 @@ NSMutableArray *suggestedArrayView;
     if (!_isSearching) {
         if ([_users count] == 0) return cell;
         if ([_users count] > 5) {
-            if ([_users.hasNextPage boolValue] && tag == [_users count] - 5) {
+            if ([self isThereANextPage] && tag == [_users count] - 5) {
                 [self loadNextPage];
             }
         } else if (tag == [_users count]) {
