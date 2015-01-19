@@ -83,7 +83,7 @@
 @property (nonatomic, strong) SignViewController *signViewController;
 @end
 
-BOOL fetchingEventAttendees;
+
 BOOL fetchingUserInfo;
 BOOL shouldAnimate;
 BOOL presentedMobileContacts;
@@ -106,7 +106,7 @@ BOOL secondTimeFetchingUserInfo;
     self.automaticallyAdjustsScrollViewInsets = NO;
     eventPageArray = [[NSMutableArray alloc] init];
     fetchingUserInfo = NO;
-    fetchingEventAttendees = NO;
+    self.fetchingEventAttendees = NO;
     shouldAnimate = NO;
     presentedMobileContacts = NO;
     shouldReloadEvents = YES;
@@ -1283,14 +1283,7 @@ BOOL secondTimeFetchingUserInfo;
 #pragma mark - UIScrollView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    /* if (scrollView != _placesTableView) {
-        if (scrollView.contentOffset.x + self.view.frame.size.width >= scrollView.contentSize.width - sizeOfEachImage && !fetchingEventAttendees) {
-            fetchingEventAttendees = YES;
-            [self fetchEventAttendeesAsynchronousForEvent:(int)scrollView.tag];
-        }
-        
-    }
-    else if (scrollView == _placesTableView) { */
+
     if (scrollView == _placesTableView) {
         
         if (!self.goElsewhereView) {
@@ -1299,7 +1292,6 @@ BOOL secondTimeFetchingUserInfo;
         if (![self shouldShowCreateButton]) {
             return;
         }
-//
         [self showOnlyOnePlusButton];
     }
 }
@@ -1336,13 +1328,12 @@ BOOL secondTimeFetchingUserInfo;
 
 - (void) fetchEventsFirstPage {
     _allEvents = nil;
-    fetchingEventAttendees = NO;
     [self fetchEvents];
 }
 
 - (void) fetchEvents {
-    if (!fetchingEventAttendees && [WGProfile currentUser].key) {
-        fetchingEventAttendees = YES;
+    if (!self.fetchingEventAttendees && [WGProfile currentUser].key) {
+        self.fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
         __weak typeof(self) weakSelf = self;
         if (_allEvents) {
@@ -1351,7 +1342,7 @@ BOOL secondTimeFetchingUserInfo;
                     [WiGoSpinnerView removeDancingGFromCenterView:weakSelf.view];
                     
                     if (error) {
-                        fetchingEventAttendees = NO;
+                        weakSelf.fetchingEventAttendees = NO;
                         shouldReloadEvents = YES;
                         return;
                     }
@@ -1384,17 +1375,18 @@ BOOL secondTimeFetchingUserInfo;
                     
                     [eventPageArray removeAllObjects];
                     [weakSelf fetchedOneParty];
-                    fetchingEventAttendees = NO;
+                    weakSelf.fetchingEventAttendees = NO;
                     shouldReloadEvents = YES; 
                     [weakSelf.placesTableView reloadData];
                 }];
             }
         } else if (self.groupNumberID) {
             [WGEvent getWithGroupNumber:self.groupNumberID andHandler:^(WGCollection *collection, NSError *error) {
+
                 [WiGoSpinnerView removeDancingGFromCenterView:weakSelf.view];
 
                 if (error) {
-                    fetchingEventAttendees = NO;
+                    weakSelf.fetchingEventAttendees = NO;
                     shouldReloadEvents = YES;
                     return;
                 }
@@ -1427,7 +1419,7 @@ BOOL secondTimeFetchingUserInfo;
                 
                 [eventPageArray removeAllObjects];
                 [weakSelf fetchedOneParty];
-                fetchingEventAttendees = NO;
+                weakSelf.fetchingEventAttendees = NO;
                 [weakSelf.placesTableView reloadData];
             }];
         } else {
@@ -1435,7 +1427,7 @@ BOOL secondTimeFetchingUserInfo;
                 [WiGoSpinnerView removeDancingGFromCenterView:weakSelf.view];
                 if (error) {
                     // [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    fetchingEventAttendees = NO;
+                    weakSelf.fetchingEventAttendees = NO;
                     return;
                 }
                 weakSelf.allEvents = collection;
@@ -1467,7 +1459,7 @@ BOOL secondTimeFetchingUserInfo;
                 
                 [eventPageArray removeAllObjects];
                 [weakSelf fetchedOneParty];
-                fetchingEventAttendees = NO;
+                weakSelf.fetchingEventAttendees = NO;
                 [weakSelf.placesTableView reloadData];
             }];
         }

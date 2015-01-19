@@ -24,6 +24,8 @@
 @property (nonatomic, strong) UIButton *rightButton;
 @property (nonatomic, strong) UIButton *goingSomewhereButton;
 
+@property (nonatomic, assign) BOOL fetchingEventAttendees;
+
 @end
 
 #import "EventPeopleScrollView.h"

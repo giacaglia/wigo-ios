@@ -80,11 +80,7 @@
     _fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"];
     _accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
 
-//    NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
-//    if (key && key.length > 0) {
-//        [WGProfile setCurrentUser:[WGUser serialize:@{ @"key" : key, @"id" : @0 }]];
-//        [self fetchUserInfo];
-//    } else {
+
     NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
     if (!key || key.length <= 0) {
         if (!_fbID || !_accessToken) {
