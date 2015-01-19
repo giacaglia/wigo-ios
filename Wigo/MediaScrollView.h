@@ -36,9 +36,8 @@
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, assign) BOOL cameraPromptAddToStory;
 
-- (void)closeView;
--(void)scrolledToPage:(int)page;
-- (void)removeMediaAtPage:(int)page;
+-(void) closeView;
+-(void) scrolledToPage:(int)page;
 
 #pragma mark - IQMediaPickerController  Delegate
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;

@@ -241,15 +241,6 @@
     }
 }
 
-- (void)removeMediaAtPage:(int)page {
-    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-    [eventMessage remove:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionDelete retryHandler:nil];
-            nil;
-        }
-    }];
- }
 
 #pragma mark - MediaScrollViewDelegate 
 
@@ -769,6 +760,9 @@
     if (vote != nil) {
         return;
     }
+    if ([self.eventMessage objectForKey:@"id"] == nil) {
+        return;
+    }
     
     [WGAnalytics tagEvent:@"Up Vote Tapped"];
     
@@ -796,6 +790,10 @@
     if (vote != nil) {
         return;
     }
+    if ([self.eventMessage objectForKey:@"id"] == nil) {
+        return;
+    }
+    
     
     [WGAnalytics tagEvent:@"Down Vote Tapped"];
 

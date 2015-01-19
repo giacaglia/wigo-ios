@@ -457,28 +457,30 @@
         [WGAnalytics tagEvent: @"Delete Highlight Tapped"];
         
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-        [eventMessage remove:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionDelete retryHandler:nil];
-                return;
-            }
-            [self.eventMessages removeObject:eventMessage];
-            [self.mediaScrollView.eventMessages removeObject:eventMessage];
-            
-            if (self.eventMessages.count == 0) {
-                if ([self.event.isExpired boolValue]) {
-                    [self.mediaScrollView closeView];
-                    [self dismissViewControllerAnimated:YES completion:nil];
+        if ([eventMessage objectForKey:@"id"]) {
+            [eventMessage remove:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionDelete retryHandler:nil];
+                    return;
+                }
+                [self.eventMessages removeObject:eventMessage];
+                [self.mediaScrollView.eventMessages removeObject:eventMessage];
+                
+                if (self.eventMessages.count == 0) {
+                    if ([self.event.isExpired boolValue]) {
+                        [self.mediaScrollView closeView];
+                        [self dismissViewControllerAnimated:YES completion:nil];
+                    } else {
+                        [self.facesCollectionView reloadData];
+                        [self.mediaScrollView reloadData];
+                    }
                 } else {
+                    // [self hideOrShowFacesForPage:(int)page];
                     [self.facesCollectionView reloadData];
                     [self.mediaScrollView reloadData];
                 }
-            } else {
-                // [self hideOrShowFacesForPage:(int)page];
-                [self.facesCollectionView reloadData];
-                [self.mediaScrollView reloadData];
-            }
-        }];
+            }];
+        }
     }
 }
 
