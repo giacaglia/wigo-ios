@@ -90,6 +90,7 @@ NSMutableArray *eventPageArray;
 int sizeOfEachImage;
 BOOL shouldReloadEvents;
 int firstIndexOfNegativeEvent;
+BOOL firstTimeLoading;
 
 @implementation PlacesViewController
 
@@ -116,7 +117,6 @@ int firstIndexOfNegativeEvent;
         }
     }
     
-    [self initializeFlashScreen];
 
     _spinnerAtCenter = YES;
     [self initializeWhereView];
@@ -149,7 +149,9 @@ int firstIndexOfNegativeEvent;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [self initializeFlashScreen];
     
+
     [self.view endEditing:YES];
     if (shouldReloadEvents) {
         [self fetchEventsFirstPage];
@@ -265,9 +267,13 @@ int firstIndexOfNegativeEvent;
 }
 
 - (void)initializeFlashScreen {
-    SignViewController *signViewController = [[SignViewController alloc] init];
-    SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:signViewController];
-    [self presentViewController:signNavigationViewController animated:NO completion:nil];
+    if (!firstTimeLoading) {
+        firstTimeLoading = YES;
+        SignViewController *signViewController = [[SignViewController alloc] init];
+        SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:signViewController];
+        [self presentViewController:signNavigationViewController animated:NO completion:nil];
+    }
+   
 }
 
 
