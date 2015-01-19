@@ -1261,6 +1261,7 @@ BOOL secondTimeFetchingUserInfo;
     self.eventOffsetDictionary = [NSMutableDictionary new];
     self.groupNumberID = groupID;
     self.groupName = groupName;
+    _spinnerAtCenter = YES;
     [self updateTitleView];
     [self fetchEventsFirstPage];
 }
