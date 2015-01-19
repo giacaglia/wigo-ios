@@ -979,7 +979,6 @@
             [self.view addSubview:self.textLabel];
         }
         self.textLabel.hidden = YES;
-        self.textField.hidden = NO;
         self.labelPoint = labelPoint;
         [self.textField becomeFirstResponder];
     } else {
@@ -1055,7 +1054,8 @@
 {
     NSDictionary* userInfo = [notification userInfo];
     CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    
+    self.textField.hidden = NO;
+    self.textField.frame = CGRectMake(0, _labelPoint.y, self.view.frame.size.width, 40);
     [UIView animateWithDuration:0.3 animations:^{
         self.textField.frame = CGRectMake(0, kbFrame.origin.y - 40, self.view.frame.size.width, 40);
     }];
