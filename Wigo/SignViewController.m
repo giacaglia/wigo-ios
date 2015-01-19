@@ -80,16 +80,21 @@
     _fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"];
     _accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
 
+//    NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
+//    if (key && key.length > 0) {
+//        [WGProfile setCurrentUser:[WGUser serialize:@{ @"key" : key, @"id" : @0 }]];
+//        [self fetchUserInfo];
+//    } else {
     NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
-    if (key && key.length > 0) {
-        [WGProfile setCurrentUser:[WGUser serialize:@{ @"key" : key, @"id" : @0 }]];
-        [self fetchUserInfo];
-    } else {
+    if (!key || key.length <= 0) {
         if (!_fbID || !_accessToken) {
             [self fetchTokensFromFacebook];
         } else {
             [self loginUserAsynchronous];
         }
+    }
+    else {
+        [WiGoSpinnerView addDancingGToCenterView:self.view];
     }
 }
 
@@ -421,20 +426,21 @@
 }
 
 
--(void) fetchUserInfo {
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
-    [WGProfile reload:^(BOOL success, NSError *error) {
-        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-        if (error) {
-            if (!_fbID || !_accessToken) {
-                [self fetchTokensFromFacebook];
-            } else {
-                [self loginUserAsynchronous];
-            }
-            return;
+- (void)reloadedUserInfo:(BOOL)success andError:(NSError *)error {
+    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+    if (error) {
+        if (!_fbID || !_accessToken) {
+            [self fetchTokensFromFacebook];
+        } else {
+            [self loginUserAsynchronous];
         }
-        [self navigate];
-    }];
+        return;
+    }
+    [self navigate];
+}
+
+-(void) fetchUserInfo {
+
 }
 
 - (void)loadMainViewController {

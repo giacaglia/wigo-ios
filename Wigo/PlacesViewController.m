@@ -79,6 +79,8 @@
 
 //Go Elsewhere
 @property (nonatomic, strong) GoOutNewPlaceHeader *goElsewhereView;
+
+@property (nonatomic, strong) SignViewController *signViewController;
 @end
 
 BOOL fetchingEventAttendees;
@@ -91,6 +93,7 @@ int sizeOfEachImage;
 BOOL shouldReloadEvents;
 int firstIndexOfNegativeEvent;
 BOOL firstTimeLoading;
+BOOL secondTimeFetchingUserInfo;
 
 @implementation PlacesViewController
 
@@ -150,7 +153,6 @@ BOOL firstTimeLoading;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self initializeFlashScreen];
-    
 
     [self.view endEditing:YES];
     if (shouldReloadEvents) {
@@ -269,8 +271,8 @@ BOOL firstTimeLoading;
 - (void)initializeFlashScreen {
     if (!firstTimeLoading) {
         firstTimeLoading = YES;
-        SignViewController *signViewController = [[SignViewController alloc] init];
-        SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:signViewController];
+        _signViewController = [SignViewController new];
+        SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:_signViewController];
         [self presentViewController:signNavigationViewController animated:NO completion:nil];
     }
    
@@ -355,7 +357,6 @@ BOOL firstTimeLoading;
 
 - (void)goToEvent:(NSNotification *)notification {
     NSDictionary *eventInfo = notification.userInfo;
-    NSLog(@"event info: %@", eventInfo);
     WGEvent *newEvent = [[WGEvent alloc] initWithJSON:eventInfo];
     if ([self.events containsObject:newEvent]) {
         WGEvent *presentEvent = (WGEvent *)[self.events objectAtIndex:[self.events indexOfObject:newEvent]];
@@ -1484,6 +1485,10 @@ BOOL firstTimeLoading;
     if (!fetchingUserInfo && [WGProfile currentUser].key) {
         fetchingUserInfo = YES;
         [WGProfile reload:^(BOOL success, NSError *error) {
+            if (!secondTimeFetchingUserInfo) {
+                secondTimeFetchingUserInfo = YES;
+                [_signViewController reloadedUserInfo:success andError:error];
+            }
             if (error) {
                 fetchingUserInfo = NO;
                 return;
