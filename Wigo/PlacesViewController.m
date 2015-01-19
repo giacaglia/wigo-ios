@@ -975,9 +975,9 @@ BOOL secondTimeFetchingUserInfo;
             cell.eventPeopleScrollView.groupID = nil;
         }
         cell.eventPeopleScrollView.placesDelegate = self;
-        /* if ([self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
-            cell.eventPeopleScrollView.contentOffset = CGPointMake([[self.eventOffsetDictionary objectForKey:[event.id stringValue]] intValue], 0);
-        } */
+        if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
+            cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+        }
         [cell updateUI];
         
         if (![event.isRead boolValue] &&
@@ -1044,6 +1044,29 @@ BOOL secondTimeFetchingUserInfo;
     if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
+}
+
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == kTodaySection) {
+        WGEvent *event;
+        if (_isSearching) {
+            int sizeOfArray = (int)[_filteredEvents  count];
+            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return;
+            event = (WGEvent *)[_filteredEvents objectAtIndex:[indexPath row]];
+        } else {
+            int sizeOfArray = (int)[_events count];
+            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return;
+            event = (WGEvent *)[_events objectAtIndex:[indexPath row]];
+        }
+        EventCell *eventCell = (EventCell *)cell;
+        if ([[self.eventOffsetDictionary objectForKey:[event.id stringValue]] isEqualToNumber:@0]) {
+            eventCell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+        }
+        [eventCell.eventPeopleScrollView saveScrollPosition];
+    }
+
+   
+
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section {
@@ -1333,6 +1356,9 @@ BOOL secondTimeFetchingUserInfo;
 #pragma mark - Network Asynchronous Functions
 
 - (void) fetchEventsFirstPage {
+    for (NSString *key in [self.eventOffsetDictionary allKeys]) {
+        [self.eventOffsetDictionary setValue:@0 forKey:key];
+    }
     _allEvents = nil;
     [self fetchEvents];
 }

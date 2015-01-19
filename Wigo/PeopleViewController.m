@@ -159,7 +159,6 @@ NSMutableArray *suggestedArrayView;
     [_searchBar becomeFirstResponder];
     [self.navigationItem setHidesBackButton:YES animated:YES];
     [self.tableViewOfPeople setContentOffset:self.tableViewOfPeople.contentOffset animated:NO];
-
     
     UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
     [cancelButton setTitle:@"Done" forState:UIControlStateNormal];
