@@ -68,8 +68,6 @@
     NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
     
     [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
-
-    if (self.facesCollectionView) [self.facesCollectionView reloadData];
     
     self.eventMessages = nil;
     [self fetchEventMessages];
