@@ -728,38 +728,38 @@
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
-    if (!longGesturePressed && gesture.state == UIGestureRecognizerStateBegan) {
-        [self.bottomContainerView setLeftContentView:nil];
-        self.buttonToggleCamera.hidden = YES;
-        self.buttonFlash.hidden = YES;
-
-        [[self session] setCaptureMode:IQCameraCaptureModeVideo];
-        [[self session] startVideoRecording];
-        
-        LLACircularProgressView *circularProgressView = [[LLACircularProgressView alloc] initWithFrame: self.buttonCapture.frame];
-        // Optionally set the current progress
-        circularProgressView.progress = 0.0f;
-        circularProgressView.tintColor = [FontProperties getBlueColor];
-        circularProgressView.innerObjectTintColor = [FontProperties getOrangeColor];
-        circularProgressView.backgroundColor = [UIColor clearColor];
-        
-        [self.buttonCapture addSubview:circularProgressView];
-        
-        videoTimerCount = kVideoTimeoutMax;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSTimer scheduledTimerWithTimeInterval: 0.01 target: self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": circularProgressView} repeats: YES] fire];
-        });
-        
-        longGesturePressed = YES;
-        
-    }
-    if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && longGesturePressed) {
-
-        [[self session] stopVideoRecording];
-        longGesturePressed = NO;
-        
-    }
+//    if (!longGesturePressed && gesture.state == UIGestureRecognizerStateBegan) {
+//        [self.bottomContainerView setLeftContentView:nil];
+//        self.buttonToggleCamera.hidden = YES;
+//        self.buttonFlash.hidden = YES;
+//
+//        [[self session] setCaptureMode:IQCameraCaptureModeVideo];
+//        [[self session] startVideoRecording];
+//        
+//        LLACircularProgressView *circularProgressView = [[LLACircularProgressView alloc] initWithFrame: self.buttonCapture.frame];
+//        // Optionally set the current progress
+//        circularProgressView.progress = 0.0f;
+//        circularProgressView.tintColor = [FontProperties getBlueColor];
+//        circularProgressView.innerObjectTintColor = [FontProperties getOrangeColor];
+//        circularProgressView.backgroundColor = [UIColor clearColor];
+//        
+//        [self.buttonCapture addSubview:circularProgressView];
+//        
+//        videoTimerCount = kVideoTimeoutMax;
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[NSTimer scheduledTimerWithTimeInterval: 0.01 target: self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": circularProgressView} repeats: YES] fire];
+//        });
+//        
+//        longGesturePressed = YES;
+//        
+//    }
+//    if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && longGesturePressed) {
+//
+//        [[self session] stopVideoRecording];
+//        longGesturePressed = NO;
+//        
+//    }
 }
 
 - (void) videoCaptureTimerFired:(NSTimer *) timer {
