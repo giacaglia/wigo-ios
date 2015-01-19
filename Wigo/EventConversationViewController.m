@@ -118,7 +118,7 @@
     }
     
     myCell.timeLabel.text = [eventMessage.created getUTCTimeStringToLocalTimeString];
-    if ([indexPath compare:self.currentActiveCell] == NSOrderedSame) {
+    if ([indexPath isEqual:self.currentActiveCell]) {
         myCell.isActive = YES;
     } else {
         myCell.isActive = NO;
@@ -139,10 +139,9 @@
 
         FaceCell *cell = (FaceCell *)[collectionView cellForItemAtIndexPath: indexPath];
         
-        if (self.currentActiveCell) {
+        if (![self.currentActiveCell isEqual:indexPath]) {
             [(FaceCell *)[collectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:NO];
         }
-        
         [cell setIsActive: YES];
         
         self.currentActiveCell = indexPath;
@@ -150,9 +149,6 @@
     }
 }
 
-//- (void)updateEventMessage:(NSDictionary *)eventMessage forCell:(UICollectionViewCell *)cell {
-//#warning GUILIANO FIX ME
-//}
 - (void)focusOnContent {
     if (!self.facesHidden) {
         [UIView animateWithDuration:0.5 animations:^{
@@ -384,15 +380,13 @@
     }
     NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
     
+    // Set old face inactive and new one active.
     if (![activeIndexPath isEqual:self.currentActiveCell]) {
-        // Set old face inactive and new one active.
-        if (self.currentActiveCell) {
-            [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:NO];
-        }
-        [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: activeIndexPath] setIsActive:YES];
-        
-        self.currentActiveCell = activeIndexPath;
+        [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:NO];
     }
+    [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: activeIndexPath] setIsActive:YES];
+        
+    self.currentActiveCell = activeIndexPath;
 }
 
 #pragma mark - G's code
@@ -475,10 +469,10 @@
                         [self.mediaScrollView reloadData];
                     }
                 } else {
-                    // [self hideOrShowFacesForPage:(int)page];
                     [self.facesCollectionView reloadData];
                     [self.mediaScrollView reloadData];
                 }
+                [self hideOrShowFacesForPage:MIN(page, self.eventMessages.count - 1)];
             }];
         }
     }
@@ -683,66 +677,42 @@
 }
 
 - (void) setIsActive:(BOOL)isActive {
-        if (_isActive == isActive) {
-            return;
-        }
-    
-        if (isActive) {
-//            CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
-//            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-//            animation.fromValue = [NSNumber numberWithFloat:0.3*(float)sizeOfEachFaceCell];
-//            animation.toValue = [NSNumber numberWithFloat:0.22*(float)sizeOfEachFaceCell];
-//            animation.duration = 0.5;
-//            [self.faceImageView.layer addAnimation: animation forKey:@"cornerRadius"];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [UIView animateWithDuration:0.5 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
-                    [self setToActiveWithNoAnimation];
-                } completion:^(BOOL finished) {}];
-            });
+    if (_isActive == isActive) {
+        return;
+    }
+    if (isActive) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration:0.5 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
+                [self setToActiveWithNoAnimation];
+            } completion:^(BOOL finished) {}];
+        });
 
-        } else {
-//            CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
-//            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-//            animation.fromValue = [NSNumber numberWithFloat:0.22*(float)sizeOfEachFaceCell];
-//            animation.toValue = [NSNumber numberWithFloat:0.3*(float)sizeOfEachFaceCell];
-//            animation.duration = 0.5;
-//            [self.faceImageView.layer addAnimation: animation forKey:@"cornerRadius"];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [UIView animateWithDuration: 0.5    animations:^{
-                    [self resetToInactive];
-                }];
-            });
-
-        }
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIView animateWithDuration: 0.5    animations:^{
+                [self resetToInactive];
+            }];
+        });
+    }
     _isActive = isActive;
 
 }
 
 - (void)setToActiveWithNoAnimation {
-        self.faceAndMediaTypeView.alpha = 1.0f;
-        
-    //    self.faceImageView.frame = CGRectMake(0, 0, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell);
-    //    self.faceImageView.center = self.contentView.center;
-    //    self.faceImageView.layer.cornerRadius = 0.3*sizeOfEachFaceCell;
+    self.faceAndMediaTypeView.alpha = 1.0f;
 
-        self.faceImageView.transform = CGAffineTransformIdentity;
-        
-        self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-        self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-        
-        self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
-        self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
+    self.faceImageView.transform = CGAffineTransformIdentity;
+    
+    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
+    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
+    
+    self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
+    self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
 }
 
 - (void) resetToInactive {
 
     self.faceAndMediaTypeView.alpha = 0.5f;
-    
-//    self.faceImageView.frame = CGRectMake(0, 0, 0.45*sizeOfEachFaceCell, 0.45*sizeOfEachFaceCell);
-//    self.faceImageView.center = self.contentView.center;
-//    self.faceImageView.layer.cornerRadius = 0.22*sizeOfEachFaceCell;
     
     self.faceImageView.transform = CGAffineTransformMakeScale(0.75, 0.75);
 
