@@ -252,7 +252,7 @@
 
 - (void)mediaPickerController:(IQMediaPickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
-    
+    NSLog(@"here");
     if (self.cameraPromptAddToStory) {
         [WGAnalytics tagEvent: @"Go Here, Then Add to Story, Then Picture Captured"];
         self.cameraPromptAddToStory = false;
@@ -302,9 +302,9 @@
         
     }
     
-    else if ( [[info allKeys] containsObject:@"IQMediaTypeVideo"]) {
+    else if ( [[info allKeys] containsObject:IQMediaTypeVideo]) {
         type = kVideoEventType;
-        NSURL *videoURL = [[[info objectForKey:@"IQMediaTypeVideo"] objectAtIndex:0] objectForKey:@"IQMediaURL"];
+        NSURL *videoURL = [[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaURL];
         self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(thumbnailGenerated:)
@@ -335,6 +335,10 @@
                               @"media_mime_type": type
                               };
         }
+        [self uploadContentWithFile:self.fileData
+                        andFileName:@"image0.jpg"
+                         andOptions:self.options];
+
         
     }
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
@@ -345,13 +349,15 @@
                                                 @"created": [NSDate nowStringUTC],
                                                 @"media": zoomedImage
                                                 }];
+        NSLog(@"media info: %@", mutableDict);
     }
     else if ( [[info allKeys] containsObject:IQMediaTypeVideo]) {
-            [mutableDict addEntriesFromDictionary:@{
-                                                    @"user": [WGProfile currentUser],
-                                                    @"created": [NSDate nowStringUTC],
-                                                    @"media": [[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaImage],
-                                                               }];
+//        [mutableDict addEntriesFromDictionary:@{
+//                                                @"user": WGProfile.currentUser,
+//                                                @"created": [NSDate nowStringUTC],
+//                                                @"media": [[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaURL],
+//                                                }];
+//        NSLog(@"media info: %@", mutableDict);
     }
     
     WGEventMessage *newEventMessage = [WGEventMessage serialize:mutableDict];
