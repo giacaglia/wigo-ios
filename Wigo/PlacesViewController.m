@@ -1255,6 +1255,7 @@ BOOL secondTimeFetchingUserInfo;
         conversationViewController.event = event;
         conversationViewController.index = @(eventIndex);
         conversationViewController.eventMessages = collection;
+        conversationViewController.isPeeking = [self isPeeking];
         
         [self presentViewController:conversationViewController animated:YES completion:nil];
     }];
