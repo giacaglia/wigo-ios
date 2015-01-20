@@ -1316,6 +1316,18 @@ BOOL secondTimeFetchingUserInfo;
 
     if (scrollView == _placesTableView) {
         
+#warning TODO: this might be super slow
+        WGCollection *currentEvents;
+        if (_isSearching) {
+            currentEvents = _filteredEvents;
+        } else {
+            currentEvents = _events;
+        }
+        for (int i = 0; i < [currentEvents count]; i++) {
+            EventCell *cell = (EventCell *)[self.placesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            [cell.eventPeopleScrollView saveScrollPosition];
+        }
+        
         if (!self.goElsewhereView) {
             return;
         }
