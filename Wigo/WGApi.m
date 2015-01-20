@@ -70,28 +70,34 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     
     [WGApi addWigoHeaders:manager.requestSerializer passKey:shouldPassKey];
     
-    [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSError *dataError;
-        NSDictionary *response;
-        @try {
-            WGParser *parser = [[WGParser alloc] init];
-            response = [parser replaceReferences:responseObject];
-        }
-        @catch (NSException *exception) {
-            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
-            dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-        }
-        @finally {
+    if (!postQueue) {
+        postQueue = dispatch_queue_create("com.whoisgoingout.wigo.postqueue", DISPATCH_QUEUE_CONCURRENT);
+    }
+    
+    dispatch_async(postQueue, ^(void) {
+        [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            NSError *dataError;
+            NSDictionary *response;
+            @try {
+                WGParser *parser = [[WGParser alloc] init];
+                response = [parser replaceReferences:responseObject];
+            }
+            @catch (NSException *exception) {
+                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                
+                dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            }
+            @finally {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    handler(response, dataError);
+                });
+            }
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                handler(response, dataError);
+                handler(operation.responseObject, error);
             });
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            handler(operation.responseObject, error);
-        });
-    }];
+        }];
+    });
 }
 
 +(void) delete:(NSString *)endpoint withHandler:(ApiResultBlock)handler {
@@ -111,28 +117,34 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     [WGApi addWigoHeaders:manager.requestSerializer passKey:NO];
     
-    [manager DELETE:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSError *dataError;
-        NSDictionary *response;
-        @try {
-            WGParser *parser = [[WGParser alloc] init];
-            response = [parser replaceReferences:responseObject];
-        }
-        @catch (NSException *exception) {
-            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
-            dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-        }
-        @finally {
+    if (!postQueue) {
+        postQueue = dispatch_queue_create("com.whoisgoingout.wigo.postqueue", DISPATCH_QUEUE_CONCURRENT);
+    }
+    
+    dispatch_async(postQueue, ^(void) {
+        [manager DELETE:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            NSError *dataError;
+            NSDictionary *response;
+            @try {
+                WGParser *parser = [[WGParser alloc] init];
+                response = [parser replaceReferences:responseObject];
+            }
+            @catch (NSException *exception) {
+                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                
+                dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            }
+            @finally {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    handler(response, dataError);
+                });
+            }
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                handler(response, dataError);
+                handler(operation.responseObject, error);
             });
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            handler(operation.responseObject, error);
-        });
-    }];
+        }];
+    });
 }
 
 +(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResultBlock)handler {
@@ -190,10 +202,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     }];
     
     if (!postQueue) {
-        postQueue = dispatch_queue_create("com.whoisgoingout.wigo.postqueue", NULL);
+        postQueue = dispatch_queue_create("com.whoisgoingout.wigo.postqueue", DISPATCH_QUEUE_CONCURRENT);
     }
     
-    dispatch_async(postQueue, ^(void) {
+    dispatch_barrier_async(postQueue, ^(void) {
         [operation start];
     });
 }
