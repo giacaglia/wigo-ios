@@ -64,6 +64,7 @@
     _alertShown = NO;
     _fetchingProfilePictures = NO;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self showOnboard];
 }
 
