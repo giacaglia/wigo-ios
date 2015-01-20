@@ -89,9 +89,6 @@
             [self loginUserAsynchronous];
         }
     }
-    else {
-        [WiGoSpinnerView addDancingGToCenterView:self.view];
-    }
 }
 
 - (void) fetchTokensFromFacebook {
@@ -380,6 +377,7 @@
     [WiGoSpinnerView addDancingGToCenterView:self.view];
 
     [[WGProfile currentUser] login:^(BOOL success, NSError *error) {
+        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
         if (error) {
             _fetchingProfilePictures = YES;
             if (error.userInfo && [error.userInfo objectForKey:@"wigoCode"] && [[error.userInfo objectForKey:@"wigoCode"] isEqualToString:@"does_not_exist"]) {
@@ -390,7 +388,6 @@
             [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
             return;
         }
-        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
         [self navigate];
     }];
 }
