@@ -109,6 +109,8 @@ NSMutableArray *suggestedArrayView;
     _lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
 
     [self.navigationController.navigationBar addSubview: _lineView];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
