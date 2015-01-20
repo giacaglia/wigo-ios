@@ -41,6 +41,10 @@
 #define kURLKey @"url"
 #define kSmallKey @"small"
 #define kCropKey @"crop"
+#define kWidthKey @"width"
+#define kHeightKey @"height"
+#define kSmallWidthKey @"small_width"
+#define kSmallHeightKey @"small_height"
 #define kInstaHandle @"instaHandle"
 
 #define kNotificationsKey @"notifications"
@@ -399,9 +403,15 @@ static WGUser *currentUser = nil;
         if (imagesArea && [imagesArea count] > 0) {
             NSDictionary *area = [imagesArea objectAtIndex:0];
             if (area && ![area isEqual:[NSNull null]]) {
+                NSNumber *width = [[self.images objectAtIndex:0] objectForKey:kWidthKey];
+                NSNumber *smallWidth = [[self.images objectAtIndex:0] objectForKey:kSmallWidthKey];
+                float resize = 3.0;
+                if (width && smallWidth) {
+                    resize = [width floatValue] / [smallWidth floatValue];
+                }
                 NSMutableDictionary *smallArea = [[NSMutableDictionary alloc] init];
                 for (id key in [area allKeys]) {
-                    int resizedValue = ([[area objectForKey:key] intValue] / 3);
+                    int resizedValue = ([[area objectForKey:key] intValue] / resize);
                     [smallArea setObject:[NSNumber numberWithInt:resizedValue] forKey:key];
                 }
                 return smallArea;
