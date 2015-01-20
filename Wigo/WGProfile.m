@@ -68,7 +68,12 @@ static WGProfile *currentUser = nil;
 }
 
 +(void) setCurrentUser:(WGUser *)user {
-    currentUser = [[WGProfile alloc] initWithJSON:[user deserialize]];
+    WGProfile *newUser = [[WGProfile alloc] initWithJSON:[user deserialize]];
+    if (![WGProfile currentUser].modified || [currentUser.modified compare:[WGProfile currentUser].modified] == NSOrderedDescending) {
+        currentUser = newUser;
+    } else {
+        NSLog(@"Didn't update current user because modified is <=");
+    }
 }
 
 +(WGProfile *) currentUser {

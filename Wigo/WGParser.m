@@ -15,7 +15,7 @@
 
 -(id) init {
     if (self = [super init]) {
-        self.cache = [[NSCache alloc] init];
+        self.cache = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -23,10 +23,14 @@
 -(id) replaceReferences:(id) object {
     [self addReferencesToCache:object];
     
-    if ([object isKindOfClass:[NSDictionary class]]) {
-        return [self replaceReferencesInDictionary:object];
-    } else if ([object isKindOfClass:[NSArray class]]) {
-        return [self replaceReferencesInArray: object];
+    if ([[self.cache allKeys] count] > 0) {
+        if ([object isKindOfClass:[NSDictionary class]]) {
+            return [self replaceReferencesInDictionary:object];
+        } else if ([object isKindOfClass:[NSArray class]]) {
+            return [self replaceReferencesInArray: object];
+        } else {
+            return object;
+        }
     } else {
         return object;
     }

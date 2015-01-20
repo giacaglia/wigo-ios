@@ -152,7 +152,11 @@ BOOL secondTimeFetchingUserInfo;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
     [self initializeFlashScreen];
+    if (![WGProfile currentUser].key) {
+        [self showFlashScreen];
+    }
 
     [self.view endEditing:YES];
     if (shouldReloadEvents) {
@@ -268,14 +272,16 @@ BOOL secondTimeFetchingUserInfo;
     [self updateTitleView];
 }
 
-- (void)initializeFlashScreen {
+-(void) initializeFlashScreen {
     if (!firstTimeLoading) {
         firstTimeLoading = YES;
         _signViewController = [SignViewController new];
-        SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:_signViewController];
-        [self presentViewController:signNavigationViewController animated:NO completion:nil];
     }
-   
+}
+
+-(void) showFlashScreen {
+    SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:_signViewController];
+    [self presentViewController:signNavigationViewController animated:NO completion:nil];
 }
 
 
@@ -1512,6 +1518,7 @@ BOOL secondTimeFetchingUserInfo;
             }
             if (error) {
                 fetchingUserInfo = NO;
+                [self showFlashScreen];
                 return;
             }
             [self initializeNavigationBar];

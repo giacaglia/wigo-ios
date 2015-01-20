@@ -75,6 +75,9 @@ static char UIScrollViewGifPullToRefresh;
     [self.refreshControl endLoading];
 }
 
+-(void) forceLoad {
+    [self.refreshControl forceLoad];
+}
 
 @end
 
@@ -140,6 +143,23 @@ static char UIScrollViewGifPullToRefresh;
        
     }
     
+}
+
+-(void) forceLoad {
+    [self setState:GifPullToRefreshStateLoading];
+    [UIView animateWithDuration:0.2
+                          delay:0
+                        options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState
+                     animations:^{
+                         self.scrollView.contentOffset = CGPointMake(0, -GifRefreshControlHeight - self.originalContentInsectY );
+                         self.scrollView.contentInset = UIEdgeInsetsMake(GifRefreshControlHeight + self.originalContentInsectY , 0.0f, 0.0f, 0.0f);
+                         
+                     }
+                     completion:^(BOOL finished) {
+                         if (self.pullToRefreshActionHandler) {
+                             self.pullToRefreshActionHandler();
+                         }
+                     }];
 }
 
 - (void)scrollViewContentOffsetChanged

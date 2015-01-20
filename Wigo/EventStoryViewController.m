@@ -70,7 +70,7 @@
     [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
     
     self.eventMessages = nil;
-    [self fetchEventMessages];
+    [self.facesCollectionView forceLoad];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self.navigationController setNavigationBarHidden: YES animated: NO];
