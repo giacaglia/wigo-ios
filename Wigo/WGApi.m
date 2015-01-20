@@ -247,7 +247,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             action = [jsonResponse objectForKey:kActionKey];
             
             fields = [[NSMutableDictionary alloc] init];
-            for (NSDictionary *field in [jsonResponse objectForKey:kFieldsKey]) {
+            for (NSDictionary *field in (NSArray *)[jsonResponse objectForKey:kFieldsKey]) {
                 [fields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
             }
         }
