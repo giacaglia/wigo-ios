@@ -16,7 +16,7 @@
 #import "UIButtonAligned.h"
 #import "RWBlurPopover.h"
 
-@interface EditProfileViewController ()
+@interface EditProfileViewController () <UITextFieldDelegate>
 
 @property UIScrollView *scrollView;
 
@@ -24,6 +24,7 @@
 @property UILabel *totalNumberOfCharactersLabel;
 @property UISwitch *privacySwitch;
 @property UIScrollView *photosScrollView;
+@property (nonatomic, strong) UITextField *instaTextField;
 
 @end
 
@@ -46,6 +47,7 @@ UIViewController *webViewController;
 
     [self initializeBarButton];
     [self initializePhotosSection];
+    [self initializeInstagramHandle];
     [self initializePrivacySection];
     [self initializeWiGoSection];
     
@@ -86,6 +88,7 @@ UIViewController *webViewController;
 
 - (void)saveDataAndGoBack {
     [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+    WGProfile.currentUser.instaHandle = _instaTextField.text;
     [WGProfile currentUser].privacy = _privacySwitch.on ? PRIVATE : PUBLIC;
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         [WiGoSpinnerView hideSpinnerForView:self.view];
@@ -170,14 +173,55 @@ UIViewController *webViewController;
     }
 }
 
+- (void)initializeInstagramHandle {
+    UILabel *instaLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 150 + 15, 100, 20)];
+    instaLabel.text = @"INSTAFAME";
+    instaLabel.textAlignment = NSTextAlignmentLeft;
+    instaLabel.font = [FontProperties getNormalFont];
+    [_scrollView addSubview:instaLabel];
+    
+    UIView *instaView = [[UIView alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 50)];
+    instaView.backgroundColor = UIColor.whiteColor;
+    [_scrollView addSubview:instaView];
+
+    UILabel *atLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 20, instaView.frame.size.height)];
+    atLabel.text = @"@";
+    atLabel.textColor = [FontProperties getOrangeColor];
+    atLabel.font = [FontProperties getSmallFont];
+    [instaView addSubview:atLabel];
+
+    _instaTextField = [[UITextField alloc] initWithFrame:CGRectMake(30, 0, instaView.frame.size.width - 60, instaView.frame.size.height)];
+    _instaTextField.delegate = self;
+    _instaTextField.textColor = [FontProperties getOrangeColor];
+    _instaTextField.font = [FontProperties getSmallFont];
+    _instaTextField.text = WGProfile.currentUser.instaHandle;
+    [[UITextField appearance] setTintColor:[FontProperties getOrangeColor]];
+    _instaTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    _instaTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    [instaView addSubview:_instaTextField];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    if (textField == _instaTextField) {
+        if(range.length + range.location > textField.text.length)
+        {
+            return NO;
+        }
+        
+        NSUInteger newLength = [textField.text length] + [string length] - range.length;
+        return (newLength > 30) ? NO : YES;
+    }
+    else return YES;
+}
+
 - (void) initializePrivacySection {
-    UILabel *privacyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 150 + 15, 100, 20)];
+    UILabel *privacyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 250 + 15, 100, 20)];
     privacyLabel.text = @"PRIVACY";
     privacyLabel.textAlignment = NSTextAlignmentLeft;
     privacyLabel.font = [FontProperties getNormalFont];
     [_scrollView addSubview:privacyLabel];
     
-    UIView *publicView = [[UIView alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 50)];
+    UIView *publicView = [[UIView alloc] initWithFrame:CGRectMake(0, 300, self.view.frame.size.width, 50)];
     publicView.backgroundColor = [UIColor whiteColor];
     UILabel *publicLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 160, publicView.frame.size.height)];
     publicLabel.text = @"Private account";
@@ -189,7 +233,7 @@ UIViewController *webViewController;
     [publicView addSubview:_privacySwitch];
     [_scrollView addSubview:publicView];
     
-    UILabel *publicDetailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 255, self.view.frame.size.width, 40)];
+    UILabel *publicDetailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 355, self.view.frame.size.width, 40)];
     publicDetailLabel.text = @"Turn privacy ON to approve follow requests and restrict your plans to only your followers.";
     publicDetailLabel.textAlignment = NSTextAlignmentCenter;
     publicDetailLabel.font = [FontProperties getSmallPhotoFont];
@@ -199,13 +243,13 @@ UIViewController *webViewController;
 }
 
 - (void) initializeWiGoSection {
-    UILabel *wiGoLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 285 + 40, 100, 20)];
+    UILabel *wiGoLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 385 + 40, 100, 20)];
     wiGoLabel.text = @"Wigo";
     wiGoLabel.textAlignment = NSTextAlignmentLeft;
     wiGoLabel.font = [FontProperties getNormalFont];
     [_scrollView addSubview:wiGoLabel];
     
-    UIButton *helpButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 355, self.view.frame.size.width, 50)];
+    UIButton *helpButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 455, self.view.frame.size.width, 50)];
     helpButton.backgroundColor = [UIColor whiteColor];
     UILabel *helpLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, helpButton.frame.size.height)];
     helpLabel.text = @"Need help? Contact Us";
@@ -214,7 +258,7 @@ UIViewController *webViewController;
     [helpButton addTarget:self action:@selector(sendEmail) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:helpButton];
     
-    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 405, self.view.frame.size.width, 50)];
+    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 505, self.view.frame.size.width, 50)];
     privacyButton.backgroundColor = [UIColor whiteColor];
     UILabel *privacyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 150, privacyButton.frame.size.height)];
     privacyLabel.text = @"Privacy Policy";
@@ -223,7 +267,7 @@ UIViewController *webViewController;
     [privacyButton addTarget:self action:@selector(openPrivacy) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:privacyButton];
     
-    UIButton *termsOfServiceButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 455, self.view.frame.size.width, 50)];
+    UIButton *termsOfServiceButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 555, self.view.frame.size.width, 50)];
     termsOfServiceButton.backgroundColor = [UIColor whiteColor];
     UILabel *termsOfServiceLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 150, termsOfServiceButton.frame.size.height)];
     termsOfServiceLabel.text = @"Terms of Service";
@@ -232,7 +276,7 @@ UIViewController *webViewController;
     [termsOfServiceButton addTarget:self action:@selector(openTerms) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:termsOfServiceButton];
     
-    UIButton *communityStandardsButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 505, self.view.frame.size.width, 50)];
+    UIButton *communityStandardsButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 605, self.view.frame.size.width, 50)];
     communityStandardsButton.backgroundColor = [UIColor whiteColor];
     UILabel *communityStandardsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, termsOfServiceButton.frame.size.height)];
     communityStandardsLabel.text = @"Community Standards";
@@ -241,7 +285,7 @@ UIViewController *webViewController;
     [communityStandardsButton addTarget:self action:@selector(openCommunityStandards) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:communityStandardsButton];
     
-    UIButton *ambassadorButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 555, self.view.frame.size.width, 50)];
+    UIButton *ambassadorButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 655, self.view.frame.size.width, 50)];
     ambassadorButton.backgroundColor = [UIColor whiteColor];
     UILabel *ambassadorButtonLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, termsOfServiceButton.frame.size.height)];
     ambassadorButtonLabel.text = @"Ambassador Dashboard";
@@ -257,11 +301,11 @@ UIViewController *webViewController;
         ambassadorButton.hidden = NO;
     }
     
-    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, 645, 50, 50)];
+    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, 745, 50, 50)];
     iconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
     [_scrollView addSubview:iconImageView];
     
-    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 685, self.view.frame.size.width, 50)];
+    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 785, self.view.frame.size.width, 50)];
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
     NSString *versionString = [info objectForKey:@"CFBundleShortVersionString"];
     versionLabel.text = [NSString stringWithFormat:@"Version %@", versionString];
@@ -269,13 +313,13 @@ UIViewController *webViewController;
     versionLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:versionLabel];
     
-    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 710, self.view.frame.size.width, 50)];
+    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 810, self.view.frame.size.width, 50)];
     builtInBostonLabel.text = @"Built in Boston";
     builtInBostonLabel.font = [FontProperties getSmallFont];
     builtInBostonLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:builtInBostonLabel];
     
-    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 735, self.view.frame.size.width, 50)];
+    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 835, self.view.frame.size.width, 50)];
     NSString *gitCount = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitCount"];
     NSString *gitHash = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitHash"];
     gitCountLabel.text = [NSString stringWithFormat:@"Git Count %@, Git Hash %@", gitCount, gitHash];
@@ -283,7 +327,7 @@ UIViewController *webViewController;
     gitCountLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:gitCountLabel];
     
-    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 755, self.view.frame.size.width, 50)];
+    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 855, self.view.frame.size.width, 50)];
     NSString *debugString = @"";
     
 #if defined(DEBUG)
