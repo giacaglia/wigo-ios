@@ -944,6 +944,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             }
         }
     }
+    else return;
 }
 
 -(void) presentUser:(WGUser *)user {
@@ -1323,7 +1324,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [InstaCell rowHeight]);
-    
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.instaLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [InstaCell rowHeight])];
     self.instaLabel.font = [FontProperties lightFont:25];
     self.instaLabel.textColor = [FontProperties getOrangeColor];

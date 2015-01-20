@@ -16,7 +16,7 @@
 #import "UIButtonAligned.h"
 #import "RWBlurPopover.h"
 
-@interface EditProfileViewController () <UITextFieldDelegate>
+@interface EditProfileViewController () <UITextFieldDelegate, UIScrollViewDelegate>
 
 @property UIScrollView *scrollView;
 
@@ -174,6 +174,13 @@ UIViewController *webViewController;
 }
 
 - (void)initializeInstagramHandle {
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(dismissKeyboard)];
+    tap.cancelsTouchesInView = YES;
+    [_scrollView addGestureRecognizer:tap];
+    
+    _scrollView.delegate = self;
+    
     UILabel *instaLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 150 + 15, 100, 20)];
     instaLabel.text = @"INSTAFAME";
     instaLabel.textAlignment = NSTextAlignmentLeft;
@@ -201,13 +208,23 @@ UIViewController *webViewController;
     [instaView addSubview:_instaTextField];
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self dismissKeyboard];
+}
+
+- (void)dismissKeyboard {
+    [_instaTextField endEditing:YES];
+}
+
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField == _instaTextField) {
         if(range.length + range.location > textField.text.length)
         {
             return NO;
         }
-        
+        NSString *tempString = [[textField.text stringByReplacingCharactersInRange:range withString:string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if ([textField.text isEqualToString:tempString]) return NO;
+            
         NSUInteger newLength = [textField.text length] + [string length] - range.length;
         return (newLength > 30) ? NO : YES;
     }
