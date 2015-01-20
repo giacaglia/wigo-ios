@@ -41,6 +41,7 @@
 #define kURLKey @"url"
 #define kSmallKey @"small"
 #define kCropKey @"crop"
+#define kInstaHandle @"instaHandle"
 
 #define kNotificationsKey @"notifications"
 #define kTapsKey @"taps"
@@ -292,6 +293,17 @@ static WGUser *currentUser = nil;
 
 -(NSDictionary *) properties {
     return [self objectForKey:kPropertiesKey];
+}
+
+- (NSString *)instaHandle {
+    NSDictionary *properties = self.properties;
+    return [properties objectForKey:kInstaHandle];
+}
+
+- (void)setInstaHandle:(NSString *)instaHandle {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:instaHandle forKey:kInstaHandle];
+    self.properties = properties;
 }
 
 -(NSArray *) images {

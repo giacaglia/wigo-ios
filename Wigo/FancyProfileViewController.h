@@ -63,7 +63,12 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @end
 
-
+#define kInstaCellName @"instaCellName"
+@interface InstaCell : UITableViewCell
++ (CGFloat) rowHeight;
+@property (nonatomic, strong) UILabel *instaLabel;
+- (void) setLabelForUser: (WGUser *) user;
+@end
 
 @interface InviteCell: UITableViewCell
 - (void) setLabelsForUser: (WGUser *) user;

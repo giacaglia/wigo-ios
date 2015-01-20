@@ -99,6 +99,7 @@ UIButton *tapButton;
     
     [self.tableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
     [self.tableView registerClass:[SummaryCell class] forCellReuseIdentifier:kSummaryCellName];
+    [self.tableView registerClass:[InstaCell class] forCellReuseIdentifier:kInstaCellName];
     [self.tableView setTableHeaderView: self.imageScrollView];
     self.tableView.showsVerticalScrollIndicator = NO;
     
@@ -755,10 +756,10 @@ UIButton *tapButton;
 #define kImageViewSection 0
 #define kNotificationsSection 1
 #define kGoOutsSection 2
-
+#define kInstagramSection 3
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 4;
 }
 
 
@@ -832,11 +833,16 @@ UIButton *tapButton;
         
         return notificationCell;
     } else if (indexPath.section == kImageViewSection) {
-        UITableViewCell *imageCell =[tableView dequeueReusableCellWithIdentifier: @"ImageScrollViewCell" forIndexPath:indexPath];
+        UITableViewCell *imageCell = [tableView dequeueReusableCellWithIdentifier: @"ImageScrollViewCell" forIndexPath:indexPath];
         
         [self.imageScrollView removeFromSuperview];
         [imageCell.contentView addSubview: self.imageScrollView];
         return imageCell;
+    }
+    else if (indexPath.section == kInstagramSection) {
+        InstaCell *instaCell = [tableView dequeueReusableCellWithIdentifier: kInstaCellName forIndexPath:indexPath];
+        [instaCell setLabelForUser:self.user];
+        return instaCell;
     }
     
     return nil;
@@ -889,6 +895,9 @@ UIButton *tapButton;
     }
     else if (indexPath.section == kImageViewSection) {
         return self.imageScrollView.frame.size.height - _nameView.frame.size.height;
+    }
+    if (indexPath.section == kInstagramSection) {
+        return [InstaCell rowHeight];
     }
     return 0;
 }
@@ -1241,10 +1250,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     return self;
 }
 
-- (void) awakeFromNib {
-    
-}
-
 
 + (CGFloat)rowHeight {
     return 100.0f;
@@ -1290,6 +1295,46 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.titleLabel.textColor = [UIColor lightGrayColor];
     self.titleLabel.numberOfLines = 2;
     [self.contentView addSubview: self.titleLabel];
+}
+
+@end
+
+
+@implementation InstaCell
+
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+
+- (void) awakeFromNib {
+    [self setup];
+}
+
+
++ (CGFloat)rowHeight {
+    return 60.0f;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [InstaCell rowHeight]);
+    
+    self.instaLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [InstaCell rowHeight])];
+    self.instaLabel.font = [FontProperties lightFont:25];
+    self.instaLabel.textColor = [FontProperties getOrangeColor];
+    self.instaLabel.textAlignment = NSTextAlignmentCenter;
+    [self.contentView addSubview:self.instaLabel];
+}
+
+- (void) setLabelForUser: (WGUser *) user {
+    if (user.instaHandle) {
+        self.instaLabel.text = [NSString stringWithFormat:@"@%@", user.instaHandle];
+    }
 }
 
 @end
@@ -1357,8 +1402,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.tappedLabel.alpha = 0;
     
     [self.contentView addSubview:self.tappedLabel];
-    
 }
+
 - (void) inviteTapped {
     UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width, self.frame.size.height)];
     orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
