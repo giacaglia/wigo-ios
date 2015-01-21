@@ -61,17 +61,13 @@ NSMutableArray *coverAlbumArray;
 }
 
 - (void)getFacebookAlbums {
-    [FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"email", @"user_friends", @"user_photos"]
+    [FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"user_photos"]
       allowLoginUI:YES
  completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
      dispatch_async(dispatch_get_main_queue(), ^{
          if (error) {
-             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                 message:error.localizedDescription
-                                                                delegate:nil
-                                                        cancelButtonTitle:@"OK"
-                                                       otherButtonTitles:nil];
-            [alertView show];
+             if (![self gaveUserPermission:[error userInfo]]) [self requestReadPermissions];
+             else [self showErrorNotAccess];
          } else if (session.isOpen) {
              [FBRequestConnection startWithGraphPath:@"/me/albums"
                                           parameters:nil
@@ -80,7 +76,9 @@ NSMutableArray *coverAlbumArray;
                                                        id result,
                                                        NSError *error) {
                                        dispatch_async(dispatch_get_main_queue(), ^(void){
+                                           if (error) NSLog(@"error: %@",error.localizedDescription);
                 NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
+                if (nonCleanAlbums.count == 0) [self requestReadPermissions];
                 NSMutableArray *cleanAlbums = [NSMutableArray new];
                 for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
                     NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
@@ -98,6 +96,45 @@ NSMutableArray *coverAlbumArray;
         }
     });
  }];
+}
+
+
+- (void)requestReadPermissions {
+    [FBSession.activeSession requestNewReadPermissions:@[@"user_photos"]
+                                     completionHandler:^(FBSession *session, NSError *error) {
+                                         if (!error) {
+                                             if ([FBSession.activeSession.permissions
+                                                  indexOfObject:@"user_photos"] == NSNotFound){
+                                                 [self showErrorNotAccess];
+                                             } else {
+                                                 [self getFacebookAlbums];
+                                             }
+                                             
+                                         } else {
+                                             [self showErrorNotAccess];
+                                         }
+                                     }];
+}
+
+- (BOOL)gaveUserPermission:(NSDictionary *)userInfo {
+    if ([[userInfo allKeys] containsObject:@"com.facebook.sdk:HTTPStatusCode"] && [[userInfo allKeys] containsObject:@"com.facebook.sdk:ParsedJSONResponseKey"]) {
+        if ([[userInfo objectForKey:@"com.facebook.sdk:HTTPStatusCode"] isEqualToNumber:@403] &&
+            [[[userInfo objectForKey:@"com.facebook.sdk:ParsedJSONResponseKey"] objectForKey:@"code"] isEqualToNumber:@403]) {
+            return NO;
+        }
+        return YES;
+        
+    }
+    return YES;
+}
+
+- (void)showErrorNotAccess {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:@"Could not load your Facebook Photos"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+    [alertView show];
 }
 
 - (void)getAlbumDetails {
