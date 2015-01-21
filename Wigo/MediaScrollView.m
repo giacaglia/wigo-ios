@@ -79,6 +79,7 @@
 
             return myCell;
         } else {
+#warning Need to disable zoom for video
             CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
             [cameraCell setControllerDelegate:self];
             NSArray *arrayViewContollers = (NSArray *)cameraCell.controller.viewControllers;
@@ -88,7 +89,6 @@
             }
             [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
             return cameraCell;
-
         }
     }
     else if ([mimeType isEqualToString:kImageEventType]) {
@@ -119,7 +119,7 @@
             }
         }
         [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
-        
+
         return myCell;
     }
     else if ([mimeType isEqualToString:kFaceImage]) {
@@ -134,6 +134,7 @@
         [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
         [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
         myCell.isPeeking = self.isPeeking;
+
         return myCell;
     }
     else if ([mimeType isEqualToString:kNotAbleToPost]) {
@@ -142,6 +143,7 @@
         myCell.titleTextLabel.text = @"To add a highlight you must be going here.";
         myCell.avoidAction.hidden = YES;
         myCell.isPeeking = self.isPeeking;
+
         return myCell;
     } else {
         VideoCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"VideoCell" forIndexPath: indexPath];
@@ -158,6 +160,10 @@
         }
         NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
         myCell.moviePlayer.contentURL = videoURL;
+        if (self.firstCell) {
+            [myCell.moviePlayer play];
+            self.firstCell = NO;
+        }
         [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
         return myCell;
     }
@@ -211,9 +217,8 @@
         }
     }
 
-    [self performBlock:^(void){[self playVideoAtPage:page];}
-            afterDelay:0.5
- cancelPreviousRequest:YES];
+    // [self performBlock:^(void){[self playVideoAtPage:page];} afterDelay:0.5 cancelPreviousRequest:YES];
+    [self playVideoAtPage:page];
 }
 
 
@@ -310,10 +315,11 @@
                                                  selector:@selector(thumbnailGenerated:)
                                                      name:MPMoviePlayerThumbnailImageRequestDidFinishNotification
                                                    object:self.moviePlayer];
-        [[NSNotificationCenter defaultCenter] addObserver:self
+        /* [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didFinishPlaying:)
                                                      name:MPMoviePlayerLoadStateDidChangeNotification
-                                                   object:self.moviePlayer];
+                                                   object:self.moviePlayer]; */
+        
         [self.moviePlayer requestThumbnailImagesAtTimes:@[@0.0f] timeOption:MPMovieTimeOptionNearestKeyFrame];
         
         NSError *error;
@@ -412,7 +418,6 @@
 - (void)didFinishPlaying:(NSNotification *)notification {
     [self.moviePlayer stop];
 }
-
 
 - (void)uploadContentWithFile:(NSData *)fileData
                   andFileName:(NSString *)filename
@@ -525,24 +530,24 @@
     
     self.moviePlayer = [[MPMoviePlayerController alloc] init];
     self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+
     self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
     [self.moviePlayer setControlStyle: MPMovieControlStyleNone];
     self.moviePlayer.repeatMode = MPMovieRepeatModeOne;
     self.moviePlayer.shouldAutoplay = NO;
-    [self.moviePlayer prepareToPlay];
     self.moviePlayer.view.frame = self.frame;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerLoadStateChanged:) name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
-    
+    [self.moviePlayer prepareToPlay];
     [self.contentView addSubview:self.moviePlayer.view];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerLoadStateChanged:) name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
     
     self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
     self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.thumbnailImageView.clipsToBounds = YES;
     [self.thumbnailImageView setHidden:NO];
-    UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
+    /* UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
     backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-    [self.thumbnailImageView addSubview:backgroundImageView];
-    
+    [self.thumbnailImageView addSubview:backgroundImageView]; */
     [self.contentView addSubview:self.thumbnailImageView];
     
     // [self.moviePlayer.backgroundView addSubview:self.thumbnailImageView];
@@ -564,13 +569,21 @@
 }
 
 - (void) moviePlayerLoadStateChanged:(NSNotification*)notification {
-    switch ([self.moviePlayer loadState]) {
-        case MPMovieLoadStateUnknown:
-            break;
-        case MPMovieLoadStatePlayable:
-            [self.thumbnailImageView setHidden:YES];
-        default:
-            break;
+    if ([self.moviePlayer loadState] == MPMovieLoadStatePlayable) {
+        NSLog(@"MPMovieLoadStatePlayable");
+    } else if ([self.moviePlayer loadState] == MPMovieLoadStatePlaythroughOK) {
+        NSLog(@"MPMovieLoadStatePlaythroughOK");
+    } else if ([self.moviePlayer loadState] == MPMovieLoadStateStalled) {
+        NSLog(@"MPMovieLoadStateStalled");
+    } else if ([self.moviePlayer loadState] == MPMovieLoadStateUnknown) {
+        NSLog(@"MPMovieLoadStateUnknown");
+    }
+    if (self.moviePlayer.loadState == MPMovieLoadStatePlayable || self.moviePlayer.loadState == MPMovieLoadStatePlaythroughOK) {
+        [self performBlock:^{
+            [self.contentView insertSubview:self.moviePlayer.view aboveSubview:self.thumbnailImageView];
+        } afterDelay:0.1];
+    } else if (self.moviePlayer.loadState == MPMovieLoadStateUnknown) {
+        [self.moviePlayer.view removeFromSuperview];
     }
 }
 

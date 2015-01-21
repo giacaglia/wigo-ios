@@ -405,6 +405,7 @@
     self.mediaScrollView.storyDelegate = self.storyDelegate;
     self.mediaScrollView.isPeeking = self.isPeeking;
     self.mediaScrollView.delegate = self;
+    self.mediaScrollView.firstCell = YES;
     [self.view addSubview:self.mediaScrollView];
     [self.view sendSubviewToBack:self.mediaScrollView];
     

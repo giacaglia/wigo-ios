@@ -33,6 +33,7 @@
 @property (nonatomic, strong) NSNumber *index;
 @property (nonatomic, assign) int maxPage;
 @property (nonatomic, assign) BOOL isFocusing;
+@property (nonatomic, assign) BOOL firstCell;
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, assign) BOOL cameraPromptAddToStory;
 

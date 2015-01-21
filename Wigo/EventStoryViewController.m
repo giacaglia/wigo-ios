@@ -579,6 +579,7 @@
 
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    
     self.conversationViewController.event = self.event;
     self.conversationViewController.index = index;
     
