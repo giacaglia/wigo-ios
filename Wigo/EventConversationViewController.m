@@ -431,7 +431,7 @@
     self.buttonTrash.enabled = NO;
     [self.view addSubview:self.buttonTrash];
     
-    if (self.index) {
+    if (self.index && self.index.intValue >= 0 && self.index.intValue < [self.mediaScrollView numberOfItemsInSection:0]) {
         [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
         self.mediaScrollView.index = self.index;
         self.mediaScrollView.minPage = [self.index intValue];
