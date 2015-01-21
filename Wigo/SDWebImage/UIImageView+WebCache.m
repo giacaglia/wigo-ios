@@ -39,8 +39,8 @@ static char imageURLKey;
 }
 
 - (void)sd_setImageWithURL:(NSURL *)url withArea:(NSDictionary *)area placeholderImage:(UIImage *)placeholder options:(SDWebImageOptions)options progress:(SDWebImageDownloaderProgressBlock)progressBlock completed:(SDWebImageCompletionBlock)completedBlock {
-    
-    __weak NSDictionary* weakArea = area;
+    __weak UIImageView *wself = self;
+
     [self sd_cancelCurrentImageLoad];
     objc_setAssociatedObject(self, &imageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
@@ -49,36 +49,36 @@ static char imageURLKey;
     }
    
     if (url) {
-        __weak UIImageView *wself = self;
         id <SDWebImageOperation> operation = [SDWebImageManager.sharedManager downloadImageWithURL:url options:options progress:progressBlock completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+            __strong typeof(wself) strongSelf = wself;
             if (!wself) return;
             dispatch_main_sync_safe(^{
                 if (!wself) return;
                 if (image) {
-                    if (![weakArea isKindOfClass:[NSNull class]] && weakArea) {
-                        CGRect rect = CGRectMake([[weakArea objectForKey:@"x"] intValue], [[weakArea objectForKey:@"y"] intValue], [[weakArea objectForKey:@"width"] intValue], [[weakArea objectForKey:@"height"] intValue]);
+                    if (![area isKindOfClass:[NSNull class]] && area) {
+                        CGRect rect = CGRectMake([[area objectForKey:@"x"] intValue], [[area objectForKey:@"y"] intValue], [[area objectForKey:@"width"] intValue], [[area objectForKey:@"height"] intValue]);
                         if (!CGRectEqualToRect(CGRectZero, rect)) {
                             CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], rect);
-                            wself.image = [UIImage imageWithCGImage:imageRef];
-                            [wself setNeedsLayout];
+                            strongSelf.image = [UIImage imageWithCGImage:imageRef];
+                            [strongSelf setNeedsLayout];
                             CGImageRelease(imageRef);
                         } else {
                             CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, image.size.width, image.size.width));
-                            wself.image = [UIImage imageWithCGImage:imageRef];
-                            [wself setNeedsLayout];
+                            strongSelf.image = [UIImage imageWithCGImage:imageRef];
+                            [strongSelf setNeedsLayout];
                             CGImageRelease(imageRef);
                         }
                     }
                     else {
                         CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, image.size.width,image.size.width));
-                        wself.image = [UIImage imageWithCGImage:imageRef];
-                        [wself setNeedsLayout];
+                        strongSelf.image = [UIImage imageWithCGImage:imageRef];
+                        [strongSelf setNeedsLayout];
                         CGImageRelease(imageRef);
                     }
                 } else {
                     if ((options & SDWebImageDelayPlaceholder)) {
-                        wself.image = placeholder;
-                        [wself setNeedsLayout];
+                        strongSelf.image = placeholder;
+                        [strongSelf setNeedsLayout];
                     }
                 }
                 if (completedBlock && finished) {
