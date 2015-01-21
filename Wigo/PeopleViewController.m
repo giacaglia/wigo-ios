@@ -794,9 +794,7 @@ NSMutableArray *suggestedArrayView;
             if (numberOfRows > 0 && userInt >= 0 && sizeOfArray > userInt) {
                 [_suggestions replaceObjectAtIndex:userInt withObject:user];
                 secondPartSubview = [self initializeSecondPart];
-                [self.tableViewOfPeople beginUpdates];
-                [self.tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.tableViewOfPeople endUpdates];
+                [_tableViewOfPeople reloadData];
             }
         } else {
             if (_isSearching) {
@@ -804,9 +802,7 @@ NSMutableArray *suggestedArrayView;
                 int sizeOfArray = (int)[_filteredUsers count];
                 if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
                     [_filteredUsers replaceObjectAtIndex:userInt withObject:user];
-                    [self.tableViewOfPeople beginUpdates];
-                    [self.tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
-                    [self.tableViewOfPeople endUpdates];
+                    [_tableViewOfPeople reloadData];
                 }
             }
             else {
@@ -814,9 +810,7 @@ NSMutableArray *suggestedArrayView;
                 int sizeOfArray = (int)[_users count];
                 if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
                     [_users replaceObjectAtIndex:userInt withObject:user];
-                    [self.tableViewOfPeople beginUpdates];
-                    [self.tableViewOfPeople reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:userInt inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
-                    [self.tableViewOfPeople endUpdates];
+                    [_tableViewOfPeople reloadData];
                 }
             }
 
