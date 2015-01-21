@@ -616,6 +616,7 @@
     self.frame = CGRectMake(0, 0, newSizeOfEachFaceCell, sizeOfEachFaceCell);
     self.contentView.frame = self.frame;
     
+    
     self.faceAndMediaTypeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2*(sizeOfEachFaceCell/3),  2*(sizeOfEachFaceCell/3))];
     self.faceAndMediaTypeView.alpha = 0.5f;
     [self.contentView addSubview:self.faceAndMediaTypeView];
@@ -628,6 +629,11 @@
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
+    
+//    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
+//                                      initWithTarget:self action:@selector(panWasRecognized:)];
+//    [self addGestureRecognizer:panner];
+
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
@@ -669,6 +675,28 @@
     _isActive = NO;
 }
 
+//- (void)panWasRecognized:(UIPanGestureRecognizer *)panner {
+//    float finalYEndPoint = 200.0f;
+//    UIView *draggedView = panner.view;
+//    CGPoint offset = [panner translationInView:draggedView.superview];
+//    CGPoint center = draggedView.center;
+////   
+////    if (panner.state == UIGestureRecognizerStateBegan) {
+////        self.startYPosition = center.y;
+////        self.sttar
+////    }
+////    self.transform
+//    if (panner.state == UIGestureRecognizerStateEnded) {
+//        draggedView.center = CGPointMake(center.x, self.startYPosition);
+//    }
+//    else {
+//        draggedView.center = CGPointMake(center.x, center.y + offset.y);
+//    }
+//    
+//    // Reset translation to zero so on the next `panWasRecognized:` message, the
+//    // translation will just be the additional movement of the touch since now.
+//    [panner setTranslation:CGPointZero inView:draggedView.superview];
+//}
 
 
 - (void)setRightLineEnabled:(BOOL)rightLineEnabled {

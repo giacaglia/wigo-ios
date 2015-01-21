@@ -44,6 +44,11 @@
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) UIView *leftLine;
 @property (nonatomic, strong) UIView *rightLine;
+
+
+// For Transition
+@property (nonatomic, assign) CGFloat startYPosition;
+@property (nonatomic, assign) CGSize initialSize;
 @end
 
 @interface FaceFlowLayout : UICollectionViewFlowLayout
