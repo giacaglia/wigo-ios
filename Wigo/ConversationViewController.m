@@ -173,6 +173,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void) initializeRightBarButton {
     CGRect profileFrame = CGRectMake(0, 0, 30, 30);
     UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
+    [profileButton addTarget:self action:@selector(showUser) forControlEvents:UIControlEventTouchUpInside];
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
@@ -182,6 +183,12 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
     self.navigationItem.rightBarButtonItem = profileBarButton;
 }
+
+- (void)showUser {
+    FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [profileViewController setStateWithUser: self.user];
+    profileViewController.user = self.user;
+    [self.navigationController pushViewController:profileViewController animated:YES];}
 
 - (void) goBack {
     [self.user readConversation:^(BOOL success, NSError *error) {
