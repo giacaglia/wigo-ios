@@ -139,7 +139,7 @@ NSMutableArray *suggestedArrayView;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
-        [profileImageView setImageWithURL:self.user.smallCoverImageURL imageArea:[self.user smallCoverImageArea]];
+        [profileImageView setImageWithURL:[self.user smallCoverImageURL] imageArea:[self.user smallCoverImageArea]];
         [profileButton addSubview:profileImageView];
         [profileButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
@@ -364,7 +364,7 @@ NSMutableArray *suggestedArrayView;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setCoverImageForUser:user completed:nil];
+    [profileImageView setSmallImageForUser:user completed:nil];
     [profileButton addSubview:profileImageView];
     profileButton.tag = (int)((xPosition - 10)/130);
     if (![user isCurrentUser]) {
@@ -610,7 +610,7 @@ NSMutableArray *suggestedArrayView;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setCoverImageForUser:user completed:nil];
+    [profileImageView setSmallImageForUser:user completed:nil];
     [profileButton addSubview:profileImageView];
     profileButton.tag = tag;
     if (![user isCurrentUser]) {

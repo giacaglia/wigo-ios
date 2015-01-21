@@ -58,7 +58,7 @@
     UIImageView *faceImageView = [[UIImageView alloc] init];
     faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     faceImageView.clipsToBounds = YES;
-    [faceImageView setImageWithURL:[WGProfile currentUser].smallCoverImageURL];
+    [faceImageView setImageWithURL:[[WGProfile currentUser] smallCoverImageURL]];
     faceImageView.frame = CGRectMake(15, 10, 47, 47);
     faceImageView.layer.cornerRadius = 3;
     faceImageView.layer.borderWidth = 1;
