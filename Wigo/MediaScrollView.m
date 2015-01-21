@@ -154,6 +154,7 @@
         if (![thumbnailURL isKindOfClass:[NSNull class]]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
             [myCell.thumbnailImageView setImageWithURL:imageURL];
+            [myCell.thumbnailImageView setHidden:NO];
         }
         NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
         myCell.moviePlayer.contentURL = videoURL;
@@ -334,11 +335,6 @@
                               @"media_mime_type": type
                               };
         }
-        [self uploadContentWithFile:self.fileData
-                        andFileName:@"image0.jpg"
-                         andOptions:self.options];
-
-        
     }
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
 
@@ -535,15 +531,21 @@
     self.moviePlayer.shouldAutoplay = NO;
     [self.moviePlayer prepareToPlay];
     self.moviePlayer.view.frame = self.frame;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerLoadStateChanged:) name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
+    
     [self.contentView addSubview:self.moviePlayer.view];
     
     self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
     self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.thumbnailImageView.clipsToBounds = YES;
+    [self.thumbnailImageView setHidden:NO];
     UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
     backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
     [self.thumbnailImageView addSubview:backgroundImageView];
-    [self.moviePlayer.backgroundView addSubview:self.thumbnailImageView];
+    
+    [self.contentView addSubview:self.thumbnailImageView];
+    
+    // [self.moviePlayer.backgroundView addSubview:self.thumbnailImageView];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];
@@ -561,6 +563,16 @@
     [self.contentView bringSubviewToFront:self.focusButton];
 }
 
+- (void) moviePlayerLoadStateChanged:(NSNotification*)notification {
+    switch ([self.moviePlayer loadState]) {
+        case MPMovieLoadStateUnknown:
+            break;
+        case MPMovieLoadStatePlayable:
+            [self.thumbnailImageView setHidden:YES];
+        default:
+            break;
+    }
+}
 
 @end
 

@@ -79,14 +79,8 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             NSError *dataError;
             NSDictionary *response;
             @try {
-                NSDate *methodStart = [NSDate date];
-                
                 WGParser *parser = [[WGParser alloc] init];
                 response = [parser replaceReferences:responseObject];
-                
-                NSDate *methodFinish = [NSDate date];
-                NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
-                NSLog(@"executionTime = %f", executionTime);
             }
             @catch (NSException *exception) {
                 NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -287,22 +281,34 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     }];
 }
 
-+(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(UploadResultBlock) handler {
++(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName thumbnailData:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(UploadVideoResultBlock) handler {
     [WGApi get:[NSString stringWithFormat: @"uploads/videos/?filename=%@", fileName] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(jsonResponse, nil, error);
+            handler(jsonResponse, nil, nil, nil, error);
             return;
         }
         
         NSError *dataError = nil;
-        NSString *action;
-        NSMutableDictionary *fields;
+        NSString *videoAction;
+        NSString *thumbnailAction;
+        NSMutableDictionary *videoFields;
+        NSMutableDictionary *thumbnailFields;
+        NSDictionary *videoDictionary;
+        NSDictionary *thumbnailDictionary;
         @try {
-            action = [jsonResponse objectForKey:kActionKey];
+            videoDictionary = [jsonResponse objectForKey:kVideoKey];
+            thumbnailDictionary = [jsonResponse objectForKey:@"thumbnail"];
             
-            fields = [[NSMutableDictionary alloc] init];
-            for (NSDictionary *field in [jsonResponse objectForKey:kFieldsKey]) {
-                [fields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
+            videoAction = [videoDictionary objectForKey:kActionKey];
+            videoFields = [[NSMutableDictionary alloc] init];
+            for (NSDictionary *field in [videoDictionary objectForKey:kFieldsKey]) {
+                [videoFields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
+            }
+            
+            thumbnailAction = [thumbnailDictionary objectForKey:kActionKey];
+            thumbnailFields = [[NSMutableDictionary alloc] init];
+            for (NSDictionary *field in [thumbnailDictionary objectForKey:kFieldsKey]) {
+                [thumbnailFields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
             }
         }
         @catch (NSException *exception) {
@@ -312,11 +318,17 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (dataError) {
-                handler(jsonResponse, fields, dataError);
+                handler(jsonResponse, nil, videoFields, thumbnailFields, dataError);
                 return;
             }
-            [WGApi upload:action fields:fields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-                handler(jsonResponse, fields, error);
+            [WGApi upload:videoAction fields:videoFields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                if (error) {
+                    handler(jsonResponse, nil, videoFields, thumbnailFields, error);
+                    return;
+                }
+                [WGApi upload:thumbnailAction fields:thumbnailFields file:thumbnailData fileName:thumbnailName andHandler:^(NSDictionary *jsonResponse2, NSError *error) {
+                    handler(jsonResponse, jsonResponse2, videoFields, thumbnailFields, error);
+                }];
             }];
         }
     }];
@@ -324,7 +336,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 
 +(void) upload:(NSString *)url fields:(NSDictionary *)fields file:(NSData *)fileData fileName:(NSString *)filename andHandler:(ApiResultBlock)handler {
     
-    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:kPOST  URLString:url parameters:fields constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { [formData appendPartWithFileData:fileData name:kFileKey fileName:filename mimeType:[fields objectForKey:kContentTypeKey]];
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:kPOST  URLString:[NSString stringWithString: url] parameters:fields constructingBodyWithBlock:^(id<AFMultipartFormData> formData) { [formData appendPartWithFileData:fileData name:kFileKey fileName:filename mimeType:[fields objectForKey:kContentTypeKey]];
     } error:nil];
     
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
