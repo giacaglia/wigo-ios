@@ -62,51 +62,44 @@ NSMutableArray *coverAlbumArray;
 
 - (void)getFacebookAlbums {
     [FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"email", @"user_friends", @"user_photos"]
-                                       allowLoginUI:YES
-                                  completionHandler:^(FBSession *session,
-                                                      FBSessionState state,
-                                                      NSError *error) {
-                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                          
-                                          if (error) {
-                                              UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                                                                  message:error.localizedDescription
-                                                                                                 delegate:nil
-                                                                                        cancelButtonTitle:@"OK"
-                                                                                        otherButtonTitles:nil];
-                                              [alertView show];
-                                          } else if (session.isOpen) {
-                                              [FBRequestConnection startWithGraphPath:@"/me/albums"
-                                                                           parameters:nil
-                                                                           HTTPMethod:@"GET"
-                                                                    completionHandler:^(
-                                                                                        FBRequestConnection *connection,
-                                                                                        id result,
-                                                                                        NSError *error
-                                                                                        ) {
-                                                                        dispatch_async(dispatch_get_main_queue(), ^(void){
-                                                                            NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
-                                                                            NSMutableArray *cleanAlbums = [NSMutableArray new];
-                                                                            for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
-                                                                                NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
-                                                                                if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||
-                                                                                    [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
-                                                                                    [cleanAlbums addObject:albumFBGraphObject];
-                                                                                    [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
-                                                                                    [coverIDArray addObject:[albumFBGraphObject objectForKey:@"cover_photo"]];
-                                                                                }
-                                                                            }
-                                                                            _albumArray = [NSArray arrayWithArray:cleanAlbums];
-                                                                            
-                                                                            [self getAlbumDetails];
-                                                                            [self.tableView reloadData];
-                                                                        });
-                                                                    }];
-                                          }
-                                      });
-                                  }];
-
+      allowLoginUI:YES
+ completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
+     dispatch_async(dispatch_get_main_queue(), ^{
+         if (error) {
+             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                 message:error.localizedDescription
+                                                                delegate:nil
+                                                        cancelButtonTitle:@"OK"
+                                                       otherButtonTitles:nil];
+            [alertView show];
+         } else if (session.isOpen) {
+             [FBRequestConnection startWithGraphPath:@"/me/albums"
+                                          parameters:nil
+                                          HTTPMethod:@"GET"
+                                   completionHandler:^(FBRequestConnection *connection,
+                                                       id result,
+                                                       NSError *error) {
+                                       dispatch_async(dispatch_get_main_queue(), ^(void){
+                NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
+                NSMutableArray *cleanAlbums = [NSMutableArray new];
+                for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
+                    NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
+                    if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||  [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
+                        [cleanAlbums addObject:albumFBGraphObject];
+                        [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
+                        if ([albumFBGraphObject objectForKey:@"cover_photo"]) [coverIDArray addObject:[albumFBGraphObject objectForKey:@"cover_photo"]];
+                    }
+                }
+                _albumArray = [NSArray arrayWithArray:cleanAlbums];
+                [self getAlbumDetails];
+                [self.tableView reloadData];
+            });
+        }];
+        }
+    });
+ }];
 }
+
 - (void)getAlbumDetails {
     for (int k = 0; k < [coverIDArray count]; k++) {
         [coverAlbumArray addObject:@""];
