@@ -20,7 +20,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = @"Top 5 Schools";
+    self.title = @"Top Schools";
     self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
     self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
     [self initializeLeftBarButton];

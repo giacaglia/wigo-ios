@@ -245,7 +245,7 @@
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rdx-TC-wio">
                                                     <rect key="frame" x="10" y="18" width="300" height="30"/>
-                                                    <state key="normal" title="TOP 5 SCHOOLS">
+                                                    <state key="normal" title="TOP SCHOOLS">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
