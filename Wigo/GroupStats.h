@@ -20,7 +20,7 @@
 @property (nonatomic, strong) EngagementGraph *dailyEngagement;
 @property (nonatomic, strong) EngagementGraph *weeklyEngagement;
 @property (nonatomic, strong) EngagementGraph *monthlyEngagement;
-
++ (void)getTop25:(ApiResultBlock)handler;
 + (void) loadStats: (void (^)(GroupStats *groupStats, NSError *error)) handler;
 
 @end

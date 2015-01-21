@@ -9,7 +9,7 @@
 #import "GroupStats.h"
 
 #define kStatsApiUrl @"analytics/school/%@/school_page"
-
+#define kTop25StatsUrl @"analytics/schools/"
 
 #define kEngagmentKey @"engagement"
 #define kActivePercentKey @"active"
@@ -26,6 +26,13 @@
 
 @implementation GroupStats
 
+
++ (void)getTop25:(ApiResultBlock)handler {
+    [WGApi get:kTop25StatsUrl withArguments:@{@"ordering": @"-num_members", @"locked": @"false", @"limit": @"25", @"key" : @"q2up893ijea24joi" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(jsonResponse, error);
+    }];
+
+}
 
 + (void)doGet:(ApiResultBlock)handler {
     [WGApi get:[NSString stringWithFormat: kStatsApiUrl, [WGProfile currentUser].group.id] withArguments:@{ @"key" : @"q2up893ijea24joi" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {

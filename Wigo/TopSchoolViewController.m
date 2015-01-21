@@ -11,8 +11,8 @@
 #import "Globals.h"
 #import "UIButtonAligned.h"
 
-@interface TopSchoolViewController ()
 
+@interface TopSchoolViewController ()
 @end
 
 @implementation TopSchoolViewController
@@ -35,6 +35,8 @@
     
     [self.tableView registerClass:[TopSchoolCell class] forCellReuseIdentifier: @"TopSchoolCell"];
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame: CGRectZero];
+    
+    [self loadStats];
 }
 
 - (void) initializeLeftBarButton {
@@ -76,13 +78,21 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TopSchoolCell *cell = [tableView dequeueReusableCellWithIdentifier: @"TopSchoolCell" forIndexPath:indexPath];
     
-    TopSchool *school = self.topSchools[indexPath.row];
+    TopSchool *school = [TopSchool initWithDictionary:self.topSchools[indexPath.row]];
 
-    cell.rankLabel.text = [NSString stringWithFormat:@"%d", (int)(indexPath.row + 1)];
+    cell.rankLabel.text = [NSString stringWithFormat:@"%d.", (int)(indexPath.row + 1)];
     cell.nameLabel.text = school.name;
     cell.countLabel.text = school.numberRegistered.stringValue;
     
     return cell;
+}
+
+- (void)loadStats {
+    [GroupStats getTop25:^(NSDictionary *jsonResponse, NSError *error) {
+        self.topSchools = [jsonResponse objectForKey:@"objects"];
+        [self.tableView reloadData];
+    }];
+
 }
 
 @end
@@ -96,12 +106,12 @@
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
     CGFloat height = [TopSchoolCell rowHeight];
 
-    self.rankLabel = [[UILabel alloc] initWithFrame: CGRectMake(10, 0, 20, height)];
+    self.rankLabel = [[UILabel alloc] initWithFrame: CGRectMake(10, 0, 35, height)];
     self.rankLabel.textColor = [FontProperties getBlueColor];
     self.rankLabel.font = [FontProperties mediumFont: 24];
     [self.contentView addSubview: self.rankLabel];
     
-    self.nameLabel = [[UILabel alloc] initWithFrame: CGRectMake(30, 0, width-60, height)];
+    self.nameLabel = [[UILabel alloc] initWithFrame: CGRectMake(45, 0, width- 100, height)];
     self.nameLabel.textColor = [FontProperties getBlueColor];
     self.nameLabel.font = [FontProperties mediumFont: 24];
     [self.contentView addSubview: self.nameLabel];

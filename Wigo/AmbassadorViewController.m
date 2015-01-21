@@ -348,11 +348,6 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
     //[self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
     TopSchoolViewController *topSchools = [[TopSchoolViewController alloc] init];
     topSchools.view.frame = self.view.frame;
-    
-    TopSchool *school = [TopSchool initWithDictionary: @{@"name": @"Coastal Carolina", @"registered": @5145}];
-    
-    topSchools.topSchools = @[school, school, school];
-    
     [self.navigationController pushViewController: topSchools animated: true];
 }
 

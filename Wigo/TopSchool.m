@@ -15,7 +15,7 @@
     
     TopSchool *school = [TopSchool new];
     school.name = obj[@"name"];
-    school.numberRegistered = obj[@"registered"];
+    school.numberRegistered = obj[@"num_members"];
     
     return school;
 }
