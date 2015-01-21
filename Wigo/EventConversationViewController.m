@@ -442,7 +442,7 @@
 
 - (void)cancelPressed:(id)sender {
     [WGAnalytics tagEvent: @"Close Highlights Tapped"];
-
+    [self.mediaScrollView.lastMoviePlayer stop];
     [self.mediaScrollView closeView];
     [self dismissViewControllerAnimated:YES completion:nil];
 }

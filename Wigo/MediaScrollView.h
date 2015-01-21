@@ -23,6 +23,7 @@
 
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate, IQMediaPickerControllerDelegate>
 
+@property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) WGCollection *eventMessages;
 @property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;

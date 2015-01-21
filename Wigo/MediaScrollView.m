@@ -17,8 +17,6 @@
 @property (nonatomic, strong) NSMutableArray *pageViews;
 
 @property (nonatomic, strong) WGCollection *eventMessagesRead;
-
-@property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) NSMutableDictionary *thumbnails;
 
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
@@ -162,6 +160,7 @@
         myCell.moviePlayer.contentURL = videoURL;
         if (self.firstCell) {
             [myCell.moviePlayer play];
+            self.lastMoviePlayer = myCell.moviePlayer;
             self.firstCell = NO;
         }
         [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
