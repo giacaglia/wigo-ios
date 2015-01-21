@@ -11,6 +11,7 @@
 
 typedef void (^ApiResultBlock)(NSDictionary *jsonResponse, NSError *error);
 typedef void (^UploadResultBlock)(NSDictionary *jsonResponse, NSDictionary *fields, NSError *error);
+typedef void (^UploadVideoResultBlock)(NSDictionary *jsonResponseVideo, NSDictionary *jsonResponseThumbnail, NSDictionary *videoFields, NSDictionary *thumbnailFields, NSError *error);
 typedef void (^WGStartupResult)(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSError *error);
 
 @class WGObject;
@@ -35,7 +36,7 @@ typedef void (^WGStartupResult)(NSString *cdnPrefix, NSNumber *googleAnalyticsEn
 
 +(void) uploadPhoto:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(UploadResultBlock) handler;
 
-+(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(UploadResultBlock) handler;
++(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName thumbnailData:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(UploadVideoResultBlock) handler;
 
 +(void) startup:(WGStartupResult)handler;
 
