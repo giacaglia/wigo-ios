@@ -1333,8 +1333,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setLabelForUser: (WGUser *) user {
-    if (user.instaHandle) {
-        self.instaLabel.text = [NSString stringWithFormat:@"@%@", user.instaHandle];
+    if (user.instaHandle && user.instaHandle.length > 0 && ![user.instaHandle isEqual:@"@"]) {
+        self.instaLabel.text = user.instaHandle;
     }
 }
 

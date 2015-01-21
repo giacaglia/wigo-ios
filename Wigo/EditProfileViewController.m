@@ -182,7 +182,7 @@ UIViewController *webViewController;
     _scrollView.delegate = self;
     
     UILabel *instaLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 150 + 15, 100, 20)];
-    instaLabel.text = @"INSTAFAME";
+    instaLabel.text = @"INSTAGRAM";
     instaLabel.textAlignment = NSTextAlignmentLeft;
     instaLabel.font = [FontProperties getNormalFont];
     [_scrollView addSubview:instaLabel];
@@ -190,16 +190,11 @@ UIViewController *webViewController;
     UIView *instaView = [[UIView alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 50)];
     instaView.backgroundColor = UIColor.whiteColor;
     [_scrollView addSubview:instaView];
-
-    UILabel *atLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 20, instaView.frame.size.height)];
-    atLabel.text = @"@";
-    atLabel.textColor = [FontProperties getOrangeColor];
-    atLabel.font = [FontProperties getSmallFont];
-    [instaView addSubview:atLabel];
-
-    _instaTextField = [[UITextField alloc] initWithFrame:CGRectMake(30, 0, instaView.frame.size.width - 60, instaView.frame.size.height)];
+    
+    _instaTextField = [[UITextField alloc] initWithFrame:CGRectMake(20, 0, instaView.frame.size.width - 40, instaView.frame.size.height)];
     _instaTextField.delegate = self;
     _instaTextField.textColor = [FontProperties getOrangeColor];
+    _instaTextField.placeholder = @"To increase your #Instafame";
     _instaTextField.font = [FontProperties getSmallFont];
     _instaTextField.text = WGProfile.currentUser.instaHandle;
     [[UITextField appearance] setTintColor:[FontProperties getOrangeColor]];
@@ -224,6 +219,11 @@ UIViewController *webViewController;
         }
         NSString *tempString = [[textField.text stringByReplacingCharactersInRange:range withString:string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         if ([textField.text isEqualToString:tempString]) return NO;
+        if (tempString.length == 1) {
+            if ([tempString isEqual:@"@"]) return YES;            
+            textField.text = [NSString stringWithFormat: @"@%@", tempString];
+            return NO;
+        }
             
         NSUInteger newLength = [textField.text length] + [string length] - range.length;
         return (newLength > 30) ? NO : YES;
