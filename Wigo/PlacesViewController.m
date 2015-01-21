@@ -185,7 +185,8 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (BOOL) isPeeking {
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
+    if (WGProfile.currentUser.group.id &&
+        (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id])){
         return NO;
     }
     

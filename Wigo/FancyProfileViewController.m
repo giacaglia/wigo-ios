@@ -808,6 +808,7 @@ UIButton *tapButton;
         if ([_followRequestSummary intValue] > 0) {
             indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
         }
+        if (indexPath.row >= _unexpiredNotifications.count) return notificationCell;
         WGNotification *notification = (WGNotification *)[_unexpiredNotifications objectAtIndex:[indexPath row]];
         if (!notification.fromUser.id) return notificationCell;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
