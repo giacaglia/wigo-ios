@@ -67,7 +67,7 @@ static WGError *sharedWGErrorInstance = nil;
         if (httpStatus == kNotFoundStatusCode) {
             if (invalidField) {
                 titleString = [NSString stringWithFormat:@"Invalid %@", invalidField];
-                messageString = [NSString stringWithFormat:@"Please enter a valid %@", invalidField];
+                messageString = [NSString stringWithFormat:@"Please enter a valid %@.", invalidField];
             } else {
                 titleString    = kUnknownErrorMessage;
                 messageString  = KUnknownErrorMore;
@@ -76,7 +76,7 @@ static WGError *sharedWGErrorInstance = nil;
         } else if (httpStatus == kBadRequestStatusCode) {
             if (invalidField) {
                 titleString = [NSString stringWithFormat:@"Invalid %@", invalidField];
-                messageString = [NSString stringWithFormat:@"Please enter a valid %@", invalidField];
+                messageString = [NSString stringWithFormat:@"Please enter a valid %@.", invalidField];
             } else {
                 titleString    = kUnknownErrorMessage;
                 messageString  = KUnknownErrorMore;
@@ -92,7 +92,7 @@ static WGError *sharedWGErrorInstance = nil;
     }
     
     // Combine message
-    messageString = [NSString stringWithFormat:@"%@. %@", messageString, moreString];
+    messageString = [NSString stringWithFormat:@"%@ %@", messageString, moreString];
     
     if (retryHandler) {
         currentRetryHandler = retryHandler;
