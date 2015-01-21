@@ -85,8 +85,10 @@
         id value = [self.parameters objectForKey:key];
         if ([value isKindOfClass:[WGCollection class]]) {
             [props setObject:[value deserialize] forKey:key];
-        } else if (![value isKindOfClass:[WGObject class]]) {
+        } else if (value && ![value isEqual:[NSNull null]] && ![value isKindOfClass:[WGObject class]]) {
             [props setObject:value forKey:key];
+        } else {
+            NSLog(@"Error: Tried to deserialize key %@ with null value", key);
         }
     }
     
@@ -102,8 +104,10 @@
             [props setObject:[value deserializeShallow] forKey:key];
         } else if ([value isKindOfClass:[WGCollection class]]) {
             [props setObject:[value deserialize] forKey:key];
-        } else {
+        } else if (value && ![value isEqual:[NSNull null]]) {
             [props setObject:value forKey:key];
+        } else {
+            NSLog(@"Error: Tried to deserialize key %@ with null value", key);
         }
     }
     
@@ -119,8 +123,10 @@
             [props setObject:[value deserializeShallow] forKey:key];
         } else if ([value isKindOfClass:[WGCollection class]]) {
             [props setObject:[value deserialize] forKey:key];
-        } else {
+        } else if (value && ![value isEqual:[NSNull null]]) {
             [props setObject:value forKey:key];
+        } else {
+            NSLog(@"Error: Tried to deserialize key %@ with null value", key);
         }
     }
     
@@ -159,8 +165,10 @@
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
     if ([value isKindOfClass:[WGObject class]]) {
         [properties setObject:[value deserialize] forKey:key];
-    } else {
+    } else if (value && ![value isEqual:[NSNull null]]) {
         [properties setObject:value forKey:key];
+    } else {
+        NSLog(@"Error: Tried to post key %@ with null value", key);
     }
     
     NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
@@ -224,8 +232,10 @@
         } else if ([value isKindOfClass:[WGObject class]]) {
             WGObject *valueObject = (WGObject *)value;
             [parametersWithIds setObject:valueObject.id forKey:key];
-        } else {
+        } else if (value && ![value isEqual:[NSNull null]]) {
             [parametersWithIds setObject:value forKey:key];
+        } else {
+            NSLog(@"Error: Tried to post key %@ with null value", key);
         }
     }
     

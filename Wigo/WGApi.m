@@ -79,8 +79,14 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             NSError *dataError;
             NSDictionary *response;
             @try {
+                NSDate *methodStart = [NSDate date];
+                
                 WGParser *parser = [[WGParser alloc] init];
                 response = [parser replaceReferences:responseObject];
+                
+                NSDate *methodFinish = [NSDate date];
+                NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
+                NSLog(@"executionTime = %f", executionTime);
             }
             @catch (NSException *exception) {
                 NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];

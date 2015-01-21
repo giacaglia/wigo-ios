@@ -106,7 +106,9 @@
         myCell.faceAndMediaTypeView.alpha = 0.4f;
     } else {
         myCell.faceAndMediaTypeView.alpha = 1.0f;
-        if (user) [myCell.faceImageView setCoverImageForUser:user completed:nil];
+        if (user) {
+            [myCell.faceImageView setSmallImageForUser:user completed:nil];
+        }
         if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
             myCell.mediaTypeImageView.hidden = YES;

@@ -411,7 +411,7 @@ static WGUser *currentUser = nil;
                 }
                 NSMutableDictionary *smallArea = [[NSMutableDictionary alloc] init];
                 for (id key in [area allKeys]) {
-                    int resizedValue = ([[area objectForKey:key] intValue] / resize);
+                    int resizedValue = ([[area objectForKey:key] floatValue] / resize);
                     [smallArea setObject:[NSNumber numberWithInt:resizedValue] forKey:key];
                 }
                 return smallArea;
