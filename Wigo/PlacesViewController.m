@@ -1515,10 +1515,21 @@ BOOL secondTimeFetchingUserInfo;
             if (!secondTimeFetchingUserInfo) {
                 secondTimeFetchingUserInfo = YES;
                 [_signViewController reloadedUserInfo:success andError:error];
+                if (error) {
+                    fetchingUserInfo = NO;
+                    [self showFlashScreen];
+                    return;
+                }
             }
             if (error) {
                 fetchingUserInfo = NO;
-                [self showFlashScreen];
+                // Second time fetching user info... already logged in
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:^(BOOL didRetry) {
+                    if (didRetry) {
+                        [self fetchUserInfo];
+                        [self fetchEvents];
+                    }
+                }];
                 return;
             }
             [self initializeNavigationBar];

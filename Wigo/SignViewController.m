@@ -68,6 +68,10 @@
     [self showOnboard];
 }
 
+-(void) showBarrierError:(NSError *)error {
+    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+}
+
 - (void)showOnboard {
     [self getFacebookTokensAndLoginORSignUp];
 }

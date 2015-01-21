@@ -15,4 +15,6 @@
 @property SignUpViewController *signUpViewController;
 @property EmailConfirmationViewController *emailConfirmationViewController;
 -(void) reloadedUserInfo:(BOOL)success andError:(NSError *)error;
+-(void) showBarrierError:(NSError *)error;
+
 @end
