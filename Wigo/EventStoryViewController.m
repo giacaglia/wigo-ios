@@ -405,10 +405,16 @@
             [cell addSubview:lineView];
             
             _noHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 70, self.view.frame.size.width, 20)];
-            _noHighlightsLabel.text = @"No highlights yet :-(";
+            NSString *str = @"0001F627";
+            NSScanner *hexScan = [NSScanner scannerWithString:str];
+            unsigned int hexNum;
+            [hexScan scanHexInt:&hexNum];
+            UTF32Char inputChar = hexNum;
+            NSString *res = [[NSString alloc] initWithBytes:&inputChar length:4 encoding:NSUTF32LittleEndianStringEncoding];
+            _noHighlightsLabel.text = [NSString stringWithFormat:@"No highlights yet %@", res];
             _noHighlightsLabel.textAlignment = NSTextAlignmentCenter;
             _noHighlightsLabel.font = [FontProperties lightFont:15.0f];
-            _noHighlightsLabel.textColor = RGB(215, 215, 215);
+            _noHighlightsLabel.textColor = RGB(190, 190, 190);
             _noHighlightsLabel.alpha = 0.0f;
             [cell addSubview:_noHighlightsLabel];
         }

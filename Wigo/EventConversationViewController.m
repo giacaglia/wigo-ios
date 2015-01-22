@@ -650,7 +650,6 @@
 //    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
 //                                      initWithTarget:self action:@selector(panWasRecognized:)];
 //    [self.faceImageView addGestureRecognizer:panner];
-
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
