@@ -478,7 +478,7 @@
                     [self.facesCollectionView reloadData];
                     [self.mediaScrollView reloadData];
                 }
-                [self hideOrShowFacesForPage:MIN(page, self.eventMessages.count - 1)];
+                [self hideOrShowFacesForPage:(int) MIN(page, self.eventMessages.count - 1)];
             }];
         }
     }

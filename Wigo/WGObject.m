@@ -71,11 +71,15 @@
     return [self.created isFromLastDay];
 }
 
--(BOOL) isEqual:(WGObject*)other {
-    if (!other || [other isEqual:[NSNull null]] || [self isEqual:[NSNull null]] || !self.id || !other.id) {
+-(BOOL) isEqual:(id)other {
+    if (!other || ![other isKindOfClass:[WGObject class]]) {
         return NO;
     }
-    return [self.id isEqualToNumber:other.id];
+    WGObject *otherObject = (WGObject *) other;
+    if (!self.id || !otherObject.id) {
+        return NO;
+    }
+    return [self.id isEqualToNumber:otherObject.id];
 }
 
 -(NSDictionary *) deserializeShallow {

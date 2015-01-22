@@ -77,7 +77,6 @@
 
             return myCell;
         } else {
-#warning Need to disable zoom for video
             CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
             [cameraCell setControllerDelegate:self];
             NSArray *arrayViewContollers = (NSArray *)cameraCell.controller.viewControllers;

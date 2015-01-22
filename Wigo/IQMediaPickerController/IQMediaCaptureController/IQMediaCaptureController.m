@@ -735,6 +735,10 @@
 
         [[self session] setCaptureMode:IQCameraCaptureModeVideo];
         
+        self.mediaView.effectiveScale = 1;
+        self.mediaView.transform = CGAffineTransformMakeScale(1, 1);
+        // self.mediaView.exposureView.frame = CGRectMake(0, 0, 70/_effectiveScale, 70/_effectiveScale);
+        
         LLACircularProgressView *circularProgressView = [[LLACircularProgressView alloc] initWithFrame: self.buttonCapture.frame];
         // Optionally set the current progress
         circularProgressView.progress = 0.0f;
