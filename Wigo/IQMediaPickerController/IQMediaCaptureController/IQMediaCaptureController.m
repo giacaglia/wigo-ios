@@ -734,7 +734,6 @@
         self.buttonFlash.hidden = YES;
 
         [[self session] setCaptureMode:IQCameraCaptureModeVideo];
-        [[self session] startVideoRecording];
         
         LLACircularProgressView *circularProgressView = [[LLACircularProgressView alloc] initWithFrame: self.buttonCapture.frame];
         // Optionally set the current progress
@@ -746,13 +745,15 @@
         [self.buttonCapture addSubview:circularProgressView];
         
         videoTimerCount = kVideoTimeoutMax;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSTimer scheduledTimerWithTimeInterval: 0.01 target: self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": circularProgressView} repeats: YES] fire];
-        });
-        
         longGesturePressed = YES;
         
+        [self performBlock:^{
+            [[self session] startVideoRecording];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSTimer scheduledTimerWithTimeInterval: 0.01 target: self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": circularProgressView} repeats: YES] fire];
+            });
+        } afterDelay:0.1];
     }
     if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && longGesturePressed) {
 

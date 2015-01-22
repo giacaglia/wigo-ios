@@ -72,7 +72,7 @@
 }
 
 -(BOOL) isEqual:(WGObject*)other {
-    if (!other || !self.id || !other.id) {
+    if (!other || [other isEqual:[NSNull null]] || [self isEqual:[NSNull null]] || !self.id || !other.id) {
         return NO;
     }
     return [self.id isEqualToNumber:other.id];
@@ -85,7 +85,7 @@
         id value = [self.parameters objectForKey:key];
         if ([value isKindOfClass:[WGCollection class]]) {
             [props setObject:[value deserialize] forKey:key];
-        } else if (value && ![value isEqual:[NSNull null]] && ![value isKindOfClass:[WGObject class]]) {
+        } else if (value && ![value isKindOfClass:[WGObject class]] && ![value isEqual:[NSNull null]]) {
             [props setObject:value forKey:key];
         } else {
             // NSLog(@"Error: Tried to deserialize key %@ with null value", key);

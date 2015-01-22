@@ -88,6 +88,7 @@
 
 @interface VideoCell : MediaCell
 @property (nonatomic, strong) UIImageView *thumbnailImageView;
+@property (nonatomic, strong) UIImageView *thumbnailImageView2;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) UILabel *label;
 @end

@@ -154,7 +154,7 @@
         if (![thumbnailURL isKindOfClass:[NSNull class]]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
             [myCell.thumbnailImageView setImageWithURL:imageURL];
-            [myCell.thumbnailImageView setHidden:NO];
+            [myCell.thumbnailImageView2 setImageWithURL:imageURL];
         }
         NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
         myCell.moviePlayer.contentURL = videoURL;
@@ -461,9 +461,11 @@
                     [self.eventConversationDelegate showErrorMessage];
                     return;
                 }
+                self.firstCell = YES;
                 [self.eventConversationDelegate showCompletedMessage];
                 self.shownCurrentImage = YES;
                 [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
+                // [self playVideoAtPage:(int)(self.eventMessages.count - 2)];
                 if (self.shownCurrentImage) {
                     [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
                 }
@@ -543,13 +545,13 @@
     self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
     self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.thumbnailImageView.clipsToBounds = YES;
-    [self.thumbnailImageView setHidden:NO];
-    /* UIImageView *backgroundImageView = [[UIImageView alloc] initWithFrame:self.frame];
-    backgroundImageView.image = [UIImage imageNamed:@"storyBackground"];
-    [self.thumbnailImageView addSubview:backgroundImageView]; */
+    
     [self.contentView addSubview:self.thumbnailImageView];
     
-    // [self.moviePlayer.backgroundView addSubview:self.thumbnailImageView];
+    self.thumbnailImageView2 = [[UIImageView alloc] initWithFrame:self.frame];
+    self.thumbnailImageView2.contentMode = UIViewContentModeScaleAspectFill;
+    self.thumbnailImageView2.clipsToBounds = YES;
+    [self.moviePlayer.backgroundView addSubview:self.thumbnailImageView2];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];
@@ -579,10 +581,11 @@
     }
     if (self.moviePlayer.loadState == MPMovieLoadStatePlayable || self.moviePlayer.loadState == MPMovieLoadStatePlaythroughOK) {
         [self performBlock:^{
-            [self.contentView insertSubview:self.moviePlayer.view aboveSubview:self.thumbnailImageView];
+            self.thumbnailImageView.alpha = 0.0;
         } afterDelay:0.1];
     } else if (self.moviePlayer.loadState == MPMovieLoadStateUnknown) {
-        [self.moviePlayer.view removeFromSuperview];
+        // [self.moviePlayer.view removeFromSuperview];
+        self.thumbnailImageView.alpha = 1.0;
     }
 }
 
