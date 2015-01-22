@@ -395,7 +395,7 @@ UIButton *tapButton;
     _orangeChatBubbleImageView.center = CGPointMake(_orangeChatBubbleImageView.center.x, _chatButton.center.y - _orangeChatBubbleImageView.frame.size.height/2 + 2);
     
     [_chatButton addSubview:_orangeChatBubbleImageView];
-    _numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, _orangeChatBubbleImageView.frame.size.width, _orangeChatBubbleImageView.frame.size.height - 8)];
+    _numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _orangeChatBubbleImageView.frame.size.width, _orangeChatBubbleImageView.frame.size.height - 8)];
     _numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
     _numberOfChatsLabel.textColor = UIColor.whiteColor;
     _numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];

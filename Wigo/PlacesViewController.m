@@ -846,9 +846,10 @@ BOOL secondTimeFetchingUserInfo;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kTodaySection) {
         if (_isSearching) {
-            return [_filteredEvents count];
+            int hasNextPage = ([_filteredEvents.hasNextPage boolValue] ? 1 : 0);
+            return [_filteredEvents count] + hasNextPage;
         } else {
-            int hasNextPage = ([_events.hasNextPage boolValue] ? 1 : 0);
+            int hasNextPage = ([_allEvents.hasNextPage boolValue] ? 1 : 0);
             return [_events count] + hasNextPage;
         }
     }
@@ -1384,6 +1385,7 @@ BOOL secondTimeFetchingUserInfo;
                     weakSelf.pastDays = [[NSMutableArray alloc] init];
                     weakSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
                     weakSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+                    
                     weakSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                     weakSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                     
