@@ -1238,9 +1238,7 @@ BOOL secondTimeFetchingUserInfo;
     
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
-    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
-        fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
-    }
+    if ([self isPeeking]) fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 
 }

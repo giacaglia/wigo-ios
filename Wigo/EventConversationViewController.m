@@ -15,6 +15,7 @@
 #import "MediaScrollView.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "EventMessagesConstants.h"
+#import "FancyProfileViewController.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 #define newSizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/4
@@ -107,7 +108,8 @@
     } else {
         myCell.faceAndMediaTypeView.alpha = 1.0f;
         if (user) {
-            [myCell.faceImageView setSmallImageForUser:user completed:nil];
+            [myCell setStateForUser:user];
+            myCell.eventConversationDelegate = self;
         }
         if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
@@ -414,6 +416,7 @@
     self.facesCollectionView.showsHorizontalScrollIndicator = NO;
     [self.facesCollectionView setCollectionViewLayout: flow];
     self.facesCollectionView.contentInset = UIEdgeInsetsMake(0, newSizeOfEachFaceCell, 0, newSizeOfEachFaceCell);
+    self.facesCollectionView.clipsToBounds = NO;
     self.facesCollectionView.pagingEnabled = NO;
     
     self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 76, 86, 66)];
@@ -588,6 +591,17 @@
     [self hideOrShowFacesForPage:(int)page];
 }
 
+- (void)presentUser:(WGUser *)user {
+    FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [profileViewController setStateWithUser: user];
+    profileViewController.user = user;
+    if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
+    [self presentViewController:profileViewController animated:YES completion:nil];
+}
+
+- (void)dimOutToPercentage:(float)percentage {
+    
+}
 
 @end
 
@@ -616,10 +630,10 @@
     self.frame = CGRectMake(0, 0, newSizeOfEachFaceCell, sizeOfEachFaceCell);
     self.contentView.frame = self.frame;
     
-    
     self.faceAndMediaTypeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2*(sizeOfEachFaceCell/3),  2*(sizeOfEachFaceCell/3))];
     self.faceAndMediaTypeView.alpha = 0.5f;
     [self.contentView addSubview:self.faceAndMediaTypeView];
+    [self.contentView bringSubviewToFront:self.faceAndMediaTypeView];
  
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell)];
     self.faceImageView.center = self.contentView.center;
@@ -630,9 +644,12 @@
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
     
+//    self.faceImageView.userInteractionEnabled = YES;
+//    self.faceAndMediaTypeView.clipsToBounds = NO;
+//    self.clipsToBounds = NO;
 //    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
 //                                      initWithTarget:self action:@selector(panWasRecognized:)];
-//    [self addGestureRecognizer:panner];
+//    [self.faceImageView addGestureRecognizer:panner];
 
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
@@ -671,32 +688,48 @@
     self.timeLabel.layer.shadowOpacity = 0.5;
     self.timeLabel.layer.shadowRadius = 0.5;
     [self.contentView addSubview:self.timeLabel];
+    [self.contentView sendSubviewToBack:self.timeLabel];
 
     _isActive = NO;
 }
 
-//- (void)panWasRecognized:(UIPanGestureRecognizer *)panner {
-//    float finalYEndPoint = 200.0f;
-//    UIView *draggedView = panner.view;
-//    CGPoint offset = [panner translationInView:draggedView.superview];
-//    CGPoint center = draggedView.center;
-////   
-////    if (panner.state == UIGestureRecognizerStateBegan) {
-////        self.startYPosition = center.y;
-////        self.sttar
-////    }
-////    self.transform
-//    if (panner.state == UIGestureRecognizerStateEnded) {
-//        draggedView.center = CGPointMake(center.x, self.startYPosition);
-//    }
-//    else {
-//        draggedView.center = CGPointMake(center.x, center.y + offset.y);
-//    }
-//    
-//    // Reset translation to zero so on the next `panWasRecognized:` message, the
-//    // translation will just be the additional movement of the touch since now.
-//    [panner setTranslation:CGPointZero inView:draggedView.superview];
-//}
+- (void)panWasRecognized:(UIPanGestureRecognizer *)panner {
+    float finalYEndPoint = 200;
+    UIView *draggedView = panner.view;
+    CGPoint offset = [panner translationInView:draggedView.superview];
+    CGPoint center = draggedView.center;
+
+    if (panner.state == UIGestureRecognizerStateBegan) {
+        self.startYPosition = center.y;
+        self.startSize = draggedView.frame.size;
+    }
+    if (panner.state == UIGestureRecognizerStateEnded) {
+        if (center.y > 150) {
+            [self.eventConversationDelegate presentUser:self.user];
+        }
+        draggedView.center = CGPointMake(center.x, self.startYPosition);
+        draggedView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    }
+    else {
+        if (_isActive) {
+            if (center.y + offset.y > self.startYPosition) {
+                draggedView.center = CGPointMake(center.x, center.y + offset.y);
+            }
+        }
+    }
+    if (_isActive) {
+        if (draggedView.center.y > self.startYPosition && draggedView.center.y <= finalYEndPoint - 30) {
+            float percentage = (finalYEndPoint - self.startYPosition)/(finalYEndPoint - draggedView.center.y);
+            draggedView.transform = CGAffineTransformMakeScale(percentage, percentage);
+            [self.eventConversationDelegate dimOutToPercentage:percentage];
+        }
+    }
+   
+    
+    // Reset translation to zero so on the next `panWasRecognized:` message, the
+    // translation will just be the additional movement of the touch since now.
+    [panner setTranslation:CGPointZero inView:draggedView.superview];
+}
 
 
 - (void)setRightLineEnabled:(BOOL)rightLineEnabled {
@@ -764,6 +797,10 @@
     });
 }
 
+- (void)setStateForUser:(WGUser *)user {
+    [self.faceImageView setCoverImageForUser:user completed:nil];
+    self.user = user;
+}
 
 @end
 

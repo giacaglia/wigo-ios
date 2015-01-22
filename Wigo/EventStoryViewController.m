@@ -55,6 +55,8 @@
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
         [self loadTextViewAndSendButton];
     }
+//    [self addToolTipBanner];
+    
 
     [self loadConversationViewController];
     [self setDetailViewRead];
@@ -423,23 +425,37 @@
 
 
 - (void)loadTextViewAndSendButton {
-    int sizeOfButton = [[UIScreen mainScreen] bounds].size.width/6.4;
-    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width -sizeOfButton - 10, self.view.frame.size.height - sizeOfButton - 10, sizeOfButton, sizeOfButton)];
+    int widthButton = [[UIScreen mainScreen] bounds].size.width/6.4;
+    int heightButton = [[UIScreen mainScreen] bounds].size.width/8;
+    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - widthButton - 15, self.view.frame.size.height - heightButton - 15, widthButton, heightButton)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
-    sendButton.backgroundColor = [FontProperties getOrangeColor];
-    sendButton.layer.borderWidth = 1.0f;
-    sendButton.layer.borderColor = [UIColor clearColor].CGColor;
-    sendButton.layer.cornerRadius = sizeOfButton/2;
-    sendButton.layer.shadowColor = [UIColor blackColor].CGColor;
-    sendButton.layer.shadowOpacity = 0.4f;
-    sendButton.layer.shadowRadius = 5.0f;
-    sendButton.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
     [self.view addSubview:sendButton];
     [self.view bringSubviewToFront:sendButton];
 
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 7, sizeOfButton/2 - 7, 15, 15)];
-    sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, widthButton, heightButton)];
+    sendOvalImageView.image = [UIImage imageNamed:@"cameraPlus"];
     [sendButton addSubview:sendOvalImageView];
+}
+
+- (void)addToolTipBanner {
+    int heightButton = [[UIScreen mainScreen] bounds].size.width/8;
+    UIImageView *highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - heightButton - 15, 233, 89)];
+    highlightImageView.center = CGPointMake(self.view.center.x, highlightImageView.center.y);
+    highlightImageView.image = [UIImage imageNamed:@"highlightBubble"];
+    [self.view addSubview:highlightImageView];
+
+    UILabel *postHighglightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, highlightImageView.frame.size.width, highlightImageView.frame.size.height)];
+    postHighglightLabel.center = CGPointMake(self.view.center.x, postHighglightLabel.center.y);
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a highlight - get the party started."];
+    [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length - 1)];
+    [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(7, 9)];
+    postHighglightLabel.attributedText = string;
+    postHighglightLabel.numberOfLines = 2;
+    postHighglightLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    postHighglightLabel.textAlignment = NSTextAlignmentCenter;
+    [highlightImageView addSubview:postHighglightLabel];
+    
+    
 }
 
 - (void)loadEventPeopleScrollView {

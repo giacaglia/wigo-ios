@@ -40,6 +40,8 @@
 - (void)showCompletedMessage;
 - (void)dismissView;
 - (void)promptCamera;
+- (void)presentUser:(WGUser *)user;
+- (void)dimOutToPercentage:(float)percentage;
 @end
 
 #endif

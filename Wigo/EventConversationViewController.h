@@ -33,6 +33,8 @@
 - (void) resetToInactive;
 - (void)setToActiveWithNoAnimation;
 - (void)updateUIToRead:(BOOL)read;
+- (void)setStateForUser:(WGUser *)user;
+@property (nonatomic, strong) WGUser *user;
 @property (nonatomic, assign) BOOL rightLineEnabled;
 @property (nonatomic, assign) BOOL leftLineEnabled;
 
@@ -45,10 +47,10 @@
 @property (nonatomic, strong) UIView *leftLine;
 @property (nonatomic, strong) UIView *rightLine;
 
-
 // For Transition
 @property (nonatomic, assign) CGFloat startYPosition;
-@property (nonatomic, assign) CGSize initialSize;
+@property (nonatomic, assign) CGSize startSize;
+@property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
 @end
 
 @interface FaceFlowLayout : UICollectionViewFlowLayout
