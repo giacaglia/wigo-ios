@@ -30,7 +30,7 @@
 @property (nonatomic, strong) UIScrollView *backgroundScrollview;
 @property (nonatomic, strong) UIView *lineViewAtTop;
 @property (nonatomic, assign) BOOL movingForward;
-@property (nonatomic, strong) UIImageView *highlightImageView;
+@property (nonatomic, strong) UIButton *highlightButton;
 @property (nonatomic, strong) UILabel *noHighlightsLabel;
 @end
 
@@ -455,13 +455,18 @@
 
 - (void)initializeToolTipBanner {
     int heightButton = [[UIScreen mainScreen] bounds].size.width/8;
-    _highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - heightButton - 15, 233, 89)];
-    _highlightImageView.center = CGPointMake(self.view.center.x, _highlightImageView.center.y);
-    _highlightImageView.image = [UIImage imageNamed:@"highlightBubble"];
-    _highlightImageView.alpha = 0.0f;
-    [self.view addSubview:_highlightImageView];
+    _highlightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - heightButton - 15, 233, 89)];
+    _highlightButton.center = CGPointMake(self.view.center.x, _highlightButton.center.y);
+    [_highlightButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
+    _highlightButton.alpha = 0.0f;
+    _highlightButton.enabled = NO;
+    [self.view addSubview:_highlightButton];
+    
+    UIImageView *highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 233, 89)];
+    highlightImageView.image = [UIImage imageNamed:@"highlightBubble"];
+    [_highlightButton addSubview:highlightImageView];
 
-    UILabel *postHighglightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _highlightImageView.frame.size.width, _highlightImageView.frame.size.height - 15)];
+    UILabel *postHighglightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, highlightImageView.frame.size.width, highlightImageView.frame.size.height - 15)];
     NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a highlight - get\nthe party started."];
     [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length - 1)];
     [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(7, 9)];
@@ -469,7 +474,7 @@
     postHighglightLabel.numberOfLines = 2;
     postHighglightLabel.lineBreakMode = NSLineBreakByWordWrapping;
     postHighglightLabel.textAlignment = NSTextAlignmentCenter;
-    [_highlightImageView addSubview:postHighglightLabel];
+    [_highlightButton addSubview:postHighglightLabel];
 }
 
 - (void)loadEventPeopleScrollView {
@@ -602,12 +607,14 @@
 
 - (void)showOrNotShowToolTip {
     if (![self shouldShowToolTip]) {
-        _highlightImageView.alpha = 0.0f;
+        _highlightButton.alpha = 0.0f;
+        _highlightButton.enabled = NO;
         _noHighlightsLabel.alpha = 0.0f;
     }
     else {
         [UIView animateWithDuration:1.5 animations:^{
-            _highlightImageView.alpha = 1.0f;
+            _highlightButton.alpha = 1.0f;
+            _highlightButton.enabled = YES;
             _noHighlightsLabel.alpha = 1.0f;
         }];
     }
