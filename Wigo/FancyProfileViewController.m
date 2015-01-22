@@ -347,16 +347,16 @@ UIButton *tapButton;
     [_headerButtonView.layer addSublayer: lowerBorder];
     
     _leftProfileButton = [[UIButton alloc] init];
-    _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3, 70);
+    _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3 + 5, 70);
     [_leftProfileButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    _numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _leftProfileButton.frame.size.width, 25)];
+    _numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _leftProfileButton.frame.size.width, 25)];
     _numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
     _numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
     _numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
     _numberOfFollowersLabel.text = [self.user.numFollowers stringValue];
     [_leftProfileButton addSubview:_numberOfFollowersLabel];
     
-    UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _leftProfileButton.frame.size.width, 20)];
+    UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _leftProfileButton.frame.size.width, 20)];
     followersLabel.textColor = [FontProperties getOrangeColor];
     followersLabel.font = [FontProperties scMediumFont:16];
     followersLabel.textAlignment = NSTextAlignmentCenter;
@@ -367,14 +367,14 @@ UIButton *tapButton;
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70);
-    _numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, _rightProfileButton.frame.size.width, 25)];
+    _numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _rightProfileButton.frame.size.width, 25)];
     _numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
     _numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
     _numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
     _numberOfFollowingLabel.text = [self.user.numFollowing stringValue];
     [_rightProfileButton addSubview:_numberOfFollowingLabel];
     
-    UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _rightProfileButton.frame.size.width, 20)];
+    UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _rightProfileButton.frame.size.width, 20)];
     followingLabel.textColor = [FontProperties getOrangeColor];
     followingLabel.font = [FontProperties scMediumFont:16.0F];
     followingLabel.textAlignment = NSTextAlignmentCenter;
@@ -384,7 +384,7 @@ UIButton *tapButton;
     
     _chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70)];
     [_chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
-    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, _chatButton.frame.size.width, 20)];
+    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _chatButton.frame.size.width, 20)];
     chatLabel.textAlignment = NSTextAlignmentCenter;
     chatLabel.text = @"chats";
     chatLabel.textColor = [FontProperties getOrangeColor];
@@ -392,10 +392,10 @@ UIButton *tapButton;
     [_chatButton addSubview:chatLabel];
     
     _orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
-    _orangeChatBubbleImageView.center = CGPointMake(_orangeChatBubbleImageView.center.x, _chatButton.center.y - _orangeChatBubbleImageView.frame.size.height/2);
+    _orangeChatBubbleImageView.center = CGPointMake(_orangeChatBubbleImageView.center.x, _chatButton.center.y - _orangeChatBubbleImageView.frame.size.height/2 + 2);
     
     [_chatButton addSubview:_orangeChatBubbleImageView];
-    _numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _orangeChatBubbleImageView.frame.size.width, _orangeChatBubbleImageView.frame.size.height - 8)];
+    _numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, _orangeChatBubbleImageView.frame.size.width, _orangeChatBubbleImageView.frame.size.height - 8)];
     _numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
     _numberOfChatsLabel.textColor = UIColor.whiteColor;
     _numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
