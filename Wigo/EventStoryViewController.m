@@ -30,6 +30,8 @@
 @property (nonatomic, strong) UIScrollView *backgroundScrollview;
 @property (nonatomic, strong) UIView *lineViewAtTop;
 @property (nonatomic, assign) BOOL movingForward;
+@property (nonatomic, strong) UIImageView *highlightImageView;
+@property (nonatomic, strong) UILabel *noHighlightsLabel;
 @end
 
 
@@ -55,8 +57,7 @@
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
         [self loadTextViewAndSendButton];
     }
-//    [self addToolTipBanner];
-    
+    [self initializeToolTipBanner];
 
     [self loadConversationViewController];
     [self setDetailViewRead];
@@ -378,7 +379,8 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-     return CGSizeMake(collectionView.bounds.size.width, 52);
+    if ([self shouldShowToolTip]) return CGSizeMake(collectionView.bounds.size.width, 85);
+    else return CGSizeMake(collectionView.bounds.size.width, 52);
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
@@ -398,9 +400,17 @@
             highlightLabel.textColor = RGB(162, 162, 162);
             [cell addSubview:highlightLabel];
             
-            UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 30, cell.frame.size.height - 1, 60, 1)];
+            UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 30, 52 - 1, 60, 1)];
             lineView.backgroundColor = RGB(228, 228, 228);
             [cell addSubview:lineView];
+            
+            _noHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 70, self.view.frame.size.width, 20)];
+            _noHighlightsLabel.text = @"No highlights yet :-(";
+            _noHighlightsLabel.textAlignment = NSTextAlignmentCenter;
+            _noHighlightsLabel.font = [FontProperties lightFont:15.0f];
+            _noHighlightsLabel.textColor = RGB(215, 215, 215);
+            _noHighlightsLabel.alpha = 0.0f;
+            [cell addSubview:_noHighlightsLabel];
         }
         
 
@@ -437,25 +447,23 @@
     [sendButton addSubview:sendOvalImageView];
 }
 
-- (void)addToolTipBanner {
+- (void)initializeToolTipBanner {
     int heightButton = [[UIScreen mainScreen] bounds].size.width/8;
-    UIImageView *highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - heightButton - 15, 233, 89)];
-    highlightImageView.center = CGPointMake(self.view.center.x, highlightImageView.center.y);
-    highlightImageView.image = [UIImage imageNamed:@"highlightBubble"];
-    [self.view addSubview:highlightImageView];
+    _highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - heightButton - 15, 233, 89)];
+    _highlightImageView.center = CGPointMake(self.view.center.x, _highlightImageView.center.y);
+    _highlightImageView.image = [UIImage imageNamed:@"highlightBubble"];
+    _highlightImageView.alpha = 0.0f;
+    [self.view addSubview:_highlightImageView];
 
-    UILabel *postHighglightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, highlightImageView.frame.size.width, highlightImageView.frame.size.height)];
-    postHighglightLabel.center = CGPointMake(self.view.center.x, postHighglightLabel.center.y);
-    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a highlight - get the party started."];
+    UILabel *postHighglightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _highlightImageView.frame.size.width, _highlightImageView.frame.size.height - 15)];
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a highlight - get\nthe party started."];
     [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length - 1)];
     [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(7, 9)];
     postHighglightLabel.attributedText = string;
     postHighglightLabel.numberOfLines = 2;
     postHighglightLabel.lineBreakMode = NSLineBreakByWordWrapping;
     postHighglightLabel.textAlignment = NSTextAlignmentCenter;
-    [highlightImageView addSubview:postHighglightLabel];
-    
-    
+    [_highlightImageView addSubview:postHighglightLabel];
 }
 
 - (void)loadEventPeopleScrollView {
@@ -564,6 +572,7 @@
                     return;
                 }
                 strongSelf.eventMessages = collection;
+                [self showOrNotShowToolTip];
                 [strongSelf.facesCollectionView reloadData];
             }];
         } else if ([self.eventMessages.hasNextPage boolValue]) {
@@ -584,6 +593,24 @@
     }
 }
 
+
+- (void)showOrNotShowToolTip {
+    if (![self shouldShowToolTip]) {
+        _highlightImageView.alpha = 0.0f;
+        _noHighlightsLabel.alpha = 0.0f;
+    }
+    else {
+        [UIView animateWithDuration:1.5 animations:^{
+            _highlightImageView.alpha = 1.0f;
+            _noHighlightsLabel.alpha = 1.0f;
+        }];
+    }
+}
+
+- (BOOL)shouldShowToolTip {
+    BOOL isPeeking = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
+    return (self.eventMessages.count == 0) && !isPeeking;
+}
 
 
 - (void)showEventConversation:(NSNumber *)index {
