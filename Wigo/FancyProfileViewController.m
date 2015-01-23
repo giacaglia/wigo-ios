@@ -1407,31 +1407,49 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) inviteTapped {
-    UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width, self.frame.size.height)];
-    orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
-    [self.contentView sendSubviewToBack:orangeBackground];
-    [self.contentView addSubview:orangeBackground];
-    self.titleLabel.hidden = YES;
     
-    self.tappedLabel.textColor = UIColor.whiteColor;
-    self.tappedLabel.alpha = 1;
-    [self.contentView bringSubviewToFront:self.tappedLabel];
     
     self.inviteButton.enabled = NO;
+    
+    [UIView animateWithDuration:0.1f animations:^{
+        self.inviteButton.transform = CGAffineTransformMakeScale(0.5f, 0.5f);
+    } completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.1f animations:^{
+        self.inviteButton.transform = CGAffineTransformMakeScale(0.7f, 0.7f);
+    } completion:^(BOOL finished) {
+        
+        UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width + 15, self.frame.size.height)];
+        orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
+        orangeBackground.layer.cornerRadius = 8.0f;
+        orangeBackground.layer.borderWidth = 1.0f;
+        orangeBackground.layer.borderColor = UIColor.clearColor.CGColor;
+        [self.contentView sendSubviewToBack:orangeBackground];
+        [self.contentView addSubview:orangeBackground];
+        self.titleLabel.hidden = YES;
+        self.tappedLabel.textColor = UIColor.whiteColor;
+        self.tappedLabel.alpha = 1;
+        [self.contentView bringSubviewToFront:self.tappedLabel];
+
     [UIView animateWithDuration:0.2f
                           delay:0.0f
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:^{
         self.inviteButton.alpha = 0.0f;
-        orangeBackground.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        orangeBackground.frame = CGRectMake(-10, 0, self.frame.size.width + 15, self.frame.size.height);
         self.tappedLabel.alpha = 1;
     } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.5f animations:^{
-            self.tappedLabel.textColor = UIColor.lightGrayColor;
-            orangeBackground.alpha = 0.0f;
-        } completion:^(BOOL finished) {
-            [self.delegate inviteTapped];
-        }];
+    [UIView animateWithDuration:0.2f animations:^{
+        orangeBackground.backgroundColor = RGB(231, 222, 214);
+        self.tappedLabel.textColor = UIColor.lightGrayColor;
+    } completion:^(BOOL finished) {
+    [UIView animateWithDuration:0.5f animations:^{
+        orangeBackground.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        [self.delegate inviteTapped];
+    }];
+    }];
+    }];
+    }];
     }];
 }
 @end

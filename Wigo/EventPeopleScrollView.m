@@ -47,9 +47,8 @@
         imgView.frame = CGRectMake(0, 0, self.sizeOfEachImage, self.sizeOfEachImage);
         imgView.contentMode = UIViewContentModeScaleAspectFill;
         imgView.clipsToBounds = YES;
-        [imgView setImageWithURL:[user smallCoverImageURL] imageArea:[user smallCoverImageArea]];
+        [imgView setImageWithURL:[user coverImageURL] imageArea:[user coverImageArea]];
         [imageButton addSubview:imgView];
-        
         
         UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
         if ([user isCurrentUser]) backgroundName.backgroundColor = [FontProperties getBlueColor];

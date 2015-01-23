@@ -75,7 +75,12 @@
 
 -(NSDictionary *) replaceReferencesInDictionary:(NSDictionary *) dictionary {
     NSMutableDictionary *newDict = [[NSMutableDictionary alloc] init];
-    if ([dictionary objectForKey:kReferenceKey]) {
+    
+    if ([dictionary objectForKey:kReferenceKey] && ![self.cache objectForKey:[dictionary objectForKey:kReferenceKey]]) {
+        NSLog(@"Server error, missing ref for dict: %@", dictionary);
+    }
+    
+    if ([dictionary objectForKey:kReferenceKey] && [self.cache objectForKey:[dictionary objectForKey:kReferenceKey]]) {
         return [self.cache objectForKey:[dictionary objectForKey:kReferenceKey]];
     }
     
