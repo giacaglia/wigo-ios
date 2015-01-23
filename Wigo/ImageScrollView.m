@@ -62,16 +62,18 @@
         
         NSDictionary *areaVal = [areaDicts objectAtIndex: i];
         
+        __weak typeof(self) weakSelf = self;
         [profileImgView setImageWithURL:[NSURL URLWithString:[imageURLs objectAtIndex:i]]
                               imageArea:areaVal
                                withInfo:infoDict
                        outputDictionary:@{@"i": [NSNumber numberWithInt:i]}
                 completedWithDictionary:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSDictionary *outputDictionary) {
                     dispatch_async(dispatch_get_main_queue(), ^{
+                        __strong typeof(weakSelf) strongSelf = weakSelf;
                         NSNumber *index = [outputDictionary objectForKey:@"i"];
                         [weakSpinner stopAnimating];
                         if ([index isEqualToNumber:@0] && self.delegate) {
-                            [self.delegate pageChangedTo:0];
+                            [strongSelf.delegate pageChangedTo:0];
                         }
                     });
         }];
