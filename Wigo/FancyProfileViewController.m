@@ -47,9 +47,9 @@
 
 @property UILabel *nameOfPersonLabel;
 @property UIImageView *privateLogoImageView;
-@property UILabel *numberOfChatsLabel;
-@property UIImageView *orangeChatBubbleImageView;
-
+@property (nonatomic, strong) UILabel *numberOfChatsLabel;
+@property (nonatomic, strong) UIImageView *orangeChatBubbleImageView;
+@property (nonatomic, strong) UIView *redChatNotification;
 @end
 
 BOOL isUserBlocked;
@@ -400,6 +400,16 @@ UIButton *tapButton;
     _numberOfChatsLabel.textColor = UIColor.whiteColor;
     _numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
     [_orangeChatBubbleImageView addSubview:_numberOfChatsLabel];
+    
+    _redChatNotification = [[UIView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 + 10, 5, 13, 13)];
+    _redChatNotification.backgroundColor = UIColor.redColor;
+    _redChatNotification.layer.borderColor = [UIColor clearColor].CGColor;
+    _redChatNotification.clipsToBounds = YES;
+    _redChatNotification.layer.borderWidth = 3;
+    _redChatNotification.layer.cornerRadius = 7;
+    _redChatNotification.alpha = 0.0f;
+    [_chatButton addSubview:_redChatNotification];
+    
     [self updateNumberOfChats];
 
     
@@ -414,7 +424,11 @@ UIButton *tapButton;
     if (![unreadChats isEqualToNumber: @0] && [self.user isCurrentUser]) {
         _orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
         _numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
+        [UIView animateWithDuration:1.5f animations:^{
+            _redChatNotification.alpha = 1.0f;
+        }];
     } else {
+        _redChatNotification.alpha = 0.0f;
         _orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
     }
 }
