@@ -72,7 +72,7 @@
                         __strong typeof(weakSelf) strongSelf = weakSelf;
                         NSNumber *index = [outputDictionary objectForKey:@"i"];
                         [weakSpinner stopAnimating];
-                        if ([index isEqualToNumber:@0] && self.delegate) {
+                        if ([index isEqualToNumber:@0] && strongSelf.delegate) {
                             [strongSelf.delegate pageChangedTo:0];
                         }
                     });
