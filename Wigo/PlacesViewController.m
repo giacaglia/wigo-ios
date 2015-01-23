@@ -46,7 +46,6 @@
 
 @property (nonatomic, assign) int tagInteger;
 
-//@property NSMutableArray *filteredContentList;
 @property (nonatomic, assign) BOOL isSearching;
 @property (nonatomic, strong) NSMutableArray *placeSubviewArray;
 @property (nonatomic, strong) UIImageView *searchIconImageView;
@@ -88,7 +87,6 @@ BOOL fetchingUserInfo;
 BOOL shouldAnimate;
 BOOL presentedMobileContacts;
 NSNumber *page;
-NSMutableArray *eventPageArray;
 int sizeOfEachImage;
 BOOL shouldReloadEvents;
 int firstIndexOfNegativeEvent;
@@ -104,7 +102,6 @@ BOOL secondTimeFetchingUserInfo;
 
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
-    eventPageArray = [[NSMutableArray alloc] init];
     fetchingUserInfo = NO;
     self.fetchingEventAttendees = NO;
     shouldAnimate = NO;
@@ -472,7 +469,6 @@ BOOL secondTimeFetchingUserInfo;
     _placesTableView.delegate = self;
     _placesTableView.showsVerticalScrollIndicator = NO;
     [_placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    //[_placesTableView setSeparatorColor:UIColor.clearColor];
     [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
     [_placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
@@ -1409,7 +1405,6 @@ BOOL secondTimeFetchingUserInfo;
                         [[weakSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                     }
                     
-                    [eventPageArray removeAllObjects];
                     [weakSelf fetchedOneParty];
                     weakSelf.fetchingEventAttendees = NO;
                     shouldReloadEvents = YES; 
@@ -1453,7 +1448,6 @@ BOOL secondTimeFetchingUserInfo;
                     [[weakSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                 }
                 
-                [eventPageArray removeAllObjects];
                 [weakSelf fetchedOneParty];
                 weakSelf.fetchingEventAttendees = NO;
                 [weakSelf.placesTableView reloadData];
@@ -1462,7 +1456,6 @@ BOOL secondTimeFetchingUserInfo;
             [WGEvent get:^(WGCollection *collection, NSError *error) {
                 [WiGoSpinnerView removeDancingGFromCenterView:weakSelf.view];
                 if (error) {
-                    // [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     weakSelf.fetchingEventAttendees = NO;
                     return;
                 }
@@ -1493,7 +1486,6 @@ BOOL secondTimeFetchingUserInfo;
                     [[weakSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                 }
                 
-                [eventPageArray removeAllObjects];
                 [weakSelf fetchedOneParty];
                 weakSelf.fetchingEventAttendees = NO;
                 [weakSelf.placesTableView reloadData];
@@ -1695,11 +1687,6 @@ BOOL secondTimeFetchingUserInfo;
 }
 - (void) setup {
     self.backgroundColor = [UIColor whiteColor];
-    
-//    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-//    NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: self.date];
-//    int weekday = (int)[comps weekday];
-//    NSString *dayName = [[[NSDateFormatter alloc] init] weekdaySymbols][weekday - 1];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 30)];
     titleLabel.backgroundColor = [UIColor clearColor];

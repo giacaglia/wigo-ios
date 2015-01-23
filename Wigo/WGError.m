@@ -87,8 +87,13 @@ static WGError *sharedWGErrorInstance = nil;
             moreString    = KUnknownErrorMore;
         }
     } else {
-        messageString = [error localizedDescription];
-        moreString = [error localizedFailureReason] ? [error localizedFailureReason] : @"";
+        if ([[error localizedFailureReason] hasPrefix:@"Exception:"] || [[error localizedDescription] hasPrefix:@"Exception:"]) {
+            messageString = @"Internal Error.";
+            moreString = @"Please try again!";
+        } else {
+            messageString = [error localizedDescription];
+            moreString = [error localizedFailureReason] ? [error localizedFailureReason] : @"";
+        }
     }
     
     // Combine message
