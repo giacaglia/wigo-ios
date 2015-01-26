@@ -12,6 +12,7 @@
 #import "WGUser.h"
 #import "WGCollection.h"
 #import "WGEvent.h"
+#import "WGMessage.h"
 
 @protocol UserSelectDelegate <NSObject>
 - (void)showUser:(WGUser *)user;
@@ -44,5 +45,10 @@
 - (void)dimOutToPercentage:(float)percentage;
 - (void)createBlurViewUnderView:(UIView *)view;
 @end
+
+@protocol ConversationCellDelegate <NSObject>
+- (void)addMessageFromSender:(WGMessage *)message;
+@end
+
 
 #endif

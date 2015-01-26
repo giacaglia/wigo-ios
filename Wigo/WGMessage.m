@@ -163,4 +163,39 @@
     }];
 }
 
+#pragma mark JSQMessageData protocol
+
+- (NSString *)senderId {
+    return [NSString stringWithFormat:@"%@", self.user.id];
+}
+
+- (NSString *)senderDisplayName {
+    return [self.user fullName];
+}
+
+- (NSDate *)date {
+    return self.created;
+}
+
+- (BOOL)isMediaMessage {
+    return NO;
+}
+
+- (NSUInteger)hash {
+    return [self.id integerValue];
+}
+
+- (NSString *)text {
+    return self.message;
+}
+
+/**
+ *  @return The media item of the message.
+ *
+ *  @warning You must not return `nil` from this method.
+ */
+- (id<JSQMessageMediaData>)media {
+    return nil;
+}
+
 @end

@@ -151,6 +151,7 @@ BOOL secondTimeFetchingUserInfo;
     
     [self initializeFlashScreen];
     if (![WGProfile currentUser].key) {
+        [_signViewController reloadedUserInfo:NO andError:nil];
         [self showFlashScreen];
     }
 
@@ -882,7 +883,7 @@ BOOL secondTimeFetchingUserInfo;
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == kTodaySection) {
-        return [TodayHeader initWithDay: [NSDate date]];
+        return [TodayHeader initWithDay: [NSDate dateInLocalTimezone]];
     }
     else if (section == kHighlightsEmptySection) {
         return [HighlightsHeader init];

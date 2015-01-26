@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import "JSQMessagesViewController/JSQMessages.h"
 #import "UIImageView+ImageArea.h"
 
 #import "FontProperties.h"

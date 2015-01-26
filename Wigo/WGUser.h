@@ -9,6 +9,7 @@
 #import "WGObject.h"
 #import "WGCollection.h"
 #import "WGGroup.h"
+#import "JSQMessagesViewController/JSQMessages.h"
 
 @class WGEvent;
 
@@ -38,7 +39,7 @@ typedef enum State {
     OTHER_SCHOOL_USER_STATE
 } State;
 
-@interface WGUser : WGObject
+@interface WGUser : WGObject <JSQMessageAvatarImageDataSource>
 
 typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
@@ -84,6 +85,8 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSNumber* numUnreadConversations;
 @property NSNumber* numUnreadNotifications;
 @property NSNumber* numUnreadUsers;
+
+@property UIImageView *avatarView;
 
 +(WGUser *)serialize:(NSDictionary *)json;
 

@@ -28,6 +28,7 @@ typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error
 
 -(NSArray *) deserialize;
 
+-(void) reverse;
 -(void) exchangeObjectAtIndex:(NSUInteger)id1 withObjectAtIndex:(NSUInteger)id2;
 -(void) replaceObjectAtIndex:(NSUInteger)index withObject:(WGObject *)object;
 -(void) addObjectsFromCollection:(WGCollection *)newCollection;

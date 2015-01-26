@@ -10,6 +10,8 @@
 
 @interface NSDate (WGDate)
 
++(NSDate *) dateInLocalTimezone;
+
 -(NSString *) joinedString;
 
 -(NSString *) getUTCTimeStringToLocalTimeString;

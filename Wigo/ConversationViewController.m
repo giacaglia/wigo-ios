@@ -11,40 +11,27 @@
 #import "UIButtonAligned.h"
 #import "FancyProfileViewController.h"
 
+#define kTimeDifferenceToShowDate 3600
+
 @interface ConversationViewController ()
 
-@property UIScrollView *scrollView;
-@property int positionOfLastMessage;
-@property UIView *chatTextFieldWrapper;
-@property CGRect frameOfChatField;
-@property UITextView *messageTextView;
-
-@property UIButton *sendButton;
 @property WGUser *user;
 @property WGCollection *messages;
 @property UIView *viewForEmptyConversation;
-@property UILabel *whiteLabelForTextField;
 
 @end
 
-NSNumber *page;
-BOOL fetching;
+JSQMessagesBubbleImageFactory *bubbleFactory;
 FancyProfileViewController *profileViewController;
-BOOL didBeginEditing;
+BOOL fetching;
 
 @implementation ConversationViewController
-
-static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCurve curve)
-{
-    return (UIViewAnimationOptions)curve << 16;
-}
 
 - (id)initWithUser: (WGUser *)user
 {
     self = [super init];
     if (self) {
         self.user = user;
-        [self initializeNotificationObservers];
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -54,7 +41,6 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 {
     self = [super init];
     if (self) {
-        [self initializeNotificationObservers];
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -63,19 +49,37 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-
-
+    
+    bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
+    
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
-    [self initializeScrollView];
-    [self initializeTapHandler];
-    [self initializeTextBox];
+    
+    self.showLoadEarlierMessagesHeader = NO;
+    self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero;
+    self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
+    
+    self.automaticallyScrollsToMostRecentMessage = YES;
+    
+    UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 1)];
+    bottomLine.backgroundColor = [FontProperties getLightOrangeColor];
+    [self.view addSubview:bottomLine];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+    [self fetchFirstPageMessages];
 }
 
-
 - (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear: animated];
+    [super viewWillAppear:animated];
     
     // Title setup
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
@@ -85,77 +89,50 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[FontProperties getOrangeColor] forKey:NSForegroundColorAttributeName];
     
     self.title = [self.user fullName];
+    
+    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.translucent = NO;
+    
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    self.collectionView.collectionViewLayout.springinessEnabled = YES;
+    
     [WGAnalytics tagEvent:@"Conversation View"];
-    [self fetchFirstPageMessages];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    didBeginEditing = NO;
 }
 
-- (void) initializeNotificationObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillBeHidden:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(addMessage:)
-                                                 name:@"updateConversation"
-                                               object:nil];
-
-
-}
-
-- (void) addFirstPageMessages {
-    _positionOfLastMessage = 5;
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage + 50);
-    [[_scrollView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    for (WGMessage *message in _messages) {
-        if ([message.user isCurrentUser]) {
-            [self addMessageFromSender:message];
-        } else {
-            [self addMessageFromReceiver:message];
-        }
+-(void) keyboardWillShow: (NSNotification *)notification {
+    if (_viewForEmptyConversation) {
+        [UIView
+         animateWithDuration:0.5
+         animations:^{
+             _viewForEmptyConversation.frame = CGRectMake(_viewForEmptyConversation.frame.origin.x, _viewForEmptyConversation.frame.origin.y / 2, _viewForEmptyConversation.frame.size.width, _viewForEmptyConversation.frame.size.height);
+         }];
     }
-    if ([_messages count] == 0) {
-        [self initializeMessageForEmptyConversation];
-    }
-    [_scrollView scrollRectToVisible:CGRectMake(_scrollView.frame.origin.x, _scrollView.frame.origin.y , _scrollView.contentSize.width, _scrollView.contentSize.height) animated:NO];
 }
 
-- (void) addMessages:(WGCollection *)messages {
-    int oldContentSize = _scrollView.contentSize.height;
-    _positionOfLastMessage = 5;
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
-    for (WGMessage *message in messages) {
-        _positionOfLastMessage = 0;
-        if ([message.user isCurrentUser])
-            [self addMessageFromSender:message];
-        else
-            [self addMessageFromReceiver:message];
+-(void) keyboardWillHide: (NSNotification *)notification {
+    if (_viewForEmptyConversation) {
+        [UIView
+         animateWithDuration:0.5
+         animations:^{
+             _viewForEmptyConversation.frame = CGRectMake(_viewForEmptyConversation.frame.origin.x, _viewForEmptyConversation.frame.origin.y * 2, _viewForEmptyConversation.frame.size.width, _viewForEmptyConversation.frame.size.height);
+         }];
     }
-    _scrollView.contentOffset = CGPointMake(0, _scrollView.contentSize.height);
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _scrollView.contentSize.height + oldContentSize);
 }
 
-- (void) initializeScrollView {
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    _positionOfLastMessage = 10;
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _positionOfLastMessage);
-    _scrollView.delegate = self;
-    [self.view addSubview:_scrollView];
+- (NSString *)senderDisplayName {
+    return [[WGProfile currentUser] fullName];
+}
+
+- (NSString *)senderId {
+    return [NSString stringWithFormat:@"%@", [WGProfile currentUser].id];
 }
 
 - (void) initializeLeftBarButton {
@@ -168,13 +145,13 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
     [barItem setCustomView:barBt];
     self.navigationItem.leftBarButtonItem = barItem;
+    self.inputToolbar.contentView.leftBarButtonItem = nil;
 }
 
 - (void) initializeRightBarButton {
-    CGRect profileFrame = CGRectMake(0, 0, 30, 30);
-    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
+    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 30, 30) andType:@3];
     [profileButton addTarget:self action:@selector(showUser) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
+    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
     [profileImageView setSmallImageForUser:self.user completed:nil];
@@ -184,267 +161,154 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     self.navigationItem.rightBarButtonItem = profileBarButton;
 }
 
-- (void)showUser {
-    FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-    [profileViewController setStateWithUser: self.user];
-    profileViewController.user = self.user;
-    [self.navigationController pushViewController:profileViewController animated:YES];}
+- (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return (WGMessage *)[_messages objectAtIndex:indexPath.item];
+}
+
+- (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return nil;
+}
+
+- (id<JSQMessageBubbleImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView messageBubbleImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    WGMessage *message = (WGMessage *)[_messages objectAtIndex:indexPath.item];
+    
+    if ([message.senderId isEqualToString:self.senderId]) {
+        return [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    }
+    
+    return [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor orangeColor]];
+    
+}
+
+- (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
+    
+    WGMessage *message = (WGMessage *)[_messages objectAtIndex:indexPath.item];
+    if (indexPath.item == 0) {
+        return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.created];
+    }
+    WGMessage *previousMessage = (WGMessage *)[_messages objectAtIndex:indexPath.item - 1];
+    if (previousMessage && [message.created timeIntervalSinceDate:previousMessage.created] > kTimeDifferenceToShowDate) {
+        return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.created];
+    }
+    
+    return nil;
+}
+
+- (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForMessageBubbleTopLabelAtIndexPath:(NSIndexPath *)indexPath {
+    return nil;
+}
+
+- (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellBottomLabelAtIndexPath:(NSIndexPath *)indexPath {
+    return nil;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return [_messages count];
+}
+
+- (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    /**
+     *  Override point for customizing cells
+     */
+    JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
+    
+    WGMessage *message = (WGMessage *)[_messages objectAtIndex:indexPath.item];
+    
+    if (!message.isMediaMessage) {
+        
+        if ([message.senderId isEqualToString:self.senderId]) {
+            cell.textView.textColor = [UIColor blackColor];
+        }
+        else {
+            cell.textView.textColor = [UIColor whiteColor];
+        }
+        
+        cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
+                                              NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
+    }
+    
+    return cell;
+}
+
+- (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
+                   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
+    WGMessage *message = (WGMessage *)[_messages objectAtIndex:indexPath.item];
+    if (indexPath.item == 0) {
+        return kJSQMessagesCollectionViewCellLabelHeightDefault;
+    }
+    WGMessage *previousMessage = (WGMessage *)[_messages objectAtIndex:indexPath.item - 1];
+    if (previousMessage && [message.created timeIntervalSinceDate:previousMessage.created] > kTimeDifferenceToShowDate) {
+        return kJSQMessagesCollectionViewCellLabelHeightDefault;
+    }
+    
+    return 0.0f;
+}
+
+- (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
+                   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForMessageBubbleTopLabelAtIndexPath:(NSIndexPath *)indexPath {
+    return 0.0f;
+}
+
+- (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
+                   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellBottomLabelAtIndexPath:(NSIndexPath *)indexPath {
+    return 0.0f;
+}
+
+- (void)collectionView:(JSQMessagesCollectionView *)collectionView
+                header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender {
+    [self fetchMessages];
+}
 
 - (void) goBack {
     [self.user readConversation:^(BOOL success, NSError *error) {
         // Do nothing?
     }];
+    
+    self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
+    self.navigationController.navigationBar.translucent = YES;
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void) initializeTapHandler {
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                action:@selector(dismissKeyboard)];
-    tap.cancelsTouchesInView = YES;
-    [_scrollView addGestureRecognizer:tap];
+- (void)showUser {
+    FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [profileViewController setStateWithUser: self.user];
+    profileViewController.user = self.user;
+    
+    self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
+    self.navigationController.navigationBar.translucent = YES;
+    
+    [self.navigationController pushViewController:profileViewController animated:YES];
 }
 
--(void)dismissKeyboard {
-    [self.view endEditing:YES];
-}
-
-- (void)addMessageFromReceiver:(WGMessage *)message {
-    UIView *messageWrapper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
-    messageWrapper.backgroundColor = RGB(234, 234, 234);
-    [messageWrapper.layer setCornerRadius:5];
-    messageWrapper.clipsToBounds = YES;
-    [_scrollView addSubview:messageWrapper];
-    
-    // Add text to the wrapper
-    UILabel *messageFromReceiver = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3 , 50)];
-    messageFromReceiver.backgroundColor = RGB(234, 234, 234);
-    messageFromReceiver.text = [message message];
-    messageFromReceiver.font = [FontProperties lightFont:15.0f];
-    messageFromReceiver.numberOfLines = 0;
-    messageFromReceiver.lineBreakMode = NSLineBreakByWordWrapping;
-    [messageFromReceiver sizeToFit];
-    
-    // Adjust size of the wrapper
-    CGSize sizeOfMessage = messageFromReceiver.frame.size;
-    messageWrapper.frame = CGRectMake(10, _positionOfLastMessage , MAX(sizeOfMessage.width + 20, 100+ 20), sizeOfMessage.height + 20);
-    [messageWrapper addSubview:messageFromReceiver];
-
-    [self addTimerOfMessage:message ToView:messageWrapper];
-    
-    // Left Image view for the chat
-    UIImageView *leftBarBeforeMessage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"leftBeforeChatIcon"]];
-    leftBarBeforeMessage.frame = CGRectMake(0, _positionOfLastMessage + messageFromReceiver.frame.size.height + 20 - 5, 10, 15);
-    [_scrollView addSubview:leftBarBeforeMessage];
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _scrollView.contentSize.height + messageWrapper.frame.size.height + 10);
-    _positionOfLastMessage += messageWrapper.frame.size.height + 10;
-    if ([page intValue] > 2) {
-        for (UIView *messageView in [_scrollView subviews]) {
-            messageView.frame = CGRectMake(messageView.frame.origin.x, messageView.frame.origin.y + messageWrapper.frame.size.height + 10, messageView.frame.size.width, messageView.frame.size.height);
+-(void) didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
+    WGMessage *message = [[WGMessage alloc] init];
+    message.message = text;
+    message.created = date;
+    message.toUser = self.user;
+    message.user = [WGProfile currentUser];
+    [message create:^(BOOL success, NSError *error) {
+        if (error) {
+            [_messages removeObject:message];
+            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
         }
-    }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.collectionView reloadData];
+            [self scrollToBottomAnimated:YES];
+        });
+    }];
+    [_viewForEmptyConversation removeFromSuperview];
+    self.inputToolbar.contentView.textView.text = @"";
+    [_messages addObject:message];
+    [self finishReceivingMessageAnimated:YES];
 }
 
-
-- (void)addMessageFromSender:(WGMessage *)message {
-    UIView *messageWrapper = [[UIView alloc] initWithFrame:CGRectMake(10, _positionOfLastMessage, 2*self.view.frame.size.width/3, 50)];
-    messageWrapper.backgroundColor = RGB(250, 233, 212);
-    [messageWrapper.layer setCornerRadius:5];
-    messageWrapper.clipsToBounds = YES;
-    [_scrollView addSubview:messageWrapper];
-    
-    // Add text to the wrapper
-    UILabel *messageFromSender = [[UILabel alloc] initWithFrame:CGRectMake(10, 10 , 2*self.view.frame.size.width/3, 50)];
-    messageFromSender.text = [message message];
-    messageFromSender.textAlignment = NSTextAlignmentRight;
-    messageFromSender.font = [FontProperties lightFont:15.0f];
-    messageFromSender.numberOfLines = 0;
-    messageFromSender.lineBreakMode = NSLineBreakByWordWrapping;
-    [messageFromSender sizeToFit];
-    
-    // Adjust the size of the wrapper
-    CGSize sizeOfMessage = messageFromSender.frame.size;
-    int widthOfMessage = MAX(sizeOfMessage.width + 20, 60 + 20);
-    messageWrapper.frame = CGRectMake(self.view.frame.size.width - 10 - widthOfMessage, _positionOfLastMessage , widthOfMessage, sizeOfMessage.height + 20);
-    [messageWrapper addSubview:messageFromSender];
-    [self addTimerOfMessage:message ToView:messageWrapper];
-    
-    // image at the right of the message
-    UIImageView *rightBarAfterMessage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightAfterChatIcon"]];
-    rightBarAfterMessage.frame = CGRectMake(self.view.frame.size.width - 10, _positionOfLastMessage +  messageFromSender.frame.size.height + 20 - 5, 10, 15);
-    [_scrollView addSubview:rightBarAfterMessage];
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, _scrollView.contentSize.height + messageWrapper.frame.size.height + 10);
-    _positionOfLastMessage += messageWrapper.frame.size.height + 10;
-    if ([page intValue] > 2) {
-        for (UIView *messageView in [_scrollView subviews]) {
-            messageView.frame = CGRectMake(messageView.frame.origin.x, messageView.frame.origin.y + messageWrapper.frame.size.height + 10, messageView.frame.size.width, messageView.frame.size.height);
-        }
-    }
-}
-
-
-- (void) addTimerOfMessage:(WGMessage *)message ToView:(UIView *)messageWrapper {
-    messageWrapper.frame = CGRectMake(messageWrapper.frame.origin.x, messageWrapper.frame.origin.y, messageWrapper.frame.size.width, messageWrapper.frame.size.height + 20);
-    
-    UILabel *timerLabel = [[UILabel alloc] initWithFrame:CGRectMake(messageWrapper.frame.size.width - 110, messageWrapper.frame.size.height - 28, 100, 20)];
-    timerLabel.text = [message.created getUTCTimeStringToLocalTimeString];
-    timerLabel.font = [FontProperties mediumFont:15.0f];
-    timerLabel.textAlignment = NSTextAlignmentRight;
-    timerLabel.textColor = RGB(179, 179, 179);
-    [messageWrapper addSubview:timerLabel];
-}
-
-- (void)initializeTextBox {
-    _chatTextFieldWrapper = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50)];
-    [self.view addSubview:_chatTextFieldWrapper];
-    [self.view bringSubviewToFront:_chatTextFieldWrapper];
-    [_chatTextFieldWrapper setBackgroundColor:RGB(234, 234, 234)];
-    UIView *firstLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 1)];
-    firstLineView.backgroundColor = [FontProperties getLightOrangeColor];
-    [_chatTextFieldWrapper addSubview:firstLineView];
-    
-    _whiteLabelForTextField = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, _chatTextFieldWrapper.frame.size.width - 70, _chatTextFieldWrapper.frame.size.height - 20)];
-    _whiteLabelForTextField.layer.cornerRadius = 5;
-    _whiteLabelForTextField.layer.masksToBounds = YES;
-    [_chatTextFieldWrapper addSubview:_whiteLabelForTextField];
-    
-    _messageTextView.tintColor = [FontProperties getOrangeColor];
-    _messageTextView = [[UITextView alloc] initWithFrame:CGRectMake(15, 10, _chatTextFieldWrapper.frame.size.width - 80, _chatTextFieldWrapper.frame.size.height - 20)];
-//    _messageTextView.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Message" attributes:@{NSFontAttributeName:[FontProperties getSmallFont]}];
-    _messageTextView.delegate = self;
-    _messageTextView.returnKeyType = UIReturnKeySend;
-    _messageTextView.backgroundColor = [UIColor whiteColor];
-    _messageTextView.font = [FontProperties mediumFont:18.0f];
-    _messageTextView.textColor = RGB(102, 102, 102);
-    [[UITextView appearance] setTintColor:RGB(102, 102, 102)];
-    [_chatTextFieldWrapper addSubview:_messageTextView];
-    [_chatTextFieldWrapper bringSubviewToFront:_messageTextView];
-    
-    _sendButton = [[UIButton alloc] initWithFrame:CGRectMake(_chatTextFieldWrapper.frame.size.width - 60, 10, 60, 30)];
-    [_sendButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
-    [_sendButton setTitle:@"Send" forState:UIControlStateNormal];
-    [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    _sendButton.backgroundColor = [UIColor clearColor];
-    _sendButton.titleLabel.font = [FontProperties getTitleFont];
-    [_chatTextFieldWrapper addSubview:_sendButton];
-}
-
-- (void)initializeMessageForEmptyConversation {
-    if (!didBeginEditing) {
-        _viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
-        _viewForEmptyConversation.center = self.view.center;
-        [self.view addSubview:_viewForEmptyConversation];
-        
-        UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , self.view.frame.size.width, 30)];
-        everyDayLabel.text = @"Start a new chat today.";
-        everyDayLabel.textColor = [FontProperties getOrangeColor];
-        everyDayLabel.textAlignment = NSTextAlignmentCenter;
-        everyDayLabel.font = [FontProperties getBigButtonFont];
-        [_viewForEmptyConversation addSubview:everyDayLabel];
-    }
-}
-
-
-- (void)sendMessage {
-    if (![_messageTextView.text isEqualToString:@""]) {
-        WGMessage *message = [[WGMessage alloc] init];
-        message.message = _messageTextView.text;
-        message.created = [NSDate date];
-        message.toUser = self.user;
-        [message create:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
-                return;
-            }
-        }];
-        
-        [self addMessageFromSender:message];
-        _messageTextView.text = @"";
-        [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [self textView:_messageTextView shouldChangeTextInRange:NSMakeRange(0, [_messageTextView.text length]) replacementText:@""];
-
-    }
-    CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height);
-    if (bottomOffset.y < 0) [_scrollView setContentOffset:CGPointZero animated:YES];
-    else [_scrollView setContentOffset:bottomOffset animated:YES];
-    
-}
-
-- (void)updateLastMessagesRead:(WGMessage *)message {
-    if ([message.id intValue] > [[WGProfile currentUser].lastMessageRead intValue]) {
-        [WGProfile currentUser].lastMessageRead = message.id;
-    }
-}
-
-- (void)keyboardWillShow:(NSNotification*)notification
-{
-    [self moveControls:notification up:YES];
-}
-
-- (void)keyboardWillBeHidden:(NSNotification*)notification
-{
-    [self moveControls:notification up:NO];
-}
-
-- (void)moveControls:(NSNotification*)notification up:(BOOL)up
-{
-    NSDictionary* userInfo = [notification userInfo];
-    
-    [self animateScrollViewUp:up withInfo:userInfo];
-   
-    CGRect newFrame = [self getNewControlsFrame:userInfo up:up forView:_chatTextFieldWrapper];
-    //HACK For predictive shit
-    if (CGRectEqualToRect(newFrame, CGRectMake(0, 12, [[UIScreen mainScreen] bounds].size.width, 50))) {
-        newFrame =  CGRectMake(0, 303, [[UIScreen mainScreen] bounds].size.width, 50);
-    }
-    [self animateControls:userInfo withFrame:newFrame];
-}
-
-- (void)animateScrollViewUp:(BOOL)up withInfo:(NSDictionary *)userInfo {
-    CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-    kbFrame = [self.view convertRect:kbFrame fromView:nil];
-
-    if (CGRectEqualToRect(kbFrame,CGRectMake(0, 315, [[UIScreen mainScreen] bounds].size.width, 253))) {
-        kbFrame =CGRectZero;
-    }
-    CGRect frame = _scrollView.frame;
-    frame.size.height += kbFrame.size.height * (up ? -1 : 1);
-    NSTimeInterval duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    UIViewAnimationCurve animationCurve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
-    _scrollView.frame = frame;
-    [UIView animateWithDuration:duration
-                          delay:0
-                        options:animationOptionsWithCurve(animationCurve)
-                     animations:^{
-                         CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height);
-                         [_scrollView setContentOffset:bottomOffset animated:NO];
-                     }
-                     completion:^(BOOL finished){}];
-}
-
-- (CGRect)getNewControlsFrame:(NSDictionary*)userInfo up:(BOOL)up forView:(UIView *)view
-{
-    CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-    kbFrame = [self.view convertRect:kbFrame fromView:nil];
-    
-    CGRect newFrame = view.frame;
-    newFrame.origin.y += kbFrame.size.height * (up ? -1 : 1);
-    
-    return newFrame;
-}
-
-- (void)animateControls:(NSDictionary*)userInfo withFrame:(CGRect)newFrame
-{
-    NSTimeInterval duration = [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    UIViewAnimationCurve animationCurve = [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
-    
-    [UIView animateWithDuration:duration
-                          delay:0
-                        options:animationOptionsWithCurve(animationCurve)
-                     animations:^{
-                         _chatTextFieldWrapper.frame = newFrame;
-                         _frameOfChatField = newFrame;
-                     }
-                     completion:^(BOOL finished){}];
+- (void) initializeNotificationObservers {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(addMessage:)
+                                                 name:@"updateConversation"
+                                               object:nil];
 }
 
 - (void)addMessage:(NSNotification *)notification {
@@ -454,58 +318,29 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         
         WGMessage *message = [[WGMessage alloc] init];
         message.message = messageString;
-        message.created = [NSDate date];
+        message.created = [NSDate dateInLocalTimezone];
+        message.user = self.user;
+        message.toUser = [WGProfile currentUser];
         
-        [self addMessageFromReceiver:message];
-        CGPoint bottomOffset = CGPointMake(0, _scrollView.contentSize.height - _scrollView.bounds.size.height + 50);
-        [_scrollView setContentOffset:bottomOffset animated:YES];
+        [_messages addObject:message];
+        
+        [self finishReceivingMessageAnimated:YES];
     }
 }
-        
-# pragma mark - UITextView Delegate.
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if ([text isEqual:@"\n"]) {
-        [self sendMessage];
-        return NO;
-    }
-   
-    if (([text isEqualToString:@""] && range.location == 0 && range.length == 1))
-        [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    else if ([text length] != 0 || [textView.text length] != 0)
-        [_sendButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-
-    CGFloat requiredWidth = [textView sizeThatFits:CGSizeMake(HUGE_VALF, HUGE_VALF)].width;
-    int numberOfRows = (int)(requiredWidth/textView.frame.size.width) + 1;
-    _chatTextFieldWrapper.frame = CGRectMake(_chatTextFieldWrapper.frame.origin.x, _frameOfChatField.origin.y - 30*(numberOfRows - 1), _chatTextFieldWrapper.frame.size.width, _frameOfChatField.size.height + 30*(numberOfRows -1));
-    _messageTextView.frame = CGRectMake(15, 10, _chatTextFieldWrapper.frame.size.width - 80, _chatTextFieldWrapper.frame.size.height - 20);
-    _whiteLabelForTextField.frame = CGRectMake(10, 10, _chatTextFieldWrapper.frame.size.width - 70, _chatTextFieldWrapper.frame.size.height - 20);
-    _sendButton.frame = CGRectMake(_chatTextFieldWrapper.frame.size.width - 60, _chatTextFieldWrapper.frame.size.height - 40, 60, 30);
-    return YES;
+- (void)initializeMessageForEmptyConversation {
+    _viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+    _viewForEmptyConversation.center = self.view.center;
+    
+    [self.view addSubview:_viewForEmptyConversation];
+    
+    UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , self.view.frame.size.width, 30)];
+    everyDayLabel.text = @"Start a new chat today.";
+    everyDayLabel.textColor = [FontProperties getOrangeColor];
+    everyDayLabel.textAlignment = NSTextAlignmentCenter;
+    everyDayLabel.font = [FontProperties getBigButtonFont];
+    [_viewForEmptyConversation addSubview:everyDayLabel];
 }
-
-- (void)textViewDidEndEditing:(UITextView *)textView {
-    [_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    _chatTextFieldWrapper.transform = CGAffineTransformMakeTranslation(0, 0);
-}
-
-- (void)textViewDidBeginEditing:(UITextView *)textView {
-    didBeginEditing = YES;
-    if (_viewForEmptyConversation) _viewForEmptyConversation.hidden = YES;
-    [self.view bringSubviewToFront:_chatTextFieldWrapper];
-}
-
-
-
-# pragma mark - UIScrollView Delegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView.contentOffset.y == 0)
-        if ([_messages count] > 0 && [_messages.hasNextPage boolValue]) {
-            [self fetchMessages];
-        }
-}
-
 
 # pragma mark - Network functions
 
@@ -525,10 +360,23 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                     fetching = NO;
                     return;
                 }
+                [collection reverse];
                 _messages = collection;
-                [self addFirstPageMessages];
+                // [self addFirstPageMessages];
                 [WiGoSpinnerView hideSpinnerForView:self.view];
                 fetching = NO;
+                
+                if ([_messages count] == 0) {
+                    [self initializeMessageForEmptyConversation];
+                } else {
+                    [_viewForEmptyConversation removeFromSuperview];
+                }
+                
+                self.showLoadEarlierMessagesHeader = [[_messages hasNextPage] boolValue];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.collectionView reloadData];
+                    [self scrollToBottomAnimated:YES];
+                });
             }];
         } else if ([_messages.hasNextPage boolValue]) {
             [_messages getNextPage:^(WGCollection *collection, NSError *error) {
@@ -537,14 +385,21 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
                     fetching = NO;
                     return;
                 }
-                
-                [_messages addObjectsFromCollection:collection];
+                [collection reverse];
+                [_messages addObjectsFromCollectionToBeginning:collection];
                 _messages.hasNextPage = collection.hasNextPage;
                 _messages.nextPage = collection.nextPage;
                 
-                [self addMessages:collection];
+                [_viewForEmptyConversation removeFromSuperview];
                 [WiGoSpinnerView hideSpinnerForView:self.view];
                 fetching = NO;
+                
+                self.showLoadEarlierMessagesHeader = [[_messages hasNextPage] boolValue];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.collectionView reloadData];
+                    [self scrollToBottomAnimated:YES];
+                });
             }];
         } else {
             fetching = NO;
@@ -552,6 +407,11 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
         }
     }
 }
-        
+
+- (void)updateLastMessagesRead:(WGMessage *)message {
+    if ([message.id intValue] > [[WGProfile currentUser].lastMessageRead intValue]) {
+        [WGProfile currentUser].lastMessageRead = message.id;
+    }
+}
 
 @end

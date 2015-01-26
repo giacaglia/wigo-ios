@@ -313,7 +313,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 - (void)saveDatesAccessed {
     NSArray *datesAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"datesAccessed"];
     if (!datesAccessed) {
-        NSDate *firstSaveDate = [NSDate date];
+        NSDate *firstSaveDate = [NSDate dateInLocalTimezone];
         datesAccessed = @[firstSaveDate];
         [[NSUserDefaults standardUserDefaults] setObject:datesAccessed forKey: @"datesAccessed"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -413,12 +413,12 @@ forRemoteNotification:(NSDictionary *)userInfo
 - (BOOL)shouldFetchAppStartup {
     NSDate *dateAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"lastTimeAccessed"];
     if (!dateAccessed) {
-        NSDate *firstSaveDate = [NSDate date];
+        NSDate *firstSaveDate = [NSDate dateInLocalTimezone];
         [[NSUserDefaults standardUserDefaults] setObject:firstSaveDate forKey: @"lastTimeAccessed"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         return YES;
     } else {
-        NSDate *newDate = [NSDate date];
+        NSDate *newDate = [NSDate dateInLocalTimezone];
         NSDateComponents *differenceDateComponents = [dateAccessed differenceBetweenDates:newDate];
         if ([differenceDateComponents hour] > 0 || [differenceDateComponents day] > 0 || [differenceDateComponents weekOfYear] > 0 || [differenceDateComponents month] > 0) {
             [[NSUserDefaults standardUserDefaults] setObject:newDate forKey: @"lastTimeAccessed"];

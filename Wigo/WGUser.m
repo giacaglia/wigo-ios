@@ -11,6 +11,8 @@
 #import "WGProfile.h"
 #import "WGMessage.h"
 
+#import "UIImageView+ImageArea.h"
+
 #define kUserKey @"user"
 #define kMeKey @"me"
 
@@ -353,7 +355,6 @@ static WGUser *currentUser = nil;
     }
 }
 
-
 -(void) makeImageAtIndexCoverImage:(NSInteger)index {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
     if (index < [imagesArray count]) {
@@ -371,6 +372,18 @@ static WGUser *currentUser = nil;
         return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kSmallKey]];
     }
     return [self coverImageURL];
+}
+
+-(UIImage *) avatarImage {
+    if (!self.avatarView) {
+        self.avatarView = [[UIImageView alloc] init];
+        [self.avatarView setImageWithURL:[self smallCoverImageURL] imageArea:[self smallCoverImageArea]];
+    }
+    return self.avatarView.image;
+}
+
+-(UIImage *) avatarHighlightedImage {
+    return nil;
 }
 
 -(NSArray *) imagesArea {
@@ -966,7 +979,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) getConversation:(WGCollectionResultBlock)handler {
-    [WGApi get:@"messages/" withArguments:@{ @"conversation" : self.id, @"ordering" : @"id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"messages/" withArguments:@{ @"conversation" : self.id, @"ordering" : @"-id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

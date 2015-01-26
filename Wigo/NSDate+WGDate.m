@@ -10,6 +10,11 @@
 
 @implementation NSDate (WGDate)
 
++(NSDate *) dateInLocalTimezone {
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    return [[NSDate date] dateByAddingTimeInterval:timeZoneSeconds];
+}
+
 -(NSString *) joinedString {
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     NSDate *dateInLocalTimezone = [self dateByAddingTimeInterval:timeZoneSeconds];
@@ -125,14 +130,15 @@
 -(NSString *) deserialize {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    return [dateFormatter stringFromDate:self];
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    return [dateFormatter stringFromDate:[self dateByAddingTimeInterval:-timeZoneSeconds]];
 }
 
 +(NSDate *) serialize:(NSString *)dateString {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-//    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-    return [dateFormatter dateFromString:dateString];
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    return [[dateFormatter dateFromString:dateString] dateByAddingTimeInterval:timeZoneSeconds];
 }
 
 +(NSString *) nowStringUTC {

@@ -8,8 +8,9 @@
 
 #import "WGObject.h"
 #import "WGUser.h"
+#import "JSQMessagesViewController/JSQMessages.h"
 
-@interface WGMessage : WGObject
+@interface WGMessage : WGObject<JSQMessageData>
 
 typedef void (^WGMessageResultBlock)(WGMessage *object, NSError *error);
 

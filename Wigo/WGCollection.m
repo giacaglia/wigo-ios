@@ -57,6 +57,20 @@
     }
 }
 
+-(void) reverse {
+    if ([self count] == 0)
+        return;
+    NSUInteger i = 0;
+    NSUInteger j = [self count] - 1;
+    while (i < j) {
+        [self exchangeObjectAtIndex:i
+                  withObjectAtIndex:j];
+        
+        i++;
+        j--;
+    }
+}
+
 -(void) exchangeObjectAtIndex:(NSUInteger)id1 withObjectAtIndex:(NSUInteger)id2 {
     [self.objects exchangeObjectAtIndex:id1 withObjectAtIndex:id2];
 }

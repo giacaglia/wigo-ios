@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Delegate.h"
 #import "WGUser.h"
 
-@interface ConversationViewController : UIViewController  <UITextViewDelegate, UIScrollViewDelegate>
+@interface ConversationViewController : JSQMessagesViewController <JSQMessagesCollectionViewDataSource, JSQMessagesCollectionViewDelegateFlowLayout>
 
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;
 - (id)initWithUser: (WGUser *)user;

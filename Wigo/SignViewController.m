@@ -428,7 +428,7 @@
 
 - (void)reloadedUserInfo:(BOOL)success andError:(NSError *)error {
     [WiGoSpinnerView removeDancingGFromCenterView:self.view];
-    if (error) {
+    if (error || !success) {
         if (!_fbID || !_accessToken) {
             [self fetchTokensFromFacebook];
         } else {
