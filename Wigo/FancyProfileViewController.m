@@ -35,15 +35,14 @@
 
 //favorite
 @property UIButton *leftProfileButton;
-@property (nonatomic, strong) UILabel *numberOfFollowersLabel;
+
 @property (nonatomic, strong) UIButton *rightProfileButton;
-@property (nonatomic, strong) UILabel *numberOfFollowingLabel;
-@property UIButton *chatButton;
+@property (nonatomic, strong) UIButton *chatButton;
 
 //UI
-@property UIButtonAligned *rightBarBt;
-@property UIButton *followButton;
-@property UILabel *followRequestLabel;
+@property (nonatomic, strong) UIButtonAligned *rightBarBt;
+@property (nonatomic, strong) UIButton *followButton;
+@property (nonatomic, strong) UILabel *followRequestLabel;
 
 @property UILabel *nameOfPersonLabel;
 @property UIImageView *privateLogoImageView;
@@ -349,12 +348,12 @@ UIButton *tapButton;
     _leftProfileButton = [[UIButton alloc] init];
     _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3 + 5, 70);
     [_leftProfileButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    _numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _leftProfileButton.frame.size.width, 25)];
-    _numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
-    _numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
-    _numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
-    _numberOfFollowersLabel.text = [self.user.numFollowers stringValue];
-    [_leftProfileButton addSubview:_numberOfFollowersLabel];
+    self.numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _leftProfileButton.frame.size.width, 25)];
+    self.numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
+    self.numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
+    self.numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberOfFollowersLabel.text = [self.user.numFollowers stringValue];
+    [_leftProfileButton addSubview:self.numberOfFollowersLabel];
     
     UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _leftProfileButton.frame.size.width, 20)];
     followersLabel.textColor = [FontProperties getOrangeColor];
@@ -367,12 +366,12 @@ UIButton *tapButton;
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70);
-    _numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _rightProfileButton.frame.size.width, 25)];
-    _numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
-    _numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
-    _numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
-    _numberOfFollowingLabel.text = [self.user.numFollowing stringValue];
-    [_rightProfileButton addSubview:_numberOfFollowingLabel];
+    self.numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _rightProfileButton.frame.size.width, 25)];
+    self.numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
+    self.numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
+    self.numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberOfFollowingLabel.text = [self.user.numFollowing stringValue];
+    [_rightProfileButton addSubview:self.numberOfFollowingLabel];
     
     UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _rightProfileButton.frame.size.width, 20)];
     followingLabel.textColor = [FontProperties getOrangeColor];
@@ -1032,15 +1031,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void) fetchUserInfo {
     if ([WGProfile currentUser].key) {
+        __weak typeof(self) weakSelf = self;
         [WGProfile reload:^(BOOL success, NSError *error) {
-            self.user = [WGProfile currentUser];
-            _numberOfFollowersLabel.text = [self.user.numFollowers stringValue];
-            _numberOfFollowingLabel.text = [self.user.numFollowing stringValue];
-            [self updateNumberOfChats];
-            _pageControl.numberOfPages = [[self.user imagesURL] count];
-            [self createImageScrollView];
-//            if ([self.user state] == PRIVATE_STATE || [self.user state] == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) _privateLogoImageView.hidden = NO;
-//            else _privateLogoImageView.hidden = YES;
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            strongSelf.user = [WGProfile currentUser];
+            strongSelf.numberOfFollowersLabel.text = [strongSelf.user.numFollowers stringValue];
+            strongSelf.numberOfFollowingLabel.text = [strongSelf.user.numFollowing stringValue];
+            [strongSelf updateNumberOfChats];
+            _pageControl.numberOfPages = [[strongSelf.user imagesURL] count];
+            [strongSelf createImageScrollView];
         }];
     }
 }

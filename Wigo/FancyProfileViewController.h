@@ -31,6 +31,8 @@
 
 @property (nonatomic, assign) BOOL isFetchingNotifications;
 @property (nonatomic, strong) WGCollection *events;
+@property (nonatomic, strong) UILabel *numberOfFollowersLabel;
+@property (nonatomic, strong) UILabel *numberOfFollowingLabel;
 
 -(id)initWithUser:(WGUser *)user;
 - (void) setStateWithUser: (WGUser *) user;
