@@ -385,9 +385,9 @@
         [WiGoSpinnerView removeDancingGFromCenterView:self.view];
         if (error) {
             _fetchingProfilePictures = YES;
+            [self logout];
             [self fetchTokensFromFacebook];
             [self fetchProfilePicturesAlbumFacebook];
-            [self logout];
             [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
             return;
         }
