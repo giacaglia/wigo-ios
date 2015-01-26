@@ -442,13 +442,12 @@
 
 - (void)loadTextViewAndSendButton {
     int widthButton = [[UIScreen mainScreen] bounds].size.width/6.4;
-    int heightButton = [[UIScreen mainScreen] bounds].size.width/8;
-    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - widthButton - 15, self.view.frame.size.height - heightButton - 15, widthButton, heightButton)];
+    sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - widthButton - 15, self.view.frame.size.height - widthButton - 15, widthButton, widthButton)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:sendButton];
     [self.view bringSubviewToFront:sendButton];
 
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, widthButton, heightButton)];
+    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, widthButton, widthButton)];
     sendOvalImageView.image = [UIImage imageNamed:@"cameraPlus"];
     [sendButton addSubview:sendOvalImageView];
 }
@@ -467,8 +466,8 @@
     [_highlightButton addSubview:highlightImageView];
 
     UILabel *postHighglightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, highlightImageView.frame.size.width, highlightImageView.frame.size.height - 15)];
-    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a highlight - get\nthe party started."];
-    [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length - 1)];
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a highlight to get\nthe party started"];
+    [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length)];
     [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(7, 9)];
     postHighglightLabel.attributedText = string;
     postHighglightLabel.numberOfLines = 2;

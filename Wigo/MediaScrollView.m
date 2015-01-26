@@ -136,8 +136,8 @@
     }
     else if ([mimeType isEqualToString:kNotAbleToPost]) {
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
-        [myCell.imageView setImageWithURL:[[WGProfile currentUser] smallCoverImageURL]];
-        myCell.titleTextLabel.text = @"To add a highlight you must be going here.";
+        [myCell.imageView setImageWithURL:[WGProfile currentUser].coverImageURL];
+        myCell.titleTextLabel.text = @"To add a highlight you\nmust be going here.";
         myCell.avoidAction.hidden = YES;
         myCell.isPeeking = self.isPeeking;
 
