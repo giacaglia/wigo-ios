@@ -920,8 +920,8 @@ BOOL secondTimeFetchingUserInfo;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == kTodaySection) {
+        if (indexPath.item == _events.count) return 1;
         return sizeOfEachCell;
-
     }
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
@@ -947,7 +947,9 @@ BOOL secondTimeFetchingUserInfo;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
-        EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName];
+        EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
+        //cleanup
+
         cell.placesDelegate = self;
         if (_isSearching) {
             if (indexPath.row == [_filteredEvents count]) {
@@ -956,6 +958,10 @@ BOOL secondTimeFetchingUserInfo;
         } else {
             if (indexPath.row == [_events count]) {
                 [self fetchEvents];
+                cell.eventNameLabel.text = nil;
+                cell.chatBubbleImageView.image = nil;
+                cell.postStoryImageView.image = nil;
+                [cell.eventPeopleScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
                 return cell;
             }
         }
@@ -1002,7 +1008,7 @@ BOOL secondTimeFetchingUserInfo;
         return nil;
     }
     else if ([self shouldShowHighlights] && indexPath.section > 1) {
-        OldEventShowHighlightsCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventShowHighlightsCellName];
+        OldEventShowHighlightsCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventShowHighlightsCellName forIndexPath:indexPath];
         cell.placesDelegate = self;
         return cell;
     }
@@ -1012,7 +1018,8 @@ BOOL secondTimeFetchingUserInfo;
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
         
         WGEvent *event = [eventObjectArray objectAtIndex:[indexPath row]];
-        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel];
+        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel
+                                       forIndexPath:indexPath];
         cell.event = event;
         cell.placesDelegate = self;
         cell.oldEventLabel.text = [event name];
@@ -1370,7 +1377,6 @@ BOOL secondTimeFetchingUserInfo;
                 [self.allEvents addNextPage:^(BOOL success, NSError *error) {
                     __strong typeof(weakSelf) strongSelf = weakSelf;
                     [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
-//                    NSLog(@"strong self: %@ all events: %@", strongSelf.allEvents, [strongSelf.allEvents deserialize]);
                     if (error) {
                         strongSelf.fetchingEventAttendees = NO;
                         shouldReloadEvents = YES;
@@ -1652,7 +1658,6 @@ BOOL secondTimeFetchingUserInfo;
     if (![self.event.isRead boolValue] && [self.event.numMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;
         self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
-        self.chatNumberLabel.text = [NSString stringWithFormat:@"%@", [self.event.numMessages stringValue]];
     }
     else if ([self.event.numMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;

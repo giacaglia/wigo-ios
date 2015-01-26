@@ -36,7 +36,6 @@
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UIImageView *chatBubbleImageView;
-@property (nonatomic, strong) UILabel *chatNumberLabel;
 @property (nonatomic, strong) UIImageView *postStoryImageView;
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 - (void)updateUI;
