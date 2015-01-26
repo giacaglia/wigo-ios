@@ -1045,11 +1045,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchNotifications {
+    __weak typeof(self) weakSelf = self;
     if (!self.isFetchingNotifications) {
         self.isFetchingNotifications = YES;
         if (!_notifications || _notifications.hasNextPage == nil) {
             [WGNotification get:^(WGCollection *collection, NSError *error) {
-                self.isFetchingNotifications = NO;
+                __strong typeof(weakSelf) strongSelf = weakSelf;
+                strongSelf.isFetchingNotifications = NO;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
@@ -1061,14 +1063,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                         [_unexpiredNotifications addObject:notification];
                     }
                 }
-                self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
-                [self.tableView reloadData];
-                [self.tableView didFinishPullToRefresh];
-                self.isFetchingNotifications = NO;
+                strongSelf.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
+                [strongSelf.tableView reloadData];
+                [strongSelf.tableView didFinishPullToRefresh];
+                strongSelf.isFetchingNotifications = NO;
             }];
         } else if ([_notifications.hasNextPage boolValue]) {
             [_notifications getNextPage:^(WGCollection *collection, NSError *error) {
-                self.isFetchingNotifications = NO;
+                __strong typeof(weakSelf) strongSelf = weakSelf;
+                strongSelf.isFetchingNotifications = NO;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
@@ -1079,10 +1082,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                         [_unexpiredNotifications addObject:notification];
                     }
                 }
-                self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
-                [self.tableView reloadData];
-                [self.tableView didFinishPullToRefresh];
-                self.isFetchingNotifications = NO;
+                strongSelf.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
+                [strongSelf.tableView reloadData];
+                [strongSelf.tableView didFinishPullToRefresh];
+                strongSelf.isFetchingNotifications = NO;
             }];
         } else {
             self.isFetchingNotifications = NO;
@@ -1112,27 +1115,31 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchEvent:(WGEvent *)event {
+    __weak typeof(self) weakSelf = self;
     [event refresh:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             return;
         }
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
         eventStoryViewController.event = event;
         eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-        [self.navigationController pushViewController: eventStoryViewController animated:YES];
+        [strongSelf.navigationController pushViewController: eventStoryViewController animated:YES];
     }];
 }
 
 
 - (void)fetchSummaryOfFollowRequests {
+    __weak typeof(self) weakSelf = self;
     [WGNotification getFollowSummary:^(NSNumber *follow, NSNumber *followRequest, NSNumber *total, NSNumber *tap, NSNumber *facebookFollow, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             return;
         }
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         _followRequestSummary = followRequest;
-        [self.tableView reloadData];
+        [strongSelf.tableView reloadData];
     }];
 }
 
@@ -1420,8 +1427,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) inviteTapped {
-    
-    
     self.inviteButton.enabled = NO;
   
     UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width + 15, self.frame.size.height)];
