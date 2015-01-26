@@ -736,7 +736,7 @@
     
     NSNumber *vote = self.eventMessage.vote;
         if (!self.numberOfVotesLabel) {
-            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 42, self.frame.size.height - 75, 32, 30)];
+            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 42, self.frame.size.height - 40, 32, 30)];
             self.numberOfVotesLabel.textColor = UIColor.whiteColor;
             self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
             self.numberOfVotesLabel.font = [FontProperties mediumFont:18.0f];
@@ -750,28 +750,12 @@
         self.numberOfVotesLabel.text = [[NSNumber numberWithInt:votes] stringValue];
 
         if (!self.upVoteButton) {
-            self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 118, 56, 52)];
+            self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 83, 56, 52)];
             self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 10, 32, 32)];
             [self.upVoteButton addSubview:self.upvoteImageView];
+            [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
             [self.contentView addSubview:self.upVoteButton];
-
-            if (self.isPeeking) {
-                self.upVoteButton.alpha = 0.2;
-            } else {
-                [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
-            }
-        }
-        if (!self.downVoteButton) {
-            self.downVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 56, self.frame.size.height - 52, 56, 52)];
-            self.downvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 10, 32, 32)];
-                       [self.downVoteButton addSubview:self.downvoteImageView];
-            [self.contentView addSubview:self.downVoteButton];
-            
-            if (self.isPeeking) {
-                self.downVoteButton.alpha = 0.2;
-            } else {
-                [self.downVoteButton addTarget:self action:@selector(downvotePressed:) forControlEvents:UIControlEventTouchUpInside];
-            }
+        
         }
         if ([vote intValue] == 1) self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
         else self.upvoteImageView.image = [UIImage imageNamed:@"upvote"];
@@ -779,10 +763,6 @@
         else self.downvoteImageView.image = [UIImage imageNamed:@"downvote"];
         
         [self showVotes];
-    
-//    else {
-//        [self hideVotes];
-//    }
     
 }
 
@@ -828,38 +808,17 @@
     
     [WGAnalytics tagEvent:@"Down Vote Tapped"];
 
-    
-    CGAffineTransform currentTransform = self.downVoteButton.transform;
-    
-    [UIView animateWithDuration:0.2f
-                     animations:^{
-                         self.downvoteImageView.image = [UIImage imageNamed:@"downvoteFilled"];
-                         self.downVoteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
-                     }
-                     completion:^(BOOL finished) {
-                         [UIView animateWithDuration:0.2f
-                                          animations:^{
-                                              self.downVoteButton.transform = currentTransform;
-                                              
-                                          } completion:^(BOOL finished) {
-                                              [self updateNumberOfVotes: NO];
-                                          }];
-                     }];
 }
 
 - (void)hideVotes {
     self.upVoteButton.hidden = YES;
     self.upVoteButton.enabled = NO;
-    self.downVoteButton.hidden = YES;
-    self.downVoteButton.enabled = NO;
     self.numberOfVotesLabel.hidden = YES;
 }
 
 - (void)showVotes {
     self.upVoteButton.hidden = NO;
     self.upVoteButton.enabled = YES;
-    self.downVoteButton.hidden = NO;
-    self.downVoteButton.enabled = YES;
     self.numberOfVotesLabel.hidden = NO;
 }
 

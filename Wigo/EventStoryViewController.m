@@ -73,6 +73,7 @@
     
     [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
     
+    self.eventMessages = nil;
     if (_loadViewFromFront) [self fetchEventMessages];
     else [self.facesCollectionView forceLoad];
     _loadViewFromFront = NO;
@@ -586,7 +587,7 @@
                     return;
                 }
                 strongSelf.eventMessages = collection;
-                [self showOrNotShowToolTip];
+                [strongSelf showOrNotShowToolTip];
                 [strongSelf.facesCollectionView reloadData];
             }];
         } else if ([self.eventMessages.hasNextPage boolValue]) {
