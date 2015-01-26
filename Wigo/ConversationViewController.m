@@ -405,7 +405,9 @@ BOOL fetching;
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.collectionView reloadData];
-                    [self scrollToBottomAnimated:YES];
+                    if (scrollToBottom) {
+                        [self scrollToBottomAnimated:YES];
+                    }
                 });
             }];
         } else {
