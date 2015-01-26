@@ -25,6 +25,7 @@
 @property (nonatomic, strong) UIButton *goingSomewhereButton;
 
 @property (nonatomic, assign) BOOL fetchingEventAttendees;
+@property (nonatomic, strong) WGCollection *allEvents;
 
 @end
 

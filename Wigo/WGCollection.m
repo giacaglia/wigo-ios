@@ -172,17 +172,19 @@
         handler(NO, [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"no next page" }]);
         return;
     }
+    __weak typeof(self) weakSelf = self;
     [WGApi get:self.nextPage withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             handler(NO, error);
             return;
         }
         NSError *dataError;
         @try {
-            WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:self.type];
-            [self addObjectsFromCollection:objects];
-            self.hasNextPage = objects.hasNextPage;
-            self.nextPage = objects.nextPage;
+            WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:strongSelf.type];
+            [strongSelf addObjectsFromCollection:objects];
+            strongSelf.hasNextPage = objects.hasNextPage;
+            strongSelf.nextPage = objects.nextPage;
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -200,15 +202,17 @@
         handler(nil, [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"no next page" }]);
         return;
     }
+    __weak typeof(self) weakSelf = self;
     [WGApi get:self.nextPage withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
         }
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         NSError *dataError;
         WGCollection *objects;
         @try {
-            objects = [WGCollection serializeResponse:jsonResponse andClass:self.type];
+            objects = [WGCollection serializeResponse:jsonResponse andClass:strongSelf.type];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
