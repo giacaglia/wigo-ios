@@ -354,44 +354,46 @@
 }
 
 - (void)hideOrShowFacesForPage:(int)page {
-    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-    if ([eventMessage.mediaMimeType isEqualToString:kCameraType]) {
-        self.buttonCancel.hidden = YES;
-        self.buttonCancel.enabled = NO;
-        self.buttonTrash.hidden = YES;
-        self.buttonTrash.enabled = NO;
-        self.facesHidden = NO;
-        [self focusOnContent];
-    }
-    else if ([eventMessage.mediaMimeType isEqualToString:kFaceImage] ||
-             [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost]
-             ) {
-        self.buttonTrash.hidden = YES;
-        self.buttonTrash.enabled = NO;
-    } else {
-        self.facesHidden = YES;
-        [self focusOnContent];
-        
-        self.buttonCancel.hidden = NO;
-        self.buttonCancel.enabled = YES;
-        if ([eventMessage.user isCurrentUser]) {
-            self.buttonTrash.hidden = NO;
-            self.buttonTrash.enabled = YES;
-        } else {
+    if (page < self.eventMessages.count) {
+        WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+        if ([eventMessage.mediaMimeType isEqualToString:kCameraType]) {
+            self.buttonCancel.hidden = YES;
+            self.buttonCancel.enabled = NO;
             self.buttonTrash.hidden = YES;
             self.buttonTrash.enabled = NO;
+            self.facesHidden = NO;
+            [self focusOnContent];
         }
-        
+        else if ([eventMessage.mediaMimeType isEqualToString:kFaceImage] ||
+                 [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost]
+                 ) {
+            self.buttonTrash.hidden = YES;
+            self.buttonTrash.enabled = NO;
+        } else {
+            self.facesHidden = YES;
+            [self focusOnContent];
+            
+            self.buttonCancel.hidden = NO;
+            self.buttonCancel.enabled = YES;
+            if ([eventMessage.user isCurrentUser]) {
+                self.buttonTrash.hidden = NO;
+                self.buttonTrash.enabled = YES;
+            } else {
+                self.buttonTrash.hidden = YES;
+                self.buttonTrash.enabled = NO;
+            }
+            
+        }
+        NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
+
+        // Set old face inactive and new one active.
+        if (![activeIndexPath isEqual:self.currentActiveCell]) {
+            [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:NO];
+        }
+        [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: activeIndexPath] setIsActive:YES];
+            
+        self.currentActiveCell = activeIndexPath;
     }
-    NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
-    
-    // Set old face inactive and new one active.
-    if (![activeIndexPath isEqual:self.currentActiveCell]) {
-        [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:NO];
-    }
-    [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: activeIndexPath] setIsActive:YES];
-        
-    self.currentActiveCell = activeIndexPath;
 }
 
 #pragma mark - G's code
