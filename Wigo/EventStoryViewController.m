@@ -30,6 +30,7 @@
 @property (nonatomic, strong) UIScrollView *backgroundScrollview;
 @property (nonatomic, strong) UIView *lineViewAtTop;
 @property (nonatomic, assign) BOOL movingForward;
+@property (nonatomic, assign) BOOL loadViewFromFront;
 @property (nonatomic, strong) UIButton *highlightButton;
 @property (nonatomic, strong) UILabel *noHighlightsLabel;
 @end
@@ -72,9 +73,9 @@
     
     [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
     
-    self.eventMessages = nil;
-    [self.facesCollectionView forceLoad];
-    
+    if (_loadViewFromFront) [self fetchEventMessages];
+    else [self.facesCollectionView forceLoad];
+    _loadViewFromFront = NO;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self.navigationController setNavigationBarHidden: YES animated: NO];
 }
@@ -173,6 +174,7 @@
 - (void)invitePressed {
     [WGAnalytics tagEvent: @"Event Story Invite Tapped"];
     _movingForward = YES;
+    _loadViewFromFront = YES;
     [self presentViewController:[[InviteViewController alloc] initWithEvent:self.event]
                        animated:YES
                      completion:nil];
@@ -244,6 +246,7 @@
         BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
         self.conversationViewController.isPeeking = isPeeking;
         _movingForward = YES;
+        _loadViewFromFront = YES;
         [self presentViewController:self.conversationViewController animated:YES completion:nil];
     }
 }
@@ -548,6 +551,7 @@
     self.conversationViewController.isPeeking = isPeeking;
 
     _movingForward = YES;
+    _loadViewFromFront = YES;
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
 }
 
@@ -648,6 +652,7 @@
 
     self.conversationViewController.storyDelegate = self;
     _movingForward = YES;
+    _loadViewFromFront = YES;
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
 }
 
@@ -716,7 +721,7 @@
     if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
         fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
     }
-    
+    _loadViewFromFront = YES;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 
