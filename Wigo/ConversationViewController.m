@@ -52,6 +52,8 @@ BOOL fetching;
 {
     [super viewDidLoad];
     
+    [self initializeNotificationObservers];
+    
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
     orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor orangeColor]];
     grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
@@ -259,7 +261,8 @@ BOOL fetching;
 
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView
                 header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender {
-    [self fetchMessages];
+    
+    [self fetchMessages:NO];
 }
 
 - (void) goBack {
@@ -348,10 +351,10 @@ BOOL fetching;
 
 - (void)fetchFirstPageMessages {
     fetching = NO;
-    [self fetchMessages];
+    [self fetchMessages:YES];
 }
 
-- (void)fetchMessages {
+- (void)fetchMessages:(BOOL)scrollToBottom {
     if (!fetching) {
         fetching = YES;
         [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
@@ -377,7 +380,9 @@ BOOL fetching;
                 self.showLoadEarlierMessagesHeader = [[_messages hasNextPage] boolValue];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.collectionView reloadData];
-                    [self scrollToBottomAnimated:YES];
+                    if (scrollToBottom) {
+                        [self scrollToBottomAnimated:YES];
+                    }
                 });
             }];
         } else if ([_messages.hasNextPage boolValue]) {
