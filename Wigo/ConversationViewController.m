@@ -177,7 +177,7 @@ static inline UIViewAnimationOptions animationOptionsWithCurve(UIViewAnimationCu
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[self.user smallCoverImageURL]];
+    [profileImageView setSmallImageForUser:self.user completed:nil];
     [profileButton addSubview:profileImageView];
     [profileButton setShowsTouchWhenHighlighted:NO];
     UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];

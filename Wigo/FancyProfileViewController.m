@@ -833,7 +833,7 @@ UIButton *tapButton;
         } else {
             notificationCell.backgroundColor = UIColor.whiteColor;
         }
-        [notificationCell.profileImageView setImageWithURL:[user smallCoverImageURL]];
+        [notificationCell.profileImageView setSmallImageForUser:user completed:nil];
         notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName], [notification message]];
         
         if ([user state] == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE || [user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {

@@ -94,7 +94,7 @@
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[user smallCoverImageURL]];
+    [profileImageView setSmallImageForUser:user completed:nil];
     profileImageView.layer.cornerRadius = 5;
     profileImageView.layer.borderWidth = 0.5;
     profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;
@@ -254,7 +254,7 @@
     profileImageView.frame = CGRectMake(10, 10, 35, 35);
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[user smallCoverImageURL]];
+    [profileImageView setSmallImageForUser:user completed:nil];
     profileImageView.layer.cornerRadius = 5;
     profileImageView.layer.borderWidth = 0.5;
     profileImageView.layer.borderColor = [UIColor whiteColor].CGColor;

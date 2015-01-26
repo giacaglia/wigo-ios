@@ -211,7 +211,7 @@ BOOL secondTimeFetchingUserInfo;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
-        [profileImageView setImageWithURL:[[WGProfile currentUser] smallCoverImageURL]];
+        [profileImageView setSmallImageForUser:WGProfile.currentUser completed:nil];
         [profileButton addSubview:profileImageView];
         [profileButton addTarget:self action:@selector(profileSegue)
                 forControlEvents:UIControlEventTouchUpInside];

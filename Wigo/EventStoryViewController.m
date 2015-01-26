@@ -350,7 +350,7 @@
     
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
     WGUser *user = eventMessage.user;
-    [myCell.mediaTypeImageView setImageWithURL:[user smallCoverImageURL]];
+    [myCell.mediaTypeImageView setSmallImageForUser:user completed:nil];
 
     NSString *contentURL;
     if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;

@@ -114,10 +114,8 @@ static char imageURLKey;
             dispatch_main_sync_safe(^{
                 if (!strongSelf) return;
                 if (image) {
-                    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, image.size.width,image.size.width));
-                    strongSelf.image = [UIImage imageWithCGImage:imageRef];
+                    strongSelf.image = image;
                     [strongSelf setNeedsLayout];
-                    CGImageRelease(imageRef);
                 } else {
                     if ((options & SDWebImageDelayPlaceholder)) {
                         strongSelf.image = placeholder;

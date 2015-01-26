@@ -21,7 +21,7 @@ NSMutableArray *failedUserInfoArray;
 }
 
 - (void)setSmallImageForUser:(WGUser *)user completed:(SDWebImageCompletedBlock)completedBlock {
-    [self setImageWithURL:[user smallCoverImageURL] placeholderImage:[[UIImage alloc] init] imageArea:[user smallCoverImageArea] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+    [self setImageWithURL:[user smallCoverImageURL] placeholderImage:[[UIImage alloc] init] imageArea:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         if (completedBlock) completedBlock(image, error, cacheType);
     }];
 }
