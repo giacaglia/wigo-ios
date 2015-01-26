@@ -18,7 +18,7 @@
 @interface TopSchoolCell : UITableViewCell
 @property (nonatomic, strong) UILabel *rankLabel;
 @property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *countLabel;
+//@property (nonatomic, strong) UILabel *countLabel;
 
 + (CGFloat) rowHeight;
 @end

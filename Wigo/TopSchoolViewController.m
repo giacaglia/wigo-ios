@@ -82,7 +82,7 @@
 
     cell.rankLabel.text = [NSString stringWithFormat:@"%d.", (int)(indexPath.row + 1)];
     cell.nameLabel.text = school.name;
-    cell.countLabel.text = school.numberRegistered.stringValue;
+//    cell.countLabel.text = school.numberRegistered.stringValue;
     
     return cell;
 }
@@ -111,16 +111,16 @@
     self.rankLabel.font = [FontProperties mediumFont: 24];
     [self.contentView addSubview: self.rankLabel];
     
-    self.nameLabel = [[UILabel alloc] initWithFrame: CGRectMake(45, 0, width- 100, height)];
+    self.nameLabel = [[UILabel alloc] initWithFrame: CGRectMake(45, 0, width- 45, height)];
     self.nameLabel.textColor = [FontProperties getBlueColor];
     self.nameLabel.font = [FontProperties mediumFont: 24];
     [self.contentView addSubview: self.nameLabel];
 
-    self.countLabel = [[UILabel alloc] initWithFrame: CGRectMake(width-60, 0, 50, height)];
-    self.countLabel.textColor = [FontProperties getOrangeColor];
-    self.countLabel.font = [FontProperties mediumFont: 24];
-    self.countLabel.textAlignment = NSTextAlignmentRight;
-    [self.contentView addSubview: self.countLabel];
+//    self.countLabel = [[UILabel alloc] initWithFrame: CGRectMake(width-60, 0, 50, height)];
+//    self.countLabel.textColor = [FontProperties getOrangeColor];
+//    self.countLabel.font = [FontProperties mediumFont: 24];
+//    self.countLabel.textAlignment = NSTextAlignmentRight;
+//    [self.contentView addSubview: self.countLabel];
 
     return self;
 }
