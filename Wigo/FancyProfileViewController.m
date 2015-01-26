@@ -1038,6 +1038,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             [strongSelf updateNumberOfChats];
             _pageControl.numberOfPages = [[strongSelf.user imagesURL] count];
             [strongSelf createImageScrollView];
+            strongSelf.userState = WGProfile.currentUser.state;
+            [strongSelf reloadViewForUserState];
         }];
     }
 }
