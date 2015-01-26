@@ -1424,25 +1424,18 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     
     self.inviteButton.enabled = NO;
-    
-    [UIView animateWithDuration:0.1f animations:^{
-        self.inviteButton.transform = CGAffineTransformMakeScale(0.5f, 0.5f);
-    } completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.1f animations:^{
-        self.inviteButton.transform = CGAffineTransformMakeScale(0.7f, 0.7f);
-    } completion:^(BOOL finished) {
-        
-        UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width + 15, self.frame.size.height)];
-        orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
-        orangeBackground.layer.cornerRadius = 8.0f;
-        orangeBackground.layer.borderWidth = 1.0f;
-        orangeBackground.layer.borderColor = UIColor.clearColor.CGColor;
-        [self.contentView sendSubviewToBack:orangeBackground];
-        [self.contentView addSubview:orangeBackground];
-        self.titleLabel.hidden = YES;
-        self.tappedLabel.textColor = UIColor.whiteColor;
-        self.tappedLabel.alpha = 1;
-        [self.contentView bringSubviewToFront:self.tappedLabel];
+  
+    UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width + 15, self.frame.size.height)];
+    orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
+    orangeBackground.layer.cornerRadius = 8.0f;
+    orangeBackground.layer.borderWidth = 1.0f;
+    orangeBackground.layer.borderColor = UIColor.clearColor.CGColor;
+    [self.contentView sendSubviewToBack:orangeBackground];
+    [self.contentView addSubview:orangeBackground];
+    self.titleLabel.hidden = YES;
+    self.tappedLabel.textColor = UIColor.whiteColor;
+    self.tappedLabel.alpha = 1;
+    [self.contentView bringSubviewToFront:self.tappedLabel];
 
     [UIView animateWithDuration:0.2f
                           delay:0.0f
@@ -1463,7 +1456,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     }];
     }];
     }];
-    }];
-    }];
+
 }
 @end

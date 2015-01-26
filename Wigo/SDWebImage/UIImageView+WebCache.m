@@ -109,16 +109,19 @@ static char imageURLKey;
     if (url) {
         __weak UIImageView *wself = self;
         id <SDWebImageOperation> operation = [SDWebImageManager.sharedManager downloadImageWithURL:url options:options progress:progressBlock completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-            if (!wself) return;
+            __strong typeof(wself) strongSelf = wself;
+            if (!strongSelf) return;
             dispatch_main_sync_safe(^{
-                if (!wself) return;
+                if (!strongSelf) return;
                 if (image) {
-                    wself.image = image;
-                    [wself setNeedsLayout];
+                    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(0, 0, image.size.width,image.size.width));
+                    strongSelf.image = [UIImage imageWithCGImage:imageRef];
+                    [strongSelf setNeedsLayout];
+                    CGImageRelease(imageRef);
                 } else {
                     if ((options & SDWebImageDelayPlaceholder)) {
-                        wself.image = placeholder;
-                        [wself setNeedsLayout];
+                        strongSelf.image = placeholder;
+                        [strongSelf setNeedsLayout];
                     }
                 }
                 if (completedBlock && finished) {
