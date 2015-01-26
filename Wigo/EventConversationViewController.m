@@ -27,6 +27,7 @@
 @property (nonatomic, assign) BOOL facesHidden;
 @property (nonatomic, strong) UIButton *buttonCancel;
 @property (nonatomic, strong) UIButton *buttonTrash;
+@property (nonatomic, strong) UIVisualEffectView *visualEffectView;
 @end
 
 @implementation EventConversationViewController
@@ -591,16 +592,50 @@
     [self hideOrShowFacesForPage:(int)page];
 }
 
-- (void)presentUser:(WGUser *)user {
-    FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-    [profileViewController setStateWithUser: user];
-    profileViewController.user = user;
-    if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
-    [self presentViewController:profileViewController animated:YES completion:nil];
+- (void)presentUser:(WGUser *)user withView:(UIView *)view {
+//    [_visualEffectView removeFromSuperview];
+//    view.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+    CGPoint initialCenter = view.center;
+//    view.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+//    view.clipsToBounds = YES;
+    [UIView animateWithDuration:0.7f animations:^{
+        view.layer.borderWidth = 0.0f;
+        view.layer.cornerRadius = 0.0f;
+        view.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.width);
+        view.center = CGPointMake(initialCenter.x, [UIScreen mainScreen].bounds.size.width/2);
+    } completion:^(BOOL finished) {
+        FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [profileViewController setStateWithUser: user];
+        profileViewController.user = user;
+        if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
+        [self presentViewController:profileViewController animated:NO completion:nil];
+    }];
+
+}
+
+- (void)createBlurViewUnderView:(UIView *)view {
+    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    
+    _visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    _visualEffectView.frame = self.view.frame;
+    _visualEffectView.alpha = 0.0f;
+    self.facesCollectionView.clipsToBounds = NO;
+    [self.view addSubview:_visualEffectView];
+    [self.view  bringSubviewToFront:self.facesCollectionView];
+    
+    [view.superview.superview bringSubviewToFront:view.superview];
+    [self.facesCollectionView bringSubviewToFront:[self.facesCollectionView cellForItemAtIndexPath:self.currentActiveCell]];
 }
 
 - (void)dimOutToPercentage:(float)percentage {
-    
+    if (percentage == 0) {
+        [_visualEffectView removeFromSuperview];
+        return;
+    }
+    else {
+        float newAlpha = 1 - 1/percentage;
+        _visualEffectView.alpha = newAlpha;
+    }
 }
 
 @end
@@ -644,12 +679,12 @@
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
     
-//    self.faceImageView.userInteractionEnabled = YES;
-//    self.faceAndMediaTypeView.clipsToBounds = NO;
-//    self.clipsToBounds = NO;
-//    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
-//                                      initWithTarget:self action:@selector(panWasRecognized:)];
-//    [self.faceImageView addGestureRecognizer:panner];
+    self.faceImageView.userInteractionEnabled = YES;
+    self.faceAndMediaTypeView.clipsToBounds = NO;
+    self.clipsToBounds = NO;
+    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
+                                      initWithTarget:self action:@selector(panWasRecognized:)];
+    [self.faceImageView addGestureRecognizer:panner];
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
@@ -701,13 +736,14 @@
     if (panner.state == UIGestureRecognizerStateBegan) {
         self.startYPosition = center.y;
         self.startSize = draggedView.frame.size;
+        [self.eventConversationDelegate createBlurViewUnderView:draggedView];
     }
     if (panner.state == UIGestureRecognizerStateEnded) {
         if (center.y > 150) {
-            [self.eventConversationDelegate presentUser:self.user];
+            [self.eventConversationDelegate presentUser:self.user withView:draggedView];
         }
-        draggedView.center = CGPointMake(center.x, self.startYPosition);
-        draggedView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+
+        [self.eventConversationDelegate dimOutToPercentage:0];
     }
     else {
         if (_isActive) {

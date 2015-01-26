@@ -40,8 +40,9 @@
 - (void)showCompletedMessage;
 - (void)dismissView;
 - (void)promptCamera;
-- (void)presentUser:(WGUser *)user;
+- (void)presentUser:(WGUser *)user withView:(UIView *)view;
 - (void)dimOutToPercentage:(float)percentage;
+- (void)createBlurViewUnderView:(UIView *)view;
 @end
 
 #endif

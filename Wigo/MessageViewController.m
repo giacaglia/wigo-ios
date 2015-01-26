@@ -205,7 +205,7 @@ BOOL isFetchingEveryone;
     UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
-    [profileImageView setImageWithURL:[user smallCoverImageURL] imageArea:[user smallCoverImageArea]];
+    [profileImageView setImageWithURL:[user smallCoverImageURL]];
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];

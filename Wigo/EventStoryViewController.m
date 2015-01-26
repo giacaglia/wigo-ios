@@ -347,7 +347,7 @@
     
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
     WGUser *user = eventMessage.user;
-    [myCell.mediaTypeImageView setImageWithURL:[user smallCoverImageURL] imageArea:[user smallCoverImageArea]];
+    [myCell.mediaTypeImageView setImageWithURL:[user smallCoverImageURL]];
 
     NSString *contentURL;
     if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
@@ -414,7 +414,7 @@
             _noHighlightsLabel.text = [NSString stringWithFormat:@"No highlights yet %@", res];
             _noHighlightsLabel.textAlignment = NSTextAlignmentCenter;
             _noHighlightsLabel.font = [FontProperties lightFont:15.0f];
-            _noHighlightsLabel.textColor = RGB(190, 190, 190);
+            _noHighlightsLabel.textColor = RGB(170, 170, 170);
             _noHighlightsLabel.alpha = 0.0f;
             [cell addSubview:_noHighlightsLabel];
         }

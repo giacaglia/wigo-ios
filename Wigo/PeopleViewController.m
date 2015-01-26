@@ -139,7 +139,7 @@ NSMutableArray *suggestedArrayView;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
-        [profileImageView setImageWithURL:[self.user smallCoverImageURL] imageArea:[self.user smallCoverImageArea]];
+        [profileImageView setImageWithURL:[self.user smallCoverImageURL]];
         [profileButton addSubview:profileImageView];
         [profileButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
