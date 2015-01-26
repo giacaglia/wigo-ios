@@ -385,10 +385,6 @@
         [WiGoSpinnerView removeDancingGFromCenterView:self.view];
         if (error) {
             _fetchingProfilePictures = YES;
-//            if (error.userInfo && [error.userInfo objectForKey:@"wigoCode"] && [[error.userInfo objectForKey:@"wigoCode"] isEqualToString:@"does_not_exist"]) {
-//              
-//                return;
-//            }
             [self fetchTokensFromFacebook];
             [self fetchProfilePicturesAlbumFacebook];
             [self logout];

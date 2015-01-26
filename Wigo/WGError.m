@@ -58,7 +58,9 @@ static WGError *sharedWGErrorInstance = nil;
     NSString *titleString = [self titleForActionType: action];
     NSString *messageString;
     NSString *moreString;
-    
+    if ([error.userInfo objectForKey:@"wigoCode"] && [[error.userInfo objectForKey:@"wigoCode"] isEqual:@"does_not_exist"]) {
+        return;
+    }
     if ([error.domain isEqualToString:kServerErrorDomain]) {
         long httpStatus = [[[error userInfo] objectForKey:AFNetworkingOperationFailingURLResponseErrorKey] statusCode];
         
