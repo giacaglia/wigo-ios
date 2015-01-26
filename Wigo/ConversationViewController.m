@@ -11,7 +11,7 @@
 #import "UIButtonAligned.h"
 #import "FancyProfileViewController.h"
 
-#define kTimeDifferenceToShowDate 3600
+#define kTimeDifferenceToShowDate 1800 // 30 minutes
 
 @interface ConversationViewController ()
 
@@ -22,6 +22,8 @@
 @end
 
 JSQMessagesBubbleImageFactory *bubbleFactory;
+JSQMessagesBubbleImage *orangeBubble;
+JSQMessagesBubbleImage *grayBubble;
 FancyProfileViewController *profileViewController;
 BOOL fetching;
 
@@ -51,6 +53,8 @@ BOOL fetching;
     [super viewDidLoad];
     
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
+    orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor orangeColor]];
+    grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
     
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
@@ -97,8 +101,6 @@ BOOL fetching;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    self.collectionView.collectionViewLayout.springinessEnabled = YES;
     
     [WGAnalytics tagEvent:@"Conversation View"];
 }
@@ -174,10 +176,10 @@ BOOL fetching;
     WGMessage *message = (WGMessage *)[_messages objectAtIndex:indexPath.item];
     
     if ([message.senderId isEqualToString:self.senderId]) {
-        return [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+        return grayBubble;
     }
     
-    return [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor orangeColor]];
+    return orangeBubble;
     
 }
 
