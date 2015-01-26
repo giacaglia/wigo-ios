@@ -33,6 +33,9 @@
 @property (nonatomic, strong) WGCollection *events;
 @property (nonatomic, strong) UILabel *numberOfFollowersLabel;
 @property (nonatomic, strong) UILabel *numberOfFollowingLabel;
+@property (nonatomic, strong) WGCollection *unexpiredNotifications;
+@property (nonatomic, strong) WGCollection *notifications;
+
 
 -(id)initWithUser:(WGUser *)user;
 - (void) setStateWithUser: (WGUser *) user;

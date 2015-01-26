@@ -29,8 +29,6 @@
 
 @property UIPageControl *pageControl;
 
-@property WGCollection *notifications;
-@property WGCollection *unexpiredNotifications;
 @property NSNumber *followRequestSummary;
 
 //favorite
@@ -759,7 +757,7 @@ UIButton *tapButton;
 - (NSInteger) notificationCount {
     if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE) {
         int numberOfCellsForSummary =  [self shouldShowFollowSummary] ? 1 : 0;
-        return _unexpiredNotifications.count + numberOfCellsForSummary;
+        return self.unexpiredNotifications.count + numberOfCellsForSummary;
     }
     return [self shouldShowInviteCell] ? 1 : 0;
 }
@@ -821,8 +819,8 @@ UIButton *tapButton;
         if ([_followRequestSummary intValue] > 0) {
             indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
         }
-        if (indexPath.row >= _unexpiredNotifications.count) return notificationCell;
-        WGNotification *notification = (WGNotification *)[_unexpiredNotifications objectAtIndex:[indexPath row]];
+        if (indexPath.row >= self.unexpiredNotifications.count) return notificationCell;
+        WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:[indexPath row]];
         if (!notification.fromUser.id) return notificationCell;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
 
@@ -948,7 +946,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             [self.navigationController pushViewController:[FollowRequestsViewController new] animated:YES];
         } else {
             if ([_followRequestSummary intValue] > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
-            WGNotification *notification = (WGNotification *)[_unexpiredNotifications objectAtIndex:indexPath.row];
+            WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:indexPath.row];
             WGUser *user = notification.fromUser;
            
             if ([notification.type isEqualToString:@"follow"] || [notification.type isEqualToString:@"follow.accepted"] || [notification.type isEqualToString:@"facebook.follow"]) {
@@ -1048,7 +1046,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     __weak typeof(self) weakSelf = self;
     if (!self.isFetchingNotifications) {
         self.isFetchingNotifications = YES;
-        if (!_notifications || _notifications.hasNextPage == nil) {
+        if (!self.notifications || self.notifications.hasNextPage == nil) {
             [WGNotification get:^(WGCollection *collection, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
                 strongSelf.isFetchingNotifications = NO;
@@ -1056,11 +1054,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     return;
                 }
-                _notifications = collection;
-                if (!_unexpiredNotifications) _unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
-                for (WGNotification *notification in _notifications) {
+                strongSelf.notifications = collection;
+                if (!strongSelf.unexpiredNotifications) strongSelf.unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
+                for (WGNotification *notification in strongSelf.notifications) {
                     if (![notification isFromLastDay]) {
-                        [_unexpiredNotifications addObject:notification];
+                        [strongSelf.unexpiredNotifications addObject:notification];
                     }
                 }
                 strongSelf.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
@@ -1068,8 +1066,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 [strongSelf.tableView didFinishPullToRefresh];
                 strongSelf.isFetchingNotifications = NO;
             }];
-        } else if ([_notifications.hasNextPage boolValue]) {
-            [_notifications getNextPage:^(WGCollection *collection, NSError *error) {
+        } else if ([self.notifications.hasNextPage boolValue]) {
+            [self.notifications getNextPage:^(WGCollection *collection, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
                 strongSelf.isFetchingNotifications = NO;
                 if (error) {
@@ -1077,9 +1075,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                     return;
                 }
                 for (WGNotification *notification in collection) {
-                    [_notifications addObject:notification];
+                    [strongSelf.notifications addObject:notification];
                     if (![notification isFromLastDay]) {
-                        [_unexpiredNotifications addObject:notification];
+                        [strongSelf.unexpiredNotifications addObject:notification];
                     }
                 }
                 strongSelf.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
