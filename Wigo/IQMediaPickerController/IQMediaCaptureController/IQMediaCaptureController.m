@@ -1331,8 +1331,8 @@ replacementString:(NSString *)string {
         _buttonCapture = [UIButton buttonWithType:UIButtonTypeCustom];
         [_buttonCapture setImage:[UIImage imageNamed:@"IQ_neutral_mode"] forState:UIControlStateNormal];
         [_buttonCapture addTarget:self action:@selector(captureAction:) forControlEvents:UIControlEventTouchUpInside];
-        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
-        [_buttonCapture addGestureRecognizer:longPress];
+//        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+//        [_buttonCapture addGestureRecognizer:longPress];
         
     }
     
