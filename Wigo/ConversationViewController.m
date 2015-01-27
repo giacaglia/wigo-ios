@@ -300,7 +300,7 @@ BOOL fetching;
 
 -(void) didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
     WGMessage *message = [[WGMessage alloc] init];
-    message.message = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];ight
+    message.message = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     message.created = date;
     message.toUser = self.user;
     message.user = [WGProfile currentUser];
