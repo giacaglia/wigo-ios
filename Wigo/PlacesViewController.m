@@ -133,9 +133,6 @@ BOOL secondTimeFetchingUserInfo;
     [self initializeNavigationBar];
     [_placesTableView reloadData];
 
-    if ([WGProfile currentUser].key) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
-    }
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
@@ -1513,6 +1510,7 @@ BOOL secondTimeFetchingUserInfo;
         fetchingUserInfo = YES;
         [WGProfile reload:^(BOOL success, NSError *error) {
             if (!secondTimeFetchingUserInfo) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
                 secondTimeFetchingUserInfo = YES;
                 if (error ||
                     ![[WGProfile currentUser].emailValidated boolValue] ||
