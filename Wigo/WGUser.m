@@ -386,6 +386,10 @@ static WGUser *currentUser = nil;
     return nil;
 }
 
+-(UIImage *) avatarPlaceholderImage {
+    return [UIImage imageNamed:@"grayIcon"];
+}
+
 -(NSArray *) imagesArea {
     if (self.properties && [[self.properties allKeys] containsObject:kImagesKey]) {
         NSArray *images = [self.properties objectForKey:kImagesKey];

@@ -116,7 +116,7 @@ BOOL fetching;
 }
 
 -(void) textChanged:(id)sender {
-    if ([self.inputToolbar.contentView.textView.text hasSuffix:@"\n"]) {
+    if ([self.inputToolbar.contentView.textView.text hasSuffix:@"\n"] && self.inputToolbar.contentView.rightBarButtonItem.enabled) {
         [self.inputToolbar.contentView.textView resignFirstResponder];
         [self.inputToolbar.delegate messagesInputToolbar:self.inputToolbar didPressRightBarButton:nil];
     }
@@ -300,7 +300,7 @@ BOOL fetching;
 
 -(void) didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
     WGMessage *message = [[WGMessage alloc] init];
-    message.message = text;
+    message.message = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];ight
     message.created = date;
     message.toUser = self.user;
     message.user = [WGProfile currentUser];
@@ -315,7 +315,10 @@ BOOL fetching;
         });
     }];
     [_viewForEmptyConversation removeFromSuperview];
+    
     self.inputToolbar.contentView.textView.text = @"";
+    self.inputToolbar.contentView.rightBarButtonItem.enabled = NO;
+    
     [_messages addObject:message];
     [self finishReceivingMessageAnimated:YES];
 }
