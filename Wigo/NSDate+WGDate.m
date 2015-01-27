@@ -27,17 +27,20 @@
     return [NSString stringWithFormat:@"Joined %@", [dateFormatter stringFromDate:dateInLocalTimezone]];
 }
 
--(NSString *) getUTCTimeStringToLocalTimeString {
-    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
-    NSDate *dateInLocalTimezone = [self dateByAddingTimeInterval:timeZoneSeconds];
-    
-    if (![dateInLocalTimezone isFromLastDay]) {
+- (NSString *) timeInLocaltimeString {
+    NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
+    [localTimeFormat setDateFormat:@"h:mm a"];
+    return [localTimeFormat stringFromDate:self];
+}
+
+-(NSString *) getUTCTimeStringToLocalTimeString {    
+    if (![self isFromLastDay]) {
         NSDateFormatter *localTimeFormat = [[NSDateFormatter alloc] init];
         [localTimeFormat setDateFormat:@"h:mm a"];
-        return [localTimeFormat stringFromDate:dateInLocalTimezone];
+        return [localTimeFormat stringFromDate:self];
     } else {
         NSDate *nowDate = [NSDate date];
-        NSDateComponents *differenceDateComponents = [dateInLocalTimezone differenceBetweenDates:nowDate];
+        NSDateComponents *differenceDateComponents = [self differenceBetweenDates:nowDate];
         if ([differenceDateComponents weekOfYear] == 0 && [differenceDateComponents month] == 0) {
             if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
                 return @"1 day ago";

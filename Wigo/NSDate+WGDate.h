@@ -14,6 +14,7 @@
 
 -(NSString *) joinedString;
 
+-(NSString *) timeInLocaltimeString;
 -(NSString *) getUTCTimeStringToLocalTimeString;
 
 -(NSDateComponents *) differenceBetweenDates:(NSDate *)date;

@@ -364,7 +364,7 @@
             [weakCell.spinner stopAnimating];
         });
     }];
-    myCell.timeLabel.text = [eventMessage.created getUTCTimeStringToLocalTimeString];
+    myCell.timeLabel.text = [eventMessage.created timeInLocaltimeString];
     myCell.timeLabel.textColor = RGB(59, 59, 59);
     myCell.faceAndMediaTypeView.alpha = 1.0f;
     

@@ -122,7 +122,7 @@
         }
     }
     
-    myCell.timeLabel.text = [eventMessage.created getUTCTimeStringToLocalTimeString];
+    myCell.timeLabel.text = [eventMessage.created timeInLocaltimeString];
     if ([indexPath isEqual:self.currentActiveCell]) {
         myCell.isActive = YES;
     } else {
