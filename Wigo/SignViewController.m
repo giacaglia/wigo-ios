@@ -412,6 +412,7 @@
         if (!_pushed) {
             _pushed = YES;
             if ([[WGProfile currentUser].group.locked boolValue]) {
+                [self.navigationController setNavigationBarHidden:YES animated:NO];
                 [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
             } else {
                 [self loadMainViewController];
@@ -435,9 +436,6 @@
     [self navigate];
 }
 
--(void) fetchUserInfo {
-
-}
 
 - (void)loadMainViewController {
     [self dismissViewControllerAnimated:NO  completion:nil];

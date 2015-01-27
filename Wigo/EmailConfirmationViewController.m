@@ -169,8 +169,10 @@ NSTimer *fetchTimer;
                 [fetchTimer invalidate];
                 fetchTimer = nil;
                 if ([[WGProfile currentUser].group.locked boolValue]) {
+                    [self.navigationController setNavigationBarHidden:YES animated:NO];
                     [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
                 } else {
+                    [self.navigationController setNavigationBarHidden:YES animated:NO];
                     onboardFollowViewController = [OnboardFollowViewController new];
                     [self.navigationController pushViewController:onboardFollowViewController animated:YES];
                 }
