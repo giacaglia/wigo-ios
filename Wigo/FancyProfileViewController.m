@@ -117,6 +117,8 @@ UIButton *tapButton;
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     
     [_pageControl removeFromSuperview];
@@ -138,6 +140,7 @@ UIButton *tapButton;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
     
     NSString *isCurrentUser = ([self.user isEqual:[WGProfile currentUser]]) ? @"Yes" : @"No";
     NSString *isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE) ? @"Yes" : @"No";
@@ -1347,7 +1350,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [InstaCell rowHeight]);
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.instaLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [InstaCell rowHeight])];
-    self.instaLabel.font = [FontProperties lightFont:25];
+    self.instaLabel.font = [FontProperties lightFont:20];
     self.instaLabel.textColor = [FontProperties getOrangeColor];
     self.instaLabel.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:self.instaLabel];

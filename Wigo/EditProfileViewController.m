@@ -305,7 +305,7 @@ UIViewController *webViewController;
     UIButton *ambassadorButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 655, self.view.frame.size.width, 50)];
     ambassadorButton.backgroundColor = [UIColor whiteColor];
     UILabel *ambassadorButtonLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, termsOfServiceButton.frame.size.height)];
-    ambassadorButtonLabel.text = @"Ambassador Dashboard";
+    ambassadorButtonLabel.text = @"Dashboard";
     ambassadorButtonLabel.font = [FontProperties getNormalFont];
     [ambassadorButton addSubview:ambassadorButtonLabel];
     [ambassadorButton addTarget:self action:@selector(showAmbassadorPanel) forControlEvents:UIControlEventTouchUpInside];

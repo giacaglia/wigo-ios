@@ -60,7 +60,7 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 - (void) viewDidLoad {
     [super viewDidLoad];
     
-    self.title = @"Ambassador Dashboard";
+    self.title = @"Dashboard";
     self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
     self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
     self.tableView.tableFooterView = [[UIView alloc] init];
