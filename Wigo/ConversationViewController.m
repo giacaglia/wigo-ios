@@ -72,6 +72,11 @@ BOOL fetching;
     [self.view addSubview:bottomLine];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(textChanged:)
+                                                 name:UITextViewTextDidChangeNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
                                                object:nil];
@@ -80,8 +85,6 @@ BOOL fetching;
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
-    
-    [self fetchFirstPageMessages];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -99,6 +102,7 @@ BOOL fetching;
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.translucent = NO;
     
+    [self fetchFirstPageMessages];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -109,6 +113,13 @@ BOOL fetching;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+}
+
+-(void) textChanged:(id)sender {
+    if ([self.inputToolbar.contentView.textView.text hasSuffix:@"\n"]) {
+        [self.inputToolbar.contentView.textView resignFirstResponder];
+        [self.inputToolbar.delegate messagesInputToolbar:self.inputToolbar didPressRightBarButton:nil];
+    }
 }
 
 -(void) keyboardWillShow: (NSNotification *)notification {
@@ -334,7 +345,7 @@ BOOL fetching;
 }
 
 - (void)initializeMessageForEmptyConversation {
-    _viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+    _viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 90)];
     _viewForEmptyConversation.center = self.view.center;
     
     [self.view addSubview:_viewForEmptyConversation];
@@ -357,8 +368,10 @@ BOOL fetching;
 - (void)fetchMessages:(BOOL)scrollToBottom {
     if (!fetching) {
         fetching = YES;
-        [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
         if (!_messages) {
+            UIView *loadingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 120)];
+            [self.view addSubview:loadingView];
+            [WiGoSpinnerView showOrangeSpinnerAddedTo:loadingView];
             [self.user getConversation:^(WGCollection *collection, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
@@ -368,7 +381,8 @@ BOOL fetching;
                 [collection reverse];
                 _messages = collection;
                 // [self addFirstPageMessages];
-                [WiGoSpinnerView hideSpinnerForView:self.view];
+                [WiGoSpinnerView hideSpinnerForView:loadingView];
+                [loadingView removeFromSuperview];
                 fetching = NO;
                 
                 if ([_messages count] == 0) {
@@ -398,7 +412,7 @@ BOOL fetching;
                 _messages.nextPage = collection.nextPage;
                 
                 [_viewForEmptyConversation removeFromSuperview];
-                [WiGoSpinnerView hideSpinnerForView:self.view];
+                // [WiGoSpinnerView hideSpinnerForView:self.view];
                 fetching = NO;
                 
                 self.showLoadEarlierMessagesHeader = [[_messages hasNextPage] boolValue];
@@ -412,7 +426,7 @@ BOOL fetching;
             }];
         } else {
             fetching = NO;
-            [WiGoSpinnerView hideSpinnerForView:self.view];
+            // [WiGoSpinnerView hideSpinnerForView:self.view];
         }
     }
 }
