@@ -16,6 +16,8 @@
 #import "WGProfile.h"
 #import "WGEvent.h"
 #import "PlacesViewController.h"
+#import "RWBlurPopover.h"
+
 
 NSNumber *numberOfNewMessages;
 NSNumber *numberOfNewNotifications;
@@ -80,6 +82,8 @@ NSDate *firstLoggedTime;
 
 - (void) dismissEverythingWithUserInfo:(NSDictionary *)userInfo {
 //    NSLog(@"dismiss Everything");
+    if ([RWBlurPopover instance]) [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:nil];
+    
     UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
     UIViewController *presentedController = [navController presentedViewController];
     UIViewController *visibleController = [navController topViewController];
@@ -163,9 +167,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    if (application.applicationState == UIApplicationStateInactive) {
-        [self dismissEverythingWithUserInfo:userInfo];
-    }
+//    if (application.applicationState == UIApplicationStateInactive) {
+//        [self dismissEverythingWithUserInfo:userInfo];
+//    }
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {
