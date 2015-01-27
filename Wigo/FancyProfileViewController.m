@@ -1355,7 +1355,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void) setLabelForUser: (WGUser *) user {
     if (user.instaHandle && user.instaHandle.length > 0 && ![user.instaHandle isEqual:@"@"]) {
-        self.instaLabel.text = user.instaHandle;
+        NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Instagram: %@", user.instaHandle]];
+        [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,10)];
+        [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(10, string.length - 10)];
+        self.instaLabel.attributedText = string;
     }
 }
 
