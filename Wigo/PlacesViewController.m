@@ -151,8 +151,8 @@ BOOL secondTimeFetchingUserInfo;
     
     [self initializeFlashScreen];
     if (![WGProfile currentUser].key) {
-        [_signViewController reloadedUserInfo:NO andError:nil];
         [self showFlashScreen];
+        [_signViewController reloadedUserInfo:NO andError:nil];
     }
 
     [self.view endEditing:YES];
@@ -1514,12 +1514,15 @@ BOOL secondTimeFetchingUserInfo;
         [WGProfile reload:^(BOOL success, NSError *error) {
             if (!secondTimeFetchingUserInfo) {
                 secondTimeFetchingUserInfo = YES;
-                [_signViewController reloadedUserInfo:success andError:error];
-                if (error) {
+                if (error ||
+                    ![[WGProfile currentUser].emailValidated boolValue] ||
+                    [[WGProfile currentUser].group.locked boolValue]) {
                     fetchingUserInfo = NO;
                     [self showFlashScreen];
+                    [_signViewController reloadedUserInfo:success andError:error];
                     return;
                 }
+                
             }
             if (error) {
                 fetchingUserInfo = NO;
