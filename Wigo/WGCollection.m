@@ -156,8 +156,13 @@
     return [self.objects indexOfObject:object];
 }
 
--(BOOL) containsObject:(WGObject *)object {
-    return [self.objects containsObject:object];
+-(BOOL) containsObject:(WGObject *)other {
+    for (WGObject *object in self.objects) {
+        if ([object isEqual:other]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 -(void) removeObject:(WGObject *)object {

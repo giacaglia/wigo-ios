@@ -734,7 +734,7 @@ BOOL secondTimeFetchingUserInfo;
                     return;
                 }
                 
-                [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : object.id }] withHandler:^(BOOL success, NSError *error) {
+                [[WGProfile currentUser] goingToEvent:object withHandler:^(BOOL success, NSError *error) {
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                         return;
@@ -745,7 +745,7 @@ BOOL secondTimeFetchingUserInfo;
                     [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
                     
                     [self dismissKeyboard];
-                    [self fetchEventsFirstPage];
+                    // [self fetchEventsFirstPage];
                     [self updateTitleView];
                     
                     [WGProfile currentUser].isGoingOut = @YES;
@@ -753,10 +753,20 @@ BOOL secondTimeFetchingUserInfo;
                     [WGProfile currentUser].isGoingOut = @YES;
                     
                     WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [WGProfile currentUser] }];
-                    WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
-                    object.attendees = eventAttendees;
                     
-                    [self showStoryForEvent:object];
+                    if ([self.allEvents containsObject:object]) {
+                        WGEvent *joinedEvent = (WGEvent *)[self.allEvents objectWithID:object.id];
+                        [joinedEvent.attendees insertObject:attendee atIndex:0];
+                        [self showStoryForEvent:joinedEvent];
+                    } else {
+                        if (object.attendees) {
+                            [object.attendees insertObject:attendee atIndex:0];
+                        } else {
+                            WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
+                            object.attendees = eventAttendees;
+                        }
+                        [self showStoryForEvent:object];
+                    }
                 }];
             }];
         }];
@@ -1580,20 +1590,6 @@ BOOL secondTimeFetchingUserInfo;
         presentedMobileContacts = YES;
         [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
     }
-}
-
-- (void)createEventWithName:(NSString *)eventName {
-    [WGEvent createEventWithName:eventName andHandler:^(WGEvent *object, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                return;
-            }
-            [_events addObject:object];
-            [_events exchangeObjectAtIndex:([_events count] - 1) withObjectAtIndex:0];
-            [self removeProfileUserFromAnyOtherEvent];
-        });
-    }];
 }
 
 - (void)addProfileUserToEventWithNumber:(int)eventID {

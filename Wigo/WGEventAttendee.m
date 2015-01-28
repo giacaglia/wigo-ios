@@ -58,7 +58,7 @@
 }
 
 +(void) getForEvent:(WGEvent *)event withHandler:(WGCollectionResultBlock)handler {
-    [WGApi get:@"eventattendees/" withArguments:@{ @"event" : event.id, @"limit" : @"10" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"eventattendees/" withArguments:@{ @"event" : event.id, @"limit" : @10, @"page" : @2 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

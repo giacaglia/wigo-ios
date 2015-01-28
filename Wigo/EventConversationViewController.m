@@ -606,11 +606,14 @@
         view.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.width);
         view.center = CGPointMake(initialCenter.x, [UIScreen mainScreen].bounds.size.width/2);
     } completion:^(BOOL finished) {
+        
         FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
         [profileViewController setStateWithUser: user];
         profileViewController.user = user;
         if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
-        [self presentViewController:profileViewController animated:NO completion:nil];
+        
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: profileViewController];
+        [self presentViewController:navController animated:NO completion:nil];
     }];
 
 }
@@ -681,12 +684,12 @@
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
 //    
-//    self.faceImageView.userInteractionEnabled = YES;
-//    self.faceAndMediaTypeView.clipsToBounds = NO;
-//    self.clipsToBounds = NO;
-//    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
-//                                      initWithTarget:self action:@selector(panWasRecognized:)];
-//    [self.faceImageView addGestureRecognizer:panner];
+    self.faceImageView.userInteractionEnabled = YES;
+    self.faceAndMediaTypeView.clipsToBounds = NO;
+    self.clipsToBounds = NO;
+    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
+                                      initWithTarget:self action:@selector(panWasRecognized:)];
+    [self.faceImageView addGestureRecognizer:panner];
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;

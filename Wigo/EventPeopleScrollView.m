@@ -115,7 +115,9 @@
                     strongSelf.fetchingEventAttendees = NO;
                     return;
                 }
-                strongSelf.event.attendees = collection;
+                [strongSelf.event.attendees addObjectsFromCollection: collection];
+                strongSelf.event.attendees.hasNextPage = collection.hasNextPage;
+                strongSelf.event.attendees.nextPage = collection.nextPage;
                 
                 [strongSelf saveScrollPosition];
                 [strongSelf updateUI];
