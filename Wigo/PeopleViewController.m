@@ -1109,7 +1109,7 @@ UIScrollView *suggestedScrollView;
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:suggestedScrollView];
     int indexOfPerson = (buttonOriginInTableView.x - 40)/130 ;
     WGUser *user;
-    int sizeOfArray = self.suggestions.count;
+    int sizeOfArray = (int) self.suggestions.count;
     if (sizeOfArray > 0 && sizeOfArray > indexOfPerson) {
         user = (WGUser *)[self.suggestions objectAtIndex:indexOfPerson];
     }
@@ -1130,7 +1130,7 @@ UIScrollView *suggestedScrollView;
 
 - (WGUser *)getSuggestedUser:(int)tag {
     WGUser *user;
-    int sizeOfArray = self.suggestions.count;
+    int sizeOfArray = (int) self.suggestions.count;
     if (sizeOfArray > 0 && sizeOfArray > tag)
         user = (WGUser *)[self.suggestions objectAtIndex:tag];
     return user;
