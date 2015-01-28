@@ -43,7 +43,6 @@ int queryQueueInt;
 UIView *secondPartSubview;
 BOOL fetching;
 UIScrollView *suggestedScrollView;
-NSMutableArray *suggestedArrayView;
 
 @implementation PeopleViewController
 
@@ -73,7 +72,6 @@ NSMutableArray *suggestedArrayView;
     [super viewDidLoad];
     didProfileSegue = NO;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
-    suggestedArrayView = [NSMutableArray new];
     // Title setup
     [self initializeBackBarButton];
     [self initializeRightBarButton];
@@ -115,7 +113,6 @@ NSMutableArray *suggestedArrayView;
     
     _lineView= [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
     _lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
-
     [self.navigationController.navigationBar addSubview: _lineView];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
@@ -198,28 +195,6 @@ NSMutableArray *suggestedArrayView;
 
 }
 
-- (void)initializeTapHandler {
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(tappedView:)];
-    tap.cancelsTouchesInView = NO;
-    [self.view addGestureRecognizer:tap];
-}
-
-- (void)tappedView:(UITapGestureRecognizer*)tapSender {
-    UIView *viewSender = (UIView *)tapSender.view;
-    int tag = (int)viewSender.tag;
-    WGUser *user = [self getUserAtIndex:tag];
-    if (user) {
-        didProfileSegue = YES;
-        userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
-        
-        self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-        [self.profileViewController setStateWithUser: user];
-        self.profileViewController.user = user;
-        [self.navigationController pushViewController:self.profileViewController animated:YES];
-    }
-}
-
 - (void)tappedButton:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
@@ -227,18 +202,23 @@ NSMutableArray *suggestedArrayView;
     if (user) {
         didProfileSegue = YES;
         userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
-
-        self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-        [self.profileViewController setStateWithUser: user];
-        self.profileViewController.user = user;
-        [self.navigationController pushViewController:self.profileViewController animated:YES];
+        [self presentUser:user];
     }
+}
+
+- (void)presentUser:(WGUser *)user {
+    FancyProfileViewController *profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    [profileViewController setStateWithUser: user];
+    profileViewController.user = user;
+    [self.navigationController pushViewController:profileViewController animated:YES];
 }
 
 
 - (void)initializeTableOfPeople {
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    [self.tableViewOfPeople registerClass:[PeopleCell class] forCellReuseIdentifier:kPeopleCellName];
+    [self.tableViewOfPeople registerClass:[SuggestedCell class] forCellReuseIdentifier:kSuggestedFriendsCellName];
     self.tableViewOfPeople.delegate = self;
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -292,47 +272,6 @@ NSMutableArray *suggestedArrayView;
 - (UIView *)initializeSecondPart {
     if ([self.currentTab isEqualToNumber:@2]) {
         UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 223)];
-        
-        UILabel *contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 14, 21)];
-        contextLabel.text = @"Suggested friends";
-        contextLabel.font = [FontProperties mediumFont:17.0f];
-        contextLabel.textAlignment = NSTextAlignmentLeft;
-        [secondPartSubview addSubview:contextLabel];
-        
-        suggestedScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 180)];
-        suggestedScrollView.showsHorizontalScrollIndicator = NO;
-        [secondPartSubview addSubview:suggestedScrollView];
-        int xPosition = 10;
-        for (int i = 0; i < MIN(10,[_suggestions count]); i++) {
-            WGUser *user = (WGUser *)[_suggestions objectAtIndex:i];
-            UIView *cellView = [self cellOfUser:user atXPosition:xPosition];
-            [suggestedScrollView addSubview:cellView];
-            [suggestedArrayView addObject:cellView];
-            xPosition += 130;
-            suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
-        }
-        
-        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 110)];
-        [inviteButton setBackgroundImage:[UIImage imageNamed:@"InviteButton"] forState:UIControlStateNormal];
-        [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        [suggestedScrollView addSubview:inviteButton];
-        
-        UILabel *inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
-        inviteMoreFriendsLabel.text = @"Invite more friends\nto Wigo";
-        inviteMoreFriendsLabel.textAlignment = NSTextAlignmentCenter;
-        inviteMoreFriendsLabel.font = [FontProperties mediumFont:12.0f];
-        inviteMoreFriendsLabel.numberOfLines = 0;
-        inviteMoreFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        inviteMoreFriendsLabel.textColor = [FontProperties getOrangeColor];
-        [suggestedScrollView addSubview:inviteMoreFriendsLabel];
-        
-        xPosition += 130;
-        suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
-
-        UIImageView *line = [[UIImageView alloc] initWithFrame:CGRectMake(15, secondPartSubview.frame.size.height - 1, secondPartSubview.frame.size.width, 1)];
-        line.backgroundColor = RGBAlpha(184, 184, 184, 0.3f);
-        [secondPartSubview addSubview:line];
-
         return secondPartSubview;
     } else {
         UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 90)];
@@ -365,120 +304,6 @@ NSMutableArray *suggestedArrayView;
     [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
 }
 
-- (UIView *)cellOfUser:(WGUser *)user atXPosition:(int)xPosition {
-    UIView *cellOfUser = [[UIView alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 175)];
-    
-    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setSmallImageForUser:user completed:nil];
-    [profileButton addSubview:profileImageView];
-    profileButton.tag = (int)((xPosition - 10)/130);
-    if (![user isCurrentUser]) {
-        [profileButton addTarget:self action:@selector(suggestedProfileSegue:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    [cellOfUser addSubview:profileButton];
-    
-    UILabel *nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 110 - 25, 110, 25)];
-    nameOfPersonLabel.textColor = [UIColor whiteColor];
-    nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-    nameOfPersonLabel.text = [user firstName];
-    nameOfPersonLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
-    nameOfPersonLabel.font = [FontProperties lightFont:16.0f];
-    [cellOfUser addSubview:nameOfPersonLabel];
-    
-    if (![user isCurrentUser]) {
-        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(30, 120, 49, 30)];
-        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-        followPersonButton.tag = -100;
-        [followPersonButton addTarget:self action:@selector(suggestedFollowedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [cellOfUser addSubview:followPersonButton];
-        if ([user state] == BLOCKED_USER_STATE) {
-            [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
-            [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-            followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            followPersonButton.layer.borderWidth = 1;
-            followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            followPersonButton.layer.cornerRadius = 3;
-            followPersonButton.tag = 50;
-        } else {
-            if ([user.isFollowing boolValue]) {
-                [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-                followPersonButton.tag = 100;
-            }
-            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-                [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-                [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
-                [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-                followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-                followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-                followPersonButton.layer.borderWidth = 1;
-                followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-                followPersonButton.layer.cornerRadius = 3;
-                followPersonButton.tag = 100;
-            }
-        }
-        
-        UILabel *dateJoined = [[UILabel alloc] init];
-        if ([user.id intValue] > [[WGProfile currentUser].lastUserRead intValue]) {
-            UILabel *mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 152, 110, 15)];
-            mutualFriendsLabel.text = @"New on Wigo";
-            mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
-            mutualFriendsLabel.font = [FontProperties lightFont:12.0f];
-            mutualFriendsLabel.textColor = RGB(102, 102, 102);
-            [cellOfUser addSubview:mutualFriendsLabel];
-            
-            dateJoined.frame = CGRectMake(0, 165, 110, 12);
-        } else {
-            dateJoined.frame = CGRectMake(0, 152, 110, 12);
-        }
-    
-        dateJoined.text = [user.created joinedString];
-        dateJoined.textColor = RGB(201, 202, 204);
-        dateJoined.textAlignment = NSTextAlignmentCenter;
-        dateJoined.font = [FontProperties lightFont:10.0f];
-        [cellOfUser addSubview:dateJoined];
-    }
-    return cellOfUser;
-}
-
-- (void)suggestedFollowedPersonPressed:(id)sender {
-    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:suggestedScrollView];
-    int indexOfPerson = (buttonOriginInTableView.x - 40)/130 ;
-    WGUser *user;
-    int sizeOfArray = (int)[_suggestions count];
-    if (sizeOfArray > 0 && sizeOfArray > indexOfPerson) {
-        user = (WGUser *)[_suggestions objectAtIndex:indexOfPerson];
-    }
-    if (user) [self updateButton:sender withUser:user];
-}
-
-- (void)suggestedProfileSegue:(id)sender {
-    UIButton *buttonSender = (UIButton *)sender;
-    int tag = (int)buttonSender.tag;
-    WGUser *user = [self getSuggestedUser:tag];
-    if (user) {
-        didProfileSegue = YES;
-        userIndex = [NSIndexPath indexPathForRow:tag inSection:0];
-        
-        self.profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-        [self.profileViewController setStateWithUser: user];
-        self.profileViewController.user = user;
-
-        [self.navigationController pushViewController:self.profileViewController animated:YES];
-    }
-}
-
-- (WGUser *)getSuggestedUser:(int)tag {
-    WGUser *user;
-    int sizeOfArray = (int)[_suggestions count];
-    if (sizeOfArray > 0 && sizeOfArray > tag)
-        user = (WGUser *)[_suggestions objectAtIndex:tag];
-    return user;
-}
 
 
 #pragma mark - Filter handlers
@@ -509,7 +334,7 @@ NSMutableArray *suggestedArrayView;
 #pragma mark - Table View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath section] == 0) {
+    if (indexPath.section == 0) {
         if ([self.currentTab isEqualToNumber:@2]) return 233;
         else if ([self.currentTab isEqualToNumber:@4]) return 95;
         else if ([self.currentTab isEqualToNumber:@3]) return 0;
@@ -552,27 +377,23 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    cell.contentView.backgroundColor = [UIColor whiteColor];
-    cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
     
     if ([indexPath section] == 0) {
-        if ([self.currentTab isEqualToNumber:@2])
-            [cell.contentView addSubview:secondPartSubview];
-        else if ([self.currentTab isEqualToNumber:@4])
-            [cell.contentView addSubview:secondPartSubview];
-        return cell;
+        if ([self.currentTab isEqual:@2]) {
+            SuggestedCell *cell = [tableView dequeueReusableCellWithIdentifier:kSuggestedFriendsCellName forIndexPath:indexPath];
+            cell.peopleViewDelegate = self;
+            [cell setStateForCollection:_suggestions];
+            return cell;
+        }
+        else if ([self.currentTab isEqual:@4]) {
+            SuggestedCell *cell = [tableView dequeueReusableCellWithIdentifier:kSuggestedFriendsCellName forIndexPath:indexPath];
+            return cell;
+        }
     }
     
-    UIImageView *line = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS + 9 - 1, cell.contentView.frame.size.width, 1)];
-    line.backgroundColor = RGBAlpha(184, 184, 184, 0.3f);
-    [cell.contentView addSubview:line];
+    PeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kPeopleCellName forIndexPath:indexPath];
+    cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
+
     
     int tag = (int)[indexPath row];
     if (!_isSearching) {
@@ -604,96 +425,29 @@ NSMutableArray *suggestedArrayView;
         if (_isSearching && [_filteredUsers.hasNextPage boolValue]) loading = YES;
         if (!_isSearching && [_users.hasNextPage boolValue]) loading = YES;
         if (loading) {
-            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-            spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
-            spinner.center = cell.contentView.center;
-            [cell.contentView addSubview:spinner];
-            [spinner startAnimating];
+          [cell.spinnerView startAnimating];
         }
         return cell;
     }
     
-    
-    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, self.view.frame.size.width - 15 - 79 - 15, 60)];
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setSmallImageForUser:user completed:nil];
-    [profileButton addSubview:profileImageView];
-    profileButton.tag = tag;
-    if (![user isCurrentUser]) {
-        [profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
+    [cell setStateForUser:user];
+   
+    cell.profileButton.tag = tag;
+    [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    if (!user.isCurrentUser) {
+        [cell.profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
     }
-    [cell.contentView addSubview:profileButton];
-    
-    if ([user.isFavorite boolValue]) {
-        UIImageView *favoriteSmall = [[UIImageView alloc] initWithFrame:CGRectMake(6, profileButton.frame.size.height - 16, 10, 10)];
-        favoriteSmall.image = [UIImage imageNamed:@"favoriteSmall"];
-        [profileButton addSubview:favoriteSmall];
-    }
-    
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    labelName.font = [FontProperties mediumFont:18.0f];
-    labelName.text = [user fullName];
-    labelName.textAlignment = NSTextAlignmentLeft;
-    labelName.userInteractionEnabled = YES;
-    [cell.contentView addSubview:labelName];
-    
-    UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
-    goingOutLabel.font =  [FontProperties mediumFont:15.0f];
-    goingOutLabel.textAlignment = NSTextAlignmentLeft;
-    if ([user.isGoingOut boolValue]) {
-        goingOutLabel.text = @"Going Out";
-        goingOutLabel.textColor = [FontProperties getOrangeColor];
-    }
-    [cell.contentView addSubview:goingOutLabel];
     
     if ([self.currentTab isEqualToNumber:@2]) {
-        UILabel *timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 140 - 15, PEOPLEVIEW_HEIGHT_OF_CELLS - 15, 140, 12)];
-        timeLabel.text = [user.created joinedString];
-        timeLabel.textAlignment = NSTextAlignmentRight;
-        timeLabel.font = [FontProperties getSmallPhotoFont];
-        timeLabel.textColor = RGB(201, 202, 204);
-        [cell.contentView addSubview:timeLabel];
+        cell.timeLabel.text = [user.created joinedString];
     }
-    
-    if (![user isCurrentUser]) {
-        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 15, 49, 30)];
-        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-        followPersonButton.tag = -100;
-        [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:followPersonButton];
-        if ([user state] == BLOCKED_USER_STATE) {
-            [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
-            [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-            followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            followPersonButton.layer.borderWidth = 1;
-            followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            followPersonButton.layer.cornerRadius = 3;
-            followPersonButton.tag = 50;
-        } else {
-            if ([user.isFollowing boolValue]) {
-                [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-                followPersonButton.tag = 100;
-            }
-            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-                [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-                [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
-                [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-                followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-                followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-                followPersonButton.layer.borderWidth = 1;
-                followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-                followPersonButton.layer.cornerRadius = 3;
-                followPersonButton.tag = 100;
-            }
-        }
-    }
+
     if ([self.currentTab isEqualToNumber:@2] &&
         [user.id intValue] > [[WGProfile currentUser].lastUserRead intValue]) {
         cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
+    }
+    else {
+        cell.contentView.backgroundColor = UIColor.whiteColor;
     }
     
     return cell;
@@ -802,7 +556,7 @@ NSMutableArray *suggestedArrayView;
             if (numberOfRows > 0 && userInt >= 0 && sizeOfArray > userInt) {
                 [_suggestions replaceObjectAtIndex:userInt withObject:user];
                 secondPartSubview = [self initializeSecondPart];
-                [_tableViewOfPeople reloadData];
+                [self.tableViewOfPeople reloadData];
             }
         } else {
             if (_isSearching) {
@@ -810,7 +564,7 @@ NSMutableArray *suggestedArrayView;
                 int sizeOfArray = (int)[_filteredUsers count];
                 if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
                     [_filteredUsers replaceObjectAtIndex:userInt withObject:user];
-                    [_tableViewOfPeople reloadData];
+                    [self.tableViewOfPeople reloadData];
                 }
             }
             else {
@@ -818,7 +572,7 @@ NSMutableArray *suggestedArrayView;
                 int sizeOfArray = (int)[_users count];
                 if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
                     [_users replaceObjectAtIndex:userInt withObject:user];
-                    [_tableViewOfPeople reloadData];
+                    [self.tableViewOfPeople reloadData];
                 }
             }
 
@@ -1116,5 +870,292 @@ NSMutableArray *suggestedArrayView;
     }];
 }
 
+@end
+
+@implementation PeopleCell
+
++ (CGFloat) height {
+    return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [PeopleCell height]);
+    self.contentView.frame = self.frame;
+    self.contentView.backgroundColor = UIColor.whiteColor;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    self.lineView = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS + 9 - 1, self.contentView.frame.size.width, 1)];
+    self.lineView.backgroundColor = RGBAlpha(184, 184, 184, 0.3f);
+    [self.contentView addSubview:self.lineView];
+    
+    self.spinnerView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.spinnerView.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
+    self.spinnerView.center = self.contentView.center;
+    [self.contentView addSubview:self.spinnerView];
+    
+    self.profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
+    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.profileImageView.clipsToBounds = YES;
+    [self.contentView addSubview:self.profileImageView];
+    
+    self.profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, self.contentView.frame.size.width - 15 - 79 - 15, 60)];
+    self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
+    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.profileImageView.clipsToBounds = YES;
+    [self.profileButton addSubview:self.profileImageView];
+    [self.contentView addSubview:self.profileButton];
+    
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+    self.nameLabel.font = [FontProperties mediumFont:18.0f];
+    self.nameLabel.textAlignment = NSTextAlignmentLeft;
+    self.nameLabel.userInteractionEnabled = YES;
+    [self.contentView addSubview:self.nameLabel];
+    
+    self.goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
+    self.goingOutLabel.font =  [FontProperties mediumFont:15.0f];
+    self.goingOutLabel.textAlignment = NSTextAlignmentLeft;
+    self.goingOutLabel.textColor = [FontProperties getOrangeColor];
+    self.goingOutLabel.text = @"Going Out";
+    self.goingOutLabel.hidden = YES;
+    [self.contentView addSubview:self.goingOutLabel];
+    
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 140 - 15, PEOPLEVIEW_HEIGHT_OF_CELLS - 15, 140, 12)];
+    self.timeLabel.textAlignment = NSTextAlignmentRight;
+    self.timeLabel.font = [FontProperties getSmallPhotoFont];
+    self.timeLabel.textColor = RGB(201, 202, 204);
+    [self.contentView addSubview:self.timeLabel];
+    
+    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 15, 49, 30)];
+    [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+    self.followPersonButton.tag = -100;
+    [self.contentView addSubview:self.followPersonButton];
+}
+
+- (void)setStateForUser:(WGUser *)user {
+    [self.profileImageView setSmallImageForUser:user completed:nil];
+    self.nameLabel.text =  user.fullName;
+    self.goingOutLabel.hidden = ![user.isGoingOut boolValue];
+
+    if (!user.isCurrentUser) {
+        if (user.state == BLOCKED_USER_STATE) {
+            [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [self.followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
+            [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            self.followPersonButton.layer.borderWidth = 1;
+            self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            self.followPersonButton.layer.cornerRadius = 3;
+            self.followPersonButton.tag = 50;
+        } else {
+            if ([user.isFollowing boolValue]) {
+                [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+                self.followPersonButton.tag = 100;
+            }
+            if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+                [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+                [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+                [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+                self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+                self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+                self.followPersonButton.layer.borderWidth = 1;
+                self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                self.followPersonButton.layer.cornerRadius = 3;
+                self.followPersonButton.tag = 100;
+            }
+        }
+    }
+}
+
+@end
+
+@implementation SuggestedCell
+
++ (CGFloat) height {
+    return 233;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [SuggestedCell height]);
+    self.contentView.frame = self.frame;
+    self.contentView.backgroundColor = UIColor.whiteColor;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    self.lineView = [[UIImageView alloc] initWithFrame:CGRectMake(15, self.contentView.frame.size.height - 1, self.contentView.frame.size.width, 1)];
+    self.lineView.backgroundColor = RGBAlpha(184, 184, 184, 0.3f);
+    [self.contentView addSubview:self.lineView];
+    
+    self.contextLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.contentView.frame.size.width - 14, 21)];
+    self.contextLabel.text = @"Suggested friends";
+    self.contextLabel.font = [FontProperties mediumFont:17.0f];
+    self.contextLabel.textAlignment = NSTextAlignmentLeft;
+    [self.contentView addSubview:self.contextLabel];
+    
+    self.suggestedScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 35, self.contentView.frame.size.width, 185)];
+    self.suggestedScrollView.showsHorizontalScrollIndicator = NO;
+    [self.contentView addSubview:self.suggestedScrollView];
+    int xPosition = 10;
+
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 110)];
+    [self.inviteButton setBackgroundImage:[UIImage imageNamed:@"InviteButton"] forState:UIControlStateNormal];
+    [self.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.suggestedScrollView addSubview:self.inviteButton];
+    
+    self.inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
+    self.inviteMoreFriendsLabel.text = @"Invite more friends\nto Wigo";
+    self.inviteMoreFriendsLabel.textAlignment = NSTextAlignmentCenter;
+    self.inviteMoreFriendsLabel.font = [FontProperties mediumFont:12.0f];
+    self.inviteMoreFriendsLabel.numberOfLines = 0;
+    self.inviteMoreFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.inviteMoreFriendsLabel.textColor = [FontProperties getOrangeColor];
+    [self.suggestedScrollView addSubview:self.inviteMoreFriendsLabel];
+    
+    xPosition += 130;
+    self.suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
+}
+
+- (void) setStateForCollection:(WGCollection *)collection {
+    self.suggestions = collection;
+    int xPosition = 10;
+    for (int i = 0; i < MIN(10,[collection count]); i++) {
+        WGUser *user = (WGUser *)[collection objectAtIndex:i];
+        UIView *cellView = [self cellOfUser:user atXPosition:xPosition];
+        [self.suggestedScrollView addSubview:cellView];
+        xPosition += 130;
+    }
+    self.inviteButton.frame = CGRectMake(xPosition, 0, 110, 110);
+    self.inviteMoreFriendsLabel.frame = CGRectMake(xPosition, 120, 110, 30);
+    xPosition += 130;
+    self.suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
+}
+
+- (UIView *)cellOfUser:(WGUser *)user atXPosition:(int)xPosition {
+    UIView *cellOfUser = [[UIView alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 175)];
+    
+    UIButton *profileButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
+    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 110, 110)];
+    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    profileImageView.clipsToBounds = YES;
+    [profileImageView setSmallImageForUser:user completed:nil];
+    [profileButton addSubview:profileImageView];
+    profileButton.tag = (int)((xPosition - 10)/130);
+    if (!user.isCurrentUser) {
+        [profileButton addTarget:self action:@selector(suggestedProfileSegue:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    [cellOfUser addSubview:profileButton];
+    
+    UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(0, 110, 110, 25)];
+    backgroundName.backgroundColor = RGB(71, 71, 71);
+    [cellOfUser addSubview:backgroundName];
+    
+    UILabel *nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 110, 110, 25)];
+    nameOfPersonLabel.text = [user firstName];
+    nameOfPersonLabel.textColor = [UIColor whiteColor];
+    nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
+    nameOfPersonLabel.font = [FontProperties lightFont:14.0f];
+    [cellOfUser addSubview:nameOfPersonLabel];
+    
+    if (![user isCurrentUser]) {
+        UIButton *followPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(30, 140, 49, 30)];
+        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+        followPersonButton.tag = -100;
+        [followPersonButton addTarget:self action:@selector(suggestedFollowedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [cellOfUser addSubview:followPersonButton];
+        if ([user state] == BLOCKED_USER_STATE) {
+            [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
+            [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            followPersonButton.layer.borderWidth = 1;
+            followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            followPersonButton.layer.cornerRadius = 3;
+            followPersonButton.tag = 50;
+        } else {
+            if ([user.isFollowing boolValue]) {
+                [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+                followPersonButton.tag = 100;
+            }
+            if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+                [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+                [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+                [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+                followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+                followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+                followPersonButton.layer.borderWidth = 1;
+                followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+                followPersonButton.layer.cornerRadius = 3;
+                followPersonButton.tag = 100;
+            }
+        }
+        
+        UILabel *dateJoined = [[UILabel alloc] init];
+        if ([user.id intValue] > [[WGProfile currentUser].lastUserRead intValue]) {
+            UILabel *mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 172, 110, 15)];
+            mutualFriendsLabel.text = @"New on Wigo";
+            mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
+            mutualFriendsLabel.font = [FontProperties lightFont:12.0f];
+            mutualFriendsLabel.textColor = RGB(102, 102, 102);
+            [cellOfUser addSubview:mutualFriendsLabel];
+            dateJoined.frame = CGRectMake(0, 185, 110, 12);
+        } else {
+            dateJoined.frame = CGRectMake(0, 172, 110, 12);
+        }
+        
+        dateJoined.text = [user.created joinedString];
+        dateJoined.textColor = RGB(201, 202, 204);
+        dateJoined.textAlignment = NSTextAlignmentCenter;
+        dateJoined.font = [FontProperties lightFont:10.0f];
+        [cellOfUser addSubview:dateJoined];
+    }
+    return cellOfUser;
+}
+
+- (void)suggestedFollowedPersonPressed:(id)sender {
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:suggestedScrollView];
+    int indexOfPerson = (buttonOriginInTableView.x - 40)/130 ;
+    WGUser *user;
+    int sizeOfArray = self.suggestions.count;
+    if (sizeOfArray > 0 && sizeOfArray > indexOfPerson) {
+        user = (WGUser *)[self.suggestions objectAtIndex:indexOfPerson];
+    }
+    if (user) [self.peopleViewDelegate updateButton:sender withUser:user];
+}
+
+
+- (void)suggestedProfileSegue:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = (int)buttonSender.tag;
+    WGUser *user = [self getSuggestedUser:tag];
+    if (user) {
+        didProfileSegue = YES;
+        userIndex = [NSIndexPath indexPathForRow:tag inSection:0];
+        [self.peopleViewDelegate presentUser:user];
+    }
+}
+
+- (WGUser *)getSuggestedUser:(int)tag {
+    WGUser *user;
+    int sizeOfArray = self.suggestions.count;
+    if (sizeOfArray > 0 && sizeOfArray > tag)
+        user = (WGUser *)[self.suggestions objectAtIndex:tag];
+    return user;
+}
 
 @end

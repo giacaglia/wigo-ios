@@ -17,3 +17,14 @@
 @property MessageViewController *messageViewController;
 
 @end
+
+
+#define kChatCellName @"ChatCellName"
+@interface ChatCell : UITableViewCell
++ (CGFloat) height;
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIImageView *profileImageView;
+@property (nonatomic, strong) UILabel *timeLabel;
+@property (nonatomic, strong) UILabel *lastMessageLabel;
+@property (nonatomic, strong) UIImageView *lastMessageImageView;
+@end

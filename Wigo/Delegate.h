@@ -50,5 +50,9 @@
 - (void)addMessageFromSender:(WGMessage *)message;
 @end
 
+@protocol PeopleViewDelegate <NSObject>
+- (void)presentUser:(WGUser *)user;
+- (void)updateButton:(id)sender withUser:(WGUser *)user;
+@end
 
 #endif
