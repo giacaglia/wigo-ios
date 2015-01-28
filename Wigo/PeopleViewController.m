@@ -167,11 +167,11 @@ UIScrollView *suggestedScrollView;
     [self.navigationItem setHidesBackButton:YES animated:YES];
     [self.tableViewOfPeople setContentOffset:self.tableViewOfPeople.contentOffset animated:NO];
     
-    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
+    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@5];
     [cancelButton setTitle:@"Done" forState:UIControlStateNormal];
     [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
-    cancelButton.titleLabel.font = [FontProperties getSubtitleFont];
+    cancelButton.titleLabel.font = [FontProperties mediumFont:17.0f];
     [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
     [barItem setCustomView:cancelButton];
