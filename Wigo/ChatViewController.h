@@ -27,5 +27,4 @@
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UILabel *lastMessageLabel;
 @property (nonatomic, strong) UIImageView *lastMessageImageView;
-
 @end
