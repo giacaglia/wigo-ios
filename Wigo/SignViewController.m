@@ -66,6 +66,8 @@
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self showOnboard];
+    
+    [WGAnalytics tagEvent:@"Sign View"];
 }
 
 -(void) showBarrierError:(NSError *)error {

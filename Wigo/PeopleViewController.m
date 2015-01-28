@@ -88,7 +88,15 @@ NSMutableArray *suggestedArrayView;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"People View"];
+    if ([self.currentTab isEqualToNumber:@2]) {
+        [WGAnalytics tagEvent:@"People Suggestions View"];
+    }
+    else if ([self.currentTab isEqualToNumber:@3]) {
+        [WGAnalytics tagEvent:@"People Followers View"];
+    }
+    else if ([self.currentTab isEqualToNumber:@4]) {
+        [WGAnalytics tagEvent:@"People Following View"];
+    }
 }
 
 - (void) viewWillAppear:(BOOL)animated {

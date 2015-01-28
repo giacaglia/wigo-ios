@@ -45,6 +45,8 @@ NSTimer *fetchTimer;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self checkIfGroupIsUnlocked];
+    
+    [WGAnalytics tagEvent:@"Battery View"];
 }
 
 -(void) checkIfGroupIsUnlocked {

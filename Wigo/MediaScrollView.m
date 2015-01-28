@@ -61,6 +61,9 @@
     if (!self.pageViews) {
         self.pageViews = [[NSMutableArray alloc] initWithCapacity:self.eventMessages.count];
     }
+    while ([self.pageViews count] - 1 < indexPath.row) {
+        [self.pageViews addObject:[NSNull null]];
+    }
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:indexPath.row];
     NSString *mimeType = eventMessage.mediaMimeType;
     NSString *contentURL = eventMessage.media;
@@ -97,7 +100,6 @@
         if ([contentURL isKindOfClass:[UIImage class]]) {
             myCell.imageView.image = (UIImage *)contentURL;
         } else {
-            
             NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
             __weak ImageCell *weakCell = myCell;
             if (![thumbnailURL isKindOfClass:[NSNull class]]) {
@@ -115,6 +117,7 @@
                 }];
             }
         }
+        
         [self.pageViews setObject:myCell.imageView atIndexedSubscript:indexPath.row];
 
         return myCell;

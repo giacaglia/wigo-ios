@@ -124,7 +124,6 @@ BOOL secondTimeFetchingUserInfo;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     NSString *isPeeking = ([self isPeeking]) ? @"Yes" : @"No";
-
     [WGAnalytics tagEvent:@"Where View" withDetails: @{ @"isPeeking": isPeeking }];
 
     self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
@@ -624,10 +623,6 @@ BOOL secondTimeFetchingUserInfo;
         _placesTableView.userInteractionEnabled = NO;
         [self textFieldDidChange:_whereAreYouGoingTextField];
     }];
-    
-
-
-
 }
 
 - (void) cancelledAddEventTapped {
@@ -868,7 +863,6 @@ BOOL secondTimeFetchingUserInfo;
     return 0;
 }
 
-
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == kTodaySection) { //today section
         return [TodayHeader height];
@@ -916,7 +910,6 @@ BOOL secondTimeFetchingUserInfo;
     return nil;
 }
 
-
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == kTodaySection) {
         return [GoOutNewPlaceHeader height];
@@ -950,8 +943,16 @@ BOOL secondTimeFetchingUserInfo;
     return 0;
 }
 
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.pastDays.count > 0 && indexPath.section > 1) {
+        NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
+        NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
+        WGEvent *event = [eventObjectArray objectAtIndex:[indexPath row]];
+        [self showConversationForEvent:event];
+    }
+}
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
         //cleanup
@@ -1252,37 +1253,34 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)showConversationForEvent:(WGEvent *)event {
-    [WGSpinnerView addDancingGOverlayToCenterView:self.view withColor:RGBAlpha(255, 255, 255, 0.75)];
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    shouldReloadEvents = NO;
+    
+    WGCollection *temporaryEventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
+    [temporaryEventMessages addObject:event.highlight];
+
+    EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    conversationViewController.event = event;
+    conversationViewController.eventMessages = temporaryEventMessages;
+    conversationViewController.isPeeking = [self isPeeking];
+    
+    [self presentViewController:conversationViewController animated:YES completion:nil];
+    
     [event getMessages:^(WGCollection *collection, NSError *error) {
-        [WGSpinnerView removeDancingGOverlayFromCenterView:self.view];
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             return;
         }
-        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        int eventIndex = [self indexOfEvent:event inCollection:collection];
+        NSInteger messageIndex = [collection indexOfObject:event.highlight];
+        conversationViewController.index = @(messageIndex);
         
-        shouldReloadEvents = NO;
-        
-        EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
-        conversationViewController.event = event;
-        conversationViewController.index = @(eventIndex);
         conversationViewController.eventMessages = collection;
-        conversationViewController.isPeeking = [self isPeeking];
+        conversationViewController.mediaScrollView.eventMessages = collection;
+        [conversationViewController.facesCollectionView reloadData];
+        [conversationViewController.mediaScrollView reloadData];
         
-        [self presentViewController:conversationViewController animated:YES completion:nil];
+        [conversationViewController highlightCellAtPage:messageIndex animated:NO];
     }];
-}
-
--(int) indexOfEvent:(WGEvent *)event inCollection:(WGCollection *)eventMessages {
-    int index = 0;
-    for (WGEventMessage *eventMessage in eventMessages) {
-        if ([eventMessage isEqual:event.highlight]) {
-            return index;
-        }
-        index += 1;
-    }
-    return 0;
 }
 
 - (void)showStoryForEvent:(WGEvent*)event {
@@ -1871,7 +1869,6 @@ BOOL secondTimeFetchingUserInfo;
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [HighlightOldEventCell height]);
     self.backgroundColor = RGB(241, 241, 241);
-    
 
     //image view
     self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 1)];
@@ -1896,11 +1893,6 @@ BOOL secondTimeFetchingUserInfo;
     postStoryImageView.contentMode = UIViewContentModeScaleAspectFit;
     postStoryImageView.center = CGPointMake(postStoryImageView.center.x, self.oldEventLabel.center.y);
     [self.contentView addSubview:postStoryImageView];
-    
-    UIButton *conversationButton = [[UIButton alloc] initWithFrame:self.frame];
-    [conversationButton addTarget:self action:@selector(loadConversation) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:conversationButton];
-    
 }
 
 - (void)loadConversation {

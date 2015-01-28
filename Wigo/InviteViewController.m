@@ -398,6 +398,8 @@ heightForHeaderInSection:(NSInteger)section
             // Do nothing!
         }];
         user.isTapped = @NO;
+
+        [WGAnalytics tagEvent:@"Untap User"];
     } else {
 #warning Group these
         [[WGProfile currentUser] tapUser:user withHandler:^(BOOL success, NSError *error) {

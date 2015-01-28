@@ -31,6 +31,11 @@ WGCollection *groups;
     [self initializeShareButton];
 }
 
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [WGAnalytics tagEvent:@"Wait List View"];
+}
+
 - (void)initializeTitle {
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 100, 56, 200, 24)];
     titleLabel.text = @"WiGgo WAIT LIST";

@@ -42,6 +42,8 @@ BOOL runningAnimations;
 //    [self initializeAnimatedGif];
 //    [self initializePageControl];
     [self initializeGetStartedButton];
+    
+    [WGAnalytics tagEvent:@"Onboard View"];
 }
 
 - (void)initializeScrollView {

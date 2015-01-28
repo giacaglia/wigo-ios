@@ -49,7 +49,7 @@
 - (void)notificationHighlightPage:(NSNotification *) notification {
     NSDictionary *userInfo = [notification userInfo];
     NSNumber *pageNumber = (NSNumber *)[userInfo objectForKey:@"page"];
-    [self highlightCellAtPage:[pageNumber integerValue]];
+    [self highlightCellAtPage:[pageNumber integerValue] animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -61,7 +61,7 @@
         self.currentActiveCell = nil;
     }
     
-    [self highlightCellAtPage:[self.index intValue]];
+    [self highlightCellAtPage:[self.index intValue] animated:YES];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
 
     
@@ -150,7 +150,7 @@
         [cell setIsActive: YES];
         
         self.currentActiveCell = indexPath;
-        [self highlightCellAtPage:indexPath.row ];
+        [self highlightCellAtPage:indexPath.row animated:YES];
     }
 }
 
@@ -312,7 +312,7 @@
         width = sizeOfEachFaceCell;
     }
     NSInteger page = [self getPageForScrollView:scrollView toLeft:leftBoolean];
-    [self highlightCellAtPage:page];
+    [self highlightCellAtPage:page animated:YES];
 }
 
 - (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
@@ -341,15 +341,15 @@
     return page;
 }
 
-- (void)highlightCellAtPage:(NSInteger)page {
+- (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated {
     page = MAX(page, 0);
     page = MIN(page, self.eventMessages.count - 1);
     [self.mediaScrollView scrolledToPage:(int)page];
     dispatch_async(dispatch_get_main_queue(), ^{
         // Content Offset to the middle (which is the first page minus the number of cells/2
-        [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:YES];
+        [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:animated];
     });
-    [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:YES];
+    [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:animated];
     [self hideOrShowFacesForPage:(int)page];
 }
 

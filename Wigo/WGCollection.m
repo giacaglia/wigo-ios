@@ -57,6 +57,22 @@
     }
 }
 
+-(BOOL) isEqual:(id)object {
+    if (!object || ![object isKindOfClass:[WGCollection class]]) {
+        return NO;
+    }
+    WGCollection *otherCollection = (WGCollection *)object;
+    if ([self count] != [otherCollection count]) {
+        return NO;
+    }
+    for (int i = 0; i < [self count]; i++) {
+        if (![[self objectAtIndex:i] isEqual:[otherCollection objectAtIndex:i]]) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
 -(void) reverse {
     if ([self count] == 0)
         return;

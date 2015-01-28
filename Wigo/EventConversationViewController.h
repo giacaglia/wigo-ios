@@ -15,7 +15,7 @@
 
 
 @interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, EventConversationDelegate>
-- (void)highlightCellAtPage:(NSInteger)page;
+- (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) WGCollection *eventMessages;
 @property (nonatomic, strong) MediaScrollView *mediaScrollView;
