@@ -14,7 +14,7 @@
 #import "FontProperties.h"
 #import "WGAnalytics.h"
 
-#import "WiGoSpinnerView.h"
+#import "WGSpinnerView.h"
 #import "FLAnimatedImage.h"
 #import "FLAnimatedImageView.h"
 #import "NSString+URLEncoding.h"

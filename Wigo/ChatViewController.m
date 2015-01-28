@@ -41,7 +41,7 @@ UIButton *newChatButton;
         }
     }
     
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [self initializeNewChatButton];
     [self initializeTableOfChats];
     [self initializeLeftBarButton];
@@ -134,7 +134,7 @@ UIButton *newChatButton;
 #pragma mark - RefreshTableView 
 
 - (void)addRefreshToTableView {
-    [WiGoSpinnerView addDancingGToUIScrollView:_tableViewOfPeople withHandler:^{
+    [WGSpinnerView addDancingGToUIScrollView:_tableViewOfPeople withHandler:^{
         [self fetchFirstPageMessages];
     }];
 }
@@ -153,7 +153,7 @@ UIButton *newChatButton;
     if (_fetchingFirstPage) {
         [WGMessage getConversations:^(WGCollection *collection, NSError *error) {
             __strong typeof(self) strongSelf = weakSelf;
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            [WGSpinnerView removeDancingGFromCenterView:self.view];
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 return;

@@ -87,11 +87,11 @@ UIViewController *webViewController;
 }
 
 - (void)saveDataAndGoBack {
-    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+    [WGSpinnerView showOrangeSpinnerAddedTo:self.view];
     WGProfile.currentUser.instaHandle = _instaTextField.text;
     [WGProfile currentUser].privacy = _privacySwitch.on ? PRIVATE : PUBLIC;
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
-        [WiGoSpinnerView hideSpinnerForView:self.view];
+        [WGSpinnerView hideSpinnerForView:self.view];
         [self dismissViewControllerAnimated:YES  completion: nil];
     }];
 }

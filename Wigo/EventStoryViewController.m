@@ -96,7 +96,7 @@
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    [WiGoSpinnerView addDancingGToUIScrollView:self.facesCollectionView
+    [WGSpinnerView addDancingGToUIScrollView:self.facesCollectionView
                                    withHandler:^{
                                        self.eventMessages = nil;
                                        [self fetchEventMessages];

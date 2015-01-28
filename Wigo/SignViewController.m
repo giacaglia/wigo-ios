@@ -171,7 +171,7 @@
 
 - (void) get3ProfilePictures {
     NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
                                  parameters:nil
                                  HTTPMethod:@"GET"
@@ -228,7 +228,7 @@
 
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
     [WGProfile currentUser].images = profilePictures;
-    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+    [WGSpinnerView removeDancingGFromCenterView:self.view];
     if (!_pushed) {
         _pushed = YES;
         _fetchingProfilePictures = NO;
@@ -379,10 +379,10 @@
     [WGProfile currentUser].facebookId = _fbID;
     [WGProfile currentUser].facebookAccessToken = _accessToken;
     
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
 
     [[WGProfile currentUser] login:^(BOOL success, NSError *error) {
-        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        [WGSpinnerView removeDancingGFromCenterView:self.view];
         if (error) {
             _fetchingProfilePictures = YES;
             [self logout];
@@ -424,7 +424,7 @@
 
 
 - (void)reloadedUserInfo:(BOOL)success andError:(NSError *)error {
-    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+    [WGSpinnerView removeDancingGFromCenterView:self.view];
     if (error || !success) {
         if (!_fbID || !_accessToken) {
             [self fetchTokensFromFacebook];

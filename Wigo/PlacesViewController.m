@@ -344,6 +344,8 @@ BOOL secondTimeFetchingUserInfo;
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: NO];
 
+#warning shouldn't this go to Conversation?
+    
     ChatViewController *chatViewController = [ChatViewController new];
     chatViewController.view.backgroundColor = UIColor.whiteColor;
     [fancyProfileViewController.navigationController pushViewController:chatViewController animated:YES];
@@ -1244,14 +1246,17 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)showConversationForEvent:(WGEvent *)event {
-    
+    [WGSpinnerView addDancingGOverlayToCenterView:self.view withColor:RGBAlpha(255, 255, 255, 0.75)];
     [event getMessages:^(WGCollection *collection, NSError *error) {
+        [WGSpinnerView removeDancingGOverlayFromCenterView:self.view];
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             return;
         }
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         int eventIndex = [self indexOfEvent:event inCollection:collection];
+        
+        shouldReloadEvents = NO;
         
         EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
         conversationViewController.event = event;
@@ -1368,13 +1373,13 @@ BOOL secondTimeFetchingUserInfo;
 - (void) fetchEvents {
     if (!self.fetchingEventAttendees && [WGProfile currentUser].key) {
         self.fetchingEventAttendees = YES;
-        if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
+        if (_spinnerAtCenter) [WGSpinnerView addDancingGToCenterView:self.view];
         __weak typeof(self) weakSelf = self;
         if (self.allEvents) {
             if ([self.allEvents.hasNextPage boolValue]) {
                 [self.allEvents addNextPage:^(BOOL success, NSError *error) {
                     __strong typeof(weakSelf) strongSelf = weakSelf;
-                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         strongSelf.fetchingEventAttendees = NO;
                         shouldReloadEvents = YES;
@@ -1417,7 +1422,7 @@ BOOL secondTimeFetchingUserInfo;
             [WGEvent getWithGroupNumber:self.groupNumberID andHandler:^(WGCollection *collection, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
 
-                [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
 
                 if (error) {
                     strongSelf.fetchingEventAttendees = NO;
@@ -1458,7 +1463,7 @@ BOOL secondTimeFetchingUserInfo;
         } else {
             [WGEvent get:^(WGCollection *collection, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
-                [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                 if (error) {
                     strongSelf.fetchingEventAttendees = NO;
                     return;
@@ -1499,7 +1504,7 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)fetchedOneParty {
-    _spinnerAtCenter ? [WiGoSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
+    _spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
      _spinnerAtCenter = NO;
     _filteredEvents = [WGCollection serializeArray:@[] andClass:[WGEvent class]];
     [self dismissKeyboard];
@@ -1542,7 +1547,7 @@ BOOL secondTimeFetchingUserInfo;
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView
+    [WGSpinnerView addDancingGToUIScrollView:_placesTableView
                                    withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];

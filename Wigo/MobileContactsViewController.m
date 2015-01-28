@@ -79,9 +79,9 @@ NSMutableArray *chosenPeople;
 }
 
 - (void)getContactAccess {
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
-        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        [WGSpinnerView removeDancingGFromCenterView:self.view];
         if ([mobileArray count] > 0) {
             peopleContactList = [NSMutableArray arrayWithArray:mobileArray];
             [contactsTableView reloadData];

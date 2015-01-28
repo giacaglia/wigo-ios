@@ -1,31 +1,22 @@
 //
-//  WiGoSpinnerView.m
+//  WGSpinnerView.m
 //  Wigo
 //
 //  Created by Giuliano Giacaglia on 7/10/14.
 //  Copyright (c) 2014 Giuliano Giacaglia. All rights reserved.
 //
 
-#import "WiGoSpinnerView.h"
+#import "WGSpinnerView.h"
 #import "FontProperties.h"
 
-@implementation WiGoSpinnerView
+@implementation WGSpinnerView
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
-
-+ (WiGoSpinnerView *)initWithView:(UIView *)view {
++ (WGSpinnerView *)initWithView:(UIView *)view {
     return nil;
 }
 
-+ (WiGoSpinnerView *)showOrangeSpinnerAddedTo:(UIView *)view {
-    WiGoSpinnerView *spinner = [[WiGoSpinnerView alloc] initWithFrame:CGRectMake(135,140,80,80)];
++ (WGSpinnerView *)showOrangeSpinnerAddedTo:(UIView *)view {
+    WGSpinnerView *spinner = [[WGSpinnerView alloc] initWithFrame:CGRectMake(135,140,80,80)];
     spinner.center = view.center;
     spinner.transform = CGAffineTransformMakeScale(2, 2);
     spinner.color = [FontProperties getOrangeColor];
@@ -34,8 +25,8 @@
 	return spinner;
 }
 
-+ (WiGoSpinnerView *)showBlueSpinnerAddedTo:(UIView *)view {
-    WiGoSpinnerView *spinner = [[WiGoSpinnerView alloc] initWithFrame:CGRectMake(135,140,80,80)];
++ (WGSpinnerView *)showBlueSpinnerAddedTo:(UIView *)view {
+    WGSpinnerView *spinner = [[WGSpinnerView alloc] initWithFrame:CGRectMake(135,140,80,80)];
     spinner.center = view.center;
     spinner.transform = CGAffineTransformMakeScale(2, 2);
     spinner.color = [FontProperties getBlueColor];
@@ -44,17 +35,15 @@
 	return spinner;
 }
 
-
-
 + (BOOL)hideSpinnerForView:(UIView *)view {
 	UIView *viewToRemove = nil;
 	for (UIView *v in [view subviews]) {
-		if ([v isKindOfClass:[WiGoSpinnerView class]]) {
+		if ([v isKindOfClass:[WGSpinnerView class]]) {
 			viewToRemove = v;
 		}
 	}
 	if (viewToRemove != nil) {
-		WiGoSpinnerView *spinner = (WiGoSpinnerView *)viewToRemove;
+		WGSpinnerView *spinner = (WGSpinnerView *)viewToRemove;
         [spinner removeFromSuperview];
 		return YES;
 	} else {
@@ -62,13 +51,11 @@
 	}
 }
 
-
-
 #pragma mark - Dancing G at Top of ScrollView
 
 + (void)addDancingGToUIScrollView:(UIScrollView *)scrollView withBackgroundColor:(UIColor *)backgroundColor withHandler:(void (^)(void))handler {
     __weak UIScrollView *tempScrollView = scrollView;
-    [tempScrollView addPullToRefreshWithDrawingImgs:[WiGoSpinnerView getDrawingImgs] andLoadingImgs:[WiGoSpinnerView getLoadingImgs] andActionHandler:^{
+    [tempScrollView addPullToRefreshWithDrawingImgs:[WGSpinnerView getDrawingImgs] andLoadingImgs:[WGSpinnerView getLoadingImgs] andActionHandler:^{
         handler();
     }];
     scrollView.refreshControl.backgroundColor = backgroundColor;
@@ -77,7 +64,7 @@
 
 + (void)addDancingGToUIScrollView:(UIScrollView *)scrollView withHandler:(void (^)(void))handler {
     __weak UIScrollView *tempScrollView = scrollView;
-    [tempScrollView addPullToRefreshWithDrawingImgs:[WiGoSpinnerView getDrawingImgs] andLoadingImgs:[WiGoSpinnerView getLoadingImgs] andActionHandler:^{
+    [tempScrollView addPullToRefreshWithDrawingImgs:[WGSpinnerView getDrawingImgs] andLoadingImgs:[WGSpinnerView getLoadingImgs] andActionHandler:^{
         handler();
     }];
 }
@@ -85,8 +72,8 @@
 #pragma mark - Dancing G at Center of view
 
 + (void)addDancingGToCenterView:(UIView *)view {
-    UIImageView *centeredImageView =[[UIImageView alloc] initWithFrame:CGRectMake(view.frame.size.width/2 - 30, view.frame.size.height/2 - 30, 60, 60)];
-    NSArray *loadingImages = [WiGoSpinnerView getLoadingImgs];
+    WGImageView *centeredImageView =[[WGImageView alloc] initWithFrame:CGRectMake(view.frame.size.width/2 - 30, view.frame.size.height/2 - 30, 60, 60)];
+    NSArray *loadingImages = [WGSpinnerView getLoadingImgs];
     centeredImageView.animationImages = loadingImages;
     centeredImageView.animationDuration = (CGFloat)loadingImages.count/20.0;
     [centeredImageView startAnimating];
@@ -94,19 +81,33 @@
 }
 
 + (BOOL)removeDancingGFromCenterView:(UIView *)view {
-    UIView *viewToRemove = nil;
-	for (UIView *v in [view subviews]) {
-		if ([v isKindOfClass:[UIImageView class]]) {
-			viewToRemove = v;
+	for (UIView *subview in [view subviews]) {
+		if ([subview isKindOfClass:[WGImageView class]]) {
+            [(WGImageView *) subview removeFromSuperview];
+            return YES;
 		}
 	}
-	if (viewToRemove != nil) {
-		UIImageView *spinner = (UIImageView *)viewToRemove;
-        [spinner removeFromSuperview];
-		return YES;
-	} else {
-		return NO;
-	}
+    return NO;
+}
+
+#pragma mark - Dancing G with Overlay at Center of View
+
++ (void)addDancingGOverlayToCenterView:(UIView *)view withColor:(UIColor *)color {
+    WGOverlayView *fullOverlay = [[WGOverlayView alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.width, view.frame.size.height)];
+    
+    fullOverlay.backgroundColor = color;
+    [WGSpinnerView addDancingGToCenterView:fullOverlay];
+    [view addSubview:fullOverlay];
+}
+
++ (BOOL)removeDancingGOverlayFromCenterView:(UIView *)view {
+    for (UIView *subview in [view subviews]) {
+        if ([subview isKindOfClass:[WGOverlayView class]]) {
+            [(WGOverlayView *) subview removeFromSuperview];
+            return YES;
+        }
+    }
+    return NO;
 }
 
 #pragma mark - Helper Functions
@@ -131,5 +132,12 @@
     return [NSArray arrayWithArray:DancingGDrawingImgs];
 }
 
+@end
+
+@implementation WGImageView
+
+@end
+
+@implementation WGOverlayView
 
 @end

@@ -858,7 +858,7 @@ NSMutableArray *suggestedArrayView;
 }
 
 - (void)fetchFirstPageEveryone {
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     _everyone = nil;
     fetching = NO;
     [self fetchEveryone];
@@ -872,7 +872,7 @@ NSMutableArray *suggestedArrayView;
             [WGUser get:^(WGCollection *collection, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                    [WGSpinnerView removeDancingGFromCenterView:self.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         fetching = NO;
@@ -888,7 +888,7 @@ NSMutableArray *suggestedArrayView;
             [_everyone getNextPage:^(WGCollection *collection, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                    [WGSpinnerView removeDancingGFromCenterView:self.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         fetching = NO;
@@ -911,13 +911,13 @@ NSMutableArray *suggestedArrayView;
             }];
         } else {
             fetching = NO;
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            [WGSpinnerView removeDancingGFromCenterView:self.view];
         }
     }
 }
 
 -(void) fetchFirstPageFollowers {
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     fetching = NO;
     _followers = nil;
     [self fetchFollowers];
@@ -931,7 +931,7 @@ NSMutableArray *suggestedArrayView;
             [WGFollow getFollowsForFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
-                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         fetching = NO;
@@ -950,7 +950,7 @@ NSMutableArray *suggestedArrayView;
             [_followers addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
-                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         fetching = NO;
@@ -966,13 +966,13 @@ NSMutableArray *suggestedArrayView;
             }];
         } else {
             fetching = NO;
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            [WGSpinnerView removeDancingGFromCenterView:self.view];
         }
     }
 }
 
 -(void) fetchFirstPageFollowing {
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     _following = nil;
     fetching = NO;
     [self fetchFollowing];
@@ -986,7 +986,7 @@ NSMutableArray *suggestedArrayView;
             [WGFollow getFollowsForUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
-                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         fetching = NO;
@@ -1006,7 +1006,7 @@ NSMutableArray *suggestedArrayView;
             [_following addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
-                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         fetching = NO;
@@ -1023,7 +1023,7 @@ NSMutableArray *suggestedArrayView;
             }];
         } else {
             fetching = NO;
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            [WGSpinnerView removeDancingGFromCenterView:self.view];
         }
     }
 }
@@ -1080,7 +1080,7 @@ NSMutableArray *suggestedArrayView;
         [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
-                [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                [WGSpinnerView removeDancingGFromCenterView:self.view];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     fetching = NO;

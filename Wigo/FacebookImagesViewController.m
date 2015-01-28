@@ -153,7 +153,7 @@ NSMutableArray *imagesArray;
 }
 
 - (void) getProfilePictures {
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     _profilePicturesURL = [NSMutableArray new];
     imagesArray = [NSMutableArray new];
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
@@ -164,7 +164,7 @@ NSMutableArray *imagesArray;
                                               id result,
                                               NSError *error
                                               ) {
-                              [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                              [WGSpinnerView removeDancingGFromCenterView:self.view];
                               if (!error) {
                                   FBGraphObject *resultObject = [result objectForKey:@"data"];
                                   for (FBGraphObject *photoRepresentation in resultObject) {

@@ -123,7 +123,7 @@
 		C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
 		C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6251923967D00361247 /* AppDelegate.m */; };
 		C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A31961EADE00A01F50 /* SDWebImageManager.m */; };
-		C12A110C19787BE700D53B1C /* WiGoSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */; };
+		C12A110C19787BE700D53B1C /* WGSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DE130B196F06B100AFA05A /* WGSpinnerView.m */; };
 		C12A110D19787BE700D53B1C /* UIImageCrop.m in Sources */ = {isa = PBXBuildFile; fileRef = E93DE52F195C99F600079074 /* UIImageCrop.m */; };
 		C12A110E19787BE700D53B1C /* UIScrollView+GifPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */; };
 		C12A110F19787BE700D53B1C /* UIButtonUngoOut.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C7A195084B700182E0E /* UIButtonUngoOut.m */; };
@@ -445,7 +445,7 @@
 		E9D906DB19255DBC00E39FC8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DA19255DBC00E39FC8 /* Security.framework */; };
 		E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */; };
 		E9DBB050197813F900DDACDE /* UIScrollView+GifPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */; };
-		E9DE130C196F06B100AFA05A /* WiGoSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */; };
+		E9DE130C196F06B100AFA05A /* WGSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DE130B196F06B100AFA05A /* WGSpinnerView.m */; };
 		E9DFE16F1A001142003C5779 /* BatteryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DFE16E1A001142003C5779 /* BatteryViewController.m */; };
 		E9DFE1701A001142003C5779 /* BatteryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DFE16E1A001142003C5779 /* BatteryViewController.m */; };
 		E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
@@ -918,8 +918,8 @@
 		E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E9DBB04E197813F900DDACDE /* UIScrollView+GifPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+GifPullToRefresh.h"; sourceTree = "<group>"; };
 		E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+GifPullToRefresh.m"; sourceTree = "<group>"; };
-		E9DE130A196F06B100AFA05A /* WiGoSpinnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WiGoSpinnerView.h; sourceTree = "<group>"; };
-		E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WiGoSpinnerView.m; sourceTree = "<group>"; };
+		E9DE130A196F06B100AFA05A /* WGSpinnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGSpinnerView.h; sourceTree = "<group>"; };
+		E9DE130B196F06B100AFA05A /* WGSpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGSpinnerView.m; sourceTree = "<group>"; };
 		E9DFE16D1A001142003C5779 /* BatteryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryViewController.h; sourceTree = "<group>"; };
 		E9DFE16E1A001142003C5779 /* BatteryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatteryViewController.m; sourceTree = "<group>"; };
 		E9E618FB193625BB00A224C0 /* EmailConfirmationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailConfirmationViewController.h; sourceTree = "<group>"; };
@@ -1556,8 +1556,8 @@
 		E9681C6A194F7BCD00182E0E /* WigoSpinnerView */ = {
 			isa = PBXGroup;
 			children = (
-				E9DE130A196F06B100AFA05A /* WiGoSpinnerView.h */,
-				E9DE130B196F06B100AFA05A /* WiGoSpinnerView.m */,
+				E9DE130A196F06B100AFA05A /* WGSpinnerView.h */,
+				E9DE130B196F06B100AFA05A /* WGSpinnerView.m */,
 			);
 			name = WigoSpinnerView;
 			sourceTree = "<group>";
@@ -2491,7 +2491,7 @@
 				C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */,
 				E96F07C419BA654600E858D7 /* GKImageCropViewController.m in Sources */,
 				E9C63BDF1A03ED35006C5DD2 /* IQAudioPickerUtility.m in Sources */,
-				C12A110C19787BE700D53B1C /* WiGoSpinnerView.m in Sources */,
+				C12A110C19787BE700D53B1C /* WGSpinnerView.m in Sources */,
 				E9C63C011A03ED35006C5DD2 /* IQBottomContainerView.m in Sources */,
 				E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */,
 				45D9FABD1A781AFD00D08577 /* JSQMediaItem.m in Sources */,
@@ -2646,7 +2646,7 @@
 				E9C63BD81A03ED35006C5DD2 /* IQAssetsPickerController.m in Sources */,
 				45D9FAB01A781AFD00D08577 /* JSQMessagesTimestampFormatter.m in Sources */,
 				45D9FAC61A781AFD00D08577 /* JSQVideoMediaItem.m in Sources */,
-				E9DE130C196F06B100AFA05A /* WiGoSpinnerView.m in Sources */,
+				E9DE130C196F06B100AFA05A /* WGSpinnerView.m in Sources */,
 				45D9FAB41A781AFD00D08577 /* JSQMessagesCollectionViewFlowLayout.m in Sources */,
 				E96F07C319BA654600E858D7 /* GKImageCropViewController.m in Sources */,
 				E9C63BFC1A03ED35006C5DD2 /* IQCaptureSession.m in Sources */,

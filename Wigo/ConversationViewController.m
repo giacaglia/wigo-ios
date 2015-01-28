@@ -374,7 +374,7 @@ BOOL fetching;
         if (!_messages) {
             UIView *loadingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 120)];
             [self.view addSubview:loadingView];
-            [WiGoSpinnerView showOrangeSpinnerAddedTo:loadingView];
+            [WGSpinnerView showOrangeSpinnerAddedTo:loadingView];
             [self.user getConversation:^(WGCollection *collection, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
@@ -384,7 +384,7 @@ BOOL fetching;
                 [collection reverse];
                 _messages = collection;
                 // [self addFirstPageMessages];
-                [WiGoSpinnerView hideSpinnerForView:loadingView];
+                [WGSpinnerView hideSpinnerForView:loadingView];
                 [loadingView removeFromSuperview];
                 fetching = NO;
                 

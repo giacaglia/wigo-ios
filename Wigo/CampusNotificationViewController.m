@@ -91,7 +91,7 @@
         return;
     }
     
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     
     [[WGProfile currentUser] broadcastMessage:self.notificationTextView.text withHandler:^(BOOL success, NSError *error) {
         if (error) {

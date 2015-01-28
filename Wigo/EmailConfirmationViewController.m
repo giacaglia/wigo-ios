@@ -183,10 +183,10 @@ NSTimer *fetchTimer;
 
 - (void)resendEmail {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     
     [[WGProfile currentUser] resendVerificationEmail:^(BOOL success, NSError *error) {
-        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        [WGSpinnerView removeDancingGFromCenterView:self.view];
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];

@@ -1,5 +1,5 @@
 //
-//  WiGoSpinnerView.h
+//  WGSpinnerView.h
 //  Wigo
 //
 //  Created by Giuliano Giacaglia on 7/10/14.
@@ -16,10 +16,10 @@ typedef enum {
     BOTTOM
 } POSITION;
 
-@interface WiGoSpinnerView : UIActivityIndicatorView
+@interface WGSpinnerView : UIActivityIndicatorView
 
-+ (WiGoSpinnerView *)showOrangeSpinnerAddedTo:(UIView *)view;
-+ (WiGoSpinnerView *)showBlueSpinnerAddedTo:(UIView *)view;
++ (WGSpinnerView *)showOrangeSpinnerAddedTo:(UIView *)view;
++ (WGSpinnerView *)showBlueSpinnerAddedTo:(UIView *)view;
 + (BOOL)hideSpinnerForView:(UIView *)view;
 
 + (void)addDancingGToUIScrollView:(UIScrollView *)scrollView withBackgroundColor:(UIColor *)backgroundColor withHandler:(void (^)(void))handler;
@@ -27,4 +27,16 @@ typedef enum {
 
 + (void)addDancingGToCenterView:(UIView *)view;
 + (BOOL)removeDancingGFromCenterView:(UIView *)view;
+
++ (void)addDancingGOverlayToCenterView:(UIView *)view withColor:(UIColor *)color;
++ (BOOL)removeDancingGOverlayFromCenterView:(UIView *)view;
+
+@end
+
+@interface WGImageView : UIImageView
+
+@end
+
+@interface WGOverlayView : UIView
+
 @end
