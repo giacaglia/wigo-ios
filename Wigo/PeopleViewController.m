@@ -167,7 +167,7 @@ UIScrollView *suggestedScrollView;
     [self.navigationItem setHidesBackButton:YES animated:YES];
     [self.tableViewOfPeople setContentOffset:self.tableViewOfPeople.contentOffset animated:NO];
     
-    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
+    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@1];
     [cancelButton setTitle:@"Done" forState:UIControlStateNormal];
     [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
@@ -219,6 +219,7 @@ UIScrollView *suggestedScrollView;
     self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     [self.tableViewOfPeople registerClass:[PeopleCell class] forCellReuseIdentifier:kPeopleCellName];
     [self.tableViewOfPeople registerClass:[SuggestedCell class] forCellReuseIdentifier:kSuggestedFriendsCellName];
+    [self.tableViewOfPeople registerClass:[InvitePeopleCell class] forCellReuseIdentifier:kInvitePeopleCellName];
     self.tableViewOfPeople.delegate = self;
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -276,24 +277,7 @@ UIScrollView *suggestedScrollView;
     } else {
         UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 90)];
         
-        UILabel *lateToThePartyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 30, 21)];
-        lateToThePartyLabel.text = @"Some of your friends are late to the party";
-        lateToThePartyLabel.textAlignment = NSTextAlignmentCenter;
-        lateToThePartyLabel.font = [FontProperties mediumFont:16.0f];
-        lateToThePartyLabel.textColor = RGB(102, 102, 102);
-        [secondPartSubview addSubview:lateToThePartyLabel];
-        
-        UIButton *inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 29, self.view.frame.size.width - 90, 30)];
-        [inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-        inviteButton.backgroundColor = [FontProperties getOrangeColor];
-        [inviteButton setTitle:@"Invite More Friends To Wigo" forState:UIControlStateNormal];
-        [inviteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        inviteButton.titleLabel.font = [FontProperties scMediumFont:16.0f];
-        inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-        inviteButton.layer.borderWidth = 1.0f;
-        inviteButton.layer.borderColor = [UIColor whiteColor].CGColor;
-        inviteButton.layer.cornerRadius = 8.0f;
-        [secondPartSubview addSubview:inviteButton];
+       
         
         return secondPartSubview;
     }
@@ -377,16 +361,17 @@ UIScrollView *suggestedScrollView;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     if ([indexPath section] == 0) {
         if ([self.currentTab isEqual:@2]) {
             SuggestedCell *cell = [tableView dequeueReusableCellWithIdentifier:kSuggestedFriendsCellName forIndexPath:indexPath];
             cell.peopleViewDelegate = self;
+            [cell.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             [cell setStateForCollection:_suggestions];
             return cell;
         }
         else if ([self.currentTab isEqual:@4]) {
-            SuggestedCell *cell = [tableView dequeueReusableCellWithIdentifier:kSuggestedFriendsCellName forIndexPath:indexPath];
+            InvitePeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kInvitePeopleCellName forIndexPath:indexPath];
+            [cell.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             return cell;
         }
     }
@@ -394,7 +379,6 @@ UIScrollView *suggestedScrollView;
     PeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kPeopleCellName forIndexPath:indexPath];
     cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
 
-    
     int tag = (int)[indexPath row];
     if (!_isSearching) {
         if ([_users count] == 0) return cell;
@@ -555,7 +539,6 @@ UIScrollView *suggestedScrollView;
             int sizeOfArray = (int)[_suggestions count];
             if (numberOfRows > 0 && userInt >= 0 && sizeOfArray > userInt) {
                 [_suggestions replaceObjectAtIndex:userInt withObject:user];
-                secondPartSubview = [self initializeSecondPart];
                 [self.tableViewOfPeople reloadData];
             }
         } else {
@@ -611,7 +594,6 @@ UIScrollView *suggestedScrollView;
                     }
                     _everyone = collection;
                     _users = _everyone;
-                    secondPartSubview = [self initializeSecondPart];
                     [self.tableViewOfPeople reloadData];
                 });
             }];
@@ -667,7 +649,6 @@ UIScrollView *suggestedScrollView;
                     
                     _users = _everyone;
                     [strongSelf.tableViewOfPeople reloadData];
-                    secondPartSubview = [self initializeSecondPart];
                     fetching = NO;
                 });
             }];
@@ -760,7 +741,6 @@ UIScrollView *suggestedScrollView;
                         [strongSelf.users addObject:follow.follow];
                     }
                     [strongSelf.tableViewOfPeople reloadData];
-                    secondPartSubview = [strongSelf initializeSecondPart];
                     fetching = NO;
                 });
             }];
@@ -779,7 +759,6 @@ UIScrollView *suggestedScrollView;
                         [strongSelf.users addObject:follow.follow];
                     }
                     [strongSelf.tableViewOfPeople reloadData];
-                    secondPartSubview = [strongSelf initializeSecondPart];
                     fetching = NO;
                 });
             }];
@@ -934,8 +913,6 @@ UIScrollView *suggestedScrollView;
     [self.contentView addSubview:self.timeLabel];
     
     self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 15, 49, 30)];
-    [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-    self.followPersonButton.tag = -100;
     [self.contentView addSubview:self.followPersonButton];
 }
 
@@ -943,7 +920,9 @@ UIScrollView *suggestedScrollView;
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text =  user.fullName;
     self.goingOutLabel.hidden = ![user.isGoingOut boolValue];
-
+    [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+    self.followPersonButton.tag = -100;
+    
     if (!user.isCurrentUser) {
         if (user.state == BLOCKED_USER_STATE) {
             [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
@@ -1014,7 +993,6 @@ UIScrollView *suggestedScrollView;
 
     self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 110)];
     [self.inviteButton setBackgroundImage:[UIImage imageNamed:@"InviteButton"] forState:UIControlStateNormal];
-    [self.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.suggestedScrollView addSubview:self.inviteButton];
     
     self.inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
@@ -1156,6 +1134,39 @@ UIScrollView *suggestedScrollView;
     if (sizeOfArray > 0 && sizeOfArray > tag)
         user = (WGUser *)[self.suggestions objectAtIndex:tag];
     return user;
+}
+
+@end
+
+@implementation InvitePeopleCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)setup {
+    self.lateToThePartyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.contentView.frame.size.width - 30, 21)];
+    self.lateToThePartyLabel.text = @"Some of your friends are late to the party";
+    self.lateToThePartyLabel.textAlignment = NSTextAlignmentCenter;
+    self.lateToThePartyLabel.font = [FontProperties mediumFont:16.0f];
+    self.lateToThePartyLabel.textColor = RGB(102, 102, 102);
+    [self.contentView addSubview:self.lateToThePartyLabel];
+    
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 29, self.contentView.frame.size.width - 90, 30)];
+    self.inviteButton.backgroundColor = [FontProperties getOrangeColor];
+    [self.inviteButton setTitle:@"Invite More Friends To Wigo" forState:UIControlStateNormal];
+    [self.inviteButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    self.inviteButton.titleLabel.font = [FontProperties scMediumFont:16.0f];
+    self.inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.inviteButton.layer.borderWidth = 1.0f;
+    self.inviteButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.inviteButton.layer.cornerRadius = 8.0f;
+    [self.contentView addSubview:self.inviteButton];
+
 }
 
 @end

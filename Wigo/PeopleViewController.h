@@ -49,3 +49,9 @@
 @property (nonatomic, strong) UILabel *inviteMoreFriendsLabel;
 - (void)setStateForCollection:(WGCollection *)collection;
 @end
+
+#define kInvitePeopleCellName @"InvitePeopleCellName"
+@interface InvitePeopleCell : UITableViewCell
+@property (nonatomic, strong) UILabel *lateToThePartyLabel;
+@property (nonatomic, strong) UIButton *inviteButton;
+@end
