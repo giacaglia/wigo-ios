@@ -9,7 +9,7 @@
 #import "ConversationViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
-#import "FancyProfileViewController.h"
+#import "ProfileViewController.h"
 
 #define kTimeDifferenceToShowDate 1800 // 30 minutes
 
@@ -24,7 +24,7 @@
 JSQMessagesBubbleImageFactory *bubbleFactory;
 JSQMessagesBubbleImage *orangeBubble;
 JSQMessagesBubbleImage *grayBubble;
-FancyProfileViewController *profileViewController;
+ProfileViewController *profileViewController;
 BOOL fetching;
 
 @implementation ConversationViewController
@@ -288,7 +288,7 @@ BOOL fetching;
 }
 
 - (void)showUser {
-    FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [profileViewController setStateWithUser: self.user];
     profileViewController.user = self.user;
     

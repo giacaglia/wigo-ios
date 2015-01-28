@@ -480,7 +480,7 @@
 		FA55261F1A1FDB4000101AE7 /* JBLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526191A1FDB4000101AE7 /* JBLineChartView.m */; };
 		FA5526221A1FE3D800101AE7 /* EngagementGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526211A1FE3D800101AE7 /* EngagementGraph.m */; };
 		FA5526231A1FE3D800101AE7 /* EngagementGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5526211A1FE3D800101AE7 /* EngagementGraph.m */; };
-		FA8C37EA1A3FDF8C00C46B9F /* FancyProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD337F1A3B996F008FF56D /* FancyProfileViewController.m */; };
+		FA8C37EA1A3FDF8C00C46B9F /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD337F1A3B996F008FF56D /* ProfileViewController.m */; };
 		FA8C37EB1A3FDF9B00C46B9F /* ImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAAF4AC41A3F7ABA0065E160 /* ImageScrollView.m */; };
 		FA8C37EC1A3FDFA500C46B9F /* FXBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33731A3B9904008FF56D /* FXBlurView.m */; };
 		FAACB6731A2508E00089FD01 /* CampusNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAACB6721A2508E00089FD01 /* CampusNotificationViewController.m */; };
@@ -490,7 +490,7 @@
 		FABD337B1A3B9904008FF56D /* JPBFloatingTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33751A3B9904008FF56D /* JPBFloatingTextViewController.m */; };
 		FABD337C1A3B9904008FF56D /* JPBParallaxBlurViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33771A3B9904008FF56D /* JPBParallaxBlurViewController.m */; };
 		FABD337D1A3B9904008FF56D /* JPBParallaxTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33791A3B9904008FF56D /* JPBParallaxTableViewController.m */; };
-		FABD33801A3B996F008FF56D /* FancyProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD337F1A3B996F008FF56D /* FancyProfileViewController.m */; };
+		FABD33801A3B996F008FF56D /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD337F1A3B996F008FF56D /* ProfileViewController.m */; };
 		FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 		FADD07311A0D296900492369 /* LLACircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD072F1A0D296900492369 /* LLACircularProgressView.m */; };
 /* End PBXBuildFile section */
@@ -977,8 +977,8 @@
 		FABD33771A3B9904008FF56D /* JPBParallaxBlurViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBParallaxBlurViewController.m; sourceTree = "<group>"; };
 		FABD33781A3B9904008FF56D /* JPBParallaxTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPBParallaxTableViewController.h; sourceTree = "<group>"; };
 		FABD33791A3B9904008FF56D /* JPBParallaxTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JPBParallaxTableViewController.m; sourceTree = "<group>"; };
-		FABD337E1A3B996F008FF56D /* FancyProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FancyProfileViewController.h; sourceTree = "<group>"; };
-		FABD337F1A3B996F008FF56D /* FancyProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FancyProfileViewController.m; sourceTree = "<group>"; };
+		FABD337E1A3B996F008FF56D /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
+		FABD337F1A3B996F008FF56D /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
 		FADD072E1A0D296900492369 /* LLACircularProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LLACircularProgressView.h; sourceTree = "<group>"; };
 		FADD072F1A0D296900492369 /* LLACircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LLACircularProgressView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1626,8 +1626,8 @@
 		E9AAAFCA193E3DC40069F700 /* User Profiles */ = {
 			isa = PBXGroup;
 			children = (
-				FABD337E1A3B996F008FF56D /* FancyProfileViewController.h */,
-				FABD337F1A3B996F008FF56D /* FancyProfileViewController.m */,
+				FABD337E1A3B996F008FF56D /* ProfileViewController.h */,
+				FABD337F1A3B996F008FF56D /* ProfileViewController.m */,
 				E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */,
 				E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */,
 				FA55260E1A1FCB0C00101AE7 /* Ambassador */,
@@ -2575,7 +2575,7 @@
 				C12A112419787BE700D53B1C /* PhotoViewController.m in Sources */,
 				E9ACCA2119C3A12500F3EB20 /* WigoConfirmationViewController.m in Sources */,
 				FA8C37EB1A3FDF9B00C46B9F /* ImageScrollView.m in Sources */,
-				FA8C37EA1A3FDF8C00C46B9F /* FancyProfileViewController.m in Sources */,
+				FA8C37EA1A3FDF8C00C46B9F /* ProfileViewController.m in Sources */,
 				E9C63BF71A03ED35006C5DD2 /* IQMediaCaptureController.m in Sources */,
 				E9C63BD91A03ED35006C5DD2 /* IQAssetsPickerController.m in Sources */,
 				FADD07311A0D296900492369 /* LLACircularProgressView.m in Sources */,
@@ -2737,7 +2737,7 @@
 				E9CD53861993C29800206B75 /* FLAnimatedImageView.m in Sources */,
 				E9CD473A194B9AD600AEA17D /* PhotoViewController.m in Sources */,
 				E9C63BFE1A03ED35006C5DD2 /* IQFileManager.m in Sources */,
-				FABD33801A3B996F008FF56D /* FancyProfileViewController.m in Sources */,
+				FABD33801A3B996F008FF56D /* ProfileViewController.m in Sources */,
 				E9C63BE21A03ED35006C5DD2 /* IQSongsAlbumViewCell.m in Sources */,
 				4544094F1A51EF3000BB3036 /* WGCollectionArray.m in Sources */,
 				E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */,

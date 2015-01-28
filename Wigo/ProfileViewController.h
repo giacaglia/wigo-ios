@@ -19,7 +19,7 @@
 @property State userState;
 @end
 
-@interface FancyProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
+@interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
 
 @property EditProfileViewController *editProfileViewController;
 @property ConversationViewController *conversationViewController;

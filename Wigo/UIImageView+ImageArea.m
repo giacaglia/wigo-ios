@@ -34,7 +34,6 @@ NSMutableArray *failedUserInfoArray;
 
 - (void)setImageWithURL:(NSURL *)url
               imageArea:(NSDictionary *)area
-               withInfo:(NSDictionary *)info
        outputDictionary:(NSDictionary *)outputDict
 completedWithDictionary:(SDWebImageCompletedBlockWithDictionary)completedDictionary {
     [self setImageWithURL:url withArea:area placeholderImage:nil options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -44,10 +43,11 @@ completedWithDictionary:(SDWebImageCompletedBlockWithDictionary)completedDiction
 
 - (void)setImageWithURL:(NSURL *)url
               imageArea:(NSDictionary *)area
-               withInfo:(NSDictionary *)info
-              completed:(SDWebImageCompletedBlock)completedBlock {
-    [self setImageWithURL:url withArea:area placeholderImage:nil options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        if (completedBlock) completedBlock(image, error, cacheType);
+       placeholderImage:(UIImage *)placeholderImage
+       outputDictionary:(NSDictionary *)outputDict
+completedWithDictionary:(SDWebImageCompletedBlockWithDictionary)completedDictionary {
+    [self setImageWithURL:url withArea:area placeholderImage:placeholderImage options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        if (completedDictionary) completedDictionary(image, error, cacheType, outputDict);
     }];
 }
 

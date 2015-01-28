@@ -11,7 +11,7 @@
 #import "IQMediaPickerController.h"
 #import "InviteViewController.h"
 #import "EventMessagesConstants.h"
-#import "FancyProfileViewController.h"
+#import "ProfileViewController.h"
 #import "WGProfile.h"
 #import "WGEvent.h"
 
@@ -716,7 +716,7 @@
 
 - (void)showUser:(WGUser *)user {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    FancyProfileViewController *fancyProfileViewController = [sb instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *fancyProfileViewController = [sb instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
 
     if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {

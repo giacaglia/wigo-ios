@@ -8,7 +8,7 @@
 
 #import "PeopleViewController.h"
 #import "Globals.h"
-#import "FancyProfileViewController.h"
+#import "ProfileViewController.h"
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
 #import "MobileContactsViewController.h"
@@ -25,7 +25,7 @@
 @property UISearchBar *searchBar;
 @property UIImageView *searchIconImageView;
 
-@property FancyProfileViewController *profileViewController;
+@property ProfileViewController *profileViewController;
 
 @property WGCollection *everyone;
 @property WGCollection *following;
@@ -207,7 +207,7 @@ UIScrollView *suggestedScrollView;
 }
 
 - (void)presentUser:(WGUser *)user {
-    FancyProfileViewController *profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [profileViewController setStateWithUser: user];
     profileViewController.user = user;
     [self.navigationController pushViewController:profileViewController animated:YES];

@@ -20,7 +20,7 @@
 #import "SignNavigationViewController.h"
 #import "PeekViewController.h"
 #import "EventStoryViewController.h"
-#import "FancyProfileViewController.h"
+#import "ProfileViewController.h"
 #import "FXBlurView.h"
 #import "ChatViewController.h"
 
@@ -338,7 +338,7 @@ BOOL secondTimeFetchingUserInfo;
 
 
 - (void)goToChat:(NSNotification *)notification {
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: NO];
@@ -357,7 +357,7 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)goToProfile {
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: NO];
@@ -631,7 +631,7 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)profileSegue {
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
@@ -1255,7 +1255,7 @@ BOOL secondTimeFetchingUserInfo;
 - (void)showUser:(WGUser *)user {
     shouldReloadEvents = NO;
     
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
     if ([self isPeeking]) fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];

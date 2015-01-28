@@ -291,7 +291,7 @@
     WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:index];
     WGUser *user = notification.fromUser;
     
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
     
     self.profileViewController = fancyProfileViewController;

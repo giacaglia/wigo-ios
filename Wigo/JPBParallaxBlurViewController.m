@@ -222,12 +222,10 @@ static CGFloat IMAGE_HEIGHT = 320.0f;
 
         [profileImgView setImageWithURL:[NSURL URLWithString:[imageURLS objectAtIndex:i]]
                               imageArea:areaVal
-                               withInfo:infoDict
                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                                   [weakSpinner stopAnimating];
                                   [_originalImages addObject: image];
                               }];
-        
         
         [_headerImageView sendSubviewToBack: profileImgView];
         [_headerImageView addSubview:profileImgView];
@@ -236,7 +234,6 @@ static CGFloat IMAGE_HEIGHT = 320.0f;
         
         [blurredProfileImgView setImageWithURL:[NSURL URLWithString:[imageURLS objectAtIndex:i]]
                               imageArea:areaVal
-                               withInfo:infoDict
                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                                   [blurredImageViewWeak setImage: [image blurredImageWithRadius:40.0f iterations:4 tintColor:[UIColor clearColor]]];
                               }];

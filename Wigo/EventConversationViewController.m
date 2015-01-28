@@ -15,7 +15,7 @@
 #import "MediaScrollView.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "EventMessagesConstants.h"
-#import "FancyProfileViewController.h"
+#import "ProfileViewController.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 #define newSizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/4
@@ -607,7 +607,7 @@
         view.center = CGPointMake(initialCenter.x, [UIScreen mainScreen].bounds.size.width/2);
     } completion:^(BOOL finished) {
         
-        FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
         [profileViewController setStateWithUser: user];
         profileViewController.user = user;
         if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;

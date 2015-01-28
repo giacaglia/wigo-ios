@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Alex Grinman. All rights reserved.
 //
 
-#import "FancyProfileViewController.h"
+#import "ProfileViewController.h"
 #import <Parse/Parse.h>
 #import "UIButtonAligned.h"
 #import "ImageScrollView.h"
@@ -16,7 +16,7 @@
 #import "EventStoryViewController.h"
 #import "FollowRequestsViewController.h"
 
-@interface FancyProfileViewController()<ImageScrollViewDelegate> {
+@interface ProfileViewController()<ImageScrollViewDelegate> {
     UIImageView *_gradientImageView;
     NSMutableArray *_blurredImages;
 }
@@ -53,7 +53,7 @@ BOOL isUserBlocked;
 BOOL blockShown;
 UIButton *tapButton;
 
-@implementation FancyProfileViewController
+@implementation ProfileViewController
 
 #pragma  mark - Init
 - (id)initWithUser:(WGUser *)user {
@@ -199,20 +199,8 @@ UIButton *tapButton;
 }
 
 - (void) createImageScrollView {
-    NSMutableArray *infoDicts = [[NSMutableArray alloc] init];
-    for (int i = 0; i < [[self.user imagesURL] count]; i++) {
-        NSMutableDictionary *info = [[NSMutableDictionary alloc] initWithDictionary:
-                                        @{
-                                          @"user": self.user,
-                                          @"images": [self.user images],
-                                          @"index": [NSNumber numberWithInt: i]
-                                          }];
-        [infoDicts addObject: info];
-    }
-    
-    
     CGFloat imageScrollViewDimension = [[UIScreen mainScreen] bounds].size.width;
-    self.imageScrollView = [[ImageScrollView alloc] initWithFrame: CGRectMake(0, 0, imageScrollViewDimension, imageScrollViewDimension) imageURLs:[self.user imagesURL] infoDicts: infoDicts areaDicts: [self.user imagesArea]];
+    self.imageScrollView = [[ImageScrollView alloc] initWithFrame: CGRectMake(0, 0, imageScrollViewDimension, imageScrollViewDimension) andUser:self.user];
     self.imageScrollView.delegate = self;
     [self.tableView reloadData];
 }
@@ -963,7 +951,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) presentUser:(WGUser *)user {
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [fancyProfileViewController setStateWithUser:user];
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];

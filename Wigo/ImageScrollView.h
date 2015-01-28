@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Globals.h"
 
 @protocol ImageScrollViewDelegate
 
@@ -19,7 +19,9 @@
 
 @property (nonatomic, assign) id<ImageScrollViewDelegate> delegate;
 
-- (instancetype)initWithFrame: (CGRect) frame imageURLs:(NSArray *)imageURLS infoDicts:(NSArray *)infoDicts areaDicts:(NSArray *)arrayDicts;
+@property (nonatomic, strong) WGUser *user;
+
+- (id) initWithFrame: (CGRect)frame andUser:(WGUser *)user;
 
 - (UIImage *) getCurrentImage;
 
