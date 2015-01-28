@@ -167,9 +167,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//    if (application.applicationState == UIApplicationStateInactive) {
-//        [self dismissEverythingWithUserInfo:userInfo];
-//    }
+    if (application.applicationState == UIApplicationStateInactive) {
+        [self dismissEverythingWithUserInfo:userInfo];
+    }
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {

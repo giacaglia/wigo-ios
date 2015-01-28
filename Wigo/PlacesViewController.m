@@ -317,7 +317,7 @@ BOOL secondTimeFetchingUserInfo;
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(goToChat)
+                                             selector:@selector(goToChat:)
                                                  name:@"goToChat"
                                                object:nil];
     
@@ -338,17 +338,23 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 
-- (void)goToChat {
+- (void)goToChat:(NSNotification *)notification {
     FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: NO];
-
-#warning shouldn't this go to Conversation?
     
     ChatViewController *chatViewController = [ChatViewController new];
     chatViewController.view.backgroundColor = UIColor.whiteColor;
     [fancyProfileViewController.navigationController pushViewController:chatViewController animated:YES];
+    
+    #warning does this work?
+    
+    NSDictionary *messageInfo = notification.userInfo;
+    WGMessage *newMessage = [[WGMessage alloc] initWithJSON:messageInfo];
+    
+    chatViewController.conversationViewController = [[ConversationViewController alloc] initWithUser:newMessage.user];
+    [chatViewController.navigationController pushViewController:chatViewController.conversationViewController animated:YES];
 }
 
 - (void)goToProfile {
