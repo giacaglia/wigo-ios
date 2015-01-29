@@ -214,6 +214,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     return [NSString stringWithFormat:baseURLString, endpoint];
 }
 
++ (void) setBaseURLString:(NSString *)newBaseURLString {
+    baseURLString = newBaseURLString;
+}
+
 +(NSString *) getStringWithEndpoint:(NSString *)endpoint andArguments:(NSDictionary *)arguments {
     NSString *fullEndpoint = [NSString stringWithString:endpoint];
     BOOL first = YES;

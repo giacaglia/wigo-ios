@@ -496,7 +496,7 @@
     self.loadingBanner.backgroundColor = UIColor.blackColor;
     [self.view addSubview:self.loadingBanner];
     
-    self.postingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 20)];
+    self.postingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 20)];
     self.postingLabel.text = @"Posting...";
     self.postingLabel.textColor = UIColor.whiteColor;
     self.postingLabel.font = [FontProperties mediumFont:13.0f];

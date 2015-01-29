@@ -362,9 +362,9 @@ BOOL isFetchingEveryone;
     NSString *oldString = _searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     __weak typeof(self) weakSelf = self;
-    /* if ([oldString isEqualToString:@"Initiate meltdown"]) {
+    if ([oldString isEqualToString:@"Initiate meltdown"]) {
         [self showMeltdown];
-    } */
+    }
     if (!_filteredContent || _filteredContent.hasNextPage == nil) {
         [[WGProfile currentUser] searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -394,7 +394,7 @@ BOOL isFetchingEveryone;
         }];
     }
 }
-/*
+
 - (void)showMeltdown {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Meltdown"
                                                                    message:nil
@@ -409,20 +409,17 @@ BOOL isFetchingEveryone;
                                                               UITextField *textField = alert.textFields[0];
                                                               NSString *text = textField.text;
                                                               if ([text isEqualToString:@"dev"] || [text isEqualToString:@"dev-api.wigo.us"]) {
-                                                                  [Query setBaseURLString:@"https://dev-api.wigo.us"];
+                                                                  [WGApi setBaseURLString:@"https://dev-api.wigo.us/api/%@"];
                                                               }
                                                               else if ([text isEqualToString:@"stage"] || [text isEqualToString:@"stage-api.wigo.us"]) {
-                                                                  [Query setBaseURLString:@"https://stage-api.wigo.us"];
+                                                                  [WGApi setBaseURLString:@"https://stage-api.wigo.us/api/%@"];
                                                               }
                                                               else if ([text isEqualToString:@"prod"] || [text isEqualToString:@"api.wigo.us"]) {
-                                                                  [Query setBaseURLString:@"https://api.wigo.us"];
-                                                              }
-                                                              else {
-                                                                  [Query setBaseURLString:text];
+                                                                  [WGApi setBaseURLString:@"https://api.wigo.us/api/%@"];
                                                               }
                                                           }];
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
 }
-*/
+
 @end

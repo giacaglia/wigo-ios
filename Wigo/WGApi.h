@@ -18,6 +18,8 @@ typedef void (^WGStartupResult)(NSString *cdnPrefix, NSNumber *googleAnalyticsEn
 
 @interface WGApi : NSObject
 
++ (void) setBaseURLString:(NSString *)newBaseURLString;
+
 @property NSCache *cache;
 
 +(void) get:(NSString *)endpoint withHandler:(ApiResultBlock)handler;
