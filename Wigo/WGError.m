@@ -7,6 +7,7 @@
 //
 
 #import "WGError.h"
+#import <Crashlytics/Crashlytics.h>
 
 #define kDismiss 0
 #define kRetryButton 1
@@ -113,7 +114,11 @@ static WGError *sharedWGErrorInstance = nil;
 }
 
 -(void) logError: (NSError *) error forAction: (WGActionType) action{
+#if DEBUG
     NSLog(@"Logged Error: %@ for Action: %@", error, [self titleForActionType: action]);
+#else
+    CLSLog(@"Logged Error: %@ for Action: %@", error, [self titleForActionType: action]);
+#endif
 }
 
 -(NSString *) titleForActionType: (WGActionType) action {

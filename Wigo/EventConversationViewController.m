@@ -464,6 +464,7 @@
             [eventMessage remove:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionDelete retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
                     return;
                 }
                 [self.eventMessages removeObject:eventMessage];

@@ -112,8 +112,6 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(BOOL) isCurrentUser;
 
 +(void) getOrderedById:(WGCollectionResultBlock)handler;
-+(void) getNotMe:(WGCollectionResultBlock)handler;
-+(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 +(void) getNewestUser:(WGUserResultBlock)handler;
 +(void) getOnboarding:(WGCollectionResultBlock)handler;
 +(void) searchUsers:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
@@ -121,6 +119,8 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 +(void) getInvites:(WGCollectionResultBlock)handler;
 +(void) searchInvites:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 
+-(void) getNotMe:(WGCollectionResultBlock)handler;
+-(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 -(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;

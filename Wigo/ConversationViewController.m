@@ -278,7 +278,9 @@ BOOL fetching;
 
 - (void) goBack {
     [self.user readConversation:^(BOOL success, NSError *error) {
-        // Do nothing?
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+        }
     }];
     
     self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
@@ -308,6 +310,7 @@ BOOL fetching;
         if (error) {
             [_messages removeObject:message];
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.collectionView reloadData];
@@ -378,6 +381,7 @@ BOOL fetching;
             [self.user getConversation:^(WGCollection *collection, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     fetching = NO;
                     return;
                 }
@@ -406,6 +410,7 @@ BOOL fetching;
             [_messages getNextPage:^(WGCollection *collection, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     fetching = NO;
                     return;
                 }

@@ -377,6 +377,7 @@ BOOL secondTimeFetchingUserInfo;
         [newEvent refresh:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
@@ -528,6 +529,7 @@ BOOL secondTimeFetchingUserInfo;
     [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : eventID }] withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
         [WGProfile currentUser].isGoingOut = @YES;
@@ -737,6 +739,7 @@ BOOL secondTimeFetchingUserInfo;
                 [[WGProfile currentUser] goingToEvent:object withHandler:^(BOOL success, NSError *error) {
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionSave];
                         return;
                     }
                     
@@ -1279,6 +1282,7 @@ BOOL secondTimeFetchingUserInfo;
     [event getMessages:^(WGCollection *collection, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
         NSInteger messageIndex = [collection indexOfObject:event.highlight];
@@ -1544,6 +1548,7 @@ BOOL secondTimeFetchingUserInfo;
             if (error) {
                 fetchingUserInfo = NO;
                 // Second time fetching user info... already logged in
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:^(BOOL didRetry) {
                     if (didRetry) {
                         [self fetchUserInfo];

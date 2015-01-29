@@ -190,6 +190,7 @@ NSTimer *fetchTimer;
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
             return;
         }
         UIAlertView *alertView = [[UIAlertView alloc]
@@ -220,6 +221,7 @@ NSTimer *fetchTimer;
     [[WGProfile currentUser] saveKey:@"email" withValue:emailString andHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
         }
     }];
 }

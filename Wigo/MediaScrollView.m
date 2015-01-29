@@ -188,6 +188,7 @@
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
                 return;
             }
             [strongSelf.storyDelegate readEventMessageIDArray:[strongSelf.eventMessagesRead idArray]];
@@ -874,7 +875,9 @@
 
 - (void)sendVote:(BOOL)upvoteBool {
     [self.eventMessage vote:upvoteBool withHandler:^(BOOL success, NSError *error) {
-        // Do nothing!
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
+        }
     }];
 }
 

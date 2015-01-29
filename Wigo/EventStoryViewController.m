@@ -202,6 +202,7 @@
             self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numAttending stringValue]];
             
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
     }];
@@ -517,7 +518,9 @@
 - (void)setDetailViewRead {
     if (![self.event.isRead boolValue]) {
         [self.event setRead:^(BOOL success, NSError *error) {
-            // Do nothing!
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            }
         }];
     }
 }
@@ -584,6 +587,7 @@
                 [strongSelf.facesCollectionView didFinishPullToRefresh];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 strongSelf.eventMessages = collection;
@@ -597,6 +601,7 @@
                 [strongSelf.facesCollectionView didFinishPullToRefresh];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 [strongSelf.facesCollectionView reloadData];

@@ -102,6 +102,7 @@
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
     }];
@@ -117,6 +118,7 @@
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
         }
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
@@ -138,6 +140,7 @@
         [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
             [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];

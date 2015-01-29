@@ -269,6 +269,7 @@ NSMutableArray *imagesArray;
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
         [self dismissViewControllerAnimated:YES completion:nil];

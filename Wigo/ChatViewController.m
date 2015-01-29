@@ -157,6 +157,7 @@ UIButton *newChatButton;
             [WGSpinnerView removeDancingGFromCenterView:self.view];
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             strongSelf.messages = collection;
@@ -186,13 +187,17 @@ UIButton *newChatButton;
 
 - (void)deleteConversationAsynchronusly:(WGMessage *)message {
     [message.otherUser deleteConversation:^(BOOL success, NSError *error) {
-        // Do nothing
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+        }
     }];
 }
 
 - (void)markMessageAsRead:(WGMessage *)message {
     [message.otherUser readConversation:^(BOOL success, NSError *error) {
-        // Do nothing!
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+        }
     }];
 }
 

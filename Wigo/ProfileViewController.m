@@ -105,6 +105,8 @@ UIButton *tapButton;
     [self initializeRightBarButton];
     [self initializeNameOfPerson];
     [self initializeHeaderButtonView];
+    
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -140,7 +142,7 @@ UIButton *tapButton;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
     NSString *isCurrentUser = ([self.user isEqual:[WGProfile currentUser]]) ? @"Yes" : @"No";
     NSString *isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE) ? @"Yes" : @"No";
@@ -259,7 +261,8 @@ UIButton *tapButton;
     [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
     [barItem setCustomView:barBt];
-    self.navigationItem.leftBarButtonItem = barItem;
+    // self.navigationItem.leftBarButtonItem = barItem;
+    [self.navigationItem setLeftBarButtonItem:barItem animated:NO];
 }
 
 - (void) initializeRightBarButton {
@@ -278,7 +281,8 @@ UIButton *tapButton;
     [_rightBarBt sizeToFit];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
     [barItem setCustomView:_rightBarBt];
-    self.navigationItem.rightBarButtonItem = barItem;
+    // self.navigationItem.rightBarButtonItem = barItem;
+    [self.navigationItem setRightBarButtonItem:barItem animated:NO];
 }
 
 
@@ -483,6 +487,7 @@ UIButton *tapButton;
             [[WGProfile currentUser] block:sentUser withType:blockType andHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionPost];
                 }
                 self.userState = self.user.state;
                 [self reloadViewForUserState];
@@ -500,6 +505,8 @@ UIButton *tapButton;
     [[WGProfile currentUser] unblock:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
+            return;
         }
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){
             self.navigationController.navigationBar.barStyle = UIBarStyleDefault;}];
@@ -517,6 +524,7 @@ UIButton *tapButton;
     [[WGProfile currentUser] follow:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
             return;
         }
         self.userState = self.user.state;
@@ -532,6 +540,7 @@ UIButton *tapButton;
     [[WGProfile currentUser] unfollow:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
             return;
         }
         self.userState = self.user.state;
@@ -975,6 +984,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [[WGProfile currentUser] tapUser:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
         }
         [self.tableView reloadData];
     }];
@@ -1045,6 +1055,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 strongSelf.isFetchingNotifications = NO;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 strongSelf.notifications = collection;
@@ -1065,6 +1076,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 strongSelf.isFetchingNotifications = NO;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 for (WGNotification *notification in collection) {
@@ -1088,6 +1100,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [[WGProfile currentUser] setLastNotificationReadToLatest:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
         }
     }];
 }
@@ -1110,6 +1123,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [event refresh:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -1126,6 +1140,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [WGNotification getFollowSummary:^(NSNumber *follow, NSNumber *followRequest, NSNumber *total, NSNumber *tap, NSNumber *facebookFollow, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
         __strong typeof(weakSelf) strongSelf = weakSelf;

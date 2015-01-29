@@ -391,6 +391,7 @@
             [self fetchTokensFromFacebook];
             [self fetchProfilePicturesAlbumFacebook];
             [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLogin];
             return;
         }
         [self navigate];

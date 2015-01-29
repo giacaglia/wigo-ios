@@ -178,6 +178,7 @@ OnboardFollowViewController *onboardFollowViewController;
         [WGUser getOrderedById:^(WGCollection *collection, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             _everyone = collection;
@@ -186,6 +187,7 @@ OnboardFollowViewController *onboardFollowViewController;
         [_everyone addNextPage:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
         }];
@@ -197,6 +199,7 @@ OnboardFollowViewController *onboardFollowViewController;
     [WGProfile reload:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
         [self dismissIfGroupUnlocked];

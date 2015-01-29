@@ -54,6 +54,7 @@
     [[WGProfile currentUser] saveKey:@"is_going_out" withValue:@NO andHandler:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
                 return;
             }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"updateViewNotGoingOut" object:nil];

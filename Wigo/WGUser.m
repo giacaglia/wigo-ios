@@ -638,8 +638,8 @@ static WGUser *currentUser = nil;
     }];
 }
 
-+(void) getNotMe:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : [WGProfile currentUser].id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+-(void) getNotMe:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -660,8 +660,8 @@ static WGUser *currentUser = nil;
     }];
 }
 
-+(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : [WGProfile currentUser].id, @"ordering" : @"is_goingout", @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+-(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"ordering" : @"is_goingout", @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

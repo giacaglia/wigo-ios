@@ -189,6 +189,7 @@ UIScrollView *suggestedScrollView;
     [[WGProfile currentUser] setLastUserReadToLatest:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
         }
     }];
     [self.navigationController popViewControllerAnimated:YES];
@@ -460,7 +461,9 @@ UIScrollView *suggestedScrollView;
         user.isBlocked = @NO;
         
         [[WGProfile currentUser] unblock:user withHandler:^(BOOL success, NSError *error) {
-            // Do nothing
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+            }
         }];
     }
     else if (senderButton.tag == -100) {
@@ -485,7 +488,9 @@ UIScrollView *suggestedScrollView;
         senderButton.tag = 100;
         [self updatedCachedProfileUser:numFollowing];
         [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
-            // Do nothing
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionPost];
+            }
         }];
     } else {
         [senderButton setTitle:nil forState:UIControlStateNormal];
@@ -500,11 +505,11 @@ UIScrollView *suggestedScrollView;
         }
         [self updatedCachedProfileUser:numFollowing];
         [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
-            // Do nothing
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+            }
         }];
     }
-    
-
 }
 
 - (void) updatedCachedProfileUser:(int)numFollowing {
@@ -583,6 +588,7 @@ UIScrollView *suggestedScrollView;
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             _suggestions = collection;
@@ -590,6 +596,7 @@ UIScrollView *suggestedScrollView;
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         return;
                     }
                     _everyone = collection;
@@ -619,6 +626,7 @@ UIScrollView *suggestedScrollView;
                     [WGSpinnerView removeDancingGFromCenterView:self.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         fetching = NO;
                         return;
                     }
@@ -635,6 +643,7 @@ UIScrollView *suggestedScrollView;
                     [WGSpinnerView removeDancingGFromCenterView:self.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         fetching = NO;
                         return;
                     }
@@ -677,6 +686,7 @@ UIScrollView *suggestedScrollView;
                     [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         fetching = NO;
                         return;
                     }
@@ -696,6 +706,7 @@ UIScrollView *suggestedScrollView;
                     [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         fetching = NO;
                         return;
                     }
@@ -732,6 +743,7 @@ UIScrollView *suggestedScrollView;
                     [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         fetching = NO;
                         return;
                     }
@@ -751,6 +763,7 @@ UIScrollView *suggestedScrollView;
                     [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         fetching = NO;
                         return;
                     }
@@ -824,6 +837,7 @@ UIScrollView *suggestedScrollView;
                 [WGSpinnerView removeDancingGFromCenterView:self.view];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     fetching = NO;
                     return;
                 }
@@ -842,6 +856,7 @@ UIScrollView *suggestedScrollView;
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             [strongSelf.tableViewOfPeople reloadData];

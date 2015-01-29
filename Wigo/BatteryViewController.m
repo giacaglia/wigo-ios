@@ -203,6 +203,7 @@ NSTimer *fetchTimer;
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             currentTotal = total;

@@ -307,7 +307,9 @@ BOOL initializedPopScreen;
         }
         senderButton.tag = 100;
         [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
-            // Do nothing!
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionPost];
+            }
         }];
         [users replaceObjectAtIndex:[indexPath row] withObject:user];
     } else {
@@ -316,7 +318,9 @@ BOOL initializedPopScreen;
         senderButton.tag = -100;
         
         [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
-            // Do nothing!
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+            }
         }];
         
         user.isFollowing = @NO;
@@ -342,6 +346,7 @@ BOOL initializedPopScreen;
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 users = collection;
@@ -353,6 +358,7 @@ BOOL initializedPopScreen;
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 [tableViewOfPeople reloadData];
@@ -412,6 +418,7 @@ BOOL initializedPopScreen;
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionSearch retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionSearch];
                 return;
             }
             users = collection;

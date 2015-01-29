@@ -112,6 +112,7 @@
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     strongSelf.fetchingEventAttendees = NO;
                     return;
                 }
@@ -129,6 +130,7 @@
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     strongSelf.fetchingEventAttendees = NO;
                     return;
                 }

@@ -403,6 +403,7 @@ UIViewController *webViewController;
     [WGProfile currentUser].isTapPushNotificationEnabled = [NSNumber numberWithBool:state];
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+        [[WGError sharedInstance] logError:error forAction:WGActionSave];
     }];
 }
 
@@ -411,6 +412,7 @@ UIViewController *webViewController;
     [WGProfile currentUser].isFavoritesGoingOutNotificationEnabled = [NSNumber numberWithBool:state];
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+        [[WGError sharedInstance] logError:error forAction:WGActionSave];
     }];
 }
 

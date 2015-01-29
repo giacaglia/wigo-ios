@@ -136,12 +136,14 @@
         [[WGProfile currentUser] signup:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionCreate retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionCreate];
                 return;
             }
             [WGProfile currentUser].images = images;
             [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
                 if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionCreate retryHandler:nil];
+                    [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionSave];
                     return;
                 }
                 self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];

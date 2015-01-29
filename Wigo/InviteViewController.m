@@ -395,7 +395,9 @@ heightForHeaderInSection:(NSInteger)section
     
     if ([user.isTapped boolValue]) {
         [[WGProfile currentUser] untap:user withHandler:^(BOOL success, NSError *error) {
-            // Do nothing!
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+            }
         }];
         user.isTapped = @NO;
 
@@ -403,7 +405,9 @@ heightForHeaderInSection:(NSInteger)section
     } else {
 #warning Group these
         [[WGProfile currentUser] tapUser:user withHandler:^(BOOL success, NSError *error) {
-            // Do nothing!
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            }
         }];
         user.isTapped = @YES;
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
@@ -521,11 +525,12 @@ heightForHeaderInSection:(NSInteger)section
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     __weak typeof(self) weakSelf = self;
-    [WGUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
+    [[WGProfile currentUser] searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             strongSelf.filteredContent = collection;
@@ -545,6 +550,7 @@ heightForHeaderInSection:(NSInteger)section
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             [strongSelf.filteredContent removeObject:[WGProfile currentUser]];
@@ -567,6 +573,7 @@ heightForHeaderInSection:(NSInteger)section
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 strongSelf.content = collection;
@@ -580,6 +587,7 @@ heightForHeaderInSection:(NSInteger)section
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 [strongSelf.content removeObject:[WGProfile currentUser]];

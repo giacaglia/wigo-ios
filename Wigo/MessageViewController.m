@@ -121,11 +121,12 @@ BOOL isFetchingEveryone;
         isFetchingEveryone = YES;
         __weak typeof(self) weakSelf = self;
         if (!_content || _content.hasNextPage == nil) {
-            [WGUser getNotMe:^(WGCollection *collection, NSError *error) {
+            [[WGProfile currentUser] getNotMe:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         return;
                     }
                     strongSelf.content = collection;
@@ -139,6 +140,7 @@ BOOL isFetchingEveryone;
                     __strong typeof(self) strongSelf = weakSelf;
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         return;
                     }
                     [strongSelf.tableView reloadData];
@@ -364,11 +366,12 @@ BOOL isFetchingEveryone;
         [self showMeltdown];
     } */
     if (!_filteredContent || _filteredContent.hasNextPage == nil) {
-        [WGUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
+        [[WGProfile currentUser] searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 strongSelf.filteredContent = collection;
@@ -382,6 +385,7 @@ BOOL isFetchingEveryone;
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 [strongSelf.tableView reloadData];
