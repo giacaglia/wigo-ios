@@ -417,7 +417,13 @@ BOOL isFetchingEveryone;
                                                               else if ([text isEqualToString:@"prod"] || [text isEqualToString:@"api.wigo.us"]) {
                                                                   [WGApi setBaseURLString:@"https://api.wigo.us/api/%@"];
                                                               }
+                                                              else {
+                                                                  NSMutableString *newMutableString = [NSMutableString stringWithString:text];
+                                                                  [newMutableString appendString:@"/api/%@"];
+                                                                  [WGApi setBaseURLString:newMutableString];
+                                                              }
                                                           }];
+    
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
 }
