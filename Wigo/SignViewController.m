@@ -229,13 +229,12 @@
 
 
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
-    [WGProfile currentUser].images = profilePictures;
+    WGProfile.currentUser.images = profilePictures;
     [WGSpinnerView removeDancingGFromCenterView:self.view];
     if (!_pushed) {
         _pushed = YES;
         _fetchingProfilePictures = NO;
-        self.signUpViewController = [[SignUpViewController alloc] init];
-        [self.navigationController pushViewController:self.signUpViewController animated:YES];
+        [self.navigationController pushViewController:[SignUpViewController new] animated:YES];
     }
 }
 
@@ -402,8 +401,7 @@
     if (![[WGProfile currentUser].emailValidated boolValue]) {
         if (!_pushed) {
             _pushed = YES;
-            self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-            [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+            [self.navigationController pushViewController:[EmailConfirmationViewController new] animated:YES];
         }
     } else {
         PFInstallation *currentInstallation = [PFInstallation currentInstallation];

@@ -339,10 +339,10 @@ static WGProfile *currentUser = nil;
         [parameters setObject:self.firstName forKey:kFirstNameKey];
     }
     if (self.lastName) {
-        [parameters setObject:self.firstName forKey:kLastNameKey];
+        [parameters setObject:self.lastName forKey:kLastNameKey];
     }
     if (self.gender) {
-        [parameters setObject:[self genderName] forKey:kGenderKey];
+        [parameters setObject:self.genderName forKey:kGenderKey];
     }
     [WGApi post:@"register" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {

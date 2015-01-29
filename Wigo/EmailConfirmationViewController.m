@@ -12,7 +12,6 @@
 #import "BatteryViewController.h"
 
 UITextField *emailTextField;
-OnboardFollowViewController *onboardFollowViewController;
 NSTimer *fetchTimer;
 
 @implementation EmailConfirmationViewController
@@ -107,12 +106,6 @@ NSTimer *fetchTimer;
     emailTextField.delegate = self;
     [self.view addSubview:emailTextField];
 
-//    UILabel *holyCrossLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 430, self.view.frame.size.width, 30)];
-//    holyCrossLabel.textAlignment = NSTextAlignmentCenter;
-//    holyCrossLabel.text = @"@ Holy Cross";
-//    holyCrossLabel.font = [FontProperties getSmallFont];
-//    holyCrossLabel.textColor = [UIColor grayColor];
-//    [self.view addSubview:holyCrossLabel];
 }
 
 - (void)initializeOtherButtons {
@@ -140,22 +133,6 @@ NSTimer *fetchTimer;
     [self.view addSubview:changeButton];
 }
 
-- (void) initializeNumberOfPeopleLabel {
-    self.numberOfPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50)];
-    self.numberOfPeopleLabel.hidden = YES;
-    self.numberOfPeopleLabel.font = [FontProperties getSmallFont];
-    self.numberOfPeopleLabel.backgroundColor = [FontProperties getLightOrangeColor];
-    self.numberOfPeopleLabel.textColor = [UIColor blackColor];
-    self.numberOfPeopleLabel.textAlignment = NSTextAlignmentCenter;
-    NSMutableAttributedString *text =
-    [[NSMutableAttributedString alloc]
-     initWithAttributedString: self.numberOfPeopleLabel.attributedText];
-    [text addAttribute:NSForegroundColorAttributeName
-                 value:[FontProperties getOrangeColor]
-                 range:NSMakeRange(0, 2)];
-    [self.numberOfPeopleLabel setAttributedText:text];
-    [self.view addSubview:self.numberOfPeopleLabel];
-}
 
 #pragma mark - Login
 
@@ -173,8 +150,7 @@ NSTimer *fetchTimer;
                     [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
                 } else {
                     [self.navigationController setNavigationBarHidden:YES animated:NO];
-                    onboardFollowViewController = [OnboardFollowViewController new];
-                    [self.navigationController pushViewController:onboardFollowViewController animated:YES];
+                    [self.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
                 }
             }
         }];

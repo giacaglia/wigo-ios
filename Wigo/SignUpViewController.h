@@ -10,6 +10,5 @@
 #import "EmailConfirmationViewController.h"
 
 @interface SignUpViewController : UIViewController
-@property EmailConfirmationViewController *emailConfirmationViewController;
 
 @end

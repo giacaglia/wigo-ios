@@ -21,7 +21,7 @@
 {
     self = [super init];
     if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
         self.navigationItem.hidesBackButton = YES;
         
     }
@@ -146,8 +146,7 @@
                     [[WGError sharedInstance] logError:error forAction:WGActionSave];
                     return;
                 }
-                self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-                [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+                [self.navigationController pushViewController:[EmailConfirmationViewController new] animated:YES];
             }];
         }];
     } else {
