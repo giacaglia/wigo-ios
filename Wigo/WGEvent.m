@@ -43,8 +43,8 @@
 
 -(void) replaceReferences {
     [super replaceReferences];
-    if ([self objectForKey:kAttendeesKey]  && [[self objectForKey:kAttendeesKey] isKindOfClass:[NSArray class]]) {
-        [self.parameters setObject:[WGCollection serializeArray:[self objectForKey:kAttendeesKey] andClass:[WGEventAttendee class]] forKey:kAttendeesKey];
+    if ([self objectForKey:kAttendeesKey]  && [[self objectForKey:kAttendeesKey] isKindOfClass:[NSDictionary class]]) {
+        [self.parameters setObject:[WGCollection serializeResponse:[self objectForKey:kAttendeesKey] andClass:[WGEventAttendee class]] forKey:kAttendeesKey];
     }
     if ([self objectForKey:kHighlightKey]  && [[self objectForKey:kHighlightKey] isKindOfClass:[NSDictionary class]]) {
         [self.parameters setObject:[WGEventMessage serialize:[self objectForKey:kHighlightKey]] forKey:kHighlightKey];

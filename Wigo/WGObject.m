@@ -91,8 +91,6 @@
             [props setObject:[value deserialize] forKey:key];
         } else if (value && ![value isKindOfClass:[WGObject class]] && ![value isEqual:[NSNull null]]) {
             [props setObject:value forKey:key];
-        } else {
-            // NSLog(@"Error: Tried to deserialize key %@ with null value", key);
         }
     }
     
@@ -110,8 +108,6 @@
             [props setObject:[value deserialize] forKey:key];
         } else if (value && ![value isEqual:[NSNull null]]) {
             [props setObject:value forKey:key];
-        } else {
-            // NSLog(@"Error: Tried to deserialize key %@ with null value", key);
         }
     }
     
@@ -129,8 +125,6 @@
             [props setObject:[value deserialize] forKey:key];
         } else if (value && ![value isEqual:[NSNull null]]) {
             [props setObject:value forKey:key];
-        } else {
-            // NSLog(@"Error: Tried to deserialize key %@ with null value", key);
         }
     }
     
@@ -171,8 +165,6 @@
         [properties setObject:[value deserialize] forKey:key];
     } else if (value && ![value isEqual:[NSNull null]]) {
         [properties setObject:value forKey:key];
-    } else {
-        // NSLog(@"Error: Tried to post key %@ with null value", key);
     }
     
     NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@", self.className, self.id];
@@ -238,8 +230,6 @@
             [parametersWithIds setObject:valueObject.id forKey:key];
         } else if (value && ![value isEqual:[NSNull null]]) {
             [parametersWithIds setObject:value forKey:key];
-        } else {
-            // NSLog(@"Error: Tried to post key %@ with null value", key);
         }
     }
     

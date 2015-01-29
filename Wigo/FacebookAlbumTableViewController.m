@@ -76,7 +76,7 @@ NSMutableArray *coverAlbumArray;
                                                        id result,
                                                        NSError *error) {
                                        dispatch_async(dispatch_get_main_queue(), ^(void){
-                                           if (error) NSLog(@"error: %@",error.localizedDescription);
+                                           if (error) NSLog(@"Error: %@", error.localizedDescription);
                 NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
                 if (nonCleanAlbums.count == 0) [self requestReadPermissions];
                 NSMutableArray *cleanAlbums = [NSMutableArray new];

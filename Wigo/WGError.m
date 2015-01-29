@@ -114,11 +114,7 @@ static WGError *sharedWGErrorInstance = nil;
 }
 
 -(void) logError: (NSError *) error forAction: (WGActionType) action{
-#if DEBUG
     NSLog(@"Logged Error: %@ for Action: %@", error, [self titleForActionType: action]);
-#else
-    CLSLog(@"Logged Error: %@ for Action: %@", error, [self titleForActionType: action]);
-#endif
 }
 
 -(NSString *) titleForActionType: (WGActionType) action {

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import <Crashlytics/Crashlytics.h>
 #import "JSQMessagesViewController/JSQMessages.h"
 #import "UIImageView+ImageArea.h"
 
@@ -38,11 +39,12 @@
 static NSString * const collectionViewCellIdentifier = @"CollectionViewCellIdentifier";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
-//#ifdef DEBUG
-//#define NSLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
-//#else
-//#define NSLog(...)
-//#endif
+#ifdef DEBUG
+#define NSLog(x, ...) NSLog(@"%s %d: " x, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#else
+#define NSLog(x, ...) CLSLog(@"%s %d: " x, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#endif
+
 #define isiPhone5  ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
 #define MAX_LENGTH_BIO 110
 #define PEOPLEVIEW_HEIGHT_OF_CELLS 80

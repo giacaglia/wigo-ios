@@ -1013,7 +1013,6 @@
 
 -(void)mediaView:(IQMediaView*)mediaView translate:(CGPoint)translationPoint
 {
-//    NSLog(@"translate");
     if ([[self session] isSessionRunning]){
         UIView *topSuperView = (UIView *)(UIView *)(UIView *)(UIView *)(UIView *)self.view.superview.superview.superview.superview.superview.superview;
         if ([topSuperView isKindOfClass:[UIScrollView class]]) {
@@ -1030,7 +1029,6 @@
 }
 
 - (void)mediaView:(IQMediaView *)mediaView stopTranslateAt:(CGPoint)translatePoint {
-//    NSLog(@"stop translate");
     if ([self session].isSessionRunning) {
         UIView *topSuperView = (UIView *)(UIView *)(UIView *)(UIView *)(UIView *)self.view.superview.superview.superview.superview.superview.superview;
         if ([topSuperView isKindOfClass:[UIScrollView class]]) {
@@ -1069,13 +1067,13 @@
 }
 
 //- (void)keyboardWillChange:(NSNotification *)note {
-////    NSLog(@"keybaorddidchange: user info: %@", userInfo);
+//    NSLog(@"keybaorddidchange: user info: %@", userInfo);
 //    NSValue *keyboardEndFrameValue = [[note userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey];
 //    CGRect keyboardEndFrame = [keyboardEndFrameValue CGRectValue];
-////    CGRect properlyRotatedCoords = [self.view.window convertRect:kbFrame toView:self.view.window.rootViewController.view];
+//    CGRect properlyRotatedCoords = [self.view.window convertRect:kbFrame toView:self.view.window.rootViewController.view];
 //    
 //    NSLog(@"keyboard frame change: %f, %f", keyboardEndFrame.size.height, keyboardEndFrame.origin.y);
-////    NSLog(@"properly frame change: %f, %f", properlyRotatedCoords.size.height, properlyRotatedCoords.origin.y);
+//    NSLog(@"properly frame change: %f, %f", properlyRotatedCoords.size.height, properlyRotatedCoords.origin.y);
 //}
 
 

@@ -1524,7 +1524,7 @@ BOOL secondTimeFetchingUserInfo;
 - (void)fetchedOneParty {
     _spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
      _spinnerAtCenter = NO;
-    _filteredEvents = [WGCollection serializeArray:@[] andClass:[WGEvent class]];
+    _filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
     [self dismissKeyboard];
 }
 

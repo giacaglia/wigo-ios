@@ -107,25 +107,7 @@
     if (!self.fetchingEventAttendees) {
         self.fetchingEventAttendees = YES;
         __weak typeof(self) weakSelf = self;
-        if (self.event.attendees.hasNextPage == nil) {
-            [WGEventAttendee getForEvent:self.event withHandler:^(WGCollection *collection, NSError *error) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    strongSelf.fetchingEventAttendees = NO;
-                    return;
-                }
-                [strongSelf.event.attendees addObjectsFromCollection: collection];
-                strongSelf.event.attendees.hasNextPage = collection.hasNextPage;
-                strongSelf.event.attendees.nextPage = collection.nextPage;
-                
-                [strongSelf saveScrollPosition];
-                [strongSelf updateUI];
-                
-                strongSelf.fetchingEventAttendees = NO;
-            }];
-        } else if ([self.event.attendees.hasNextPage boolValue]) {
+        if ([self.event.attendees.hasNextPage boolValue]) {
             [self.event.attendees addNextPage:^(BOOL success, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {

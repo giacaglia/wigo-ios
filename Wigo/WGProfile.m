@@ -209,7 +209,7 @@ static WGProfile *currentUser = nil;
 
 -(void) addChosenPerson:(WGUser *)person {
     if (!self.chosenPeople) {
-        self.chosenPeople = [WGCollection serializeArray:@[] andClass:[WGUser class]];
+        self.chosenPeople = [[WGCollection alloc] initWithType:[WGUser class]];
     }
     [self.chosenPeople addObject:person];
 }

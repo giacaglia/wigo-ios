@@ -573,15 +573,6 @@
 }
 
 - (void) moviePlayerLoadStateChanged:(NSNotification*)notification {
-    if ([self.moviePlayer loadState] == MPMovieLoadStatePlayable) {
-        NSLog(@"MPMovieLoadStatePlayable");
-    } else if ([self.moviePlayer loadState] == MPMovieLoadStatePlaythroughOK) {
-        NSLog(@"MPMovieLoadStatePlaythroughOK");
-    } else if ([self.moviePlayer loadState] == MPMovieLoadStateStalled) {
-        NSLog(@"MPMovieLoadStateStalled");
-    } else if ([self.moviePlayer loadState] == MPMovieLoadStateUnknown) {
-        NSLog(@"MPMovieLoadStateUnknown");
-    }
     if (self.moviePlayer.loadState == MPMovieLoadStatePlayable || self.moviePlayer.loadState == MPMovieLoadStatePlaythroughOK) {
         [self performBlock:^{
             self.thumbnailImageView.alpha = 0.0;

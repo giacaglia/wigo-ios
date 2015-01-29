@@ -81,7 +81,6 @@ NSDate *firstLoggedTime;
 }
 
 - (void) dismissEverythingWithUserInfo:(NSDictionary *)userInfo {
-//    NSLog(@"dismiss Everything");
     if ([RWBlurPopover instance]) [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:nil];
     
     UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
