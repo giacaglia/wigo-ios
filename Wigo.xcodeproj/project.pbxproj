@@ -104,6 +104,10 @@
 		45D9FAE71A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FA921A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.m */; };
 		45D9FAE81A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45D9FA931A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.xib */; };
 		45D9FAE91A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45D9FA931A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.xib */; };
+		45D9FBAE1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBAB1A7AE1DD00D08577 /* GCDAsyncSocket.m */; };
+		45D9FBAF1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBAB1A7AE1DD00D08577 /* GCDAsyncSocket.m */; };
+		45D9FBB01A7AE1DD00D08577 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBAD1A7AE1DD00D08577 /* GCDAsyncUdpSocket.m */; };
+		45D9FBB11A7AE1DD00D08577 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBAD1A7AE1DD00D08577 /* GCDAsyncUdpSocket.m */; };
 		45DF868E1A5AE1C100DB85AE /* WGError.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF868D1A5AE1C100DB85AE /* WGError.m */; };
 		45DF86911A5AFBA000DB85AE /* WGEventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86901A5AFBA000DB85AE /* WGEventMessage.m */; };
 		45DF86941A5B0B5C00DB85AE /* WGAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86931A5B0B5C00DB85AE /* WGAnalytics.m */; };
@@ -630,6 +634,10 @@
 		45D9FA911A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSQMessagesTypingIndicatorFooterView.h; sourceTree = "<group>"; };
 		45D9FA921A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSQMessagesTypingIndicatorFooterView.m; sourceTree = "<group>"; };
 		45D9FA931A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JSQMessagesTypingIndicatorFooterView.xib; sourceTree = "<group>"; };
+		45D9FBAA1A7AE1DD00D08577 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		45D9FBAB1A7AE1DD00D08577 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		45D9FBAC1A7AE1DD00D08577 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		45D9FBAD1A7AE1DD00D08577 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		45DF868C1A5AE1C100DB85AE /* WGError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGError.h; sourceTree = "<group>"; };
 		45DF868D1A5AE1C100DB85AE /* WGError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGError.m; sourceTree = "<group>"; };
 		45DF868F1A5AFBA000DB85AE /* WGEventMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEventMessage.h; sourceTree = "<group>"; };
@@ -1515,6 +1523,10 @@
 		E921D657192398B000361247 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				45D9FBAA1A7AE1DD00D08577 /* GCDAsyncSocket.h */,
+				45D9FBAB1A7AE1DD00D08577 /* GCDAsyncSocket.m */,
+				45D9FBAC1A7AE1DD00D08577 /* GCDAsyncUdpSocket.h */,
+				45D9FBAD1A7AE1DD00D08577 /* GCDAsyncUdpSocket.m */,
 				45D9FA271A781AFD00D08577 /* JSQMessagesViewController */,
 				45DF86981A5C5DEB00DB85AE /* AFNetworking */,
 				4563F55F1A3F875900F8C9C4 /* NSDictionary+STHelper */,
@@ -2535,6 +2547,7 @@
 				E9C63BEF1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */,
 				E9AEAE541A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */,
 				C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */,
+				45D9FBAF1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */,
 				E9C63BD51A03ED35006C5DD2 /* IQAssetsPickerShadowView.m in Sources */,
 				E9C63C091A03ED35006C5DD2 /* IQPartitionView.m in Sources */,
 				45D9FAD31A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
@@ -2545,6 +2558,7 @@
 				E9C63C031A03ED35006C5DD2 /* IQFeatureOverlay.m in Sources */,
 				E9C63BF31A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */,
 				45D9FAE11A781AFD00D08577 /* JSQMessagesMediaPlaceholderView.m in Sources */,
+				45D9FBB11A7AE1DD00D08577 /* GCDAsyncUdpSocket.m in Sources */,
 				E9C63C0D1A03ED35006C5DD2 /* IQ_PocketSVG.m in Sources */,
 				45D9FADD1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.m in Sources */,
 				FA2BC20B1A6826FE00055F7C /* TopSchool.m in Sources */,
@@ -2673,6 +2687,7 @@
 				E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */,
 				FAACB6731A2508E00089FD01 /* CampusNotificationViewController.m in Sources */,
 				E9C63BF61A03ED35006C5DD2 /* IQMediaCaptureController.m in Sources */,
+				45D9FBAE1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */,
 				E900C2BA1961EADE00A01F50 /* SDWebImageDownloader.m in Sources */,
 				45DF86971A5B1F8200DB85AE /* NSDate+WGDate.m in Sources */,
 				E9C63BDE1A03ED35006C5DD2 /* IQAudioPickerUtility.m in Sources */,
@@ -2803,6 +2818,7 @@
 				E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
 				E9DFE16F1A001142003C5779 /* BatteryViewController.m in Sources */,
 				45D9FAE01A781AFD00D08577 /* JSQMessagesMediaPlaceholderView.m in Sources */,
+				45D9FBB01A7AE1DD00D08577 /* GCDAsyncUdpSocket.m in Sources */,
 				E900C2BE1961EADE00A01F50 /* UIButton+WebCache.m in Sources */,
 				E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */,
 				45D9FA9E1A781AFD00D08577 /* UIDevice+JSQMessages.m in Sources */,

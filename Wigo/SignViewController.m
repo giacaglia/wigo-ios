@@ -150,6 +150,7 @@
                                               ) {
                               if (error) {
                                   _fetchingProfilePictures = NO;
+                                  [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
                               }
                               BOOL foundProfilePicturesAlbum = NO;
                               FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
@@ -184,6 +185,7 @@
                                               ) {
                               if (error) {
                                   _fetchingProfilePictures = NO;
+                                  [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
                               }
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
                               for (FBGraphObject *photoRepresentation in resultObject) {

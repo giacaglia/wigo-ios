@@ -1535,8 +1535,7 @@ BOOL secondTimeFetchingUserInfo;
             if (!secondTimeFetchingUserInfo) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
                 secondTimeFetchingUserInfo = YES;
-                if (error ||
-                    ![[WGProfile currentUser].emailValidated boolValue] ||
+                if (error || ![[WGProfile currentUser].emailValidated boolValue] ||
                     [[WGProfile currentUser].group.locked boolValue]) {
                     fetchingUserInfo = NO;
                     [self showFlashScreen];
