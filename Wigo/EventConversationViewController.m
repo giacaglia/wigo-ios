@@ -595,12 +595,8 @@
     [self hideOrShowFacesForPage:(int)page];
 }
 
-- (void)presentUser:(WGUser *)user withView:(UIView *)view {
-//    [_visualEffectView removeFromSuperview];
-//    view.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+- (void)presentUser:(WGUser *)user withView:(UIView *)view withStartFrame:(CGRect)startFrame {
     CGPoint initialCenter = view.center;
-//    view.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-//    view.clipsToBounds = YES;
     [UIView animateWithDuration:0.7f animations:^{
         view.layer.borderWidth = 0.0f;
         view.layer.cornerRadius = 0.0f;
@@ -614,21 +610,28 @@
         if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
         
         UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: profileViewController];
-        [self presentViewController:navController animated:NO completion:nil];
+        [self presentViewController:navController animated:NO completion:^{
+            view.center = initialCenter;
+            view.layer.borderWidth = 1.0f;
+            view.layer.borderColor = UIColor.clearColor.CGColor;
+            view.frame = startFrame;
+            view.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+            NSLog(@"width: %f", startFrame.size.width/2);
+            view.layer.cornerRadius = startFrame.size.width/2;
+        }];
     }];
 
 }
 
 - (void)createBlurViewUnderView:(UIView *)view {
-    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    
+    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     _visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     _visualEffectView.frame = self.view.frame;
     _visualEffectView.alpha = 0.0f;
-    self.facesCollectionView.clipsToBounds = NO;
     [self.view addSubview:_visualEffectView];
     [self.view  bringSubviewToFront:self.facesCollectionView];
-    
+
+    self.facesCollectionView.clipsToBounds = NO;
     [view.superview.superview bringSubviewToFront:view.superview];
     [self.facesCollectionView bringSubviewToFront:[self.facesCollectionView cellForItemAtIndexPath:self.currentActiveCell]];
 }
@@ -678,10 +681,10 @@
  
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell)];
     self.faceImageView.center = self.contentView.center;
-    self.faceImageView.layer.masksToBounds = YES;
-    self.faceImageView.backgroundColor = [UIColor blackColor];
-    self.faceImageView.layer.borderWidth = 1.0;
+    self.faceImageView.backgroundColor = UIColor.blackColor;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.faceImageView.layer.masksToBounds = YES;
+    self.faceImageView.layer.borderWidth = 1.0;
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
 //    
@@ -741,14 +744,15 @@
 
     if (panner.state == UIGestureRecognizerStateBegan) {
         self.startYPosition = center.y;
-        self.startSize = draggedView.frame.size;
+        self.startFrame = draggedView.frame;
         [self.eventConversationDelegate createBlurViewUnderView:draggedView];
     }
     if (panner.state == UIGestureRecognizerStateEnded) {
         if (center.y > 150) {
-            [self.eventConversationDelegate presentUser:self.user withView:draggedView];
+            [self.eventConversationDelegate presentUser:self.user
+                                               withView:draggedView
+                                         withStartFrame:self.startFrame];
         }
-
         [self.eventConversationDelegate dimOutToPercentage:0];
     }
     else {

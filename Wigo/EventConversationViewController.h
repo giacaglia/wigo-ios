@@ -49,7 +49,7 @@
 
 // For Transition
 @property (nonatomic, assign) CGFloat startYPosition;
-@property (nonatomic, assign) CGSize startSize;
+@property (nonatomic, assign) CGRect startFrame;
 @property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
 @end
 

@@ -41,7 +41,9 @@
 - (void)showCompletedMessage;
 - (void)dismissView;
 - (void)promptCamera;
-- (void)presentUser:(WGUser *)user withView:(UIView *)view;
+- (void)presentUser:(WGUser *)user
+           withView:(UIView *)view
+      withStartFrame:(CGRect)startFrame;
 - (void)dimOutToPercentage:(float)percentage;
 - (void)createBlurViewUnderView:(UIView *)view;
 @end
