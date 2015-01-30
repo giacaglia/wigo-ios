@@ -592,6 +592,7 @@ UIScrollView *suggestedScrollView;
                 return;
             }
             _suggestions = collection;
+#warning why do we do this?
             [_suggestions getNextPage:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (error) {
@@ -651,7 +652,7 @@ UIScrollView *suggestedScrollView;
                     if (_suggestions) {
                         [_everyone addObjectsFromCollection:collection notInCollection:_suggestions];
                     } else {
-                        [_everyone addObjectsFromCollection:collection];
+                        [_everyone addObjectsFromCollection:collection notInCollection:_everyone];
                     }
                     _everyone.hasNextPage = collection.hasNextPage;
                     _everyone.nextPage = collection.nextPage;

@@ -1082,7 +1082,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 for (WGNotification *notification in collection) {
                     [strongSelf.notifications addObject:notification];
                     if (![notification isFromLastDay]) {
-                        [strongSelf.unexpiredNotifications addObject:notification];
+                        if (![strongSelf.unexpiredNotifications containsObject:notification]) {
+                            [strongSelf.unexpiredNotifications addObject:notification];
+                        }
                     }
                 }
                 strongSelf.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];

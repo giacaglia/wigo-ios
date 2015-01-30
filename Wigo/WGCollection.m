@@ -130,6 +130,14 @@
     }
 }
 
+-(void) addObjectsFromCollectionToBeginning:(WGCollection *)collection notInCollection:(WGCollection *)notCollection {
+    for (WGObject *object in collection) {
+        if (![notCollection containsObject:object]) {
+            [self insertObject:object atIndex:0];
+        }
+    }
+}
+
 -(WGObject *) objectAtIndex:(NSInteger)index {
     return [self.objects objectAtIndex:index];
 }
@@ -217,7 +225,7 @@
         NSError *dataError;
         @try {
             WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:strongSelf.type];
-            [strongSelf addObjectsFromCollection:objects];
+            [strongSelf addObjectsFromCollection:objects notInCollection:strongSelf];
             strongSelf.hasNextPage = objects.hasNextPage;
             strongSelf.nextPage = objects.nextPage;
         }

@@ -387,7 +387,6 @@ BOOL fetching;
                 }
                 [collection reverse];
                 _messages = collection;
-                // [self addFirstPageMessages];
                 [WGSpinnerView hideSpinnerForView:loadingView];
                 [loadingView removeFromSuperview];
                 fetching = NO;
@@ -415,12 +414,11 @@ BOOL fetching;
                     return;
                 }
                 [collection reverse];
-                [_messages addObjectsFromCollectionToBeginning:collection];
+                [_messages addObjectsFromCollectionToBeginning:collection notInCollection:_messages];
                 _messages.hasNextPage = collection.hasNextPage;
                 _messages.nextPage = collection.nextPage;
                 
                 [_viewForEmptyConversation removeFromSuperview];
-                // [WiGoSpinnerView hideSpinnerForView:self.view];
                 fetching = NO;
                 
                 self.showLoadEarlierMessagesHeader = [[_messages hasNextPage] boolValue];
@@ -434,7 +432,6 @@ BOOL fetching;
             }];
         } else {
             fetching = NO;
-            // [WiGoSpinnerView hideSpinnerForView:self.view];
         }
     }
 }
