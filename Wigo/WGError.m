@@ -11,7 +11,14 @@
 #import "GCDAsyncUdpSocket.h"
 #import "WGProfile.h"
 
+#define kPapertrailURL @"logs2.papertrailapp.com"
+#define kPapertrailPort 21181
+
 #define kDeviceType @"iphone"
+#define kDeviceTypeKey @"device_type"
+#define kAppVersionKey @"app_version"
+#define kOSVersionKey @"os_version"
+#define kDebugKey @"debug"
 
 #define kDismiss 0
 #define kRetryButton 1
@@ -124,11 +131,11 @@ static WGError *sharedWGErrorInstance = nil;
     }
     NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
     if ([WGProfile currentUser].id) {
-        [userInfo setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"api_version"];
-        [userInfo setObject:kDeviceType forKey:@"device_type"];
-        [userInfo setObject:[[UIDevice currentDevice] systemVersion] forKey:@"ios_version"];
+        [userInfo setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:kAppVersionKey];
+        [userInfo setObject:kDeviceType forKey:kDeviceTypeKey];
+        [userInfo setObject:[[UIDevice currentDevice] systemVersion] forKey:kOSVersionKey];
 #if DEBUG
-        [userInfo setObject:@YES forKey:@"debug"];
+        [userInfo setObject:@YES forKey:kDebugKey];
 #endif
     }
     
@@ -141,7 +148,7 @@ static WGError *sharedWGErrorInstance = nil;
     
     NSString *formattedLogMessage = [NSString stringWithFormat:@"<22>1 %@ ios user-%@ - - - %@", [dateFormatter stringFromDate:[NSDate date]], [WGProfile currentUser].id, logMessage];
     
-    [udpSocket sendData:[formattedLogMessage dataUsingEncoding:NSUTF8StringEncoding] toHost:@"logs2.papertrailapp.com" port:21181 withTimeout:-1 tag:1];
+    [udpSocket sendData:[formattedLogMessage dataUsingEncoding:NSUTF8StringEncoding] toHost:kPapertrailURL port:kPapertrailPort withTimeout:-1 tag:1];
     
     NSLog(@"%@", formattedLogMessage);
 }
