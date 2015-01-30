@@ -1216,7 +1216,7 @@ replacementString:(NSString *)string {
     {
         _session = [[IQCaptureSession alloc] init];
         [_session setExposureMode:AVCaptureExposureModeContinuousAutoExposure];
-        [_session setFocusMode:AVCaptureFocusModeAutoFocus];
+        [_session setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
     }
     return _session;
 }
