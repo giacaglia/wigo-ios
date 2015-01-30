@@ -46,6 +46,7 @@
       withStartFrame:(CGRect)startFrame;
 - (void)dimOutToPercentage:(float)percentage;
 - (void)createBlurViewUnderView:(UIView *)view;
+- (void)presentHoleOnTopOfView:(UIView *)view;
 @end
 
 @protocol ConversationCellDelegate <NSObject>

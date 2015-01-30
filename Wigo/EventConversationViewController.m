@@ -28,6 +28,7 @@
 @property (nonatomic, strong) UIButton *buttonCancel;
 @property (nonatomic, strong) UIButton *buttonTrash;
 @property (nonatomic, strong) UIVisualEffectView *visualEffectView;
+@property (nonatomic, strong) UIView *holeView;
 @end
 
 @implementation EventConversationViewController
@@ -647,6 +648,20 @@
     }
 }
 
+- (void)presentHoleOnTopOfView:(UIView *)view {
+    if (!_holeView) {
+        _holeView = [UIView new];
+        ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        [profileViewController setStateWithUser: WGProfile.currentUser];
+        profileViewController.user = WGProfile.currentUser;
+        profileViewController.view.backgroundColor = [UIColor clearColor];
+        self.modalPresentationStyle = UIModalPresentationCurrentContext;
+        [self presentViewController:profileViewController animated:NO completion:nil];
+    }
+    _holeView.hidden = NO;
+
+}
+
 @end
 
 #pragma mark - Face Classes
@@ -688,12 +703,12 @@
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
 //    
-    self.faceImageView.userInteractionEnabled = YES;
-    self.faceAndMediaTypeView.clipsToBounds = NO;
-    self.clipsToBounds = NO;
-    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
-                                      initWithTarget:self action:@selector(panWasRecognized:)];
-    [self.faceImageView addGestureRecognizer:panner];
+//    self.faceImageView.userInteractionEnabled = YES;
+//    self.faceAndMediaTypeView.clipsToBounds = NO;
+//    self.clipsToBounds = NO;
+//    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
+//                                      initWithTarget:self action:@selector(panWasRecognized:)];
+//    [self.faceImageView addGestureRecognizer:panner];
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
@@ -737,7 +752,7 @@
 }
 
 - (void)panWasRecognized:(UIPanGestureRecognizer *)panner {
-    float finalYEndPoint = 200;
+    float finalYEndPoint = [[UIScreen mainScreen] bounds].size.width/2;
     UIView *draggedView = panner.view;
     CGPoint offset = [panner translationInView:draggedView.superview];
     CGPoint center = draggedView.center;
@@ -758,22 +773,48 @@
     else {
         if (_isActive) {
             if (center.y + offset.y > self.startYPosition) {
-                draggedView.center = CGPointMake(center.x, center.y + offset.y);
+                if (offset.y >= 0) {
+                    if (draggedView.center.y <= [[UIScreen mainScreen] bounds].size.width/2) {
+                        draggedView.center = CGPointMake(center.x, center.y + offset.y);
+                    }
+                    else {
+                        [self.eventConversationDelegate presentHoleOnTopOfView:draggedView];
+//                        if (!self.holeView) {
+//                            self.holeView = [UIView new];
+//                            
+//                        }
+//                        self.holeView.hidden = NO;
+                    }
+                }
+                else {
+                    draggedView.center = CGPointMake(center.x, center.y + offset.y);
+                }
             }
         }
     }
     if (_isActive) {
         if (draggedView.center.y > self.startYPosition && draggedView.center.y <= finalYEndPoint - 30) {
-            float percentage = (finalYEndPoint - self.startYPosition)/(finalYEndPoint - draggedView.center.y);
-            draggedView.transform = CGAffineTransformMakeScale(percentage, percentage);
+             float percentage = (finalYEndPoint - self.startYPosition)/(finalYEndPoint - draggedView.center.y);
             [self.eventConversationDelegate dimOutToPercentage:percentage];
+            if (draggedView.center.y <= [[UIScreen mainScreen] bounds].size.width/2) {
+                draggedView.transform = CGAffineTransformMakeScale(percentage, percentage);
+            }
         }
     }
    
-    
-    // Reset translation to zero so on the next `panWasRecognized:` message, the
-    // translation will just be the additional movement of the touch since now.
     [panner setTranslation:CGPointZero inView:draggedView.superview];
+}
+
+#warning NEED TO ADD FOR PEEKING
+- (UIView *)copyOfProfileView:(UIView*)draggedView {
+//    ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+//    [profileViewController setStateWithUser: self.user];
+//    profileViewController.user = self.user;
+//    profileViewController.view.backgroundColor = [UIColor clearColor];
+//    self.modalPresentationStyle = UIModalPresentationCurrentContext;
+//    [self presentModalViewController:profileViewController animated:YES];
+
+    return nil;
 }
 
 

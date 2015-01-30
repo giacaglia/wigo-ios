@@ -51,6 +51,7 @@
 @property (nonatomic, assign) CGFloat startYPosition;
 @property (nonatomic, assign) CGRect startFrame;
 @property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
+@property (nonatomic, strong) UIView *holeView;
 @end
 
 @interface FaceFlowLayout : UICollectionViewFlowLayout
