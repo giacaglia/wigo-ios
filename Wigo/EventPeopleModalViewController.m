@@ -54,7 +54,7 @@ int initializedLocationCount;
     
     [self loadLargeImageForIndex:self.startIndex];
     
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(updateScrollPosition) userInfo:nil repeats:YES];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.016 target:self selector:@selector(updateScrollPosition) userInfo:nil repeats:YES];
 }
 
 -(void) updateScrollPosition {
