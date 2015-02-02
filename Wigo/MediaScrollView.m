@@ -268,14 +268,6 @@
     if ([[info allKeys] containsObject:UIImagePickerControllerOriginalImage]) {
         image = (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
         
-        
-        
-        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-            image = [UIImage imageWithCGImage:[image CGImage]
-                                        scale:image.scale
-                                  orientation: UIImageOrientationLeftMirrored];
-        }
-        
         CGFloat imageWidth = image.size.height * 1.0; // because the image is rotated
         CGFloat imageHeight = image.size.width * 1.0; // because the image is rotated
         CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
@@ -913,8 +905,6 @@
     CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yAdjust); //This slots the preview exactly in the middle of the screen
     self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
     
-//    CGFloat scale = [UIScreen mainScreen].bounds.size.height/ (4/3 * [UIScreen mainScreen].bounds.size.width);
-//    self.controller.cameraViewTransform = CGAffineTransformScale(self.controller.cameraViewTransform, scale, scale);
     self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, (NSString *)kUTTypeImage, nil];
     [self.contentView addSubview:self.controller.view];
 
