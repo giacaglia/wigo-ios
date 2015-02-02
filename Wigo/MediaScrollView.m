@@ -270,6 +270,7 @@
         
         CGFloat imageWidth = image.size.height * 1.0; // because the image is rotated
         CGFloat imageHeight = image.size.width * 1.0; // because the image is rotated
+
         CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
         CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
         
@@ -941,6 +942,10 @@
     self.tapRecognizer.delegate = self;
     [self.previewImageView addGestureRecognizer:self.tapRecognizer];
     
+    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizer:)];
+    panRecognizer.delegate = self;
+    [self addGestureRecognizer:panRecognizer];
+    
     self.cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(10, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.cancelButton setTitle:@"< Cancel" forState:UIControlStateNormal];
@@ -1047,6 +1052,10 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.cancelButton.hidden = YES;
     self.cancelButton.enabled = NO;
     self.info = nil;
+    self.textLabel.text = @"";
+    self.textField.text = @"";
+    self.textField.hidden = YES;
+    self.textLabel.hidden = YES;
 }
 
 
@@ -1056,13 +1065,20 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
 
 }
 
+- (void)panGestureRecognizer:(UIPanGestureRecognizer *)panRecognizer {
+    CGPoint translation = [panRecognizer translationInView:self];
+    NSLog(@"translation y: %f", translation.y);
+}
+
+
 - (void)tapGestureRecognizer:(UIGestureRecognizer*)recognizer {
     if (!self.previewImageView.isHidden) {
         CGPoint center = [recognizer locationInView:self];
         float heightScreen = [UIScreen mainScreen].bounds.size.height;
         float widthScreen = [UIScreen mainScreen].bounds.size.width;
-        self.percentPoint = CGPointMake(center.y/heightScreen, 1 - (center.x/widthScreen));
+        self.percentPoint = CGPointMake(1 - (center.x/widthScreen), center.y/heightScreen);
         self.percentPoint = CGPointMake(self.percentPoint.x, MIN(MAX(self.percentPoint.y, 125/[UIScreen mainScreen].bounds.size.height), 1 - (158/[UIScreen mainScreen].bounds.size.height)));
+        NSLog(@"center.x %f, center.y: %f,  percent point %f", center.x, center.y,  self.percentPoint.y);
         self.textLabel.frame = CGRectMake(0, center.y, [UIScreen mainScreen].bounds.size.width, 40);
         
         if (![self.textField isFirstResponder]) {
