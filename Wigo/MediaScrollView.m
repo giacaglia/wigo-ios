@@ -269,17 +269,25 @@
         image = (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
         
         
-        CGFloat imageWidth = image.size.height; // because the image is rotated
-        CGFloat imageHeight = image.size.width; // because the image is rotated
+        
+        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+            image = [UIImage imageWithCGImage:[image CGImage]
+                                        scale:image.scale
+                                  orientation: UIImageOrientationLeftMirrored];
+        }
+        
+        CGFloat imageWidth = image.size.height * 1.0; // because the image is rotated
+        CGFloat imageHeight = image.size.width * 1.0; // because the image is rotated
         CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
         CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
         
-        CGFloat ratio = floor(imageWidth/screenHeight); // approximately 4.0
+        CGFloat ratio = imageWidth/screenHeight; // approximately 4.0
         CGFloat cropWidth = screenHeight * ratio;
         CGFloat cropHeight = screenWidth * ratio;
         
         CGFloat translation = (imageHeight - cropHeight) / 2.0;
         
+
         UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
         UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight, screenWidth) interpolationQuality:kCGInterpolationHigh];
         NSData *fileData = UIImageJPEGRepresentation(scaledImage, 0.8);
