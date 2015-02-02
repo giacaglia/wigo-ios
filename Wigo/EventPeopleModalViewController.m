@@ -136,7 +136,7 @@ int initializedLocationCount;
     if (![[self.imageDidLoad objectAtIndex:index] boolValue]) {
         UIImageView *imageView = (UIImageView *)[self.images objectAtIndex:index];
         WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:index];
-        [imageView setCoverImageForUser:attendee.user completed:nil];
+        [imageView setImageWithURL:[attendee.user coverImageURL] placeholderImage:imageView.image imageArea:[attendee.user coverImageArea] completed:nil];
         [self.imageDidLoad setObject:@YES atIndexedSubscript:index];
     }
 }
