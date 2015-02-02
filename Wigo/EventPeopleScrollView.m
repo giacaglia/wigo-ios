@@ -8,7 +8,8 @@
 
 #import "EventPeopleScrollView.h"
 #import "Globals.h"
-
+#import "UIView+ViewToImage.h"
+#import "UIImage+ImageEffects.h"
 
 @implementation EventPeopleScrollView
 
@@ -20,14 +21,53 @@
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
         self.event = event;
+        
+        UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressGestureRecognizer:)];
+        [self addGestureRecognizer:longPressGesture];
+        longPressGesture.delegate = self;
     }
     return self;
+}
+
+-(void)longPressGestureRecognizer:(UILongPressGestureRecognizer *)gestureRecognizer {
+    CGPoint p = [gestureRecognizer locationInView:self];
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        int index = [self indexAtPoint:p];
+        if (index >= 0 && index < [self.event.attendees count]) {
+            
+            UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
+            imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
+                                                                     tintColor:RGBAlpha(0, 0, 0, 0.75)
+                                                         saturationDeltaFactor:1.3
+                                                                     maskImage:nil];
+            
+            self.eventPeopleModalViewController = [[EventPeopleModalViewController alloc] initWithEvent:self.event startIndex:index andBackgroundImage:imageOfUnderlyingView];
+            [self.eventPeopleModalViewController.view addGestureRecognizer:gestureRecognizer];
+            self.eventPeopleModalViewController.placesDelegate = self.placesDelegate;
+            
+            [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];
+        }
+    } else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        [self.eventPeopleModalViewController untap:gestureRecognizer];
+        [self.eventPeopleModalViewController.view removeGestureRecognizer:gestureRecognizer];
+        [self addGestureRecognizer:gestureRecognizer];
+    }
+    if (self.eventPeopleModalViewController) {
+        [self.eventPeopleModalViewController touchedLocation:gestureRecognizer];
+    }
+}
+
+-(int) indexAtPoint:(CGPoint) point {
+    return floor(point.x / (self.sizeOfEachImage + 10));
+}
+
+-(CGPoint) indexToPoint:(int) index {
+    return CGPointMake(index * (self.sizeOfEachImage + 10) + self.sizeOfEachImage / 2, 0);
 }
 
 + (CGFloat) containerHeight {
     return (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7 + 25;
 }
-
 
 -(void) updateUI {
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];

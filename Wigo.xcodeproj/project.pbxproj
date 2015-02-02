@@ -108,6 +108,12 @@
 		45D9FBAF1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBAB1A7AE1DD00D08577 /* GCDAsyncSocket.m */; };
 		45D9FBB01A7AE1DD00D08577 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBAD1A7AE1DD00D08577 /* GCDAsyncUdpSocket.m */; };
 		45D9FBB11A7AE1DD00D08577 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBAD1A7AE1DD00D08577 /* GCDAsyncUdpSocket.m */; };
+		45D9FBB41A7ED46600D08577 /* EventPeopleModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBB31A7ED46600D08577 /* EventPeopleModalViewController.m */; };
+		45D9FBB51A7ED46600D08577 /* EventPeopleModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBB31A7ED46600D08577 /* EventPeopleModalViewController.m */; };
+		45D9FBB81A8003EF00D08577 /* UIView+ViewToImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBB71A8003EF00D08577 /* UIView+ViewToImage.m */; };
+		45D9FBB91A8003EF00D08577 /* UIView+ViewToImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBB71A8003EF00D08577 /* UIView+ViewToImage.m */; };
+		45D9FBBC1A80043000D08577 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBBB1A80043000D08577 /* UIImage+ImageEffects.m */; settings = {COMPILER_FLAGS = "-w"; }; };
+		45D9FBBD1A80043000D08577 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = 45D9FBBB1A80043000D08577 /* UIImage+ImageEffects.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		45DF868E1A5AE1C100DB85AE /* WGError.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF868D1A5AE1C100DB85AE /* WGError.m */; };
 		45DF86911A5AFBA000DB85AE /* WGEventMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86901A5AFBA000DB85AE /* WGEventMessage.m */; };
 		45DF86941A5B0B5C00DB85AE /* WGAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86931A5B0B5C00DB85AE /* WGAnalytics.m */; };
@@ -644,6 +650,12 @@
 		45D9FBAB1A7AE1DD00D08577 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
 		45D9FBAC1A7AE1DD00D08577 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
 		45D9FBAD1A7AE1DD00D08577 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		45D9FBB21A7ED46600D08577 /* EventPeopleModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPeopleModalViewController.h; sourceTree = "<group>"; };
+		45D9FBB31A7ED46600D08577 /* EventPeopleModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventPeopleModalViewController.m; sourceTree = "<group>"; };
+		45D9FBB61A8003EF00D08577 /* UIView+ViewToImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+ViewToImage.h"; sourceTree = "<group>"; };
+		45D9FBB71A8003EF00D08577 /* UIView+ViewToImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ViewToImage.m"; sourceTree = "<group>"; };
+		45D9FBBA1A80043000D08577 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		45D9FBBB1A80043000D08577 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		45DF868C1A5AE1C100DB85AE /* WGError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGError.h; sourceTree = "<group>"; };
 		45DF868D1A5AE1C100DB85AE /* WGError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGError.m; sourceTree = "<group>"; };
 		45DF868F1A5AFBA000DB85AE /* WGEventMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEventMessage.h; sourceTree = "<group>"; };
@@ -1355,6 +1367,10 @@
 				E9706E1A19C22B1400A21DE0 /* WigoCustomCell */,
 				E994111019AA8D9200D76379 /* NSString+URLEncoding.h */,
 				E994111119AA8D9200D76379 /* NSString+URLEncoding.m */,
+				45D9FBBA1A80043000D08577 /* UIImage+ImageEffects.h */,
+				45D9FBBB1A80043000D08577 /* UIImage+ImageEffects.m */,
+				45D9FBB61A8003EF00D08577 /* UIView+ViewToImage.h */,
+				45D9FBB71A8003EF00D08577 /* UIView+ViewToImage.m */,
 				E9ACDC6719AB7559004B0349 /* NSObject-CancelableScheduledBlock.h */,
 				E9ACDC6819AB7559004B0349 /* NSObject-CancelableScheduledBlock.m */,
 				E998C26319CB80240012BF51 /* UIImageView+ImageArea.h */,
@@ -2109,6 +2125,8 @@
 			children = (
 				E9A0F9AF1A1E5CBE001A66DF /* EventMessagesConstants.h */,
 				E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */,
+				45D9FBB21A7ED46600D08577 /* EventPeopleModalViewController.h */,
+				45D9FBB31A7ED46600D08577 /* EventPeopleModalViewController.m */,
 				E9AEAE511A0190DB00BD77AF /* EventPeopleScrollView.h */,
 				E9AEAE521A0190DB00BD77AF /* EventPeopleScrollView.m */,
 				FA2BE9BB19FAF06500CC0E5E /* EventStoryViewController.h */,
@@ -2541,6 +2559,7 @@
 				E9C63BD71A03ED35006C5DD2 /* IQCheckmarkView.m in Sources */,
 				45D9FA9B1A781AFD00D08577 /* NSString+JSQMessages.m in Sources */,
 				E96F07C019BA654600E858D7 /* GKImageCropOverlayView.m in Sources */,
+				45D9FBB91A8003EF00D08577 /* UIView+ViewToImage.m in Sources */,
 				C12A110E19787BE700D53B1C /* UIScrollView+GifPullToRefresh.m in Sources */,
 				E9EA951919E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */,
 				45D9FAC51A781AFD00D08577 /* JSQPhotoMediaItem.m in Sources */,
@@ -2548,6 +2567,7 @@
 				E9E6A569199917BE003B590C /* OnboardFollowViewController.m in Sources */,
 				E9CD53851993C29800206B75 /* FLAnimatedImage.m in Sources */,
 				45D9FAB71A781AFD00D08577 /* JSQMessagesCollectionViewFlowLayoutInvalidationContext.m in Sources */,
+				45D9FBBD1A80043000D08577 /* UIImage+ImageEffects.m in Sources */,
 				E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */,
 				45D9FAE71A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.m in Sources */,
 				45D9FAAF1A781AFD00D08577 /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,
@@ -2646,6 +2666,7 @@
 				E9C63BF51A03ED35006C5DD2 /* IQSongsPlaylistViewController.m in Sources */,
 				E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
 				E9D039C91A09886A00DEF094 /* MediaScrollView.m in Sources */,
+				45D9FBB51A7ED46600D08577 /* EventPeopleModalViewController.m in Sources */,
 				E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				C12A113319787BE700D53B1C /* RWBlurPopover.m in Sources */,
 				E9CB091619FB062D00B548A6 /* FacebookHelper.m in Sources */,
@@ -2712,6 +2733,7 @@
 				454409581A537F1C00BB3036 /* WGMessage.m in Sources */,
 				E921D6221923967D00361247 /* main.m in Sources */,
 				E9C63C121A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m in Sources */,
+				45D9FBBC1A80043000D08577 /* UIImage+ImageEffects.m in Sources */,
 				E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */,
 				E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */,
 				FAACB6731A2508E00089FD01 /* CampusNotificationViewController.m in Sources */,
@@ -2758,6 +2780,7 @@
 				E998C28019D1BF7D0012BF51 /* InviteViewController.m in Sources */,
 				E96F07C519BA654600E858D7 /* GKImagePicker.m in Sources */,
 				E9C63BE41A03ED35006C5DD2 /* IQSongsCell.m in Sources */,
+				45D9FBB81A8003EF00D08577 /* UIView+ViewToImage.m in Sources */,
 				FABD337C1A3B9904008FF56D /* JPBParallaxBlurViewController.m in Sources */,
 				E9BF59E81A3B40EB00AF8AFE /* UILabelBorder.m in Sources */,
 				E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */,
@@ -2807,6 +2830,7 @@
 				E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */,
 				FA5526111A1FCB3700101AE7 /* GroupStats.m in Sources */,
 				E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
+				45D9FBB41A7ED46600D08577 /* EventPeopleModalViewController.m in Sources */,
 				45D9FAA61A781AFD00D08577 /* JSQMessagesViewController.m in Sources */,
 				E9C63C041A03ED35006C5DD2 /* IQMediaView.m in Sources */,
 				FA55260C1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,

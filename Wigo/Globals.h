@@ -40,11 +40,11 @@
 static NSString * const collectionViewCellIdentifier = @"CollectionViewCellIdentifier";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
-#ifdef DEBUG
+/* #ifdef DEBUG
 #define NSLog(x, ...) NSLog(@"%s %d: " x, __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #else
 #define NSLog(x, ...) CLSLog(@"%s %d: " x, __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#endif
+#endif */
 
 #define isiPhone5  ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
 #define MAX_LENGTH_BIO 110
