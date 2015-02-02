@@ -263,8 +263,25 @@
     [self.eventConversationDelegate addLoadingBanner];
     NSString *type = @"";
     
-    UIImage *image;
+    if ([[info allKeys] containsObject:UIMediaPickerText]) {
+        NSString *text = [[info objectForKey:UIMediaPickerText] objectForKey:UIMediaPickerText];
+        NSNumber *yPercentage = [[info objectForKey:UIMediaPickerText] objectForKey:UIMediaPickerPercentage];
+        NSDictionary *properties = @{@"yPercentage": yPercentage};
+        self.options =  @{
+                          @"event": self.event.id,
+                          @"message": text,
+                          @"properties": properties,
+                          @"media_mime_type": type
+                          };
+    }
+    //    else {
+    //        self.options =  @{
+    //                          @"event": self.event.id,
+    //                          @"media_mime_type": type
+    //                          };
+    //    }
     
+    UIImage *image;
     if ([[info allKeys] containsObject:UIImagePickerControllerOriginalImage]) {
         image = (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
         
@@ -279,18 +296,17 @@
         CGFloat cropHeight = screenWidth * ratio;
         
         CGFloat translation = (imageHeight - cropHeight) / 2.0;
-        
-
+    
         UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
         UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight, screenWidth) interpolationQuality:kCGInterpolationHigh];
         NSData *fileData = UIImageJPEGRepresentation(scaledImage, 0.8);
 
         type = kImageEventType;
 
-            self.options =  @{
-                         @"event": self.event.id,
-                         @"media_mime_type": type
-                         };
+        self.options =  @{
+                     @"event": self.event.id,
+                     @"media_mime_type": type
+                     };
         [self uploadContentWithFile:fileData
                         andFileName:@"image0.jpg"
                          andOptions:self.options];
@@ -315,33 +331,17 @@
 //        NSError *error;
 //        self.fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
 //        
-//        if ([[info allKeys] containsObject:IQMediaTypeText]) {
-//            NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
-//            NSNumber *yPercentage = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPercentage];
-//            NSDictionary *properties = @{@"yPercentage": yPercentage};
-//            self.options =  @{
-//                              @"event": self.event.id,
-//                              @"message": text,
-//                              @"properties": properties,
-//                              @"media_mime_type": type
-//                              };
-//        } else {
-//            self.options =  @{
-//                              @"event": self.event.id,
-//                              @"media_mime_type": type
-//                              };
-//        }
-//    }
+
     NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
 
-//    if ([[info allKeys] containsObject:IQMediaTypeImage]) {
+    if ([[info allKeys] containsObject:UIImagePickerControllerOriginalImage]) {
         [mutableDict addEntriesFromDictionary:@{
                                                 @"user": [WGProfile currentUser],
                                                 @"created": [NSDate nowStringUTC],
                                                 @"media": image
                                                 }];
         NSLog(@"media info: %@", mutableDict);
-//    }
+    }
 //    else if ( [[info allKeys] containsObject:IQMediaTypeVideo]) {
 //        [mutableDict addEntriesFromDictionary:@{
 //                                                @"user": WGProfile.currentUser,
@@ -942,9 +942,10 @@
     self.tapRecognizer.delegate = self;
     [self.previewImageView addGestureRecognizer:self.tapRecognizer];
     
-    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizer:)];
-    panRecognizer.delegate = self;
-    [self addGestureRecognizer:panRecognizer];
+    self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizer:)];
+    self.panRecognizer.delegate = self;
+    self.panRecognizer.enabled = NO;
+    [self addGestureRecognizer:self.panRecognizer];
     
     self.cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(10, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -1032,9 +1033,16 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.cancelButton.hidden = NO;
     self.cancelButton.enabled = YES;
     self.info = info;
+    self.panRecognizer.enabled = NO;
 }
 
 - (void)cancelPressed {
+    [self cleanupView];
+    self.info = nil;
+}
+
+
+- (void)cleanupView {
     self.dismissButton.hidden = NO;
     self.dismissButton.enabled = YES;
     self.pictureButton.hidden = NO;
@@ -1051,23 +1059,36 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.postButton.enabled = NO;
     self.cancelButton.hidden = YES;
     self.cancelButton.enabled = NO;
-    self.info = nil;
     self.textLabel.text = @"";
     self.textField.text = @"";
     self.textField.hidden = YES;
     self.textLabel.hidden = YES;
+    self.panRecognizer.enabled = NO;
 }
 
-
 - (void)postPressed {
+    NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:self.info];
+    [newInfo addEntriesFromDictionary:@{
+                                        UIMediaPickerText: @{
+                                                UIMediaPickerText: self.textField.text,
+                                                UIMediaPickerPercentage: [NSNumber numberWithFloat:self.percentPoint.y]
+                                                }
+                                        }];
+    [self cleanupView];
     [self.mediaScrollDelegate mediaPickerController:self.controller
                                     didFinishMediaWithInfo:self.info];
 
 }
 
 - (void)panGestureRecognizer:(UIPanGestureRecognizer *)panRecognizer {
-    CGPoint translation = [panRecognizer translationInView:self];
-    NSLog(@"translation y: %f", translation.y);
+    CGPoint center = [panRecognizer locationInView:self.previewImageView];
+    if (!self.textField.isFirstResponder) {
+        center.y = MIN(MAX(center.y, 125), [UIScreen mainScreen].bounds.size.height - 158);
+        self.textField.hidden = YES;
+        self.textLabel.hidden = NO;
+        self.textLabel.text = self.textField.text;
+        self.textLabel.frame =  CGRectMake(0, center.y, [UIScreen mainScreen].bounds.size.width, 40);
+    }
 }
 
 
@@ -1084,6 +1105,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
         if (![self.textField isFirstResponder]) {
             self.textLabel.hidden = YES;
             [self.textField becomeFirstResponder];
+            self.panRecognizer.enabled = YES;
         }
         else {
             [self.textField endEditing:YES];

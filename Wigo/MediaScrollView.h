@@ -12,7 +12,8 @@
 #import "Delegate.h"
 #import "IQMediaCaptureController.h"
 
-
+#define UIMediaPickerText @"UIMediaPickerText"
+#define UIMediaPickerPercentage @"UIMediaPickerPercentage"
 
 @protocol MediaScrollViewDelegate
 - (void)focusOnContent;
@@ -107,11 +108,12 @@
 
 @property (nonatomic, strong) UIImageView *previewImageView;
 @property (nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
+@property (nonatomic, strong) UIPanGestureRecognizer *panRecognizer;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *postButton;
 @property (nonatomic, strong) NSDictionary *info;
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) UILabel *textLabel;
 @property (nonatomic, assign) CGPoint percentPoint;
-
+@property (nonatomic, assign) CGPoint startPoint;
 @end
