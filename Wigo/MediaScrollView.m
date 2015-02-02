@@ -76,7 +76,6 @@
             myCell.avoidAction.hidden = YES;
             myCell.cameraAccessImageView.hidden = NO;
             myCell.isPeeking = self.isPeeking;
-
             return myCell;
         } else {
             CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
@@ -935,7 +934,6 @@
     [self.dismissButton addTarget:self action:@selector(dismissPressed) forControlEvents:UIControlEventTouchUpInside];
     [overlayView addSubview:self.dismissButton];
     
-    
     self.previewImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
     self.previewImageView.hidden = YES;
     self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -1043,7 +1041,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.switchButton.hidden = NO;
     self.switchButton.enabled = YES;
     
-    self.previewImageView.hidden = NO;
+    self.previewImageView.hidden = YES;
+    self.previewImageView.userInteractionEnabled = NO;
     self.previewImageView.image = nil;
     self.postButton.hidden = YES;
     self.postButton.enabled = NO;
@@ -1060,22 +1059,24 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
 }
 
 - (void)tapGestureRecognizer:(UIGestureRecognizer*)recognizer {
-    CGPoint center = [recognizer locationInView:self];
-    float heightScreen = [UIScreen mainScreen].bounds.size.height;
-    float widthScreen = [UIScreen mainScreen].bounds.size.width;
-    self.yPercentPoint = CGPointMake(center.y/heightScreen, 1 - (center.x/widthScreen));
-    self.textLabel.frame = CGRectMake(0, center.y, [UIScreen mainScreen].bounds.size.width, 40);
-
-
-    if (![self.textField isFirstResponder]) {
-        self.textLabel.hidden = YES;
-        [self.textField becomeFirstResponder];
-    }
-    else {
-        [self.textField endEditing:YES];
-        self.textField.hidden = YES;
-        self.textLabel.hidden = NO;
-        self.textLabel.text = self.textField.text;
+    if (!self.previewImageView.isHidden) {
+        CGPoint center = [recognizer locationInView:self];
+        float heightScreen = [UIScreen mainScreen].bounds.size.height;
+        float widthScreen = [UIScreen mainScreen].bounds.size.width;
+        self.percentPoint = CGPointMake(center.y/heightScreen, 1 - (center.x/widthScreen));
+        self.percentPoint = CGPointMake(self.percentPoint.x, MIN(MAX(self.percentPoint.y, 125/[UIScreen mainScreen].bounds.size.height), 1 - (158/[UIScreen mainScreen].bounds.size.height)));
+        self.textLabel.frame = CGRectMake(0, center.y, [UIScreen mainScreen].bounds.size.width, 40);
+        
+        if (![self.textField isFirstResponder]) {
+            self.textLabel.hidden = YES;
+            [self.textField becomeFirstResponder];
+        }
+        else {
+            [self.textField endEditing:YES];
+            self.textField.hidden = YES;
+            self.textLabel.hidden = NO;
+            self.textLabel.text = self.textField.text;
+        }
     }
 }
 
@@ -1084,11 +1085,37 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     NSDictionary* userInfo = [notification userInfo];
     CGRect kbFrame = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     self.textField.hidden = NO;
-    float yPosition = self.yPercentPoint.y * [UIScreen mainScreen].bounds.size.height;
+    float yPosition = self.percentPoint.y * [UIScreen mainScreen].bounds.size.height;
     self.textField.frame = CGRectMake(0, yPosition, [UIScreen mainScreen].bounds.size.width, 40);
     [UIView animateWithDuration:0.3 animations:^{
-        self.textField.frame = CGRectMake(0, kbFrame.origin.y - 40,  [UIScreen mainScreen].bounds.size.width, 40);
+        self.textField.frame = CGRectMake(0, kbFrame.origin.y - 40, [UIScreen mainScreen].bounds.size.width, 40);
     }];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self.textField endEditing:YES];
+    [UIView animateWithDuration:0.3 animations:^{
+        self.textField.hidden = YES;
+        self.textLabel.hidden = NO;
+        self.textLabel.text = self.textField.text;
+        float yPosition = self.percentPoint.y * [UIScreen mainScreen].bounds.size.height;
+        self.textLabel.frame =  CGRectMake(0, yPosition, [UIScreen mainScreen].bounds.size.width, 40);
+    }];
+    if (self.textField.text.length == 0) {
+        self.textField.hidden = YES;
+        self.textLabel.hidden = YES;
+    }
+    return YES;
+}
+
+- (BOOL)textField:(UITextField *)textField
+shouldChangeCharactersInRange:(NSRange)range
+replacementString:(NSString *)string {
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    CGSize size = [newString sizeWithAttributes:
+                   @{NSFontAttributeName:textField.font}];
+    if (size.width < [UIScreen mainScreen].bounds.size.width - 10) return YES;
+    return NO;
 }
 
 

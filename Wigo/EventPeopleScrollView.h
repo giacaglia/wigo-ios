@@ -9,14 +9,17 @@
 #import <UIKit/UIKit.h>
 #import "WGEvent.h"
 #import "Delegate.h"
+#import "EventPeopleModalViewController.h"
 
-@interface EventPeopleScrollView : UIScrollView <UIScrollViewDelegate>
+@interface EventPeopleScrollView : UIScrollView <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
 -(id) initWithEvent:(WGEvent*)event;
 -(void) updateUI;
 +(CGFloat) containerHeight;
 -(void) scrollToSavedPosition;
 -(void) saveScrollPosition;
+
+@property EventPeopleModalViewController *eventPeopleModalViewController;
 
 @property (nonatomic, assign) id <UserSelectDelegate> userSelectDelegate;
 @property (nonatomic, assign) id <PlacesDelegate> placesDelegate;

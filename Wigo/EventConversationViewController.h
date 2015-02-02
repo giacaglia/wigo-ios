@@ -12,7 +12,6 @@
 #import "MediaScrollView.h"
 #import "Delegate.h"
 
-
 @interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, EventConversationDelegate>
 - (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated;
 @property (nonatomic, strong) WGEvent *event;

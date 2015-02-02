@@ -1262,7 +1262,12 @@ BOOL secondTimeFetchingUserInfo;
     [fancyProfileViewController setStateWithUser: user];
     if ([self isPeeking]) fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+}
 
+- (void)showModalAttendees:(UIViewController *)modal {
+    shouldReloadEvents = NO;
+    [self.navigationController presentViewController:modal animated:YES completion:nil];
+    // [self.navigationController pushViewController: modal animated: YES];
 }
 
 - (void)showConversationForEvent:(WGEvent *)event {

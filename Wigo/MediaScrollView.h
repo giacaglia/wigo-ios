@@ -112,6 +112,6 @@
 @property (nonatomic, strong) NSDictionary *info;
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) UILabel *textLabel;
-@property (nonatomic, assign) CGPoint yPercentPoint;
+@property (nonatomic, assign) CGPoint percentPoint;
 
 @end

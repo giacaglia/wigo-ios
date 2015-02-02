@@ -23,6 +23,7 @@
 - (void)showConversationForEvent:(WGEvent *)event;
 - (void)showStoryForEvent:(WGEvent*)event;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
+- (void)showModalAttendees:(UIViewController *)modal;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 
 - (void)updateEvent:(WGEvent *)newEvent;
