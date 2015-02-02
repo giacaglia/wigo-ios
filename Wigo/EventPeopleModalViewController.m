@@ -11,7 +11,7 @@
 
 #define kNameBarHeight 32
 #define kBorderWidth 10
-#define kMaxVelocity 25
+#define kMaxVelocity 20
 
 @interface EventPeopleModalViewController ()
 
@@ -81,7 +81,7 @@ int initializedLocationCount;
         [self fetchEventAttendeesAsynchronous];
     }
     
-    NSLog(@"Velocity: %f", self.velocity);
+    // NSLog(@"Velocity: %f", self.velocity);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -101,11 +101,11 @@ int initializedLocationCount;
     
     EventPeopleScrollView *source = (EventPeopleScrollView *)sender;
     
-    [self.placesDelegate.eventOffsetDictionary setObject:[NSNumber numberWithInt:MIN(source.contentSize.width - source.bounds.size.width, MAX(0, [source indexToPoint:touchIndex - 2].x))] forKey:[self.event.id stringValue]];
+    [self.placesDelegate.eventOffsetDictionary setObject:[NSNumber numberWithInt:MIN(MAX(0, source.contentSize.width - source.bounds.size.width), MAX(0, [source indexToPoint:touchIndex - 2].x))] forKey:[self.event.id stringValue]];
     
     [source scrollToSavedPosition];
     
-    NSLog(@"Scroll Position: %f", [source indexToPoint:touchIndex].x);
+    NSLog(@"Scroll Position: %f", source.contentOffset.x);
     
     [self dismissViewControllerAnimated:YES completion:^{
         if (attendee) {
