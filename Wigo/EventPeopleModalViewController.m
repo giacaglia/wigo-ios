@@ -7,9 +7,11 @@
 //
 
 #import "EventPeopleModalViewController.h"
+#import "EventPeopleScrollView.h"
 
 #define kNameBarHeight 32
 #define kBorderWidth 10
+#define kMaxVelocity 25
 
 @interface EventPeopleModalViewController ()
 
@@ -78,14 +80,17 @@ int initializedLocationCount;
     if (currentIndex >= [self.images count] - 2) {
         [self fetchEventAttendeesAsynchronous];
     }
+    
+    NSLog(@"Velocity: %f", self.velocity);
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
 
--(void) untap:(UILongPressGestureRecognizer *)gestureRecognizer {
+-(void) untap:(UILongPressGestureRecognizer *)gestureRecognizer withSender:(id)sender {
     CGPoint touchPoint = [gestureRecognizer locationInView:self.attendeesPhotosScrollView];
+    int touchIndex = [self indexAtPoint:touchPoint];
     WGEventAttendee *attendee;
     for (int i = 0; i < [self.images count]; i++) {
         UIImageView *imageView = (UIImageView *)[self.images objectAtIndex:i];
@@ -93,9 +98,19 @@ int initializedLocationCount;
             attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:imageView.tag];
         }
     }
+    
+    EventPeopleScrollView *source = (EventPeopleScrollView *)sender;
+    
+    [self.placesDelegate.eventOffsetDictionary setObject:[NSNumber numberWithInt:MIN(source.contentSize.width - source.bounds.size.width, MAX(0, [source indexToPoint:touchIndex - 2].x))] forKey:[self.event.id stringValue]];
+    
+    [source scrollToSavedPosition];
+    
+    NSLog(@"Scroll Position: %f", [source indexToPoint:touchIndex].x);
+    
     [self dismissViewControllerAnimated:YES completion:^{
         if (attendee) {
-            [self.placesDelegate showUser:attendee.user];
+            // Present User Disabled!
+            // [self.placesDelegate showUser:attendee.user];
         }
     }];
     [self.timer invalidate];
@@ -114,6 +129,12 @@ int initializedLocationCount;
     // NSLog(@"Current: %f", self.lastPosition.x);
     
     self.velocity += (self.lastPosition.x - self.initialPosition.x) / 7.5;
+    
+    if (self.velocity > kMaxVelocity) {
+        self.velocity = kMaxVelocity;
+    } else if (self.velocity < -kMaxVelocity) {
+        self.velocity = -kMaxVelocity;
+    }
 }
 
 -(int) indexAtPoint:(CGPoint) point {

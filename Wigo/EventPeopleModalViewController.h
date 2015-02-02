@@ -32,7 +32,7 @@
 
 - (id)initWithEvent:(WGEvent *)event startIndex:(int)index andBackgroundImage:(UIImage *)image;
 
--(void) untap:(UILongPressGestureRecognizer *)gestureRecognizer;
+-(void) untap:(UILongPressGestureRecognizer *)gestureRecognizer withSender:(id)sender;
 -(void) updateUI;
 -(void) touchedLocation:(UIGestureRecognizer *)gestureRecognizer;
 

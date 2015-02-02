@@ -18,6 +18,7 @@
 +(CGFloat) containerHeight;
 -(void) scrollToSavedPosition;
 -(void) saveScrollPosition;
+-(CGPoint) indexToPoint:(int) index;
 
 @property EventPeopleModalViewController *eventPeopleModalViewController;
 

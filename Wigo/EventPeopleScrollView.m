@@ -48,7 +48,7 @@
             [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];
         }
     } else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        [self.eventPeopleModalViewController untap:gestureRecognizer];
+        [self.eventPeopleModalViewController untap:gestureRecognizer withSender:self];
         [self.eventPeopleModalViewController.view removeGestureRecognizer:gestureRecognizer];
         [self addGestureRecognizer:gestureRecognizer];
     }
@@ -58,11 +58,11 @@
 }
 
 -(int) indexAtPoint:(CGPoint) point {
-    return floor(point.x / (self.sizeOfEachImage + 10));
+    return floor((point.x - 10) / (self.sizeOfEachImage + 3));
 }
 
 -(CGPoint) indexToPoint:(int) index {
-    return CGPointMake(index * (self.sizeOfEachImage + 10) + self.sizeOfEachImage / 2, 0);
+    return CGPointMake(10 + index * (self.sizeOfEachImage + 3) + self.sizeOfEachImage / 2, 0);
 }
 
 + (CGFloat) containerHeight {
