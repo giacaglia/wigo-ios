@@ -63,12 +63,12 @@ int initializedLocationCount;
     float newOffset = self.attendeesPhotosScrollView.contentOffset.x + self.velocity;
     self.attendeesPhotosScrollView.contentOffset = CGPointMake(MAX(minX, MIN(maxX, newOffset)), 0);
 
-    if (self.attendeesPhotosScrollView.contentOffset.x == maxX || self.attendeesPhotosScrollView.contentOffset.x == minX) {
-        // self.initialPosition = self.lastPosition;
-        // self.velocity = 0;
-    } else {
-        self.initialPosition = CGPointMake(self.initialPosition.x * 0.5 + self.lastPosition.x * 0.5, self.initialPosition.y * 0.95 + self.lastPosition.y * 0.05);
+    if ((self.attendeesPhotosScrollView.contentOffset.x == maxX && ![self.event.attendees.hasNextPage boolValue]) || self.attendeesPhotosScrollView.contentOffset.x == minX) {
+        self.initialPosition = self.lastPosition;
+        self.velocity = 0;
     }
+    
+    self.initialPosition = CGPointMake(self.initialPosition.x * 0.5 + self.lastPosition.x * 0.5, self.initialPosition.y * 0.95 + self.lastPosition.y * 0.05);
     
     int currentIndex = [self indexAtOffset:self.attendeesPhotosScrollView.contentOffset];
     [self loadLargeImageForIndex:currentIndex];
@@ -135,8 +135,11 @@ int initializedLocationCount;
 -(void) loadLargeImageForIndex:(int)index {
     if (![[self.imageDidLoad objectAtIndex:index] boolValue]) {
         UIImageView *imageView = (UIImageView *)[self.images objectAtIndex:index];
+        
+        UIImage *smallCoverImage = [imageView.image copy];
+        
         WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:index];
-        [imageView setImageWithURL:[attendee.user coverImageURL] placeholderImage:imageView.image imageArea:[attendee.user coverImageArea] completed:nil];
+        [imageView setImageWithURL:[attendee.user coverImageURL] placeholderImage:smallCoverImage imageArea:[attendee.user coverImageArea] completed:nil];
         [self.imageDidLoad setObject:@YES atIndexedSubscript:index];
     }
 }
@@ -197,7 +200,6 @@ int initializedLocationCount;
             [self.event.attendees addNextPage:^(BOOL success, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     strongSelf.fetchingEventAttendees = NO;
                     return;
