@@ -186,6 +186,12 @@
 		C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */; };
 		C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E921D61E1923967D00361247 /* InfoPlist.strings */; };
 		C12A11C919787BE700D53B1C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E9D7D5321926539C00E1ED10 /* Main.storyboard */; };
+		C14AB1BB1A8017670011C4E5 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = C14AB1B61A8017670011C4E5 /* UIImage+Alpha.m */; };
+		C14AB1BC1A8017670011C4E5 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = C14AB1B61A8017670011C4E5 /* UIImage+Alpha.m */; };
+		C14AB1BD1A8017670011C4E5 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = C14AB1B81A8017670011C4E5 /* UIImage+Resize.m */; };
+		C14AB1BE1A8017670011C4E5 /* UIImage+Resize.m in Sources */ = {isa = PBXBuildFile; fileRef = C14AB1B81A8017670011C4E5 /* UIImage+Resize.m */; };
+		C14AB1BF1A8017670011C4E5 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = C14AB1BA1A8017670011C4E5 /* UIImage+RoundedCorner.m */; };
+		C14AB1C01A8017670011C4E5 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = C14AB1BA1A8017670011C4E5 /* UIImage+RoundedCorner.m */; };
 		C16D86A819747FF6003EB336 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
 		C18AC292198451150056957B /* autorevision.sh in Resources */ = {isa = PBXBuildFile; fileRef = C18AC290198451150056957B /* autorevision.sh */; };
 		C18AC293198451150056957B /* process_info_plist.sh in Resources */ = {isa = PBXBuildFile; fileRef = C18AC291198451150056957B /* process_info_plist.sh */; };
@@ -671,6 +677,12 @@
 		45F74FF41A5E3F9100A5170F /* WGFollow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGFollow.m; sourceTree = "<group>"; };
 		C12A11E119787BE700D53B1C /* Wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12A11E219787BE800D53B1C /* wigoBlade.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = wigoBlade.plist; sourceTree = "<group>"; };
+		C14AB1B51A8017670011C4E5 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
+		C14AB1B61A8017670011C4E5 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
+		C14AB1B71A8017670011C4E5 /* UIImage+Resize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resize.h"; sourceTree = "<group>"; };
+		C14AB1B81A8017670011C4E5 /* UIImage+Resize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resize.m"; sourceTree = "<group>"; };
+		C14AB1B91A8017670011C4E5 /* UIImage+RoundedCorner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+RoundedCorner.h"; sourceTree = "<group>"; };
+		C14AB1BA1A8017670011C4E5 /* UIImage+RoundedCorner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+RoundedCorner.m"; sourceTree = "<group>"; };
 		C16D86A919747FF6003EB336 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C18AC290198451150056957B /* autorevision.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = autorevision.sh; sourceTree = "<group>"; };
 		C18AC291198451150056957B /* process_info_plist.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = process_info_plist.sh; sourceTree = "<group>"; };
@@ -1339,6 +1351,7 @@
 		C12A11021978788000D53B1C /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				C14AB1B41A8017670011C4E5 /* UIImageCategories */,
 				E9706E1A19C22B1400A21DE0 /* WigoCustomCell */,
 				E994111019AA8D9200D76379 /* NSString+URLEncoding.h */,
 				E994111119AA8D9200D76379 /* NSString+URLEncoding.m */,
@@ -1350,6 +1363,19 @@
 				E998C28319D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m */,
 			);
 			name = Categories;
+			sourceTree = "<group>";
+		};
+		C14AB1B41A8017670011C4E5 /* UIImageCategories */ = {
+			isa = PBXGroup;
+			children = (
+				C14AB1B51A8017670011C4E5 /* UIImage+Alpha.h */,
+				C14AB1B61A8017670011C4E5 /* UIImage+Alpha.m */,
+				C14AB1B71A8017670011C4E5 /* UIImage+Resize.h */,
+				C14AB1B81A8017670011C4E5 /* UIImage+Resize.m */,
+				C14AB1B91A8017670011C4E5 /* UIImage+RoundedCorner.h */,
+				C14AB1BA1A8017670011C4E5 /* UIImage+RoundedCorner.m */,
+			);
+			path = UIImageCategories;
 			sourceTree = "<group>";
 		};
 		C18AC28F198451150056957B /* autorevision */ = {
@@ -2630,9 +2656,12 @@
 				E9ACCA2519C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
 				E9C63C051A03ED35006C5DD2 /* IQMediaView.m in Sources */,
 				E9C63C111A03ED35006C5DD2 /* IQMediaPickerController.m in Sources */,
+				C14AB1BE1A8017670011C4E5 /* UIImage+Resize.m in Sources */,
 				E9DFE1701A001142003C5779 /* BatteryViewController.m in Sources */,
 				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
 				C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */,
+				C14AB1BC1A8017670011C4E5 /* UIImage+Alpha.m in Sources */,
+				C14AB1C01A8017670011C4E5 /* UIImage+RoundedCorner.m in Sources */,
 				45D9FAC11A781AFD00D08577 /* JSQMessagesAvatarImage.m in Sources */,
 				FA8C37EC1A3FDFA500C46B9F /* FXBlurView.m in Sources */,
 				C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */,
@@ -2721,6 +2750,7 @@
 				45DF86B11A5C5DEB00DB85AE /* AFURLConnectionOperation.m in Sources */,
 				E900C2B91961EADE00A01F50 /* SDWebImageDecoder.m in Sources */,
 				E900C2BD1961EADE00A01F50 /* SDWebImagePrefetcher.m in Sources */,
+				C14AB1BF1A8017670011C4E5 /* UIImage+RoundedCorner.m in Sources */,
 				45D9FACE1A781AFD00D08577 /* JSQMessagesCollectionViewCellIncoming.m in Sources */,
 				E9CD472B194B889800AEA17D /* RWBlurImage.m in Sources */,
 				45D9FAA41A781AFD00D08577 /* JSQMessagesKeyboardController.m in Sources */,
@@ -2768,6 +2798,7 @@
 				45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */,
 				FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */,
 				45D9FABE1A781AFD00D08577 /* JSQMessage.m in Sources */,
+				C14AB1BD1A8017670011C4E5 /* UIImage+Resize.m in Sources */,
 				45D9FAA01A781AFD00D08577 /* UIImage+JSQMessages.m in Sources */,
 				45D9FACA1A781AFD00D08577 /* JSQMessagesCollectionView.m in Sources */,
 				45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */,
@@ -2839,6 +2870,7 @@
 				E998C28819D342C50012BF51 /* PopViewController.m in Sources */,
 				454409641A58D19300BB3036 /* WGProfile.m in Sources */,
 				454409611A54A08A00BB3036 /* WGParser.m in Sources */,
+				C14AB1BB1A8017670011C4E5 /* UIImage+Alpha.m in Sources */,
 				E9C63BD01A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m in Sources */,
 				45D9FAC41A781AFD00D08577 /* JSQPhotoMediaItem.m in Sources */,
 				E9C63BF41A03ED35006C5DD2 /* IQSongsPlaylistViewController.m in Sources */,

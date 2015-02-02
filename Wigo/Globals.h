@@ -20,6 +20,7 @@
 #import "FLAnimatedImageView.h"
 #import "NSString+URLEncoding.h"
 #import "NSObject-CancelableScheduledBlock.h"
+#import "UIImage+Resize.h"
 
 #import "WGProfile.h"
 #import "WGEvent.h"

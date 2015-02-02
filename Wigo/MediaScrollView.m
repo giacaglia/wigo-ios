@@ -264,39 +264,33 @@
     [self.eventConversationDelegate addLoadingBanner];
     NSString *type = @"";
     
-//    UIImage *zoomedImage;
     UIImage *image;
+    
     if ([[info allKeys] containsObject:UIImagePickerControllerOriginalImage]) {
         image = (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
         
-//        
-//        float scaleFactor = [captureController effectiveScale];
-//        
-//        UIImage *resizedImage = [self imageWithImage: image scaledToSize: CGSizeMake(image.size.width*scaleFactor, image.size.height*scaleFactor)];
-//        
-//        CGRect cropRect = CGRectMake(resizedImage.size.width/2 - image.size.width/2, resizedImage.size.height/2 - image.size.height/2, image.size.width, image.size.height);
-//        
-//        zoomedImage = [self getSubImageFrom: resizedImage WithRect: cropRect];
+        
+        CGFloat imageWidth = image.size.height; // because the image is rotated
+        CGFloat imageHeight = image.size.width; // because the image is rotated
+        CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+        CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+        
+        CGFloat ratio = floor(imageWidth/screenHeight); // approximately 4.0
+        CGFloat cropWidth = screenHeight * ratio;
+        CGFloat cropHeight = screenWidth * ratio;
+        
+        CGFloat translation = (imageHeight - cropHeight) / 2.0;
+        
+        UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
+        UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight, screenWidth) interpolationQuality:kCGInterpolationHigh];
+        NSData *fileData = UIImageJPEGRepresentation(scaledImage, 0.8);
 
-        NSData *fileData = UIImageJPEGRepresentation(image, 1.0);
         type = kImageEventType;
-//        if ([[info allKeys] containsObject:IQMediaTypeText]) {
-//            NSString *text = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaText];
-//            NSNumber *yPercentage = [[[info objectForKey:IQMediaTypeText] objectAtIndex:0] objectForKey:IQMediaYPercentage];
-//            NSDictionary *properties = @{@"yPercentage": yPercentage};
-//            self.options =  @{
-//                         @"event": self.event.id,
-//                         @"message": text,
-//                         @"properties": properties,
-//                         @"media_mime_type": type
-//                         };
-//            [WGAnalytics tagEvent: @"Event Conversation Added Text"];
-//        } else {
+
             self.options =  @{
                          @"event": self.event.id,
                          @"media_mime_type": type
                          };
-//        }
         [self uploadContentWithFile:fileData
                         andFileName:@"image0.jpg"
                          andOptions:self.options];
@@ -900,8 +894,20 @@
     self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
     self.controller.delegate = self;
     self.controller.showsCameraControls = NO;
-    CGFloat scale = [UIScreen mainScreen].bounds.size.height/ (4/3 * [UIScreen mainScreen].bounds.size.width);
-    self.controller.cameraViewTransform = CGAffineTransformScale(self.controller.cameraViewTransform, scale, scale);
+    
+    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat cameraWidth = screenWidth;
+    CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
+    CGFloat scale = screenHeight / cameraHeight;
+    CGFloat delta = screenHeight - cameraHeight;
+    CGFloat yAdjust = delta / 2.0;
+    
+    CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yAdjust); //This slots the preview exactly in the middle of the screen
+    self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
+    
+//    CGFloat scale = [UIScreen mainScreen].bounds.size.height/ (4/3 * [UIScreen mainScreen].bounds.size.width);
+//    self.controller.cameraViewTransform = CGAffineTransformScale(self.controller.cameraViewTransform, scale, scale);
     self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, (NSString *)kUTTypeImage, nil];
     [self.contentView addSubview:self.controller.view];
 
