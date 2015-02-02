@@ -222,7 +222,7 @@ BOOL secondTimeFetchingUserInfo;
             self.leftRedDotLabel.layer.cornerRadius = 8;
         }
         [profileButton addSubview:self.leftRedDotLabel];
-        if ([[WGProfile currentUser].numUnreadNotifications intValue] > 0) {
+        if (WGProfile.currentUser.numUnreadNotifications.intValue > 0 || WGProfile.currentUser.numUnreadConversations.intValue > 0) {
             self.leftRedDotLabel.hidden = NO;
         } else {
             self.leftRedDotLabel.hidden = YES;

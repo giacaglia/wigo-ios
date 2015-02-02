@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "IQMediaPickerController.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "WGEvent.h"
 #import "Delegate.h"
-
+#import "IQMediaCaptureController.h"
 
 
 
@@ -19,14 +18,16 @@
 - (void)focusOnContent;
 @optional
 - (void)updateEventMessage:(WGEventMessage *)eventMessage forCell:(UICollectionViewCell *)cell;
+- (void)dismissView;
+- (void)mediaPickerController:(UIImagePickerController *)controller
+       didFinishMediaWithInfo:(NSDictionary *)info;
 @end
 
-@interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate, IQMediaPickerControllerDelegate>
+@interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate>
 
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) WGCollection *eventMessages;
-@property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
 @property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
@@ -93,9 +94,24 @@
 @property (nonatomic, strong) UILabel *label;
 @end
 
-@interface CameraCell : UICollectionViewCell
-@property (nonatomic, assign) BOOL controllerDelegateSet;
-@property (nonatomic, strong) IQMediaPickerController *controller;
-- (void)setControllerDelegate:(id)controllerDelegate;
+@interface CameraCell : UICollectionViewCell<UINavigationControllerDelegate,
+                                            UIImagePickerControllerDelegate,
+                                            UIGestureRecognizerDelegate,
+                                            UITextFieldDelegate>
+@property (nonatomic, assign) id <MediaScrollViewDelegate> mediaScrollDelegate;
+@property (nonatomic, strong) UIImagePickerController *controller;
+@property (nonatomic, strong) UIButton *dismissButton;
+@property (nonatomic, strong) UIButton *flashButton;
+@property (nonatomic, strong) UIButton *switchButton;
+@property (nonatomic, strong) UIButton *pictureButton;
+
+@property (nonatomic, strong) UIImageView *previewImageView;
+@property (nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
+@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *postButton;
+@property (nonatomic, strong) NSDictionary *info;
+@property (nonatomic, strong) UITextField *textField;
+@property (nonatomic, strong) UILabel *textLabel;
+@property (nonatomic, assign) CGPoint yPercentPoint;
 
 @end

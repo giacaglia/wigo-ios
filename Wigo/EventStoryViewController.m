@@ -242,7 +242,6 @@
             if (self.eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
         }
         self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
-        self.conversationViewController.controllerDelegate = self;
         self.conversationViewController.storyDelegate = self;
         
         BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
@@ -446,7 +445,7 @@
 
 
 - (void)loadTextViewAndSendButton {
-    int widthButton = [[UIScreen mainScreen] bounds].size.width/6.4;
+    int widthButton = [[UIScreen mainScreen] bounds].size.width/5.33;
     sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - widthButton - 15, self.view.frame.size.height - widthButton - 15, widthButton, widthButton)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:sendButton];
@@ -548,7 +547,6 @@
         self.conversationViewController.eventMessages = [self eventMessagesWithYourFace: NO];
     }
     self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
-    self.conversationViewController.controllerDelegate = self;
     self.conversationViewController.storyDelegate = self;
     
     BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);

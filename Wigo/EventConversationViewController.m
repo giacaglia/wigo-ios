@@ -405,7 +405,7 @@
                             collectionViewLayout:[[MediaFlowLayout alloc] init]];
     self.mediaScrollView.eventMessages = self.eventMessages;
     self.mediaScrollView.event = self.event;
-    self.mediaScrollView.controllerDelegate = self.controllerDelegate;
+//    self.mediaScrollView.controllerDelegate = self.controllerDelegate;
     self.mediaScrollView.mediaDelegate = self;
     self.mediaScrollView.eventConversationDelegate = self;
     self.mediaScrollView.storyDelegate = self.storyDelegate;

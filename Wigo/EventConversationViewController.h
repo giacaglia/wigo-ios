@@ -10,7 +10,6 @@
 #import <UIKit/UIKit.h>
 #import "Globals.h"
 #import "MediaScrollView.h"
-#import "IQMediaPickerController.h"
 #import "Delegate.h"
 
 
@@ -20,7 +19,6 @@
 @property (nonatomic, strong) WGCollection *eventMessages;
 @property (nonatomic, strong) MediaScrollView *mediaScrollView;
 @property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
-@property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) NSNumber *index;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
 @property (nonatomic, assign) BOOL isFocusing;
