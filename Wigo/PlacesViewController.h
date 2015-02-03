@@ -10,6 +10,7 @@
 #import "WGEvent.h"
 #import "Delegate.h"
 #import "UIButtonAligned.h"
+#import "SignViewController.h"
 
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate>
@@ -26,6 +27,9 @@
 
 @property (nonatomic, assign) BOOL fetchingEventAttendees;
 @property (nonatomic, strong) WGCollection *allEvents;
+@property (nonatomic, strong) SignViewController *signViewController;
+@property (nonatomic, assign) BOOL fetchingUserInfo;
+@property (nonatomic, assign) BOOL secondTimeFetchingUserInfo;
 
 @end
 

@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Delegate.h"
 
 @interface BatteryViewController : UIViewController
-
+@property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 @end

@@ -22,7 +22,7 @@ NSTimer *fetchTimer;
 - (id)init {
     self = [super init];
     if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
     }
     return self;
 }
@@ -189,8 +189,9 @@ NSTimer *fetchTimer;
 
 - (void)initializePeekButton {
     NSString *peekSchool = @"Maryland University";
-    NSString *titleString = [NSString stringWithFormat:@"Live Peek at\n%@", peekSchool];
+    NSString *titleString = [NSString stringWithFormat:@"Live Peek at %@", peekSchool];
     UIButton *peekButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 25 - 70, self.view.frame.size.width - 30, 70)];
+    [peekButton addTarget:self action:@selector(peekSchoolPressed) forControlEvents:UIControlEventTouchUpInside];
     peekButton.center = CGPointMake(self.view.center.x, peekButton.center.y);
     [peekButton setTitle:titleString forState:UIControlStateNormal];
     [peekButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
@@ -200,7 +201,7 @@ NSTimer *fetchTimer;
     peekButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.view addSubview:peekButton];
     
-    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(peekButton.frame.size.width - 50, 8, 50, 88)];
+    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(peekButton.frame.size.width - 50, 8, 50, 80)];
     rightArrowImageView.center = CGPointMake(rightArrowImageView.center.x, peekButton.center.y);
     rightArrowImageView.image = [UIImage imageNamed:@"batteryRightPost"];
     [peekButton addSubview:rightArrowImageView];
@@ -211,6 +212,13 @@ NSTimer *fetchTimer;
     [peekButton addSubview:lineView];
 }
 
+- (void)peekSchoolPressed {
+    NSNumber *groupID = @1877;
+    NSString *groupName = @"Maryland";
+    [self.placesDelegate setGroupID:groupID andGroupName:groupName];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
 
 - (void) fetchSummaryGoingOut {
     [WGGroup getGroupSummary:^(NSNumber *total, NSNumber *numGroups, NSNumber *private, NSNumber *public, NSError *error) {

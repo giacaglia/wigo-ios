@@ -236,7 +236,9 @@
     if (!_pushed) {
         _pushed = YES;
         _fetchingProfilePictures = NO;
-        [self.navigationController pushViewController:[SignUpViewController new] animated:YES];
+        SignUpViewController *signUpViewController = [SignUpViewController new];
+        signUpViewController.placesDelegate = self.placesDelegate;
+        [self.navigationController pushViewController:signUpViewController animated:YES];
     }
 }
 
@@ -403,7 +405,9 @@
     if (![[WGProfile currentUser].emailValidated boolValue]) {
         if (!_pushed) {
             _pushed = YES;
-            [self.navigationController pushViewController:[EmailConfirmationViewController new] animated:YES];
+            EmailConfirmationViewController *emailConfirmationViewController = [EmailConfirmationViewController new];
+            emailConfirmationViewController.placesDelegate = self.placesDelegate;
+            [self.navigationController pushViewController:emailConfirmationViewController animated:YES];
         }
     } else {
         PFInstallation *currentInstallation = [PFInstallation currentInstallation];
@@ -416,7 +420,9 @@
             _pushed = YES;
             if ([[WGProfile currentUser].group.locked boolValue]) {
                 [self.navigationController setNavigationBarHidden:YES animated:NO];
-                [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
+                BatteryViewController *batteryViewController = [BatteryViewController new];
+                batteryViewController.placesDelegate = self.placesDelegate;
+                [self.navigationController pushViewController:batteryViewController animated:NO];
             } else {
                 [self loadMainViewController];
             }

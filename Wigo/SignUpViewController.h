@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EmailConfirmationViewController.h"
+#import "Delegate.h"
 
 @interface SignUpViewController : UIViewController
-
+@property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 @end

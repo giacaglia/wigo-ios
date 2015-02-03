@@ -8,6 +8,7 @@
 
 #import "SignUpViewController.h"
 #import "Globals.h"
+#import "EmailConfirmationViewController.h"
 #define isiPhone5  ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
 
 
@@ -131,22 +132,28 @@
     BOOL isEmail = [emailTest evaluateWithObject:emailString];
     if (isEmail) {
         NSArray *images = [[WGProfile currentUser] images];
-        [WGProfile currentUser].email = emailString;
-        
+        WGProfile.currentUser.email = emailString;
+        __weak typeof(self) weakSelf = self;
         [[WGProfile currentUser] signup:^(BOOL success, NSError *error) {
+            __weak typeof(weakSelf) strongSelf = weakSelf;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionCreate retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionCreate];
                 return;
             }
-            [WGProfile currentUser].images = images;
+            WGProfile.currentUser.images = images;
+            __weak typeof(strongSelf) weakOfStrong = strongSelf;
             [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+                __strong typeof(weakOfStrong) strongOfStrong = weakOfStrong;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionSave];
                     return;
                 }
-                [self.navigationController pushViewController:[EmailConfirmationViewController new] animated:YES];
+                EmailConfirmationViewController *emailConfirmationViewController =
+                [EmailConfirmationViewController new];
+                emailConfirmationViewController.placesDelegate = strongOfStrong.placesDelegate;
+                [strongOfStrong.navigationController pushViewController:[EmailConfirmationViewController new] animated:YES];
             }];
         }];
     } else {

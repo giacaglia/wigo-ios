@@ -137,8 +137,10 @@ NSTimer *fetchTimer;
 #pragma mark - Login
 
 - (void) login {
-    if ([WGProfile currentUser].key) {
+    if (WGProfile.currentUser.key) {
+        __weak typeof(self) weakSelf = self;
         [WGProfile reload:^(BOOL success, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
             if (error) {
                 return;
             }
@@ -146,11 +148,13 @@ NSTimer *fetchTimer;
                 [fetchTimer invalidate];
                 fetchTimer = nil;
                 if ([[WGProfile currentUser].group.locked boolValue]) {
-                    [self.navigationController setNavigationBarHidden:YES animated:NO];
-                    [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
+                    [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
+                    BatteryViewController *batteryViewController = [BatteryViewController new];
+                    batteryViewController.placesDelegate = strongSelf.placesDelegate;
+                    [strongSelf.navigationController pushViewController:batteryViewController animated:NO];
                 } else {
-                    [self.navigationController setNavigationBarHidden:YES animated:NO];
-                    [self.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
+                    [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
+                    [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
                 }
             }
         }];

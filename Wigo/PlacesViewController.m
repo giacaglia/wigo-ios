@@ -16,7 +16,6 @@
 #import "WigoConfirmationViewController.h"
 #import "MobileContactsViewController.h"
 #import "InviteViewController.h"
-#import "SignViewController.h"
 #import "SignNavigationViewController.h"
 #import "PeekViewController.h"
 #import "EventStoryViewController.h"
@@ -77,11 +76,8 @@
 //Go Elsewhere
 @property (nonatomic, strong) GoOutNewPlaceHeader *goElsewhereView;
 
-@property (nonatomic, strong) SignViewController *signViewController;
 @end
 
-
-BOOL fetchingUserInfo;
 BOOL shouldAnimate;
 BOOL presentedMobileContacts;
 NSNumber *page;
@@ -89,7 +85,6 @@ int sizeOfEachImage;
 BOOL shouldReloadEvents;
 int firstIndexOfNegativeEvent;
 BOOL firstTimeLoading;
-BOOL secondTimeFetchingUserInfo;
 
 @implementation PlacesViewController
 
@@ -100,7 +95,7 @@ BOOL secondTimeFetchingUserInfo;
 
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
-    fetchingUserInfo = NO;
+    self.fetchingUserInfo = NO;
     self.fetchingEventAttendees = NO;
     shouldAnimate = NO;
     presentedMobileContacts = NO;
@@ -147,7 +142,7 @@ BOOL secondTimeFetchingUserInfo;
     [self initializeFlashScreen];
     if (![WGProfile currentUser].key) {
         [self showFlashScreen];
-        [_signViewController reloadedUserInfo:NO andError:nil];
+        [self.signViewController reloadedUserInfo:NO andError:nil];
     }
 
     [self.view endEditing:YES];
@@ -268,12 +263,13 @@ BOOL secondTimeFetchingUserInfo;
 -(void) initializeFlashScreen {
     if (!firstTimeLoading) {
         firstTimeLoading = YES;
-        _signViewController = [SignViewController new];
+        self.signViewController = [SignViewController new];
+        self.signViewController.placesDelegate = self;
     }
 }
 
 -(void) showFlashScreen {
-    SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:_signViewController];
+    SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:self.signViewController];
     [self presentViewController:signNavigationViewController animated:NO completion:nil];
 }
 
@@ -1533,35 +1529,37 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void) fetchUserInfo {
-    if (!fetchingUserInfo && [WGProfile currentUser].key) {
-        fetchingUserInfo = YES;
+    __weak typeof(self) weakSelf = self;
+    if (!self.fetchingUserInfo && WGProfile.currentUser.key) {
+        self.fetchingUserInfo = YES;
         [WGProfile reload:^(BOOL success, NSError *error) {
-            if (!secondTimeFetchingUserInfo) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (!strongSelf.secondTimeFetchingUserInfo) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
-                secondTimeFetchingUserInfo = YES;
+                strongSelf.secondTimeFetchingUserInfo = YES;
                 if (error || ![[WGProfile currentUser].emailValidated boolValue] ||
                     [[WGProfile currentUser].group.locked boolValue]) {
-                    fetchingUserInfo = NO;
-                    [self showFlashScreen];
-                    [_signViewController reloadedUserInfo:success andError:error];
+                    strongSelf.fetchingUserInfo = NO;
+                    [strongSelf showFlashScreen];
+                    [strongSelf.signViewController reloadedUserInfo:success andError:error];
                     return;
                 }
                 
             }
             if (error) {
-                fetchingUserInfo = NO;
+                strongSelf.fetchingUserInfo = NO;
                 // Second time fetching user info... already logged in
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:^(BOOL didRetry) {
                     if (didRetry) {
-                        [self fetchUserInfo];
-                        [self fetchEvents];
+                        [strongSelf fetchUserInfo];
+                        [strongSelf fetchEvents];
                     }
                 }];
                 return;
             }
-            [self initializeNavigationBar];
-            fetchingUserInfo = NO;
+            [strongSelf initializeNavigationBar];
+            strongSelf.fetchingUserInfo = NO;
         }];
     }
 }
