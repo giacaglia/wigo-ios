@@ -10,7 +10,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "WGEvent.h"
 #import "Delegate.h"
-#import "IQMediaCaptureController.h"
 
 #define UIMediaPickerText @"UIMediaPickerText"
 #define UIMediaPickerPercentage @"UIMediaPickerPercentage"
@@ -43,7 +42,7 @@
 -(void) closeView;
 -(void) scrolledToPage:(int)page;
 
-#pragma mark - IQMediaPickerController  Delegate
+#pragma mark - UIImagePickerDelegate  Delegate
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) NSData *fileData;
 @property (nonatomic, strong) NSDictionary *options;

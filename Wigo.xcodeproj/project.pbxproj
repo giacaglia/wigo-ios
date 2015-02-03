@@ -360,76 +360,6 @@
 		E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */; };
 		E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
 		E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
-		E9C63BCE1A03ED35006C5DD2 /* IQAlbumAssetsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B771A03ED35006C5DD2 /* IQAlbumAssetsViewController.m */; };
-		E9C63BCF1A03ED35006C5DD2 /* IQAlbumAssetsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B771A03ED35006C5DD2 /* IQAlbumAssetsViewController.m */; };
-		E9C63BD01A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B7A1A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m */; };
-		E9C63BD11A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B7A1A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m */; };
-		E9C63BD21A03ED35006C5DD2 /* IQAssetsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B7C1A03ED35006C5DD2 /* IQAssetsCell.m */; };
-		E9C63BD31A03ED35006C5DD2 /* IQAssetsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B7C1A03ED35006C5DD2 /* IQAssetsCell.m */; };
-		E9C63BD41A03ED35006C5DD2 /* IQAssetsPickerShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B7F1A03ED35006C5DD2 /* IQAssetsPickerShadowView.m */; };
-		E9C63BD51A03ED35006C5DD2 /* IQAssetsPickerShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B7F1A03ED35006C5DD2 /* IQAssetsPickerShadowView.m */; };
-		E9C63BD61A03ED35006C5DD2 /* IQCheckmarkView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B811A03ED35006C5DD2 /* IQCheckmarkView.m */; };
-		E9C63BD71A03ED35006C5DD2 /* IQCheckmarkView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B811A03ED35006C5DD2 /* IQCheckmarkView.m */; };
-		E9C63BD81A03ED35006C5DD2 /* IQAssetsPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B831A03ED35006C5DD2 /* IQAssetsPickerController.m */; };
-		E9C63BD91A03ED35006C5DD2 /* IQAssetsPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B831A03ED35006C5DD2 /* IQAssetsPickerController.m */; };
-		E9C63BDA1A03ED35006C5DD2 /* IQAudioPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B861A03ED35006C5DD2 /* IQAudioPickerController.m */; };
-		E9C63BDB1A03ED35006C5DD2 /* IQAudioPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B861A03ED35006C5DD2 /* IQAudioPickerController.m */; };
-		E9C63BDC1A03ED35006C5DD2 /* IQAudioPickerController.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9C63B871A03ED35006C5DD2 /* IQAudioPickerController.xcassets */; };
-		E9C63BDD1A03ED35006C5DD2 /* IQAudioPickerController.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9C63B871A03ED35006C5DD2 /* IQAudioPickerController.xcassets */; };
-		E9C63BDE1A03ED35006C5DD2 /* IQAudioPickerUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B8A1A03ED35006C5DD2 /* IQAudioPickerUtility.m */; };
-		E9C63BDF1A03ED35006C5DD2 /* IQAudioPickerUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B8A1A03ED35006C5DD2 /* IQAudioPickerUtility.m */; };
-		E9C63BE01A03ED35006C5DD2 /* IQAudioPickerShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B8E1A03ED35006C5DD2 /* IQAudioPickerShadowView.m */; };
-		E9C63BE11A03ED35006C5DD2 /* IQAudioPickerShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B8E1A03ED35006C5DD2 /* IQAudioPickerShadowView.m */; };
-		E9C63BE21A03ED35006C5DD2 /* IQSongsAlbumViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B911A03ED35006C5DD2 /* IQSongsAlbumViewCell.m */; };
-		E9C63BE31A03ED35006C5DD2 /* IQSongsAlbumViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B911A03ED35006C5DD2 /* IQSongsAlbumViewCell.m */; };
-		E9C63BE41A03ED35006C5DD2 /* IQSongsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B931A03ED35006C5DD2 /* IQSongsCell.m */; };
-		E9C63BE51A03ED35006C5DD2 /* IQSongsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B931A03ED35006C5DD2 /* IQSongsCell.m */; };
-		E9C63BE61A03ED35006C5DD2 /* IQSongsListTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B961A03ED35006C5DD2 /* IQSongsListTableHeaderView.m */; };
-		E9C63BE71A03ED35006C5DD2 /* IQSongsListTableHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B961A03ED35006C5DD2 /* IQSongsListTableHeaderView.m */; };
-		E9C63BE81A03ED35006C5DD2 /* IQSongsAlbumListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B981A03ED35006C5DD2 /* IQSongsAlbumListViewController.m */; };
-		E9C63BE91A03ED35006C5DD2 /* IQSongsAlbumListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B981A03ED35006C5DD2 /* IQSongsAlbumListViewController.m */; };
-		E9C63BEA1A03ED35006C5DD2 /* IQSongsArtistListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B9A1A03ED35006C5DD2 /* IQSongsArtistListViewController.m */; };
-		E9C63BEB1A03ED35006C5DD2 /* IQSongsArtistListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B9A1A03ED35006C5DD2 /* IQSongsArtistListViewController.m */; };
-		E9C63BEC1A03ED35006C5DD2 /* IQSongsCompilationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B9C1A03ED35006C5DD2 /* IQSongsCompilationsViewController.m */; };
-		E9C63BED1A03ED35006C5DD2 /* IQSongsCompilationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B9C1A03ED35006C5DD2 /* IQSongsCompilationsViewController.m */; };
-		E9C63BEE1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B9E1A03ED35006C5DD2 /* IQSongsComposersViewController.m */; };
-		E9C63BEF1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63B9E1A03ED35006C5DD2 /* IQSongsComposersViewController.m */; };
-		E9C63BF01A03ED35006C5DD2 /* IQSongsGenreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BA01A03ED35006C5DD2 /* IQSongsGenreViewController.m */; };
-		E9C63BF11A03ED35006C5DD2 /* IQSongsGenreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BA01A03ED35006C5DD2 /* IQSongsGenreViewController.m */; };
-		E9C63BF21A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BA21A03ED35006C5DD2 /* IQSongsListViewController.m */; };
-		E9C63BF31A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BA21A03ED35006C5DD2 /* IQSongsListViewController.m */; };
-		E9C63BF41A03ED35006C5DD2 /* IQSongsPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BA41A03ED35006C5DD2 /* IQSongsPlaylistViewController.m */; };
-		E9C63BF51A03ED35006C5DD2 /* IQSongsPlaylistViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BA41A03ED35006C5DD2 /* IQSongsPlaylistViewController.m */; };
-		E9C63BF61A03ED35006C5DD2 /* IQMediaCaptureController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BA71A03ED35006C5DD2 /* IQMediaCaptureController.m */; };
-		E9C63BF71A03ED35006C5DD2 /* IQMediaCaptureController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BA71A03ED35006C5DD2 /* IQMediaCaptureController.m */; };
-		E9C63BF81A03ED35006C5DD2 /* IQMediaCaptureController.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9C63BA81A03ED35006C5DD2 /* IQMediaCaptureController.xcassets */; };
-		E9C63BF91A03ED35006C5DD2 /* IQMediaCaptureController.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9C63BA81A03ED35006C5DD2 /* IQMediaCaptureController.xcassets */; };
-		E9C63BFA1A03ED35006C5DD2 /* IQAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BAD1A03ED35006C5DD2 /* IQAudioSession.m */; };
-		E9C63BFB1A03ED35006C5DD2 /* IQAudioSession.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BAD1A03ED35006C5DD2 /* IQAudioSession.m */; };
-		E9C63BFC1A03ED35006C5DD2 /* IQCaptureSession.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BAF1A03ED35006C5DD2 /* IQCaptureSession.m */; };
-		E9C63BFD1A03ED35006C5DD2 /* IQCaptureSession.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BAF1A03ED35006C5DD2 /* IQCaptureSession.m */; };
-		E9C63BFE1A03ED35006C5DD2 /* IQFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BB21A03ED35006C5DD2 /* IQFileManager.m */; };
-		E9C63BFF1A03ED35006C5DD2 /* IQFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BB21A03ED35006C5DD2 /* IQFileManager.m */; };
-		E9C63C001A03ED35006C5DD2 /* IQBottomContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BB61A03ED35006C5DD2 /* IQBottomContainerView.m */; };
-		E9C63C011A03ED35006C5DD2 /* IQBottomContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BB61A03ED35006C5DD2 /* IQBottomContainerView.m */; };
-		E9C63C021A03ED35006C5DD2 /* IQFeatureOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BBA1A03ED35006C5DD2 /* IQFeatureOverlay.m */; };
-		E9C63C031A03ED35006C5DD2 /* IQFeatureOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BBA1A03ED35006C5DD2 /* IQFeatureOverlay.m */; };
-		E9C63C041A03ED35006C5DD2 /* IQMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BBC1A03ED35006C5DD2 /* IQMediaView.m */; };
-		E9C63C051A03ED35006C5DD2 /* IQMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BBC1A03ED35006C5DD2 /* IQMediaView.m */; };
-		E9C63C061A03ED35006C5DD2 /* IQPartitionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BBF1A03ED35006C5DD2 /* IQPartitionBar.m */; };
-		E9C63C071A03ED35006C5DD2 /* IQPartitionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BBF1A03ED35006C5DD2 /* IQPartitionBar.m */; };
-		E9C63C081A03ED35006C5DD2 /* IQPartitionView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BC11A03ED35006C5DD2 /* IQPartitionView.m */; };
-		E9C63C091A03ED35006C5DD2 /* IQPartitionView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BC11A03ED35006C5DD2 /* IQPartitionView.m */; };
-		E9C63C0A1A03ED35006C5DD2 /* IQ_DPMeterView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BC51A03ED35006C5DD2 /* IQ_DPMeterView.m */; };
-		E9C63C0B1A03ED35006C5DD2 /* IQ_DPMeterView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BC51A03ED35006C5DD2 /* IQ_DPMeterView.m */; };
-		E9C63C0C1A03ED35006C5DD2 /* IQ_PocketSVG.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BC81A03ED35006C5DD2 /* IQ_PocketSVG.m */; };
-		E9C63C0D1A03ED35006C5DD2 /* IQ_PocketSVG.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BC81A03ED35006C5DD2 /* IQ_PocketSVG.m */; };
-		E9C63C0E1A03ED35006C5DD2 /* mic.svg in Resources */ = {isa = PBXBuildFile; fileRef = E9C63BC91A03ED35006C5DD2 /* mic.svg */; };
-		E9C63C0F1A03ED35006C5DD2 /* mic.svg in Resources */ = {isa = PBXBuildFile; fileRef = E9C63BC91A03ED35006C5DD2 /* mic.svg */; };
-		E9C63C101A03ED35006C5DD2 /* IQMediaPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BCB1A03ED35006C5DD2 /* IQMediaPickerController.m */; };
-		E9C63C111A03ED35006C5DD2 /* IQMediaPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BCB1A03ED35006C5DD2 /* IQMediaPickerController.m */; };
-		E9C63C121A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BCD1A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m */; };
-		E9C63C131A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C63BCD1A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m */; };
 		E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CB091419FB062D00B548A6 /* FacebookHelper.m */; };
 		E9CB091619FB062D00B548A6 /* FacebookHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CB091419FB062D00B548A6 /* FacebookHelper.m */; };
 		E9CD47141948E27500AEA17D /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
@@ -844,73 +774,6 @@
 		E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaitListViewController.m; sourceTree = "<group>"; };
 		E9C34A7619F98A2C00D7E9D3 /* MobileDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileDelegate.h; sourceTree = "<group>"; };
 		E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileDelegate.m; sourceTree = "<group>"; };
-		E9C63B761A03ED35006C5DD2 /* IQAlbumAssetsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAlbumAssetsViewController.h; sourceTree = "<group>"; };
-		E9C63B771A03ED35006C5DD2 /* IQAlbumAssetsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAlbumAssetsViewController.m; sourceTree = "<group>"; };
-		E9C63B791A03ED35006C5DD2 /* IQAssetsAlbumViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAssetsAlbumViewCell.h; sourceTree = "<group>"; };
-		E9C63B7A1A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAssetsAlbumViewCell.m; sourceTree = "<group>"; };
-		E9C63B7B1A03ED35006C5DD2 /* IQAssetsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAssetsCell.h; sourceTree = "<group>"; };
-		E9C63B7C1A03ED35006C5DD2 /* IQAssetsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAssetsCell.m; sourceTree = "<group>"; };
-		E9C63B7E1A03ED35006C5DD2 /* IQAssetsPickerShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAssetsPickerShadowView.h; sourceTree = "<group>"; };
-		E9C63B7F1A03ED35006C5DD2 /* IQAssetsPickerShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAssetsPickerShadowView.m; sourceTree = "<group>"; };
-		E9C63B801A03ED35006C5DD2 /* IQCheckmarkView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQCheckmarkView.h; sourceTree = "<group>"; };
-		E9C63B811A03ED35006C5DD2 /* IQCheckmarkView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQCheckmarkView.m; sourceTree = "<group>"; };
-		E9C63B821A03ED35006C5DD2 /* IQAssetsPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAssetsPickerController.h; sourceTree = "<group>"; };
-		E9C63B831A03ED35006C5DD2 /* IQAssetsPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAssetsPickerController.m; sourceTree = "<group>"; };
-		E9C63B851A03ED35006C5DD2 /* IQAudioPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAudioPickerController.h; sourceTree = "<group>"; };
-		E9C63B861A03ED35006C5DD2 /* IQAudioPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAudioPickerController.m; sourceTree = "<group>"; };
-		E9C63B871A03ED35006C5DD2 /* IQAudioPickerController.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = IQAudioPickerController.xcassets; sourceTree = "<group>"; };
-		E9C63B891A03ED35006C5DD2 /* IQAudioPickerUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAudioPickerUtility.h; sourceTree = "<group>"; };
-		E9C63B8A1A03ED35006C5DD2 /* IQAudioPickerUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAudioPickerUtility.m; sourceTree = "<group>"; };
-		E9C63B8D1A03ED35006C5DD2 /* IQAudioPickerShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAudioPickerShadowView.h; sourceTree = "<group>"; };
-		E9C63B8E1A03ED35006C5DD2 /* IQAudioPickerShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAudioPickerShadowView.m; sourceTree = "<group>"; };
-		E9C63B901A03ED35006C5DD2 /* IQSongsAlbumViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSongsAlbumViewCell.h; sourceTree = "<group>"; };
-		E9C63B911A03ED35006C5DD2 /* IQSongsAlbumViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSongsAlbumViewCell.m; sourceTree = "<group>"; };
-		E9C63B921A03ED35006C5DD2 /* IQSongsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSongsCell.h; sourceTree = "<group>"; };
-		E9C63B931A03ED35006C5DD2 /* IQSongsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSongsCell.m; sourceTree = "<group>"; };
-		E9C63B951A03ED35006C5DD2 /* IQSongsListTableHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSongsListTableHeaderView.h; sourceTree = "<group>"; };
-		E9C63B961A03ED35006C5DD2 /* IQSongsListTableHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSongsListTableHeaderView.m; sourceTree = "<group>"; };
-		E9C63B971A03ED35006C5DD2 /* IQSongsAlbumListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSongsAlbumListViewController.h; sourceTree = "<group>"; };
-		E9C63B981A03ED35006C5DD2 /* IQSongsAlbumListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSongsAlbumListViewController.m; sourceTree = "<group>"; };
-		E9C63B991A03ED35006C5DD2 /* IQSongsArtistListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSongsArtistListViewController.h; sourceTree = "<group>"; };
-		E9C63B9A1A03ED35006C5DD2 /* IQSongsArtistListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSongsArtistListViewController.m; sourceTree = "<group>"; };
-		E9C63B9B1A03ED35006C5DD2 /* IQSongsCompilationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSongsCompilationsViewController.h; sourceTree = "<group>"; };
-		E9C63B9C1A03ED35006C5DD2 /* IQSongsCompilationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSongsCompilationsViewController.m; sourceTree = "<group>"; };
-		E9C63B9D1A03ED35006C5DD2 /* IQSongsComposersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSongsComposersViewController.h; sourceTree = "<group>"; };
-		E9C63B9E1A03ED35006C5DD2 /* IQSongsComposersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSongsComposersViewController.m; sourceTree = "<group>"; };
-		E9C63B9F1A03ED35006C5DD2 /* IQSongsGenreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSongsGenreViewController.h; sourceTree = "<group>"; };
-		E9C63BA01A03ED35006C5DD2 /* IQSongsGenreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSongsGenreViewController.m; sourceTree = "<group>"; };
-		E9C63BA11A03ED35006C5DD2 /* IQSongsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSongsListViewController.h; sourceTree = "<group>"; };
-		E9C63BA21A03ED35006C5DD2 /* IQSongsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSongsListViewController.m; sourceTree = "<group>"; };
-		E9C63BA31A03ED35006C5DD2 /* IQSongsPlaylistViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQSongsPlaylistViewController.h; sourceTree = "<group>"; };
-		E9C63BA41A03ED35006C5DD2 /* IQSongsPlaylistViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQSongsPlaylistViewController.m; sourceTree = "<group>"; };
-		E9C63BA61A03ED35006C5DD2 /* IQMediaCaptureController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQMediaCaptureController.h; sourceTree = "<group>"; };
-		E9C63BA71A03ED35006C5DD2 /* IQMediaCaptureController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQMediaCaptureController.m; sourceTree = "<group>"; };
-		E9C63BA81A03ED35006C5DD2 /* IQMediaCaptureController.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = IQMediaCaptureController.xcassets; sourceTree = "<group>"; };
-		E9C63BAC1A03ED35006C5DD2 /* IQAudioSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQAudioSession.h; sourceTree = "<group>"; };
-		E9C63BAD1A03ED35006C5DD2 /* IQAudioSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQAudioSession.m; sourceTree = "<group>"; };
-		E9C63BAE1A03ED35006C5DD2 /* IQCaptureSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQCaptureSession.h; sourceTree = "<group>"; };
-		E9C63BAF1A03ED35006C5DD2 /* IQCaptureSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQCaptureSession.m; sourceTree = "<group>"; };
-		E9C63BB11A03ED35006C5DD2 /* IQFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQFileManager.h; sourceTree = "<group>"; };
-		E9C63BB21A03ED35006C5DD2 /* IQFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQFileManager.m; sourceTree = "<group>"; };
-		E9C63BB51A03ED35006C5DD2 /* IQBottomContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQBottomContainerView.h; sourceTree = "<group>"; };
-		E9C63BB61A03ED35006C5DD2 /* IQBottomContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQBottomContainerView.m; sourceTree = "<group>"; };
-		E9C63BB91A03ED35006C5DD2 /* IQFeatureOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQFeatureOverlay.h; sourceTree = "<group>"; };
-		E9C63BBA1A03ED35006C5DD2 /* IQFeatureOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQFeatureOverlay.m; sourceTree = "<group>"; };
-		E9C63BBB1A03ED35006C5DD2 /* IQMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQMediaView.h; sourceTree = "<group>"; };
-		E9C63BBC1A03ED35006C5DD2 /* IQMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQMediaView.m; sourceTree = "<group>"; };
-		E9C63BBE1A03ED35006C5DD2 /* IQPartitionBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQPartitionBar.h; sourceTree = "<group>"; };
-		E9C63BBF1A03ED35006C5DD2 /* IQPartitionBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQPartitionBar.m; sourceTree = "<group>"; };
-		E9C63BC01A03ED35006C5DD2 /* IQPartitionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQPartitionView.h; sourceTree = "<group>"; };
-		E9C63BC11A03ED35006C5DD2 /* IQPartitionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQPartitionView.m; sourceTree = "<group>"; };
-		E9C63BC41A03ED35006C5DD2 /* IQ_DPMeterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQ_DPMeterView.h; sourceTree = "<group>"; };
-		E9C63BC51A03ED35006C5DD2 /* IQ_DPMeterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQ_DPMeterView.m; sourceTree = "<group>"; };
-		E9C63BC71A03ED35006C5DD2 /* IQ_PocketSVG.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQ_PocketSVG.h; sourceTree = "<group>"; };
-		E9C63BC81A03ED35006C5DD2 /* IQ_PocketSVG.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQ_PocketSVG.m; sourceTree = "<group>"; };
-		E9C63BC91A03ED35006C5DD2 /* mic.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = mic.svg; sourceTree = "<group>"; };
-		E9C63BCA1A03ED35006C5DD2 /* IQMediaPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQMediaPickerController.h; sourceTree = "<group>"; };
-		E9C63BCB1A03ED35006C5DD2 /* IQMediaPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQMediaPickerController.m; sourceTree = "<group>"; };
-		E9C63BCC1A03ED35006C5DD2 /* IQMediaPickerControllerConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IQMediaPickerControllerConstants.h; sourceTree = "<group>"; };
-		E9C63BCD1A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IQMediaPickerControllerConstants.m; sourceTree = "<group>"; };
 		E9CB091319FB062D00B548A6 /* FacebookHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookHelper.h; sourceTree = "<group>"; };
 		E9CB091419FB062D00B548A6 /* FacebookHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookHelper.m; sourceTree = "<group>"; };
 		E9CD47121948E27500AEA17D /* UIImageViewShake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageViewShake.h; sourceTree = "<group>"; };
@@ -1572,7 +1435,6 @@
 				FABD33711A3B98ED008FF56D /* ParallaxHeaderTV */,
 				FA5526131A1FDB4000101AE7 /* JBBarChart */,
 				FADD072D1A0D296900492369 /* LLACircularProgressView */,
-				E9C63B741A03ED35006C5DD2 /* IQMediaPickerController */,
 				E9CB091219FB061F00B548A6 /* FacebookHelper */,
 				E9C3056819F831CA00F9564D /* KeychainWrapper */,
 				E9EA951319E9F83C003C79F0 /* StickyHeader */,
@@ -1749,256 +1611,6 @@
 				E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */,
 			);
 			name = KeychainWrapper;
-			sourceTree = "<group>";
-		};
-		E9C63B741A03ED35006C5DD2 /* IQMediaPickerController */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63B751A03ED35006C5DD2 /* IQAssetsPickerController */,
-				E9C63B841A03ED35006C5DD2 /* IQAudioPickerController */,
-				E9C63BA51A03ED35006C5DD2 /* IQMediaCaptureController */,
-				E9C63BCA1A03ED35006C5DD2 /* IQMediaPickerController.h */,
-				E9C63BCB1A03ED35006C5DD2 /* IQMediaPickerController.m */,
-				E9C63BCC1A03ED35006C5DD2 /* IQMediaPickerControllerConstants.h */,
-				E9C63BCD1A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m */,
-			);
-			path = IQMediaPickerController;
-			sourceTree = "<group>";
-		};
-		E9C63B751A03ED35006C5DD2 /* IQAssetsPickerController */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63B761A03ED35006C5DD2 /* IQAlbumAssetsViewController.h */,
-				E9C63B771A03ED35006C5DD2 /* IQAlbumAssetsViewController.m */,
-				E9C63B781A03ED35006C5DD2 /* IQAssetPickerCell */,
-				E9C63B7D1A03ED35006C5DD2 /* IQAssetPickerView */,
-				E9C63B821A03ED35006C5DD2 /* IQAssetsPickerController.h */,
-				E9C63B831A03ED35006C5DD2 /* IQAssetsPickerController.m */,
-			);
-			path = IQAssetsPickerController;
-			sourceTree = "<group>";
-		};
-		E9C63B781A03ED35006C5DD2 /* IQAssetPickerCell */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63B791A03ED35006C5DD2 /* IQAssetsAlbumViewCell.h */,
-				E9C63B7A1A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m */,
-				E9C63B7B1A03ED35006C5DD2 /* IQAssetsCell.h */,
-				E9C63B7C1A03ED35006C5DD2 /* IQAssetsCell.m */,
-			);
-			path = IQAssetPickerCell;
-			sourceTree = "<group>";
-		};
-		E9C63B7D1A03ED35006C5DD2 /* IQAssetPickerView */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63B7E1A03ED35006C5DD2 /* IQAssetsPickerShadowView.h */,
-				E9C63B7F1A03ED35006C5DD2 /* IQAssetsPickerShadowView.m */,
-				E9C63B801A03ED35006C5DD2 /* IQCheckmarkView.h */,
-				E9C63B811A03ED35006C5DD2 /* IQCheckmarkView.m */,
-			);
-			path = IQAssetPickerView;
-			sourceTree = "<group>";
-		};
-		E9C63B841A03ED35006C5DD2 /* IQAudioPickerController */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63B851A03ED35006C5DD2 /* IQAudioPickerController.h */,
-				E9C63B861A03ED35006C5DD2 /* IQAudioPickerController.m */,
-				E9C63B871A03ED35006C5DD2 /* IQAudioPickerController.xcassets */,
-				E9C63B881A03ED35006C5DD2 /* IQAudioPickerUtility */,
-				E9C63B8B1A03ED35006C5DD2 /* IQAudioPIckerViewControllers */,
-			);
-			path = IQAudioPickerController;
-			sourceTree = "<group>";
-		};
-		E9C63B881A03ED35006C5DD2 /* IQAudioPickerUtility */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63B891A03ED35006C5DD2 /* IQAudioPickerUtility.h */,
-				E9C63B8A1A03ED35006C5DD2 /* IQAudioPickerUtility.m */,
-			);
-			path = IQAudioPickerUtility;
-			sourceTree = "<group>";
-		};
-		E9C63B8B1A03ED35006C5DD2 /* IQAudioPIckerViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63B8C1A03ED35006C5DD2 /* IQAudioCellShadowView */,
-				E9C63B8F1A03ED35006C5DD2 /* IQAudioPickerTableViewCell */,
-				E9C63B941A03ED35006C5DD2 /* IQAudioPickerTableViewHeader */,
-				E9C63B971A03ED35006C5DD2 /* IQSongsAlbumListViewController.h */,
-				E9C63B981A03ED35006C5DD2 /* IQSongsAlbumListViewController.m */,
-				E9C63B991A03ED35006C5DD2 /* IQSongsArtistListViewController.h */,
-				E9C63B9A1A03ED35006C5DD2 /* IQSongsArtistListViewController.m */,
-				E9C63B9B1A03ED35006C5DD2 /* IQSongsCompilationsViewController.h */,
-				E9C63B9C1A03ED35006C5DD2 /* IQSongsCompilationsViewController.m */,
-				E9C63B9D1A03ED35006C5DD2 /* IQSongsComposersViewController.h */,
-				E9C63B9E1A03ED35006C5DD2 /* IQSongsComposersViewController.m */,
-				E9C63B9F1A03ED35006C5DD2 /* IQSongsGenreViewController.h */,
-				E9C63BA01A03ED35006C5DD2 /* IQSongsGenreViewController.m */,
-				E9C63BA11A03ED35006C5DD2 /* IQSongsListViewController.h */,
-				E9C63BA21A03ED35006C5DD2 /* IQSongsListViewController.m */,
-				E9C63BA31A03ED35006C5DD2 /* IQSongsPlaylistViewController.h */,
-				E9C63BA41A03ED35006C5DD2 /* IQSongsPlaylistViewController.m */,
-			);
-			path = IQAudioPIckerViewControllers;
-			sourceTree = "<group>";
-		};
-		E9C63B8C1A03ED35006C5DD2 /* IQAudioCellShadowView */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63B8D1A03ED35006C5DD2 /* IQAudioPickerShadowView.h */,
-				E9C63B8E1A03ED35006C5DD2 /* IQAudioPickerShadowView.m */,
-			);
-			path = IQAudioCellShadowView;
-			sourceTree = "<group>";
-		};
-		E9C63B8F1A03ED35006C5DD2 /* IQAudioPickerTableViewCell */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63B901A03ED35006C5DD2 /* IQSongsAlbumViewCell.h */,
-				E9C63B911A03ED35006C5DD2 /* IQSongsAlbumViewCell.m */,
-				E9C63B921A03ED35006C5DD2 /* IQSongsCell.h */,
-				E9C63B931A03ED35006C5DD2 /* IQSongsCell.m */,
-			);
-			path = IQAudioPickerTableViewCell;
-			sourceTree = "<group>";
-		};
-		E9C63B941A03ED35006C5DD2 /* IQAudioPickerTableViewHeader */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63B951A03ED35006C5DD2 /* IQSongsListTableHeaderView.h */,
-				E9C63B961A03ED35006C5DD2 /* IQSongsListTableHeaderView.m */,
-			);
-			path = IQAudioPickerTableViewHeader;
-			sourceTree = "<group>";
-		};
-		E9C63BA51A03ED35006C5DD2 /* IQMediaCaptureController */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BA61A03ED35006C5DD2 /* IQMediaCaptureController.h */,
-				E9C63BA71A03ED35006C5DD2 /* IQMediaCaptureController.m */,
-				E9C63BA81A03ED35006C5DD2 /* IQMediaCaptureController.xcassets */,
-				E9C63BA91A03ED35006C5DD2 /* IQMediaCaptureUtility */,
-				E9C63BB31A03ED35006C5DD2 /* IQMediaCaptureView */,
-				E9C63BC21A03ED35006C5DD2 /* Third Party */,
-			);
-			path = IQMediaCaptureController;
-			sourceTree = "<group>";
-		};
-		E9C63BA91A03ED35006C5DD2 /* IQMediaCaptureUtility */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BAA1A03ED35006C5DD2 /* IQCaptureSession */,
-				E9C63BB01A03ED35006C5DD2 /* IQFileManager */,
-			);
-			path = IQMediaCaptureUtility;
-			sourceTree = "<group>";
-		};
-		E9C63BAA1A03ED35006C5DD2 /* IQCaptureSession */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BAB1A03ED35006C5DD2 /* IQAudioSession */,
-				E9C63BAE1A03ED35006C5DD2 /* IQCaptureSession.h */,
-				E9C63BAF1A03ED35006C5DD2 /* IQCaptureSession.m */,
-			);
-			path = IQCaptureSession;
-			sourceTree = "<group>";
-		};
-		E9C63BAB1A03ED35006C5DD2 /* IQAudioSession */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BAC1A03ED35006C5DD2 /* IQAudioSession.h */,
-				E9C63BAD1A03ED35006C5DD2 /* IQAudioSession.m */,
-			);
-			path = IQAudioSession;
-			sourceTree = "<group>";
-		};
-		E9C63BB01A03ED35006C5DD2 /* IQFileManager */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BB11A03ED35006C5DD2 /* IQFileManager.h */,
-				E9C63BB21A03ED35006C5DD2 /* IQFileManager.m */,
-			);
-			path = IQFileManager;
-			sourceTree = "<group>";
-		};
-		E9C63BB31A03ED35006C5DD2 /* IQMediaCaptureView */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BB41A03ED35006C5DD2 /* IQBottomContainerView */,
-				E9C63BB71A03ED35006C5DD2 /* IQMediaView */,
-				E9C63BBD1A03ED35006C5DD2 /* IQPartitionBar */,
-			);
-			path = IQMediaCaptureView;
-			sourceTree = "<group>";
-		};
-		E9C63BB41A03ED35006C5DD2 /* IQBottomContainerView */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BB51A03ED35006C5DD2 /* IQBottomContainerView.h */,
-				E9C63BB61A03ED35006C5DD2 /* IQBottomContainerView.m */,
-			);
-			path = IQBottomContainerView;
-			sourceTree = "<group>";
-		};
-		E9C63BB71A03ED35006C5DD2 /* IQMediaView */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BB81A03ED35006C5DD2 /* IQFeatureOverlay */,
-				E9C63BBB1A03ED35006C5DD2 /* IQMediaView.h */,
-				E9C63BBC1A03ED35006C5DD2 /* IQMediaView.m */,
-			);
-			path = IQMediaView;
-			sourceTree = "<group>";
-		};
-		E9C63BB81A03ED35006C5DD2 /* IQFeatureOverlay */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BB91A03ED35006C5DD2 /* IQFeatureOverlay.h */,
-				E9C63BBA1A03ED35006C5DD2 /* IQFeatureOverlay.m */,
-			);
-			path = IQFeatureOverlay;
-			sourceTree = "<group>";
-		};
-		E9C63BBD1A03ED35006C5DD2 /* IQPartitionBar */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BBE1A03ED35006C5DD2 /* IQPartitionBar.h */,
-				E9C63BBF1A03ED35006C5DD2 /* IQPartitionBar.m */,
-				E9C63BC01A03ED35006C5DD2 /* IQPartitionView.h */,
-				E9C63BC11A03ED35006C5DD2 /* IQPartitionView.m */,
-			);
-			path = IQPartitionBar;
-			sourceTree = "<group>";
-		};
-		E9C63BC21A03ED35006C5DD2 /* Third Party */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BC31A03ED35006C5DD2 /* DPMeterView */,
-				E9C63BC61A03ED35006C5DD2 /* PocketSVG */,
-			);
-			path = "Third Party";
-			sourceTree = "<group>";
-		};
-		E9C63BC31A03ED35006C5DD2 /* DPMeterView */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BC41A03ED35006C5DD2 /* IQ_DPMeterView.h */,
-				E9C63BC51A03ED35006C5DD2 /* IQ_DPMeterView.m */,
-			);
-			path = DPMeterView;
-			sourceTree = "<group>";
-		};
-		E9C63BC61A03ED35006C5DD2 /* PocketSVG */ = {
-			isa = PBXGroup;
-			children = (
-				E9C63BC71A03ED35006C5DD2 /* IQ_PocketSVG.h */,
-				E9C63BC81A03ED35006C5DD2 /* IQ_PocketSVG.m */,
-				E9C63BC91A03ED35006C5DD2 /* mic.svg */,
-			);
-			path = PocketSVG;
 			sourceTree = "<group>";
 		};
 		E9CB091219FB061F00B548A6 /* FacebookHelper */ = {
@@ -2369,18 +1981,15 @@
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
 				E9CD53941993C73900206B75 /* Images.xcassets in Resources */,
 				C12A119319787BE700D53B1C /* Whitney-Medium.ttf in Resources */,
-				E9C63BF91A03ED35006C5DD2 /* IQMediaCaptureController.xcassets in Resources */,
 				E96F07D719BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				45D9FA951A781AFD00D08577 /* JSQMessagesAssets.bundle in Resources */,
 				45D9FAA91A781AFD00D08577 /* JSQMessagesViewController.xib in Resources */,
 				45D9FAE91A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.xib in Resources */,
 				45D9FAE51A781AFD00D08577 /* JSQMessagesToolbarContentView.xib in Resources */,
-				E9C63C0F1A03ED35006C5DD2 /* mic.svg in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				45D9FAD11A781AFD00D08577 /* JSQMessagesCollectionViewCellIncoming.xib in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
-				E9C63BDD1A03ED35006C5DD2 /* IQAudioPickerController.xcassets in Resources */,
 				E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */,
 				45D9FAD51A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.xib in Resources */,
 			);
@@ -2392,7 +2001,6 @@
 			files = (
 				E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */,
 				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
-				E9C63BF81A03ED35006C5DD2 /* IQMediaCaptureController.xcassets in Resources */,
 				45D9FA941A781AFD00D08577 /* JSQMessagesAssets.bundle in Resources */,
 				E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
@@ -2405,13 +2013,11 @@
 				45D9FAE41A781AFD00D08577 /* JSQMessagesToolbarContentView.xib in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
-				E9C63C0E1A03ED35006C5DD2 /* mic.svg in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
 				45D9FADE1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.xib in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
 				C18AC292198451150056957B /* autorevision.sh in Resources */,
 				E921D6201923967D00361247 /* InfoPlist.strings in Resources */,
-				E9C63BDC1A03ED35006C5DD2 /* IQAudioPickerController.xcassets in Resources */,
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,
 				45D9FA961A781AFD00D08577 /* JSQMessages.strings in Resources */,
 				45D9FAA81A781AFD00D08577 /* JSQMessagesViewController.xib in Resources */,
@@ -2532,24 +2138,18 @@
 				C1F5B3C51A654A4200CAFD95 /* WGError.m in Sources */,
 				C1F5B3C61A654A4200CAFD95 /* WGParser.m in Sources */,
 				E994111319AA8D9200D76379 /* NSString+URLEncoding.m in Sources */,
-				E9C63BFD1A03ED35006C5DD2 /* IQCaptureSession.m in Sources */,
 				C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */,
 				E96F07C219BA654600E858D7 /* GKImageCropView.m in Sources */,
 				C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */,
 				45D9FAD71A781AFD00D08577 /* JSQMessagesComposerTextView.m in Sources */,
 				C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */,
 				E96F07C419BA654600E858D7 /* GKImageCropViewController.m in Sources */,
-				E9C63BDF1A03ED35006C5DD2 /* IQAudioPickerUtility.m in Sources */,
 				C12A110C19787BE700D53B1C /* WGSpinnerView.m in Sources */,
-				E9C63C011A03ED35006C5DD2 /* IQBottomContainerView.m in Sources */,
 				E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */,
 				45D9FABD1A781AFD00D08577 /* JSQMediaItem.m in Sources */,
 				45D9FAB91A781AFD00D08577 /* JSQMessagesCollectionViewLayoutAttributes.m in Sources */,
-				E9C63C131A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m in Sources */,
 				45D9FAE31A781AFD00D08577 /* JSQMessagesToolbarContentView.m in Sources */,
 				C12A110D19787BE700D53B1C /* UIImageCrop.m in Sources */,
-				E9C63BF11A03ED35006C5DD2 /* IQSongsGenreViewController.m in Sources */,
-				E9C63BD71A03ED35006C5DD2 /* IQCheckmarkView.m in Sources */,
 				45D9FA9B1A781AFD00D08577 /* NSString+JSQMessages.m in Sources */,
 				E96F07C019BA654600E858D7 /* GKImageCropOverlayView.m in Sources */,
 				45D9FBB91A8003EF00D08577 /* UIView+ViewToImage.m in Sources */,
@@ -2564,7 +2164,6 @@
 				E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */,
 				45D9FAE71A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.m in Sources */,
 				45D9FAAF1A781AFD00D08577 /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,
-				E9C63BEB1A03ED35006C5DD2 /* IQSongsArtistListViewController.m in Sources */,
 				C12A110F19787BE700D53B1C /* UIButtonUngoOut.m in Sources */,
 				C12A111019787BE700D53B1C /* PeopleViewController.m in Sources */,
 				FAACB6741A2508E00089FD01 /* CampusNotificationViewController.m in Sources */,
@@ -2581,47 +2180,33 @@
 				45D9FAA31A781AFD00D08577 /* UIView+JSQMessages.m in Sources */,
 				45D9FACD1A781AFD00D08577 /* JSQMessagesCollectionViewCell.m in Sources */,
 				C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */,
-				E9C63C0B1A03ED35006C5DD2 /* IQ_DPMeterView.m in Sources */,
 				C12A111719787BE700D53B1C /* SignViewController.m in Sources */,
-				E9C63BEF1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */,
 				E9AEAE541A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */,
 				C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */,
 				45D9FBAF1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */,
-				E9C63BD51A03ED35006C5DD2 /* IQAssetsPickerShadowView.m in Sources */,
-				E9C63C091A03ED35006C5DD2 /* IQPartitionView.m in Sources */,
 				45D9FAD31A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
 				E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
 				E96F07C819BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */,
-				E9C63C071A03ED35006C5DD2 /* IQPartitionBar.m in Sources */,
 				C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */,
-				E9C63C031A03ED35006C5DD2 /* IQFeatureOverlay.m in Sources */,
-				E9C63BF31A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */,
 				45D9FAE11A781AFD00D08577 /* JSQMessagesMediaPlaceholderView.m in Sources */,
 				45D9FBB11A7AE1DD00D08577 /* GCDAsyncUdpSocket.m in Sources */,
-				E9C63C0D1A03ED35006C5DD2 /* IQ_PocketSVG.m in Sources */,
 				45D9FADD1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.m in Sources */,
 				FA2BC20B1A6826FE00055F7C /* TopSchool.m in Sources */,
 				C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */,
 				E96F07BE19BA654600E858D7 /* GKCropBorderView.m in Sources */,
-				E9C63BE31A03ED35006C5DD2 /* IQSongsAlbumViewCell.m in Sources */,
 				45D9FAB11A781AFD00D08577 /* JSQMessagesTimestampFormatter.m in Sources */,
 				E9BF59E91A3B40EB00AF8AFE /* UILabelBorder.m in Sources */,
-				E9C63BED1A03ED35006C5DD2 /* IQSongsCompilationsViewController.m in Sources */,
 				C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */,
 				C12A111E19787BE700D53B1C /* SDWebImagePrefetcher.m in Sources */,
-				E9C63BD31A03ED35006C5DD2 /* IQAssetsCell.m in Sources */,
-				E9C63BE91A03ED35006C5DD2 /* IQSongsAlbumListViewController.m in Sources */,
 				45D9FAC91A781AFD00D08577 /* JSQMessagesCellTextView.m in Sources */,
 				E998C28119D1BF7D0012BF51 /* InviteViewController.m in Sources */,
 				E9203B541A23C4B90086BF73 /* EventConversationViewController.m in Sources */,
 				45D9FADB1A781AFD00D08577 /* JSQMessagesLabel.m in Sources */,
 				C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */,
-				E9C63BE51A03ED35006C5DD2 /* IQSongsCell.m in Sources */,
 				E96F07C619BA654600E858D7 /* GKImagePicker.m in Sources */,
 				E998C26619CB80240012BF51 /* UIImageView+ImageArea.m in Sources */,
 				E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */,
 				E998C28519D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m in Sources */,
-				E9C63BFF1A03ED35006C5DD2 /* IQFileManager.m in Sources */,
 				C12A112219787BE700D53B1C /* FontProperties.m in Sources */,
 				E9A0F9B21A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */,
 				E9CD53871993C29800206B75 /* FLAnimatedImageView.m in Sources */,
@@ -2629,18 +2214,12 @@
 				E9ACCA2119C3A12500F3EB20 /* WigoConfirmationViewController.m in Sources */,
 				FA8C37EB1A3FDF9B00C46B9F /* ImageScrollView.m in Sources */,
 				FA8C37EA1A3FDF8C00C46B9F /* ProfileViewController.m in Sources */,
-				E9C63BF71A03ED35006C5DD2 /* IQMediaCaptureController.m in Sources */,
-				E9C63BD91A03ED35006C5DD2 /* IQAssetsPickerController.m in Sources */,
 				FADD07311A0D296900492369 /* LLACircularProgressView.m in Sources */,
 				C12A112519787BE700D53B1C /* UIImage+GIF.m in Sources */,
 				C12A112619787BE700D53B1C /* UIImageView+WebCache.m in Sources */,
 				FA5526121A1FCB3700101AE7 /* GroupStats.m in Sources */,
-				E9C63BCF1A03ED35006C5DD2 /* IQAlbumAssetsViewController.m in Sources */,
-				E9C63BE71A03ED35006C5DD2 /* IQSongsListTableHeaderView.m in Sources */,
-				E9C63BE11A03ED35006C5DD2 /* IQAudioPickerShadowView.m in Sources */,
 				45D9FACF1A781AFD00D08577 /* JSQMessagesCollectionViewCellIncoming.m in Sources */,
 				FA55260D1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,
-				E9C63BFB1A03ED35006C5DD2 /* IQAudioSession.m in Sources */,
 				C12A112819787BE700D53B1C /* SDImageCache.m in Sources */,
 				C12A112919787BE700D53B1C /* UIButtonAligned.m in Sources */,
 				E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
@@ -2649,14 +2228,12 @@
 				C12A112D19787BE700D53B1C /* PlacesViewController.m in Sources */,
 				C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */,
 				45D9FA9F1A781AFD00D08577 /* UIDevice+JSQMessages.m in Sources */,
-				E9C63BDB1A03ED35006C5DD2 /* IQAudioPickerController.m in Sources */,
 				C12A112F19787BE700D53B1C /* ConversationViewController.m in Sources */,
 				45D9FAA71A781AFD00D08577 /* JSQMessagesViewController.m in Sources */,
 				E9444C0919F00FCC004E7925 /* OnboardViewController.m in Sources */,
 				C12A113019787BE700D53B1C /* SDWebImageCompat.m in Sources */,
 				C12A113119787BE700D53B1C /* NSData+ImageContentType.m in Sources */,
 				E99D0ADD1A2CCA3300384A73 /* PeekViewController.m in Sources */,
-				E9C63BF51A03ED35006C5DD2 /* IQSongsPlaylistViewController.m in Sources */,
 				E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
 				E9D039C91A09886A00DEF094 /* MediaScrollView.m in Sources */,
 				45D9FBB51A7ED46600D08577 /* EventPeopleModalViewController.m in Sources */,
@@ -2668,8 +2245,6 @@
 				E96F07AD19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
 				E9ACCA2519C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
-				E9C63C051A03ED35006C5DD2 /* IQMediaView.m in Sources */,
-				E9C63C111A03ED35006C5DD2 /* IQMediaPickerController.m in Sources */,
 				C14AB1BE1A8017670011C4E5 /* UIImage+Resize.m in Sources */,
 				E9DFE1701A001142003C5779 /* BatteryViewController.m in Sources */,
 				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
@@ -2682,7 +2257,6 @@
 				FA55261D1A1FDB4000101AE7 /* JBChartView.m in Sources */,
 				45D9FAB31A781AFD00D08577 /* JSQMessagesToolbarButtonFactory.m in Sources */,
 				C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */,
-				E9C63BD11A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m in Sources */,
 				C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */,
 				E9ACDC6A19AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
 				C12A113A19787BE700D53B1C /* MKAnnotationView+WebCache.m in Sources */,
@@ -2700,16 +2274,13 @@
 				4563F5271A3F460F00F8C9C4 /* WGUser.m in Sources */,
 				E96F07C119BA654600E858D7 /* GKImageCropView.m in Sources */,
 				E900C2BC1961EADE00A01F50 /* SDWebImageManager.m in Sources */,
-				E9C63BD81A03ED35006C5DD2 /* IQAssetsPickerController.m in Sources */,
 				45D9FAB01A781AFD00D08577 /* JSQMessagesTimestampFormatter.m in Sources */,
 				45D9FAC61A781AFD00D08577 /* JSQVideoMediaItem.m in Sources */,
 				E9DE130C196F06B100AFA05A /* WGSpinnerView.m in Sources */,
 				45D9FAB41A781AFD00D08577 /* JSQMessagesCollectionViewFlowLayout.m in Sources */,
 				E96F07C319BA654600E858D7 /* GKImageCropViewController.m in Sources */,
-				E9C63BFC1A03ED35006C5DD2 /* IQCaptureSession.m in Sources */,
 				E93DE530195C99F600079074 /* UIImageCrop.m in Sources */,
 				E9DBB050197813F900DDACDE /* UIScrollView+GifPullToRefresh.m in Sources */,
-				E9C63BE81A03ED35006C5DD2 /* IQSongsAlbumListViewController.m in Sources */,
 				45D9FABA1A781AFD00D08577 /* JSQLocationMediaItem.m in Sources */,
 				45D9FAAC1A781AFD00D08577 /* JSQMessagesBubbleImageFactory.m in Sources */,
 				E96F07BF19BA654600E858D7 /* GKImageCropOverlayView.m in Sources */,
@@ -2725,16 +2296,13 @@
 				45DF86B31A5C5DEB00DB85AE /* AFURLResponseSerialization.m in Sources */,
 				454409581A537F1C00BB3036 /* WGMessage.m in Sources */,
 				E921D6221923967D00361247 /* main.m in Sources */,
-				E9C63C121A03ED35006C5DD2 /* IQMediaPickerControllerConstants.m in Sources */,
 				45D9FBBC1A80043000D08577 /* UIImage+ImageEffects.m in Sources */,
 				E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */,
 				E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */,
 				FAACB6731A2508E00089FD01 /* CampusNotificationViewController.m in Sources */,
-				E9C63BF61A03ED35006C5DD2 /* IQMediaCaptureController.m in Sources */,
 				45D9FBAE1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */,
 				E900C2BA1961EADE00A01F50 /* SDWebImageDownloader.m in Sources */,
 				45DF86971A5B1F8200DB85AE /* NSDate+WGDate.m in Sources */,
-				E9C63BDE1A03ED35006C5DD2 /* IQAudioPickerUtility.m in Sources */,
 				E93030C41986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
 				E93DE52A195C82B900079074 /* MessageViewController.m in Sources */,
 				E900C2C11961EADE00A01F50 /* UIImage+WebP.m in Sources */,
@@ -2756,11 +2324,7 @@
 				45D9FAAE1A781AFD00D08577 /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,
 				E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */,
 				E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */,
-				E9C63BE61A03ED35006C5DD2 /* IQSongsListTableHeaderView.m in Sources */,
 				45D9FADC1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.m in Sources */,
-				E9C63BD41A03ED35006C5DD2 /* IQAssetsPickerShadowView.m in Sources */,
-				E9C63BF01A03ED35006C5DD2 /* IQSongsGenreViewController.m in Sources */,
-				E9C63BD21A03ED35006C5DD2 /* IQAssetsCell.m in Sources */,
 				E96F07BD19BA654600E858D7 /* GKCropBorderView.m in Sources */,
 				45DF86B11A5C5DEB00DB85AE /* AFURLConnectionOperation.m in Sources */,
 				E900C2B91961EADE00A01F50 /* SDWebImageDecoder.m in Sources */,
@@ -2772,7 +2336,6 @@
 				45D9FAD61A781AFD00D08577 /* JSQMessagesComposerTextView.m in Sources */,
 				E998C28019D1BF7D0012BF51 /* InviteViewController.m in Sources */,
 				E96F07C519BA654600E858D7 /* GKImagePicker.m in Sources */,
-				E9C63BE41A03ED35006C5DD2 /* IQSongsCell.m in Sources */,
 				45D9FBB81A8003EF00D08577 /* UIView+ViewToImage.m in Sources */,
 				FABD337C1A3B9904008FF56D /* JPBParallaxBlurViewController.m in Sources */,
 				E9BF59E81A3B40EB00AF8AFE /* UILabelBorder.m in Sources */,
@@ -2781,25 +2344,19 @@
 				45D9FAB61A781AFD00D08577 /* JSQMessagesCollectionViewFlowLayoutInvalidationContext.m in Sources */,
 				FAAF4AC51A3F7ABA0065E160 /* ImageScrollView.m in Sources */,
 				E9BE8C49192A48F1008BB84C /* FontProperties.m in Sources */,
-				E9C63BDA1A03ED35006C5DD2 /* IQAudioPickerController.m in Sources */,
-				E9C63BEE1A03ED35006C5DD2 /* IQSongsComposersViewController.m in Sources */,
 				45DF86911A5AFBA000DB85AE /* WGEventMessage.m in Sources */,
 				E9203B531A23C4B90086BF73 /* EventConversationViewController.m in Sources */,
 				FA2BC20A1A6826FE00055F7C /* TopSchool.m in Sources */,
 				E998C28419D1E90A0012BF51 /* NSMutableDictionary+NotOverwrite.m in Sources */,
-				E9C63C001A03ED35006C5DD2 /* IQBottomContainerView.m in Sources */,
 				45D9FACC1A781AFD00D08577 /* JSQMessagesCollectionViewCell.m in Sources */,
 				E9AEAE531A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */,
 				45D9FAA21A781AFD00D08577 /* UIView+JSQMessages.m in Sources */,
 				45D9FADA1A781AFD00D08577 /* JSQMessagesLabel.m in Sources */,
-				E9C63BCE1A03ED35006C5DD2 /* IQAlbumAssetsViewController.m in Sources */,
 				45D9FAD81A781AFD00D08577 /* JSQMessagesInputToolbar.m in Sources */,
 				45DF86AE1A5C5DEB00DB85AE /* AFHTTPSessionManager.m in Sources */,
 				E9CD53861993C29800206B75 /* FLAnimatedImageView.m in Sources */,
 				E9CD473A194B9AD600AEA17D /* PhotoViewController.m in Sources */,
-				E9C63BFE1A03ED35006C5DD2 /* IQFileManager.m in Sources */,
 				FABD33801A3B996F008FF56D /* ProfileViewController.m in Sources */,
-				E9C63BE21A03ED35006C5DD2 /* IQSongsAlbumViewCell.m in Sources */,
 				4544094F1A51EF3000BB3036 /* WGCollectionArray.m in Sources */,
 				E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */,
 				45F74FF51A5E3F9100A5170F /* WGFollow.m in Sources */,
@@ -2807,9 +2364,7 @@
 				E9ACCA2019C3A12500F3EB20 /* WigoConfirmationViewController.m in Sources */,
 				E900C2BF1961EADE00A01F50 /* UIImage+GIF.m in Sources */,
 				45D9FAAA1A781AFD00D08577 /* JSQMessagesAvatarImageFactory.m in Sources */,
-				E9C63BE01A03ED35006C5DD2 /* IQAudioPickerShadowView.m in Sources */,
 				E900C2C31961EADE00A01F50 /* UIImageView+WebCache.m in Sources */,
-				E9C63BEA1A03ED35006C5DD2 /* IQSongsArtistListViewController.m in Sources */,
 				FABD337D1A3B9904008FF56D /* JPBParallaxTableViewController.m in Sources */,
 				45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */,
 				FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */,
@@ -2818,18 +2373,15 @@
 				45D9FAA01A781AFD00D08577 /* UIImage+JSQMessages.m in Sources */,
 				45D9FACA1A781AFD00D08577 /* JSQMessagesCollectionView.m in Sources */,
 				45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */,
-				E9C63C081A03ED35006C5DD2 /* IQPartitionView.m in Sources */,
 				E900C2B71961EADE00A01F50 /* SDImageCache.m in Sources */,
 				E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */,
 				FA5526111A1FCB3700101AE7 /* GroupStats.m in Sources */,
 				E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
 				45D9FBB41A7ED46600D08577 /* EventPeopleModalViewController.m in Sources */,
 				45D9FAA61A781AFD00D08577 /* JSQMessagesViewController.m in Sources */,
-				E9C63C041A03ED35006C5DD2 /* IQMediaView.m in Sources */,
 				FA55260C1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,
 				E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */,
 				45D9FABC1A781AFD00D08577 /* JSQMediaItem.m in Sources */,
-				E9C63BFA1A03ED35006C5DD2 /* IQAudioSession.m in Sources */,
 				45D9FAC81A781AFD00D08577 /* JSQMessagesCellTextView.m in Sources */,
 				4563F5241A3F436100F8C9C4 /* WGObject.m in Sources */,
 				45DF86B21A5C5DEB00DB85AE /* AFURLRequestSerialization.m in Sources */,
@@ -2837,19 +2389,13 @@
 				4563F51E1A3F387700F8C9C4 /* WGApi.m in Sources */,
 				E900C2BB1961EADE00A01F50 /* SDWebImageDownloaderOperation.m in Sources */,
 				45D9FAC01A781AFD00D08577 /* JSQMessagesAvatarImage.m in Sources */,
-				E9C63C0C1A03ED35006C5DD2 /* IQ_PocketSVG.m in Sources */,
 				45D9FAE21A781AFD00D08577 /* JSQMessagesToolbarContentView.m in Sources */,
 				45D9FAB21A781AFD00D08577 /* JSQMessagesToolbarButtonFactory.m in Sources */,
-				E9C63C061A03ED35006C5DD2 /* IQPartitionBar.m in Sources */,
-				E9C63C101A03ED35006C5DD2 /* IQMediaPickerController.m in Sources */,
 				E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */,
 				4563F5651A3F875900F8C9C4 /* NSDictionary+STHelper.m in Sources */,
 				E9444C0819F00FCC004E7925 /* OnboardViewController.m in Sources */,
 				E900C2B81961EADE00A01F50 /* SDWebImageCompat.m in Sources */,
-				E9C63BEC1A03ED35006C5DD2 /* IQSongsCompilationsViewController.m in Sources */,
-				E9C63C0A1A03ED35006C5DD2 /* IQ_DPMeterView.m in Sources */,
 				E900C2B61961EADE00A01F50 /* NSData+ImageContentType.m in Sources */,
-				E9C63C021A03ED35006C5DD2 /* IQFeatureOverlay.m in Sources */,
 				FA2BC2061A68268700055F7C /* TopSchoolViewController.m in Sources */,
 				FABD337A1A3B9904008FF56D /* FXBlurView.m in Sources */,
 				E99D0ADC1A2CCA3300384A73 /* PeekViewController.m in Sources */,
@@ -2873,7 +2419,6 @@
 				E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */,
 				FA2BE9BD19FAF06500CC0E5E /* EventStoryViewController.m in Sources */,
 				45DF86B01A5C5DEB00DB85AE /* AFSecurityPolicy.m in Sources */,
-				E9C63BF21A03ED35006C5DD2 /* IQSongsListViewController.m in Sources */,
 				454409551A5241FA00BB3036 /* WGEvent.m in Sources */,
 				45D9FAD21A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
 				45D9FA9C1A781AFD00D08577 /* UIColor+JSQMessages.m in Sources */,
@@ -2882,14 +2427,11 @@
 				FA55261C1A1FDB4000101AE7 /* JBChartView.m in Sources */,
 				E9ACDC6919AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
 				E900C2B51961EADE00A01F50 /* MKAnnotationView+WebCache.m in Sources */,
-				E9C63BD61A03ED35006C5DD2 /* IQCheckmarkView.m in Sources */,
 				E998C28819D342C50012BF51 /* PopViewController.m in Sources */,
 				454409641A58D19300BB3036 /* WGProfile.m in Sources */,
 				454409611A54A08A00BB3036 /* WGParser.m in Sources */,
 				C14AB1BB1A8017670011C4E5 /* UIImage+Alpha.m in Sources */,
-				E9C63BD01A03ED35006C5DD2 /* IQAssetsAlbumViewCell.m in Sources */,
 				45D9FAC41A781AFD00D08577 /* JSQPhotoMediaItem.m in Sources */,
-				E9C63BF41A03ED35006C5DD2 /* IQSongsPlaylistViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
