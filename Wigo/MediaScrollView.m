@@ -1012,6 +1012,16 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:info];
+    UIImage *image =  (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
+    if (self.controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+        UIImage *newImage = [UIImage imageWithCGImage:[image CGImage]
+                                                          scale:image.scale
+                                                    orientation: UIImageOrientationLeftMirrored];
+        [newInfo setObject:newImage forKey:UIImagePickerControllerOriginalImage];
+    }
+    self.info = [[NSDictionary alloc] initWithDictionary:newInfo];
+    
     self.dismissButton.hidden = YES;
     self.dismissButton.enabled = NO;
     self.pictureButton.hidden = YES;
@@ -1023,12 +1033,11 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     self.previewImageView.hidden = NO;
     self.previewImageView.userInteractionEnabled = YES;
-    self.previewImageView.image = (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
+    self.previewImageView.image = (UIImage *) [self.info objectForKey: UIImagePickerControllerOriginalImage];
     self.postButton.hidden = NO;
     self.postButton.enabled = YES;
     self.cancelButton.hidden = NO;
     self.cancelButton.enabled = YES;
-    self.info = info;
     self.panRecognizer.enabled = NO;
 }
 
