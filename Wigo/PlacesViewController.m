@@ -23,8 +23,8 @@
 #import "ProfileViewController.h"
 #import "FXBlurView.h"
 #import "ChatViewController.h"
+#import "BatteryViewController.h"
 
-//#define sizeOfEachCell [[UIScreen mainScreen] bounds].size.width/1.6
 #define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
 
 #define kEventCellName @"EventCell"
@@ -160,6 +160,7 @@ BOOL secondTimeFetchingUserInfo;
     [self fetchUserInfo];
     [self shouldShowCreateButton];
     [self showOnlyOnePlusButton];
+    [self presentViewController:[BatteryViewController new] animated:YES completion:nil];
 }
 
 - (BOOL) shouldShowCreateButton {

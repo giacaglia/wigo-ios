@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WGEvent.h"
 
 @interface OnboardFollowViewController : UIViewController <UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
 
+@property (nonatomic, strong) UITableView *tableViewOfPeople;
+@property (nonatomic, strong) WGCollection *users;
+@property (nonatomic, strong) WGCollection *filteredUsers;
 @end

@@ -405,7 +405,6 @@
                             collectionViewLayout:[[MediaFlowLayout alloc] init]];
     self.mediaScrollView.eventMessages = self.eventMessages;
     self.mediaScrollView.event = self.event;
-//    self.mediaScrollView.controllerDelegate = self.controllerDelegate;
     self.mediaScrollView.mediaDelegate = self;
     self.mediaScrollView.eventConversationDelegate = self;
     self.mediaScrollView.storyDelegate = self.storyDelegate;
@@ -497,7 +496,7 @@
     self.loadingBanner.backgroundColor = UIColor.blackColor;
     [self.view addSubview:self.loadingBanner];
     
-    self.postingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 100, 20)];
+    self.postingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 150, 20)];
     self.postingLabel.text = @"Posting...";
     self.postingLabel.textColor = UIColor.whiteColor;
     self.postingLabel.font = [FontProperties mediumFont:13.0f];

@@ -11,9 +11,6 @@
 #import "RWBlurPopover.h"
 
 UISearchBar *searchBar;
-UITableView *tableViewOfPeople;
-WGCollection *users;
-WGCollection *filteredUsers;
 BOOL isSearching;
 UIImageView *searchIconImageView;
 UIViewController *popViewController;
@@ -152,11 +149,11 @@ BOOL initializedPopScreen;
 }
 
 - (void)initializeTableOfPeople {
-    tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 158)];
-    tableViewOfPeople.delegate = self;
-    tableViewOfPeople.dataSource = self;
-    tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [self.view addSubview:tableViewOfPeople];
+    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 158)];
+    self.tableViewOfPeople.delegate = self;
+    self.tableViewOfPeople.dataSource = self;
+    self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:self.tableViewOfPeople];
 }
 
 - (void)initializeContinueButton {
@@ -187,10 +184,10 @@ BOOL initializedPopScreen;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (isSearching) {
-        return [filteredUsers count];
+        return [self.filteredUsers count];
     } else {
-        int hasNextPage = ([users.hasNextPage boolValue] ? 1 : 0);
-        return [users count] + hasNextPage;
+        int hasNextPage = ([self.users.hasNextPage boolValue] ? 1 : 0);
+        return [self.users count] + hasNextPage;
     }
 }
 
@@ -204,8 +201,8 @@ BOOL initializedPopScreen;
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
-    if ([users count] == 0) return cell;
-    if ([indexPath row] == [users count]) {
+    if ([self.users count] == 0) return cell;
+    if ([indexPath row] == [self.users count]) {
         [self fetchEveryone];
         return cell;
     }
@@ -272,21 +269,21 @@ BOOL initializedPopScreen;
 -(WGUser *) getUserAtIndex:(int)index {
     WGUser *user;
     if (isSearching) {
-        int sizeOfArray = (int)[filteredUsers count];
+        int sizeOfArray = (int)[self.filteredUsers count];
         if (sizeOfArray > 0 && sizeOfArray > index)
-            user = (WGUser *)[filteredUsers objectAtIndex:index];
+            user = (WGUser *)[self.filteredUsers objectAtIndex:index];
     } else {
-        int sizeOfArray = (int)[users count];
+        int sizeOfArray = (int)[self.users count];
         if (sizeOfArray > 0 && sizeOfArray > index)
-            user = (WGUser *)[users objectAtIndex:index];
+            user = (WGUser *)[self.users objectAtIndex:index];
     }
     return user;
 }
 
 - (void) followedPersonPressed:(id)sender {
     //Get Index Path
-    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:tableViewOfPeople];
-    NSIndexPath *indexPath = [tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:self.tableViewOfPeople];
+    NSIndexPath *indexPath = [self.tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
     WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
     
     UIButton *senderButton = (UIButton*)sender;
@@ -311,7 +308,7 @@ BOOL initializedPopScreen;
                 [[WGError sharedInstance] logError:error forAction:WGActionPost];
             }
         }];
-        [users replaceObjectAtIndex:[indexPath row] withObject:user];
+        [self.users replaceObjectAtIndex:[indexPath row] withObject:user];
     } else {
         [senderButton setTitle:nil forState:UIControlStateNormal];
         [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
@@ -325,7 +322,7 @@ BOOL initializedPopScreen;
         
         user.isFollowing = @NO;
         user.isFollowingRequested = @NO;
-        [users replaceObjectAtIndex:[indexPath row] withObject:user];
+        [self.users replaceObjectAtIndex:[indexPath row] withObject:user];
     }
 }
 
@@ -341,27 +338,30 @@ BOOL initializedPopScreen;
 }
 
 - (void) fetchEveryone {
-    if (!users) {
+    __weak typeof(self) weakSelf = self;
+    if (!self.users) {
         [WGUser getOnboarding:^(WGCollection *collection, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
-                users = collection;
-                [tableViewOfPeople reloadData];
+                strongSelf.users = collection;
+                [strongSelf.tableViewOfPeople reloadData];
             });
         }];
-    } else if ([users.hasNextPage boolValue]) {
-        [users addNextPage:^(BOOL success, NSError *error) {
+    } else if ([self.users.hasNextPage boolValue]) {
+        [self.users addNextPage:^(BOOL success, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
-                [tableViewOfPeople reloadData];
+                [strongSelf.tableViewOfPeople reloadData];
             });
         }];
     }
@@ -391,7 +391,7 @@ BOOL initializedPopScreen;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    [filteredUsers removeAllObjects];
+    [self.filteredUsers removeAllObjects];
     
     if([searchText length] != 0) {
         isSearching = YES;
@@ -401,7 +401,7 @@ BOOL initializedPopScreen;
     } else {
         isSearching = NO;
     }
-    [tableViewOfPeople reloadData];
+    [self.tableViewOfPeople reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -413,16 +413,17 @@ BOOL initializedPopScreen;
 - (void)searchTableList {
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
-    
+    __weak typeof(self) weakSelf = self;
     [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionSearch retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionSearch];
                 return;
             }
-            users = collection;
-            [tableViewOfPeople reloadData];
+            strongSelf.users = collection;
+            [strongSelf.tableViewOfPeople reloadData];
         });
     }];
 }

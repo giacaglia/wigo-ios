@@ -325,7 +325,6 @@
 		E99D0ADD1A2CCA3300384A73 /* PeekViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99D0ADB1A2CCA3300384A73 /* PeekViewController.m */; };
 		E99EC2891986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
 		E99EC28A1986B69C00CBFA59 /* MoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99EC2881986B69C00CBFA59 /* MoreViewController.m */; };
-		E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
 		E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */; };
 		E9A0F9B21A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */; };
 		E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
@@ -476,7 +475,6 @@
 		E9F7995319D4C733001D5BFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A695C619B0C7840071067B /* CoreData.framework */; };
 		E9F7995519D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */; };
 		E9F7995619D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */; };
-		E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E99F46AE199012F0007408C1 /* LockScreenViewController.m */; };
 		FA2BC2061A68268700055F7C /* TopSchoolViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BC2051A68268700055F7C /* TopSchoolViewController.m */; };
 		FA2BC2071A68268700055F7C /* TopSchoolViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BC2051A68268700055F7C /* TopSchoolViewController.m */; };
 		FA2BC20A1A6826FE00055F7C /* TopSchool.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BC2091A6826FE00055F7C /* TopSchool.m */; };
@@ -808,8 +806,6 @@
 		E99D0ADB1A2CCA3300384A73 /* PeekViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeekViewController.m; sourceTree = "<group>"; };
 		E99EC2871986B69C00CBFA59 /* MoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoreViewController.h; sourceTree = "<group>"; };
 		E99EC2881986B69C00CBFA59 /* MoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MoreViewController.m; sourceTree = "<group>"; };
-		E99F46AD199012F0007408C1 /* LockScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockScreenViewController.h; sourceTree = "<group>"; };
-		E99F46AE199012F0007408C1 /* LockScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LockScreenViewController.m; sourceTree = "<group>"; };
 		E9A0F9AF1A1E5CBE001A66DF /* EventMessagesConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventMessagesConstants.h; sourceTree = "<group>"; };
 		E9A0F9B01A1E5CBE001A66DF /* EventMessagesConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventMessagesConstants.m; sourceTree = "<group>"; };
 		E9A31E451980AB25008A711B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -2084,8 +2080,6 @@
 			children = (
 				E9DFE16D1A001142003C5779 /* BatteryViewController.h */,
 				E9DFE16E1A001142003C5779 /* BatteryViewController.m */,
-				E99F46AD199012F0007408C1 /* LockScreenViewController.h */,
-				E99F46AE199012F0007408C1 /* LockScreenViewController.m */,
 				E9C34A6D19F86FAB00D7E9D3 /* WaitListViewController.h */,
 				E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */,
 			);
@@ -2539,7 +2533,6 @@
 				C1F5B3C61A654A4200CAFD95 /* WGParser.m in Sources */,
 				E994111319AA8D9200D76379 /* NSString+URLEncoding.m in Sources */,
 				E9C63BFD1A03ED35006C5DD2 /* IQCaptureSession.m in Sources */,
-				E9FB229219913EC100D4B93D /* LockScreenViewController.m in Sources */,
 				C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */,
 				E96F07C219BA654600E858D7 /* GKImageCropView.m in Sources */,
 				C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */,
@@ -2839,7 +2832,6 @@
 				E9C63BFA1A03ED35006C5DD2 /* IQAudioSession.m in Sources */,
 				45D9FAC81A781AFD00D08577 /* JSQMessagesCellTextView.m in Sources */,
 				4563F5241A3F436100F8C9C4 /* WGObject.m in Sources */,
-				E99F46AF199012F0007408C1 /* LockScreenViewController.m in Sources */,
 				45DF86B21A5C5DEB00DB85AE /* AFURLRequestSerialization.m in Sources */,
 				E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */,
 				4563F51E1A3F387700F8C9C4 /* WGApi.m in Sources */,
