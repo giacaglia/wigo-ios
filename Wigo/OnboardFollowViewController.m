@@ -46,7 +46,6 @@ BOOL initializedPopScreen;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-//    if (!initializedPopScreen) [self initializePopScreen];
     [WGAnalytics tagEvent:@"Onboard Follow View"];
 }
 
@@ -170,8 +169,6 @@ BOOL initializedPopScreen;
     [continueButton addSubview:rightArrowImageView];
     [self.view addSubview:continueButton];
 }
-
-
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -278,11 +278,21 @@
         CGFloat cropWidth = screenHeight * ratio;
         CGFloat cropHeight = screenWidth * ratio;
         
+        CGFloat jpegQuality = 0.8;
+        CGFloat imageMultiple = 1.0f;
+        
         CGFloat translation = (imageHeight - cropHeight) / 2.0;
     
         UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
-        UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight, screenWidth) interpolationQuality:kCGInterpolationHigh];
-        fileData = UIImageJPEGRepresentation(scaledImage, 0.8);
+        UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight*imageMultiple, screenWidth*imageMultiple) interpolationQuality:kCGInterpolationHigh];
+        UIImage *flippedImage = scaledImage;
+        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
+                                                    scale:scaledImage.scale
+                                              orientation:UIImageOrientationLeftMirrored];
+        }
+
+        fileData = UIImageJPEGRepresentation(flippedImage, jpegQuality);
         type = kImageEventType;
     }
     
@@ -1016,8 +1026,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *image =  (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
     if (self.controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
         UIImage *newImage = [UIImage imageWithCGImage:[image CGImage]
-                                                          scale:image.scale
-                                                    orientation: UIImageOrientationLeftMirrored];
+                                                scale:image.scale
+                                          orientation:UIImageOrientationLeftMirrored];
         [newInfo setObject:newImage forKey:UIImagePickerControllerOriginalImage];
     }
     self.info = [[NSDictionary alloc] initWithDictionary:newInfo];

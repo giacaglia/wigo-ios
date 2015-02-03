@@ -32,12 +32,10 @@ NSTimer *fetchTimer;
     [super viewDidLoad];
    
     widthShared = 100;
-    [self fetchSummaryGoingOut];
-    [self initializeBackground];
     [self initializeNameOfSchool];
     [self initializeShareLabel];
-    [self initializeBattery];
     [self initializeShareButton];
+    [self initializePeekButton];
     
     fetchTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(checkIfGroupIsUnlocked) userInfo:nil repeats:YES];
 }
@@ -62,20 +60,15 @@ NSTimer *fetchTimer;
     }];
 }
 
-- (void)initializeBackground {
-    UIImageView *batteryBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"batteryBackground"]];
-    batteryBackground.frame = self.view.frame;
-    [self.view addSubview:batteryBackground];
-}
 
 - (void)initializeNameOfSchool {
-    if ([WGProfile currentUser].group.name) {
-        UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 60, self.view.frame.size.width - 44, 60)];
-        schoolLabel.text = [WGProfile currentUser].group.name;
+    if (WGProfile.currentUser.group.name) {
+        UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 80, self.view.frame.size.width - 44, 60)];
+        schoolLabel.text = WGProfile.currentUser.group.name;
         schoolLabel.textAlignment = NSTextAlignmentCenter;
         schoolLabel.numberOfLines = 0;
         schoolLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        schoolLabel.textColor = [UIColor whiteColor];
+        schoolLabel.textColor = UIColor.whiteColor;
         schoolLabel.font = [FontProperties scMediumFont:20];
         [self.view addSubview:schoolLabel];
 
@@ -111,21 +104,18 @@ NSTimer *fetchTimer;
 }
 
 - (void)initializeShareLabel {
-    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height/2 + 10, self.view.frame.size.width - 20, 100)];
+    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height/2  - 100, self.view.frame.size.width - 30, 100)];
     shareLabel.font = [FontProperties mediumFont:18.0f];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.textColor = [UIColor whiteColor];
     shareLabel.numberOfLines = 0;
     shareLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-    NSString *string = @"Wigo will unlock when more people from your school download the app. Share Wigo to charge the battery and speed things up!";
+    NSString *string = [NSString stringWithFormat:@"%@, Wigo will unlock when more people from your school download the app. Share Wigo to speed things up!", WGProfile.currentUser.firstName];
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
     [text addAttribute:NSForegroundColorAttributeName
                  value:RGB(238, 122, 11)
-                 range:NSMakeRange(94, 7)];
-    [text addAttribute:NSForegroundColorAttributeName
-                 value:RGB(238, 122, 11)
-                 range:NSMakeRange(10, 6)];
+                 range:NSMakeRange(WGProfile.currentUser.firstName.length + 12, 6)];
     
     shareLabel.attributedText = text;
     [self.view addSubview:shareLabel];
@@ -152,15 +142,15 @@ NSTimer *fetchTimer;
 }
 
 - (void)initializeShareButton {
-    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 100, self.view.frame.size.height - 65, 200, 48)];
-    shareButton.backgroundColor = RGB(238, 122, 11);
+    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 100, self.view.frame.size.height/2 + 10, 200, 48)];
+//    shareButton.backgroundColor = RGB(238, 122, 11);
     [shareButton setTitle:@"Share Wigo" forState:UIControlStateNormal];
-    [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [shareButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     shareButton.titleLabel.font = [FontProperties getBigButtonFont];
     shareButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    shareButton.layer.borderColor = [UIColor clearColor].CGColor;
+    shareButton.layer.borderColor = UIColor.whiteColor.CGColor;
     shareButton.layer.borderWidth = 1;
-    shareButton.layer.cornerRadius = 15;
+    shareButton.layer.cornerRadius = 8;
     [shareButton addTarget:self action:@selector(sharedPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:shareButton];
 }
@@ -195,6 +185,30 @@ NSTimer *fetchTimer;
                              completion:nil];
         }
     };
+}
+
+- (void)initializePeekButton {
+    NSString *peekSchool = @"Maryland University";
+    NSString *titleString = [NSString stringWithFormat:@"Live Peek at\n%@", peekSchool];
+    UIButton *peekButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 25 - 70, self.view.frame.size.width - 30, 70)];
+    peekButton.center = CGPointMake(self.view.center.x, peekButton.center.y);
+    [peekButton setTitle:titleString forState:UIControlStateNormal];
+    [peekButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    peekButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    peekButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
+    peekButton.titleLabel.numberOfLines = 0;
+    peekButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [self.view addSubview:peekButton];
+    
+    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(peekButton.frame.size.width - 50, 8, 50, 88)];
+    rightArrowImageView.center = CGPointMake(rightArrowImageView.center.x, peekButton.center.y);
+    rightArrowImageView.image = [UIImage imageNamed:@"batteryRightPost"];
+    [peekButton addSubview:rightArrowImageView];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 1)];
+    lineView.center = CGPointMake(peekButton.center.x, lineView.center.y);
+    lineView.backgroundColor = RGBAlpha(255, 255, 255, 0.3f);
+    [peekButton addSubview:lineView];
 }
 
 

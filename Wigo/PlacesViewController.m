@@ -23,7 +23,6 @@
 #import "ProfileViewController.h"
 #import "FXBlurView.h"
 #import "ChatViewController.h"
-#import "BatteryViewController.h"
 
 #define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
 
@@ -160,7 +159,6 @@ BOOL secondTimeFetchingUserInfo;
     [self fetchUserInfo];
     [self shouldShowCreateButton];
     [self showOnlyOnePlusButton];
-    [self presentViewController:[BatteryViewController new] animated:YES completion:nil];
 }
 
 - (BOOL) shouldShowCreateButton {
