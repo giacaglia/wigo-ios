@@ -262,26 +262,9 @@
 
     [self.eventConversationDelegate addLoadingBanner];
     NSString *type = @"";
-    
-    if ([[info allKeys] containsObject:UIMediaPickerText]) {
-        NSString *text = [[info objectForKey:UIMediaPickerText] objectForKey:UIMediaPickerText];
-        NSNumber *yPercentage = [[info objectForKey:UIMediaPickerText] objectForKey:UIMediaPickerPercentage];
-        NSDictionary *properties = @{@"yPercentage": yPercentage};
-        self.options =  @{
-                          @"event": self.event.id,
-                          @"message": text,
-                          @"properties": properties,
-                          @"media_mime_type": type
-                          };
-    }
-    //    else {
-    //        self.options =  @{
-    //                          @"event": self.event.id,
-    //                          @"media_mime_type": type
-    //                          };
-    //    }
-    
+   
     UIImage *image;
+    NSData *fileData;
     if ([[info allKeys] containsObject:UIImagePickerControllerOriginalImage]) {
         image = (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
         
@@ -299,19 +282,32 @@
     
         UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
         UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight, screenWidth) interpolationQuality:kCGInterpolationHigh];
-        NSData *fileData = UIImageJPEGRepresentation(scaledImage, 0.8);
-
+        fileData = UIImageJPEGRepresentation(scaledImage, 0.8);
         type = kImageEventType;
-
-        self.options =  @{
-                     @"event": self.event.id,
-                     @"media_mime_type": type
-                     };
-        [self uploadContentWithFile:fileData
-                        andFileName:@"image0.jpg"
-                         andOptions:self.options];
-        
     }
+    
+    if ([[info allKeys] containsObject:UIMediaPickerText]) {
+        NSString *text = [[info objectForKey:UIMediaPickerText] objectForKey:UIMediaPickerText];
+        NSNumber *yPercentage = [[info objectForKey:UIMediaPickerText] objectForKey:UIMediaPickerPercentage];
+        NSDictionary *properties = @{@"yPercentage": yPercentage};
+        self.options =  @{
+                          @"event": self.event.id,
+                          @"message": text,
+                          @"properties": properties,
+                          @"media_mime_type": type
+                          };
+    }
+    else {
+        self.options =  @{
+                          @"event": self.event.id,
+                          @"media_mime_type": type
+                          };
+    }
+    
+    [self uploadContentWithFile:fileData
+                    andFileName:@"image0.jpg"
+                     andOptions:self.options];
+    
     
 //    else if ( [[info allKeys] containsObject:UIImagePickerControllerO]) {
 //        type = kVideoEventType;
@@ -1068,15 +1064,18 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
 
 - (void)postPressed {
     NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:self.info];
-    [newInfo addEntriesFromDictionary:@{
-                                        UIMediaPickerText: @{
-                                                UIMediaPickerText: self.textField.text,
-                                                UIMediaPickerPercentage: [NSNumber numberWithFloat:self.percentPoint.y]
-                                                }
-                                        }];
+    if (self.textField.text.length > 0) {
+        [newInfo addEntriesFromDictionary:@{
+                                            UIMediaPickerText: @{
+                                                    UIMediaPickerText: self.textField.text,
+                                                    UIMediaPickerPercentage: [NSNumber numberWithFloat:self.percentPoint.y]
+                                                    }
+                                            }];
+    }
+    
     [self cleanupView];
     [self.mediaScrollDelegate mediaPickerController:self.controller
-                                    didFinishMediaWithInfo:self.info];
+                             didFinishMediaWithInfo:newInfo];
 
 }
 
@@ -1088,6 +1087,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
         self.textLabel.hidden = NO;
         self.textLabel.text = self.textField.text;
         self.textLabel.frame =  CGRectMake(0, center.y, [UIScreen mainScreen].bounds.size.width, 40);
+        self.percentPoint = CGPointMake(1 - (center.x/[UIScreen mainScreen].bounds.size.width), center.y/[UIScreen mainScreen].bounds.size.height);
     }
 }
 
