@@ -992,7 +992,11 @@
     
     self.postButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.postButton addTarget:self action:@selector(postPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.postButton setTitle:@"Post >" forState:UIControlStateNormal];
+    UILabel *postLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 100, 0, 100, self.postButton.frame.size.height)];
+    postLabel.text = @"Post >";
+    postLabel.textColor = UIColor.whiteColor;
+    postLabel.textAlignment = NSTextAlignmentRight;
+    [self.postButton addSubview:postLabel];
     self.postButton.hidden = YES;
     self.postButton.enabled = NO;
     self.postButton.titleLabel.textAlignment = NSTextAlignmentRight;
