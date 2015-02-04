@@ -128,7 +128,7 @@ NSNumber *currentNumGroups;
     [self.placesDelegate setGroupID:self.groupID andGroupName:self.groupName];
 
     NSString *titleString = [NSString stringWithFormat:@"Live Peek at %@", self.groupName];
-    UIButton *peekButton = [[UIButton alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height - 25 - 70, self.view.frame.size.width - 30, 70)];
+    UIButton *peekButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 70, self.view.frame.size.width, 70)];
     [peekButton addTarget:self action:@selector(peekSchoolPressed) forControlEvents:UIControlEventTouchUpInside];
     peekButton.center = CGPointMake(self.view.center.x, peekButton.center.y);
     [peekButton setTitle:titleString forState:UIControlStateNormal];
@@ -139,17 +139,16 @@ NSNumber *currentNumGroups;
     peekButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.view addSubview:peekButton];
     
-    UIImageView *orangeBackgroundImageView = [[UIImageView alloc] initWithFrame:peekButton.frame];
+    UIImageView *orangeBackgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, peekButton.frame.size.width, peekButton.frame.size.height)];
     orangeBackgroundImageView.image = [UIImage imageNamed:@"orangeGradientBackground"];
     [peekButton addSubview:orangeBackgroundImageView];
+    [peekButton bringSubviewToFront:orangeBackgroundImageView];
     
     UIImageView *rightArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(peekButton.frame.size.width - 5 - 30, peekButton.frame.size.height/2 - 4, 5, 8)];
     rightArrowImageView.image = [UIImage imageNamed:@"batteryRightPost"];
     [peekButton addSubview:rightArrowImageView];
     
-    
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 1)];
-    lineView.center = CGPointMake(peekButton.center.x, lineView.center.y);
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(peekButton.frame.size.width/2 - 50, 0, 100, 1)];
     lineView.backgroundColor = RGBAlpha(255, 255, 255, 0.3f);
     [peekButton addSubview:lineView];
 }
