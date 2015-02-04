@@ -37,13 +37,8 @@
 
 }
 
-@property (nonatomic, strong) UIView *loadingView;
-@property (nonatomic, strong) UIView *loadingIndicator;
 @property (nonatomic, strong) UIView *whereAreYouGoingView;
-@property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
-
 @property (nonatomic, assign) int tagInteger;
-
 @property (nonatomic, assign) BOOL isSearching;
 @property (nonatomic, strong) NSMutableArray *placeSubviewArray;
 @property (nonatomic, strong) UIImageView *searchIconImageView;
@@ -53,7 +48,6 @@
 @property (nonatomic, strong) UILabel *whereLabel;
 @property (nonatomic, assign) int yPositionOfWhereSubview;
 
-@property (nonatomic, strong) UITableView *placesTableView;
 
 //private pressed
 @property UIScrollView *scrollViewSender;
@@ -124,7 +118,7 @@ BOOL firstTimeLoading;
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
 
     [self initializeNavigationBar];
-    [_placesTableView reloadData];
+    [self.placesTableView reloadData];
 
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -384,7 +378,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)scrollUp {
-    [_placesTableView setContentOffset:CGPointZero animated:YES];
+    [self.placesTableView setContentOffset:CGPointZero animated:YES];
 }
 
 - (void) updateViewNotGoingOut {
@@ -441,7 +435,7 @@ BOOL firstTimeLoading;
     _ungoOutButton.enabled = YES;
     [self.view endEditing:YES];
     [UIView animateWithDuration:0.2 animations:^{
-        _placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
+        self.placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-50);
         _whereAreYouGoingView.alpha = 0;
         _dimView.alpha = 0;
@@ -459,28 +453,28 @@ BOOL firstTimeLoading;
 }
 
 - (void)initializeWhereView {
-    _placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64) style: UITableViewStyleGrouped];
+    self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64) style: UITableViewStyleGrouped];
 
-    _placesTableView.sectionHeaderHeight = 0;
-    _placesTableView.sectionFooterHeight = 0;
-    _placesTableView.backgroundColor = UIColor.whiteColor;
-    [self.view addSubview:_placesTableView];
-    _placesTableView.dataSource = self;
-    _placesTableView.delegate = self;
-    _placesTableView.showsVerticalScrollIndicator = NO;
-    [_placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
-    [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
-    [_placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
-    _placesTableView.backgroundColor = RGB(241, 241, 241);
-    _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.placesTableView.sectionHeaderHeight = 0;
+    self.placesTableView.sectionFooterHeight = 0;
+    self.placesTableView.backgroundColor = UIColor.whiteColor;
+    [self.view addSubview:self.placesTableView];
+    self.placesTableView.dataSource = self;
+    self.placesTableView.delegate = self;
+    self.placesTableView.showsVerticalScrollIndicator = NO;
+    [self.placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [self.placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
+    [self.placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
+    [self.placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
+    self.placesTableView.backgroundColor = RGB(241, 241, 241);
+    self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _yPositionOfWhereSubview = 280;
     
-    CGRect frame = _placesTableView.bounds;
+    CGRect frame = self.placesTableView.bounds;
     frame.origin.y = -frame.size.height;
     UIView* whiteView = [[UIView alloc] initWithFrame:frame];
     whiteView.backgroundColor = UIColor.whiteColor;
-    [_placesTableView addSubview:whiteView];
+    [self.placesTableView addSubview:whiteView];
     
     [self addRefreshToScrollView];
     [self initializeGoingSomewhereElseButton];
@@ -512,11 +506,11 @@ BOOL firstTimeLoading;
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
     [WGAnalytics tagEvent:@"Go Here" withDetails:options];
     shouldAnimate = YES;
-    _whereAreYouGoingTextField.text = @"";
+    self.whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
     [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
-    [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    [self.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     [self goOutToEventNumber:[NSNumber numberWithInt:(int) buttonSender.tag]];
 }
 
@@ -600,9 +594,9 @@ BOOL firstTimeLoading;
         self.navigationItem.leftBarButtonItem.customView.alpha = 0.0f;
         self.navigationItem.rightBarButtonItem.customView.alpha = 0.0f;
         
-        [_whereAreYouGoingTextField becomeFirstResponder];
+        [self.whereAreYouGoingTextField becomeFirstResponder];
         self.whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0, 50);
-        //_placesTableView.transform = CGAffineTransformMakeTranslation(0, 50);
+        //self.placesTableView.transform = CGAffineTransformMakeTranslation(0, 50);
         self.whereAreYouGoingView.alpha = 1.0f;
         
     } completion:^(BOOL finished) {
@@ -617,8 +611,8 @@ BOOL firstTimeLoading;
 
         //[self dismissKeyboard];
         _ungoOutButton.enabled = NO;
-        _placesTableView.userInteractionEnabled = NO;
-        [self textFieldDidChange:_whereAreYouGoingTextField];
+        self.placesTableView.userInteractionEnabled = NO;
+        [self textFieldDidChange:self.whereAreYouGoingTextField];
     }];
 }
 
@@ -687,18 +681,18 @@ BOOL firstTimeLoading;
     
     [self.view addSubview:_whereAreYouGoingView];
     
-    _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _whereAreYouGoingView.frame.size.width - 10, 50)];
-    _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
-    _whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
-    _whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
+    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _whereAreYouGoingView.frame.size.width - 10, 50)];
+    self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
+    self.whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
+    self.whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
     [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
-    _whereAreYouGoingTextField.delegate = self;
-    [_whereAreYouGoingTextField addTarget:self
+    self.whereAreYouGoingTextField.delegate = self;
+    [self.whereAreYouGoingTextField addTarget:self
                                    action:@selector(textFieldDidChange:)
                          forControlEvents:UIControlEventEditingChanged];
-    _whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
+    self.whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
     
-    [_whereAreYouGoingView addSubview:_whereAreYouGoingTextField];
+    [_whereAreYouGoingView addSubview:self.whereAreYouGoingTextField];
     
     
     CALayer *bottomBorder = [CALayer layer];
@@ -708,43 +702,46 @@ BOOL firstTimeLoading;
 }
 
 - (void)clearTextField {
-    _placesTableView.userInteractionEnabled = YES;
-    _whereAreYouGoingTextField.text = @"";
-    [self textFieldDidChange:_whereAreYouGoingTextField];
+    self.placesTableView.userInteractionEnabled = YES;
+    self.whereAreYouGoingTextField.text = @"";
+    [self textFieldDidChange:self.whereAreYouGoingTextField];
 }
 
 
 - (void)createPressed {
-    if ([_whereAreYouGoingTextField.text length] != 0) {
-        _whereAreYouGoingTextField.enabled = NO;
+    if ([self.whereAreYouGoingTextField.text length] != 0) {
+        self.whereAreYouGoingTextField.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;
         [self addLoadingIndicator];
-        [WGEvent createEventWithName:_whereAreYouGoingTextField.text andHandler:^(WGEvent *object, NSError *error) {
+        __weak typeof(self) weakSelf = self;
+        [WGEvent createEventWithName:self.whereAreYouGoingTextField.text andHandler:^(WGEvent *object, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
             [UIView animateWithDuration:0.2f animations:^{
-                _loadingIndicator.frame = CGRectMake(0, 0, _loadingView.frame.size.width, _loadingView.frame.size.height);
+                strongSelf.loadingIndicator.frame = CGRectMake(0, 0, strongSelf.loadingView.frame.size.width, strongSelf.loadingView.frame.size.height);
             } completion:^(BOOL finished) {
-                if (finished) [_loadingView removeFromSuperview];
+                if (finished) [strongSelf.loadingView removeFromSuperview];
                 
-                _whereAreYouGoingTextField.enabled = YES;
-                self.navigationItem.rightBarButtonItem.enabled = YES;
+                strongSelf.whereAreYouGoingTextField.enabled = YES;
+                strongSelf.navigationItem.rightBarButtonItem.enabled = YES;
                 if (error) {
                     return;
                 }
-                
-                [[WGProfile currentUser] goingToEvent:object withHandler:^(BOOL success, NSError *error) {
+                __weak typeof(strongSelf) weakOfStrong = strongSelf;
+                [WGProfile.currentUser goingToEvent:object withHandler:^(BOOL success, NSError *error) {
+                    __strong typeof(weakOfStrong) strongOfStrong = weakOfStrong;
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                         [[WGError sharedInstance] logError:error forAction:WGActionSave];
                         return;
                     }
                     
-                    [self removeProfileUserFromAnyOtherEvent];
+                    [strongOfStrong removeProfileUserFromAnyOtherEvent];
                     
-                    [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                    [strongOfStrong.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
                     
-                    [self dismissKeyboard];
+                    [strongOfStrong dismissKeyboard];
                     // [self fetchEventsFirstPage];
-                    [self updateTitleView];
+                    [strongOfStrong updateTitleView];
                     
                     [WGProfile currentUser].isGoingOut = @YES;
                     [WGProfile currentUser].eventAttending = object;
@@ -752,10 +749,10 @@ BOOL firstTimeLoading;
                     
                     WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [WGProfile currentUser] }];
                     
-                    if ([self.allEvents containsObject:object]) {
-                        WGEvent *joinedEvent = (WGEvent *)[self.allEvents objectWithID:object.id];
+                    if ([strongOfStrong.allEvents containsObject:object]) {
+                        WGEvent *joinedEvent = (WGEvent *)[strongOfStrong.allEvents objectWithID:object.id];
                         [joinedEvent.attendees insertObject:attendee atIndex:0];
-                        [self showStoryForEvent:joinedEvent];
+                        [strongOfStrong showStoryForEvent:joinedEvent];
                     } else {
                         if (object.attendees) {
                             [object.attendees insertObject:attendee atIndex:0];
@@ -763,7 +760,7 @@ BOOL firstTimeLoading;
                             WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
                             object.attendees = eventAttendees;
                         }
-                        [self showStoryForEvent:object];
+                        [strongOfStrong showStoryForEvent:object];
                     }
                 }];
             }];
@@ -772,18 +769,18 @@ BOOL firstTimeLoading;
 }
 
 - (void)addLoadingIndicator {
-    _loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, _whereAreYouGoingView.frame.size.height - 10, _whereAreYouGoingView.frame.size.width - 20, 5)];
-    _loadingView.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    _loadingView.layer.borderWidth = 1.0f;
-    _loadingView.layer.cornerRadius = 3.0f;
+    self.loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, _whereAreYouGoingView.frame.size.height - 10, _whereAreYouGoingView.frame.size.width - 20, 5)];
+    self.loadingView.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    self.loadingView.layer.borderWidth = 1.0f;
+    self.loadingView.layer.cornerRadius = 3.0f;
     
-    _loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, _loadingView.frame.size.height)];
-    _loadingIndicator.backgroundColor = [FontProperties getBlueColor];
-    [_loadingView addSubview:_loadingIndicator];
+    self.loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, self.loadingView.frame.size.height)];
+    self.loadingIndicator.backgroundColor = [FontProperties getBlueColor];
+    [self.loadingView addSubview:self.loadingIndicator];
     [UIView animateWithDuration:0.8f animations:^{
-        _loadingIndicator.frame = CGRectMake(0, 0, _loadingView.frame.size.width*0.7, _loadingView.frame.size.height);
+        self.loadingIndicator.frame = CGRectMake(0, 0, self.loadingView.frame.size.width*0.7, self.loadingView.frame.size.height);
     }];
-    [_whereAreYouGoingView addSubview:_loadingView];
+    [_whereAreYouGoingView addSubview:self.loadingView];
 }
 
 
@@ -807,7 +804,7 @@ BOOL firstTimeLoading;
 
     }
 
-    [_placesTableView reloadData];
+    [self.placesTableView reloadData];
 }
 
 
@@ -1247,7 +1244,7 @@ BOOL firstTimeLoading;
 
 - (void)showHighlights {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"shownHighlights"];
-    [_placesTableView reloadData];
+    [self.placesTableView reloadData];
 }
 
 - (void)showUser:(WGUser *)user {
@@ -1314,7 +1311,7 @@ BOOL firstTimeLoading;
     self.events = [[WGCollection alloc] initWithType:[WGEvent class]];
     self.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
     self.allEvents = nil;
-    [_placesTableView reloadData];
+    [self.placesTableView reloadData];
     _spinnerAtCenter = YES;
     [self updateTitleView];
     [self fetchEventsFirstPage];
@@ -1339,7 +1336,7 @@ BOOL firstTimeLoading;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 
-    if (scrollView == _placesTableView) {
+    if (scrollView == self.placesTableView) {
         if (!self.goElsewhereView) {
             return;
         }
@@ -1352,7 +1349,7 @@ BOOL firstTimeLoading;
 
 - (void)showOnlyOnePlusButton {
     // convert label frame
-    CGRect comparisonFrame = [_placesTableView convertRect: self.goElsewhereView.frame toView:self.view];
+    CGRect comparisonFrame = [self.placesTableView convertRect: self.goElsewhereView.frame toView:self.view];
     // check if label is contained in self.view
     
     CGRect viewFrame = self.view.frame;
@@ -1522,7 +1519,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)fetchedOneParty {
-    _spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
+    _spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [self.placesTableView didFinishPullToRefresh];
      _spinnerAtCenter = NO;
     _filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
     [self dismissKeyboard];
@@ -1567,7 +1564,7 @@ BOOL firstTimeLoading;
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    [WGSpinnerView addDancingGToUIScrollView:_placesTableView
+    [WGSpinnerView addDancingGToUIScrollView:self.placesTableView
                                    withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];

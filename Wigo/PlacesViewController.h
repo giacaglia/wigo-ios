@@ -30,7 +30,10 @@
 @property (nonatomic, strong) SignViewController *signViewController;
 @property (nonatomic, assign) BOOL fetchingUserInfo;
 @property (nonatomic, assign) BOOL secondTimeFetchingUserInfo;
-
+@property (nonatomic, strong) UITableView *placesTableView;
+@property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
+@property (nonatomic, strong) UIView *loadingView;
+@property (nonatomic, strong) UIView *loadingIndicator;
 @end
 
 #import "EventPeopleScrollView.h"
