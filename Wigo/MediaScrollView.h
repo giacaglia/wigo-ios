@@ -20,6 +20,8 @@
 - (void)updateEventMessage:(WGEventMessage *)eventMessage forCell:(UICollectionViewCell *)cell;
 - (void)dismissView;
 - (void)mediaPickerController:(UIImagePickerController *)controller
+       startUploadingWithInfo:(NSDictionary *)info;
+- (void)mediaPickerController:(UIImagePickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info;
 @end
 
@@ -41,6 +43,11 @@
 
 -(void) closeView;
 -(void) scrolledToPage:(int)page;
+
+- (void)callbackFromUpload;
+@property (nonatomic, assign) BOOL didPostContent;
+@property (nonatomic, strong) NSError *error;
+@property (nonatomic, strong) WGEventMessage *object;
 
 #pragma mark - UIImagePickerDelegate  Delegate
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;

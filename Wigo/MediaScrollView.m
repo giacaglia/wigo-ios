@@ -253,17 +253,16 @@
 #pragma mark - IQMediaPickerController Delegate methods
 
 - (void)mediaPickerController:(UIImagePickerController *)controller
-       didFinishMediaWithInfo:(NSDictionary *)info {
+       startUploadingWithInfo:(NSDictionary *)info {
     if (self.cameraPromptAddToStory) {
         [WGAnalytics tagEvent: @"Go Here, Then Add to Story, Then Picture Captured"];
         self.cameraPromptAddToStory = false;
     } else {
         [WGAnalytics tagEvent: @"Event Conversation Captured Picture"];
     }
-
-    [self.eventConversationDelegate addLoadingBanner];
+    
     NSString *type = @"";
-   
+    
     UIImage *image;
     NSData *fileData;
     if ([[info allKeys] containsObject:UIImagePickerControllerOriginalImage]) {
@@ -271,7 +270,7 @@
         
         CGFloat imageWidth = image.size.height * 1.0; // because the image is rotated
         CGFloat imageHeight = image.size.width * 1.0; // because the image is rotated
-
+        
         CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
         CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
         
@@ -283,88 +282,78 @@
         CGFloat imageMultiple = 1.0f;
         
         CGFloat translation = (imageHeight - cropHeight) / 2.0;
-    
+        
         UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
         UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight*imageMultiple, screenWidth*imageMultiple) interpolationQuality:kCGInterpolationHigh];
         UIImage *flippedImage = scaledImage;
         if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
             flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
-                                                    scale:scaledImage.scale
-                                              orientation:UIImageOrientationLeftMirrored];
+                                               scale:scaledImage.scale
+                                         orientation:UIImageOrientationLeftMirrored];
         }
-
+        
         fileData = UIImageJPEGRepresentation(flippedImage, jpegQuality);
         type = kImageEventType;
     }
     
-    if ([[info allKeys] containsObject:UIMediaPickerText]) {
-        NSString *text = [[info objectForKey:UIMediaPickerText] objectForKey:UIMediaPickerText];
-        NSNumber *yPercentage = [[info objectForKey:UIMediaPickerText] objectForKey:UIMediaPickerPercentage];
-        NSDictionary *properties = @{@"yPercentage": yPercentage};
-        self.options =  @{
-                          @"event": self.event.id,
-                          @"message": text,
-                          @"properties": properties,
-                          @"media_mime_type": type
-                          };
-    }
-    else {
-        self.options =  @{
-                          @"event": self.event.id,
-                          @"media_mime_type": type
-                          };
-    }
+    self.options =  @{
+                      @"event": self.event.id,
+                      @"media_mime_type": type
+                      };
+
     
     [self uploadContentWithFile:fileData
                     andFileName:@"image0.jpg"
                      andOptions:self.options];
     
     
-//    else if ( [[info allKeys] containsObject:UIImagePickerControllerO]) {
-//        type = kVideoEventType;
-//        NSURL *videoURL = [[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaURL];
-//        self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
-//        [[NSNotificationCenter defaultCenter] addObserver:self
-//                                                 selector:@selector(thumbnailGenerated:)
-//                                                     name:MPMoviePlayerThumbnailImageRequestDidFinishNotification
-//                                                   object:self.moviePlayer];
-//        /* [[NSNotificationCenter defaultCenter] addObserver:self
-//                                                 selector:@selector(didFinishPlaying:)
-//                                                     name:MPMoviePlayerLoadStateDidChangeNotification
-//                                                   object:self.moviePlayer]; */
-//        
-//        [self.moviePlayer requestThumbnailImagesAtTimes:@[@0.0f] timeOption:MPMovieTimeOptionNearestKeyFrame];
-//        
-//        NSError *error;
-//        self.fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
-//        
-
-    NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
-
-    if ([[info allKeys] containsObject:UIImagePickerControllerOriginalImage]) {
-        [mutableDict addEntriesFromDictionary:@{
-                                                @"user": [WGProfile currentUser],
-                                                @"created": [NSDate nowStringUTC],
-                                                @"media": image
-                                                }];
-        NSLog(@"media info: %@", mutableDict);
-    }
-//    else if ( [[info allKeys] containsObject:IQMediaTypeVideo]) {
-//        [mutableDict addEntriesFromDictionary:@{
-//                                                @"user": WGProfile.currentUser,
-//                                                @"created": [NSDate nowStringUTC],
-//                                                @"media": [[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaURL],
-//                                                }];
-//        NSLog(@"media info: %@", mutableDict);
-//    }
+    //    else if ( [[info allKeys] containsObject:UIImagePickerControllerO]) {
+    //        type = kVideoEventType;
+    //        NSURL *videoURL = [[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaURL];
+    //        self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
+    //        [[NSNotificationCenter defaultCenter] addObserver:self
+    //                                                 selector:@selector(thumbnailGenerated:)
+    //                                                     name:MPMoviePlayerThumbnailImageRequestDidFinishNotification
+    //                                                   object:self.moviePlayer];
+    //        /* [[NSNotificationCenter defaultCenter] addObserver:self
+    //                                                 selector:@selector(didFinishPlaying:)
+    //                                                     name:MPMoviePlayerLoadStateDidChangeNotification
+    //                                                   object:self.moviePlayer]; */
+    //
+    //        [self.moviePlayer requestThumbnailImagesAtTimes:@[@0.0f] timeOption:MPMovieTimeOptionNearestKeyFrame];
+    //
+    //        NSError *error;
+    //        self.fileData = [NSData dataWithContentsOfURL: videoURL options: NSDataReadingMappedIfSafe error: &error];
+    //
+    //    else if ( [[info allKeys] containsObject:IQMediaTypeVideo]) {
+    //        [mutableDict addEntriesFromDictionary:@{
+    //                                                @"user": WGProfile.currentUser,
+    //                                                @"created": [NSDate nowStringUTC],
+    //                                                @"media": [[[info objectForKey:IQMediaTypeVideo] objectAtIndex:0] objectForKey:IQMediaURL],
+    //                                                }];
+    //        NSLog(@"media info: %@", mutableDict);
+    //    }
     
-    WGEventMessage *newEventMessage = [WGEventMessage serialize:mutableDict];
-    
-    if (!self.shownCurrentImage) {
-        [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:newEventMessage];
-        [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
-        self.shownCurrentImage = YES;
+  }
+
+- (void)mediaPickerController:(UIImagePickerController *)controller
+       didFinishMediaWithInfo:(NSDictionary *)info {
+    [self.eventConversationDelegate addLoadingBanner];
+    NSDictionary *callbackInfo = nil;
+    if ([[info allKeys] containsObject:UIMediaPickerText]) {
+        NSString *text = [[info objectForKey:UIMediaPickerText] objectForKey:UIMediaPickerText];
+        NSNumber *yPercentage = [[info objectForKey:UIMediaPickerText] objectForKey:UIMediaPickerPercentage];
+        NSDictionary *properties = @{@"yPercentage": yPercentage};
+         NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
+        callbackInfo = @{
+                         @"message": text,
+                         @"properties": properties,
+                         };
+        [mutableDict addEntriesFromDictionary:callbackInfo];
+        self.options = mutableDict;
     }
+    self.didPostContent = YES;
+    [self callbackFromUploadWithInfo:callbackInfo];
   
 }
 
@@ -421,24 +410,12 @@
                    andOptions:(NSDictionary *)options
 {
     WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
+    __weak typeof(self) weakSelf = self;
     [newEventMessage addPhoto:fileData withName:filename andHandler:^(WGEventMessage *object, NSError *error) {
-        if (error) {
-            [self.eventConversationDelegate showErrorMessage];
-            return;
-        }
-        [object create:^(BOOL success, NSError *error) {
-            if (error) {
-                [self.eventConversationDelegate showErrorMessage];
-                return;
-            }
-            [self.eventConversationDelegate showCompletedMessage];
-            self.shownCurrentImage = YES;
-            [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
-            if (self.shownCurrentImage) {
-                [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
-            }
-            [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
-        }];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.error = error;
+        strongSelf.object = object;
+        [strongSelf callbackFromUploadWithInfo:nil];
     }];
 }
 
@@ -449,27 +426,78 @@
          andOptions:(NSDictionary *)options
 {
     WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
+    __weak typeof(self) weakSelf = self;
     [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumbnailFilename andHandler:^(WGEventMessage *object, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
-            [self.eventConversationDelegate showErrorMessage];
+            [strongSelf.eventConversationDelegate showErrorMessage];
             return;
         }
         [object create:^(BOOL success, NSError *error) {
                 if (error) {
-                    [self.eventConversationDelegate showErrorMessage];
+                    [strongSelf.eventConversationDelegate showErrorMessage];
                     return;
                 }
-                self.firstCell = YES;
-                [self.eventConversationDelegate showCompletedMessage];
-                self.shownCurrentImage = YES;
-                [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
+                strongSelf.firstCell = YES;
+                [strongSelf.eventConversationDelegate showCompletedMessage];
+                strongSelf.shownCurrentImage = YES;
+                [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
                 // [self playVideoAtPage:(int)(self.eventMessages.count - 2)];
-                if (self.shownCurrentImage) {
-                    [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
+                if (strongSelf.shownCurrentImage) {
+                    [strongSelf.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
                 }
-                [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+                [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
         }];
     }];
+}
+
+- (void)callbackFromUploadWithInfo:(NSDictionary *)info {
+    if (self.didPostContent) {
+        if (self.error) {
+            [self.eventConversationDelegate showErrorMessage];
+            return;
+        }
+        NSMutableDictionary *mutableDictionary = [[NSMutableDictionary alloc] initWithDictionary:[self.object deserialize]];
+        [mutableDictionary addEntriesFromDictionary:info];
+        self.object = [[WGEventMessage alloc] initWithJSON:mutableDictionary];
+        [self.object create:^(BOOL success, NSError *error) {
+            if (self.error) {
+                [self.eventConversationDelegate showErrorMessage];
+                return;
+            }
+            [self.eventConversationDelegate showCompletedMessage];
+            self.shownCurrentImage = YES;
+            [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:self.object];
+            if (self.shownCurrentImage) {
+                [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
+            }
+            [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+        }];
+        self.didPostContent = NO;
+        
+        NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
+        
+        
+        if (info && [info.allKeys containsObject:UIImagePickerControllerOriginalImage]) {
+            UIImage *image =  (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
+            [mutableDict addEntriesFromDictionary:@{
+                                                    @"user": [WGProfile currentUser],
+                                                    @"created": [NSDate nowStringUTC],
+                                                    @"media": image
+                                                    }];
+            NSLog(@"media info: %@", mutableDict);
+        }
+        
+        
+        WGEventMessage *newEventMessage = [WGEventMessage serialize:mutableDict];
+        
+        if (!self.shownCurrentImage) {
+            [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:newEventMessage];
+            [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+            self.shownCurrentImage = YES;
+        }
+
+    }
 }
 
 
@@ -989,6 +1017,7 @@
     [self.previewImageView addSubview:self.textLabel];
 }
 
+
 - (void)changeFlash {
     if (self.controller.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
         [self.flashButton setImage:[UIImage imageNamed:@"flashOn"] forState:UIControlStateNormal];
@@ -1050,6 +1079,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.cancelButton.hidden = NO;
     self.cancelButton.enabled = YES;
     self.panRecognizer.enabled = NO;
+    [self.mediaScrollDelegate mediaPickerController:self.controller
+                             startUploadingWithInfo:self.info];
 }
 
 - (void)cancelPressed {
@@ -1096,7 +1127,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     [self cleanupView];
     [self.mediaScrollDelegate mediaPickerController:self.controller
                              didFinishMediaWithInfo:newInfo];
-
 }
 
 - (void)panGestureRecognizer:(UIPanGestureRecognizer *)panRecognizer {
