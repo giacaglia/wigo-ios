@@ -8,7 +8,6 @@
 //
 
 #import "EventStoryViewController.h"
-#import "IQMediaPickerController.h"
 #import "InviteViewController.h"
 #import "EventMessagesConstants.h"
 #import "ProfileViewController.h"
@@ -533,7 +532,6 @@
 
 
 - (void)sendPressed {
-    
     [WGAnalytics tagEvent: @"Event Story Create Highlight Tapped"];
 
     //not going here
@@ -674,16 +672,6 @@
         }
         [self.facesCollectionView reloadData];
     });
-}
-
-#pragma mark - IQMediaController Delegate
-
-- (void)mediaPickerController:(IQMediaPickerController *)controller didFinishMediaWithInfo:(NSDictionary *)info {
-    
-}
-
-- (void)mediaPickerControllerDidCancel:(IQMediaPickerController *)controller {
-    
 }
 
 #pragma mark - UIScrollViewDelegate 
