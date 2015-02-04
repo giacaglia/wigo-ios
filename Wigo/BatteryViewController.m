@@ -10,11 +10,7 @@
 #import "Globals.h"
 #import "OnboardFollowViewController.h"
 
-UIImageView *orangeImageView;
-NSNumber *currentTotal;
 NSNumber *currentNumGroups;
-int widthShared;
-UIImageView *batteryImageView;
 
 @implementation BatteryViewController
 
@@ -30,7 +26,6 @@ UIImageView *batteryImageView;
 - (void)viewDidLoad {
     [super viewDidLoad];
    
-    widthShared = 100;
     [self initializeNameOfSchool];
     [self initializeShareLabel];
     [self initializeShareButton];
@@ -44,6 +39,10 @@ UIImageView *batteryImageView;
     [self checkIfGroupIsUnlocked];
     
     [WGAnalytics tagEvent:@"Battery View"];
+//    if (self.blurredBackground) {
+//        [self.view addSubview:self.blurredBackground];
+//        [self.view sendSubviewToBack:self.blurredBackground];
+//    }
 }
 
 -(void) checkIfGroupIsUnlocked {
@@ -75,33 +74,6 @@ UIImageView *batteryImageView;
     }
 }
 
-- (void)initializeBattery {
-    //193
-    UILabel *youAreAlmostThereLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, self.view.frame.size.height/2 - 80, self.view.frame.size.width - 44, 20)];
-    youAreAlmostThereLabel.text = @"You are almost there...";
-    youAreAlmostThereLabel.textAlignment = NSTextAlignmentCenter;
-    youAreAlmostThereLabel.textColor = [UIColor whiteColor];
-    youAreAlmostThereLabel.font = [FontProperties mediumFont:15.0f];
-    [self.view addSubview:youAreAlmostThereLabel];
-    
-    batteryImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"batteryImage"]];
-    batteryImageView.frame = CGRectMake(76, self.view.frame.size.height/2 - 55, 168, 57);
-    batteryImageView.center = CGPointMake(self.view.center.x, batteryImageView.center.y);
-    [self.view addSubview:batteryImageView];
-    
-    UILabel *orangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(batteryImageView.frame.origin.x+4, self.view.frame.size.height/2 - 51, 14, 48)];
-    orangeLabel.backgroundColor = [FontProperties getOrangeColor];
-    [self.view addSubview:orangeLabel];
-    
-    orangeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(batteryImageView.frame.origin.x+10, self.view.frame.size.height/2 - 53, 20, 54)];
-    orangeImageView.image = [UIImage imageNamed:@"batteryRectangle"];
-    [self.view addSubview:orangeImageView];
-    
-    [self.view bringSubviewToFront: batteryImageView];
-    
-  
-}
-
 - (void)initializeShareLabel {
     UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height/2  - 100, self.view.frame.size.width - 30, 100)];
     shareLabel.font = [FontProperties mediumFont:18.0f];
@@ -120,29 +92,8 @@ UIImageView *batteryImageView;
     [self.view addSubview:shareLabel];
 }
 
-- (void)initializeJoinLabel {
-    UILabel *joinLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 65 - 35, self.view.frame.size.width - 40, 25)];
-    joinLabel.textAlignment = NSTextAlignmentCenter;
-    joinLabel.textColor = [UIColor whiteColor];
-    joinLabel.font = [FontProperties mediumFont:19.0f];
-   
-    if (currentNumGroups) {
-        NSString *string =[NSString stringWithFormat:@"Join %@ schools already on Wigo", [currentNumGroups stringValue]];
-        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
-        [text addAttribute:NSForegroundColorAttributeName
-                     value:[UIColor whiteColor]
-                     range:NSMakeRange(0, string.length)];
-        [text addAttribute:NSForegroundColorAttributeName
-                     value:RGB(238, 122, 11)
-                     range:NSMakeRange(5, [currentNumGroups stringValue].length)];
-        joinLabel.attributedText = text;
-    }
-    [self.view addSubview:joinLabel];
-}
-
 - (void)initializeShareButton {
     UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 100, self.view.frame.size.height/2 + 10, 200, 48)];
-//    shareButton.backgroundColor = RGB(238, 122, 11);
     [shareButton setTitle:@"Share Wigo" forState:UIControlStateNormal];
     [shareButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     shareButton.titleLabel.font = [FontProperties getBigButtonFont];
@@ -166,24 +117,6 @@ UIImageView *batteryImageView;
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityVC animated:YES completion:nil];
-    activityVC.completionHandler = ^(NSString *activityType, BOOL completed) {
-        if (completed) {
-            int width = orangeImageView.frame.size.width;
-            float percentage = (float)(width - 40)/(float)98;
-            if (percentage < 1) {
-                percentage = (float)MIN(0.96, (float)percentage + (float)widthShared/(float)500);
-            }
-            percentage = MIN(0.96, percentage);
-            width = 40 + percentage * (138 - 40);
-            [UIView animateWithDuration:3
-                                  delay:0
-                                options:UIViewAnimationOptionCurveEaseInOut
-                             animations:^{
-                                 orangeImageView.frame = CGRectMake(84, self.view.frame.size.height/2 - 53, width, 54);
-                             }
-                             completion:nil];
-        }
-    };
 }
 
 - (void)initializePeekButton {
@@ -206,10 +139,14 @@ UIImageView *batteryImageView;
     peekButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.view addSubview:peekButton];
     
-    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(peekButton.frame.size.width - 50, 8, 50, 80)];
-    rightArrowImageView.center = CGPointMake(rightArrowImageView.center.x, peekButton.center.y);
+    UIImageView *orangeBackgroundImageView = [[UIImageView alloc] initWithFrame:peekButton.frame];
+    orangeBackgroundImageView.image = [UIImage imageNamed:@"orangeGradientBackground"];
+    [peekButton addSubview:orangeBackgroundImageView];
+    
+    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(peekButton.frame.size.width - 5 - 30, peekButton.frame.size.height/2 - 4, 5, 8)];
     rightArrowImageView.image = [UIImage imageNamed:@"batteryRightPost"];
     [peekButton addSubview:rightArrowImageView];
+    
     
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 1)];
     lineView.center = CGPointMake(peekButton.center.x, lineView.center.y);
@@ -220,37 +157,6 @@ UIImageView *batteryImageView;
 - (void)peekSchoolPressed {
     [self.placesDelegate presentViewWithGroupID:self.groupID andGroupName:self.groupName];
     [self dismissViewControllerAnimated:YES completion:nil];
-    
-}
-
-- (void) fetchSummaryGoingOut {
-    [WGGroup getGroupSummary:^(NSNumber *total, NSNumber *numGroups, NSNumber *private, NSNumber *public, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            currentTotal = total;
-            currentNumGroups = numGroups;
-            [self initializeJoinLabel];
-            [self chargeBattery];
-        });
-    }];
-}
-
-- (void)chargeBattery {
-    if (currentTotal) {
-        float percentage = MIN([currentTotal floatValue]/500, 1);
-        int width = 40 + percentage * (138 - 40);
-        [UIView animateWithDuration:3
-                              delay:0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             orangeImageView.frame = CGRectMake(orangeImageView.frame.origin.x, self.view.frame.size.height/2 - 53, width, 54);
-                         }
-                         completion:nil];
-    }
 }
 
 - (void)fetchPeekSchools {

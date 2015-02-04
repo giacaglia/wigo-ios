@@ -629,7 +629,7 @@
     _visualEffectView.frame = self.view.frame;
     _visualEffectView.alpha = 0.0f;
     [self.view addSubview:_visualEffectView];
-    [self.view  bringSubviewToFront:self.facesCollectionView];
+    [self.view bringSubviewToFront:self.facesCollectionView];
 
     self.facesCollectionView.clipsToBounds = NO;
     [view.superview.superview bringSubviewToFront:view.superview];

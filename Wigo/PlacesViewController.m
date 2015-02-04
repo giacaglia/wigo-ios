@@ -557,8 +557,6 @@ BOOL firstTimeLoading;
         UIImage *bgImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
-        
-        
         CGFloat yOrigin = self.whereAreYouGoingTextField.frame.origin.y + self.whereAreYouGoingTextField.frame.size.height;
         _dimView = [[UIView alloc] initWithFrame: CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - self.whereAreYouGoingTextField.frame.size.height)];
         
@@ -1286,7 +1284,6 @@ BOOL firstTimeLoading;
         conversationViewController.mediaScrollView.eventMessages = collection;
         [conversationViewController.facesCollectionView reloadData];
         [conversationViewController.mediaScrollView reloadData];
-        
         [conversationViewController highlightCellAtPage:messageIndex animated:NO];
     }];
 }
@@ -1331,6 +1328,7 @@ BOOL firstTimeLoading;
 - (void)backPressed {
     self.presentingLockedView = NO;
     self.schoolButton.enabled = YES;
+    
     BatteryViewController *batteryViewController = [BatteryViewController new];
     batteryViewController.placesDelegate = self;
     [self presentViewController:batteryViewController animated:YES completion:nil];
