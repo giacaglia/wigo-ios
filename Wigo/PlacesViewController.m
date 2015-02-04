@@ -409,6 +409,8 @@ BOOL firstTimeLoading;
     [self.schoolButton addSubview:triangleImageView];
 
     self.navigationItem.titleView = self.schoolButton;
+    if (self.presentingLockedView) self.schoolButton.enabled = NO;
+    else self.schoolButton.enabled = YES;
 }
 
 - (void)showSchools {
