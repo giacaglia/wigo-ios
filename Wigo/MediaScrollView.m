@@ -441,12 +441,11 @@
                 strongSelf.firstCell = YES;
                 [strongSelf.eventConversationDelegate showCompletedMessage];
                 strongSelf.shownCurrentImage = YES;
-                [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:object];
-                // [self playVideoAtPage:(int)(self.eventMessages.count - 2)];
+                [strongSelf.eventMessages replaceObjectAtIndex:(strongSelf.eventMessages.count - 2) withObject:object];
                 if (strongSelf.shownCurrentImage) {
-                    [strongSelf.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
+                    [strongSelf.eventMessages removeObjectAtIndex:strongSelf.eventMessages.count - 1];
                 }
-                [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+                [strongSelf.eventConversationDelegate reloadUIForEventMessages:strongSelf.eventMessages];
         }];
     }];
 }
@@ -460,20 +459,21 @@
         NSMutableDictionary *mutableDictionary = [[NSMutableDictionary alloc] initWithDictionary:[self.object deserialize]];
         [mutableDictionary addEntriesFromDictionary:info];
         self.object = [[WGEventMessage alloc] initWithJSON:mutableDictionary];
+        __weak typeof(self) weakSelf = self;
         [self.object create:^(BOOL success, NSError *error) {
-            if (self.error) {
-                [self.eventConversationDelegate showErrorMessage];
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (strongSelf.error) {
+                [strongSelf.eventConversationDelegate showErrorMessage];
                 return;
             }
-            [self.eventConversationDelegate showCompletedMessage];
-            self.shownCurrentImage = YES;
-            [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:self.object];
-            if (self.shownCurrentImage) {
-                [self.eventMessages removeObjectAtIndex:self.eventMessages.count - 1];
+            [strongSelf.eventConversationDelegate showCompletedMessage];
+            strongSelf.shownCurrentImage = YES;
+            [strongSelf.eventMessages replaceObjectAtIndex:(strongSelf.eventMessages.count - 2) withObject:strongSelf.object];
+            if (strongSelf.shownCurrentImage) {
+                [strongSelf.eventMessages removeObjectAtIndex:strongSelf.eventMessages.count - 1];
             }
-            [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+            [strongSelf.eventConversationDelegate reloadUIForEventMessages:strongSelf.eventMessages];
         }];
-        self.didPostContent = NO;
         
         NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
         
@@ -496,7 +496,7 @@
             [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
             self.shownCurrentImage = YES;
         }
-
+        self.didPostContent = NO;
     }
 }
 
