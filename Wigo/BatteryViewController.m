@@ -15,7 +15,6 @@ NSNumber *currentTotal;
 NSNumber *currentNumGroups;
 int widthShared;
 UIImageView *batteryImageView;
-NSTimer *fetchTimer;
 
 @implementation BatteryViewController
 
@@ -37,7 +36,7 @@ NSTimer *fetchTimer;
     [self initializeShareButton];
     [self initializePeekButton];
     
-    fetchTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(checkIfGroupIsUnlocked) userInfo:nil repeats:YES];
+    self.fetchTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(checkIfGroupIsUnlocked) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -45,17 +44,22 @@ NSTimer *fetchTimer;
     [self checkIfGroupIsUnlocked];
     
     [WGAnalytics tagEvent:@"Battery View"];
+    NSNumber *groupID = @1877;
+    NSString *groupName = @"Maryland";
+    [self.placesDelegate setGroupID:groupID andGroupName:groupName];
 }
 
 -(void) checkIfGroupIsUnlocked {
+    __weak typeof(self) weakSelf = self;
     [WGProfile reload:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             return;
         }
-        if ([WGProfile currentUser].group.locked && ![[WGProfile currentUser].group.locked boolValue]) {
-            [fetchTimer invalidate];
-            fetchTimer = nil;
-            [self.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
+        if (WGProfile.currentUser.group.locked && ![WGProfile.currentUser.group.locked boolValue]) {
+            [strongSelf.fetchTimer invalidate];
+            strongSelf.fetchTimer = nil;
+            [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
         }
     }];
 }
@@ -71,7 +75,6 @@ NSTimer *fetchTimer;
         schoolLabel.textColor = UIColor.whiteColor;
         schoolLabel.font = [FontProperties scMediumFont:20];
         [self.view addSubview:schoolLabel];
-
     }
 }
 
@@ -88,7 +91,6 @@ NSTimer *fetchTimer;
     batteryImageView.frame = CGRectMake(76, self.view.frame.size.height/2 - 55, 168, 57);
     batteryImageView.center = CGPointMake(self.view.center.x, batteryImageView.center.y);
     [self.view addSubview:batteryImageView];
-
     
     UILabel *orangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(batteryImageView.frame.origin.x+4, self.view.frame.size.height/2 - 51, 14, 48)];
     orangeLabel.backgroundColor = [FontProperties getOrangeColor];
@@ -215,7 +217,7 @@ NSTimer *fetchTimer;
 - (void)peekSchoolPressed {
     NSNumber *groupID = @1877;
     NSString *groupName = @"Maryland";
-    [self.placesDelegate setGroupID:groupID andGroupName:groupName];
+    [self.placesDelegate presentViewWithGroupID:groupID andGroupName:groupName];
     [self dismissViewControllerAnimated:YES completion:nil];
     
 }

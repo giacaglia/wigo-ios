@@ -22,6 +22,7 @@
 #import "ProfileViewController.h"
 #import "FXBlurView.h"
 #import "ChatViewController.h"
+#import "BatteryViewController.h"
 
 #define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
 
@@ -74,10 +75,6 @@
 
 BOOL shouldAnimate;
 BOOL presentedMobileContacts;
-NSNumber *page;
-int sizeOfEachImage;
-BOOL shouldReloadEvents;
-int firstIndexOfNegativeEvent;
 BOOL firstTimeLoading;
 
 @implementation PlacesViewController
@@ -93,8 +90,7 @@ BOOL firstTimeLoading;
     self.fetchingEventAttendees = NO;
     shouldAnimate = NO;
     presentedMobileContacts = NO;
-    shouldReloadEvents = YES;
-    firstIndexOfNegativeEvent = -1;
+    self.shouldReloadEvents = YES;
     self.eventOffsetDictionary = [NSMutableDictionary new];
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
@@ -140,10 +136,10 @@ BOOL firstTimeLoading;
     }
 
     [self.view endEditing:YES];
-    if (shouldReloadEvents) {
+    if (self.shouldReloadEvents) {
         [self fetchEventsFirstPage];
     } else {
-        shouldReloadEvents = YES;
+        self.shouldReloadEvents = YES;
     }
     [self fetchUserInfo];
     [self shouldShowCreateButton];
@@ -190,7 +186,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) initializeNavigationBar {
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
         CGRect profileFrame = CGRectMake(3, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
@@ -219,21 +215,16 @@ BOOL firstTimeLoading;
         self.navigationItem.leftBarButtonItem = profileBarButton;
         
         self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
-        imageView.image = [UIImage imageNamed:@"followPlusWhite"];
-        [self.rightButton addTarget:self action:@selector(followPressed)
-                   forControlEvents:UIControlEventTouchUpInside];
-        [self.rightButton addSubview:imageView];
-        [self.rightButton setShowsTouchWhenHighlighted:YES];
-        UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
-        self.navigationItem.rightBarButtonItem = rightBarButton;
-        
-        [self.rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         UIImageView *followPlusWhiteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
         followPlusWhiteImageView.image = [UIImage imageNamed:@"followPlusWhite"];
         [self.rightButton addSubview:followPlusWhiteImageView];
+        [self.rightButton addTarget:self action:@selector(followPressed)
+                   forControlEvents:UIControlEventTouchUpInside];
+        [self.rightButton setShowsTouchWhenHighlighted:YES];
+        UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
+        self.navigationItem.rightBarButtonItem = rightBarButton;
 
-        if ([[WGProfile currentUser].numUnreadUsers intValue] > 0) {
+        if ([WGProfile.currentUser.numUnreadUsers intValue] > 0) {
             self.redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, 10, 10)];
             self.redDotLabel.backgroundColor = [FontProperties getOrangeColor];
             self.redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
@@ -246,7 +237,11 @@ BOOL firstTimeLoading;
         }
 
         
-    } else {
+    }
+    else if (self.presentingLockedView) {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+    else {
         self.navigationItem.leftBarButtonItem = nil;
         self.navigationItem.rightBarButtonItem = nil;
     }
@@ -388,12 +383,12 @@ BOOL firstTimeLoading;
 }
 
 - (void) updateTitleView {
-    if (!self.groupName) self.groupName = [WGProfile currentUser].group.name;
-    UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    [schoolButton setTitle:self.groupName forState:UIControlStateNormal];
-    [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
-    schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    if (!self.groupName) self.groupName = WGProfile.currentUser.group.name;
+    self.schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [self.schoolButton setTitle:self.groupName forState:UIControlStateNormal];
+    [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    [self.schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
+    self.schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
   
     CGFloat fontSize = 20.0f;
     CGSize size;
@@ -406,15 +401,14 @@ BOOL firstTimeLoading;
         
         fontSize -= 2.0;
     }
-    schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
+    self.schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
 
     UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, 0, 6, 5)];
-    [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     triangleImageView.image = [UIImage imageNamed:@"whiteTriangle"];
-    [schoolButton addSubview:triangleImageView];
+    [self.schoolButton addSubview:triangleImageView];
 
-    
-    self.navigationItem.titleView = schoolButton;
+    self.navigationItem.titleView = self.schoolButton;
 }
 
 - (void)showSchools {
@@ -515,15 +509,17 @@ BOOL firstTimeLoading;
 }
 
 - (void)goOutToEventNumber:(NSNumber*)eventID {
+    __weak typeof(self) weakSelf = self;
     [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : eventID }] withHandler:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
-        [WGProfile currentUser].isGoingOut = @YES;
-        [self updateTitleView];
-        [self fetchEventsFirstPage];
+        WGProfile.currentUser.isGoingOut = @YES;
+        [strongSelf updateTitleView];
+        [strongSelf fetchEventsFirstPage];
     }];
 }
 
@@ -740,7 +736,6 @@ BOOL firstTimeLoading;
                     [strongOfStrong.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
                     
                     [strongOfStrong dismissKeyboard];
-                    // [self fetchEventsFirstPage];
                     [strongOfStrong updateTitleView];
                     
                     [WGProfile currentUser].isGoingOut = @YES;
@@ -1248,7 +1243,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)showUser:(WGUser *)user {
-    shouldReloadEvents = NO;
+    self.shouldReloadEvents = NO;
     
     ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
@@ -1257,14 +1252,14 @@ BOOL firstTimeLoading;
 }
 
 - (void)showModalAttendees:(UIViewController *)modal {
-    shouldReloadEvents = NO;
+    self.shouldReloadEvents = NO;
     [self.navigationController presentViewController:modal animated:YES completion:nil];
     // [self.navigationController pushViewController: modal animated: YES];
 }
 
 - (void)showConversationForEvent:(WGEvent *)event {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    shouldReloadEvents = NO;
+    self.shouldReloadEvents = NO;
     
     WGCollection *temporaryEventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
     [temporaryEventMessages addObject:event.highlight];
@@ -1315,6 +1310,28 @@ BOOL firstTimeLoading;
     _spinnerAtCenter = YES;
     [self updateTitleView];
     [self fetchEventsFirstPage];
+}
+
+- (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
+    self.presentingLockedView = YES;
+    UIButtonAligned *leftButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@2];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 8, 8, 14)];
+    imageView.image = [UIImage imageNamed:@"backToBattery"];
+    [leftButton addTarget:self action:@selector(backPressed)
+         forControlEvents:UIControlEventTouchUpInside];
+    [leftButton addSubview:imageView];
+    [leftButton setShowsTouchWhenHighlighted:YES];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    self.navigationItem.leftBarButtonItem = leftBarButton;
+    self.schoolButton.enabled = NO;
+}
+
+- (void)backPressed {
+    self.presentingLockedView = NO;
+    self.schoolButton.enabled = YES;
+    BatteryViewController *batteryViewController = [BatteryViewController new];
+    batteryViewController.placesDelegate = self;
+    [self presentViewController:batteryViewController animated:YES completion:nil];
 }
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
@@ -1397,7 +1414,7 @@ BOOL firstTimeLoading;
                     [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         strongSelf.fetchingEventAttendees = NO;
-                        shouldReloadEvents = YES;
+                        strongSelf.shouldReloadEvents = YES;
                         return;
                     }
                     
@@ -1429,7 +1446,7 @@ BOOL firstTimeLoading;
                     
                     [strongSelf fetchedOneParty];
                     strongSelf.fetchingEventAttendees = NO;
-                    shouldReloadEvents = YES; 
+                    strongSelf.shouldReloadEvents = YES;
                     [strongSelf.placesTableView reloadData];
                 }];
             }
@@ -1441,7 +1458,7 @@ BOOL firstTimeLoading;
 
                 if (error) {
                     strongSelf.fetchingEventAttendees = NO;
-                    shouldReloadEvents = YES;
+                    strongSelf.shouldReloadEvents = YES;
                     return;
                 }
                 strongSelf.allEvents = collection;

@@ -11,4 +11,5 @@
 
 @interface BatteryViewController : UIViewController
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) NSTimer *fetchTimer;
 @end
