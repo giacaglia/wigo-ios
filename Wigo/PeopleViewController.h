@@ -21,6 +21,14 @@
 @property (nonatomic, assign) int tabNumber;
 @property (nonatomic, strong) NSNumber *currentTab;
 @property (nonatomic, strong) UITableView *tableViewOfPeople;
+
+@property (nonatomic, strong) WGCollection *everyone;
+@property (nonatomic, strong) WGCollection *users;
+@property (nonatomic, strong) WGCollection *suggestions;
+@property (nonatomic, strong) WGCollection *following;
+@property (nonatomic, strong) WGCollection *followers;
+@property (nonatomic, assign) BOOL fetching;
+
 @end
 
 #define kPeopleCellName @"PeopleCellName"

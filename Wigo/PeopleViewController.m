@@ -18,7 +18,6 @@
 }
 
 // Search Bar Content
-@property WGCollection *users;
 @property WGCollection *filteredUsers;
 
 @property BOOL isSearching;
@@ -26,11 +25,6 @@
 @property UIImageView *searchIconImageView;
 
 @property ProfileViewController *profileViewController;
-
-@property WGCollection *everyone;
-@property WGCollection *following;
-@property WGCollection *followers;
-@property WGCollection *suggestions;
 
 @property NSNumber *page;
 
@@ -41,7 +35,6 @@ BOOL didProfileSegue;
 NSIndexPath *userIndex;
 int queryQueueInt;
 UIView *secondPartSubview;
-BOOL fetching;
 UIScrollView *suggestedScrollView;
 
 @implementation PeopleViewController
@@ -104,8 +97,8 @@ UIScrollView *suggestedScrollView;
 
     if (!didProfileSegue) {
         if (!self.currentTab) self.currentTab = @2;
-        _users = [[WGCollection alloc] initWithType:[WGUser class]];
-        _filteredUsers = [[WGCollection alloc] initWithType:[WGUser class]];
+        self.users = [[WGCollection alloc] initWithType:[WGUser class]];
+        self.filteredUsers = [[WGCollection alloc] initWithType:[WGUser class]];
         [self loadTableView];
     }
     didProfileSegue = NO;
@@ -342,19 +335,19 @@ UIScrollView *suggestedScrollView;
 
 - (int)numberOfRowsWithNoShare {
     if (_isSearching) {
-        return (int)[_filteredUsers count];
+        return (int)[self.filteredUsers count];
     } else {
         int hasNextPage = [self isThereANextPage] ? 1 : 0;
-        return (int)[_users count] + hasNextPage;
+        return (int)self.users.count + hasNextPage;
     }
 }
 
 - (BOOL)isThereANextPage {
     if ([self.currentTab isEqual:@2]) {
-        return [_users.hasNextPage boolValue];
+        return [self.users.hasNextPage boolValue];
     }
     else if ([self.currentTab isEqual:@3]) {
-       return [_followers.hasNextPage boolValue];
+       return [self.followers.hasNextPage boolValue];
     }
     else {
        return [_following.hasNextPage boolValue];
@@ -367,7 +360,7 @@ UIScrollView *suggestedScrollView;
             SuggestedCell *cell = [tableView dequeueReusableCellWithIdentifier:kSuggestedFriendsCellName forIndexPath:indexPath];
             cell.peopleViewDelegate = self;
             [cell.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-            [cell setStateForCollection:_suggestions];
+            [cell setStateForCollection:self.suggestions];
             return cell;
         }
         else if ([self.currentTab isEqual:@4]) {
@@ -382,23 +375,23 @@ UIScrollView *suggestedScrollView;
 
     int tag = (int)[indexPath row];
     if (!_isSearching) {
-        if ([_users count] == 0) return cell;
-        if ([_users count] > 5) {
-            if ([self isThereANextPage] && tag == [_users count] - 5) {
+        if (self.users.count == 0) return cell;
+        if (self.users.count > 5) {
+            if ([self isThereANextPage] && tag == self.users.count - 5) {
                 [self loadNextPage];
             }
-        } else if (tag == [_users count]) {
+        } else if (tag == self.users.count) {
             [self loadNextPage];
             return cell;
         }
     }
     else {
-        if ([_filteredUsers count] == 0) return cell;
-        if ([_filteredUsers count] > 5) {
-            if ([_filteredUsers.hasNextPage boolValue] && tag == [_filteredUsers count] - 5) {
+        if (self.filteredUsers.count == 0) return cell;
+        if (self.filteredUsers.count > 5) {
+            if ([self.filteredUsers.hasNextPage boolValue] && tag == self.filteredUsers.count - 5) {
                 [self getNextPageForFilteredContent];
             }
-        } else if (tag == [_filteredUsers count]) {
+        } else if (tag == self.filteredUsers.count) {
             [self getNextPageForFilteredContent];
             return cell;
         }
@@ -407,8 +400,8 @@ UIScrollView *suggestedScrollView;
     WGUser *user = [self getUserAtIndex:tag];
     if (!user) {
         BOOL loading = NO;
-        if (_isSearching && [_filteredUsers.hasNextPage boolValue]) loading = YES;
-        if (!_isSearching && [_users.hasNextPage boolValue]) loading = YES;
+        if (_isSearching && [self.filteredUsers.hasNextPage boolValue]) loading = YES;
+        if (!_isSearching && [self.users.hasNextPage boolValue]) loading = YES;
         if (loading) {
           [cell.spinnerView startAnimating];
         }
@@ -447,8 +440,8 @@ UIScrollView *suggestedScrollView;
     NSIndexPath *indexPath = [self.tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
     WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
     if (user) [self updateButton:sender withUser:user];
-    if ([indexPath row] < [_users count]) {
-        [_users replaceObjectAtIndex:[indexPath row] withObject:user];
+    if ([indexPath row] < self.users.count) {
+        [self.users replaceObjectAtIndex:[indexPath row] withObject:user];
     }
 }
 
@@ -481,7 +474,7 @@ UIScrollView *suggestedScrollView;
             user.isFollowingRequested = @YES;
         } else {
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            [_users addObject:user];
+            [self.users addObject:user];
             numFollowing += 1;
             user.isFollowing = @YES;
         }
@@ -500,7 +493,7 @@ UIScrollView *suggestedScrollView;
         user.isFollowing = @NO;
         user.isFollowingRequested = @NO;
         if (user.privacy != PRIVATE && user) {
-            [_users removeObject:user];
+            [self.users removeObject:user];
             numFollowing -= 1;
         }
         [self updatedCachedProfileUser:numFollowing];
@@ -521,13 +514,13 @@ UIScrollView *suggestedScrollView;
 - (WGUser *)getUserAtIndex:(int)index {
     WGUser *user;
     if (_isSearching) {
-        int sizeOfArray = (int)[_filteredUsers count];
+        int sizeOfArray = self.filteredUsers.count;
         if (sizeOfArray > 0 && sizeOfArray > index)
-            user = (WGUser *)[_filteredUsers objectAtIndex:index];
+            user = (WGUser *)[self.filteredUsers objectAtIndex:index];
     } else {
-        int sizeOfArray = (int)[_users count];
+        int sizeOfArray = (int)self.users.count;
         if (sizeOfArray > 0 && sizeOfArray > index)
-            user = (WGUser *)[_users objectAtIndex:index];
+            user = (WGUser *)[self.users objectAtIndex:index];
     }
     return user;
 }
@@ -541,25 +534,25 @@ UIScrollView *suggestedScrollView;
     if (user) {
         if ([userIndex section] == 0) {
             int numberOfRows = (int)[self.tableViewOfPeople numberOfRowsInSection:0];
-            int sizeOfArray = (int)[_suggestions count];
+            int sizeOfArray = (int)self.suggestions.count;
             if (numberOfRows > 0 && userInt >= 0 && sizeOfArray > userInt) {
-                [_suggestions replaceObjectAtIndex:userInt withObject:user];
+                [self.suggestions replaceObjectAtIndex:userInt withObject:user];
                 [self.tableViewOfPeople reloadData];
             }
         } else {
             if (_isSearching) {
                 int numberOfRows = (int)[self.tableViewOfPeople numberOfRowsInSection:1];
-                int sizeOfArray = (int)[_filteredUsers count];
+                int sizeOfArray = (int)[self.filteredUsers count];
                 if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
-                    [_filteredUsers replaceObjectAtIndex:userInt withObject:user];
+                    [self.filteredUsers replaceObjectAtIndex:userInt withObject:user];
                     [self.tableViewOfPeople reloadData];
                 }
             }
             else {
                 int numberOfRows = (int)[self.tableViewOfPeople numberOfRowsInSection:1];
-                int sizeOfArray = (int)[_users count];
+                int sizeOfArray = (int)self.users.count;
                 if (numberOfRows > 0 && numberOfRows > userInt  && userInt >= 0 && sizeOfArray > userInt) {
-                    [_users replaceObjectAtIndex:userInt withObject:user];
+                    [self.users replaceObjectAtIndex:userInt withObject:user];
                     [self.tableViewOfPeople reloadData];
                 }
             }
@@ -584,25 +577,27 @@ UIScrollView *suggestedScrollView;
 }
 
 - (void)fetchFirstPageSuggestions {
+    __weak typeof(self) weakSelf = self;
     [WGUser getSuggestions:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
-            _suggestions = collection;
+            strongSelf.suggestions = collection;
 #warning why do we do this?
-            [_suggestions getNextPage:^(WGCollection *collection, NSError *error) {
+            [strongSelf.suggestions getNextPage:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         return;
                     }
-                    _everyone = collection;
-                    _users = _everyone;
-                    [self.tableViewOfPeople reloadData];
+                    strongSelf.everyone = collection;
+                    strongSelf.users = strongSelf.everyone;
+                    [strongSelf.tableViewOfPeople reloadData];
                 });
             }];
         });
@@ -611,16 +606,16 @@ UIScrollView *suggestedScrollView;
 
 - (void)fetchFirstPageEveryone {
     [WGSpinnerView addDancingGToCenterView:self.view];
-    _everyone = nil;
-    fetching = NO;
+    self.everyone = nil;
+    self.fetching = NO;
     [self fetchEveryone];
 }
 
 - (void) fetchEveryone {
-    if (!fetching) {
-        fetching = YES;
+    if (!self.fetching) {
+        self.fetching = YES;
         __weak typeof(self) weakSelf = self;
-        if (!_everyone) {
+        if (!self.everyone) {
             [WGUser get:^(WGCollection *collection, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -628,42 +623,42 @@ UIScrollView *suggestedScrollView;
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        fetching = NO;
+                        strongSelf.fetching = NO;
                         return;
                     }
-                    _everyone = collection;
-                    _users = _everyone;
+                    strongSelf.everyone = collection;
+                    strongSelf.users = strongSelf.everyone;
                     [strongSelf.tableViewOfPeople reloadData];
-                    fetching = NO;
+                    strongSelf.fetching = NO;
                 });
             }];
-        } else if ([_everyone.hasNextPage boolValue]) {
-            [_everyone getNextPage:^(WGCollection *collection, NSError *error) {
+        } else if ([self.everyone.hasNextPage boolValue]) {
+            [self.everyone getNextPage:^(WGCollection *collection, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     [WGSpinnerView removeDancingGFromCenterView:self.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        fetching = NO;
+                        strongSelf.fetching = NO;
                         return;
                     }
                     
-                    if (_suggestions) {
-                        [_everyone addObjectsFromCollection:collection notInCollection:_suggestions];
+                    if (strongSelf.suggestions) {
+                        [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.suggestions];
                     } else {
-                        [_everyone addObjectsFromCollection:collection notInCollection:_everyone];
+                        [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.everyone];
                     }
-                    _everyone.hasNextPage = collection.hasNextPage;
-                    _everyone.nextPage = collection.nextPage;
+                    strongSelf.everyone.hasNextPage = collection.hasNextPage;
+                    strongSelf.everyone.nextPage = collection.nextPage;
                     
-                    _users = _everyone;
+                    strongSelf.users = strongSelf.everyone;
                     [strongSelf.tableViewOfPeople reloadData];
-                    fetching = NO;
+                    strongSelf.fetching = NO;
                 });
             }];
         } else {
-            fetching = NO;
+            self.fetching = NO;
             [WGSpinnerView removeDancingGFromCenterView:self.view];
         }
     }
@@ -671,16 +666,16 @@ UIScrollView *suggestedScrollView;
 
 -(void) fetchFirstPageFollowers {
     [WGSpinnerView addDancingGToCenterView:self.view];
-    fetching = NO;
-    _followers = nil;
+    self.fetching = NO;
+    self.followers = nil;
     [self fetchFollowers];
 }
 
 -(void) fetchFollowers {
     __weak typeof(self) weakSelf = self;
-    if (!fetching) {
-        fetching = YES;
-        if (!_followers) {
+    if (!self.fetching) {
+        self.fetching = YES;
+        if (!self.followers) {
             [WGFollow getFollowsForFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
@@ -688,7 +683,7 @@ UIScrollView *suggestedScrollView;
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        fetching = NO;
+                        strongSelf.fetching = NO;
                         return;
                     }
                     strongSelf.followers = collection;
@@ -697,18 +692,18 @@ UIScrollView *suggestedScrollView;
                         [strongSelf.users addObject:follow.user];
                     }
                     [strongSelf.tableViewOfPeople reloadData];
-                    fetching = NO;
+                    strongSelf.fetching = NO;
                 });
             }];
-        } else if ([_followers.hasNextPage boolValue]) {
-            [_followers addNextPage:^(BOOL success, NSError *error) {
+        } else if ([self.followers.hasNextPage boolValue]) {
+            [self.followers addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
                     [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        fetching = NO;
+                        strongSelf.fetching = NO;
                         return;
                     }
                     strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
@@ -716,11 +711,11 @@ UIScrollView *suggestedScrollView;
                         [strongSelf.users addObject:follow.user];
                     }
                     [strongSelf.tableViewOfPeople reloadData];
-                    fetching = NO;
+                    strongSelf.fetching = NO;
                 });
             }];
         } else {
-            fetching = NO;
+            self.fetching = NO;
             [WGSpinnerView removeDancingGFromCenterView:self.view];
         }
     }
@@ -728,16 +723,16 @@ UIScrollView *suggestedScrollView;
 
 -(void) fetchFirstPageFollowing {
     [WGSpinnerView addDancingGToCenterView:self.view];
-    _following = nil;
-    fetching = NO;
+    self.following = nil;
+    self.fetching = NO;
     [self fetchFollowing];
 }
 
 -(void) fetchFollowing {
-    if (!fetching) {
-        fetching = YES;
+    if (!self.fetching) {
+        self.fetching = YES;
         __weak typeof(self) weakSelf = self;
-        if (!_following) {
+        if (!self.following) {
             [WGFollow getFollowsForUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
@@ -745,7 +740,7 @@ UIScrollView *suggestedScrollView;
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        fetching = NO;
+                        self.fetching = NO;
                         return;
                     }
                     strongSelf.following = collection;
@@ -754,18 +749,18 @@ UIScrollView *suggestedScrollView;
                         [strongSelf.users addObject:follow.follow];
                     }
                     [strongSelf.tableViewOfPeople reloadData];
-                    fetching = NO;
+                    strongSelf.fetching = NO;
                 });
             }];
-        } else if ([_following.hasNextPage boolValue]) {
-            [_following addNextPage:^(BOOL success, NSError *error) {
+        } else if ([self.following.hasNextPage boolValue]) {
+            [self.following addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
                     [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        fetching = NO;
+                        strongSelf.fetching = NO;
                         return;
                     }
                     strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
@@ -773,11 +768,11 @@ UIScrollView *suggestedScrollView;
                         [strongSelf.users addObject:follow.follow];
                     }
                     [strongSelf.tableViewOfPeople reloadData];
-                    fetching = NO;
+                    strongSelf.fetching = NO;
                 });
             }];
         } else {
-            fetching = NO;
+            self.fetching = NO;
             [WGSpinnerView removeDancingGFromCenterView:self.view];
         }
     }
@@ -839,12 +834,12 @@ UIScrollView *suggestedScrollView;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    fetching = NO;
+                    strongSelf.fetching = NO;
                     return;
                 }
                 _filteredUsers = collection;
                 [strongSelf.tableViewOfPeople reloadData];
-                fetching = NO;
+                strongSelf.fetching = NO;
             });
         }];
     }
