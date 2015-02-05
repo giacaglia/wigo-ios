@@ -59,6 +59,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 }
 
 +(void) getURL:(NSString *)url withHandler:(ApiResultBlock)handler {
+    if (!url || ![url isKindOfClass:[NSString class]]) handler(nil,  [NSError new]);
     NSLog(@"GET %@", url);
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
