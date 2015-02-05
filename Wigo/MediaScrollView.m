@@ -947,8 +947,8 @@
     UIView *overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
     self.controller.cameraOverlayView = overlayView;
     
-    self.pictureButton = [[UIButton alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 110, 100, 100)];
-    UIImageView *captureImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    self.pictureButton = [[UIButton alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
+    UIImageView *captureImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.pictureButton.frame.size.width/2 - 36, self.pictureButton.frame.size.height - 72 - 5, 72, 72)];
     captureImageView.image = [UIImage imageNamed:@"captureCamera"];
     [self.pictureButton addSubview:captureImageView];
     self.pictureButton.center = CGPointMake(overlayView.center.x, self.pictureButton.center.y);
@@ -956,14 +956,14 @@
     [overlayView addSubview:self.pictureButton];
     
     self.flashButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    self.flashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    self.flashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 30, 37)];
     self.flashImageView.image = [UIImage imageNamed:@"flashOff"];
     [self.flashButton addSubview:self.flashImageView];
     [self.flashButton addTarget:self action:@selector(changeFlash) forControlEvents:UIControlEventTouchUpInside];
     [overlayView addSubview:self.flashButton];
     
     self.switchButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 100, 0, 100, 100)];
-    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width - 36 - 10, 10, 36, 29)];
     cameraImageView.image = [UIImage imageNamed:@"cameraIcon"];
     [self.switchButton addSubview:cameraImageView];
     [self.switchButton addTarget:self action:@selector(switchCamera) forControlEvents:UIControlEventTouchUpInside];
@@ -1037,10 +1037,12 @@
 - (void)changeFlash {
     if (self.controller.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
         self.flashImageView.image = [UIImage imageNamed:@"flashOn"];
+        self.flashImageView.frame = CGRectMake(10, 10, 16, 26);
         self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
     }
     else {
         self.flashImageView.image = [UIImage imageNamed:@"flashOff"];
+        self.flashImageView.frame = CGRectMake(10, 10, 30, 37);
         self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
     }
 }
