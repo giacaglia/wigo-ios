@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Delegate.h"
 
-@interface SignUpViewController : UIViewController
+@interface SignUpViewController : UIViewController <UITextFieldDelegate>
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) UITextField *studentTextField;
 @end
