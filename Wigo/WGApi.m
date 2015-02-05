@@ -67,7 +67,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     
     // Hack for Ambassador View
-    BOOL shouldPassKey = [url containsString:@"key="];
+    BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
     
     [WGApi addWigoHeaders:manager.requestSerializer passKey:shouldPassKey];
     
