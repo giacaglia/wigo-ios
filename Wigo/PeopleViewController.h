@@ -27,6 +27,7 @@
 @property (nonatomic, strong) WGCollection *suggestions;
 @property (nonatomic, strong) WGCollection *following;
 @property (nonatomic, strong) WGCollection *followers;
+@property (nonatomic, strong) WGCollection *filteredUsers;
 @property (nonatomic, assign) BOOL fetching;
 
 @end

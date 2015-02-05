@@ -18,8 +18,6 @@
 }
 
 // Search Bar Content
-@property WGCollection *filteredUsers;
-
 @property BOOL isSearching;
 @property UISearchBar *searchBar;
 @property UIImageView *searchIconImageView;
@@ -169,6 +167,9 @@ UIScrollView *suggestedScrollView;
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
     [barItem setCustomView:cancelButton];
     self.navigationItem.rightBarButtonItem = barItem;
+
+    self.filteredUsers = [[WGCollection alloc] initWithType:[WGUser class]];
+    [self.tableViewOfPeople reloadData];
 }
 
 - (void)cancelPressed {
@@ -227,7 +228,7 @@ UIScrollView *suggestedScrollView;
 - (void)initializeSearchBar {
     UIColor *grayColor = RGB(184, 184, 184);
     _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(10, 10, self.view.frame.size.width - 20, 30)];
-    _searchBar.barTintColor = [UIColor whiteColor];
+    _searchBar.barTintColor = UIColor.whiteColor;
     _searchBar.tintColor = grayColor;
     _searchBar.placeholder = @"Search By Name";
     _searchBar.delegate = self;
@@ -254,7 +255,7 @@ UIScrollView *suggestedScrollView;
             if ([secondLevelSubview isKindOfClass:[UITextField class]])
             {
                 UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
-                searchBarTextField.textColor = grayColor;
+                searchBarTextField.textColor = [FontProperties getOrangeColor];
                 break;
             }
             else {
@@ -270,12 +271,8 @@ UIScrollView *suggestedScrollView;
         return secondPartSubview;
     } else {
         UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 90)];
-        
-       
-        
         return secondPartSubview;
     }
- 
 }
 
 - (void)inviteButtonPressed  {
@@ -297,7 +294,7 @@ UIScrollView *suggestedScrollView;
     self.navigationItem.titleView = nil;
     if ([self.currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageSuggestions];
-        self.title = [WGProfile currentUser].group.name;
+        self.title = WGProfile.currentUser.group.name;
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
@@ -514,7 +511,7 @@ UIScrollView *suggestedScrollView;
 - (WGUser *)getUserAtIndex:(int)index {
     WGUser *user;
     if (_isSearching) {
-        int sizeOfArray = self.filteredUsers.count;
+        int sizeOfArray = (int)self.filteredUsers.count;
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = (WGUser *)[self.filteredUsers objectAtIndex:index];
     } else {
@@ -542,7 +539,7 @@ UIScrollView *suggestedScrollView;
         } else {
             if (_isSearching) {
                 int numberOfRows = (int)[self.tableViewOfPeople numberOfRowsInSection:1];
-                int sizeOfArray = (int)[self.filteredUsers count];
+                int sizeOfArray = (int)self.filteredUsers.count;
                 if (numberOfRows > 0 && numberOfRows > userInt && userInt >= 0 && sizeOfArray > userInt) {
                     [self.filteredUsers replaceObjectAtIndex:userInt withObject:user];
                     [self.tableViewOfPeople reloadData];
@@ -577,17 +574,18 @@ UIScrollView *suggestedScrollView;
 }
 
 - (void)fetchFirstPageSuggestions {
+    [WGSpinnerView addDancingGToCenterView:self.view];
     __weak typeof(self) weakSelf = self;
     [WGUser getSuggestions:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             strongSelf.suggestions = collection;
-#warning why do we do this?
             [strongSelf.suggestions getNextPage:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     if (error) {
@@ -837,7 +835,7 @@ UIScrollView *suggestedScrollView;
                     strongSelf.fetching = NO;
                     return;
                 }
-                _filteredUsers = collection;
+                strongSelf.filteredUsers = collection;
                 [strongSelf.tableViewOfPeople reloadData];
                 strongSelf.fetching = NO;
             });
@@ -847,7 +845,7 @@ UIScrollView *suggestedScrollView;
 
 - (void) getNextPageForFilteredContent {
     __weak typeof(self) weakSelf = self;
-    [_filteredUsers addNextPage:^(BOOL success, NSError *error) {
+    [self.filteredUsers addNextPage:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {

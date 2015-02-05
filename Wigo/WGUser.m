@@ -661,7 +661,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"ordering" : @"is_goingout", @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

@@ -15,13 +15,10 @@
 
 @interface MediaScrollView() {}
 @property (nonatomic, strong) NSMutableArray *pageViews;
-
 @property (nonatomic, strong) WGCollection *eventMessagesRead;
 @property (nonatomic, strong) NSMutableDictionary *thumbnails;
-
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
-
 @property (nonatomic, assign) BOOL shownCurrentImage;
 @end
 
@@ -213,8 +210,7 @@
         }
     }
 
-    // [self performBlock:^(void){[self playVideoAtPage:page];} afterDelay:0.5 cancelPreviousRequest:YES];
-    [self playVideoAtPage:page];
+    [self performBlock:^(void){[self playVideoAtPage:page];} afterDelay:0.5];
 }
 
 
@@ -499,11 +495,6 @@
         self.didPostContent = NO;
     }
 }
-
-
-//- (void)mediaPickerControllerDidCancel:( *)controller {
-//    [self.eventConversationDelegate dismissView];
-//}
 
 @end
 
@@ -1175,7 +1166,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
         float widthScreen = [UIScreen mainScreen].bounds.size.width;
         self.percentPoint = CGPointMake(1 - (center.x/widthScreen), center.y/heightScreen);
         self.percentPoint = CGPointMake(self.percentPoint.x, MIN(MAX(self.percentPoint.y, 125/[UIScreen mainScreen].bounds.size.height), 1 - (158/[UIScreen mainScreen].bounds.size.height)));
-        NSLog(@"center.x %f, center.y: %f,  percent point %f", center.x, center.y,  self.percentPoint.y);
         self.textLabel.frame = CGRectMake(0, center.y, [UIScreen mainScreen].bounds.size.width, 40);
         
         if (![self.textField isFirstResponder]) {
