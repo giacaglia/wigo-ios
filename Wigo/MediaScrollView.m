@@ -948,23 +948,31 @@
     self.controller.cameraOverlayView = overlayView;
     
     self.pictureButton = [[UIButton alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 110, 100, 100)];
-    [self.pictureButton setImage:[UIImage imageNamed:@"captureCamera"] forState:UIControlStateNormal];
+    UIImageView *captureImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    captureImageView.image = [UIImage imageNamed:@"captureCamera"];
+    [self.pictureButton addSubview:captureImageView];
     self.pictureButton.center = CGPointMake(overlayView.center.x, self.pictureButton.center.y);
     [self.pictureButton addTarget:self.controller action:@selector(takePicture) forControlEvents:UIControlEventTouchUpInside];
     [overlayView addSubview:self.pictureButton];
     
     self.flashButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    [self.flashButton setImage:[UIImage imageNamed:@"flashOff"] forState:UIControlStateNormal];
+    self.flashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    self.flashImageView.image = [UIImage imageNamed:@"flashOff"];
+    [self.flashButton addSubview:self.flashImageView];
     [self.flashButton addTarget:self action:@selector(changeFlash) forControlEvents:UIControlEventTouchUpInside];
     [overlayView addSubview:self.flashButton];
     
     self.switchButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 100, 0, 100, 100)];
-    [self.switchButton setImage:[UIImage imageNamed:@"cameraIcon"] forState:UIControlStateNormal];
+    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    cameraImageView.image = [UIImage imageNamed:@"cameraIcon"];
+    [self.switchButton addSubview:cameraImageView];
     [self.switchButton addTarget:self action:@selector(switchCamera) forControlEvents:UIControlEventTouchUpInside];
     [overlayView addSubview:self.switchButton];
     
     self.dismissButton = [[UIButton alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
-    [self.dismissButton setImage:[UIImage imageNamed:@"cancelCamera"] forState:UIControlStateNormal];
+    UIImageView *dismissImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.dismissButton.frame.size.height - 36 - 10, 36, 36)];
+    dismissImageView.image = [UIImage imageNamed:@"cancelCamera"];
+    [self.dismissButton addSubview:dismissImageView];
     [self.dismissButton addTarget:self action:@selector(dismissPressed) forControlEvents:UIControlEventTouchUpInside];
     [overlayView addSubview:self.dismissButton];
     
@@ -984,7 +992,11 @@
     
     self.cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(10, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.cancelButton setTitle:@"< Cancel" forState:UIControlStateNormal];
+    UILabel *cancelLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.cancelButton.frame.size.height - 50, 100, 50)];
+    cancelLabel.text = @"< Cancel";
+    cancelLabel.textColor = UIColor.whiteColor;
+    cancelLabel.textAlignment = NSTextAlignmentLeft;
+    [self.cancelButton addSubview:cancelLabel];
     self.cancelButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     self.cancelButton.hidden = YES;
     self.cancelButton.enabled = NO;
@@ -992,7 +1004,7 @@
     
     self.postButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.postButton addTarget:self action:@selector(postPressed) forControlEvents:UIControlEventTouchUpInside];
-    UILabel *postLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 100, 0, 100, self.postButton.frame.size.height)];
+    UILabel *postLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 100, self.postButton.frame.size.height - 50, 100, 50)];
     postLabel.text = @"Post >";
     postLabel.textColor = UIColor.whiteColor;
     postLabel.textAlignment = NSTextAlignmentRight;
@@ -1024,11 +1036,11 @@
 
 - (void)changeFlash {
     if (self.controller.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
-        [self.flashButton setImage:[UIImage imageNamed:@"flashOn"] forState:UIControlStateNormal];
+        self.flashImageView.image = [UIImage imageNamed:@"flashOn"];
         self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
     }
     else {
-        [self.flashButton setImage:[UIImage imageNamed:@"flashOff"] forState:UIControlStateNormal];
+        self.flashImageView.image = [UIImage imageNamed:@"flashOff"];
         self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
     }
 }

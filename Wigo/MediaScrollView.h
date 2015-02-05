@@ -44,7 +44,7 @@
 -(void) closeView;
 -(void) scrolledToPage:(int)page;
 
-- (void)callbackFromUpload;
+- (void)callbackFromUploadWithInfo:(NSDictionary *)callbackInfo;
 @property (nonatomic, assign) BOOL didPostContent;
 @property (nonatomic, strong) NSError *error;
 @property (nonatomic, strong) WGEventMessage *object;
@@ -109,6 +109,7 @@
 @property (nonatomic, strong) UIImagePickerController *controller;
 @property (nonatomic, strong) UIButton *dismissButton;
 @property (nonatomic, strong) UIButton *flashButton;
+@property (nonatomic, strong) UIImageView *flashImageView;
 @property (nonatomic, strong) UIButton *switchButton;
 @property (nonatomic, strong) UIButton *pictureButton;
 
