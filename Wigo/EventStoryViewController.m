@@ -456,8 +456,8 @@
 }
 
 - (void)initializeToolTipBanner {
-    int heightButton = [[UIScreen mainScreen] bounds].size.width/8;
-    _highlightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - heightButton - 15, 233, 89)];
+    int widthButton = [[UIScreen mainScreen] bounds].size.width/5.33;
+    _highlightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - widthButton - 15, 233, 89)];
     _highlightButton.center = CGPointMake(self.view.center.x, _highlightButton.center.y);
     [_highlightButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     _highlightButton.alpha = 0.0f;
