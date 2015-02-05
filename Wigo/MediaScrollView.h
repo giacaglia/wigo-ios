@@ -111,6 +111,7 @@
 @property (nonatomic, strong) UIButton *flashButton;
 @property (nonatomic, strong) UIImageView *flashImageView;
 @property (nonatomic, strong) UIButton *switchButton;
+@property (nonatomic, strong) UIImageView *cameraImageView;
 @property (nonatomic, strong) UIButton *pictureButton;
 
 @property (nonatomic, strong) UIImageView *previewImageView;

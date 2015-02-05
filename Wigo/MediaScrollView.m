@@ -963,9 +963,9 @@
     [overlayView addSubview:self.flashButton];
     
     self.switchButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 100, 0, 100, 100)];
-    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width - 36 - 10, 10, 36, 29)];
-    cameraImageView.image = [UIImage imageNamed:@"cameraIcon"];
-    [self.switchButton addSubview:cameraImageView];
+    self.cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width - 36 - 10, 10, 36, 29)];
+    self.cameraImageView.image = [UIImage imageNamed:@"cameraIcon"];
+    [self.switchButton addSubview:self.cameraImageView];
     [self.switchButton addTarget:self action:@selector(switchCamera) forControlEvents:UIControlEventTouchUpInside];
     [overlayView addSubview:self.switchButton];
     
@@ -996,6 +996,10 @@
     cancelLabel.text = @"< Cancel";
     cancelLabel.textColor = UIColor.whiteColor;
     cancelLabel.textAlignment = NSTextAlignmentLeft;
+    cancelLabel.layer.shadowColor = UIColor.blackColor.CGColor;
+    cancelLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
+    cancelLabel.layer.shadowOpacity = 0.5;
+    cancelLabel.layer.shadowRadius = 0.5;
     [self.cancelButton addSubview:cancelLabel];
     self.cancelButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     self.cancelButton.hidden = YES;
@@ -1008,6 +1012,10 @@
     postLabel.text = @"Post >";
     postLabel.textColor = UIColor.whiteColor;
     postLabel.textAlignment = NSTextAlignmentRight;
+    postLabel.layer.shadowColor = UIColor.blackColor.CGColor;
+    postLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
+    postLabel.layer.shadowOpacity = 0.5;
+    postLabel.layer.shadowRadius = 0.5;
     [self.postButton addSubview:postLabel];
     self.postButton.hidden = YES;
     self.postButton.enabled = NO;
@@ -1037,7 +1045,7 @@
 - (void)changeFlash {
     if (self.controller.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
         self.flashImageView.image = [UIImage imageNamed:@"flashOn"];
-        self.flashImageView.frame = CGRectMake(10, 10, 16, 26);
+        self.flashImageView.frame = CGRectMake(10, 10, 18, 30);
         self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
     }
     else {
@@ -1049,10 +1057,10 @@
 
 - (void)switchCamera {
     [UIView animateWithDuration:.15f animations:^{
-        self.switchButton.transform = CGAffineTransformMakeScale(1.5,1.5);
+        self.cameraImageView.transform = CGAffineTransformMakeScale(1.5,1.5);
     }completion:^(BOOL finished) {
         [UIView animateWithDuration:.15f animations:^{
-            self.switchButton.transform = CGAffineTransformMakeScale(1.0,1.0);
+            self.cameraImageView.transform = CGAffineTransformMakeScale(1.0,1.0);
         }];
     }];
 
