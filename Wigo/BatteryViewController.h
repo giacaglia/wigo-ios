@@ -15,5 +15,5 @@
 @property (nonatomic, strong) NSArray *schoolSections;
 @property (nonatomic, strong) NSNumber *groupID;
 @property (nonatomic, strong) NSString *groupName;
-@property (nonatomic, strong) UIView *blurredBackground;
+@property (nonatomic, strong) UIImage *blurredBackgroundImage;
 @end

@@ -23,6 +23,8 @@
 #import "FXBlurView.h"
 #import "ChatViewController.h"
 #import "BatteryViewController.h"
+#import "UIView+ViewToImage.h"
+#import "UIImage+ImageEffects.h"
 
 #define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
 
@@ -1314,7 +1316,7 @@ BOOL firstTimeLoading;
 - (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
     self.presentingLockedView = YES;
     UIButtonAligned *leftButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@2];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 8, 8, 14)];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 8, 8, 14)];
     imageView.image = [UIImage imageNamed:@"backToBattery"];
     [leftButton addTarget:self action:@selector(backPressed)
          forControlEvents:UIControlEventTouchUpInside];
@@ -1330,6 +1332,13 @@ BOOL firstTimeLoading;
     self.schoolButton.enabled = YES;
     
     BatteryViewController *batteryViewController = [BatteryViewController new];
+    
+    UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
+    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
+                                                             tintColor:RGBAlpha(0, 0, 0, 0.75)
+                                                 saturationDeltaFactor:1.3
+                                                             maskImage:nil];
+    batteryViewController.blurredBackgroundImage = imageOfUnderlyingView;
     batteryViewController.placesDelegate = self;
     [self presentViewController:batteryViewController animated:YES completion:nil];
 }
@@ -1551,8 +1560,8 @@ BOOL firstTimeLoading;
             if (!strongSelf.secondTimeFetchingUserInfo) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
                 strongSelf.secondTimeFetchingUserInfo = YES;
-                if (error || ![[WGProfile currentUser].emailValidated boolValue] ||
-                    [[WGProfile currentUser].group.locked boolValue]) {
+                if (error || (![[WGProfile currentUser].emailValidated boolValue] ||
+                    ([[WGProfile currentUser].group.locked boolValue] && !strongSelf.presentingLockedView))) {
                     strongSelf.fetchingUserInfo = NO;
                     [strongSelf showFlashScreen];
                     [strongSelf.signViewController reloadedUserInfo:success andError:error];

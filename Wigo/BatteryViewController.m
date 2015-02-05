@@ -39,10 +39,12 @@ NSNumber *currentNumGroups;
     [self checkIfGroupIsUnlocked];
     
     [WGAnalytics tagEvent:@"Battery View"];
-//    if (self.blurredBackground) {
-//        [self.view addSubview:self.blurredBackground];
-//        [self.view sendSubviewToBack:self.blurredBackground];
-//    }
+    if (self.blurredBackgroundImage) {
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        imageView.image = self.blurredBackgroundImage;
+        [self.view addSubview:imageView];
+        [self.view sendSubviewToBack:imageView];
+    }
 }
 
 -(void) checkIfGroupIsUnlocked {
