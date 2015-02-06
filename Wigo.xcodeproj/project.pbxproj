@@ -400,6 +400,8 @@
 		E9EA951919E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */; };
 		E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */; };
 		E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */; };
+		E9F406021A8436570043F07F /* ReferalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F406011A8436570043F07F /* ReferalViewController.m */; };
+		E9F406031A8436570043F07F /* ReferalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F406011A8436570043F07F /* ReferalViewController.m */; };
 		E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
 		E9F7995219D4C727001D5BFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A695C619B0C7840071067B /* CoreData.framework */; };
 		E9F7995319D4C733001D5BFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A695C619B0C7840071067B /* CoreData.framework */; };
@@ -822,6 +824,8 @@
 		E9EA951619E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSStickyHeaderFlowLayoutAttributes.h; sourceTree = "<group>"; };
 		E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSStickyHeaderFlowLayoutAttributes.m; sourceTree = "<group>"; };
 		E9ECFF7F196D917F00384252 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		E9F406001A8436570043F07F /* ReferalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferalViewController.h; sourceTree = "<group>"; };
+		E9F406011A8436570043F07F /* ReferalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReferalViewController.m; sourceTree = "<group>"; };
 		E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
 		E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpViewController.m; sourceTree = "<group>"; };
 		E9F7994819D4C646001D5BFC /* GAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
@@ -1573,6 +1577,8 @@
 				E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */,
 				E9E6A566199917BE003B590C /* OnboardFollowViewController.h */,
 				E9E6A567199917BE003B590C /* OnboardFollowViewController.m */,
+				E9F406001A8436570043F07F /* ReferalViewController.h */,
+				E9F406011A8436570043F07F /* ReferalViewController.m */,
 				E9444C0619F00FCC004E7925 /* OnboardViewController.h */,
 				E9444C0719F00FCC004E7925 /* OnboardViewController.m */,
 				E9DFE1711A00114A003C5779 /* LockScreen */,
@@ -2180,6 +2186,7 @@
 				45D9FAA31A781AFD00D08577 /* UIView+JSQMessages.m in Sources */,
 				45D9FACD1A781AFD00D08577 /* JSQMessagesCollectionViewCell.m in Sources */,
 				C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */,
+				E9F406031A8436570043F07F /* ReferalViewController.m in Sources */,
 				C12A111719787BE700D53B1C /* SignViewController.m in Sources */,
 				E9AEAE541A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */,
 				C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */,
@@ -2394,6 +2401,7 @@
 				E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */,
 				4563F5651A3F875900F8C9C4 /* NSDictionary+STHelper.m in Sources */,
 				E9444C0819F00FCC004E7925 /* OnboardViewController.m in Sources */,
+				E9F406021A8436570043F07F /* ReferalViewController.m in Sources */,
 				E900C2B81961EADE00A01F50 /* SDWebImageCompat.m in Sources */,
 				E900C2B61961EADE00A01F50 /* NSData+ImageContentType.m in Sources */,
 				FA2BC2061A68268700055F7C /* TopSchoolViewController.m in Sources */,
