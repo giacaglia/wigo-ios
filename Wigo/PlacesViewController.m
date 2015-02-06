@@ -188,7 +188,10 @@ BOOL firstTimeLoading;
 }
 
 - (void) initializeNavigationBar {
-    if (!self.groupNumberID || !WGProfile.currentUser.group.id || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
+    if (![WGProfile currentUser].group.id) {
+        self.navigationItem.leftBarButtonItem = nil;
+        self.navigationItem.rightBarButtonItem = nil;
+    } else if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
         CGRect profileFrame = CGRectMake(3, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
@@ -234,16 +237,12 @@ BOOL firstTimeLoading;
             self.redDotLabel.layer.borderWidth = 3;
             self.redDotLabel.layer.cornerRadius = 5;
             [self.rightButton addSubview:self.redDotLabel];
-        } else {
-            if (self.redDotLabel) [self.redDotLabel removeFromSuperview];
+        } else if (self.redDotLabel) {
+            [self.redDotLabel removeFromSuperview];
         }
-
-        
-    }
-    else if (self.presentingLockedView) {
+    } else if (self.presentingLockedView) {
         self.navigationItem.rightBarButtonItem = nil;
-    }
-    else {
+    } else {
         self.navigationItem.leftBarButtonItem = nil;
         self.navigationItem.rightBarButtonItem = nil;
     }
