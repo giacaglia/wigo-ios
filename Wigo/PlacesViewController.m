@@ -73,6 +73,8 @@
 //Go Elsewhere
 @property (nonatomic, strong) GoOutNewPlaceHeader *goElsewhereView;
 
+
+@property (nonatomic, strong) UIView *blackViewOnTop;
 @end
 
 BOOL shouldAnimate;
@@ -130,7 +132,6 @@ BOOL firstTimeLoading;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self showToolTip];
     [self initializeFlashScreen];
     if (![WGProfile currentUser].key) {
         [self showFlashScreen];
@@ -320,6 +321,7 @@ BOOL firstTimeLoading;
 - (void)loadViewAfterSigningUser {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
+    [self showToolTip];
 }
 
 
@@ -1240,20 +1242,20 @@ BOOL firstTimeLoading;
 #pragma mark - ToolTip 
 
 - (void)showToolTip {
-//    BOOL didShowTooltip = [[NSUserDefaults standardUserDefaults] boolForKey:@"didShowTooltip"];
-//    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"didShowTooltip"];
-//    if (didShowTooltip) return;
-    UIView *blackViewOnTop = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    blackViewOnTop.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
-    [self.view addSubview:blackViewOnTop];
+    BOOL didShowTooltip = [[NSUserDefaults standardUserDefaults] boolForKey:@"didShowTooltip"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"didShowTooltip"];
+    if (didShowTooltip) return;
+    _blackViewOnTop = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    _blackViewOnTop.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
+    [self.view addSubview:_blackViewOnTop];
     
     UIImageView *tooltipImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110, 0, 220, 80)];
     tooltipImageView.image = [UIImage imageNamed:@"tooltipRectangle"];
-    [blackViewOnTop addSubview:tooltipImageView];
+    [_blackViewOnTop addSubview:tooltipImageView];
     
-    UILabel *tooltipLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, tooltipImageView.frame.size.width, tooltipImageView.frame.size.height - 10)];
+    UILabel *tooltipLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, tooltipImageView.frame.size.width - 15, tooltipImageView.frame.size.height - 10)];
     tooltipLabel.numberOfLines = 0;
-    tooltipLabel.textAlignment = NSTextAlignmentCenter;
+    tooltipLabel.textAlignment = NSTextAlignmentLeft;
     NSMutableAttributedString *mutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"Peek at top trending\nWigo schools"];
     [mutAttributedString addAttribute:NSForegroundColorAttributeName
                  value:[FontProperties getBlueColor]
@@ -1264,11 +1266,26 @@ BOOL firstTimeLoading;
     tooltipLabel.attributedText = mutAttributedString;
     [tooltipImageView addSubview:tooltipLabel];
     
-    UIButton *gotItButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 0, 90, 40)];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(tooltipImageView.frame.size.width - 23 - 10, tooltipImageView.frame.size.height/2 - 15, 10, 30)];
+    [closeButton setTitle:@"x" forState:UIControlStateNormal];
+    [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
+    [closeButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
+    [tooltipImageView addSubview:closeButton];
+    
+    UIButton *gotItButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 65, 150, 130, 40)];
     [gotItButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     [gotItButton setTitle:@"GOT IT" forState:UIControlStateNormal];
     gotItButton.layer.borderColor = UIColor.whiteColor.CGColor;
-    [blackViewOnTop addSubview:gotItButton];
+    gotItButton.layer.borderWidth = 1.0f;
+    gotItButton.layer.cornerRadius = 5.0f;
+    [gotItButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
+    [_blackViewOnTop addSubview:gotItButton];
+}
+
+- (void)dismissToolTip {
+    [UIView animateWithDuration:0.5f animations:^{
+        _blackViewOnTop.alpha = 0.0f;
+    }];
 }
 
 #pragma mark - PlacesDelegate

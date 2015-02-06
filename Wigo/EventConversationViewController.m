@@ -698,13 +698,6 @@
     self.faceImageView.layer.borderWidth = 1.0;
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
-//    
-//    self.faceImageView.userInteractionEnabled = YES;
-//    self.faceAndMediaTypeView.clipsToBounds = NO;
-//    self.clipsToBounds = NO;
-//    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
-//                                      initWithTarget:self action:@selector(panWasRecognized:)];
-//    [self.faceImageView addGestureRecognizer:panner];
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
@@ -775,11 +768,6 @@
                     }
                     else {
                         [self.eventConversationDelegate presentHoleOnTopOfView:draggedView];
-//                        if (!self.holeView) {
-//                            self.holeView = [UIView new];
-//                            
-//                        }
-//                        self.holeView.hidden = NO;
                     }
                 }
                 else {
