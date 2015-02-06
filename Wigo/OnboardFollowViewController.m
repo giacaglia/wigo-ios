@@ -13,8 +13,6 @@
 UISearchBar *searchBar;
 BOOL isSearching;
 UIImageView *searchIconImageView;
-UIViewController *popViewController;
-BOOL initializedPopScreen;
 
 @implementation OnboardFollowViewController
 
@@ -22,7 +20,6 @@ BOOL initializedPopScreen;
 {
     self = [super init];
     if (self) {
-        initializedPopScreen = NO;
         self.view.backgroundColor = [UIColor whiteColor];
         self.navigationController.navigationBar.hidden = YES;
         self.navigationItem.hidesBackButton = YES;
@@ -47,41 +44,6 @@ BOOL initializedPopScreen;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [WGAnalytics tagEvent:@"Onboard Follow View"];
-}
-
-- (void)initializePopScreen {
-    initializedPopScreen = YES;
-    popViewController = [[UIViewController alloc] init];
-    popViewController.view.frame = self.view.frame;
-    popViewController.view.backgroundColor = [FontProperties getOrangeColor];
-    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height/2 - 60, popViewController.view.frame.size.width - 40, 120)];
-    followLabel.text = @"Follow people\n you know.";
-    followLabel.textColor = [UIColor whiteColor];
-    followLabel.numberOfLines = 0;
-    followLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    followLabel.font = [FontProperties getSubHeaderFont];
-    followLabel.textAlignment = NSTextAlignmentCenter;
-    [popViewController.view addSubview:followLabel];
-    popViewController.view.backgroundColor = [FontProperties getOrangeColor];
-
-    [self presentViewController:popViewController animated:NO completion:^(void) {}];
-    [NSTimer scheduledTimerWithTimeInterval:2.0
-                                     target:self
-                                   selector:@selector(dismissPopViewController)
-                                   userInfo:nil
-                                    repeats:NO];
-}
-
-- (void)dismissPopViewController {
-    [UIView animateWithDuration:0.2
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseOut
-                     animations:^{
-                         popViewController.view.alpha = 0;
-                     } completion:^(BOOL b){
-                         [popViewController dismissViewControllerAnimated:NO completion:nil];
-                         popViewController.view.alpha = 1;
-                     }];
 }
 
 - (void)initializeTitle {
@@ -212,12 +174,6 @@ BOOL initializedPopScreen;
     [profileImageView setSmallImageForUser:user completed:nil];
     [cell.contentView addSubview:profileImageView];
     
-    if ([user.isFavorite boolValue]) {
-        UIImageView *favoriteSmall = [[UIImageView alloc] initWithFrame:CGRectMake(6, profileImageView.frame.size.height - 16, 10, 10)];
-        favoriteSmall.image = [UIImage imageNamed:@"favoriteSmall"];
-        [profileImageView addSubview:favoriteSmall];
-    }
-    
     UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
     labelName.font = [FontProperties mediumFont:18.0f];
     labelName.text = [user fullName];
@@ -225,16 +181,6 @@ BOOL initializedPopScreen;
     labelName.textAlignment = NSTextAlignmentLeft;
     labelName.userInteractionEnabled = YES;
     [cell.contentView addSubview:labelName];
-    
-    UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
-    goingOutLabel.font =  [FontProperties mediumFont:15.0f];
-    goingOutLabel.textAlignment = NSTextAlignmentLeft;
-    if ([user.isGoingOut boolValue]) {
-        goingOutLabel.text = @"Going Out";
-        goingOutLabel.textColor = [FontProperties getOrangeColor];
-    }
-    [cell.contentView addSubview:goingOutLabel];
-    
     
     if (![user isCurrentUser]) {
         UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 15, 49, 30)];
@@ -266,11 +212,11 @@ BOOL initializedPopScreen;
 -(WGUser *) getUserAtIndex:(int)index {
     WGUser *user;
     if (isSearching) {
-        int sizeOfArray = (int)[self.filteredUsers count];
+        int sizeOfArray = (int)self.filteredUsers.count;
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = (WGUser *)[self.filteredUsers objectAtIndex:index];
     } else {
-        int sizeOfArray = (int)[self.users count];
+        int sizeOfArray = (int)self.users.count;
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = (WGUser *)[self.users objectAtIndex:index];
     }
@@ -419,7 +365,7 @@ BOOL initializedPopScreen;
                 [[WGError sharedInstance] logError:error forAction:WGActionSearch];
                 return;
             }
-            strongSelf.users = collection;
+            strongSelf.filteredUsers = collection;
             [strongSelf.tableViewOfPeople reloadData];
         });
     }];

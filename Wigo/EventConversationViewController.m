@@ -883,7 +883,7 @@
 }
 
 - (void)setStateForUser:(WGUser *)user {
-    [self.faceImageView setCoverImageForUser:user completed:nil];
+    [self.faceImageView setSmallImageForUser:user completed:nil];
     self.user = user;
 }
 

@@ -8,30 +8,23 @@
 
 #import "ReferalViewController.h"
 #import "Globals.h"
+@interface ReferalViewController ()
+@property (nonatomic, strong) UIButton *continueButton;
+@property (nonatomic, strong) UIImageView *rightArrowImageView;
+
+@end
 
 UISearchBar *searchBar;
 BOOL isSearching;
 UIImageView *searchIconImageView;
-UIViewController *popViewController;
-BOOL initializedPopScreen;
 
 @implementation ReferalViewController
-
-//
-//  OnboardFollowViewController.m
-//  Wigo
-//
-//  Created by Giuliano Giacaglia on 8/11/14.
-//  Copyright (c) 2014 Giuliano Giacaglia. All rights reserved.
-//
-
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        initializedPopScreen = NO;
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
         self.navigationController.navigationBar.hidden = YES;
         self.navigationItem.hidesBackButton = YES;
         [self.navigationController setNavigationBarHidden:YES animated:YES];
@@ -54,51 +47,17 @@ BOOL initializedPopScreen;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Onboard Follow View"];
+    [WGAnalytics tagEvent:@"Referal View"];
 }
 
-- (void)initializePopScreen {
-    initializedPopScreen = YES;
-    popViewController = [[UIViewController alloc] init];
-    popViewController.view.frame = self.view.frame;
-    popViewController.view.backgroundColor = [FontProperties getOrangeColor];
-    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height/2 - 60, popViewController.view.frame.size.width - 40, 120)];
-    followLabel.text = @"Follow people\n you know.";
-    followLabel.textColor = [UIColor whiteColor];
-    followLabel.numberOfLines = 0;
-    followLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    followLabel.font = [FontProperties getSubHeaderFont];
-    followLabel.textAlignment = NSTextAlignmentCenter;
-    [popViewController.view addSubview:followLabel];
-    popViewController.view.backgroundColor = [FontProperties getOrangeColor];
-    
-    [self presentViewController:popViewController animated:NO completion:^(void) {}];
-    [NSTimer scheduledTimerWithTimeInterval:2.0
-                                     target:self
-                                   selector:@selector(dismissPopViewController)
-                                   userInfo:nil
-                                    repeats:NO];
-}
-
-- (void)dismissPopViewController {
-    [UIView animateWithDuration:0.2
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseOut
-                     animations:^{
-                         popViewController.view.alpha = 0;
-                     } completion:^(BOOL b){
-                         [popViewController dismissViewControllerAnimated:NO completion:nil];
-                         popViewController.view.alpha = 1;
-                     }];
-}
 
 - (void)initializeTitle {
-    UILabel *emailConfirmationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, self.view.frame.size.width, 28)];
-    emailConfirmationLabel.text = @"Follow Your Classmates";
-    emailConfirmationLabel.textColor = [FontProperties getOrangeColor];
-    emailConfirmationLabel.font = [FontProperties getTitleFont];
-    emailConfirmationLabel.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:emailConfirmationLabel];
+    UILabel *whoReferredYouLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 25, self.view.frame.size.width, 28)];
+    whoReferredYouLabel.text = @"Who Referred you?";
+    whoReferredYouLabel.textColor = [FontProperties getOrangeColor];
+    whoReferredYouLabel.font = [FontProperties getTitleFont];
+    whoReferredYouLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:whoReferredYouLabel];
 }
 
 - (void)initializeTapHandler {
@@ -156,7 +115,8 @@ BOOL initializedPopScreen;
 }
 
 - (void)initializeTableOfPeople {
-    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 158)];
+    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 154)];
+    [self.tableViewOfPeople registerClass:[ReferalPeopleCell class] forCellReuseIdentifier:kReferalPeopleCellName];
     self.tableViewOfPeople.delegate = self;
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -164,23 +124,42 @@ BOOL initializedPopScreen;
 }
 
 - (void)initializeContinueButton {
-    UIButton *continueButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 54, self.view.frame.size.width, 54)];
-    [continueButton setTitle:@"Continue" forState:UIControlStateNormal];
-    [continueButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    continueButton.titleLabel.font = [FontProperties getBigButtonFont];
-    continueButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    continueButton.layer.borderWidth = 1.0f;
-    [continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchDown];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
-    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeRightArrow"]];
-    rightArrowImageView.frame = CGRectMake(continueButton.frame.size.width - 35, 27 - 9, 11, 18);
-    [continueButton addSubview:rightArrowImageView];
-    [self.view addSubview:continueButton];
+    _continueButton = [UIButton new];
+    _continueButton.backgroundColor = RGB(252, 221, 187);
+    [_continueButton setTitle:@"Continue" forState:UIControlStateNormal];
+    [_continueButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    _continueButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
+    [_continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_continueButton];
+    
+    
+    _continueButton.frame = CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50);
+    _rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightArrow"]];
+    _rightArrowImageView.frame = CGRectMake(_continueButton.frame.size.width - 35, _continueButton.frame.size.height/2 - 7, 7, 14);
+    [_continueButton addSubview:_rightArrowImageView];
+}
+
+- (void)keyboardDidHide:(NSNotification *)notification {
+    NSDictionary* keyboardInfo = [notification userInfo];
+    CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    _continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
 }
 
 
+- (void)keyboardDidShow:(NSNotification *)notification {
+    NSDictionary* keyboardInfo = [notification userInfo];
+    CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    _continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
+    _rightArrowImageView.frame = CGRectMake(_continueButton.frame.size.width - 35, _continueButton.frame.size.height/2 - 7, 7, 14);
+}
+
+
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return PEOPLEVIEW_HEIGHT_OF_CELLS;
+    return [ReferalPeopleCell height];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -189,23 +168,24 @@ BOOL initializedPopScreen;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (isSearching) {
-        return [self.filteredUsers count];
+        return self.filteredUsers.count;
     } else {
         int hasNextPage = ([self.users.hasNextPage boolValue] ? 1 : 0);
-        return [self.users count] + hasNextPage;
+        return self.users.count + hasNextPage;
     }
 }
 
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    _continueButton.backgroundColor = [FontProperties getOrangeColor];
+//    ReferalPeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kReferalPeopleCellName forIndexPath:indexPath];
+//    cell.backgroundColor = UIColor.redColor;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    cell.contentView.backgroundColor = [UIColor whiteColor];
-    
+    ReferalPeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kReferalPeopleCellName forIndexPath:indexPath];
+    cell.profileImageView.image = nil;
+    cell.labelName.text = @"";
     if ([self.users count] == 0) return cell;
     if ([indexPath row] == [self.users count]) {
         [self fetchEveryone];
@@ -213,60 +193,9 @@ BOOL initializedPopScreen;
     }
     
     WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
-    
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setSmallImageForUser:user completed:nil];
-    [cell.contentView addSubview:profileImageView];
-    
-    if ([user.isFavorite boolValue]) {
-        UIImageView *favoriteSmall = [[UIImageView alloc] initWithFrame:CGRectMake(6, profileImageView.frame.size.height - 16, 10, 10)];
-        favoriteSmall.image = [UIImage imageNamed:@"favoriteSmall"];
-        [profileImageView addSubview:favoriteSmall];
-    }
-    
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    labelName.font = [FontProperties mediumFont:18.0f];
-    labelName.text = [user fullName];
-    labelName.tag = [indexPath row];
-    labelName.textAlignment = NSTextAlignmentLeft;
-    labelName.userInteractionEnabled = YES;
-    [cell.contentView addSubview:labelName];
-    
-    UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 45, 150, 20)];
-    goingOutLabel.font =  [FontProperties mediumFont:15.0f];
-    goingOutLabel.textAlignment = NSTextAlignmentLeft;
-    if ([user.isGoingOut boolValue]) {
-        goingOutLabel.text = @"Going Out";
-        goingOutLabel.textColor = [FontProperties getOrangeColor];
-    }
-    [cell.contentView addSubview:goingOutLabel];
-    
-    
-    if (![user isCurrentUser]) {
-        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 15, 49, 30)];
-        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-        followPersonButton.tag = -100;
-        [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:followPersonButton];
-        
-        if ([user.isFollowing boolValue]) {
-            [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            followPersonButton.tag = 100;
-        }
-        if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-            [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
-            [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-            followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            followPersonButton.layer.borderWidth = 1;
-            followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            followPersonButton.layer.cornerRadius = 3;
-            followPersonButton.tag = 100;
-        }
-    }
+    [cell.profileImageView setSmallImageForUser:user completed:nil];
+    cell.labelName.text = user.fullName;
+    cell.labelName.tag = indexPath.row;
     
     return cell;
 }
@@ -274,62 +203,17 @@ BOOL initializedPopScreen;
 -(WGUser *) getUserAtIndex:(int)index {
     WGUser *user;
     if (isSearching) {
-        int sizeOfArray = (int)[self.filteredUsers count];
+        int sizeOfArray = (int)self.filteredUsers.count;
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = (WGUser *)[self.filteredUsers objectAtIndex:index];
     } else {
-        int sizeOfArray = (int)[self.users count];
+        int sizeOfArray = (int)self.users.count;
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = (WGUser *)[self.users objectAtIndex:index];
     }
     return user;
 }
 
-- (void) followedPersonPressed:(id)sender {
-    //Get Index Path
-    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:self.tableViewOfPeople];
-    NSIndexPath *indexPath = [self.tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
-    WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
-    
-    UIButton *senderButton = (UIButton*)sender;
-    if (senderButton.tag == -100) {
-        if (user.privacy == PRIVATE) {
-            [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
-            [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-            senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            senderButton.layer.borderWidth = 1;
-            senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            senderButton.layer.cornerRadius = 3;
-            user.isFollowingRequested = @YES;
-        } else {
-            [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            user.isFollowing = @YES;
-        }
-        senderButton.tag = 100;
-        [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionPost];
-            }
-        }];
-        [self.users replaceObjectAtIndex:[indexPath row] withObject:user];
-    } else {
-        [senderButton setTitle:nil forState:UIControlStateNormal];
-        [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-        senderButton.tag = -100;
-        
-        [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-            }
-        }];
-        
-        user.isFollowing = @NO;
-        user.isFollowingRequested = @NO;
-        [self.users replaceObjectAtIndex:[indexPath row] withObject:user];
-    }
-}
 
 - (void)continuePressed {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -427,10 +311,43 @@ BOOL initializedPopScreen;
                 [[WGError sharedInstance] logError:error forAction:WGActionSearch];
                 return;
             }
-            strongSelf.users = collection;
+            strongSelf.filteredUsers = collection;
             [strongSelf.tableViewOfPeople reloadData];
         });
     }];
+}
+
+@end
+
+@implementation ReferalPeopleCell
+
++ (CGFloat) height {
+    return  80;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [ReferalPeopleCell height]);
+    self.contentView.frame = self.frame;
+    self.contentView.backgroundColor = [UIColor whiteColor];
+
+    self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, [ReferalPeopleCell height]/2 - 30, 60, 60)];
+    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.profileImageView.clipsToBounds = YES;
+    [self.contentView addSubview:self.profileImageView];
+    
+    self.labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+    self.labelName.font = [FontProperties mediumFont:18.0f];
+    self.labelName.textAlignment = NSTextAlignmentLeft;
+    self.labelName.userInteractionEnabled = YES;
+    [self.contentView addSubview:self.labelName];
 }
 
 @end

@@ -147,7 +147,6 @@
     _continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
 }
 
-
 - (void)keyboardDidShow:(NSNotification *)notification {
     NSDictionary* keyboardInfo = [notification userInfo];
     CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];

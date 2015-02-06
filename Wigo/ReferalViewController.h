@@ -14,5 +14,13 @@
 @property (nonatomic, strong) UITableView *tableViewOfPeople;
 @property (nonatomic, strong) WGCollection *users;
 @property (nonatomic, strong) WGCollection *filteredUsers;
-
 @end
+
+
+#define kReferalPeopleCellName @"ReferalPeopleCellName"
+@interface ReferalPeopleCell : UITableViewCell
++ (CGFloat) height;
+@property (nonatomic, strong) UIImageView *profileImageView;
+@property (nonatomic, strong) UILabel *labelName;
+@end
+
