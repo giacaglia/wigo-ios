@@ -188,7 +188,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) initializeNavigationBar {
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
+    if (!self.groupNumberID || !WGProfile.currentUser.group.id || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
         CGRect profileFrame = CGRectMake(3, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
@@ -1444,10 +1444,12 @@ BOOL firstTimeLoading;
                     strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                     strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                     for (WGEvent *event in strongSelf.allEvents) {
-                        if ([event.isExpired boolValue]) {
-                            [strongSelf.oldEvents addObject:event];
-                        } else {
-                            [strongSelf.events addObject:event];
+                        if (event) {
+                            if ([event.isExpired boolValue]) {
+                                [strongSelf.oldEvents addObject:event];
+                            } else {
+                                [strongSelf.events addObject:event];
+                            }
                         }
                     }
                     
@@ -1456,11 +1458,13 @@ BOOL firstTimeLoading;
                             continue;
                         }
                         NSString *eventDate = [[event expires] deserialize];
-                        if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                            [strongSelf.pastDays addObject: eventDate];
-                            [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                        if (eventDate) {
+                            if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                                [strongSelf.pastDays addObject: eventDate];
+                                [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                            }
+                            [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                         }
-                        [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                     }
                     
                     [strongSelf fetchedOneParty];
@@ -1488,10 +1492,12 @@ BOOL firstTimeLoading;
                 strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                 
                 for (WGEvent *event in strongSelf.allEvents) {
-                    if ([event.isExpired boolValue]) {
-                        [strongSelf.oldEvents addObject:event];
-                    } else {
-                        [strongSelf.events addObject:event];
+                    if (event) {
+                        if ([event.isExpired boolValue]) {
+                            [strongSelf.oldEvents addObject:event];
+                        } else {
+                            [strongSelf.events addObject:event];
+                        }
                     }
                 }
                 
@@ -1500,11 +1506,13 @@ BOOL firstTimeLoading;
                         continue;
                     }
                     NSString *eventDate = [[event expires] deserialize];
-                    if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                        [strongSelf.pastDays addObject: eventDate];
-                        [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                    if (eventDate) {
+                        if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                            [strongSelf.pastDays addObject: eventDate];
+                            [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                        }
+                        [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                     }
-                    [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                 }
                 
                 [strongSelf fetchedOneParty];

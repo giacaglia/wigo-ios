@@ -92,6 +92,10 @@
 }
 
 -(void) replaceObjectAtIndex:(NSUInteger)index withObject:(WGObject *)object {
+    if (!object) {
+        NSLog(@"Tried to insert nil object to WGCollection at index %lu", (unsigned long)index);
+        return;
+    }
     [self.objects replaceObjectAtIndex:index withObject:object];
 }
 
@@ -102,6 +106,10 @@
 -(void) addObjectsFromCollection:(WGCollection *)newCollection notInCollection:(WGCollection *)notCollection {
     for (int i = 0; i < [newCollection.objects count]; i++) {
         WGObject *object = [newCollection.objects objectAtIndex:i];
+        if (!object) {
+            NSLog(@"Tried to insert nil object to WGCollection at index %lu", (unsigned long)index);
+            continue;
+        }
         if (![notCollection containsObject:object]) {
             [self.objects addObject:object];
         }

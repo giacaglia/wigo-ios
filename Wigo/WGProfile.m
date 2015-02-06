@@ -349,6 +349,8 @@ static WGProfile *currentUser = nil;
             NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
             if ([jsonResponse objectForKey:@"message"]) {
                 [newInfo setObject:[jsonResponse objectForKey:@"message"] forKey:@"wigoMessage"];
+            }
+            if ([jsonResponse objectForKey:@"field"]) {
                 [newInfo setObject:[jsonResponse objectForKey:@"field"] forKey:@"wigoField"];
             }
             handler(NO, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);

@@ -100,9 +100,9 @@
     
     WGUser *user = eventMessage.user;
     
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
+    if ([eventMessage objectForKey:@"media_mime_type"] && ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
         [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
-        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost]
+        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost])
         ) {
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
         myCell.mediaTypeImageView.hidden = YES;
@@ -113,11 +113,11 @@
             [myCell setStateForUser:user];
             myCell.eventConversationDelegate = self;
         }
-        if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
+        if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
             myCell.mediaTypeImageView.hidden = YES;
         }
-        else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
+        else if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
             myCell.mediaTypeImageView.hidden = YES;
         }
@@ -357,17 +357,14 @@
 - (void)hideOrShowFacesForPage:(int)page {
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-        if ([eventMessage.mediaMimeType isEqualToString:kCameraType]) {
+        if (eventMessage.mediaMimeType && [eventMessage.mediaMimeType isEqualToString:kCameraType]) {
             self.buttonCancel.hidden = YES;
             self.buttonCancel.enabled = NO;
             self.buttonTrash.hidden = YES;
             self.buttonTrash.enabled = NO;
             self.facesHidden = NO;
             [self focusOnContent];
-        }
-        else if ([eventMessage.mediaMimeType isEqualToString:kFaceImage] ||
-                 [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost]
-                 ) {
+        } else if (eventMessage.mediaMimeType && ([eventMessage.mediaMimeType isEqualToString:kFaceImage] || [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost])) {
             self.buttonTrash.hidden = YES;
             self.buttonTrash.enabled = NO;
         } else {

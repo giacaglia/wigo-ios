@@ -1467,7 +1467,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [UIView animateWithDuration:0.5f animations:^{
         orangeBackground.alpha = 0.0f;
     } completion:^(BOOL finished) {
-        [self.delegate inviteTapped];
+        if (self.delegate) {
+            [self.delegate inviteTapped];
+        }
     }];
     }];
     }];

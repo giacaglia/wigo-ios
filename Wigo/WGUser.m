@@ -222,6 +222,9 @@ static WGUser *currentUser = nil;
 }
 
 -(Gender) gender {
+    if ([[WGUser genderNames] indexOfObject:[self objectForKey: kGenderKey]] == NSNotFound) {
+        return MALE;
+    }
     return (Gender) [[WGUser genderNames] indexOfObject:[self objectForKey: kGenderKey]];
 }
 
@@ -349,6 +352,10 @@ static WGUser *currentUser = nil;
 
 -(void) removeImageAtIndex:(NSInteger)index {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
+    if (index < 0 || index >= [imagesArray count]) {
+        NSLog(@"Invalid index %ld for image removal", (long)index);
+        return;
+    }
     if ([imagesArray count] > 3) {
         [imagesArray removeObjectAtIndex:index];
         [self setImages: imagesArray];
@@ -364,11 +371,14 @@ static WGUser *currentUser = nil;
 }
 
 -(NSURL *) coverImageURL {
-    return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kURLKey]];
+    if (self.images && [self.images count] > 0) {
+        return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kURLKey]];
+    }
+    return [NSURL URLWithString:@""];
 }
 
 -(NSURL *) smallCoverImageURL {
-    if ([[self.images objectAtIndex:0] objectForKey:kSmallKey]) {
+    if (self.images && [self.images count] > 0 && [[self.images objectAtIndex:0] objectForKey:kSmallKey]) {
         return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kSmallKey]];
     }
     return [self coverImageURL];
@@ -661,7 +671,10 @@ static WGUser *currentUser = nil;
 }
 
 -(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    if (!query) {
+        return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
+    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"ordering" : @"is_goingout", @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -749,6 +762,9 @@ static WGUser *currentUser = nil;
 }
 
 +(void) searchInvites:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
+    if (!query) {
+        return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi get:@"users/" withArguments:@{ @"following" : @"true", @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -794,6 +810,9 @@ static WGUser *currentUser = nil;
 }
 
 +(void) searchUsers:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
+    if (!query) {
+        return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi get:@"users/" withArguments:@{ @"text" : query, @"id__ne" : [WGProfile currentUser].id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -840,6 +859,9 @@ static WGUser *currentUser = nil;
 #pragma mark Various API Calls
 
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler {
+    if (!message) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi post:@"school/broadcast" withParameters:@{ @"message": message } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
@@ -864,6 +886,9 @@ static WGUser *currentUser = nil;
 }
 
 -(void) block:(WGUser *)user withType:(NSString *)type andHandler:(BoolResultBlock)handler {
+    if (!user.id || !type) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi post:@"blocks/" withParameters:@{ @"block" : user.id, @"type" : type } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isBlocked = @YES;
@@ -874,6 +899,9 @@ static WGUser *currentUser = nil;
 
 
 -(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+    if (!user.id) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi post:@"taps" withParameters:@{ @"tapped" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isTapped = @YES;
@@ -885,6 +913,9 @@ static WGUser *currentUser = nil;
 -(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler {
     NSMutableArray *taps = [[NSMutableArray alloc] init];
     for (WGUser *user in users) {
+        if (!user.id) {
+            return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+        }
         [taps addObject:@{ @"tapped" : user.id }];
     }
     [WGApi post:@"taps" withParameters:taps andHandler:^(NSDictionary *jsonResponse, NSError *error) {
@@ -919,6 +950,9 @@ static WGUser *currentUser = nil;
 }
 
 -(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+    if (!user.id) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi get:@"follows/accept" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollower = @YES;
@@ -929,6 +963,9 @@ static WGUser *currentUser = nil;
 }
 
 -(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+    if (!user.id) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi get:@"follows/reject" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollower = @NO;
@@ -947,6 +984,9 @@ static WGUser *currentUser = nil;
 }
 
 -(void) goingToEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler {
+    if (!event.id) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi post:@"eventattendees/" withParameters:@{ @"event" : event.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             self.isGoingOut = @YES;
