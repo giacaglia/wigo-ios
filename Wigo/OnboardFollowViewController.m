@@ -111,6 +111,7 @@ UIImageView *searchIconImageView;
 
 - (void)initializeTableOfPeople {
     self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 158)];
+    [self.tableViewOfPeople registerClass:[OnboardCell class] forCellReuseIdentifier:kOnboardCellName];
     self.tableViewOfPeople.delegate = self;
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -151,58 +152,40 @@ UIImageView *searchIconImageView;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    cell.contentView.backgroundColor = [UIColor whiteColor];
+    OnboardCell *cell = [tableView dequeueReusableCellWithIdentifier:kOnboardCellName forIndexPath:indexPath];
     
-    if ([self.users count] == 0) return cell;
-    if ([indexPath row] == [self.users count]) {
+    if (self.users.count == 0) return cell;
+    if (indexPath.row == self.users.count) {
         [self fetchEveryone];
         return cell;
     }
     
-    WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
+    WGUser *user = [self getUserAtIndex:indexPath.row];
     
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, 60, 60)];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setSmallImageForUser:user completed:nil];
-    [cell.contentView addSubview:profileImageView];
-    
-    UILabel *labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    labelName.font = [FontProperties mediumFont:18.0f];
-    labelName.text = [user fullName];
-    labelName.tag = [indexPath row];
-    labelName.textAlignment = NSTextAlignmentLeft;
-    labelName.userInteractionEnabled = YES;
-    [cell.contentView addSubview:labelName];
+    [cell.profileImageView setSmallImageForUser:user completed:nil];
+    cell.labelName.text = user.fullName;
+    cell.labelName.tag = indexPath.row;
     
     if (![user isCurrentUser]) {
-        UIButton *followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 15, 49, 30)];
-        [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-        followPersonButton.tag = -100;
-        [followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.contentView addSubview:followPersonButton];
+       
+        [cell.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+        cell.followPersonButton.tag = -100;
+        [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
         
         if ([user.isFollowing boolValue]) {
-            [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            followPersonButton.tag = 100;
+            [cell.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+            cell.followPersonButton.tag = 100;
         }
-        if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-            [followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
-            [followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-            followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            followPersonButton.layer.borderWidth = 1;
-            followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            followPersonButton.layer.cornerRadius = 3;
-            followPersonButton.tag = 100;
+        if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+            [cell.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [cell.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+            [cell.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            cell.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            cell.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            cell.followPersonButton.layer.borderWidth = 1;
+            cell.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            cell.followPersonButton.layer.cornerRadius = 3;
+            cell.followPersonButton.tag = 100;
         }
     }
     
@@ -227,7 +210,7 @@ UIImageView *searchIconImageView;
     //Get Index Path
     CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:self.tableViewOfPeople];
     NSIndexPath *indexPath = [self.tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
-    WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
+    WGUser *user = [self getUserAtIndex:(int)indexPath.row];
     
     UIButton *senderButton = (UIButton*)sender;
     if (senderButton.tag == -100) {
@@ -369,6 +352,45 @@ UIImageView *searchIconImageView;
             [strongSelf.tableViewOfPeople reloadData];
         });
     }];
+}
+
+@end
+
+
+@implementation OnboardCell
+
++ (CGFloat) height {
+    return  80;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [OnboardCell height]);
+    self.contentView.frame = self.frame;
+    self.contentView.backgroundColor = [UIColor whiteColor];
+    
+    self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, [OnboardCell height]/2 - 30, 60, 60)];
+    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.profileImageView.clipsToBounds = YES;
+    [self.contentView addSubview:self.profileImageView];
+    
+    self.labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+    self.labelName.font = [FontProperties mediumFont:18.0f];
+    self.labelName.textAlignment = NSTextAlignmentLeft;
+    self.labelName.userInteractionEnabled = YES;
+    [self.contentView addSubview:self.labelName];
+    
+   self.followPersonButton = [[UIButton alloc]
+                              initWithFrame:CGRectMake([UIScreen mainScreen
+                                                                        ].bounds.size.width - 15 - 49, [OnboardCell height]/2 - 15, 49, 30)];
+    [self.contentView addSubview:self.followPersonButton];
 }
 
 @end
