@@ -240,7 +240,8 @@ BOOL firstTimeLoading;
         } else if (self.redDotLabel) {
             [self.redDotLabel removeFromSuperview];
         }
-    } else if (self.presentingLockedView) {
+    }
+    else if (self.presentingLockedView) {
         self.navigationItem.rightBarButtonItem = nil;
     } else {
         self.navigationItem.leftBarButtonItem = nil;
@@ -1239,12 +1240,35 @@ BOOL firstTimeLoading;
 #pragma mark - ToolTip 
 
 - (void)showToolTip {
-    BOOL didShowTooltip = [[NSUserDefaults standardUserDefaults] boolForKey:@"didShowTooltip"];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"didShowTooltip"];
-    if (didShowTooltip) return;
+//    BOOL didShowTooltip = [[NSUserDefaults standardUserDefaults] boolForKey:@"didShowTooltip"];
+//    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"didShowTooltip"];
+//    if (didShowTooltip) return;
     UIView *blackViewOnTop = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     blackViewOnTop.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
     [self.view addSubview:blackViewOnTop];
+    
+    UIImageView *tooltipImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110, 0, 220, 80)];
+    tooltipImageView.image = [UIImage imageNamed:@"tooltipRectangle"];
+    [blackViewOnTop addSubview:tooltipImageView];
+    
+    UILabel *tooltipLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, tooltipImageView.frame.size.width, tooltipImageView.frame.size.height - 10)];
+    tooltipLabel.numberOfLines = 0;
+    tooltipLabel.textAlignment = NSTextAlignmentCenter;
+    NSMutableAttributedString *mutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"Peek at top trending\nWigo schools"];
+    [mutAttributedString addAttribute:NSForegroundColorAttributeName
+                 value:[FontProperties getBlueColor]
+                 range:NSMakeRange(0, 4)];
+    [mutAttributedString addAttribute:NSForegroundColorAttributeName
+                                value:RGB(162, 162, 162)
+                                range:NSMakeRange(4, mutAttributedString.string.length - 4)];
+    tooltipLabel.attributedText = mutAttributedString;
+    [tooltipImageView addSubview:tooltipLabel];
+    
+    UIButton *gotItButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 0, 90, 40)];
+    [gotItButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    [gotItButton setTitle:@"GOT IT" forState:UIControlStateNormal];
+    gotItButton.layer.borderColor = UIColor.whiteColor.CGColor;
+    [blackViewOnTop addSubview:gotItButton];
 }
 
 #pragma mark - PlacesDelegate
