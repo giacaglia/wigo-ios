@@ -153,7 +153,8 @@ UIImageView *searchIconImageView;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     OnboardCell *cell = [tableView dequeueReusableCellWithIdentifier:kOnboardCellName forIndexPath:indexPath];
-    
+    cell.labelName.text = @"";
+    cell.profileImageView.image = nil;
     if (self.users.count == 0) return cell;
     if (indexPath.row == self.users.count) {
         [self fetchEveryone];
@@ -161,13 +162,11 @@ UIImageView *searchIconImageView;
     }
     
     WGUser *user = [self getUserAtIndex:indexPath.row];
-    
     [cell.profileImageView setSmallImageForUser:user completed:nil];
     cell.labelName.text = user.fullName;
     cell.labelName.tag = indexPath.row;
     
     if (![user isCurrentUser]) {
-       
         [cell.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         cell.followPersonButton.tag = -100;
         [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];

@@ -10,7 +10,6 @@
 #import "Globals.h"
 #import "GKImagePicker.h"
 #import "GKImageCropViewController.h"
-#import "ErrorViewController.h"
 #import "FacebookHelper.h"
 #import "UIButtonAligned.h"
 

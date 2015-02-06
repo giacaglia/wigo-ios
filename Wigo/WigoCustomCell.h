@@ -22,7 +22,6 @@
 @property (nonatomic, strong) IBOutlet UILabel *profileName;
 @property (nonatomic, strong) IBOutlet UIButton *tapButton;
 @property (nonatomic, strong) IBOutlet UIImageViewShake *tappedImageView;
-@property (nonatomic, strong) IBOutlet UIImageView *favoriteSmall;
 
 @property (nonatomic, assign) id <WigoCustomCellDelegate> delegate;
 @end

@@ -130,7 +130,7 @@ BOOL firstTimeLoading;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
+    [self showToolTip];
     [self initializeFlashScreen];
     if (![WGProfile currentUser].key) {
         [self showFlashScreen];
@@ -1237,6 +1237,17 @@ BOOL firstTimeLoading;
     return newImage;
 }
 
+#pragma mark - ToolTip 
+
+- (void)showToolTip {
+    BOOL didShowTooltip = [[NSUserDefaults standardUserDefaults] boolForKey:@"didShowTooltip"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"didShowTooltip"];
+    if (didShowTooltip) return;
+    UIView *blackViewOnTop = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    blackViewOnTop.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
+    [self.view addSubview:blackViewOnTop];
+}
+
 #pragma mark - PlacesDelegate
 
 - (void)showHighlights {
@@ -1256,7 +1267,6 @@ BOOL firstTimeLoading;
 - (void)showModalAttendees:(UIViewController *)modal {
     self.shouldReloadEvents = NO;
     [self.navigationController presentViewController:modal animated:YES completion:nil];
-    // [self.navigationController pushViewController: modal animated: YES];
 }
 
 - (void)showConversationForEvent:(WGEvent *)event {

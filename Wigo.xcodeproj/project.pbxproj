@@ -278,8 +278,6 @@
 		E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C7A195084B700182E0E /* UIButtonUngoOut.m */; };
 		E96EF676197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
 		E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
-		E96F07AC19B8F65900E858D7 /* ErrorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07AB19B8F65900E858D7 /* ErrorViewController.m */; };
-		E96F07AD19B8F65900E858D7 /* ErrorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07AB19B8F65900E858D7 /* ErrorViewController.m */; };
 		E96F07BD19BA654600E858D7 /* GKCropBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07B219BA654600E858D7 /* GKCropBorderView.m */; };
 		E96F07BE19BA654600E858D7 /* GKCropBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07B219BA654600E858D7 /* GKCropBorderView.m */; };
 		E96F07BF19BA654600E858D7 /* GKImageCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07B419BA654600E858D7 /* GKImageCropOverlayView.m */; };
@@ -356,8 +354,6 @@
 		E9BF59E91A3B40EB00AF8AFE /* UILabelBorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */; };
 		E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
 		E9C3057019F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
-		E9C34A6F19F86FAB00D7E9D3 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */; };
-		E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */; };
 		E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
 		E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
 		E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CB091419FB062D00B548A6 /* FacebookHelper.m */; };
@@ -695,8 +691,6 @@
 		E9681C7A195084B700182E0E /* UIButtonUngoOut.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonUngoOut.m; sourceTree = "<group>"; };
 		E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowRequestsViewController.h; sourceTree = "<group>"; };
 		E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowRequestsViewController.m; sourceTree = "<group>"; };
-		E96F07AA19B8F65900E858D7 /* ErrorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorViewController.h; sourceTree = "<group>"; };
-		E96F07AB19B8F65900E858D7 /* ErrorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ErrorViewController.m; sourceTree = "<group>"; };
 		E96F07B119BA654600E858D7 /* GKCropBorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKCropBorderView.h; sourceTree = "<group>"; };
 		E96F07B219BA654600E858D7 /* GKCropBorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKCropBorderView.m; sourceTree = "<group>"; };
 		E96F07B319BA654600E858D7 /* GKImageCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKImageCropOverlayView.h; sourceTree = "<group>"; };
@@ -772,8 +766,6 @@
 		E9C14E631A30B07C00E20B15 /* Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Delegate.h; sourceTree = "<group>"; };
 		E9C3056D19F8341600F9564D /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
-		E9C34A6D19F86FAB00D7E9D3 /* WaitListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaitListViewController.h; sourceTree = "<group>"; };
-		E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaitListViewController.m; sourceTree = "<group>"; };
 		E9C34A7619F98A2C00D7E9D3 /* MobileDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileDelegate.h; sourceTree = "<group>"; };
 		E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileDelegate.m; sourceTree = "<group>"; };
 		E9CB091319FB062D00B548A6 /* FacebookHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookHelper.h; sourceTree = "<group>"; };
@@ -1463,8 +1455,6 @@
 				E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */,
 				E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */,
 				E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */,
-				E96F07AA19B8F65900E858D7 /* ErrorViewController.h */,
-				E96F07AB19B8F65900E858D7 /* ErrorViewController.m */,
 			);
 			name = "Facebook Photos";
 			sourceTree = "<group>";
@@ -1698,8 +1688,6 @@
 			children = (
 				E9DFE16D1A001142003C5779 /* BatteryViewController.h */,
 				E9DFE16E1A001142003C5779 /* BatteryViewController.m */,
-				E9C34A6D19F86FAB00D7E9D3 /* WaitListViewController.h */,
-				E9C34A6E19F86FAB00D7E9D3 /* WaitListViewController.m */,
 			);
 			name = LockScreen;
 			sourceTree = "<group>";
@@ -2241,7 +2229,6 @@
 				C12A113019787BE700D53B1C /* SDWebImageCompat.m in Sources */,
 				C12A113119787BE700D53B1C /* NSData+ImageContentType.m in Sources */,
 				E99D0ADD1A2CCA3300384A73 /* PeekViewController.m in Sources */,
-				E9C34A7019F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
 				E9D039C91A09886A00DEF094 /* MediaScrollView.m in Sources */,
 				45D9FBB51A7ED46600D08577 /* EventPeopleModalViewController.m in Sources */,
 				E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
@@ -2249,7 +2236,6 @@
 				E9CB091619FB062D00B548A6 /* FacebookHelper.m in Sources */,
 				FA55261F1A1FDB4000101AE7 /* JBLineChartView.m in Sources */,
 				45D9FAAB1A781AFD00D08577 /* JSQMessagesAvatarImageFactory.m in Sources */,
-				E96F07AD19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
 				E9ACCA2519C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
 				C14AB1BE1A8017670011C4E5 /* UIImage+Resize.m in Sources */,
@@ -2407,12 +2393,10 @@
 				FA2BC2061A68268700055F7C /* TopSchoolViewController.m in Sources */,
 				FABD337A1A3B9904008FF56D /* FXBlurView.m in Sources */,
 				E99D0ADC1A2CCA3300384A73 /* PeekViewController.m in Sources */,
-				E9C34A6F19F86FAB00D7E9D3 /* WaitListViewController.m in Sources */,
 				E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */,
 				E9D039C81A09886A00DEF094 /* MediaScrollView.m in Sources */,
 				E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */,
-				E96F07AC19B8F65900E858D7 /* ErrorViewController.m in Sources */,
 				E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */,
 				FA55261E1A1FDB4000101AE7 /* JBLineChartView.m in Sources */,
 				45D9FAC21A781AFD00D08577 /* JSQMessagesBubbleImage.m in Sources */,
