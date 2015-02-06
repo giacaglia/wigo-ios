@@ -135,17 +135,24 @@ UIImageView *searchIconImageView;
     [_continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_continueButton];
     
-    
     _continueButton.frame = CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50);
     _rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightArrow"]];
     _rightArrowImageView.frame = CGRectMake(_continueButton.frame.size.width - 35, _continueButton.frame.size.height/2 - 7, 7, 14);
     [_continueButton addSubview:_rightArrowImageView];
+    
+    UIButton *skipButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 60, 40)];
+    [skipButton setTitle:@"Skip" forState:UIControlStateNormal];
+    [skipButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    skipButton.titleLabel.font = [FontProperties getTitleFont];
+    [skipButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:skipButton];
 }
 
 - (void)keyboardDidHide:(NSNotification *)notification {
     NSDictionary* keyboardInfo = [notification userInfo];
     CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     _continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
+    self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - 50);
 }
 
 
@@ -154,6 +161,7 @@ UIImageView *searchIconImageView;
     CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     _continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
     _rightArrowImageView.frame = CGRectMake(_continueButton.frame.size.width - 35, _continueButton.frame.size.height/2 - 7, 7, 14);
+    self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - kbFrame.size.height - 50);
 }
 
 
@@ -178,8 +186,8 @@ UIImageView *searchIconImageView;
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     _continueButton.backgroundColor = [FontProperties getOrangeColor];
-//    ReferalPeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kReferalPeopleCellName forIndexPath:indexPath];
-//    cell.backgroundColor = UIColor.redColor;
+    searchIconImageView.hidden = YES;
+    isSearching = NO;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
