@@ -107,6 +107,7 @@ BOOL firstTimeLoading;
 
     _spinnerAtCenter = YES;
     [self initializeWhereView];
+    [self showToolTip];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -321,7 +322,6 @@ BOOL firstTimeLoading;
 - (void)loadViewAfterSigningUser {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
-    [self showToolTip];
 }
 
 
@@ -416,6 +416,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)showSchools {
+    if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
     PeekViewController *peekViewController = [PeekViewController new];
     peekViewController.placesDelegate = self;
     [self presentViewController:peekViewController animated:YES completion:nil];
@@ -488,6 +489,7 @@ BOOL firstTimeLoading;
 
 - (void)followPressed {
     if ([WGProfile currentUser].key) {
+        if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
         self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
         [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[WGProfile currentUser]] animated:YES];
     }
@@ -620,6 +622,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)profileSegue {
+    if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
     ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
@@ -1227,44 +1230,49 @@ BOOL firstTimeLoading;
 #pragma mark - ToolTip 
 
 - (void)showToolTip {
-    BOOL didShowTooltip = [[NSUserDefaults standardUserDefaults] boolForKey:@"didShowTooltip"];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"didShowTooltip"];
-    if (didShowTooltip) return;
-    _blackViewOnTop = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    _blackViewOnTop.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
-    [self.view addSubview:_blackViewOnTop];
-    
-    UIImageView *tooltipImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110, 0, 220, 80)];
-    tooltipImageView.image = [UIImage imageNamed:@"tooltipRectangle"];
-    [_blackViewOnTop addSubview:tooltipImageView];
-    
-    UILabel *tooltipLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, tooltipImageView.frame.size.width - 15, tooltipImageView.frame.size.height - 10)];
-    tooltipLabel.numberOfLines = 0;
-    tooltipLabel.textAlignment = NSTextAlignmentLeft;
-    NSMutableAttributedString *mutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"Peek at top trending\nWigo schools"];
-    [mutAttributedString addAttribute:NSForegroundColorAttributeName
-                 value:[FontProperties getBlueColor]
-                 range:NSMakeRange(0, 4)];
-    [mutAttributedString addAttribute:NSForegroundColorAttributeName
-                                value:RGB(162, 162, 162)
-                                range:NSMakeRange(4, mutAttributedString.string.length - 4)];
-    tooltipLabel.attributedText = mutAttributedString;
-    [tooltipImageView addSubview:tooltipLabel];
-    
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(tooltipImageView.frame.size.width - 23 - 10, tooltipImageView.frame.size.height/2 - 15, 10, 30)];
-    [closeButton setTitle:@"x" forState:UIControlStateNormal];
-    [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
-    [closeButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
-    [tooltipImageView addSubview:closeButton];
-    
-    UIButton *gotItButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 65, 150, 130, 40)];
-    [gotItButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    [gotItButton setTitle:@"GOT IT" forState:UIControlStateNormal];
-    gotItButton.layer.borderColor = UIColor.whiteColor.CGColor;
-    gotItButton.layer.borderWidth = 1.0f;
-    gotItButton.layer.cornerRadius = 5.0f;
-    [gotItButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
-    [_blackViewOnTop addSubview:gotItButton];
+    int timesShownTooltip = [[NSUserDefaults standardUserDefaults] integerForKey:@"timesShownTooltip"];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] ;
+    NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate:[NSDate date]];
+    int weekday = [comps weekday];
+    if ((weekday == 5 || weekday == 6 || weekday == 7) &&  timesShownTooltip < 4 && !_blackViewOnTop) {
+        _blackViewOnTop = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+        _blackViewOnTop.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
+        [self.view addSubview:_blackViewOnTop];
+        
+        UIImageView *tooltipImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110, 0, 220, 80)];
+        tooltipImageView.image = [UIImage imageNamed:@"tooltipRectangle"];
+        [_blackViewOnTop addSubview:tooltipImageView];
+        
+        UILabel *tooltipLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, tooltipImageView.frame.size.width - 15, tooltipImageView.frame.size.height - 10)];
+        tooltipLabel.numberOfLines = 0;
+        tooltipLabel.textAlignment = NSTextAlignmentLeft;
+        NSMutableAttributedString *mutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"Peek at top trending\nWigo schools"];
+        [mutAttributedString addAttribute:NSForegroundColorAttributeName
+                                    value:[FontProperties getBlueColor]
+                                    range:NSMakeRange(0, 4)];
+        [mutAttributedString addAttribute:NSForegroundColorAttributeName
+                                    value:RGB(162, 162, 162)
+                                    range:NSMakeRange(4, mutAttributedString.string.length - 4)];
+        tooltipLabel.attributedText = mutAttributedString;
+        [tooltipImageView addSubview:tooltipLabel];
+        
+        UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(tooltipImageView.frame.size.width - 23 - 10, tooltipImageView.frame.size.height/2 - 15, 10, 30)];
+        [closeButton setTitle:@"x" forState:UIControlStateNormal];
+        [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
+        [closeButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
+        [tooltipImageView addSubview:closeButton];
+        
+        UIButton *gotItButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 65, 150, 130, 40)];
+        [gotItButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        [gotItButton setTitle:@"GOT IT" forState:UIControlStateNormal];
+        gotItButton.layer.borderColor = UIColor.whiteColor.CGColor;
+        gotItButton.layer.borderWidth = 1.0f;
+        gotItButton.layer.cornerRadius = 5.0f;
+        [gotItButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
+        [_blackViewOnTop addSubview:gotItButton];
+        timesShownTooltip += 1;
+        [[NSUserDefaults standardUserDefaults] setInteger:timesShownTooltip forKey:@"timesShownTooltip"];
+    }
 }
 
 - (void)dismissToolTip {
