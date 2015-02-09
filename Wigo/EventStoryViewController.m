@@ -707,14 +707,14 @@
 
 - (void)showUser:(WGUser *)user {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    ProfileViewController *fancyProfileViewController = [sb instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-    [fancyProfileViewController setStateWithUser: user];
+    ProfileViewController *profileViewController = [sb instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    [profileViewController setStateWithUser: user];
 
     if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
-        fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
+        profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     }
     _loadViewFromFront = YES;
-    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+    [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
 

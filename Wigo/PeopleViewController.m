@@ -202,7 +202,7 @@ UIScrollView *suggestedScrollView;
 }
 
 - (void)presentUser:(WGUser *)user {
-    ProfileViewController *profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [profileViewController setStateWithUser: user];
     profileViewController.user = user;
     [self.navigationController pushViewController:profileViewController animated:YES];

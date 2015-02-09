@@ -9,6 +9,7 @@
 #import "FollowRequestsViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
+#import "ProfileViewController.h"
 
 @interface FollowRequestsViewController ()
 
@@ -299,11 +300,10 @@
     WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:index];
     WGUser *user = notification.fromUser;
     
-    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-    [fancyProfileViewController setStateWithUser: user];
+    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    [profileViewController setStateWithUser: user];
     
-    self.profileViewController = fancyProfileViewController;
-    [self.navigationController pushViewController: self.profileViewController animated:YES];
+    [self.navigationController pushViewController: profileViewController animated:YES];
 }
 
 - (UIImage *)imageWithColor:(UIColor *)color

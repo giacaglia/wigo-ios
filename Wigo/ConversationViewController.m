@@ -290,7 +290,7 @@ BOOL fetching;
 }
 
 - (void)showUser {
-    ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [profileViewController setStateWithUser: self.user];
     profileViewController.user = self.user;
     

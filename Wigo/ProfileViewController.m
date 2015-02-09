@@ -831,9 +831,9 @@ UIButton *tapButton;
             notificationCell.backgroundColor = UIColor.whiteColor;
         }
         [notificationCell.profileImageView setSmallImageForUser:user completed:nil];
-        notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", [user firstName], [notification message]];
+        notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];
         
-        if ([user state] == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE || [user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+        if (user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE || user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
             notificationCell.rightPostImageView.hidden = YES;
         } else {
             notificationCell.rightPostImageView.hidden = NO;
@@ -951,8 +951,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
            
             if ([notification.type isEqualToString:@"follow"] || [notification.type isEqualToString:@"follow.accepted"] || [notification.type isEqualToString:@"facebook.follow"]) {
                 [self presentUser:user];
-            } else if ([user state] != NOT_YET_ACCEPTED_PRIVATE_USER_STATE && [user state] != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE && user.eventAttending) {
-                [self presentEvent:user.eventAttending];
+            } else if ([user state] != NOT_YET_ACCEPTED_PRIVATE_USER_STATE && [user state] != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
+                if (user.eventAttending) [self presentEvent:user.eventAttending];
+                else [self presentUser:user];
             }
         }
     }
@@ -960,10 +961,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) presentUser:(WGUser *)user {
-    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [fancyProfileViewController setStateWithUser:user];
-    fancyProfileViewController.events = self.events;
-    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    [profileViewController setStateWithUser:user];
+    profileViewController.events = self.events;
+    [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
 - (void)presentEvent:(WGEvent *)event {

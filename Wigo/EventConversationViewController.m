@@ -601,7 +601,7 @@
         view.center = CGPointMake(initialCenter.x, [UIScreen mainScreen].bounds.size.width/2);
     } completion:^(BOOL finished) {
         
-        ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
         [profileViewController setStateWithUser: user];
         profileViewController.user = user;
         if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
@@ -647,7 +647,7 @@
 - (void)presentHoleOnTopOfView:(UIView *)view {
     if (!_holeView) {
         _holeView = [UIView new];
-        ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
         [profileViewController setStateWithUser: WGProfile.currentUser];
         profileViewController.user = WGProfile.currentUser;
         profileViewController.view.backgroundColor = [UIColor clearColor];
@@ -791,7 +791,7 @@
 
 #warning NEED TO ADD FOR PEEKING
 - (UIView *)copyOfProfileView:(UIView*)draggedView {
-//    ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+//    ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
 //    [profileViewController setStateWithUser: self.user];
 //    profileViewController.user = self.user;
 //    profileViewController.view.backgroundColor = [UIColor clearColor];
