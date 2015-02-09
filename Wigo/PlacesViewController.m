@@ -334,14 +334,12 @@ BOOL firstTimeLoading;
     ChatViewController *chatViewController = [ChatViewController new];
     chatViewController.view.backgroundColor = UIColor.whiteColor;
     [fancyProfileViewController.navigationController pushViewController:chatViewController animated:YES];
-    
-    #warning does this work?
-    
-    NSDictionary *messageInfo = notification.userInfo;
-    WGMessage *newMessage = [[WGMessage alloc] initWithJSON:messageInfo];
-    
-    chatViewController.conversationViewController = [[ConversationViewController alloc] initWithUser:newMessage.user];
-    [chatViewController.navigationController pushViewController:chatViewController.conversationViewController animated:YES];
+        
+//    NSDictionary *messageInfo = notification.userInfo;
+//    WGMessage *newMessage = [[WGMessage alloc] initWithJSON:messageInfo];
+//    
+//    chatViewController.conversationViewController = [[ConversationViewController alloc] initWithUser:newMessage.user];
+//    [chatViewController.navigationController pushViewController:chatViewController.conversationViewController animated:YES];
 }
 
 - (void)goToProfile {

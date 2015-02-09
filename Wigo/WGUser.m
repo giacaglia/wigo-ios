@@ -49,6 +49,7 @@
 #define kSmallHeightKey @"small_height"
 #define kInstaHandle @"instaHandle"
 
+#define kReferredByKey @"referred_by"
 #define kNotificationsKey @"notifications"
 #define kTapsKey @"taps"
 #define kFavoritesGoingOutKey @"favorites_going_out"
@@ -579,6 +580,10 @@ static WGUser *currentUser = nil;
         }
     }
     return nil;
+}
+
+-(void) setReferredBy:(NSNumber *)referredByNumber {
+    [self setObject:referredByNumber forKey:kReferredByKey];
 }
 
 -(void) setIsFavoritesGoingOutNotificationEnabled:(NSNumber *)isFavoritesGoingOutNotificationEnabled {

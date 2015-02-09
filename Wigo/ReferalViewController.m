@@ -194,13 +194,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     ReferalPeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kReferalPeopleCellName forIndexPath:indexPath];
     cell.profileImageView.image = nil;
     cell.labelName.text = @"";
-    if ([self.users count] == 0) return cell;
-    if ([indexPath row] == [self.users count]) {
+    if (self.users.count == 0) return cell;
+    if (indexPath.row == self.users.count) {
         [self fetchEveryone];
         return cell;
     }
     
-    WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
+    WGUser *user = [self getUserAtIndex:(int)indexPath.row];
     [cell.profileImageView setSmallImageForUser:user completed:nil];
     cell.labelName.text = user.fullName;
     cell.labelName.tag = indexPath.row;
@@ -356,6 +356,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.labelName.textAlignment = NSTextAlignmentLeft;
     self.labelName.userInteractionEnabled = YES;
     [self.contentView addSubview:self.labelName];
+}
+
+- (void) saveReferal {
+    [WGProfile.currentUser setReferredBy:@1];
+    [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+        [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+        [[WGError sharedInstance] logError:error forAction:WGActionSave];
+    }];
 }
 
 @end

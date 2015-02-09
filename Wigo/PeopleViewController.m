@@ -332,7 +332,7 @@ UIScrollView *suggestedScrollView;
 
 - (int)numberOfRowsWithNoShare {
     if (_isSearching) {
-        return (int)[self.filteredUsers count];
+        return (int)self.filteredUsers.count;
     } else {
         int hasNextPage = [self isThereANextPage] ? 1 : 0;
         return (int)self.users.count + hasNextPage;
@@ -352,7 +352,7 @@ UIScrollView *suggestedScrollView;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath section] == 0) {
+    if (indexPath.section == 0) {
         if ([self.currentTab isEqual:@2]) {
             SuggestedCell *cell = [tableView dequeueReusableCellWithIdentifier:kSuggestedFriendsCellName forIndexPath:indexPath];
             cell.peopleViewDelegate = self;
@@ -360,7 +360,7 @@ UIScrollView *suggestedScrollView;
             [cell setStateForCollection:self.suggestions];
             return cell;
         }
-        else if ([self.currentTab isEqual:@4]) {
+        else if ([self.currentTab isEqual:@4] && self.user.isCurrentUser) {
             InvitePeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kInvitePeopleCellName forIndexPath:indexPath];
             [cell.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             return cell;
@@ -980,7 +980,7 @@ UIScrollView *suggestedScrollView;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [SuggestedCell height]);
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [SuggestedCell height]);
     self.contentView.frame = self.frame;
     self.contentView.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -1158,14 +1158,14 @@ UIScrollView *suggestedScrollView;
 }
 
 - (void)setup {
-    self.lateToThePartyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.contentView.frame.size.width - 30, 21)];
+    self.lateToThePartyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 5, [UIScreen mainScreen].bounds.size.width - 30, 21)];
     self.lateToThePartyLabel.text = @"Some of your friends are late to the party";
     self.lateToThePartyLabel.textAlignment = NSTextAlignmentCenter;
     self.lateToThePartyLabel.font = [FontProperties mediumFont:16.0f];
     self.lateToThePartyLabel.textColor = RGB(102, 102, 102);
     [self.contentView addSubview:self.lateToThePartyLabel];
     
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 29, self.contentView.frame.size.width - 90, 30)];
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 34, [UIScreen mainScreen].bounds.size.width - 90, 30)];
     self.inviteButton.backgroundColor = [FontProperties getOrangeColor];
     [self.inviteButton setTitle:@"Invite More Friends To Wigo" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
