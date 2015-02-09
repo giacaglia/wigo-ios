@@ -86,7 +86,7 @@
 @property (nonatomic, strong) UIButton *actionButton;
 @property (nonatomic, strong) UIButton *avoidAction;
 @property (nonatomic, strong) UILabel *blackBackgroundLabel;
-@property (nonatomic, strong) UIImageView *cameraAccessImageView;
+@property (nonatomic, strong) UIView *cameraAccessView;
 @end
 
 @interface ImageCell : MediaCell

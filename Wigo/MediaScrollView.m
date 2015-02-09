@@ -12,6 +12,8 @@
 #import "WGEventMessage.h"
 #import "WGCollection.h"
 #import <AVFoundation/AVFoundation.h>
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
 
 @interface MediaScrollView() {}
 @property (nonatomic, strong) NSMutableArray *pageViews;
@@ -68,11 +70,11 @@
         AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         if (authStatus == AVAuthorizationStatusDenied) {
             PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
-            [myCell.imageView setSmallImageForUser:WGProfile.currentUser completed:nil];
+            [myCell.imageView setCoverImageForUser:WGProfile.currentUser completed:nil];
              myCell.titleTextLabel.frame = CGRectMake(15, 160, self.frame.size.width - 30, 60);
             myCell.titleTextLabel.text = @"Please Give WiGo an access to camera to add to the story:";
             myCell.avoidAction.hidden = YES;
-            myCell.cameraAccessImageView.hidden = NO;
+            myCell.cameraAccessView.hidden = NO;
             myCell.isPeeking = self.isPeeking;
             return myCell;
         } else {
@@ -661,10 +663,59 @@
     [self.avoidAction.titleLabel setFont: [FontProperties scMediumFont:18.0f]];
     [self.contentView addSubview:self.avoidAction];
     
-    self.cameraAccessImageView = [[UIImageView alloc] initWithFrame:CGRectMake(25, 250, 224, 192)];
-    self.cameraAccessImageView.image = [UIImage imageNamed:@"cameraRoll"];
-    self.cameraAccessImageView.hidden = YES;
-    [self.contentView addSubview:self.cameraAccessImageView];
+    self.cameraAccessView = [[UIView alloc] initWithFrame:CGRectMake(0, 250, [UIScreen mainScreen].bounds.size.width, 192)];
+    self.cameraAccessView.hidden = YES;
+    [self.contentView addSubview:self.cameraAccessView];
+    
+    UILabel *firstLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 0, [UIScreen mainScreen].bounds.size.width, 40)];
+    firstLabel.text = @"1.         Open iPhone Settings";
+    firstLabel.textColor = UIColor.whiteColor;
+    firstLabel.font = [FontProperties mediumFont:20.0f];
+    [self.cameraAccessView addSubview:firstLabel];
+    
+    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(43, 5, 25, 25)];
+    firstImageView.image = [UIImage imageNamed:@"settings"];
+    [self.cameraAccessView addSubview:firstImageView];
+    
+    UILabel *secondLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 40, [UIScreen mainScreen].bounds.size.width, 40)];
+    secondLabel.text = @"2.         Find Wigo";
+    secondLabel.textColor = UIColor.whiteColor;
+    secondLabel.font = [FontProperties mediumFont:20.0f];
+    [self.cameraAccessView addSubview:secondLabel];
+    
+    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake(43, 45, 25, 25)];
+    secondImageView.image = [UIImage imageNamed:@"dancingG-0"];
+    secondImageView.backgroundColor = UIColor.whiteColor;
+    secondImageView.layer.borderColor = UIColor.clearColor.CGColor;
+    secondImageView.layer.borderWidth = 1.0f;
+    secondImageView.layer.cornerRadius = 4.0f;
+    [self.cameraAccessView addSubview:secondImageView];
+    
+    UILabel *thirdLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 80, [UIScreen mainScreen].bounds.size.width, 40)];
+    thirdLabel.text = @"3.         Enable Camera access";
+    thirdLabel.textColor = UIColor.whiteColor;
+    thirdLabel.font = [FontProperties mediumFont:20.0f];
+    [self.cameraAccessView addSubview:thirdLabel];
+    
+    UIImageView *thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(43, 85, 25, 25)];
+    thirdImageView.image = [UIImage imageNamed:@"camera"];
+    [self.cameraAccessView addSubview:thirdImageView];
+
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        UIButton *gotItButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 60, 150, 120, 40)];
+        [gotItButton setTitle:@"GOT IT" forState:UIControlStateNormal];
+        [gotItButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        gotItButton.backgroundColor = [FontProperties getOrangeColor];
+        [gotItButton addTarget:self action:@selector(gotItPressed) forControlEvents:UIControlEventTouchUpInside];
+        gotItButton.layer.borderColor = UIColor.clearColor.CGColor;
+        gotItButton.layer.borderWidth = 1.0f;
+        gotItButton.layer.cornerRadius = 10.0f;
+        [self.cameraAccessView addSubview:gotItButton];
+    }
+}
+
+- (void)gotItPressed {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
 
 @end

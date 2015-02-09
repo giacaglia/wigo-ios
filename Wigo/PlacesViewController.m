@@ -1027,11 +1027,7 @@ BOOL firstTimeLoading;
         cell.oldEventLabel.text = [event name];
         NSString *contentURL = event.highlight.media;
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [[WGProfile currentUser] cdnPrefix], contentURL]];
-        __weak HighlightOldEventCell *weakCell = cell;
         [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//            if (image) {
-//                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
-//            }
         }];
         return cell;
     }
@@ -1039,8 +1035,6 @@ BOOL firstTimeLoading;
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-
     // Remove seperator inset
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
         [cell setSeparatorInset:UIEdgeInsetsZero];
