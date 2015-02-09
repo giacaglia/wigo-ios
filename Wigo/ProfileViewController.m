@@ -518,6 +518,7 @@ UIButton *tapButton;
 
 - (void)followPressed {
     self.user.isFollowing = @YES;
+    self.user.isFollowingRequested = @YES;
     self.userState = self.user.state;
     [self reloadViewForUserState];
     

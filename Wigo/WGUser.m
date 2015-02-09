@@ -607,7 +607,7 @@ static WGUser *currentUser = nil;
 }
 
 -(State) state {
-    if ([self isCurrentUser]) {
+    if (self.isCurrentUser) {
         if (self.privacy == PRIVATE) return PRIVATE_STATE;
         else return PUBLIC_STATE;
     }
@@ -615,16 +615,16 @@ static WGUser *currentUser = nil;
         return BLOCKED_USER_STATE;
     }
     if (self.privacy == PRIVATE) {
-        if ([self.isFollowing boolValue]) {
+        if ([self.isFollowingRequested boolValue]) {
+            return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
+        }
+        else if ([self.isFollowing boolValue]) {
             if (self.eventAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
             return FOLLOWING_USER_STATE;
         }
-        else if ([self.isFollowingRequested boolValue]) {
-            return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
-        }
         else return NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
     }
-    if ([self.isFollowing boolValue]) {
+    if ([self.isFollowing boolValue] || self.isFollowingRequested) {
         if (self.eventAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
         return FOLLOWING_USER_STATE;
     }
