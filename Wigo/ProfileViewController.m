@@ -656,6 +656,7 @@ UIButton *tapButton;
             _privateLogoImageView.hidden = NO;
         }
         else {
+            _privateLogoImageView.hidden = YES;
             _followRequestLabel.hidden = YES;
         }
     }
