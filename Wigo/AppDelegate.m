@@ -179,7 +179,17 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if ([aps isKindOfClass:[NSDictionary class]]) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:aps];
+            NSDictionary *aps = [userInfo objectForKey:@"aps"];
+            if ([aps isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *alert = [aps objectForKey:@"alert"];
+                if ([alert isKindOfClass:[NSDictionary class]]) {
+                    NSString *locKeyString = [alert objectForKey:@"loc-key"];
+                    if ([locKeyString isEqualToString:@"M"]) {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:aps];
+                    }
+                    
+                }
+            }
         }
     } else { // If it's was at the background or inactive
     }
