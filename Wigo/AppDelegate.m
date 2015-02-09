@@ -28,6 +28,11 @@ NSDate *firstLoggedTime;
 - (void) initializeGoogleAnalytics {
     [GAI sharedInstance].trackUncaughtExceptions = NO;
     
+#if DEBUG
+    [[GAI sharedInstance].logger setLogLevel:kGAILogLevelVerbose];
+#else
+    [[GAI sharedInstance].logger setLogLevel:kGAILogLevelNone];
+#endif
     
     [GAI sharedInstance].dispatchInterval = 20;
     [[GAI sharedInstance] trackerWithTrackingId:@"UA-54234727-2"];
