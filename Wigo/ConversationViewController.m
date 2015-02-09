@@ -332,7 +332,8 @@ ProfileViewController *profileViewController;
 }
 
 - (void)addMessage:(NSNotification *)notification {
-    NSDictionary *alert = [[notification userInfo] objectForKey:@"alert"];
+    NSDictionary *aps = [notification.userInfo objectForKey:@"aps"];
+    NSDictionary *alert = [aps objectForKey:@"alert"];
     if (![alert isKindOfClass:[NSDictionary class]]) {
         return;
     }

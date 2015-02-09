@@ -28,9 +28,6 @@ NSDate *firstLoggedTime;
 - (void) initializeGoogleAnalytics {
     [GAI sharedInstance].trackUncaughtExceptions = NO;
     
-#if DEBUG
-    [GAI sharedInstance].debug = YES;
-#endif
     
     [GAI sharedInstance].dispatchInterval = 20;
     [[GAI sharedInstance] trackerWithTrackingId:@"UA-54234727-2"];
@@ -185,7 +182,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
                 if ([alert isKindOfClass:[NSDictionary class]]) {
                     NSString *locKeyString = [alert objectForKey:@"loc-key"];
                     if ([locKeyString isEqualToString:@"M"]) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:aps];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:userInfo];
                     }
                     
                 }
