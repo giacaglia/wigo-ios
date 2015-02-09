@@ -624,7 +624,7 @@ static WGUser *currentUser = nil;
         }
         else return NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
     }
-    if ([self.isFollowing boolValue] || self.isFollowingRequested) {
+    if ([self.isFollowing boolValue] || [self.isFollowingRequested boolValue]) {
         if (self.eventAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
         return FOLLOWING_USER_STATE;
     }
