@@ -1036,9 +1036,9 @@ BOOL firstTimeLoading;
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [[WGProfile currentUser] cdnPrefix], contentURL]];
         __weak HighlightOldEventCell *weakCell = cell;
         [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            if (image) {
-                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
-            }
+//            if (image) {
+//                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
+//            }
         }];
         return cell;
     }

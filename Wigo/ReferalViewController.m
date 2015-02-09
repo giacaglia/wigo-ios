@@ -351,7 +351,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.profileImageView.clipsToBounds = YES;
     [self.contentView addSubview:self.profileImageView];
     
-    self.labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+    self.labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, [UIScreen mainScreen].bounds.size.width - 85 - 15, 20)];
     self.labelName.font = [FontProperties mediumFont:18.0f];
     self.labelName.textAlignment = NSTextAlignmentLeft;
     self.labelName.userInteractionEnabled = YES;
