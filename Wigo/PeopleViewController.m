@@ -324,8 +324,14 @@ UIScrollView *suggestedScrollView;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        if (_isSearching) return 0;
-        else return 1;
+        if (_isSearching) {
+          return 0;
+        }
+        else if ([self.currentTab isEqual:@2] ||
+                 ([self.currentTab isEqual:@4] && self.user.isCurrentUser) ) {
+            return 1;
+        }
+        return 0;
     }
     return [self numberOfRowsWithNoShare];
 }
