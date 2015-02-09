@@ -26,7 +26,12 @@ NSDate *firstLoggedTime;
 @implementation AppDelegate
 
 - (void) initializeGoogleAnalytics {
-    [GAI sharedInstance].trackUncaughtExceptions = YES;
+    [GAI sharedInstance].trackUncaughtExceptions = NO;
+    
+#if DEBUG
+    [GAI sharedInstance].debug = YES;
+#endif
+    
     [GAI sharedInstance].dispatchInterval = 20;
     [[GAI sharedInstance] trackerWithTrackingId:@"UA-54234727-2"];
 }
@@ -174,23 +179,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if ([aps isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *alert = [aps objectForKey:@"alert"];
-            if ([alert isKindOfClass:[NSDictionary class]]) {
-                NSString *locKeyString = [alert objectForKey:@"loc-key"];
-                if ([locKeyString isEqualToString:@"M"]) {
-                    NSArray *locArgs = [alert objectForKey:@"loc-args"];
-                    NSString *messageString = locArgs[1];
-                    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObject:messageString forKey:@"message"];
-                    if ([[userInfo allKeys] containsObject:@"from_user"]) {
-                        NSDictionary *fromUserDict = [userInfo objectForKey:@"from_user"];
-                        if ([[fromUserDict allKeys] containsObject:@"id"]) {
-                            [dictionary setObject:[fromUserDict objectForKey:@"id"] forKey:@"id"];
-                        }
-                    }
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:[NSDictionary dictionaryWithDictionary:dictionary]];
-                }
-                
-            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:aps];
         }
     } else { // If it's was at the background or inactive
     }

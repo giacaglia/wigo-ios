@@ -165,7 +165,7 @@ UIViewController *webViewController;
     UIButton*buttonSender = (UIButton *)sender;
     if (buttonSender.tag == -1) {
         [self.navigationController pushViewController:[FacebookAlbumTableViewController new] animated:YES];
-    } else {
+    } else if (buttonSender.tag < [[[WGProfile currentUser] images] count]) {
         [self.view endEditing:YES];
         self.photoViewController = [[PhotoViewController alloc] initWithImage:[[WGProfile currentUser].images objectAtIndex:buttonSender.tag]];
         self.photoViewController.indexOfImage = (int)buttonSender.tag;

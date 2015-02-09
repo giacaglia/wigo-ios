@@ -957,22 +957,19 @@ BOOL firstTimeLoading;
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
-        //cleanup
-
+        
         cell.placesDelegate = self;
         if (_isSearching) {
             if (indexPath.row == [_filteredEvents count]) {
                 return cell;
             }
-        } else {
-            if (indexPath.row == [_events count]) {
-                [self fetchEvents];
-                cell.eventNameLabel.text = nil;
-                cell.chatBubbleImageView.image = nil;
-                cell.postStoryImageView.image = nil;
-                [cell.eventPeopleScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-                return cell;
-            }
+        } else if (indexPath.row == [_events count]) {
+            [self fetchEvents];
+            cell.eventNameLabel.text = nil;
+            cell.chatBubbleImageView.image = nil;
+            cell.postStoryImageView.image = nil;
+            [cell.eventPeopleScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+            return cell;
         }
         
         WGEvent *event;
@@ -1002,8 +999,7 @@ BOOL firstTimeLoading;
             cell.chatBubbleImageView.hidden = NO;
             cell.chatBubbleImageView.image = [UIImage  imageNamed:@"cameraBubble"];
             cell.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
-        }
-        else if ( [event.numMessages intValue] > 0) {
+        } else if ( [event.numMessages intValue] > 0) {
             cell.chatBubbleImageView.hidden = NO;
             cell.chatBubbleImageView.image = [UIImage  imageNamed:@"blueCameraBubble"];
             cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
@@ -1012,17 +1008,14 @@ BOOL firstTimeLoading;
             cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
         return cell;
-    }
-    else if (indexPath.section == kHighlightsEmptySection) {
+    } else if (indexPath.section == kHighlightsEmptySection) {
         return nil;
-    }
-    else if ([self shouldShowHighlights] && indexPath.section > 1) {
+    } else if ([self shouldShowHighlights] && indexPath.section > 1) {
         OldEventShowHighlightsCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventShowHighlightsCellName forIndexPath:indexPath];
         cell.placesDelegate = self;
         return cell;
-    }
-    else if (self.pastDays.count > 0 && indexPath.section > 1) { // past day rows
-        
+    } else if (self.pastDays.count > 0 && indexPath.section > 1) {
+        // past day rows
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
         
