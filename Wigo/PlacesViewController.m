@@ -72,7 +72,6 @@
 @property (nonatomic, strong) UIView *blackViewOnTop;
 @end
 
-BOOL shouldAnimate;
 BOOL presentedMobileContacts;
 BOOL firstTimeLoading;
 
@@ -87,7 +86,6 @@ BOOL firstTimeLoading;
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.fetchingUserInfo = NO;
     self.fetchingEventAttendees = NO;
-    shouldAnimate = NO;
     presentedMobileContacts = NO;
     self.shouldReloadEvents = YES;
     self.eventOffsetDictionary = [NSMutableDictionary new];
@@ -500,7 +498,6 @@ BOOL firstTimeLoading;
 - (void) goHerePressed:(id)sender {
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
     [WGAnalytics tagEvent:@"Go Here" withDetails:options];
-    shouldAnimate = YES;
     self.whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;

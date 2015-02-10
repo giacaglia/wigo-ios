@@ -176,7 +176,8 @@ UIImageView *searchIconImageView;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (isSearching) {
-        return self.filteredUsers.count;
+        int hasNextPage = ([self.filteredUsers.hasNextPage boolValue] ? 1 : 0);
+        return self.filteredUsers.count + hasNextPage;
     } else {
         int hasNextPage = ([self.users.hasNextPage boolValue] ? 1 : 0);
         return self.users.count + hasNextPage;
@@ -185,6 +186,7 @@ UIImageView *searchIconImageView;
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    self.chosenIndexPath = indexPath;
     _continueButton.backgroundColor = [FontProperties getOrangeColor];
     searchIconImageView.hidden = YES;
     isSearching = NO;
@@ -194,17 +196,26 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     ReferalPeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kReferalPeopleCellName forIndexPath:indexPath];
     cell.profileImageView.image = nil;
     cell.labelName.text = @"";
+    cell.groupName.text = @"";
     if (self.users.count == 0) return cell;
-    if (indexPath.row == self.users.count) {
-        [self fetchEveryone];
-        return cell;
+    if (isSearching) {
+        if (indexPath.row == self.filteredUsers.count) {
+            [self getNextPageForFilteredContent];
+            return cell;
+        }
     }
+    else {
+        if (indexPath.row == self.users.count) {
+            [self fetchEveryone];
+            return cell;
+        }
+    }
+   
     
     WGUser *user = [self getUserAtIndex:(int)indexPath.row];
     [cell.profileImageView setSmallImageForUser:user completed:nil];
     cell.labelName.text = user.fullName;
-    cell.labelName.tag = indexPath.row;
-    
+    cell.groupName.text = user.group.name;
     return cell;
 }
 
@@ -224,8 +235,19 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 
 - (void)continuePressed {
+    [self saveReferal];
     [self dismissViewControllerAnimated:YES completion:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
+}
+
+
+- (void) saveReferal {
+    WGUser *referredUser = [self getUserAtIndex:(int)self.chosenIndexPath.item];
+    [WGProfile.currentUser setReferredBy:referredUser.id];
+    [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+        [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+        [[WGError sharedInstance] logError:error forAction:WGActionSave];
+    }];
 }
 
 #pragma mark - Network functions
@@ -237,7 +259,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void) fetchEveryone {
     __weak typeof(self) weakSelf = self;
     if (!self.users) {
-        [WGUser getOnboarding:^(WGCollection *collection, NSError *error) {
+        [WGUser getReferals:^(WGCollection *collection, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 if (error) {
@@ -264,6 +286,21 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     }
 }
 
+- (void) getNextPageForFilteredContent {
+    __weak typeof(self) weakSelf = self;
+    [self.filteredUsers addNextPage:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            [strongSelf.tableViewOfPeople reloadData];
+        });
+    }];
+}
+
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
@@ -288,9 +325,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    [self.filteredUsers removeAllObjects];
-    
-    if([searchText length] != 0) {
+    self.filteredUsers = nil;
+    if(searchText.length != 0) {
         isSearching = YES;
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.25
@@ -311,7 +347,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     __weak typeof(self) weakSelf = self;
-    [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
+    [WGUser searchReferals:searchString withHandler:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (error) {
@@ -324,6 +360,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         });
     }];
 }
+
 
 @end
 
@@ -354,16 +391,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.labelName = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, [UIScreen mainScreen].bounds.size.width - 85 - 15, 20)];
     self.labelName.font = [FontProperties mediumFont:18.0f];
     self.labelName.textAlignment = NSTextAlignmentLeft;
-    self.labelName.userInteractionEnabled = YES;
     [self.contentView addSubview:self.labelName];
+    
+    self.groupName = [[UILabel alloc] initWithFrame:CGRectMake(85, 30, [UIScreen mainScreen].bounds.size.width - 85 - 15, 20)];
+    self.groupName.font = [FontProperties mediumFont:17.0f];
+    self.groupName.textColor = RGB(200, 200, 200);
+    self.groupName.textAlignment = NSTextAlignmentLeft;
+    [self.contentView addSubview:self.groupName];
 }
 
-- (void) saveReferal {
-    [WGProfile.currentUser setReferredBy:@1];
-    [WGProfile.currentUser save:^(BOOL success, NSError *error) {
-        [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-        [[WGError sharedInstance] logError:error forAction:WGActionSave];
-    }];
-}
+
 
 @end

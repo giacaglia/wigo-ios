@@ -156,9 +156,17 @@ UIImageView *searchIconImageView;
     cell.labelName.text = @"";
     cell.profileImageView.image = nil;
     if (self.users.count == 0) return cell;
-    if (indexPath.row == self.users.count) {
-        [self fetchEveryone];
-        return cell;
+    if (isSearching) {
+        if (indexPath.row == self.filteredUsers.count) {
+            [self getNextPageForFilteredContent];
+            return cell;
+        }
+    }
+    else {
+        if (indexPath.row == self.users.count) {
+            [self fetchEveryone];
+            return cell;
+        }
     }
     
     WGUser *user = [self getUserAtIndex:indexPath.row];
@@ -291,6 +299,22 @@ UIImageView *searchIconImageView;
         }];
     }
 }
+
+- (void) getNextPageForFilteredContent {
+    __weak typeof(self) weakSelf = self;
+    [self.filteredUsers addNextPage:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            [strongSelf.tableViewOfPeople reloadData];
+        });
+    }];
+}
+
 
 #pragma mark - UISearchBarDelegate
 

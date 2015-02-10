@@ -14,6 +14,7 @@
 @property (nonatomic, strong) UITableView *tableViewOfPeople;
 @property (nonatomic, strong) WGCollection *users;
 @property (nonatomic, strong) WGCollection *filteredUsers;
+@property (nonatomic, strong) NSIndexPath *chosenIndexPath;
 @end
 
 
@@ -22,5 +23,6 @@
 + (CGFloat) height;
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UILabel *labelName;
+@property (nonatomic, strong) UILabel *groupName;
 @end
 

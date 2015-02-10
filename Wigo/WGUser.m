@@ -700,6 +700,28 @@ static WGUser *currentUser = nil;
     }];
 }
 
++(void) getReferals:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"context" : @"referral" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
 +(void) getOnboarding:(WGCollectionResultBlock)handler {
     [WGApi get:@"users/" withArguments:@{ @"query" : @"onboarding" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
@@ -813,6 +835,33 @@ static WGUser *currentUser = nil;
         }
     }];
 }
+
+
++(void) searchReferals:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
+    if (!query) {
+        return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
+    [WGApi get:@"users/" withArguments:@{ @"context": @"referral", @"text" : query, @"id__ne" : [WGProfile currentUser].id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
 
 +(void) searchUsers:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
     if (!query) {
