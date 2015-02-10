@@ -62,6 +62,7 @@ UIScrollView *suggestedScrollView;
     queryQueueInt = 0;
     [super viewDidLoad];
     didProfileSegue = NO;
+    if (!self.currentTab) self.currentTab = @2;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
     // Title setup
     [self initializeBackBarButton];
@@ -128,7 +129,15 @@ UIScrollView *suggestedScrollView;
 }
 
 - (void) initializeRightBarButton {
-    if (![self.user isCurrentUser]) {
+    if (self.user.isCurrentUser && [self.currentTab isEqual:@2]) {
+        UIButtonAligned *searchButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 15, 16) andType:@2];
+        [searchButton setBackgroundImage:[UIImage imageNamed:@"orangeSearchIcon"] forState:UIControlStateNormal];
+        [searchButton addTarget:self action:@selector(searchPressed)
+                forControlEvents:UIControlEventTouchUpInside];
+        [searchButton setShowsTouchWhenHighlighted:YES];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
+    }
+    else {
         CGRect profileFrame = CGRectMake(0, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
         profileButton.userInteractionEnabled = NO;
@@ -140,13 +149,6 @@ UIScrollView *suggestedScrollView;
         [profileButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
         self.navigationItem.rightBarButtonItem = profileBarButton;
-    } else {
-        UIButtonAligned *searchButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 15, 16) andType:@2];
-        [searchButton setBackgroundImage:[UIImage imageNamed:@"orangeSearchIcon"] forState:UIControlStateNormal];
-        [searchButton addTarget:self action:@selector(searchPressed)
-                forControlEvents:UIControlEventTouchUpInside];
-        [searchButton setShowsTouchWhenHighlighted:YES];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
     }
 }
 
