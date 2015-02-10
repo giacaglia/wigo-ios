@@ -65,6 +65,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSDictionary* properties;
 @property NSArray* images;
 @property NSString *instaHandle;
+@property NSString *referralTracked;
 
 @property NSNumber* isFavorite;
 @property NSString* firstName;

@@ -448,7 +448,6 @@
 
 - (void)loadMainViewController {
     [self dismissViewControllerAnimated:NO  completion:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
 }
 
 @end

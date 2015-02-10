@@ -241,7 +241,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)continuePressed {
     [self saveReferal];
     [self dismissViewControllerAnimated:YES completion:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
 }
 
 

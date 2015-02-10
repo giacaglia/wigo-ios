@@ -25,6 +25,7 @@
 #import "BatteryViewController.h"
 #import "UIView+ViewToImage.h"
 #import "UIImage+ImageEffects.h"
+#import "ReferalViewController.h"
 
 #define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
 
@@ -141,6 +142,21 @@ BOOL firstTimeLoading;
     [self fetchUserInfo];
     [self shouldShowCreateButton];
     [self showOnlyOnePlusButton];
+}
+
+- (void)showReferral {
+    NSString * refferalTracked = WGProfile.currentUser.referralTracked;
+    if (!refferalTracked) {
+        [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        NSDate *date = [NSDate date];
+        NSString *dateString = [dateFormatter stringFromDate:date];
+        WGProfile.currentUser.referralTracked = dateString;
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
+    }
+   
 }
 
 - (BOOL) shouldShowCreateButton {
@@ -292,11 +308,6 @@ BOOL firstTimeLoading;
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(loadViewAfterSigningUser)
-                                                 name:@"loadViewAfterSigningUser"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(goToChat:)
                                                  name:@"goToChat"
                                                object:nil];
@@ -311,12 +322,6 @@ BOOL firstTimeLoading;
                                                  name:@"goToEvent"
                                                object:nil];
 }
-
-- (void)loadViewAfterSigningUser {
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
-}
-
 
 - (void)goToChat:(NSNotification *)notification {
     ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
@@ -1611,7 +1616,9 @@ BOOL firstTimeLoading;
                     [strongSelf.signViewController reloadedUserInfo:success andError:error];
                     return;
                 }
-                
+                [strongSelf showReferral];
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
             }
             if (error) {
                 strongSelf.fetchingUserInfo = NO;

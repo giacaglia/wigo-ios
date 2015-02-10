@@ -261,7 +261,6 @@ UIImageView *searchIconImageView;
 
 - (void)continuePressed {
     [self dismissViewControllerAnimated:YES completion:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
 }
 
 #pragma mark - Network functions

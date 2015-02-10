@@ -48,6 +48,8 @@
 #define kSmallWidthKey @"small_width"
 #define kSmallHeightKey @"small_height"
 #define kInstaHandle @"instaHandle"
+#define kEventsInsideProperties @"events"
+#define kReferralTracked @"referral_tracked"
 
 #define kReferredByKey @"referred_by"
 #define kNotificationsKey @"notifications"
@@ -324,6 +326,24 @@ static WGUser *currentUser = nil;
 -(void) setImages:(NSArray *)images {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
     [properties setObject:images forKey:kImagesKey];
+    self.properties = properties;
+}
+
+- (NSString *)referralTracked {
+    NSDictionary *properties = self.properties;
+    if ([[properties allKeys] containsObject:kEventsInsideProperties]) {
+        NSDictionary *events = [properties objectForKey:kEventsInsideProperties];
+        if ([[events allKeys] containsObject:kReferralTracked]) {
+            return [events objectForKey:kReferralTracked];
+        }
+    }
+    return nil;
+}
+
+- (void)setReferralTracked:(NSString *)referralTracked {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:@{ kReferralTracked : referralTracked}
+                   forKey:kEventsInsideProperties];
     self.properties = properties;
 }
 
