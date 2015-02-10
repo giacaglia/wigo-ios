@@ -1456,6 +1456,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.tappedLabel.alpha = 1;
     [self.contentView bringSubviewToFront:self.tappedLabel];
 
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.2f
                           delay:0.0f
                         options:UIViewAnimationOptionCurveEaseIn
@@ -1466,13 +1467,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     } completion:^(BOOL finished) {
     [UIView animateWithDuration:0.2f animations:^{
         orangeBackground.backgroundColor = RGB(231, 222, 214);
-        self.tappedLabel.textColor = UIColor.lightGrayColor;
+        weakSelf.tappedLabel.textColor = UIColor.lightGrayColor;
     } completion:^(BOOL finished) {
     [UIView animateWithDuration:0.5f animations:^{
         orangeBackground.alpha = 0.0f;
     } completion:^(BOOL finished) {
-        if (self.delegate) {
-            [self.delegate inviteTapped];
+        if (weakSelf.delegate) {
+            [weakSelf.delegate inviteTapped];
         }
     }];
     }];

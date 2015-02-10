@@ -144,7 +144,13 @@ static WGError *sharedWGErrorInstance = nil;
     [dateFormatter setLocale:enUSPOSIXLocale];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
     
-    NSString *logMessage = [NSString stringWithFormat:@"Error: %@ with Action: %@", [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo], [self titleForActionType: action]];
+    NSString *logMessage;
+    if (error.domain != nil) {
+       logMessage = [NSString stringWithFormat:@"Error: %@ with Action: %@", [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo], [self titleForActionType: action]];
+    }
+    else {
+        logMessage = [NSString stringWithFormat:@"Error: %@ with Action: %@", [NSError errorWithDomain:@"Error domain = nil" code:error.code userInfo:userInfo], [self titleForActionType: action]];
+    }
     
     NSString *formattedLogMessage = [NSString stringWithFormat:@"<22>1 %@ ios user-%@ - - - %@", [dateFormatter stringFromDate:[NSDate date]], [WGProfile currentUser].id, logMessage];
     
