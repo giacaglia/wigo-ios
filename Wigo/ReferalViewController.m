@@ -123,6 +123,11 @@ UIImageView *searchIconImageView;
     [self.view addSubview:self.tableViewOfPeople];
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [searchBar endEditing:YES];
+    searchIconImageView.hidden = YES;
+}
+
 - (void)initializeContinueButton {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
@@ -211,7 +216,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         }
     }
    
-    
     WGUser *user = [self getUserAtIndex:(int)indexPath.row];
     [cell.profileImageView setSmallImageForUser:user completed:nil];
     cell.labelName.text = user.fullName;
