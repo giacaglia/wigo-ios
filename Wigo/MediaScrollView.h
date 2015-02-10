@@ -40,12 +40,13 @@
 @property (nonatomic, assign) BOOL firstCell;
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, assign) BOOL cameraPromptAddToStory;
-
+@property (nonatomic, strong) NSString *filenameString;
 -(void) closeView;
 -(void) scrolledToPage:(int)page;
 
-- (void)callbackFromUploadWithInfo:(NSDictionary *)callbackInfo;
-@property (nonatomic, assign) int numberOfTaksCompleted;
+- (void)callbackFromUploadWithInfo:(NSDictionary *)callbackInfo
+                       andFilename:(NSString *)filename;
+@property (nonatomic, strong) NSMutableSet *tasksStillBeingUploaded;
 @property (nonatomic, strong) NSError *error;
 @property (nonatomic, strong) WGEventMessage *object;
 

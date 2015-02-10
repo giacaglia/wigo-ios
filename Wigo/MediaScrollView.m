@@ -39,6 +39,8 @@
     self.showsHorizontalScrollIndicator = NO;
     self.showsVerticalScrollIndicator = NO;
     self.dataSource = self;
+    self.filenameString = @"0.jpg";
+    self.tasksStillBeingUploaded = [NSMutableSet new];
     [self registerClass:[VideoCell class] forCellWithReuseIdentifier:@"VideoCell"];
     [self registerClass:[ImageCell class] forCellWithReuseIdentifier:@"ImageCell"];
     [self registerClass:[PromptCell class] forCellWithReuseIdentifier:@"PromptCell"];
@@ -252,6 +254,12 @@
 
 - (void)mediaPickerController:(UIImagePickerController *)controller
        startUploadingWithInfo:(NSDictionary *)info {
+    self.filenameString = [self.filenameString substringWithRange:NSMakeRange(0, self.filenameString.length - 2)];
+    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+    f.numberStyle = NSNumberFormatterDecimalStyle;
+    NSNumber *myNumber = [f numberFromString:self.filenameString];
+    myNumber = [NSNumber numberWithInt:([myNumber integerValue] + 1)];
+    self.filenameString = [NSString stringWithFormat:@"%@.jpg", [myNumber stringValue]];
     if (self.cameraPromptAddToStory) {
         [WGAnalytics tagEvent: @"Go Here, Then Add to Story, Then Picture Captured"];
         self.cameraPromptAddToStory = false;
@@ -301,7 +309,7 @@
 
     
     [self uploadContentWithFile:fileData
-                    andFileName:@"image0.jpg"
+                    andFileName:self.filenameString
                      andOptions:self.options];
     
     
@@ -350,8 +358,13 @@
         [mutableDict addEntriesFromDictionary:callbackInfo];
         self.options = mutableDict;
     }
-    self.numberOfTaksCompleted += 1;
-    [self callbackFromUploadWithInfo:callbackInfo];
+    if ([self.tasksStillBeingUploaded containsObject:self.filenameString]) {
+        [self.tasksStillBeingUploaded removeObject:self.filenameString];
+    }
+    else {
+        [self.tasksStillBeingUploaded addObject:self.filenameString];
+    }
+    [self callbackFromUploadWithInfo:callbackInfo andFilename:self.filenameString];
   
 }
 
@@ -413,8 +426,20 @@
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.error = error;
         strongSelf.object = object;
-        strongSelf.numberOfTaksCompleted += 1;
-        [strongSelf callbackFromUploadWithInfo:nil];
+        NSDictionary *objectDict = [strongSelf.object deserialize];
+        if ([[objectDict allKeys] containsObject:@"media"]) {
+            NSString *mediaName = [objectDict objectForKey:@"media"];
+            NSArray *components = [mediaName componentsSeparatedByString:@"/"];
+            NSString *returnedFilename = [components lastObject];
+            if ([strongSelf.tasksStillBeingUploaded containsObject:returnedFilename]) {
+                [strongSelf.tasksStillBeingUploaded removeObject:returnedFilename];
+            }
+            else {
+                [strongSelf.tasksStillBeingUploaded addObject:returnedFilename];
+            }
+            [strongSelf callbackFromUploadWithInfo:nil andFilename:returnedFilename];
+
+        }
     }];
 }
 
@@ -449,8 +474,8 @@
     }];
 }
 
-- (void)callbackFromUploadWithInfo:(NSDictionary *)info {
-    if (self.numberOfTaksCompleted >= 2) {
+- (void)callbackFromUploadWithInfo:(NSDictionary *)info andFilename:(NSString *)filenameString {
+    if (![self.tasksStillBeingUploaded containsObject:filenameString]) {
         if (self.error) {
             [self.eventConversationDelegate showErrorMessage];
             return;
@@ -473,10 +498,10 @@
             }
             [strongSelf.eventConversationDelegate reloadUIForEventMessages:strongSelf.eventMessages];
         }];
-        
+
         NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
-        
-        
+
+
         if (info && [info.allKeys containsObject:UIImagePickerControllerOriginalImage]) {
             UIImage *image =  (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
             [mutableDict addEntriesFromDictionary:@{
@@ -485,17 +510,18 @@
                                                     @"media": image
                                                     }];
         }
-        
-        
+
+
         WGEventMessage *newEventMessage = [WGEventMessage serialize:mutableDict];
-        
+
         if (!self.shownCurrentImage) {
             [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:newEventMessage];
             [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
             self.shownCurrentImage = YES;
         }
-        self.numberOfTaksCompleted = 0;
+        
     }
+
 }
 
 @end
@@ -1192,9 +1218,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
                                             }];
     }
     
-    [self cleanupView];
     [self.mediaScrollDelegate mediaPickerController:self.controller
                              didFinishMediaWithInfo:newInfo];
+    [self cleanupView];
 }
 
 - (void)panGestureRecognizer:(UIPanGestureRecognizer *)panRecognizer {
