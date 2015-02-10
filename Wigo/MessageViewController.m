@@ -246,6 +246,9 @@ int queryQueueInt;
     }
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [_searchBar endEditing:YES];
+}
 
 #pragma mark - UISearchBar
 - (void)initializeSearchBar {
