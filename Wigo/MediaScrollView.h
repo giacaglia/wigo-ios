@@ -45,7 +45,7 @@
 -(void) scrolledToPage:(int)page;
 
 - (void)callbackFromUploadWithInfo:(NSDictionary *)callbackInfo;
-@property (nonatomic, assign) BOOL didPostContent;
+@property (nonatomic, assign) int numberOfTaksCompleted;
 @property (nonatomic, strong) NSError *error;
 @property (nonatomic, strong) WGEventMessage *object;
 

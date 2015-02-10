@@ -350,7 +350,7 @@
         [mutableDict addEntriesFromDictionary:callbackInfo];
         self.options = mutableDict;
     }
-    self.didPostContent = YES;
+    self.numberOfTaksCompleted += 1;
     [self callbackFromUploadWithInfo:callbackInfo];
   
 }
@@ -413,6 +413,7 @@
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.error = error;
         strongSelf.object = object;
+        strongSelf.numberOfTaksCompleted += 1;
         [strongSelf callbackFromUploadWithInfo:nil];
     }];
 }
@@ -449,7 +450,7 @@
 }
 
 - (void)callbackFromUploadWithInfo:(NSDictionary *)info {
-    if (self.didPostContent) {
+    if (self.numberOfTaksCompleted >= 2) {
         if (self.error) {
             [self.eventConversationDelegate showErrorMessage];
             return;
@@ -483,7 +484,6 @@
                                                     @"created": [NSDate nowStringUTC],
                                                     @"media": image
                                                     }];
-            NSLog(@"media info: %@", mutableDict);
         }
         
         
@@ -494,7 +494,7 @@
             [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
             self.shownCurrentImage = YES;
         }
-        self.didPostContent = NO;
+        self.numberOfTaksCompleted = 0;
     }
 }
 
@@ -1182,7 +1182,6 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
 }
 
 - (void)postPressed {
-    NSLog(@"info %@", self.info);
     NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:self.info];
     if (self.textField.text.length > 0) {
         [newInfo addEntriesFromDictionary:@{
