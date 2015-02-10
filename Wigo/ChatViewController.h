@@ -7,14 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ConversationViewController.h"
-#import "MessageViewController.h"
 
 
 @interface ChatViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property ConversationViewController *conversationViewController;
-@property MessageViewController *messageViewController;
+@property (nonatomic, strong) UIButton *chatButton;
+@property (nonatomic, assign) BOOL fetchingFirstPage;
+@property (nonatomic, strong) UITableView *tableViewOfPeople;
+
 
 @end
 
@@ -27,4 +27,5 @@
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UILabel *lastMessageLabel;
 @property (nonatomic, strong) UIImageView *lastMessageImageView;
+
 @end

@@ -11,18 +11,17 @@
 
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
+#import "MessageViewController.h"
+#import "ConversationViewController.h"
 
 @interface ChatViewController () {
     UIView *_lineView;
 }
 
-@property UITableView *tableViewOfPeople;
 @property WGCollection *messages;
 @property NSNumber *page;
-@property BOOL fetchingFirstPage;
 @end
 
-UIButton *newChatButton;
 
 @implementation ChatViewController
 
@@ -90,7 +89,7 @@ UIButton *newChatButton;
 }
 
 - (void)scrollUp {
-    [_tableViewOfPeople setContentOffset:CGPointZero animated:YES];
+    [self.tableViewOfPeople setContentOffset:CGPointZero animated:YES];
 }
 
 - (void)initializeRightBarButtonItem {
@@ -106,36 +105,35 @@ UIButton *newChatButton;
 }
 
 - (void) writeMessage {
-    self.messageViewController = [[MessageViewController alloc] init];
-    [self.navigationController pushViewController:self.messageViewController animated:YES];
+    [self.navigationController pushViewController:[MessageViewController new] animated:YES];
 }
 
 
 - (void)initializeNewChatButton {
-    newChatButton = [[UIButton alloc] initWithFrame:CGRectMake(40, self.view.frame.size.height/2 - 20, self.view.frame.size.width - 2*40, 40)];
-    [newChatButton addTarget:self action:@selector(writeMessage) forControlEvents:UIControlEventTouchUpInside];
-    newChatButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
-    [newChatButton setTitle:@"Start a New Chat" forState:UIControlStateNormal];
-    [newChatButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    newChatButton.hidden = YES;
-    [self.view addSubview:newChatButton];
+    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(40, self.view.frame.size.height/2 - 20, self.view.frame.size.width - 2*40, 40)];
+    [self.chatButton addTarget:self action:@selector(writeMessage) forControlEvents:UIControlEventTouchUpInside];
+    self.chatButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
+    [self.chatButton setTitle:@"Start a New Chat" forState:UIControlStateNormal];
+    [self.chatButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    self.chatButton.hidden = YES;
+    [self.view addSubview:self.chatButton];
 }
 
 - (void)initializeTableOfChats {
-    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    _tableViewOfPeople.delegate = self;
-    _tableViewOfPeople.dataSource = self;
-    _tableViewOfPeople.backgroundColor = [UIColor clearColor];
-    _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [_tableViewOfPeople registerClass:[ChatCell class] forCellReuseIdentifier:kChatCellName];
-    [self.view addSubview:_tableViewOfPeople];
+    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    self.tableViewOfPeople.delegate = self;
+    self.tableViewOfPeople.dataSource = self;
+    self.tableViewOfPeople.backgroundColor = UIColor.clearColor;
+    self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.tableViewOfPeople registerClass:[ChatCell class] forCellReuseIdentifier:kChatCellName];
+    [self.view addSubview:self.tableViewOfPeople];
     [self addRefreshToTableView];
 }
 
 #pragma mark - RefreshTableView 
 
 - (void)addRefreshToTableView {
-    [WGSpinnerView addDancingGToUIScrollView:_tableViewOfPeople withHandler:^{
+    [WGSpinnerView addDancingGToUIScrollView:self.tableViewOfPeople withHandler:^{
         [self fetchFirstPageMessages];
     }];
 }
@@ -143,15 +141,15 @@ UIButton *newChatButton;
 #pragma mark - Network functions
 
 - (void)fetchFirstPageMessages {
-    if (!_fetchingFirstPage) {
-        _fetchingFirstPage = YES;
+    if (!self.fetchingFirstPage) {
+        self.fetchingFirstPage = YES;
         [self fetchMessages];
     }
 }
 
 - (void)fetchMessages {
     __weak typeof(self) weakSelf = self;
-    if (_fetchingFirstPage) {
+    if (self.fetchingFirstPage) {
         [WGMessage getConversations:^(WGCollection *collection, NSError *error) {
             __strong typeof(self) strongSelf = weakSelf;
             [WGSpinnerView removeDancingGFromCenterView:self.view];
@@ -165,12 +163,12 @@ UIButton *newChatButton;
             
             if ([strongSelf.messages count] == 0) {
                 strongSelf.tableViewOfPeople.hidden = YES;
-                newChatButton.hidden = NO;
+                strongSelf.chatButton.hidden = NO;
             } else {
                 strongSelf.tableViewOfPeople.hidden = NO;
-                newChatButton.hidden = YES;
+                strongSelf.chatButton.hidden = YES;
             }
-            _fetchingFirstPage = NO;
+            strongSelf.fetchingFirstPage = NO;
             [strongSelf.tableViewOfPeople reloadData];
             [strongSelf.tableViewOfPeople didFinishPullToRefresh];
         }];
@@ -178,7 +176,7 @@ UIButton *newChatButton;
         [_messages addNextPage:^(BOOL success, NSError *error) {
             __strong typeof(self) strongSelf = weakSelf;
             strongSelf.tableViewOfPeople.hidden = NO;
-            newChatButton.hidden = YES;
+            strongSelf.chatButton.hidden = YES;
             [strongSelf.tableViewOfPeople reloadData];
             [strongSelf.tableViewOfPeople didFinishPullToRefresh];
         }];
@@ -210,19 +208,19 @@ UIButton *newChatButton;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     int hasNextPage = ([_messages.hasNextPage boolValue] ? 1 : 0);
-    return [_messages count] + hasNextPage;
+    return _messages.count + hasNextPage;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kChatCellName forIndexPath:indexPath];
     
-    if ([indexPath row] == [_messages count]) {
+    if (indexPath.row == _messages.count) {
         [self fetchMessages];
         return cell;
     }
     
-    if ([_messages count] == 0) return cell;
+    if (_messages.count  == 0) return cell;
     WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
     WGUser *user = [message otherUser];
    
@@ -266,13 +264,13 @@ UIButton *newChatButton;
 
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (![_messages count] == 0) {
+    if (_messages.count != 0) {
         WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
         message.isRead = @YES;
         [self markMessageAsRead:message];
         WGUser *user = [message otherUser];
-        self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
-        [self.navigationController pushViewController:self.conversationViewController animated:YES];
+        ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:conversationViewController animated:YES];
     }
 }
 

@@ -8,8 +8,9 @@
 
 #import "MessageViewController.h"
 #import "Globals.h"
-
 #import "UIButtonAligned.h"
+#import "ConversationViewController.h"
+
 
 @interface MessageViewController ()
 
@@ -18,17 +19,9 @@
 @property BOOL isSearching;
 @property UIImageView *searchIconImageView;
 
-// Table View
-@property UITableView *tableView;
-//@property NSArray *contentList;
-@property NSNumber *page;
-@property WGCollection *content;
-@property WGCollection *filteredContent;
-
 @end
 
 int queryQueueInt;
-BOOL isFetchingEveryone;
 
 @implementation MessageViewController
 
@@ -45,9 +38,9 @@ BOOL isFetchingEveryone;
 {
     [super viewDidLoad];
     queryQueueInt = 0;
-    _content = [[WGCollection alloc] initWithType:[WGUser class]];
-    _filteredContent = [[WGCollection alloc] initWithType:[WGUser class]];
-    isFetchingEveryone = NO;
+    self.content = [[WGCollection alloc] initWithType:[WGUser class]];
+    self.filteredContent = [[WGCollection alloc] initWithType:[WGUser class]];
+    self.isFetchingEveryone = NO;
     
     // Title setup
     [self initializeNavigationItem];
@@ -103,11 +96,11 @@ BOOL isFetchingEveryone;
 
 - (void) initializeTableListOfFriends {
     self.automaticallyAdjustsScrollViewInsets = NO;
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
-    _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [self.view addSubview:_tableView];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view addSubview:self.tableView];
 }
 
 #pragma Network Functions
@@ -117,10 +110,10 @@ BOOL isFetchingEveryone;
 }
 
 - (void) fetchEveryone {
-    if (!isFetchingEveryone) {
-        isFetchingEveryone = YES;
+    if (!self.isFetchingEveryone) {
+        self.isFetchingEveryone = YES;
         __weak typeof(self) weakSelf = self;
-        if (!_content || _content.hasNextPage == nil) {
+        if (!self.content || self.content.hasNextPage == nil) {
             [[WGProfile currentUser] getNotMe:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
@@ -131,11 +124,11 @@ BOOL isFetchingEveryone;
                     }
                     strongSelf.content = collection;
                     [strongSelf.tableView reloadData];
-                    isFetchingEveryone = NO;
+                    strongSelf.isFetchingEveryone = NO;
                 });
             }];
-        } else if ([_content.hasNextPage boolValue]) {
-            [_content addNextPage:^(BOOL success, NSError *error) {
+        } else if ([self.content.hasNextPage boolValue]) {
+            [self.content addNextPage:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
                     if (error) {
@@ -144,7 +137,7 @@ BOOL isFetchingEveryone;
                         return;
                     }
                     [strongSelf.tableView reloadData];
-                    isFetchingEveryone = NO;
+                    strongSelf.isFetchingEveryone = NO;
                 });
             }];
         }
@@ -159,10 +152,10 @@ BOOL isFetchingEveryone;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (_isSearching) {
-        return [_filteredContent count];
+        return self.filteredContent.count;
     }
-    int hasNextPage = ([_content.hasNextPage boolValue] ? 1 : 0);
-    return [_content count] + hasNextPage;
+    int hasNextPage = ([self.content.hasNextPage boolValue] ? 1 : 0);
+    return self.content.count + hasNextPage;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -174,12 +167,12 @@ BOOL isFetchingEveryone;
     }
     
     [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    if ([_content count] > 5) {
-        if ([_content.hasNextPage boolValue] && [indexPath row] == [_content count] - 5) {
+    if (self.content.count > 5) {
+        if ([self.content.hasNextPage boolValue] && indexPath.row == self.content.count - 5) {
             [self fetchEveryone];
         }
     }
-    if ([indexPath row] == [_content count] && [_content count] != 0) {
+    if (indexPath.row == self.content.count && self.content.count != 0) {
         [self fetchEveryone];
         UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
@@ -191,15 +184,15 @@ BOOL isFetchingEveryone;
     
     WGUser *user;
     if (_isSearching) {
-        if ([_filteredContent count] == 0) return cell;
-        if ([indexPath row] < [_filteredContent count]) {
-            user = (WGUser *)[_filteredContent objectAtIndex:[indexPath row]];
+        if (self.filteredContent.count == 0) return cell;
+        if (indexPath.row < self.filteredContent.count) {
+            user = (WGUser *)[self.filteredContent objectAtIndex:indexPath.row];
         }
         else return cell;
     } else {
-        if ([_content count] == 0) return cell;
-        if ([indexPath row] < [_content count]) {
-            user = (WGUser *)[_content objectAtIndex:[indexPath row]];
+        if (self.content.count == 0) return cell;
+        if (indexPath.row < self.content.count) {
+            user = (WGUser *)[self.content objectAtIndex:indexPath.row];
         }
         else return cell;
     }
@@ -211,7 +204,7 @@ BOOL isFetchingEveryone;
     [cell.contentView addSubview:profileImageView];
     
     UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    textLabel.text = [user fullName];
+    textLabel.text = user.fullName;
     textLabel.font = [FontProperties getSubtitleFont];
     [cell.contentView addSubview:textLabel];
     
@@ -239,17 +232,17 @@ BOOL isFetchingEveryone;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     WGUser *user;
     if (_isSearching) {
-        int sizeOfArray = (int)[_filteredContent count];
-        if (sizeOfArray > 0 && sizeOfArray > [indexPath row])
-            user = (WGUser *)[_filteredContent objectAtIndex:[indexPath row]];
+        int sizeOfArray = (int)self.filteredContent.count;
+        if (sizeOfArray > 0 && sizeOfArray > indexPath.row)
+            user = (WGUser *)[self.filteredContent objectAtIndex:[indexPath row]];
     } else {
-        int sizeOfArray = (int)[_content count];
-        if (sizeOfArray > 0 && sizeOfArray > [indexPath row])
-            user = (WGUser *)[_content objectAtIndex:[indexPath row]];
+        int sizeOfArray = (int)self.content.count;
+        if (sizeOfArray > 0 && sizeOfArray > indexPath.row)
+            user = (WGUser *)[self.content objectAtIndex:[indexPath row]];
     }
     if (user) {
-        self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
-        [self.navigationController pushViewController:self.conversationViewController animated:YES];
+        ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:conversationViewController animated:YES];
     }
 }
 
@@ -312,7 +305,7 @@ BOOL isFetchingEveryone;
     _isSearching = NO;
     _searchBar.text = @"";
     [self searchBarTextDidEndEditing:_searchBar];
-    [_tableView reloadData];
+    [self.tableView reloadData];
     [self initializeNavigationItem];
 }
 
@@ -340,16 +333,16 @@ BOOL isFetchingEveryone;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    [_filteredContent removeAllObjects];
-    if([searchText length] != 0) {
+    if(searchText.length != 0) {
         _isSearching = YES;
+        self.filteredContent = nil;
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.25
      cancelPreviousRequest:YES];
     } else {
         _isSearching = NO;
     }
-    [_tableView reloadData];
+    [self.tableView reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -365,7 +358,7 @@ BOOL isFetchingEveryone;
     if ([oldString isEqualToString:@"Initiate meltdown"]) {
         [self showMeltdown];
     }
-    if (!_filteredContent || _filteredContent.hasNextPage == nil) {
+    if (self.filteredContent.hasNextPage == nil) {
         [[WGProfile currentUser] searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 __strong typeof(self) strongSelf = weakSelf;
@@ -376,11 +369,11 @@ BOOL isFetchingEveryone;
                 }
                 strongSelf.filteredContent = collection;
                 [strongSelf.tableView reloadData];
-                isFetchingEveryone = NO;
+                strongSelf.isFetchingEveryone = NO;
             });
         }];
-    } else if ([_filteredContent.hasNextPage boolValue]) {
-        [_filteredContent addNextPage:^(BOOL success, NSError *error) {
+    } else if ([self.filteredContent.hasNextPage boolValue]) {
+        [self.filteredContent addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
@@ -389,7 +382,7 @@ BOOL isFetchingEveryone;
                     return;
                 }
                 [strongSelf.tableView reloadData];
-                isFetchingEveryone = NO;
+                strongSelf.isFetchingEveryone = NO;
             });
         }];
     }

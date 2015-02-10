@@ -7,10 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ConversationViewController.h"
+#import "WGCollection.h"
 
 @interface MessageViewController : UIViewController <UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property ConversationViewController *conversationViewController;
+@property (nonatomic, assign) BOOL isFetchingEveryone;
+@property (nonatomic, strong) WGCollection *content;
+@property (nonatomic, strong) WGCollection *filteredContent;
+@property (nonatomic, strong) UITableView *tableView;
 
 @end
