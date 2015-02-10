@@ -315,7 +315,7 @@ ProfileViewController *profileViewController;
             [strongSelf scrollToBottomAnimated:YES];
         });
     }];
-    [self.viewForEmptyConversation removeFromSuperview];
+    self.viewForEmptyConversation.alpha = 0.0f;
     
     self.inputToolbar.contentView.textView.text = @"";
     self.inputToolbar.contentView.rightBarButtonItem.enabled = NO;
@@ -417,7 +417,7 @@ ProfileViewController *profileViewController;
                 if (strongSelf.messages.count == 0) {
                     [strongSelf initializeMessageForEmptyConversation];
                 } else {
-                    [strongSelf.viewForEmptyConversation removeFromSuperview];
+                    strongSelf.viewForEmptyConversation.alpha = 0.0f;
                 }
                 
                 strongSelf.showLoadEarlierMessagesHeader = [[strongSelf.messages hasNextPage] boolValue];

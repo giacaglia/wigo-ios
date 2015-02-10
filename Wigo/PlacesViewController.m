@@ -37,7 +37,6 @@
 @interface PlacesViewController () {
     UIView *_dimView;
     BOOL isLoaded;
-
 }
 
 @property (nonatomic, strong) UIView *whereAreYouGoingView;
@@ -57,10 +56,7 @@
 @property CGPoint scrollViewPoint;
 
 // Events Summary
-@property WGCollection *events;
-@property WGCollection *oldEvents;
 @property WGCollection *filteredEvents;
-@property WGCollectionArray *userArray;
 
 // Go OUT Button
 @property UIButtonUngoOut *ungoOutButton;
@@ -68,7 +64,6 @@
 
 // Events By Days
 @property (nonatomic, strong) NSMutableArray *pastDays;
-@property (nonatomic, strong) NSMutableDictionary *dayToEventObjArray;
 
 //Go Elsewhere
 @property (nonatomic, strong) GoOutNewPlaceHeader *goElsewhereView;
@@ -785,7 +780,7 @@ BOOL firstTimeLoading;
 
 
 -(void)updateEvent:(WGEvent *)newEvent {
-    [_events replaceObjectAtIndex:[_events indexOfObject:newEvent] withObject:newEvent];
+    [self.events replaceObjectAtIndex:[self.events indexOfObject:newEvent] withObject:newEvent];
 }
 
 - (void)textFieldDidChange:(UITextField *)textField {
@@ -815,7 +810,7 @@ BOOL firstTimeLoading;
 
 - (void)searchTableList:(NSString *)searchString {
     int index = 0;
-    for (WGEvent *event in _events) {
+    for (WGEvent *event in self.events) {
         NSComparisonResult comparisonResult = [event.name compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
         
         if (comparisonResult == NSOrderedSame && ![_filteredEvents containsObject:event]) {
@@ -851,7 +846,7 @@ BOOL firstTimeLoading;
             return [_filteredEvents count] + hasNextPage;
         } else {
             int hasNextPage = ([self.allEvents.hasNextPage boolValue] ? 1 : 0);
-            return [_events count] + hasNextPage;
+            return self.events.count + hasNextPage;
         }
     }
     else if (section == kHighlightsEmptySection) {
@@ -905,7 +900,7 @@ BOOL firstTimeLoading;
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if (section == kTodaySection) {
         self.goElsewhereView = [GoOutNewPlaceHeader init];
-        if ([_events count] > 0) [self.goElsewhereView setupWithMoreThanOneEvent:YES];
+        if (self.events.count > 0) [self.goElsewhereView setupWithMoreThanOneEvent:YES];
         else [self.goElsewhereView setupWithMoreThanOneEvent:NO];
         [self.goElsewhereView.addEventButton addTarget: self action: @selector(goingSomewhereElsePressed) forControlEvents: UIControlEventTouchUpInside];
         [self shouldShowCreateButton];
@@ -924,7 +919,7 @@ BOOL firstTimeLoading;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == kTodaySection) {
-        if (indexPath.item == _events.count) return 1;
+        if (indexPath.item == self.events.count) return 1;
         return sizeOfEachCell;
     }
     else if (indexPath.section == kHighlightsEmptySection) {
@@ -966,7 +961,7 @@ BOOL firstTimeLoading;
             if (indexPath.row == [_filteredEvents count]) {
                 return cell;
             }
-        } else if (indexPath.row == [_events count]) {
+        } else if (indexPath.row == self.events.count) {
             [self fetchEvents];
             cell.eventNameLabel.text = nil;
             cell.chatBubbleImageView.image = nil;
@@ -981,9 +976,9 @@ BOOL firstTimeLoading;
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
             event = (WGEvent *)[_filteredEvents objectAtIndex:[indexPath row]];
         } else {
-            int sizeOfArray = (int)[_events count];
-            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
-            event = (WGEvent *)[_events objectAtIndex:[indexPath row]];
+            int sizeOfArray = (int)self.events.count;
+            if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return cell;
+            event = (WGEvent *)[self.events objectAtIndex:indexPath.row];
         }
         cell.event = event;
         if (self.groupNumberID) {
@@ -1058,13 +1053,13 @@ BOOL firstTimeLoading;
     if (indexPath.section == kTodaySection) {
         WGEvent *event;
         if (_isSearching) {
-            int sizeOfArray = (int)[_filteredEvents  count];
-            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return;
-            event = (WGEvent *)[_filteredEvents objectAtIndex:[indexPath row]];
+            int sizeOfArray = (int)_filteredEvents.count;
+            if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return;
+            event = (WGEvent *)[_filteredEvents objectAtIndex:indexPath.row];
         } else {
-            int sizeOfArray = (int)[_events count];
-            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return;
-            event = (WGEvent *)[_events objectAtIndex:[indexPath row]];
+            int sizeOfArray = (int)self.events.count;
+            if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return;
+            event = (WGEvent *)[self.events objectAtIndex:indexPath.row];
         }
         EventCell *eventCell = (EventCell *)cell;
         if ([[self.eventOffsetDictionary objectForKey:[event.id stringValue]] isEqualToNumber:@0]) {
@@ -1315,7 +1310,8 @@ BOOL firstTimeLoading;
     conversationViewController.isPeeking = [self isPeeking];
     
     [self presentViewController:conversationViewController animated:YES completion:nil];
-    
+    __weak typeof(conversationViewController) weakConversationViewController =
+    conversationViewController;
     [event getMessages:^(WGCollection *collection, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
@@ -1323,13 +1319,13 @@ BOOL firstTimeLoading;
             return;
         }
         NSInteger messageIndex = [collection indexOfObject:event.highlight];
-        conversationViewController.index = @(messageIndex);
+        weakConversationViewController.index = @(messageIndex);
         
-        conversationViewController.eventMessages = collection;
-        conversationViewController.mediaScrollView.eventMessages = collection;
-        [conversationViewController.facesCollectionView reloadData];
-        [conversationViewController.mediaScrollView reloadData];
-        [conversationViewController highlightCellAtPage:messageIndex animated:NO];
+        weakConversationViewController.eventMessages = collection;
+        weakConversationViewController.mediaScrollView.eventMessages = collection;
+        [weakConversationViewController.facesCollectionView reloadData];
+        [weakConversationViewController.mediaScrollView reloadData];
+        [weakConversationViewController highlightCellAtPage:messageIndex animated:NO];
     }];
 }
 
@@ -1387,13 +1383,13 @@ BOOL firstTimeLoading;
 }
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
-    int numberOfEvents = (int)[_events count];
+    int numberOfEvents = (int)self.events.count;
     return numberOfEvents * userIndex + eventIndex;
 }
 
 - (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {
     int userIndex, eventIndex;
-    int numberOfEvents = (int)[_events count];
+    int numberOfEvents = (int)self.events.count;
     userIndex = uniqueIndex / numberOfEvents;
     eventIndex = uniqueIndex - userIndex * numberOfEvents;
     return @{ @"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex" : [NSNumber numberWithInt:eventIndex] };
@@ -1673,15 +1669,15 @@ BOOL firstTimeLoading;
 }
 
 - (void)addProfileUserToEventWithNumber:(int)eventID {
-    WGEvent *event = (WGEvent *)[_events objectWithID:[NSNumber numberWithInt:eventID]];
+    WGEvent *event = (WGEvent *)[self.events objectWithID:[NSNumber numberWithInt:eventID]];
     [self removeProfileUserFromAnyOtherEvent];
     [event.attendees insertObject:[WGProfile currentUser] atIndex:0];
     event.numAttending = @([event.numAttending intValue] + 1);
-    [_events exchangeObjectAtIndex:[_events indexOfObject:event] withObjectAtIndex:0];
+    [self.events exchangeObjectAtIndex:[self.events indexOfObject:event] withObjectAtIndex:0];
 }
 
 -(void) removeProfileUserFromAnyOtherEvent {
-    for (WGEvent* event in _events) {
+    for (WGEvent* event in self.events) {
         if ([event.attendees containsObject:[WGProfile currentUser]]) {
             [event.attendees removeObject:[WGProfile currentUser]];
             event.numAttending = @([event.numAttending intValue] - 1);

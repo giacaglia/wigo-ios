@@ -27,6 +27,9 @@
 
 @property (nonatomic, assign) BOOL fetchingEventAttendees;
 @property (nonatomic, strong) WGCollection *allEvents;
+@property (nonatomic, strong) WGCollection *events;
+@property (nonatomic, strong) WGCollection *oldEvents;
+@property (nonatomic, strong) NSMutableDictionary *dayToEventObjArray;
 @property (nonatomic, strong) SignViewController *signViewController;
 @property (nonatomic, assign) BOOL fetchingUserInfo;
 @property (nonatomic, assign) BOOL secondTimeFetchingUserInfo;

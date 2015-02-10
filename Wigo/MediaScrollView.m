@@ -1182,6 +1182,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
 }
 
 - (void)postPressed {
+    NSLog(@"info %@", self.info);
     NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:self.info];
     if (self.textField.text.length > 0) {
         [newInfo addEntriesFromDictionary:@{
