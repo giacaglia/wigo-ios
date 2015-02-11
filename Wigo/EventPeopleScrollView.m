@@ -22,9 +22,10 @@
         self.delegate = self;
         self.event = event;
         
-        UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressGestureRecognizer:)];
+#warning remove event attendees feature for release
+        /* UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressGestureRecognizer:)];
         [self addGestureRecognizer:longPressGesture];
-        longPressGesture.delegate = self;
+        longPressGesture.delegate = self; */
     }
     return self;
 }
