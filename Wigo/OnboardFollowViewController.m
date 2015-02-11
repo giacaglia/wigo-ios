@@ -301,17 +301,20 @@ UIImageView *searchIconImageView;
 
 - (void) getNextPageForFilteredContent {
     __weak typeof(self) weakSelf = self;
-    [self.filteredUsers addNextPage:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            __strong typeof(self) strongSelf = weakSelf;
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            [strongSelf.tableViewOfPeople reloadData];
-        });
-    }];
+    if ([[self.filteredUsers hasNextPage] boolValue]) {
+        [self.filteredUsers addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                    return;
+                }
+                [strongSelf.tableViewOfPeople reloadData];
+            });
+        }];
+    }
+   
 }
 
 
