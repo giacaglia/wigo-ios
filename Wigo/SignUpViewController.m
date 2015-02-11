@@ -102,22 +102,25 @@
 - (void)continuePressed {
     NSString *emailString = self.studentTextField.text;
     if ([self isTextAnEmail:emailString]) {
-        NSArray *images = [[WGProfile currentUser] images];
+        NSArray *images = WGProfile.currentUser.images;
         WGProfile.currentUser.email = emailString;
         __weak typeof(self) weakSelf = self;
         self.studentTextField.enabled = NO;
-        [[WGProfile currentUser] signup:^(BOOL success, NSError *error) {
+        [WGSpinnerView addDancingGToCenterView:self.view];
+        [WGProfile.currentUser signup:^(BOOL success, NSError *error) {
             __weak typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.studentTextField.enabled = YES;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionCreate retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionCreate];
+                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                 return;
             }
             WGProfile.currentUser.images = images;
             __weak typeof(strongSelf) weakOfStrong = strongSelf;
-            [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+            [WGProfile.currentUser save:^(BOOL success, NSError *error) {
                 __strong typeof(weakOfStrong) strongOfStrong = weakOfStrong;
+                [WGSpinnerView removeDancingGFromCenterView:strongOfStrong.view];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionSave];
