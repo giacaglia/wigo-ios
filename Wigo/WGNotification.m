@@ -10,6 +10,8 @@
 
 #define kFromUserKey @"from_user"
 #define kTypeKey @"type"
+#define kProperties @"properties"
+#define kEventName @"event_name"
 
 @implementation WGNotification
 
@@ -56,10 +58,24 @@
     return [self objectForKey:kFromUserKey];
 }
 
+-(NSDictionary *)properties {
+    return [self objectForKey:kProperties];
+}
+
+-(NSString *)eventName {
+    if (self.properties){
+        return [self.properties objectForKey:kEventName];
+    }
+    return nil;
+}
+
 -(NSString *) message {
     NSString *type = self.type;
     if ([type isEqualToString:@"tap"]) {
         if (![self.created isFromLastDay]) {
+            if (self.eventName) {
+                return [NSString stringWithFormat:@"wants to see you out at %@", self.eventName];
+            }
             if (self.fromUser.eventAttending.name) {
                 return [NSString stringWithFormat:@"wants to see you out at %@", self.fromUser.eventAttending.name];
             }

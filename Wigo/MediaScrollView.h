@@ -106,7 +106,7 @@
 @interface CameraCell : UICollectionViewCell<UINavigationControllerDelegate,
                                             UIImagePickerControllerDelegate,
                                             UIGestureRecognizerDelegate,
-                                            UITextFieldDelegate, CameraDelegate>
+                                            UITextFieldDelegate>
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, assign) id <MediaScrollViewDelegate> mediaScrollDelegate;
 @property (nonatomic, strong) UIImagePickerController *controller;

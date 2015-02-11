@@ -114,7 +114,7 @@ int queryQueueInt;
         self.isFetchingEveryone = YES;
         __weak typeof(self) weakSelf = self;
         if (!self.content || self.content.hasNextPage == nil) {
-            [[WGProfile currentUser] getNotMe:^(WGCollection *collection, NSError *error) {
+            [[WGProfile currentUser] getNotMeForMessage:^(WGCollection *collection, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^(void) {
                     __strong typeof(self) strongSelf = weakSelf;
                     if (error) {

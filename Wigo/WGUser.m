@@ -705,8 +705,8 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) getNotMe:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+-(void) getNotMeForMessage:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"context": @"message"} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
