@@ -14,6 +14,7 @@
 #import "KeychainItemWrapper.h"
 #import "FacebookHelper.h"
 #import <Parse/Parse.h>
+#import "ReferalViewController.h"
 
 #import <Crashlytics/Crashlytics.h>
 
@@ -422,6 +423,17 @@
         if (!_pushed) {
             _pushed = YES;
             if ([[WGProfile currentUser].group.locked boolValue]) {
+                NSString * refferalTracked = WGProfile.currentUser.referralTracked;
+                if (!refferalTracked) {
+                    [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
+                    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                    [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
+                    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+                    NSDate *date = [NSDate date];
+                    NSString *dateString = [dateFormatter stringFromDate:date];
+                    WGProfile.currentUser.referralTracked = dateString;
+                    [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
+                }
                 [self.navigationController setNavigationBarHidden:YES animated:NO];
                 BatteryViewController *batteryViewController = [BatteryViewController new];
                 batteryViewController.placesDelegate = self.placesDelegate;

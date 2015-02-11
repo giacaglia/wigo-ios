@@ -10,6 +10,7 @@
 #import "Globals.h"
 #import "OnboardFollowViewController.h"
 #import "BatteryViewController.h"
+#import "ReferalViewController.h"
 
 UITextField *emailTextField;
 NSTimer *fetchTimer;
@@ -148,6 +149,18 @@ NSTimer *fetchTimer;
                 [fetchTimer invalidate];
                 fetchTimer = nil;
                 if ([[WGProfile currentUser].group.locked boolValue]) {
+                    NSString * refferalTracked = WGProfile.currentUser.referralTracked;
+                    if (!refferalTracked) {
+                        [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
+                        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                        [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
+                        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+                        NSDate *date = [NSDate date];
+                        NSString *dateString = [dateFormatter stringFromDate:date];
+                        WGProfile.currentUser.referralTracked = dateString;
+                        [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
+                    }
+                    
                     [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
                     BatteryViewController *batteryViewController = [BatteryViewController new];
                     batteryViewController.placesDelegate = strongSelf.placesDelegate;
