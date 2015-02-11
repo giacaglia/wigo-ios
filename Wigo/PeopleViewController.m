@@ -478,6 +478,7 @@ UIScrollView *suggestedScrollView;
             senderButton.layer.cornerRadius = 3;
             user.isFollowingRequested = @YES;
         } else {
+            [senderButton setTitle:nil forState:UIControlStateNormal];
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             [self.users addObject:user];
             numFollowing += 1;
@@ -1068,6 +1069,7 @@ UIScrollView *suggestedScrollView;
     
     if (![user isCurrentUser]) {
         UIButton *followPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(30, 140, 49, 30)];
+        [followPersonButton setTitle:nil forState:UIControlStateNormal];
         [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         followPersonButton.tag = -100;
         [followPersonButton addTarget:self action:@selector(suggestedFollowedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -1085,6 +1087,7 @@ UIScrollView *suggestedScrollView;
         } else {
             if ([user.isFollowing boolValue]) {
                 [followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+                [followPersonButton setTitle:nil forState:UIControlStateNormal];
                 followPersonButton.tag = 100;
             }
             if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
