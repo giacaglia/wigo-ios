@@ -939,6 +939,7 @@ UIScrollView *suggestedScrollView;
     self.nameLabel.text =  user.fullName;
     self.goingOutLabel.hidden = ![user.isGoingOut boolValue];
     [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+    [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
     self.followPersonButton.tag = -100;
     
     if (!user.isCurrentUser) {
@@ -955,6 +956,7 @@ UIScrollView *suggestedScrollView;
         } else {
             if ([user.isFollowing boolValue]) {
                 [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+                [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
                 self.followPersonButton.tag = 100;
             }
             if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
