@@ -127,7 +127,7 @@ BOOL firstTimeLoading;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self initializeFlashScreen];
-    if (![WGProfile currentUser].key) {
+    if (![WGProfile currentUser].key && !self.presentingLockedView) {
         [self showFlashScreen];
         [self.signViewController reloadedUserInfo:NO andError:nil];
     }
