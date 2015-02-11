@@ -17,6 +17,8 @@
 #import "WGEvent.h"
 #import "PlacesViewController.h"
 #import "RWBlurPopover.h"
+#define kImageQuality @"quality"
+#define kImageMultiple @"multiple"
 
 
 NSNumber *numberOfNewMessages;
@@ -403,14 +405,18 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 - (void)fetchAppStart {
     BOOL canFetchAppStartUp = [[NSUserDefaults standardUserDefaults] boolForKey:@"canFetchAppStartup"];
-    if ((canFetchAppStartUp && [self shouldFetchAppStartup] && [WGProfile currentUser])) {
-        [WGApi startup:^(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSError *error) {
+    if (canFetchAppStartUp && [self shouldFetchAppStartup] && [WGProfile currentUser]) {
+        [WGApi startup:^(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSDictionary *imageProperties, NSError *error) {
             if (error) {
                 return;
             }
             [WGProfile currentUser].cdnPrefix = cdnPrefix;
             [WGProfile currentUser].googleAnalyticsEnabled = googleAnalyticsEnabled;
             [WGProfile currentUser].schoolStatistics = schoolStatistics;
+            NSNumber *imageMultiple = [imageProperties objectForKey:kImageMultiple];
+            NSNumber *imageQuality = [imageProperties objectForKey:kImageQuality];
+            [WGProfile currentUser].imageMultiple = [imageMultiple floatValue];
+            [WGProfile currentUser].imageQuality = [imageQuality floatValue];
         }];
     }
 }

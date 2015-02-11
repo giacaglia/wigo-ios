@@ -22,6 +22,8 @@
 @property NSNumber *numberOfTimesWentOut;
 @property NSArray *datesAccessed;
 @property WGCollection *chosenPeople;
+@property float imageQuality;
+@property float imageMultiple;
 
 +(void) setCurrentUser:(WGUser *)user;
 +(WGProfile *) currentUser;

@@ -284,8 +284,8 @@
         CGFloat cropWidth = screenHeight * ratio;
         CGFloat cropHeight = screenWidth * ratio;
         
-        CGFloat jpegQuality = 0.8;
-        CGFloat imageMultiple = 1.0f;
+        CGFloat jpegQuality = WGProfile.currentUser.imageQuality;
+        CGFloat imageMultiple = WGProfile.currentUser.imageMultiple;
         
         CGFloat translation = (imageHeight - cropHeight) / 2.0;
         

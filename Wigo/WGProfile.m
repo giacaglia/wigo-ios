@@ -17,6 +17,8 @@
 #define kGroupKey @"group"
 #define kIsAttendingKey @"is_attending"
 #define kSchoolStatisticsKey @"school_statistics"
+#define kImageQuality @"imageQuality"
+#define kImageMultiple @"imageMultiple"
 #define kGoogleAnalyticsEnabledKey @"googleAnalyticsEnabled"
 #define kCanFetchAppStartupKey @"canFetchAppStartup"
 #define kTriedToRegisterKey @"triedToRegister"
@@ -157,6 +159,26 @@ static WGProfile *currentUser = nil;
 
 -(NSNumber *) schoolStatistics {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kSchoolStatisticsKey];
+}
+
+- (void)setImageQuality:(float)imageQuality {
+    [[NSUserDefaults standardUserDefaults] setFloat:imageQuality forKey:kImageMultiple];
+}
+
+- (float)imageQuality {
+    int returnedImageQuality = [[NSUserDefaults standardUserDefaults] floatForKey:kImageMultiple];
+    if (returnedImageQuality == 0) return 0.8;
+    return returnedImageQuality;
+}
+
+- (void)setImageMultiple:(float)imageMultiple {
+    [[NSUserDefaults standardUserDefaults] setFloat:imageMultiple forKey:kImageMultiple];
+}
+
+- (float)imageMultiple {
+      int returnedImageMultiple = [[NSUserDefaults standardUserDefaults] floatForKey:kImageMultiple];
+    if (returnedImageMultiple == 0) return 1.0f;
+    return returnedImageMultiple;
 }
 
 -(void) setGoogleAnalyticsEnabled:(NSNumber *)googleAnalyticsEnabled {

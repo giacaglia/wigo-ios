@@ -46,6 +46,7 @@ static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
 static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 #endif
 
+
 @implementation WGApi
 
 +(void) get:(NSString *)endpoint withHandler:(ApiResultBlock)handler {
@@ -354,13 +355,14 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 +(void) startup:(WGStartupResult)handler {
     [WGApi get:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, nil, nil, error);
+            handler(nil, nil, nil, nil, error);
             return;
         }
         NSString *cdnPrefix;
         NSNumber *googleAnalyticsEnabled;
         NSNumber *schoolStatistics;
         NSError *dataError;
+        NSDictionary *imageProperties;
         @try {
             NSDictionary *cdn = [jsonResponse objectForKey:@"cdn"];
             cdnPrefix = [cdn objectForKey:@"uploads"];
@@ -370,6 +372,9 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             
             NSDictionary *provisioning = [jsonResponse objectForKey:@"provisioning"];
             schoolStatistics = [provisioning objectForKey:@"school_statistics"];
+            
+            NSDictionary *uploadsProperties = [jsonResponse objectForKey:@"uploads"];
+            imageProperties = [uploadsProperties objectForKey:@"image"];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -378,10 +383,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (dataError) {
-                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, dataError);
+                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, imageProperties, dataError);
                 return;
             }
-            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, dataError);
+            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, imageProperties, dataError);
         }
     }];
 }
