@@ -32,7 +32,6 @@
 
 @property UIAlertView * alert;
 @property BOOL alertShown;
-@property BOOL fetchingProfilePictures;
 @end
 
 @implementation SignViewController
@@ -42,7 +41,7 @@
 {
     self = [super init];
     if (self) {
-        _fetchingProfilePictures = NO;
+        self.fetchingProfilePictures = NO;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -53,7 +52,7 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlertToNotShown) name:@"changeAlertToNotShown" object:nil];
     _alertShown = NO;
-    _fetchingProfilePictures = NO;
+    self.fetchingProfilePictures = NO;
     _pushed = NO;
     
     [self initializeLogo];
@@ -62,7 +61,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     _alertShown = NO;
-    _fetchingProfilePictures = NO;
+    self.fetchingProfilePictures = NO;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self showOnboard];
@@ -80,7 +79,7 @@
 
 - (void) changeAlertToNotShown {
     _alertShown = NO;
-    _fetchingProfilePictures = NO;
+    self.fetchingProfilePictures = NO;
 }
 
 - (void) getFacebookTokensAndLoginORSignUp {
@@ -149,7 +148,7 @@
                                               NSError *error
                                               ) {
                               if (error) {
-                                  _fetchingProfilePictures = NO;
+                                  self.fetchingProfilePictures = NO;
                                   [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
                               }
                               BOOL foundProfilePicturesAlbum = NO;
@@ -163,7 +162,7 @@
                                   }
                               }
                               if (!foundProfilePicturesAlbum) {
-                                  _fetchingProfilePictures = NO;
+                                  self.fetchingProfilePictures = NO;
                                   NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
                                   [profilePictures addObject:@{@"url": _profilePic}];
                                   [self saveProfilePictures:profilePictures];
@@ -184,7 +183,7 @@
                                               NSError *error
                                               ) {
                               if (error) {
-                                  _fetchingProfilePictures = NO;
+                                  self.fetchingProfilePictures = NO;
                                   [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
                               }
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
@@ -235,7 +234,7 @@
     [WGSpinnerView removeDancingGFromCenterView:self.view];
     if (!_pushed) {
         _pushed = YES;
-        _fetchingProfilePictures = NO;
+        self.fetchingProfilePictures = NO;
         SignUpViewController *signUpViewController = [SignUpViewController new];
         signUpViewController.placesDelegate = self.placesDelegate;
         [self.navigationController pushViewController:signUpViewController animated:YES];
@@ -303,7 +302,7 @@
             [WGProfile currentUser].gender = [WGUser genderFromName:[userResponse objectForKey:@"gender"]];
         }
         
-        if (!_alertShown && !_fetchingProfilePictures) {
+        if (!_alertShown && !self.fetchingProfilePictures) {
             [self loginUserAsynchronous];
         }
     }
@@ -386,13 +385,17 @@
     
     [WGSpinnerView addDancingGToCenterView:self.view];
 
+    __weak typeof(self) weakSelf = self;
     [[WGProfile currentUser] login:^(BOOL success, NSError *error) {
-        [WGSpinnerView removeDancingGFromCenterView:self.view];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (error) {
-            _fetchingProfilePictures = YES;
-            [self logout];
-            [self fetchTokensFromFacebook];
-            [self fetchProfilePicturesAlbumFacebook];
+            self.fetchingProfilePictures = YES;
+            [strongSelf logout];
+            [strongSelf fetchTokensFromFacebook];
+            if ([error.localizedDescription isEqual:@"Request failed: not found (404)"]) {
+                [strongSelf fetchProfilePicturesAlbumFacebook];
+            }
             [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLogin];
             return;

@@ -17,5 +17,6 @@
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 -(void) reloadedUserInfo:(BOOL)success andError:(NSError *)error;
 -(void) showBarrierError:(NSError *)error;
+@property (nonatomic, assign) BOOL fetchingProfilePictures;
 
 @end
