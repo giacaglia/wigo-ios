@@ -15,6 +15,7 @@
 @property (nonatomic, strong) WGCollection *users;
 @property (nonatomic, strong) WGCollection *filteredUsers;
 @property (nonatomic, strong) NSIndexPath *chosenIndexPath;
+@property (nonatomic, assign) BOOL isSearching;
 @end
 
 

@@ -15,7 +15,6 @@
 @end
 
 UISearchBar *searchBar;
-BOOL isSearching;
 UIImageView *searchIconImageView;
 
 @implementation ReferalViewController
@@ -180,7 +179,7 @@ UIImageView *searchIconImageView;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (isSearching) {
+    if (self.isSearching) {
         int hasNextPage = ([self.filteredUsers.hasNextPage boolValue] ? 1 : 0);
         return self.filteredUsers.count + hasNextPage;
     } else {
@@ -194,7 +193,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.chosenIndexPath = indexPath;
     _continueButton.backgroundColor = [FontProperties getOrangeColor];
     searchIconImageView.hidden = YES;
-    isSearching = NO;
+    self.isSearching = NO;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -203,7 +202,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     cell.labelName.text = @"";
     cell.groupName.text = @"";
     if (self.users.count == 0) return cell;
-    if (isSearching) {
+    if (self.isSearching) {
         if (indexPath.row == self.filteredUsers.count) {
             [self getNextPageForFilteredContent];
             return cell;
@@ -225,7 +224,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 -(WGUser *) getUserAtIndex:(int)index {
     WGUser *user;
-    if (isSearching) {
+    if (self.isSearching) {
         int sizeOfArray = (int)self.filteredUsers.count;
         if (sizeOfArray > 0 && sizeOfArray > index)
             user = (WGUser *)[self.filteredUsers objectAtIndex:index];
@@ -313,7 +312,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     searchIconImageView.hidden = YES;
-    isSearching = YES;
+    self.isSearching = YES;
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
@@ -333,16 +332,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    self.filteredUsers = nil;
     if(searchText.length != 0) {
-        isSearching = YES;
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.25
      cancelPreviousRequest:YES];
     } else {
-        isSearching = NO;
+        self.isSearching = NO;
+        [self.tableViewOfPeople reloadData];
     }
-    [self.tableViewOfPeople reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -363,6 +360,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 [[WGError sharedInstance] logError:error forAction:WGActionSearch];
                 return;
             }
+            strongSelf.isSearching = YES;
             strongSelf.filteredUsers = collection;
             [strongSelf.tableViewOfPeople reloadData];
         });
