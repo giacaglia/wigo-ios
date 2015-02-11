@@ -1625,8 +1625,10 @@ BOOL firstTimeLoading;
                     [strongSelf.signViewController reloadedUserInfo:success andError:error];
                     return;
                 }
-                [strongSelf showReferral];
-                [strongSelf showToolTip];
+                if (!strongSelf.presentingLockedView) {
+                    [strongSelf showReferral];
+                    [strongSelf showToolTip];
+                }
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
             }
