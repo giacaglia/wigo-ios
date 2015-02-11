@@ -50,6 +50,7 @@
 #define kInstaHandle @"instaHandle"
 #define kEventsInsideProperties @"events"
 #define kReferralTracked @"referral_tracked"
+#define kTooltipTracked @"tooltip_tracked"
 
 #define kReferredByKey @"referred_by"
 #define kNotificationsKey @"notifications"
@@ -345,6 +346,30 @@ static WGUser *currentUser = nil;
     [properties setObject:@{ kReferralTracked : referralTracked}
                    forKey:kEventsInsideProperties];
     self.properties = properties;
+}
+
+- (NSArray *)arrayTooltipTracked {
+    NSDictionary *properties = self.properties;
+    if ([[properties allKeys] containsObject:kEventsInsideProperties]) {
+        NSDictionary *events = [properties objectForKey:kEventsInsideProperties];
+        if ([[events allKeys] containsObject:kTooltipTracked]) {
+            return [events objectForKey:kTooltipTracked];
+        }
+    }
+    return nil;
+}
+
+- (void)setArrayTooltipTracked:(NSArray *)arrayTooltipTracked {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:@{ kTooltipTracked : arrayTooltipTracked}
+                   forKey:kEventsInsideProperties];
+    self.properties = properties;
+}
+
+- (void)addTootltipTracked:(NSString *)tooltipTracked {
+    NSMutableArray *arrayTooltipTracked = [[NSMutableArray alloc] initWithArray:[self arrayTooltipTracked]];
+    [arrayTooltipTracked addObject:tooltipTracked];
+    [self setArrayTooltipTracked:arrayTooltipTracked];
 }
 
 -(void) addImageURL:(NSString *)imageURL {
