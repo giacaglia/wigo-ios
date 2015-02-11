@@ -10,6 +10,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "WGEvent.h"
 #import "Delegate.h"
+#import "OverlayView.h"
 
 #define UIMediaPickerText @"UIMediaPickerText"
 #define UIMediaPickerPercentage @"UIMediaPickerPercentage"
@@ -105,7 +106,8 @@
 @interface CameraCell : UICollectionViewCell<UINavigationControllerDelegate,
                                             UIImagePickerControllerDelegate,
                                             UIGestureRecognizerDelegate,
-                                            UITextFieldDelegate>
+                                            UITextFieldDelegate, CameraDelegate>
+@property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, assign) id <MediaScrollViewDelegate> mediaScrollDelegate;
 @property (nonatomic, strong) UIImagePickerController *controller;
 @property (nonatomic, strong) UIButton *dismissButton;

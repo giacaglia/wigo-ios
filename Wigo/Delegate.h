@@ -60,4 +60,8 @@
 - (void)updateButton:(id)sender withUser:(WGUser *)user;
 @end
 
+@protocol CameraDelegate <NSObject>
+- (void)presentFocusPoint:(CGPoint)focusPoint;
+@end
+
 #endif

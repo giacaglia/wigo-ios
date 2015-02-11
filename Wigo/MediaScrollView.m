@@ -620,7 +620,6 @@
             self.thumbnailImageView.alpha = 0.0;
         } afterDelay:0.1];
     } else if (self.moviePlayer.loadState == MPMovieLoadStateUnknown) {
-        // [self.moviePlayer.view removeFromSuperview];
         self.thumbnailImageView.alpha = 1.0;
     }
 }
@@ -1012,42 +1011,42 @@
     self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, (NSString *)kUTTypeImage, nil];
     [self.contentView addSubview:self.controller.view];
 
-    UIView *overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
-    self.controller.cameraOverlayView = overlayView;
+    self.overlayView = [[OverlayView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
+    self.controller.cameraOverlayView = self.overlayView;
     
     self.pictureButton = [[UIButton alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     UIImageView *captureImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.pictureButton.frame.size.width/2 - 36, self.pictureButton.frame.size.height - 72 - 5, 72, 72)];
     captureImageView.image = [UIImage imageNamed:@"captureCamera"];
     [self.pictureButton addSubview:captureImageView];
-    self.pictureButton.center = CGPointMake(overlayView.center.x, self.pictureButton.center.y);
+    self.pictureButton.center = CGPointMake(self.overlayView.center.x, self.pictureButton.center.y);
     [self.pictureButton addTarget:self.controller action:@selector(takePicture) forControlEvents:UIControlEventTouchUpInside];
-    [overlayView addSubview:self.pictureButton];
+    [self.overlayView addSubview:self.pictureButton];
     
     self.flashButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     self.flashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 30, 37)];
     self.flashImageView.image = [UIImage imageNamed:@"flashOff"];
     [self.flashButton addSubview:self.flashImageView];
     [self.flashButton addTarget:self action:@selector(changeFlash) forControlEvents:UIControlEventTouchUpInside];
-    [overlayView addSubview:self.flashButton];
+    [self.overlayView addSubview:self.flashButton];
     
     self.switchButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 100, 0, 100, 100)];
     self.cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width - 36 - 10, 10, 36, 29)];
     self.cameraImageView.image = [UIImage imageNamed:@"cameraIcon"];
     [self.switchButton addSubview:self.cameraImageView];
     [self.switchButton addTarget:self action:@selector(switchCamera) forControlEvents:UIControlEventTouchUpInside];
-    [overlayView addSubview:self.switchButton];
+    [self.overlayView addSubview:self.switchButton];
     
     self.dismissButton = [[UIButton alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     UIImageView *dismissImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.dismissButton.frame.size.height - 36 - 10, 36, 36)];
     dismissImageView.image = [UIImage imageNamed:@"cancelCamera"];
     [self.dismissButton addSubview:dismissImageView];
     [self.dismissButton addTarget:self action:@selector(dismissPressed) forControlEvents:UIControlEventTouchUpInside];
-    [overlayView addSubview:self.dismissButton];
+    [self.overlayView addSubview:self.dismissButton];
     
     self.previewImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
     self.previewImageView.hidden = YES;
     self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
-    [overlayView addSubview:self.previewImageView];
+    [self.overlayView addSubview:self.previewImageView];
     
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
     self.tapRecognizer.delegate = self;
@@ -1072,7 +1071,7 @@
     self.cancelButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     self.cancelButton.hidden = YES;
     self.cancelButton.enabled = NO;
-    [overlayView addSubview:self.cancelButton];
+    [self.overlayView addSubview:self.cancelButton];
     
     self.postButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.postButton addTarget:self action:@selector(postPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -1088,7 +1087,7 @@
     self.postButton.hidden = YES;
     self.postButton.enabled = NO;
     self.postButton.titleLabel.textAlignment = NSTextAlignmentRight;
-    [overlayView addSubview:self.postButton];
+    [self.overlayView addSubview:self.postButton];
     
     self.textField = [UITextField new];
     self.textField.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
@@ -1108,6 +1107,12 @@
     self.textLabel.font = [FontProperties mediumFont:17.0f];
     [self.previewImageView addSubview:self.textLabel];
 }
+
+//- (void)presentFocusPoint:(CGPoint)focusPoint {
+//    UIView *redview = [[UIView alloc] initWithFrame:CGRectMake(focusPoint.x, focusPoint.y, 20, 20)];
+//    redview.backgroundColor = UIColor.redColor;
+//    [self.overlayView addSubview:redview];
+//}
 
 
 - (void)changeFlash {

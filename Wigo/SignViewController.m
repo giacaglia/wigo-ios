@@ -390,7 +390,7 @@
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (error) {
-            self.fetchingProfilePictures = YES;
+            strongSelf.fetchingProfilePictures = YES;
             [strongSelf logout];
             [strongSelf fetchTokensFromFacebook];
             if ([error.localizedDescription isEqual:@"Request failed: not found (404)"]) {
@@ -400,7 +400,7 @@
             [[WGError sharedInstance] logError:error forAction:WGActionLogin];
             return;
         }
-        [self navigate];
+        [strongSelf navigate];
     }];
 }
 
