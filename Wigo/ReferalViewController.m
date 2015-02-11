@@ -249,8 +249,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (referredUser.id) {
         [WGProfile.currentUser setReferredBy:referredUser.id];
         [WGProfile.currentUser save:^(BOOL success, NSError *error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+                return;
+            }
         }];
     }
 }

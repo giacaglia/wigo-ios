@@ -488,6 +488,7 @@ UIButton *tapButton;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionPost];
+                    return;
                 }
                 self.userState = self.user.state;
                 [self reloadViewForUserState];
@@ -996,6 +997,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionPost];
+            return;
         }
         [self.tableView reloadData];
     }];
