@@ -960,6 +960,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             }
         }
     }
+    else if (indexPath.section == kInstagramSection ) {
+        InstaCell *instaCell = (InstaCell *)[tableView cellForRowAtIndexPath:indexPath];
+        if ([instaCell hasInstaTextForUser:self.user]) {
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = self.user.instaHandle;
+        }
+    }
     else return;
 }
 
@@ -1366,12 +1373,16 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setLabelForUser: (WGUser *) user {
-    if (user.instaHandle && user.instaHandle.length > 0 && ![user.instaHandle isEqual:@"@"]) {
+    if ([self hasInstaTextForUser:user]) {
         NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Instagram: %@", user.instaHandle]];
         [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,10)];
         [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(10, string.length - 10)];
         self.instaLabel.attributedText = string;
     }
+}
+
+- (BOOL)hasInstaTextForUser:(WGUser *)user {
+    return user.instaHandle && user.instaHandle.length > 0 && ![user.instaHandle isEqual:@"@"];
 }
 
 @end

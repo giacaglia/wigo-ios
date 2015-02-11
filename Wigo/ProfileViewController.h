@@ -73,6 +73,7 @@
 + (CGFloat) rowHeight;
 @property (nonatomic, strong) UILabel *instaLabel;
 - (void) setLabelForUser: (WGUser *) user;
+- (BOOL)hasInstaTextForUser:(WGUser *)user;
 @end
 
 @interface InviteCell: UITableViewCell
