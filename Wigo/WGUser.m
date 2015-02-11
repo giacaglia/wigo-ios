@@ -330,44 +330,51 @@ static WGUser *currentUser = nil;
     self.properties = properties;
 }
 
-- (NSString *)referralTracked {
+- (NSDictionary *)events {
     NSDictionary *properties = self.properties;
     if ([[properties allKeys] containsObject:kEventsInsideProperties]) {
-        NSDictionary *events = [properties objectForKey:kEventsInsideProperties];
-        if ([[events allKeys] containsObject:kReferralTracked]) {
-            return [events objectForKey:kReferralTracked];
-        }
+        return [properties objectForKey:kEventsInsideProperties];
+    }
+    return [NSDictionary new];
+}
+
+- (void)setEvents:(NSDictionary *)events {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:self.properties];
+    [properties setObject:events forKey:kEventsInsideProperties];
+    self.properties = properties;
+}
+
+- (NSString *)referralTracked {
+    NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
+    if ([[events allKeys] containsObject:kReferralTracked]) {
+        return [events objectForKey:kReferralTracked];
     }
     return nil;
 }
 
 - (void)setReferralTracked:(NSString *)referralTracked {
-    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
-    [properties setObject:@{ kReferralTracked : referralTracked}
-                   forKey:kEventsInsideProperties];
-    self.properties = properties;
+    NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
+    [events setObject:referralTracked forKey:kReferralTracked];
+    self.events = events;
 }
 
 - (NSArray *)arrayTooltipTracked {
-    NSDictionary *properties = self.properties;
-    if ([[properties allKeys] containsObject:kEventsInsideProperties]) {
-        NSDictionary *events = [properties objectForKey:kEventsInsideProperties];
-        if ([[events allKeys] containsObject:kTooltipTracked]) {
-            return [events objectForKey:kTooltipTracked];
-        }
+    NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
+    if ([[events allKeys] containsObject:kTooltipTracked]) {
+        return [events objectForKey:kTooltipTracked];
     }
-    return nil;
+    
+    return [NSArray new];
 }
 
 - (void)setArrayTooltipTracked:(NSArray *)arrayTooltipTracked {
-    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
-    [properties setObject:@{ kTooltipTracked : arrayTooltipTracked}
-                   forKey:kEventsInsideProperties];
-    self.properties = properties;
+    NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
+    [events setObject:arrayTooltipTracked forKey:kTooltipTracked];
+    self.events = events;
 }
 
 - (void)addTootltipTracked:(NSString *)tooltipTracked {
-    NSMutableArray *arrayTooltipTracked = [[NSMutableArray alloc] initWithArray:[self arrayTooltipTracked]];
+    NSMutableArray *arrayTooltipTracked = [[NSMutableArray alloc] initWithArray:self.arrayTooltipTracked];
     [arrayTooltipTracked addObject:tooltipTracked];
     [self setArrayTooltipTracked:arrayTooltipTracked];
 }

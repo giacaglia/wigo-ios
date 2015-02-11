@@ -246,11 +246,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void) saveReferal {
     WGUser *referredUser = [self getUserAtIndex:(int)self.chosenIndexPath.item];
-    [WGProfile.currentUser setReferredBy:referredUser.id];
-    [WGProfile.currentUser save:^(BOOL success, NSError *error) {
-        [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-        [[WGError sharedInstance] logError:error forAction:WGActionSave];
-    }];
+    if (referredUser.id) {
+        [WGProfile.currentUser setReferredBy:referredUser.id];
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+        }];
+    }
 }
 
 #pragma mark - Network functions

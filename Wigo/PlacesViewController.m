@@ -101,7 +101,6 @@ BOOL firstTimeLoading;
 
     _spinnerAtCenter = YES;
     [self initializeWhereView];
-    [self showToolTip];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -1227,11 +1226,14 @@ BOOL firstTimeLoading;
 #pragma mark - ToolTip 
 
 - (void)showToolTip {
-    int timesShownTooltip = [[NSUserDefaults standardUserDefaults] integerForKey:@"timesShownTooltip"];
+    NSArray *arrayTooltip = WGProfile.currentUser.arrayTooltipTracked;
+    
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] ;
     NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate:[NSDate date]];
-    int weekday = [comps weekday];
-    if ((weekday == 5 || weekday == 6 || weekday == 7) &&  timesShownTooltip < 4 && !_blackViewOnTop) {
+    int weekday = (int)comps.weekday;
+    NSString *weekdayString = [NSString stringWithFormat:@"%ld", (long)comps.weekday];
+    BOOL didShowToday = (arrayTooltip.count > 0) && [arrayTooltip containsObject:weekdayString];
+    if ((weekday == 4 || weekday == 6 || weekday == 7) &&  !didShowToday && !_blackViewOnTop) {
         _blackViewOnTop = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
         _blackViewOnTop.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
         [self.view addSubview:_blackViewOnTop];
@@ -1267,8 +1269,11 @@ BOOL firstTimeLoading;
         gotItButton.layer.cornerRadius = 5.0f;
         [gotItButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
         [_blackViewOnTop addSubview:gotItButton];
-        timesShownTooltip += 1;
-        [[NSUserDefaults standardUserDefaults] setInteger:timesShownTooltip forKey:@"timesShownTooltip"];
+        [WGProfile.currentUser addTootltipTracked:weekdayString];
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+        }];
     }
 }
 
@@ -1617,6 +1622,7 @@ BOOL firstTimeLoading;
                     return;
                 }
                 [strongSelf showReferral];
+                [strongSelf showToolTip];
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
             }
