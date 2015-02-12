@@ -169,7 +169,7 @@ UIImageView *searchIconImageView;
         }
     }
     
-    WGUser *user = [self getUserAtIndex:indexPath.row];
+    WGUser *user = [self getUserAtIndex:(int)indexPath.row];
     [cell.profileImageView setSmallImageForUser:user completed:nil];
     cell.labelName.text = user.fullName;
     cell.labelName.tag = indexPath.row;
@@ -272,9 +272,11 @@ UIImageView *searchIconImageView;
 - (void) fetchEveryone {
     __weak typeof(self) weakSelf = self;
     if (!self.users) {
+        [WGSpinnerView addDancingGToCenterView:self.view];
         [WGUser getOnboarding:^(WGCollection *collection, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             dispatch_async(dispatch_get_main_queue(), ^(void) {
+                [WGSpinnerView removeDancingGFromCenterView:self.view];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionLoad];
