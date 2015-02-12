@@ -150,7 +150,6 @@ BOOL firstTimeLoading;
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
         [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        NSDate *date = [NSDate date];
         WGProfile.currentUser.showReferrer = @0;
         [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
     }
