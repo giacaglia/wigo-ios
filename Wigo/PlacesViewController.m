@@ -1242,7 +1242,7 @@ BOOL firstTimeLoading;
         UILabel *tooltipLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, tooltipImageView.frame.size.width - 15, tooltipImageView.frame.size.height - 10)];
         tooltipLabel.numberOfLines = 0;
         tooltipLabel.textAlignment = NSTextAlignmentLeft;
-        NSMutableAttributedString *mutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"Peek at top trending\nWigo schools"];
+        NSMutableAttributedString *mutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"Peek at trending\nWigo schools"];
         [mutAttributedString addAttribute:NSForegroundColorAttributeName
                                     value:[FontProperties getBlueColor]
                                     range:NSMakeRange(0, 4)];
@@ -1615,8 +1615,14 @@ BOOL firstTimeLoading;
             if (!strongSelf.secondTimeFetchingUserInfo) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
                 strongSelf.secondTimeFetchingUserInfo = YES;
-                if (error || (![[WGProfile currentUser].emailValidated boolValue] ||
-                    ([[WGProfile currentUser].group.locked boolValue] && !strongSelf.presentingLockedView))) {
+                if (
+                    (error || ![[WGProfile currentUser].emailValidated boolValue] ||
+                    [[WGProfile currentUser].group.locked boolValue])
+                    
+                    &&
+                    
+                    !strongSelf.presentingLockedView )
+                {
                     strongSelf.fetchingUserInfo = NO;
                     [strongSelf showFlashScreen];
                     [strongSelf.signViewController reloadedUserInfo:success andError:error];
