@@ -13,7 +13,6 @@
 #import "ReferalViewController.h"
 
 UITextField *emailTextField;
-NSTimer *fetchTimer;
 
 @implementation EmailConfirmationViewController
 
@@ -37,7 +36,7 @@ NSTimer *fetchTimer;
     [self initializeFaceAndNameLabel];
     [self initializeEmailLabel];
     [self initializeOtherButtons];
-    fetchTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(login) userInfo:nil repeats:YES];
+    self.fetchTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(login) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -146,8 +145,8 @@ NSTimer *fetchTimer;
                 return;
             }
             if ([[WGProfile currentUser].emailValidated boolValue]) {
-                [fetchTimer invalidate];
-                fetchTimer = nil;
+                [strongSelf.fetchTimer invalidate];
+                strongSelf.fetchTimer = nil;
                 if ([[WGProfile currentUser].group.locked boolValue]) {
                     NSNumber * showReferrer = WGProfile.currentUser.showReferrer;
                     if ([showReferrer boolValue]) {
