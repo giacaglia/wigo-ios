@@ -16,5 +16,5 @@
 @property (nonatomic, strong) UITableView *invitePeopleTableView;
 @property (nonatomic, strong) WGCollection *content;
 @property (nonatomic, strong) WGCollection *filteredContent;
-
+@property (nonatomic, assign) BOOL isSearching;
 @end

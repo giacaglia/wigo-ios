@@ -18,7 +18,6 @@
     NSMutableArray *chosenPeople;
     WGEvent *event;
     UISearchBar *searchBar;
-    BOOL isSearching;
     
     UIButton *aroundInviteButton;
     UILabel *titleLabel;
@@ -165,14 +164,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        if (isSearching) {
-            return [self.filteredContent count];
+        if (self.isSearching) {
+            return self.filteredContent.count;
         } else {
             int hasNextPage = ([self.content.hasNextPage boolValue] ? 1 : 0);
-            return [self.content count] + hasNextPage;
+            return self.content.count + hasNextPage;
         }
     } else {
-        if (isSearching) return [filteredMobileContacts count];
+        if (self.isSearching) return [filteredMobileContacts count];
         return [mobileContacts count];
     }
 }
@@ -190,34 +189,34 @@
     if ([indexPath section] == 0) {
         int tag = (int)[indexPath row];
         WGUser *user;
-        if (isSearching) {
-            if ([self.filteredContent count] == 0) return cell;
-            if (tag < [self.filteredContent count]) {
+        if (self.isSearching) {
+            if (self.filteredContent.count == 0) return cell;
+            if (tag < self.filteredContent.count) {
                 user = (WGUser *)[self.filteredContent objectAtIndex:tag];
             }
-            if ([self.filteredContent count] > 5 && [self.content.hasNextPage boolValue]) {
-                if (tag == [self.filteredContent count] - 5) {
+            if (self.filteredContent.count > 5 && [self.content.hasNextPage boolValue]) {
+                if (tag == self.filteredContent.count - 5) {
                     [self getNextPageForFilteredContent];
                 }
             }
             else {
-                if (tag == [self.filteredContent count] && [self.content count] != 0) {
+                if (tag == self.filteredContent.count && self.content.count != 0) {
                     [self getNextPageForFilteredContent];
                     return cell;
                 }
             }
         } else {
-            if ([self.content count] == 0) return cell;
-            if (tag < [self.content count]) {
+            if (self.content.count == 0) return cell;
+            if (tag < self.content.count) {
                 user = (WGUser *)[self.content objectAtIndex:tag];
             }
-            if ([self.content count] > 5 && [self.content.hasNextPage boolValue]) {
-                if (tag == [self.content count] - 5) {
+            if (self.content.count > 5 && [self.content.hasNextPage boolValue]) {
+                if (tag == self.content.count - 5) {
                     [self fetchEveryone];
                 }
             }
             else {
-                if (tag == [self.content count] && [self.content count] != 0) {
+                if (tag == self.content.count && self.content.count != 0) {
                     [self fetchEveryone];
                     return cell;
                 }
@@ -280,7 +279,7 @@
 
         
         ABRecordRef contactPerson;
-        if (isSearching)
+        if (self.isSearching)
             contactPerson  = (__bridge ABRecordRef)([filteredMobileContacts objectAtIndex:[indexPath row]]);
         else
             contactPerson = (__bridge ABRecordRef)([mobileContacts objectAtIndex:[indexPath row]]);
@@ -328,7 +327,7 @@
     int tag = (int)buttonSender.tag;
     ABRecordRef contactPerson;
     ABRecordID recordID;
-    if (isSearching) {
+    if (self.isSearching) {
         contactPerson = (__bridge ABRecordRef)([filteredMobileContacts objectAtIndex:tag]);
         recordID = ABRecordGetRecordID(contactPerson);
         tag = [MobileDelegate changeTag:tag fromArray:filteredMobileContacts toArray:mobileContacts];
@@ -383,12 +382,12 @@ heightForHeaderInSection:(NSInteger)section
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
     WGUser *user;
-    if (isSearching) {
-        if (tag < [self.filteredContent count]) {
+    if (self.isSearching) {
+        if (tag < self.filteredContent.count) {
             user = (WGUser *)[self.filteredContent objectAtIndex:tag];
         }
     } else {
-        if (tag < [self.content count]) {
+        if (tag < self.content.count) {
             user = (WGUser *)[self.content objectAtIndex:tag];
         }
     }
@@ -454,7 +453,7 @@ heightForHeaderInSection:(NSInteger)section
 
     cancelButton.hidden = YES;
     [self.view endEditing:YES];
-    isSearching = NO;
+    self.isSearching = NO;
     searchBar.text = @"";
     searchBar.hidden = YES;
     
@@ -496,21 +495,16 @@ heightForHeaderInSection:(NSInteger)section
 
 #pragma mark - UISearchBarDelegate
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    isSearching = YES;
-}
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if([searchText length] != 0) {
-        isSearching = YES;
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.25
      cancelPreviousRequest:YES];
     } else {
-//        [self.view endEditing:YES];
-//        isSearching = NO;
+        self.isSearching = NO;
+        [self.invitePeopleTableView reloadData];
     }
-    [self.invitePeopleTableView reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -533,6 +527,7 @@ heightForHeaderInSection:(NSInteger)section
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
+            strongSelf.isSearching = YES;
             strongSelf.filteredContent = collection;
             [strongSelf.filteredContent removeObject:[WGProfile currentUser]];
             [strongSelf.invitePeopleTableView reloadData];

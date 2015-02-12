@@ -36,7 +36,7 @@ NSNumber *currentNumGroups;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self checkIfGroupIsUnlocked];
+    if (self.fetchTimer) [self.fetchTimer fire];
     
     [WGAnalytics tagEvent:@"Battery View"];
     if (self.blurredBackgroundImage) {
@@ -160,6 +160,7 @@ NSNumber *currentNumGroups;
 }
 
 - (void)peekSchoolPressed {
+    [self.fetchTimer invalidate];
     [self.placesDelegate presentViewWithGroupID:self.groupID andGroupName:self.groupName];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
