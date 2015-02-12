@@ -1361,6 +1361,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
+    NSLog(@"presented group ID: %@", groupID);
     self.presentingLockedView = YES;
     UIButtonAligned *leftButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@2];
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 8, 8, 14)];

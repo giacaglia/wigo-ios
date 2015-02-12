@@ -48,13 +48,16 @@ NSNumber *currentNumGroups;
 }
 
 -(void) checkIfGroupIsUnlocked {
+    NSLog(@"Battery");
     __weak typeof(self) weakSelf = self;
     [WGProfile reload:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             return;
         }
-        if (WGProfile.currentUser.group.locked && ![WGProfile.currentUser.group.locked boolValue]) {
+        if (WGProfile.currentUser.group.locked &&
+            ![WGProfile.currentUser.group.locked boolValue]) {
+            NSLog(@"here");
             [strongSelf.fetchTimer invalidate];
             strongSelf.fetchTimer = nil;
             [strongSelf.placesDelegate setGroupID:WGProfile.currentUser.group.id andGroupName:WGProfile.currentUser.group.name];

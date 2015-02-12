@@ -236,8 +236,6 @@
         if (goHereState == PRESENTFACESTATE) {
             if (self.eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
         } else {
-            if (goHereState == FIRSTTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:SECONDTIMEPRESENTCAMERASTATE forKey:kGoHereState];
-            if (goHereState == SECONDTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:DONOTPRESENTANYTHINGSTATE forKey:kGoHereState];
             if (self.eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
         }
         self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
