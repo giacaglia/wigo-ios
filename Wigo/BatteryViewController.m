@@ -177,7 +177,7 @@ NSNumber *currentNumGroups;
     __weak typeof(self) weakSelf = self;
     [WGApi get:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
-        if (!error && WGProfile.currentUser.group.verified) {
+        if (!error && [WGProfile.currentUser.group.verified boolValue]) {
             strongSelf.schoolSections = [jsonResponse objectForKey:@"sections"];
             [strongSelf initializePeekButton];
         }
