@@ -49,7 +49,7 @@
 #define kSmallHeightKey @"small_height"
 #define kInstaHandle @"instaHandle"
 #define kEventsInsideProperties @"events"
-#define kReferralTracked @"referral_tracked"
+#define kShowReferrer @"show_referrer"
 #define kTooltipTracked @"tooltip_tracked"
 
 #define kReferredByKey @"referred_by"
@@ -344,19 +344,27 @@ static WGUser *currentUser = nil;
     self.properties = properties;
 }
 
-- (NSString *)referralTracked {
+- (NSNumber *)showReferrer {
     NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
-    if ([[events allKeys] containsObject:kReferralTracked]) {
-        return [events objectForKey:kReferralTracked];
+    if ([[events allKeys] containsObject:kShowReferrer]) {
+        return [events objectForKey:kShowReferrer];
     }
-    return nil;
+    return @0;
 }
 
-- (void)setReferralTracked:(NSString *)referralTracked {
+- (void)setShowReferrer:(NSNumber *)showReferrer {
     NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
-    [events setObject:referralTracked forKey:kReferralTracked];
+    if ([showReferrer isEqual:@0]) {
+        if ([[events allKeys] containsObject:kShowReferrer]) {
+            [events removeObjectForKey:kShowReferrer];
+        }
+    }
+    else {
+        [events setObject:showReferrer forKey:kShowReferrer];
+    }
     self.events = events;
 }
+
 
 - (NSArray *)arrayTooltipTracked {
     NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];

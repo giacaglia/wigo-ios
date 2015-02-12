@@ -65,7 +65,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSDictionary* properties;
 @property NSArray* images;
 @property NSString *instaHandle;
-@property NSString *referralTracked;
+@property NSNumber *showReferrer;
 @property NSArray *arrayTooltipTracked;
 @property NSDictionary *events;
 
@@ -100,7 +100,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(State) state;
 
-- (void)addTootltipTracked:(NSString *)tooltipTracked;
+-(void) addTootltipTracked:(NSString *)tooltipTracked;
 -(void) setReferredBy:(NSNumber *)referredByNumber;
 -(void) setImageDictionary:(NSDictionary *)imageDictionary forIndex:(NSInteger)index;
 -(void) removeImageAtIndex:(NSInteger)index;
