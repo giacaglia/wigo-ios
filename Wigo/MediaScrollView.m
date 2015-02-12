@@ -68,6 +68,8 @@
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:indexPath.row];
     NSString *mimeType = eventMessage.mediaMimeType;
     NSString *contentURL = eventMessage.media;
+    self.eventConversationDelegate.cancelButton.hidden = NO;
+
     if ([mimeType isEqualToString:kCameraType]) {
         AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
         if (authStatus == AVAuthorizationStatusDenied) {
@@ -120,16 +122,16 @@
     else if ([mimeType isEqualToString:kFaceImage]) {
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
         [myCell.imageView setCoverImageForUser:WGProfile.currentUser completed:nil];
-        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet, you're going out to %@.", [self.event name]];
-        myCell.subtitleTextLabel.text = @"You can now post inside this event";
+        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet! You're going out to: %@", [self.event name]];
+        myCell.subtitleTextLabel.text = @"Post a highlight inside this event :)";
         myCell.subtitleTextLabel.alpha = 0.7f;
         myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
-        [myCell.actionButton setTitle:@"ADD TO THIS EVENT" forState:UIControlStateNormal];
+        [myCell.actionButton setTitle:@"POST HIGHLIGHT" forState:UIControlStateNormal];
         [myCell.actionButton.titleLabel setFont: [FontProperties scMediumFont: 16.0]];
         [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
         [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
         myCell.isPeeking = self.isPeeking;
-
+        self.eventConversationDelegate.cancelButton.hidden = YES;
         return myCell;
     }
     else if ([mimeType isEqualToString:kNotAbleToPost]) {

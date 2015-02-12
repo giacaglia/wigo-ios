@@ -49,6 +49,7 @@
 - (void)dimOutToPercentage:(float)percentage;
 - (void)createBlurViewUnderView:(UIView *)view;
 - (void)presentHoleOnTopOfView:(UIView *)view;
+@property UIButton *cancelButton;
 @end
 
 @protocol ConversationCellDelegate <NSObject>
