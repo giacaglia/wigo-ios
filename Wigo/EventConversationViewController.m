@@ -32,7 +32,6 @@
 
 @implementation EventConversationViewController
 
-
 #pragma mark - ViewController Delegate
 
 - (void)viewDidLoad {

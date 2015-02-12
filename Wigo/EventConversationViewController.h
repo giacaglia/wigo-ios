@@ -24,6 +24,7 @@
 @property (nonatomic, strong) UILabel *postingLabel;
 @property (nonatomic, strong) UIView *loadingBanner;
 @property (nonatomic, assign) BOOL isPeeking;
+@property (nonatomic, strong) UIButton *buttonCancel;
 @end
 
 @interface FaceCell : UICollectionViewCell

@@ -137,6 +137,7 @@ UITextField *emailTextField;
 #pragma mark - Login
 
 - (void) login {
+    NSLog(@"here");
     if (WGProfile.currentUser.key) {
         __weak typeof(self) weakSelf = self;
         [WGProfile reload:^(BOOL success, NSError *error) {
