@@ -65,7 +65,8 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSDictionary* properties;
 @property NSArray* images;
 @property NSString *instaHandle;
-@property NSNumber *showReferrer;
+@property NSArray *triggers;
+@property BOOL findReferrer;
 @property NSArray *arrayTooltipTracked;
 @property NSDictionary *events;
 

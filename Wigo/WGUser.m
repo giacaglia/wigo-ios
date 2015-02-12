@@ -49,7 +49,8 @@
 #define kSmallHeightKey @"small_height"
 #define kInstaHandle @"instaHandle"
 #define kEventsInsideProperties @"events"
-#define kShowReferrer @"show_referrer"
+#define kTriggers @"triggers"
+#define kFindReferrer @"find_referrer"
 #define kTooltipTracked @"tooltip_tracked"
 
 #define kReferredByKey @"referred_by"
@@ -344,25 +345,46 @@ static WGUser *currentUser = nil;
     self.properties = properties;
 }
 
-- (NSNumber *)showReferrer {
-    NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
-    if ([[events allKeys] containsObject:kShowReferrer]) {
-        return [events objectForKey:kShowReferrer];
+- (NSArray *)triggers {
+    NSDictionary *events = self.events;
+    if ([events.allKeys containsObject:kTriggers]) {
+        return [events objectForKey:kTriggers];
     }
-    return @0;
+    return [NSArray new];
 }
 
-- (void)setShowReferrer:(NSNumber *)showReferrer {
+- (void)setTriggers:(NSArray *)triggers {
     NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
-    if ([showReferrer isEqual:@0]) {
-        if ([[events allKeys] containsObject:kShowReferrer]) {
-            [events removeObjectForKey:kShowReferrer];
+    if (triggers.count == 0) {
+        if ([[events allKeys] containsObject:kTriggers]) {
+            [events removeObjectForKey:kTriggers];
         }
     }
     else {
-        [events setObject:showReferrer forKey:kShowReferrer];
+        [events setObject:triggers forKey:kTriggers];
     }
     self.events = events;
+}
+
+- (BOOL)findReferrer {
+    if ([self.triggers containsObject:kFindReferrer]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)setFindReferrer:(BOOL)findReferrer {
+    NSMutableArray *triggers = [[NSMutableArray alloc] initWithArray:self.triggers];
+
+    if (findReferrer) {
+        if (![triggers containsObject:kFindReferrer]) {
+            [triggers addObject:kFindReferrer];
+        }
+    }
+    else {
+        [triggers removeObject:kFindReferrer];
+    }
+    self.triggers = triggers;
 }
 
 

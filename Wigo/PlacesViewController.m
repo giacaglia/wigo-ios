@@ -144,13 +144,12 @@ BOOL firstTimeLoading;
 }
 
 - (void)showReferral {
-    NSNumber * showReferrer = WGProfile.currentUser.showReferrer;
-    if ([showReferrer boolValue]) {
+    if (WGProfile.currentUser.findReferrer) {
         [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
         [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        WGProfile.currentUser.showReferrer = @0;
+        WGProfile.currentUser.findReferrer = NO;
         [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
     }
 }
