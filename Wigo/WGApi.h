@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "WGParser.h"
 
+typedef void (^SerializedApiResultBlock)(NSURL *sentURL, NSDictionary *jsonResponse, NSError *error);
 typedef void (^ApiResultBlock)(NSDictionary *jsonResponse, NSError *error);
 typedef void (^UploadResultBlock)(NSDictionary *jsonResponse, NSDictionary *fields, NSError *error);
 typedef void (^UploadVideoResultBlock)(NSDictionary *jsonResponseVideo, NSDictionary *jsonResponseThumbnail, NSDictionary *videoFields, NSDictionary *thumbnailFields, NSError *error);
@@ -18,9 +19,17 @@ typedef void (^WGStartupResult)(NSString *cdnPrefix, NSNumber *googleAnalyticsEn
 
 @interface WGApi : NSObject
 
+@property NSNumber *requestNumber;
+
 + (void) setBaseURLString:(NSString *)newBaseURLString;
 
 @property NSCache *cache;
+
+// Serialized
++(void) get:(NSString *)endpoint withSerializedHandler:(SerializedApiResultBlock)handler;
++(void) get:(NSString *)endpoint withArguments:(NSDictionary *)arguments andSerializedHandler:(SerializedApiResultBlock)handler;
++(NSString *) getStringWithEndpoint:(NSString *)endpoint andArguments:(NSDictionary *)arguments;
++(NSString *) getUrlStringForEndpoint:(NSString *)endpoint;
 
 +(void) get:(NSString *)endpoint withHandler:(ApiResultBlock)handler;
 

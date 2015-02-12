@@ -39,8 +39,8 @@ UIImageView *searchIconImageView;
     [self initializeTitle];
     [self initializeTapHandler];
     [self initializeSearchBar];
-    [self initializeTableOfPeople];
     [self initializeContinueButton];
+    [self initializeTableOfPeople];
     [self fetchFirstPageEveryone];
 }
 
@@ -114,12 +114,14 @@ UIImageView *searchIconImageView;
 }
 
 - (void)initializeTableOfPeople {
-    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 154)];
+    int sizeOfContinueButton = (_continueButton.isHidden) ? 0 : 50;
+    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - sizeOfContinueButton)];
     [self.tableViewOfPeople registerClass:[ReferalPeopleCell class] forCellReuseIdentifier:kReferalPeopleCellName];
     self.tableViewOfPeople.delegate = self;
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view addSubview:self.tableViewOfPeople];
+    [self.view sendSubviewToBack:self.tableViewOfPeople];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -137,6 +139,7 @@ UIImageView *searchIconImageView;
     [_continueButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     _continueButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
     [_continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchUpInside];
+    _continueButton.hidden = YES;
     [self.view addSubview:_continueButton];
     
     _continueButton.frame = CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50);
@@ -156,7 +159,8 @@ UIImageView *searchIconImageView;
     NSDictionary* keyboardInfo = [notification userInfo];
     CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     _continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
-    self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - 50);
+    int sizeOfContinueButton = (_continueButton.isHidden) ? 0 : 50;
+    self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - sizeOfContinueButton);
 }
 
 
@@ -165,7 +169,8 @@ UIImageView *searchIconImageView;
     CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     _continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
     _rightArrowImageView.frame = CGRectMake(_continueButton.frame.size.width - 35, _continueButton.frame.size.height/2 - 7, 7, 14);
-    self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - kbFrame.size.height - 50);
+    int sizeOfContinueButton = (_continueButton.isHidden) ? 0 : 50;
+    self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - kbFrame.size.height - sizeOfContinueButton);
 }
 
 
@@ -191,9 +196,9 @@ UIImageView *searchIconImageView;
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.chosenIndexPath = indexPath;
+    _continueButton.hidden = NO;
     _continueButton.backgroundColor = [FontProperties getOrangeColor];
     searchIconImageView.hidden = YES;
-    self.isSearching = NO;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -244,7 +249,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 
 - (void) saveReferal {
-    WGUser *referredUser = [self getUserAtIndex:(int)self.chosenIndexPath.item];
+    WGUser *referredUser = [self getUserAtIndex:(int)self.chosenIndexPath.row];
     if (referredUser.id) {
         [WGProfile.currentUser setReferredBy:referredUser.id];
         [WGProfile.currentUser save:^(BOOL success, NSError *error) {
@@ -266,9 +271,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void) fetchEveryone {
     __weak typeof(self) weakSelf = self;
     if (!self.users) {
+        [WGSpinnerView addDancingGToCenterView: self.view];
         [WGUser getReferals:^(WGCollection *collection, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             dispatch_async(dispatch_get_main_queue(), ^(void) {
+                [WGSpinnerView removeDancingGFromCenterView: self.view];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionLoad];
@@ -295,24 +302,25 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void) getNextPageForFilteredContent {
     __weak typeof(self) weakSelf = self;
-    [self.filteredUsers addNextPage:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            __strong typeof(self) strongSelf = weakSelf;
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            [strongSelf.tableViewOfPeople reloadData];
-        });
-    }];
+    if ([self.filteredUsers.hasNextPage boolValue]) {
+        [self.filteredUsers addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                    return;
+                }
+                [strongSelf.tableViewOfPeople reloadData];
+            });
+        }];
+    }
 }
 
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     searchIconImageView.hidden = YES;
-    self.isSearching = YES;
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
@@ -322,19 +330,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         }  completion:^(BOOL finished){
             searchIconImageView.hidden = NO;
         }];
-    } else {
-        [UIView animateWithDuration:0.01 animations:^{
-            searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
-        }  completion:^(BOOL finished){
-            searchIconImageView.hidden = NO;
-        }];
     }
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if(searchText.length != 0) {
         [self performBlock:^(void){[self searchTableList];}
-                afterDelay:0.25
+                afterDelay:0.2
      cancelPreviousRequest:YES];
     } else {
         self.isSearching = NO;
@@ -344,15 +346,18 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [self performBlock:^(void){[self searchTableList];}
-            afterDelay:0.25
+            afterDelay:0.2
  cancelPreviousRequest:YES];
 }
 
 - (void)searchTableList {
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
+    NSString *endpoint = [WGApi getStringWithEndpoint:@"users/" andArguments:@{ @"context": @"referral", @"text" : searchString, @"id__ne" : WGProfile.currentUser.id }];
+    self.lastSearchString = [WGApi getUrlStringForEndpoint:endpoint];
+
     __weak typeof(self) weakSelf = self;
-    [WGUser searchReferals:searchString withHandler:^(WGCollection *collection, NSError *error) {
+    [WGUser searchReferals:searchString withHandler:^(NSURL *urlSent, WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (error) {
@@ -360,9 +365,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                 [[WGError sharedInstance] logError:error forAction:WGActionSearch];
                 return;
             }
-            strongSelf.isSearching = YES;
-            strongSelf.filteredUsers = collection;
-            [strongSelf.tableViewOfPeople reloadData];
+            if ([strongSelf.lastSearchString isEqual:urlSent.absoluteString]) {
+                strongSelf.isSearching = YES;
+                strongSelf.filteredUsers = collection;
+                [strongSelf.tableViewOfPeople reloadData];
+            }
         });
     }];
 }

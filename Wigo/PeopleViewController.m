@@ -365,6 +365,7 @@ UIScrollView *suggestedScrollView;
             SuggestedCell *cell = [tableView dequeueReusableCellWithIdentifier:kSuggestedFriendsCellName forIndexPath:indexPath];
             cell.peopleViewDelegate = self;
             [cell.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+            [cell.suggestedScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
             [cell setStateForCollection:self.suggestions];
             return cell;
         }
@@ -1032,8 +1033,11 @@ UIScrollView *suggestedScrollView;
     self.suggestions = collection;
     int xPosition = 10;
     for (int i = 0; i < MIN(10,[collection count]); i++) {
+        UIView *view = [self.suggestedScrollView viewWithTag:(i + 1)];
+        [view removeFromSuperview];
         WGUser *user = (WGUser *)[collection objectAtIndex:i];
         UIView *cellView = [self cellOfUser:user atXPosition:xPosition];
+        cellView.tag = (i + 1);
         [self.suggestedScrollView addSubview:cellView];
         xPosition += 130;
     }
