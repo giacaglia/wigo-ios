@@ -123,10 +123,10 @@
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
         [myCell.imageView setCoverImageForUser:WGProfile.currentUser completed:nil];
         myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet! You're going out to: %@", [self.event name]];
-        myCell.subtitleTextLabel.text = @"Post a highlight inside this event :)";
+        myCell.subtitleTextLabel.text = @"Post a selfie to build the hype!";
         myCell.subtitleTextLabel.alpha = 0.7f;
         myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
-        [myCell.actionButton setTitle:@"POST HIGHLIGHT" forState:UIControlStateNormal];
+        [myCell.actionButton setTitle:@"POST" forState:UIControlStateNormal];
         [myCell.actionButton.titleLabel setFont: [FontProperties scMediumFont: 16.0]];
         [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
         [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
@@ -995,6 +995,7 @@
 
     self.controller = [[UIImagePickerController alloc] init];
     self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
+    self.controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
     self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
     self.controller.delegate = self;
     self.controller.showsCameraControls = NO;
