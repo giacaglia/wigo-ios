@@ -482,9 +482,9 @@
             [self.eventConversationDelegate showErrorMessage];
             return;
         }
-        NSMutableDictionary *mutableDictionary = [[NSMutableDictionary alloc] initWithDictionary:[self.object deserialize]];
-        [mutableDictionary addEntriesFromDictionary:info];
-        self.object = [[WGEventMessage alloc] initWithJSON:mutableDictionary];
+        NSMutableDictionary *objectDict = [[NSMutableDictionary alloc] initWithDictionary:self.object.deserialize];
+        [objectDict addEntriesFromDictionary:info];
+        self.object = [[WGEventMessage alloc] initWithJSON:objectDict];
         __weak typeof(self) weakSelf = self;
         [self.object create:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -493,24 +493,29 @@
                 return;
             }
             [strongSelf.eventConversationDelegate showCompletedMessage];
-            strongSelf.shownCurrentImage = YES;
-            [strongSelf.eventMessages replaceObjectAtIndex:(strongSelf.eventMessages.count - 2) withObject:strongSelf.object];
-            if (strongSelf.shownCurrentImage) {
-                [strongSelf.eventMessages removeObjectAtIndex:strongSelf.eventMessages.count - 1];
+          
+            if (!strongSelf.shownCurrentImage) {
+                [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:strongSelf.object];
+                [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+                strongSelf.shownCurrentImage = YES;
             }
-            [strongSelf.eventConversationDelegate reloadUIForEventMessages:strongSelf.eventMessages];
+            else {
+                strongSelf.shownCurrentImage = NO;
+            }
         }];
 
         NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
 
-
+        [mutableDict addEntriesFromDictionary:@{
+                                                @"user": WGProfile.currentUser.deserialize,
+                                                @"created": [NSDate nowStringUTC],
+                                                }];
         if (info && [info.allKeys containsObject:UIImagePickerControllerOriginalImage]) {
             UIImage *image =  (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
-            [mutableDict addEntriesFromDictionary:@{
-                                                    @"user": [WGProfile currentUser],
-                                                    @"created": [NSDate nowStringUTC],
-                                                    @"media": image
-                                                    }];
+            [mutableDict setObject:image forKey:@"media"];
+        }
+        else {
+            [mutableDict addEntriesFromDictionary:self.object.deserialize];
         }
 
 
@@ -520,6 +525,9 @@
             [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:newEventMessage];
             [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
             self.shownCurrentImage = YES;
+        }
+        else {
+            self.shownCurrentImage = NO;
         }
         
     }
