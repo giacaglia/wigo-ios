@@ -113,12 +113,8 @@ NSNumber *currentNumGroups;
 
 - (void)sharedPressed {
     [WGAnalytics tagEvent:@"Share Pressed"];
-    NSArray *activityItems;
-    if ([WGProfile currentUser].group.name && currentNumGroups) {
-        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[WGProfile currentUser].group.name uppercaseString], [currentNumGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
-    } else {
-        activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
-    }
+    NSArray *activityItems = @[@"This Wigo app is going to change the game! http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+
     
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
