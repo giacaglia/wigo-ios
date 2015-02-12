@@ -88,11 +88,14 @@ NSNumber *currentNumGroups;
     shareLabel.numberOfLines = 0;
     shareLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-    NSString *string = [NSString stringWithFormat:@"%@, Wigo will unlock when more people from your school download the app. Share Wigo to speed things up!", WGProfile.currentUser.firstName];
+    NSString *string = [NSString stringWithFormat:@"%@, Wigo will unlock when more people from your school download the app. Email hello@wigo.us to become a campus ambassador or share Wigo to speed things up!", WGProfile.currentUser.firstName];
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
     [text addAttribute:NSForegroundColorAttributeName
                  value:RGB(238, 122, 11)
                  range:NSMakeRange(WGProfile.currentUser.firstName.length + 12, 6)];
+    [text addAttribute:NSForegroundColorAttributeName
+                 value:RGB(238, 122, 11)
+                 range:NSMakeRange(WGProfile.currentUser.firstName.length + 62, 12)];
     
     shareLabel.attributedText = text;
     [self.view addSubview:shareLabel];
@@ -128,7 +131,19 @@ NSNumber *currentNumGroups;
     self.groupID = [schoolDictionary objectForKey:@"id"];
     self.groupName = [schoolDictionary objectForKey:@"name"];
     [self.placesDelegate setGroupID:self.groupID andGroupName:self.groupName];
-
+    
+    NSString *str = @"0001F627";
+    NSScanner *hexScan = [NSScanner scannerWithString:str];
+    unsigned int hexNum;
+    [hexScan scanHexInt:&hexNum];
+    UTF32Char inputChar = hexNum;
+    NSString *res = [[NSString alloc] initWithBytes:&inputChar length:4 encoding:NSUTF32LittleEndianStringEncoding];
+    UILabel *eyeballsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 30)];
+    eyeballsLabel.text = res;
+    eyeballsLabel.textAlignment = NSTextAlignmentCenter;
+    eyeballsLabel.font = [FontProperties mediumFont:20.0f];
+    [self.view addSubview:eyeballsLabel];
+    
     NSString *titleString = [NSString stringWithFormat:@"Live Peek at %@", self.groupName];
     UIButton *peekButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 70, self.view.frame.size.width, 70)];
     [peekButton addTarget:self action:@selector(peekSchoolPressed) forControlEvents:UIControlEventTouchUpInside];
