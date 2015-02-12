@@ -10,6 +10,7 @@
 
 #define kNameKey @"name"
 #define kLockedKey @"locked"
+#define kVerified @"verified"
 #define kRankKey @"rank"
 #define kUnlockAtKey @"unlock_at"
 #define kNumMembersKey @"num_members"
@@ -39,6 +40,14 @@
 
 -(void) setName:(NSString *)name {
     [self setObject:name forKey:kNameKey];
+}
+
+-(NSNumber *) verified {
+    return [self objectForKey:kVerified];
+}
+
+-(void) setVerified:(NSNumber *)verified {
+    [self setObject:verified forKey:kVerified];
 }
 
 -(NSString *) name {

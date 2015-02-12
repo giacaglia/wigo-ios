@@ -15,6 +15,7 @@ typedef void (^WGGroupSummaryResultBlock)(NSNumber *total, NSNumber *numGroups, 
 
 @property NSString *name;
 @property NSNumber *locked;
+@property NSNumber *verified;
 @property NSNumber *rank;
 @property NSNumber *unlockAt;
 @property NSNumber *numMembers;
