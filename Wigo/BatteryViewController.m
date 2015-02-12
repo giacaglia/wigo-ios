@@ -81,21 +81,21 @@ NSNumber *currentNumGroups;
 }
 
 - (void)initializeShareLabel {
-    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height/2  - 100, self.view.frame.size.width - 30, 100)];
+    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height/2  - 120, self.view.frame.size.width - 30, 120)];
     shareLabel.font = [FontProperties mediumFont:18.0f];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.textColor = [UIColor whiteColor];
     shareLabel.numberOfLines = 0;
     shareLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-    NSString *string = [NSString stringWithFormat:@"%@, Wigo will unlock when more people from your school download the app. Email hello@wigo.us to become a campus ambassador or share Wigo to speed things up!", WGProfile.currentUser.firstName];
+    NSString *string = [NSString stringWithFormat:@"%@, Wigo will unlock when more people from your school download the app. Email hello@wigo.us to become a campus ambassador and share Wigo to speed things up!", WGProfile.currentUser.firstName];
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
     [text addAttribute:NSForegroundColorAttributeName
                  value:RGB(238, 122, 11)
                  range:NSMakeRange(WGProfile.currentUser.firstName.length + 12, 6)];
     [text addAttribute:NSForegroundColorAttributeName
                  value:RGB(238, 122, 11)
-                 range:NSMakeRange(WGProfile.currentUser.firstName.length + 62, 12)];
+                 range:NSMakeRange(WGProfile.currentUser.firstName.length + 77, 13)];
     
     shareLabel.attributedText = text;
     [self.view addSubview:shareLabel];
@@ -131,8 +131,7 @@ NSNumber *currentNumGroups;
     self.groupID = [schoolDictionary objectForKey:@"id"];
     self.groupName = [schoolDictionary objectForKey:@"name"];
     [self.placesDelegate setGroupID:self.groupID andGroupName:self.groupName];
-    
-    NSString *str = @"0001F627";
+    NSString *str = @"0001F440";
     NSScanner *hexScan = [NSScanner scannerWithString:str];
     unsigned int hexNum;
     [hexScan scanHexInt:&hexNum];
@@ -141,7 +140,7 @@ NSNumber *currentNumGroups;
     UILabel *eyeballsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 30)];
     eyeballsLabel.text = res;
     eyeballsLabel.textAlignment = NSTextAlignmentCenter;
-    eyeballsLabel.font = [FontProperties mediumFont:20.0f];
+    eyeballsLabel.font = [FontProperties mediumFont:30.0f];
     [self.view addSubview:eyeballsLabel];
     
     NSString *titleString = [NSString stringWithFormat:@"Live Peek at %@", self.groupName];
