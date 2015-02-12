@@ -129,7 +129,7 @@
                 EmailConfirmationViewController *emailConfirmationViewController =
                 [EmailConfirmationViewController new];
                 emailConfirmationViewController.placesDelegate = strongOfStrong.placesDelegate;
-                [strongOfStrong.navigationController pushViewController:[EmailConfirmationViewController new] animated:YES];
+                [strongOfStrong.navigationController pushViewController:emailConfirmationViewController animated:YES];
             }];
         }];
     } else {
