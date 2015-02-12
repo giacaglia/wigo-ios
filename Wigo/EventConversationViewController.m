@@ -25,7 +25,6 @@
 @property (nonatomic, assign) CGPoint collectionViewPointNow;
 @property (nonatomic, assign) CGPoint imagesScrollViewPointNow;
 @property (nonatomic, assign) BOOL facesHidden;
-@property (nonatomic, strong) UIButton *buttonCancel;
 @property (nonatomic, strong) UIButton *buttonTrash;
 @property (nonatomic, strong) UIVisualEffectView *visualEffectView;
 @property (nonatomic, strong) UIView *holeView;

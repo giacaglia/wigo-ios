@@ -68,7 +68,7 @@
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:indexPath.row];
     NSString *mimeType = eventMessage.mediaMimeType;
     NSString *contentURL = eventMessage.media;
-    self.eventConversationDelegate.cancelButton.hidden = NO;
+    self.eventConversationDelegate.buttonCancel.hidden = NO;
 
     if ([mimeType isEqualToString:kCameraType]) {
         AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
@@ -131,7 +131,7 @@
         [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
         [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
         myCell.isPeeking = self.isPeeking;
-        self.eventConversationDelegate.cancelButton.hidden = YES;
+        self.eventConversationDelegate.buttonCancel.hidden = YES;
         return myCell;
     }
     else if ([mimeType isEqualToString:kNotAbleToPost]) {
