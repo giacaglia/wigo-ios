@@ -36,7 +36,7 @@
 #define kOldEventShowHighlightsCellName @"OldEventShowHighlightsCellName"
 
 @interface PlacesViewController () {
-    UIView *_dimView;
+//    UIView *_dimView;
     BOOL isLoaded;
 }
 
@@ -416,11 +416,11 @@ BOOL firstTimeLoading;
 }
 
 - (void)initializeTapHandler {
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(cancelledAddEventTapped)];
-    tap.cancelsTouchesInView = NO;
-    tap.delegate = self;
-    [_dimView addGestureRecognizer:tap];
+//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+//                                                                          action:@selector(cancelledAddEventTapped)];
+//    tap.cancelsTouchesInView = NO;
+//    tap.delegate = self;
+//    [_dimView addGestureRecognizer:tap];
 }
 
 - (void)dismissKeyboard {
@@ -430,9 +430,9 @@ BOOL firstTimeLoading;
         self.placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-50);
         _whereAreYouGoingView.alpha = 0;
-        _dimView.alpha = 0;
+//        _dimView.alpha = 0;
     } completion:^(BOOL finished) {
-        [_dimView removeFromSuperview];
+//        [_dimView removeFromSuperview];
     }];
     [self clearTextField];
 }
@@ -547,49 +547,49 @@ BOOL firstTimeLoading;
 
     [self scrollUp];
 
-    if (!_dimView) {
-        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, self.view.opaque, 0.0);
-        [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-        UIImage *bgImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        CGFloat yOrigin = self.whereAreYouGoingTextField.frame.origin.y + self.whereAreYouGoingTextField.frame.size.height;
-        _dimView = [[UIView alloc] initWithFrame: CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - self.whereAreYouGoingTextField.frame.size.height)];
-        
-        
-        UIImageView *blurredView = [[UIImageView alloc] initWithFrame: CGRectMake(_dimView.bounds.origin.x, _dimView.bounds.origin.y, _dimView.bounds.size.width, _dimView.bounds.size.height)];
-        [blurredView setImage: [bgImage blurredImageWithRadius: 20.0f iterations: 4 tintColor: [UIColor blackColor]]];
-        
-        [_dimView addSubview: blurredView];
-        
-        UIView *overlay = [[UIView alloc] initWithFrame: _dimView.bounds];
-        overlay.backgroundColor = [UIColor blackColor];
-        overlay.alpha = 0.5f;
-        
-        [_dimView addSubview: overlay];
-        
-        _dimView.alpha = 0;
-    }
+//    if (!_dimView) {
+//        UIGraphicsBeginImageContextWithOptions(self.view.bounds.size, self.view.opaque, 0.0);
+//        [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+//        UIImage *bgImage = UIGraphicsGetImageFromCurrentImageContext();
+//        UIGraphicsEndImageContext();
+//        
+//        CGFloat yOrigin = self.whereAreYouGoingTextField.frame.origin.y + self.whereAreYouGoingTextField.frame.size.height;
+//        _dimView = [[UIView alloc] initWithFrame: CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - self.whereAreYouGoingTextField.frame.size.height)];
+//        
+//        
+//        UIImageView *blurredView = [[UIImageView alloc] initWithFrame: CGRectMake(_dimView.bounds.origin.x, _dimView.bounds.origin.y, _dimView.bounds.size.width, _dimView.bounds.size.height)];
+//        [blurredView setImage: [bgImage blurredImageWithRadius: 20.0f iterations: 4 tintColor: [UIColor blackColor]]];
+//        
+//        [_dimView addSubview: blurredView];
+//        
+//        UIView *overlay = [[UIView alloc] initWithFrame: _dimView.bounds];
+//        overlay.backgroundColor = [UIColor blackColor];
+//        overlay.alpha = 0.5f;
+//        
+//        [_dimView addSubview: overlay];
+//        
+//        _dimView.alpha = 0;
+//    }
     
-    if ([self.view.subviews indexOfObject: _dimView] == NSNotFound) {
-        [self.view addSubview: _dimView];
-        [self initializeTapHandler];
-    }
+//    if ([self.view.subviews indexOfObject: _dimView] == NSNotFound) {
+//        [self.view addSubview: _dimView];
+//        [self initializeTapHandler];
+//    }
     
     [self showWhereAreYouGoingView];
 
     
     [UIView animateWithDuration: 0.2 animations:^{
-        _dimView.alpha = 1.0;
+//        _dimView.alpha = 1.0;
         
         self.navigationItem.titleView.alpha = 0.0f;
         self.navigationItem.leftBarButtonItem.customView.alpha = 0.0f;
         self.navigationItem.rightBarButtonItem.customView.alpha = 0.0f;
         
         [self.whereAreYouGoingTextField becomeFirstResponder];
-        self.whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0, 50);
+        _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0, 50);
         //self.placesTableView.transform = CGAffineTransformMakeTranslation(0, 50);
-        self.whereAreYouGoingView.alpha = 1.0f;
+        _whereAreYouGoingView.alpha = 1.0f;
         
     } completion:^(BOOL finished) {
         
@@ -667,31 +667,42 @@ BOOL firstTimeLoading;
 #pragma mark - Where Are You Going? View and Delegate
 
 - (void)showWhereAreYouGoingView {
-    
-    _whereAreYouGoingView = [[UIView alloc] initWithFrame:CGRectMake(0, 14, self.view.frame.size.width, 50)];
-    _whereAreYouGoingView.backgroundColor = [UIColor whiteColor];
-    _whereAreYouGoingView.alpha = 0;
-    
-    [self.view addSubview:_whereAreYouGoingView];
-    
-    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _whereAreYouGoingView.frame.size.width - 10, 50)];
-    self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
-    self.whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
-    self.whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
-    [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
-    self.whereAreYouGoingTextField.delegate = self;
-    [self.whereAreYouGoingTextField addTarget:self
-                                   action:@selector(textFieldDidChange:)
-                         forControlEvents:UIControlEventEditingChanged];
-    self.whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
-    
-    [_whereAreYouGoingView addSubview:self.whereAreYouGoingTextField];
-    
-    
-    CALayer *bottomBorder = [CALayer layer];
-    bottomBorder.frame = CGRectMake(0.0f, _whereAreYouGoingView.frame.size.height - 1, _whereAreYouGoingView.frame.size.width, 1.0f);
-    bottomBorder.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f].CGColor;
-    [_whereAreYouGoingView.layer addSublayer:bottomBorder];
+    if (!_whereAreYouGoingView) {
+        _whereAreYouGoingView = [[UIView alloc] initWithFrame:CGRectMake(0, 14, self.view.frame.size.width, self.view.frame.size.height)];
+        _whereAreYouGoingView.backgroundColor = UIColor.whiteColor;
+        _whereAreYouGoingView.alpha = 0;
+        
+        [self.view addSubview:_whereAreYouGoingView];
+        
+        self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _whereAreYouGoingView.frame.size.width - 10, 50)];
+        self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
+        self.whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
+        self.whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
+        [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
+        self.whereAreYouGoingTextField.delegate = self;
+        [self.whereAreYouGoingTextField addTarget:self
+                                           action:@selector(textFieldDidChange:)
+                                 forControlEvents:UIControlEventEditingChanged];
+        self.whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
+        
+        [_whereAreYouGoingView addSubview:self.whereAreYouGoingTextField];
+        
+        
+        CALayer *bottomBorder = [CALayer layer];
+        bottomBorder.frame = CGRectMake(0.0f, _whereAreYouGoingView.frame.size.height - 1, _whereAreYouGoingView.frame.size.width, 1.0f);
+        bottomBorder.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f].CGColor;
+        [_whereAreYouGoingView.layer addSublayer:bottomBorder];
+        
+        UIView *eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 50, self.view.frame.size.width, self.view.frame.size.height)];
+        [_whereAreYouGoingView addSubview:eventDetails];
+        
+        UILabel *eventTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
+        eventTypeLabel.text = @"EVENT TYPE";
+        eventTypeLabel.textAlignment = NSTextAlignmentCenter;
+        eventTypeLabel.textColor = [FontProperties getBlueColor];
+        eventTypeLabel.font = [FontProperties scMediumFont:15.0f];
+        [eventDetails addSubview:eventTypeLabel];
+    }
 }
 
 - (void)clearTextField {
