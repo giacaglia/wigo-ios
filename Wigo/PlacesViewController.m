@@ -671,12 +671,23 @@ BOOL firstTimeLoading;
         _whereAreYouGoingView = [[UIView alloc] initWithFrame:CGRectMake(0, 14, self.view.frame.size.width, self.view.frame.size.height)];
         _whereAreYouGoingView.backgroundColor = UIColor.whiteColor;
         _whereAreYouGoingView.alpha = 0;
-        
         [self.view addSubview:_whereAreYouGoingView];
         
-        self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _whereAreYouGoingView.frame.size.width - 10, 50)];
+        UILabel *eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 10, 90, 30)];
+        eventNameLabel.text = @"event name";
+        eventNameLabel.textColor = [FontProperties getBlueColor];
+        eventNameLabel.textAlignment = NSTextAlignmentCenter;
+        eventNameLabel.font = [FontProperties scMediumFont:15.0f];
+        [_whereAreYouGoingView addSubview:eventNameLabel];
+        
+        UIView *lineUnderEventName = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 40, 90, 1)];
+        lineUnderEventName.backgroundColor = [FontProperties getBlueColor];
+        [_whereAreYouGoingView addSubview:lineUnderEventName];
+        
+        self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 40, _whereAreYouGoingView.frame.size.width, 50)];
         self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
         self.whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
+        self.whereAreYouGoingTextField.textAlignment = NSTextAlignmentCenter;
         self.whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
         [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
         self.whereAreYouGoingTextField.delegate = self;
@@ -684,25 +695,97 @@ BOOL firstTimeLoading;
                                            action:@selector(textFieldDidChange:)
                                  forControlEvents:UIControlEventEditingChanged];
         self.whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
-        
         [_whereAreYouGoingView addSubview:self.whereAreYouGoingTextField];
-        
         
         CALayer *bottomBorder = [CALayer layer];
         bottomBorder.frame = CGRectMake(0.0f, _whereAreYouGoingView.frame.size.height - 1, _whereAreYouGoingView.frame.size.width, 1.0f);
         bottomBorder.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f].CGColor;
         [_whereAreYouGoingView.layer addSublayer:bottomBorder];
         
-        UIView *eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 50, self.view.frame.size.width, self.view.frame.size.height)];
+        UIView *eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 110, self.view.frame.size.width, self.view.frame.size.height)];
         [_whereAreYouGoingView addSubview:eventDetails];
         
-        UILabel *eventTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
-        eventTypeLabel.text = @"EVENT TYPE";
+        UILabel *eventTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+        eventTypeLabel.text = @"event type";
         eventTypeLabel.textAlignment = NSTextAlignmentCenter;
         eventTypeLabel.textColor = [FontProperties getBlueColor];
         eventTypeLabel.font = [FontProperties scMediumFont:15.0f];
         [eventDetails addSubview:eventTypeLabel];
+        
+        UIView *lineUnderEventType = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 30, 90, 1)];
+        lineUnderEventType.backgroundColor = [FontProperties getBlueColor];
+        [eventDetails addSubview:lineUnderEventType];
+        
+        self.switchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 50, 240, 40)];
+        [self.switchButton addTarget:self action:@selector(switchPressed) forControlEvents:UIControlEventTouchUpInside];
+        self.switchButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+        self.switchButton.layer.borderWidth = 1.0f;
+        self.switchButton.layer.cornerRadius = 15;
+        [eventDetails addSubview:self.switchButton];
+        
+        self.backLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.switchButton.frame.size.width/2 - 20, self.switchButton.frame.size.height)];
+        self.backLabel.text = @"Public";
+        self.backLabel.textColor = [FontProperties getBlueColor];
+        self.backLabel.font = [FontProperties mediumFont:15.0f];
+        self.backLabel.textAlignment = NSTextAlignmentCenter;
+        [self.switchButton addSubview:self.backLabel];
+        
+        self.backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(30, self.switchButton.frame.size.height/2 - 9, 12, 19)];
+        self.backImageView.image = [UIImage imageNamed:@"blueUnlocked"];
+        [self.switchButton addSubview:self.backImageView];
+        
+        self.frontView = [[UIView alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width/2 + 4, 2, self.switchButton.frame.size.width/2 - 8, self.switchButton.frame.size.height - 4)];
+        self.frontView.backgroundColor = [FontProperties getBlueColor];
+        self.frontView.layer.borderColor = UIColor.clearColor.CGColor;
+        self.frontView.layer.borderWidth = 1.0f;
+        self.frontView.layer.cornerRadius = 10.0f;
+        [self.switchButton addSubview:self.frontView];
+        
+        self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.frontView.frame.size.height/2 - 8, 12, 16)];
+        self.frontImageView.image = [UIImage imageNamed:@"lockClosed"];
+        [self.frontView addSubview:self.frontImageView];
+        
+        self.frontLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.frontView.frame.size.width - 20, self.frontView.frame.size.height)];
+        self.frontLabel.text = @"Invite Only";
+        self.frontLabel.textAlignment = NSTextAlignmentCenter;
+        self.frontLabel.textColor = UIColor.whiteColor;
+        self.frontLabel.font = [FontProperties mediumFont:15.0f];
+        [self.frontView addSubview:self.frontLabel];
+        
+        UILabel *invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, 30)];
+        invitePeopleLabel.text = @"Only you can invite people and only\nthose invited can see the event.";
+        invitePeopleLabel.textAlignment = NSTextAlignmentCenter;
+        invitePeopleLabel.numberOfLines = 2;
+        invitePeopleLabel.font = [FontProperties mediumFont:12.0f];
+        invitePeopleLabel.textColor = [FontProperties getBlueColor];
+        [eventDetails addSubview:invitePeopleLabel];
     }
+}
+
+- (void)switchPressed {
+    if ([self.frontLabel.text isEqual:@"Invite Only"]) {
+        self.frontLabel.text = @"Public";
+        self.backLabel.text = @"Invite Only";
+        self.frontImageView.image = [UIImage imageNamed:@"unlocked"];
+        self.backImageView.image = [UIImage imageNamed:@"blueLockClosed"];
+        [UIView animateWithDuration:0.5 animations:^{
+            self.frontView.transform = CGAffineTransformMakeTranslation(- self.switchButton.frame.size.width/2, 0);
+            self.backLabel.transform = CGAffineTransformMakeTranslation(self.switchButton.frame.size.width/2, 0);
+            self.backImageView.transform = CGAffineTransformMakeTranslation(self.switchButton.frame.size.width/2, 0);
+        }];
+    }
+    else {
+        self.frontLabel.text = @"Invite Only";
+        self.backLabel.text = @"Public";
+        self.frontImageView.image = [UIImage imageNamed:@"lockClosed"];
+        self.backImageView.image = [UIImage imageNamed:@"blueUnlocked"];
+        [UIView animateWithDuration:0.5 animations:^{
+            self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
+            self.backLabel.transform = CGAffineTransformMakeTranslation(0, 0);
+            self.backImageView.transform = CGAffineTransformMakeTranslation(-15, 0);
+        }];
+    }
+   
 }
 
 - (void)clearTextField {

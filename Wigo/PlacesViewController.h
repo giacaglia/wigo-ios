@@ -40,6 +40,13 @@
 @property (nonatomic, strong) UIButton *schoolButton;
 @property (nonatomic, assign) BOOL presentingLockedView;
 @property (nonatomic, assign) BOOL shouldReloadEvents;
+@property (nonatomic, strong) UIView *frontView;
+@property (nonatomic, strong) UILabel *frontLabel;
+@property (nonatomic, strong) UIImageView *frontImageView;
+@property (nonatomic, strong) UIView *backView;
+@property (nonatomic, strong) UILabel *backLabel;
+@property (nonatomic, strong) UIImageView *backImageView;
+@property (nonatomic, strong) UIButton *switchButton;
 @end
 
 #import "EventPeopleScrollView.h"
