@@ -9,6 +9,7 @@
 #import "BatteryViewController.h"
 #import "Globals.h"
 #import "OnboardFollowViewController.h"
+#import "ReferalViewController.h"
 
 NSNumber *currentNumGroups;
 
@@ -45,6 +46,7 @@ NSNumber *currentNumGroups;
         [self.view addSubview:imageView];
         [self.view sendSubviewToBack:imageView];
     }
+    [self showReferral];
 }
 
 -(void) checkIfGroupIsUnlocked {
@@ -165,6 +167,17 @@ NSNumber *currentNumGroups;
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(peekButton.frame.size.width/2 - 50, 0, 100, 1)];
     lineView.backgroundColor = RGBAlpha(255, 255, 255, 0.3f);
     [peekButton addSubview:lineView];
+}
+
+- (void)showReferral {
+    if (WGProfile.currentUser.findReferrer) {
+        [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        WGProfile.currentUser.findReferrer = NO;
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
+    }
 }
 
 - (void)peekSchoolPressed {

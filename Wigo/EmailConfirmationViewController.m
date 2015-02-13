@@ -148,15 +148,6 @@ UITextField *emailTextField;
                 [strongSelf.fetchTimer invalidate];
                 strongSelf.fetchTimer = nil;
                 if ([[WGProfile currentUser].group.locked boolValue]) {
-                    if (WGProfile.currentUser.findReferrer) {
-                        [strongSelf presentViewController:[ReferalViewController new] animated:YES completion:nil];
-                        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                        [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
-                        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-                        WGProfile.currentUser.findReferrer = NO;
-                        [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
-                    }
-                    
                     [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
                     BatteryViewController *batteryViewController = [BatteryViewController new];
                     batteryViewController.placesDelegate = strongSelf.placesDelegate;
