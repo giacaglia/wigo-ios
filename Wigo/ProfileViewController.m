@@ -1240,16 +1240,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.descriptionLabel.font = [FontProperties lightFont:15.0f];
     self.descriptionLabel.textColor = RGB(104, 104, 104);
     self.descriptionLabel.center = CGPointMake(self.descriptionLabel.center.x, self.center.y);
-
     [self.contentView addSubview:self.descriptionLabel];
-    
-    self.buttonCallback = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 27 - 14, self.frame.size.height/2  - 13, 27, 27)];
-    [self.buttonCallback addTarget:self action:@selector(tapPressed) forControlEvents:UIControlEventTouchUpInside];
-    self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 27, 27)];
-    self.tapImageView.image = [UIImage imageNamed:@"tapUnselectedNotification"];
-    [self.buttonCallback addSubview:self.tapImageView];
-    self.buttonCallback.hidden = YES;
-    [self.contentView addSubview:self.buttonCallback];
     
     self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
     self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
@@ -1263,15 +1254,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.tapLabel.textColor = RGB(240, 203, 163);
     self.tapLabel.hidden = YES;
     [self.contentView addSubview:self.tapLabel];
-}
-
-- (void)tapPressed {
-    if (self.isTapped) {
-        self.tapImageView.image = [UIImage imageNamed:@"tapUnselectedNotification"];
-    } else {
-        self.tapImageView.image = [UIImage imageNamed:@"tapSelectedNotification"];
-    }
-    self.isTapped = !self.isTapped;
 }
 
 @end

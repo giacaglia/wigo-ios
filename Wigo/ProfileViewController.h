@@ -53,9 +53,7 @@
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UILabel *descriptionLabel;
 
-@property (nonatomic, strong) UIButton *buttonCallback;
 @property (nonatomic, assign) BOOL isTapped;
-@property (nonatomic, strong) UIImageView *tapImageView;
 @property (nonatomic, strong) UILabel *tapLabel;
 @property (nonatomic, strong) UIImageView *rightPostImageView;
 @end
