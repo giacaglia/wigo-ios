@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EmailConfirmationViewController.h"
+#import "Delegate.h"
 
-@interface SignUpViewController : UIViewController
-@property EmailConfirmationViewController *emailConfirmationViewController;
-
+@interface SignUpViewController : UIViewController <UITextFieldDelegate>
+@property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) UITextField *studentTextField;
 @end

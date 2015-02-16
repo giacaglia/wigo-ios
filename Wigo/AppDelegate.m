@@ -17,6 +17,8 @@
 #import "WGEvent.h"
 #import "PlacesViewController.h"
 #import "RWBlurPopover.h"
+#define kImageQuality @"quality"
+#define kImageMultiple @"multiple"
 
 
 NSNumber *numberOfNewMessages;
@@ -26,7 +28,14 @@ NSDate *firstLoggedTime;
 @implementation AppDelegate
 
 - (void) initializeGoogleAnalytics {
-    [GAI sharedInstance].trackUncaughtExceptions = YES;
+    [GAI sharedInstance].trackUncaughtExceptions = NO;
+    
+#if DEBUG
+    [[GAI sharedInstance].logger setLogLevel:kGAILogLevelVerbose];
+#else
+    [[GAI sharedInstance].logger setLogLevel:kGAILogLevelNone];
+#endif
+    
     [GAI sharedInstance].dispatchInterval = 20;
     [[GAI sharedInstance] trackerWithTrackingId:@"UA-54234727-2"];
 }
@@ -81,7 +90,6 @@ NSDate *firstLoggedTime;
 }
 
 - (void) dismissEverythingWithUserInfo:(NSDictionary *)userInfo {
-//    NSLog(@"dismiss Everything");
     if ([RWBlurPopover instance]) [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:nil];
     
     UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
@@ -137,6 +145,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     // Store the deviceToken in the current installation and save it to Parse.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     currentInstallation[@"api_version"] = API_VERSION;
+    currentInstallation[@"osVersion"] = [UIDevice currentDevice].systemVersion;
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
 }
@@ -167,30 +176,24 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-//    if (application.applicationState == UIApplicationStateInactive) {
-//        [self dismissEverythingWithUserInfo:userInfo];
-//    }
+    if (application.applicationState == UIApplicationStateInactive) {
+        [self dismissEverythingWithUserInfo:userInfo];
+    }
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
         if ([aps isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *alert = [aps objectForKey:@"alert"];
-            if ([alert isKindOfClass:[NSDictionary class]]) {
-                NSString *locKeyString = [alert objectForKey:@"loc-key"];
-                if ([locKeyString isEqualToString:@"M"]) {
-                    NSArray *locArgs = [alert objectForKey:@"loc-args"];
-                    NSString *messageString = locArgs[1];
-                    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObject:messageString forKey:@"message"];
-                    if ([[userInfo allKeys] containsObject:@"from_user"]) {
-                        NSDictionary *fromUserDict = [userInfo objectForKey:@"from_user"];
-                        if ([[fromUserDict allKeys] containsObject:@"id"]) {
-                            [dictionary setObject:[fromUserDict objectForKey:@"id"] forKey:@"id"];
-                        }
+            NSDictionary *aps = [userInfo objectForKey:@"aps"];
+            if ([aps isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *alert = [aps objectForKey:@"alert"];
+                if ([alert isKindOfClass:[NSDictionary class]]) {
+                    NSString *locKeyString = [alert objectForKey:@"loc-key"];
+                    if ([locKeyString isEqualToString:@"M"]) {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:userInfo];
                     }
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:[NSDictionary dictionaryWithDictionary:dictionary]];
+                    
                 }
-                
             }
         }
     } else { // If it's was at the background or inactive
@@ -402,14 +405,18 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 - (void)fetchAppStart {
     BOOL canFetchAppStartUp = [[NSUserDefaults standardUserDefaults] boolForKey:@"canFetchAppStartup"];
-    if ((canFetchAppStartUp && [self shouldFetchAppStartup] && [WGProfile currentUser])) {
-        [WGApi startup:^(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSError *error) {
+    if (canFetchAppStartUp && [self shouldFetchAppStartup] && [WGProfile currentUser]) {
+        [WGApi startup:^(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSDictionary *imageProperties, NSError *error) {
             if (error) {
                 return;
             }
             [WGProfile currentUser].cdnPrefix = cdnPrefix;
             [WGProfile currentUser].googleAnalyticsEnabled = googleAnalyticsEnabled;
             [WGProfile currentUser].schoolStatistics = schoolStatistics;
+            NSNumber *imageMultiple = [imageProperties objectForKey:kImageMultiple];
+            NSNumber *imageQuality = [imageProperties objectForKey:kImageQuality];
+            [WGProfile currentUser].imageMultiple = [imageMultiple floatValue];
+            [WGProfile currentUser].imageQuality = [imageQuality floatValue];
         }];
     }
 }

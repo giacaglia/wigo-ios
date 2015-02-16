@@ -23,9 +23,11 @@
 - (void)showConversationForEvent:(WGEvent *)event;
 - (void)showStoryForEvent:(WGEvent*)event;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
+- (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
+- (void)showModalAttendees:(UIViewController *)modal;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
-
 - (void)updateEvent:(WGEvent *)newEvent;
+
 @end
 
 @protocol StoryDelegate <NSObject>
@@ -41,14 +43,26 @@
 - (void)showCompletedMessage;
 - (void)dismissView;
 - (void)promptCamera;
-- (void)presentUser:(WGUser *)user withView:(UIView *)view;
+- (void)presentUser:(WGUser *)user
+           withView:(UIView *)view
+      withStartFrame:(CGRect)startFrame;
 - (void)dimOutToPercentage:(float)percentage;
 - (void)createBlurViewUnderView:(UIView *)view;
+- (void)presentHoleOnTopOfView:(UIView *)view;
+@property (nonatomic, strong) UIButton *buttonCancel;
 @end
 
 @protocol ConversationCellDelegate <NSObject>
 - (void)addMessageFromSender:(WGMessage *)message;
 @end
 
+@protocol PeopleViewDelegate <NSObject>
+- (void)presentUser:(WGUser *)user;
+- (void)updateButton:(id)sender withUser:(WGUser *)user;
+@end
+
+@protocol CameraDelegate <NSObject>
+- (void)presentFocusPoint:(CGPoint)focusPoint;
+@end
 
 #endif

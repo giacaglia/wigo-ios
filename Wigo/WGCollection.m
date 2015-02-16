@@ -57,6 +57,22 @@
     }
 }
 
+-(BOOL) isEqual:(id)object {
+    if (!object || ![object isKindOfClass:[WGCollection class]]) {
+        return NO;
+    }
+    WGCollection *otherCollection = (WGCollection *)object;
+    if ([self count] != [otherCollection count]) {
+        return NO;
+    }
+    for (int i = 0; i < [self count]; i++) {
+        if (![[self objectAtIndex:i] isEqual:[otherCollection objectAtIndex:i]]) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
 -(void) reverse {
     if ([self count] == 0)
         return;
@@ -76,6 +92,10 @@
 }
 
 -(void) replaceObjectAtIndex:(NSUInteger)index withObject:(WGObject *)object {
+    if (!object) {
+        NSLog(@"Tried to insert nil object to WGCollection at index %lu", (unsigned long)index);
+        return;
+    }
     [self.objects replaceObjectAtIndex:index withObject:object];
 }
 
@@ -86,6 +106,10 @@
 -(void) addObjectsFromCollection:(WGCollection *)newCollection notInCollection:(WGCollection *)notCollection {
     for (int i = 0; i < [newCollection.objects count]; i++) {
         WGObject *object = [newCollection.objects objectAtIndex:i];
+        if (!object) {
+            NSLog(@"Tried to insert nil object to WGCollection at index %lu", (unsigned long)index);
+            continue;
+        }
         if (![notCollection containsObject:object]) {
             [self.objects addObject:object];
         }
@@ -111,6 +135,14 @@
 -(void) addObjectsFromCollectionToBeginning:(WGCollection *)collection {
     for (WGObject *object in collection) {
         [self insertObject:object atIndex:0];
+    }
+}
+
+-(void) addObjectsFromCollectionToBeginning:(WGCollection *)collection notInCollection:(WGCollection *)notCollection {
+    for (WGObject *object in collection) {
+        if (![notCollection containsObject:object]) {
+            [self insertObject:object atIndex:0];
+        }
     }
 }
 
@@ -140,8 +172,13 @@
     return [self.objects indexOfObject:object];
 }
 
--(BOOL) containsObject:(WGObject *)object {
-    return [self.objects containsObject:object];
+-(BOOL) containsObject:(WGObject *)other {
+    for (WGObject *object in self.objects) {
+        if ([object isEqual:other]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 -(void) removeObject:(WGObject *)object {
@@ -196,7 +233,7 @@
         NSError *dataError;
         @try {
             WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:strongSelf.type];
-            [strongSelf addObjectsFromCollection:objects];
+            [strongSelf addObjectsFromCollection:objects notInCollection:strongSelf];
             strongSelf.hasNextPage = objects.hasNextPage;
             strongSelf.nextPage = objects.nextPage;
         }

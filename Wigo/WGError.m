@@ -7,11 +7,23 @@
 //
 
 #import "WGError.h"
+#import <Crashlytics/Crashlytics.h>
+#import "GCDAsyncUdpSocket.h"
+#import "WGProfile.h"
+
+#define kPapertrailURL @"logs2.papertrailapp.com"
+#define kPapertrailPort 21181
+
+#define kDeviceType @"iphone"
+#define kDeviceTypeKey @"device_type"
+#define kAppVersionKey @"app_version"
+#define kOSVersionKey @"os_version"
+#define kDebugKey @"debug"
 
 #define kDismiss 0
 #define kRetryButton 1
 
-#define kErrorTitles @[@"Post failed", @"Search failed", @"Delete failed", @"Submit failed", @"Request failed", @"Failed to load", @"Cancel Request failed", @"Failed to contact", @"Ignore failed", @"Login failed", @"Failed to create", @"Could not save", @"Wigo cannot connect to the internet"]
+#define kErrorTitles @[@"Post failed", @"Search failed", @"Delete failed", @"Upload failed", @"Failed to load", @"Login failed", @"Failed to create", @"Could not save", @"Facebook Error"]
 
 #define kMessageKey @"message"
 
@@ -32,6 +44,7 @@
 @interface WGError() {
     UIAlertView *errorAlertView;
     WGErrorRetryBlock currentRetryHandler;
+    GCDAsyncUdpSocket *udpSocket;
 }
 
 @end
@@ -113,7 +126,37 @@ static WGError *sharedWGErrorInstance = nil;
 }
 
 -(void) logError: (NSError *) error forAction: (WGActionType) action{
-    NSLog(@"Logged Error: %@ for Action: %@", error, [self titleForActionType: action]);
+    if (!udpSocket) {
+        udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    }
+    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
+    if ([WGProfile currentUser].id) {
+        [userInfo setObject:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:kAppVersionKey];
+        [userInfo setObject:kDeviceType forKey:kDeviceTypeKey];
+        [userInfo setObject:[[UIDevice currentDevice] systemVersion] forKey:kOSVersionKey];
+#if DEBUG
+        [userInfo setObject:@YES forKey:kDebugKey];
+#endif
+    }
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSLocale *enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+    [dateFormatter setLocale:enUSPOSIXLocale];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+    
+    NSString *logMessage;
+    if (error.domain != nil) {
+       logMessage = [NSString stringWithFormat:@"Error: %@ with Action: %@", [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo], [self titleForActionType: action]];
+    }
+    else {
+        logMessage = [NSString stringWithFormat:@"Error: %@ with Action: %@", [NSError errorWithDomain:@"Error domain = nil" code:error.code userInfo:userInfo], [self titleForActionType: action]];
+    }
+    
+    NSString *formattedLogMessage = [NSString stringWithFormat:@"<22>1 %@ ios user-%@ - - - %@", [dateFormatter stringFromDate:[NSDate date]], [WGProfile currentUser].id, logMessage];
+    
+    [udpSocket sendData:[formattedLogMessage dataUsingEncoding:NSUTF8StringEncoding] toHost:kPapertrailURL port:kPapertrailPort withTimeout:-1 tag:1];
+    
+    NSLog(@"%@", formattedLogMessage);
 }
 
 -(NSString *) titleForActionType: (WGActionType) action {

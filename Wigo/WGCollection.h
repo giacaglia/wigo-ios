@@ -11,6 +11,7 @@
 
 @interface WGCollection : NSEnumerator
 
+typedef void (^WGSerializedCollectionResultBlock)(NSURL *urlSent, WGCollection *collection, NSError *error);
 typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error);
 
 @property Class type;
@@ -38,6 +39,7 @@ typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error
 -(NSInteger) indexOfObject:(WGObject *)object;
 -(void) insertObject:(WGObject *)object atIndex:(NSUInteger)index;
 -(void) addObjectsFromCollectionToBeginning:(WGCollection *)collection;
+-(void) addObjectsFromCollectionToBeginning:(WGCollection *)collection notInCollection:(WGCollection *)notCollection;
 -(void) removeObjectAtIndex:(NSUInteger)index;
 -(void) removeAllObjects;
 -(void) removeObject:(WGObject *)object;

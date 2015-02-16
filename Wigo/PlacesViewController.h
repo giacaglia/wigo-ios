@@ -10,6 +10,7 @@
 #import "WGEvent.h"
 #import "Delegate.h"
 #import "UIButtonAligned.h"
+#import "SignViewController.h"
 
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate>
@@ -26,7 +27,19 @@
 
 @property (nonatomic, assign) BOOL fetchingEventAttendees;
 @property (nonatomic, strong) WGCollection *allEvents;
-
+@property (nonatomic, strong) WGCollection *events;
+@property (nonatomic, strong) WGCollection *oldEvents;
+@property (nonatomic, strong) NSMutableDictionary *dayToEventObjArray;
+@property (nonatomic, strong) SignViewController *signViewController;
+@property (nonatomic, assign) BOOL fetchingUserInfo;
+@property (nonatomic, assign) BOOL secondTimeFetchingUserInfo;
+@property (nonatomic, strong) UITableView *placesTableView;
+@property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
+@property (nonatomic, strong) UIView *loadingView;
+@property (nonatomic, strong) UIView *loadingIndicator;
+@property (nonatomic, strong) UIButton *schoolButton;
+@property (nonatomic, assign) BOOL presentingLockedView;
+@property (nonatomic, assign) BOOL shouldReloadEvents;
 @end
 
 #import "EventPeopleScrollView.h"

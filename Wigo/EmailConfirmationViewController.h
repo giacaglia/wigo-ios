@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Delegate.h"
 
 @interface EmailConfirmationViewController : UIViewController <UITextFieldDelegate>
-
-@property UILabel *numberOfPeopleLabel;
+@property (nonatomic, strong) UILabel *numberOfPeopleLabel;
+@property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) NSTimer *fetchTimer;
 @end

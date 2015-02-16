@@ -8,11 +8,13 @@
 
 #import "SignUpViewController.h"
 #import "Globals.h"
-#define isiPhone5  ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
-
+#import "EmailConfirmationViewController.h"
 
 @interface SignUpViewController ()
-@property UITextField *studentTextField;
+
+@property (nonatomic, strong) UIButton *continueButton;
+@property (nonatomic, strong) UILabel *eduAddressLabel;
+@property (nonatomic, strong) UILabel *errorLabel;
 @end
 
 @implementation SignUpViewController
@@ -21,7 +23,7 @@
 {
     self = [super init];
     if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
         self.navigationItem.hidesBackButton = YES;
         
     }
@@ -33,7 +35,6 @@
     [super viewDidLoad];
 
     [self initializeSignUpLabel];
-    [self initializeFaceAndNameLabel];
     [self initializeEDUAddress];
 }
 
@@ -51,107 +52,132 @@
     [self.view addSubview:signUpLabel];
 }
 
-- (void)initializeFaceAndNameLabel {
-    UIView *faceAndNameView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 68)];
-    faceAndNameView.backgroundColor = [FontProperties getLightOrangeColor];
-    
-    UIImageView *faceImageView = [[UIImageView alloc] init];
-    faceImageView.contentMode = UIViewContentModeScaleAspectFill;
-    faceImageView.clipsToBounds = YES;
-    [faceImageView setSmallImageForUser:WGProfile.currentUser completed:nil];
-    faceImageView.frame = CGRectMake(15, 10, 47, 47);
-    faceImageView.layer.cornerRadius = 3;
-    faceImageView.layer.borderWidth = 1;
-    faceImageView.backgroundColor = [UIColor whiteColor];
-    faceImageView.layer.masksToBounds = YES;
-    [faceAndNameView addSubview:faceImageView];
-    
-    UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(75, 24, 200, 22)];
-    nameLabel.textAlignment = NSTextAlignmentLeft;
-    nameLabel.text = [[WGProfile currentUser] fullName];
-    nameLabel.font = [FontProperties getSmallFont];
-    [faceAndNameView addSubview:nameLabel];
-    
-    [self.view addSubview:faceAndNameView];
-}
-
 - (void)initializeEDUAddress {
-    UILabel *eduAddressLabel = [[UILabel alloc] init];
-    eduAddressLabel.text = @"Enter your .EDU email to verify you're a college student:";
-    eduAddressLabel.textAlignment = NSTextAlignmentCenter;
-    eduAddressLabel.font = [FontProperties getSmallFont];
-    eduAddressLabel.numberOfLines = 0;
-    eduAddressLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [self.view addSubview:eduAddressLabel];
+    _eduAddressLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 66, self.view.frame.size.width, 50)];
+    NSString *eduString = [NSString stringWithFormat:@"%@, please enter your .EDU email\nto verify you're a college student", WGProfile.currentUser.firstName];
+    NSMutableAttributedString *mutAttributedText = [[NSMutableAttributedString alloc] initWithString:eduString];
+    [mutAttributedText addAttribute:NSForegroundColorAttributeName value:RGB(127, 127, 127) range:NSMakeRange(0, eduString.length)];
+    [mutAttributedText addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(WGProfile.currentUser.firstName.length + 20, 10)];
+    _eduAddressLabel.attributedText = mutAttributedText;
+    _eduAddressLabel.textAlignment = NSTextAlignmentCenter;
+    _eduAddressLabel.font = [FontProperties mediumFont:16.0f];
+    _eduAddressLabel.numberOfLines = 0;
+    _eduAddressLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [self.view addSubview:_eduAddressLabel];
     
-    _studentTextField = [[UITextField alloc] init];
-    _studentTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"student@university.edu" attributes:@{NSForegroundColorAttributeName:RGBAlpha(246, 143, 30, 0.3f)}];
-    _studentTextField.textAlignment = NSTextAlignmentCenter;
-    _studentTextField.tintColor = [FontProperties getOrangeColor];
-    _studentTextField.textColor = [FontProperties getOrangeColor];
-    _studentTextField.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    _studentTextField.layer.borderWidth = 1;
-    _studentTextField.layer.cornerRadius = 5;
-    _studentTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    _studentTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    [_studentTextField becomeFirstResponder];
-    [_studentTextField addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventEditingDidEndOnExit];
-    [self.view addSubview:_studentTextField];
+    self.studentTextField = [[UITextField alloc] init];
+    NSString *placeHolderString = [NSString stringWithFormat:@"%@@university.edu", WGProfile.currentUser.firstName.lowercaseString];
+    self.studentTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:placeHolderString attributes:@{NSForegroundColorAttributeName:RGBAlpha(246, 143, 30, 0.3f)}];
+    self.studentTextField.textAlignment = NSTextAlignmentCenter;
+    self.studentTextField.tintColor = [FontProperties getOrangeColor];
+    self.studentTextField.textColor = [FontProperties getOrangeColor];
+    self.studentTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.studentTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    [self.studentTextField becomeFirstResponder];
+    self.studentTextField.returnKeyType = UIReturnKeyDone;
+    [self.studentTextField addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventEditingDidEndOnExit];
+    self.studentTextField.delegate = self;
+    [self.view addSubview:self.studentTextField];
     
-    UIButton *continueButton = [[UIButton alloc] init];
-    continueButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
-    [continueButton setTitle:@"Continue" forState:UIControlStateNormal];
-    [continueButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    continueButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    continueButton.layer.borderWidth = 3;
-    continueButton.layer.cornerRadius = 5;
-    [continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchUpInside];
+    _errorLabel = [UILabel new];
+    _errorLabel.textColor = UIColor.redColor;
+    _errorLabel.text = @"Please enter correct email";
+    _errorLabel.textAlignment = NSTextAlignmentCenter;
+    _errorLabel.font = [FontProperties mediumFont:15.0f];
+    _errorLabel.hidden = YES;
+    [self.view addSubview:_errorLabel];
     
-    if (isiPhone5) {
-        eduAddressLabel.frame = CGRectMake(40, 150, self.view.frame.size.width - 80, 50);
-        _studentTextField.frame = CGRectMake(40, 210, self.view.frame.size.width - 80, 47);
-        continueButton.frame = CGRectMake(37, 270, self.view.frame.size.width - 77, 47);
-    } else {
-        eduAddressLabel.frame = CGRectMake(40, 130, self.view.frame.size.width - 80, 50);
-        _studentTextField.frame = CGRectMake(40, 180, self.view.frame.size.width - 80, 37);
-        continueButton.frame = CGRectMake(37, 225, self.view.frame.size.width - 77, 37);
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
-    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightArrow"]];
-    rightArrowImageView.frame = CGRectMake(continueButton.frame.size.width - 35, continueButton.frame.size.height/2 - 9, 11, 18);
-    [continueButton addSubview:rightArrowImageView];
-    [self.view addSubview:continueButton];
+    _continueButton = [UIButton new];
+    _continueButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
+    [_continueButton setTitle:@"Continue" forState:UIControlStateNormal];
+    [_continueButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    _continueButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
+    [_continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_continueButton];
 }
 
 - (void)continuePressed {
-    NSString *emailString = _studentTextField.text;
-    emailString = [emailString stringByReplacingOccurrencesOfString:@" " withString:@""];
-    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
-    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
-    BOOL isEmail = [emailTest evaluateWithObject:emailString];
-    if (isEmail) {
-        NSArray *images = [[WGProfile currentUser] images];
-        [WGProfile currentUser].email = emailString;
-        
-        [[WGProfile currentUser] signup:^(BOOL success, NSError *error) {
+    NSString *emailString = self.studentTextField.text;
+    if ([self isTextAnEmail:emailString]) {
+        NSArray *images = WGProfile.currentUser.images;
+        WGProfile.currentUser.email = emailString;
+        __weak typeof(self) weakSelf = self;
+        self.studentTextField.enabled = NO;
+        [WGSpinnerView addDancingGToCenterView:self.view];
+        [WGProfile.currentUser signup:^(BOOL success, NSError *error) {
+            __weak typeof(weakSelf) strongSelf = weakSelf;
+            strongSelf.studentTextField.enabled = YES;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionCreate retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionCreate];
+                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                 return;
             }
-            [WGProfile currentUser].images = images;
-            [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+            WGProfile.currentUser.images = images;
+            __weak typeof(strongSelf) weakOfStrong = strongSelf;
+            [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+                __strong typeof(weakOfStrong) strongOfStrong = weakOfStrong;
+                [WGSpinnerView removeDancingGFromCenterView:strongOfStrong.view];
                 if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionCreate retryHandler:nil];
+                    [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionSave];
                     return;
                 }
-                self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-                [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+                EmailConfirmationViewController *emailConfirmationViewController =
+                [EmailConfirmationViewController new];
+                emailConfirmationViewController.placesDelegate = strongOfStrong.placesDelegate;
+                [strongOfStrong.navigationController pushViewController:emailConfirmationViewController animated:YES];
             }];
         }];
     } else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email" message:@"Enter a valid email address" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        _errorLabel.hidden = NO;
     }    
 }
+
+- (BOOL)isTextAnEmail:(NSString *)emailString {
+    emailString = [emailString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+    return [emailTest evaluateWithObject:emailString];
+}
+
+- (void)keyboardDidHide:(NSNotification *)notification {
+    NSDictionary* keyboardInfo = [notification userInfo];
+    CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    _continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
+}
+
+- (void)keyboardDidShow:(NSNotification *)notification {
+    NSDictionary* keyboardInfo = [notification userInfo];
+    CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    _continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
+    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"rightArrow"]];
+    rightArrowImageView.frame = CGRectMake(_continueButton.frame.size.width - 35, _continueButton.frame.size.height/2 - 7, 7, 14);
+    [_continueButton addSubview:rightArrowImageView];
+    self.studentTextField.frame = CGRectMake(40, _continueButton.frame.origin.y/2 + _eduAddressLabel.frame.origin.y/2 + _eduAddressLabel.frame.size.height/2, self.view.frame.size.width - 80, 47);
+    _errorLabel.frame = CGRectMake(0, self.studentTextField.frame.origin.y + self.studentTextField.frame.size.height, self.view.frame.size.width, 20);
+}
+
+- (BOOL)textField:(UITextField *)textField
+shouldChangeCharactersInRange:(NSRange)range
+replacementString:(NSString *)string {
+    if (!_errorLabel.isHidden) _errorLabel.hidden = YES;
+    NSString *tempString = [[textField.text stringByReplacingCharactersInRange:range withString:string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.edu";
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+    BOOL isEDUEmail = [emailTest evaluateWithObject:tempString];
+    if (isEDUEmail) {
+        _continueButton.backgroundColor = [FontProperties getOrangeColor];
+    }
+    else {
+        _continueButton.backgroundColor = RGBAlpha(246, 143, 30, 0.3f);
+    }
+    return YES;
+}
+
 
 @end

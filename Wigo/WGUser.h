@@ -65,6 +65,10 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSDictionary* properties;
 @property NSArray* images;
 @property NSString *instaHandle;
+@property NSArray *triggers;
+@property BOOL findReferrer;
+@property NSArray *arrayTooltipTracked;
+@property NSDictionary *events;
 
 @property NSNumber* isFavorite;
 @property NSString* firstName;
@@ -97,6 +101,8 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(State) state;
 
+-(void) addTootltipTracked:(NSString *)tooltipTracked;
+-(void) setReferredBy:(NSNumber *)referredByNumber;
 -(void) setImageDictionary:(NSDictionary *)imageDictionary forIndex:(NSInteger)index;
 -(void) removeImageAtIndex:(NSInteger)index;
 -(void) makeImageAtIndexCoverImage:(NSInteger)index;
@@ -112,15 +118,17 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(BOOL) isCurrentUser;
 
 +(void) getOrderedById:(WGCollectionResultBlock)handler;
-+(void) getNotMe:(WGCollectionResultBlock)handler;
-+(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 +(void) getNewestUser:(WGUserResultBlock)handler;
++(void) getReferals:(WGCollectionResultBlock)handler;
 +(void) getOnboarding:(WGCollectionResultBlock)handler;
 +(void) searchUsers:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 +(void) getSuggestions:(WGCollectionResultBlock)handler;
 +(void) getInvites:(WGCollectionResultBlock)handler;
 +(void) searchInvites:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 
+-(void) getNotMeForMessage:(WGCollectionResultBlock)handler;
++(void) searchReferals:(NSString *)query withHandler:(WGSerializedCollectionResultBlock)handler;
+-(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 -(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;

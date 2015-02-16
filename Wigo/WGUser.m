@@ -48,7 +48,12 @@
 #define kSmallWidthKey @"small_width"
 #define kSmallHeightKey @"small_height"
 #define kInstaHandle @"instaHandle"
+#define kEventsInsideProperties @"events"
+#define kTriggers @"triggers"
+#define kFindReferrer @"find_referrer"
+#define kTooltipTracked @"tooltip_tracked"
 
+#define kReferredByKey @"referred_by"
 #define kNotificationsKey @"notifications"
 #define kTapsKey @"taps"
 #define kFavoritesGoingOutKey @"favorites_going_out"
@@ -222,6 +227,9 @@ static WGUser *currentUser = nil;
 }
 
 -(Gender) gender {
+    if ([[WGUser genderNames] indexOfObject:[self objectForKey: kGenderKey]] == NSNotFound) {
+        return MALE;
+    }
     return (Gender) [[WGUser genderNames] indexOfObject:[self objectForKey: kGenderKey]];
 }
 
@@ -323,6 +331,84 @@ static WGUser *currentUser = nil;
     self.properties = properties;
 }
 
+- (NSDictionary *)events {
+    NSDictionary *properties = self.properties;
+    if ([[properties allKeys] containsObject:kEventsInsideProperties]) {
+        return [properties objectForKey:kEventsInsideProperties];
+    }
+    return [NSDictionary new];
+}
+
+- (void)setEvents:(NSDictionary *)events {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:self.properties];
+    [properties setObject:events forKey:kEventsInsideProperties];
+    self.properties = properties;
+}
+
+- (NSArray *)triggers {
+    NSDictionary *events = self.events;
+    if ([events.allKeys containsObject:kTriggers]) {
+        return [events objectForKey:kTriggers];
+    }
+    return [NSArray new];
+}
+
+- (void)setTriggers:(NSArray *)triggers {
+    NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
+    if (triggers.count == 0) {
+        if ([[events allKeys] containsObject:kTriggers]) {
+            [events removeObjectForKey:kTriggers];
+        }
+    }
+    else {
+        [events setObject:triggers forKey:kTriggers];
+    }
+    self.events = events;
+}
+
+- (BOOL)findReferrer {
+    if ([self.triggers containsObject:kFindReferrer]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)setFindReferrer:(BOOL)findReferrer {
+    NSMutableArray *triggers = [[NSMutableArray alloc] initWithArray:self.triggers];
+
+    if (findReferrer) {
+        if (![triggers containsObject:kFindReferrer]) {
+            [triggers addObject:kFindReferrer];
+        }
+    }
+    else {
+        [triggers removeObject:kFindReferrer];
+    }
+    self.triggers = triggers;
+}
+
+
+- (NSArray *)arrayTooltipTracked {
+    NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
+    if ([[events allKeys] containsObject:kTooltipTracked]) {
+        return [events objectForKey:kTooltipTracked];
+    }
+    
+    return [NSArray new];
+}
+
+- (void)setArrayTooltipTracked:(NSArray *)arrayTooltipTracked {
+    NSMutableDictionary *events = [[NSMutableDictionary alloc] initWithDictionary:self.events];
+    [events setObject:arrayTooltipTracked forKey:kTooltipTracked];
+    self.events = events;
+}
+
+- (void)addTootltipTracked:(NSString *)tooltipTracked {
+    NSMutableArray *arrayTooltipTracked = [[NSMutableArray alloc] initWithArray:self.arrayTooltipTracked];
+    [arrayTooltipTracked addObject:tooltipTracked];
+    [self setArrayTooltipTracked:arrayTooltipTracked];
+}
+
 -(void) addImageURL:(NSString *)imageURL {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
     if ([imagesArray count] < 5) {
@@ -349,6 +435,10 @@ static WGUser *currentUser = nil;
 
 -(void) removeImageAtIndex:(NSInteger)index {
     NSMutableArray *imagesArray = [[NSMutableArray alloc] initWithArray:[self images]];
+    if (index < 0 || index >= [imagesArray count]) {
+        NSLog(@"Invalid index %ld for image removal", (long)index);
+        return;
+    }
     if ([imagesArray count] > 3) {
         [imagesArray removeObjectAtIndex:index];
         [self setImages: imagesArray];
@@ -364,11 +454,14 @@ static WGUser *currentUser = nil;
 }
 
 -(NSURL *) coverImageURL {
-    return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kURLKey]];
+    if (self.images && [self.images count] > 0) {
+        return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kURLKey]];
+    }
+    return [NSURL URLWithString:@""];
 }
 
 -(NSURL *) smallCoverImageURL {
-    if ([[self.images objectAtIndex:0] objectForKey:kSmallKey]) {
+    if (self.images && [self.images count] > 0 && [[self.images objectAtIndex:0] objectForKey:kSmallKey]) {
         return [NSURL URLWithString: [[self.images objectAtIndex:0] objectForKey:kSmallKey]];
     }
     return [self coverImageURL];
@@ -571,6 +664,10 @@ static WGUser *currentUser = nil;
     return nil;
 }
 
+-(void) setReferredBy:(NSNumber *)referredByNumber {
+    [self setObject:referredByNumber forKey:kReferredByKey];
+}
+
 -(void) setIsFavoritesGoingOutNotificationEnabled:(NSNumber *)isFavoritesGoingOutNotificationEnabled {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:self.properties];
     
@@ -592,7 +689,7 @@ static WGUser *currentUser = nil;
 }
 
 -(State) state {
-    if ([self isCurrentUser]) {
+    if (self.isCurrentUser) {
         if (self.privacy == PRIVATE) return PRIVATE_STATE;
         else return PUBLIC_STATE;
     }
@@ -600,16 +697,16 @@ static WGUser *currentUser = nil;
         return BLOCKED_USER_STATE;
     }
     if (self.privacy == PRIVATE) {
-        if ([self.isFollowing boolValue]) {
+        if ([self.isFollowingRequested boolValue]) {
+            return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
+        }
+        else if ([self.isFollowing boolValue]) {
             if (self.eventAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
             return FOLLOWING_USER_STATE;
         }
-        else if ([self.isFollowingRequested boolValue]) {
-            return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
-        }
         else return NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
     }
-    if ([self.isFollowing boolValue]) {
+    if ([self.isFollowing boolValue] || [self.isFollowingRequested boolValue]) {
         if (self.eventAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
         return FOLLOWING_USER_STATE;
     }
@@ -638,8 +735,8 @@ static WGUser *currentUser = nil;
     }];
 }
 
-+(void) getNotMe:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : [WGProfile currentUser].id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+-(void) getNotMeForMessage:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"context": @"message"} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -660,8 +757,33 @@ static WGUser *currentUser = nil;
     }];
 }
 
-+(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : [WGProfile currentUser].id, @"ordering" : @"is_goingout", @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+-(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
+    if (!query) {
+        return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
+    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
++(void) getReferals:(WGCollectionResultBlock)handler {
+    [WGApi get:@"users/" withArguments:@{ @"context" : @"referral" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -749,6 +871,9 @@ static WGUser *currentUser = nil;
 }
 
 +(void) searchInvites:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
+    if (!query) {
+        return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi get:@"users/" withArguments:@{ @"following" : @"true", @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -793,7 +918,37 @@ static WGUser *currentUser = nil;
     }];
 }
 
+
++(void) searchReferals:(NSString *)query withHandler:(WGSerializedCollectionResultBlock)handler {
+    if (!query) {
+        return handler([NSURL URLWithString:@"users/"], nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
+    [WGApi get:@"users/" withArguments:@{ @"context": @"referral", @"text" : query, @"id__ne" : [WGProfile currentUser].id } andSerializedHandler:^(NSURL *urlSent, NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(urlSent, nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(urlSent, objects, dataError);
+        }
+    }];
+}
+
+
 +(void) searchUsers:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
+    if (!query) {
+        return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi get:@"users/" withArguments:@{ @"text" : query, @"id__ne" : [WGProfile currentUser].id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -840,6 +995,9 @@ static WGUser *currentUser = nil;
 #pragma mark Various API Calls
 
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler {
+    if (!message) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi post:@"school/broadcast" withParameters:@{ @"message": message } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
@@ -864,6 +1022,9 @@ static WGUser *currentUser = nil;
 }
 
 -(void) block:(WGUser *)user withType:(NSString *)type andHandler:(BoolResultBlock)handler {
+    if (!user.id || !type) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi post:@"blocks/" withParameters:@{ @"block" : user.id, @"type" : type } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isBlocked = @YES;
@@ -874,6 +1035,9 @@ static WGUser *currentUser = nil;
 
 
 -(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+    if (!user.id) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi post:@"taps" withParameters:@{ @"tapped" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isTapped = @YES;
@@ -885,6 +1049,9 @@ static WGUser *currentUser = nil;
 -(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler {
     NSMutableArray *taps = [[NSMutableArray alloc] init];
     for (WGUser *user in users) {
+        if (!user.id) {
+            return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+        }
         [taps addObject:@{ @"tapped" : user.id }];
     }
     [WGApi post:@"taps" withParameters:taps andHandler:^(NSDictionary *jsonResponse, NSError *error) {
@@ -919,6 +1086,9 @@ static WGUser *currentUser = nil;
 }
 
 -(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+    if (!user.id) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi get:@"follows/accept" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollower = @YES;
@@ -929,6 +1099,9 @@ static WGUser *currentUser = nil;
 }
 
 -(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+    if (!user.id) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi get:@"follows/reject" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollower = @NO;
@@ -947,6 +1120,9 @@ static WGUser *currentUser = nil;
 }
 
 -(void) goingToEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler {
+    if (!event.id) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
     [WGApi post:@"eventattendees/" withParameters:@{ @"event" : event.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             self.isGoingOut = @YES;

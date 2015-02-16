@@ -104,7 +104,9 @@
     }
     if ([numbers count] > 0) {
         [[WGProfile currentUser] sendInvites:numbers withHandler:^(BOOL success, NSError *error) {
-            // Do nothing!
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionPost];
+            }
         }];
     }
 }

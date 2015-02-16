@@ -8,17 +8,19 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import <Crashlytics/Crashlytics.h>
 #import "JSQMessagesViewController/JSQMessages.h"
 #import "UIImageView+ImageArea.h"
 
 #import "FontProperties.h"
 #import "WGAnalytics.h"
 
-#import "WiGoSpinnerView.h"
+#import "WGSpinnerView.h"
 #import "FLAnimatedImage.h"
 #import "FLAnimatedImageView.h"
 #import "NSString+URLEncoding.h"
 #import "NSObject-CancelableScheduledBlock.h"
+#import "UIImage+Resize.h"
 
 #import "WGProfile.h"
 #import "WGEvent.h"
@@ -38,11 +40,12 @@
 static NSString * const collectionViewCellIdentifier = @"CollectionViewCellIdentifier";
 static NSString * const headerCellIdentifier = @"HeaderContentCell";
 
-//#ifdef DEBUG
-//#define NSLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
-//#else
-//#define NSLog(...)
-//#endif
+/* #ifdef DEBUG
+#define NSLog(x, ...) NSLog(@"%s %d: " x, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#else
+#define NSLog(x, ...) CLSLog(@"%s %d: " x, __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#endif */
+
 #define isiPhone5  ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
 #define MAX_LENGTH_BIO 110
 #define PEOPLEVIEW_HEIGHT_OF_CELLS 80

@@ -21,9 +21,10 @@
 @implementation ImageScrollView
 
 
-- (instancetype)initWithFrame: (CGRect) frame imageURLs:(NSArray *)imageURLS infoDicts:(NSArray *)infoDicts areaDicts:(NSArray *)areaDicts {
-    
+- (id)initWithFrame: (CGRect) frame andUser:(WGUser *)user {
     if (self = [super initWithFrame: frame]) {
+        self.user = user;
+        
         self.scrollView = [[UIScrollView alloc] initWithFrame: frame];
         self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.scrollView.autoresizesSubviews = YES;
@@ -35,16 +36,16 @@
         
         _currentPage = 0;
         
-        [self addImages: imageURLS infoDicts: infoDicts areaDicts: areaDicts];
+        [self addImages];
     }
     
     return self;
 }
 
-- (void) addImages:(NSArray *)imageURLs infoDicts:(NSArray *)infoDicts areaDicts:(NSArray *)areaDicts {
+- (void) addImages {
     [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     self.imageViews = [[NSMutableArray alloc] init];
-    for (int i = 0; i < [imageURLs count]; i++) {
+    for (int i = 0; i < [self.user.imagesURL count]; i++) {
         
         UIImageView *profileImgView = [self getNewProfileImageView: CGRectMake((self.frame.size.width + 10) * i, 0, self.frame.size.width, self.frame.size.width)];
         
@@ -58,15 +59,19 @@
         [spinner startAnimating];
         __weak UIActivityIndicatorView *weakSpinner = spinner;
         
-        NSMutableDictionary *infoDict = [infoDicts objectAtIndex: i];
+        NSDictionary *areaVal = [self.user.imagesArea objectAtIndex: i];
         
-        NSDictionary *areaVal = [areaDicts objectAtIndex: i];
+        UIImageView *placeholderCover;
+        if (i == 0) {
+            placeholderCover = [[UIImageView alloc] init];
+            [placeholderCover setImageWithURL:self.user.smallCoverImageURL imageArea:self.user.smallCoverImageArea];
+        }
         
         __weak typeof(self) weakSelf = self;
-        [profileImgView setImageWithURL:[NSURL URLWithString:[imageURLs objectAtIndex:i]]
+        [profileImgView setImageWithURL:[NSURL URLWithString:[self.user.imagesURL objectAtIndex:i]]
                               imageArea:areaVal
-                               withInfo:infoDict
-                       outputDictionary:@{@"i": [NSNumber numberWithInt:i]}
+                       placeholderImage:placeholderCover.image
+                       outputDictionary:@{ @"i": [NSNumber numberWithInt:i] }
                 completedWithDictionary:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSDictionary *outputDictionary) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -77,13 +82,12 @@
                         }
                     });
         }];
-         
+        
         [self.imageViews addObject: profileImgView];
         [self.scrollView addSubview:profileImgView];
-        
     }
     
-    [self.scrollView setContentSize:CGSizeMake((self.frame.size.width + 10) * [imageURLs count] - 10, [[UIScreen mainScreen] bounds].size.width)];
+    [self.scrollView setContentSize:CGSizeMake((self.frame.size.width + 10) * [self.user.imagesURL count] - 10, [[UIScreen mainScreen] bounds].size.width)];
 }
 
 - (UIImage *) getCurrentImage {

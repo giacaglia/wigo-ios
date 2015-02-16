@@ -8,10 +8,9 @@
 //
 
 #import "EventStoryViewController.h"
-#import "IQMediaPickerController.h"
 #import "InviteViewController.h"
 #import "EventMessagesConstants.h"
-#import "FancyProfileViewController.h"
+#import "ProfileViewController.h"
 #import "WGProfile.h"
 #import "WGEvent.h"
 
@@ -96,7 +95,7 @@
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    [WiGoSpinnerView addDancingGToUIScrollView:self.facesCollectionView
+    [WGSpinnerView addDancingGToUIScrollView:self.facesCollectionView
                                    withHandler:^{
                                        self.eventMessages = nil;
                                        [self fetchEventMessages];
@@ -202,6 +201,7 @@
             self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ going", [self.event.numAttending stringValue]];
             
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
     }];
@@ -236,12 +236,9 @@
         if (goHereState == PRESENTFACESTATE) {
             if (self.eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithYourFace:YES];
         } else {
-            if (goHereState == FIRSTTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:SECONDTIMEPRESENTCAMERASTATE forKey:kGoHereState];
-            if (goHereState == SECONDTIMEPRESENTCAMERASTATE) [[NSUserDefaults standardUserDefaults] setInteger:DONOTPRESENTANYTHINGSTATE forKey:kGoHereState];
             if (self.eventMessages) self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
         }
         self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
-        self.conversationViewController.controllerDelegate = self;
         self.conversationViewController.storyDelegate = self;
         
         BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
@@ -445,7 +442,7 @@
 
 
 - (void)loadTextViewAndSendButton {
-    int widthButton = [[UIScreen mainScreen] bounds].size.width/6.4;
+    int widthButton = [[UIScreen mainScreen] bounds].size.width/5.33;
     sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - widthButton - 15, self.view.frame.size.height - widthButton - 15, widthButton, widthButton)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:sendButton];
@@ -457,8 +454,8 @@
 }
 
 - (void)initializeToolTipBanner {
-    int heightButton = [[UIScreen mainScreen] bounds].size.width/8;
-    _highlightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - heightButton - 15, 233, 89)];
+    int widthButton = [[UIScreen mainScreen] bounds].size.width/5.33;
+    _highlightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - widthButton - 15, 233, 89)];
     _highlightButton.center = CGPointMake(self.view.center.x, _highlightButton.center.y);
     [_highlightButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     _highlightButton.alpha = 0.0f;
@@ -517,7 +514,9 @@
 - (void)setDetailViewRead {
     if (![self.event.isRead boolValue]) {
         [self.event setRead:^(BOOL success, NSError *error) {
-            // Do nothing!
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            }
         }];
     }
 }
@@ -531,7 +530,6 @@
 
 
 - (void)sendPressed {
-    
     [WGAnalytics tagEvent: @"Event Story Create Highlight Tapped"];
 
     //not going here
@@ -545,7 +543,6 @@
         self.conversationViewController.eventMessages = [self eventMessagesWithYourFace: NO];
     }
     self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
-    self.conversationViewController.controllerDelegate = self;
     self.conversationViewController.storyDelegate = self;
     
     BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
@@ -584,6 +581,7 @@
                 [strongSelf.facesCollectionView didFinishPullToRefresh];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 strongSelf.eventMessages = collection;
@@ -597,6 +595,7 @@
                 [strongSelf.facesCollectionView didFinishPullToRefresh];
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
                 [strongSelf.facesCollectionView reloadData];
@@ -673,16 +672,6 @@
     });
 }
 
-#pragma mark - IQMediaController Delegate
-
-- (void)mediaPickerController:(IQMediaPickerController *)controller didFinishMediaWithInfo:(NSDictionary *)info {
-    
-}
-
-- (void)mediaPickerControllerDidCancel:(IQMediaPickerController *)controller {
-    
-}
-
 #pragma mark - UIScrollViewDelegate 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -716,14 +705,14 @@
 
 - (void)showUser:(WGUser *)user {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    FancyProfileViewController *fancyProfileViewController = [sb instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-    [fancyProfileViewController setStateWithUser: user];
+    ProfileViewController *profileViewController = [sb instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    [profileViewController setStateWithUser: user];
 
     if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
-        fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
+        profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     }
     _loadViewFromFront = YES;
-    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+    [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
 

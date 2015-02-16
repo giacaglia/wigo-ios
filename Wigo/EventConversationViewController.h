@@ -10,23 +10,21 @@
 #import <UIKit/UIKit.h>
 #import "Globals.h"
 #import "MediaScrollView.h"
-#import "IQMediaPickerController.h"
 #import "Delegate.h"
 
-
 @interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, EventConversationDelegate>
-- (void)highlightCellAtPage:(NSInteger)page;
+- (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) WGCollection *eventMessages;
 @property (nonatomic, strong) MediaScrollView *mediaScrollView;
 @property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
-@property (nonatomic, assign) id<IQMediaPickerControllerDelegate> controllerDelegate;
 @property (nonatomic, strong) NSNumber *index;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
 @property (nonatomic, assign) BOOL isFocusing;
 @property (nonatomic, strong) UILabel *postingLabel;
 @property (nonatomic, strong) UIView *loadingBanner;
 @property (nonatomic, assign) BOOL isPeeking;
+@property (nonatomic, strong) UIButton *buttonCancel;
 @end
 
 @interface FaceCell : UICollectionViewCell
@@ -49,8 +47,9 @@
 
 // For Transition
 @property (nonatomic, assign) CGFloat startYPosition;
-@property (nonatomic, assign) CGSize startSize;
+@property (nonatomic, assign) CGRect startFrame;
 @property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
+@property (nonatomic, strong) UIView *holeView;
 @end
 
 @interface FaceFlowLayout : UICollectionViewFlowLayout

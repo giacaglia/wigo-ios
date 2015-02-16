@@ -10,10 +10,9 @@
 #import "Globals.h"
 #import "OnboardFollowViewController.h"
 #import "BatteryViewController.h"
+#import "ReferalViewController.h"
 
 UITextField *emailTextField;
-OnboardFollowViewController *onboardFollowViewController;
-NSTimer *fetchTimer;
 
 @implementation EmailConfirmationViewController
 
@@ -37,7 +36,7 @@ NSTimer *fetchTimer;
     [self initializeFaceAndNameLabel];
     [self initializeEmailLabel];
     [self initializeOtherButtons];
-    fetchTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(login) userInfo:nil repeats:YES];
+    self.fetchTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(login) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -107,12 +106,6 @@ NSTimer *fetchTimer;
     emailTextField.delegate = self;
     [self.view addSubview:emailTextField];
 
-//    UILabel *holyCrossLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 430, self.view.frame.size.width, 30)];
-//    holyCrossLabel.textAlignment = NSTextAlignmentCenter;
-//    holyCrossLabel.text = @"@ Holy Cross";
-//    holyCrossLabel.font = [FontProperties getSmallFont];
-//    holyCrossLabel.textColor = [UIColor grayColor];
-//    [self.view addSubview:holyCrossLabel];
 }
 
 - (void)initializeOtherButtons {
@@ -140,41 +133,28 @@ NSTimer *fetchTimer;
     [self.view addSubview:changeButton];
 }
 
-- (void) initializeNumberOfPeopleLabel {
-    self.numberOfPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50)];
-    self.numberOfPeopleLabel.hidden = YES;
-    self.numberOfPeopleLabel.font = [FontProperties getSmallFont];
-    self.numberOfPeopleLabel.backgroundColor = [FontProperties getLightOrangeColor];
-    self.numberOfPeopleLabel.textColor = [UIColor blackColor];
-    self.numberOfPeopleLabel.textAlignment = NSTextAlignmentCenter;
-    NSMutableAttributedString *text =
-    [[NSMutableAttributedString alloc]
-     initWithAttributedString: self.numberOfPeopleLabel.attributedText];
-    [text addAttribute:NSForegroundColorAttributeName
-                 value:[FontProperties getOrangeColor]
-                 range:NSMakeRange(0, 2)];
-    [self.numberOfPeopleLabel setAttributedText:text];
-    [self.view addSubview:self.numberOfPeopleLabel];
-}
 
 #pragma mark - Login
 
 - (void) login {
-    if ([WGProfile currentUser].key) {
+    if (WGProfile.currentUser.key) {
+        __weak typeof(self) weakSelf = self;
         [WGProfile reload:^(BOOL success, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
             if (error) {
                 return;
             }
             if ([[WGProfile currentUser].emailValidated boolValue]) {
-                [fetchTimer invalidate];
-                fetchTimer = nil;
+                [strongSelf.fetchTimer invalidate];
+                strongSelf.fetchTimer = nil;
                 if ([[WGProfile currentUser].group.locked boolValue]) {
-                    [self.navigationController setNavigationBarHidden:YES animated:NO];
-                    [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
+                    [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
+                    BatteryViewController *batteryViewController = [BatteryViewController new];
+                    batteryViewController.placesDelegate = strongSelf.placesDelegate;
+                    [strongSelf.navigationController pushViewController:batteryViewController animated:NO];
                 } else {
-                    [self.navigationController setNavigationBarHidden:YES animated:NO];
-                    onboardFollowViewController = [OnboardFollowViewController new];
-                    [self.navigationController pushViewController:onboardFollowViewController animated:YES];
+                    [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
+                    [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
                 }
             }
         }];
@@ -183,13 +163,14 @@ NSTimer *fetchTimer;
 
 - (void)resendEmail {
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     
     [[WGProfile currentUser] resendVerificationEmail:^(BOOL success, NSError *error) {
-        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        [WGSpinnerView removeDancingGFromCenterView:self.view];
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
             return;
         }
         UIAlertView *alertView = [[UIAlertView alloc]
@@ -220,6 +201,7 @@ NSTimer *fetchTimer;
     [[WGProfile currentUser] saveKey:@"email" withValue:emailString andHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
         }
     }];
 }

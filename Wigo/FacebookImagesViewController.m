@@ -10,7 +10,6 @@
 #import "Globals.h"
 #import "GKImagePicker.h"
 #import "GKImageCropViewController.h"
-#import "ErrorViewController.h"
 #import "FacebookHelper.h"
 #import "UIButtonAligned.h"
 
@@ -153,7 +152,7 @@ NSMutableArray *imagesArray;
 }
 
 - (void) getProfilePictures {
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     _profilePicturesURL = [NSMutableArray new];
     imagesArray = [NSMutableArray new];
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
@@ -164,7 +163,7 @@ NSMutableArray *imagesArray;
                                               id result,
                                               NSError *error
                                               ) {
-                              [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+                              [WGSpinnerView removeDancingGFromCenterView:self.view];
                               if (!error) {
                                   FBGraphObject *resultObject = [result objectForKey:@"data"];
                                   for (FBGraphObject *photoRepresentation in resultObject) {
@@ -269,6 +268,7 @@ NSMutableArray *imagesArray;
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
         [self dismissViewControllerAnimated:YES completion:nil];

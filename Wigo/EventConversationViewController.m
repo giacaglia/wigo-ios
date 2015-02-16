@@ -15,7 +15,7 @@
 #import "MediaScrollView.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "EventMessagesConstants.h"
-#import "FancyProfileViewController.h"
+#import "ProfileViewController.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 #define newSizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/4
@@ -25,13 +25,12 @@
 @property (nonatomic, assign) CGPoint collectionViewPointNow;
 @property (nonatomic, assign) CGPoint imagesScrollViewPointNow;
 @property (nonatomic, assign) BOOL facesHidden;
-@property (nonatomic, strong) UIButton *buttonCancel;
 @property (nonatomic, strong) UIButton *buttonTrash;
 @property (nonatomic, strong) UIVisualEffectView *visualEffectView;
+@property (nonatomic, strong) UIView *holeView;
 @end
 
 @implementation EventConversationViewController
-
 
 #pragma mark - ViewController Delegate
 
@@ -49,7 +48,7 @@
 - (void)notificationHighlightPage:(NSNotification *) notification {
     NSDictionary *userInfo = [notification userInfo];
     NSNumber *pageNumber = (NSNumber *)[userInfo objectForKey:@"page"];
-    [self highlightCellAtPage:[pageNumber integerValue]];
+    [self highlightCellAtPage:[pageNumber integerValue] animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -61,7 +60,7 @@
         self.currentActiveCell = nil;
     }
     
-    [self highlightCellAtPage:[self.index intValue]];
+    [self highlightCellAtPage:[self.index intValue] animated:YES];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
 
     
@@ -99,9 +98,9 @@
     
     WGUser *user = eventMessage.user;
     
-    if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
+    if ([eventMessage objectForKey:@"media_mime_type"] && ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
         [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
-        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost]
+        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost])
         ) {
         myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
         myCell.mediaTypeImageView.hidden = YES;
@@ -112,11 +111,11 @@
             [myCell setStateForUser:user];
             myCell.eventConversationDelegate = self;
         }
-        if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
+        if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
             myCell.mediaTypeImageView.hidden = YES;
         }
-        else if ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
+        else if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
             myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
             myCell.mediaTypeImageView.hidden = YES;
         }
@@ -150,7 +149,7 @@
         [cell setIsActive: YES];
         
         self.currentActiveCell = indexPath;
-        [self highlightCellAtPage:indexPath.row ];
+        [self highlightCellAtPage:indexPath.row animated:YES];
     }
 }
 
@@ -312,7 +311,7 @@
         width = sizeOfEachFaceCell;
     }
     NSInteger page = [self getPageForScrollView:scrollView toLeft:leftBoolean];
-    [self highlightCellAtPage:page];
+    [self highlightCellAtPage:page animated:YES];
 }
 
 - (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
@@ -341,32 +340,29 @@
     return page;
 }
 
-- (void)highlightCellAtPage:(NSInteger)page {
+- (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated {
     page = MAX(page, 0);
     page = MIN(page, self.eventMessages.count - 1);
     [self.mediaScrollView scrolledToPage:(int)page];
     dispatch_async(dispatch_get_main_queue(), ^{
         // Content Offset to the middle (which is the first page minus the number of cells/2
-        [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:YES];
+        [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:animated];
     });
-    [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:YES];
+    [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:animated];
     [self hideOrShowFacesForPage:(int)page];
 }
 
 - (void)hideOrShowFacesForPage:(int)page {
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-        if ([eventMessage.mediaMimeType isEqualToString:kCameraType]) {
+        if (eventMessage.mediaMimeType && [eventMessage.mediaMimeType isEqualToString:kCameraType]) {
             self.buttonCancel.hidden = YES;
             self.buttonCancel.enabled = NO;
             self.buttonTrash.hidden = YES;
             self.buttonTrash.enabled = NO;
             self.facesHidden = NO;
             [self focusOnContent];
-        }
-        else if ([eventMessage.mediaMimeType isEqualToString:kFaceImage] ||
-                 [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost]
-                 ) {
+        } else if (eventMessage.mediaMimeType && ([eventMessage.mediaMimeType isEqualToString:kFaceImage] || [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost])) {
             self.buttonTrash.hidden = YES;
             self.buttonTrash.enabled = NO;
         } else {
@@ -404,7 +400,6 @@
                             collectionViewLayout:[[MediaFlowLayout alloc] init]];
     self.mediaScrollView.eventMessages = self.eventMessages;
     self.mediaScrollView.event = self.event;
-    self.mediaScrollView.controllerDelegate = self.controllerDelegate;
     self.mediaScrollView.mediaDelegate = self;
     self.mediaScrollView.eventConversationDelegate = self;
     self.mediaScrollView.storyDelegate = self.storyDelegate;
@@ -464,6 +459,7 @@
             [eventMessage remove:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionDelete retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
                     return;
                 }
                 [self.eventMessages removeObject:eventMessage];
@@ -495,7 +491,7 @@
     self.loadingBanner.backgroundColor = UIColor.blackColor;
     [self.view addSubview:self.loadingBanner];
     
-    self.postingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 60, 20)];
+    self.postingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 150, 20)];
     self.postingLabel.text = @"Posting...";
     self.postingLabel.textColor = UIColor.whiteColor;
     self.postingLabel.font = [FontProperties mediumFont:13.0f];
@@ -594,37 +590,43 @@
     [self hideOrShowFacesForPage:(int)page];
 }
 
-- (void)presentUser:(WGUser *)user withView:(UIView *)view {
-//    [_visualEffectView removeFromSuperview];
-//    view.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+- (void)presentUser:(WGUser *)user withView:(UIView *)view withStartFrame:(CGRect)startFrame {
     CGPoint initialCenter = view.center;
-//    view.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-//    view.clipsToBounds = YES;
     [UIView animateWithDuration:0.7f animations:^{
         view.layer.borderWidth = 0.0f;
         view.layer.cornerRadius = 0.0f;
         view.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.width);
         view.center = CGPointMake(initialCenter.x, [UIScreen mainScreen].bounds.size.width/2);
     } completion:^(BOOL finished) {
-        FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+        
+        ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
         [profileViewController setStateWithUser: user];
         profileViewController.user = user;
         if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
-        [self presentViewController:profileViewController animated:NO completion:nil];
+        
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: profileViewController];
+        [self presentViewController:navController animated:NO completion:^{
+            view.center = initialCenter;
+            view.layer.borderWidth = 1.0f;
+            view.layer.borderColor = UIColor.clearColor.CGColor;
+            view.frame = startFrame;
+            view.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+            NSLog(@"width: %f", startFrame.size.width/2);
+            view.layer.cornerRadius = startFrame.size.width/2;
+        }];
     }];
 
 }
 
 - (void)createBlurViewUnderView:(UIView *)view {
-    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    
+    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     _visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     _visualEffectView.frame = self.view.frame;
     _visualEffectView.alpha = 0.0f;
-    self.facesCollectionView.clipsToBounds = NO;
     [self.view addSubview:_visualEffectView];
-    [self.view  bringSubviewToFront:self.facesCollectionView];
-    
+    [self.view bringSubviewToFront:self.facesCollectionView];
+
+    self.facesCollectionView.clipsToBounds = NO;
     [view.superview.superview bringSubviewToFront:view.superview];
     [self.facesCollectionView bringSubviewToFront:[self.facesCollectionView cellForItemAtIndexPath:self.currentActiveCell]];
 }
@@ -638,6 +640,20 @@
         float newAlpha = 1 - 1/percentage;
         _visualEffectView.alpha = newAlpha;
     }
+}
+
+- (void)presentHoleOnTopOfView:(UIView *)view {
+    if (!_holeView) {
+        _holeView = [UIView new];
+        ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+        [profileViewController setStateWithUser: WGProfile.currentUser];
+        profileViewController.user = WGProfile.currentUser;
+        profileViewController.view.backgroundColor = [UIColor clearColor];
+        self.modalPresentationStyle = UIModalPresentationCurrentContext;
+        [self presentViewController:profileViewController animated:NO completion:nil];
+    }
+    _holeView.hidden = NO;
+
 }
 
 @end
@@ -674,19 +690,12 @@
  
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0.6*sizeOfEachFaceCell, 0.6*sizeOfEachFaceCell)];
     self.faceImageView.center = self.contentView.center;
-    self.faceImageView.layer.masksToBounds = YES;
-    self.faceImageView.backgroundColor = [UIColor blackColor];
-    self.faceImageView.layer.borderWidth = 1.0;
+    self.faceImageView.backgroundColor = UIColor.blackColor;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.faceImageView.layer.masksToBounds = YES;
+    self.faceImageView.layer.borderWidth = 1.0;
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
-//    
-//    self.faceImageView.userInteractionEnabled = YES;
-//    self.faceAndMediaTypeView.clipsToBounds = NO;
-//    self.clipsToBounds = NO;
-//    UIPanGestureRecognizer *panner = [[UIPanGestureRecognizer alloc]
-//                                      initWithTarget:self action:@selector(panWasRecognized:)];
-//    [self.faceImageView addGestureRecognizer:panner];
     
     self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
     self.leftLine.alpha = 0.5f;
@@ -730,42 +739,64 @@
 }
 
 - (void)panWasRecognized:(UIPanGestureRecognizer *)panner {
-    float finalYEndPoint = 200;
+    float finalYEndPoint = [[UIScreen mainScreen] bounds].size.width/2;
     UIView *draggedView = panner.view;
     CGPoint offset = [panner translationInView:draggedView.superview];
     CGPoint center = draggedView.center;
 
     if (panner.state == UIGestureRecognizerStateBegan) {
         self.startYPosition = center.y;
-        self.startSize = draggedView.frame.size;
+        self.startFrame = draggedView.frame;
         [self.eventConversationDelegate createBlurViewUnderView:draggedView];
     }
     if (panner.state == UIGestureRecognizerStateEnded) {
         if (center.y > 150) {
-            [self.eventConversationDelegate presentUser:self.user withView:draggedView];
+            [self.eventConversationDelegate presentUser:self.user
+                                               withView:draggedView
+                                         withStartFrame:self.startFrame];
         }
-
         [self.eventConversationDelegate dimOutToPercentage:0];
     }
     else {
         if (_isActive) {
             if (center.y + offset.y > self.startYPosition) {
-                draggedView.center = CGPointMake(center.x, center.y + offset.y);
+                if (offset.y >= 0) {
+                    if (draggedView.center.y <= [[UIScreen mainScreen] bounds].size.width/2) {
+                        draggedView.center = CGPointMake(center.x, center.y + offset.y);
+                    }
+                    else {
+                        [self.eventConversationDelegate presentHoleOnTopOfView:draggedView];
+                    }
+                }
+                else {
+                    draggedView.center = CGPointMake(center.x, center.y + offset.y);
+                }
             }
         }
     }
     if (_isActive) {
         if (draggedView.center.y > self.startYPosition && draggedView.center.y <= finalYEndPoint - 30) {
-            float percentage = (finalYEndPoint - self.startYPosition)/(finalYEndPoint - draggedView.center.y);
-            draggedView.transform = CGAffineTransformMakeScale(percentage, percentage);
+             float percentage = (finalYEndPoint - self.startYPosition)/(finalYEndPoint - draggedView.center.y);
             [self.eventConversationDelegate dimOutToPercentage:percentage];
+            if (draggedView.center.y <= [[UIScreen mainScreen] bounds].size.width/2) {
+                draggedView.transform = CGAffineTransformMakeScale(percentage, percentage);
+            }
         }
     }
    
-    
-    // Reset translation to zero so on the next `panWasRecognized:` message, the
-    // translation will just be the additional movement of the touch since now.
     [panner setTranslation:CGPointZero inView:draggedView.superview];
+}
+
+#warning NEED TO ADD FOR PEEKING
+- (UIView *)copyOfProfileView:(UIView*)draggedView {
+//    ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+//    [profileViewController setStateWithUser: self.user];
+//    profileViewController.user = self.user;
+//    profileViewController.view.backgroundColor = [UIColor clearColor];
+//    self.modalPresentationStyle = UIModalPresentationCurrentContext;
+//    [self presentModalViewController:profileViewController animated:YES];
+
+    return nil;
 }
 
 
@@ -835,7 +866,7 @@
 }
 
 - (void)setStateForUser:(WGUser *)user {
-    [self.faceImageView setCoverImageForUser:user completed:nil];
+    [self.faceImageView setSmallImageForUser:user completed:nil];
     self.user = user;
 }
 

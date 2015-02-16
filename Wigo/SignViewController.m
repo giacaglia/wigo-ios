@@ -14,6 +14,7 @@
 #import "KeychainItemWrapper.h"
 #import "FacebookHelper.h"
 #import <Parse/Parse.h>
+#import "ReferalViewController.h"
 
 #import <Crashlytics/Crashlytics.h>
 
@@ -32,7 +33,6 @@
 
 @property UIAlertView * alert;
 @property BOOL alertShown;
-@property BOOL fetchingProfilePictures;
 @end
 
 @implementation SignViewController
@@ -42,7 +42,7 @@
 {
     self = [super init];
     if (self) {
-        _fetchingProfilePictures = NO;
+        self.fetchingProfilePictures = NO;
         self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -53,7 +53,7 @@
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlertToNotShown) name:@"changeAlertToNotShown" object:nil];
     _alertShown = NO;
-    _fetchingProfilePictures = NO;
+    self.fetchingProfilePictures = NO;
     _pushed = NO;
     
     [self initializeLogo];
@@ -62,10 +62,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     _alertShown = NO;
-    _fetchingProfilePictures = NO;
+    self.fetchingProfilePictures = NO;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self showOnboard];
+    
+    [WGAnalytics tagEvent:@"Sign View"];
 }
 
 -(void) showBarrierError:(NSError *)error {
@@ -78,7 +80,7 @@
 
 - (void) changeAlertToNotShown {
     _alertShown = NO;
-    _fetchingProfilePictures = NO;
+    self.fetchingProfilePictures = NO;
 }
 
 - (void) getFacebookTokensAndLoginORSignUp {
@@ -115,18 +117,18 @@
     _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"user_friends", @"user_photos"]];
     _loginView.loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
     _loginView.delegate = self;
-    _loginView.frame = CGRectMake(0, self.view.frame.size.height - 127, 253, 36);
+    _loginView.frame = CGRectMake(0, self.view.frame.size.height - 50 - 50, 256, 50);
     _loginView.frame = CGRectOffset(_loginView.frame, (self.view.center.x - (_loginView.frame.size.width / 2)), 5);
     _loginView.backgroundColor = [UIColor whiteColor];
     UIImageView *connectFacebookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"connectFacebook"]];
     connectFacebookImageView.backgroundColor = [UIColor whiteColor];
-    connectFacebookImageView.frame = CGRectMake(0, 0, 253, 36);
+    connectFacebookImageView.frame = CGRectMake(0, 0, 256, 50);
     [_loginView addSubview:connectFacebookImageView];
     [_loginView bringSubviewToFront:connectFacebookImageView];
     [self.view addSubview:_loginView];
     
     UILabel *dontWorryLabel = [[UILabel alloc] init];
-    dontWorryLabel.frame = CGRectMake(0, self.view.frame.size.height - 125 + 34, self.view.frame.size.width, 30);
+    dontWorryLabel.frame = CGRectMake(0, self.view.frame.size.height - 30 - 20, self.view.frame.size.width, 30);
     dontWorryLabel.text = @"Don't worry, we'll NEVER post on your behalf.";
     dontWorryLabel.font = [FontProperties mediumFont:13.0f];
     dontWorryLabel.textColor = RGB(51, 102, 154);
@@ -147,7 +149,8 @@
                                               NSError *error
                                               ) {
                               if (error) {
-                                  _fetchingProfilePictures = NO;
+                                  self.fetchingProfilePictures = NO;
+                                  [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
                               }
                               BOOL foundProfilePicturesAlbum = NO;
                               FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
@@ -160,7 +163,7 @@
                                   }
                               }
                               if (!foundProfilePicturesAlbum) {
-                                  _fetchingProfilePictures = NO;
+                                  self.fetchingProfilePictures = NO;
                                   NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
                                   [profilePictures addObject:@{@"url": _profilePic}];
                                   [self saveProfilePictures:profilePictures];
@@ -171,7 +174,7 @@
 
 - (void) get3ProfilePictures {
     NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
                                  parameters:nil
                                  HTTPMethod:@"GET"
@@ -181,7 +184,8 @@
                                               NSError *error
                                               ) {
                               if (error) {
-                                  _fetchingProfilePictures = NO;
+                                  self.fetchingProfilePictures = NO;
+                                  [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
                               }
                               FBGraphObject *resultObject = [result objectForKey:@"data"];
                               for (FBGraphObject *photoRepresentation in resultObject) {
@@ -227,13 +231,14 @@
 
 
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
-    [WGProfile currentUser].images = profilePictures;
-    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+    WGProfile.currentUser.images = profilePictures;
+    [WGSpinnerView removeDancingGFromCenterView:self.view];
     if (!_pushed) {
         _pushed = YES;
-        _fetchingProfilePictures = NO;
-        self.signUpViewController = [[SignUpViewController alloc] init];
-        [self.navigationController pushViewController:self.signUpViewController animated:YES];
+        self.fetchingProfilePictures = NO;
+        SignUpViewController *signUpViewController = [SignUpViewController new];
+        signUpViewController.placesDelegate = self.placesDelegate;
+        [self.navigationController pushViewController:signUpViewController animated:YES];
     }
 }
 
@@ -298,7 +303,7 @@
             [WGProfile currentUser].gender = [WGUser genderFromName:[userResponse objectForKey:@"gender"]];
         }
         
-        if (!_alertShown && !_fetchingProfilePictures) {
+        if (!_alertShown && !self.fetchingProfilePictures) {
             [self loginUserAsynchronous];
         }
     }
@@ -379,19 +384,24 @@
     [WGProfile currentUser].facebookId = _fbID;
     [WGProfile currentUser].facebookAccessToken = _accessToken;
     
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
 
+    __weak typeof(self) weakSelf = self;
     [[WGProfile currentUser] login:^(BOOL success, NSError *error) {
-        [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (error) {
-            _fetchingProfilePictures = YES;
-            [self logout];
-            [self fetchTokensFromFacebook];
-            [self fetchProfilePicturesAlbumFacebook];
+            strongSelf.fetchingProfilePictures = YES;
+            [strongSelf logout];
+            [strongSelf fetchTokensFromFacebook];
+            if ([error.localizedDescription isEqual:@"Request failed: not found (404)"]) {
+                [strongSelf fetchProfilePicturesAlbumFacebook];
+            }
             [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLogin];
             return;
         }
-        [self navigate];
+        [strongSelf navigate];
     }];
 }
 
@@ -399,8 +409,9 @@
     if (![[WGProfile currentUser].emailValidated boolValue]) {
         if (!_pushed) {
             _pushed = YES;
-            self.emailConfirmationViewController = [[EmailConfirmationViewController alloc] init];
-            [self.navigationController pushViewController:self.emailConfirmationViewController animated:YES];
+            EmailConfirmationViewController *emailConfirmationViewController = [EmailConfirmationViewController new];
+            emailConfirmationViewController.placesDelegate = self.placesDelegate;
+            [self.navigationController pushViewController:emailConfirmationViewController animated:YES];
         }
     } else {
         PFInstallation *currentInstallation = [PFInstallation currentInstallation];
@@ -412,8 +423,18 @@
         if (!_pushed) {
             _pushed = YES;
             if ([[WGProfile currentUser].group.locked boolValue]) {
+                if (WGProfile.currentUser.findReferrer) {
+                    [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
+                    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                    [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
+                    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+                    WGProfile.currentUser.findReferrer = NO;
+                    [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
+                }
                 [self.navigationController setNavigationBarHidden:YES animated:NO];
-                [self.navigationController pushViewController:[BatteryViewController new] animated:NO];
+                BatteryViewController *batteryViewController = [BatteryViewController new];
+                batteryViewController.placesDelegate = self.placesDelegate;
+                [self.navigationController pushViewController:batteryViewController animated:NO];
             } else {
                 [self loadMainViewController];
             }
@@ -424,7 +445,7 @@
 
 
 - (void)reloadedUserInfo:(BOOL)success andError:(NSError *)error {
-    [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+    [WGSpinnerView removeDancingGFromCenterView:self.view];
     if (error || !success) {
         if (!_fbID || !_accessToken) {
             [self fetchTokensFromFacebook];
@@ -439,7 +460,6 @@
 
 - (void)loadMainViewController {
     [self dismissViewControllerAnimated:NO  completion:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"loadViewAfterSigningUser" object:self];
 }
 
 @end

@@ -9,20 +9,16 @@
 #import "BatteryViewController.h"
 #import "Globals.h"
 #import "OnboardFollowViewController.h"
+#import "ReferalViewController.h"
 
-UIImageView *orangeImageView;
-NSNumber *currentTotal;
 NSNumber *currentNumGroups;
-int widthShared;
-UIImageView *batteryImageView;
-NSTimer *fetchTimer;
 
 @implementation BatteryViewController
 
 - (id)init {
     self = [super init];
     if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
     }
     return self;
 }
@@ -31,198 +27,174 @@ NSTimer *fetchTimer;
 - (void)viewDidLoad {
     [super viewDidLoad];
    
-    widthShared = 100;
-    [self fetchSummaryGoingOut];
-    [self initializeBackground];
     [self initializeNameOfSchool];
     [self initializeShareLabel];
-    [self initializeBattery];
     [self initializeShareButton];
+    [self fetchPeekSchools];
     
-    fetchTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(checkIfGroupIsUnlocked) userInfo:nil repeats:YES];
+    self.fetchTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(checkIfGroupIsUnlocked) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self checkIfGroupIsUnlocked];
+    if (self.fetchTimer) [self.fetchTimer fire];
+    
+    [WGAnalytics tagEvent:@"Battery View"];
+    if (self.blurredBackgroundImage) {
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        imageView.image = self.blurredBackgroundImage;
+        [self.view addSubview:imageView];
+        [self.view sendSubviewToBack:imageView];
+    }
+    [self showReferral];
 }
 
 -(void) checkIfGroupIsUnlocked {
+    __weak typeof(self) weakSelf = self;
     [WGProfile reload:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             return;
         }
-        if ([WGProfile currentUser].group.locked && ![[WGProfile currentUser].group.locked boolValue]) {
-            [fetchTimer invalidate];
-            fetchTimer = nil;
-            [self.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
+        if (WGProfile.currentUser.group.locked &&
+            ![WGProfile.currentUser.group.locked boolValue]) {
+            [strongSelf.fetchTimer invalidate];
+            strongSelf.fetchTimer = nil;
+            [strongSelf.placesDelegate setGroupID:WGProfile.currentUser.group.id andGroupName:WGProfile.currentUser.group.name];
+            [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
         }
     }];
 }
 
-- (void)initializeBackground {
-    UIImageView *batteryBackground = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"batteryBackground"]];
-    batteryBackground.frame = self.view.frame;
-    [self.view addSubview:batteryBackground];
-}
 
 - (void)initializeNameOfSchool {
-    if ([WGProfile currentUser].group.name) {
-        UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 60, self.view.frame.size.width - 44, 60)];
-        schoolLabel.text = [WGProfile currentUser].group.name;
+    if (WGProfile.currentUser.group.name) {
+        UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 80, self.view.frame.size.width - 44, 60)];
+        schoolLabel.text = WGProfile.currentUser.group.name;
         schoolLabel.textAlignment = NSTextAlignmentCenter;
         schoolLabel.numberOfLines = 0;
         schoolLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        schoolLabel.textColor = [UIColor whiteColor];
+        schoolLabel.textColor = UIColor.whiteColor;
         schoolLabel.font = [FontProperties scMediumFont:20];
         [self.view addSubview:schoolLabel];
-
     }
 }
 
-- (void)initializeBattery {
-    //193
-    UILabel *youAreAlmostThereLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, self.view.frame.size.height/2 - 80, self.view.frame.size.width - 44, 20)];
-    youAreAlmostThereLabel.text = @"You are almost there...";
-    youAreAlmostThereLabel.textAlignment = NSTextAlignmentCenter;
-    youAreAlmostThereLabel.textColor = [UIColor whiteColor];
-    youAreAlmostThereLabel.font = [FontProperties mediumFont:15.0f];
-    [self.view addSubview:youAreAlmostThereLabel];
-    
-    batteryImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"batteryImage"]];
-    batteryImageView.frame = CGRectMake(76, self.view.frame.size.height/2 - 55, 168, 57);
-    batteryImageView.center = CGPointMake(self.view.center.x, batteryImageView.center.y);
-    [self.view addSubview:batteryImageView];
-
-    
-    UILabel *orangeLabel = [[UILabel alloc] initWithFrame:CGRectMake(batteryImageView.frame.origin.x+4, self.view.frame.size.height/2 - 51, 14, 48)];
-    orangeLabel.backgroundColor = [FontProperties getOrangeColor];
-    [self.view addSubview:orangeLabel];
-    
-    orangeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(batteryImageView.frame.origin.x+10, self.view.frame.size.height/2 - 53, 20, 54)];
-    orangeImageView.image = [UIImage imageNamed:@"batteryRectangle"];
-    [self.view addSubview:orangeImageView];
-    
-    [self.view bringSubviewToFront: batteryImageView];
-    
-  
-}
-
 - (void)initializeShareLabel {
-    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.view.frame.size.height/2 + 10, self.view.frame.size.width - 20, 100)];
+    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height/2  - 120, self.view.frame.size.width - 30, 120)];
     shareLabel.font = [FontProperties mediumFont:18.0f];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.textColor = [UIColor whiteColor];
     shareLabel.numberOfLines = 0;
     shareLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-    NSString *string = @"Wigo will unlock when more people from your school download the app. Share Wigo to charge the battery and speed things up!";
+    NSString *string = [NSString stringWithFormat:@"%@, Wigo will unlock when more people from your school download the app. Email hello@wigo.us to become a campus ambassador and share Wigo to speed things up!", WGProfile.currentUser.firstName];
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
     [text addAttribute:NSForegroundColorAttributeName
                  value:RGB(238, 122, 11)
-                 range:NSMakeRange(94, 7)];
+                 range:NSMakeRange(WGProfile.currentUser.firstName.length + 12, 6)];
     [text addAttribute:NSForegroundColorAttributeName
                  value:RGB(238, 122, 11)
-                 range:NSMakeRange(10, 6)];
+                 range:NSMakeRange(WGProfile.currentUser.firstName.length + 77, 13)];
     
     shareLabel.attributedText = text;
     [self.view addSubview:shareLabel];
 }
 
-- (void)initializeJoinLabel {
-    UILabel *joinLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 65 - 35, self.view.frame.size.width - 40, 25)];
-    joinLabel.textAlignment = NSTextAlignmentCenter;
-    joinLabel.textColor = [UIColor whiteColor];
-    joinLabel.font = [FontProperties mediumFont:19.0f];
-   
-    if (currentNumGroups) {
-        NSString *string =[NSString stringWithFormat:@"Join %@ schools already on Wigo", [currentNumGroups stringValue]];
-        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
-        [text addAttribute:NSForegroundColorAttributeName
-                     value:[UIColor whiteColor]
-                     range:NSMakeRange(0, string.length)];
-        [text addAttribute:NSForegroundColorAttributeName
-                     value:RGB(238, 122, 11)
-                     range:NSMakeRange(5, [currentNumGroups stringValue].length)];
-        joinLabel.attributedText = text;
-    }
-    [self.view addSubview:joinLabel];
-}
-
 - (void)initializeShareButton {
-    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 100, self.view.frame.size.height - 65, 200, 48)];
-    shareButton.backgroundColor = RGB(238, 122, 11);
+    UIButton *shareButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 100, self.view.frame.size.height/2 + 10, 200, 48)];
     [shareButton setTitle:@"Share Wigo" forState:UIControlStateNormal];
-    [shareButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [shareButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     shareButton.titleLabel.font = [FontProperties getBigButtonFont];
     shareButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    shareButton.layer.borderColor = [UIColor clearColor].CGColor;
+    shareButton.layer.borderColor = UIColor.whiteColor.CGColor;
     shareButton.layer.borderWidth = 1;
-    shareButton.layer.cornerRadius = 15;
+    shareButton.layer.cornerRadius = 8;
     [shareButton addTarget:self action:@selector(sharedPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:shareButton];
 }
 
 - (void)sharedPressed {
     [WGAnalytics tagEvent:@"Share Pressed"];
-    NSArray *activityItems;
-    if ([WGProfile currentUser].group.name && currentNumGroups) {
-        activityItems =  @[[NSString stringWithFormat:@"%@:\n%@ schools are going out on Wigo.\nLet's do this: wigo.us/app", [[WGProfile currentUser].group.name uppercaseString], [currentNumGroups stringValue]], [UIImage imageNamed:@"wigoApp" ]];
-    } else {
-        activityItems = @[@"Who is going out? #Wigo http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
-    }
+    NSArray *activityItems = @[@"This Wigo app is going to change the game! http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
+
     
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
     activityVC.excludedActivityTypes = @[UIActivityTypeCopyToPasteboard, UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeAirDrop, UIActivityTypeSaveToCameraRoll];
     [self presentViewController:activityVC animated:YES completion:nil];
-    activityVC.completionHandler = ^(NSString *activityType, BOOL completed) {
-        if (completed) {
-            int width = orangeImageView.frame.size.width;
-            float percentage = (float)(width - 40)/(float)98;
-            if (percentage < 1) {
-                percentage = (float)MIN(0.96, (float)percentage + (float)widthShared/(float)500);
-            }
-            percentage = MIN(0.96, percentage);
-            width = 40 + percentage * (138 - 40);
-            [UIView animateWithDuration:3
-                                  delay:0
-                                options:UIViewAnimationOptionCurveEaseInOut
-                             animations:^{
-                                 orangeImageView.frame = CGRectMake(84, self.view.frame.size.height/2 - 53, width, 54);
-                             }
-                             completion:nil];
-        }
-    };
 }
 
-
-- (void) fetchSummaryGoingOut {
-    [WGGroup getGroupSummary:^(NSNumber *total, NSNumber *numGroups, NSNumber *private, NSNumber *public, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                return;
-            }
-            currentTotal = total;
-            currentNumGroups = numGroups;
-            [self initializeJoinLabel];
-            [self chargeBattery];
-        });
-    }];
+- (void)initializePeekButton {
+    NSDictionary *sectionDictionary = [self.schoolSections objectAtIndex:1];
+    NSArray *arrayOfSchools = [sectionDictionary objectForKey:@"schools"];
+    NSDictionary *schoolDictionary = [arrayOfSchools objectAtIndex:0];
+    self.groupID = [schoolDictionary objectForKey:@"id"];
+    self.groupName = [schoolDictionary objectForKey:@"name"];
+    [self.placesDelegate setGroupID:self.groupID andGroupName:self.groupName];
+    NSString *str = @"0001F440";
+    NSScanner *hexScan = [NSScanner scannerWithString:str];
+    unsigned int hexNum;
+    [hexScan scanHexInt:&hexNum];
+    UTF32Char inputChar = hexNum;
+    NSString *res = [[NSString alloc] initWithBytes:&inputChar length:4 encoding:NSUTF32LittleEndianStringEncoding];
+    UILabel *eyeballsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 30)];
+    eyeballsLabel.text = res;
+    eyeballsLabel.textAlignment = NSTextAlignmentCenter;
+    eyeballsLabel.font = [FontProperties mediumFont:30.0f];
+    [self.view addSubview:eyeballsLabel];
+    
+    NSString *titleString = [NSString stringWithFormat:@"Live Peek at %@", self.groupName];
+    UIButton *peekButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 70, self.view.frame.size.width, 70)];
+    [peekButton addTarget:self action:@selector(peekSchoolPressed) forControlEvents:UIControlEventTouchUpInside];
+    peekButton.center = CGPointMake(self.view.center.x, peekButton.center.y);
+    [peekButton setTitle:titleString forState:UIControlStateNormal];
+    [peekButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    peekButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    peekButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
+    peekButton.titleLabel.numberOfLines = 0;
+    peekButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [self.view addSubview:peekButton];
+    
+    UIImageView *orangeBackgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, peekButton.frame.size.width, peekButton.frame.size.height)];
+    orangeBackgroundImageView.image = [UIImage imageNamed:@"orangeGradientBackground"];
+    [peekButton addSubview:orangeBackgroundImageView];
+    [peekButton bringSubviewToFront:orangeBackgroundImageView];
+    
+    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(peekButton.frame.size.width - 5 - 30, peekButton.frame.size.height/2 - 4, 5, 8)];
+    rightArrowImageView.image = [UIImage imageNamed:@"batteryRightPost"];
+    [peekButton addSubview:rightArrowImageView];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(peekButton.frame.size.width/2 - 50, 0, 100, 1)];
+    lineView.backgroundColor = RGBAlpha(255, 255, 255, 0.3f);
+    [peekButton addSubview:lineView];
 }
 
-- (void)chargeBattery {
-    if (currentTotal) {
-        float percentage = MIN([currentTotal floatValue]/500, 1);
-        int width = 40 + percentage * (138 - 40);
-        [UIView animateWithDuration:3
-                              delay:0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^{
-                             orangeImageView.frame = CGRectMake(orangeImageView.frame.origin.x, self.view.frame.size.height/2 - 53, width, 54);
-                         }
-                         completion:nil];
+- (void)showReferral {
+    if (WGProfile.currentUser.findReferrer) {
+        [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        WGProfile.currentUser.findReferrer = NO;
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
     }
+}
+
+- (void)peekSchoolPressed {
+    [self.fetchTimer invalidate];
+    [self.placesDelegate presentViewWithGroupID:self.groupID andGroupName:self.groupName];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)fetchPeekSchools {
+    __weak typeof(self) weakSelf = self;
+    [WGApi get:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (!error && [WGProfile.currentUser.group.verified boolValue]) {
+            strongSelf.schoolSections = [jsonResponse objectForKey:@"sections"];
+            [strongSelf initializePeekButton];
+        }
+    }];
 }
 
 @end

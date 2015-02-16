@@ -17,6 +17,8 @@
 #define kGroupKey @"group"
 #define kIsAttendingKey @"is_attending"
 #define kSchoolStatisticsKey @"school_statistics"
+#define kImageQuality @"imageQuality"
+#define kImageMultiple @"imageMultiple"
 #define kGoogleAnalyticsEnabledKey @"googleAnalyticsEnabled"
 #define kCanFetchAppStartupKey @"canFetchAppStartup"
 #define kTriedToRegisterKey @"triedToRegister"
@@ -159,6 +161,26 @@ static WGProfile *currentUser = nil;
     return [[NSUserDefaults standardUserDefaults] objectForKey:kSchoolStatisticsKey];
 }
 
+- (void)setImageQuality:(float)imageQuality {
+    [[NSUserDefaults standardUserDefaults] setFloat:imageQuality forKey:kImageMultiple];
+}
+
+- (float)imageQuality {
+    int returnedImageQuality = [[NSUserDefaults standardUserDefaults] floatForKey:kImageMultiple];
+    if (returnedImageQuality == 0) return 0.8;
+    return returnedImageQuality;
+}
+
+- (void)setImageMultiple:(float)imageMultiple {
+    [[NSUserDefaults standardUserDefaults] setFloat:imageMultiple forKey:kImageMultiple];
+}
+
+- (float)imageMultiple {
+      int returnedImageMultiple = [[NSUserDefaults standardUserDefaults] floatForKey:kImageMultiple];
+    if (returnedImageMultiple == 0) return 1.0f;
+    return returnedImageMultiple;
+}
+
 -(void) setGoogleAnalyticsEnabled:(NSNumber *)googleAnalyticsEnabled {
     [[NSUserDefaults standardUserDefaults] setObject:googleAnalyticsEnabled forKey:kGoogleAnalyticsEnabledKey];
 }
@@ -209,7 +231,7 @@ static WGProfile *currentUser = nil;
 
 -(void) addChosenPerson:(WGUser *)person {
     if (!self.chosenPeople) {
-        self.chosenPeople = [WGCollection serializeArray:@[] andClass:[WGUser class]];
+        self.chosenPeople = [[WGCollection alloc] initWithType:[WGUser class]];
     }
     [self.chosenPeople addObject:person];
 }
@@ -339,16 +361,18 @@ static WGProfile *currentUser = nil;
         [parameters setObject:self.firstName forKey:kFirstNameKey];
     }
     if (self.lastName) {
-        [parameters setObject:self.firstName forKey:kLastNameKey];
+        [parameters setObject:self.lastName forKey:kLastNameKey];
     }
     if (self.gender) {
-        [parameters setObject:[self genderName] forKey:kGenderKey];
+        [parameters setObject:self.genderName forKey:kGenderKey];
     }
     [WGApi post:@"register" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];
             if ([jsonResponse objectForKey:@"message"]) {
                 [newInfo setObject:[jsonResponse objectForKey:@"message"] forKey:@"wigoMessage"];
+            }
+            if ([jsonResponse objectForKey:@"field"]) {
                 [newInfo setObject:[jsonResponse objectForKey:@"field"] forKey:@"wigoField"];
             }
             handler(NO, [NSError errorWithDomain:error.domain code:error.code userInfo:newInfo]);

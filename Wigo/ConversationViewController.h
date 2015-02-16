@@ -14,5 +14,8 @@
 
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;
 - (id)initWithUser: (WGUser *)user;
+@property (nonatomic, strong) WGCollection *messages;
+@property (nonatomic, strong) UIView *viewForEmptyConversation;
+@property (nonatomic, assign) BOOL fetching;
 
 @end

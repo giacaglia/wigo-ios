@@ -11,18 +11,17 @@
 
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
+#import "MessageViewController.h"
+#import "ConversationViewController.h"
 
 @interface ChatViewController () {
     UIView *_lineView;
 }
 
-@property UITableView *tableViewOfPeople;
 @property WGCollection *messages;
 @property NSNumber *page;
-@property BOOL fetchingFirstPage;
 @end
 
-UIButton *newChatButton;
 
 @implementation ChatViewController
 
@@ -41,7 +40,7 @@ UIButton *newChatButton;
         }
     }
     
-    [WiGoSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [self initializeNewChatButton];
     [self initializeTableOfChats];
     [self initializeLeftBarButton];
@@ -90,7 +89,7 @@ UIButton *newChatButton;
 }
 
 - (void)scrollUp {
-    [_tableViewOfPeople setContentOffset:CGPointZero animated:YES];
+    [self.tableViewOfPeople setContentOffset:CGPointZero animated:YES];
 }
 
 - (void)initializeRightBarButtonItem {
@@ -106,35 +105,35 @@ UIButton *newChatButton;
 }
 
 - (void) writeMessage {
-    self.messageViewController = [[MessageViewController alloc] init];
-    [self.navigationController pushViewController:self.messageViewController animated:YES];
+    [self.navigationController pushViewController:[MessageViewController new] animated:YES];
 }
 
 
 - (void)initializeNewChatButton {
-    newChatButton = [[UIButton alloc] initWithFrame:CGRectMake(40, self.view.frame.size.height/2 - 20, self.view.frame.size.width - 2*40, 40)];
-    [newChatButton addTarget:self action:@selector(writeMessage) forControlEvents:UIControlEventTouchUpInside];
-    newChatButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
-    [newChatButton setTitle:@"Start a New Chat" forState:UIControlStateNormal];
-    [newChatButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    newChatButton.hidden = YES;
-    [self.view addSubview:newChatButton];
+    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(40, self.view.frame.size.height/2 - 20, self.view.frame.size.width - 2*40, 40)];
+    [self.chatButton addTarget:self action:@selector(writeMessage) forControlEvents:UIControlEventTouchUpInside];
+    self.chatButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
+    [self.chatButton setTitle:@"Start a New Chat" forState:UIControlStateNormal];
+    [self.chatButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    self.chatButton.hidden = YES;
+    [self.view addSubview:self.chatButton];
 }
 
 - (void)initializeTableOfChats {
-    _tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-    _tableViewOfPeople.delegate = self;
-    _tableViewOfPeople.dataSource = self;
-    _tableViewOfPeople.backgroundColor = [UIColor clearColor];
-    _tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [self.view addSubview:_tableViewOfPeople];
+    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    self.tableViewOfPeople.delegate = self;
+    self.tableViewOfPeople.dataSource = self;
+    self.tableViewOfPeople.backgroundColor = UIColor.clearColor;
+    self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.tableViewOfPeople registerClass:[ChatCell class] forCellReuseIdentifier:kChatCellName];
+    [self.view addSubview:self.tableViewOfPeople];
     [self addRefreshToTableView];
 }
 
 #pragma mark - RefreshTableView 
 
 - (void)addRefreshToTableView {
-    [WiGoSpinnerView addDancingGToUIScrollView:_tableViewOfPeople withHandler:^{
+    [WGSpinnerView addDancingGToUIScrollView:self.tableViewOfPeople withHandler:^{
         [self fetchFirstPageMessages];
     }];
 }
@@ -142,20 +141,21 @@ UIButton *newChatButton;
 #pragma mark - Network functions
 
 - (void)fetchFirstPageMessages {
-    if (!_fetchingFirstPage) {
-        _fetchingFirstPage = YES;
+    if (!self.fetchingFirstPage) {
+        self.fetchingFirstPage = YES;
         [self fetchMessages];
     }
 }
 
 - (void)fetchMessages {
     __weak typeof(self) weakSelf = self;
-    if (_fetchingFirstPage) {
+    if (self.fetchingFirstPage) {
         [WGMessage getConversations:^(WGCollection *collection, NSError *error) {
             __strong typeof(self) strongSelf = weakSelf;
-            [WiGoSpinnerView removeDancingGFromCenterView:self.view];
+            [WGSpinnerView removeDancingGFromCenterView:self.view];
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             strongSelf.messages = collection;
@@ -163,12 +163,12 @@ UIButton *newChatButton;
             
             if ([strongSelf.messages count] == 0) {
                 strongSelf.tableViewOfPeople.hidden = YES;
-                newChatButton.hidden = NO;
+                strongSelf.chatButton.hidden = NO;
             } else {
                 strongSelf.tableViewOfPeople.hidden = NO;
-                newChatButton.hidden = YES;
+                strongSelf.chatButton.hidden = YES;
             }
-            _fetchingFirstPage = NO;
+            strongSelf.fetchingFirstPage = NO;
             [strongSelf.tableViewOfPeople reloadData];
             [strongSelf.tableViewOfPeople didFinishPullToRefresh];
         }];
@@ -176,7 +176,7 @@ UIButton *newChatButton;
         [_messages addNextPage:^(BOOL success, NSError *error) {
             __strong typeof(self) strongSelf = weakSelf;
             strongSelf.tableViewOfPeople.hidden = NO;
-            newChatButton.hidden = YES;
+            strongSelf.chatButton.hidden = YES;
             [strongSelf.tableViewOfPeople reloadData];
             [strongSelf.tableViewOfPeople didFinishPullToRefresh];
         }];
@@ -185,13 +185,17 @@ UIButton *newChatButton;
 
 - (void)deleteConversationAsynchronusly:(WGMessage *)message {
     [message.otherUser deleteConversation:^(BOOL success, NSError *error) {
-        // Do nothing
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+        }
     }];
 }
 
 - (void)markMessageAsRead:(WGMessage *)message {
     [message.otherUser readConversation:^(BOOL success, NSError *error) {
-        // Do nothing!
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+        }
     }];
 }
 
@@ -204,72 +208,43 @@ UIButton *newChatButton;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     int hasNextPage = ([_messages.hasNextPage boolValue] ? 1 : 0);
-    return [_messages count] + hasNextPage;
+    return _messages.count + hasNextPage;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    cell.contentView.backgroundColor = [UIColor whiteColor];
 
-    if ([indexPath row] == [_messages count]) {
+    ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kChatCellName forIndexPath:indexPath];
+    
+    if (indexPath.row == _messages.count) {
         [self fetchMessages];
         return cell;
     }
     
-    if ([_messages count] == 0) return cell;
+    if (_messages.count  == 0) return cell;
     WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
     WGUser *user = [message otherUser];
-    
-    UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setSmallImageForUser:user completed:nil];
-    [cell.contentView addSubview:profileImageView];
-    
-    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    textLabel.text = [user fullName];
-    textLabel.font = [FontProperties getSubtitleFont];
-    [cell.contentView addSubview:textLabel];
-    
-    UIImageView *lastMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(85, 25, 150, 40)];
-    UILabel *lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 40)];
-    lastMessageLabel.text = [message message];
-    lastMessageLabel.font = [FontProperties lightFont:13.0f];
-    lastMessageLabel.textColor = [UIColor blackColor];
-    lastMessageLabel.textAlignment = NSTextAlignmentLeft;
-    lastMessageLabel.numberOfLines = 2;
-    lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+   
+    [cell.profileImageView setSmallImageForUser:user completed:nil];
+    cell.nameLabel.text = user.fullName;
+    cell.timeLabel.text = [message.created getUTCTimeStringToLocalTimeString];
 
-    if ([message expired]) {
-        lastMessageLabel.textColor = RGB(150, 150, 150);
-        lastMessageLabel.text = [message message];
-        [lastMessageImageView addSubview:lastMessageLabel];
+    cell.lastMessageLabel.text = message.message;
+    if (message.expired) {
+        cell.lastMessageLabel.textColor = RGB(150, 150, 150);
         UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[message message]];
         if (!blurredImage) {
-            blurredImage = [UIImageCrop blurredImageFromImageView:lastMessageImageView withRadius:3.0f];
+            blurredImage = [UIImageCrop blurredImageFromImageView:cell.lastMessageImageView withRadius:3.0f];
             [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:[message message]];
         }
-        lastMessageImageView.image = blurredImage;
-        [lastMessageLabel removeFromSuperview];
+        cell.lastMessageImageView.image = blurredImage;
+        cell.lastMessageLabel.hidden = YES;
     } else {
-        [lastMessageImageView addSubview:lastMessageLabel];
+        cell.lastMessageLabel.textColor = UIColor.blackColor;
+        cell.lastMessageLabel.hidden = NO;
     }
-    [cell.contentView addSubview:lastMessageImageView];
-
-    UILabel *timeStampLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, 10, 80, 20)];
-    timeStampLabel.font = [FontProperties lightFont:15.0f];
-    timeStampLabel.text = [message.created getUTCTimeStringToLocalTimeString];
-    timeStampLabel.textColor = RGB(179, 179, 179);
-    timeStampLabel.textAlignment = NSTextAlignmentRight;
-    [cell.contentView addSubview:timeStampLabel];
-
+ 
     if (![message.isRead boolValue]) cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
+    else cell.contentView.backgroundColor = UIColor.whiteColor;
     
     return cell;
 }
@@ -280,7 +255,7 @@ UIButton *newChatButton;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 75;
+    return [ChatCell height];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -289,13 +264,13 @@ UIButton *newChatButton;
 
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (![_messages count] == 0) {
+    if (_messages.count != 0) {
         WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
         message.isRead = @YES;
         [self markMessageAsRead:message];
         WGUser *user = [message otherUser];
-        self.conversationViewController = [[ConversationViewController alloc] initWithUser:user];
-        [self.navigationController pushViewController:self.conversationViewController animated:YES];
+        ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
+        [self.navigationController pushViewController:conversationViewController animated:YES];
     }
 }
 
@@ -338,6 +313,54 @@ UIButton *newChatButton;
     UIGraphicsEndImageContext();
     
     return image;
+}
+
+@end
+
+@implementation ChatCell
+
++ (CGFloat) height {
+    return 75.0f;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [ChatCell height]);
+    self.contentView.frame = self.frame;
+    self.contentView.backgroundColor = UIColor.whiteColor;
+    
+    self.profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
+    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.profileImageView.clipsToBounds = YES;
+    [self.contentView addSubview:self.profileImageView];
+    
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+    self.nameLabel.font = [FontProperties getSubtitleFont];
+    [self.contentView addSubview:self.nameLabel];
+    
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 90, 10, 80, 20)];
+    self.timeLabel.font = [FontProperties lightFont:15.0f];
+    self.timeLabel.textColor = RGB(179, 179, 179);
+    self.timeLabel.textAlignment = NSTextAlignmentRight;
+    [self.contentView addSubview:self.timeLabel];
+    
+    self.lastMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(85, 25, 150, 40)];
+    [self.contentView addSubview:self.lastMessageImageView];
+
+    self.lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 40)];
+    self.lastMessageLabel.font = [FontProperties lightFont:13.0f];
+    self.lastMessageLabel.textColor = UIColor.blackColor;
+    self.lastMessageLabel.textAlignment = NSTextAlignmentLeft;
+    self.lastMessageLabel.numberOfLines = 2;
+    self.lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [self.lastMessageImageView addSubview:self.lastMessageLabel];
 }
 
 @end

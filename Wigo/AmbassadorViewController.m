@@ -276,10 +276,10 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 
 #pragma mark - Load Stats
 - (void) loadStats {
-    [WiGoSpinnerView addDancingGToCenterView: self.navigationController.view];
+    [WGSpinnerView addDancingGToCenterView: self.navigationController.view];
     
     [GroupStats loadStats:^(GroupStats *groupStats, NSError *error) {
-        [WiGoSpinnerView removeDancingGFromCenterView: self.navigationController.view];
+        [WGSpinnerView removeDancingGFromCenterView: self.navigationController.view];
         if (error) {
             //FIXME:Put alert here
             return;

@@ -87,11 +87,11 @@ UIViewController *webViewController;
 }
 
 - (void)saveDataAndGoBack {
-    [WiGoSpinnerView showOrangeSpinnerAddedTo:self.view];
+    [WGSpinnerView showOrangeSpinnerAddedTo:self.view];
     WGProfile.currentUser.instaHandle = _instaTextField.text;
     [WGProfile currentUser].privacy = _privacySwitch.on ? PRIVATE : PUBLIC;
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
-        [WiGoSpinnerView hideSpinnerForView:self.view];
+        [WGSpinnerView hideSpinnerForView:self.view];
         [self dismissViewControllerAnimated:YES  completion: nil];
     }];
 }
@@ -165,7 +165,7 @@ UIViewController *webViewController;
     UIButton*buttonSender = (UIButton *)sender;
     if (buttonSender.tag == -1) {
         [self.navigationController pushViewController:[FacebookAlbumTableViewController new] animated:YES];
-    } else {
+    } else if (buttonSender.tag < [[[WGProfile currentUser] images] count]) {
         [self.view endEditing:YES];
         self.photoViewController = [[PhotoViewController alloc] initWithImage:[[WGProfile currentUser].images objectAtIndex:buttonSender.tag]];
         self.photoViewController.indexOfImage = (int)buttonSender.tag;
@@ -403,6 +403,7 @@ UIViewController *webViewController;
     [WGProfile currentUser].isTapPushNotificationEnabled = [NSNumber numberWithBool:state];
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+        [[WGError sharedInstance] logError:error forAction:WGActionSave];
     }];
 }
 
@@ -411,6 +412,7 @@ UIViewController *webViewController;
     [WGProfile currentUser].isFavoritesGoingOutNotificationEnabled = [NSNumber numberWithBool:state];
     [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
         [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+        [[WGError sharedInstance] logError:error forAction:WGActionSave];
     }];
 }
 

@@ -1,4 +1,3 @@
-
 //
 //  WGApi.m
 //  Wigo
@@ -26,7 +25,7 @@ dispatch_queue_t postQueue;
 
 #define kWigoApiKey @"oi34u53205ju34ik23"
 #define kDeviceType @"iphone"
-#define kWigoApiVersion @"1.0.7 (enable_refs)"
+#define kWigoApiVersion @"1.0.8 (enable_refs)"
 #define kGZip @"gzip"
 #define kTrue @"true"
 #define kPOST @"POST"
@@ -47,7 +46,61 @@ static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
 static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 #endif
 
+
 @implementation WGApi
+
++(void) get:(NSString *)endpoint withSerializedHandler:(SerializedApiResultBlock)handler {
+    [WGApi getURL:[WGApi getUrlStringForEndpoint:endpoint] withSerializedHandler:handler];
+}
+
++(void) get:(NSString *)endpoint withArguments:(NSDictionary *)arguments andSerializedHandler:(SerializedApiResultBlock)handler {
+    NSString *fullEndpoint = [WGApi getStringWithEndpoint:endpoint andArguments:arguments];
+    [WGApi getURL:[WGApi getUrlStringForEndpoint:fullEndpoint] withSerializedHandler:handler];
+}
+
+
++(void) getURL:(NSString *)url withSerializedHandler:(SerializedApiResultBlock)handler {
+    NSLog(@"GET %@", url);
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    
+    // Hack for Ambassador View
+    BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
+    
+    [WGApi addWigoHeaders:manager.requestSerializer passKey:shouldPassKey];
+    
+    if (!postQueue) {
+        postQueue = dispatch_queue_create("com.whoisgoingout.wigo.postqueue", DISPATCH_QUEUE_CONCURRENT);
+    }
+    
+    dispatch_async(postQueue, ^(void) {
+        [manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            NSError *dataError;
+            NSDictionary *response;
+            @try {
+                WGParser *parser = [[WGParser alloc] init];
+                response = [parser replaceReferences:responseObject];
+            }
+            @catch (NSException *exception) {
+                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                
+                dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            }
+            @finally {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    handler(operation.response.URL, response, dataError);
+                });
+            }
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                handler(operation.response.URL, operation.responseObject, error);
+            });
+        }];
+    });
+}
+
 
 +(void) get:(NSString *)endpoint withHandler:(ApiResultBlock)handler {
     [WGApi getURL:[WGApi getUrlStringForEndpoint:endpoint] withHandler:handler];
@@ -57,6 +110,8 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     NSString *fullEndpoint = [WGApi getStringWithEndpoint:endpoint andArguments:arguments];
     [WGApi getURL:[WGApi getUrlStringForEndpoint:fullEndpoint] withHandler:handler];
 }
+
+
 
 +(void) getURL:(NSString *)url withHandler:(ApiResultBlock)handler {
     NSLog(@"GET %@", url);
@@ -214,6 +269,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     return [NSString stringWithFormat:baseURLString, endpoint];
 }
 
++ (void) setBaseURLString:(NSString *)newBaseURLString {
+    baseURLString = newBaseURLString;
+}
+
 +(NSString *) getStringWithEndpoint:(NSString *)endpoint andArguments:(NSDictionary *)arguments {
     NSString *fullEndpoint = [NSString stringWithString:endpoint];
     BOOL first = YES;
@@ -351,13 +410,14 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 +(void) startup:(WGStartupResult)handler {
     [WGApi get:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, nil, nil, error);
+            handler(nil, nil, nil, nil, error);
             return;
         }
         NSString *cdnPrefix;
         NSNumber *googleAnalyticsEnabled;
         NSNumber *schoolStatistics;
         NSError *dataError;
+        NSDictionary *imageProperties;
         @try {
             NSDictionary *cdn = [jsonResponse objectForKey:@"cdn"];
             cdnPrefix = [cdn objectForKey:@"uploads"];
@@ -367,6 +427,9 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             
             NSDictionary *provisioning = [jsonResponse objectForKey:@"provisioning"];
             schoolStatistics = [provisioning objectForKey:@"school_statistics"];
+            
+            NSDictionary *uploadsProperties = [jsonResponse objectForKey:@"uploads"];
+            imageProperties = [uploadsProperties objectForKey:@"image"];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -375,10 +438,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (dataError) {
-                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, dataError);
+                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, imageProperties, dataError);
                 return;
             }
-            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, dataError);
+            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, imageProperties, dataError);
         }
     }];
 }

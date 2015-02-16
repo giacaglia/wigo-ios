@@ -43,8 +43,8 @@
 
 -(void) replaceReferences {
     [super replaceReferences];
-    if ([self objectForKey:kAttendeesKey]  && [[self objectForKey:kAttendeesKey] isKindOfClass:[NSArray class]]) {
-        [self.parameters setObject:[WGCollection serializeArray:[self objectForKey:kAttendeesKey] andClass:[WGEventAttendee class]] forKey:kAttendeesKey];
+    if ([self objectForKey:kAttendeesKey]  && [[self objectForKey:kAttendeesKey] isKindOfClass:[NSDictionary class]]) {
+        [self.parameters setObject:[WGCollection serializeResponse:[self objectForKey:kAttendeesKey] andClass:[WGEventAttendee class]] forKey:kAttendeesKey];
     }
     if ([self objectForKey:kHighlightKey]  && [[self objectForKey:kHighlightKey] isKindOfClass:[NSDictionary class]]) {
         [self.parameters setObject:[WGEventMessage serialize:[self objectForKey:kHighlightKey]] forKey:kHighlightKey];
@@ -207,7 +207,7 @@
 }
 
 +(void) createEventWithName:(NSString *)name andHandler:(WGEventResultBlock)handler {
-    [WGApi post:@"events/" withParameters:@{ @"name" : name } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:@"events/" withParameters:@{ @"name" : name, @"attendees_limit" : @10 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

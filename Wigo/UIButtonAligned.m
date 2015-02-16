@@ -52,6 +52,9 @@
     else if ([self.type isEqualToNumber:@3]) {
         insets = UIEdgeInsetsMake(0, 0, 0, 8);
     }
+    else if ([self.type isEqualToNumber:@5]) {
+        insets = UIEdgeInsetsMake(0, 0, 0, 10.0f);
+    }
     return insets;
 }
 

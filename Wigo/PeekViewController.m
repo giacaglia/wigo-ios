@@ -114,10 +114,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchSchools {
+    __weak typeof(self) weakSelf = self;
     [WGApi get:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (!error) {
-            self.schoolSections = [jsonResponse objectForKey:@"sections"];
-            [self.schoolsTableView reloadData];
+            strongSelf.schoolSections = [jsonResponse objectForKey:@"sections"];
+            [strongSelf.schoolsTableView reloadData];
         }
     }];
 }

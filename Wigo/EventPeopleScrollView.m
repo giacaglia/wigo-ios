@@ -8,7 +8,8 @@
 
 #import "EventPeopleScrollView.h"
 #import "Globals.h"
-
+#import "UIView+ViewToImage.h"
+#import "UIImage+ImageEffects.h"
 
 @implementation EventPeopleScrollView
 
@@ -20,14 +21,54 @@
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
         self.event = event;
+        
+#warning remove event attendees feature for release
+        /* UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressGestureRecognizer:)];
+        [self addGestureRecognizer:longPressGesture];
+        longPressGesture.delegate = self; */
     }
     return self;
+}
+
+-(void)longPressGestureRecognizer:(UILongPressGestureRecognizer *)gestureRecognizer {
+    CGPoint p = [gestureRecognizer locationInView:self];
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        int index = [self indexAtPoint:p];
+        if (index >= 0 && index < [self.event.attendees count]) {
+            
+            UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
+            imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
+                                                                     tintColor:RGBAlpha(0, 0, 0, 0.75)
+                                                         saturationDeltaFactor:1.3
+                                                                     maskImage:nil];
+            
+            self.eventPeopleModalViewController = [[EventPeopleModalViewController alloc] initWithEvent:self.event startIndex:index andBackgroundImage:imageOfUnderlyingView];
+            [self.eventPeopleModalViewController.view addGestureRecognizer:gestureRecognizer];
+            self.eventPeopleModalViewController.placesDelegate = self.placesDelegate;
+            
+            [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];
+        }
+    } else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        [self.eventPeopleModalViewController untap:gestureRecognizer withSender:self];
+        [self.eventPeopleModalViewController.view removeGestureRecognizer:gestureRecognizer];
+        [self addGestureRecognizer:gestureRecognizer];
+    }
+    if (self.eventPeopleModalViewController) {
+        [self.eventPeopleModalViewController touchedLocation:gestureRecognizer];
+    }
+}
+
+-(int) indexAtPoint:(CGPoint) point {
+    return floor((point.x - 10) / (self.sizeOfEachImage + 3));
+}
+
+-(CGPoint) indexToPoint:(int) index {
+    return CGPointMake(10 + index * (self.sizeOfEachImage + 3) + self.sizeOfEachImage / 2, 0);
 }
 
 + (CGFloat) containerHeight {
     return (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7 + 25;
 }
-
 
 -(void) updateUI {
     [self.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -107,26 +148,12 @@
     if (!self.fetchingEventAttendees) {
         self.fetchingEventAttendees = YES;
         __weak typeof(self) weakSelf = self;
-        if (self.event.attendees.hasNextPage == nil) {
-            [WGEventAttendee getForEvent:self.event withHandler:^(WGCollection *collection, NSError *error) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    strongSelf.fetchingEventAttendees = NO;
-                    return;
-                }
-                strongSelf.event.attendees = collection;
-                
-                [strongSelf saveScrollPosition];
-                [strongSelf updateUI];
-                
-                strongSelf.fetchingEventAttendees = NO;
-            }];
-        } else if ([self.event.attendees.hasNextPage boolValue]) {
+        if ([self.event.attendees.hasNextPage boolValue]) {
             [self.event.attendees addNextPage:^(BOOL success, NSError *error) {
                 __strong typeof(self) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     strongSelf.fetchingEventAttendees = NO;
                     return;
                 }

@@ -16,15 +16,17 @@
 #import "WigoConfirmationViewController.h"
 #import "MobileContactsViewController.h"
 #import "InviteViewController.h"
-#import "SignViewController.h"
 #import "SignNavigationViewController.h"
 #import "PeekViewController.h"
 #import "EventStoryViewController.h"
-#import "FancyProfileViewController.h"
+#import "ProfileViewController.h"
 #import "FXBlurView.h"
 #import "ChatViewController.h"
+#import "BatteryViewController.h"
+#import "UIView+ViewToImage.h"
+#import "UIImage+ImageEffects.h"
+#import "ReferalViewController.h"
 
-//#define sizeOfEachCell [[UIScreen mainScreen] bounds].size.width/1.6
 #define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
 
 #define kEventCellName @"EventCell"
@@ -36,16 +38,10 @@
 @interface PlacesViewController () {
     UIView *_dimView;
     BOOL isLoaded;
-
 }
 
-@property (nonatomic, strong) UIView *loadingView;
-@property (nonatomic, strong) UIView *loadingIndicator;
 @property (nonatomic, strong) UIView *whereAreYouGoingView;
-@property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
-
 @property (nonatomic, assign) int tagInteger;
-
 @property (nonatomic, assign) BOOL isSearching;
 @property (nonatomic, strong) NSMutableArray *placeSubviewArray;
 @property (nonatomic, strong) UIImageView *searchIconImageView;
@@ -55,17 +51,13 @@
 @property (nonatomic, strong) UILabel *whereLabel;
 @property (nonatomic, assign) int yPositionOfWhereSubview;
 
-@property (nonatomic, strong) UITableView *placesTableView;
 
 //private pressed
 @property UIScrollView *scrollViewSender;
 @property CGPoint scrollViewPoint;
 
 // Events Summary
-@property WGCollection *events;
-@property WGCollection *oldEvents;
 @property WGCollection *filteredEvents;
-@property WGCollectionArray *userArray;
 
 // Go OUT Button
 @property UIButtonUngoOut *ungoOutButton;
@@ -73,24 +65,16 @@
 
 // Events By Days
 @property (nonatomic, strong) NSMutableArray *pastDays;
-@property (nonatomic, strong) NSMutableDictionary *dayToEventObjArray;
 
 //Go Elsewhere
 @property (nonatomic, strong) GoOutNewPlaceHeader *goElsewhereView;
 
-@property (nonatomic, strong) SignViewController *signViewController;
+
+@property (nonatomic, strong) UIView *blackViewOnTop;
 @end
 
-
-BOOL fetchingUserInfo;
-BOOL shouldAnimate;
 BOOL presentedMobileContacts;
-NSNumber *page;
-int sizeOfEachImage;
-BOOL shouldReloadEvents;
-int firstIndexOfNegativeEvent;
 BOOL firstTimeLoading;
-BOOL secondTimeFetchingUserInfo;
 
 @implementation PlacesViewController
 
@@ -101,12 +85,10 @@ BOOL secondTimeFetchingUserInfo;
 
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
-    fetchingUserInfo = NO;
+    self.fetchingUserInfo = NO;
     self.fetchingEventAttendees = NO;
-    shouldAnimate = NO;
     presentedMobileContacts = NO;
-    shouldReloadEvents = YES;
-    firstIndexOfNegativeEvent = -1;
+    self.shouldReloadEvents = YES;
     self.eventOffsetDictionary = [NSMutableDictionary new];
     for (UIView *view in self.navigationController.navigationBar.subviews) {
         for (UIView *view2 in view.subviews) {
@@ -124,14 +106,13 @@ BOOL secondTimeFetchingUserInfo;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     NSString *isPeeking = ([self isPeeking]) ? @"Yes" : @"No";
-
     [WGAnalytics tagEvent:@"Where View" withDetails: @{ @"isPeeking": isPeeking }];
 
     self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
 
     [self initializeNavigationBar];
-    [_placesTableView reloadData];
+    [self.placesTableView reloadData];
 
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -145,22 +126,32 @@ BOOL secondTimeFetchingUserInfo;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
     [self initializeFlashScreen];
-    if (![WGProfile currentUser].key) {
+    if (![WGProfile currentUser].key && !self.presentingLockedView) {
         [self showFlashScreen];
-        [_signViewController reloadedUserInfo:NO andError:nil];
+        [self.signViewController reloadedUserInfo:NO andError:nil];
     }
 
     [self.view endEditing:YES];
-    if (shouldReloadEvents) {
+    if (self.shouldReloadEvents) {
         [self fetchEventsFirstPage];
     } else {
-        shouldReloadEvents = YES;
+        self.shouldReloadEvents = YES;
     }
     [self fetchUserInfo];
     [self shouldShowCreateButton];
     [self showOnlyOnePlusButton];
+}
+
+- (void)showReferral {
+    if (WGProfile.currentUser.findReferrer) {
+        [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        WGProfile.currentUser.findReferrer = NO;
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
+    }
 }
 
 - (BOOL) shouldShowCreateButton {
@@ -203,7 +194,10 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void) initializeNavigationBar {
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
+    if (![WGProfile currentUser].group.id) {
+        self.navigationItem.leftBarButtonItem = nil;
+        self.navigationItem.rightBarButtonItem = nil;
+    } else if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
         CGRect profileFrame = CGRectMake(3, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
@@ -223,7 +217,7 @@ BOOL secondTimeFetchingUserInfo;
             self.leftRedDotLabel.layer.cornerRadius = 8;
         }
         [profileButton addSubview:self.leftRedDotLabel];
-        if ([[WGProfile currentUser].numUnreadNotifications intValue] > 0) {
+        if (WGProfile.currentUser.numUnreadNotifications.intValue > 0 || WGProfile.currentUser.numUnreadConversations.intValue > 0) {
             self.leftRedDotLabel.hidden = NO;
         } else {
             self.leftRedDotLabel.hidden = YES;
@@ -232,21 +226,16 @@ BOOL secondTimeFetchingUserInfo;
         self.navigationItem.leftBarButtonItem = profileBarButton;
         
         self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
-        imageView.image = [UIImage imageNamed:@"followPlusWhite"];
-        [self.rightButton addTarget:self action:@selector(followPressed)
-                   forControlEvents:UIControlEventTouchUpInside];
-        [self.rightButton addSubview:imageView];
-        [self.rightButton setShowsTouchWhenHighlighted:YES];
-        UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
-        self.navigationItem.rightBarButtonItem = rightBarButton;
-        
-        [self.rightButton.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         UIImageView *followPlusWhiteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
         followPlusWhiteImageView.image = [UIImage imageNamed:@"followPlusWhite"];
         [self.rightButton addSubview:followPlusWhiteImageView];
+        [self.rightButton addTarget:self action:@selector(followPressed)
+                   forControlEvents:UIControlEventTouchUpInside];
+        [self.rightButton setShowsTouchWhenHighlighted:YES];
+        UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
+        self.navigationItem.rightBarButtonItem = rightBarButton;
 
-        if ([[WGProfile currentUser].numUnreadUsers intValue] > 0) {
+        if ([WGProfile.currentUser.numUnreadUsers intValue] > 0) {
             self.redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, 10, 10)];
             self.redDotLabel.backgroundColor = [FontProperties getOrangeColor];
             self.redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
@@ -254,11 +243,12 @@ BOOL secondTimeFetchingUserInfo;
             self.redDotLabel.layer.borderWidth = 3;
             self.redDotLabel.layer.cornerRadius = 5;
             [self.rightButton addSubview:self.redDotLabel];
-        } else {
-            if (self.redDotLabel) [self.redDotLabel removeFromSuperview];
+        } else if (self.redDotLabel) {
+            [self.redDotLabel removeFromSuperview];
         }
-
-        
+    }
+    else if (self.presentingLockedView) {
+        self.navigationItem.rightBarButtonItem = nil;
     } else {
         self.navigationItem.leftBarButtonItem = nil;
         self.navigationItem.rightBarButtonItem = nil;
@@ -270,12 +260,13 @@ BOOL secondTimeFetchingUserInfo;
 -(void) initializeFlashScreen {
     if (!firstTimeLoading) {
         firstTimeLoading = YES;
-        _signViewController = [SignViewController new];
+        self.signViewController = [SignViewController new];
+        self.signViewController.placesDelegate = self;
     }
 }
 
 -(void) showFlashScreen {
-    SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:_signViewController];
+    SignNavigationViewController *signNavigationViewController = [[SignNavigationViewController alloc] initWithRootViewController:self.signViewController];
     [self presentViewController:signNavigationViewController animated:NO completion:nil];
 }
 
@@ -312,12 +303,7 @@ BOOL secondTimeFetchingUserInfo;
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(loadViewAfterSigningUser)
-                                                 name:@"loadViewAfterSigningUser"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(goToChat)
+                                             selector:@selector(goToChat:)
                                                  name:@"goToChat"
                                                object:nil];
     
@@ -332,25 +318,25 @@ BOOL secondTimeFetchingUserInfo;
                                                object:nil];
 }
 
-- (void)loadViewAfterSigningUser {
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
-}
-
-
-- (void)goToChat {
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+- (void)goToChat:(NSNotification *)notification {
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: NO];
-
+    
     ChatViewController *chatViewController = [ChatViewController new];
     chatViewController.view.backgroundColor = UIColor.whiteColor;
     [fancyProfileViewController.navigationController pushViewController:chatViewController animated:YES];
+        
+//    NSDictionary *messageInfo = notification.userInfo;
+//    WGMessage *newMessage = [[WGMessage alloc] initWithJSON:messageInfo];
+//    
+//    chatViewController.conversationViewController = [[ConversationViewController alloc] initWithUser:newMessage.user];
+//    [chatViewController.navigationController pushViewController:chatViewController.conversationViewController animated:YES];
 }
 
 - (void)goToProfile {
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: NO];
@@ -370,6 +356,7 @@ BOOL secondTimeFetchingUserInfo;
         [newEvent refresh:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
             EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
@@ -381,7 +368,7 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)scrollUp {
-    [_placesTableView setContentOffset:CGPointZero animated:YES];
+    [self.placesTableView setContentOffset:CGPointZero animated:YES];
 }
 
 - (void) updateViewNotGoingOut {
@@ -391,12 +378,12 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void) updateTitleView {
-    if (!self.groupName) self.groupName = [WGProfile currentUser].group.name;
-    UIButton *schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    [schoolButton setTitle:self.groupName forState:UIControlStateNormal];
-    [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
-    schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    if (!self.groupName) self.groupName = WGProfile.currentUser.group.name;
+    self.schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [self.schoolButton setTitle:self.groupName forState:UIControlStateNormal];
+    [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    [self.schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
+    self.schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
   
     CGFloat fontSize = 20.0f;
     CGSize size;
@@ -409,18 +396,20 @@ BOOL secondTimeFetchingUserInfo;
         
         fontSize -= 2.0;
     }
-    schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
+    self.schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
 
     UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, 0, 6, 5)];
-    [schoolButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     triangleImageView.image = [UIImage imageNamed:@"whiteTriangle"];
-    [schoolButton addSubview:triangleImageView];
+    [self.schoolButton addSubview:triangleImageView];
 
-    
-    self.navigationItem.titleView = schoolButton;
+    self.navigationItem.titleView = self.schoolButton;
+    if (self.presentingLockedView) self.schoolButton.enabled = NO;
+    else self.schoolButton.enabled = YES;
 }
 
 - (void)showSchools {
+    if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
     PeekViewController *peekViewController = [PeekViewController new];
     peekViewController.placesDelegate = self;
     [self presentViewController:peekViewController animated:YES completion:nil];
@@ -438,7 +427,7 @@ BOOL secondTimeFetchingUserInfo;
     _ungoOutButton.enabled = YES;
     [self.view endEditing:YES];
     [UIView animateWithDuration:0.2 animations:^{
-        _placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
+        self.placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-50);
         _whereAreYouGoingView.alpha = 0;
         _dimView.alpha = 0;
@@ -456,28 +445,28 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)initializeWhereView {
-    _placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64) style: UITableViewStyleGrouped];
+    self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64) style: UITableViewStyleGrouped];
 
-    _placesTableView.sectionHeaderHeight = 0;
-    _placesTableView.sectionFooterHeight = 0;
-    _placesTableView.backgroundColor = UIColor.whiteColor;
-    [self.view addSubview:_placesTableView];
-    _placesTableView.dataSource = self;
-    _placesTableView.delegate = self;
-    _placesTableView.showsVerticalScrollIndicator = NO;
-    [_placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    [_placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
-    [_placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
-    [_placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
-    _placesTableView.backgroundColor = RGB(241, 241, 241);
-    _placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.placesTableView.sectionHeaderHeight = 0;
+    self.placesTableView.sectionFooterHeight = 0;
+    self.placesTableView.backgroundColor = UIColor.whiteColor;
+    [self.view addSubview:self.placesTableView];
+    self.placesTableView.dataSource = self;
+    self.placesTableView.delegate = self;
+    self.placesTableView.showsVerticalScrollIndicator = NO;
+    [self.placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [self.placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
+    [self.placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
+    [self.placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
+    self.placesTableView.backgroundColor = RGB(241, 241, 241);
+    self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     _yPositionOfWhereSubview = 280;
     
-    CGRect frame = _placesTableView.bounds;
+    CGRect frame = self.placesTableView.bounds;
     frame.origin.y = -frame.size.height;
     UIView* whiteView = [[UIView alloc] initWithFrame:frame];
     whiteView.backgroundColor = UIColor.whiteColor;
-    [_placesTableView addSubview:whiteView];
+    [self.placesTableView addSubview:whiteView];
     
     [self addRefreshToScrollView];
     [self initializeGoingSomewhereElseButton];
@@ -493,6 +482,7 @@ BOOL secondTimeFetchingUserInfo;
 
 - (void)followPressed {
     if ([WGProfile currentUser].key) {
+        if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
         self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
         [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[WGProfile currentUser]] animated:YES];
     }
@@ -508,24 +498,26 @@ BOOL secondTimeFetchingUserInfo;
 - (void) goHerePressed:(id)sender {
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
     [WGAnalytics tagEvent:@"Go Here" withDetails:options];
-    shouldAnimate = YES;
-    _whereAreYouGoingTextField.text = @"";
+    self.whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
     [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
-    [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    [self.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     [self goOutToEventNumber:[NSNumber numberWithInt:(int) buttonSender.tag]];
 }
 
 - (void)goOutToEventNumber:(NSNumber*)eventID {
+    __weak typeof(self) weakSelf = self;
     [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : eventID }] withHandler:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
-        [WGProfile currentUser].isGoingOut = @YES;
-        [self updateTitleView];
-        [self fetchEventsFirstPage];
+        WGProfile.currentUser.isGoingOut = @YES;
+        [strongSelf updateTitleView];
+        [strongSelf fetchEventsFirstPage];
     }];
 }
 
@@ -561,8 +553,6 @@ BOOL secondTimeFetchingUserInfo;
         UIImage *bgImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         
-        
-        
         CGFloat yOrigin = self.whereAreYouGoingTextField.frame.origin.y + self.whereAreYouGoingTextField.frame.size.height;
         _dimView = [[UIView alloc] initWithFrame: CGRectMake(0, yOrigin, self.view.frame.size.width, self.view.frame.size.height - self.whereAreYouGoingTextField.frame.size.height)];
         
@@ -596,9 +586,9 @@ BOOL secondTimeFetchingUserInfo;
         self.navigationItem.leftBarButtonItem.customView.alpha = 0.0f;
         self.navigationItem.rightBarButtonItem.customView.alpha = 0.0f;
         
-        [_whereAreYouGoingTextField becomeFirstResponder];
+        [self.whereAreYouGoingTextField becomeFirstResponder];
         self.whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0, 50);
-        //_placesTableView.transform = CGAffineTransformMakeTranslation(0, 50);
+        //self.placesTableView.transform = CGAffineTransformMakeTranslation(0, 50);
         self.whereAreYouGoingView.alpha = 1.0f;
         
     } completion:^(BOOL finished) {
@@ -613,13 +603,9 @@ BOOL secondTimeFetchingUserInfo;
 
         //[self dismissKeyboard];
         _ungoOutButton.enabled = NO;
-        _placesTableView.userInteractionEnabled = NO;
-        [self textFieldDidChange:_whereAreYouGoingTextField];
+        self.placesTableView.userInteractionEnabled = NO;
+        [self textFieldDidChange:self.whereAreYouGoingTextField];
     }];
-    
-
-
-
 }
 
 - (void) cancelledAddEventTapped {
@@ -628,7 +614,8 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)profileSegue {
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
@@ -687,18 +674,18 @@ BOOL secondTimeFetchingUserInfo;
     
     [self.view addSubview:_whereAreYouGoingView];
     
-    _whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _whereAreYouGoingView.frame.size.width - 10, 50)];
-    _whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
-    _whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
-    _whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
+    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, _whereAreYouGoingView.frame.size.width - 10, 50)];
+    self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
+    self.whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
+    self.whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
     [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
-    _whereAreYouGoingTextField.delegate = self;
-    [_whereAreYouGoingTextField addTarget:self
+    self.whereAreYouGoingTextField.delegate = self;
+    [self.whereAreYouGoingTextField addTarget:self
                                    action:@selector(textFieldDidChange:)
                          forControlEvents:UIControlEventEditingChanged];
-    _whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
+    self.whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
     
-    [_whereAreYouGoingView addSubview:_whereAreYouGoingTextField];
+    [_whereAreYouGoingView addSubview:self.whereAreYouGoingTextField];
     
     
     CALayer *bottomBorder = [CALayer layer];
@@ -708,52 +695,65 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)clearTextField {
-    _placesTableView.userInteractionEnabled = YES;
-    _whereAreYouGoingTextField.text = @"";
-    [self textFieldDidChange:_whereAreYouGoingTextField];
+    self.placesTableView.userInteractionEnabled = YES;
+    self.whereAreYouGoingTextField.text = @"";
+    [self textFieldDidChange:self.whereAreYouGoingTextField];
 }
 
 
 - (void)createPressed {
-    if ([_whereAreYouGoingTextField.text length] != 0) {
-        _whereAreYouGoingTextField.enabled = NO;
+    if ([self.whereAreYouGoingTextField.text length] != 0) {
+        self.whereAreYouGoingTextField.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;
         [self addLoadingIndicator];
-        [WGEvent createEventWithName:_whereAreYouGoingTextField.text andHandler:^(WGEvent *object, NSError *error) {
+        __weak typeof(self) weakSelf = self;
+        [WGEvent createEventWithName:self.whereAreYouGoingTextField.text andHandler:^(WGEvent *object, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
             [UIView animateWithDuration:0.2f animations:^{
-                _loadingIndicator.frame = CGRectMake(0, 0, _loadingView.frame.size.width, _loadingView.frame.size.height);
+                strongSelf.loadingIndicator.frame = CGRectMake(0, 0, strongSelf.loadingView.frame.size.width, strongSelf.loadingView.frame.size.height);
             } completion:^(BOOL finished) {
-                if (finished) [_loadingView removeFromSuperview];
+                if (finished) [strongSelf.loadingView removeFromSuperview];
                 
-                _whereAreYouGoingTextField.enabled = YES;
-                self.navigationItem.rightBarButtonItem.enabled = YES;
+                strongSelf.whereAreYouGoingTextField.enabled = YES;
+                strongSelf.navigationItem.rightBarButtonItem.enabled = YES;
                 if (error) {
                     return;
                 }
-                
-                [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : object.id }] withHandler:^(BOOL success, NSError *error) {
+                __weak typeof(strongSelf) weakOfStrong = strongSelf;
+                [WGProfile.currentUser goingToEvent:object withHandler:^(BOOL success, NSError *error) {
+                    __strong typeof(weakOfStrong) strongOfStrong = weakOfStrong;
                     if (error) {
                         [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                        [[WGError sharedInstance] logError:error forAction:WGActionSave];
                         return;
                     }
                     
-                    [self removeProfileUserFromAnyOtherEvent];
+                    [strongOfStrong removeProfileUserFromAnyOtherEvent];
                     
-                    [_placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                    [strongOfStrong.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
                     
-                    [self dismissKeyboard];
-                    [self fetchEventsFirstPage];
-                    [self updateTitleView];
+                    [strongOfStrong dismissKeyboard];
+                    [strongOfStrong updateTitleView];
                     
                     [WGProfile currentUser].isGoingOut = @YES;
                     [WGProfile currentUser].eventAttending = object;
                     [WGProfile currentUser].isGoingOut = @YES;
                     
                     WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [WGProfile currentUser] }];
-                    WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
-                    object.attendees = eventAttendees;
                     
-                    [self showStoryForEvent:object];
+                    if ([strongOfStrong.allEvents containsObject:object]) {
+                        WGEvent *joinedEvent = (WGEvent *)[strongOfStrong.allEvents objectWithID:object.id];
+                        [joinedEvent.attendees insertObject:attendee atIndex:0];
+                        [strongOfStrong showStoryForEvent:joinedEvent];
+                    } else {
+                        if (object.attendees) {
+                            [object.attendees insertObject:attendee atIndex:0];
+                        } else {
+                            WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
+                            object.attendees = eventAttendees;
+                        }
+                        [strongOfStrong showStoryForEvent:object];
+                    }
                 }];
             }];
         }];
@@ -761,23 +761,23 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)addLoadingIndicator {
-    _loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, _whereAreYouGoingView.frame.size.height - 10, _whereAreYouGoingView.frame.size.width - 20, 5)];
-    _loadingView.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    _loadingView.layer.borderWidth = 1.0f;
-    _loadingView.layer.cornerRadius = 3.0f;
+    self.loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, _whereAreYouGoingView.frame.size.height - 10, _whereAreYouGoingView.frame.size.width - 20, 5)];
+    self.loadingView.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    self.loadingView.layer.borderWidth = 1.0f;
+    self.loadingView.layer.cornerRadius = 3.0f;
     
-    _loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, _loadingView.frame.size.height)];
-    _loadingIndicator.backgroundColor = [FontProperties getBlueColor];
-    [_loadingView addSubview:_loadingIndicator];
+    self.loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, self.loadingView.frame.size.height)];
+    self.loadingIndicator.backgroundColor = [FontProperties getBlueColor];
+    [self.loadingView addSubview:self.loadingIndicator];
     [UIView animateWithDuration:0.8f animations:^{
-        _loadingIndicator.frame = CGRectMake(0, 0, _loadingView.frame.size.width*0.7, _loadingView.frame.size.height);
+        self.loadingIndicator.frame = CGRectMake(0, 0, self.loadingView.frame.size.width*0.7, self.loadingView.frame.size.height);
     }];
-    [_whereAreYouGoingView addSubview:_loadingView];
+    [_whereAreYouGoingView addSubview:self.loadingView];
 }
 
 
 -(void)updateEvent:(WGEvent *)newEvent {
-    [_events replaceObjectAtIndex:[_events indexOfObject:newEvent] withObject:newEvent];
+    [self.events replaceObjectAtIndex:[self.events indexOfObject:newEvent] withObject:newEvent];
 }
 
 - (void)textFieldDidChange:(UITextField *)textField {
@@ -796,7 +796,7 @@ BOOL secondTimeFetchingUserInfo;
 
     }
 
-    [_placesTableView reloadData];
+    [self.placesTableView reloadData];
 }
 
 
@@ -807,7 +807,7 @@ BOOL secondTimeFetchingUserInfo;
 
 - (void)searchTableList:(NSString *)searchString {
     int index = 0;
-    for (WGEvent *event in _events) {
+    for (WGEvent *event in self.events) {
         NSComparisonResult comparisonResult = [event.name compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
         
         if (comparisonResult == NSOrderedSame && ![_filteredEvents containsObject:event]) {
@@ -843,7 +843,7 @@ BOOL secondTimeFetchingUserInfo;
             return [_filteredEvents count] + hasNextPage;
         } else {
             int hasNextPage = ([self.allEvents.hasNextPage boolValue] ? 1 : 0);
-            return [_events count] + hasNextPage;
+            return self.events.count + hasNextPage;
         }
     }
     else if (section == kHighlightsEmptySection) {
@@ -859,7 +859,6 @@ BOOL secondTimeFetchingUserInfo;
 
     return 0;
 }
-
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == kTodaySection) { //today section
@@ -898,7 +897,7 @@ BOOL secondTimeFetchingUserInfo;
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     if (section == kTodaySection) {
         self.goElsewhereView = [GoOutNewPlaceHeader init];
-        if ([_events count] > 0) [self.goElsewhereView setupWithMoreThanOneEvent:YES];
+        if (self.events.count > 0) [self.goElsewhereView setupWithMoreThanOneEvent:YES];
         else [self.goElsewhereView setupWithMoreThanOneEvent:NO];
         [self.goElsewhereView.addEventButton addTarget: self action: @selector(goingSomewhereElsePressed) forControlEvents: UIControlEventTouchUpInside];
         [self shouldShowCreateButton];
@@ -907,7 +906,6 @@ BOOL secondTimeFetchingUserInfo;
     
     return nil;
 }
-
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == kTodaySection) {
@@ -918,7 +916,7 @@ BOOL secondTimeFetchingUserInfo;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == kTodaySection) {
-        if (indexPath.item == _events.count) return 1;
+        if (indexPath.item == self.events.count) return 1;
         return sizeOfEachCell;
     }
     else if (indexPath.section == kHighlightsEmptySection) {
@@ -942,26 +940,31 @@ BOOL secondTimeFetchingUserInfo;
     return 0;
 }
 
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.pastDays.count > 0 && indexPath.section > 1) {
+        NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
+        NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
+        WGEvent *event = [eventObjectArray objectAtIndex:[indexPath row]];
+        [self showConversationForEvent:event];
+    }
+}
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
-        //cleanup
-
+        
         cell.placesDelegate = self;
         if (_isSearching) {
             if (indexPath.row == [_filteredEvents count]) {
                 return cell;
             }
-        } else {
-            if (indexPath.row == [_events count]) {
-                [self fetchEvents];
-                cell.eventNameLabel.text = nil;
-                cell.chatBubbleImageView.image = nil;
-                cell.postStoryImageView.image = nil;
-                [cell.eventPeopleScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-                return cell;
-            }
+        } else if (indexPath.row == self.events.count) {
+            [self fetchEvents];
+            cell.eventNameLabel.text = nil;
+            cell.chatBubbleImageView.image = nil;
+            cell.postStoryImageView.image = nil;
+            [cell.eventPeopleScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+            return cell;
         }
         
         WGEvent *event;
@@ -970,9 +973,9 @@ BOOL secondTimeFetchingUserInfo;
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
             event = (WGEvent *)[_filteredEvents objectAtIndex:[indexPath row]];
         } else {
-            int sizeOfArray = (int)[_events count];
-            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
-            event = (WGEvent *)[_events objectAtIndex:[indexPath row]];
+            int sizeOfArray = (int)self.events.count;
+            if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return cell;
+            event = (WGEvent *)[self.events objectAtIndex:indexPath.row];
         }
         cell.event = event;
         if (self.groupNumberID) {
@@ -991,8 +994,7 @@ BOOL secondTimeFetchingUserInfo;
             cell.chatBubbleImageView.hidden = NO;
             cell.chatBubbleImageView.image = [UIImage  imageNamed:@"cameraBubble"];
             cell.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
-        }
-        else if ( [event.numMessages intValue] > 0) {
+        } else if ( [event.numMessages intValue] > 0) {
             cell.chatBubbleImageView.hidden = NO;
             cell.chatBubbleImageView.image = [UIImage  imageNamed:@"blueCameraBubble"];
             cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
@@ -1001,17 +1003,14 @@ BOOL secondTimeFetchingUserInfo;
             cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
         }
         return cell;
-    }
-    else if (indexPath.section == kHighlightsEmptySection) {
+    } else if (indexPath.section == kHighlightsEmptySection) {
         return nil;
-    }
-    else if ([self shouldShowHighlights] && indexPath.section > 1) {
+    } else if ([self shouldShowHighlights] && indexPath.section > 1) {
         OldEventShowHighlightsCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventShowHighlightsCellName forIndexPath:indexPath];
         cell.placesDelegate = self;
         return cell;
-    }
-    else if (self.pastDays.count > 0 && indexPath.section > 1) { // past day rows
-        
+    } else if (self.pastDays.count > 0 && indexPath.section > 1) {
+        // past day rows
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
         
@@ -1023,11 +1022,7 @@ BOOL secondTimeFetchingUserInfo;
         cell.oldEventLabel.text = [event name];
         NSString *contentURL = event.highlight.media;
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [[WGProfile currentUser] cdnPrefix], contentURL]];
-        __weak HighlightOldEventCell *weakCell = cell;
         [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            if (image) {
-                weakCell.highlightImageView.image = [self convertImageToGrayScale:image];
-            }
         }];
         return cell;
     }
@@ -1035,8 +1030,6 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-
     // Remove seperator inset
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
         [cell setSeparatorInset:UIEdgeInsetsZero];
@@ -1057,13 +1050,13 @@ BOOL secondTimeFetchingUserInfo;
     if (indexPath.section == kTodaySection) {
         WGEvent *event;
         if (_isSearching) {
-            int sizeOfArray = (int)[_filteredEvents  count];
-            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return;
-            event = (WGEvent *)[_filteredEvents objectAtIndex:[indexPath row]];
+            int sizeOfArray = (int)_filteredEvents.count;
+            if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return;
+            event = (WGEvent *)[_filteredEvents objectAtIndex:indexPath.row];
         } else {
-            int sizeOfArray = (int)[_events count];
-            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return;
-            event = (WGEvent *)[_events objectAtIndex:[indexPath row]];
+            int sizeOfArray = (int)self.events.count;
+            if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return;
+            event = (WGEvent *)[self.events objectAtIndex:indexPath.row];
         }
         EventCell *eventCell = (EventCell *)cell;
         if ([[self.eventOffsetDictionary objectForKey:[event.id stringValue]] isEqualToNumber:@0]) {
@@ -1226,52 +1219,121 @@ BOOL secondTimeFetchingUserInfo;
     return newImage;
 }
 
+#pragma mark - ToolTip 
+
+- (void)showToolTip {
+    NSArray *arrayTooltip = WGProfile.currentUser.arrayTooltipTracked;
+    
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] ;
+    NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate:[NSDate date]];
+    int weekday = (int)comps.weekday;
+    NSString *weekdayString = [NSString stringWithFormat:@"%d", weekday];
+    BOOL didShowToday = (arrayTooltip.count > 0) && [arrayTooltip containsObject:weekdayString];
+    if ((weekday == 5 || weekday == 6 || weekday == 7) &&  !didShowToday && !_blackViewOnTop) {
+        _blackViewOnTop = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+        _blackViewOnTop.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
+        [self.view addSubview:_blackViewOnTop];
+        
+        UIImageView *tooltipImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110, 0, 220, 80)];
+        tooltipImageView.image = [UIImage imageNamed:@"tooltipRectangle"];
+        [_blackViewOnTop addSubview:tooltipImageView];
+        
+        UILabel *tooltipLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, tooltipImageView.frame.size.width - 15, tooltipImageView.frame.size.height - 10)];
+        tooltipLabel.numberOfLines = 0;
+        tooltipLabel.textAlignment = NSTextAlignmentLeft;
+        NSMutableAttributedString *mutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"Peek at trending\nWigo schools"];
+        [mutAttributedString addAttribute:NSForegroundColorAttributeName
+                                    value:[FontProperties getBlueColor]
+                                    range:NSMakeRange(0, 4)];
+        [mutAttributedString addAttribute:NSForegroundColorAttributeName
+                                    value:RGB(162, 162, 162)
+                                    range:NSMakeRange(4, mutAttributedString.string.length - 4)];
+        tooltipLabel.attributedText = mutAttributedString;
+        [tooltipImageView addSubview:tooltipLabel];
+        
+        UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(tooltipImageView.frame.size.width - 23 - 10, tooltipImageView.frame.size.height/2 - 15, 10, 30)];
+        [closeButton setTitle:@"x" forState:UIControlStateNormal];
+        [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
+        [closeButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
+        [tooltipImageView addSubview:closeButton];
+        
+        UIButton *gotItButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 65, 150, 130, 40)];
+        [gotItButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        [gotItButton setTitle:@"GOT IT" forState:UIControlStateNormal];
+        gotItButton.layer.borderColor = UIColor.whiteColor.CGColor;
+        gotItButton.layer.borderWidth = 1.0f;
+        gotItButton.layer.cornerRadius = 5.0f;
+        [gotItButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
+        [_blackViewOnTop addSubview:gotItButton];
+        [WGProfile.currentUser addTootltipTracked:weekdayString];
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+                return;
+            }
+            
+        }];
+    }
+}
+
+- (void)dismissToolTip {
+    [UIView animateWithDuration:0.5f animations:^{
+        _blackViewOnTop.alpha = 0.0f;
+    }];
+}
+
 #pragma mark - PlacesDelegate
 
 - (void)showHighlights {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"shownHighlights"];
-    [_placesTableView reloadData];
+    [self.placesTableView reloadData];
 }
 
 - (void)showUser:(WGUser *)user {
-    shouldReloadEvents = NO;
+    self.shouldReloadEvents = NO;
     
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
     if ([self isPeeking]) fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+}
 
+- (void)showModalAttendees:(UIViewController *)modal {
+    self.shouldReloadEvents = NO;
+    [self.navigationController presentViewController:modal animated:YES completion:nil];
 }
 
 - (void)showConversationForEvent:(WGEvent *)event {
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    self.shouldReloadEvents = NO;
     
+    WGCollection *temporaryEventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
+    [temporaryEventMessages addObject:event.highlight];
+
+    EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    conversationViewController.event = event;
+    conversationViewController.eventMessages = temporaryEventMessages;
+    conversationViewController.isPeeking = [self isPeeking];
+    
+    [self presentViewController:conversationViewController animated:YES completion:nil];
+    __weak typeof(conversationViewController) weakConversationViewController =
+    conversationViewController;
     [event getMessages:^(WGCollection *collection, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
-        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        int eventIndex = [self indexOfEvent:event inCollection:collection];
+        NSInteger messageIndex = [collection indexOfObject:event.highlight];
+        weakConversationViewController.index = @(messageIndex);
         
-        EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
-        conversationViewController.event = event;
-        conversationViewController.index = @(eventIndex);
-        conversationViewController.eventMessages = collection;
-        conversationViewController.isPeeking = [self isPeeking];
-        
-        [self presentViewController:conversationViewController animated:YES completion:nil];
+        weakConversationViewController.eventMessages = collection;
+        weakConversationViewController.mediaScrollView.eventMessages = collection;
+        [weakConversationViewController.facesCollectionView reloadData];
+        [weakConversationViewController.mediaScrollView reloadData];
+        [weakConversationViewController highlightCellAtPage:messageIndex animated:NO];
     }];
-}
-
--(int) indexOfEvent:(WGEvent *)event inCollection:(WGCollection *)eventMessages {
-    int index = 0;
-    for (WGEventMessage *eventMessage in eventMessages) {
-        if ([eventMessage isEqual:event.highlight]) {
-            return index;
-        }
-        index += 1;
-    }
-    return 0;
 }
 
 - (void)showStoryForEvent:(WGEvent*)event {
@@ -1291,20 +1353,51 @@ BOOL secondTimeFetchingUserInfo;
     self.events = [[WGCollection alloc] initWithType:[WGEvent class]];
     self.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
     self.allEvents = nil;
-    [_placesTableView reloadData];
+    [self.placesTableView reloadData];
     _spinnerAtCenter = YES;
     [self updateTitleView];
     [self fetchEventsFirstPage];
 }
 
+- (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
+    NSLog(@"presented group ID: %@", groupID);
+    self.presentingLockedView = YES;
+    UIButtonAligned *leftButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@2];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 8, 8, 14)];
+    imageView.image = [UIImage imageNamed:@"backToBattery"];
+    [leftButton addTarget:self action:@selector(backPressed)
+         forControlEvents:UIControlEventTouchUpInside];
+    [leftButton addSubview:imageView];
+    [leftButton setShowsTouchWhenHighlighted:YES];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
+    self.navigationItem.leftBarButtonItem = leftBarButton;
+    self.schoolButton.enabled = NO;
+}
+
+- (void)backPressed {
+    self.presentingLockedView = NO;
+    self.schoolButton.enabled = YES;
+    
+    BatteryViewController *batteryViewController = [BatteryViewController new];
+    
+    UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
+    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
+                                                             tintColor:RGBAlpha(0, 0, 0, 0.75)
+                                                 saturationDeltaFactor:1.3
+                                                             maskImage:nil];
+    batteryViewController.blurredBackgroundImage = imageOfUnderlyingView;
+    batteryViewController.placesDelegate = self;
+    [self presentViewController:batteryViewController animated:YES completion:nil];
+}
+
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
-    int numberOfEvents = (int)[_events count];
+    int numberOfEvents = (int)self.events.count;
     return numberOfEvents * userIndex + eventIndex;
 }
 
 - (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {
     int userIndex, eventIndex;
-    int numberOfEvents = (int)[_events count];
+    int numberOfEvents = (int)self.events.count;
     userIndex = uniqueIndex / numberOfEvents;
     eventIndex = uniqueIndex - userIndex * numberOfEvents;
     return @{ @"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex" : [NSNumber numberWithInt:eventIndex] };
@@ -1316,7 +1409,7 @@ BOOL secondTimeFetchingUserInfo;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 
-    if (scrollView == _placesTableView) {
+    if (scrollView == self.placesTableView) {
         if (!self.goElsewhereView) {
             return;
         }
@@ -1329,7 +1422,7 @@ BOOL secondTimeFetchingUserInfo;
 
 - (void)showOnlyOnePlusButton {
     // convert label frame
-    CGRect comparisonFrame = [_placesTableView convertRect: self.goElsewhereView.frame toView:self.view];
+    CGRect comparisonFrame = [self.placesTableView convertRect: self.goElsewhereView.frame toView:self.view];
     // check if label is contained in self.view
     
     CGRect viewFrame = self.view.frame;
@@ -1368,16 +1461,16 @@ BOOL secondTimeFetchingUserInfo;
 - (void) fetchEvents {
     if (!self.fetchingEventAttendees && [WGProfile currentUser].key) {
         self.fetchingEventAttendees = YES;
-        if (_spinnerAtCenter) [WiGoSpinnerView addDancingGToCenterView:self.view];
+        if (_spinnerAtCenter) [WGSpinnerView addDancingGToCenterView:self.view];
         __weak typeof(self) weakSelf = self;
         if (self.allEvents) {
             if ([self.allEvents.hasNextPage boolValue]) {
                 [self.allEvents addNextPage:^(BOOL success, NSError *error) {
                     __strong typeof(weakSelf) strongSelf = weakSelf;
-                    [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     if (error) {
                         strongSelf.fetchingEventAttendees = NO;
-                        shouldReloadEvents = YES;
+                        strongSelf.shouldReloadEvents = YES;
                         return;
                     }
                     
@@ -1388,10 +1481,12 @@ BOOL secondTimeFetchingUserInfo;
                     strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                     strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                     for (WGEvent *event in strongSelf.allEvents) {
-                        if ([event.isExpired boolValue]) {
-                            [strongSelf.oldEvents addObject:event];
-                        } else {
-                            [strongSelf.events addObject:event];
+                        if (event) {
+                            if ([event.isExpired boolValue]) {
+                                [strongSelf.oldEvents addObject:event];
+                            } else {
+                                [strongSelf.events addObject:event];
+                            }
                         }
                     }
                     
@@ -1400,16 +1495,18 @@ BOOL secondTimeFetchingUserInfo;
                             continue;
                         }
                         NSString *eventDate = [[event expires] deserialize];
-                        if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                            [strongSelf.pastDays addObject: eventDate];
-                            [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                        if (eventDate) {
+                            if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                                [strongSelf.pastDays addObject: eventDate];
+                                [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                            }
+                            [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                         }
-                        [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                     }
                     
                     [strongSelf fetchedOneParty];
                     strongSelf.fetchingEventAttendees = NO;
-                    shouldReloadEvents = YES; 
+                    strongSelf.shouldReloadEvents = YES;
                     [strongSelf.placesTableView reloadData];
                 }];
             }
@@ -1417,11 +1514,11 @@ BOOL secondTimeFetchingUserInfo;
             [WGEvent getWithGroupNumber:self.groupNumberID andHandler:^(WGCollection *collection, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
 
-                [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
 
                 if (error) {
                     strongSelf.fetchingEventAttendees = NO;
-                    shouldReloadEvents = YES;
+                    strongSelf.shouldReloadEvents = YES;
                     return;
                 }
                 strongSelf.allEvents = collection;
@@ -1432,10 +1529,12 @@ BOOL secondTimeFetchingUserInfo;
                 strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                 
                 for (WGEvent *event in strongSelf.allEvents) {
-                    if ([event.isExpired boolValue]) {
-                        [strongSelf.oldEvents addObject:event];
-                    } else {
-                        [strongSelf.events addObject:event];
+                    if (event) {
+                        if ([event.isExpired boolValue]) {
+                            [strongSelf.oldEvents addObject:event];
+                        } else {
+                            [strongSelf.events addObject:event];
+                        }
                     }
                 }
                 
@@ -1444,11 +1543,13 @@ BOOL secondTimeFetchingUserInfo;
                         continue;
                     }
                     NSString *eventDate = [[event expires] deserialize];
-                    if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                        [strongSelf.pastDays addObject: eventDate];
-                        [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                    if (eventDate) {
+                        if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                            [strongSelf.pastDays addObject: eventDate];
+                            [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                        }
+                        [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                     }
-                    [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                 }
                 
                 [strongSelf fetchedOneParty];
@@ -1458,7 +1559,7 @@ BOOL secondTimeFetchingUserInfo;
         } else {
             [WGEvent get:^(WGCollection *collection, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
-                [WiGoSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                 if (error) {
                     strongSelf.fetchingEventAttendees = NO;
                     return;
@@ -1499,42 +1600,55 @@ BOOL secondTimeFetchingUserInfo;
 }
 
 - (void)fetchedOneParty {
-    _spinnerAtCenter ? [WiGoSpinnerView removeDancingGFromCenterView:self.view] : [_placesTableView didFinishPullToRefresh];
+    _spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [self.placesTableView didFinishPullToRefresh];
      _spinnerAtCenter = NO;
-    _filteredEvents = [WGCollection serializeArray:@[] andClass:[WGEvent class]];
+    _filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
     [self dismissKeyboard];
 }
 
 - (void) fetchUserInfo {
-    if (!fetchingUserInfo && [WGProfile currentUser].key) {
-        fetchingUserInfo = YES;
+    __weak typeof(self) weakSelf = self;
+    if (!self.fetchingUserInfo && WGProfile.currentUser.key) {
+        self.fetchingUserInfo = YES;
         [WGProfile reload:^(BOOL success, NSError *error) {
-            if (!secondTimeFetchingUserInfo) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (!strongSelf.secondTimeFetchingUserInfo) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
-                secondTimeFetchingUserInfo = YES;
-                if (error ||
-                    ![[WGProfile currentUser].emailValidated boolValue] ||
-                    [[WGProfile currentUser].group.locked boolValue]) {
-                    fetchingUserInfo = NO;
-                    [self showFlashScreen];
-                    [_signViewController reloadedUserInfo:success andError:error];
+                strongSelf.secondTimeFetchingUserInfo = YES;
+                if (
+                    (error || ![[WGProfile currentUser].emailValidated boolValue] ||
+                    [[WGProfile currentUser].group.locked boolValue])
+                    
+                    &&
+                    
+                    !strongSelf.presentingLockedView )
+                {
+                    strongSelf.fetchingUserInfo = NO;
+                    [strongSelf showFlashScreen];
+                    [strongSelf.signViewController reloadedUserInfo:success andError:error];
                     return;
                 }
-                
+                if (!strongSelf.presentingLockedView) {
+                    [strongSelf showReferral];
+                    [strongSelf showToolTip];
+                }
+                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
             }
             if (error) {
-                fetchingUserInfo = NO;
+                strongSelf.fetchingUserInfo = NO;
                 // Second time fetching user info... already logged in
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:^(BOOL didRetry) {
                     if (didRetry) {
-                        [self fetchUserInfo];
-                        [self fetchEvents];
+                        [strongSelf fetchUserInfo];
+                        [strongSelf fetchEvents];
                     }
                 }];
                 return;
             }
-            [self initializeNavigationBar];
-            fetchingUserInfo = NO;
+            [strongSelf initializeNavigationBar];
+            strongSelf.fetchingUserInfo = NO;
         }];
     }
 }
@@ -1542,7 +1656,7 @@ BOOL secondTimeFetchingUserInfo;
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    [WiGoSpinnerView addDancingGToUIScrollView:_placesTableView
+    [WGSpinnerView addDancingGToUIScrollView:self.placesTableView
                                    withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];
@@ -1573,30 +1687,16 @@ BOOL secondTimeFetchingUserInfo;
     }
 }
 
-- (void)createEventWithName:(NSString *)eventName {
-    [WGEvent createEventWithName:eventName andHandler:^(WGEvent *object, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                return;
-            }
-            [_events addObject:object];
-            [_events exchangeObjectAtIndex:([_events count] - 1) withObjectAtIndex:0];
-            [self removeProfileUserFromAnyOtherEvent];
-        });
-    }];
-}
-
 - (void)addProfileUserToEventWithNumber:(int)eventID {
-    WGEvent *event = (WGEvent *)[_events objectWithID:[NSNumber numberWithInt:eventID]];
+    WGEvent *event = (WGEvent *)[self.events objectWithID:[NSNumber numberWithInt:eventID]];
     [self removeProfileUserFromAnyOtherEvent];
     [event.attendees insertObject:[WGProfile currentUser] atIndex:0];
     event.numAttending = @([event.numAttending intValue] + 1);
-    [_events exchangeObjectAtIndex:[_events indexOfObject:event] withObjectAtIndex:0];
+    [self.events exchangeObjectAtIndex:[self.events indexOfObject:event] withObjectAtIndex:0];
 }
 
 -(void) removeProfileUserFromAnyOtherEvent {
-    for (WGEvent* event in _events) {
+    for (WGEvent* event in self.events) {
         if ([event.attendees containsObject:[WGProfile currentUser]]) {
             [event.attendees removeObject:[WGProfile currentUser]];
             event.numAttending = @([event.numAttending intValue] - 1);
@@ -1860,7 +1960,6 @@ BOOL secondTimeFetchingUserInfo;
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [HighlightOldEventCell height]);
     self.backgroundColor = RGB(241, 241, 241);
-    
 
     //image view
     self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 1)];
@@ -1885,11 +1984,6 @@ BOOL secondTimeFetchingUserInfo;
     postStoryImageView.contentMode = UIViewContentModeScaleAspectFit;
     postStoryImageView.center = CGPointMake(postStoryImageView.center.x, self.oldEventLabel.center.y);
     [self.contentView addSubview:postStoryImageView];
-    
-    UIButton *conversationButton = [[UIButton alloc] initWithFrame:self.frame];
-    [conversationButton addTarget:self action:@selector(loadConversation) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:conversationButton];
-    
 }
 
 - (void)loadConversation {

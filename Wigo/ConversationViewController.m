@@ -9,23 +9,20 @@
 #import "ConversationViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
-#import "FancyProfileViewController.h"
+#import "ProfileViewController.h"
 
 #define kTimeDifferenceToShowDate 1800 // 30 minutes
 
 @interface ConversationViewController ()
 
 @property WGUser *user;
-@property WGCollection *messages;
-@property UIView *viewForEmptyConversation;
 
 @end
 
 JSQMessagesBubbleImageFactory *bubbleFactory;
 JSQMessagesBubbleImage *orangeBubble;
 JSQMessagesBubbleImage *grayBubble;
-FancyProfileViewController *profileViewController;
-BOOL fetching;
+ProfileViewController *profileViewController;
 
 @implementation ConversationViewController
 
@@ -123,21 +120,21 @@ BOOL fetching;
 }
 
 -(void) keyboardWillShow: (NSNotification *)notification {
-    if (_viewForEmptyConversation) {
+    if (self.viewForEmptyConversation) {
         [UIView
          animateWithDuration:0.5
          animations:^{
-             _viewForEmptyConversation.frame = CGRectMake(_viewForEmptyConversation.frame.origin.x, _viewForEmptyConversation.frame.origin.y / 2, _viewForEmptyConversation.frame.size.width, _viewForEmptyConversation.frame.size.height);
+             self.viewForEmptyConversation.frame = CGRectMake(self.viewForEmptyConversation.frame.origin.x, self.viewForEmptyConversation.frame.origin.y / 2, self.viewForEmptyConversation.frame.size.width, self.viewForEmptyConversation.frame.size.height);
          }];
     }
 }
 
 -(void) keyboardWillHide: (NSNotification *)notification {
-    if (_viewForEmptyConversation) {
+    if (self.viewForEmptyConversation) {
         [UIView
          animateWithDuration:0.5
          animations:^{
-             _viewForEmptyConversation.frame = CGRectMake(_viewForEmptyConversation.frame.origin.x, _viewForEmptyConversation.frame.origin.y * 2, _viewForEmptyConversation.frame.size.width, _viewForEmptyConversation.frame.size.height);
+             self.viewForEmptyConversation.frame = CGRectMake(self.viewForEmptyConversation.frame.origin.x, self.viewForEmptyConversation.frame.origin.y * 2, self.viewForEmptyConversation.frame.size.width, self.viewForEmptyConversation.frame.size.height);
          }];
     }
 }
@@ -177,7 +174,7 @@ BOOL fetching;
 }
 
 - (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return (WGMessage *)[_messages objectAtIndex:indexPath.item];
+    return (WGMessage *)[self.messages objectAtIndex:indexPath.item];
 }
 
 - (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -186,23 +183,22 @@ BOOL fetching;
 
 - (id<JSQMessageBubbleImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView messageBubbleImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    WGMessage *message = (WGMessage *)[_messages objectAtIndex:indexPath.item];
+    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
     
     if ([message.senderId isEqualToString:self.senderId]) {
         return grayBubble;
     }
     
     return orangeBubble;
-    
 }
 
 - (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
     
-    WGMessage *message = (WGMessage *)[_messages objectAtIndex:indexPath.item];
+    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
     if (indexPath.item == 0) {
         return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.created];
     }
-    WGMessage *previousMessage = (WGMessage *)[_messages objectAtIndex:indexPath.item - 1];
+    WGMessage *previousMessage = (WGMessage *)[self.messages objectAtIndex:indexPath.item - 1];
     if (previousMessage && [message.created timeIntervalSinceDate:previousMessage.created] > kTimeDifferenceToShowDate) {
         return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.created];
     }
@@ -219,7 +215,7 @@ BOOL fetching;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return [_messages count];
+    return [self.messages count];
 }
 
 - (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -228,7 +224,7 @@ BOOL fetching;
      */
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
     
-    WGMessage *message = (WGMessage *)[_messages objectAtIndex:indexPath.item];
+    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
     
     if (!message.isMediaMessage) {
         
@@ -248,11 +244,11 @@ BOOL fetching;
 
 - (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
                    layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
-    WGMessage *message = (WGMessage *)[_messages objectAtIndex:indexPath.item];
+    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
     if (indexPath.item == 0) {
         return kJSQMessagesCollectionViewCellLabelHeightDefault;
     }
-    WGMessage *previousMessage = (WGMessage *)[_messages objectAtIndex:indexPath.item - 1];
+    WGMessage *previousMessage = (WGMessage *)[self.messages objectAtIndex:indexPath.item - 1];
     if (previousMessage && [message.created timeIntervalSinceDate:previousMessage.created] > kTimeDifferenceToShowDate) {
         return kJSQMessagesCollectionViewCellLabelHeightDefault;
     }
@@ -278,7 +274,9 @@ BOOL fetching;
 
 - (void) goBack {
     [self.user readConversation:^(BOOL success, NSError *error) {
-        // Do nothing?
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+        }
     }];
     
     self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
@@ -288,7 +286,7 @@ BOOL fetching;
 }
 
 - (void)showUser {
-    FancyProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
+    ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [profileViewController setStateWithUser: self.user];
     profileViewController.user = self.user;
     
@@ -304,22 +302,25 @@ BOOL fetching;
     message.created = date;
     message.toUser = self.user;
     message.user = [WGProfile currentUser];
+    __weak typeof(self) weakSelf = self;
     [message create:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
-            [_messages removeObject:message];
+            [strongSelf.messages removeObject:message];
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.collectionView reloadData];
-            [self scrollToBottomAnimated:YES];
+            [strongSelf.collectionView reloadData];
+            [strongSelf scrollToBottomAnimated:YES];
         });
     }];
-    [_viewForEmptyConversation removeFromSuperview];
+    self.viewForEmptyConversation.alpha = 0.0f;
     
     self.inputToolbar.contentView.textView.text = @"";
     self.inputToolbar.contentView.rightBarButtonItem.enabled = NO;
     
-    [_messages addObject:message];
+    [self.messages addObject:message];
     [self finishReceivingMessageAnimated:YES];
 }
 
@@ -331,105 +332,128 @@ BOOL fetching;
 }
 
 - (void)addMessage:(NSNotification *)notification {
-    NSNumber *fromUserID = [[notification userInfo] valueForKey:@"id"];
-    if (fromUserID && [fromUserID isEqualToNumber:self.user.id]) {
-        NSString *messageString = [[notification userInfo] valueForKey:@"message"];
-        
+    NSDictionary *aps = [notification.userInfo objectForKey:@"aps"];
+    NSDictionary *alert = [aps objectForKey:@"alert"];
+    if (![alert isKindOfClass:[NSDictionary class]]) {
+        return;
+    }
+    NSString *locKeyString = [alert objectForKey:@"loc-key"];
+    if (![locKeyString isEqualToString:@"M"]) {
+        return;
+    }
+    NSArray *locArgs = [alert objectForKey:@"loc-args"];
+    if ([locArgs count] < 2) {
+        return;
+    }
+    // NSString *fromFullName = locArgs[0];
+    NSString *messageString = locArgs[1];
+    
+    NSNumber *messageID = [[notification userInfo] objectForKey:@"id"];
+    
+    NSDictionary *fromUser = [[notification userInfo] objectForKey:@"from_user"];
+    if (![fromUser isKindOfClass:[NSDictionary class]]) {
+        return;
+    }
+    NSNumber *fromUserID = [fromUser objectForKey:@"id"];
+    
+    if (fromUserID && self.user.id && [fromUserID isEqualToNumber:self.user.id]) {
         WGMessage *message = [[WGMessage alloc] init];
+        
+        message.id = messageID;
         message.message = messageString;
         message.created = [NSDate dateInLocalTimezone];
         message.user = self.user;
         message.toUser = [WGProfile currentUser];
         
-        [_messages addObject:message];
+        [self.messages addObject:message];
         
         [self finishReceivingMessageAnimated:YES];
     }
 }
 
 - (void)initializeMessageForEmptyConversation {
-    _viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 90)];
-    _viewForEmptyConversation.center = self.view.center;
+    self.viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 90)];
+    self.viewForEmptyConversation.center = self.view.center;
     
-    [self.view addSubview:_viewForEmptyConversation];
+    [self.view addSubview:self.viewForEmptyConversation];
     
     UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , self.view.frame.size.width, 30)];
     everyDayLabel.text = @"Start a new chat today.";
     everyDayLabel.textColor = [FontProperties getOrangeColor];
     everyDayLabel.textAlignment = NSTextAlignmentCenter;
     everyDayLabel.font = [FontProperties getBigButtonFont];
-    [_viewForEmptyConversation addSubview:everyDayLabel];
+    [self.viewForEmptyConversation addSubview:everyDayLabel];
 }
 
 # pragma mark - Network functions
 
 - (void)fetchFirstPageMessages {
-    fetching = NO;
+    self.fetching = NO;
     [self fetchMessages:YES];
 }
 
 - (void)fetchMessages:(BOOL)scrollToBottom {
-    if (!fetching) {
-        fetching = YES;
-        if (!_messages) {
+    if (!self.fetching) {
+        self.fetching = YES;
+        if (!self.messages) {
             UIView *loadingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 120)];
             [self.view addSubview:loadingView];
-            [WiGoSpinnerView showOrangeSpinnerAddedTo:loadingView];
+            [WGSpinnerView showOrangeSpinnerAddedTo:loadingView];
+            __weak typeof(self) weakSelf = self;
             [self.user getConversation:^(WGCollection *collection, NSError *error) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    fetching = NO;
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                    strongSelf.fetching = NO;
                     return;
                 }
                 [collection reverse];
-                _messages = collection;
-                // [self addFirstPageMessages];
-                [WiGoSpinnerView hideSpinnerForView:loadingView];
+                strongSelf.messages = collection;
+                [WGSpinnerView hideSpinnerForView:loadingView];
                 [loadingView removeFromSuperview];
-                fetching = NO;
+                strongSelf.fetching = NO;
                 
-                if ([_messages count] == 0) {
-                    [self initializeMessageForEmptyConversation];
+                if (strongSelf.messages.count == 0) {
+                    [strongSelf initializeMessageForEmptyConversation];
                 } else {
-                    [_viewForEmptyConversation removeFromSuperview];
+                    strongSelf.viewForEmptyConversation.alpha = 0.0f;
                 }
                 
-                self.showLoadEarlierMessagesHeader = [[_messages hasNextPage] boolValue];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.collectionView reloadData];
-                    if (scrollToBottom) {
-                        [self scrollToBottomAnimated:YES];
-                    }
-                });
+                strongSelf.showLoadEarlierMessagesHeader = [[strongSelf.messages hasNextPage] boolValue];
+                [strongSelf.collectionView reloadData];
+                if (scrollToBottom) {
+                    [strongSelf scrollToBottomAnimated:YES];
+                }
             }];
-        } else if ([_messages.hasNextPage boolValue]) {
-            [_messages getNextPage:^(WGCollection *collection, NSError *error) {
+        } else if ([self.messages.hasNextPage boolValue]) {
+            __weak typeof(self) weakSelf = self;
+            [self.messages getNextPage:^(WGCollection *collection, NSError *error) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    fetching = NO;
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                    strongSelf.fetching = NO;
                     return;
                 }
                 [collection reverse];
-                [_messages addObjectsFromCollectionToBeginning:collection];
-                _messages.hasNextPage = collection.hasNextPage;
-                _messages.nextPage = collection.nextPage;
+                [strongSelf.messages addObjectsFromCollectionToBeginning:collection notInCollection:self.messages];
+                strongSelf.messages.hasNextPage = collection.hasNextPage;
+                strongSelf.messages.nextPage = collection.nextPage;
                 
-                [_viewForEmptyConversation removeFromSuperview];
-                // [WiGoSpinnerView hideSpinnerForView:self.view];
-                fetching = NO;
-                
-                self.showLoadEarlierMessagesHeader = [[_messages hasNextPage] boolValue];
+                [strongSelf.viewForEmptyConversation removeFromSuperview];
+                strongSelf.fetching = NO;
+                strongSelf.showLoadEarlierMessagesHeader = [[strongSelf.messages hasNextPage] boolValue];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.collectionView reloadData];
+                    [strongSelf.collectionView reloadData];
                     if (scrollToBottom) {
-                        [self scrollToBottomAnimated:YES];
+                        [strongSelf scrollToBottomAnimated:YES];
                     }
                 });
             }];
         } else {
-            fetching = NO;
-            // [WiGoSpinnerView hideSpinnerForView:self.view];
+            self.fetching = NO;
         }
     }
 }

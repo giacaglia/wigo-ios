@@ -16,6 +16,4 @@
 
 +(WGEventAttendee *)serialize:(NSDictionary *)json;
 
-+(void) getForEvent:(WGEvent *)event withHandler:(WGCollectionResultBlock)handler;
-
 @end

@@ -13,16 +13,12 @@ typedef enum {
     WGActionPost    = 0,
     WGActionSearch  = 1,
     WGActionDelete  = 2,
-    WGActionSubmit  = 3,
-    WGActionRequest = 4,
-    WGActionLoad    = 5,
-    WGActionCancel  = 6,
-    WGActionAccept  = 7,
-    WGActionIgnore  = 8,
-    WGActionLogin   = 9,
-    WGActionCreate  = 10,
-    WGActionSave    = 11,
-    WGActionCore    = 12
+    WGActionUpload  = 3,
+    WGActionLoad    = 4,
+    WGActionLogin   = 5,
+    WGActionCreate  = 6,
+    WGActionSave    = 7,
+    WGActionFacebook = 8
 } WGActionType;
 
 

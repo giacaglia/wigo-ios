@@ -46,7 +46,6 @@
 
 + (UIFont *)getSubtitleFont {
     return [FontProperties mediumFont:15.0f];
-
 }
 
 + (UIFont *)getSmallFont {

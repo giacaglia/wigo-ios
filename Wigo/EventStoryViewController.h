@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "Globals.h"
-#import "IQMediaPickerController.h"
 #import "EventPeopleScrollView.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
@@ -23,7 +22,8 @@ typedef enum
     DONOTPRESENTANYTHINGSTATE
 } GOHERESTATE;
 
-@interface EventStoryViewController : UIViewController <IQMediaPickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate, StoryDelegate, UserSelectDelegate>
+@interface EventStoryViewController : UIViewController
+    <UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate, StoryDelegate, UserSelectDelegate>
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;

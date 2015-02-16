@@ -9,6 +9,7 @@
 #import "FollowRequestsViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
+#import "ProfileViewController.h"
 
 @interface FollowRequestsViewController ()
 
@@ -81,7 +82,9 @@
     WGUser *user = notification.fromUser;
     
     [[WGProfile currentUser] acceptFollowRequestForUser:user withHandler:^(BOOL success, NSError *error) {
-        // Do nothing!
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+        }
     }];
     
     UIButton *notificationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width - 100, 54)];
@@ -145,7 +148,9 @@
     }
     WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:buttonSender.tag];
     [[WGProfile currentUser] rejectFollowRequestForUser:notification.fromUser withHandler:^(BOOL success, NSError *error) {
-        // Do nothing!
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+        }
     }];
 }
 
@@ -161,7 +166,9 @@
             buttonSender.tag = -100;
             user.isBlocked = @NO;
             [[WGProfile currentUser] unblock:user withHandler:^(BOOL success, NSError *error) {
-                // Do nothing!
+                if (error) {
+                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+                }
             }];
         }
         else if (buttonSender.tag == -100) {
@@ -184,6 +191,7 @@
             [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionSave];
                 }
             }];
         } else {
@@ -195,6 +203,7 @@
             [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionSave];
                 }
             }];
         }
@@ -291,11 +300,10 @@
     WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:index];
     WGUser *user = notification.fromUser;
     
-    FancyProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"FancyProfileViewController"];
-    [fancyProfileViewController setStateWithUser: user];
+    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    [profileViewController setStateWithUser: user];
     
-    self.profileViewController = fancyProfileViewController;
-    [self.navigationController pushViewController: self.profileViewController animated:YES];
+    [self.navigationController pushViewController: profileViewController animated:YES];
 }
 
 - (UIImage *)imageWithColor:(UIColor *)color
