@@ -1628,10 +1628,6 @@ BOOL firstTimeLoading;
                     [strongSelf.signViewController reloadedUserInfo:success andError:error];
                     return;
                 }
-                if (!strongSelf.presentingLockedView) {
-                    [strongSelf showReferral];
-                    [strongSelf showToolTip];
-                }
                 [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
             }
@@ -1646,6 +1642,10 @@ BOOL firstTimeLoading;
                     }
                 }];
                 return;
+            }
+            if (!strongSelf.presentingLockedView) {
+                [strongSelf showReferral];
+                [strongSelf showToolTip];
             }
             [strongSelf initializeNavigationBar];
             strongSelf.fetchingUserInfo = NO;
