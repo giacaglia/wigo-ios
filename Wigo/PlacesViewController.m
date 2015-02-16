@@ -720,34 +720,12 @@ BOOL firstTimeLoading;
         self.switchButton.layer.cornerRadius = 15;
         [eventDetails addSubview:self.switchButton];
         
-        self.frontView = [[UIView alloc] initWithFrame:CGRectMake(4, 2, self.switchButton.frame.size.width/2 - 8, self.switchButton.frame.size.height - 4)];
+        self.frontView = [[UIView alloc] initWithFrame:CGRectMake(4, 2, self.switchButton.frame.size.width/2 + 10, self.switchButton.frame.size.height - 4)];
         self.frontView.backgroundColor = [FontProperties getBlueColor];
         self.frontView.layer.borderColor = UIColor.clearColor.CGColor;
         self.frontView.layer.borderWidth = 1.0f;
         self.frontView.layer.cornerRadius = 10.0f;
         [self.switchButton addSubview:self.frontView];
-        
-        self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.frontView.frame.size.height/2 - 8, 12, 16)];
-        self.frontImageView.image = [UIImage imageNamed:@"unlocked"];
-        [self.frontView addSubview:self.frontImageView];
-        
-        self.frontLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.frontView.frame.size.width - 20, self.frontView.frame.size.height)];
-        self.frontLabel.text = @"Public";
-        self.frontLabel.textAlignment = NSTextAlignmentCenter;
-        self.frontLabel.textColor = UIColor.whiteColor;
-        self.frontLabel.font = [FontProperties mediumFont:15.0f];
-        [self.frontView addSubview:self.frontLabel];
-
-        self.backLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width/2 + 20, 0, self.switchButton.frame.size.width/2 - 20, self.switchButton.frame.size.height)];
-        self.backLabel.text = @"Invite only";
-        self.backLabel.textColor = [FontProperties getBlueColor];
-        self.backLabel.font = [FontProperties mediumFont:15.0f];
-        self.backLabel.textAlignment = NSTextAlignmentCenter;
-        [self.switchButton addSubview:self.backLabel];
-        
-        self.backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width/2 + 15, self.switchButton.frame.size.height/2 - 9, 12, 19)];
-        self.backImageView.image = [UIImage imageNamed:@"blueLockClosed"];
-        [self.switchButton addSubview:self.backImageView];
         
         self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, 30)];
         self.invitePeopleLabel.text = @"The whole school can see what you are posting.";
@@ -756,34 +734,49 @@ BOOL firstTimeLoading;
         self.invitePeopleLabel.font = [FontProperties mediumFont:12.0f];
         self.invitePeopleLabel.textColor = [FontProperties getBlueColor];
         [eventDetails addSubview:self.invitePeopleLabel];
+        
+        self.publicLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.frontView.frame.size.width - 20, self.frontView.frame.size.height)];
+        self.publicLabel.text = @"Public";
+        self.publicLabel.textAlignment = NSTextAlignmentCenter;
+        self.publicLabel.textColor = UIColor.whiteColor;
+        self.publicLabel.font = [FontProperties mediumFont:15.0f];
+        [self.switchButton addSubview:self.publicLabel];
+        [self.switchButton bringSubviewToFront:self.publicLabel];
+        
+        self.inviteOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width/2 + 20, 0, self.switchButton.frame.size.width/2 - 20, self.switchButton.frame.size.height)];
+        self.inviteOnlyLabel.text = @"Invite Only";
+        self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
+        self.inviteOnlyLabel.font = [FontProperties mediumFont:15.0f];
+        self.inviteOnlyLabel.textAlignment = NSTextAlignmentCenter;
+        [self.switchButton addSubview:self.inviteOnlyLabel];
+        [self.switchButton bringSubviewToFront:self.inviteOnlyLabel];
+        
+        self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width/2 - 6, self.frontView.frame.size.height/2 - 8, 12, 16)];
+        self.frontImageView.image = [UIImage imageNamed:@"unlocked"];
+        [self.switchButton addSubview:self.frontImageView];
+        [self.switchButton bringSubviewToFront:self.frontImageView];
     }
 }
 
 - (void)switchPressed {
-    if ([self.frontLabel.text isEqual:@"Public"]) {
-        self.frontLabel.text = @"Invite Only";
-        self.backLabel.text = @"Public";
+    if (!self.privacyTurnedOn) {
+        self.publicLabel.textColor = [FontProperties getBlueColor];
+        self.inviteOnlyLabel.textColor = UIColor.whiteColor;
         self.frontImageView.image = [UIImage imageNamed:@"lockClosed"];
-        self.backImageView.image = [UIImage imageNamed:@"blueUnlocked"];
         self.privacyTurnedOn = YES;
         self.invitePeopleLabel.text = @"Only you can invite people and only\nthose invited can see the event.";
         [UIView animateWithDuration:0.5 animations:^{
-            self.frontView.transform = CGAffineTransformMakeTranslation(self.switchButton.frame.size.width/2, 0);
-            self.backLabel.transform = CGAffineTransformMakeTranslation(-self.switchButton.frame.size.width/2, 0);
-            self.backImageView.transform = CGAffineTransformMakeTranslation( - self.switchButton.frame.size.width/2, 0);
+            self.frontView.transform = CGAffineTransformMakeTranslation(self.switchButton.frame.size.width/2 - 10 - 4 - 4, 0);
         }];
     }
     else {
-        self.frontLabel.text = @"Public";
-        self.backLabel.text = @"Invite Only";
+        self.publicLabel.textColor = UIColor.whiteColor;
+        self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
         self.frontImageView.image = [UIImage imageNamed:@"unlocked"];
-        self.backImageView.image = [UIImage imageNamed:@"blueLockClosed"];
         self.privacyTurnedOn = NO;
         self.invitePeopleLabel.text = @"The whole school can see what you are posting.";
         [UIView animateWithDuration:0.5 animations:^{
             self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
-            self.backLabel.transform = CGAffineTransformMakeTranslation(0, 0);
-            self.backImageView.transform = CGAffineTransformMakeTranslation(0, 0);
         }];
     }
    
