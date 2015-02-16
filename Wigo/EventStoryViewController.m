@@ -61,7 +61,7 @@
     }
     [self initializeToolTipBanner];
     [self initializePrivateTooltipBanner];
-//    [self initializeOverlayPrivate];
+    [self initializeOverlayPrivate];
     [self loadConversationViewController];
     [self setDetailViewRead];
 }
@@ -479,22 +479,25 @@
 
 - (void)initializeOverlayPrivate {
     UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
-    UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    visualEffectView.frame = self.view.frame;
-    [self.view addSubview:visualEffectView];
-    [self.view bringSubviewToFront:visualEffectView];
+    self.visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    self.visualEffectView.frame = self.view.frame;
+    self.visualEffectView.hidden = YES;
+    [self.view addSubview:self.visualEffectView];
+    [self.view bringSubviewToFront:self.visualEffectView];
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 24, 24, 24, 24)];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 24 - 18, 30, 24, 24)];
     UIImageView *closeButtonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+    closeButtonImageView.image = [UIImage imageNamed:@"blueCloseButton"];
     [closeButton addSubview:closeButtonImageView];
-    [visualEffectView addSubview:closeButton];
+    [closeButton addTarget:self action:@selector(closeOverlay) forControlEvents:UIControlEventTouchUpInside];
+    [self.visualEffectView addSubview:closeButton];
     
     UILabel *eventOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 190, self.view.frame.size.width, 20)];
     eventOnlyLabel.text = @"This event is invite-only";
     eventOnlyLabel.font = [FontProperties mediumFont:18];
     eventOnlyLabel.textColor = [FontProperties getBlueColor];
     eventOnlyLabel.textAlignment = NSTextAlignmentCenter;
-    [visualEffectView addSubview:eventOnlyLabel];
+    [self.visualEffectView addSubview:eventOnlyLabel];
     
     UILabel *explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 32, self.view.frame.size.width, 75)];
     explanationLabel.text = @"Only people you invite can see the\nevent and what is going on and only you\ncan invite people. You can change the\ntype of the event:";
@@ -503,10 +506,14 @@
     explanationLabel.textAlignment = NSTextAlignmentCenter;
     explanationLabel.numberOfLines = 0;
     explanationLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [visualEffectView addSubview:explanationLabel];
+    [self.visualEffectView addSubview:explanationLabel];
     
     PrivateSwitchView *privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2 + 66, 240, 40)];
-    [visualEffectView addSubview:privateSwitchView];
+    [self.visualEffectView addSubview:privateSwitchView];
+}
+
+- (void)closeOverlay {
+    self.visualEffectView.hidden = YES;
 }
 
 - (void)initializeToolTipBanner {
@@ -565,10 +572,13 @@
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
-    UIImageView *privacyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 20 - 19, 30, 12, 16)];
+    
+    UIButton *privateLogoButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 20 - 19 - 15, 15, 42, 46)];
+    privateLogoButton.hidden = !self.event.isPrivate;
+    privateLogoButton.enabled = self.event.isPrivate;
+    UIImageView *privacyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 12, 16)];
     privacyImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
-    privacyImageView.hidden = !self.event.isPrivate;
-    [self.view addSubview:privacyImageView];
+    [privateLogoButton addSubview:privacyImageView];
 }
 
 - (void)setDetailViewRead {

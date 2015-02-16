@@ -40,6 +40,7 @@ typedef enum
 @property (nonatomic, assign) BOOL cancelFetchMessages;
 @property (nonatomic, strong) WGCollection *eventMessages;
 @property (nonatomic, strong) UICollectionView *facesCollectionView;
+@property (nonatomic, strong) UIVisualEffectView *visualEffectView;
 
 @end
 

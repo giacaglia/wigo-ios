@@ -15,4 +15,5 @@
 @property (nonatomic, strong) UILabel *inviteOnlyLabel;
 @property (nonatomic, strong) UIImageView *frontImageView;
 @property (nonatomic, assign) BOOL privacyTurnedOn;
+@property (nonatomic, assign) CGFloat firstX;
 @end
