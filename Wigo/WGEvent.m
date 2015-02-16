@@ -206,8 +206,14 @@
     }];
 }
 
-+(void) createEventWithName:(NSString *)name andHandler:(WGEventResultBlock)handler {
-    [WGApi post:@"events/" withParameters:@{ @"name" : name, @"attendees_limit" : @10 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
++(void)createEventWithName:(NSString *)name andPrivate:(BOOL)isPrivate andHandler:(WGEventResultBlock)handler {
+    NSString *privacy = isPrivate ? @"private" : @"public";
+    [WGApi post:@"events/" withParameters:@{ @"name" : name,
+                                             @"attendees_limit" : @10 ,
+                                             @"privacy": privacy
+                                             }
+        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            
         if (error) {
             handler(nil, error);
             return;
@@ -227,6 +233,7 @@
         }
     }];
 }
+
 
 -(void) refresh:(BoolResultBlock)handler {
     NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@?attendees_limit=10", self.className, self.id];

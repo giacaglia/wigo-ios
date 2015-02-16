@@ -47,6 +47,8 @@
 @property (nonatomic, strong) UILabel *backLabel;
 @property (nonatomic, strong) UIImageView *backImageView;
 @property (nonatomic, strong) UIButton *switchButton;
+@property (nonatomic, assign) BOOL privacyTurnedOn;
+@property (nonatomic, strong) UILabel *invitePeopleLabel;
 @end
 
 #import "EventPeopleScrollView.h"
