@@ -146,9 +146,6 @@ BOOL firstTimeLoading;
 - (void)showReferral {
     if (WGProfile.currentUser.findReferrer) {
         [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
-        NSDateFormatter *dateFormatter = [NSDateFormatter new];
-        [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
-        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
         WGProfile.currentUser.findReferrer = NO;
         [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
     }
@@ -1729,12 +1726,6 @@ BOOL firstTimeLoading;
                     [strongSelf.signViewController reloadedUserInfo:success andError:error];
                     return;
                 }
-                if (!strongSelf.presentingLockedView) {
-                    [strongSelf showReferral];
-                    [strongSelf showToolTip];
-                }
-                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
             }
             if (error) {
                 strongSelf.fetchingUserInfo = NO;
@@ -1748,6 +1739,12 @@ BOOL firstTimeLoading;
                 }];
                 return;
             }
+            if (!strongSelf.presentingLockedView) {
+                [strongSelf showReferral];
+                [strongSelf showToolTip];
+            }
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
             [strongSelf initializeNavigationBar];
             strongSelf.fetchingUserInfo = NO;
         }];
