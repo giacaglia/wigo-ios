@@ -18,6 +18,7 @@
 #define kNumMessagesKey @"num_messages"
 #define kAttendeesKey @"attendees"
 #define kHighlightKey @"highlight"
+#define kPrivacyKey @"privacy"
 
 @interface WGEvent()
 
@@ -61,6 +62,17 @@
 
 -(NSString *) name {
     return [self objectForKey:kNameKey];
+}
+
+- (BOOL)isPrivate {
+    NSString *privacy = [self objectForKey:kPrivacyKey];
+    if (privacy) return [privacy isEqual:@"private"];
+    return NO;
+}
+
+- (void)setIsPrivate:(BOOL)isPrivate {
+    NSString *privacy = isPrivate ? @"private" : @"public";
+    [self setObject:privacy forKey:kPrivacyKey];
 }
 
 -(void) setExpires:(NSDate *)expires {
@@ -210,7 +222,7 @@
     NSString *privacy = isPrivate ? @"private" : @"public";
     [WGApi post:@"events/" withParameters:@{ @"name" : name,
                                              @"attendees_limit" : @10 ,
-                                             @"privacy": privacy
+                                             kPrivacyKey: privacy
                                              }
         andHandler:^(NSDictionary *jsonResponse, NSError *error) {
             

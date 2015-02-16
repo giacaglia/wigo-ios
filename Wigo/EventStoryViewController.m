@@ -32,6 +32,7 @@
 @property (nonatomic, assign) BOOL loadViewFromFront;
 @property (nonatomic, strong) UIButton *highlightButton;
 @property (nonatomic, strong) UILabel *noHighlightsLabel;
+@property (nonatomic, strong) UIImageView *privateTooltipBanner;
 @end
 
 
@@ -58,7 +59,8 @@
         [self loadTextViewAndSendButton];
     }
     [self initializeToolTipBanner];
-
+    [self initializePrivateTooltipBanner];
+    [self initializeOverlayPrivate];
     [self loadConversationViewController];
     [self setDetailViewRead];
 }
@@ -88,9 +90,6 @@
     _movingForward = NO;
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear: animated];
-}
 
 #pragma mark - Refresh Control
 
@@ -453,6 +452,57 @@
     [sendButton addSubview:sendOvalImageView];
 }
 
+- (void)initializePrivateTooltipBanner {
+    self.privateTooltipBanner = [[UIImageView alloc] initWithFrame:CGRectMake(self.inviteButton.center.x - 115 - 30, self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height, 230, 91)];
+    self.privateTooltipBanner.image = [UIImage imageNamed:@"privateTooltipImageView"];
+    [self.backgroundScrollview bringSubviewToFront:self.privateTooltipBanner];
+    [self.backgroundScrollview addSubview:self.privateTooltipBanner];
+    
+    UILabel *inviteFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.privateTooltipBanner.frame.size.width - 20, self.privateTooltipBanner.frame.size.height)];
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Invite friends to your\nprivate party!"];
+    [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length)];
+    [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getBlueColor] range:NSMakeRange(0, 6)];
+    inviteFriendsLabel.attributedText = string;
+    inviteFriendsLabel.numberOfLines = 2;
+    inviteFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    inviteFriendsLabel.textAlignment = NSTextAlignmentLeft;
+    [self.privateTooltipBanner addSubview:inviteFriendsLabel];
+    
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6, self.privateTooltipBanner.frame.size.height/2 - 6, 12, 12)];
+    [closeButton setTitle:@"x" forState:UIControlStateNormal];
+    [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
+    [self.privateTooltipBanner addSubview:closeButton];
+}
+
+- (void)initializeOverlayPrivate {
+    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+    UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    visualEffectView.frame = self.view.frame;
+    visualEffectView.alpha = 0.0f;
+    [self.view addSubview:visualEffectView];
+    [self.view bringSubviewToFront:visualEffectView];
+    
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 24, 24, 24, 24)];
+    UIImageView *closeButtonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+    [closeButton addSubview:closeButtonImageView];
+    [visualEffectView addSubview:closeButton];
+    
+    UILabel *eventOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 190, self.view.frame.size.width, 20)];
+    eventOnlyLabel.text = @"This event is invite-only";
+    eventOnlyLabel.font = [FontProperties mediumFont:18];
+    eventOnlyLabel.textColor = [FontProperties getBlueColor];
+    eventOnlyLabel.textAlignment = NSTextAlignmentCenter;
+    [visualEffectView addSubview:eventOnlyLabel];
+    
+    UILabel *explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 32, self.view.frame.size.width, 75)];
+    explanationLabel.text = @"Only people you invite can see the\nevent and what is going on and only you\ncan invite people. You can change the\ntype of the event:";
+    explanationLabel.font = [FontProperties mediumFont:15];
+    explanationLabel.textColor = [FontProperties getBlueColor];
+    explanationLabel.numberOfLines = 0;
+    explanationLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [visualEffectView addSubview:explanationLabel];
+}
+
 - (void)initializeToolTipBanner {
     int widthButton = [[UIScreen mainScreen] bounds].size.width/5.33;
     _highlightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - widthButton - 15, 233, 89)];
@@ -509,6 +559,10 @@
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
+    UIImageView *privacyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 20 - 19, 30, 12, 16)];
+    privacyImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
+    privacyImageView.hidden = !self.event.isPrivate;
+    [self.view addSubview:privacyImageView];
 }
 
 - (void)setDetailViewRead {

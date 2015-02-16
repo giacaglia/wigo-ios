@@ -55,6 +55,7 @@
 
 @interface EventCell : UITableViewCell
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) UIImageView *privacyLockImageView;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UIImageView *chatBubbleImageView;

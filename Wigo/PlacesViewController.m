@@ -1063,6 +1063,7 @@ BOOL firstTimeLoading;
             cell.eventNameLabel.text = nil;
             cell.chatBubbleImageView.image = nil;
             cell.postStoryImageView.image = nil;
+            cell.privacyLockImageView.hidden = YES;
             [cell.eventPeopleScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
             return cell;
         }
@@ -1822,6 +1823,11 @@ BOOL firstTimeLoading;
     self.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
+    self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 20, 12, 16)];
+    self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
+    self.privacyLockImageView.hidden = YES;
+    [self.contentView addSubview:self.privacyLockImageView];
+    
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.frame.size.width - 75, 64)];
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.font = [FontProperties mediumFont: 18];
@@ -1856,7 +1862,7 @@ BOOL firstTimeLoading;
 }
 
 -(void) updateUI {
-    self.eventNameLabel.text = [self.event name];
+    self.eventNameLabel.text = self.event.name;
     if (![self.event.isRead boolValue] && [self.event.numMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;
         self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
@@ -1865,7 +1871,15 @@ BOOL firstTimeLoading;
         self.chatBubbleImageView.hidden = NO;
         self.chatBubbleImageView.image = [UIImage imageNamed:@"blueCameraBubble"];
     } else {
-     self.chatBubbleImageView.hidden = YES;
+        self.chatBubbleImageView.hidden = YES;
+    }
+    if (self.event.isPrivate) {
+        self.privacyLockImageView.hidden = NO;
+        self.eventNameLabel.transform = CGAffineTransformMakeTranslation(12 + 9, 0);
+    }
+    else {
+        self.privacyLockImageView.hidden = YES;
+        self.eventNameLabel.transform = CGAffineTransformMakeTranslation(0, 0);
     }
     self.eventPeopleScrollView.event = self.event;
     [self.eventPeopleScrollView updateUI];
