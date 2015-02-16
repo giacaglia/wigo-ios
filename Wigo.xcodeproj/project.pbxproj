@@ -275,6 +275,8 @@
 		E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */; };
 		E9444C0819F00FCC004E7925 /* OnboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9444C0719F00FCC004E7925 /* OnboardViewController.m */; };
 		E9444C0919F00FCC004E7925 /* OnboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9444C0719F00FCC004E7925 /* OnboardViewController.m */; };
+		E957CD6A1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */; };
+		E957CD6B1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */; };
 		E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C7A195084B700182E0E /* UIButtonUngoOut.m */; };
 		E96EF676197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
 		E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
@@ -687,6 +689,8 @@
 		E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPageControlAligned.m; sourceTree = "<group>"; };
 		E9444C0619F00FCC004E7925 /* OnboardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardViewController.h; sourceTree = "<group>"; };
 		E9444C0719F00FCC004E7925 /* OnboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardViewController.m; sourceTree = "<group>"; };
+		E957CD681A928EBD00D0FF7C /* PrivateSwitchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrivateSwitchView.h; sourceTree = "<group>"; };
+		E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateSwitchView.m; sourceTree = "<group>"; };
 		E9681C79195084B700182E0E /* UIButtonUngoOut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonUngoOut.h; sourceTree = "<group>"; };
 		E9681C7A195084B700182E0E /* UIButtonUngoOut.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonUngoOut.m; sourceTree = "<group>"; };
 		E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowRequestsViewController.h; sourceTree = "<group>"; };
@@ -1735,6 +1739,8 @@
 				E9203B521A23C4B90086BF73 /* EventConversationViewController.m */,
 				E9D039C61A09886A00DEF094 /* MediaScrollView.h */,
 				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
+				E957CD681A928EBD00D0FF7C /* PrivateSwitchView.h */,
+				E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */,
 			);
 			name = EventStory;
 			sourceTree = "<group>";
@@ -2111,6 +2117,7 @@
 				45D9FAAD1A781AFD00D08577 /* JSQMessagesBubbleImageFactory.m in Sources */,
 				C1F5B3DF1A654B4D00CAFD95 /* AFURLSessionManager.m in Sources */,
 				C1F5B3D61A654AE300CAFD95 /* NSDate+WGDate.m in Sources */,
+				E957CD6B1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */,
 				C1F5B3CA1A654AC800CAFD95 /* WGUser.m in Sources */,
 				C1F5B3CB1A654AC800CAFD95 /* WGProfile.m in Sources */,
 				45D9FAD91A781AFD00D08577 /* JSQMessagesInputToolbar.m in Sources */,
@@ -2371,6 +2378,7 @@
 				FA5526111A1FCB3700101AE7 /* GroupStats.m in Sources */,
 				E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
 				45D9FBB41A7ED46600D08577 /* EventPeopleModalViewController.m in Sources */,
+				E957CD6A1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */,
 				45D9FAA61A781AFD00D08577 /* JSQMessagesViewController.m in Sources */,
 				FA55260C1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,
 				E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */,
@@ -2511,6 +2519,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
@@ -2530,6 +2539,7 @@
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2541,6 +2551,8 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = Wigo;
 				PROVISIONING_PROFILE = "72E87B98-4DFD-4182-9EB5-CD4475603301";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigoBlade-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2551,6 +2563,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FACEBOOK_APPID = 661589153895742;
@@ -2571,6 +2584,7 @@
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2582,6 +2596,7 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = Wigo;
 				PROVISIONING_PROFILE = "6184f4da-3064-4b33-9ba3-ceea7db8ac09";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigoBlade-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2592,6 +2607,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FACEBOOK_APPID = 661589153895742;
@@ -2612,6 +2628,7 @@
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2623,6 +2640,7 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = Wigo;
 				PROVISIONING_PROFILE = "6184f4da-3064-4b33-9ba3-ceea7db8ac09";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigoBlade-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;
@@ -2708,6 +2726,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
@@ -2727,6 +2746,7 @@
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2738,6 +2758,8 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigo-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2748,6 +2770,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
@@ -2767,6 +2790,7 @@
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2778,6 +2802,7 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigo-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2881,6 +2906,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
@@ -2900,6 +2926,7 @@
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2911,6 +2938,7 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigo-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;

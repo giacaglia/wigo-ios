@@ -13,6 +13,7 @@
 #import "ProfileViewController.h"
 #import "WGProfile.h"
 #import "WGEvent.h"
+#import "PrivateSwitchView.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 #define kHeaderLength 64
@@ -60,7 +61,7 @@
     }
     [self initializeToolTipBanner];
     [self initializePrivateTooltipBanner];
-    [self initializeOverlayPrivate];
+//    [self initializeOverlayPrivate];
     [self loadConversationViewController];
     [self setDetailViewRead];
 }
@@ -452,9 +453,11 @@
     [sendButton addSubview:sendOvalImageView];
 }
 
+#warning NEED to show tooltip only for creator
 - (void)initializePrivateTooltipBanner {
     self.privateTooltipBanner = [[UIImageView alloc] initWithFrame:CGRectMake(self.inviteButton.center.x - 115 - 30, self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height, 230, 91)];
     self.privateTooltipBanner.image = [UIImage imageNamed:@"privateTooltipImageView"];
+    self.privateTooltipBanner.hidden = !self.event.isPrivate;
     [self.backgroundScrollview bringSubviewToFront:self.privateTooltipBanner];
     [self.backgroundScrollview addSubview:self.privateTooltipBanner];
     
@@ -478,7 +481,6 @@
     UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
     UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     visualEffectView.frame = self.view.frame;
-    visualEffectView.alpha = 0.0f;
     [self.view addSubview:visualEffectView];
     [self.view bringSubviewToFront:visualEffectView];
     
@@ -498,9 +500,13 @@
     explanationLabel.text = @"Only people you invite can see the\nevent and what is going on and only you\ncan invite people. You can change the\ntype of the event:";
     explanationLabel.font = [FontProperties mediumFont:15];
     explanationLabel.textColor = [FontProperties getBlueColor];
+    explanationLabel.textAlignment = NSTextAlignmentCenter;
     explanationLabel.numberOfLines = 0;
     explanationLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [visualEffectView addSubview:explanationLabel];
+    
+    PrivateSwitchView *privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2 + 66, 240, 40)];
+    [visualEffectView addSubview:privateSwitchView];
 }
 
 - (void)initializeToolTipBanner {

@@ -40,14 +40,9 @@
 @property (nonatomic, strong) UIButton *schoolButton;
 @property (nonatomic, assign) BOOL presentingLockedView;
 @property (nonatomic, assign) BOOL shouldReloadEvents;
-@property (nonatomic, strong) UIView *frontView;
-@property (nonatomic, strong) UILabel *publicLabel;
-@property (nonatomic, strong) UIImageView *frontImageView;
-@property (nonatomic, strong) UIView *backView;
-@property (nonatomic, strong) UILabel *inviteOnlyLabel;
 @property (nonatomic, strong) UIButton *switchButton;
-@property (nonatomic, assign) BOOL privacyTurnedOn;
 @property (nonatomic, strong) UILabel *invitePeopleLabel;
+@property (nonatomic, assign) BOOL privacyTurnedOn;
 @end
 
 #import "EventPeopleScrollView.h"

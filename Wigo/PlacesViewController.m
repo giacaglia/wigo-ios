@@ -26,6 +26,7 @@
 #import "UIView+ViewToImage.h"
 #import "UIImage+ImageEffects.h"
 #import "ReferalViewController.h"
+#import "PrivateSwitchView.h"
 
 #define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
 
@@ -713,19 +714,8 @@ BOOL firstTimeLoading;
         lineUnderEventType.backgroundColor = [FontProperties getBlueColor];
         [eventDetails addSubview:lineUnderEventType];
         
-        self.switchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 50, 240, 40)];
-        [self.switchButton addTarget:self action:@selector(switchPressed) forControlEvents:UIControlEventTouchUpInside];
-        self.switchButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
-        self.switchButton.layer.borderWidth = 1.0f;
-        self.switchButton.layer.cornerRadius = 15;
-        [eventDetails addSubview:self.switchButton];
-        
-        self.frontView = [[UIView alloc] initWithFrame:CGRectMake(4, 2, self.switchButton.frame.size.width/2 + 10, self.switchButton.frame.size.height - 4)];
-        self.frontView.backgroundColor = [FontProperties getBlueColor];
-        self.frontView.layer.borderColor = UIColor.clearColor.CGColor;
-        self.frontView.layer.borderWidth = 1.0f;
-        self.frontView.layer.cornerRadius = 10.0f;
-        [self.switchButton addSubview:self.frontView];
+        PrivateSwitchView *privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 50, 240, 40)];
+        [eventDetails addSubview:privateSwitchView];
         
         self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, 30)];
         self.invitePeopleLabel.text = @"The whole school can see what you are posting.";
@@ -734,53 +724,32 @@ BOOL firstTimeLoading;
         self.invitePeopleLabel.font = [FontProperties mediumFont:12.0f];
         self.invitePeopleLabel.textColor = [FontProperties getBlueColor];
         [eventDetails addSubview:self.invitePeopleLabel];
-        
-        self.publicLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.frontView.frame.size.width - 20, self.frontView.frame.size.height)];
-        self.publicLabel.text = @"Public";
-        self.publicLabel.textAlignment = NSTextAlignmentCenter;
-        self.publicLabel.textColor = UIColor.whiteColor;
-        self.publicLabel.font = [FontProperties mediumFont:15.0f];
-        [self.switchButton addSubview:self.publicLabel];
-        [self.switchButton bringSubviewToFront:self.publicLabel];
-        
-        self.inviteOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width/2 + 20, 0, self.switchButton.frame.size.width/2 - 20, self.switchButton.frame.size.height)];
-        self.inviteOnlyLabel.text = @"Invite Only";
-        self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
-        self.inviteOnlyLabel.font = [FontProperties mediumFont:15.0f];
-        self.inviteOnlyLabel.textAlignment = NSTextAlignmentCenter;
-        [self.switchButton addSubview:self.inviteOnlyLabel];
-        [self.switchButton bringSubviewToFront:self.inviteOnlyLabel];
-        
-        self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.switchButton.frame.size.width/2 - 6, self.frontView.frame.size.height/2 - 8, 12, 16)];
-        self.frontImageView.image = [UIImage imageNamed:@"unlocked"];
-        [self.switchButton addSubview:self.frontImageView];
-        [self.switchButton bringSubviewToFront:self.frontImageView];
     }
 }
 
-- (void)switchPressed {
-    if (!self.privacyTurnedOn) {
-        self.publicLabel.textColor = [FontProperties getBlueColor];
-        self.inviteOnlyLabel.textColor = UIColor.whiteColor;
-        self.frontImageView.image = [UIImage imageNamed:@"lockClosed"];
-        self.privacyTurnedOn = YES;
-        self.invitePeopleLabel.text = @"Only you can invite people and only\nthose invited can see the event.";
-        [UIView animateWithDuration:0.5 animations:^{
-            self.frontView.transform = CGAffineTransformMakeTranslation(self.switchButton.frame.size.width/2 - 10 - 4 - 4, 0);
-        }];
-    }
-    else {
-        self.publicLabel.textColor = UIColor.whiteColor;
-        self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
-        self.frontImageView.image = [UIImage imageNamed:@"unlocked"];
-        self.privacyTurnedOn = NO;
-        self.invitePeopleLabel.text = @"The whole school can see what you are posting.";
-        [UIView animateWithDuration:0.5 animations:^{
-            self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
-        }];
-    }
-   
-}
+//- (void)switchPressed {
+//    if (!self.privacyTurnedOn) {
+//        self.publicLabel.textColor = [FontProperties getBlueColor];
+//        self.inviteOnlyLabel.textColor = UIColor.whiteColor;
+//        self.frontImageView.image = [UIImage imageNamed:@"lockClosed"];
+//        self.privacyTurnedOn = YES;
+//        self.invitePeopleLabel.text = @"Only you can invite people and only\nthose invited can see the event.";
+//        [UIView animateWithDuration:0.5 animations:^{
+//            self.frontView.transform = CGAffineTransformMakeTranslation(self.switchButton.frame.size.width/2 - 10 - 4 - 4, 0);
+//        }];
+//    }
+//    else {
+//        self.publicLabel.textColor = UIColor.whiteColor;
+//        self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
+//        self.frontImageView.image = [UIImage imageNamed:@"unlocked"];
+//        self.privacyTurnedOn = NO;
+//        self.invitePeopleLabel.text = @"The whole school can see what you are posting.";
+//        [UIView animateWithDuration:0.5 animations:^{
+//            self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
+//        }];
+//    }
+//   
+//}
 
 - (void)clearTextField {
     self.placesTableView.userInteractionEnabled = YES;
