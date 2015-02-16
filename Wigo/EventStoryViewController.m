@@ -473,8 +473,13 @@
     
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6, self.privateTooltipBanner.frame.size.height/2 - 6, 12, 12)];
     [closeButton setTitle:@"x" forState:UIControlStateNormal];
+    [closeButton addTarget:self action:@selector(closePrivateTooltip) forControlEvents:UIControlEventTouchUpInside];
     [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
     [self.privateTooltipBanner addSubview:closeButton];
+}
+
+- (void)closePrivateTooltip {
+    self.privateTooltipBanner.hidden = YES;
 }
 
 - (void)initializeOverlayPrivate {
@@ -522,6 +527,7 @@
     _highlightButton.center = CGPointMake(self.view.center.x, _highlightButton.center.y);
     [_highlightButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     _highlightButton.alpha = 0.0f;
+    _highlightButton.hidden = self.event.isPrivate;
     _highlightButton.enabled = NO;
     [self.view addSubview:_highlightButton];
     
@@ -572,13 +578,18 @@
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
-    
     UIButton *privateLogoButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 20 - 19 - 15, 15, 42, 46)];
     privateLogoButton.hidden = !self.event.isPrivate;
     privateLogoButton.enabled = self.event.isPrivate;
+    [privateLogoButton addTarget:self action:@selector(showOverlayView) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:privateLogoButton];
     UIImageView *privacyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 12, 16)];
     privacyImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
     [privateLogoButton addSubview:privacyImageView];
+}
+
+- (void)showOverlayView {
+    self.visualEffectView.hidden = NO;
 }
 
 - (void)setDetailViewRead {
