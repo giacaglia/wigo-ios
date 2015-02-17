@@ -24,6 +24,7 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 @property WGCollection *attendees;
 @property WGEventMessage *highlight;
 
+- (WGUser *)owner;
 +(WGEvent *)serialize:(NSDictionary *)json;
 
 -(void) addAttendee:(WGEventAttendee *)attendee;

@@ -19,6 +19,7 @@
 #define kAttendeesKey @"attendees"
 #define kHighlightKey @"highlight"
 #define kPrivacyKey @"privacy"
+#define kOwnerKey @"owner"
 
 @interface WGEvent()
 
@@ -149,6 +150,10 @@
     [WGApi post:[NSString stringWithFormat:@"events/%@/messages/read/", self.id] withParameters:[messages idArray] andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
+}
+
+- (WGUser *)owner {
+    return [[WGUser alloc] initWithJSON:[self objectForKey:kOwnerKey]];
 }
 
 -(void) getMessages:(WGCollectionResultBlock)handler {

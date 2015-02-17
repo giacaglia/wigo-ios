@@ -457,11 +457,11 @@
 - (void)initializePrivateTooltipBanner {
     self.privateTooltipBanner = [[UIImageView alloc] initWithFrame:CGRectMake(self.inviteButton.center.x - 115 - 30, self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height, 230, 91)];
     self.privateTooltipBanner.image = [UIImage imageNamed:@"privateTooltipImageView"];
-    self.privateTooltipBanner.hidden = !self.event.isPrivate;
+    self.privateTooltipBanner.hidden = !self.event.isPrivate || ![self.event.owner isEqual:WGProfile.currentUser];
     [self.backgroundScrollview bringSubviewToFront:self.privateTooltipBanner];
     [self.backgroundScrollview addSubview:self.privateTooltipBanner];
     
-    UILabel *inviteFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.privateTooltipBanner.frame.size.width - 20, self.privateTooltipBanner.frame.size.height)];
+    UILabel *inviteFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 19, self.privateTooltipBanner.frame.size.width - 20, self.privateTooltipBanner.frame.size.height - 19)];
     NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Invite friends to your\nprivate party!"];
     [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length)];
     [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getBlueColor] range:NSMakeRange(0, 6)];
@@ -471,7 +471,7 @@
     inviteFriendsLabel.textAlignment = NSTextAlignmentLeft;
     [self.privateTooltipBanner addSubview:inviteFriendsLabel];
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6, self.privateTooltipBanner.frame.size.height/2 - 6, 12, 12)];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6, self.privateTooltipBanner.frame.size.height/2 + 10 - 6, 12, 12)];
     [closeButton setTitle:@"x" forState:UIControlStateNormal];
     [closeButton addTarget:self action:@selector(closePrivateTooltip) forControlEvents:UIControlEventTouchUpInside];
     [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
@@ -490,8 +490,8 @@
     [self.view addSubview:self.visualEffectView];
     [self.view bringSubviewToFront:self.visualEffectView];
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 24 - 18, 30, 24, 24)];
-    UIImageView *closeButtonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 18, 30, 40, 40)];
+    UIImageView *closeButtonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, 0, 24, 24)];
     closeButtonImageView.image = [UIImage imageNamed:@"blueCloseButton"];
     [closeButton addSubview:closeButtonImageView];
     [closeButton addTarget:self action:@selector(closeOverlay) forControlEvents:UIControlEventTouchUpInside];
@@ -505,7 +505,12 @@
     [self.visualEffectView addSubview:eventOnlyLabel];
     
     UILabel *explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 32, self.view.frame.size.width, 75)];
-    explanationLabel.text = @"Only people you invite can see the\nevent and what is going on and only you\ncan invite people. You can change the\ntype of the event:";
+    if ([self.event.owner isEqual:WGProfile.currentUser]) {
+        explanationLabel.text = @"Only people you invite can see the\nevent and what is going on and only you\ncan invite people. You can change the\ntype of the event:";
+    }
+    else {
+        explanationLabel.text = @"Only invited people can see whats going on. Only creator can invite people.";
+    }
     explanationLabel.font = [FontProperties mediumFont:15];
     explanationLabel.textColor = [FontProperties getBlueColor];
     explanationLabel.textAlignment = NSTextAlignmentCenter;
@@ -514,7 +519,13 @@
     [self.visualEffectView addSubview:explanationLabel];
     
     PrivateSwitchView *privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2 + 66, 240, 40)];
+    privateSwitchView.hidden = ![self.event.owner isEqual:WGProfile.currentUser];
     [self.visualEffectView addSubview:privateSwitchView];
+    
+    UIImageView *lockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 12, self.view.frame.size.height/2 + 66, 24, 32)];
+    lockImageView.image = [UIImage imageNamed:@"lockImage"];
+    lockImageView.hidden = [self.event.owner isEqual:WGProfile.currentUser];
+    [self.visualEffectView addSubview:lockImageView];
 }
 
 - (void)closeOverlay {
