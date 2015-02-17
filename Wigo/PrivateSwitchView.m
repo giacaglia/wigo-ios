@@ -32,7 +32,7 @@
     self.layer.borderWidth = 1.0f;
     self.layer.cornerRadius = 20.0f;
     
-    self.frontView = [[UIView alloc] initWithFrame:CGRectMake(4, 2, self.frame.size.width/2 + 15, self.frame.size.height - 4)];
+    self.frontView = [[UIView alloc] initWithFrame:CGRectMake(3, 2, self.frame.size.width/2 + 15, self.frame.size.height - 4)];
     self.frontView.backgroundColor = [FontProperties getBlueColor];
     self.frontView.layer.borderColor = UIColor.clearColor.CGColor;
     self.frontView.layer.borderWidth = 1.0f;
@@ -59,6 +59,7 @@
     self.closeLockImageView = [[FLAnimatedImageView alloc] init];
     self.closeLockImageView.animatedImage = animatedImage;
     self.closeLockImageView.frame = CGRectMake(self.frame.size.width/2 - 6, self.frame.size.height/2 - 8, 12, 16);
+    self.closeLockImageView.animationRepeatCount = 0;
     [self addSubview:self.closeLockImageView];
     
     FLAnimatedImage *openImage = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"openLock" ofType:@"gif"]]];
@@ -66,6 +67,7 @@
     self.openLockImageView.animatedImage = openImage;
     self.openLockImageView.frame = CGRectMake(self.frame.size.width/2 - 6, self.frame.size.height/2 - 8, 12, 16);
     self.openLockImageView.hidden = YES;
+    self.openLockImageView.animationRepeatCount = 0;
     [self addSubview:self.openLockImageView];
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(privacyPressed)];
@@ -99,6 +101,27 @@
         [UIView setAnimationDelegate:self];
         [UIView commitAnimations];
     }
+    CGFloat percentage = 2*((translatedPoint.x - self.center.x/2)/self.center.x);
+    NSLog(@"percentage = %f", percentage);
+    self.closeLockImageView.alpha = percentage;
+
+//    self.closeLockImageView.hidden = NO;
+//    self.closeLockImageView.animationRepeatCount = 1;
+//    self.closeLockImageView.animationDuration = 0.84;
+//    self.closeLockImageView.currentFrameIndex = 0;
+//    [self.closeLockImageView startAnimating];
+//    
+//    [UIView animateWithDuration:0.3 animations:^{
+//        self.publicLabel.alpha = 0.0f;
+//    } completion:^(BOOL finished) {
+//        self.publicLabel.textColor = [FontProperties getBlueColor];
+//        self.publicLabel.alpha = 1.0f;
+//    }];
+    [UIView animateWithDuration:0.84 animations:^{
+        self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 3 - 4, 0);
+    }   completion:^(BOOL finished) {
+        [self.closeLockImageView stopAnimating];
+    }];
 }
 
 
@@ -106,15 +129,19 @@
     if (!self.privacyTurnedOn) {
         self.openLockImageView.hidden = YES;
         self.closeLockImageView.hidden = NO;
+        self.closeLockImageView.animationRepeatCount = 1;
+        self.closeLockImageView.animationDuration = 0.84;
+        self.closeLockImageView.currentFrameIndex = 0;
         [self.closeLockImageView startAnimating];
+        
         [UIView animateWithDuration:0.3 animations:^{
             self.publicLabel.alpha = 0.0f;
         } completion:^(BOOL finished) {
             self.publicLabel.textColor = [FontProperties getBlueColor];
             self.publicLabel.alpha = 1.0f;
         }];
-        [UIView animateWithDuration:0.7 animations:^{
-            self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 4 - 4, 0);
+        [UIView animateWithDuration:0.84 animations:^{
+            self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 3 - 4, 0);
         }
         completion:^(BOOL finished) {
             [self.closeLockImageView stopAnimating];
@@ -133,6 +160,9 @@
     else {
         self.openLockImageView.hidden = NO;
         self.closeLockImageView.hidden = YES;
+        self.openLockImageView.animationRepeatCount = 1;
+        self.openLockImageView.animationDuration = 0.84;
+        self.openLockImageView.currentFrameIndex = 0;
         [self.openLockImageView startAnimating];
         [UIView animateWithDuration:0.3 animations:^{
             self.inviteOnlyLabel.alpha = 0;
@@ -140,7 +170,7 @@
             self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
             self.inviteOnlyLabel.alpha = 1.0f;
         }];
-        [UIView animateWithDuration:0.7 animations:^{
+        [UIView animateWithDuration:0.84 animations:^{
             self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
         } completion:^(BOOL finished) {
             [self.openLockImageView stopAnimating];
