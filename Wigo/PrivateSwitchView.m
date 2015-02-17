@@ -55,10 +55,18 @@
     [self addSubview:self.inviteOnlyLabel];
     [self bringSubviewToFront:self.inviteOnlyLabel];
     
-    self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 6, self.frame.size.height/2 - 8, 12, 16)];
-    self.frontImageView.image = [UIImage imageNamed:@"unlocked"];
-    [self addSubview:self.frontImageView];
-    [self bringSubviewToFront:self.frontImageView];
+    FLAnimatedImage *animatedImage = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"closeLock" ofType:@"gif"]]];
+    self.closeLockImageView = [[FLAnimatedImageView alloc] init];
+    self.closeLockImageView.animatedImage = animatedImage;
+    self.closeLockImageView.frame = CGRectMake(self.frame.size.width/2 - 6, self.frame.size.height/2 - 8, 12, 16);
+    [self addSubview:self.closeLockImageView];
+    
+    FLAnimatedImage *openImage = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"openLock" ofType:@"gif"]]];
+    self.openLockImageView = [[FLAnimatedImageView alloc] init];
+    self.openLockImageView.animatedImage = openImage;
+    self.openLockImageView.frame = CGRectMake(self.frame.size.width/2 - 6, self.frame.size.height/2 - 8, 12, 16);
+    self.openLockImageView.hidden = YES;
+    [self addSubview:self.openLockImageView];
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(privacyPressed)];
     [self addGestureRecognizer:tapGesture];
@@ -96,6 +104,9 @@
 
 - (void)privacyPressed {
     if (!self.privacyTurnedOn) {
+        self.openLockImageView.hidden = YES;
+        self.closeLockImageView.hidden = NO;
+        [self.closeLockImageView startAnimating];
         [UIView animateWithDuration:0.3 animations:^{
             self.publicLabel.alpha = 0.0f;
         } completion:^(BOOL finished) {
@@ -104,6 +115,9 @@
         }];
         [UIView animateWithDuration:0.7 animations:^{
             self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 4 - 4, 0);
+        }
+        completion:^(BOOL finished) {
+            [self.closeLockImageView stopAnimating];
         }];
         [UIView animateWithDuration:0.34 animations:^{
             self.inviteOnlyLabel.alpha = 0.0f;
@@ -117,6 +131,9 @@
         self.invitePeopleLabel.text = @"Only you can invite people and only\nthose invited can see the event.";
     }
     else {
+        self.openLockImageView.hidden = NO;
+        self.closeLockImageView.hidden = YES;
+        [self.openLockImageView startAnimating];
         [UIView animateWithDuration:0.3 animations:^{
             self.inviteOnlyLabel.alpha = 0;
         } completion:^(BOOL finished) {
@@ -125,6 +142,8 @@
         }];
         [UIView animateWithDuration:0.7 animations:^{
             self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
+        } completion:^(BOOL finished) {
+            [self.openLockImageView stopAnimating];
         }];
         [UIView animateWithDuration:0.34 animations:^{
             self.publicLabel.alpha = 0.0f;

@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FLAnimatedImage.h"
+#import "FLAnimatedImageView.h"
 
 @interface PrivateSwitchView : UIView
 @property (nonatomic, strong) UIView *frontView;
@@ -16,4 +18,7 @@
 @property (nonatomic, strong) UIImageView *frontImageView;
 @property (nonatomic, assign) BOOL privacyTurnedOn;
 @property (nonatomic, assign) CGFloat firstX;
+@property (nonatomic, strong) FLAnimatedImageView *closeLockImageView;
+@property (nonatomic, strong) FLAnimatedImageView *openLockImageView;
+
 @end

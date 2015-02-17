@@ -716,6 +716,8 @@ BOOL firstTimeLoading;
         
         PrivateSwitchView *privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 50, 240, 40)];
         [eventDetails addSubview:privateSwitchView];
+        [privateSwitchView.closeLockImageView stopAnimating];
+        [privateSwitchView.openLockImageView stopAnimating];
         
         self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, 30)];
         self.invitePeopleLabel.text = @"The whole school can see what you are posting.";
