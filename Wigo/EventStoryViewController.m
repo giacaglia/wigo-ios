@@ -136,10 +136,17 @@
     self.inviteButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
     self.inviteButton.layer.borderWidth = 1.0f;
     self.inviteButton.layer.cornerRadius = 5.0f;
-    [self.inviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
     self.inviteButton.hidden = YES;
     self.inviteButton.enabled = NO;
     [self.backgroundScrollview addSubview:self.inviteButton];
+    if (self.event.isPrivate && ![self.event.owner isEqual:WGProfile.currentUser]) {
+        self.inviteButton.alpha = 0.5f;
+        [self.inviteButton addTarget:self action:@selector(showOverlayView) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else {
+        self.inviteButton.alpha = 1.0f;
+        [self.inviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+    }
     
     self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 170, 40)];
     [self.goHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
