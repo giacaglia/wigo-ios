@@ -34,6 +34,7 @@
 @property (nonatomic, strong) UIButton *highlightButton;
 @property (nonatomic, strong) UILabel *noHighlightsLabel;
 @property (nonatomic, strong) UIImageView *privateTooltipBanner;
+@property (nonatomic, strong) PrivateSwitchView *privateSwitchView;
 @end
 
 
@@ -525,9 +526,9 @@
     explanationLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.visualEffectView addSubview:explanationLabel];
     
-    PrivateSwitchView *privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2 + 66, 240, 40)];
-    privateSwitchView.hidden = ![self.event.owner isEqual:WGProfile.currentUser];
-    [self.visualEffectView addSubview:privateSwitchView];
+    _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2 + 66, 240, 40)];
+    _privateSwitchView.hidden = ![self.event.owner isEqual:WGProfile.currentUser];
+    [self.visualEffectView addSubview:_privateSwitchView];
     
     UIImageView *lockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 12, self.view.frame.size.height/2 + 66, 24, 32)];
     lockImageView.image = [UIImage imageNamed:@"lockImage"];
@@ -539,6 +540,15 @@
     [UIView animateWithDuration:0.4 animations:^{
         self.visualEffectView.alpha = 0.0f;
     }];
+    self.event.isPrivate = NO;
+    if (!_privateSwitchView.privacyTurnedOn) {
+        [self.event setPrivacyOn:NO andHandler:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+                return;
+            }
+        }];
+    }
 }
 
 - (void)initializeToolTipBanner {

@@ -140,6 +140,13 @@
     self.attendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
 }
 
+- (void)setPrivacyOn:(BOOL)isPrivate andHandler:(BoolResultBlock)handler {
+    NSString *privacyString = isPrivate ? @"private" : @"public";
+    [WGApi post:[NSString stringWithFormat:@"events/%@/", self.id] withParameters:@{kPrivacyKey : privacyString} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
+}
+
 -(void) setRead:(BoolResultBlock)handler {
     [WGApi post:@"events/read/" withParameters:@[ self.id ] andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);

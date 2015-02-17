@@ -29,6 +29,7 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 
 -(void) addAttendee:(WGEventAttendee *)attendee;
 
+- (void)setPrivacyOn:(BOOL)privacy andHandler:(BoolResultBlock)handler;
 -(void) setRead:(BoolResultBlock)handler;
 -(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResultBlock)handler;
 
