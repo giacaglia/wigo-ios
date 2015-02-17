@@ -84,27 +84,7 @@
     
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
         CGFloat velocityX = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:self.frontView].x);
-        CGFloat finalX = translatedPoint.x + velocityX;
-        if (UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation])) {
-            if (finalX < 0) {
-                //finalX = 0;
-            } else if (finalX > 768) {
-                //finalX = 768;
-            }
-            
-        } else {
-            if (finalX < 0) {
-                //finalX = 0;
-            } else if (finalX > 1024) {
-                //finalX = 768;
-            }
-
-        }
-        
         CGFloat animationDuration = (ABS(velocityX)*.0002)+.2;
-        
-        NSLog(@"the duration is: %f", animationDuration);
-        
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:animationDuration];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];

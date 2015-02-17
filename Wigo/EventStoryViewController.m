@@ -493,7 +493,7 @@
     UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
     self.visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     self.visualEffectView.frame = self.view.frame;
-    self.visualEffectView.hidden = YES;
+    self.visualEffectView.alpha = 0.0f;
     [self.view addSubview:self.visualEffectView];
     [self.view bringSubviewToFront:self.visualEffectView];
     
@@ -536,7 +536,9 @@
 }
 
 - (void)closeOverlay {
-    self.visualEffectView.hidden = YES;
+    [UIView animateWithDuration:0.4 animations:^{
+        self.visualEffectView.alpha = 0.0f;
+    }];
 }
 
 - (void)initializeToolTipBanner {
@@ -607,7 +609,9 @@
 }
 
 - (void)showOverlayView {
-    self.visualEffectView.hidden = NO;
+    [UIView animateWithDuration:0.5f animations:^{
+        self.visualEffectView.alpha = 1.0f;
+    }];
 }
 
 - (void)setDetailViewRead {
