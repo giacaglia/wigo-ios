@@ -1077,6 +1077,7 @@
     self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
     self.controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
     self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+    self.controller.videoQuality = UIImagePickerControllerQualityTypeHigh;
     self.controller.delegate = self;
     self.controller.showsCameraControls = NO;
     
@@ -1102,10 +1103,10 @@
     self.captureImageView.image = [UIImage imageNamed:@"captureCamera"];
     [self.pictureButton addSubview:self.captureImageView];
     self.pictureButton.center = CGPointMake(self.overlayView.center.x, self.pictureButton.center.y);
-    UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
-    [self.pictureButton addGestureRecognizer:longGesture];
+//    UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+//    [self.pictureButton addGestureRecognizer:longGesture];
     UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePicture)];
-    [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
+//    [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
     [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
     [self.overlayView addSubview:self.pictureButton];
     
@@ -1215,7 +1216,6 @@
         [self.circularProgressView setProgress:0.0f];
         self.circularProgressView.hidden = NO;
         self.controller.mediaTypes = [NSArray arrayWithObject:(NSString *)kUTTypeMovie];
-        self.controller.videoQuality = UIImagePickerControllerQualityTypeHigh;
         self.controller.videoMaximumDuration = 8.0f;
         self.videoTimerCount = 8.0f;
         self.longGesturePressed = YES;
