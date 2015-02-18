@@ -1098,13 +1098,13 @@
     self.controller.cameraOverlayView = self.overlayView;
     
     self.pictureButton = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
-    UIImageView *captureImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.pictureButton.frame.size.width/2 - 36, self.pictureButton.frame.size.height - 72 - 5, 72, 72)];
-    captureImageView.image = [UIImage imageNamed:@"captureCamera"];
-    [self.pictureButton addSubview:captureImageView];
+    self.captureImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.pictureButton.frame.size.width/2 - 36, self.pictureButton.frame.size.height - 72 - 5, 72, 72)];
+    self.captureImageView.image = [UIImage imageNamed:@"captureCamera"];
+    [self.pictureButton addSubview:self.captureImageView];
     self.pictureButton.center = CGPointMake(self.overlayView.center.x, self.pictureButton.center.y);
     UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     [self.pictureButton addGestureRecognizer:longGesture];
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.controller action:@selector(takePicture)];
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePicture)];
     [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
     [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
     [self.overlayView addSubview:self.pictureButton];
@@ -1195,17 +1195,22 @@
     [self.previewImageView addSubview:self.textLabel];
 }
 
+- (void)takePicture {
+    [self.controller takePicture];
+//    [self.controller stopVideoCapture];
+
+}
+
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
     if (!self.longGesturePressed && gesture.state == UIGestureRecognizerStateBegan) {
         
-        LLACircularProgressView *circularProgressView = [[LLACircularProgressView alloc] initWithFrame: self.postButton.frame];
+        LLACircularProgressView *circularProgressView = [[LLACircularProgressView alloc] initWithFrame:self.captureImageView.frame];
         // Optionally set the current progress
         circularProgressView.progress = 0.0f;
         circularProgressView.tintColor = [FontProperties getBlueColor];
         circularProgressView.innerObjectTintColor = [FontProperties getOrangeColor];
-        circularProgressView.backgroundColor = [UIColor clearColor];
-        
-        [self.postButton addSubview:circularProgressView];
+        circularProgressView.backgroundColor = UIColor.clearColor;
+        [self.pictureButton addSubview:circularProgressView];
         self.controller.mediaTypes = [NSArray arrayWithObject:(NSString *)kUTTypeMovie];
        
         self.videoTimerCount = 8.0;
@@ -1227,7 +1232,6 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         self.videoTimerCount -= timer.timeInterval;
-        
         LLACircularProgressView *circularProgressView = timer.userInfo[@"progress"];
         UILongPressGestureRecognizer *gesture = timer.userInfo[@"gesture"];
         [circularProgressView setProgress: MIN(1.0, (8.0 - self.videoTimerCount)/8.0) animated:YES];
@@ -1319,9 +1323,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
                                  startUploadingWithInfo:self.info];
     }
     else {
-        self.info = info;
-        [self.mediaScrollDelegate mediaPickerController:self.controller
-                                 startUploadingWithInfo:self.info];
+//        self.info = info;
+//        [self.mediaScrollDelegate mediaPickerController:self.controller
+//                                 startUploadingWithInfo:self.info];
   
     }
    
