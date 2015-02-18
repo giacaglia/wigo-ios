@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "FLAnimatedImage.h"
 #import "FLAnimatedImageView.h"
+#import "Delegate.h"
 
 @interface PrivateSwitchView : UIView
+@property (nonatomic, strong) id<PrivacySwitchDelegate> privateDelegate;
 @property (nonatomic, strong) UIView *frontView;
-@property (nonatomic, strong) UILabel *invitePeopleLabel;
+@property (nonatomic, strong) NSString *explanationString;
 @property (nonatomic, strong) UILabel *publicLabel;
 @property (nonatomic, strong) UILabel *inviteOnlyLabel;
 @property (nonatomic, assign) BOOL privacyTurnedOn;

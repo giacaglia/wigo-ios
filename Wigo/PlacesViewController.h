@@ -13,7 +13,9 @@
 #import "SignViewController.h"
 
 
-@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate>
+@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
+    UIGestureRecognizerDelegate, PlacesDelegate,
+    PrivacySwitchDelegate>
 
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) NSString *groupName;

@@ -718,16 +718,21 @@ BOOL firstTimeLoading;
         _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 50, 240, 40)];
         [eventDetails addSubview:_privateSwitchView];
         [_privateSwitchView.closeLockImageView stopAnimating];
+        _privateSwitchView.privateDelegate = self;
         [_privateSwitchView.openLockImageView stopAnimating];
         
         self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, 30)];
-        self.invitePeopleLabel.text = _privateSwitchView.invitePeopleLabel.text;
+        self.invitePeopleLabel.text = _privateSwitchView.explanationString;
         self.invitePeopleLabel.textAlignment = NSTextAlignmentCenter;
         self.invitePeopleLabel.numberOfLines = 2;
         self.invitePeopleLabel.font = [FontProperties mediumFont:12.0f];
         self.invitePeopleLabel.textColor = [FontProperties getBlueColor];
         [eventDetails addSubview:self.invitePeopleLabel];
     }
+}
+
+- (void)updateUnderliningText {
+    self.invitePeopleLabel.text = _privateSwitchView.explanationString;
 }
 
 - (void)clearTextField {

@@ -260,7 +260,7 @@
     NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
     f.numberStyle = NSNumberFormatterDecimalStyle;
     NSNumber *myNumber = [f numberFromString:self.filenameString];
-    myNumber = [NSNumber numberWithInt:([myNumber integerValue] + 1)];
+    myNumber = [NSNumber numberWithInt:((int)[myNumber intValue] + 1)];
     self.filenameString = [NSString stringWithFormat:@"%@.jpg", [myNumber stringValue]];
     if (self.cameraPromptAddToStory) {
         [WGAnalytics tagEvent: @"Go Here, Then Add to Story, Then Picture Captured"];

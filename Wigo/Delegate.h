@@ -27,7 +27,10 @@
 - (void)showModalAttendees:(UIViewController *)modal;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 - (void)updateEvent:(WGEvent *)newEvent;
+@end
 
+@protocol PrivacySwitchDelegate <NSObject>
+- (void)updateUnderliningText;
 @end
 
 @protocol StoryDelegate <NSObject>

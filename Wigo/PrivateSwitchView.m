@@ -72,7 +72,7 @@
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(privacyPressed)];
     [self addGestureRecognizer:tapGesture];
-    
+    self.explanationString = @"The whole school can see what you are posting.";
 //    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(move:)];
 //    [panRecognizer setMinimumNumberOfTouches:1];
 //    [panRecognizer setMaximumNumberOfTouches:1];
@@ -129,6 +129,7 @@
             } completion:^(BOOL finished) {
                 self.publicLabel.textColor = [FontProperties getBlueColor];
                 self.publicLabel.alpha = 1.0f;
+                [self.privateDelegate updateUnderliningText];
             }];
             [UIView animateWithDuration:0.84 animations:^{
                 self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 2 - 2, 0);
@@ -145,7 +146,7 @@
             }];
             
             self.privacyTurnedOn = YES;
-            self.invitePeopleLabel.text = @"Only you can invite people and only\nthose invited can see the event.";
+            self.explanationString = @"Only you can invite people and only\nthose invited can see the event.";
         }
         else {
             self.openLockImageView.animationRepeatCount = 1;
@@ -159,6 +160,7 @@
             } completion:^(BOOL finished) {
                 self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
                 self.inviteOnlyLabel.alpha = 1.0f;
+                [self.privateDelegate updateUnderliningText];
             }];
             [UIView animateWithDuration:0.84 animations:^{
                 self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
@@ -174,10 +176,9 @@
             }];
             //
             self.privacyTurnedOn = NO;
-            self.invitePeopleLabel.text = @"The whole school can see what you are posting.";
+            self.explanationString = @"The whole school can see what you are posting.";
         }
     }
- 
 }
 
 @end
