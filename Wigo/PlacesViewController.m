@@ -729,6 +729,8 @@ BOOL firstTimeLoading;
         self.invitePeopleLabel.textColor = [FontProperties getBlueColor];
         [eventDetails addSubview:self.invitePeopleLabel];
     }
+    [_privateSwitchView.closeLockImageView stopAnimating];
+    [_privateSwitchView.openLockImageView stopAnimating];
 }
 
 - (void)updateUnderliningText {

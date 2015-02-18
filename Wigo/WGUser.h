@@ -128,6 +128,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(void) getNotMeForMessage:(WGCollectionResultBlock)handler;
 +(void) searchReferals:(NSString *)query withHandler:(WGSerializedCollectionResultBlock)handler;
+-(void) searchNotMe:(NSString *)query withContext:(NSString *)contextString withHandler:(WGCollectionResultBlock)handler;
 -(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 -(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;

@@ -33,6 +33,7 @@
     self.layer.cornerRadius = 22.0f;
     
     self.frontView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, self.frame.size.width/2 + 15, self.frame.size.height - 4)];
+//    self.frontView.backgroundColor = UIColor.clearColor;
     self.frontView.backgroundColor = [FontProperties getBlueColor];
     self.frontView.layer.borderColor = UIColor.clearColor.CGColor;
     self.frontView.layer.borderWidth = 1.0f;
@@ -60,6 +61,9 @@
     self.closeLockImageView.animatedImage = animatedImage;
     self.closeLockImageView.frame = CGRectMake(self.frame.size.width/2 - 6, self.frame.size.height/2 - 8, 12, 16);
     self.closeLockImageView.animationRepeatCount = 0;
+    for (int i = 0; i < 28; i++) {
+        [self.closeLockImageView.animatedImage imageLazilyCachedAtIndex:i];
+    }
     [self addSubview:self.closeLockImageView];
     
     FLAnimatedImage *openImage = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"openLock" ofType:@"gif"]]];
@@ -73,10 +77,10 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(privacyPressed)];
     [self addGestureRecognizer:tapGesture];
     self.explanationString = @"The whole school can see what you are posting.";
-//    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(move:)];
-//    [panRecognizer setMinimumNumberOfTouches:1];
-//    [panRecognizer setMaximumNumberOfTouches:1];
-//    [self.frontView addGestureRecognizer:panRecognizer];
+    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(move:)];
+    [panRecognizer setMinimumNumberOfTouches:1];
+    [panRecognizer setMaximumNumberOfTouches:1];
+    [self.frontView addGestureRecognizer:panRecognizer];
 }
 
 
@@ -89,7 +93,7 @@
     }
     
     translatedPoint = CGPointMake(self.firstX+translatedPoint.x, [sender view].center.y);
-    translatedPoint = CGPointMake(MIN(MAX((self.center.x)/2 ,translatedPoint.x), self.center.x), translatedPoint.y);
+    translatedPoint = CGPointMake(MIN(MAX(self.firstX ,translatedPoint.x), self.center.x + 15 - 2), translatedPoint.y);
     [[sender view] setCenter:translatedPoint];
     
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
@@ -103,13 +107,22 @@
     }
     CGFloat percentage = 2*((translatedPoint.x - self.center.x/2)/self.center.x);
     NSLog(@"percentage = %f", percentage);
-    self.closeLockImageView.alpha = percentage;
-    [UIView animateWithDuration:0.84 animations:^{
-        self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 2 - 2, 0);
-    }   completion:^(BOOL finished) {
-        [self.closeLockImageView stopAnimating];
-    }];
+    self.publicLabel.hidden = NO;
+    [self bringSubviewToFront:self.publicLabel];
+    self.publicLabel.textColor = RGB(floor(255*(1-percentage) + 122*(percentage)),floor(255*(1-percentage) + 193*percentage), floor(255*(1-percentage) + 226*percentage));
+    [self bringSubviewToFront:self.inviteOnlyLabel];
+    self.inviteOnlyLabel.textColor = RGB(floor(255*percentage + 122*(1 - percentage)),floor(255*percentage + 193*(1-percentage)), floor(255*percentage + 226*(1-percentage)));
+    self.closeLockImageView.hidden = NO;
+    self.closeLockImageView.currentFrameIndex = 25;
+    UIImage *image = self.closeLockImageView.currentFrame;
+    self.closeLockImageView.image = image;
+//    self.closeLockImageView.currentFrameIndex = 25;
+//    [self.closeLockImageView startAnimating];
+//    [self.closeLockImageView stopAnimating];
+    [self bringSubviewToFront:self.closeLockImageView];
 }
+
+
 
 
 - (void)privacyPressed {
