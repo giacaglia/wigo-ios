@@ -30,16 +30,16 @@
 - (void)setup {
     self.layer.borderColor = [FontProperties getBlueColor].CGColor;
     self.layer.borderWidth = 1.0f;
-    self.layer.cornerRadius = 20.0f;
+    self.layer.cornerRadius = 22.0f;
     
-    self.frontView = [[UIView alloc] initWithFrame:CGRectMake(3, 2, self.frame.size.width/2 + 15, self.frame.size.height - 4)];
+    self.frontView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, self.frame.size.width/2 + 15, self.frame.size.height - 4)];
     self.frontView.backgroundColor = [FontProperties getBlueColor];
     self.frontView.layer.borderColor = UIColor.clearColor.CGColor;
     self.frontView.layer.borderWidth = 1.0f;
-    self.frontView.layer.cornerRadius = 15.0f;
+    self.frontView.layer.cornerRadius = 20.0f;
     [self addSubview:self.frontView];
     
-    self.publicLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frontView.frame.size.width - 20, self.frontView.frame.size.height)];
+    self.publicLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.frontView.frame.size.width - 10, self.frontView.frame.size.height)];
     self.publicLabel.text = @"Public";
     self.publicLabel.textAlignment = NSTextAlignmentCenter;
     self.publicLabel.textColor = UIColor.whiteColor;
@@ -47,8 +47,8 @@
     [self addSubview:self.publicLabel];
     [self bringSubviewToFront:self.publicLabel];
     
-    self.inviteOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2 + 20, 0, self.frame.size.width/2 - 20, self.frame.size.height)];
-    self.inviteOnlyLabel.text = @"Invite Only";
+    self.inviteOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2 + 10, 0, self.frame.size.width/2 - 20, self.frontView.frame.size.height)];
+    self.inviteOnlyLabel.text = @"Private";
     self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
     self.inviteOnlyLabel.font = [FontProperties mediumFont:15.0f];
     self.inviteOnlyLabel.textAlignment = NSTextAlignmentCenter;
@@ -73,10 +73,10 @@
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(privacyPressed)];
     [self addGestureRecognizer:tapGesture];
     
-    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(move:)];
-    [panRecognizer setMinimumNumberOfTouches:1];
-    [panRecognizer setMaximumNumberOfTouches:1];
-    [self.frontView addGestureRecognizer:panRecognizer];
+//    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(move:)];
+//    [panRecognizer setMinimumNumberOfTouches:1];
+//    [panRecognizer setMaximumNumberOfTouches:1];
+//    [self.frontView addGestureRecognizer:panRecognizer];
 }
 
 
@@ -104,21 +104,8 @@
     CGFloat percentage = 2*((translatedPoint.x - self.center.x/2)/self.center.x);
     NSLog(@"percentage = %f", percentage);
     self.closeLockImageView.alpha = percentage;
-
-//    self.closeLockImageView.hidden = NO;
-//    self.closeLockImageView.animationRepeatCount = 1;
-//    self.closeLockImageView.animationDuration = 0.84;
-//    self.closeLockImageView.currentFrameIndex = 0;
-//    [self.closeLockImageView startAnimating];
-//    
-//    [UIView animateWithDuration:0.3 animations:^{
-//        self.publicLabel.alpha = 0.0f;
-//    } completion:^(BOOL finished) {
-//        self.publicLabel.textColor = [FontProperties getBlueColor];
-//        self.publicLabel.alpha = 1.0f;
-//    }];
     [UIView animateWithDuration:0.84 animations:^{
-        self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 3 - 4, 0);
+        self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 2 - 2, 0);
     }   completion:^(BOOL finished) {
         [self.closeLockImageView stopAnimating];
     }];
@@ -126,66 +113,71 @@
 
 
 - (void)privacyPressed {
-    if (!self.privacyTurnedOn) {
-        self.openLockImageView.hidden = YES;
-        self.closeLockImageView.hidden = NO;
-        self.closeLockImageView.animationRepeatCount = 1;
-        self.closeLockImageView.animationDuration = 0.84;
-        self.closeLockImageView.currentFrameIndex = 0;
-        [self.closeLockImageView startAnimating];
-        
-        [UIView animateWithDuration:0.3 animations:^{
-            self.publicLabel.alpha = 0.0f;
-        } completion:^(BOOL finished) {
-            self.publicLabel.textColor = [FontProperties getBlueColor];
-            self.publicLabel.alpha = 1.0f;
-        }];
-        [UIView animateWithDuration:0.84 animations:^{
-            self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 3 - 4, 0);
+    if (!self.runningAnimation) {
+        self.runningAnimation = YES;
+        if (!self.privacyTurnedOn) {
+            self.openLockImageView.currentFrameIndex = 29;
+            self.closeLockImageView.animationRepeatCount = 1;
+            self.closeLockImageView.animationDuration = 0.84;
+            self.closeLockImageView.currentFrameIndex = 0;
+            self.openLockImageView.hidden = YES;
+            self.closeLockImageView.hidden = NO;
+            [self.closeLockImageView startAnimating];
+            
+            [UIView animateWithDuration:0.3 animations:^{
+                self.publicLabel.alpha = 0.0f;
+            } completion:^(BOOL finished) {
+                self.publicLabel.textColor = [FontProperties getBlueColor];
+                self.publicLabel.alpha = 1.0f;
+            }];
+            [UIView animateWithDuration:0.84 animations:^{
+                self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 2 - 2, 0);
+            }
+            completion:^(BOOL finished) {
+                [self.closeLockImageView stopAnimating];
+                self.runningAnimation = NO;
+             }];
+            [UIView animateWithDuration:0.34 animations:^{
+                self.inviteOnlyLabel.alpha = 0.0f;
+            } completion:^(BOOL finished) {
+                self.inviteOnlyLabel.textColor = UIColor.whiteColor;
+                self.inviteOnlyLabel.alpha = 1.0f;
+            }];
+            
+            self.privacyTurnedOn = YES;
+            self.invitePeopleLabel.text = @"Only you can invite people and only\nthose invited can see the event.";
         }
-        completion:^(BOOL finished) {
-            [self.closeLockImageView stopAnimating];
-        }];
-        [UIView animateWithDuration:0.34 animations:^{
-            self.inviteOnlyLabel.alpha = 0.0f;
-        } completion:^(BOOL finished) {
-            self.inviteOnlyLabel.textColor = UIColor.whiteColor;
-            self.inviteOnlyLabel.alpha = 1.0f;
-        }];
-        
-        self.frontImageView.image = [UIImage imageNamed:@"lockClosed"];
-        self.privacyTurnedOn = YES;
-        self.invitePeopleLabel.text = @"Only you can invite people and only\nthose invited can see the event.";
+        else {
+            self.openLockImageView.animationRepeatCount = 1;
+            self.openLockImageView.animationDuration = 0.84;
+            self.openLockImageView.currentFrameIndex = 0;
+            self.closeLockImageView.hidden = YES;
+            self.openLockImageView.hidden = NO;
+            [self.openLockImageView startAnimating];
+            [UIView animateWithDuration:0.3 animations:^{
+                self.inviteOnlyLabel.alpha = 0;
+            } completion:^(BOOL finished) {
+                self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
+                self.inviteOnlyLabel.alpha = 1.0f;
+            }];
+            [UIView animateWithDuration:0.84 animations:^{
+                self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
+            } completion:^(BOOL finished) {
+                self.runningAnimation = NO;
+                [self.openLockImageView stopAnimating];
+            }];
+            [UIView animateWithDuration:0.34 animations:^{
+                self.publicLabel.alpha = 0.0f;
+            } completion:^(BOOL finished) {
+                self.publicLabel.textColor = UIColor.whiteColor;
+                self.publicLabel.alpha = 1.0f;
+            }];
+            //
+            self.privacyTurnedOn = NO;
+            self.invitePeopleLabel.text = @"The whole school can see what you are posting.";
+        }
     }
-    else {
-        self.openLockImageView.hidden = NO;
-        self.closeLockImageView.hidden = YES;
-        self.openLockImageView.animationRepeatCount = 1;
-        self.openLockImageView.animationDuration = 0.84;
-        self.openLockImageView.currentFrameIndex = 0;
-        [self.openLockImageView startAnimating];
-        [UIView animateWithDuration:0.3 animations:^{
-            self.inviteOnlyLabel.alpha = 0;
-        } completion:^(BOOL finished) {
-            self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
-            self.inviteOnlyLabel.alpha = 1.0f;
-        }];
-        [UIView animateWithDuration:0.84 animations:^{
-            self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
-        } completion:^(BOOL finished) {
-            [self.openLockImageView stopAnimating];
-        }];
-        [UIView animateWithDuration:0.34 animations:^{
-            self.publicLabel.alpha = 0.0f;
-        } completion:^(BOOL finished) {
-            self.publicLabel.textColor = UIColor.whiteColor;
-            self.publicLabel.alpha = 1.0f;
-        }];
-        
-        self.frontImageView.image = [UIImage imageNamed:@"unlocked"];
-        self.privacyTurnedOn = NO;
-        self.invitePeopleLabel.text = @"The whole school can see what you are posting.";
-    }
+ 
 }
 
 @end

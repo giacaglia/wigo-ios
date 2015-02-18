@@ -775,7 +775,6 @@ BOOL firstTimeLoading;
                     
                     [WGProfile currentUser].isGoingOut = @YES;
                     [WGProfile currentUser].eventAttending = object;
-                    [WGProfile currentUser].isGoingOut = @YES;
                     
                     WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [WGProfile currentUser] }];
                     
@@ -799,7 +798,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)addLoadingIndicator {
-    self.loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, _whereAreYouGoingView.frame.size.height - 10, _whereAreYouGoingView.frame.size.width - 20, 5)];
+    self.loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, 5, _whereAreYouGoingView.frame.size.width - 20, 5)];
     self.loadingView.layer.borderColor = [FontProperties getBlueColor].CGColor;
     self.loadingView.layer.borderWidth = 1.0f;
     self.loadingView.layer.cornerRadius = 3.0f;

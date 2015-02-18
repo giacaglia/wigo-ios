@@ -35,6 +35,8 @@
 @property (nonatomic, strong) UILabel *noHighlightsLabel;
 @property (nonatomic, strong) UIImageView *privateTooltipBanner;
 @property (nonatomic, strong) PrivateSwitchView *privateSwitchView;
+@property (nonatomic, strong) UIButton *privateLogoButton;
+@property (nonatomic, strong) UIImageView *privacyImageView;
 @end
 
 
@@ -461,7 +463,6 @@
     [sendButton addSubview:sendOvalImageView];
 }
 
-#warning NEED to show tooltip only for creator
 - (void)initializePrivateTooltipBanner {
     self.privateTooltipBanner = [[UIImageView alloc] initWithFrame:CGRectMake(self.inviteButton.center.x - 115 - 30, self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height, 230, 91)];
     self.privateTooltipBanner.image = [UIImage imageNamed:@"privateTooltipImageView"];
@@ -542,6 +543,7 @@
     }];
     self.event.isPrivate = NO;
     if (!_privateSwitchView.privacyTurnedOn) {
+        _privacyImageView.image = [UIImage imageNamed:@"blueUnlocked"];
         [self.event setPrivacyOn:NO andHandler:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] logError:error forAction:WGActionSave];
@@ -608,14 +610,14 @@
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
-    UIButton *privateLogoButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 20 - 19 - 15, 15, 42, 46)];
-    privateLogoButton.hidden = !self.event.isPrivate;
-    privateLogoButton.enabled = self.event.isPrivate;
-    [privateLogoButton addTarget:self action:@selector(showOverlayView) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:privateLogoButton];
-    UIImageView *privacyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 12, 16)];
-    privacyImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
-    [privateLogoButton addSubview:privacyImageView];
+    _privateLogoButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 20 - 19 - 15, 15, 42, 46)];
+    _privateLogoButton.hidden = !self.event.isPrivate;
+    _privateLogoButton.enabled = self.event.isPrivate;
+    [_privateLogoButton addTarget:self action:@selector(showOverlayView) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_privateLogoButton];
+    _privacyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 12, 16)];
+    _privacyImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
+    [_privateLogoButton addSubview:_privacyImageView];
 }
 
 - (void)showOverlayView {
