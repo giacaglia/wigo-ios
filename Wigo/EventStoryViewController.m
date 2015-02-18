@@ -52,9 +52,7 @@
     [self.view addSubview: self.backgroundScrollview];
     [self.view sendSubviewToBack: self.backgroundScrollview];
     
-    
     [self loadEventTitle];
-
     [self loadEventPeopleScrollView];
     [self loadEventDetails];
     [self loadInviteOrGoHereButton];
@@ -63,9 +61,9 @@
         [self loadTextViewAndSendButton];
     }
     [self initializeToolTipBanner];
+    [self loadConversationViewController];
     [self initializePrivateTooltipBanner];
     [self initializeOverlayPrivate];
-    [self loadConversationViewController];
     [self setDetailViewRead];
 }
 
