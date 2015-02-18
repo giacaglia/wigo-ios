@@ -37,6 +37,7 @@
 @property (nonatomic, strong) PrivateSwitchView *privateSwitchView;
 @property (nonatomic, strong) UIButton *privateLogoButton;
 @property (nonatomic, strong) UIImageView *privacyImageView;
+@property (nonatomic, strong) UILabel *explanationLabel;
 @end
 
 
@@ -511,28 +512,34 @@
     eventOnlyLabel.textAlignment = NSTextAlignmentCenter;
     [self.visualEffectView addSubview:eventOnlyLabel];
     
-    UILabel *explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 32, self.view.frame.size.width, 75)];
+    _explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 32, self.view.frame.size.width, 75)];
     if ([self.event.owner isEqual:WGProfile.currentUser]) {
-        explanationLabel.text = @"Only people you invite can see the\nevent and what is going on and only you\ncan invite people. You can change the\ntype of the event:";
+        _explanationLabel.text = @"Only people you invite can see the\nevent and what is going on and only you\ncan invite people. You can change the\ntype of the event:";
     }
     else {
-        explanationLabel.text = @"Only invited people can see whats going on. Only creator can invite people.";
+        _explanationLabel.text = @"Only invited people can see whats going on. Only creator can invite people.";
     }
-    explanationLabel.font = [FontProperties mediumFont:15];
-    explanationLabel.textColor = [FontProperties getBlueColor];
-    explanationLabel.textAlignment = NSTextAlignmentCenter;
-    explanationLabel.numberOfLines = 0;
-    explanationLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [self.visualEffectView addSubview:explanationLabel];
+    _explanationLabel.font = [FontProperties mediumFont:15];
+    _explanationLabel.textColor = [FontProperties getBlueColor];
+    _explanationLabel.textAlignment = NSTextAlignmentCenter;
+    _explanationLabel.numberOfLines = 0;
+    _explanationLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [self.visualEffectView addSubview:_explanationLabel];
     
     _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2 + 66, 240, 40)];
+    [_privateSwitchView changeToPrivateState:YES];
     _privateSwitchView.hidden = ![self.event.owner isEqual:WGProfile.currentUser];
+    _privateSwitchView.privateDelegate = self;
     [self.visualEffectView addSubview:_privateSwitchView];
-    
+
     UIImageView *lockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 12, self.view.frame.size.height/2 + 66, 24, 32)];
     lockImageView.image = [UIImage imageNamed:@"lockImage"];
     lockImageView.hidden = [self.event.owner isEqual:WGProfile.currentUser];
     [self.visualEffectView addSubview:lockImageView];
+}
+
+- (void)updateUnderliningText {
+    _explanationLabel.text = _privateSwitchView.explanationString;
 }
 
 - (void)closeOverlay {
@@ -619,6 +626,8 @@
 }
 
 - (void)showOverlayView {
+    [_privateSwitchView.openLockImageView stopAnimating];
+    [_privateSwitchView.closeLockImageView stopAnimating];
     [UIView animateWithDuration:0.5f animations:^{
         self.visualEffectView.alpha = 1.0f;
     }];

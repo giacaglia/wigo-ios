@@ -181,4 +181,24 @@
     }
 }
 
+- (void)changeToPrivateState:(BOOL)isPrivate {
+    if (isPrivate) {
+        self.privacyTurnedOn = YES;
+        self.publicLabel.textColor = [FontProperties getBlueColor];
+        [self.privateDelegate updateUnderliningText];
+        self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 2 - 2, 0);
+        self.inviteOnlyLabel.textColor = UIColor.whiteColor;
+        self.explanationString = @"Only you can invite people and only\nthose invited can see the event.";
+    }
+    else {
+        self.privacyTurnedOn = NO;
+        self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
+        [self.privateDelegate updateUnderliningText];
+        self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
+        self.publicLabel.textColor = UIColor.whiteColor;
+        self.explanationString = @"The whole school can see what you are posting.";
+    }
+
+}
+
 @end

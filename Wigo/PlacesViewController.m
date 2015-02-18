@@ -717,8 +717,8 @@ BOOL firstTimeLoading;
         
         _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 50, 240, 40)];
         [eventDetails addSubview:_privateSwitchView];
-        [_privateSwitchView.closeLockImageView stopAnimating];
         _privateSwitchView.privateDelegate = self;
+        [_privateSwitchView.closeLockImageView stopAnimating];
         [_privateSwitchView.openLockImageView stopAnimating];
         
         self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, 30)];

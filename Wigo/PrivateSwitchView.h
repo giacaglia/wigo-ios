@@ -22,4 +22,5 @@
 @property (nonatomic, strong) FLAnimatedImageView *closeLockImageView;
 @property (nonatomic, strong) FLAnimatedImageView *openLockImageView;
 @property (nonatomic, assign) BOOL runningAnimation;
+- (void)changeToPrivateState:(BOOL)isPrivate;
 @end

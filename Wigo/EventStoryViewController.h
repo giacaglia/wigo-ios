@@ -23,7 +23,7 @@ typedef enum
 } GOHERESTATE;
 
 @interface EventStoryViewController : UIViewController
-    <UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate, StoryDelegate, UserSelectDelegate>
+    <UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UITextViewDelegate, StoryDelegate, UserSelectDelegate, PrivacySwitchDelegate>
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
