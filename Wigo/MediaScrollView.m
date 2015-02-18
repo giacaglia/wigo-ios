@@ -371,13 +371,13 @@
         }
     }
     else {
-        UIImage *scaledImage = [image resizedImage:CGSizeMake(screenHeight*imageMultiple, screenWidth*imageMultiple) interpolationQuality:kCGInterpolationHigh];
+//        UIImage *scaledImage = [image resizedImage:CGSizeMake(screenWidth*imageMultiple, screenHeight*imageMultiple) interpolationQuality:kCGInterpolationHigh];
         flippedImage = image;
-        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
-                                               scale:scaledImage.scale
-                                         orientation:UIImageOrientationLeftMirrored];
-        }
+//        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+//            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
+//                                               scale:scaledImage.scale
+//                                         orientation:UIImageOrientationLeftMirrored];
+//        }
     }
     
     return UIImageJPEGRepresentation(flippedImage, jpegQuality);
@@ -462,6 +462,7 @@
                   andFileName:(NSString *)filename
                    andOptions:(NSDictionary *)options
 {
+    // If it's image.
     if ([[options objectForKey:kMediaMimeTypeKey] isEqual:kImageEventType]) {
         WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
         __weak typeof(self) weakSelf = self;
@@ -483,11 +484,12 @@
                 [strongSelf callbackFromUploadWithInfo:nil andFilename:returnedFilename];
             }
         }];
-    }
+    } //If it's video
     else if ([[options objectForKey:kMediaMimeTypeKey] isEqual:kVideoEventType]) {
         NSData *thumbnailData = [options objectForKey:kThumbnailDataKey];
         NSString *thumnailFileName = [options objectForKey:@"thumbnail"];
         NSMutableDictionary *mutableOptions = [NSMutableDictionary dictionaryWithDictionary:options];
+        UIImage *image = [UIImage imageWithData:thumbnailData];
         [mutableOptions removeObjectForKey:kThumbnailDataKey];
         options = mutableOptions;
         WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
@@ -1049,8 +1051,6 @@
 
 @end
 
-#import "LLACircularProgressView.h"
-
 @implementation CameraCell
 
 - (id) initWithCoder:(NSCoder *)aDecoder {
@@ -1108,6 +1108,15 @@
     [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
     [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
     [self.overlayView addSubview:self.pictureButton];
+    
+    self.circularProgressView = [[LLACircularProgressView alloc] initWithFrame:self.captureImageView.frame];
+    // Optionally set the current progress
+    self.circularProgressView.progress = 0.0f;
+    self.circularProgressView.tintColor = [FontProperties getBlueColor];
+    self.circularProgressView.innerObjectTintColor = [FontProperties getOrangeColor];
+    self.circularProgressView.backgroundColor = UIColor.clearColor;
+    self.circularProgressView.hidden = YES;
+    [self.pictureButton addSubview:self.circularProgressView];
     
     self.flashButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     self.flashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 30, 37)];
@@ -1203,27 +1212,23 @@
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
     if (!self.longGesturePressed && gesture.state == UIGestureRecognizerStateBegan) {
-        
-        LLACircularProgressView *circularProgressView = [[LLACircularProgressView alloc] initWithFrame:self.captureImageView.frame];
-        // Optionally set the current progress
-        circularProgressView.progress = 0.0f;
-        circularProgressView.tintColor = [FontProperties getBlueColor];
-        circularProgressView.innerObjectTintColor = [FontProperties getOrangeColor];
-        circularProgressView.backgroundColor = UIColor.clearColor;
-        [self.pictureButton addSubview:circularProgressView];
+        [self.circularProgressView setProgress:0.0f];
+        self.circularProgressView.hidden = NO;
         self.controller.mediaTypes = [NSArray arrayWithObject:(NSString *)kUTTypeMovie];
-       
-        self.videoTimerCount = 8.0;
+        self.controller.videoQuality = UIImagePickerControllerQualityTypeHigh;
+        self.controller.videoMaximumDuration = 8.0f;
+        self.videoTimerCount = 8.0f;
         self.longGesturePressed = YES;
         [self performBlock:^{
             [self.controller startVideoCapture];
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": circularProgressView} repeats: YES] fire];
+                [[NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": self.circularProgressView} repeats: YES] fire];
             });
         } afterDelay:0.1];
     }
     if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && self.longGesturePressed) {
         [self.controller stopVideoCapture];
+        self.circularProgressView.hidden = YES;
         self.longGesturePressed = NO;
     }
 }
@@ -1232,15 +1237,14 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         self.videoTimerCount -= timer.timeInterval;
-        LLACircularProgressView *circularProgressView = timer.userInfo[@"progress"];
         UILongPressGestureRecognizer *gesture = timer.userInfo[@"gesture"];
-        [circularProgressView setProgress: MIN(1.0, (8.0 - self.videoTimerCount)/8.0) animated:YES];
+        [self.circularProgressView setProgress: MIN(1.0, (8.0 - self.videoTimerCount)/8.0) animated:YES];
         
         
         if (self.videoTimerCount <= 0) {
             
             [timer invalidate];
-            
+
             //hack to cancel the gesture.
             gesture.enabled = NO;
             gesture.enabled = YES;
@@ -1289,7 +1293,6 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    NSLog(@"here");
     self.dismissButton.hidden = YES;
     self.dismissButton.enabled = NO;
     self.pictureButton.hidden = YES;
@@ -1323,9 +1326,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
                                  startUploadingWithInfo:self.info];
     }
     else {
-//        self.info = info;
-//        [self.mediaScrollDelegate mediaPickerController:self.controller
-//                                 startUploadingWithInfo:self.info];
+        self.info = info;
+        [self.mediaScrollDelegate mediaPickerController:self.controller
+                                 startUploadingWithInfo:self.info];
   
     }
    

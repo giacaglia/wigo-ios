@@ -10,6 +10,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "WGEvent.h"
 #import "Delegate.h"
+#import "LLACircularProgressView.h"
 
 #define UIMediaPickerText @"UIMediaPickerText"
 #define UIMediaPickerPercentage @"UIMediaPickerPercentage"
@@ -102,6 +103,7 @@
 @property (nonatomic, strong) UILabel *label;
 @end
 
+
 @interface CameraCell : UICollectionViewCell<UINavigationControllerDelegate,
                                             UIImagePickerControllerDelegate,
                                             UIGestureRecognizerDelegate,
@@ -118,6 +120,7 @@
 @property (nonatomic, strong) UIImageView *captureImageView;
 @property (nonatomic, assign) double videoTimerCount;
 @property (nonatomic, assign) BOOL longGesturePressed;
+@property (nonatomic, strong) LLACircularProgressView *circularProgressView ;
 
 @property (nonatomic, strong) UIImageView *previewImageView;
 @property (nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
