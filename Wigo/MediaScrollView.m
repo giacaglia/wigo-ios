@@ -583,10 +583,11 @@
                 strongSelf.shownCurrentImage = YES;
             }
             else {
-                [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:strongSelf.object];
-                [strongSelf.eventMessages removeObjectAtIndex:(self.eventMessages.count -1)];
-                [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
-                strongSelf.shownCurrentImage = YES;
+                if (info == nil){
+                    [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:strongSelf.object];
+                    [strongSelf.eventMessages removeObjectAtIndex:(self.eventMessages.count -1)];
+                    [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+                }
                 strongSelf.shownCurrentImage = NO;
             }
         }];
