@@ -50,6 +50,7 @@
 #import "EventPeopleScrollView.h"
 
 @interface EventCell : UITableViewCell
+@property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UIImageView *privacyLockImageView;
 @property (nonatomic, strong) WGEvent *event;

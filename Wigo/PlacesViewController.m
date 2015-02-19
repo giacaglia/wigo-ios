@@ -996,7 +996,8 @@ BOOL firstTimeLoading;
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
-        
+        if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
+        cell.loadingView.hidden = YES;
         cell.placesDelegate = self;
         if (_isSearching) {
             if (indexPath.row == [_filteredEvents count]) {
@@ -1004,6 +1005,8 @@ BOOL firstTimeLoading;
             }
         } else if (indexPath.row == self.events.count) {
             [self fetchEvents];
+            cell.loadingView.hidden = NO;
+            [cell.loadingView startAnimating];
             cell.eventNameLabel.text = nil;
             cell.chatBubbleImageView.image = nil;
             cell.postStoryImageView.image = nil;
@@ -1766,6 +1769,10 @@ BOOL firstTimeLoading;
     self.contentView.frame = self.frame;
     self.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
+    self.loadingView.hidden = YES;
+    [self.contentView addSubview:self.loadingView];
     
     self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 20, 12, 16)];
     self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
