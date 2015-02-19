@@ -100,30 +100,38 @@
     [[sender view] setCenter:translatedPoint];
     
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
+        CGFloat velocityX = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:self.frontView].x);
+        CGFloat animationDuration = (ABS(velocityX)*.0002)+.2;
         if (translatedPoint.x > 0.75*self.center.x) {
-            [UIView animateWithDuration:0.4 animations:^{
+            [UIView animateWithDuration:animationDuration animations:^{
                 [[sender view] setCenter:CGPointMake(self.center.x + 15 - 4, translatedPoint.y)];
             }];
+            self.privacyTurnedOn = YES;
+            self.explanationString = @"Only you can invite people and only\nthose invited can see the event.";
+            [self.privateDelegate updateUnderliningText];
             self.publicLabel.hidden = NO;
             [self bringSubviewToFront:self.publicLabel];
             self.publicLabel.textColor = [FontProperties getBlueColor];
             [self bringSubviewToFront:self.inviteOnlyLabel];
             self.inviteOnlyLabel.textColor = UIColor.whiteColor;
             self.movingImageView.hidden = NO;
-            self.movingImageView.image = [UIImage imageNamed:@"openLock-30"];
+            self.movingImageView.image = [UIImage imageNamed:@"openLock-1"];
             [self bringSubviewToFront:self.movingImageView];
         }
         else {
-            [UIView animateWithDuration:0.4 animations:^{
+            [UIView animateWithDuration:animationDuration animations:^{
                 [[sender view] setCenter:CGPointMake(self.center.x/2 - 15 + 4, translatedPoint.y)];
             }];
+            self.privacyTurnedOn = NO;
+            self.explanationString = @"The whole school can see what you are posting.";
+            [self.privateDelegate updateUnderliningText];
             self.publicLabel.hidden = NO;
             [self bringSubviewToFront:self.publicLabel];
             self.publicLabel.textColor = UIColor.whiteColor;
             [self bringSubviewToFront:self.inviteOnlyLabel];
             self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
             self.movingImageView.hidden = NO;
-            self.movingImageView.image = [UIImage imageNamed:@"openLock-1"];
+            self.movingImageView.image = [UIImage imageNamed:@"openLock-30"];
             [self bringSubviewToFront:self.movingImageView];
         }
         return;
@@ -147,6 +155,11 @@
 
 - (void)privacyPressed {
     if (!self.runningAnimation) {
+        self.movingImageView.hidden = YES;
+        [self bringSubviewToFront:self.openLockImageView];
+        self.openLockImageView.hidden = NO;
+        [self bringSubviewToFront:self.closeLockImageView];
+        self.closeLockImageView.hidden = NO;
         self.runningAnimation = YES;
         if (!self.privacyTurnedOn) {
             self.openLockImageView.currentFrameIndex = 29;
