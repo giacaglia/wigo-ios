@@ -255,9 +255,18 @@
 
 #pragma mark - IQMediaPickerController Delegate methods
 
+- (void)cancelPressed {
+    self.filenameString = [self.filenameString substringWithRange:NSMakeRange(0, self.filenameString.length - 4)];
+    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+    f.numberStyle = NSNumberFormatterDecimalStyle;
+    NSNumber *myNumber = [f numberFromString:self.filenameString];
+    myNumber = [NSNumber numberWithInt:((int)[myNumber intValue] + 1)];
+    self.filenameString = [NSString stringWithFormat:@"%@.jpg", [myNumber stringValue]];
+}
+
 - (void)mediaPickerController:(UIImagePickerController *)controller
        startUploadingWithInfo:(NSDictionary *)info {
-    self.filenameString = [self.filenameString substringWithRange:NSMakeRange(0, self.filenameString.length - 2)];
+    self.filenameString = [self.filenameString substringWithRange:NSMakeRange(0, self.filenameString.length - 4)];
     NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
     f.numberStyle = NSNumberFormatterDecimalStyle;
     NSNumber *myNumber = [f numberFromString:self.filenameString];
@@ -1104,12 +1113,12 @@
     [self.pictureButton addSubview:self.captureImageView];
     self.pictureButton.center = CGPointMake(self.overlayView.center.x, self.pictureButton.center.y);
     [self.pictureButton addTarget:self.controller action:@selector(takePicture) forControlEvents:UIControlEventTouchUpInside];
+    [self.overlayView addSubview:self.pictureButton];
 //    UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
 //    [self.pictureButton addGestureRecognizer:longGesture];
 //    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePicture)];
 //    [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
 //    [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
-    [self.overlayView addSubview:self.pictureButton];
     
     self.circularProgressView = [[LLACircularProgressView alloc] initWithFrame:self.captureImageView.frame];
     // Optionally set the current progress
@@ -1298,7 +1307,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.dismissButton.enabled = NO;
     self.pictureButton.hidden = YES;
 #warning Remember to disable to UIButton
-    //    self.pictureButton.enabled = NO;
+    self.pictureButton.enabled = NO;
     self.flashButton.hidden = YES;
     self.flashButton.enabled = NO;
     self.switchButton.hidden = YES;
@@ -1336,6 +1345,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
 }
 
 - (void)cancelPressed {
+    [self.mediaScrollDelegate cancelPressed];
     [self cleanupView];
     self.info = nil;
 }
@@ -1345,8 +1355,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.dismissButton.hidden = NO;
     self.dismissButton.enabled = YES;
     self.pictureButton.hidden = NO;
-#warning Remember to disable UIButton
-//    self.pictureButton.enabled = YES;
+#warning Remember to enabled
+    self.pictureButton.enabled = YES;
     self.flashButton.hidden = NO;
     self.flashButton.enabled = YES;
     self.switchButton.hidden = NO;

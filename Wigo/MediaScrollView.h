@@ -24,6 +24,7 @@
        startUploadingWithInfo:(NSDictionary *)info;
 - (void)mediaPickerController:(UIImagePickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info;
+- (void)cancelPressed;
 @end
 
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate>
