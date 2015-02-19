@@ -364,9 +364,10 @@ UIScrollView *suggestedScrollView;
         if ([self.currentTab isEqual:@2]) {
             SuggestedCell *cell = [tableView dequeueReusableCellWithIdentifier:kSuggestedFriendsCellName forIndexPath:indexPath];
             cell.peopleViewDelegate = self;
-            [cell.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             [cell.suggestedScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+            [cell addInviteButtonToScrollView];
             [cell setStateForCollection:self.suggestions];
+            [cell.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             return cell;
         }
         else if ([self.currentTab isEqual:@4] && self.user.isCurrentUser) {
@@ -1010,13 +1011,19 @@ UIScrollView *suggestedScrollView;
     self.suggestedScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 35, self.contentView.frame.size.width, 185)];
     self.suggestedScrollView.showsHorizontalScrollIndicator = NO;
     [self.contentView addSubview:self.suggestedScrollView];
-    int xPosition = 10;
 
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 110)];
+    [self addInviteButtonToScrollView];
+    
+    int xPosition = 140;
+    self.suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
+}
+
+- (void)addInviteButtonToScrollView {
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 0, 110, 110)];
     [self.inviteButton setBackgroundImage:[UIImage imageNamed:@"InviteButton"] forState:UIControlStateNormal];
     [self.suggestedScrollView addSubview:self.inviteButton];
     
-    self.inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
+    self.inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 120, 110, 30)];
     self.inviteMoreFriendsLabel.text = @"Invite more friends\nto Wigo";
     self.inviteMoreFriendsLabel.textAlignment = NSTextAlignmentCenter;
     self.inviteMoreFriendsLabel.font = [FontProperties mediumFont:12.0f];
@@ -1024,9 +1031,6 @@ UIScrollView *suggestedScrollView;
     self.inviteMoreFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.inviteMoreFriendsLabel.textColor = [FontProperties getOrangeColor];
     [self.suggestedScrollView addSubview:self.inviteMoreFriendsLabel];
-    
-    xPosition += 130;
-    self.suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
 }
 
 - (void) setStateForCollection:(WGCollection *)collection {

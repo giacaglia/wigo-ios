@@ -527,9 +527,9 @@
     [self.visualEffectView addSubview:_explanationLabel];
     
     _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2 + 66, 240, 40)];
-    [_privateSwitchView changeToPrivateState:YES];
     _privateSwitchView.hidden = ![self.event.owner isEqual:WGProfile.currentUser];
     _privateSwitchView.privateDelegate = self;
+    [_privateSwitchView changeToPrivateState:YES];
     [self.visualEffectView addSubview:_privateSwitchView];
 
     UIImageView *lockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 12, self.view.frame.size.height/2 + 66, 24, 32)];
