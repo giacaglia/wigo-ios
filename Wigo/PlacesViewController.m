@@ -717,6 +717,8 @@ BOOL firstTimeLoading;
         
         _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 50, 240, 40)];
         [eventDetails addSubview:_privateSwitchView];
+        _privateSwitchView.privateString = @"Only you can invite people and only\nthose invited can see the event.";
+        _privateSwitchView.publicString =  @"The whole school can see and attend your event.";
         _privateSwitchView.privateDelegate = self;
         [_privateSwitchView.closeLockImageView stopAnimating];
         [_privateSwitchView.openLockImageView stopAnimating];

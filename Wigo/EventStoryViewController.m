@@ -143,7 +143,7 @@
     [self.backgroundScrollview addSubview:self.inviteButton];
     if (self.event.isPrivate && ![self.event.owner isEqual:WGProfile.currentUser]) {
         self.inviteButton.alpha = 0.5f;
-        [self.inviteButton addTarget:self action:@selector(showOverlayView) forControlEvents:UIControlEventTouchUpInside];
+        [self.inviteButton addTarget:self action:@selector(showOverlayForInvite) forControlEvents:UIControlEventTouchUpInside];
     }
     else {
         self.inviteButton.alpha = 1.0f;
@@ -463,18 +463,18 @@
 }
 
 - (void)initializePrivateTooltipBanner {
-    self.privateTooltipBanner = [[UIImageView alloc] initWithFrame:CGRectMake(self.inviteButton.center.x - 115 - 30, self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height, 230, 91)];
+    self.privateTooltipBanner = [[UIImageView alloc] initWithFrame:CGRectMake(self.inviteButton.center.x - 115 - 30, self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height, 230, 150)];
     self.privateTooltipBanner.image = [UIImage imageNamed:@"privateTooltipImageView"];
     self.privateTooltipBanner.hidden = !self.event.isPrivate || ![self.event.owner isEqual:WGProfile.currentUser];
     [self.backgroundScrollview bringSubviewToFront:self.privateTooltipBanner];
     [self.backgroundScrollview addSubview:self.privateTooltipBanner];
     
     UILabel *inviteFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 19, self.privateTooltipBanner.frame.size.width - 20, self.privateTooltipBanner.frame.size.height - 19)];
-    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Invite friends to your\nprivate party!"];
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"You're in charge.\nInvite friends to your\nprivate event!"];
     [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length)];
-    [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getBlueColor] range:NSMakeRange(0, 6)];
+    [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getBlueColor] range:NSMakeRange(18, 6)];
     inviteFriendsLabel.attributedText = string;
-    inviteFriendsLabel.numberOfLines = 2;
+    inviteFriendsLabel.numberOfLines = 3;
     inviteFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
     inviteFriendsLabel.textAlignment = NSTextAlignmentLeft;
     [self.privateTooltipBanner addSubview:inviteFriendsLabel];
@@ -625,9 +625,23 @@
     [_privateLogoButton addSubview:_privacyImageView];
 }
 
+
+- (void)showOverlayForInvite {
+    [_privateSwitchView.openLockImageView stopAnimating];
+    [_privateSwitchView.closeLockImageView stopAnimating];
+    _privateSwitchView.privateString = @"Only the creator can invite people and only\nthose invited can see the event.";
+    _privateSwitchView.publicString =  @"The whole school can see and attend your event.";
+    _explanationLabel.text = _privateSwitchView.privateString;
+    [UIView animateWithDuration:0.5f animations:^{
+        self.visualEffectView.alpha = 1.0f;
+    }];
+}
 - (void)showOverlayView {
     [_privateSwitchView.openLockImageView stopAnimating];
     [_privateSwitchView.closeLockImageView stopAnimating];
+    _privateSwitchView.privateString = @"Only you can invite people and only\nthose invited can see the event.";
+    _privateSwitchView.publicString =  @"The whole school can see\nand attend your event.";
+    _explanationLabel.text = _privateSwitchView.privateString;
     [UIView animateWithDuration:0.5f animations:^{
         self.visualEffectView.alpha = 1.0f;
     }];

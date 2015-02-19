@@ -14,6 +14,8 @@
 @interface PrivateSwitchView : UIView
 @property (nonatomic, strong) id<PrivacySwitchDelegate> privateDelegate;
 @property (nonatomic, strong) UIView *frontView;
+@property (nonatomic, strong) NSString *privateString;
+@property (nonatomic, strong) NSString *publicString;
 @property (nonatomic, strong) NSString *explanationString;
 @property (nonatomic, strong) UILabel *publicLabel;
 @property (nonatomic, strong) UILabel *inviteOnlyLabel;

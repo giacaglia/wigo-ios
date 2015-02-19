@@ -192,7 +192,7 @@
             }];
             
             self.privacyTurnedOn = YES;
-            self.explanationString = @"Only you can invite people and only\nthose invited can see the event.";
+            self.explanationString = self.privateString;
         }
         else {
             self.openLockImageView.animationRepeatCount = 1;
@@ -222,7 +222,7 @@
             }];
             //
             self.privacyTurnedOn = NO;
-            self.explanationString = @"The whole school can see what you are posting.";
+            self.explanationString = self.publicString;
         }
     }
 }
