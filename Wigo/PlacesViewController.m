@@ -28,7 +28,7 @@
 #import "ReferalViewController.h"
 #import "PrivateSwitchView.h"
 
-#define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
+#define sizeOfEachCell 84 + [EventPeopleScrollView containerHeight] + 10
 
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCel @"HighlightOldEventCell"
@@ -1008,8 +1008,7 @@ BOOL firstTimeLoading;
             cell.loadingView.hidden = NO;
             [cell.loadingView startAnimating];
             cell.eventNameLabel.text = nil;
-            cell.chatBubbleImageView.image = nil;
-            cell.postStoryImageView.image = nil;
+            cell.numberOfPeopleGoingLabel.text = nil;
             cell.privacyLockImageView.hidden = YES;
             [cell.eventPeopleScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
             return cell;
@@ -1037,19 +1036,6 @@ BOOL firstTimeLoading;
         }
         [cell updateUI];
         
-        if (![event.isRead boolValue] &&
-            [event.numMessages intValue] > 0) {
-            cell.chatBubbleImageView.hidden = NO;
-            cell.chatBubbleImageView.image = [UIImage  imageNamed:@"cameraBubble"];
-            cell.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
-        } else if ( [event.numMessages intValue] > 0) {
-            cell.chatBubbleImageView.hidden = NO;
-            cell.chatBubbleImageView.image = [UIImage  imageNamed:@"blueCameraBubble"];
-            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-        } else {
-            cell.chatBubbleImageView.hidden = YES;
-            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-        }
         return cell;
     } else if (indexPath.section == kHighlightsEmptySection) {
         return nil;
@@ -1774,7 +1760,7 @@ BOOL firstTimeLoading;
     self.loadingView.hidden = YES;
     [self.contentView addSubview:self.loadingView];
     
-    self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 32 - 8, 12, 16)];
+    self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 12 - 10, 32 - 8, 12, 16)];
     self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
     self.privacyLockImageView.hidden = YES;
     [self.contentView addSubview:self.privacyLockImageView];
@@ -1785,19 +1771,15 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textColor = RGB(100, 173, 215);
     [self.contentView addSubview:self.eventNameLabel];
     
-    self.chatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 48, 15, 20, 20)];
-    self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
-    self.chatBubbleImageView.center = CGPointMake(self.chatBubbleImageView.center.x, self.eventNameLabel.center.y);
-    self.chatBubbleImageView.hidden = YES;
-    [self.contentView addSubview:self.chatBubbleImageView];
-    
-    self.postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 24, 13, 9, 14)];
-    self.postStoryImageView.center = CGPointMake(self.postStoryImageView.center.x, self.eventNameLabel.center.y);
-    self.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-    [self.contentView addSubview:self.postStoryImageView];
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 64, self.frame.size.width, 20)];
+//    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ People are going"];
+    self.numberOfPeopleGoingLabel.textColor = RGB(0, 0, 81);
+    self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
+    self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
+    [self.contentView addSubview:self.numberOfPeopleGoingLabel];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.frame = CGRectMake(0, 64, self.frame.size.width, [EventPeopleScrollView containerHeight]);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 84 + 12, self.frame.size.width, [EventPeopleScrollView containerHeight]);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
@@ -1814,24 +1796,9 @@ BOOL firstTimeLoading;
 
 -(void) updateUI {
     self.eventNameLabel.text = self.event.name;
-    if (![self.event.isRead boolValue] && [self.event.numMessages intValue] > 0) {
-        self.chatBubbleImageView.hidden = NO;
-        self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
-    }
-    else if ([self.event.numMessages intValue] > 0) {
-        self.chatBubbleImageView.hidden = NO;
-        self.chatBubbleImageView.image = [UIImage imageNamed:@"blueCameraBubble"];
-    } else {
-        self.chatBubbleImageView.hidden = YES;
-    }
-    if (self.event.isPrivate) {
-        self.privacyLockImageView.hidden = NO;
-        self.eventNameLabel.transform = CGAffineTransformMakeTranslation(12 + 9, 0);
-    }
-    else {
-        self.privacyLockImageView.hidden = YES;
-        self.eventNameLabel.transform = CGAffineTransformMakeTranslation(0, 0);
-    }
+    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ People are going", self.event.numAttending];
+    self.privacyLockImageView.hidden = !self.event.isPrivate;
+
     self.eventPeopleScrollView.event = self.event;
     [self.eventPeopleScrollView updateUI];
 }
@@ -1900,7 +1867,6 @@ BOOL firstTimeLoading;
     UIImageView *backgroundView = [[UIImageView alloc] initWithFrame:self.bounds];
     backgroundView.image = [UIImage imageNamed: @"create_bg"];
     [self addSubview: backgroundView];
-    
     
     int sizeOfButton = 40;
     self.plusButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - sizeOfButton - 20, 0, sizeOfButton, sizeOfButton)];

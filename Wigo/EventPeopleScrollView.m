@@ -88,23 +88,24 @@
         imgView.frame = CGRectMake(0, 0, self.sizeOfEachImage, self.sizeOfEachImage);
         imgView.contentMode = UIViewContentModeScaleAspectFill;
         imgView.clipsToBounds = YES;
+        imgView.layer.borderColor = UIColor.clearColor.CGColor;
+        imgView.layer.borderWidth = 1.0f;
+        imgView.layer.cornerRadius = self.sizeOfEachImage/2;
         [imgView setSmallImageForUser:user completed:nil];
         [imageButton addSubview:imgView];
         
         UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
-        if ([user isCurrentUser]) backgroundName.backgroundColor = [FontProperties getBlueColor];
-        else backgroundName.backgroundColor = RGB(71, 71, 71);
         [self addSubview:backgroundName];
         
         UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
         profileName.text = [user firstName];
-        profileName.textColor = [UIColor whiteColor];
+        profileName.textColor = UIColor.blackColor;
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.font = [FontProperties lightFont:14.0f];
         [self addSubview:profileName];
         
         
-        self.xPosition += self.sizeOfEachImage + 3;
+        self.xPosition += self.sizeOfEachImage + 10;
         self.contentSize = CGSizeMake(self.xPosition + 10, self.sizeOfEachImage + 25);
     }
     

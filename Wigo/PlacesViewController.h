@@ -55,8 +55,7 @@
 @property (nonatomic, strong) UIImageView *privacyLockImageView;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) UILabel *eventNameLabel;
-@property (nonatomic, strong) UIImageView *chatBubbleImageView;
-@property (nonatomic, strong) UIImageView *postStoryImageView;
+@property (nonatomic, strong) UILabel *numberOfPeopleGoingLabel;
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 - (void)updateUI;
 @end
