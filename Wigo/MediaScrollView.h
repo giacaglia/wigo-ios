@@ -116,7 +116,7 @@
 @property (nonatomic, strong) UIImageView *flashImageView;
 @property (nonatomic, strong) UIButton *switchButton;
 @property (nonatomic, strong) UIImageView *cameraImageView;
-@property (nonatomic, strong) UIView *pictureButton;
+@property (nonatomic, strong) UIButton *pictureButton;
 @property (nonatomic, strong) UIImageView *captureImageView;
 @property (nonatomic, assign) double videoTimerCount;
 @property (nonatomic, assign) BOOL longGesturePressed;
