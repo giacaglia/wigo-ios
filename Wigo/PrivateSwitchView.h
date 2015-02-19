@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UILabel *inviteOnlyLabel;
 @property (nonatomic, assign) BOOL privacyTurnedOn;
 @property (nonatomic, assign) CGFloat firstX;
+@property (nonatomic, strong) UIImageView *movingImageView;
 @property (nonatomic, strong) FLAnimatedImageView *closeLockImageView;
 @property (nonatomic, strong) FLAnimatedImageView *openLockImageView;
 @property (nonatomic, assign) BOOL runningAnimation;

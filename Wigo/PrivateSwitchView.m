@@ -33,7 +33,6 @@
     self.layer.cornerRadius = 22.0f;
     
     self.frontView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, self.frame.size.width/2 + 15, self.frame.size.height - 4)];
-//    self.frontView.backgroundColor = UIColor.clearColor;
     self.frontView.backgroundColor = [FontProperties getBlueColor];
     self.frontView.layer.borderColor = UIColor.clearColor.CGColor;
     self.frontView.layer.borderWidth = 1.0f;
@@ -65,6 +64,10 @@
         [self.closeLockImageView.animatedImage imageLazilyCachedAtIndex:i];
     }
     [self addSubview:self.closeLockImageView];
+    
+    self.movingImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 6, self.frame.size.height/2 - 8, 12, 16)];
+    self.movingImageView.hidden = YES;
+    [self addSubview:self.movingImageView];
     
     FLAnimatedImage *openImage = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"openLock" ofType:@"gif"]]];
     self.openLockImageView = [[FLAnimatedImageView alloc] init];
@@ -106,20 +109,22 @@
         [UIView commitAnimations];
     }
     CGFloat percentage = 2*((translatedPoint.x - self.center.x/2)/self.center.x);
+    percentage = MIN(MAX(percentage, 0), 1);
     NSLog(@"percentage = %f", percentage);
     self.publicLabel.hidden = NO;
     [self bringSubviewToFront:self.publicLabel];
     self.publicLabel.textColor = RGB(floor(255*(1-percentage) + 122*(percentage)),floor(255*(1-percentage) + 193*percentage), floor(255*(1-percentage) + 226*percentage));
     [self bringSubviewToFront:self.inviteOnlyLabel];
     self.inviteOnlyLabel.textColor = RGB(floor(255*percentage + 122*(1 - percentage)),floor(255*percentage + 193*(1-percentage)), floor(255*percentage + 226*(1-percentage)));
-    self.closeLockImageView.hidden = NO;
-    self.closeLockImageView.currentFrameIndex = 25;
-    UIImage *image = self.closeLockImageView.currentFrame;
-    self.closeLockImageView.image = image;
+    int number = MAX((1-percentage) * 30, 1);
+    UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"openLock-%d", number]];
+    self.movingImageView.hidden = NO;
+    self.movingImageView.image = image;
+    [self bringSubviewToFront:self.movingImageView];
+
 //    self.closeLockImageView.currentFrameIndex = 25;
 //    [self.closeLockImageView startAnimating];
 //    [self.closeLockImageView stopAnimating];
-    [self bringSubviewToFront:self.closeLockImageView];
 }
 
 
