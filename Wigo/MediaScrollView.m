@@ -558,7 +558,8 @@
     }];
 }
 
-- (void)callbackFromUploadWithInfo:(NSDictionary *)info andFilename:(NSString *)filenameString {
+- (void)callbackFromUploadWithInfo:(NSDictionary *)info
+                       andFilename:(NSString *)filenameString {
     if (![self.tasksStillBeingUploaded containsObject:filenameString]) {
         if (self.error) {
             [self.eventConversationDelegate showErrorMessage];
@@ -582,6 +583,10 @@
                 strongSelf.shownCurrentImage = YES;
             }
             else {
+                [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:strongSelf.object];
+                [strongSelf.eventMessages removeObjectAtIndex:(self.eventMessages.count -1)];
+                [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+                strongSelf.shownCurrentImage = YES;
                 strongSelf.shownCurrentImage = NO;
             }
         }];
@@ -1325,13 +1330,17 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     if (self.controller.cameraCaptureMode == UIImagePickerControllerCameraCaptureModePhoto) {
         NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:info];
         UIImage *image =  (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
+        UIImage *newImage = image;
         if (self.controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-            UIImage *newImage = [UIImage imageWithCGImage:[image CGImage]
+            newImage = [UIImage imageWithCGImage:[image CGImage]
                                                     scale:image.scale
                                               orientation:UIImageOrientationLeftMirrored];
             [newInfo setObject:newImage forKey:UIImagePickerControllerOriginalImage];
         }
         self.info = [[NSDictionary alloc] initWithDictionary:newInfo];
+        self.previewImageView.hidden = NO;
+        self.previewImageView.userInteractionEnabled = YES;
+        self.previewImageView.image = newImage;
         [self.mediaScrollDelegate mediaPickerController:self.controller
                                  startUploadingWithInfo:self.info];
     }
