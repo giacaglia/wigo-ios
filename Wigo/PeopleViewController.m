@@ -68,12 +68,10 @@ UIScrollView *suggestedScrollView;
     [self initializeBackBarButton];
     [self initializeRightBarButton];
     
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
 
     [self initializeSearchBar];
     [self initializeTableOfPeople];
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -355,7 +353,7 @@ UIScrollView *suggestedScrollView;
        return [self.followers.hasNextPage boolValue];
     }
     else {
-       return [_following.hasNextPage boolValue];
+       return [self.following.hasNextPage boolValue];
     }
 }
 
