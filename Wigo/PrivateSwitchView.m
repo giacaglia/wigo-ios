@@ -96,21 +96,40 @@
     }
     
     translatedPoint = CGPointMake(self.firstX+translatedPoint.x, [sender view].center.y);
-    translatedPoint = CGPointMake(MIN(MAX(self.firstX ,translatedPoint.x), self.center.x + 15 - 2), translatedPoint.y);
+    translatedPoint = CGPointMake(MIN(MAX(self.center.x/2 - 15 ,translatedPoint.x), self.center.x + 15 - 2), translatedPoint.y);
     [[sender view] setCenter:translatedPoint];
     
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
-        CGFloat velocityX = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:self.frontView].x);
-        CGFloat animationDuration = (ABS(velocityX)*.0002)+.2;
-        [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:animationDuration];
-        [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-        [UIView setAnimationDelegate:self];
-        [UIView commitAnimations];
+        if (translatedPoint.x > 0.75*self.center.x) {
+            [UIView animateWithDuration:0.4 animations:^{
+                [[sender view] setCenter:CGPointMake(self.center.x + 15 - 4, translatedPoint.y)];
+            }];
+            self.publicLabel.hidden = NO;
+            [self bringSubviewToFront:self.publicLabel];
+            self.publicLabel.textColor = [FontProperties getBlueColor];
+            [self bringSubviewToFront:self.inviteOnlyLabel];
+            self.inviteOnlyLabel.textColor = UIColor.whiteColor;
+            self.movingImageView.hidden = NO;
+            self.movingImageView.image = [UIImage imageNamed:@"openLock-30"];
+            [self bringSubviewToFront:self.movingImageView];
+        }
+        else {
+            [UIView animateWithDuration:0.4 animations:^{
+                [[sender view] setCenter:CGPointMake(self.center.x/2 - 15 + 4, translatedPoint.y)];
+            }];
+            self.publicLabel.hidden = NO;
+            [self bringSubviewToFront:self.publicLabel];
+            self.publicLabel.textColor = UIColor.whiteColor;
+            [self bringSubviewToFront:self.inviteOnlyLabel];
+            self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
+            self.movingImageView.hidden = NO;
+            self.movingImageView.image = [UIImage imageNamed:@"openLock-1"];
+            [self bringSubviewToFront:self.movingImageView];
+        }
+        return;
     }
     CGFloat percentage = 2*((translatedPoint.x - self.center.x/2)/self.center.x);
     percentage = MIN(MAX(percentage, 0), 1);
-    NSLog(@"percentage = %f", percentage);
     self.publicLabel.hidden = NO;
     [self bringSubviewToFront:self.publicLabel];
     self.publicLabel.textColor = RGB(floor(255*(1-percentage) + 122*(percentage)),floor(255*(1-percentage) + 193*percentage), floor(255*(1-percentage) + 226*percentage));
@@ -121,10 +140,6 @@
     self.movingImageView.hidden = NO;
     self.movingImageView.image = image;
     [self bringSubviewToFront:self.movingImageView];
-
-//    self.closeLockImageView.currentFrameIndex = 25;
-//    [self.closeLockImageView startAnimating];
-//    [self.closeLockImageView stopAnimating];
 }
 
 
@@ -150,7 +165,7 @@
                 [self.privateDelegate updateUnderliningText];
             }];
             [UIView animateWithDuration:0.84 animations:^{
-                self.frontView.transform = CGAffineTransformMakeTranslation(self.frame.size.width/2 - 15 - 2 - 2, 0);
+                [self.frontView setCenter:CGPointMake(self.center.x + 15 - 4, self.frontView.center.y)];
             }
             completion:^(BOOL finished) {
                 [self.closeLockImageView stopAnimating];
@@ -181,7 +196,7 @@
                 [self.privateDelegate updateUnderliningText];
             }];
             [UIView animateWithDuration:0.84 animations:^{
-                self.frontView.transform = CGAffineTransformMakeTranslation(0, 0);
+                [self.frontView setCenter:CGPointMake(self.center.x/2 - 15 + 4, self.frontView.center.y)];
             } completion:^(BOOL finished) {
                 self.runningAnimation = NO;
                 [self.openLockImageView stopAnimating];
