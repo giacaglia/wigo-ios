@@ -428,7 +428,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             
             NSDictionary *provisioning = [jsonResponse objectForKey:@"provisioning"];
             schoolStatistics = [provisioning objectForKey:@"school_statistics"];
-            privateEvents = [jsonResponse objectForKey:@"private_events"];
+            privateEvents = [provisioning objectForKey:@"private_events"];
             
             NSDictionary *uploadsProperties = [jsonResponse objectForKey:@"uploads"];
             imageProperties = [uploadsProperties objectForKey:@"image"];
