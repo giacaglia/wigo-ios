@@ -479,9 +479,11 @@
     inviteFriendsLabel.textAlignment = NSTextAlignmentLeft;
     [self.privateTooltipBanner addSubview:inviteFriendsLabel];
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6, self.privateTooltipBanner.frame.size.height/2 + 10 - 6, 12, 12)];
-    [closeButton setTitle:@"x" forState:UIControlStateNormal];
-    [closeButton addTarget:self action:@selector(closePrivateTooltip) forControlEvents:UIControlEventTouchUpInside];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6 - 20, self.privateTooltipBanner.frame.size.height/2 + 10 - 6 - 20, 40, 40)];
+    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 12, 12)];
+    closeImageView.image = [UIImage imageNamed:@"grayCloseButton"];
+    [closeButton addSubview:closeImageView];
+    [closeButton addTarget:self action:@selector(closePrivateTooltip) forControlEvents:UIControlEventTouchDown];
     [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
     [self.privateTooltipBanner addSubview:closeButton];
 }
@@ -506,19 +508,28 @@
     [self.visualEffectView addSubview:closeButton];
     
     UILabel *eventOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 190, self.view.frame.size.width, 20)];
+    eventOnlyLabel.center = CGPointMake(self.view.center.x, self.view.center.y - 10 - 25 - 10);
     eventOnlyLabel.text = @"This event is invite-only";
-    eventOnlyLabel.font = [FontProperties mediumFont:18];
+    eventOnlyLabel.font = [FontProperties semiboldFont:18];
     eventOnlyLabel.textColor = [FontProperties getBlueColor];
     eventOnlyLabel.textAlignment = NSTextAlignmentCenter;
     [self.visualEffectView addSubview:eventOnlyLabel];
     
-    _explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 32, self.view.frame.size.width, 75)];
+    _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2, 240, 40)];
+    _privateSwitchView.center = CGPointMake(_privateSwitchView.center.x, self.view.center.y + 10 + 25 + 20);
+    _privateSwitchView.hidden = ![self.event.owner isEqual:WGProfile.currentUser];
+    _privateSwitchView.privateDelegate = self;
+    [_privateSwitchView changeToPrivateState:YES];
+    [self.visualEffectView addSubview:_privateSwitchView];
+    
+    _explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 32, self.view.frame.size.width, 40)];
     if ([self.event.owner isEqual:WGProfile.currentUser]) {
         _explanationLabel.text = @"Only people you invite can see the\nevent and what is going on and only you\ncan invite people. You can change the\ntype of the event:";
     }
     else {
         _explanationLabel.text = @"Only invited people can see whats going on. Only creator can invite people.";
     }
+    _explanationLabel.center = self.view.center;
     _explanationLabel.font = [FontProperties mediumFont:15];
     _explanationLabel.textColor = [FontProperties getBlueColor];
     _explanationLabel.textAlignment = NSTextAlignmentCenter;
@@ -526,12 +537,7 @@
     _explanationLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.visualEffectView addSubview:_explanationLabel];
     
-    _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2 + 66, 240, 40)];
-    _privateSwitchView.hidden = ![self.event.owner isEqual:WGProfile.currentUser];
-    _privateSwitchView.privateDelegate = self;
-    [_privateSwitchView changeToPrivateState:YES];
-    [self.visualEffectView addSubview:_privateSwitchView];
-
+   
     UIImageView *lockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 12, self.view.frame.size.height/2 + 66, 24, 32)];
     lockImageView.image = [UIImage imageNamed:@"lockImage"];
     lockImageView.hidden = [self.event.owner isEqual:WGProfile.currentUser];

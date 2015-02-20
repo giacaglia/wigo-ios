@@ -723,7 +723,7 @@ BOOL firstTimeLoading;
         [_privateSwitchView.closeLockImageView stopAnimating];
         [_privateSwitchView.openLockImageView stopAnimating];
         
-        self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, 30)];
+        self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 92, self.view.frame.size.width, 30)];
         self.invitePeopleLabel.text = _privateSwitchView.explanationString;
         self.invitePeopleLabel.textAlignment = NSTextAlignmentCenter;
         self.invitePeopleLabel.numberOfLines = 2;

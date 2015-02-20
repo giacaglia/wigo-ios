@@ -30,16 +30,16 @@
 - (void)setup {
     self.layer.borderColor = [FontProperties getBlueColor].CGColor;
     self.layer.borderWidth = 1.0f;
-    self.layer.cornerRadius = 22.0f;
+    self.layer.cornerRadius = 20.0f;
     
     self.frontView = [[UIView alloc] initWithFrame:CGRectMake(2, 2, self.frame.size.width/2 + 15, self.frame.size.height - 4)];
     self.frontView.backgroundColor = [FontProperties getBlueColor];
     self.frontView.layer.borderColor = UIColor.clearColor.CGColor;
     self.frontView.layer.borderWidth = 1.0f;
-    self.frontView.layer.cornerRadius = 20.0f;
+    self.frontView.layer.cornerRadius = 18.0f;
     [self addSubview:self.frontView];
     
-    self.publicLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.frontView.frame.size.width - 10, self.frontView.frame.size.height)];
+    self.publicLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frontView.frame.size.width - 4, self.frontView.frame.size.height)];
     self.publicLabel.text = @"Public";
     self.publicLabel.textAlignment = NSTextAlignmentCenter;
     self.publicLabel.textColor = UIColor.whiteColor;
@@ -162,6 +162,7 @@
         self.closeLockImageView.hidden = NO;
         self.runningAnimation = YES;
         if (!self.privacyTurnedOn) {
+            //Change to private
             self.openLockImageView.currentFrameIndex = 29;
             self.closeLockImageView.animationRepeatCount = 1;
             self.closeLockImageView.animationDuration = 0.84;
@@ -170,23 +171,26 @@
             self.closeLockImageView.hidden = NO;
             [self.closeLockImageView startAnimating];
             
-            [UIView animateWithDuration:0.3 animations:^{
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.publicLabel.alpha = 0.0f;
             } completion:^(BOOL finished) {
                 self.publicLabel.textColor = [FontProperties getBlueColor];
                 self.publicLabel.alpha = 1.0f;
                 [self.privateDelegate updateUnderliningText];
             }];
-            [UIView animateWithDuration:0.84 animations:^{
-                [self.frontView setCenter:CGPointMake(self.center.x + 15 - 4, self.frontView.center.y)];
+            
+            [UIView animateWithDuration:0.84 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                [self.frontView setCenter:CGPointMake(self.center.x + 15 - 4 - 0.5, self.frontView.center.y)];
             }
             completion:^(BOOL finished) {
                 [self.closeLockImageView stopAnimating];
                 self.runningAnimation = NO;
              }];
-            [UIView animateWithDuration:0.34 animations:^{
+            
+            [UIView animateWithDuration:0.34 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.inviteOnlyLabel.alpha = 0.0f;
             } completion:^(BOOL finished) {
+                self.inviteOnlyLabel.transform = CGAffineTransformMakeTranslation(-2, 0);
                 self.inviteOnlyLabel.textColor = UIColor.whiteColor;
                 self.inviteOnlyLabel.alpha = 1.0f;
             }];
@@ -195,26 +199,31 @@
             self.explanationString = self.privateString;
         }
         else {
+            //Change to public
             self.openLockImageView.animationRepeatCount = 1;
             self.openLockImageView.animationDuration = 0.84;
             self.openLockImageView.currentFrameIndex = 0;
             self.closeLockImageView.hidden = YES;
             self.openLockImageView.hidden = NO;
             [self.openLockImageView startAnimating];
-            [UIView animateWithDuration:0.3 animations:^{
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.inviteOnlyLabel.alpha = 0;
             } completion:^(BOOL finished) {
+                self.inviteOnlyLabel.transform = CGAffineTransformMakeTranslation(0, 0);
                 self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
                 self.inviteOnlyLabel.alpha = 1.0f;
                 [self.privateDelegate updateUnderliningText];
             }];
-            [UIView animateWithDuration:0.84 animations:^{
-                [self.frontView setCenter:CGPointMake(self.center.x/2 - 15 + 4, self.frontView.center.y)];
+
+            
+            [UIView animateWithDuration:0.84 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                [self.frontView setCenter:CGPointMake(self.center.x/2 - 15 + 4 + 0.5, self.frontView.center.y)];
             } completion:^(BOOL finished) {
                 self.runningAnimation = NO;
                 [self.openLockImageView stopAnimating];
             }];
-            [UIView animateWithDuration:0.34 animations:^{
+            
+            [UIView animateWithDuration:0.34 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
                 self.publicLabel.alpha = 0.0f;
             } completion:^(BOOL finished) {
                 self.publicLabel.textColor = UIColor.whiteColor;

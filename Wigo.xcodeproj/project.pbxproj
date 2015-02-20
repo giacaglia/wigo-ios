@@ -359,6 +359,8 @@
 		E9C3401C1A96476000AB069F /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C3401A1A96476000AB069F /* FacebookSDK.framework */; };
 		E9C3401E1A96482100AB069F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C3401D1A96482100AB069F /* Bolts.framework */; };
 		E9C3401F1A96482100AB069F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C3401D1A96482100AB069F /* Bolts.framework */; };
+		E9C340211A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */; };
+		E9C340221A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */; };
 		E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
 		E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
 		E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CB091419FB062D00B548A6 /* FacebookHelper.m */; };
@@ -776,6 +778,7 @@
 		E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		E9C3401A1A96476000AB069F /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		E9C3401D1A96482100AB069F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Semibold.ttf"; sourceTree = "<group>"; };
 		E9C34A7619F98A2C00D7E9D3 /* MobileDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileDelegate.h; sourceTree = "<group>"; };
 		E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileDelegate.m; sourceTree = "<group>"; };
 		E9CB091319FB062D00B548A6 /* FacebookHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookHelper.h; sourceTree = "<group>"; };
@@ -1598,6 +1601,7 @@
 		E9BE8C4F192AA29C008BB84C /* Whitney */ = {
 			isa = PBXGroup;
 			children = (
+				E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */,
 				E998C27319D068880012BF51 /* Whitney-Bold.ttf */,
 				E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */,
 				E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */,
@@ -1985,6 +1989,7 @@
 				45D9FA971A781AFD00D08577 /* JSQMessages.strings in Resources */,
 				E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
+				E9C340221A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
 				E9CD53941993C73900206B75 /* Images.xcassets in Resources */,
 				C12A119319787BE700D53B1C /* Whitney-Medium.ttf in Resources */,
@@ -2031,6 +2036,7 @@
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,
 				45D9FA961A781AFD00D08577 /* JSQMessages.strings in Resources */,
 				45D9FAA81A781AFD00D08577 /* JSQMessagesViewController.xib in Resources */,
+				E9C340211A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
