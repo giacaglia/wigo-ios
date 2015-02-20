@@ -23,6 +23,8 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 @property NSNumber *numMessages;
 @property WGCollection *attendees;
 @property WGEventMessage *highlight;
+@property NSArray *tags;
+@property BOOL isAggregate;
 
 - (WGUser *)owner;
 +(WGEvent *)serialize:(NSDictionary *)json;

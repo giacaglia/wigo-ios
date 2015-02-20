@@ -20,6 +20,8 @@
 #define kHighlightKey @"highlight"
 #define kPrivacyKey @"privacy"
 #define kOwnerKey @"owner"
+#define kTagsKey @"tags"
+#define kAggregateKey @"aggregate"
 
 @interface WGEvent()
 
@@ -122,6 +124,30 @@
 
 -(WGEventMessage *) highlight {
     return [self objectForKey:kHighlightKey];
+}
+
+- (NSArray *)tags {
+    return [self objectForKey:kTagsKey];
+}
+
+- (void)setTags:(NSArray *)tags {
+    [self setObject:tags forKey:kTagsKey];
+}
+
+
+- (BOOL)isAggregate {
+    return self.tags && [self.tags containsObject:kAggregateKey];
+}
+
+- (void)setIsAggregate:(BOOL)isAggregate {
+    NSMutableArray *mutableTags = [NSMutableArray arrayWithArray:self.tags];
+    if (isAggregate && ![mutableTags containsObject:kAggregateKey]) {
+        [mutableTags addObject:kAggregateKey];
+    }
+    if (!isAggregate && [mutableTags containsObject:kAggregateKey]) {
+        [mutableTags removeObject:kAggregateKey];
+    }
+    self.tags = mutableTags;
 }
 
 -(void) setAttendees:(WGCollection *)attendees {

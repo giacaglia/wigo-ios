@@ -58,8 +58,6 @@
     [self loadEventDetails];
     [self loadInviteOrGoHereButton];
     [self loadCameraButton];
-
-  
     [self initializeToolTipBanner];
     [self loadConversationViewController];
     [self initializePrivateTooltipBanner];
@@ -161,7 +159,7 @@
     [self.backgroundScrollview addSubview:self.goHereButton];
     
     
-    if ([self isPeeking]) {
+    if ([self isPeeking] || self.event.isAggregate) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
         self.goHereButton.hidden = YES;
@@ -457,7 +455,7 @@
     sendOvalImageView.image = [UIImage imageNamed:@"cameraPlus"];
     [sendButton addSubview:sendOvalImageView];
     
-    if ([self isPeeking]) {
+    if ([self isPeeking] || self.event.isAggregate) {
         sendButton.hidden = YES;
         sendButton.enabled = NO;
     }
@@ -758,7 +756,7 @@
 
 
 - (void)showOrNotShowToolTip {
-    if (![self shouldShowToolTip]) {
+    if (![self shouldShowToolTip] || self.event.isAggregate) {
         _highlightButton.alpha = 0.0f;
         _highlightButton.enabled = NO;
         _noHighlightsLabel.alpha = 0.0f;
