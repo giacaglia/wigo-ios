@@ -17,6 +17,7 @@
 #define kGroupKey @"group"
 #define kIsAttendingKey @"is_attending"
 #define kSchoolStatisticsKey @"school_statistics"
+#define kPrivateEventsEnabledKey @"private_events"
 #define kImageQuality @"imageQuality"
 #define kImageMultiple @"imageMultiple"
 #define kGoogleAnalyticsEnabledKey @"googleAnalyticsEnabled"
@@ -159,6 +160,14 @@ static WGProfile *currentUser = nil;
 
 -(NSNumber *) schoolStatistics {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kSchoolStatisticsKey];
+}
+
+-(void) setPrivateEvents:(NSNumber *)privateEvents {
+    [[NSUserDefaults standardUserDefaults] setObject:privateEvents forKey:kPrivateEventsEnabledKey];
+}
+
+-(NSNumber *) privateEvents {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kPrivateEventsEnabledKey];
 }
 
 - (void)setImageQuality:(float)imageQuality {

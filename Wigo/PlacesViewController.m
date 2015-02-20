@@ -72,6 +72,7 @@
 
 
 @property (nonatomic, strong) UIView *blackViewOnTop;
+@property (nonatomic ,strong) UIView *eventDetails;
 @property (nonatomic, strong) PrivateSwitchView *privateSwitchView;
 @end
 
@@ -701,22 +702,22 @@ BOOL firstTimeLoading;
         bottomBorder.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f].CGColor;
         [_whereAreYouGoingView.layer addSublayer:bottomBorder];
         
-        UIView *eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 110, self.view.frame.size.width, self.view.frame.size.height)];
-        [_whereAreYouGoingView addSubview:eventDetails];
+        _eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 110, self.view.frame.size.width, self.view.frame.size.height)];
+        [_whereAreYouGoingView addSubview:_eventDetails];
         
         UILabel *eventTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
         eventTypeLabel.text = @"event type";
         eventTypeLabel.textAlignment = NSTextAlignmentCenter;
         eventTypeLabel.textColor = [FontProperties getBlueColor];
         eventTypeLabel.font = [FontProperties scMediumFont:15.0f];
-        [eventDetails addSubview:eventTypeLabel];
+        [_eventDetails addSubview:eventTypeLabel];
         
         UIView *lineUnderEventType = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 30, 90, 1)];
         lineUnderEventType.backgroundColor = [FontProperties getBlueColor];
-        [eventDetails addSubview:lineUnderEventType];
+        [_eventDetails addSubview:lineUnderEventType];
         
         _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 50, 240, 40)];
-        [eventDetails addSubview:_privateSwitchView];
+        [_eventDetails addSubview:_privateSwitchView];
         _privateSwitchView.privateString = @"Only you can invite people and only\nthose invited can see the event.";
         _privateSwitchView.publicString =  @"The whole school can see and attend your event.";
         _privateSwitchView.privateDelegate = self;
@@ -729,10 +730,16 @@ BOOL firstTimeLoading;
         self.invitePeopleLabel.numberOfLines = 2;
         self.invitePeopleLabel.font = [FontProperties mediumFont:12.0f];
         self.invitePeopleLabel.textColor = [FontProperties getBlueColor];
-        [eventDetails addSubview:self.invitePeopleLabel];
+        [_eventDetails addSubview:self.invitePeopleLabel];
     }
     [_privateSwitchView.closeLockImageView stopAnimating];
     [_privateSwitchView.openLockImageView stopAnimating];
+    if (![WGProfile.currentUser.privateEvents boolValue]) {
+        _eventDetails.hidden = YES;
+    }
+    else {
+        _eventDetails.hidden = NO;
+    }
 }
 
 - (void)updateUnderliningText {

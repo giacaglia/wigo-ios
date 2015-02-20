@@ -14,6 +14,7 @@
 @property NSString *cdnPrefix;
 
 @property NSNumber *schoolStatistics;
+@property NSNumber *privateEvents;
 @property NSNumber *showedOnboardView;
 @property NSNumber *googleAnalyticsEnabled;
 @property NSNumber *canFetchAppStartup;

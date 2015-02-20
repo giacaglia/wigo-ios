@@ -410,12 +410,13 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 +(void) startup:(WGStartupResult)handler {
     [WGApi get:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, nil, nil, nil, error);
+            handler(nil, nil, nil, nil, nil, error);
             return;
         }
         NSString *cdnPrefix;
         NSNumber *googleAnalyticsEnabled;
         NSNumber *schoolStatistics;
+        NSNumber *privateEvents;
         NSError *dataError;
         NSDictionary *imageProperties;
         @try {
@@ -427,6 +428,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             
             NSDictionary *provisioning = [jsonResponse objectForKey:@"provisioning"];
             schoolStatistics = [provisioning objectForKey:@"school_statistics"];
+            privateEvents = [jsonResponse objectForKey:@"private_events"];
             
             NSDictionary *uploadsProperties = [jsonResponse objectForKey:@"uploads"];
             imageProperties = [uploadsProperties objectForKey:@"image"];
@@ -438,10 +440,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (dataError) {
-                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, imageProperties, dataError);
+                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, privateEvents, imageProperties, dataError);
                 return;
             }
-            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, imageProperties, dataError);
+            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, privateEvents, imageProperties, dataError);
         }
     }];
 }
