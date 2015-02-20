@@ -47,13 +47,13 @@
     [self addSubview:self.publicLabel];
     [self bringSubviewToFront:self.publicLabel];
     
-    self.inviteOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2 + 10, 0, self.frame.size.width/2 - 20, self.frontView.frame.size.height)];
-    self.inviteOnlyLabel.text = @"Private";
-    self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
-    self.inviteOnlyLabel.font = [FontProperties mediumFont:15.0f];
-    self.inviteOnlyLabel.textAlignment = NSTextAlignmentCenter;
-    [self addSubview:self.inviteOnlyLabel];
-    [self bringSubviewToFront:self.inviteOnlyLabel];
+    self.privateLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2 + 10, 0, self.frame.size.width/2 - 20, self.frontView.frame.size.height)];
+    self.privateLabel.text = @"Private";
+    self.privateLabel.textColor = [FontProperties getBlueColor];
+    self.privateLabel.font = [FontProperties mediumFont:15.0f];
+    self.privateLabel.textAlignment = NSTextAlignmentCenter;
+    [self addSubview:self.privateLabel];
+    [self bringSubviewToFront:self.privateLabel];
     
     FLAnimatedImage *animatedImage = [[FLAnimatedImage alloc] initWithAnimatedGIFData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"closeLock" ofType:@"gif"]]];
     self.closeLockImageView = [[FLAnimatedImageView alloc] init];
@@ -112,8 +112,8 @@
             self.publicLabel.hidden = NO;
             [self bringSubviewToFront:self.publicLabel];
             self.publicLabel.textColor = [FontProperties getBlueColor];
-            [self bringSubviewToFront:self.inviteOnlyLabel];
-            self.inviteOnlyLabel.textColor = UIColor.whiteColor;
+            [self bringSubviewToFront:self.privateLabel];
+            self.privateLabel.textColor = UIColor.whiteColor;
             self.movingImageView.hidden = NO;
             self.movingImageView.image = [UIImage imageNamed:@"openLock-1"];
             [self bringSubviewToFront:self.movingImageView];
@@ -128,8 +128,8 @@
             self.publicLabel.hidden = NO;
             [self bringSubviewToFront:self.publicLabel];
             self.publicLabel.textColor = UIColor.whiteColor;
-            [self bringSubviewToFront:self.inviteOnlyLabel];
-            self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
+            [self bringSubviewToFront:self.privateLabel];
+            self.privateLabel.textColor = [FontProperties getBlueColor];
             self.movingImageView.hidden = NO;
             self.movingImageView.image = [UIImage imageNamed:@"openLock-30"];
             [self bringSubviewToFront:self.movingImageView];
@@ -141,8 +141,8 @@
     self.publicLabel.hidden = NO;
     [self bringSubviewToFront:self.publicLabel];
     self.publicLabel.textColor = RGB(floor(255*(1-percentage) + 122*(percentage)),floor(255*(1-percentage) + 193*percentage), floor(255*(1-percentage) + 226*percentage));
-    [self bringSubviewToFront:self.inviteOnlyLabel];
-    self.inviteOnlyLabel.textColor = RGB(floor(255*percentage + 122*(1 - percentage)),floor(255*percentage + 193*(1-percentage)), floor(255*percentage + 226*(1-percentage)));
+    [self bringSubviewToFront:self.privateLabel];
+    self.privateLabel.textColor = RGB(floor(255*percentage + 122*(1 - percentage)),floor(255*percentage + 193*(1-percentage)), floor(255*percentage + 226*(1-percentage)));
     int number = MAX((1-percentage) * 30, 1);
     UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"openLock-%d", number]];
     self.movingImageView.hidden = NO;
@@ -180,7 +180,7 @@
             }];
             
             [UIView animateWithDuration:0.84 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                [self.frontView setCenter:CGPointMake(self.center.x + 15 - 4 - 0.5, self.frontView.center.y)];
+                self.frontView.frame = CGRectMake(self.frame.size.width - self.frontView.frame.size.width - 2, self.frontView.frame.origin.y, self.frontView.frame.size.width, self.frontView.frame.size.height);
             }
             completion:^(BOOL finished) {
                 [self.closeLockImageView stopAnimating];
@@ -188,11 +188,11 @@
              }];
             
             [UIView animateWithDuration:0.34 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                self.inviteOnlyLabel.alpha = 0.0f;
+                self.privateLabel.alpha = 0.0f;
             } completion:^(BOOL finished) {
-                self.inviteOnlyLabel.transform = CGAffineTransformMakeTranslation(-2, 0);
-                self.inviteOnlyLabel.textColor = UIColor.whiteColor;
-                self.inviteOnlyLabel.alpha = 1.0f;
+                self.privateLabel.transform = CGAffineTransformMakeTranslation(-2, 0);
+                self.privateLabel.textColor = UIColor.whiteColor;
+                self.privateLabel.alpha = 1.0f;
             }];
             
             self.privacyTurnedOn = YES;
@@ -207,17 +207,17 @@
             self.openLockImageView.hidden = NO;
             [self.openLockImageView startAnimating];
             [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                self.inviteOnlyLabel.alpha = 0;
+                self.privateLabel.alpha = 0;
             } completion:^(BOOL finished) {
-                self.inviteOnlyLabel.transform = CGAffineTransformMakeTranslation(0, 0);
-                self.inviteOnlyLabel.textColor = [FontProperties getBlueColor];
-                self.inviteOnlyLabel.alpha = 1.0f;
+                self.privateLabel.transform = CGAffineTransformMakeTranslation(0, 0);
+                self.privateLabel.textColor = [FontProperties getBlueColor];
+                self.privateLabel.alpha = 1.0f;
                 [self.privateDelegate updateUnderliningText];
             }];
 
             
             [UIView animateWithDuration:0.84 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                [self.frontView setCenter:CGPointMake(self.center.x/2 - 15 + 4 + 0.5, self.frontView.center.y)];
+                self.frontView.frame = CGRectMake(1, self.frontView.frame.origin.y, self.frontView.frame.size.width, self.frontView.frame.size.height);
             } completion:^(BOOL finished) {
                 self.runningAnimation = NO;
                 [self.openLockImageView stopAnimating];

@@ -18,7 +18,7 @@
 @property (nonatomic, strong) NSString *publicString;
 @property (nonatomic, strong) NSString *explanationString;
 @property (nonatomic, strong) UILabel *publicLabel;
-@property (nonatomic, strong) UILabel *inviteOnlyLabel;
+@property (nonatomic, strong) UILabel *privateLabel;
 @property (nonatomic, assign) BOOL privacyTurnedOn;
 @property (nonatomic, assign) CGFloat firstX;
 @property (nonatomic, strong) UIImageView *movingImageView;
