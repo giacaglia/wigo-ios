@@ -57,10 +57,9 @@
     [self loadEventPeopleScrollView];
     [self loadEventDetails];
     [self loadInviteOrGoHereButton];
+    [self loadCameraButton];
 
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
-        [self loadTextViewAndSendButton];
-    }
+  
     [self initializeToolTipBanner];
     [self loadConversationViewController];
     [self initializePrivateTooltipBanner];
@@ -70,10 +69,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
 
-    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    NSString *isPeekingString = ([self isPeeking]) ? @"Yes" : @"No";
     
     [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
     
@@ -164,7 +161,7 @@
     [self.backgroundScrollview addSubview:self.goHereButton];
     
     
-    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
+    if ([self isPeeking]) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
         self.goHereButton.hidden = YES;
@@ -250,8 +247,7 @@
         self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
         self.conversationViewController.storyDelegate = self;
         
-        BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
-        self.conversationViewController.isPeeking = isPeeking;
+        self.conversationViewController.isPeeking = [self isPeeking];
         _movingForward = YES;
         _loadViewFromFront = YES;
         [self presentViewController:self.conversationViewController animated:YES completion:nil];
@@ -450,7 +446,7 @@
 }
 
 
-- (void)loadTextViewAndSendButton {
+- (void)loadCameraButton {
     int widthButton = [[UIScreen mainScreen] bounds].size.width/5.33;
     sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - widthButton - 15, self.view.frame.size.height - widthButton - 15, widthButton, widthButton)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -460,6 +456,15 @@
     UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, widthButton, widthButton)];
     sendOvalImageView.image = [UIImage imageNamed:@"cameraPlus"];
     [sendButton addSubview:sendOvalImageView];
+    
+    if ([self isPeeking]) {
+        sendButton.hidden = YES;
+        sendButton.enabled = NO;
+    }
+    else  {
+        sendButton.hidden = NO;
+        sendButton.enabled = YES;
+    }
 }
 
 - (void)closePrivateTooltip {
@@ -628,6 +633,7 @@
     _privateLogoButton.enabled = self.event.isPrivate;
     [_privateLogoButton addTarget:self action:@selector(showOverlayView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_privateLogoButton];
+    
     _privacyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 12, 16)];
     _privacyImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
     [_privateLogoButton addSubview:_privacyImageView];
@@ -689,8 +695,7 @@
     self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
     self.conversationViewController.storyDelegate = self;
     
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
-    self.conversationViewController.isPeeking = isPeeking;
+    self.conversationViewController.isPeeking = [self isPeeking];
 
     _movingForward = YES;
     _loadViewFromFront = YES;
@@ -768,16 +773,12 @@
 }
 
 - (BOOL)shouldShowToolTip {
-    BOOL isPeeking = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
-    return (self.eventMessages.count == 0) && !isPeeking;
+    return (self.eventMessages.count == 0) && ![self isPeeking];
 }
 
 
 - (void)showEventConversation:(NSNumber *)index {
-    
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
-
-    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    NSString *isPeekingString = ([self isPeeking]) ? @"Yes" : @"No";
     [WGAnalytics tagEvent:@"Event Story Highlight Tapped" withDetails: @{ @"isPeeking": isPeekingString }];
 
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -792,12 +793,16 @@
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     
-    self.conversationViewController.isPeeking = isPeeking;
+    self.conversationViewController.isPeeking = [self isPeeking];
 
     self.conversationViewController.storyDelegate = self;
     _movingForward = YES;
     _loadViewFromFront = YES;
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
+}
+
+- (BOOL)isPeeking {
+    return (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
 }
 
 
@@ -852,7 +857,7 @@
     ProfileViewController *profileViewController = [sb instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [profileViewController setStateWithUser: user];
 
-    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
+    if ([self isPeeking]) {
         profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     }
     _loadViewFromFront = YES;
