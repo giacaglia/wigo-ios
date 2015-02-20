@@ -1113,18 +1113,18 @@
     self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
     self.controller.cameraOverlayView = self.overlayView;
     
-    self.pictureButton = [[UIButton alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
+    self.pictureButton = [[UIView alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     self.captureImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.pictureButton.frame.size.width/2 - 36, self.pictureButton.frame.size.height - 72 - 5, 72, 72)];
     self.captureImageView.image = [UIImage imageNamed:@"captureCamera"];
     [self.pictureButton addSubview:self.captureImageView];
     self.pictureButton.center = CGPointMake(self.overlayView.center.x, self.pictureButton.center.y);
-    [self.pictureButton addTarget:self.controller action:@selector(takePicture) forControlEvents:UIControlEventTouchUpInside];
+//    [self.pictureButton addTarget:self.controller action:@selector(takePicture) forControlEvents:UIControlEventTouchUpInside];
     [self.overlayView addSubview:self.pictureButton];
-//    UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
-//    [self.pictureButton addGestureRecognizer:longGesture];
-//    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePicture)];
-//    [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
-//    [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
+    UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    [self.pictureButton addGestureRecognizer:longGesture];
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.controller action:@selector(takePicture)];
+    [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
+    [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
     
     self.circularProgressView = [[LLACircularProgressView alloc] initWithFrame:self.captureImageView.frame];
     // Optionally set the current progress
@@ -1160,6 +1160,17 @@
     self.previewImageView.hidden = YES;
     self.previewImageView.contentMode = UIViewContentModeScaleAspectFill;
     [self.overlayView addSubview:self.previewImageView];
+    
+    self.previewMoviePlayer = [[MPMoviePlayerController alloc] init];
+    self.previewMoviePlayer.movieSourceType = MPMovieSourceTypeFile;
+    self.previewMoviePlayer.scalingMode = MPMovieScalingModeAspectFill;
+    [self.previewMoviePlayer setControlStyle: MPMovieControlStyleNone];
+    self.previewMoviePlayer.repeatMode = MPMovieRepeatModeOne;
+    self.previewMoviePlayer.shouldAutoplay = YES;
+    self.previewMoviePlayer.view.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+    self.previewMoviePlayer.view.hidden = YES;
+    [self.previewMoviePlayer prepareToPlay];
+    [self.overlayView addSubview:self.previewMoviePlayer.view];
     
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
     self.tapRecognizer.delegate = self;
@@ -1312,16 +1323,12 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.dismissButton.hidden = YES;
     self.dismissButton.enabled = NO;
     self.pictureButton.hidden = YES;
-#warning Remember to disable to UIButton
-    self.pictureButton.enabled = NO;
+    self.pictureButton.userInteractionEnabled = NO;
     self.flashButton.hidden = YES;
     self.flashButton.enabled = NO;
     self.switchButton.hidden = YES;
     self.switchButton.enabled = NO;
     
-    self.previewImageView.hidden = NO;
-    self.previewImageView.userInteractionEnabled = YES;
-    self.previewImageView.image = (UIImage *) [self.info objectForKey: UIImagePickerControllerOriginalImage];
     self.postButton.hidden = NO;
     self.postButton.enabled = YES;
     self.cancelButton.hidden = NO;
@@ -1329,6 +1336,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.panRecognizer.enabled = NO;
 
     if (self.controller.cameraCaptureMode == UIImagePickerControllerCameraCaptureModePhoto) {
+        self.previewImageView.hidden = NO;
+        self.previewImageView.userInteractionEnabled = YES;
+        self.previewImageView.image = (UIImage *) [self.info objectForKey: UIImagePickerControllerOriginalImage];
         NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:info];
         UIImage *image =  (UIImage *) [info objectForKey: UIImagePickerControllerOriginalImage];
         UIImage *newImage = image;
@@ -1346,6 +1356,14 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
                                  startUploadingWithInfo:self.info];
     }
     else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.previewMoviePlayer.view.hidden = NO;
+            NSURL *fileURL = [info objectForKey:UIImagePickerControllerMediaURL];
+            self.previewMoviePlayer.contentURL = fileURL;
+            [self.previewMoviePlayer prepareToPlay];
+            [self.previewMoviePlayer play];
+
+        });
         self.info = info;
         [self.mediaScrollDelegate mediaPickerController:self.controller
                                  startUploadingWithInfo:self.info];
@@ -1365,8 +1383,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.dismissButton.hidden = NO;
     self.dismissButton.enabled = YES;
     self.pictureButton.hidden = NO;
-#warning Remember to enabled
-    self.pictureButton.enabled = YES;
+    self.pictureButton.userInteractionEnabled = YES;
     self.flashButton.hidden = NO;
     self.flashButton.enabled = YES;
     self.switchButton.hidden = NO;

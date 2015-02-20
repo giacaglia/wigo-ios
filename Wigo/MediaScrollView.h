@@ -117,13 +117,14 @@
 @property (nonatomic, strong) UIImageView *flashImageView;
 @property (nonatomic, strong) UIButton *switchButton;
 @property (nonatomic, strong) UIImageView *cameraImageView;
-@property (nonatomic, strong) UIButton *pictureButton;
+@property (nonatomic, strong) UIView *pictureButton;
 @property (nonatomic, strong) UIImageView *captureImageView;
 @property (nonatomic, assign) double videoTimerCount;
 @property (nonatomic, assign) BOOL longGesturePressed;
 @property (nonatomic, strong) LLACircularProgressView *circularProgressView ;
 
 @property (nonatomic, strong) UIImageView *previewImageView;
+@property (nonatomic, strong) MPMoviePlayerController *previewMoviePlayer;
 @property (nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panRecognizer;
 @property (nonatomic, strong) UIButton *cancelButton;
