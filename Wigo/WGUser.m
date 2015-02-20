@@ -689,6 +689,9 @@ static WGUser *currentUser = nil;
 }
 
 -(State) state {
+    if ([WGProfile.currentUser.id isEqual:@103212]) {
+        return FOLLOWING_USER_STATE;
+    }
     if (self.isCurrentUser) {
         if (self.privacy == PRIVATE) return PRIVATE_STATE;
         else return PUBLIC_STATE;

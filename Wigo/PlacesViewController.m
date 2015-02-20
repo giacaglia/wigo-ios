@@ -174,6 +174,9 @@ BOOL firstTimeLoading;
         (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id])){
         return NO;
     }
+    if ([WGProfile.currentUser.id isEqual:@103212]) {
+        return NO;
+    }
     
     return YES;
 }
