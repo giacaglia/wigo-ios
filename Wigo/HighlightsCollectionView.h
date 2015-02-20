@@ -9,12 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "Globals.h"
 
-@interface HighlightsCollectionView : UICollectionView
+@interface HighlightsCollectionView : UICollectionView <UICollectionViewDataSource,
+                                                        UICollectionViewDelegate>
 
+@property (nonatomic, strong) WGCollection *eventMessages;
 @end
 
-@interface HighlightCell : UICollectionViewCell <UICollectionViewDataSource,
-                                                UICollectionViewDelegate>
+@interface HighlightCell : UICollectionViewCell
+
++ (CGFloat) height;
 - (void) resetToInactive;
 - (void)setToActiveWithNoAnimation;
 - (void)updateUIToRead:(BOOL)read;
