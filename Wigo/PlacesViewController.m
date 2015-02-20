@@ -28,7 +28,6 @@
 #import "ReferalViewController.h"
 #import "PrivateSwitchView.h"
 
-#define sizeOfEachCell 84 + [EventPeopleScrollView containerHeight] + 10
 
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCel @"HighlightOldEventCell"
@@ -961,7 +960,7 @@ BOOL firstTimeLoading;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([indexPath section] == kTodaySection) {
         if (indexPath.item == self.events.count) return 1;
-        return sizeOfEachCell;
+        return [EventCell height];
     }
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
@@ -1742,6 +1741,10 @@ BOOL firstTimeLoading;
 
 @implementation EventCell
 
++ (CGFloat)height {
+    return 64 + 2*[EventPeopleScrollView containerHeight] + 10;
+}
+
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -1751,7 +1754,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, sizeOfEachCell);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
     self.contentView.frame = self.frame;
     self.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -1770,9 +1773,12 @@ BOOL firstTimeLoading;
     self.eventNameLabel.font = [FontProperties mediumFont: 18];
     self.eventNameLabel.textColor = RGB(100, 173, 215);
     [self.contentView addSubview:self.eventNameLabel];
+
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 63, 80, 1)];
+    lineView.backgroundColor = RGB(0, 0, 81);
+    [self.contentView addSubview:lineView];
     
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 64, self.frame.size.width, 20)];
-//    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ People are going"];
     self.numberOfPeopleGoingLabel.textColor = RGB(0, 0, 81);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
@@ -1782,6 +1788,12 @@ BOOL firstTimeLoading;
     self.eventPeopleScrollView.frame = CGRectMake(0, 84 + 12, self.frame.size.width, [EventPeopleScrollView containerHeight]);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
+    
+    self.numberOfHighglightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height, self.frame.size.width, 20)];
+    self.numberOfHighglightsLabel.textAlignment = NSTextAlignmentLeft;
+    self.numberOfHighglightsLabel.textColor = RGB(0, 0, 81);
+    self.numberOfHighglightsLabel.font = [FontProperties lightFont:15.0f];
+    [self.contentView addSubview:self.numberOfHighglightsLabel];
     
     UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y, self.frame.size.width - self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.size.height)];
     eventFeedButton.backgroundColor = [UIColor clearColor];
@@ -1797,14 +1809,11 @@ BOOL firstTimeLoading;
 -(void) updateUI {
     self.eventNameLabel.text = self.event.name;
     self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ People are going", self.event.numAttending];
+    self.numberOfHighglightsLabel.text = [NSString stringWithFormat:@"%@ Highlights", @"12"];
     self.privacyLockImageView.hidden = !self.event.isPrivate;
 
     self.eventPeopleScrollView.event = self.event;
     [self.eventPeopleScrollView updateUI];
-}
-
-- (void)setOffset:(int)offset forIndexPath:(NSIndexPath *)indexPath {
-    
 }
 
 - (void)showEventConversation {
