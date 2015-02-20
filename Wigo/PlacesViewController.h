@@ -48,6 +48,7 @@
 @end
 
 #import "EventPeopleScrollView.h"
+#import "HighlightsCollectionView.h"
 
 @interface EventCell : UITableViewCell
 + (CGFloat) height;
@@ -60,6 +61,7 @@
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 @property (nonatomic, strong) UILabel *numberOfHighglightsLabel;
 - (void)updateUI;
+@property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @end
 
 

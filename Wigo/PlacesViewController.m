@@ -1742,7 +1742,7 @@ BOOL firstTimeLoading;
 @implementation EventCell
 
 + (CGFloat)height {
-    return 64 + 2*[EventPeopleScrollView containerHeight] + 10;
+    return 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 100 + 10;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1775,11 +1775,11 @@ BOOL firstTimeLoading;
     [self.contentView addSubview:self.eventNameLabel];
 
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 63, 80, 1)];
-    lineView.backgroundColor = RGB(0, 0, 81);
+    lineView.backgroundColor = RGB(197, 197, 197);
     [self.contentView addSubview:lineView];
     
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 64, self.frame.size.width, 20)];
-    self.numberOfPeopleGoingLabel.textColor = RGB(0, 0, 81);
+    self.numberOfPeopleGoingLabel.textColor = RGB(197, 197, 197);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
     [self.contentView addSubview:self.numberOfPeopleGoingLabel];
@@ -1791,9 +1791,15 @@ BOOL firstTimeLoading;
     
     self.numberOfHighglightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height, self.frame.size.width, 20)];
     self.numberOfHighglightsLabel.textAlignment = NSTextAlignmentLeft;
-    self.numberOfHighglightsLabel.textColor = RGB(0, 0, 81);
+    self.numberOfHighglightsLabel.textColor = RGB(197, 197, 197);
     self.numberOfHighglightsLabel.font = [FontProperties lightFont:15.0f];
     [self.contentView addSubview:self.numberOfHighglightsLabel];
+    
+  
+    self.highlightsCollectionView = [[HighlightsCollectionView alloc]
+                                     initWithFrame:CGRectMake(10, self.numberOfHighglightsLabel.frame.origin.y + self.numberOfHighglightsLabel.frame.size.height + 5, self.frame.size.width - 10, [HighlightCell height])
+                                     collectionViewLayout:[HighlightsFlowLayout new]];
+    [self.contentView addSubview:self.highlightsCollectionView];
     
     UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y, self.frame.size.width - self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.size.height)];
     eventFeedButton.backgroundColor = [UIColor clearColor];
@@ -1802,11 +1808,11 @@ BOOL firstTimeLoading;
     
     UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 0.5f, self.frame.size.width, 0.5)];
     lineSeparator.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.4f];
-
     [self.contentView addSubview:lineSeparator];
 }
 
 -(void) updateUI {
+    self.highlightsCollectionView.event = self.event;
     self.eventNameLabel.text = self.event.name;
     self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ People are going", self.event.numAttending];
     self.numberOfHighglightsLabel.text = [NSString stringWithFormat:@"%@ Highlights", @"12"];
