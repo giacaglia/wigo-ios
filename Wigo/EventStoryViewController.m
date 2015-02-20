@@ -462,6 +462,10 @@
     [sendButton addSubview:sendOvalImageView];
 }
 
+- (void)closePrivateTooltip {
+    self.privateTooltipBanner.hidden = YES;
+}
+
 - (void)initializePrivateTooltipBanner {
     self.privateTooltipBanner = [[UIImageView alloc] initWithFrame:CGRectMake(self.inviteButton.center.x - 115 - 30, self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height, 230, 150)];
     self.privateTooltipBanner.image = [UIImage imageNamed:@"privateTooltipImageView"];
@@ -479,18 +483,16 @@
     inviteFriendsLabel.textAlignment = NSTextAlignmentLeft;
     [self.privateTooltipBanner addSubview:inviteFriendsLabel];
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6 - 20, self.privateTooltipBanner.frame.size.height/2 + 10 - 6 - 20, 40, 40)];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6 - 20, self.privateTooltipBanner.frame.size.height/2 + 10 - 6 - 20, 30, 30)];
     UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 12, 12)];
     closeImageView.image = [UIImage imageNamed:@"grayCloseButton"];
+    self.privateTooltipBanner.userInteractionEnabled = YES;
     [closeButton addSubview:closeImageView];
-    [closeButton addTarget:self action:@selector(closePrivateTooltip) forControlEvents:UIControlEventTouchDown];
+    [closeButton addTarget:self action:@selector(closePrivateTooltip) forControlEvents:UIControlEventTouchUpInside];
     [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
     [self.privateTooltipBanner addSubview:closeButton];
 }
 
-- (void)closePrivateTooltip {
-    self.privateTooltipBanner.hidden = YES;
-}
 
 - (void)initializeOverlayPrivate {
     UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
