@@ -1234,8 +1234,6 @@
 
 - (void)takePicture {
     [self.controller takePicture];
-//    [self.controller stopVideoCapture];
-
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
@@ -1247,10 +1245,12 @@
         self.videoTimerCount = 8.0f;
         self.longGesturePressed = YES;
         [self performBlock:^{
-            [self.controller startVideoCapture];
             dispatch_async(dispatch_get_main_queue(), ^{
+                CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 0.0);
+                self.controller.cameraViewTransform = CGAffineTransformScale(translate, 1.0, 1.0);
                 [[NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": self.circularProgressView} repeats: YES] fire];
             });
+            [self.controller startVideoCapture];
         } afterDelay:0.1];
     }
     if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && self.longGesturePressed) {
@@ -1362,7 +1362,16 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
             self.previewMoviePlayer.contentURL = fileURL;
             [self.previewMoviePlayer prepareToPlay];
             [self.previewMoviePlayer play];
-
+            CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+            CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+            CGFloat cameraWidth = screenWidth;
+            CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
+            CGFloat scale = screenHeight / cameraHeight;
+            CGFloat delta = screenHeight - cameraHeight;
+            CGFloat yAdjust = delta / 2.0;
+            
+            CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yAdjust); //This slots the preview exactly in the middle of the screen
+            self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
         });
         self.info = info;
         [self.mediaScrollDelegate mediaPickerController:self.controller
@@ -1388,7 +1397,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.flashButton.enabled = YES;
     self.switchButton.hidden = NO;
     self.switchButton.enabled = YES;
-    
+
+    [self.previewMoviePlayer stop];
+    self.previewMoviePlayer.view.hidden = YES;
     self.previewImageView.hidden = YES;
     self.previewImageView.userInteractionEnabled = NO;
     self.previewImageView.image = nil;

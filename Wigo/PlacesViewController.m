@@ -58,7 +58,6 @@
 @property CGPoint scrollViewPoint;
 
 // Events Summary
-@property WGCollection *filteredEvents;
 
 // Go OUT Button
 @property UIButtonUngoOut *ungoOutButton;
@@ -833,7 +832,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)textFieldDidChange:(UITextField *)textField {
-    [_filteredEvents removeAllObjects];
+    [self.filteredEvents removeAllObjects];
     
     if([textField.text length] != 0) {
         _isSearching = YES;
@@ -862,8 +861,8 @@ BOOL firstTimeLoading;
     for (WGEvent *event in self.events) {
         NSComparisonResult comparisonResult = [event.name compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
         
-        if (comparisonResult == NSOrderedSame && ![_filteredEvents containsObject:event]) {
-            [_filteredEvents addObject: event];
+        if (comparisonResult == NSOrderedSame && ![self.filteredEvents containsObject:event]) {
+            [self.filteredEvents addObject: event];
         }
         
         index += 1;
@@ -874,28 +873,31 @@ BOOL firstTimeLoading;
 #define kTodaySection 0
 #define kHighlightsEmptySection 1
 
+- (int)shouldShowAggregatePrivateEvents {
+    return (self.aggregateEvent && ![self.allEvents.hasNextPage boolValue]) ? 1 : 0;
+}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if ([self shouldShowHighlights]) {
-        //[Today section] [Button show highlights]
+        //[Today section]  [Button show highlights]
         return 1 + 1 + 1;
     }
     else if (self.pastDays.count > 0) {
         //[Today section] [Highlighs section] (really just space for a header) + pastDays sections
         return 1 + 1 + self.pastDays.count;
     }
-    //just today section
+    //[Today section]
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kTodaySection) {
         if (_isSearching) {
-            int hasNextPage = ([_filteredEvents.hasNextPage boolValue] ? 1 : 0);
-            return [_filteredEvents count] + hasNextPage;
+            int hasNextPage = ([self.filteredEvents.hasNextPage boolValue] ? 1 : 0);
+            return [self.filteredEvents count] + hasNextPage;
         } else {
             int hasNextPage = ([self.allEvents.hasNextPage boolValue] ? 1 : 0);
-            return self.events.count + hasNextPage;
+            return self.events.count + hasNextPage + [self shouldShowAggregatePrivateEvents];
         }
     }
     else if (section == kHighlightsEmptySection) {
@@ -937,7 +939,7 @@ BOOL firstTimeLoading;
         return [HighlightsHeader init];
     }
     else if ([self shouldShowHighlights] && section > 1) {
-        return 0;
+        return nil;
     }
     else if (self.pastDays.count > 0 && section > 1) { //past day headers
         return [PastDayHeader initWithDay: [self.pastDays objectAtIndex: section - 2] isFirst: (section - 2) == 0];
@@ -967,7 +969,9 @@ BOOL firstTimeLoading;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([indexPath section] == kTodaySection) {
+    if (indexPath.section == kTodaySection) {
+        if (indexPath.row == self.events.count && [self shouldShowAggregatePrivateEvents] == 1)
+            return sizeOfEachCell;
         if (indexPath.item == self.events.count) return 1;
         return sizeOfEachCell;
     }
@@ -1002,16 +1006,34 @@ BOOL firstTimeLoading;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"(%ld, %ld)", (long)indexPath.section, (long)indexPath.row);
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
         if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
         cell.loadingView.hidden = YES;
         cell.placesDelegate = self;
+       
+        if (indexPath.row == self.events.count &&
+            [self shouldShowAggregatePrivateEvents] == 1) {
+            NSLog(@"aggregate (%ld, %ld)", (long)indexPath.section, (long)indexPath.row);
+            cell.event = self.aggregateEvent;
+            if (self.groupNumberID) {
+                cell.eventPeopleScrollView.groupID = self.groupNumberID;
+            } else {
+                cell.eventPeopleScrollView.groupID = nil;
+            }
+            cell.eventPeopleScrollView.placesDelegate = self;
+            if (![self.eventOffsetDictionary objectForKey:[self.aggregateEvent.id stringValue]]) {
+                cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+            }
+            [cell updateUI];
+            return cell;
+        }
         if (_isSearching) {
-            if (indexPath.row == [_filteredEvents count]) {
+            if (indexPath.row == self.filteredEvents.count) {
                 return cell;
             }
-        } else if (indexPath.row == self.events.count) {
+        } else if (indexPath.row == self.events.count && [self shouldShowAggregatePrivateEvents] == 0) {
             [self fetchEvents];
             cell.loadingView.hidden = NO;
             [cell.loadingView startAnimating];
@@ -1025,9 +1047,9 @@ BOOL firstTimeLoading;
         
         WGEvent *event;
         if (_isSearching) {
-            int sizeOfArray = (int)[_filteredEvents  count];
+            int sizeOfArray = (int)self.filteredEvents.count;
             if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
-            event = (WGEvent *)[_filteredEvents objectAtIndex:[indexPath row]];
+            event = (WGEvent *)[self.filteredEvents objectAtIndex:[indexPath row]];
         } else {
             int sizeOfArray = (int)self.events.count;
             if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return cell;
@@ -1044,20 +1066,6 @@ BOOL firstTimeLoading;
             cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
         [cell updateUI];
-        
-        if (![event.isRead boolValue] &&
-            [event.numMessages intValue] > 0) {
-            cell.chatBubbleImageView.hidden = NO;
-            cell.chatBubbleImageView.image = [UIImage  imageNamed:@"cameraBubble"];
-            cell.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
-        } else if ( [event.numMessages intValue] > 0) {
-            cell.chatBubbleImageView.hidden = NO;
-            cell.chatBubbleImageView.image = [UIImage  imageNamed:@"blueCameraBubble"];
-            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-        } else {
-            cell.chatBubbleImageView.hidden = YES;
-            cell.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
-        }
         return cell;
     } else if (indexPath.section == kHighlightsEmptySection) {
         return nil;
@@ -1106,9 +1114,9 @@ BOOL firstTimeLoading;
     if (indexPath.section == kTodaySection) {
         WGEvent *event;
         if (_isSearching) {
-            int sizeOfArray = (int)_filteredEvents.count;
+            int sizeOfArray = (int)self.filteredEvents.count;
             if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return;
-            event = (WGEvent *)[_filteredEvents objectAtIndex:indexPath.row];
+            event = (WGEvent *)[self.filteredEvents objectAtIndex:indexPath.row];
         } else {
             int sizeOfArray = (int)self.events.count;
             if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return;
@@ -1626,7 +1634,11 @@ BOOL firstTimeLoading;
                 strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
                 strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                 strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                
+                WGEvent *aggregateEvent = (WGEvent *)[strongSelf.allEvents objectAtIndex:0];
+                if (aggregateEvent.isAggregate) {
+                    strongSelf.aggregateEvent = aggregateEvent;
+                    [strongSelf.allEvents removeObjectAtIndex:0];
+                }
                 for (WGEvent *event in strongSelf.allEvents) {
                     if ([event.isExpired boolValue]) {
                         [strongSelf.oldEvents addObject:event];
@@ -1658,7 +1670,7 @@ BOOL firstTimeLoading;
 - (void)fetchedOneParty {
     _spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [self.placesTableView didFinishPullToRefresh];
      _spinnerAtCenter = NO;
-    _filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+    self.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
     [self dismissKeyboard];
 }
 
@@ -1825,12 +1837,16 @@ BOOL firstTimeLoading;
     if (![self.event.isRead boolValue] && [self.event.numMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;
         self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
+        self.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
     }
     else if ([self.event.numMessages intValue] > 0) {
         self.chatBubbleImageView.hidden = NO;
         self.chatBubbleImageView.image = [UIImage imageNamed:@"blueCameraBubble"];
+        self.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+
     } else {
         self.chatBubbleImageView.hidden = YES;
+        self.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
     }
     if (self.event.isPrivate) {
         self.privacyLockImageView.hidden = NO;
@@ -1842,10 +1858,6 @@ BOOL firstTimeLoading;
     }
     self.eventPeopleScrollView.event = self.event;
     [self.eventPeopleScrollView updateUI];
-}
-
-- (void)setOffset:(int)offset forIndexPath:(NSIndexPath *)indexPath {
-    
 }
 
 - (void)showEventConversation {

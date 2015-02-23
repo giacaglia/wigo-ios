@@ -25,7 +25,7 @@ dispatch_queue_t postQueue;
 
 #define kWigoApiKey @"oi34u53205ju34ik23"
 #define kDeviceType @"iphone"
-#define kWigoApiVersion @"1.0.8 (enable_refs)"
+#define kWigoApiVersion @"1.0.9 (enable_refs)"
 #define kGZip @"gzip"
 #define kTrue @"true"
 #define kPOST @"POST"
