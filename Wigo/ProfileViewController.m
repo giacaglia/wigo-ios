@@ -141,15 +141,19 @@ UIButton *tapButton;
         [self updateLastNotificationsRead];
     }
     else {
-        __weak typeof(self) weakSelf = self;
-        [self.user refetchUserWithHandler:^(BOOL success, NSError *error) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            if (error) {
-                return;
-            }
-            strongSelf.userState = strongSelf.user.state;
-            [strongSelf reloadViewForUserState];
-        }];
+        if (self.user.isTapped == nil ||self.user.isFollowing == nil ) {
+            __weak typeof(self) weakSelf = self;
+            [self.user refetchUserWithHandler:^(BOOL success, NSError *error) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
+                if (error) {
+                    return;
+                }
+                strongSelf.userState = strongSelf.user.state;
+                [strongSelf.imageScrollView updateImages];
+                [strongSelf.tableView reloadData];
+                [strongSelf reloadViewForUserState];
+            }];
+        }
     }
 }
 
