@@ -124,7 +124,7 @@
                 return;
             }
             strongSelf.eventMessages = collection;
-            strongSelf.contentSize = CGSizeMake(strongSelf.eventMessages.count *[HighlightCell height], [HighlightCell height]);
+            strongSelf.contentSize = CGSizeMake(strongSelf.eventMessages.count *[HighlightCell height], [HighlightCell height] - 40);
 //            [strongSelf showOrNotShowToolTip];
             [strongSelf reloadData];
         }];
@@ -138,6 +138,8 @@
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
+            strongSelf.contentSize = CGSizeMake(strongSelf.eventMessages.count *[HighlightCell height], [HighlightCell height]);
+            
             [strongSelf reloadData];
         }];
     } else {
@@ -154,7 +156,7 @@
 @implementation HighlightCell
 
 + (CGFloat)height {
-    return 120;
+    return 80;
 }
 
 - (id) initWithCoder:(NSCoder *)aDecoder {
@@ -272,7 +274,7 @@
     self.sectionInset = UIEdgeInsetsMake(0, 10, 10, 10);
     self.minimumLineSpacing = 0;
     self.minimumInteritemSpacing = 0;
-    self.scrollDirection = UICollectionViewScrollDirectionVertical;
+    self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
 }
 
 @end
