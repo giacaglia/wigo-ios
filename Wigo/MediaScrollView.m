@@ -1251,19 +1251,21 @@
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
     if (!self.longGesturePressed && gesture.state == UIGestureRecognizerStateBegan) {
-        [self.circularProgressView setProgress:0.0f];
-        self.circularProgressView.hidden = NO;
-        self.controller.mediaTypes = [NSArray arrayWithObject:(NSString *)kUTTypeMovie];
-        self.controller.videoMaximumDuration = 8.0f;
-        self.videoTimerCount = 8.0f;
-        self.longGesturePressed = YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.circularProgressView setProgress:0.0f];
+            self.circularProgressView.hidden = NO;
+            self.videoTimerCount = 8.0f;
+            self.longGesturePressed = YES;
+            self.controller.mediaTypes = [NSArray arrayWithObject:(NSString *)kUTTypeMovie];
+            self.controller.videoMaximumDuration = 8.0f;
+        });
         [self performBlock:^{
-            [self.controller startVideoCapture];
             dispatch_async(dispatch_get_main_queue(), ^{
+                [self.controller startVideoCapture];
                 [[NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": self.circularProgressView} repeats: YES] fire];
                 
             });
-        } afterDelay:0.1];
+        } afterDelay:0.4];
     }
     if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && self.longGesturePressed) {
         [self.controller stopVideoCapture];
