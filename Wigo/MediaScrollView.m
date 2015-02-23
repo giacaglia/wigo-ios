@@ -1245,6 +1245,7 @@
 }
 
 - (void)takePicture {
+    self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
     if (self.controller.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn &&
         self.controller.cameraDevice == UIImagePickerControllerCameraDeviceFront ) {
         [UIView animateWithDuration:0.04 animations:^{
@@ -1263,7 +1264,7 @@
             self.circularProgressView.hidden = NO;
             self.videoTimerCount = 8.0f;
             self.longGesturePressed = YES;
-            self.controller.mediaTypes = [NSArray arrayWithObject:(NSString *)kUTTypeMovie];
+            self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
             self.controller.videoMaximumDuration = 8.0f;
         });
         [self performBlock:^{
@@ -1276,6 +1277,7 @@
     }
     if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && self.longGesturePressed) {
         [self.controller stopVideoCapture];
+        self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
         self.circularProgressView.hidden = YES;
         self.longGesturePressed = NO;
     }
