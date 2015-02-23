@@ -1183,6 +1183,10 @@
     self.tapRecognizer.delegate = self;
     [self.previewImageView addGestureRecognizer:self.tapRecognizer];
     
+    UITapGestureRecognizer *newTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
+    newTapGestureRecognizer.delegate = self;
+    [self.previewMoviePlayer.view addGestureRecognizer:newTapGestureRecognizer];
+    
     self.panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizer:)];
     self.panRecognizer.delegate = self;
     self.panRecognizer.enabled = NO;
@@ -1227,7 +1231,8 @@
     self.textField.font = [FontProperties mediumFont:17.0f];
     self.textField.delegate = self;
     self.textField.returnKeyType = UIReturnKeyDone;
-    [self.previewImageView addSubview:self.textField];
+    [self.overlayView addSubview:self.textField];
+    [self.overlayView bringSubviewToFront:self.textField];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardDidShowNotification object:nil];
     
     self.textLabel = [UILabel new];
@@ -1236,7 +1241,8 @@
     self.textLabel.textColor = UIColor.whiteColor;
     self.textLabel.textAlignment = NSTextAlignmentCenter;
     self.textLabel.font = [FontProperties mediumFont:17.0f];
-    [self.previewImageView addSubview:self.textLabel];
+    [self.overlayView addSubview:self.textLabel];
+    [self.overlayView bringSubviewToFront:self.textLabel];
 }
 
 - (void)takePicture {
@@ -1456,9 +1462,17 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     }
 }
 
+// this allows you to dispatch touches
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return YES;
+}
+// this enables you to handle multiple recognizers on single view
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
 
 - (void)tapGestureRecognizer:(UIGestureRecognizer*)recognizer {
-    if (!self.previewImageView.isHidden) {
+    if (!self.previewImageView.isHidden || !self.previewMoviePlayer.view.isHidden) {
         CGPoint center = [recognizer locationInView:self];
         float heightScreen = [UIScreen mainScreen].bounds.size.height;
         float widthScreen = [UIScreen mainScreen].bounds.size.width;
