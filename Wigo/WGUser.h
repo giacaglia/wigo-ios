@@ -26,6 +26,7 @@ typedef enum Privacy {
 } Privacy;
 
 typedef enum State {
+    NOT_LOADED_STATE,
     PRIVATE_STATE,
     PUBLIC_STATE,
     NOT_FOLLOWING_PUBLIC_USER_STATE,
@@ -146,7 +147,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) readConversation:(BoolResultBlock)handler;
 -(void) deleteConversation:(BoolResultBlock)handler;
 -(void) getConversation:(WGCollectionResultBlock)handler;
--(void) refetchUser;
+-(void) refetchUserWithHandler:(BoolResultBlock)handler;
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler;
 -(void) resendVerificationEmail:(BoolResultBlock) handler;
 

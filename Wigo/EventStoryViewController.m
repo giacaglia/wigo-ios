@@ -854,9 +854,7 @@
     ProfileViewController *profileViewController = [sb instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [profileViewController setStateWithUser: user];
 
-    if ([self isPeeking]) {
-        profileViewController.userState = OTHER_SCHOOL_USER_STATE;
-    }
+    if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     _loadViewFromFront = YES;
     [self.navigationController pushViewController: profileViewController animated: YES];
 }

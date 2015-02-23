@@ -736,11 +736,12 @@ static WGUser *currentUser = nil;
 }
 
 
--(void) refetchUser {
+-(void) refetchUserWithHandler:(BoolResultBlock)handler {
     __weak typeof(self) weakSelf = self;
     [WGApi get:[NSString stringWithFormat:@"users/%@", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
+            handler(NO, error);
             return;
         }
         NSError *dataError;
@@ -753,6 +754,7 @@ static WGUser *currentUser = nil;
             dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
+            handler(YES, nil);
             return;
         }
     }];
