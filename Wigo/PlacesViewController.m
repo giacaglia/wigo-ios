@@ -1795,9 +1795,8 @@ BOOL firstTimeLoading;
     self.numberOfHighglightsLabel.font = [FontProperties lightFont:15.0f];
     [self.contentView addSubview:self.numberOfHighglightsLabel];
     
-  
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
-                                     initWithFrame:CGRectMake(10, self.numberOfHighglightsLabel.frame.origin.y + self.numberOfHighglightsLabel.frame.size.height + 5, self.frame.size.width - 10, [HighlightCell height])
+                                     initWithFrame:CGRectMake(10, self.numberOfHighglightsLabel.frame.origin.y + self.numberOfHighglightsLabel.frame.size.height + 5, self.frame.size.width - 10, [HighlightCell height] + 40)
                                      collectionViewLayout:[HighlightsFlowLayout new]];
     [self.contentView addSubview:self.highlightsCollectionView];
     
@@ -1815,7 +1814,9 @@ BOOL firstTimeLoading;
     self.highlightsCollectionView.event = self.event;
     self.eventNameLabel.text = self.event.name;
     self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ People are going", self.event.numAttending];
-    self.numberOfHighglightsLabel.text = [NSString stringWithFormat:@"%@ Highlights", @"12"];
+    if (self.highlightsCollectionView.eventMessages) {
+        self.numberOfHighglightsLabel.text = [NSString stringWithFormat:@"%d Highlights", self.highlightsCollectionView.eventMessages.count];
+    }
     self.privacyLockImageView.hidden = !self.event.isPrivate;
 
     self.eventPeopleScrollView.event = self.event;

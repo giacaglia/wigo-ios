@@ -54,10 +54,9 @@
     whiteView.backgroundColor = UIColor.whiteColor;
     [self addSubview:whiteView];
     
-    self.showsVerticalScrollIndicator = NO;
     self.scrollEnabled = YES;
-    self.alwaysBounceVertical = YES;
-    self.bounces = YES;
+//    self.alwaysBounceVertical = YES;
+//    self.bounces = YES;
 }
 
 - (void)setEvent:(WGEvent *)event {
@@ -86,7 +85,7 @@
     }
     myCell.faceImageView.center = CGPointMake(myCell.contentView.center.x, myCell.faceImageView.center.y);
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
-    WGUser *user = eventMessage.user;
+//    WGUser *user = eventMessage.user;
     
     NSString *contentURL;
     if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
@@ -124,8 +123,7 @@
                 return;
             }
             strongSelf.eventMessages = collection;
-            strongSelf.contentSize = CGSizeMake(strongSelf.eventMessages.count *[HighlightCell height], [HighlightCell height] - 40);
-//            [strongSelf showOrNotShowToolTip];
+            strongSelf.contentSize = CGSizeMake(strongSelf.eventMessages.count *[HighlightCell height], [HighlightCell height]);
             [strongSelf reloadData];
         }];
     } else if ([self.eventMessages.hasNextPage boolValue]) {
@@ -139,7 +137,6 @@
                 return;
             }
             strongSelf.contentSize = CGSizeMake(strongSelf.eventMessages.count *[HighlightCell height], [HighlightCell height]);
-            
             [strongSelf reloadData];
         }];
     } else {
@@ -271,7 +268,7 @@
 - (void)setup
 {
     self.itemSize = CGSizeMake([HighlightCell height], [HighlightCell height]);
-    self.sectionInset = UIEdgeInsetsMake(0, 10, 10, 10);
+//    self.sectionInset = UIEdgeInsetsMake(0, 10, 10, 10);
     self.minimumLineSpacing = 0;
     self.minimumInteritemSpacing = 0;
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
