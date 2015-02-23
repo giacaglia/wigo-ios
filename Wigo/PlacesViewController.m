@@ -1006,7 +1006,6 @@ BOOL firstTimeLoading;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"(%ld, %ld)", (long)indexPath.section, (long)indexPath.row);
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
         if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
@@ -1015,7 +1014,6 @@ BOOL firstTimeLoading;
        
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
-            NSLog(@"aggregate (%ld, %ld)", (long)indexPath.section, (long)indexPath.row);
             cell.event = self.aggregateEvent;
             if (self.groupNumberID) {
                 cell.eventPeopleScrollView.groupID = self.groupNumberID;

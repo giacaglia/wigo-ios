@@ -1118,11 +1118,10 @@
     self.captureImageView.image = [UIImage imageNamed:@"captureCamera"];
     [self.pictureButton addSubview:self.captureImageView];
     self.pictureButton.center = CGPointMake(self.overlayView.center.x, self.pictureButton.center.y);
-//    [self.pictureButton addTarget:self.controller action:@selector(takePicture) forControlEvents:UIControlEventTouchUpInside];
     [self.overlayView addSubview:self.pictureButton];
     UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     [self.pictureButton addGestureRecognizer:longGesture];
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.controller action:@selector(takePicture)];
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePicture)];
     [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
     [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
     
@@ -1171,6 +1170,12 @@
     self.previewMoviePlayer.view.hidden = YES;
     [self.previewMoviePlayer prepareToPlay];
     [self.overlayView addSubview:self.previewMoviePlayer.view];
+    
+    self.flashWhiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
+    self.flashWhiteView.backgroundColor = UIColor.whiteColor;
+    self.flashWhiteView.hidden = YES;
+    [self.overlayView addSubview:self.flashWhiteView];
+    [self.overlayView bringSubviewToFront:self.flashWhiteView];
     
     self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
     self.tapRecognizer.delegate = self;
@@ -1233,6 +1238,14 @@
 }
 
 - (void)takePicture {
+    if (self.controller.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn &&
+        self.controller.cameraDevice == UIImagePickerControllerCameraDeviceFront ) {
+        [UIView animateWithDuration:0.04 animations:^{
+            self.flashWhiteView.alpha = 1.0f;
+        } completion:^(BOOL finished) {
+            self.flashWhiteView.alpha = 0.0f;
+        }];
+    }
     [self.controller takePicture];
 }
 
@@ -1245,12 +1258,11 @@
         self.videoTimerCount = 8.0f;
         self.longGesturePressed = YES;
         [self performBlock:^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 0.0);
-                self.controller.cameraViewTransform = CGAffineTransformScale(translate, 1.0, 1.0);
-                [[NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": self.circularProgressView} repeats: YES] fire];
-            });
             [self.controller startVideoCapture];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": self.circularProgressView} repeats: YES] fire];
+                
+            });
         } afterDelay:0.1];
     }
     if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && self.longGesturePressed) {
@@ -1261,12 +1273,10 @@
 }
 
 - (void) videoCaptureTimerFired:(NSTimer *) timer {
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         self.videoTimerCount -= timer.timeInterval;
         UILongPressGestureRecognizer *gesture = timer.userInfo[@"gesture"];
         [self.circularProgressView setProgress: MIN(1.0, (8.0 - self.videoTimerCount)/8.0) animated:YES];
-        
         
         if (self.videoTimerCount <= 0) {
             
