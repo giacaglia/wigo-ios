@@ -592,7 +592,6 @@
                 strongSelf.shownCurrentImage = NO;
             }
         }];
-
         NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
 
         [mutableDict addEntriesFromDictionary:@{

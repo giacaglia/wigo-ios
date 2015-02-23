@@ -68,7 +68,7 @@ UIButton *tapButton;
     if ([WGProfile currentUser] && user) {
         self.user = user;
         self.userState = self.user.state;
-        if (user.isTapped == nil) self.userState = NOT_LOADED_STATE;
+        if (user.isTapped == nil || user.isFollowing == nil) self.userState = NOT_LOADED_STATE;
         self.view.backgroundColor = [UIColor whiteColor];
         [self createImageScrollView];
     }
