@@ -9,6 +9,7 @@
 #import "HighlightsCollectionView.h"
 
 #define highlightCellName @"HighLightCellName"
+#define kAddPhotoCellName @"AddPhotoCellName"
 
 @implementation HighlightsCollectionView
 
@@ -43,6 +44,7 @@
     
     self.pagingEnabled = NO;
     [self registerClass:[HighlightCell class] forCellWithReuseIdentifier:highlightCellName];
+    [self registerClass:[AddPhotoCell class] forCellWithReuseIdentifier:kAddPhotoCellName];
     
     self.dataSource = self;
     self.delegate = self;
@@ -55,8 +57,7 @@
     [self addSubview:whiteView];
     
     self.scrollEnabled = YES;
-//    self.alwaysBounceVertical = YES;
-//    self.bounces = YES;
+    self.showAddPhoto = YES;
 }
 
 - (void)setEvent:(WGEvent *)event {
@@ -72,20 +73,24 @@
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.eventMessages.count;
+    return 1 +  self.eventMessages.count;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 0) {
+        AddPhotoCell *cell  =[collectionView dequeueReusableCellWithReuseIdentifier:kAddPhotoCellName forIndexPath: indexPath];
+        
+        return cell;
+    }
     HighlightCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
-    myCell.contentView.frame = CGRectMake(0, 0, [HighlightCell height],[HighlightCell height]);
-    myCell.faceAndMediaTypeView.frame = myCell.contentView.frame;
-    
-    if ([indexPath row] + 1 == self.eventMessages.count && [self.eventMessages.hasNextPage boolValue]) {
+    indexPath = [NSIndexPath indexPathForRow:(indexPath.row - 1) inSection:indexPath.section];
+
+    if (indexPath.row + 1 == self.eventMessages.count &&
+        [self.eventMessages.hasNextPage boolValue]) {
         [self fetchEventMessages];
     }
     myCell.faceImageView.center = CGPointMake(myCell.contentView.center.x, myCell.faceImageView.center.y);
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
-//    WGUser *user = eventMessage.user;
     
     NSString *contentURL;
     if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
@@ -98,7 +103,6 @@
             [weakCell.spinner stopAnimating];
         });
     }];
-    myCell.faceAndMediaTypeView.alpha = 1.0f;
     
     if (eventMessage.isRead) {
         if ([eventMessage.isRead boolValue]) {
@@ -148,7 +152,50 @@
 
 @end
 
+@implementation AddPhotoCell
 
+- (id) initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder: aDecoder];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (id) initWithFrame:(CGRect)frame {
+    self = [super initWithFrame: frame];
+    if (self) {
+        [self setup];
+    }
+    
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
+    self.contentView.frame = self.frame;
+    
+    self.controller = [[UIImagePickerController alloc] init];
+    self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeImage, nil];
+    self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
+    self.controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+    self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+    self.controller.showsCameraControls = NO;
+    
+    CGFloat controllerHeight = [HighlightCell height];
+    CGFloat controllerWidth = [HighlightCell height];
+    CGFloat cameraWidth = controllerWidth;
+    CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
+    CGFloat scale = controllerHeight / cameraHeight;
+    CGFloat delta = controllerHeight - cameraHeight;
+    CGFloat yAdjust = delta / 2.0;
+    
+    CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yAdjust); //This slots the preview exactly in the middle of the screen
+    self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
+    [self.contentView addSubview:self.controller.view];
+}
+
+@end
 
 @implementation HighlightCell
 
@@ -177,22 +224,16 @@
     self.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
     self.contentView.frame = self.frame;
     
-    self.faceAndMediaTypeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2*([HighlightCell height]/3),  2*([HighlightCell height]/3))];
-    self.faceAndMediaTypeView.alpha = 0.5f;
-    [self.contentView addSubview:self.faceAndMediaTypeView];
-    [self.contentView bringSubviewToFront:self.faceAndMediaTypeView];
-    
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0.9*[HighlightCell height], 0.9*[HighlightCell height])];
     self.faceImageView.center = self.contentView.center;
     self.faceImageView.backgroundColor = UIColor.blackColor;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.faceImageView.layer.masksToBounds = YES;
-    [self.faceAndMediaTypeView addSubview: self.faceImageView];
-    
+    [self.contentView addSubview: self.faceImageView];
     
     self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake([HighlightCell height]/4, [HighlightCell height]/4, [HighlightCell height]/2, [HighlightCell height]/2)];
     self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
-    [self.faceAndMediaTypeView addSubview:self.spinner];
+    [self.contentView addSubview:self.spinner];
     
     _isActive = NO;
 }
@@ -221,7 +262,6 @@
 }
 
 - (void)setToActiveWithNoAnimation {
-    self.faceAndMediaTypeView.alpha = 1.0f;
     
     self.faceImageView.transform = CGAffineTransformIdentity;
     

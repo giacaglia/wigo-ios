@@ -15,6 +15,11 @@
 @property (nonatomic, strong) WGCollection *eventMessages;
 @property (nonatomic, assign) BOOL cancelFetchMessages;
 @property (nonatomic, strong) WGEvent *event;
+@property (nonatomic, assign) BOOL showAddPhoto;
+@end
+
+@interface AddPhotoCell : UICollectionViewCell
+@property (nonatomic, strong) UIImagePickerController *controller;
 @end
 
 @interface HighlightCell : UICollectionViewCell
@@ -28,7 +33,6 @@
 
 
 @property (nonatomic, assign) BOOL isActive;
-@property (nonatomic, strong) UIView *faceAndMediaTypeView;
 @property (nonatomic, strong) UIImageView *faceImageView;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
