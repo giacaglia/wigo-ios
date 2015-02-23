@@ -36,6 +36,7 @@
 }
 
 - (void)setup {
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     self.backgroundColor = RGB(23, 23, 23);
     self.showsHorizontalScrollIndicator = NO;
     self.showsVerticalScrollIndicator = NO;
@@ -1124,6 +1125,7 @@
     UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePicture)];
     [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
     [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
+    [longGesture requireGestureRecognizerToFail:tapGestureRecognizer];
     
     self.circularProgressView = [[LLACircularProgressView alloc] initWithFrame:self.captureImageView.frame];
     // Optionally set the current progress
