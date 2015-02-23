@@ -101,6 +101,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(State) state;
 
+
 -(void) addTootltipTracked:(NSString *)tooltipTracked;
 -(void) setReferredBy:(NSNumber *)referredByNumber;
 -(void) setImageDictionary:(NSDictionary *)imageDictionary forIndex:(NSInteger)index;
@@ -145,7 +146,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) readConversation:(BoolResultBlock)handler;
 -(void) deleteConversation:(BoolResultBlock)handler;
 -(void) getConversation:(WGCollectionResultBlock)handler;
-
+-(void) refetchUser;
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler;
 -(void) resendVerificationEmail:(BoolResultBlock) handler;
 

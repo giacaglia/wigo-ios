@@ -735,16 +735,17 @@ static WGUser *currentUser = nil;
     }];
 }
 
--(void) getNotMeForMessage:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"context": @"message"} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+
+-(void) refetchUser {
+    __weak typeof(self) weakSelf = self;
+    [WGApi get:[NSString stringWithFormat:@"users/%@", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
-            handler(nil, error);
             return;
         }
         NSError *dataError;
-        WGCollection *objects;
         @try {
-            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+            strongSelf.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -752,8 +753,13 @@ static WGUser *currentUser = nil;
             dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(objects, dataError);
+            return;
         }
+    }];
+}
+-(void) getNotMeForMessage:(WGCollectionResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        
     }];
 }
 

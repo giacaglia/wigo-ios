@@ -137,6 +137,9 @@ UIButton *tapButton;
         [self fetchUserInfo];
         [self updateLastNotificationsRead];
     }
+    else {
+        [self.user refetchUser];
+    }
 }
 
 
