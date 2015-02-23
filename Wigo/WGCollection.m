@@ -7,6 +7,7 @@
 //
 
 #import "WGCollection.h"
+#define kMetaKey @"meta"
 
 @implementation WGCollection
 
@@ -25,7 +26,7 @@
 +(WGCollection *)serializeResponse:(NSDictionary *) jsonResponse andClass:(Class)type {
     WGCollection *newCollection = [[WGCollection alloc] initWithType:type];
     
-    [newCollection setPagination: [jsonResponse objectForKey:@"meta"]];
+    [newCollection setMetaInfo: [jsonResponse objectForKey:kMetaKey]];
     [newCollection initObjects: [jsonResponse objectForKey:@"objects"]];
     
     return newCollection;
@@ -276,12 +277,16 @@
     }];
 }
 
--(void)setPagination:(NSDictionary *)metaDictionary {
+-(void)setMetaInfo:(NSDictionary *)metaDictionary {
     self.hasNextPage = [metaDictionary objectForKey:@"has_next_page"];
     if (self.hasNextPage && [self.hasNextPage  boolValue]) {
         self.nextPage = [metaDictionary objectForKey:@"next"];
         self.nextPage = [self.nextPage substringFromIndex:5];
     }
+    if ([metaDictionary objectForKey:@"num_results"]) {
+        self.metaNumResults = [metaDictionary objectForKey:@"num_results"];
+    }
 }
+
 
 @end

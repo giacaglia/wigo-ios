@@ -21,6 +21,7 @@ typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error
 
 @property NSNumber *hasNextPage;
 @property NSString *nextPage;
+@property NSNumber *metaNumResults;
 
 -(id) initWithType:(Class)type;
 

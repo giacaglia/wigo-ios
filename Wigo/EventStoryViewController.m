@@ -121,8 +121,7 @@
     self.numberGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberGoingLabel.font = [FontProperties mediumFont:16];
     [self.backgroundScrollview addSubview:self.numberGoingLabel];
-    
-
+    self.numberGoingLabel.hidden = self.event.isAggregate;
 }
 
 - (void)loadInviteOrGoHereButton {

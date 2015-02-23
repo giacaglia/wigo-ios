@@ -874,7 +874,10 @@ BOOL firstTimeLoading;
 #define kHighlightsEmptySection 1
 
 - (int)shouldShowAggregatePrivateEvents {
-    return (self.aggregateEvent && ![self.allEvents.hasNextPage boolValue]) ? 1 : 0;
+    return (self.aggregateEvent &&
+            self.aggregateEvent.attendees &&
+            self.aggregateEvent.attendees.metaNumResults.intValue > 0
+            && ![self.allEvents.hasNextPage boolValue]) ? 1 : 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
