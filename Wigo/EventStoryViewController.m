@@ -397,7 +397,7 @@
         
         if (highlightLabel == nil) {
             highlightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
-            highlightLabel.text = @"Highlights";
+            highlightLabel.text = @"The Buzz";
             highlightLabel.textAlignment = NSTextAlignmentCenter;
             highlightLabel.font = [FontProperties lightFont:20.0f];
             highlightLabel.textColor = RGB(162, 162, 162);
@@ -408,13 +408,13 @@
             [cell addSubview:lineView];
             
             _noHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 70, self.view.frame.size.width, 20)];
-            NSString *str = @"0001F627";
+            NSString *str = @"0001F60F";
             NSScanner *hexScan = [NSScanner scannerWithString:str];
             unsigned int hexNum;
             [hexScan scanHexInt:&hexNum];
             UTF32Char inputChar = hexNum;
             NSString *res = [[NSString alloc] initWithBytes:&inputChar length:4 encoding:NSUTF32LittleEndianStringEncoding];
-            _noHighlightsLabel.text = [NSString stringWithFormat:@"No highlights yet %@", res];
+            _noHighlightsLabel.text = [NSString stringWithFormat:@"This event is lacking some buzz %@", res];
             _noHighlightsLabel.textAlignment = NSTextAlignmentCenter;
             _noHighlightsLabel.font = [FontProperties lightFont:15.0f];
             _noHighlightsLabel.textColor = RGB(170, 170, 170);
@@ -583,7 +583,7 @@
     [_highlightButton addSubview:highlightImageView];
 
     UILabel *postHighglightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, highlightImageView.frame.size.width, highlightImageView.frame.size.height - 15)];
-    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a highlight to get\nthe party started"];
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a selfie to create some buzz"];
     [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length)];
     [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(7, 9)];
     postHighglightLabel.attributedText = string;
