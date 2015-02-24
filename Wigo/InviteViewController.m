@@ -216,6 +216,9 @@
         
         if (user) {
             [cell setUser:user];
+            [cell.aroundTapButton removeTarget:nil
+                               action:NULL
+                     forControlEvents:UIControlEventAllEvents];
             [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
             cell.aroundTapButton.tag = indexPath.row;
         }
@@ -228,6 +231,9 @@
             contactPerson = (__bridge ABRecordRef)([mobileContacts objectAtIndex:indexPath.row]);
         [cell setCellForContactPerson:contactPerson withChosenPeople:chosenPeople];
         cell.aroundTapButton.tag = indexPath.row;
+        [cell.aroundTapButton removeTarget:nil
+                                    action:NULL
+                          forControlEvents:UIControlEventAllEvents];
         [cell.aroundTapButton addTarget:self action:@selector(inviteMobilePressed:) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -248,7 +254,7 @@
         recordID = ABRecordGetRecordID(contactPerson);
     }
     for (UIView *subview in buttonSender.subviews) {
-        if ([subview isKindOfClass:[UIImageView class]] && subview.tag != -1) {
+        if ([subview isKindOfClass:[UIImageView class]] && subview.tag == 3) {
             UIImageView *selectedImageView = (UIImageView *)subview;
             NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
             if (![chosenPeople containsObject:recordIdString]) {
@@ -559,6 +565,7 @@ heightForHeaderInSection:(NSInteger)section
     [self.aroundTapButton addSubview:self.goingOutLabel];
     
     self.tapImageView = [[UIImageView alloc]initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 15 - 15 - 25, [TapCell height] / 2 - 15, 30, 30)];
+    self.tapImageView.tag = 3;
     [self.aroundTapButton addSubview:self.tapImageView];
 }
 
