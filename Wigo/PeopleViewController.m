@@ -584,6 +584,7 @@ UIScrollView *suggestedScrollView;
 
 - (void)fetchFirstPageSuggestions {
     [WGSpinnerView addDancingGToCenterView:self.view];
+    if (!self.everyone) self.everyone = [[WGCollection alloc] initWithType:[WGUser class]];
     __weak typeof(self) weakSelf = self;
     [WGUser getSuggestions:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -602,7 +603,9 @@ UIScrollView *suggestedScrollView;
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         return;
                     }
-                    strongSelf.everyone = collection;
+                    if (strongSelf.suggestions) {
+                        [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.suggestions];
+                    }
                     strongSelf.users = strongSelf.everyone;
                     [strongSelf.tableViewOfPeople reloadData];
                 });
@@ -620,6 +623,7 @@ UIScrollView *suggestedScrollView;
 
 - (void) fetchEveryone {
     if (!self.fetching) {
+        if (!self.everyone) self.everyone = [[WGCollection alloc] initWithType:[WGUser class]];
         self.fetching = YES;
         __weak typeof(self) weakSelf = self;
         if (!self.everyone) {
@@ -632,6 +636,9 @@ UIScrollView *suggestedScrollView;
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         strongSelf.fetching = NO;
                         return;
+                    }
+                    if (strongSelf.suggestions) {
+                        [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.suggestions];
                     }
                     strongSelf.everyone = collection;
                     strongSelf.users = strongSelf.everyone;
