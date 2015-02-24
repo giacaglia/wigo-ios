@@ -877,8 +877,8 @@ BOOL firstTimeLoading;
 - (int)shouldShowAggregatePrivateEvents {
     return (self.aggregateEvent &&
             self.aggregateEvent.attendees &&
-            self.aggregateEvent.attendees.metaNumResults.intValue > 0
-            && ![self.allEvents.hasNextPage boolValue]) ? 1 : 0;
+            self.aggregateEvent.attendees.metaNumResults.intValue > 0 &&
+            ![self.allEvents.hasNextPage boolValue]) ? 1 : 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -1527,6 +1527,7 @@ BOOL firstTimeLoading;
     for (NSString *key in [self.eventOffsetDictionary allKeys]) {
         [self.eventOffsetDictionary setValue:@0 forKey:key];
     }
+    self.aggregateEvent = nil;
     self.allEvents = nil;
     [self fetchEvents];
 }
@@ -1594,12 +1595,22 @@ BOOL firstTimeLoading;
                     strongSelf.shouldReloadEvents = YES;
                     return;
                 }
+                
                 strongSelf.allEvents = collection;
                 strongSelf.pastDays = [[NSMutableArray alloc] init];
                 strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
                 strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
                 strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                 strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+                
+                if (strongSelf.allEvents.count > 0) {
+                    WGEvent *aggregateEvent = (WGEvent *)[strongSelf.allEvents objectAtIndex:0];
+                    if (aggregateEvent.isAggregate) {
+                        strongSelf.aggregateEvent = aggregateEvent;
+                        [strongSelf.allEvents removeObjectAtIndex:0];
+                    }
+                    else strongSelf.aggregateEvent = nil;
+                }
                 
                 for (WGEvent *event in strongSelf.allEvents) {
                     if (event) {

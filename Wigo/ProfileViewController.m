@@ -150,6 +150,7 @@ UIButton *tapButton;
                 }
                 strongSelf.userState = strongSelf.user.state;
                 [strongSelf.imageScrollView updateImages];
+                _pageControl.numberOfPages = [strongSelf.user.imagesURL count];
                 [strongSelf.tableView reloadData];
                 [strongSelf reloadViewForUserState];
             }];
@@ -288,7 +289,6 @@ UIButton *tapButton;
     [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
     
-    [_rightBarBt sizeToFit];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
     [barItem setCustomView:_rightBarBt];
     // self.navigationItem.rightBarButtonItem = barItem;
@@ -696,6 +696,7 @@ UIButton *tapButton;
         [_rightBarBt setTitle:@"More" forState:UIControlStateNormal];
         [_rightBarBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
     }
+    [_rightBarBt sizeToFit];
     
     [self.tableView reloadData];
 }
@@ -1088,7 +1089,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             strongSelf.numberOfFollowersLabel.text = [strongSelf.user.numFollowers stringValue];
             strongSelf.numberOfFollowingLabel.text = [strongSelf.user.numFollowing stringValue];
             [strongSelf updateNumberOfChats];
-            _pageControl.numberOfPages = [[strongSelf.user imagesURL] count];
+            _pageControl.numberOfPages = [strongSelf.user.imagesURL count];
             [strongSelf setUserState:WGProfile.currentUser.state];
             [strongSelf reloadViewForUserState];
         }];

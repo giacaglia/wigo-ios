@@ -325,8 +325,14 @@ heightForHeaderInSection:(NSInteger)section
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
         [WGAnalytics tagEvent:@"Tap User" withDetails:options];
     }
-    if (tag < [self.content count]) {
-        [self.content replaceObjectAtIndex:tag withObject:user];
+    if (self.isSearching) {
+        if (tag < self.filteredContent.count) {
+            user = (WGUser *)[self.filteredContent objectAtIndex:tag];
+        }
+    } else {
+        if (tag < self.content.count) {
+            user = (WGUser *)[self.content objectAtIndex:tag];
+        }
     }
     int sizeOfTable = (int)[self.invitePeopleTableView numberOfRowsInSection:0];
     if (sizeOfTable > 0 && tag < sizeOfTable && tag >= 0) {
@@ -443,21 +449,6 @@ heightForHeaderInSection:(NSInteger)section
         });
     }];
 
-    [[WGProfile currentUser] searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            __strong typeof(self) strongSelf = weakSelf;
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            strongSelf.isSearching = YES;
-            strongSelf.filteredContent = collection;
-            [strongSelf.filteredContent removeObject:[WGProfile currentUser]];
-            [strongSelf.invitePeopleTableView reloadData];
-        });
-    }];
-    
     // Mobile contacts
     filteredMobileContacts = [NSMutableArray arrayWithArray:[MobileDelegate filterArray:mobileContacts withText:searchBar.text]];
 }
@@ -498,8 +489,9 @@ heightForHeaderInSection:(NSInteger)section
                     [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
+                strongSelf.isSearching = NO;
                 strongSelf.content = collection;
-                [strongSelf.content removeObject:[WGProfile currentUser]];
+                [strongSelf.content removeObject:WGProfile.currentUser];
                 [strongSelf.invitePeopleTableView reloadData];
             });
         }];
@@ -512,7 +504,7 @@ heightForHeaderInSection:(NSInteger)section
                     [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
-                [strongSelf.content removeObject:[WGProfile currentUser]];
+                [strongSelf.content removeObject:WGProfile.currentUser];
                 [strongSelf.invitePeopleTableView reloadData];
             });
         }];
