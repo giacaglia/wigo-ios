@@ -136,7 +136,7 @@ UIButton *tapButton;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
-    if ([self.user isCurrentUser]) {
+    if (self.user.isCurrentUser) {
         [self fetchUserInfo];
         [self updateLastNotificationsRead];
     }
@@ -287,14 +287,6 @@ UIButton *tapButton;
     _rightBarBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
-    
-    if (self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) {
-        [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
-        [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
-    } else {
-        [_rightBarBt setTitle:@"More" forState:UIControlStateNormal];
-        [_rightBarBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
-    }
     
     [_rightBarBt sizeToFit];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
@@ -697,6 +689,14 @@ UIButton *tapButton;
         }
     }
     
+    if (self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) {
+        [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
+        [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
+    } else {
+        [_rightBarBt setTitle:@"More" forState:UIControlStateNormal];
+        [_rightBarBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
     [self.tableView reloadData];
 }
 
@@ -1084,13 +1084,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         __weak typeof(self) weakSelf = self;
         [WGProfile reload:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
-            strongSelf.user = [WGProfile currentUser];
+            strongSelf.user = WGProfile.currentUser;
             strongSelf.numberOfFollowersLabel.text = [strongSelf.user.numFollowers stringValue];
             strongSelf.numberOfFollowingLabel.text = [strongSelf.user.numFollowing stringValue];
             [strongSelf updateNumberOfChats];
             _pageControl.numberOfPages = [[strongSelf.user imagesURL] count];
-            [strongSelf createImageScrollView];
-            strongSelf.userState = WGProfile.currentUser.state;
+            [strongSelf setUserState:WGProfile.currentUser.state];
             [strongSelf reloadViewForUserState];
         }];
     }

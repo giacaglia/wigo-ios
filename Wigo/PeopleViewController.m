@@ -1141,7 +1141,7 @@ UIScrollView *suggestedScrollView;
 }
 
 - (void)suggestedFollowedPersonPressed:(id)sender {
-    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:suggestedScrollView];
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:self.suggestedScrollView];
     int indexOfPerson = (buttonOriginInTableView.x - 40)/130 ;
     WGUser *user;
     int sizeOfArray = (int) self.suggestions.count;

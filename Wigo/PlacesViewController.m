@@ -1649,6 +1649,7 @@ BOOL firstTimeLoading;
                         strongSelf.aggregateEvent = aggregateEvent;
                         [strongSelf.allEvents removeObjectAtIndex:0];
                     }
+                    else strongSelf.aggregateEvent = nil;
                 }
                 for (WGEvent *event in strongSelf.allEvents) {
                     if ([event.isExpired boolValue]) {
