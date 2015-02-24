@@ -992,7 +992,7 @@ BOOL firstTimeLoading;
 
         WGEvent *event = [eventObjectArray objectAtIndex:[indexPath row]];
         if (event.highlight) {
-            return 215;
+            return [HighlightOldEventCell height];
         }
     }
     
@@ -2077,7 +2077,7 @@ BOOL firstTimeLoading;
 }
 
 + (CGFloat) height {
-    return 215;
+    return [UIScreen mainScreen].bounds.size.height * 0.43;
 }
 
 @end
