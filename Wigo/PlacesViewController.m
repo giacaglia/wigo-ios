@@ -27,6 +27,7 @@
 #import "UIImage+ImageEffects.h"
 #import "ReferalViewController.h"
 #import "PrivateSwitchView.h"
+#import "EventMessagesConstants.h"
 
 #define sizeOfEachCell 64 + [EventPeopleScrollView containerHeight] + 10
 
@@ -1084,11 +1085,18 @@ BOOL firstTimeLoading;
                                        forIndexPath:indexPath];
         cell.event = event;
         cell.placesDelegate = self;
-        cell.oldEventLabel.text = [event name];
-        NSString *contentURL = event.highlight.media;
+        cell.oldEventLabel.text = event.name;
+        NSString *contentURL;
+        if ([event.highlight.mediaMimeType isEqual:kImageEventType]) {
+            contentURL = event.highlight.media;
+        }
+        else {
+            contentURL = event.highlight.thumbnail;
+        }
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [[WGProfile currentUser] cdnPrefix], contentURL]];
         [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         }];
+
         return cell;
     }
     return nil;
