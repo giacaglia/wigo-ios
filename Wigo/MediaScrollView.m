@@ -86,6 +86,13 @@
         } else {
             CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
             cameraCell.mediaScrollDelegate = self;
+            if ([cameraCell.info.allKeys containsObject:UIImagePickerControllerMediaType]) {
+                NSString *typeString = [cameraCell.info objectForKey:UIImagePickerControllerMediaType];
+                if ([typeString isEqual:@"public.movie"]) {
+                    [cameraCell.previewMoviePlayer play];
+                    
+                }
+            }
             [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
             return cameraCell;
         }
@@ -125,7 +132,7 @@
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
         [myCell.imageView setCoverImageForUser:WGProfile.currentUser completed:nil];
         myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet! You're going out to: %@", [self.event name]];
-        myCell.subtitleTextLabel.text = @"Post a selfie to build the hype!";
+        myCell.subtitleTextLabel.text = @"Post a selfie to build the buzz!";
         myCell.subtitleTextLabel.alpha = 0.7f;
         myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
         [myCell.actionButton setTitle:@"POST" forState:UIControlStateNormal];
@@ -1260,6 +1267,7 @@
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
     if (!self.longGesturePressed && gesture.state == UIGestureRecognizerStateBegan) {
         dispatch_async(dispatch_get_main_queue(), ^{
+
             [self.circularProgressView setProgress:0.0f];
             self.circularProgressView.hidden = NO;
             self.videoTimerCount = 8.0f;
@@ -1270,16 +1278,23 @@
         [self performBlock:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.controller startVideoCapture];
+                self.isRecording = YES;
+                CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 0.0); //This slots the preview exactly in the middle of the screen
+                self.controller.cameraViewTransform = CGAffineTransformScale(translate, 1.0, 1.0);
                 [[NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": self.circularProgressView} repeats: YES] fire];
                 
             });
         } afterDelay:0.4];
     }
     if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && self.longGesturePressed) {
-        [self.controller stopVideoCapture];
-        self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
-        self.circularProgressView.hidden = YES;
-        self.longGesturePressed = NO;
+        if (self.isRecording) {
+            [self.controller stopVideoCapture];
+            self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+            self.circularProgressView.hidden = YES;
+            [self.circularProgressView setProgress:0.1f];
+            self.longGesturePressed = NO;
+            self.isRecording = NO;
+        }
     }
 }
 
@@ -1403,6 +1418,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
 }
 
 - (void)cancelPressed {
+    self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
     [self.mediaScrollDelegate cancelPressed];
     [self cleanupView];
     self.info = nil;

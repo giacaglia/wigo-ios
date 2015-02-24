@@ -120,6 +120,7 @@
 @property (nonatomic, strong) UIView *pictureButton;
 @property (nonatomic, strong) UIView *flashWhiteView;
 @property (nonatomic, strong) UIImageView *captureImageView;
+@property (nonatomic, assign) BOOL isRecording;
 @property (nonatomic, assign) double videoTimerCount;
 @property (nonatomic, assign) BOOL longGesturePressed;
 @property (nonatomic, strong) LLACircularProgressView *circularProgressView ;
