@@ -189,7 +189,8 @@
     self.controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
     self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
     self.controller.showsCameraControls = NO;
-    
+    self.controller.delegate = self;
+
     CGFloat controllerHeight = [HighlightCell height];
     CGFloat controllerWidth = [HighlightCell height];
     CGFloat cameraWidth = controllerWidth;
@@ -209,6 +210,11 @@
 //    self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
     self.controller.view.transform = CGAffineTransformScale(translate, scaleWidth, scaleHeight);
     [self.contentView addSubview:self.controller.view];
+}
+
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
 @end

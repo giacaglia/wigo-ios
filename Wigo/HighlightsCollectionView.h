@@ -22,7 +22,7 @@
 @property (nonatomic, strong) UIImagePickerController *controller;
 @end
 
-@interface HighlightCell : UICollectionViewCell
+@interface HighlightCell : UICollectionViewCell <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 + (CGFloat) height;
 - (void) resetToInactive;
