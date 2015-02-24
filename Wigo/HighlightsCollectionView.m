@@ -49,7 +49,6 @@
     self.dataSource = self;
     self.delegate = self;
     
-    
     CGRect frame = self.bounds;
     frame.origin.y = -frame.size.height;
     UIView* whiteView = [[UIView alloc] initWithFrame:frame];
@@ -79,7 +78,7 @@
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 0) {
         AddPhotoCell *cell  =[collectionView dequeueReusableCellWithReuseIdentifier:kAddPhotoCellName forIndexPath: indexPath];
-        
+        cell.contentView.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
         return cell;
     }
     HighlightCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
@@ -154,6 +153,14 @@
 
 @implementation AddPhotoCell
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
 - (id) initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder: aDecoder];
     if (self) {
@@ -172,6 +179,7 @@
 }
 
 - (void) setup {
+    self.backgroundColor = UIColor.whiteColor;
     self.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
     self.contentView.frame = self.frame;
     
@@ -186,12 +194,20 @@
     CGFloat controllerWidth = [HighlightCell height];
     CGFloat cameraWidth = controllerWidth;
     CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
-    CGFloat scale = controllerHeight / cameraHeight;
+    CGFloat scaleHeight = controllerHeight / cameraHeight;
+    CGFloat scaleWidth = controllerWidth / cameraWidth;
+    scaleHeight = scaleHeight/6;
+    scaleWidth = scaleWidth/3;
     CGFloat delta = controllerHeight - cameraHeight;
     CGFloat yAdjust = delta / 2.0;
-    
-    CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yAdjust); //This slots the preview exactly in the middle of the screen
-    self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
+    NSLog(@"scale: %f", scaleHeight);
+    NSLog(@"y Adjust: %f", yAdjust);
+    yAdjust = -245.0f;
+    CGFloat xAdjust = -140.0f;
+    CGAffineTransform translate = CGAffineTransformMakeTranslation(xAdjust, yAdjust); //This slots the preview exactly in the middle of the screen
+    self.controller.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, scaleWidth/scaleHeight);
+//    self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
+    self.controller.view.transform = CGAffineTransformScale(translate, scaleWidth, scaleHeight);
     [self.contentView addSubview:self.controller.view];
 }
 
