@@ -92,19 +92,20 @@
     CGPoint translatedPoint = [(UIPanGestureRecognizer*)sender translationInView:self.frontView];
     
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateBegan) {
-        self.firstX = [sender view].center.x;
+        self.firstX = [sender view].frame.origin.x;
     }
     
-    translatedPoint = CGPointMake(self.firstX+translatedPoint.x, [sender view].center.y);
-    translatedPoint = CGPointMake(MIN(MAX(self.center.x/2 - 15 ,translatedPoint.x), self.center.x + 15 - 2), translatedPoint.y);
-    [[sender view] setCenter:translatedPoint];
-    
+//    NSLog(@"")
+    translatedPoint = CGPointMake(self.firstX+translatedPoint.x, [sender view].frame.origin.y);
+    translatedPoint = CGPointMake(MIN(MAX(2 ,translatedPoint.x), self.frame.size.width - self.frontView.frame.size.width - 2), translatedPoint.y);
+    [[sender view] setFrame:CGRectMake(translatedPoint.x, translatedPoint.y, [sender view].frame.size.width, [sender view].frame.size.height)];
+  
     if ([(UIPanGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
         CGFloat velocityX = (0.2*[(UIPanGestureRecognizer*)sender velocityInView:self.frontView].x);
         CGFloat animationDuration = (ABS(velocityX)*.0002)+.2;
-        if (translatedPoint.x > 0.75*self.center.x) {
+        if ([sender view].center.x > self.frame.size.width/2) {
             [UIView animateWithDuration:animationDuration animations:^{
-                [[sender view] setCenter:CGPointMake(self.center.x + 15 - 4, translatedPoint.y)];
+                [[sender view] setFrame:CGRectMake(self.frame.size.width - self.frontView.frame.size.width - 2, [sender view].frame.origin.y, [sender view].frame.size.width, [sender view].frame.size.height)];
             }];
             self.privacyTurnedOn = YES;
             self.explanationString = @"Only you can invite people and only\nthose invited can see the event.";
@@ -120,7 +121,7 @@
         }
         else {
             [UIView animateWithDuration:animationDuration animations:^{
-                [[sender view] setCenter:CGPointMake(self.center.x/2 - 15 + 4, translatedPoint.y)];
+                 [[sender view] setFrame:CGRectMake(2, [sender view].frame.origin.y, [sender view].frame.size.width, [sender view].frame.size.height)];
             }];
             self.privacyTurnedOn = NO;
             self.explanationString = @"The whole school can see what you are posting.";
@@ -149,9 +150,6 @@
     self.movingImageView.image = image;
     [self bringSubviewToFront:self.movingImageView];
 }
-
-
-
 
 - (void)privacyPressed {
     if (!self.runningAnimation) {
@@ -217,7 +215,7 @@
 
             
             [UIView animateWithDuration:0.84 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                self.frontView.frame = CGRectMake(1, self.frontView.frame.origin.y, self.frontView.frame.size.width, self.frontView.frame.size.height);
+                self.frontView.frame = CGRectMake(2, self.frontView.frame.origin.y, self.frontView.frame.size.width, self.frontView.frame.size.height);
             } completion:^(BOOL finished) {
                 self.runningAnimation = NO;
                 [self.openLockImageView stopAnimating];

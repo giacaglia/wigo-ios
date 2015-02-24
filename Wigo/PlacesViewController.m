@@ -1643,10 +1643,12 @@ BOOL firstTimeLoading;
                 strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
                 strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
                 strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                WGEvent *aggregateEvent = (WGEvent *)[strongSelf.allEvents objectAtIndex:0];
-                if (aggregateEvent.isAggregate) {
-                    strongSelf.aggregateEvent = aggregateEvent;
-                    [strongSelf.allEvents removeObjectAtIndex:0];
+                if (strongSelf.allEvents.count > 0) {
+                    WGEvent *aggregateEvent = (WGEvent *)[strongSelf.allEvents objectAtIndex:0];
+                    if (aggregateEvent.isAggregate) {
+                        strongSelf.aggregateEvent = aggregateEvent;
+                        [strongSelf.allEvents removeObjectAtIndex:0];
+                    }
                 }
                 for (WGEvent *event in strongSelf.allEvents) {
                     if ([event.isExpired boolValue]) {
