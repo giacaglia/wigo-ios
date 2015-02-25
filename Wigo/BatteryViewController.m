@@ -65,7 +65,9 @@ NSNumber *currentNumGroups;
             [strongSelf.placesDelegate setGroupID:WGProfile.currentUser.group.id andGroupName:WGProfile.currentUser.group.name];
             if ([strongSelf isModal]) {
                 [strongSelf dismissViewControllerAnimated:NO completion:nil];
-                [strongSelf presentViewController:[OnboardFollowViewController new] animated:YES completion:nil];
+
+//                [strongSelf presentViewController:[OnboardFollowViewController new] animated:YES completion:^{
+//                }];
             }
             else {
                 [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
