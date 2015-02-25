@@ -148,7 +148,12 @@ UIButton *tapButton;
                 if (error) {
                     return;
                 }
-                strongSelf.userState = strongSelf.user.state;
+                if (strongSelf.isPeeking) {
+                    strongSelf.userState = OTHER_SCHOOL_USER_STATE;
+                }
+                else {
+                    strongSelf.userState = strongSelf.user.state;
+                }
                 [strongSelf.imageScrollView updateImages];
                 _pageControl.numberOfPages = [strongSelf.user.imagesURL count];
                 [strongSelf.tableView reloadData];
@@ -165,7 +170,7 @@ UIButton *tapButton;
     
     NSString *isCurrentUser = ([self.user isEqual:[WGProfile currentUser]]) ? @"Yes" : @"No";
     NSString *isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE) ? @"Yes" : @"No";
-
+    self.isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE);
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", isPeeking, @"isPeeking", nil];
     
     [WGAnalytics tagEvent:@"Profile View" withDetails:options];

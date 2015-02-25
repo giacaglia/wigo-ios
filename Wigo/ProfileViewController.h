@@ -35,6 +35,7 @@
 @property (nonatomic, strong) UILabel *numberOfFollowingLabel;
 @property (nonatomic, strong) WGCollection *unexpiredNotifications;
 @property (nonatomic, strong) WGCollection *notifications;
+@property (nonatomic, assign) BOOL isPeeking;
 
 
 -(id)initWithUser:(WGUser *)user;
