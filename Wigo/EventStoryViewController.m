@@ -507,8 +507,8 @@
     [self.view addSubview:self.visualEffectView];
     [self.view bringSubviewToFront:self.visualEffectView];
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 18, 30, 40, 40)];
-    UIImageView *closeButtonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, 0, 24, 24)];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 18, 20, 60, 40)];
+    UIImageView *closeButtonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, 10, 24, 24)];
     closeButtonImageView.image = [UIImage imageNamed:@"blueCloseButton"];
     [closeButton addSubview:closeButtonImageView];
     [closeButton addTarget:self action:@selector(closeOverlay) forControlEvents:UIControlEventTouchUpInside];
