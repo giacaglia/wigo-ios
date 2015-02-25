@@ -738,7 +738,9 @@ static WGUser *currentUser = nil;
 
 -(void) refetchUserWithHandler:(BoolResultBlock)handler {
     __weak typeof(self) weakSelf = self;
-    [WGApi get:[NSString stringWithFormat:@"users/%@", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/"
+ withArguments:@{ @"id__ne" : self.id, @"context": @"message"}
+    andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             handler(NO, error);
