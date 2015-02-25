@@ -495,7 +495,7 @@
     [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
     [self.privateTooltipBanner addSubview:closeButton];
     
-    self.privateTooltipBanner.hidden = WGProfile.currentUser.youAreInCharge || !self.event.isPrivate;
+    self.privateTooltipBanner.hidden = WGProfile.currentUser.youAreInCharge || !self.event.isPrivate || !self.event.owner.isCurrentUser;
 }
 
 
