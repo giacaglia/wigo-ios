@@ -143,7 +143,7 @@ UIButton *tapButton;
     else {
         if (self.user.isTapped == nil ||self.user.isFollowing == nil ) {
             __weak typeof(self) weakSelf = self;
-            [self.user refetchUserWithHandler:^(BOOL success, NSError *error) {
+            [self.user refetchUserWithGroup:WGProfile.peekingGroupID andHandler:^(BOOL success, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
                 if (error) {
                     return;

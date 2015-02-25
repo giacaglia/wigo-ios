@@ -736,28 +736,56 @@ static WGUser *currentUser = nil;
 }
 
 
--(void) refetchUserWithHandler:(BoolResultBlock)handler {
+-(void) refetchUserWithGroup:(NSNumber *)groupID andHandler:(BoolResultBlock)handler {
     __weak typeof(self) weakSelf = self;
-    [WGApi get:[NSString stringWithFormat:@"users/%@", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        if (error) {
-            handler(NO, error);
-            return;
-        }
-        NSError *dataError;
-        @try {
-            strongSelf.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
-        }
-        @catch (NSException *exception) {
-            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
-            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-        }
-        @finally {
-            handler(YES, nil);
-            return;
-        }
-    }];
+    if (!groupID) {
+        [WGApi get:[NSString stringWithFormat:@"users/%@", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (error) {
+                handler(NO, error);
+                return;
+            }
+            NSError *dataError;
+            @try {
+                strongSelf.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            }
+            @catch (NSException *exception) {
+                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                
+                dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            }
+            @finally {
+                handler(YES, nil);
+                return;
+            }
+        }];
+
+    }
+    else {
+        [WGApi get:[NSString stringWithFormat:@"users/%@", self.id]
+     withArguments:@{@"group": groupID.stringValue}
+        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (error) {
+                handler(NO, error);
+                return;
+            }
+            NSError *dataError;
+            @try {
+                strongSelf.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            }
+            @catch (NSException *exception) {
+                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                
+                dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            }
+            @finally {
+                handler(YES, nil);
+                return;
+            }
+        }];
+ 
+    }
 }
 -(void) getNotMeForMessage:(WGCollectionResultBlock)handler {
     [WGApi get:@"users/"  withArguments:@{ @"id__ne" : self.id, @"context": @"message"}

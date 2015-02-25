@@ -37,10 +37,12 @@
 #define kLastUserReadKey @"last_user_read"
 #define kVideoEnabled @"video"
 #define kYouAreInCharge @"youAreInCharge"
+#define kPeekingGroupID @"peekingGroupID"
 
 #define kDefaultCDNPrefix @"wigo-uploads.s3.amazonaws.com"
 
 static WGProfile *currentUser = nil;
+static NSNumber *peekingGroupID = nil;
 
 @implementation WGProfile
 
@@ -81,6 +83,14 @@ static WGProfile *currentUser = nil;
         currentUser = [[WGProfile alloc] init];
     }
     return currentUser;
+}
+
++ (void)setPeekingGroupID:(NSNumber *)groupID {
+    peekingGroupID = groupID;
+}
+
++ (NSNumber *)peekingGroupID {
+    return peekingGroupID;
 }
 
 -(void) setKey:(NSString *)key {

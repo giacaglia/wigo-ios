@@ -110,6 +110,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSNumber *groupID = [schoolDictionary objectForKey:@"id"];
     NSString *groupName = [schoolDictionary objectForKey:@"name"];
     [self.placesDelegate setGroupID:groupID andGroupName:groupName];
+    if (![WGProfile.currentUser.group.id isEqual:groupID]) {
+        [WGProfile setPeekingGroupID:groupID];
+    }
+    else {
+        [WGProfile setPeekingGroupID:nil];
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

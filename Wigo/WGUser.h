@@ -83,7 +83,6 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property WGEvent* eventAttending;
 @property WGGroup* group;
 @property NSNumber* groupRank;
-
 @property NSNumber* isTapPushNotificationEnabled;
 @property NSNumber* isFavoritesGoingOutNotificationEnabled;
 
@@ -147,7 +146,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) readConversation:(BoolResultBlock)handler;
 -(void) deleteConversation:(BoolResultBlock)handler;
 -(void) getConversation:(WGCollectionResultBlock)handler;
--(void) refetchUserWithHandler:(BoolResultBlock)handler;
+-(void) refetchUserWithGroup:(NSNumber *)groupID andHandler:(BoolResultBlock)handler;
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler;
 -(void) resendVerificationEmail:(BoolResultBlock) handler;
 

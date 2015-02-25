@@ -30,6 +30,8 @@
 
 +(void) setCurrentUser:(WGUser *)user;
 +(WGProfile *) currentUser;
++(void)setPeekingGroupID:(NSNumber *)peekingGroupID;
++(NSNumber *)peekingGroupID;
 -(void) login:(BoolResultBlock)handler;
 -(void) signup:(BoolResultBlock)handler;
 +(void) reload:(BoolResultBlock)handler;
