@@ -414,7 +414,7 @@
             [hexScan scanHexInt:&hexNum];
             UTF32Char inputChar = hexNum;
             NSString *res = [[NSString alloc] initWithBytes:&inputChar length:4 encoding:NSUTF32LittleEndianStringEncoding];
-            _noHighlightsLabel.text = [NSString stringWithFormat:@"This event is lacking some buzz %@", res];
+            _noHighlightsLabel.text = [NSString stringWithFormat:@"This event is lacking buzz %@", res];
             _noHighlightsLabel.textAlignment = NSTextAlignmentCenter;
             _noHighlightsLabel.font = [FontProperties lightFont:15.0f];
             _noHighlightsLabel.textColor = RGB(170, 170, 170);

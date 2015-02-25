@@ -93,6 +93,7 @@
 @end
 
 @interface HighlightOldEventCell : UITableViewCell
+@property (nonatomic, strong) UIImageView *privateIconImageView;
 @property (nonatomic, strong) UIImageView *highlightImageView;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;

@@ -1087,6 +1087,14 @@ BOOL firstTimeLoading;
         cell.event = event;
         cell.placesDelegate = self;
         cell.oldEventLabel.text = event.name;
+        if (cell.event.isPrivate) {
+            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(20, 0);
+            cell.privateIconImageView.hidden = NO;
+        }
+        else {
+            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(0, 0);
+            cell.privateIconImageView.hidden = YES;
+        }
         NSString *contentURL;
         if ([event.highlight.mediaMimeType isEqual:kImageEventType]) {
             contentURL = event.highlight.media;
@@ -2080,6 +2088,11 @@ BOOL firstTimeLoading;
     UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame: self.highlightImageView.bounds];
     gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
     [self.contentView addSubview:gradientBackground];
+    
+    self.privateIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.highlightImageView.bounds.size.height - 33, 12, 15)];
+    self.privateIconImageView.image = [UIImage imageNamed:@"privateIcon"];
+    self.privateIconImageView.hidden = YES;
+    [self.contentView addSubview:self.privateIconImageView];
     
     self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.highlightImageView.bounds.size.height - 50, self.frame.size.width - 75, 50)];
     self.oldEventLabel.numberOfLines = 2;
