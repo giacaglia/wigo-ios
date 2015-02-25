@@ -876,10 +876,11 @@ BOOL firstTimeLoading;
 #define kHighlightsEmptySection 1
 
 - (int)shouldShowAggregatePrivateEvents {
+    BOOL areEventsOfTodayDone = self.oldEvents.count > 0 || ![self.allEvents.hasNextPage boolValue];
     return (self.aggregateEvent &&
             self.aggregateEvent.attendees &&
             self.aggregateEvent.attendees.metaNumResults.intValue > 0 &&
-            ![self.allEvents.hasNextPage boolValue]) ? 1 : 0;
+            areEventsOfTodayDone) ? 1 : 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -975,9 +976,14 @@ BOOL firstTimeLoading;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
-        if (indexPath.row == self.events.count && [self shouldShowAggregatePrivateEvents] == 1)
+        if (indexPath.row == self.events.count &&
+            [self shouldShowAggregatePrivateEvents] == 1) {
             return sizeOfEachCell;
-        if (indexPath.item == self.events.count) return 1;
+        }
+        if (indexPath.row == self.events.count + 1 &&
+            [self.allEvents.hasNextPage boolValue] ) {
+            return 1;
+        }
         return sizeOfEachCell;
     }
     else if (indexPath.section == kHighlightsEmptySection) {
@@ -1010,7 +1016,8 @@ BOOL firstTimeLoading;
     }
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+-(UITableViewCell *)tableView:(UITableView *)tableView
+        cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
         if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
@@ -1020,11 +1027,7 @@ BOOL firstTimeLoading;
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
             cell.event = self.aggregateEvent;
-            if (self.groupNumberID) {
-                cell.eventPeopleScrollView.groupID = self.groupNumberID;
-            } else {
-                cell.eventPeopleScrollView.groupID = nil;
-            }
+            cell.eventPeopleScrollView.groupID = self.groupNumberID;
             cell.eventPeopleScrollView.placesDelegate = self;
             if (![self.eventOffsetDictionary objectForKey:[self.aggregateEvent.id stringValue]]) {
                 cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
@@ -1059,11 +1062,7 @@ BOOL firstTimeLoading;
             event = (WGEvent *)[self.events objectAtIndex:indexPath.row];
         }
         cell.event = event;
-        if (self.groupNumberID) {
-            cell.eventPeopleScrollView.groupID = self.groupNumberID;
-        } else {
-            cell.eventPeopleScrollView.groupID = nil;
-        }
+        cell.eventPeopleScrollView.groupID = self.groupNumberID;
         cell.eventPeopleScrollView.placesDelegate = self;
         if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
             cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
@@ -1448,7 +1447,6 @@ BOOL firstTimeLoading;
 }
 
 - (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
-    NSLog(@"presented group ID: %@", groupID);
     self.presentingLockedView = YES;
     UIButtonAligned *leftButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@2];
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 8, 8, 14)];
