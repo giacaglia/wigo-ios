@@ -71,7 +71,7 @@ NSNumber *currentNumGroups;
 
 - (void)initializeNameOfSchool {
     if (WGProfile.currentUser.group.name) {
-        UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 80, self.view.frame.size.width - 44, 60)];
+        UILabel *schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, self.view.frame.size.height/2 - 140 - 60 - 20, self.view.frame.size.width - 44, 60)];
         schoolLabel.text = WGProfile.currentUser.group.name;
         schoolLabel.textAlignment = NSTextAlignmentCenter;
         schoolLabel.numberOfLines = 0;
