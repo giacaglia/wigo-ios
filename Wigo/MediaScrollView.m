@@ -90,7 +90,6 @@
                 NSString *typeString = [cameraCell.info objectForKey:UIImagePickerControllerMediaType];
                 if ([typeString isEqual:@"public.movie"]) {
                     [cameraCell.previewMoviePlayer play];
-                    
                 }
             }
             [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
@@ -1126,12 +1125,16 @@
     [self.pictureButton addSubview:self.captureImageView];
     self.pictureButton.center = CGPointMake(self.overlayView.center.x, self.pictureButton.center.y);
     [self.overlayView addSubview:self.pictureButton];
-    UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
-    [self.pictureButton addGestureRecognizer:longGesture];
+  
     UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePicture)];
-    [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
     [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
-    [longGesture requireGestureRecognizerToFail:tapGestureRecognizer];
+    
+    if (WGProfile.currentUser.videoEnabled) {
+        UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+        [self.pictureButton addGestureRecognizer:longGesture];
+        [longGesture requireGestureRecognizerToFail:tapGestureRecognizer];
+        [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
+    }
     
     self.circularProgressView = [[LLACircularProgressView alloc] initWithFrame:self.captureImageView.frame];
     // Optionally set the current progress

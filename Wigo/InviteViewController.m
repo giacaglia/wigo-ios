@@ -573,7 +573,7 @@ heightForHeaderInSection:(NSInteger)section
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.fullNameLabel.text = user.fullName;
     if ([user.isGoingOut boolValue]) {
-        if (user.eventAttending.name) {
+        if (user.eventAttending.name && !user.eventAttending.isPrivate) {
             self.goingOutLabel.text = [NSString stringWithFormat:@"Going out to %@", user.eventAttending.name];
         } else {
             self.goingOutLabel.text = @"Going Out";

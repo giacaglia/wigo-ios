@@ -25,6 +25,8 @@
 @property WGCollection *chosenPeople;
 @property float imageQuality;
 @property float imageMultiple;
+@property BOOL videoEnabled;
+@property BOOL youAreInCharge;
 
 +(void) setCurrentUser:(WGUser *)user;
 +(WGProfile *) currentUser;

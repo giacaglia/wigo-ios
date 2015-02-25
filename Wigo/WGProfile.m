@@ -35,6 +35,8 @@
 #define kFacebookIdKey @"facebook_id"
 #define kLastNotificationReadKey @"last_notification_read"
 #define kLastUserReadKey @"last_user_read"
+#define kVideoEnabled @"video"
+#define kYouAreInCharge @"youAreInCharge"
 
 #define kDefaultCDNPrefix @"wigo-uploads.s3.amazonaws.com"
 
@@ -168,6 +170,22 @@ static WGProfile *currentUser = nil;
 
 -(NSNumber *) privateEvents {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kPrivateEventsEnabledKey];
+}
+
+- (void)setVideoEnabled:(BOOL)isVideoEnabled {
+    [[NSUserDefaults standardUserDefaults] setBool:isVideoEnabled forKey:kVideoEnabled];
+}
+
+-(BOOL)videoEnabled {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kVideoEnabled];
+}
+
+- (void)setYouAreInCharge:(BOOL)youAreInCharge {
+    [[NSUserDefaults standardUserDefaults] setBool:youAreInCharge forKey:kYouAreInCharge];
+}
+
+- (BOOL)youAreInCharge {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kYouAreInCharge];
 }
 
 - (void)setImageQuality:(float)imageQuality {

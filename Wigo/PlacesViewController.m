@@ -754,6 +754,7 @@ BOOL firstTimeLoading;
 
 - (void)createPressed {
     if ([self.whereAreYouGoingTextField.text length] != 0) {
+        WGProfile.currentUser.youAreInCharge = NO;
         self.whereAreYouGoingTextField.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;
         [self addLoadingIndicator];

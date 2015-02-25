@@ -465,6 +465,7 @@
 }
 
 - (void)closePrivateTooltip {
+    WGProfile.currentUser.youAreInCharge = YES;
     self.privateTooltipBanner.hidden = YES;
 }
 
@@ -485,14 +486,16 @@
     inviteFriendsLabel.textAlignment = NSTextAlignmentLeft;
     [self.privateTooltipBanner addSubview:inviteFriendsLabel];
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6 - 20, self.privateTooltipBanner.frame.size.height/2 + 10 - 6 - 20, 30, 30)];
-    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, 12, 12)];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6 - 20 - 30, self.privateTooltipBanner.frame.size.height/2 + 10 - 6 - 20 - 30, 30 + 30, 30 + 30)];
+    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20 + 30, 20 + 30, 12, 12)];
     closeImageView.image = [UIImage imageNamed:@"grayCloseButton"];
     self.privateTooltipBanner.userInteractionEnabled = YES;
     [closeButton addSubview:closeImageView];
     [closeButton addTarget:self action:@selector(closePrivateTooltip) forControlEvents:UIControlEventTouchUpInside];
     [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
     [self.privateTooltipBanner addSubview:closeButton];
+    
+    self.privateTooltipBanner.hidden = WGProfile.currentUser.youAreInCharge;
 }
 
 
@@ -583,9 +586,9 @@
     [_highlightButton addSubview:highlightImageView];
 
     UILabel *postHighglightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, highlightImageView.frame.size.width, highlightImageView.frame.size.height - 15)];
-    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a selfie to create some buzz"];
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a selfie to\ncreate some buzz"];
     [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length)];
-    [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(7, 9)];
+    [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(7, 7)];
     postHighglightLabel.attributedText = string;
     postHighglightLabel.numberOfLines = 2;
     postHighglightLabel.lineBreakMode = NSLineBreakByWordWrapping;
