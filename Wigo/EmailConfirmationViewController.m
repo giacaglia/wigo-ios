@@ -153,8 +153,11 @@ UITextField *emailTextField;
                     batteryViewController.placesDelegate = strongSelf.placesDelegate;
                     [strongSelf.navigationController pushViewController:batteryViewController animated:NO];
                 } else {
-                    [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
-                    [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
+                    if (!strongSelf.showOnboard) {
+                        [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
+                        [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
+                        strongSelf.showOnboard = YES;
+                    }
                 }
             }
         }];

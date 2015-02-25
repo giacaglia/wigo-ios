@@ -57,9 +57,11 @@ NSNumber *currentNumGroups;
             return;
         }
         if (WGProfile.currentUser.group.locked &&
-            ![WGProfile.currentUser.group.locked boolValue]) {
+            ![WGProfile.currentUser.group.locked boolValue] &&
+            !strongSelf.showOnboard) {
             [strongSelf.fetchTimer invalidate];
             strongSelf.fetchTimer = nil;
+            strongSelf.showOnboard = YES;
             [strongSelf.placesDelegate setGroupID:WGProfile.currentUser.group.id andGroupName:WGProfile.currentUser.group.name];
             [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
         }
