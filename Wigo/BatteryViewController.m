@@ -63,7 +63,13 @@ NSNumber *currentNumGroups;
             strongSelf.fetchTimer = nil;
             strongSelf.showOnboard = YES;
             [strongSelf.placesDelegate setGroupID:WGProfile.currentUser.group.id andGroupName:WGProfile.currentUser.group.name];
-            [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
+            if ([strongSelf isModal]) {
+                [strongSelf dismissViewControllerAnimated:NO completion:nil];
+                [strongSelf presentViewController:[OnboardFollowViewController new] animated:YES completion:nil];
+            }
+            else {
+                [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
+            }
         }
     }];
 }
@@ -197,6 +203,19 @@ NSNumber *currentNumGroups;
             [strongSelf initializePeekButton];
         }
     }];
+}
+
+- (BOOL)isModal {
+    if([self presentingViewController])
+        return YES;
+    if([[self presentingViewController] presentedViewController] == self)
+        return YES;
+    if([[[self navigationController] presentingViewController] presentedViewController] == [self navigationController])
+        return YES;
+    if([[[self tabBarController] presentingViewController] isKindOfClass:[UITabBarController class]])
+        return YES;
+    
+    return NO;
 }
 
 @end
