@@ -10,7 +10,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "WGEvent.h"
 #import "Delegate.h"
-#import "OverlayView.h"
+#import "LLACircularProgressView.h"
 
 #define UIMediaPickerText @"UIMediaPickerText"
 #define UIMediaPickerPercentage @"UIMediaPickerPercentage"
@@ -24,6 +24,7 @@
        startUploadingWithInfo:(NSDictionary *)info;
 - (void)mediaPickerController:(UIImagePickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info;
+- (void)cancelPressed;
 @end
 
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate>
@@ -103,6 +104,7 @@
 @property (nonatomic, strong) UILabel *label;
 @end
 
+
 @interface CameraCell : UICollectionViewCell<UINavigationControllerDelegate,
                                             UIImagePickerControllerDelegate,
                                             UIGestureRecognizerDelegate,
@@ -115,9 +117,16 @@
 @property (nonatomic, strong) UIImageView *flashImageView;
 @property (nonatomic, strong) UIButton *switchButton;
 @property (nonatomic, strong) UIImageView *cameraImageView;
-@property (nonatomic, strong) UIButton *pictureButton;
+@property (nonatomic, strong) UIView *pictureButton;
+@property (nonatomic, strong) UIView *flashWhiteView;
+@property (nonatomic, strong) UIImageView *captureImageView;
+@property (nonatomic, assign) BOOL isRecording;
+@property (nonatomic, assign) double videoTimerCount;
+@property (nonatomic, assign) BOOL longGesturePressed;
+@property (nonatomic, strong) LLACircularProgressView *circularProgressView ;
 
 @property (nonatomic, strong) UIImageView *previewImageView;
+@property (nonatomic, strong) MPMoviePlayerController *previewMoviePlayer;
 @property (nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
 @property (nonatomic, strong) UIPanGestureRecognizer *panRecognizer;
 @property (nonatomic, strong) UIButton *cancelButton;

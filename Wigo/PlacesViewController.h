@@ -13,7 +13,9 @@
 #import "SignViewController.h"
 
 
-@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, PlacesDelegate>
+@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
+    UIGestureRecognizerDelegate, PlacesDelegate,
+    PrivacySwitchDelegate>
 
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) NSString *groupName;
@@ -28,7 +30,9 @@
 @property (nonatomic, assign) BOOL fetchingEventAttendees;
 @property (nonatomic, strong) WGCollection *allEvents;
 @property (nonatomic, strong) WGCollection *events;
+@property (nonatomic, strong) WGCollection *filteredEvents;
 @property (nonatomic, strong) WGCollection *oldEvents;
+@property (nonatomic, strong) WGEvent *aggregateEvent;
 @property (nonatomic, strong) NSMutableDictionary *dayToEventObjArray;
 @property (nonatomic, strong) SignViewController *signViewController;
 @property (nonatomic, assign) BOOL fetchingUserInfo;
@@ -40,12 +44,17 @@
 @property (nonatomic, strong) UIButton *schoolButton;
 @property (nonatomic, assign) BOOL presentingLockedView;
 @property (nonatomic, assign) BOOL shouldReloadEvents;
+@property (nonatomic, strong) UIButton *switchButton;
+@property (nonatomic, strong) UILabel *invitePeopleLabel;
+@property (nonatomic, assign) BOOL privacyTurnedOn;
 @end
 
 #import "EventPeopleScrollView.h"
 
 @interface EventCell : UITableViewCell
+@property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) UIImageView *privacyLockImageView;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UIImageView *chatBubbleImageView;
@@ -84,6 +93,7 @@
 @end
 
 @interface HighlightOldEventCell : UITableViewCell
+@property (nonatomic, strong) UIImageView *privateIconImageView;
 @property (nonatomic, strong) UIImageView *highlightImageView;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;

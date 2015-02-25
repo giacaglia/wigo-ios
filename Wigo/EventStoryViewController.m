@@ -13,6 +13,7 @@
 #import "ProfileViewController.h"
 #import "WGProfile.h"
 #import "WGEvent.h"
+#import "PrivateSwitchView.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 #define kHeaderLength 64
@@ -32,6 +33,11 @@
 @property (nonatomic, assign) BOOL loadViewFromFront;
 @property (nonatomic, strong) UIButton *highlightButton;
 @property (nonatomic, strong) UILabel *noHighlightsLabel;
+@property (nonatomic, strong) UIImageView *privateTooltipBanner;
+@property (nonatomic, strong) PrivateSwitchView *privateSwitchView;
+@property (nonatomic, strong) UIButton *privateLogoButton;
+@property (nonatomic, strong) UIImageView *privacyImageView;
+@property (nonatomic, strong) UILabel *explanationLabel;
 @end
 
 
@@ -47,28 +53,22 @@
     [self.view addSubview: self.backgroundScrollview];
     [self.view sendSubviewToBack: self.backgroundScrollview];
     
-    
     [self loadEventTitle];
-
     [self loadEventPeopleScrollView];
     [self loadEventDetails];
     [self loadInviteOrGoHereButton];
-
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
-        [self loadTextViewAndSendButton];
-    }
+    [self loadCameraButton];
     [self initializeToolTipBanner];
-
     [self loadConversationViewController];
+    [self initializePrivateTooltipBanner];
+    [self initializeOverlayPrivate];
     [self setDetailViewRead];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
 
-    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    NSString *isPeekingString = ([self isPeeking]) ? @"Yes" : @"No";
     
     [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
     
@@ -88,9 +88,6 @@
     _movingForward = NO;
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear: animated];
-}
 
 #pragma mark - Refresh Control
 
@@ -124,8 +121,7 @@
     self.numberGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberGoingLabel.font = [FontProperties mediumFont:16];
     [self.backgroundScrollview addSubview:self.numberGoingLabel];
-    
-
+    self.numberGoingLabel.hidden = self.event.isAggregate;
 }
 
 - (void)loadInviteOrGoHereButton {
@@ -136,10 +132,17 @@
     self.inviteButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
     self.inviteButton.layer.borderWidth = 1.0f;
     self.inviteButton.layer.cornerRadius = 5.0f;
-    [self.inviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
     self.inviteButton.hidden = YES;
     self.inviteButton.enabled = NO;
     [self.backgroundScrollview addSubview:self.inviteButton];
+    if (self.event.isPrivate && ![self.event.owner isEqual:WGProfile.currentUser]) {
+        self.inviteButton.alpha = 0.5f;
+        [self.inviteButton addTarget:self action:@selector(showOverlayForInvite) forControlEvents:UIControlEventTouchUpInside];
+    }
+    else {
+        self.inviteButton.alpha = 1.0f;
+        [self.inviteButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+    }
     
     self.goHereButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 170 - 10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 170, 40)];
     [self.goHereButton addTarget:self action:@selector(goHerePressed) forControlEvents:UIControlEventTouchUpInside];
@@ -155,7 +158,7 @@
     [self.backgroundScrollview addSubview:self.goHereButton];
     
     
-    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
+    if ([self isPeeking] || self.event.isAggregate) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
         self.goHereButton.hidden = YES;
@@ -241,8 +244,7 @@
         self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
         self.conversationViewController.storyDelegate = self;
         
-        BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
-        self.conversationViewController.isPeeking = isPeeking;
+        self.conversationViewController.isPeeking = [self isPeeking];
         _movingForward = YES;
         _loadViewFromFront = YES;
         [self presentViewController:self.conversationViewController animated:YES completion:nil];
@@ -395,7 +397,7 @@
         
         if (highlightLabel == nil) {
             highlightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 54)];
-            highlightLabel.text = @"Highlights";
+            highlightLabel.text = @"The Buzz";
             highlightLabel.textAlignment = NSTextAlignmentCenter;
             highlightLabel.font = [FontProperties lightFont:20.0f];
             highlightLabel.textColor = RGB(162, 162, 162);
@@ -406,13 +408,13 @@
             [cell addSubview:lineView];
             
             _noHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 70, self.view.frame.size.width, 20)];
-            NSString *str = @"0001F627";
+            NSString *str = @"0001F60F";
             NSScanner *hexScan = [NSScanner scannerWithString:str];
             unsigned int hexNum;
             [hexScan scanHexInt:&hexNum];
             UTF32Char inputChar = hexNum;
             NSString *res = [[NSString alloc] initWithBytes:&inputChar length:4 encoding:NSUTF32LittleEndianStringEncoding];
-            _noHighlightsLabel.text = [NSString stringWithFormat:@"No highlights yet %@", res];
+            _noHighlightsLabel.text = [NSString stringWithFormat:@"This event is lacking buzz %@", res];
             _noHighlightsLabel.textAlignment = NSTextAlignmentCenter;
             _noHighlightsLabel.font = [FontProperties lightFont:15.0f];
             _noHighlightsLabel.textColor = RGB(170, 170, 170);
@@ -441,7 +443,7 @@
 }
 
 
-- (void)loadTextViewAndSendButton {
+- (void)loadCameraButton {
     int widthButton = [[UIScreen mainScreen] bounds].size.width/5.33;
     sendButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - widthButton - 15, self.view.frame.size.height - widthButton - 15, widthButton, widthButton)];
     [sendButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -451,14 +453,130 @@
     UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, widthButton, widthButton)];
     sendOvalImageView.image = [UIImage imageNamed:@"cameraPlus"];
     [sendButton addSubview:sendOvalImageView];
+    
+    if ([self isPeeking] || self.event.isAggregate) {
+        sendButton.hidden = YES;
+        sendButton.enabled = NO;
+    }
+    else  {
+        sendButton.hidden = NO;
+        sendButton.enabled = YES;
+    }
+}
+
+- (void)closePrivateTooltip {
+    WGProfile.currentUser.youAreInCharge = YES;
+    self.privateTooltipBanner.hidden = YES;
+}
+
+- (void)initializePrivateTooltipBanner {
+    self.privateTooltipBanner = [[UIImageView alloc] initWithFrame:CGRectMake(self.inviteButton.center.x - 115 - 30, self.inviteButton.frame.origin.y + self.inviteButton.frame.size.height, 230, 150)];
+    self.privateTooltipBanner.image = [UIImage imageNamed:@"privateTooltipImageView"];
+    self.privateTooltipBanner.hidden = !self.event.isPrivate || ![self.event.owner isEqual:WGProfile.currentUser];
+    [self.backgroundScrollview bringSubviewToFront:self.privateTooltipBanner];
+    [self.backgroundScrollview addSubview:self.privateTooltipBanner];
+    
+    UILabel *inviteFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 19, self.privateTooltipBanner.frame.size.width - 20, self.privateTooltipBanner.frame.size.height - 19)];
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"You're in charge.\nInvite friends to your\nprivate event!"];
+    [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length)];
+    [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getBlueColor] range:NSMakeRange(18, 6)];
+    inviteFriendsLabel.attributedText = string;
+    inviteFriendsLabel.numberOfLines = 3;
+    inviteFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    inviteFriendsLabel.textAlignment = NSTextAlignmentLeft;
+    [self.privateTooltipBanner addSubview:inviteFriendsLabel];
+    
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.privateTooltipBanner.frame.size.width - 30 - 6 - 20 - 30, self.privateTooltipBanner.frame.size.height/2 + 10 - 6 - 20 - 30, 30 + 30, 30 + 30)];
+    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20 + 30, 20 + 30, 12, 12)];
+    closeImageView.image = [UIImage imageNamed:@"grayCloseButton"];
+    self.privateTooltipBanner.userInteractionEnabled = YES;
+    [closeButton addSubview:closeImageView];
+    [closeButton addTarget:self action:@selector(closePrivateTooltip) forControlEvents:UIControlEventTouchUpInside];
+    [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
+    [self.privateTooltipBanner addSubview:closeButton];
+    
+    self.privateTooltipBanner.hidden = WGProfile.currentUser.youAreInCharge || !self.event.isPrivate || !self.event.owner.isCurrentUser;
+}
+
+
+- (void)initializeOverlayPrivate {
+    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+    self.visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    self.visualEffectView.frame = self.view.frame;
+    self.visualEffectView.alpha = 0.0f;
+    [self.view addSubview:self.visualEffectView];
+    [self.view bringSubviewToFront:self.visualEffectView];
+    
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 18, 30, 40, 40)];
+    UIImageView *closeButtonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, 0, 24, 24)];
+    closeButtonImageView.image = [UIImage imageNamed:@"blueCloseButton"];
+    [closeButton addSubview:closeButtonImageView];
+    [closeButton addTarget:self action:@selector(closeOverlay) forControlEvents:UIControlEventTouchUpInside];
+    [self.visualEffectView addSubview:closeButton];
+    
+    UILabel *eventOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 190, self.view.frame.size.width, 20)];
+    eventOnlyLabel.center = CGPointMake(self.view.center.x, self.view.center.y - 10 - 25 - 10);
+    eventOnlyLabel.text = @"This event is invite-only";
+    eventOnlyLabel.font = [FontProperties semiboldFont:18];
+    eventOnlyLabel.textColor = [FontProperties getBlueColor];
+    eventOnlyLabel.textAlignment = NSTextAlignmentCenter;
+    [self.visualEffectView addSubview:eventOnlyLabel];
+    
+    _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2, 240, 40)];
+    _privateSwitchView.center = CGPointMake(_privateSwitchView.center.x, self.view.center.y + 10 + 25 + 20);
+    _privateSwitchView.hidden = ![self.event.owner isEqual:WGProfile.currentUser];
+    _privateSwitchView.privateDelegate = self;
+    [_privateSwitchView changeToPrivateState:YES];
+    [self.visualEffectView addSubview:_privateSwitchView];
+    
+    _explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 32, self.view.frame.size.width, 40)];
+    if ([self.event.owner isEqual:WGProfile.currentUser]) {
+        _explanationLabel.text = @"Only people you invite can see the\nevent and what is going on and only you\ncan invite people. You can change the\ntype of the event:";
+    }
+    else {
+        _explanationLabel.text = @"Only invited people can see whats going on. Only creator can invite people.";
+    }
+    _explanationLabel.center = self.view.center;
+    _explanationLabel.font = [FontProperties mediumFont:15];
+    _explanationLabel.textColor = [FontProperties getBlueColor];
+    _explanationLabel.textAlignment = NSTextAlignmentCenter;
+    _explanationLabel.numberOfLines = 0;
+    _explanationLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [self.visualEffectView addSubview:_explanationLabel];
+    
+   
+    UIImageView *lockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 12, self.view.frame.size.height/2 + 66, 24, 32)];
+    lockImageView.image = [UIImage imageNamed:@"lockImage"];
+    lockImageView.hidden = [self.event.owner isEqual:WGProfile.currentUser];
+    [self.visualEffectView addSubview:lockImageView];
+}
+
+- (void)updateUnderliningText {
+    _explanationLabel.text = _privateSwitchView.explanationString;
+}
+
+- (void)closeOverlay {
+    [UIView animateWithDuration:0.4 animations:^{
+        self.visualEffectView.alpha = 0.0f;
+    }];
+    self.event.isPrivate = NO;
+    if (!_privateSwitchView.privacyTurnedOn) {
+        _privacyImageView.image = [UIImage imageNamed:@"blueUnlocked"];
+        [self.event setPrivacyOn:NO andHandler:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+                return;
+            }
+        }];
+    }
 }
 
 - (void)initializeToolTipBanner {
     int widthButton = [[UIScreen mainScreen] bounds].size.width/5.33;
-    _highlightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - widthButton - 15, 233, 89)];
-    _highlightButton.center = CGPointMake(self.view.center.x, _highlightButton.center.y);
+    _highlightButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 233 - 40, self.view.frame.size.height - 89 - widthButton - 15, 233, 89)];
     [_highlightButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     _highlightButton.alpha = 0.0f;
+    _highlightButton.hidden = self.event.isPrivate;
     _highlightButton.enabled = NO;
     [self.view addSubview:_highlightButton];
     
@@ -466,15 +584,15 @@
     highlightImageView.image = [UIImage imageNamed:@"highlightBubble"];
     [_highlightButton addSubview:highlightImageView];
 
-    UILabel *postHighglightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, highlightImageView.frame.size.width, highlightImageView.frame.size.height - 15)];
-    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a highlight to get\nthe party started"];
+    UILabel *postHighlightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, highlightImageView.frame.size.width, highlightImageView.frame.size.height - 15)];
+    NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a selfie to\ncreate some buzz"];
     [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length)];
-    [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(7, 9)];
-    postHighglightLabel.attributedText = string;
-    postHighglightLabel.numberOfLines = 2;
-    postHighglightLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    postHighglightLabel.textAlignment = NSTextAlignmentCenter;
-    [_highlightButton addSubview:postHighglightLabel];
+    [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(7, 7)];
+    postHighlightLabel.attributedText = string;
+    postHighlightLabel.numberOfLines = 2;
+    postHighlightLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    postHighlightLabel.textAlignment = NSTextAlignmentCenter;
+    [_highlightButton addSubview:postHighlightLabel];
 }
 
 - (void)loadEventPeopleScrollView {
@@ -509,6 +627,37 @@
     titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:titleLabel];
     
+    _privateLogoButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 20 - 19 - 15, 15, 42, 46)];
+    _privateLogoButton.hidden = !self.event.isPrivate;
+    _privateLogoButton.enabled = self.event.isPrivate;
+    [_privateLogoButton addTarget:self action:@selector(showOverlayView) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_privateLogoButton];
+    
+    _privacyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 12, 16)];
+    _privacyImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
+    [_privateLogoButton addSubview:_privacyImageView];
+}
+
+
+- (void)showOverlayForInvite {
+    [_privateSwitchView.openLockImageView stopAnimating];
+    [_privateSwitchView.closeLockImageView stopAnimating];
+    _privateSwitchView.privateString = @"Only the creator can invite people and only\nthose invited can see the event.";
+    _privateSwitchView.publicString =  @"The whole school can see and attend your event.";
+    _explanationLabel.text = _privateSwitchView.privateString;
+    [UIView animateWithDuration:0.5f animations:^{
+        self.visualEffectView.alpha = 1.0f;
+    }];
+}
+- (void)showOverlayView {
+    [_privateSwitchView.openLockImageView stopAnimating];
+    [_privateSwitchView.closeLockImageView stopAnimating];
+    _privateSwitchView.privateString = @"Only you can invite people and only\nthose invited can see the event.";
+    _privateSwitchView.publicString =  @"The whole school can see\nand attend your event.";
+    _explanationLabel.text = _privateSwitchView.privateString;
+    [UIView animateWithDuration:0.5f animations:^{
+        self.visualEffectView.alpha = 1.0f;
+    }];
 }
 
 - (void)setDetailViewRead {
@@ -545,8 +694,7 @@
     self.conversationViewController.index = [NSNumber numberWithInteger:self.conversationViewController.eventMessages.count - 1];
     self.conversationViewController.storyDelegate = self;
     
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
-    self.conversationViewController.isPeeking = isPeeking;
+    self.conversationViewController.isPeeking = [self isPeeking];
 
     _movingForward = YES;
     _loadViewFromFront = YES;
@@ -609,7 +757,7 @@
 
 
 - (void)showOrNotShowToolTip {
-    if (![self shouldShowToolTip]) {
+    if (![self shouldShowToolTip] || self.event.isAggregate) {
         _highlightButton.alpha = 0.0f;
         _highlightButton.enabled = NO;
         _noHighlightsLabel.alpha = 0.0f;
@@ -624,16 +772,12 @@
 }
 
 - (BOOL)shouldShowToolTip {
-    BOOL isPeeking = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
-    return (self.eventMessages.count == 0) && !isPeeking;
+    return (self.eventMessages.count == 0) && ![self isPeeking];
 }
 
 
 - (void)showEventConversation:(NSNumber *)index {
-    
-    BOOL isPeeking  = (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
-
-    NSString *isPeekingString = (isPeeking) ? @"Yes" : @"No";
+    NSString *isPeekingString = ([self isPeeking]) ? @"Yes" : @"No";
     [WGAnalytics tagEvent:@"Event Story Highlight Tapped" withDetails: @{ @"isPeeking": isPeekingString }];
 
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -648,12 +792,16 @@
         self.conversationViewController.eventMessages = [self eventMessagesWithCamera];
     }
     
-    self.conversationViewController.isPeeking = isPeeking;
+    self.conversationViewController.isPeeking = [self isPeeking];
 
     self.conversationViewController.storyDelegate = self;
     _movingForward = YES;
     _loadViewFromFront = YES;
     [self presentViewController:self.conversationViewController animated:YES completion:nil];
+}
+
+- (BOOL)isPeeking {
+    return (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]);
 }
 
 
@@ -708,9 +856,7 @@
     ProfileViewController *profileViewController = [sb instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [profileViewController setStateWithUser: user];
 
-    if (self.groupNumberID && ![self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
-        profileViewController.userState = OTHER_SCHOOL_USER_STATE;
-    }
+    if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     _loadViewFromFront = YES;
     [self.navigationController pushViewController: profileViewController animated: YES];
 }

@@ -14,7 +14,6 @@
 #define kRankKey @"rank"
 #define kUnlockAtKey @"unlock_at"
 #define kNumMembersKey @"num_members"
-#define kNumEventsKey @"num_events"
 
 @implementation WGGroup
 
@@ -76,14 +75,6 @@
 
 -(NSNumber *) unlockAt {
     return [self objectForKey:kUnlockAtKey];
-}
-
--(void) setNumEvents:(NSNumber *)numEvents {
-    [self setObject:numEvents forKey:kNumEventsKey];
-}
-
--(NSNumber *) numEvents {
-    return [self objectForKey:kNumEventsKey];
 }
 
 -(void) setNumMembers:(NSNumber *)numMembers {

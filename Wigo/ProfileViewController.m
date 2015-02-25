@@ -68,9 +68,12 @@ UIButton *tapButton;
     if ([WGProfile currentUser] && user) {
         self.user = user;
         self.userState = self.user.state;
+        if (user.isTapped == nil || user.isFollowing == nil) self.userState = NOT_LOADED_STATE;
         self.view.backgroundColor = [UIColor whiteColor];
         [self createImageScrollView];
     }
+   
+    
 }
 
 #pragma mark - View Delegate
@@ -133,9 +136,30 @@ UIButton *tapButton;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
-    if ([self.user isCurrentUser]) {
+    if (self.user.isCurrentUser) {
         [self fetchUserInfo];
         [self updateLastNotificationsRead];
+    }
+    else {
+        if (self.user.isTapped == nil ||self.user.isFollowing == nil ) {
+            __weak typeof(self) weakSelf = self;
+            [self.user refetchUserWithGroup:WGProfile.peekingGroupID andHandler:^(BOOL success, NSError *error) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
+                if (error) {
+                    return;
+                }
+                if (strongSelf.isPeeking) {
+                    strongSelf.userState = OTHER_SCHOOL_USER_STATE;
+                }
+                else {
+                    strongSelf.userState = strongSelf.user.state;
+                }
+                [strongSelf.imageScrollView updateImages];
+                _pageControl.numberOfPages = [strongSelf.user.imagesURL count];
+                [strongSelf.tableView reloadData];
+                [strongSelf reloadViewForUserState];
+            }];
+        }
     }
 }
 
@@ -146,7 +170,7 @@ UIButton *tapButton;
     
     NSString *isCurrentUser = ([self.user isEqual:[WGProfile currentUser]]) ? @"Yes" : @"No";
     NSString *isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE) ? @"Yes" : @"No";
-
+    self.isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE);
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", isPeeking, @"isPeeking", nil];
     
     [WGAnalytics tagEvent:@"Profile View" withDetails:options];
@@ -270,15 +294,6 @@ UIButton *tapButton;
     [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
     
-    if (self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) {
-        [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
-        [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
-    } else {
-        [_rightBarBt setTitle:@"More" forState:UIControlStateNormal];
-        [_rightBarBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
-    }
-    
-    [_rightBarBt sizeToFit];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
     [barItem setCustomView:_rightBarBt];
     // self.navigationItem.rightBarButtonItem = barItem;
@@ -484,15 +499,17 @@ UIButton *tapButton;
     if (!blockShown) {
         blockShown = YES;
         if (![sentUser isCurrentUser]) {
+            __weak typeof(self) weakSelf = self;
             [[WGProfile currentUser] block:sentUser withType:blockType andHandler:^(BOOL success, NSError *error) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionPost];
                     return;
                 }
-                self.userState = self.user.state;
-                [self reloadViewForUserState];
-                [self presentBlockPopView:sentUser];
+                strongSelf.userState = strongSelf.user.state;
+                [strongSelf reloadViewForUserState];
+                [strongSelf presentBlockPopView:sentUser];
             }];
         }
     }
@@ -575,7 +592,21 @@ UIButton *tapButton;
 #pragma mark User State
 
 - (void) reloadViewForUserState {
-    if (self.userState == OTHER_SCHOOL_USER_STATE) {
+    if (self.userState == NOT_LOADED_STATE) {
+        _rightBarBt.enabled = NO;
+        _rightBarBt.hidden = YES;
+        _leftProfileButton.enabled = NO;
+        _leftProfileButton.hidden = YES;
+        _rightProfileButton.enabled = NO;
+        _rightProfileButton.hidden = YES;
+        _chatButton.enabled = NO;
+        _chatButton.hidden = YES;
+        _followButton.enabled = NO;
+        _followButton.hidden = YES;
+        _followButton.enabled = NO;
+        _followButton.hidden = YES;
+    }
+    else if (self.userState == OTHER_SCHOOL_USER_STATE) {
         _rightBarBt.enabled = NO;
         _rightBarBt.hidden = YES;
         _leftProfileButton.enabled = NO;
@@ -663,6 +694,21 @@ UIButton *tapButton;
         }
     }
     
+    if (self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) {
+        [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
+        [_rightBarBt removeTarget:nil
+                           action:NULL
+                 forControlEvents:UIControlEventAllEvents];
+        [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
+    } else {
+        [_rightBarBt setTitle:@"More" forState:UIControlStateNormal];
+        [_rightBarBt removeTarget:nil
+                           action:NULL
+                 forControlEvents:UIControlEventAllEvents];
+        [_rightBarBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
+    }
+    [_rightBarBt sizeToFit];
+    
     [self.tableView reloadData];
 }
 
@@ -736,9 +782,13 @@ UIButton *tapButton;
 }
 
 - (BOOL) shouldShowInviteCell {
-    if ([self.user isCurrentUser] || self.userState ==  NOT_FOLLOWING_PUBLIC_USER_STATE ||
-        self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE ||
-        self.userState == BLOCKED_USER_STATE || self.userState == OTHER_SCHOOL_USER_STATE) {
+    if ([self.user isCurrentUser] ||
+        self.userState == NOT_LOADED_STATE ||
+        self.userState ==  NOT_FOLLOWING_PUBLIC_USER_STATE ||
+        self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
+        self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE ||
+        self.userState == BLOCKED_USER_STATE ||
+        self.userState == OTHER_SCHOOL_USER_STATE) {
         return NO;
     }
     
@@ -1046,13 +1096,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         __weak typeof(self) weakSelf = self;
         [WGProfile reload:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
-            strongSelf.user = [WGProfile currentUser];
+            strongSelf.user = WGProfile.currentUser;
             strongSelf.numberOfFollowersLabel.text = [strongSelf.user.numFollowers stringValue];
             strongSelf.numberOfFollowingLabel.text = [strongSelf.user.numFollowing stringValue];
             [strongSelf updateNumberOfChats];
-            _pageControl.numberOfPages = [[strongSelf.user imagesURL] count];
-            [strongSelf createImageScrollView];
-            strongSelf.userState = WGProfile.currentUser.state;
+            _pageControl.numberOfPages = [strongSelf.user.imagesURL count];
+            [strongSelf setUserState:WGProfile.currentUser.state];
             [strongSelf reloadViewForUserState];
         }];
     }

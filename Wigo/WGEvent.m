@@ -18,6 +18,10 @@
 #define kNumMessagesKey @"num_messages"
 #define kAttendeesKey @"attendees"
 #define kHighlightKey @"highlight"
+#define kPrivacyKey @"privacy"
+#define kOwnerKey @"owner"
+#define kTagsKey @"tags"
+#define kAggregateKey @"aggregate"
 
 @interface WGEvent()
 
@@ -61,6 +65,17 @@
 
 -(NSString *) name {
     return [self objectForKey:kNameKey];
+}
+
+- (BOOL)isPrivate {
+    NSString *privacy = [self objectForKey:kPrivacyKey];
+    if (privacy) return [privacy isEqual:@"private"];
+    return NO;
+}
+
+- (void)setIsPrivate:(BOOL)isPrivate {
+    NSString *privacy = isPrivate ? @"private" : @"public";
+    [self setObject:privacy forKey:kPrivacyKey];
 }
 
 -(void) setExpires:(NSDate *)expires {
@@ -111,6 +126,30 @@
     return [self objectForKey:kHighlightKey];
 }
 
+- (NSArray *)tags {
+    return [self objectForKey:kTagsKey];
+}
+
+- (void)setTags:(NSArray *)tags {
+    [self setObject:tags forKey:kTagsKey];
+}
+
+
+- (BOOL)isAggregate {
+    return self.tags && [self.tags containsObject:kAggregateKey];
+}
+
+- (void)setIsAggregate:(BOOL)isAggregate {
+    NSMutableArray *mutableTags = [NSMutableArray arrayWithArray:self.tags];
+    if (isAggregate && ![mutableTags containsObject:kAggregateKey]) {
+        [mutableTags addObject:kAggregateKey];
+    }
+    if (!isAggregate && [mutableTags containsObject:kAggregateKey]) {
+        [mutableTags removeObject:kAggregateKey];
+    }
+    self.tags = mutableTags;
+}
+
 -(void) setAttendees:(WGCollection *)attendees {
     [self setObject:attendees forKey:kAttendeesKey];
 }
@@ -127,6 +166,13 @@
     self.attendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
 }
 
+- (void)setPrivacyOn:(BOOL)isPrivate andHandler:(BoolResultBlock)handler {
+    NSString *privacyString = isPrivate ? @"private" : @"public";
+    [WGApi post:[NSString stringWithFormat:@"events/%@/", self.id] withParameters:@{kPrivacyKey : privacyString} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
+}
+
 -(void) setRead:(BoolResultBlock)handler {
     [WGApi post:@"events/read/" withParameters:@[ self.id ] andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
@@ -137,6 +183,10 @@
     [WGApi post:[NSString stringWithFormat:@"events/%@/messages/read/", self.id] withParameters:[messages idArray] andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
+}
+
+- (WGUser *)owner {
+    return [[WGUser alloc] initWithJSON:[self objectForKey:kOwnerKey]];
 }
 
 -(void) getMessages:(WGCollectionResultBlock)handler {
@@ -206,8 +256,14 @@
     }];
 }
 
-+(void) createEventWithName:(NSString *)name andHandler:(WGEventResultBlock)handler {
-    [WGApi post:@"events/" withParameters:@{ @"name" : name, @"attendees_limit" : @10 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
++(void)createEventWithName:(NSString *)name andPrivate:(BOOL)isPrivate andHandler:(WGEventResultBlock)handler {
+    NSString *privacy = isPrivate ? @"private" : @"public";
+    [WGApi post:@"events/" withParameters:@{ @"name" : name,
+                                             @"attendees_limit" : @10 ,
+                                             kPrivacyKey: privacy
+                                             }
+        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            
         if (error) {
             handler(nil, error);
             return;
@@ -227,6 +283,7 @@
         }
     }];
 }
+
 
 -(void) refresh:(BoolResultBlock)handler {
     NSString *thisObjectURL = [NSString stringWithFormat:@"%@s/%@?attendees_limit=10", self.className, self.id];

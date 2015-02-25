@@ -18,6 +18,7 @@
 + (UIFont *)mediumFont:(float)fontSize;
 + (UIFont *)scMediumFont:(float)fontSize;
 + (UIFont *)boldFont:(float)fontSize;
++ (UIFont *)semiboldFont:(float)fontSize;
 
 + (UIFont *)getBioFont;
 + (UIFont *)getSubHeaderFont;

@@ -735,8 +735,61 @@ static WGUser *currentUser = nil;
     }];
 }
 
+
+-(void) refetchUserWithGroup:(NSNumber *)groupID andHandler:(BoolResultBlock)handler {
+    __weak typeof(self) weakSelf = self;
+    if (!groupID) {
+        [WGApi get:[NSString stringWithFormat:@"users/%@", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (error) {
+                handler(NO, error);
+                return;
+            }
+            NSError *dataError;
+            @try {
+                strongSelf.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            }
+            @catch (NSException *exception) {
+                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                
+                dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            }
+            @finally {
+                handler(YES, nil);
+                return;
+            }
+        }];
+
+    }
+    else {
+        [WGApi get:[NSString stringWithFormat:@"users/%@", self.id]
+     withArguments:@{@"group": groupID.stringValue}
+        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (error) {
+                handler(NO, error);
+                return;
+            }
+            NSError *dataError;
+            @try {
+                strongSelf.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            }
+            @catch (NSException *exception) {
+                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                
+                dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            }
+            @finally {
+                handler(YES, nil);
+                return;
+            }
+        }];
+ 
+    }
+}
 -(void) getNotMeForMessage:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"context": @"message"} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/"  withArguments:@{ @"id__ne" : self.id, @"context": @"message"}
+            andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -755,6 +808,32 @@ static WGUser *currentUser = nil;
             handler(objects, dataError);
         }
     }];
+}
+
+-(void) searchNotMe:(NSString *)query withContext:(NSString *)contextString withHandler:(WGCollectionResultBlock)handler {
+    if (!query) {
+        return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
+    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"text" : query , @"context": contextString} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+
 }
 
 -(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler {

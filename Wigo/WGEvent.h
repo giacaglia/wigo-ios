@@ -15,6 +15,7 @@
 typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 
 @property NSString *name;
+@property BOOL isPrivate;
 @property NSDate *expires;
 @property NSNumber *isRead;
 @property NSNumber *isExpired;
@@ -22,17 +23,20 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 @property NSNumber *numMessages;
 @property WGCollection *attendees;
 @property WGEventMessage *highlight;
+@property NSArray *tags;
+@property BOOL isAggregate;
 
+- (WGUser *)owner;
 +(WGEvent *)serialize:(NSDictionary *)json;
 
 -(void) addAttendee:(WGEventAttendee *)attendee;
 
+- (void)setPrivacyOn:(BOOL)privacy andHandler:(BoolResultBlock)handler;
 -(void) setRead:(BoolResultBlock)handler;
 -(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResultBlock)handler;
 
 -(void) getMessages:(WGCollectionResultBlock)handler;
 
 +(void) getWithGroupNumber:(NSNumber *)groupNumber andHandler:(WGCollectionResultBlock)handler;
-+(void) createEventWithName:(NSString *)name andHandler:(WGEventResultBlock)handler;
-
++(void)createEventWithName:(NSString *)name andPrivate:(BOOL)isPrivate andHandler:(WGEventResultBlock)handler;
 @end

@@ -14,6 +14,7 @@
 @property NSString *cdnPrefix;
 
 @property NSNumber *schoolStatistics;
+@property NSNumber *privateEvents;
 @property NSNumber *showedOnboardView;
 @property NSNumber *googleAnalyticsEnabled;
 @property NSNumber *canFetchAppStartup;
@@ -24,9 +25,13 @@
 @property WGCollection *chosenPeople;
 @property float imageQuality;
 @property float imageMultiple;
+@property BOOL videoEnabled;
+@property BOOL youAreInCharge;
 
 +(void) setCurrentUser:(WGUser *)user;
 +(WGProfile *) currentUser;
++(void)setPeekingGroupID:(NSNumber *)peekingGroupID;
++(NSNumber *)peekingGroupID;
 -(void) login:(BoolResultBlock)handler;
 -(void) signup:(BoolResultBlock)handler;
 +(void) reload:(BoolResultBlock)handler;

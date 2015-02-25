@@ -19,7 +19,6 @@ typedef void (^WGGroupSummaryResultBlock)(NSNumber *total, NSNumber *numGroups, 
 @property NSNumber *rank;
 @property NSNumber *unlockAt;
 @property NSNumber *numMembers;
-@property NSNumber *numEvents;
 
 +(WGGroup *)serialize:(NSDictionary *)json;
 

@@ -49,6 +49,7 @@
 #define kSuggestedFriendsCellName @"SuggestedFriendsCellName"
 @interface SuggestedCell : UITableViewCell
 + (CGFloat) height;
+- (void) addInviteButtonToScrollView;
 @property (nonatomic, strong) id<PeopleViewDelegate> peopleViewDelegate;
 @property (nonatomic, strong) WGCollection *suggestions;
 @property (nonatomic, strong) UIView *lineView;

@@ -68,12 +68,10 @@ UIScrollView *suggestedScrollView;
     [self initializeBackBarButton];
     [self initializeRightBarButton];
     
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
 
     [self initializeSearchBar];
     [self initializeTableOfPeople];
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -355,7 +353,7 @@ UIScrollView *suggestedScrollView;
        return [self.followers.hasNextPage boolValue];
     }
     else {
-       return [_following.hasNextPage boolValue];
+       return [self.following.hasNextPage boolValue];
     }
 }
 
@@ -364,9 +362,10 @@ UIScrollView *suggestedScrollView;
         if ([self.currentTab isEqual:@2]) {
             SuggestedCell *cell = [tableView dequeueReusableCellWithIdentifier:kSuggestedFriendsCellName forIndexPath:indexPath];
             cell.peopleViewDelegate = self;
-            [cell.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             [cell.suggestedScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+            [cell addInviteButtonToScrollView];
             [cell setStateForCollection:self.suggestions];
+            [cell.inviteButton addTarget:self action:@selector(inviteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             return cell;
         }
         else if ([self.currentTab isEqual:@4] && self.user.isCurrentUser) {
@@ -585,6 +584,7 @@ UIScrollView *suggestedScrollView;
 
 - (void)fetchFirstPageSuggestions {
     [WGSpinnerView addDancingGToCenterView:self.view];
+    if (!self.everyone) self.everyone = [[WGCollection alloc] initWithType:[WGUser class]];
     __weak typeof(self) weakSelf = self;
     [WGUser getSuggestions:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -603,7 +603,9 @@ UIScrollView *suggestedScrollView;
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         return;
                     }
-                    strongSelf.everyone = collection;
+                    if (strongSelf.suggestions) {
+                        [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.suggestions];
+                    }
                     strongSelf.users = strongSelf.everyone;
                     [strongSelf.tableViewOfPeople reloadData];
                 });
@@ -621,6 +623,7 @@ UIScrollView *suggestedScrollView;
 
 - (void) fetchEveryone {
     if (!self.fetching) {
+        if (!self.everyone) self.everyone = [[WGCollection alloc] initWithType:[WGUser class]];
         self.fetching = YES;
         __weak typeof(self) weakSelf = self;
         if (!self.everyone) {
@@ -633,6 +636,9 @@ UIScrollView *suggestedScrollView;
                         [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                         strongSelf.fetching = NO;
                         return;
+                    }
+                    if (strongSelf.suggestions) {
+                        [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.suggestions];
                     }
                     strongSelf.everyone = collection;
                     strongSelf.users = strongSelf.everyone;
@@ -1010,13 +1016,19 @@ UIScrollView *suggestedScrollView;
     self.suggestedScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 35, self.contentView.frame.size.width, 185)];
     self.suggestedScrollView.showsHorizontalScrollIndicator = NO;
     [self.contentView addSubview:self.suggestedScrollView];
-    int xPosition = 10;
 
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(xPosition, 0, 110, 110)];
+    [self addInviteButtonToScrollView];
+    
+    int xPosition = 140;
+    self.suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
+}
+
+- (void)addInviteButtonToScrollView {
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 0, 110, 110)];
     [self.inviteButton setBackgroundImage:[UIImage imageNamed:@"InviteButton"] forState:UIControlStateNormal];
     [self.suggestedScrollView addSubview:self.inviteButton];
     
-    self.inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(xPosition, 120, 110, 30)];
+    self.inviteMoreFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 120, 110, 30)];
     self.inviteMoreFriendsLabel.text = @"Invite more friends\nto Wigo";
     self.inviteMoreFriendsLabel.textAlignment = NSTextAlignmentCenter;
     self.inviteMoreFriendsLabel.font = [FontProperties mediumFont:12.0f];
@@ -1024,9 +1036,6 @@ UIScrollView *suggestedScrollView;
     self.inviteMoreFriendsLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.inviteMoreFriendsLabel.textColor = [FontProperties getOrangeColor];
     [self.suggestedScrollView addSubview:self.inviteMoreFriendsLabel];
-    
-    xPosition += 130;
-    self.suggestedScrollView.contentSize = CGSizeMake(xPosition + 110, 175);
 }
 
 - (void) setStateForCollection:(WGCollection *)collection {
@@ -1132,7 +1141,7 @@ UIScrollView *suggestedScrollView;
 }
 
 - (void)suggestedFollowedPersonPressed:(id)sender {
-    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:suggestedScrollView];
+    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:self.suggestedScrollView];
     int indexOfPerson = (buttonOriginInTableView.x - 40)/130 ;
     WGUser *user;
     int sizeOfArray = (int) self.suggestions.count;

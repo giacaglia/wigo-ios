@@ -17,6 +17,7 @@
 #define kGroupKey @"group"
 #define kIsAttendingKey @"is_attending"
 #define kSchoolStatisticsKey @"school_statistics"
+#define kPrivateEventsEnabledKey @"private_events"
 #define kImageQuality @"imageQuality"
 #define kImageMultiple @"imageMultiple"
 #define kGoogleAnalyticsEnabledKey @"googleAnalyticsEnabled"
@@ -34,10 +35,14 @@
 #define kFacebookIdKey @"facebook_id"
 #define kLastNotificationReadKey @"last_notification_read"
 #define kLastUserReadKey @"last_user_read"
+#define kVideoEnabled @"video"
+#define kYouAreInCharge @"youAreInCharge"
+#define kPeekingGroupID @"peekingGroupID"
 
 #define kDefaultCDNPrefix @"wigo-uploads.s3.amazonaws.com"
 
 static WGProfile *currentUser = nil;
+static NSNumber *peekingGroupID = nil;
 
 @implementation WGProfile
 
@@ -78,6 +83,14 @@ static WGProfile *currentUser = nil;
         currentUser = [[WGProfile alloc] init];
     }
     return currentUser;
+}
+
++ (void)setPeekingGroupID:(NSNumber *)groupID {
+    peekingGroupID = groupID;
+}
+
++ (NSNumber *)peekingGroupID {
+    return peekingGroupID;
 }
 
 -(void) setKey:(NSString *)key {
@@ -159,6 +172,30 @@ static WGProfile *currentUser = nil;
 
 -(NSNumber *) schoolStatistics {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kSchoolStatisticsKey];
+}
+
+-(void) setPrivateEvents:(NSNumber *)privateEvents {
+    [[NSUserDefaults standardUserDefaults] setObject:privateEvents forKey:kPrivateEventsEnabledKey];
+}
+
+-(NSNumber *) privateEvents {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kPrivateEventsEnabledKey];
+}
+
+- (void)setVideoEnabled:(BOOL)isVideoEnabled {
+    [[NSUserDefaults standardUserDefaults] setBool:isVideoEnabled forKey:kVideoEnabled];
+}
+
+-(BOOL)videoEnabled {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kVideoEnabled];
+}
+
+- (void)setYouAreInCharge:(BOOL)youAreInCharge {
+    [[NSUserDefaults standardUserDefaults] setBool:youAreInCharge forKey:kYouAreInCharge];
+}
+
+- (BOOL)youAreInCharge {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kYouAreInCharge];
 }
 
 - (void)setImageQuality:(float)imageQuality {

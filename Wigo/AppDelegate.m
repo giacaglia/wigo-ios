@@ -406,13 +406,15 @@ forRemoteNotification:(NSDictionary *)userInfo
 - (void)fetchAppStart {
     BOOL canFetchAppStartUp = [[NSUserDefaults standardUserDefaults] boolForKey:@"canFetchAppStartup"];
     if (canFetchAppStartUp && [self shouldFetchAppStartup] && [WGProfile currentUser]) {
-        [WGApi startup:^(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSDictionary *imageProperties, NSError *error) {
+        [WGApi startup:^(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSNumber *privateEvents, BOOL videoEnabled, NSDictionary *imageProperties, NSError *error) {
             if (error) {
                 return;
             }
             [WGProfile currentUser].cdnPrefix = cdnPrefix;
             [WGProfile currentUser].googleAnalyticsEnabled = googleAnalyticsEnabled;
             [WGProfile currentUser].schoolStatistics = schoolStatistics;
+            [WGProfile currentUser].privateEvents = privateEvents;
+            [WGProfile currentUser].videoEnabled = videoEnabled;
             NSNumber *imageMultiple = [imageProperties objectForKey:kImageMultiple];
             NSNumber *imageQuality = [imageProperties objectForKey:kImageQuality];
             [WGProfile currentUser].imageMultiple = [imageMultiple floatValue];

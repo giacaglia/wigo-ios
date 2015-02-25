@@ -16,4 +16,5 @@
 @property (nonatomic, strong) NSNumber *groupID;
 @property (nonatomic, strong) NSString *groupName;
 @property (nonatomic, strong) UIImage *blurredBackgroundImage;
+@property (nonatomic, assign) BOOL showOnboard;
 @end

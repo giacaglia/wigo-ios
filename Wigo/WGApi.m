@@ -25,7 +25,7 @@ dispatch_queue_t postQueue;
 
 #define kWigoApiKey @"oi34u53205ju34ik23"
 #define kDeviceType @"iphone"
-#define kWigoApiVersion @"1.0.8 (enable_refs)"
+#define kWigoApiVersion @"1.0.9 (enable_refs)"
 #define kGZip @"gzip"
 #define kTrue @"true"
 #define kPOST @"POST"
@@ -410,12 +410,14 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 +(void) startup:(WGStartupResult)handler {
     [WGApi get:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, nil, nil, nil, error);
+            handler(nil, nil, nil, nil, NO, nil, error);
             return;
         }
         NSString *cdnPrefix;
         NSNumber *googleAnalyticsEnabled;
         NSNumber *schoolStatistics;
+        NSNumber *privateEvents;
+        BOOL videoEnabled;
         NSError *dataError;
         NSDictionary *imageProperties;
         @try {
@@ -427,6 +429,8 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             
             NSDictionary *provisioning = [jsonResponse objectForKey:@"provisioning"];
             schoolStatistics = [provisioning objectForKey:@"school_statistics"];
+            privateEvents = [provisioning objectForKey:@"private_events"];
+            videoEnabled = [[provisioning objectForKey:@"video"] boolValue];
             
             NSDictionary *uploadsProperties = [jsonResponse objectForKey:@"uploads"];
             imageProperties = [uploadsProperties objectForKey:@"image"];
@@ -438,10 +442,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (dataError) {
-                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, imageProperties, dataError);
+                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, privateEvents, YES, imageProperties, dataError);
                 return;
             }
-            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, imageProperties, dataError);
+            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, privateEvents, YES, imageProperties, dataError);
         }
     }];
 }

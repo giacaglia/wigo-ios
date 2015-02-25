@@ -13,4 +13,5 @@
 @property (nonatomic, strong) UILabel *numberOfPeopleLabel;
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) NSTimer *fetchTimer;
+@property (nonatomic, assign) BOOL showOnboard;
 @end

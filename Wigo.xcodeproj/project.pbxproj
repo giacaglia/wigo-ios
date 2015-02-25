@@ -129,7 +129,6 @@
 		45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86AB1A5C5DEB00DB85AE /* AFURLSessionManager.m */; };
 		45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF11A5DA86500A5170F /* WGGroup.m */; };
 		45F74FF51A5E3F9100A5170F /* WGFollow.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF41A5E3F9100A5170F /* WGFollow.m */; };
-		45F74FF61A5EF4A100A5170F /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
 		C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6251923967D00361247 /* AppDelegate.m */; };
 		C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A31961EADE00A01F50 /* SDWebImageManager.m */; };
@@ -184,7 +183,6 @@
 		C12A114919787BE700D53B1C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6171923967D00361247 /* CoreGraphics.framework */; };
 		C12A114A19787BE700D53B1C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6191923967D00361247 /* UIKit.framework */; };
 		C12A114B19787BE700D53B1C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E921D6151923967D00361247 /* Foundation.framework */; };
-		C12A114C19787BE700D53B1C /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5F192AA29C008BB84C /* Whitney-LightSC.ttf */; };
 		C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */; };
 		C12A118919787BE700D53B1C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
@@ -237,7 +235,6 @@
 		C1F5B3E31A654B8800CAFD95 /* JPBParallaxBlurViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33771A3B9904008FF56D /* JPBParallaxBlurViewController.m */; };
 		C1F5B3E41A654B8800CAFD95 /* JPBParallaxTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FABD33791A3B9904008FF56D /* JPBParallaxTableViewController.m */; };
 		C1FE7D9E1A2D1DD10016F82A /* UserTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = C1FE7D9D1A2D1DD10016F82A /* UserTestCase.m */; };
-		C1FE7DB41A2D22EA0016F82A /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9ECFF7F196D917F00384252 /* FacebookSDK.framework */; };
 		E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2581961B96000A01F50 /* SignNavigationViewController.m */; };
 		E900C2B51961EADE00A01F50 /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2951961EADE00A01F50 /* MKAnnotationView+WebCache.m */; };
 		E900C2B61961EADE00A01F50 /* NSData+ImageContentType.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2971961EADE00A01F50 /* NSData+ImageContentType.m */; };
@@ -275,6 +272,10 @@
 		E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */; };
 		E9444C0819F00FCC004E7925 /* OnboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9444C0719F00FCC004E7925 /* OnboardViewController.m */; };
 		E9444C0919F00FCC004E7925 /* OnboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9444C0719F00FCC004E7925 /* OnboardViewController.m */; };
+		E957CD6A1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */; };
+		E957CD6B1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */; };
+		E957CD6D1A938B8400D0FF7C /* openLock.gif in Resources */ = {isa = PBXBuildFile; fileRef = E957CD6C1A938B8400D0FF7C /* openLock.gif */; };
+		E957CD6E1A938B8400D0FF7C /* openLock.gif in Resources */ = {isa = PBXBuildFile; fileRef = E957CD6C1A938B8400D0FF7C /* openLock.gif */; };
 		E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C7A195084B700182E0E /* UIButtonUngoOut.m */; };
 		E96EF676197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
 		E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
@@ -298,15 +299,11 @@
 		E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */; };
 		E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
-		E98559FF1A8BD7120009FEFB /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E98559FE1A8BD7120009FEFB /* OverlayView.m */; };
-		E9855A001A8BD7120009FEFB /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E98559FE1A8BD7120009FEFB /* OverlayView.m */; };
 		E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
 		E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */; };
 		E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */; };
 		E994111219AA8D9200D76379 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = E994111119AA8D9200D76379 /* NSString+URLEncoding.m */; };
 		E994111319AA8D9200D76379 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = E994111119AA8D9200D76379 /* NSString+URLEncoding.m */; };
-		E998C25919C9F7FB0012BF51 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C25619C9F7FB0012BF51 /* Bolts.framework */; };
-		E998C25A19C9F7FB0012BF51 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C25619C9F7FB0012BF51 /* Bolts.framework */; };
 		E998C25B19C9F7FB0012BF51 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C25719C9F7FB0012BF51 /* Parse.framework */; };
 		E998C25C19C9F7FB0012BF51 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C25719C9F7FB0012BF51 /* Parse.framework */; };
 		E998C25D19C9F7FB0012BF51 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E998C25819C9F7FB0012BF51 /* ParseFacebookUtils.framework */; };
@@ -354,8 +351,16 @@
 		E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C63192AA29C008BB84C /* Whitney-MediumSC.ttf */; };
 		E9BF59E81A3B40EB00AF8AFE /* UILabelBorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */; };
 		E9BF59E91A3B40EB00AF8AFE /* UILabelBorder.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */; };
+		E9C1AD5E1A939BDF009BCFDC /* closeLock.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9C1AD5D1A939BDF009BCFDC /* closeLock.gif */; };
+		E9C1AD5F1A939BDF009BCFDC /* closeLock.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9C1AD5D1A939BDF009BCFDC /* closeLock.gif */; };
 		E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
 		E9C3057019F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
+		E9C3401B1A96476000AB069F /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C3401A1A96476000AB069F /* FacebookSDK.framework */; };
+		E9C3401C1A96476000AB069F /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C3401A1A96476000AB069F /* FacebookSDK.framework */; };
+		E9C3401E1A96482100AB069F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C3401D1A96482100AB069F /* Bolts.framework */; };
+		E9C3401F1A96482100AB069F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C3401D1A96482100AB069F /* Bolts.framework */; };
+		E9C340211A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */; };
+		E9C340221A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */; };
 		E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
 		E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
 		E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CB091419FB062D00B548A6 /* FacebookHelper.m */; };
@@ -689,6 +694,9 @@
 		E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPageControlAligned.m; sourceTree = "<group>"; };
 		E9444C0619F00FCC004E7925 /* OnboardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardViewController.h; sourceTree = "<group>"; };
 		E9444C0719F00FCC004E7925 /* OnboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardViewController.m; sourceTree = "<group>"; };
+		E957CD681A928EBD00D0FF7C /* PrivateSwitchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrivateSwitchView.h; sourceTree = "<group>"; };
+		E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateSwitchView.m; sourceTree = "<group>"; };
+		E957CD6C1A938B8400D0FF7C /* openLock.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = openLock.gif; sourceTree = "<group>"; };
 		E9681C79195084B700182E0E /* UIButtonUngoOut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonUngoOut.h; sourceTree = "<group>"; };
 		E9681C7A195084B700182E0E /* UIButtonUngoOut.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonUngoOut.m; sourceTree = "<group>"; };
 		E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowRequestsViewController.h; sourceTree = "<group>"; };
@@ -711,8 +719,6 @@
 		E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoCustomCell.m; sourceTree = "<group>"; };
 		E9798F9819901EC100A97AE9 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		E97999D019759A2900C617E3 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
-		E98559FD1A8BD7120009FEFB /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
-		E98559FE1A8BD7120009FEFB /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
 		E98C185B1924176500EF60F8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		E9902986196B347C00192FF2 /* FacebookAlbumTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookAlbumTableViewController.h; sourceTree = "<group>"; };
 		E9902987196B347C00192FF2 /* FacebookAlbumTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookAlbumTableViewController.m; sourceTree = "<group>"; };
@@ -720,7 +726,6 @@
 		E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookImagesViewController.m; sourceTree = "<group>"; };
 		E994111019AA8D9200D76379 /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
 		E994111119AA8D9200D76379 /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+URLEncoding.m"; sourceTree = "<group>"; };
-		E998C25619C9F7FB0012BF51 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		E998C25719C9F7FB0012BF51 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		E998C25819C9F7FB0012BF51 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
 		E998C26319CB80240012BF51 /* UIImageView+ImageArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+ImageArea.h"; sourceTree = "<group>"; };
@@ -768,8 +773,12 @@
 		E9BF59E61A3B40EB00AF8AFE /* UILabelBorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UILabelBorder.h; sourceTree = "<group>"; };
 		E9BF59E71A3B40EB00AF8AFE /* UILabelBorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UILabelBorder.m; sourceTree = "<group>"; };
 		E9C14E631A30B07C00E20B15 /* Delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Delegate.h; sourceTree = "<group>"; };
+		E9C1AD5D1A939BDF009BCFDC /* closeLock.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = closeLock.gif; sourceTree = "<group>"; };
 		E9C3056D19F8341600F9564D /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
+		E9C3401A1A96476000AB069F /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		E9C3401D1A96482100AB069F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Semibold.ttf"; sourceTree = "<group>"; };
 		E9C34A7619F98A2C00D7E9D3 /* MobileDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileDelegate.h; sourceTree = "<group>"; };
 		E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileDelegate.m; sourceTree = "<group>"; };
 		E9CB091319FB062D00B548A6 /* FacebookHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookHelper.h; sourceTree = "<group>"; };
@@ -819,7 +828,6 @@
 		E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSStickyHeaderFlowLayout.m; sourceTree = "<group>"; };
 		E9EA951619E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSStickyHeaderFlowLayoutAttributes.h; sourceTree = "<group>"; };
 		E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSStickyHeaderFlowLayoutAttributes.m; sourceTree = "<group>"; };
-		E9ECFF7F196D917F00384252 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		E9F406001A8436570043F07F /* ReferalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferalViewController.h; sourceTree = "<group>"; };
 		E9F406011A8436570043F07F /* ReferalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReferalViewController.m; sourceTree = "<group>"; };
 		E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
@@ -886,8 +894,8 @@
 				E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */,
 				E9A31E481980AB9B008A711B /* libsqlite3.dylib in Frameworks */,
 				E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */,
+				E9C3401F1A96482100AB069F /* Bolts.framework in Frameworks */,
 				E998C25C19C9F7FB0012BF51 /* Parse.framework in Frameworks */,
-				E998C25A19C9F7FB0012BF51 /* Bolts.framework in Frameworks */,
 				C12A113E19787BE700D53B1C /* SystemConfiguration.framework in Frameworks */,
 				C12A113F19787BE700D53B1C /* Crashlytics.framework in Frameworks */,
 				C12A114019787BE700D53B1C /* Security.framework in Frameworks */,
@@ -900,9 +908,9 @@
 				C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */,
 				C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */,
 				C12A114919787BE700D53B1C /* CoreGraphics.framework in Frameworks */,
+				E9C3401C1A96476000AB069F /* FacebookSDK.framework in Frameworks */,
 				C12A114A19787BE700D53B1C /* UIKit.framework in Frameworks */,
 				C12A114B19787BE700D53B1C /* Foundation.framework in Frameworks */,
-				C12A114C19787BE700D53B1C /* FacebookSDK.framework in Frameworks */,
 				C1F5B3C21A6549E000CAFD95 /* AVFoundation.framework in Frameworks */,
 				C1F5B3C31A6549E000CAFD95 /* MediaPlayer.framework in Frameworks */,
 			);
@@ -912,7 +920,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45F74FF61A5EF4A100A5170F /* FacebookSDK.framework in Frameworks */,
 				FA438EA919F19F2200AD74C2 /* AVFoundation.framework in Frameworks */,
 				FA438EA719F1998A00AD74C2 /* MediaPlayer.framework in Frameworks */,
 				E9F7995319D4C733001D5BFC /* CoreData.framework in Frameworks */,
@@ -920,10 +927,10 @@
 				E9ACCA2819C4CD0F00F3EB20 /* AddressBook.framework in Frameworks */,
 				E9CD53891993C2DD00206B75 /* ImageIO.framework in Frameworks */,
 				E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */,
+				E9C3401E1A96482100AB069F /* Bolts.framework in Frameworks */,
 				E9A31E4A1980ABB5008A711B /* AdSupport.framework in Frameworks */,
 				E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */,
 				E998C25B19C9F7FB0012BF51 /* Parse.framework in Frameworks */,
-				E998C25919C9F7FB0012BF51 /* Bolts.framework in Frameworks */,
 				E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */,
 				E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */,
 				E9D906DB19255DBC00E39FC8 /* Security.framework in Frameworks */,
@@ -934,6 +941,7 @@
 				E9D906D319255D9A00E39FC8 /* CoreLocation.framework in Frameworks */,
 				E9D906D119255D8B00E39FC8 /* CFNetwork.framework in Frameworks */,
 				E9D906CF19255D8200E39FC8 /* AudioToolbox.framework in Frameworks */,
+				E9C3401B1A96476000AB069F /* FacebookSDK.framework in Frameworks */,
 				E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */,
 				E921D6181923967D00361247 /* CoreGraphics.framework in Frameworks */,
 				E921D61A1923967D00361247 /* UIKit.framework in Frameworks */,
@@ -945,7 +953,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C1FE7DB41A2D22EA0016F82A /* FacebookSDK.framework in Frameworks */,
 				E921D63A1923967D00361247 /* UIKit.framework in Frameworks */,
 				E921D6391923967D00361247 /* Foundation.framework in Frameworks */,
 			);
@@ -1325,10 +1332,11 @@
 		E921D6141923967D00361247 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E9C3401D1A96482100AB069F /* Bolts.framework */,
+				E9C3401A1A96476000AB069F /* FacebookSDK.framework */,
 				FA438EA819F19F2200AD74C2 /* AVFoundation.framework */,
 				FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */,
 				E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */,
-				E998C25619C9F7FB0012BF51 /* Bolts.framework */,
 				E998C25719C9F7FB0012BF51 /* Parse.framework */,
 				E998C25819C9F7FB0012BF51 /* ParseFacebookUtils.framework */,
 				E9ACCA2719C4CD0F00F3EB20 /* AddressBook.framework */,
@@ -1337,7 +1345,6 @@
 				E9A31E471980AB9B008A711B /* libsqlite3.dylib */,
 				E9A31E451980AB25008A711B /* AdSupport.framework */,
 				E90AA8A71976C8B60055D74B /* Crashlytics.framework */,
-				E9ECFF7F196D917F00384252 /* FacebookSDK.framework */,
 				E900C2901961E0B800A01F50 /* ImageIO.framework */,
 				E9CD472E194B897200AEA17D /* Accelerate.framework */,
 				E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */,
@@ -1594,6 +1601,7 @@
 		E9BE8C4F192AA29C008BB84C /* Whitney */ = {
 			isa = PBXGroup;
 			children = (
+				E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */,
 				E998C27319D068880012BF51 /* Whitney-Bold.ttf */,
 				E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */,
 				E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */,
@@ -1666,6 +1674,8 @@
 		E9CD53901993C48400206B75 /* Gifs */ = {
 			isa = PBXGroup;
 			children = (
+				E957CD6C1A938B8400D0FF7C /* openLock.gif */,
+				E9C1AD5D1A939BDF009BCFDC /* closeLock.gif */,
 			);
 			name = Gifs;
 			sourceTree = "<group>";
@@ -1739,8 +1749,8 @@
 				E9203B521A23C4B90086BF73 /* EventConversationViewController.m */,
 				E9D039C61A09886A00DEF094 /* MediaScrollView.h */,
 				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
-				E98559FD1A8BD7120009FEFB /* OverlayView.h */,
-				E98559FE1A8BD7120009FEFB /* OverlayView.m */,
+				E957CD681A928EBD00D0FF7C /* PrivateSwitchView.h */,
+				E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */,
 			);
 			name = EventStory;
 			sourceTree = "<group>";
@@ -1972,17 +1982,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9C1AD5F1A939BDF009BCFDC /* closeLock.gif in Resources */,
 				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
 				45D9FADF1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.xib in Resources */,
 				45D9FA971A781AFD00D08577 /* JSQMessages.strings in Resources */,
 				E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
+				E9C340221A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
 				E9CD53941993C73900206B75 /* Images.xcassets in Resources */,
 				C12A119319787BE700D53B1C /* Whitney-Medium.ttf in Resources */,
 				E96F07D719BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				45D9FA951A781AFD00D08577 /* JSQMessagesAssets.bundle in Resources */,
+				E957CD6E1A938B8400D0FF7C /* openLock.gif in Resources */,
 				45D9FAA91A781AFD00D08577 /* JSQMessagesViewController.xib in Resources */,
 				45D9FAE91A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.xib in Resources */,
 				45D9FAE51A781AFD00D08577 /* JSQMessagesToolbarContentView.xib in Resources */,
@@ -1999,6 +2012,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9C1AD5E1A939BDF009BCFDC /* closeLock.gif in Resources */,
 				E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */,
 				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
 				45D9FA941A781AFD00D08577 /* JSQMessagesAssets.bundle in Resources */,
@@ -2013,6 +2027,7 @@
 				45D9FAE41A781AFD00D08577 /* JSQMessagesToolbarContentView.xib in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
+				E957CD6D1A938B8400D0FF7C /* openLock.gif in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
 				45D9FADE1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.xib in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
@@ -2021,6 +2036,7 @@
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,
 				45D9FA961A781AFD00D08577 /* JSQMessages.strings in Resources */,
 				45D9FAA81A781AFD00D08577 /* JSQMessagesViewController.xib in Resources */,
+				E9C340211A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2117,6 +2133,7 @@
 				45D9FAAD1A781AFD00D08577 /* JSQMessagesBubbleImageFactory.m in Sources */,
 				C1F5B3DF1A654B4D00CAFD95 /* AFURLSessionManager.m in Sources */,
 				C1F5B3D61A654AE300CAFD95 /* NSDate+WGDate.m in Sources */,
+				E957CD6B1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */,
 				C1F5B3CA1A654AC800CAFD95 /* WGUser.m in Sources */,
 				C1F5B3CB1A654AC800CAFD95 /* WGProfile.m in Sources */,
 				45D9FAD91A781AFD00D08577 /* JSQMessagesInputToolbar.m in Sources */,
@@ -2202,7 +2219,6 @@
 				45D9FAC91A781AFD00D08577 /* JSQMessagesCellTextView.m in Sources */,
 				E998C28119D1BF7D0012BF51 /* InviteViewController.m in Sources */,
 				E9203B541A23C4B90086BF73 /* EventConversationViewController.m in Sources */,
-				E9855A001A8BD7120009FEFB /* OverlayView.m in Sources */,
 				45D9FADB1A781AFD00D08577 /* JSQMessagesLabel.m in Sources */,
 				C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */,
 				E96F07C619BA654600E858D7 /* GKImagePicker.m in Sources */,
@@ -2378,6 +2394,7 @@
 				FA5526111A1FCB3700101AE7 /* GroupStats.m in Sources */,
 				E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
 				45D9FBB41A7ED46600D08577 /* EventPeopleModalViewController.m in Sources */,
+				E957CD6A1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */,
 				45D9FAA61A781AFD00D08577 /* JSQMessagesViewController.m in Sources */,
 				FA55260C1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,
 				E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */,
@@ -2425,7 +2442,6 @@
 				E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */,
 				FA55261C1A1FDB4000101AE7 /* JBChartView.m in Sources */,
 				E9ACDC6919AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
-				E98559FF1A8BD7120009FEFB /* OverlayView.m in Sources */,
 				E900C2B51961EADE00A01F50 /* MKAnnotationView+WebCache.m in Sources */,
 				E998C28819D342C50012BF51 /* PopViewController.m in Sources */,
 				454409641A58D19300BB3036 /* WGProfile.m in Sources */,
@@ -2519,6 +2535,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
@@ -2538,6 +2555,7 @@
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2549,6 +2567,8 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = Wigo;
 				PROVISIONING_PROFILE = "72E87B98-4DFD-4182-9EB5-CD4475603301";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigoBlade-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2559,6 +2579,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FACEBOOK_APPID = 661589153895742;
@@ -2579,6 +2600,7 @@
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2590,6 +2612,7 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = Wigo;
 				PROVISIONING_PROFILE = "6184f4da-3064-4b33-9ba3-ceea7db8ac09";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigoBlade-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2600,6 +2623,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FACEBOOK_APPID = 661589153895742;
@@ -2620,6 +2644,7 @@
 				INFOPLIST_FILE = Wigo/wigoBlade.plist;
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2631,6 +2656,7 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = Wigo;
 				PROVISIONING_PROFILE = "6184f4da-3064-4b33-9ba3-ceea7db8ac09";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigoBlade-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;
@@ -2716,6 +2742,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
@@ -2735,6 +2762,7 @@
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2746,6 +2774,8 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigo-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2756,6 +2786,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
@@ -2775,6 +2806,7 @@
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2786,6 +2818,7 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigo-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2889,6 +2922,7 @@
 				API_VERSION = 1.0.7;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FACEBOOK_APPID = 661589153895742;
@@ -2908,6 +2942,7 @@
 				INFOPLIST_FILE = "Wigo/Wigo-Info.plist";
 				INFOPLIST_PREPROCESS = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Wigo",
@@ -2919,6 +2954,7 @@
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigo-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Distribution;

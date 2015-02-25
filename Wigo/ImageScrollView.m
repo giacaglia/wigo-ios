@@ -36,13 +36,13 @@
         
         _currentPage = 0;
         
-        [self addImages];
+        [self updateImages];
     }
     
     return self;
 }
 
-- (void) addImages {
+- (void) updateImages {
     [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     self.imageViews = [[NSMutableArray alloc] init];
     for (int i = 0; i < [self.user.imagesURL count]; i++) {

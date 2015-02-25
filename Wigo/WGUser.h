@@ -26,6 +26,7 @@ typedef enum Privacy {
 } Privacy;
 
 typedef enum State {
+    NOT_LOADED_STATE,
     PRIVATE_STATE,
     PUBLIC_STATE,
     NOT_FOLLOWING_PUBLIC_USER_STATE,
@@ -82,7 +83,6 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property WGEvent* eventAttending;
 @property WGGroup* group;
 @property NSNumber* groupRank;
-
 @property NSNumber* isTapPushNotificationEnabled;
 @property NSNumber* isFavoritesGoingOutNotificationEnabled;
 
@@ -100,6 +100,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(NSString *) fullName;
 
 -(State) state;
+
 
 -(void) addTootltipTracked:(NSString *)tooltipTracked;
 -(void) setReferredBy:(NSNumber *)referredByNumber;
@@ -128,6 +129,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(void) getNotMeForMessage:(WGCollectionResultBlock)handler;
 +(void) searchReferals:(NSString *)query withHandler:(WGSerializedCollectionResultBlock)handler;
+-(void) searchNotMe:(NSString *)query withContext:(NSString *)contextString withHandler:(WGCollectionResultBlock)handler;
 -(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 -(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;
@@ -144,7 +146,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) readConversation:(BoolResultBlock)handler;
 -(void) deleteConversation:(BoolResultBlock)handler;
 -(void) getConversation:(WGCollectionResultBlock)handler;
-
+-(void) refetchUserWithGroup:(NSNumber *)groupID andHandler:(BoolResultBlock)handler;
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler;
 -(void) resendVerificationEmail:(BoolResultBlock) handler;
 
