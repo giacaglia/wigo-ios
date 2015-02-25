@@ -83,7 +83,7 @@ NSNumber *currentNumGroups;
 }
 
 - (void)initializeShareLabel {
-    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height/2  - 120, self.view.frame.size.width - 30, 120)];
+    UILabel *shareLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height/2  - 140, self.view.frame.size.width - 30, 140)];
     shareLabel.font = [FontProperties mediumFont:18.0f];
     shareLabel.textAlignment = NSTextAlignmentCenter;
     shareLabel.textColor = [UIColor whiteColor];
