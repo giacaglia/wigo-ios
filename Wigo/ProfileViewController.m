@@ -691,9 +691,15 @@ UIButton *tapButton;
     
     if (self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) {
         [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
+        [_rightBarBt removeTarget:nil
+                           action:NULL
+                 forControlEvents:UIControlEventAllEvents];
         [_rightBarBt addTarget:self action: @selector(editPressed) forControlEvents:UIControlEventTouchUpInside];
     } else {
         [_rightBarBt setTitle:@"More" forState:UIControlStateNormal];
+        [_rightBarBt removeTarget:nil
+                           action:NULL
+                 forControlEvents:UIControlEventAllEvents];
         [_rightBarBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
     }
     [_rightBarBt sizeToFit];
