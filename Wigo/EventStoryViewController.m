@@ -573,8 +573,7 @@
 
 - (void)initializeToolTipBanner {
     int widthButton = [[UIScreen mainScreen] bounds].size.width/5.33;
-    _highlightButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 89 - widthButton - 15, 233, 89)];
-    _highlightButton.center = CGPointMake(self.view.center.x, _highlightButton.center.y);
+    _highlightButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 233 - 40, self.view.frame.size.height - 89 - widthButton - 15, 233, 89)];
     [_highlightButton addTarget:self action:@selector(sendPressed) forControlEvents:UIControlEventTouchUpInside];
     _highlightButton.alpha = 0.0f;
     _highlightButton.hidden = self.event.isPrivate;
@@ -585,15 +584,15 @@
     highlightImageView.image = [UIImage imageNamed:@"highlightBubble"];
     [_highlightButton addSubview:highlightImageView];
 
-    UILabel *postHighglightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, highlightImageView.frame.size.width, highlightImageView.frame.size.height - 15)];
+    UILabel *postHighlightLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, highlightImageView.frame.size.width, highlightImageView.frame.size.height - 15)];
     NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:@"Post a selfie to\ncreate some buzz"];
     [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,string.length)];
     [string addAttribute:NSForegroundColorAttributeName value:[FontProperties getOrangeColor] range:NSMakeRange(7, 7)];
-    postHighglightLabel.attributedText = string;
-    postHighglightLabel.numberOfLines = 2;
-    postHighglightLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    postHighglightLabel.textAlignment = NSTextAlignmentCenter;
-    [_highlightButton addSubview:postHighglightLabel];
+    postHighlightLabel.attributedText = string;
+    postHighlightLabel.numberOfLines = 2;
+    postHighlightLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    postHighlightLabel.textAlignment = NSTextAlignmentCenter;
+    [_highlightButton addSubview:postHighlightLabel];
 }
 
 - (void)loadEventPeopleScrollView {
