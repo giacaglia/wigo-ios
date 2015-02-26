@@ -974,16 +974,22 @@ BOOL firstTimeLoading;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
- if (indexPath.section == kTodaySection) {
+<<<<<<< HEAD
+    if (indexPath.section == kTodaySection) {
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
-            return [EventCell height];
+            return sizeOfEachCell;
         }
         if (indexPath.row == self.events.count + 1 &&
             [self.allEvents.hasNextPage boolValue] ) {
             return 1;
         }
+        return sizeOfEachCell;
+=======
+    if ([indexPath section] == kTodaySection) {
+        if (indexPath.item == self.events.count) return 1;
         return [EventCell height];
+>>>>>>> staging
     }
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
@@ -1066,6 +1072,10 @@ BOOL firstTimeLoading;
             cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
         [cell updateUI];
+<<<<<<< HEAD
+=======
+        
+>>>>>>> staging
         return cell;
     } else if (indexPath.section == kHighlightsEmptySection) {
         return nil;
@@ -1882,9 +1892,33 @@ BOOL firstTimeLoading;
 -(void) updateUI {
     self.highlightsCollectionView.event = self.event;
     self.eventNameLabel.text = self.event.name;
+<<<<<<< HEAD
+    if (![self.event.isRead boolValue] && [self.event.numMessages intValue] > 0) {
+        self.chatBubbleImageView.hidden = NO;
+        self.chatBubbleImageView.image = [UIImage imageNamed:@"cameraBubble"];
+        self.postStoryImageView.image = [UIImage imageNamed:@"orangePostStory"];
+    }
+    else if ([self.event.numMessages intValue] > 0) {
+        self.chatBubbleImageView.hidden = NO;
+        self.chatBubbleImageView.image = [UIImage imageNamed:@"blueCameraBubble"];
+        self.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+
+    } else {
+        self.chatBubbleImageView.hidden = YES;
+        self.postStoryImageView.image = [UIImage imageNamed:@"postStory"];
+    }
+    if (self.event.isPrivate) {
+        self.privacyLockImageView.hidden = NO;
+        self.eventNameLabel.transform = CGAffineTransformMakeTranslation(12 + 9, 0);
+    }
+    else {
+        self.privacyLockImageView.hidden = YES;
+        self.eventNameLabel.transform = CGAffineTransformMakeTranslation(0, 0);
+=======
     self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ People are going", self.event.numAttending];
     if (self.highlightsCollectionView.eventMessages) {
         self.numberOfHighglightsLabel.text = [NSString stringWithFormat:@"%d Highlights", self.highlightsCollectionView.eventMessages.count];
+>>>>>>> staging
     }
     self.privacyLockImageView.hidden = !self.event.isPrivate;
 

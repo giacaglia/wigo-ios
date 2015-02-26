@@ -50,25 +50,28 @@
 @end
 
 #import "EventPeopleScrollView.h"
+#import "HighlightsCollectionView.h"
 
 @interface EventCell : UITableViewCell
++ (CGFloat) height;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UIImageView *privacyLockImageView;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) UILabel *eventNameLabel;
-@property (nonatomic, strong) UIImageView *chatBubbleImageView;
-@property (nonatomic, strong) UIImageView *postStoryImageView;
+@property (nonatomic, strong) UILabel *numberOfPeopleGoingLabel;
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
+@property (nonatomic, strong) UILabel *numberOfHighglightsLabel;
 - (void)updateUI;
+@property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @end
 
 
 #pragma mark - Headers
 @interface TodayHeader : UIView
++ (CGFloat) height;
 @property (nonatomic, strong) NSDate *date;
 + (instancetype) initWithDay: (NSDate *) date;
-+ (CGFloat) height;
 @end
 
 @interface GoOutNewPlaceHeader : UIView
