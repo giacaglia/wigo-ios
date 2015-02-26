@@ -48,13 +48,6 @@
     
     self.dataSource = self;
     self.delegate = self;
-    
-    CGRect frame = self.bounds;
-    frame.origin.y = -frame.size.height;
-    UIView* whiteView = [[UIView alloc] initWithFrame:frame];
-    whiteView.backgroundColor = UIColor.whiteColor;
-    [self addSubview:whiteView];
-    
     self.scrollEnabled = YES;
     self.showAddPhoto = YES;
 }

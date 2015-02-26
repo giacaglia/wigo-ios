@@ -61,7 +61,8 @@
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UILabel *numberOfPeopleGoingLabel;
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
-@property (nonatomic, strong) UILabel *numberOfHighglightsLabel;
+@property (nonatomic, strong) UILabel *numberOfHighlightsLabel;
+@property (nonatomic, strong) UILabel *numberOfNewHighlightsLabel;
 - (void)updateUI;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @end

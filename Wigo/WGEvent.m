@@ -190,7 +190,7 @@
 }
 
 -(void) getMessages:(WGCollectionResultBlock)handler {
-    [WGApi get:@"eventmessages/" withArguments:@{ @"event" : self.id, @"ordering" : @"id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"eventmessages/" withArguments:@{ @"event" : self.id, @"ordering" : @"-id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
