@@ -310,10 +310,8 @@
     self.facesCollectionView.bounces = YES;
     
     [self addRefreshToScrollView];
+    self.facesCollectionView.hidden = self.event.isAggregate;
 }
-
-
-
 
 #pragma mark - UICollectionView Data Source
 
