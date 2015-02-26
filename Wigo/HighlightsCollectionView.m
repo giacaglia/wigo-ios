@@ -217,6 +217,11 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
+- (void)collectionView:(UICollectionView *)collectionView
+didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"indexPath row: %d", indexPath.row);
+}
+
 @end
 
 @implementation HighlightCell
