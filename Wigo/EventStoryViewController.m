@@ -113,29 +113,13 @@
     } else {
         self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numAttending stringValue]];
     }
-    if (self.event.isAggregate) {
-        self.numberGoingLabel.text = nil;
-        [WGEvent getAggregateStatsWithHandler:^(NSNumber *numMessages, NSNumber *numAttending, NSError *error) {
-            if (numMessages.intValue > 0) {
-                if (numAttending.intValue > 0) {
-                    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ posts/ %@ attending",numMessages.stringValue,  numAttending.stringValue];
-                }
-                else {
-                    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ posts",numMessages.stringValue];
-                }
-            }
-            else {
-                self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ attending",numAttending.stringValue];
-            }
-         
-        }];
-    }
 
 
     self.numberGoingLabel.textColor = RGB(170, 170, 170);
     self.numberGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberGoingLabel.font = [FontProperties mediumFont:16];
     [self.backgroundScrollview addSubview:self.numberGoingLabel];
+    self.numberGoingLabel.hidden = self.event.isAggregate;
 }
 
 - (void)loadInviteOrGoHereButton {
@@ -324,6 +308,43 @@
     self.facesCollectionView.bounces = YES;
     
     [self addRefreshToScrollView];
+    
+    
+    if (self.event.isAggregate) {
+        [WGEvent getAggregateStatsWithHandler:^(NSNumber *numMessages, NSNumber *numAttending, NSError *error) {
+            if (numAttending.intValue >0 ) {
+                UIFont *numberLabelFont = [FontProperties lightFont: 55];
+                NSDictionary *attributes = @{NSFontAttributeName: numberLabelFont};
+                CGFloat spacerSize = 10.0f;
+                CGFloat titleWidth = 200.0f;
+                
+                CGSize numberSize = [numAttending.stringValue sizeWithAttributes: attributes];
+                CGFloat contentWidth = numberSize.width + spacerSize + titleWidth;
+                CGFloat sideSpacing = (self.view.bounds.size.width - contentWidth)/2;
+                UILabel *numberLabel = [[UILabel alloc] initWithFrame: CGRectMake(sideSpacing, 0, numberSize.width, self.backgroundScrollview.frame.size.height)];
+                numberLabel.text = numAttending.stringValue;
+                numberLabel.textAlignment = NSTextAlignmentRight;
+                numberLabel.font = numberLabelFont;
+                numberLabel.textColor = [FontProperties getOrangeColor];
+                [self.backgroundScrollview addSubview: numberLabel];
+                
+                UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(sideSpacing + numberSize.width + spacerSize, 0, titleWidth, self.backgroundScrollview.frame.size.height)];
+                if (numAttending.intValue == 1) {
+                    titleLabel.text = [NSString stringWithFormat: @"person going\nto a private event"];
+                }
+                else {
+                    titleLabel.text = [NSString stringWithFormat: @"people going\nto private events"];
+                }
+              
+                titleLabel.font = [FontProperties lightFont: 24];
+                titleLabel.textColor = [UIColor lightGrayColor];
+                titleLabel.numberOfLines = 2;
+                [self.backgroundScrollview addSubview: titleLabel];
+            }
+          
+        }];
+    }
+ 
 }
 
 
