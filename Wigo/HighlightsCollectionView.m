@@ -61,8 +61,23 @@
 
 - (void)setEvent:(WGEvent *)event {
     _event = event;
-    [self fetchEventMessages];
+    [self fetchEventMessagesFirstPage];
 }
+
+#pragma mark - UICollectionView Delegate
+
+- (void)collectionView:(UICollectionView *)collectionView
+didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    int selectedIndex = indexPath.row;
+    if ([self.event isEqual:WGProfile.currentUser.eventAttending] &&
+        indexPath.row  > 0)  {
+        selectedIndex = indexPath.row - 1;
+    }
+    [self.placesDelegate showConversationForEvent:self.event
+                                withEventMessages:self.eventMessages
+                                          atIndex:selectedIndex];
+}
+
 
 #pragma mark - UICollectionView Data Source
 
@@ -72,17 +87,23 @@
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return 1 +  self.eventMessages.count;
+    if ([self.event isEqual:WGProfile.currentUser.eventAttending]) {
+        return 1 + self.eventMessages.count;
+    }
+    else return self.eventMessages.count;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0) {
+    if (indexPath.row == 0 && [self.event isEqual:WGProfile.currentUser.eventAttending]) {
         AddPhotoCell *cell  =[collectionView dequeueReusableCellWithReuseIdentifier:kAddPhotoCellName forIndexPath: indexPath];
         cell.contentView.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
+        [self performSelector:@selector(showNavigationBar:) withObject:cell.controller afterDelay:0];
         return cell;
     }
     HighlightCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
-    indexPath = [NSIndexPath indexPathForRow:(indexPath.row - 1) inSection:indexPath.section];
+    if ([self.event isEqual:WGProfile.currentUser.eventAttending]) {
+        indexPath = [NSIndexPath indexPathForRow:(indexPath.row - 1) inSection:indexPath.section];   
+    }
 
     if (indexPath.row + 1 == self.eventMessages.count &&
         [self.eventMessages.hasNextPage boolValue]) {
@@ -110,6 +131,28 @@
         else [myCell updateUIToRead:NO];
     }
     return myCell;
+}
+
+- (void)showNavigationBar:(UIImagePickerController*)imagePicker {
+    [imagePicker setNavigationBarHidden:NO];
+}
+
+- (void)fetchEventMessagesFirstPage {
+    self.eventMessages = nil;
+    __weak typeof(self) weakSelf = self;
+    [self.event getMessages:^(WGCollection *collection, NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.cancelFetchMessages = NO;
+        [strongSelf didFinishPullToRefresh];
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        strongSelf.eventMessages = collection;
+        strongSelf.contentSize = CGSizeMake(strongSelf.eventMessages.count *[HighlightCell height], [HighlightCell height]);
+        [strongSelf reloadData];
+    }];
 }
 
 - (void)fetchEventMessages {
@@ -197,14 +240,14 @@
     CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
     CGFloat scaleHeight = controllerHeight / cameraHeight;
     CGFloat scaleWidth = controllerWidth / cameraWidth;
-    scaleHeight = scaleHeight/6;
-    scaleWidth = scaleWidth/3;
+    scaleHeight = scaleHeight/3.5;
+    scaleWidth = scaleWidth/2.7;
     CGFloat delta = controllerHeight - cameraHeight;
     CGFloat yAdjust = delta / 2.0;
     NSLog(@"scale: %f", scaleHeight);
     NSLog(@"y Adjust: %f", yAdjust);
-    yAdjust = -245.0f;
-    CGFloat xAdjust = -140.0f;
+    yAdjust = -220.0f;
+    CGFloat xAdjust = -100.0f;
     CGAffineTransform translate = CGAffineTransformMakeTranslation(xAdjust, yAdjust); //This slots the preview exactly in the middle of the screen
     self.controller.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, scaleWidth/scaleHeight);
 //    self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
@@ -212,14 +255,16 @@
     [self.contentView addSubview:self.controller.view];
 }
 
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+-(BOOL)prefersStatusBarHidden   // iOS8 definitely needs this one. checked.
 {
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    return NO;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView
-didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"indexPath row: %d", indexPath.row);
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
 @end
@@ -227,7 +272,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 @implementation HighlightCell
 
 + (CGFloat)height {
-    return 80;
+    return 130;
 }
 
 - (id) initWithCoder:(NSCoder *)aDecoder {

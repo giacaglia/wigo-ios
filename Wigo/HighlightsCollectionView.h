@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Globals.h"
+#import "Delegate.h"
 
 @interface HighlightsCollectionView : UICollectionView <UICollectionViewDataSource,
                                                         UICollectionViewDelegate>
@@ -16,14 +17,14 @@
 @property (nonatomic, assign) BOOL cancelFetchMessages;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) BOOL showAddPhoto;
+@property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 @end
 
-@interface AddPhotoCell : UICollectionViewCell
+@interface AddPhotoCell : UICollectionViewCell  <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (nonatomic, strong) UIImagePickerController *controller;
 @end
 
-@interface HighlightCell : UICollectionViewCell <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
-
+@interface HighlightCell : UICollectionViewCell
 + (CGFloat) height;
 - (void) resetToInactive;
 - (void)setToActiveWithNoAnimation;

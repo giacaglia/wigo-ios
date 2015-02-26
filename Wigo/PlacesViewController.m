@@ -31,7 +31,7 @@
 
 
 #define kEventCellName @"EventCell"
-#define kHighlightOldEventCel @"HighlightOldEventCell"
+#define kHighlightOldEventCell @"HighlightOldEventCell"
 #define kOldEventCellName @"OldEventCell"
 
 #define kOldEventShowHighlightsCellName @"OldEventShowHighlightsCellName"
@@ -454,7 +454,7 @@ BOOL firstTimeLoading;
     self.placesTableView.showsVerticalScrollIndicator = NO;
     [self.placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
-    [self.placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCel];
+    [self.placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCell];
     [self.placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
     self.placesTableView.backgroundColor = RGB(241, 241, 241);
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -1019,6 +1019,7 @@ BOOL firstTimeLoading;
         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
+        cell.placesDelegate = self;
         if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
         cell.loadingView.hidden = YES;
         cell.placesDelegate = self;
@@ -1028,6 +1029,7 @@ BOOL firstTimeLoading;
             cell.event = self.aggregateEvent;
             cell.eventPeopleScrollView.groupID = self.groupNumberID;
             cell.eventPeopleScrollView.placesDelegate = self;
+            cell.placesDelegate = self;
             if (![self.eventOffsetDictionary objectForKey:[self.aggregateEvent.id stringValue]]) {
                 cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
             }
@@ -1062,6 +1064,7 @@ BOOL firstTimeLoading;
         cell.event = event;
         cell.eventPeopleScrollView.groupID = self.groupNumberID;
         cell.eventPeopleScrollView.placesDelegate = self;
+        cell.highlightsCollectionView.placesDelegate = self;
         if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
             cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
@@ -1079,7 +1082,7 @@ BOOL firstTimeLoading;
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
         
         WGEvent *event = [eventObjectArray objectAtIndex:[indexPath row]];
-        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCel
+        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCell
                                        forIndexPath:indexPath];
         cell.event = event;
         cell.placesDelegate = self;
@@ -1381,6 +1384,18 @@ BOOL firstTimeLoading;
 - (void)showModalAttendees:(UIViewController *)modal {
     self.shouldReloadEvents = NO;
     [self.navigationController presentViewController:modal animated:YES completion:nil];
+}
+
+- (void)showConversationForEvent:(WGEvent *)event
+               withEventMessages:(WGCollection *)eventMessages
+                         atIndex:(int)index {
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
+    conversationViewController.event = event;
+    conversationViewController.index = [NSNumber numberWithInt:index];
+    conversationViewController.eventMessages = eventMessages;
+    conversationViewController.isPeeking = [self isPeeking];
+    [self presentViewController:conversationViewController animated:YES completion:nil];
 }
 
 - (void)showConversationForEvent:(WGEvent *)event {

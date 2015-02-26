@@ -20,6 +20,9 @@
 
 @protocol PlacesDelegate <UserSelectDelegate>
 - (void)showHighlights;
+- (void)showConversationForEvent:(WGEvent *)event
+               withEventMessages:(WGCollection *)eventMessages
+                         atIndex:(int)index;
 - (void)showConversationForEvent:(WGEvent *)event;
 - (void)showStoryForEvent:(WGEvent*)event;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
