@@ -235,27 +235,55 @@
 }
 
 +(void)getAggregateStatsWithHandler:(WGAggregateStats)handler {
-    [WGApi get:@"events/private_aggregate_summary" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-            handler(nil, nil, error);
-            return;
-        }
-        NSError *dataError;
-        NSNumber *numberOfMessages;
-        NSNumber *numberOfAttending;
-        @try {
-            numberOfMessages = [jsonResponse objectForKey:@"num_messages"];
-            numberOfAttending = [jsonResponse objectForKey:@"num_attending"];
-        }
-        @catch (NSException *exception) {
-            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
-            dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-        }
-        @finally {
-            handler(numberOfMessages, numberOfAttending, dataError);
-        }
-    }];
+    if (WGProfile.peekingGroupID) {
+        NSDictionary *arguments = @{@"group": WGProfile.peekingGroupID};
+        [WGApi get:@"events/private_aggregate_summary"
+     withArguments:arguments
+        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            if (error) {
+                handler(nil, nil, error);
+                return;
+            }
+            NSError *dataError;
+            NSNumber *numberOfMessages;
+            NSNumber *numberOfAttending;
+            @try {
+                numberOfMessages = [jsonResponse objectForKey:@"num_messages"];
+                numberOfAttending = [jsonResponse objectForKey:@"num_attending"];
+            }
+            @catch (NSException *exception) {
+                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                
+                dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            }
+            @finally {
+                handler(numberOfMessages, numberOfAttending, dataError);
+            }
+        }];
+    }
+    else {
+        [WGApi get:@"events/private_aggregate_summary" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            if (error) {
+                handler(nil, nil, error);
+                return;
+            }
+            NSError *dataError;
+            NSNumber *numberOfMessages;
+            NSNumber *numberOfAttending;
+            @try {
+                numberOfMessages = [jsonResponse objectForKey:@"num_messages"];
+                numberOfAttending = [jsonResponse objectForKey:@"num_attending"];
+            }
+            @catch (NSException *exception) {
+                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                
+                dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+            }
+            @finally {
+                handler(numberOfMessages, numberOfAttending, dataError);
+            }
+        }];
+    }
 }
 
 +(void) getWithGroupNumber: (NSNumber *)groupNumber andHandler:(WGCollectionResultBlock)handler {
