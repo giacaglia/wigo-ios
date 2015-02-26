@@ -107,21 +107,35 @@
     [self.view addSubview:backgroundView];
     [self.view sendSubviewToBack:backgroundView];
     
-    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 120, 40)];
+    self.numberGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, 200, 40)];
     if ([self.event.numAttending intValue] > 1) {
         self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ are going", [self.event.numAttending stringValue]];
     } else {
         self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ is going", [self.event.numAttending stringValue]];
     }
-//    if ([self.event.numberInvited intValue] > 0) {
-//        self.numberGoingLabel.text = [NSString stringWithFormat:@"%@/%@ invited", self.numberGoingLabel.text, [self.event.numberInvited stringValue]];
-//    }
+    if (self.event.isAggregate) {
+        self.numberGoingLabel.text = nil;
+        [WGEvent getAggregateStatsWithHandler:^(NSNumber *numMessages, NSNumber *numAttending, NSError *error) {
+            if (numMessages.intValue > 0) {
+                if (numAttending.intValue > 0) {
+                    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ posts/ %@ attending",numMessages.stringValue,  numAttending.stringValue];
+                }
+                else {
+                    self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ posts",numMessages.stringValue];
+                }
+            }
+            else {
+                self.numberGoingLabel.text = [NSString stringWithFormat:@"%@ attending",numAttending.stringValue];
+            }
+         
+        }];
+    }
+
 
     self.numberGoingLabel.textColor = RGB(170, 170, 170);
     self.numberGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberGoingLabel.font = [FontProperties mediumFont:16];
     [self.backgroundScrollview addSubview:self.numberGoingLabel];
-    self.numberGoingLabel.hidden = self.event.isAggregate;
 }
 
 - (void)loadInviteOrGoHereButton {
@@ -310,14 +324,14 @@
     self.facesCollectionView.bounces = YES;
     
     [self addRefreshToScrollView];
-    self.facesCollectionView.hidden = self.event.isAggregate;
 }
+
 
 #pragma mark - UICollectionView Data Source
 
 -(NSInteger)numberOfSectionsInCollectionView: (UICollectionView *)collectionView
 {
-    return 1;
+    return (self.event.isAggregate) ? 0 : 1;
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {

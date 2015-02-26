@@ -279,12 +279,6 @@ UIScrollView *suggestedScrollView;
     [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
 }
 
-- (void)showStats {
-    
-}
-
-
-
 #pragma mark - Filter handlers
 
 - (void)clearSearchBar {
