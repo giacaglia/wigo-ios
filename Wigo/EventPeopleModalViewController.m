@@ -56,40 +56,57 @@ int initializedLocationCount;
     
     [self loadLargeImageForIndex:self.startIndex];
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 200, 50, 50)];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, 50, 50)];
     closeButton.center = CGPointMake(self.view.center.x, closeButton.center.y);
-    closeButton.backgroundColor = UIColor.whiteColor;
+    closeButton.backgroundColor = UIColor.clearColor;
+    [closeButton setTitle:@"x" forState:UIControlStateNormal];
+    [closeButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    closeButton.titleLabel.font = [FontProperties lightFont:70.0f];
+    [closeButton addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:closeButton];
-//    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.016 target:self selector:@selector(updateScrollPosition) userInfo:nil repeats:YES];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.016 target:self selector:@selector(updateScrollPosition) userInfo:nil repeats:YES];
 }
 
-//-(void) updateScrollPosition {
-//    float minX = 0;
-//    float maxX = [self indexToOffset:(int)self.event.attendees.count - 1].x;
-//    float newOffset = self.attendeesPhotosScrollView.contentOffset.x + self.velocity;
-//    self.attendeesPhotosScrollView.contentOffset = CGPointMake(MAX(minX, MIN(maxX, newOffset)), 0);
-//
-//    if ((self.attendeesPhotosScrollView.contentOffset.x == maxX && ![self.event.attendees.hasNextPage boolValue]) || self.attendeesPhotosScrollView.contentOffset.x == minX) {
-//        self.initialPosition = self.lastPosition;
-//        self.velocity = 0;
-//    }
-//    
-//    self.initialPosition = CGPointMake(self.initialPosition.x * 0.5 + self.lastPosition.x * 0.5, self.initialPosition.y * 0.95 + self.lastPosition.y * 0.05);
-//    
-//    int currentIndex = [self indexAtOffset:self.attendeesPhotosScrollView.contentOffset];
-//    [self loadLargeImageForIndex:currentIndex];
-//    if (currentIndex + 1 < [self.images count]) {
-//        [self loadLargeImageForIndex:currentIndex + 1];
-//    }
-//    if (currentIndex >= [self.images count] - 2) {
-//        [self fetchEventAttendeesAsynchronous];
-//    }
-//    
-//    // NSLog(@"Velocity: %f", self.velocity);
-//}
+-(void) updateScrollPosition {
+    float minX = 0;
+    float maxX = [self indexToOffset:(int)self.event.attendees.count - 1].x;
+    float newOffset = self.attendeesPhotosScrollView.contentOffset.x + self.velocity;
+    self.attendeesPhotosScrollView.contentOffset = CGPointMake(MAX(minX, MIN(maxX, newOffset)), 0);
+
+    if ((self.attendeesPhotosScrollView.contentOffset.x == maxX && ![self.event.attendees.hasNextPage boolValue]) || self.attendeesPhotosScrollView.contentOffset.x == minX) {
+        self.initialPosition = self.lastPosition;
+        self.velocity = 0;
+    }
+    
+    self.initialPosition = CGPointMake(self.initialPosition.x * 0.5 + self.lastPosition.x * 0.5, self.initialPosition.y * 0.95 + self.lastPosition.y * 0.05);
+    
+    int currentIndex = [self indexAtOffset:self.attendeesPhotosScrollView.contentOffset];
+    [self loadLargeImageForIndex:currentIndex];
+    if (currentIndex + 1 < [self.images count]) {
+        [self loadLargeImageForIndex:currentIndex + 1];
+    }
+    if (currentIndex >= [self.images count] - 2) {
+        [self fetchEventAttendeesAsynchronous];
+    }
+    
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+
+- (void)dismissView {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)presentUser:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:buttonSender.tag];
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (attendee) {
+             [self.placesDelegate showUser:attendee.user];
+        }
+    }];
 }
 
 -(void) untap:(UILongPressGestureRecognizer *)gestureRecognizer withSender:(id)sender {
@@ -181,6 +198,7 @@ int initializedLocationCount;
         CGPoint position = [self indexToPoint:index];
         
         UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(position.x, position.y, imageWidth, imageWidth)];
+        [imageButton addTarget:self action:@selector(presentUser:) forControlEvents:UIControlEventTouchUpInside];
         imageButton.tag = index;
         [self.attendeesPhotosScrollView addSubview:imageButton];
         
@@ -211,7 +229,7 @@ int initializedLocationCount;
         profileName.font = [FontProperties lightFont:15.0f];
         [self.attendeesPhotosScrollView addSubview:profileName];
         
-        self.attendeesPhotosScrollView.contentSize = CGSizeMake(position.x + kBorderWidth, imageWidth + kNameBarHeight);
+        self.attendeesPhotosScrollView.contentSize = CGSizeMake(position.x + imageWidth + kBorderWidth, imageWidth + kNameBarHeight);
         
         index += 1;
     }

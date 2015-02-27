@@ -135,6 +135,9 @@ UIButton *tapButton;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    
+
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if (self.user.isCurrentUser) {
         [self fetchUserInfo];

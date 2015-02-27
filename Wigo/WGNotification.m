@@ -10,7 +10,8 @@
 
 #define kFromUserKey @"from_user"
 #define kTypeKey @"type"
-#define kProperties @"properties"
+#define kMessageKey @"message"
+#define kPropertiesKey @"properties"
 #define kEventName @"event_name"
 
 @implementation WGNotification
@@ -59,7 +60,7 @@
 }
 
 -(NSDictionary *)properties {
-    return [self objectForKey:kProperties];
+    return [self objectForKey:kPropertiesKey];
 }
 
 -(NSString *)eventName {
@@ -92,7 +93,9 @@
     } else if ([type isEqualToString:@"follow.accepted"]) {
         return @"accepted your follow request";
     }
-    return @"";
+    else {
+        return [self.properties objectForKey:kMessageKey];
+    }
 }
 
 +(void) get:(WGCollectionResultBlock)handler {

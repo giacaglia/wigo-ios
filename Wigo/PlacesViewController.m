@@ -492,7 +492,7 @@ BOOL firstTimeLoading;
     self.whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
-    [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
+//    [self addProfileUserToEventWithNumber:(int)buttonSender.tag];
     [self.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
     [self goOutToEventNumber:[NSNumber numberWithInt:(int) buttonSender.tag]];
 }
@@ -1012,6 +1012,8 @@ BOOL firstTimeLoading;
         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
+        cell.goingHereButton.hidden = [self isPeeking];
+        [cell.goingHereButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
         cell.placesDelegate = self;
         if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
         cell.loadingView.hidden = YES;
@@ -1371,6 +1373,7 @@ BOOL firstTimeLoading;
     ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [fancyProfileViewController setStateWithUser: user];
     if ([self isPeeking]) fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 
@@ -1386,9 +1389,27 @@ BOOL firstTimeLoading;
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
     conversationViewController.index = [NSNumber numberWithInt:index];
+    if ([event.owner isEqual:WGProfile.currentUser]) {
+        eventMessages = [self eventMessagesWithCamera:eventMessages];
+    }
     conversationViewController.eventMessages = eventMessages;
     conversationViewController.isPeeking = [self isPeeking];
     [self presentViewController:conversationViewController animated:YES completion:nil];
+}
+
+- (WGCollection *)eventMessagesWithCamera:(WGCollection *)eventMessages {
+    WGCollection *newEventMessages =  [[WGCollection alloc] initWithType:[WGEventMessage class]];
+    [newEventMessages addObjectsFromCollection:eventMessages];
+    WGEventMessage *eventMessage = [WGEventMessage serialize:@{
+                                                               @"user": [WGProfile currentUser],
+                                                               @"created": [NSDate nowStringUTC],
+                                                               @"media_mime_type": kCameraType,
+                                                               @"media": @""
+                                                               }];
+    
+    [newEventMessages insertObject:eventMessage atIndex:0];
+    
+    return newEventMessages;
 }
 
 - (void)showConversationForEvent:(WGEvent *)event {
@@ -1853,10 +1874,6 @@ BOOL firstTimeLoading;
                                      collectionViewLayout:[HighlightsFlowLayout new]];
     [self.contentView addSubview:self.highlightsCollectionView];
     
-    UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y, self.frame.size.width - self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.size.height)];
-    eventFeedButton.backgroundColor = [UIColor clearColor];
-    [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
-    [self.contentView addSubview: eventFeedButton];
     
     self.goingHereButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 10, self.frame.size.width, 48)];
     self.goingHereButton.backgroundColor = [FontProperties getBlueColor];
@@ -1895,10 +1912,6 @@ BOOL firstTimeLoading;
     [self.eventPeopleScrollView updateUI];
 }
 
-- (void)showEventConversation {
-    [self.eventPeopleScrollView saveScrollPosition];
-    [self.placesDelegate showStoryForEvent:self.event];
-}
 
 @end
 
