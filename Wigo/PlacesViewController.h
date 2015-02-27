@@ -63,6 +63,7 @@
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 @property (nonatomic, strong) UILabel *numberOfHighlightsLabel;
 @property (nonatomic, strong) UILabel *numberOfNewHighlightsLabel;
+@property (nonatomic, strong) UIButton *goingHereButton;
 - (void)updateUI;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @end

@@ -38,7 +38,7 @@
 }
 
 - (void)setup {
-    self.backgroundColor = UIColor.whiteColor;
+    self.backgroundColor =  RGB(247, 247, 247);
     self.showsHorizontalScrollIndicator = NO;
     self.showsVerticalScrollIndicator = NO;
     
@@ -215,7 +215,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setup {
-    self.backgroundColor = UIColor.whiteColor;
+    self.backgroundColor =  RGB(247, 247, 247);
     self.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
     self.contentView.frame = self.frame;
     
@@ -237,8 +237,6 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     scaleWidth = scaleWidth/2.7;
     CGFloat delta = controllerHeight - cameraHeight;
     CGFloat yAdjust = delta / 2.0;
-    NSLog(@"scale: %f", scaleHeight);
-    NSLog(@"y Adjust: %f", yAdjust);
     yAdjust = -220.0f;
     CGFloat xAdjust = -100.0f;
     CGAffineTransform translate = CGAffineTransformMakeTranslation(xAdjust, yAdjust); //This slots the preview exactly in the middle of the screen

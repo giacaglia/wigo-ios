@@ -13,7 +13,6 @@
 //View Extensions
 #import "UIButtonAligned.h"
 #import "UIButtonUngoOut.h"
-#import "WigoConfirmationViewController.h"
 #import "MobileContactsViewController.h"
 #import "InviteViewController.h"
 #import "SignNavigationViewController.h"
@@ -224,10 +223,10 @@ BOOL firstTimeLoading;
         self.navigationItem.leftBarButtonItem = profileBarButton;
         
         self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
-        UIImageView *followPlusWhiteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 8, 22, 17)];
-        followPlusWhiteImageView.image = [UIImage imageNamed:@"followPlusWhite"];
-        [self.rightButton addSubview:followPlusWhiteImageView];
-        [self.rightButton addTarget:self action:@selector(followPressed)
+        [self.rightButton setTitle:@"+" forState:UIControlStateNormal];
+        self.rightButton.titleLabel.font = [FontProperties lightFont:25];
+        [self.rightButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        [self.rightButton addTarget:self action:@selector(goingSomewhereElsePressed)
                    forControlEvents:UIControlEventTouchUpInside];
         [self.rightButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
@@ -293,11 +292,6 @@ BOOL firstTimeLoading;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(fetchUserInfo)
                                                  name:@"fetchUserInfo"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(presentContactsView)
-                                                 name:@"presentContactsView"
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -463,12 +457,11 @@ BOOL firstTimeLoading;
     CGRect frame = self.placesTableView.bounds;
     frame.origin.y = -frame.size.height;
     UIView* whiteView = [[UIView alloc] initWithFrame:frame];
-    whiteView.backgroundColor = UIColor.whiteColor;
+    whiteView.backgroundColor = RGB(247, 247, 247);
     [self.placesTableView addSubview:whiteView];
     
     [self addRefreshToScrollView];
     [self initializeGoingSomewhereElseButton];
-    
 }
 
 - (void)chooseEvent:(NSNotification *)notification {
@@ -525,9 +518,9 @@ BOOL firstTimeLoading;
     [self.goingSomewhereButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
     self.goingSomewhereButton.backgroundColor = [FontProperties getBlueColor];
     self.goingSomewhereButton.layer.borderWidth = 1.0f;
-    self.goingSomewhereButton.layer.borderColor = [UIColor clearColor].CGColor;
+    self.goingSomewhereButton.layer.borderColor = UIColor.clearColor.CGColor;
     self.goingSomewhereButton.layer.cornerRadius = sizeOfButton/2;
-    self.goingSomewhereButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.goingSomewhereButton.layer.shadowColor = UIColor.blackColor.CGColor;
     self.goingSomewhereButton.layer.shadowOpacity = 0.4f;
     self.goingSomewhereButton.layer.shadowRadius = 5.0f;
     self.goingSomewhereButton.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
@@ -675,7 +668,7 @@ BOOL firstTimeLoading;
         eventNameLabel.text = @"event name";
         eventNameLabel.textColor = [FontProperties getBlueColor];
         eventNameLabel.textAlignment = NSTextAlignmentCenter;
-        eventNameLabel.font = [FontProperties scMediumFont:15.0f];
+        eventNameLabel.font = [FontProperties mediumFont:13.0f];
         [_whereAreYouGoingView addSubview:eventNameLabel];
         
         UIView *lineUnderEventName = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 40, 90, 1)];
@@ -1774,34 +1767,12 @@ BOOL firstTimeLoading;
 
 - (void)addRefreshToScrollView {
     [WGSpinnerView addDancingGToUIScrollView:self.placesTableView
-                                   withHandler:^{
+                         withBackgroundColor:RGB(247, 247, 247)
+                                 withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];
         [self fetchUserInfo];
     }];
-}
-
-#pragma mark - Growth Hack
-- (BOOL)shouldPresentGrowthHack {
-    int numberOfTimesWentOut = (int)[[NSUserDefaults standardUserDefaults] integerForKey:@"numberOfTimesWentOut"];
-    if (numberOfTimesWentOut == 0) {
-        [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"numberOfTimesWentOut"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return NO;
-    }
-    else if (numberOfTimesWentOut == 1) {
-        [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"numberOfTimesWentOut"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return YES;
-    }
-    return NO;
-}
-
-- (void)presentContactsView {
-    if (!presentedMobileContacts) {
-        presentedMobileContacts = YES;
-        [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
-    }
 }
 
 - (void)addProfileUserToEventWithNumber:(int)eventID {
@@ -1826,7 +1797,7 @@ BOOL firstTimeLoading;
 @implementation EventCell
 
 + (CGFloat)height {
-    return 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 100 + 10;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 100 + 10 + 40;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1840,7 +1811,7 @@ BOOL firstTimeLoading;
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
     self.contentView.frame = self.frame;
-    self.backgroundColor = UIColor.whiteColor;
+    self.backgroundColor = RGB(247, 247, 247);
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
@@ -1852,45 +1823,47 @@ BOOL firstTimeLoading;
     self.privacyLockImageView.hidden = YES;
     [self.contentView addSubview:self.privacyLockImageView];
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, self.frame.size.width - 75, 64)];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 64)];
+    self.eventNameLabel.textAlignment = NSTextAlignmentCenter;
     self.eventNameLabel.numberOfLines = 2;
-    self.eventNameLabel.font = [FontProperties mediumFont: 18];
-    self.eventNameLabel.textColor = RGB(100, 173, 215);
+    self.eventNameLabel.backgroundColor = UIColor.whiteColor;
+    self.eventNameLabel.font = [FontProperties mediumFont: 25];
+    self.eventNameLabel.textColor = UIColor.blackColor;
     [self.contentView addSubview:self.eventNameLabel];
     
-    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 64, self.frame.size.width, 20)];
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 20 + 64, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = UIColor.blackColor;
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
-    self.numberOfPeopleGoingLabel.font = [FontProperties mediumFont:18.0f];
+    self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:18.0f];
     [self.contentView addSubview:self.numberOfPeopleGoingLabel];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
     self.eventPeopleScrollView.sizeOfEachImage = (float)[[UIScreen mainScreen] bounds].size.width/(float)4;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 84 + 12, self.frame.size.width, [EventPeopleScrollView containerHeight]);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 84 + 12, self.frame.size.width, [EventPeopleScrollView containerHeight]);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
     self.numberOfHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height, self.frame.size.width, 20)];
     self.numberOfHighlightsLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfHighlightsLabel.textColor = UIColor.blackColor;
-    self.numberOfHighlightsLabel.font = [FontProperties mediumFont:18.0f];
+    self.numberOfHighlightsLabel.font = [FontProperties lightFont:18.0f];
     [self.contentView addSubview:self.numberOfHighlightsLabel];
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
                                      initWithFrame:CGRectMake(10, self.numberOfHighlightsLabel.frame.origin.y + self.numberOfHighlightsLabel.frame.size.height + 5, self.frame.size.width - 10, [HighlightCell height])
                                      collectionViewLayout:[HighlightsFlowLayout new]];
     [self.contentView addSubview:self.highlightsCollectionView];
     
-    self.numberOfNewHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(90, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height, 50, 20)];
-    self.numberOfNewHighlightsLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberOfNewHighlightsLabel.font = [FontProperties mediumFont:18.0f];
-    self.numberOfNewHighlightsLabel.textColor = UIColor.whiteColor;
-    self.numberOfNewHighlightsLabel.backgroundColor = [FontProperties getOrangeColor];
-    [self.contentView addSubview:self.numberOfNewHighlightsLabel];
-    
     UIButton *eventFeedButton = [[UIButton alloc] initWithFrame:CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y, self.frame.size.width - self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.size.height)];
     eventFeedButton.backgroundColor = [UIColor clearColor];
     [eventFeedButton addTarget: self action: @selector(showEventConversation) forControlEvents: UIControlEventTouchUpInside];
     [self.contentView addSubview: eventFeedButton];
+    
+    self.goingHereButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 10, self.frame.size.width, 48)];
+    self.goingHereButton.backgroundColor = [FontProperties getBlueColor];
+    [self.goingHereButton setTitle:@"Go Here" forState:UIControlStateNormal];
+    [self.goingHereButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    self.goingHereButton.titleLabel.font = [FontProperties mediumFont:15.0f];
+    [self.contentView addSubview:self.goingHereButton];
     
     UILabel *lineSeparator = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height - 40, self.frame.size.width, 0.5)];
     lineSeparator.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.4f];
@@ -1904,12 +1877,17 @@ BOOL firstTimeLoading;
 -(void) updateUI {
     self.highlightsCollectionView.event = self.event;
     self.eventNameLabel.text = self.event.name;
-    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Attending (%@)", self.event.numAttending];
-    NSString *numberOfNew = @"3 new";
-    NSDictionary *attributes = @{NSFontAttributeName: [FontProperties mediumFont:20.0f]};
-    CGSize numberSize = [numberOfNew sizeWithAttributes: attributes];
-    self.numberOfNewHighlightsLabel.frame = CGRectMake(self.numberOfNewHighlightsLabel.frame.origin.x, self.numberOfNewHighlightsLabel.frame.origin.y, numberSize.width, self.numberOfNewHighlightsLabel.frame.size.height);
-    self.numberOfNewHighlightsLabel.text = @"3 new";
+    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", self.event.numAttending];
+    if (self.event.id && [WGProfile.currentUser.eventAttending.id isEqual:self.event.id]) {
+        self.goingHereButton.backgroundColor = UIColor.whiteColor;
+        [self.goingHereButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+        [self.goingHereButton setTitle:@"Invite More people" forState:UIControlStateNormal];
+    }
+    else {
+        self.goingHereButton.backgroundColor = [FontProperties getBlueColor];
+        [self.goingHereButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        [self.goingHereButton setTitle:@"Go here" forState:UIControlStateNormal];
+    }
 
     self.numberOfHighlightsLabel.text = @"Highlights";
     self.privacyLockImageView.hidden = !self.event.isPrivate;
@@ -1929,26 +1907,26 @@ BOOL firstTimeLoading;
 
 + (instancetype) initWithDay: (NSDate *) date {
     TodayHeader *header = [[TodayHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TodayHeader height])];
-    header.date = date;
-    [header setup];
+//    header.date = date;
+//    [header setup];
     
     return header;
 }
 - (void) setup {
-    self.backgroundColor = [UIColor whiteColor];
+    self.backgroundColor = RGB(217, 217, 217);
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 30)];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.font = [FontProperties scMediumFont: 18.0f];
-    titleLabel.textColor = [FontProperties getBlueColor];
-    titleLabel.text = @"today";
-    titleLabel.center = self.center;
-    [self addSubview: titleLabel];
+//    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 30)];
+//    titleLabel.backgroundColor = [UIColor clearColor];
+//    titleLabel.textAlignment = NSTextAlignmentCenter;
+//    titleLabel.font = [FontProperties scMediumFont: 18.0f];
+//    titleLabel.textColor = [FontProperties getBlueColor];
+//    titleLabel.text = @"today";
+//    titleLabel.center = self.center;
+//    [self addSubview: titleLabel];
     
-    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(self.center.x - 50, self.frame.size.height - 0.5f, 100, 0.5f)];
-    lineView.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.4f];
-    [self addSubview: lineView];
+//    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(self.center.x - 50, self.frame.size.height - 0.5f, 100, 0.5f)];
+//    lineView.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.4f];
+//    [self addSubview: lineView];
     
 }
 

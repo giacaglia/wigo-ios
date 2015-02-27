@@ -21,11 +21,11 @@
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
         self.event = event;
+//        UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressGestureRecognizer:)];
+//        [self addGestureRecognizer:longPressGesture];
+//        longPressGesture.delegate = self;
         
-#warning remove event attendees feature for release
-        UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressGestureRecognizer:)];
-        [self addGestureRecognizer:longPressGesture];
-        longPressGesture.delegate = self;
+
     }
     return self;
 }
@@ -131,17 +131,30 @@
 }
 
 - (void)chooseUser:(id)sender {
+//    UIButton *buttonSender = (UIButton *)sender;
+//    int tag = (int)buttonSender.tag;
+//    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:tag];
+//    // self.eventOffset = self.contentOffset.x;
+//    if (self.userSelectDelegate) {
+//        [self.userSelectDelegate showUser: attendee.user];
+//    } else {
+//        [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
+//                                                     forKey:[self.event.id stringValue]];
+//        [self.placesDelegate showUser:attendee.user];
+//    }
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
-    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:tag];
-    // self.eventOffset = self.contentOffset.x;
-    if (self.userSelectDelegate) {
-        [self.userSelectDelegate showUser: attendee.user];
-    } else {
-        [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
-                                                     forKey:[self.event.id stringValue]];
-        [self.placesDelegate showUser:attendee.user];
-    }
+    UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
+    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
+                                                             tintColor:RGBAlpha(0, 0, 0, 0.75)
+                                                 saturationDeltaFactor:1.3
+                                                             maskImage:nil];
+    
+    self.eventPeopleModalViewController = [[EventPeopleModalViewController alloc] initWithEvent:self.event startIndex:tag andBackgroundImage:imageOfUnderlyingView];
+//    [self.eventPeopleModalViewController.view addGestureRecognizer:gestureRecognizer];
+    self.eventPeopleModalViewController.placesDelegate = self.placesDelegate;
+    
+    [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];
 }
 
 
