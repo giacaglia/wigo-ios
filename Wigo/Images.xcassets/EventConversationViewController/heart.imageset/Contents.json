@@ -2,17 +2,18 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "heart.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "upvote@2x.png"
+      "filename" : "heart@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "upvote@3x.png"
+      "filename" : "heart@3x.png"
     }
   ],
   "info" : {

@@ -70,9 +70,7 @@
 - (void)updateUI;
 @property (nonatomic, strong) UILabel *numberOfVotesLabel;
 @property (nonatomic, strong) UIButton *upVoteButton;
-@property (nonatomic, strong) UIButton *downVoteButton;
 @property (nonatomic, strong) UIImageView *upvoteImageView;
-@property (nonatomic, strong) UIImageView *downvoteImageView;
 @property (nonatomic, strong) UIButton *focusButton;
 @property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
 - (void)focusOnContent;

@@ -157,7 +157,6 @@
 		C12A112819787BE700D53B1C /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2991961EADE00A01F50 /* SDImageCache.m */; };
 		C12A112919787BE700D53B1C /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E990298A196B4E0700192FF2 /* FacebookImagesViewController.m */; };
-		C12A112D19787BE700D53B1C /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */; };
 		C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A11961EADE00A01F50 /* SDWebImageDownloaderOperation.m */; };
 		C12A112F19787BE700D53B1C /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
 		C12A113019787BE700D53B1C /* SDWebImageCompat.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C29B1961EADE00A01F50 /* SDWebImageCompat.m */; };
@@ -329,7 +328,6 @@
 		E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
 		E9A31E4A1980ABB5008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
-		E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */; };
@@ -377,6 +375,32 @@
 		E9CD53891993C2DD00206B75 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E900C2901961E0B800A01F50 /* ImageIO.framework */; };
 		E9CD53931993C73900206B75 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9CD53921993C73900206B75 /* Images.xcassets */; };
 		E9CD53941993C73900206B75 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E9CD53921993C73900206B75 /* Images.xcassets */; };
+		E9CDC4401AA4EC4200CD0336 /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CDC43F1AA4EC4200CD0336 /* PlacesViewController.m */; };
+		E9CDC4411AA4EC4200CD0336 /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CDC43F1AA4EC4200CD0336 /* PlacesViewController.m */; };
+		E9CDC4451AA4EF6200CD0336 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4431AA4EF6200CD0336 /* Montserrat-Bold.ttf */; };
+		E9CDC4461AA4EF6200CD0336 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4431AA4EF6200CD0336 /* Montserrat-Bold.ttf */; };
+		E9CDC4471AA4EF6200CD0336 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4441AA4EF6200CD0336 /* Montserrat-Regular.ttf */; };
+		E9CDC4481AA4EF6200CD0336 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4441AA4EF6200CD0336 /* Montserrat-Regular.ttf */; };
+		E9CDC4541AA4EF9900CD0336 /* OpenSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44A1AA4EF9900CD0336 /* OpenSans-Bold.ttf */; };
+		E9CDC4551AA4EF9900CD0336 /* OpenSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44A1AA4EF9900CD0336 /* OpenSans-Bold.ttf */; };
+		E9CDC4561AA4EF9900CD0336 /* OpenSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44B1AA4EF9900CD0336 /* OpenSans-BoldItalic.ttf */; };
+		E9CDC4571AA4EF9900CD0336 /* OpenSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44B1AA4EF9900CD0336 /* OpenSans-BoldItalic.ttf */; };
+		E9CDC4581AA4EF9900CD0336 /* OpenSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44C1AA4EF9900CD0336 /* OpenSans-ExtraBold.ttf */; };
+		E9CDC4591AA4EF9900CD0336 /* OpenSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44C1AA4EF9900CD0336 /* OpenSans-ExtraBold.ttf */; };
+		E9CDC45A1AA4EF9900CD0336 /* OpenSans-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44D1AA4EF9900CD0336 /* OpenSans-ExtraBoldItalic.ttf */; };
+		E9CDC45B1AA4EF9900CD0336 /* OpenSans-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44D1AA4EF9900CD0336 /* OpenSans-ExtraBoldItalic.ttf */; };
+		E9CDC45C1AA4EF9900CD0336 /* OpenSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44E1AA4EF9900CD0336 /* OpenSans-Italic.ttf */; };
+		E9CDC45D1AA4EF9900CD0336 /* OpenSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44E1AA4EF9900CD0336 /* OpenSans-Italic.ttf */; };
+		E9CDC45E1AA4EF9900CD0336 /* OpenSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44F1AA4EF9900CD0336 /* OpenSans-Light.ttf */; };
+		E9CDC45F1AA4EF9900CD0336 /* OpenSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44F1AA4EF9900CD0336 /* OpenSans-Light.ttf */; };
+		E9CDC4601AA4EF9900CD0336 /* OpenSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4501AA4EF9900CD0336 /* OpenSans-LightItalic.ttf */; };
+		E9CDC4611AA4EF9900CD0336 /* OpenSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4501AA4EF9900CD0336 /* OpenSans-LightItalic.ttf */; };
+		E9CDC4621AA4EF9900CD0336 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4511AA4EF9900CD0336 /* OpenSans-Regular.ttf */; };
+		E9CDC4631AA4EF9900CD0336 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4511AA4EF9900CD0336 /* OpenSans-Regular.ttf */; };
+		E9CDC4641AA4EF9900CD0336 /* OpenSans-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4521AA4EF9900CD0336 /* OpenSans-Semibold.ttf */; };
+		E9CDC4651AA4EF9900CD0336 /* OpenSans-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4521AA4EF9900CD0336 /* OpenSans-Semibold.ttf */; };
+		E9CDC4661AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4531AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf */; };
+		E9CDC4671AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4531AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf */; };
 		E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */; };
 		E9D039C81A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
 		E9D039C91A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
@@ -749,7 +773,6 @@
 		E9A50CFC19350F13009B73EA /* ConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationViewController.m; sourceTree = "<group>"; };
 		E9A695C619B0C7840071067B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
-		E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlacesViewController.m; sourceTree = "<group>"; };
 		E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileViewController.h; sourceTree = "<group>"; };
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
 		E9AAAFC7193E357E0069F700 /* UIButtonAligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonAligned.h; sourceTree = "<group>"; };
@@ -797,6 +820,19 @@
 		E9CD53821993C29800206B75 /* FLAnimatedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLAnimatedImageView.h; sourceTree = "<group>"; };
 		E9CD53831993C29800206B75 /* FLAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLAnimatedImageView.m; sourceTree = "<group>"; };
 		E9CD53921993C73900206B75 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		E9CDC43F1AA4EC4200CD0336 /* PlacesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlacesViewController.m; sourceTree = "<group>"; };
+		E9CDC4431AA4EF6200CD0336 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Bold.ttf"; sourceTree = "<group>"; };
+		E9CDC4441AA4EF6200CD0336 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Regular.ttf"; sourceTree = "<group>"; };
+		E9CDC44A1AA4EF9900CD0336 /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Bold.ttf"; sourceTree = "<group>"; };
+		E9CDC44B1AA4EF9900CD0336 /* OpenSans-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-BoldItalic.ttf"; sourceTree = "<group>"; };
+		E9CDC44C1AA4EF9900CD0336 /* OpenSans-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-ExtraBold.ttf"; sourceTree = "<group>"; };
+		E9CDC44D1AA4EF9900CD0336 /* OpenSans-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		E9CDC44E1AA4EF9900CD0336 /* OpenSans-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Italic.ttf"; sourceTree = "<group>"; };
+		E9CDC44F1AA4EF9900CD0336 /* OpenSans-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Light.ttf"; sourceTree = "<group>"; };
+		E9CDC4501AA4EF9900CD0336 /* OpenSans-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-LightItalic.ttf"; sourceTree = "<group>"; };
+		E9CDC4511AA4EF9900CD0336 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Regular.ttf"; sourceTree = "<group>"; };
+		E9CDC4521AA4EF9900CD0336 /* OpenSans-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Semibold.ttf"; sourceTree = "<group>"; };
+		E9CDC4531AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-SemiboldItalic.ttf"; sourceTree = "<group>"; };
 		E9D039C61A09886A00DEF094 /* MediaScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaScrollView.h; sourceTree = "<group>"; };
 		E9D039C71A09886A00DEF094 /* MediaScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaScrollView.m; sourceTree = "<group>"; };
 		E9D7D5331926539C00E1ED10 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Wigo/en.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -1382,6 +1418,8 @@
 		E921D61C1923967D00361247 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E9CDC4491AA4EF8700CD0336 /* Open Sans */,
+				E9CDC4421AA4EF4900CD0336 /* Montserrat */,
 				E9CD53921993C73900206B75 /* Images.xcassets */,
 				E9CD53901993C48400206B75 /* Gifs */,
 				E9CD53911993C49000206B75 /* Music */,
@@ -1686,6 +1724,32 @@
 			name = Music;
 			sourceTree = "<group>";
 		};
+		E9CDC4421AA4EF4900CD0336 /* Montserrat */ = {
+			isa = PBXGroup;
+			children = (
+				E9CDC4431AA4EF6200CD0336 /* Montserrat-Bold.ttf */,
+				E9CDC4441AA4EF6200CD0336 /* Montserrat-Regular.ttf */,
+			);
+			name = Montserrat;
+			sourceTree = "<group>";
+		};
+		E9CDC4491AA4EF8700CD0336 /* Open Sans */ = {
+			isa = PBXGroup;
+			children = (
+				E9CDC44A1AA4EF9900CD0336 /* OpenSans-Bold.ttf */,
+				E9CDC44B1AA4EF9900CD0336 /* OpenSans-BoldItalic.ttf */,
+				E9CDC44C1AA4EF9900CD0336 /* OpenSans-ExtraBold.ttf */,
+				E9CDC44D1AA4EF9900CD0336 /* OpenSans-ExtraBoldItalic.ttf */,
+				E9CDC44E1AA4EF9900CD0336 /* OpenSans-Italic.ttf */,
+				E9CDC44F1AA4EF9900CD0336 /* OpenSans-Light.ttf */,
+				E9CDC4501AA4EF9900CD0336 /* OpenSans-LightItalic.ttf */,
+				E9CDC4511AA4EF9900CD0336 /* OpenSans-Regular.ttf */,
+				E9CDC4521AA4EF9900CD0336 /* OpenSans-Semibold.ttf */,
+				E9CDC4531AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf */,
+			);
+			name = "Open Sans";
+			sourceTree = "<group>";
+		};
 		E9DBB04D197813F900DDACDE /* CHGifRefreshControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -1800,7 +1864,7 @@
 			isa = PBXGroup;
 			children = (
 				E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */,
-				E9AAAFB6193CBA7A0069F700 /* PlacesViewController.m */,
+				E9CDC43F1AA4EC4200CD0336 /* PlacesViewController.m */,
 				E9AAAFCA193E3DC40069F700 /* User Profiles */,
 				FA85ED9A1A5C406A004B0465 /* Inviting */,
 				FA2BE9BA19FAEAFC00CC0E5E /* EventStory */,
@@ -1983,26 +2047,38 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9C1AD5F1A939BDF009BCFDC /* closeLock.gif in Resources */,
+				E9CDC4631AA4EF9900CD0336 /* OpenSans-Regular.ttf in Resources */,
 				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
+				E9CDC45D1AA4EF9900CD0336 /* OpenSans-Italic.ttf in Resources */,
 				45D9FADF1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.xib in Resources */,
 				45D9FA971A781AFD00D08577 /* JSQMessages.strings in Resources */,
 				E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */,
+				E9CDC4571AA4EF9900CD0336 /* OpenSans-BoldItalic.ttf in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
 				E9C340221A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
 				E9CD53941993C73900206B75 /* Images.xcassets in Resources */,
+				E9CDC45F1AA4EF9900CD0336 /* OpenSans-Light.ttf in Resources */,
+				E9CDC4551AA4EF9900CD0336 /* OpenSans-Bold.ttf in Resources */,
 				C12A119319787BE700D53B1C /* Whitney-Medium.ttf in Resources */,
+				E9CDC4651AA4EF9900CD0336 /* OpenSans-Semibold.ttf in Resources */,
 				E96F07D719BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				45D9FA951A781AFD00D08577 /* JSQMessagesAssets.bundle in Resources */,
+				E9CDC4481AA4EF6200CD0336 /* Montserrat-Regular.ttf in Resources */,
 				E957CD6E1A938B8400D0FF7C /* openLock.gif in Resources */,
 				45D9FAA91A781AFD00D08577 /* JSQMessagesViewController.xib in Resources */,
 				45D9FAE91A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.xib in Resources */,
 				45D9FAE51A781AFD00D08577 /* JSQMessagesToolbarContentView.xib in Resources */,
+				E9CDC4611AA4EF9900CD0336 /* OpenSans-LightItalic.ttf in Resources */,
 				C12A119A19787BE700D53B1C /* Whitney-Light.ttf in Resources */,
 				C12A11C319787BE700D53B1C /* InfoPlist.strings in Resources */,
 				45D9FAD11A781AFD00D08577 /* JSQMessagesCollectionViewCellIncoming.xib in Resources */,
+				E9CDC4591AA4EF9900CD0336 /* OpenSans-ExtraBold.ttf in Resources */,
+				E9CDC4461AA4EF6200CD0336 /* Montserrat-Bold.ttf in Resources */,
 				C12A11C919787BE700D53B1C /* Main.storyboard in Resources */,
+				E9CDC4671AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf in Resources */,
+				E9CDC45B1AA4EF9900CD0336 /* OpenSans-ExtraBoldItalic.ttf in Resources */,
 				E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */,
 				45D9FAD51A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.xib in Resources */,
 			);
@@ -2016,10 +2092,17 @@
 				E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */,
 				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
 				45D9FA941A781AFD00D08577 /* JSQMessagesAssets.bundle in Resources */,
+				E9CDC4451AA4EF6200CD0336 /* Montserrat-Bold.ttf in Resources */,
+				E9CDC4661AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf in Resources */,
 				E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
 				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
+				E9CDC4601AA4EF9900CD0336 /* OpenSans-LightItalic.ttf in Resources */,
 				45D9FAD41A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.xib in Resources */,
+				E9CDC4621AA4EF9900CD0336 /* OpenSans-Regular.ttf in Resources */,
+				E9CDC45E1AA4EF9900CD0336 /* OpenSans-Light.ttf in Resources */,
+				E9CDC4641AA4EF9900CD0336 /* OpenSans-Semibold.ttf in Resources */,
+				E9CDC4471AA4EF6200CD0336 /* Montserrat-Regular.ttf in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				45D9FAD01A781AFD00D08577 /* JSQMessagesCollectionViewCellIncoming.xib in Resources */,
 				E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */,
@@ -2032,11 +2115,16 @@
 				45D9FADE1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.xib in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
 				C18AC292198451150056957B /* autorevision.sh in Resources */,
+				E9CDC4541AA4EF9900CD0336 /* OpenSans-Bold.ttf in Resources */,
 				E921D6201923967D00361247 /* InfoPlist.strings in Resources */,
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,
+				E9CDC45C1AA4EF9900CD0336 /* OpenSans-Italic.ttf in Resources */,
 				45D9FA961A781AFD00D08577 /* JSQMessages.strings in Resources */,
 				45D9FAA81A781AFD00D08577 /* JSQMessagesViewController.xib in Resources */,
+				E9CDC4561AA4EF9900CD0336 /* OpenSans-BoldItalic.ttf in Resources */,
 				E9C340211A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */,
+				E9CDC45A1AA4EF9900CD0336 /* OpenSans-ExtraBoldItalic.ttf in Resources */,
+				E9CDC4581AA4EF9900CD0336 /* OpenSans-ExtraBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2153,6 +2241,7 @@
 				C1F5B3C81A654A5B00CAFD95 /* WGObject.m in Sources */,
 				C1F5B3C91A654A5B00CAFD95 /* WGGroup.m in Sources */,
 				C1F5B3C41A654A4200CAFD95 /* WGApi.m in Sources */,
+				E9CDC4411AA4EC4200CD0336 /* PlacesViewController.m in Sources */,
 				C1F5B3C51A654A4200CAFD95 /* WGError.m in Sources */,
 				C1F5B3C61A654A4200CAFD95 /* WGParser.m in Sources */,
 				E994111319AA8D9200D76379 /* NSString+URLEncoding.m in Sources */,
@@ -2243,7 +2332,6 @@
 				E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
 				45D9FA9D1A781AFD00D08577 /* UIColor+JSQMessages.m in Sources */,
 				C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */,
-				C12A112D19787BE700D53B1C /* PlacesViewController.m in Sources */,
 				C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */,
 				45D9FA9F1A781AFD00D08577 /* UIDevice+JSQMessages.m in Sources */,
 				C12A112F19787BE700D53B1C /* ConversationViewController.m in Sources */,
@@ -2288,6 +2376,7 @@
 				E9CD47141948E27500AEA17D /* UIImageViewShake.m in Sources */,
 				E921D6261923967D00361247 /* AppDelegate.m in Sources */,
 				4563F5271A3F460F00F8C9C4 /* WGUser.m in Sources */,
+				E9CDC4401AA4EC4200CD0336 /* PlacesViewController.m in Sources */,
 				E96F07C119BA654600E858D7 /* GKImageCropView.m in Sources */,
 				E900C2BC1961EADE00A01F50 /* SDWebImageManager.m in Sources */,
 				45D9FAB01A781AFD00D08577 /* JSQMessagesTimestampFormatter.m in Sources */,
@@ -2402,7 +2491,6 @@
 				45D9FAC81A781AFD00D08577 /* JSQMessagesCellTextView.m in Sources */,
 				4563F5241A3F436100F8C9C4 /* WGObject.m in Sources */,
 				45DF86B21A5C5DEB00DB85AE /* AFURLRequestSerialization.m in Sources */,
-				E9AAAFB7193CBA7A0069F700 /* PlacesViewController.m in Sources */,
 				4563F51E1A3F387700F8C9C4 /* WGApi.m in Sources */,
 				E900C2BB1961EADE00A01F50 /* SDWebImageDownloaderOperation.m in Sources */,
 				45D9FAC01A781AFD00D08577 /* JSQMessagesAvatarImage.m in Sources */,

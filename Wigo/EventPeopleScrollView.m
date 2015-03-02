@@ -21,49 +21,13 @@
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
         self.event = event;
-//        UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressGestureRecognizer:)];
-//        [self addGestureRecognizer:longPressGesture];
-//        longPressGesture.delegate = self;
-        
 
     }
     return self;
 }
 
--(void)longPressGestureRecognizer:(UILongPressGestureRecognizer *)gestureRecognizer {
-    CGPoint p = [gestureRecognizer locationInView:self];
-    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        int index = [self indexAtPoint:p];
-        if (index >= 0 && index < [self.event.attendees count]) {
-            
-            UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
-            imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
-                                                                     tintColor:RGBAlpha(0, 0, 0, 0.75)
-                                                         saturationDeltaFactor:1.3
-                                                                     maskImage:nil];
-            
-            self.eventPeopleModalViewController = [[EventPeopleModalViewController alloc] initWithEvent:self.event startIndex:index andBackgroundImage:imageOfUnderlyingView];
-            [self.eventPeopleModalViewController.view addGestureRecognizer:gestureRecognizer];
-            self.eventPeopleModalViewController.placesDelegate = self.placesDelegate;
-            
-            [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];
-        }
-    } else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        [self.eventPeopleModalViewController.view removeGestureRecognizer:gestureRecognizer];
-        [self addGestureRecognizer:gestureRecognizer];
-    }
-}
-
--(int) indexAtPoint:(CGPoint) point {
-    return floor((point.x - 10) / (self.sizeOfEachImage + 3));
-}
-
--(CGPoint) indexToPoint:(int) index {
-    return CGPointMake(10 + index * (self.sizeOfEachImage + 3) + self.sizeOfEachImage / 2, 0);
-}
-
 + (CGFloat) containerHeight {
-    return (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7 + 25;
+    return (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7;
 }
 
 -(void) updateUI {
@@ -94,7 +58,7 @@
         [self addSubview:backgroundName];
         
         UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
-        profileName.text = [user firstName];
+        profileName.text = user.firstName;
         profileName.textColor = UIColor.blackColor;
         profileName.textAlignment = NSTextAlignmentCenter;
         profileName.font = [FontProperties lightFont:14.0f];

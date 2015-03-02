@@ -61,14 +61,9 @@
 
 - (void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    int selectedIndex = indexPath.row;
-    if ([self.event isEqual:WGProfile.currentUser.eventAttending] &&
-        indexPath.row  > 0)  {
-        selectedIndex = indexPath.row - 1;
-    }
     [self.placesDelegate showConversationForEvent:self.event
                                 withEventMessages:self.eventMessages
-                                          atIndex:selectedIndex];
+                                          atIndex:(int)indexPath.row];
 }
 
 
@@ -237,7 +232,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     scaleWidth = scaleWidth/2.9;
     CGFloat delta = controllerHeight - cameraHeight;
     CGFloat yAdjust = delta / 2.0;
-    yAdjust = -220.0f;
+    yAdjust = -230.0f;
     CGFloat xAdjust = -120.0f;
     CGAffineTransform translate = CGAffineTransformMakeTranslation(xAdjust, yAdjust); //This slots the preview exactly in the middle of the screen
     self.controller.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, scaleWidth/scaleHeight);

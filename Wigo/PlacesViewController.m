@@ -414,9 +414,7 @@ BOOL firstTimeLoading;
         self.placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-50);
         _whereAreYouGoingView.alpha = 0;
-//        _dimView.alpha = 0;
     } completion:^(BOOL finished) {
-//        [_dimView removeFromSuperview];
     }];
     [self clearTextField];
 }
@@ -440,8 +438,7 @@ BOOL firstTimeLoading;
     [self.placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [self.placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCell];
     [self.placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
-    self.placesTableView.backgroundColor = RGB(247, 247, 247);
-//    self.placesTableView.backgroundColor = UIColor.redColor;
+    self.placesTableView.backgroundColor = RGB(217, 217, 217);
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self addRefreshToScrollView];
 }
@@ -1698,7 +1695,7 @@ BOOL firstTimeLoading;
 
 - (void)addRefreshToScrollView {
     [WGSpinnerView addDancingGToUIScrollView:self.placesTableView
-                         withBackgroundColor:RGB(247, 247, 247)
+                         withBackgroundColor:RGB(217, 217, 217)
                                  withHandler:^{
         _spinnerAtCenter = NO;
         [self fetchEventsFirstPage];
@@ -1758,14 +1755,18 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textAlignment = NSTextAlignmentCenter;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.backgroundColor = UIColor.whiteColor;
-    self.eventNameLabel.font = [FontProperties mediumFont: 25];
+    self.eventNameLabel.font = [FontProperties montserratBold:21.0f];
     self.eventNameLabel.textColor = UIColor.blackColor;
     [self.contentView addSubview:self.eventNameLabel];
+    
+    UIView *lineHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, self.eventNameLabel.frame.size.height, self.frame.size.width, 1)];
+    lineHeaderView.backgroundColor = RGB(223, 223, 223);
+    [self.contentView addSubview:lineHeaderView];
     
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 20 + 64, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = UIColor.blackColor;
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
-    self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:18.0f];
+    self.numberOfPeopleGoingLabel.font = [FontProperties openSansSemibold:15.0f];
     [self.contentView addSubview:self.numberOfPeopleGoingLabel];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
@@ -1777,7 +1778,7 @@ BOOL firstTimeLoading;
     self.numberOfHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height, self.frame.size.width, 20)];
     self.numberOfHighlightsLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfHighlightsLabel.textColor = UIColor.blackColor;
-    self.numberOfHighlightsLabel.font = [FontProperties lightFont:18.0f];
+    self.numberOfHighlightsLabel.font = [FontProperties openSansSemibold:15.0f];
     [self.contentView addSubview:self.numberOfHighlightsLabel];
     
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
@@ -1785,13 +1786,16 @@ BOOL firstTimeLoading;
                                      collectionViewLayout:[HighlightsFlowLayout new]];
     [self.contentView addSubview:self.highlightsCollectionView];
     
-    
     self.goingHereButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 10, self.frame.size.width, [UIScreen mainScreen].bounds.size.width/5.3)];
     self.goingHereButton.backgroundColor = [FontProperties getBlueColor];
     [self.goingHereButton setTitle:@"Go Here" forState:UIControlStateNormal];
     [self.goingHereButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    self.goingHereButton.titleLabel.font = [FontProperties mediumFont:15.0f];
+    self.goingHereButton.titleLabel.font = [FontProperties montserratBold:14.0f];
     [self.contentView addSubview:self.goingHereButton];
+    
+    UIView *grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height, self.frame.size.width, [EventCell height] - (self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height))];
+    grayView.backgroundColor = RGB(217, 217, 217);
+    [self.contentView addSubview:grayView];
 }
 
 -(void) updateUI {
