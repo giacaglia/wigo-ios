@@ -61,9 +61,9 @@
         profileName.text = user.firstName;
         profileName.textColor = UIColor.blackColor;
         profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.font = [FontProperties lightFont:14.0f];
+        profileName.font = [FontProperties openSansRegular:12.0f];
+        profileName.alpha = 0.5f;
         [self addSubview:profileName];
-        
         
         self.xPosition += self.sizeOfEachImage + 10;
         self.contentSize = CGSizeMake(self.xPosition + 10, self.sizeOfEachImage + 25);

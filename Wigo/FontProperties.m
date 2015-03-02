@@ -13,7 +13,7 @@
 #pragma mark - Font
 
 + (UIFont *)openSansRegular:(float)fontSize {
-    return [UIFont fontWithName:@"OpenSans-Regular" size:fontSize];
+    return [UIFont fontWithName:@"OpenSans" size:fontSize];
 }
 
 + (UIFont *)openSansSemibold:(float)fontSize {
@@ -21,7 +21,7 @@
 }
 
 + (UIFont *)montserratRegular:(float)fontSize {
-    return [UIFont fontWithName:@"Montserrat-Regular" size:fontSize];
+    return [UIFont fontWithName:@"Montserrat" size:fontSize];
 }
 
 + (UIFont *)montserratBold:(float)fontSize {

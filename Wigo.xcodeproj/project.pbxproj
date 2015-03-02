@@ -395,12 +395,12 @@
 		E9CDC45F1AA4EF9900CD0336 /* OpenSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC44F1AA4EF9900CD0336 /* OpenSans-Light.ttf */; };
 		E9CDC4601AA4EF9900CD0336 /* OpenSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4501AA4EF9900CD0336 /* OpenSans-LightItalic.ttf */; };
 		E9CDC4611AA4EF9900CD0336 /* OpenSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4501AA4EF9900CD0336 /* OpenSans-LightItalic.ttf */; };
-		E9CDC4621AA4EF9900CD0336 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4511AA4EF9900CD0336 /* OpenSans-Regular.ttf */; };
-		E9CDC4631AA4EF9900CD0336 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4511AA4EF9900CD0336 /* OpenSans-Regular.ttf */; };
 		E9CDC4641AA4EF9900CD0336 /* OpenSans-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4521AA4EF9900CD0336 /* OpenSans-Semibold.ttf */; };
 		E9CDC4651AA4EF9900CD0336 /* OpenSans-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4521AA4EF9900CD0336 /* OpenSans-Semibold.ttf */; };
 		E9CDC4661AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4531AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf */; };
 		E9CDC4671AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4531AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf */; };
+		E9CDC46D1AA51EB300CD0336 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC46C1AA51EB300CD0336 /* OpenSans-Regular.ttf */; };
+		E9CDC46E1AA51EB300CD0336 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC46C1AA51EB300CD0336 /* OpenSans-Regular.ttf */; };
 		E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */; };
 		E9D039C81A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
 		E9D039C91A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
@@ -830,9 +830,9 @@
 		E9CDC44E1AA4EF9900CD0336 /* OpenSans-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Italic.ttf"; sourceTree = "<group>"; };
 		E9CDC44F1AA4EF9900CD0336 /* OpenSans-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Light.ttf"; sourceTree = "<group>"; };
 		E9CDC4501AA4EF9900CD0336 /* OpenSans-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-LightItalic.ttf"; sourceTree = "<group>"; };
-		E9CDC4511AA4EF9900CD0336 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Regular.ttf"; sourceTree = "<group>"; };
 		E9CDC4521AA4EF9900CD0336 /* OpenSans-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Semibold.ttf"; sourceTree = "<group>"; };
 		E9CDC4531AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-SemiboldItalic.ttf"; sourceTree = "<group>"; };
+		E9CDC46C1AA51EB300CD0336 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Regular.ttf"; sourceTree = "<group>"; };
 		E9D039C61A09886A00DEF094 /* MediaScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaScrollView.h; sourceTree = "<group>"; };
 		E9D039C71A09886A00DEF094 /* MediaScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaScrollView.m; sourceTree = "<group>"; };
 		E9D7D5331926539C00E1ED10 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Wigo/en.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -1743,7 +1743,7 @@
 				E9CDC44E1AA4EF9900CD0336 /* OpenSans-Italic.ttf */,
 				E9CDC44F1AA4EF9900CD0336 /* OpenSans-Light.ttf */,
 				E9CDC4501AA4EF9900CD0336 /* OpenSans-LightItalic.ttf */,
-				E9CDC4511AA4EF9900CD0336 /* OpenSans-Regular.ttf */,
+				E9CDC46C1AA51EB300CD0336 /* OpenSans-Regular.ttf */,
 				E9CDC4521AA4EF9900CD0336 /* OpenSans-Semibold.ttf */,
 				E9CDC4531AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf */,
 			);
@@ -2047,7 +2047,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9C1AD5F1A939BDF009BCFDC /* closeLock.gif in Resources */,
-				E9CDC4631AA4EF9900CD0336 /* OpenSans-Regular.ttf in Resources */,
 				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
 				E9CDC45D1AA4EF9900CD0336 /* OpenSans-Italic.ttf in Resources */,
@@ -2057,6 +2056,7 @@
 				E9CDC4571AA4EF9900CD0336 /* OpenSans-BoldItalic.ttf in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
 				E9C340221A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */,
+				E9CDC46E1AA51EB300CD0336 /* OpenSans-Regular.ttf in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
 				E9CD53941993C73900206B75 /* Images.xcassets in Resources */,
 				E9CDC45F1AA4EF9900CD0336 /* OpenSans-Light.ttf in Resources */,
@@ -2099,12 +2099,12 @@
 				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E9CDC4601AA4EF9900CD0336 /* OpenSans-LightItalic.ttf in Resources */,
 				45D9FAD41A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.xib in Resources */,
-				E9CDC4621AA4EF9900CD0336 /* OpenSans-Regular.ttf in Resources */,
 				E9CDC45E1AA4EF9900CD0336 /* OpenSans-Light.ttf in Resources */,
 				E9CDC4641AA4EF9900CD0336 /* OpenSans-Semibold.ttf in Resources */,
 				E9CDC4471AA4EF6200CD0336 /* Montserrat-Regular.ttf in Resources */,
 				E9BE8C98192AA29C008BB84C /* Whitney-MediumSC.ttf in Resources */,
 				45D9FAD01A781AFD00D08577 /* JSQMessagesCollectionViewCellIncoming.xib in Resources */,
+				E9CDC46D1AA51EB300CD0336 /* OpenSans-Regular.ttf in Resources */,
 				E998C27419D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				45D9FAE81A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.xib in Resources */,
 				45D9FAE41A781AFD00D08577 /* JSQMessagesToolbarContentView.xib in Resources */,

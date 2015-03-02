@@ -234,9 +234,8 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat yAdjust = delta / 2.0;
     yAdjust = -230.0f;
     CGFloat xAdjust = -120.0f;
-    CGAffineTransform translate = CGAffineTransformMakeTranslation(xAdjust, yAdjust); //This slots the preview exactly in the middle of the screen
+    CGAffineTransform translate = CGAffineTransformMakeTranslation(xAdjust, yAdjust);
     self.controller.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, scaleWidth/scaleHeight);
-//    self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
     self.controller.view.transform = CGAffineTransformScale(translate, scaleWidth, scaleHeight);
     [self.contentView addSubview:self.controller.view];
 }
