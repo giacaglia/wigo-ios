@@ -939,7 +939,6 @@ BOOL firstTimeLoading;
             cell.grayView.transform = CGAffineTransformMakeTranslation(0, 0);
         }
         cell.goingHereButton.hidden = [self isPeeking];
-        [cell.goingHereButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
         cell.placesDelegate = self;
         if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
         cell.loadingView.hidden = YES;
@@ -987,6 +986,18 @@ BOOL firstTimeLoading;
         cell.highlightsCollectionView.placesDelegate = self;
         if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
             cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+        }
+        if (cell.event.id && [WGProfile.currentUser.eventAttending.id isEqual:cell.event.id]) {
+            [cell.goingHereButton removeTarget:nil
+                               action:NULL
+                     forControlEvents:UIControlEventAllEvents];
+            [cell.goingHereButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+        }
+        else {
+            [cell.goingHereButton removeTarget:nil
+                                        action:NULL
+                              forControlEvents:UIControlEventAllEvents];
+            [cell.goingHereButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
         }
         [cell updateUI];
         return cell;
@@ -1614,6 +1625,10 @@ BOOL firstTimeLoading;
     self.privacyLockImageView.hidden = YES;
     [self.contentView addSubview:self.privacyLockImageView];
     
+    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 64)];
+    backgroundView.backgroundColor = UIColor.whiteColor;
+    [self.contentView addSubview:backgroundView];
+    
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.frame.size.width - 30, 64)];
     self.eventNameLabel.textAlignment = NSTextAlignmentCenter;
     self.eventNameLabel.numberOfLines = 2;
@@ -1626,7 +1641,7 @@ BOOL firstTimeLoading;
     lineHeaderView.backgroundColor = RGB(223, 223, 223);
     [self.contentView addSubview:lineHeaderView];
     
-    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 20 + 64, self.frame.size.width, 20)];
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 64 + 20, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = UIColor.blackColor;
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties openSansSemibold:15.0f];
@@ -1634,11 +1649,11 @@ BOOL firstTimeLoading;
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
     self.eventPeopleScrollView.sizeOfEachImage = (float)[[UIScreen mainScreen] bounds].size.width/(float)6.4;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 84 + 12, self.frame.size.width, [EventPeopleScrollView containerHeight]);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 84 + 9, self.frame.size.width, self.eventPeopleScrollView.sizeOfEachImage + 18);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
-    self.numberOfHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height, self.frame.size.width, 20)];
+    self.numberOfHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, self.frame.size.width, 20)];
     self.numberOfHighlightsLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfHighlightsLabel.textColor = UIColor.blackColor;
     self.numberOfHighlightsLabel.font = [FontProperties openSansSemibold:15.0f];

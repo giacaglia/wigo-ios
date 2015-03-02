@@ -54,10 +54,7 @@
         [imgView setSmallImageForUser:user completed:nil];
         [imageButton addSubview:imgView];
         
-        UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
-        [self addSubview:backgroundName];
-        
-        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 25)];
+        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(self.xPosition, self.sizeOfEachImage, self.sizeOfEachImage, 18)];
         profileName.text = user.firstName;
         profileName.textColor = UIColor.blackColor;
         profileName.textAlignment = NSTextAlignmentCenter;
@@ -66,7 +63,7 @@
         [self addSubview:profileName];
         
         self.xPosition += self.sizeOfEachImage + 10;
-        self.contentSize = CGSizeMake(self.xPosition + 10, self.sizeOfEachImage + 25);
+        self.contentSize = CGSizeMake(self.xPosition + 10, self.sizeOfEachImage + 18);
     }
     
     [self scrollToSavedPosition];
