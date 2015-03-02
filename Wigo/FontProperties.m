@@ -99,7 +99,7 @@
 #pragma mark - Colors
 
 + (UIColor *)getBlueColor {
-    return RGB(94, 157, 203);
+    return RGB(109, 166, 206);
 }
 
 + (UIColor *)getLightBlueColor {

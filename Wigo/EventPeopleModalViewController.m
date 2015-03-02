@@ -9,7 +9,7 @@
 #import "EventPeopleModalViewController.h"
 #import "EventPeopleScrollView.h"
 
-#define kNameBarHeight 32
+#define kNameBarHeight 48.5
 #define kBorderWidth 10
 
 @interface EventPeopleModalViewController ()
@@ -118,6 +118,7 @@ int imageWidth;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     AttendeesPhotoCell *attendeeCell = [collectionView dequeueReusableCellWithReuseIdentifier:kAttendeesCellName forIndexPath:indexPath];
+    attendeeCell.imageButton.tag = indexPath.item;
     [attendeeCell.imageButton addTarget:self action:@selector(presentUser:) forControlEvents:UIControlEventTouchUpInside];
     WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
     [attendeeCell setStateForUser:attendee.user];
@@ -150,21 +151,20 @@ int imageWidth;
 - (void)setup {
     self.imageButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     [self.contentView addSubview:self.imageButton];
-    self.imgView = [[UIImageView alloc] init];
-    self.imgView.frame = CGRectMake(0, 0, imageWidth, imageWidth);
+   
+    self.imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     self.imgView.contentMode = UIViewContentModeScaleAspectFill;
     self.imgView.clipsToBounds = YES;
     [self.imageButton addSubview:self.imgView];
     
-    self.backgroundNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,imageWidth, imageWidth, kNameBarHeight)];
+    self.backgroundNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, kNameBarHeight)];
     [self.contentView addSubview:self.backgroundNameLabel];
     
     self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, kNameBarHeight)];
-    self.profileNameLabel.textColor = [UIColor whiteColor];
+    self.profileNameLabel.textColor = UIColor.whiteColor;
     self.profileNameLabel.textAlignment = NSTextAlignmentCenter;
-    self.profileNameLabel.font = [FontProperties lightFont:15.0f];
+    self.profileNameLabel.font = [FontProperties mediumFont:21.0f];
     [self.contentView addSubview:self.profileNameLabel];
-
 }
 
 - (void)setStateForUser:(WGUser *)user {
@@ -174,11 +174,10 @@ int imageWidth;
          dispatch_async(dispatch_get_main_queue(), ^{
              __strong typeof(weakSelf) strongSelf = weakSelf;
              __strong WGUser* strongUser = weakUser;
-             [strongSelf.imgView setCoverImageForUser:strongUser completed:nil];
+             [strongSelf.imgView setImageWithURL:strongUser.coverImageURL placeholderImage:image imageArea:strongUser.coverImageArea completed:nil];
          });
         
     }];
-  
     
     if (user.isCurrentUser) {
         self.backgroundNameLabel.backgroundColor = [FontProperties getBlueColor];
@@ -186,7 +185,6 @@ int imageWidth;
         self.backgroundNameLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.5f);
     }
     self.profileNameLabel.text = user.firstName;
-
 }
 
 @end
