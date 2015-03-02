@@ -11,14 +11,12 @@
 
 #define kNameBarHeight 32
 #define kBorderWidth 10
-#define kMaxVelocity 20
 
 @interface EventPeopleModalViewController ()
 
 @end
 
 int imageWidth;
-int initializedLocationCount;
 
 @implementation EventPeopleModalViewController
 
@@ -28,8 +26,6 @@ int initializedLocationCount;
         self.event = event;
         self.backgroundImage = image;
         self.fetchingEventAttendees = NO;
-        self.velocity = 0;
-        initializedLocationCount = 0;
         self.startIndex = index;
     }
     return self;
@@ -45,51 +41,29 @@ int initializedLocationCount;
     backView.image = self.backgroundImage;
     [self.view addSubview:backView];
     
-    self.attendeesPhotosScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, ([UIScreen mainScreen].bounds.size.height - imageWidth - kNameBarHeight) / 2, [UIScreen mainScreen].bounds.size.width, imageWidth + kNameBarHeight)];
+    AttendeesLayout *layout = [AttendeesLayout new];
+    self.attendeesPhotosScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, imageWidth + kNameBarHeight) collectionViewLayout:layout];
+    self.attendeesPhotosScrollView.center = self.view.center;
+    self.attendeesPhotosScrollView.backgroundColor = UIColor.clearColor;
     self.attendeesPhotosScrollView.showsHorizontalScrollIndicator = NO;
-
+    self.attendeesPhotosScrollView.delegate = self;
+    self.attendeesPhotosScrollView.dataSource = self;
+    [self.attendeesPhotosScrollView registerClass:[AttendeesPhotoCell class] forCellWithReuseIdentifier:kAttendeesCellName];
     [self.view addSubview:self.attendeesPhotosScrollView];
     
-    [self updateUI];
-
-    self.attendeesPhotosScrollView.contentOffset = [self indexToOffset:self.startIndex];
-    
-    [self loadLargeImageForIndex:self.startIndex];
+    [self.attendeesPhotosScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.startIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
     
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, 50, 50)];
     closeButton.center = CGPointMake(self.view.center.x, closeButton.center.y);
     closeButton.backgroundColor = UIColor.clearColor;
-    [closeButton setTitle:@"x" forState:UIControlStateNormal];
-    [closeButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12.5, 12.5, 25, 25)];
+    closeImageView.image = [UIImage imageNamed:@"closeModalView"];
+    [closeButton addSubview:closeImageView];
     closeButton.titleLabel.font = [FontProperties lightFont:70.0f];
     [closeButton addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:closeButton];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.016 target:self selector:@selector(updateScrollPosition) userInfo:nil repeats:YES];
 }
 
--(void) updateScrollPosition {
-    float minX = 0;
-    float maxX = [self indexToOffset:(int)self.event.attendees.count - 1].x;
-    float newOffset = self.attendeesPhotosScrollView.contentOffset.x + self.velocity;
-    self.attendeesPhotosScrollView.contentOffset = CGPointMake(MAX(minX, MIN(maxX, newOffset)), 0);
-
-    if ((self.attendeesPhotosScrollView.contentOffset.x == maxX && ![self.event.attendees.hasNextPage boolValue]) || self.attendeesPhotosScrollView.contentOffset.x == minX) {
-        self.initialPosition = self.lastPosition;
-        self.velocity = 0;
-    }
-    
-    self.initialPosition = CGPointMake(self.initialPosition.x * 0.5 + self.lastPosition.x * 0.5, self.initialPosition.y * 0.95 + self.lastPosition.y * 0.05);
-    
-    int currentIndex = [self indexAtOffset:self.attendeesPhotosScrollView.contentOffset];
-    [self loadLargeImageForIndex:currentIndex];
-    if (currentIndex + 1 < [self.images count]) {
-        [self loadLargeImageForIndex:currentIndex + 1];
-    }
-    if (currentIndex >= [self.images count] - 2) {
-        [self fetchEventAttendeesAsynchronous];
-    }
-    
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -109,132 +83,6 @@ int initializedLocationCount;
     }];
 }
 
--(void) untap:(UILongPressGestureRecognizer *)gestureRecognizer withSender:(id)sender {
-    CGPoint touchPoint = [gestureRecognizer locationInView:self.attendeesPhotosScrollView];
-    int touchIndex = [self indexAtPoint:touchPoint];
-    WGEventAttendee *attendee;
-    for (int i = 0; i < [self.images count]; i++) {
-        UIImageView *imageView = (UIImageView *)[self.images objectAtIndex:i];
-        if (CGRectContainsPoint(imageView.superview.frame, touchPoint)) {
-            attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:imageView.tag];
-        }
-    }
-    
-    EventPeopleScrollView *source = (EventPeopleScrollView *)sender;
-    
-    [self.placesDelegate.eventOffsetDictionary setObject:[NSNumber numberWithInt:MIN(MAX(0, source.contentSize.width - source.bounds.size.width), MAX(0, [source indexToPoint:touchIndex - 2].x))] forKey:[self.event.id stringValue]];
-    
-    [source scrollToSavedPosition];
-    
-    NSLog(@"Scroll Position: %f", source.contentOffset.x);
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        if (attendee) {
-            // Present User Disabled!
-            // [self.placesDelegate showUser:attendee.user];
-        }
-    }];
-    [self.timer invalidate];
-}
-
--(void) touchedLocation:(UIGestureRecognizer *)gestureRecognizer {
-    self.lastPosition = [gestureRecognizer locationInView:self.view];
-    
-    if (initializedLocationCount < 5) {
-        initializedLocationCount += 1;
-        self.initialPosition = self.lastPosition;
-        return;
-    }
-    
-    // NSLog(@"Initial: %f", self.initialPosition.x);
-    // NSLog(@"Current: %f", self.lastPosition.x);
-    
-    self.velocity += (self.lastPosition.x - self.initialPosition.x) / 7.5;
-    
-    if (self.velocity > kMaxVelocity) {
-        self.velocity = kMaxVelocity;
-    } else if (self.velocity < -kMaxVelocity) {
-        self.velocity = -kMaxVelocity;
-    }
-}
-
--(int) indexAtPoint:(CGPoint) point {
-    return MAX(0, floor((point.x - kBorderWidth) / (imageWidth + kBorderWidth)));
-}
-
--(int) indexAtOffset:(CGPoint) point {
-    return MAX(0, floor(point.x / (imageWidth + kBorderWidth)));
-}
-
--(CGPoint) indexToPoint:(int) index {
-    return CGPointMake(kBorderWidth + index * (imageWidth + kBorderWidth), 0);
-}
-
--(CGPoint) indexToOffset:(int) index {
-    return CGPointMake(index * (imageWidth + kBorderWidth), 0);
-}
-
--(void) loadLargeImageForIndex:(int)index {
-    if (![[self.imageDidLoad objectAtIndex:index] boolValue]) {
-        UIImageView *imageView = (UIImageView *)[self.images objectAtIndex:index];
-        
-        UIImage *smallCoverImage = [imageView.image copy];
-        
-        WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:index];
-        [imageView setImageWithURL:[attendee.user coverImageURL] placeholderImage:smallCoverImage imageArea:[attendee.user coverImageArea] completed:nil];
-        [self.imageDidLoad setObject:@YES atIndexedSubscript:index];
-    }
-}
-
--(void) updateUI {
-    [self.attendeesPhotosScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    self.images = [[NSMutableArray alloc] init];
-    self.imageDidLoad = [[NSMutableArray alloc] init];
-    int index = 0;
-    for (WGEventAttendee *attendee in self.event.attendees) {
-        WGUser *user = attendee.user;
-        
-        CGPoint position = [self indexToPoint:index];
-        
-        UIButton *imageButton = [[UIButton alloc] initWithFrame:CGRectMake(position.x, position.y, imageWidth, imageWidth)];
-        [imageButton addTarget:self action:@selector(presentUser:) forControlEvents:UIControlEventTouchUpInside];
-        imageButton.tag = index;
-        [self.attendeesPhotosScrollView addSubview:imageButton];
-        
-        UIImageView *imgView = [[UIImageView alloc] init];
-        imgView.frame = CGRectMake(0, 0, imageWidth, imageWidth);
-        imgView.contentMode = UIViewContentModeScaleAspectFill;
-        imgView.clipsToBounds = YES;
-        imgView.tag = index;
-        [imgView setSmallImageForUser:user completed:nil];
-        
-        [self.images addObject:imgView];
-        [self.imageDidLoad addObject:@NO];
-        
-        [imageButton addSubview:imgView];
-        
-        UILabel *backgroundName = [[UILabel alloc] initWithFrame:CGRectMake(position.x, position.y + imageWidth, imageWidth, kNameBarHeight)];
-        if ([user isCurrentUser]) {
-            backgroundName.backgroundColor = [FontProperties getBlueColor];
-        } else {
-            backgroundName.backgroundColor = RGBAlpha(0, 0, 0, 0.5f);
-        }
-        [self.attendeesPhotosScrollView addSubview:backgroundName];
-        
-        UILabel *profileName = [[UILabel alloc] initWithFrame:CGRectMake(position.x, position.y + imageWidth, imageWidth, kNameBarHeight)];
-        profileName.text = [user firstName];
-        profileName.textColor = [UIColor whiteColor];
-        profileName.textAlignment = NSTextAlignmentCenter;
-        profileName.font = [FontProperties lightFont:15.0f];
-        [self.attendeesPhotosScrollView addSubview:profileName];
-        
-        self.attendeesPhotosScrollView.contentSize = CGSizeMake(position.x + imageWidth + kBorderWidth, imageWidth + kNameBarHeight);
-        
-        index += 1;
-    }
-}
-
 - (void)fetchEventAttendeesAsynchronous {
     if (!self.fetchingEventAttendees) {
         self.fetchingEventAttendees = YES;
@@ -247,11 +95,7 @@ int initializedLocationCount;
                     strongSelf.fetchingEventAttendees = NO;
                     return;
                 }
-                
-                CGPoint oldOffset = strongSelf.attendeesPhotosScrollView.contentOffset;
-                [strongSelf updateUI];
-                strongSelf.attendeesPhotosScrollView.contentOffset = oldOffset;
-                
+                [strongSelf.attendeesPhotosScrollView reloadData];
                 strongSelf.fetchingEventAttendees = NO;
             }];
         } else {
@@ -260,5 +104,124 @@ int initializedLocationCount;
     }
 }
 
+#pragma mark - UICollectionView Data Source
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView
+     numberOfItemsInSection:(NSInteger)section {
+    return self.event.attendees.count;
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    AttendeesPhotoCell *attendeeCell = [collectionView dequeueReusableCellWithReuseIdentifier:kAttendeesCellName forIndexPath:indexPath];
+    [attendeeCell.imageButton addTarget:self action:@selector(presentUser:) forControlEvents:UIControlEventTouchUpInside];
+    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
+    [attendeeCell setStateForUser:attendee.user];
+    if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
+    return attendeeCell;
+}
 
 @end
+
+@implementation AttendeesPhotoCell
+
+- (id) initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder: aDecoder];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (id) initWithFrame:(CGRect)frame {
+    self = [super initWithFrame: frame];
+    if (self) {
+        [self setup];
+    }
+    
+    return self;
+}
+
+
+- (void)setup {
+    self.imageButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
+    [self.contentView addSubview:self.imageButton];
+    self.imgView = [[UIImageView alloc] init];
+    self.imgView.frame = CGRectMake(0, 0, imageWidth, imageWidth);
+    self.imgView.contentMode = UIViewContentModeScaleAspectFill;
+    self.imgView.clipsToBounds = YES;
+    [self.imageButton addSubview:self.imgView];
+    
+    self.backgroundNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,imageWidth, imageWidth, kNameBarHeight)];
+    [self.contentView addSubview:self.backgroundNameLabel];
+    
+    self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, kNameBarHeight)];
+    self.profileNameLabel.textColor = [UIColor whiteColor];
+    self.profileNameLabel.textAlignment = NSTextAlignmentCenter;
+    self.profileNameLabel.font = [FontProperties lightFont:15.0f];
+    [self.contentView addSubview:self.profileNameLabel];
+
+}
+
+- (void)setStateForUser:(WGUser *)user {
+    __weak typeof(self) weakSelf = self;
+    __weak WGUser *weakUser = user;
+    [self.imgView setSmallImageForUser:user completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+         dispatch_async(dispatch_get_main_queue(), ^{
+             __strong typeof(weakSelf) strongSelf = weakSelf;
+             __strong WGUser* strongUser = weakUser;
+             [strongSelf.imgView setCoverImageForUser:strongUser completed:nil];
+         });
+        
+    }];
+  
+    
+    if (user.isCurrentUser) {
+        self.backgroundNameLabel.backgroundColor = [FontProperties getBlueColor];
+    } else {
+        self.backgroundNameLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.5f);
+    }
+    self.profileNameLabel.text = user.firstName;
+
+}
+
+@end
+
+@implementation AttendeesLayout
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        [self setup];
+    }
+    
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    if (self) {
+        [self setup];
+    }
+    
+    return self;
+}
+
+- (void)setup
+{
+    self.itemSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.width);
+    self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    self.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
+    self.minimumInteritemSpacing = 0.0;
+    self.minimumLineSpacing = 0.0;
+}
+
+
+@end
+

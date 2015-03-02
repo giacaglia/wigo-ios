@@ -10,30 +10,26 @@
 #import "Globals.h"
 #import "Delegate.h"
 
-@interface EventPeopleModalViewController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate>
-
-@property CGPoint initialPosition;
-@property CGPoint lastPosition;
+@interface EventPeopleModalViewController : UIViewController
+    <UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property BOOL fetchingEventAttendees;
-
-@property NSTimer *timer;
-
 @property UIImage *backgroundImage;
-
-@property NSMutableArray *images;
-@property NSMutableArray *imageDidLoad;
-
 @property int startIndex;
-@property float velocity;
-@property UIScrollView *attendeesPhotosScrollView;
+@property UICollectionView *attendeesPhotosScrollView;
 @property WGEvent *event;
 @property (nonatomic, assign) id <PlacesDelegate> placesDelegate;
-
 - (id)initWithEvent:(WGEvent *)event startIndex:(int)index andBackgroundImage:(UIImage *)image;
+@end
 
--(void) untap:(UILongPressGestureRecognizer *)gestureRecognizer withSender:(id)sender;
--(void) updateUI;
--(void) touchedLocation:(UIGestureRecognizer *)gestureRecognizer;
+#define kAttendeesCellName @"attendeesCellName"
+@interface AttendeesPhotoCell : UICollectionViewCell
+@property (nonatomic, strong) UIButton *imageButton;
+@property (nonatomic, strong) UIImageView *imgView;
+@property (nonatomic, strong) UILabel *backgroundNameLabel;
+@property (nonatomic, strong) UILabel *profileNameLabel;
+- (void)setStateForUser:(WGUser *)user;
+@end
 
+@interface AttendeesLayout : UICollectionViewFlowLayout
 @end

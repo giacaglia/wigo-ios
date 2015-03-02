@@ -49,12 +49,8 @@
             [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];
         }
     } else if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        [self.eventPeopleModalViewController untap:gestureRecognizer withSender:self];
         [self.eventPeopleModalViewController.view removeGestureRecognizer:gestureRecognizer];
         [self addGestureRecognizer:gestureRecognizer];
-    }
-    if (self.eventPeopleModalViewController) {
-        [self.eventPeopleModalViewController touchedLocation:gestureRecognizer];
     }
 }
 
