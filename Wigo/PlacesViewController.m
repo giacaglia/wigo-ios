@@ -399,14 +399,6 @@ BOOL firstTimeLoading;
     [self presentViewController:peekViewController animated:YES completion:nil];
 }
 
-- (void)initializeTapHandler {
-//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-//                                                                          action:@selector(cancelledAddEventTapped)];
-//    tap.cancelsTouchesInView = NO;
-//    tap.delegate = self;
-//    [_dimView addGestureRecognizer:tap];
-}
-
 - (void)dismissKeyboard {
     _ungoOutButton.enabled = YES;
     [self.view endEditing:YES];
@@ -816,7 +808,7 @@ BOOL firstTimeLoading;
     if (section == kTodaySection) {
         if (_isSearching) {
             int hasNextPage = ([self.filteredEvents.hasNextPage boolValue] ? 1 : 0);
-            return [self.filteredEvents count] + hasNextPage;
+            return self.filteredEvents.count + hasNextPage;
         } else {
             int hasNextPage = ([self.allEvents.hasNextPage boolValue] ? 1 : 0);
             return self.events.count + hasNextPage + [self shouldShowAggregatePrivateEvents];
@@ -838,10 +830,10 @@ BOOL firstTimeLoading;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == kTodaySection) { //today section
-        return 0;
+        return [TodayHeader height];
     }
     else if (section == kHighlightsEmptySection) { //highlights section seperator
-        return [HighlightsHeader height];
+        return 40;
     }
     else if ([self shouldShowHighlights] && section > 1) {
         return 0;
@@ -855,7 +847,7 @@ BOOL firstTimeLoading;
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == kTodaySection) {
-        return nil;
+        return [TodayHeader new];
     }
     else if (section == kHighlightsEmptySection) {
         return [HighlightsHeader init];
@@ -891,16 +883,20 @@ BOOL firstTimeLoading;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
- if (indexPath.section == kTodaySection) {
+    if (indexPath.section == kTodaySection) {
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
-            return [EventCell height];
+            return [EventCell heightIsPeeking:[self isPeeking]];
         }
         if (indexPath.row == self.events.count + 1 &&
-            [self.allEvents.hasNextPage boolValue] ) {
+            [self.allEvents.hasNextPage boolValue] &&
+            [self shouldShowAggregatePrivateEvents] ) {
             return 1;
         }
-        return [EventCell height];
+        if (indexPath.row == self.events.count &&
+            [self.allEvents.hasNextPage boolValue] &&
+            [self shouldShowAggregatePrivateEvents]) return 1;
+        return [EventCell heightIsPeeking:[self isPeeking]];
     }
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
@@ -936,13 +932,18 @@ BOOL firstTimeLoading;
         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
+        if ([self isPeeking]) {
+            cell.grayView.transform = CGAffineTransformMakeTranslation(0, - cell.goingHereButton.frame.size.height);
+        }
+        else {
+            cell.grayView.transform = CGAffineTransformMakeTranslation(0, 0);
+        }
         cell.goingHereButton.hidden = [self isPeeking];
         [cell.goingHereButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
         cell.placesDelegate = self;
         if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
         cell.loadingView.hidden = YES;
         cell.placesDelegate = self;
-       
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
             cell.event = self.aggregateEvent;
@@ -1078,147 +1079,6 @@ BOOL firstTimeLoading;
     return !shownHighlights && self.pastDays.count;
 }
 
-
-#pragma mark - Image helper
-
-- (UIImage *)rotateImage:(UIImage *)image {
-    
-    int kMaxResolution = 320; // Or whatever
-    
-    CGImageRef imgRef = image.CGImage;
-    
-    CGFloat width = CGImageGetWidth(imgRef);
-    CGFloat height = CGImageGetHeight(imgRef);
-    
-    
-    CGAffineTransform transform = CGAffineTransformIdentity;
-    CGRect bounds = CGRectMake(0, 0, width, height);
-    if (width > kMaxResolution || height > kMaxResolution) {
-        CGFloat ratio = width/height;
-        if (ratio > 1) {
-            bounds.size.width = kMaxResolution;
-            bounds.size.height = bounds.size.width / ratio;
-        } else {
-            bounds.size.height = kMaxResolution;
-            bounds.size.width = bounds.size.height * ratio;
-        }
-    }
-    
-    CGFloat scaleRatio = bounds.size.width / width;
-    CGSize imageSize = CGSizeMake(CGImageGetWidth(imgRef), CGImageGetHeight(imgRef));
-    CGFloat boundHeight;
-    UIImageOrientation orient = image.imageOrientation;
-    switch(orient) {
-            
-        case UIImageOrientationUp: //EXIF = 1
-            transform = CGAffineTransformIdentity;
-            break;
-            
-        case UIImageOrientationUpMirrored: //EXIF = 2
-            transform = CGAffineTransformMakeTranslation(imageSize.width, 0.0);
-            transform = CGAffineTransformScale(transform, -1.0, 1.0);
-            break;
-            
-        case UIImageOrientationDown: //EXIF = 3
-            transform = CGAffineTransformMakeTranslation(imageSize.width, imageSize.height);
-            transform = CGAffineTransformRotate(transform, M_PI);
-            break;
-            
-        case UIImageOrientationDownMirrored: //EXIF = 4
-            transform = CGAffineTransformMakeTranslation(0.0, imageSize.height);
-            transform = CGAffineTransformScale(transform, 1.0, -1.0);
-            break;
-            
-        case UIImageOrientationLeftMirrored: //EXIF = 5
-            boundHeight = bounds.size.height;
-            bounds.size.height = bounds.size.width;
-            bounds.size.width = boundHeight;
-            transform = CGAffineTransformMakeTranslation(imageSize.height, imageSize.width);
-            transform = CGAffineTransformScale(transform, -1.0, 1.0);
-            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
-            break;
-            
-        case UIImageOrientationLeft: //EXIF = 6
-            boundHeight = bounds.size.height;
-            bounds.size.height = bounds.size.width;
-            bounds.size.width = boundHeight;
-            transform = CGAffineTransformMakeTranslation(0.0, imageSize.width);
-            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
-            break;
-            
-        case UIImageOrientationRightMirrored: //EXIF = 7
-            boundHeight = bounds.size.height;
-            bounds.size.height = bounds.size.width;
-            bounds.size.width = boundHeight;
-            transform = CGAffineTransformMakeScale(-1.0, 1.0);
-            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
-            break;
-            
-        case UIImageOrientationRight: //EXIF = 8
-            boundHeight = bounds.size.height;
-            bounds.size.height = bounds.size.width;
-            bounds.size.width = boundHeight;
-            transform = CGAffineTransformMakeTranslation(imageSize.height, 0.0);
-            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
-            break;
-            
-        default:
-            [NSException raise:NSInternalInconsistencyException format:@"Invalid image orientation"];
-            
-    }
-    
-    UIGraphicsBeginImageContext(bounds.size);
-    
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    if (orient == UIImageOrientationRight || orient == UIImageOrientationLeft) {
-        CGContextScaleCTM(context, -scaleRatio, scaleRatio);
-        CGContextTranslateCTM(context, -height, 0);
-    } else {
-        CGContextScaleCTM(context, scaleRatio, -scaleRatio);
-        CGContextTranslateCTM(context, 0, -height);
-    }
-    
-    CGContextConcatCTM(context, transform);
-    
-    CGContextDrawImage(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, width, height), imgRef);
-    UIImage *imageCopy = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return imageCopy;
-}
-
-- (UIImage *)convertImageToGrayScale:(UIImage *)image {
-    
-    image = [self rotateImage:image];//THIS IS WHERE REPAIR THE ROTATION PROBLEM
-    
-    // Create image rectangle with current image width/height
-    CGRect imageRect = CGRectMake(0, 0, image.size.width, image.size.height);
-    
-    // Grayscale color space
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-    
-    // Create bitmap content with current image size and grayscale colorspace
-    CGContextRef context = CGBitmapContextCreate(nil, image.size.width, image.size.height, 8, 0, colorSpace, (int)kCGImageAlphaNone);
-    
-    // Draw image into current context, with specified rectangle
-    // using previously defined context (with grayscale colorspace)
-    CGContextDrawImage(context, imageRect, [image CGImage]);
-    
-    // Create bitmap image info from pixel data in current context
-    CGImageRef imageRef = CGBitmapContextCreateImage(context);
-    
-    // Create a new UIImage object
-    UIImage *newImage = [UIImage imageWithCGImage:imageRef];
-    
-    // Release colorspace, context and bitmap information
-    CGColorSpaceRelease(colorSpace);
-    CGContextRelease(context);
-    CFRelease(imageRef);
-    
-    // Return the new grayscale image
-    return newImage;
-}
 
 #pragma mark - ToolTip 
 
@@ -1724,7 +1584,10 @@ BOOL firstTimeLoading;
 
 @implementation EventCell
 
-+ (CGFloat)height {
++ (CGFloat)heightIsPeeking:(BOOL)isPeeking {
+    if (isPeeking) {
+        return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 100 + 10;
+    }
     return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 100 + 10 + [UIScreen mainScreen].bounds.size.width/5.3;
 }
 
@@ -1737,7 +1600,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell heightIsPeeking:NO]);
     self.contentView.frame = self.frame;
     self.backgroundColor = RGB(247, 247, 247);
     self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -1751,7 +1614,7 @@ BOOL firstTimeLoading;
     self.privacyLockImageView.hidden = YES;
     [self.contentView addSubview:self.privacyLockImageView];
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 64)];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.frame.size.width - 30, 64)];
     self.eventNameLabel.textAlignment = NSTextAlignmentCenter;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.backgroundColor = UIColor.whiteColor;
@@ -1792,10 +1655,10 @@ BOOL firstTimeLoading;
     [self.goingHereButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     self.goingHereButton.titleLabel.font = [FontProperties montserratBold:14.0f];
     [self.contentView addSubview:self.goingHereButton];
-    
-    UIView *grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height, self.frame.size.width, [EventCell height] - (self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height))];
-    grayView.backgroundColor = RGB(217, 217, 217);
-    [self.contentView addSubview:grayView];
+
+    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height, self.frame.size.width, [EventCell heightIsPeeking:NO] - (self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height))];
+    self.grayView.backgroundColor = RGB(217, 217, 217);
+    [self.contentView addSubview:self.grayView];
 }
 
 -(void) updateUI {
@@ -1850,7 +1713,7 @@ BOOL firstTimeLoading;
 }
 
 + (CGFloat) height {
-    return 50;
+    return 0.5;
 }
 @end
 

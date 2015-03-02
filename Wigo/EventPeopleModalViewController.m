@@ -52,6 +52,9 @@ int imageWidth;
     [self.view addSubview:self.attendeesPhotosScrollView];
     
     [self.attendeesPhotosScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.startIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
+    CGPoint newOffset = self.attendeesPhotosScrollView.contentOffset;
+    newOffset = CGPointMake(newOffset.x - 10, newOffset.y);
+    self.attendeesPhotosScrollView.contentOffset = newOffset;
     
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, 50, 50)];
     closeButton.center = CGPointMake(self.view.center.x, closeButton.center.y);
@@ -160,7 +163,7 @@ int imageWidth;
     self.backgroundNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, kNameBarHeight)];
     [self.contentView addSubview:self.backgroundNameLabel];
     
-    self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, kNameBarHeight)];
+    self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, kNameBarHeight - 15)];
     self.profileNameLabel.textColor = UIColor.whiteColor;
     self.profileNameLabel.textAlignment = NSTextAlignmentCenter;
     self.profileNameLabel.font = [FontProperties mediumFont:21.0f];

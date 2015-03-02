@@ -52,7 +52,7 @@
 #import "HighlightsCollectionView.h"
 
 @interface EventCell : UITableViewCell
-+ (CGFloat) height;
++ (CGFloat) heightIsPeeking:(BOOL)isPeeking;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UIImageView *privacyLockImageView;
@@ -63,6 +63,7 @@
 @property (nonatomic, strong) UILabel *numberOfHighlightsLabel;
 @property (nonatomic, strong) UILabel *numberOfNewHighlightsLabel;
 @property (nonatomic, strong) UIButton *goingHereButton;
+@property (nonatomic, strong) UIView *grayView;
 - (void)updateUI;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @end
