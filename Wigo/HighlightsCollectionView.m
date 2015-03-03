@@ -222,21 +222,20 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     self.controller.showsCameraControls = NO;
     self.controller.delegate = self;
 
-    CGFloat controllerHeight = [HighlightCell height];
-    CGFloat controllerWidth = [HighlightCell height];
-    CGFloat cameraWidth = controllerWidth;
+    float sizeOfCell = 0.9 * (float)[HighlightCell height];
+    NSLog(@"total height: %f, size of cell: %f", [HighlightCell height], sizeOfCell);
+    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat controllerWidth = sizeOfCell;
+    CGFloat controllerHeight = sizeOfCell;
+    CGFloat cameraWidth =  screenWidth;
     CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
-    CGFloat scaleHeight = controllerHeight / cameraHeight;
-    CGFloat scaleWidth = controllerWidth / cameraWidth;
-    scaleHeight = scaleHeight/3.9;
-    scaleWidth = scaleWidth/2.9;
-    CGFloat delta = controllerHeight - cameraHeight;
-    CGFloat yAdjust = delta / 2.0;
-    yAdjust = -230.0f;
-    CGFloat xAdjust = -120.0f;
-    CGAffineTransform translate = CGAffineTransformMakeTranslation(xAdjust, yAdjust);
-    self.controller.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, scaleWidth/scaleHeight);
+    CGFloat scaleWidth = (controllerWidth / cameraWidth);
+    CGFloat scaleHeight = (controllerHeight / cameraHeight);
+   
+    CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 0.0);
     self.controller.view.transform = CGAffineTransformScale(translate, scaleWidth, scaleHeight);
+    self.controller.view.frame = CGRectMake(0, 0, self.controller.view.frame.size.width, self.controller.view.frame.size.height);
+    self.controller.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, scaleWidth/scaleHeight);
     [self.contentView addSubview:self.controller.view];
 }
 

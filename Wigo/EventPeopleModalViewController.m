@@ -56,13 +56,20 @@ int imageWidth;
     newOffset = CGPointMake(newOffset.x - 10, newOffset.y);
     self.attendeesPhotosScrollView.contentOffset = newOffset;
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, 50, 50)];
+//    UIButton *backButtonModal = [[UIButton alloc] initWithFrame:CGRectMake(0, 35, 50, 50)];
+//    backButtonModal.backgroundColor = UIColor.clearColor;
+//    UIImageView *backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 1, 8.75, 15)];
+//    backImageView.image = [UIImage imageNamed:@"backButtonModal"];
+//    [backButtonModal addSubview:backImageView];
+//    [backButtonModal addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:backButtonModal];
+    
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 80, 50, 50)];
     closeButton.center = CGPointMake(self.view.center.x, closeButton.center.y);
     closeButton.backgroundColor = UIColor.clearColor;
-    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12.5, 12.5, 25, 25)];
+    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(25 - 7.5, 50 - 15, 15, 15)];
     closeImageView.image = [UIImage imageNamed:@"closeModalView"];
     [closeButton addSubview:closeImageView];
-    closeButton.titleLabel.font = [FontProperties lightFont:70.0f];
     [closeButton addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:closeButton];
 }

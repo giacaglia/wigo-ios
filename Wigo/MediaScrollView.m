@@ -925,10 +925,10 @@
     
     NSNumber *vote = self.eventMessage.vote;
         if (!self.numberOfVotesLabel) {
-            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 42, self.frame.size.height - 55, 32, 30)];
+            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 52, self.frame.size.height - 50, 32, 30)];
             self.numberOfVotesLabel.textColor = UIColor.whiteColor;
             self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
-            self.numberOfVotesLabel.font = [FontProperties mediumFont:18.0f];
+            self.numberOfVotesLabel.font = [FontProperties openSansSemibold:21.0f];
             self.numberOfVotesLabel.layer.shadowOpacity = 1.0f;
             self.numberOfVotesLabel.layer.shadowColor = UIColor.blackColor.CGColor;
             self.numberOfVotesLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
@@ -940,7 +940,7 @@
 
         if (!self.upVoteButton) {
             self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 42 - 30 - 10, self.frame.size.height - 55, 56, 52)];
-            self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 10, 22, 18)];
+            self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 12, 22, 18)];
             [self.upVoteButton addSubview:self.upvoteImageView];
             [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
             [self.contentView addSubview:self.upVoteButton];

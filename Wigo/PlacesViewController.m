@@ -281,11 +281,6 @@ BOOL firstTimeLoading;
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(chooseEvent:)
-                                                 name:@"chooseEvent"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(fetchEventsFirstPage)
                                                  name:@"fetchEvents"
                                                object:nil];
@@ -438,12 +433,6 @@ BOOL firstTimeLoading;
     [self addRefreshToScrollView];
 }
 
-- (void)chooseEvent:(NSNotification *)notification {
-    if ([WGProfile currentUser].key) {
-        NSNumber *eventID = [[notification userInfo] valueForKey:@"eventID"];
-        [self goOutToEventNumber:eventID];
-    }
-}
 
 - (void)followPressed {
     if ([WGProfile currentUser].key) {
@@ -467,12 +456,23 @@ BOOL firstTimeLoading;
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
     [self.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-    [self goOutToEventNumber:[NSNumber numberWithInt:(int) buttonSender.tag]];
+    [self goOutToEventAtRow:(int)buttonSender.tag];
 }
 
-- (void)goOutToEventNumber:(NSNumber*)eventID {
+- (void)goOutToEventAtRow:(int)row {
     __weak typeof(self) weakSelf = self;
-    [[WGProfile currentUser] goingToEvent:[WGEvent serialize:@{ @"id" : eventID }] withHandler:^(BOOL success, NSError *error) {
+    
+    WGEvent *event;
+    if (_isSearching) {
+        int sizeOfArray = (int)self.filteredEvents.count;
+        if (sizeOfArray == 0 || sizeOfArray <= row) return;
+        event = (WGEvent *)[self.filteredEvents objectAtIndex:row];
+    } else {
+        int sizeOfArray = (int)self.events.count;
+        if (sizeOfArray == 0 || sizeOfArray <= row) return ;
+        event = (WGEvent *)[self.events objectAtIndex:row];
+    }
+    [[WGProfile currentUser] goingToEvent:event withHandler:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
@@ -990,6 +990,7 @@ BOOL firstTimeLoading;
         if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
             cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
+        cell.goingHereButton.tag = indexPath.row;
         if (cell.event.id && [WGProfile.currentUser.eventAttending.id isEqual:cell.event.id]) {
             [cell.goingHereButton removeTarget:nil
                                action:NULL
