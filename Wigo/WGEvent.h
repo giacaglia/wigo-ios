@@ -21,6 +21,7 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 @property NSNumber *isExpired;
 @property NSNumber *numAttending;
 @property NSNumber *numMessages;
+@property WGCollection *messages;
 @property WGCollection *attendees;
 @property WGEventMessage *highlight;
 @property NSArray *tags;

@@ -54,7 +54,9 @@
 
 - (void)setEvent:(WGEvent *)event {
     _event = event;
-    [self fetchEventMessagesFirstPage];
+    self.eventMessages = [WGCollection serializeResponse:event.messages andClass:[WGEventMessage class]];
+    self.contentSize = CGSizeMake(self.eventMessages.count *[HighlightCell height], [HighlightCell height]);
+    [self reloadData];
 }
 
 #pragma mark - UICollectionView Delegate
@@ -126,23 +128,21 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [imagePicker setNavigationBarHidden:NO];
 }
 
-- (void)fetchEventMessagesFirstPage {
-    self.eventMessages = nil;
-    __weak typeof(self) weakSelf = self;
-    [self.event getMessages:^(WGCollection *collection, NSError *error) {
-        __strong typeof(self) strongSelf = weakSelf;
-        strongSelf.cancelFetchMessages = NO;
-        [strongSelf didFinishPullToRefresh];
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-            return;
-        }
-        strongSelf.eventMessages = collection;
-        strongSelf.contentSize = CGSizeMake(strongSelf.eventMessages.count *[HighlightCell height], [HighlightCell height]);
-        [strongSelf reloadData];
-    }];
-}
+//- (void)fetchEventMessagesFirstPage {
+//    self.eventMessages = nil;
+//    __weak typeof(self) weakSelf = self;
+//    [self.event getMessages:^(WGCollection *collection, NSError *error) {
+//        __strong typeof(self) strongSelf = weakSelf;
+//        strongSelf.cancelFetchMessages = NO;
+//        [strongSelf didFinishPullToRefresh];
+//        if (error) {
+//            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+//            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+//            return;
+//        }
+//       
+//    }];
+//}
 
 - (void)fetchEventMessages {
     self.cancelFetchMessages = YES;

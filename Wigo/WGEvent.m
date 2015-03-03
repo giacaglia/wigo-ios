@@ -16,6 +16,7 @@
 #define kExpiresKey @"expires"
 #define kNumAttendingKey @"num_attending"
 #define kNumMessagesKey @"num_messages"
+#define kMessagesKey @"messages"
 #define kAttendeesKey @"attendees"
 #define kHighlightKey @"highlight"
 #define kPrivacyKey @"privacy"
@@ -148,6 +149,14 @@
         [mutableTags removeObject:kAggregateKey];
     }
     self.tags = mutableTags;
+}
+
+- (WGCollection *)messages {
+    return [self objectForKey:kMessagesKey];
+}
+
+- (void)setMessages:(WGCollection *)messages {
+    [self setObject:messages forKey:kMessagesKey];
 }
 
 -(void) setAttendees:(WGCollection *)attendees {

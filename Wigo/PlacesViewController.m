@@ -462,16 +462,8 @@ BOOL firstTimeLoading;
 - (void)goOutToEventAtRow:(int)row {
     __weak typeof(self) weakSelf = self;
     
-    WGEvent *event;
-    if (_isSearching) {
-        int sizeOfArray = (int)self.filteredEvents.count;
-        if (sizeOfArray == 0 || sizeOfArray <= row) return;
-        event = (WGEvent *)[self.filteredEvents objectAtIndex:row];
-    } else {
-        int sizeOfArray = (int)self.events.count;
-        if (sizeOfArray == 0 || sizeOfArray <= row) return ;
-        event = (WGEvent *)[self.events objectAtIndex:row];
-    }
+    WGEvent *event = [self getEventAtIndexPath:[NSIndexPath indexPathForItem:row inSection:0]];
+    if (event == nil) return;
     [WGProfile.currentUser goingToEvent:event withHandler:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
@@ -894,12 +886,16 @@ BOOL firstTimeLoading;
         }
         if (indexPath.row == self.events.count + 1 &&
             [self.allEvents.hasNextPage boolValue] &&
-            [self shouldShowAggregatePrivateEvents] ) {
+            [self shouldShowAggregatePrivateEvents] == 1) {
             return 1;
         }
         if (indexPath.row == self.events.count &&
             [self.allEvents.hasNextPage boolValue] &&
-            [self shouldShowAggregatePrivateEvents]) return 1;
+            [self shouldShowAggregatePrivateEvents] == 1) {
+           return 1;
+        }
+        WGEvent *event = [self getEventAtIndexPath:indexPath];
+        if (event == nil) return 1;
         return [EventCell heightIsPeeking:[self isPeeking]];
     }
     else if (indexPath.section == kHighlightsEmptySection) {
@@ -942,12 +938,16 @@ BOOL firstTimeLoading;
         else {
             cell.grayView.transform = CGAffineTransformMakeTranslation(0, 0);
         }
+        //Cleanup
+        cell.highlightsCollectionView.event = nil;
+        cell.highlightsCollectionView.eventMessages = nil;
+        [cell.highlightsCollectionView reloadData];
         cell.goingHereButton.hidden = [self isPeeking];
         cell.placesDelegate = self;
         if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
         cell.loadingView.hidden = YES;
         cell.placesDelegate = self;
-        if (indexPath.row == self.events.count &&
+                if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
             cell.event = self.aggregateEvent;
             cell.eventPeopleScrollView.groupID = self.groupNumberID;
@@ -974,16 +974,8 @@ BOOL firstTimeLoading;
             return cell;
         }
         
-        WGEvent *event;
-        if (_isSearching) {
-            int sizeOfArray = (int)self.filteredEvents.count;
-            if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return cell;
-            event = (WGEvent *)[self.filteredEvents objectAtIndex:[indexPath row]];
-        } else {
-            int sizeOfArray = (int)self.events.count;
-            if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return cell;
-            event = (WGEvent *)[self.events objectAtIndex:indexPath.row];
-        }
+        WGEvent *event = [self getEventAtIndexPath:indexPath];
+        if (event == nil) return cell;
         cell.event = event;
         cell.eventPeopleScrollView.groupID = self.groupNumberID;
         cell.eventPeopleScrollView.placesDelegate = self;
@@ -1047,6 +1039,20 @@ BOOL firstTimeLoading;
     return nil;
 }
 
+- (WGEvent *)getEventAtIndexPath:(NSIndexPath *)indexPath {
+    WGEvent *event;
+    if (_isSearching) {
+        int sizeOfArray = (int)self.filteredEvents.count;
+        if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return nil;
+        event = (WGEvent *)[self.filteredEvents objectAtIndex:[indexPath row]];
+    } else {
+        int sizeOfArray = (int)self.events.count;
+        if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return nil;
+        event = (WGEvent *)[self.events objectAtIndex:indexPath.row];
+    }
+    return event;
+}
+
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     // Remove seperator inset
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
@@ -1066,16 +1072,8 @@ BOOL firstTimeLoading;
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
-        WGEvent *event;
-        if (_isSearching) {
-            int sizeOfArray = (int)self.filteredEvents.count;
-            if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return;
-            event = (WGEvent *)[self.filteredEvents objectAtIndex:indexPath.row];
-        } else {
-            int sizeOfArray = (int)self.events.count;
-            if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return;
-            event = (WGEvent *)[self.events objectAtIndex:indexPath.row];
-        }
+        WGEvent *event = [self getEventAtIndexPath:indexPath];
+        if (event == nil) return;
         EventCell *eventCell = (EventCell *)cell;
         if ([[self.eventOffsetDictionary objectForKey:[event.id stringValue]] isEqualToNumber:@0]) {
             eventCell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
@@ -1665,7 +1663,7 @@ BOOL firstTimeLoading;
     [self.contentView addSubview:self.numberOfHighlightsLabel];
     
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
-                                     initWithFrame:CGRectMake(10, self.numberOfHighlightsLabel.frame.origin.y + self.numberOfHighlightsLabel.frame.size.height + 5, self.frame.size.width - 10, [HighlightCell height])
+                                     initWithFrame:CGRectMake(0, self.numberOfHighlightsLabel.frame.origin.y + self.numberOfHighlightsLabel.frame.size.height + 5, self.frame.size.width, [HighlightCell height])
                                      collectionViewLayout:[HighlightsFlowLayout new]];
     [self.contentView addSubview:self.highlightsCollectionView];
     
