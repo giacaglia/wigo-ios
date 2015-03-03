@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Globals.h"
 #import "Delegate.h"
+#define kHighlightsHeader @"HighlightsHeader"
 
 @interface HighlightsCollectionView : UICollectionView <UICollectionViewDataSource,
                                                         UICollectionViewDelegate>

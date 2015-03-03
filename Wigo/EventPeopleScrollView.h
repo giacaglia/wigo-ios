@@ -11,7 +11,7 @@
 #import "Delegate.h"
 #import "EventPeopleModalViewController.h"
 
-@interface EventPeopleScrollView : UIScrollView <UIScrollViewDelegate, UIGestureRecognizerDelegate>
+@interface EventPeopleScrollView : UICollectionView <UICollectionViewDataSource, UICollectionViewDelegate, UIGestureRecognizerDelegate>
 
 -(id) initWithEvent:(WGEvent*)event;
 -(void) updateUI;
@@ -30,4 +30,18 @@
 @property (nonatomic, assign) int xPosition;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) int sizeOfEachImage;
+@end
+
+#define kScrollViewHeader @"scrollViewHeader"
+#define kScrollViewCellName @"scrollViewCellName"
+@interface ScrollViewCell : UICollectionViewCell
+@property (nonatomic, strong) UIButton *imageButton;
+@property (nonatomic, strong) UIImageView *imgView;
+@property (nonatomic, strong) UILabel *profileNameLabel;
+- (void)setStateForUser:(WGUser *)user;
+@end
+
+@interface ScrollViewLayout : UICollectionViewFlowLayout
+- (id)initWithSize:(int)size;
+@property (nonatomic, assign) int sizeOfFrame;
 @end

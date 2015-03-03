@@ -45,6 +45,7 @@
     self.pagingEnabled = NO;
     [self registerClass:[HighlightCell class] forCellWithReuseIdentifier:highlightCellName];
     [self registerClass:[AddPhotoCell class] forCellWithReuseIdentifier:kAddPhotoCellName];
+    [self registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kHighlightsHeader];
     
     self.dataSource = self;
     self.delegate = self;
@@ -180,6 +181,22 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     }
 
 }
+
+#pragma mark - UICollectionView Header
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                        withReuseIdentifier:kHighlightsHeader
+                                                                               forIndexPath:indexPath];
+        return cell;
+    }
+    return nil;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    return CGSizeMake(5, 1);
+}
+
 
 @end
 
