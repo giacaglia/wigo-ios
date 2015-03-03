@@ -78,7 +78,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if ([self.event isEqual:WGProfile.currentUser.eventAttending]) {
         return 1 + self.eventMessages.count;
     }
-    else return self.eventMessages.count;
+    else {
+        return self.eventMessages.count; 
+    }
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -97,7 +99,6 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         [self.eventMessages.hasNextPage boolValue]) {
         [self fetchEventMessages];
     }
-    myCell.faceImageView.center = CGPointMake(myCell.contentView.center.x, myCell.faceImageView.center.y);
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
     
     NSString *contentURL;
@@ -214,29 +215,43 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     self.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
     self.contentView.frame = self.frame;
     
-    self.controller = [[UIImagePickerController alloc] init];
-    self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeImage, nil];
-    self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
-    self.controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-    self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
-    self.controller.showsCameraControls = NO;
-    self.controller.delegate = self;
+//    self.controller = [[UIImagePickerController alloc] init];
+//    self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeImage, nil];
+//    self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
+//    self.controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+//    self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+//    self.controller.showsCameraControls = NO;
+//    self.controller.delegate = self;
+//
+//    float sizeOfCell = 0.9 * (float)[HighlightCell height];
+//    NSLog(@"total height: %f, size of cell: %f", [HighlightCell height], sizeOfCell);
+//    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+//    CGFloat controllerWidth = sizeOfCell;
+//    CGFloat controllerHeight = sizeOfCell;
+//    CGFloat cameraWidth =  screenWidth;
+//    CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
+//    CGFloat scaleWidth = (controllerWidth / cameraWidth);
+//    CGFloat scaleHeight = (controllerHeight / cameraHeight);
+//   
+//    CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 0.0);
+//    self.controller.view.transform = CGAffineTransformScale(translate, scaleWidth, scaleHeight);
+//    self.controller.view.frame = CGRectMake(0, 0, self.controller.view.frame.size.width, self.controller.view.frame.size.height);
+//    self.controller.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, scaleWidth/scaleHeight);
+//    [self.contentView addSubview:self.controller.view];
 
-    float sizeOfCell = 0.9 * (float)[HighlightCell height];
-    NSLog(@"total height: %f, size of cell: %f", [HighlightCell height], sizeOfCell);
-    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-    CGFloat controllerWidth = sizeOfCell;
-    CGFloat controllerHeight = sizeOfCell;
-    CGFloat cameraWidth =  screenWidth;
-    CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
-    CGFloat scaleWidth = (controllerWidth / cameraWidth);
-    CGFloat scaleHeight = (controllerHeight / cameraHeight);
-   
-    CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 0.0);
-    self.controller.view.transform = CGAffineTransformScale(translate, scaleWidth, scaleHeight);
-    self.controller.view.frame = CGRectMake(0, 0, self.controller.view.frame.size.width, self.controller.view.frame.size.height);
-    self.controller.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, scaleWidth/scaleHeight);
-    [self.contentView addSubview:self.controller.view];
+    self.colorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0.9f * (float) [HighlightCell height], 0.9f * (float) [HighlightCell height])];
+    self.colorView.center = self.contentView.center;
+    self.colorView.backgroundColor = [FontProperties getBlueColor];
+    [self.contentView addSubview:self.colorView];
+    
+    self.addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.colorView.frame.size.width, self.colorView.frame.size.height)];
+    self.addPhotoLabel.font = [FontProperties montserratRegular:20.0f];
+    self.addPhotoLabel.numberOfLines = 0;
+    self.addPhotoLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.addPhotoLabel.textAlignment = NSTextAlignmentCenter;
+    self.addPhotoLabel.text = @"Add\nPhoto";
+    self.addPhotoLabel.textColor = UIColor.whiteColor;
+    [self.colorView addSubview:self.addPhotoLabel];
 }
 
 -(BOOL)prefersStatusBarHidden   // iOS8 definitely needs this one. checked.
@@ -324,7 +339,6 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) resetToInactive {
-    
 //    self.faceAndMediaTypeView.alpha = 0.5f;
 //    
 //    self.faceImageView.transform = CGAffineTransformMakeScale(0.75, 0.75);

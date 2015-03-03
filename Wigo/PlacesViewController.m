@@ -472,7 +472,7 @@ BOOL firstTimeLoading;
         if (sizeOfArray == 0 || sizeOfArray <= row) return ;
         event = (WGEvent *)[self.events objectAtIndex:row];
     }
-    [[WGProfile currentUser] goingToEvent:event withHandler:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser goingToEvent:event withHandler:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
@@ -482,6 +482,7 @@ BOOL firstTimeLoading;
         WGProfile.currentUser.isGoingOut = @YES;
         [strongSelf updateTitleView];
         [strongSelf fetchEventsFirstPage];
+        [strongSelf scrollUp];
     }];
 }
 

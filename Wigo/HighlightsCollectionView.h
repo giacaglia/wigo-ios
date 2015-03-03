@@ -22,6 +22,8 @@
 
 @interface AddPhotoCell : UICollectionViewCell  <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (nonatomic, strong) UIImagePickerController *controller;
+@property (nonatomic, strong) UIView *colorView;
+@property (nonatomic, strong) UILabel *addPhotoLabel;
 @end
 
 @interface HighlightCell : UICollectionViewCell
