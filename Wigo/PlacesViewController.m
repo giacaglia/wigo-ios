@@ -194,6 +194,9 @@ BOOL firstTimeLoading;
         CGRect profileFrame = CGRectMake(3, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
+        profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
+        profileImageView.layer.borderWidth = 1.0f;
+        profileImageView.layer.cornerRadius = profileFrame.size.height/2;
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
         [profileImageView setSmallImageForUser:WGProfile.currentUser completed:nil];
@@ -369,18 +372,18 @@ BOOL firstTimeLoading;
     [self.schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
     self.schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
   
-    CGFloat fontSize = 20.0f;
+    CGFloat fontSize = 16.0f;
     CGSize size;
     while (fontSize > 0.0f)
     {
         size = [self.groupName sizeWithAttributes:
-                       @{NSFontAttributeName:[FontProperties scMediumFont:fontSize]}];
+                       @{NSFontAttributeName:[FontProperties openSansSemibold:fontSize]}];
         //TODO: not use fixed length
         if (size.width <= 210) break;
         
         fontSize -= 2.0;
     }
-    self.schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
+    self.schoolButton.titleLabel.font = [FontProperties openSansSemibold:fontSize];
 
     UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, 0, 6, 5)];
     [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
