@@ -25,7 +25,6 @@
 @property (nonatomic, assign) CGPoint collectionViewPointNow;
 @property (nonatomic, assign) CGPoint imagesScrollViewPointNow;
 @property (nonatomic, assign) BOOL facesHidden;
-@property (nonatomic, strong) UIButton *buttonTrash;
 @property (nonatomic, strong) UIVisualEffectView *visualEffectView;
 @property (nonatomic, strong) UIView *holeView;
 @end
@@ -158,10 +157,14 @@
         [UIView animateWithDuration:0.5 animations:^{
             self.facesCollectionView.alpha = 0;
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,-self.facesCollectionView.frame.size.height);
-            self.buttonTrash.alpha = 0;
-            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, self.buttonTrash.frame.size.height);
             self.buttonCancel.alpha = 0;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, self.buttonCancel.frame.size.height);
+            self.upVoteButton.alpha = 0;
+            self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, self.upVoteButton.frame.size.height);
+            self.numberOfVotesLabel.alpha = 0;
+            self.numberOfVotesLabel.transform = CGAffineTransformMakeTranslation(0, self.numberOfVotesLabel.frame.size.height);
+            self.backgroundTop.alpha = 0;
+            self.backgroundBottom.alpha = 0;
         } completion:^(BOOL finished) {
             self.facesHidden = YES;
         }];
@@ -169,12 +172,44 @@
         [UIView animateWithDuration:0.5 animations:^{
             self.facesCollectionView.alpha = 1;
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,0);
-            self.buttonTrash.alpha = 1;
-            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, 0);
             self.buttonCancel.alpha = 1;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, 0);
+            self.upVoteButton.alpha = 1;
+            self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, 0);
+            self.numberOfVotesLabel.alpha = 1;
+            self.numberOfVotesLabel.transform = CGAffineTransformMakeTranslation(0, 0);
+            self.backgroundTop.alpha = 1;
+            self.backgroundBottom.alpha = 1;
         } completion:^(BOOL finished) {
             self.facesHidden = NO;
+        }];
+    }
+}
+
+- (void)fetchEventMessages {
+    __weak typeof(self) weakSelf = self;
+    if (!self.eventMessages) {
+        [self.event getMessages:^(WGCollection *collection, NSError *error) {
+            __strong typeof(self) strongSelf = weakSelf;
+            [strongSelf.facesCollectionView didFinishPullToRefresh];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            strongSelf.eventMessages = collection;
+            [strongSelf.facesCollectionView reloadData];
+        }];
+    } else if ([self.eventMessages.hasNextPage boolValue]) {
+        [self.eventMessages addNextPage:^(BOOL success, NSError *error) {
+            __strong typeof(self) strongSelf = weakSelf;
+            [strongSelf.facesCollectionView didFinishPullToRefresh];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            [strongSelf.facesCollectionView reloadData];
         }];
     }
 }
@@ -212,61 +247,6 @@
     
     [self presentViewController:picker animated:YES completion:NULL];
 }
-
-#pragma mark - Image Picker {
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    
-    NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
-    
-    //video
-    if (CFStringCompare ((__bridge CFStringRef) mediaType, kUTTypeMovie, 0) == kCFCompareEqualTo) {
-        NSURL *videoUrl=(NSURL*)[info objectForKey:UIImagePickerControllerMediaURL];
-        [self generateThumbnailAndSendVideo: videoUrl];
-    }
-    //image
-    else if (CFStringCompare ((__bridge CFStringRef) mediaType, kUTTypeImage, 0) == kCFCompareEqualTo) {
-
-        UIImage *image = [info objectForKey: UIImagePickerControllerEditedImage];
-        NSData *imageData = UIImageJPEGRepresentation(image, 0.8);
-        [self sendImage: imageData];
-    }
-    [picker dismissViewControllerAnimated: YES completion:nil];
-}
-
-- (void) sendImage: (NSData *) data{
-
-}
-
-- (void) sendVideo: (NSData *) data withThumbnail: (UIImage *) thumb {
-
-}
-#pragma mark - Media Scroll View Delegate
-
-
-#pragma mark - Helpers
-
--(void)generateThumbnailAndSendVideo: (NSURL *) videoUrl
-{
-    AVURLAsset *asset=[[AVURLAsset alloc] initWithURL: videoUrl options:nil];
-    AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
-    generator.appliesPreferredTrackTransform=TRUE;
-    CMTime thumbTime = CMTimeMakeWithSeconds(0,30);
-    
-    AVAssetImageGeneratorCompletionHandler handler = ^(CMTime requestedTime, CGImageRef im, CMTime actualTime, AVAssetImageGeneratorResult result, NSError *error){
-        if (result != AVAssetImageGeneratorSucceeded) {
-            NSLog(@"couldn't generate thumbnail, error:%@", error);
-        }
-        UIImage *thumb =[UIImage imageWithCGImage:im];
-        NSData *videoData = [NSData dataWithContentsOfURL: videoUrl];
-        [self sendVideo: videoData withThumbnail: thumb];
-
-    };
-    
-    CGSize maxSize = CGSizeMake([[UIScreen mainScreen] bounds].size.width, 180);
-    generator.maximumSize = maxSize;
-    [generator generateCGImagesAsynchronouslyForTimes:[NSArray arrayWithObject:[NSValue valueWithCMTime:thumbTime]] completionHandler:handler];
-}
-
 
 #pragma mark - ScrollViewDelegate
 
@@ -355,30 +335,21 @@
 - (void)hideOrShowFacesForPage:(int)page {
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+        self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
+        if (eventMessage.vote.intValue == 1) self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
+        else self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
         if (eventMessage.mediaMimeType && [eventMessage.mediaMimeType isEqualToString:kCameraType]) {
             self.buttonCancel.hidden = YES;
             self.buttonCancel.enabled = NO;
-            self.buttonTrash.hidden = YES;
-            self.buttonTrash.enabled = NO;
             self.facesHidden = NO;
             [self focusOnContent];
         } else if (eventMessage.mediaMimeType && ([eventMessage.mediaMimeType isEqualToString:kFaceImage] || [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost])) {
-            self.buttonTrash.hidden = YES;
-            self.buttonTrash.enabled = NO;
         } else {
             self.facesHidden = YES;
             [self focusOnContent];
             
             self.buttonCancel.hidden = NO;
             self.buttonCancel.enabled = YES;
-            if ([eventMessage.user isCurrentUser]) {
-                self.buttonTrash.hidden = NO;
-                self.buttonTrash.enabled = YES;
-            } else {
-                self.buttonTrash.hidden = YES;
-                self.buttonTrash.enabled = NO;
-            }
-            
         }
         NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
 
@@ -409,6 +380,14 @@
     [self.view addSubview:self.mediaScrollView];
     [self.view sendSubviewToBack:self.mediaScrollView];
     
+    self.backgroundTop = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 100)];
+    self.backgroundTop.image = [UIImage imageNamed:@"backgroundTop"];
+    [self.view addSubview:self.backgroundTop];
+    
+    self.backgroundBottom = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 100)];
+    self.backgroundBottom.image = [UIImage imageNamed:@"backgroundBottom"];
+    [self.view addSubview:self.backgroundBottom];
+
     self.facesCollectionView.backgroundColor = [UIColor clearColor];
     FaceFlowLayout *flow = [[FaceFlowLayout alloc] init];
     self.facesCollectionView.showsHorizontalScrollIndicator = NO;
@@ -417,27 +396,76 @@
     self.facesCollectionView.clipsToBounds = NO;
     self.facesCollectionView.pagingEnabled = NO;
     
-    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 76, 86, 66)];
+    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 10, 86, 66)];
     UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 30, 36, 36)];
     cancelImageView.image = [UIImage imageNamed:@"cancelCamera"];
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
     
-    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 18, self.view.frame.size.height - 46, 36, 36)];
-    UIImageView *trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 36, 36)];
-    trashImageView.image = [UIImage imageNamed:@"trashIcon"];
-    [self.buttonTrash addSubview:trashImageView];
-    [self.buttonTrash addTarget:self action:@selector(trashPressed:) forControlEvents:UIControlEventTouchUpInside];
-    self.buttonTrash.hidden = YES;
-    self.buttonTrash.enabled = NO;
-    [self.view addSubview:self.buttonTrash];
+    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(47, self.view.frame.size.height - 50, 32, 30)];
+    self.numberOfVotesLabel.textColor = UIColor.whiteColor;
+    self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberOfVotesLabel.font = [FontProperties openSansSemibold:21.0f];
+    self.numberOfVotesLabel.layer.shadowOpacity = 1.0f;
+    self.numberOfVotesLabel.layer.shadowColor = UIColor.blackColor.CGColor;
+    self.numberOfVotesLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
+    self.numberOfVotesLabel.layer.shadowRadius = 0.5;
+    [self.view addSubview:self.numberOfVotesLabel];
     
+    self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 55, 56, 52)];
+    [self.view addSubview:self.upVoteButton];
+
+    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 12, 22, 18)];
+    self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
+    [self.upVoteButton addSubview:self.upvoteImageView];
+    [self.upVoteButton addTarget:self action:@selector(upvotePressed) forControlEvents:UIControlEventTouchUpInside];
     if (self.index && self.index.intValue >= 0 && self.index.intValue < [self.mediaScrollView numberOfItemsInSection:0]) {
         [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
         self.mediaScrollView.index = self.index;
         self.mediaScrollView.minPage = [self.index intValue];
         self.mediaScrollView.maxPage = [self.index intValue];
+    }
+}
+
+- (void)upvotePressed {
+    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+    NSNumber *vote = [eventMessage objectForKey:@"vote"];
+    if (vote != nil) {
+        return;
+    }
+    if ([eventMessage objectForKey:@"id"] == nil) {
+        return;
+    }
+    
+    [WGAnalytics tagEvent:@"Up Vote Tapped"];
+    
+    CGAffineTransform currentTransform = self.upVoteButton.transform;
+    
+    [UIView animateWithDuration:0.2f
+                     animations:^{
+                         self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
+                         self.upVoteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
+                     }
+                     completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.2f
+                                          animations:^{
+                                              self.upVoteButton.transform = currentTransform;
+                                              
+                                          } completion:^(BOOL finished) {
+                                              [self updateNumberOfVotes:YES];
+                                          }];
+                     }];
+}
+- (void)updateNumberOfVotes:(BOOL)upvoteBool {
+    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+
+    NSNumber *votedUpNumber = [eventMessage objectForKey:@"vote"];
+    if (!votedUpNumber) {
+        eventMessage.vote = @1;
+        eventMessage.upVotes = @([eventMessage.upVotes intValue] + 1);
     }
 }
 
@@ -447,42 +475,6 @@
     [self.mediaScrollView closeView];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-- (void)trashPressed:(id)sender {
-    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
-    
-    if (page < self.eventMessages.count && page >= 0) {
-        [WGAnalytics tagEvent: @"Delete Highlight Tapped"];
-        
-        WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-        if ([eventMessage objectForKey:@"id"]) {
-            [eventMessage remove:^(BOOL success, NSError *error) {
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionDelete retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-                    return;
-                }
-                [self.eventMessages removeObject:eventMessage];
-                [self.mediaScrollView.eventMessages removeObject:eventMessage];
-                
-                if (self.eventMessages.count == 0) {
-                    if ([self.event.isExpired boolValue]) {
-                        [self.mediaScrollView closeView];
-                        [self dismissViewControllerAnimated:YES completion:nil];
-                    } else {
-                        [self.facesCollectionView reloadData];
-                        [self.mediaScrollView reloadData];
-                    }
-                } else {
-                    [self.facesCollectionView reloadData];
-                    [self.mediaScrollView reloadData];
-                }
-                [self hideOrShowFacesForPage:(int) MIN(page, self.eventMessages.count - 1)];
-            }];
-        }
-    }
-}
-
 
 #pragma mark -  EventConversation Delegate methods
 

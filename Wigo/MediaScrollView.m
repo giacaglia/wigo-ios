@@ -877,7 +877,7 @@
     self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     self.imageView.clipsToBounds = YES;
     [self.contentView addSubview:self.imageView];
-    
+
     self.spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     self.spinner.frame = CGRectMake(self.imageView.frame.size.width/4, self.imageView.frame.size.height/4, self.imageView.frame.size.width/2,  self.imageView.frame.size.height/2);
     [self.imageView addSubview:self.spinner];
@@ -923,92 +923,9 @@
     }
     else self.label.hidden = YES;
     
-    NSNumber *vote = self.eventMessage.vote;
-        if (!self.numberOfVotesLabel) {
-            self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width - 52, self.frame.size.height - 50, 32, 30)];
-            self.numberOfVotesLabel.textColor = UIColor.whiteColor;
-            self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
-            self.numberOfVotesLabel.font = [FontProperties openSansSemibold:21.0f];
-            self.numberOfVotesLabel.layer.shadowOpacity = 1.0f;
-            self.numberOfVotesLabel.layer.shadowColor = UIColor.blackColor.CGColor;
-            self.numberOfVotesLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
-            self.numberOfVotesLabel.layer.shadowRadius = 0.5;
-            [self.contentView addSubview:self.numberOfVotesLabel];
-        }
-        int votes = [self.eventMessage.upVotes intValue] - [self.eventMessage.downVotes intValue];
-        self.numberOfVotesLabel.text = [[NSNumber numberWithInt:votes] stringValue];
-
-        if (!self.upVoteButton) {
-            self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 42 - 30 - 10, self.frame.size.height - 55, 56, 52)];
-            self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 12, 22, 18)];
-            [self.upVoteButton addSubview:self.upvoteImageView];
-            [self.upVoteButton addTarget:self action:@selector(upvotePressed:) forControlEvents:UIControlEventTouchUpInside];
-            [self.contentView addSubview:self.upVoteButton];
-        }
-    
-        if ([vote intValue] == 1) self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
-        else self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
-    
-        [self showVotes];
     
 }
 
-- (void)upvotePressed:(id)sender {
-    NSNumber *vote = [self.eventMessage objectForKey:@"vote"];
-    if (vote != nil) {
-        return;
-    }
-    if ([self.eventMessage objectForKey:@"id"] == nil) {
-        return;
-    }
-    
-    [WGAnalytics tagEvent:@"Up Vote Tapped"];
-    
-    CGAffineTransform currentTransform = self.upVoteButton.transform;
-    
-    [UIView animateWithDuration:0.2f
-                     animations:^{
-                         self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
-                         self.upVoteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
-                     }
-                     completion:^(BOOL finished) {
-                         [UIView animateWithDuration:0.2f
-                                          animations:^{
-                                              self.upVoteButton.transform = currentTransform;
-                                              
-                                          } completion:^(BOOL finished) {
-                                              [self updateNumberOfVotes:YES];
-                                          }];
-                     }];
-}
-
-- (void)hideVotes {
-    self.upVoteButton.hidden = YES;
-    self.upVoteButton.enabled = NO;
-    self.numberOfVotesLabel.hidden = YES;
-}
-
-- (void)showVotes {
-    self.upVoteButton.hidden = NO;
-    self.upVoteButton.enabled = YES;
-    self.numberOfVotesLabel.hidden = NO;
-}
-
-- (void)updateNumberOfVotes:(BOOL)upvoteBool {
-    NSNumber *votedUpNumber = [self.eventMessage objectForKey:@"vote"];
-    if (!votedUpNumber) {
-        if (!upvoteBool) {
-            self.eventMessage.vote = @-1;
-            self.eventMessage.downVotes = @([self.eventMessage.downVotes intValue] + 1);
-        } else {
-            self.eventMessage.vote = @1;
-            self.eventMessage.upVotes = @([self.eventMessage.upVotes intValue] + 1);
-        }
-        [self updateUI];
-        [self sendVote:upvoteBool];
-    }
-    [self.mediaScrollDelegate updateEventMessage:self.eventMessage forCell:self];
-}
 
 
 - (void)sendVote:(BOOL)upvoteBool {

@@ -64,6 +64,15 @@ int imageWidth;
 //    [backButtonModal addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
 //    [self.view addSubview:backButtonModal];
     
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 54, self.view.frame.size.width - 30, 50)];
+    titleLabel.text = self.event.name;
+    titleLabel.textColor = UIColor.whiteColor;
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.numberOfLines = 0;
+    titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    titleLabel.font = [FontProperties openSansRegular:20.0f];
+    [self.view addSubview:titleLabel];
+    
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 80, 50, 50)];
     closeButton.center = CGPointMake(self.view.center.x, closeButton.center.y);
     closeButton.backgroundColor = UIColor.clearColor;
@@ -80,17 +89,17 @@ int imageWidth;
 }
 
 - (void)dismissView {
+    [self.placesDelegate.eventOffsetDictionary setObject:@200
+                                                  forKey:self.event.id.stringValue];
+    self.placesDelegate.doNotReloadOffsets = YES;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)presentUser:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:buttonSender.tag];
-    [self dismissViewControllerAnimated:YES completion:^{
-        if (attendee) {
-             [self.placesDelegate showUser:attendee.user];
-        }
-    }];
+    if (attendee) [self.placesDelegate showUser:attendee.user];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)fetchEventAttendeesAsynchronous {

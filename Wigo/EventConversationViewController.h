@@ -25,6 +25,13 @@
 @property (nonatomic, strong) UIView *loadingBanner;
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) UIButton *buttonCancel;
+@property (nonatomic, strong) UIImageView *backgroundTop;
+@property (nonatomic, strong) UIImageView *backgroundBottom;
+
+// Bottom controls
+@property (nonatomic, strong) UILabel *numberOfVotesLabel;
+@property (nonatomic, strong) UIButton *upVoteButton;
+@property (nonatomic, strong) UIImageView *upvoteImageView;
 @end
 
 @interface FaceCell : UICollectionViewCell

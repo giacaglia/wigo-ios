@@ -30,6 +30,7 @@
 - (void)showModalAttendees:(UIViewController *)modal;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 - (void)updateEvent:(WGEvent *)newEvent;
+@property (nonatomic, assign) BOOL doNotReloadOffsets;
 @end
 
 @protocol PrivacySwitchDelegate <NSObject>

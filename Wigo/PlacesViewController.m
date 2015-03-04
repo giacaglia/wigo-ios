@@ -1345,8 +1345,11 @@ BOOL firstTimeLoading;
 #pragma mark - Network Asynchronous Functions
 
 - (void) fetchEventsFirstPage {
-    for (NSString *key in [self.eventOffsetDictionary allKeys]) {
-        [self.eventOffsetDictionary setValue:@0 forKey:key];
+    if (!self.doNotReloadOffsets) {
+        for (NSString *key in [self.eventOffsetDictionary allKeys]) {
+            [self.eventOffsetDictionary setValue:@0 forKey:key];
+        }
+        self.doNotReloadOffsets = NO;
     }
     self.aggregateEvent = nil;
     self.allEvents = nil;
@@ -1636,7 +1639,7 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textAlignment = NSTextAlignmentCenter;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.backgroundColor = UIColor.whiteColor;
-    self.eventNameLabel.font = [FontProperties montserratBold:21.0f];
+    self.eventNameLabel.font = [FontProperties openSansSemibold:21.0f];
     self.eventNameLabel.textColor = UIColor.blackColor;
     [self.contentView addSubview:self.eventNameLabel];
     
@@ -1671,9 +1674,9 @@ BOOL firstTimeLoading;
     self.goingHereButton.backgroundColor = [FontProperties getBlueColor];
     [self.goingHereButton setTitle:@"Go Here" forState:UIControlStateNormal];
     [self.goingHereButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    self.goingHereButton.titleLabel.font = [FontProperties montserratBold:14.0f];
+    self.goingHereButton.titleLabel.font = [FontProperties openSansSemibold:14.0f];
     [self.contentView addSubview:self.goingHereButton];
-
+    
     self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height, self.frame.size.width, [EventCell heightIsPeeking:NO] - (self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height))];
     self.grayView.backgroundColor = RGB(217, 217, 217);
     [self.contentView addSubview:self.grayView];

@@ -46,6 +46,7 @@
 @property (nonatomic, strong) UIButton *switchButton;
 @property (nonatomic, strong) UILabel *invitePeopleLabel;
 @property (nonatomic, assign) BOOL privacyTurnedOn;
+@property (nonatomic, assign) BOOL doNotReloadOffsets;
 @end
 
 #import "EventPeopleScrollView.h"
