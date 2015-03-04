@@ -15,8 +15,6 @@
 
 - (id)initWithEvent:(WGEvent *)event {
     if (self.widthOfEachCell == 0) self.widthOfEachCell = (float)[[UIScreen mainScreen] bounds].size.width/(float)6.4;
-    
-    NSLog(@"2. width: %d", self.widthOfEachCell);
     self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.widthOfEachCell + 50) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:self.widthOfEachCell]];
     if (self) {
         self.contentSize = CGSizeMake(15, self.widthOfEachCell + 40);
@@ -136,6 +134,7 @@
         [scrollCell.imageButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
         scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
         scrollCell.profileNameLabel.text = @"Invite";
+        scrollCell.profileNameLabel.alpha = 1.0f;
         scrollCell.profileNameLabel.textColor = [FontProperties getOrangeColor];
         scrollCell.profileNameLabel.font = [FontProperties semiboldFont:12.0f];
     }

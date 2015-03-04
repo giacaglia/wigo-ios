@@ -17,6 +17,7 @@
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) WGCollection *eventMessages;
 @property (nonatomic, strong) MediaScrollView *mediaScrollView;
+@property (nonatomic, assign) NSInteger lastPage;
 @property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
 @property (nonatomic, strong) NSNumber *index;
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
@@ -24,11 +25,11 @@
 @property (nonatomic, strong) UILabel *postingLabel;
 @property (nonatomic, strong) UIView *loadingBanner;
 @property (nonatomic, assign) BOOL isPeeking;
-@property (nonatomic, strong) UIButton *buttonCancel;
-@property (nonatomic, strong) UIImageView *backgroundTop;
-@property (nonatomic, strong) UIImageView *backgroundBottom;
+
 
 // Bottom controls
+@property (nonatomic, strong) UIButton *buttonCancel;
+@property (nonatomic, strong) UIImageView *backgroundBottom;
 @property (nonatomic, strong) UILabel *numberOfVotesLabel;
 @property (nonatomic, strong) UIButton *upVoteButton;
 @property (nonatomic, strong) UIImageView *upvoteImageView;

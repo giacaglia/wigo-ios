@@ -38,17 +38,8 @@
     self.title = self.event.name;
     
     [self loadScrollView];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(notificationHighlightPage:)
-                                                 name:@"notificationHighlightPage"
-                                               object:nil];
 }
 
-- (void)notificationHighlightPage:(NSNotification *) notification {
-    NSDictionary *userInfo = [notification userInfo];
-    NSNumber *pageNumber = (NSNumber *)[userInfo objectForKey:@"page"];
-    [self highlightCellAtPage:[pageNumber integerValue] animated:YES];
-}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
@@ -159,7 +150,6 @@
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, self.upVoteButton.frame.size.height);
             self.numberOfVotesLabel.alpha = 0;
             self.numberOfVotesLabel.transform = CGAffineTransformMakeTranslation(0, self.numberOfVotesLabel.frame.size.height);
-            self.backgroundTop.alpha = 0;
             self.backgroundBottom.alpha = 0;
         } completion:^(BOOL finished) {
             self.facesHidden = YES;
@@ -174,7 +164,6 @@
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, 0);
             self.numberOfVotesLabel.alpha = 1;
             self.numberOfVotesLabel.transform = CGAffineTransformMakeTranslation(0, 0);
-            self.backgroundTop.alpha = 1;
             self.backgroundBottom.alpha = 1;
         } completion:^(BOOL finished) {
             self.facesHidden = NO;
@@ -267,7 +256,8 @@
     }
 }
 
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     CGPoint pointNow;
     if (scrollView == self.mediaScrollView) pointNow = _imagesScrollViewPointNow;
     else pointNow = _collectionViewPointNow;
@@ -301,13 +291,13 @@
     }
     NSInteger page;
     if (leftBoolean) {
-        if (fractionalPage - floor(fractionalPage) < 0.8) {
+        if (fractionalPage - floor(fractionalPage) < 0.95) {
             page = floor(fractionalPage);
         } else {
             page = ceil(fractionalPage);
         }
     } else {
-        if (fractionalPage - floor(fractionalPage) < 0.2) {
+        if (fractionalPage - floor(fractionalPage) < 0.05) {
             page = floor(fractionalPage);
         } else {
             page = ceil(fractionalPage);
@@ -375,6 +365,7 @@
     self.mediaScrollView.firstCell = YES;
     [self.view addSubview:self.mediaScrollView];
     [self.view sendSubviewToBack:self.mediaScrollView];
+    self.mediaScrollView.pagingEnabled = NO;
     
     self.backgroundBottom = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 100)];
     self.backgroundBottom.image = [UIImage imageNamed:@"backgroundBottom"];
@@ -606,7 +597,6 @@
             view.layer.borderColor = UIColor.clearColor.CGColor;
             view.frame = startFrame;
             view.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-            NSLog(@"width: %f", startFrame.size.width/2);
             view.layer.cornerRadius = startFrame.size.width/2;
         }];
     }];
