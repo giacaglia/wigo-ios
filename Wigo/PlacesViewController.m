@@ -1651,6 +1651,7 @@ BOOL firstTimeLoading;
     self.numberOfPeopleGoingLabel.textColor = UIColor.blackColor;
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties openSansSemibold:15.0f];
+    self.numberOfPeopleGoingLabel.alpha = 0.5f;
     [self.contentView addSubview:self.numberOfPeopleGoingLabel];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
@@ -1663,6 +1664,7 @@ BOOL firstTimeLoading;
     self.numberOfHighlightsLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfHighlightsLabel.textColor = UIColor.blackColor;
     self.numberOfHighlightsLabel.font = [FontProperties openSansSemibold:15.0f];
+    self.numberOfHighlightsLabel.alpha = 0.5f;
     [self.contentView addSubview:self.numberOfHighlightsLabel];
     
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
@@ -1697,7 +1699,7 @@ BOOL firstTimeLoading;
         [self.goingHereButton setTitle:@"GO HERE" forState:UIControlStateNormal];
     }
 
-    self.numberOfHighlightsLabel.text = @"Highlights";
+    self.numberOfHighlightsLabel.text = @"The Buzz";
     self.privacyLockImageView.hidden = !self.event.isPrivate;
     self.eventPeopleScrollView.event = self.event;
     [self.eventPeopleScrollView updateUI];

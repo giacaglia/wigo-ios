@@ -17,6 +17,7 @@
 
 @protocol MediaScrollViewDelegate
 - (void)focusOnContent;
+- (void)upvotePressed;
 @optional
 - (void)updateEventMessage:(WGEventMessage *)eventMessage forCell:(UICollectionViewCell *)cell;
 - (void)dismissView;
@@ -27,7 +28,8 @@
 - (void)cancelPressed;
 @end
 
-@interface MediaScrollView : UICollectionView <UICollectionViewDataSource, MediaScrollViewDelegate>
+@interface MediaScrollView : UICollectionView <UICollectionViewDataSource,
+                                                MediaScrollViewDelegate>
 
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) WGEvent *event;
@@ -72,8 +74,10 @@
 @property (nonatomic, strong) UIButton *upVoteButton;
 @property (nonatomic, strong) UIImageView *upvoteImageView;
 @property (nonatomic, strong) UIButton *focusButton;
+@property (nonatomic, strong) UIView *touchableView;
 @property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
 - (void)focusOnContent;
+- (void)doubleTapToLike;
 @property (nonatomic, assign) BOOL isFocusing;
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;

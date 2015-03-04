@@ -83,6 +83,10 @@
     [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];
 }
 
+- (void)invitePressed {
+    [self.placesDelegate invitePressed];
+}
+
 
 - (void)fetchEventAttendeesAsynchronous {
     if (!self.fetchingEventAttendees) {
@@ -113,21 +117,46 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
-    return self.event.attendees.count;
+    if (section == kInviteSection) {
+        if (self.event.id && [WGProfile.currentUser.eventAttending.id isEqual:self.event.id]) {
+            return 1;
+        }
+        else return 0;
+    }
+    else if (section == kPeopleSection) {
+        return self.event.attendees.count;
+    }
+    return 0;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
+    return 2;
+
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ScrollViewCell *scrollCell = [collectionView dequeueReusableCellWithReuseIdentifier:kScrollViewCellName forIndexPath:indexPath];
-    scrollCell.imageButton.tag = indexPath.item;
-    [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
-    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
-    [scrollCell setStateForUser:attendee.user];
-    if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
+    if (indexPath.section == kInviteSection) {
+        [scrollCell.imageButton removeTarget:nil
+                           action:NULL
+                 forControlEvents:UIControlEventAllEvents];
+        [scrollCell.imageButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+        scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
+        scrollCell.profileNameLabel.text = @"Invite";
+        scrollCell.profileNameLabel.textColor = [FontProperties getOrangeColor];
+        scrollCell.profileNameLabel.font = [FontProperties semiboldFont:12.0f];
+    }
+    else {
+        scrollCell.imageButton.tag = indexPath.item;
+        [scrollCell.imageButton removeTarget:nil
+                                      action:NULL
+                            forControlEvents:UIControlEventAllEvents];
+        [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
+        WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
+        [scrollCell setStateForUser:attendee.user];
+        if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
+    }
     return scrollCell;
 }
 
@@ -195,6 +224,7 @@
 - (void)setStateForUser:(WGUser *)user {
     [self.imgView setSmallImageForUser:user completed:nil];
     self.profileNameLabel.text = user.firstName;
+    self.profileNameLabel.textColor = UIColor.blackColor;
     if (user.isCurrentUser) {
         self.profileNameLabel.alpha = 1.0f;
         self.profileNameLabel.font = [FontProperties openSansSemibold:12.0f];

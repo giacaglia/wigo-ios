@@ -20,6 +20,10 @@
     return [UIFont fontWithName:@"OpenSans-Semibold" size:fontSize];
 }
 
++ (UIFont *)openSansBold:(float)fontSize {
+    return [UIFont fontWithName:@"OpenSans-Bold" size:fontSize];
+}
+
 + (UIFont *)montserratRegular:(float)fontSize {
     return [UIFont fontWithName:@"Montserrat" size:fontSize];
 }

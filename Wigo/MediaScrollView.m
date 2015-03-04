@@ -260,6 +260,10 @@
     [self.eventConversationDelegate focusOnContent];
 }
 
+- (void)upvotePressed {
+    [self.eventConversationDelegate upvotePressed];
+}
+
 #pragma mark - IQMediaPickerController Delegate methods
 
 - (void)cancelPressed {
@@ -505,7 +509,6 @@
         NSData *thumbnailData = [options objectForKey:kThumbnailDataKey];
         NSString *thumnailFileName = [options objectForKey:@"thumbnail"];
         NSMutableDictionary *mutableOptions = [NSMutableDictionary dictionaryWithDictionary:options];
-        UIImage *image = [UIImage imageWithData:thumbnailData];
         [mutableOptions removeObjectForKey:kThumbnailDataKey];
         options = mutableOptions;
         WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
@@ -891,11 +894,22 @@
     [self.contentView addSubview:self.label];
     [self.contentView bringSubviewToFront:self.label];
     
-    self.focusButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 110, self.frame.size.width, self.frame.size.height - 220)];
-    self.focusButton.backgroundColor = UIColor.clearColor;
-    [self.focusButton addTarget:self action:@selector(focusOnContent) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:self.focusButton];
-    [self.contentView bringSubviewToFront:self.focusButton];
+    
+    self.touchableView = [[UIView alloc] initWithFrame:CGRectMake(0, 110, self.frame.size.width, self.frame.size.height - 200)];
+    self.touchableView.backgroundColor = UIColor.clearColor;
+    [self.contentView addSubview:self.touchableView];
+    [self.contentView bringSubviewToFront:self.touchableView];
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(focusOnContent)];
+    singleTap.cancelsTouchesInView = YES;
+    singleTap.numberOfTapsRequired = 1;
+    [self.touchableView addGestureRecognizer:singleTap];
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapToLike)];
+    doubleTap.numberOfTapsRequired = 2;
+    doubleTap.cancelsTouchesInView = YES;
+    [self.touchableView addGestureRecognizer:doubleTap];
+    [singleTap requireGestureRecognizerToFail:doubleTap];
 
 }
 
@@ -938,6 +952,10 @@
 
 - (void)focusOnContent {
     [self.mediaScrollDelegate focusOnContent];
+}
+
+- (void)doubleTapToLike {
+    [self.mediaScrollDelegate upvotePressed];
 }
 
 @end

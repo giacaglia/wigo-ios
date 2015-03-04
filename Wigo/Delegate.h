@@ -31,6 +31,7 @@
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 - (void)updateEvent:(WGEvent *)newEvent;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
+- (void)invitePressed;
 @end
 
 @protocol PrivacySwitchDelegate <NSObject>
@@ -43,6 +44,7 @@
 
 @protocol EventConversationDelegate <NSObject>
 - (void)focusOnContent;
+- (void)upvotePressed;
 @property (nonatomic, assign) BOOL isFocusing;
 - (void)reloadUIForEventMessages:(WGCollection *)eventMessages;
 - (void)addLoadingBanner;

@@ -58,13 +58,9 @@
     } else {
         self.currentActiveCell = nil;
     }
-    
     [self highlightCellAtPage:[self.index intValue] animated:YES];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
-
-    
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
-    
     [WGAnalytics tagEvent:@"Event Story Detail View" withDetails: @{@"isPeeking": isPeekingString}];
 }
 
@@ -380,10 +376,6 @@
     [self.view addSubview:self.mediaScrollView];
     [self.view sendSubviewToBack:self.mediaScrollView];
     
-    self.backgroundTop = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 100)];
-    self.backgroundTop.image = [UIImage imageNamed:@"backgroundTop"];
-    [self.view addSubview:self.backgroundTop];
-    
     self.backgroundBottom = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 100)];
     self.backgroundBottom.image = [UIImage imageNamed:@"backgroundBottom"];
     [self.view addSubview:self.backgroundBottom];
@@ -396,14 +388,14 @@
     self.facesCollectionView.clipsToBounds = NO;
     self.facesCollectionView.pagingEnabled = NO;
     
-    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 10, 86, 66)];
-    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 30, 36, 36)];
-    cancelImageView.image = [UIImage imageNamed:@"cancelCamera"];
+    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 74, 86, 66)];
+    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 51, 15, 15)];
+    cancelImageView.image = [UIImage imageNamed:@"closeModalView"];
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
     
-    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(47, self.view.frame.size.height - 50, 32, 30)];
+    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 32, self.view.frame.size.height - 50, 32, 30)];
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
     self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
     self.numberOfVotesLabel.font = [FontProperties openSansSemibold:21.0f];
@@ -413,9 +405,8 @@
     self.numberOfVotesLabel.layer.shadowRadius = 0.5;
     [self.view addSubview:self.numberOfVotesLabel];
     
-    self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height - 55, 56, 52)];
+    self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , self.view.frame.size.height - 55, 56, 52)];
     [self.view addSubview:self.upVoteButton];
-
     self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 12, 22, 18)];
     self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
     [self.upVoteButton addSubview:self.upvoteImageView];
@@ -466,7 +457,19 @@
     if (!votedUpNumber) {
         eventMessage.vote = @1;
         eventMessage.upVotes = @([eventMessage.upVotes intValue] + 1);
+        [eventMessage vote:upvoteBool withHandler:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionPost];
+            }
+        }];
+        NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+        f.numberStyle = NSNumberFormatterDecimalStyle;
+        NSNumber *myNumber = [f numberFromString:self.numberOfVotesLabel.text];
+        myNumber = [NSNumber numberWithInt:(myNumber.intValue + 1)];
+        self.numberOfVotesLabel.text = myNumber.stringValue;
+        self.numberOfVotesLabel.font = [FontProperties openSansBold:21.0f];
     }
+    
 }
 
 - (void)cancelPressed:(id)sender {

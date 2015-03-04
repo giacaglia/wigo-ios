@@ -34,6 +34,8 @@
 
 #define kScrollViewHeader @"scrollViewHeader"
 #define kScrollViewCellName @"scrollViewCellName"
+#define kInviteSection 0
+#define kPeopleSection 1
 @interface ScrollViewCell : UICollectionViewCell
 @property (nonatomic, strong) UIButton *imageButton;
 @property (nonatomic, strong) UIImageView *imgView;
