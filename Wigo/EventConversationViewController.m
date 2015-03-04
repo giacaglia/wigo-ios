@@ -158,7 +158,7 @@
             self.facesCollectionView.alpha = 0;
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,-self.facesCollectionView.frame.size.height);
             self.buttonCancel.alpha = 0;
-            self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, self.buttonCancel.frame.size.height);
+            self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, -self.buttonCancel.frame.size.height);
             self.upVoteButton.alpha = 0;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, self.upVoteButton.frame.size.height);
             self.numberOfVotesLabel.alpha = 0;

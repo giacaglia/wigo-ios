@@ -78,7 +78,6 @@
                                                              maskImage:nil];
     
     self.eventPeopleModalViewController = [[EventPeopleModalViewController alloc] initWithEvent:self.event startIndex:tag andBackgroundImage:imageOfUnderlyingView];
-    //    [self.eventPeopleModalViewController.view addGestureRecognizer:gestureRecognizer];
     self.eventPeopleModalViewController.placesDelegate = self.placesDelegate;
     
     [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];
@@ -189,13 +188,21 @@
     self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 20)];
     self.profileNameLabel.textColor = UIColor.blackColor;
     self.profileNameLabel.textAlignment = NSTextAlignmentCenter;
-    self.profileNameLabel.font = [FontProperties lightFont:14.0f];
+    self.profileNameLabel.font = [FontProperties openSansRegular:12.0f];
     [self.contentView addSubview:self.profileNameLabel];
 }
 
 - (void)setStateForUser:(WGUser *)user {
     [self.imgView setSmallImageForUser:user completed:nil];
     self.profileNameLabel.text = user.firstName;
+    if (user.isCurrentUser) {
+        self.profileNameLabel.alpha = 1.0f;
+        self.profileNameLabel.font = [FontProperties openSansSemibold:12.0f];
+    }
+    else {
+        self.profileNameLabel.alpha = 0.5f;
+        self.profileNameLabel.font = [FontProperties openSansRegular:12.0f];
+    }
 }
 
 @end
