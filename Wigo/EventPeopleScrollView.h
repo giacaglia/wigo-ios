@@ -29,7 +29,7 @@
 @property (nonatomic, strong) NSNumber *page;
 @property (nonatomic, assign) int xPosition;
 @property (nonatomic, strong) WGEvent *event;
-@property (nonatomic, assign) int sizeOfEachImage;
+@property (nonatomic, assign) int widthOfEachCell;
 @end
 
 #define kScrollViewHeader @"scrollViewHeader"
@@ -44,6 +44,6 @@
 @end
 
 @interface ScrollViewLayout : UICollectionViewFlowLayout
-- (id)initWithSize:(int)size;
-@property (nonatomic, assign) int sizeOfFrame;
+- (id)initWithWidth:(int)width;
+@property (nonatomic, assign) int widthOfFrame;
 @end

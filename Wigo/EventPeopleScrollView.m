@@ -14,16 +14,16 @@
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(WGEvent *)event {
-    if (self.sizeOfEachImage == 0) self.sizeOfEachImage = (float)[[UIScreen mainScreen] bounds].size.width/(float)6.4;
-    self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.sizeOfEachImage + 25) collectionViewLayout:[[ScrollViewLayout alloc] initWithSize:self.sizeOfEachImage]];
+    if (self.widthOfEachCell == 0) self.widthOfEachCell = (float)[[UIScreen mainScreen] bounds].size.width/(float)6.4;
+    
+    NSLog(@"2. width: %d", self.widthOfEachCell);
+    self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.widthOfEachCell + 50) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:self.widthOfEachCell]];
     if (self) {
-        self.contentSize = CGSizeMake(15, self.sizeOfEachImage + 10);
-        self.showsHorizontalScrollIndicator = NO;
-        self.delegate = self;
-        self.event = event;
+        self.contentSize = CGSizeMake(15, self.widthOfEachCell + 40);
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
         self.dataSource = self;
+        self.event = event;
         [self registerClass:[ScrollViewCell class] forCellWithReuseIdentifier:kScrollViewCellName];
         [self registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kScrollViewHeader];
     }
@@ -47,14 +47,6 @@
 
 -(void) saveScrollPosition {
     [self.placesDelegate.eventOffsetDictionary setObject:[NSNumber numberWithInt:self.contentOffset.x] forKey:[self.event.id stringValue]];
-}
-
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    // Add 3 images
-    if (scrollView.contentOffset.x + [[UIScreen mainScreen] bounds].size.width + 4 * self.sizeOfEachImage >= scrollView.contentSize.width && !self.fetchingEventAttendees) {
-        [self fetchEventAttendeesAsynchronous];
-    }
 }
 
 - (void)chooseUser:(id)sender {
@@ -172,7 +164,10 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    return CGSizeMake(10, 1);
+    if (section == kInviteSection) {
+        return CGSizeMake(10, 1);
+    }
+    else return CGSizeMake(0.5, 0.5);
 }
 
 
@@ -199,11 +194,11 @@
 
 
 - (void)setup {
-    int imageWidth = self.frame.size.height - 20;
-    self.frame = CGRectMake(0, 0, imageWidth + 5, imageWidth + 20);
+    int imageWidth = self.frame.size.width - 10;
+    self.frame = CGRectMake(0, 0, imageWidth, imageWidth + 30);
     self.contentView.frame = self.frame;
 
-    self.imageButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 2, imageWidth, imageWidth)];
+    self.imageButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     [self.contentView addSubview:self.imageButton];
     
     self.imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
@@ -239,10 +234,10 @@
 
 @implementation ScrollViewLayout
 
-- (id)initWithSize:(int)size {
+- (id)initWithWidth:(int)width {
     self = [super init];
     if (self) {
-        self.sizeOfFrame = size;
+        self.widthOfFrame = width;
         [self setup];
     }
     return self;
@@ -270,7 +265,7 @@
 
 - (void)setup
 {
-    self.itemSize = CGSizeMake(self.sizeOfFrame + 10, self.sizeOfFrame + 20);
+    self.itemSize = CGSizeMake(self.widthOfFrame + 10, self.widthOfFrame + 20);
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     self.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
     self.minimumInteritemSpacing = 0.0f;

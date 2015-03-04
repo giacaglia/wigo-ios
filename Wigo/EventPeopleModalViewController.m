@@ -7,14 +7,9 @@
 //
 
 #import "EventPeopleModalViewController.h"
-#import "EventPeopleScrollView.h"
 
 #define kNameBarHeight 48.5
 #define kBorderWidth 10
-
-@interface EventPeopleModalViewController ()
-
-@end
 
 int imageWidth;
 

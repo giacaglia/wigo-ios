@@ -1655,8 +1655,10 @@ BOOL firstTimeLoading;
     [self.contentView addSubview:self.numberOfPeopleGoingLabel];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.sizeOfEachImage = (float)[[UIScreen mainScreen] bounds].size.width/(float)6.4;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 84 + 9, self.frame.size.width, self.eventPeopleScrollView.sizeOfEachImage + 18);
+    self.eventPeopleScrollView.widthOfEachCell = (float)[[UIScreen mainScreen] bounds].size.width/(float)6.4;
+    NSLog(@"1.width %d", self.eventPeopleScrollView.widthOfEachCell);
+
+    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 84 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
