@@ -20,6 +20,7 @@
 @property WGEvent *event;
 @property (nonatomic, assign) id <PlacesDelegate> placesDelegate;
 - (id)initWithEvent:(WGEvent *)event startIndex:(int)index andBackgroundImage:(UIImage *)image;
+@property (nonatomic, assign) CGPoint pointNow;
 @end
 
 #define kAttendeesCellName @"attendeesCellName"

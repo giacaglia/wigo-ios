@@ -313,8 +313,8 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         // Content Offset to the middle (which is the first page minus the number of cells/2
         [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:animated];
+        [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:animated];
     });
-    [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:animated];
     [self hideOrShowFacesForPage:(int)page];
 }
 
@@ -819,10 +819,8 @@
     self.faceAndMediaTypeView.alpha = 1.0f;
 
     self.faceImageView.transform = CGAffineTransformIdentity;
-    
     self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
     self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-    
     self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
 }
@@ -830,12 +828,9 @@
 - (void) resetToInactive {
 
     self.faceAndMediaTypeView.alpha = 0.5f;
-    
     self.faceImageView.transform = CGAffineTransformMakeScale(0.75, 0.75);
-
     self.mediaTypeImageView.frame = CGRectMake(0.6*sizeOfEachFaceCell, 0.25*sizeOfEachFaceCell, sizeOfEachFaceCell/6.6, sizeOfEachFaceCell/6.6);
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
-    
     self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
     self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
 }
