@@ -1314,6 +1314,69 @@ BOOL firstTimeLoading;
     return @{ @"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex" : [NSNumber numberWithInt:eventIndex] };
 }
 
+#pragma mark - Paging
+
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    self.pointNow = self.placesTableView.contentOffset;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
+                  willDecelerate:(BOOL)decelerate
+{
+    CGPoint pointNow = self.pointNow;
+    if (decelerate) {
+        if (scrollView.contentOffset.y < pointNow.y) {
+            [self stoppedScrollingToLeft:YES forScrollView:scrollView];
+        } else if (scrollView.contentOffset.y >= pointNow.y) {
+            [self stoppedScrollingToLeft:NO forScrollView:scrollView];
+        }
+    }
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    CGPoint pointNow = self.pointNow;
+    if (scrollView.contentOffset.y < pointNow.y) {
+        [self stoppedScrollingToLeft:YES forScrollView:scrollView];
+    } else if (scrollView.contentOffset.y >= pointNow.y) {
+        [self stoppedScrollingToLeft:NO forScrollView:scrollView];
+    }
+}
+
+- (void)stoppedScrollingToLeft:(BOOL)leftBoolean forScrollView:(UIScrollView *)scrollView
+{
+    NSInteger page = [self getPageForScrollView:scrollView toLeft:leftBoolean];
+    [self highlightCellAtPage:page animated:YES];
+}
+
+- (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
+    float fractionalPage;
+    CGFloat pageHeight = [EventCell heightIsPeeking:[self isPeeking]];
+    fractionalPage = (self.placesTableView.contentOffset.y) / pageHeight;
+    NSInteger page;
+    if (leftBoolean) {
+        if (fractionalPage - floor(fractionalPage) < 0.95) {
+            page = floor(fractionalPage);
+        } else {
+            page = ceil(fractionalPage);
+        }
+    } else {
+        if (fractionalPage - floor(fractionalPage) < 0.05) {
+            page = floor(fractionalPage);
+        } else {
+            page = ceil(fractionalPage);
+        }
+    }
+    return page;
+}
+
+- (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated {
+    page = MAX(page, 0);
+    page = MIN(page, self.events.count - 1);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.placesTableView setContentOffset:CGPointMake(0.0f, [EventCell heightIsPeeking:[self isPeeking]] * page) animated:animated];
+    });
+}
 
 
 #pragma mark - UIScrollView Delegate

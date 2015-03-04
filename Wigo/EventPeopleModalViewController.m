@@ -121,68 +121,67 @@ int imageWidth;
 
 #pragma mark - Paging
 
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    _pointNow = scrollView.contentOffset;
+}
 
-//-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-//    _pointNow = scrollView.contentOffset;
-//}
-//
-//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
-//                  willDecelerate:(BOOL)decelerate
-//{
-//    CGPoint pointNow = _pointNow;
-//    if (decelerate) {
-//        if (scrollView.contentOffset.x < pointNow.x) {
-//            [self stoppedScrollingToLeft:YES forScrollView:scrollView];
-//        } else if (scrollView.contentOffset.x >= pointNow.x) {
-//            [self stoppedScrollingToLeft:NO forScrollView:scrollView];
-//        }
-//    }
-//}
-//
-//- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
-//                     withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-//    CGPoint pointNow = _pointNow;
-//    if (scrollView.contentOffset.x < pointNow.x) {
-//        [self stoppedScrollingToLeft:YES forScrollView:scrollView];
-//    } else if (scrollView.contentOffset.x >= pointNow.x) {
-//        [self stoppedScrollingToLeft:NO forScrollView:scrollView];
-//    }
-//}
-//
-//- (void)stoppedScrollingToLeft:(BOOL)leftBoolean forScrollView:(UIScrollView *)scrollView
-//{
-//    NSInteger page = [self getPageForScrollView:scrollView toLeft:leftBoolean];
-//    [self highlightCellAtPage:page animated:YES];
-//}
-//
-//- (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
-//    float fractionalPage;
-//    CGFloat pageWidth = [[UIScreen mainScreen] bounds].size.width;
-//    fractionalPage = (self.attendeesPhotosScrollView.contentOffset.x) / pageWidth;
-//     NSInteger page;
-//    if (leftBoolean) {
-//        if (fractionalPage - floor(fractionalPage) < 0.95) {
-//            page = floor(fractionalPage);
-//        } else {
-//            page = ceil(fractionalPage);
-//        }
-//    } else {
-//        if (fractionalPage - floor(fractionalPage) < 0.05) {
-//            page = floor(fractionalPage);
-//        } else {
-//            page = ceil(fractionalPage);
-//        }
-//    }
-//    return page;
-//}
-//
-//- (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated {
-//    page = MAX(page, 0);
-//    page = MIN(page, self.event.attendees.count - 1);
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [self.attendeesPhotosScrollView setContentOffset:CGPointMake(([UIScreen mainScreen].bounds.size.width) * page, 0.0f) animated:animated];
-//    });
-//}
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
+                  willDecelerate:(BOOL)decelerate
+{
+    CGPoint pointNow = _pointNow;
+    if (decelerate) {
+        if (scrollView.contentOffset.x < pointNow.x) {
+            [self stoppedScrollingToLeft:YES forScrollView:scrollView];
+        } else if (scrollView.contentOffset.x >= pointNow.x) {
+            [self stoppedScrollingToLeft:NO forScrollView:scrollView];
+        }
+    }
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    CGPoint pointNow = _pointNow;
+    if (scrollView.contentOffset.x < pointNow.x) {
+        [self stoppedScrollingToLeft:YES forScrollView:scrollView];
+    } else if (scrollView.contentOffset.x >= pointNow.x) {
+        [self stoppedScrollingToLeft:NO forScrollView:scrollView];
+    }
+}
+
+- (void)stoppedScrollingToLeft:(BOOL)leftBoolean forScrollView:(UIScrollView *)scrollView
+{
+    NSInteger page = [self getPageForScrollView:scrollView toLeft:leftBoolean];
+    [self highlightCellAtPage:page animated:YES];
+}
+
+- (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
+    float fractionalPage;
+    CGFloat pageWidth = [[UIScreen mainScreen] bounds].size.width;
+    fractionalPage = (self.attendeesPhotosScrollView.contentOffset.x) / pageWidth;
+     NSInteger page;
+    if (leftBoolean) {
+        if (fractionalPage - floor(fractionalPage) < 0.95) {
+            page = floor(fractionalPage);
+        } else {
+            page = ceil(fractionalPage);
+        }
+    } else {
+        if (fractionalPage - floor(fractionalPage) < 0.05) {
+            page = floor(fractionalPage);
+        } else {
+            page = ceil(fractionalPage);
+        }
+    }
+    return page;
+}
+
+- (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated {
+    page = MAX(page, 0);
+    page = MIN(page, self.event.attendees.count - 1);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.attendeesPhotosScrollView setContentOffset:CGPointMake(([UIScreen mainScreen].bounds.size.width) * page, 0.0f) animated:animated];
+    });
+}
 
 #pragma mark - UICollectionView Data Source
 

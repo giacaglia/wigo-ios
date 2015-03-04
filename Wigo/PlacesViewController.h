@@ -47,6 +47,7 @@
 @property (nonatomic, strong) UILabel *invitePeopleLabel;
 @property (nonatomic, assign) BOOL privacyTurnedOn;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
+@property (nonatomic, assign) CGPoint pointNow;
 @end
 
 #import "EventPeopleScrollView.h"
