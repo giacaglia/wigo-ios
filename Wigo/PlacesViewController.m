@@ -36,7 +36,6 @@
 #define kOldEventShowHighlightsCellName @"OldEventShowHighlightsCellName"
 
 @interface PlacesViewController () {
-//    UIView *_dimView;
     BOOL isLoaded;
 }
 
@@ -579,10 +578,10 @@ BOOL firstTimeLoading;
         [self.view addSubview:_whereAreYouGoingView];
         
         UILabel *eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 10, 90, 30)];
-        eventNameLabel.text = @"event name";
+        eventNameLabel.text = @"Event Name";
         eventNameLabel.textColor = [FontProperties getBlueColor];
         eventNameLabel.textAlignment = NSTextAlignmentCenter;
-        eventNameLabel.font = [FontProperties mediumFont:13.0f];
+        eventNameLabel.font = [FontProperties openSansRegular:13.0f];
         [_whereAreYouGoingView addSubview:eventNameLabel];
         
         UIView *lineUnderEventName = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 40, 90, 1)];
@@ -591,7 +590,7 @@ BOOL firstTimeLoading;
         
         self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 40, _whereAreYouGoingView.frame.size.width, 50)];
         self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
-        self.whereAreYouGoingTextField.font = [FontProperties mediumFont:18.0f];
+        self.whereAreYouGoingTextField.font = [FontProperties openSansRegular:18.0f];
         self.whereAreYouGoingTextField.textAlignment = NSTextAlignmentCenter;
         self.whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
         [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
@@ -611,7 +610,7 @@ BOOL firstTimeLoading;
         [_whereAreYouGoingView addSubview:_eventDetails];
         
         UILabel *eventTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
-        eventTypeLabel.text = @"event type";
+        eventTypeLabel.text = @"Event Type";
         eventTypeLabel.textAlignment = NSTextAlignmentCenter;
         eventTypeLabel.textColor = [FontProperties getBlueColor];
         eventTypeLabel.font = [FontProperties scMediumFont:15.0f];
@@ -633,7 +632,7 @@ BOOL firstTimeLoading;
         self.invitePeopleLabel.text = _privateSwitchView.explanationString;
         self.invitePeopleLabel.textAlignment = NSTextAlignmentCenter;
         self.invitePeopleLabel.numberOfLines = 2;
-        self.invitePeopleLabel.font = [FontProperties mediumFont:12.0f];
+        self.invitePeopleLabel.font = [FontProperties openSansRegular:12.0f];
         self.invitePeopleLabel.textColor = [FontProperties getBlueColor];
         [_eventDetails addSubview:self.invitePeopleLabel];
     }
