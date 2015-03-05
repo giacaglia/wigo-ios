@@ -19,7 +19,6 @@
     
     UIButton *aroundInviteButton;
     UILabel *titleLabel;
-    UIButton *searchButton;
     UIButton *cancelButton;
 }
 
@@ -47,7 +46,7 @@
     [self getMobileContacts];
     [self fetchFirstPageEveryone];
     [self initializeTitle];
-    [self initializeTapPeopleTitle];
+//    [self initializeTapPeopleTitle];
     [self initializeSearchBar];
     [self initializeTableInvite];
 }
@@ -55,6 +54,11 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [WGAnalytics tagEvent:@"Invite View"];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 }
 
 
@@ -81,14 +85,6 @@
     doneLabel.textAlignment = NSTextAlignmentLeft;
     doneLabel.font = [FontProperties getTitleFont];
     [aroundInviteButton addSubview:doneLabel];
-    
-    searchButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 30 - 15, 40 - 40, 60, 80)];
-    [searchButton addTarget:self action:@selector(searchPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:searchButton];
-    
-    UIImageView *searchImageView = [[UIImageView alloc] initWithFrame:CGRectMake(14, 35, 15, 16)];
-    searchImageView.image = [UIImage imageNamed:@"searchIcon"];
-    [searchButton addSubview:searchImageView];
 }
 
 - (void)initializeTapPeopleTitle {
@@ -141,7 +137,7 @@
 }
 
 - (void)initializeTableInvite {
-    self.invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 75, self.view.frame.size.width, self.view.frame.size.height - 64 - 75)];
+    self.invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 40, self.view.frame.size.width, self.view.frame.size.height - 64 - 40)];
     [self.invitePeopleTableView registerClass:[TapCell class] forCellReuseIdentifier:kTapCellName];
     self.invitePeopleTableView.dataSource = self;
     self.invitePeopleTableView.delegate = self;
@@ -351,12 +347,7 @@ heightForHeaderInSection:(NSInteger)section
 - (void)searchPressed {
     aroundInviteButton.hidden = YES;
     titleLabel.hidden = YES;
-    searchButton.hidden = YES;
     [self.invitePeopleTableView setContentOffset:self.invitePeopleTableView.contentOffset animated:NO];
-
-    searchBar.hidden = NO;
-    [self.view addSubview:searchBar];
-    [searchBar becomeFirstResponder];
     
     cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 65 - 15, 20, 65, 44)];
     [cancelButton setTitle:@"Done" forState:UIControlStateNormal];
@@ -370,7 +361,6 @@ heightForHeaderInSection:(NSInteger)section
 - (void)cancelPressed {
     aroundInviteButton.hidden = NO;
     titleLabel.hidden = NO;
-    searchButton.hidden = NO;
 
     cancelButton.hidden = YES;
     [self.view endEditing:YES];
@@ -387,30 +377,31 @@ heightForHeaderInSection:(NSInteger)section
 
 
 - (void)initializeSearchBar {
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width - 60, 40)];
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
     searchBar.barTintColor = [FontProperties getBlueColor];
     searchBar.tintColor = [FontProperties getBlueColor];
     searchBar.placeholder = @"Search By Name";
     searchBar.delegate = self;
-    UITextField *searchField = [searchBar valueForKey:@"_searchField"];
-    [searchField setValue:[FontProperties getBlueColor] forKeyPath:@"_placeholderLabel.textColor"];
+//    UITextField *searchField = [searchBar valueForKey:@"_searchField"];
+//    [searchField setValue:[FontProperties getBlueColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [self.view addSubview:searchBar];
     
     // Search Icon Clear
-    UITextField *txfSearchField = [searchBar valueForKey:@"_searchField"];
-    [txfSearchField setLeftViewMode:UITextFieldViewModeNever];
+//    UITextField *txfSearchField = [searchBar valueForKey:@"_searchField"];
+//    [txfSearchField setLeftViewMode:UITextFieldViewModeNever];
     
     // Remove Clear Button on the right
-    UITextField *textField = [searchBar valueForKey:@"_searchField"];
-    textField.clearButtonMode = UITextFieldViewModeNever;
+//    UITextField *textField = [searchBar valueForKey:@"_searchField"];
+//    textField.clearButtonMode = UITextFieldViewModeNever;
     
     // Text when editing becomes orange
-    for (UIView *subView in searchBar.subviews) {
-        for (UIView *secondLevelSubview in subView.subviews){
-            if (![secondLevelSubview isKindOfClass:[UITextField class]]) {
-                [secondLevelSubview removeFromSuperview];
-            }
-        }
-    }
+//    for (UIView *subView in searchBar.subviews) {
+//        for (UIView *secondLevelSubview in subView.subviews){
+//            if (![secondLevelSubview isKindOfClass:[UITextField class]]) {
+//                [secondLevelSubview removeFromSuperview];
+//            }
+//        }
+//    }
 }
 
 
