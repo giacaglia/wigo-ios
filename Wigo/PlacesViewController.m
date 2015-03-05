@@ -1167,7 +1167,7 @@ BOOL firstTimeLoading;
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
     conversationViewController.index = [NSNumber numberWithInt:index];
-    if ([event.owner isEqual:WGProfile.currentUser]) {
+    if ([event.id isEqual:WGProfile.currentUser.eventAttending.id]) {
         eventMessages = [self eventMessagesWithCamera:eventMessages];
     }
     conversationViewController.eventMessages = eventMessages;

@@ -332,8 +332,15 @@
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
         self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
-        if (eventMessage.vote.intValue == 1) self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
-        else self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
+        if (eventMessage.vote.intValue == 1) {
+            self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
+            self.numberOfVotesLabel.font = [FontProperties openSansBold:21.0f];
+        }
+        else {
+            self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
+            self.numberOfVotesLabel.font = [FontProperties openSansSemibold:21.0f];
+
+        }
         if (eventMessage.mediaMimeType && [eventMessage.mediaMimeType isEqualToString:kCameraType]) {
             self.buttonCancel.hidden = YES;
             self.buttonCancel.enabled = NO;
