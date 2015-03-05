@@ -34,7 +34,7 @@
 - (void)updateUIToRead:(BOOL)read;
 - (void)setStateForUser:(WGUser *)user;
 @property (nonatomic, strong) WGUser *user;
-
+@property (nonatomic, strong) UIView *orangeDotView;
 
 @property (nonatomic, assign) BOOL isActive;
 @property (nonatomic, strong) UIImageView *faceImageView;

@@ -87,16 +87,19 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    HighlightCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
+
     if (indexPath.row == 0 && [self.event isEqual:WGProfile.currentUser.eventAttending]) {
-        HighlightCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
         cell.contentView.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
         cell.faceImageView.image = [UIImage imageNamed:@"cameraAddImage"];
+        cell.orangeDotView.hidden = YES;
         return cell;
     }
-    HighlightCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
     if ([self.event isEqual:WGProfile.currentUser.eventAttending]) {
         indexPath = [NSIndexPath indexPathForRow:(indexPath.row - 1) inSection:indexPath.section];   
     }
+    cell.orangeDotView.hidden = YES;
+
 
     if (indexPath.row + 1 == self.eventMessages.count &&
         [self.eventMessages.hasNextPage boolValue]) {
@@ -108,9 +111,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
     else  contentURL = eventMessage.media;
     NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
-    [myCell.spinner startAnimating];
-    __weak HighlightCell *weakCell = myCell;
-    [myCell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+    [cell.spinner startAnimating];
+    __weak HighlightCell *weakCell = cell;
+    [cell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakCell.spinner stopAnimating];
         });
@@ -118,11 +121,11 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     if (eventMessage.isRead) {
         if ([eventMessage.isRead boolValue]) {
-            [myCell updateUIToRead:YES];
+            [cell updateUIToRead:YES];
         }
-        else [myCell updateUIToRead:NO];
+        else [cell updateUIToRead:NO];
     }
-    return myCell;
+    return cell;
 }
 
 - (void)showNavigationBar:(UIImagePickerController*)imagePicker {
@@ -296,12 +299,20 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     self.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
     self.contentView.frame = self.frame;
     
-    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0.9*[HighlightCell height], 0.9*[HighlightCell height])];
+    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 3, 0.9*[HighlightCell height], 0.9*[HighlightCell height])];
     self.faceImageView.center = self.contentView.center;
     self.faceImageView.backgroundColor = UIColor.clearColor;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.faceImageView.layer.masksToBounds = YES;
     [self.contentView addSubview: self.faceImageView];
+    
+    self.orangeDotView = [[UIView alloc] initWithFrame:CGRectMake(0.9*[HighlightCell height] - 3, 0, 15, 15)];
+    self.orangeDotView.backgroundColor = [FontProperties getOrangeColor];
+    self.orangeDotView.layer.borderColor = [UIColor clearColor].CGColor;
+    self.orangeDotView.clipsToBounds = YES;
+    self.orangeDotView.layer.borderWidth = 3;
+    self.orangeDotView.layer.cornerRadius = 7.5;
+    [self.contentView addSubview:self.orangeDotView];
     
     self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake([HighlightCell height]/4, [HighlightCell height]/4, [HighlightCell height]/2, [HighlightCell height]/2)];
     self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
@@ -346,13 +357,13 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)updateUIToRead:(BOOL)read {
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        if (read) {
-//            self.faceAndMediaTypeView.alpha = 0.4f;
-//        } else {
-//            self.faceAndMediaTypeView.alpha = 1.0f;
-//        }
-//    });
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (read) {
+            self.orangeDotView.hidden = YES;
+        } else {
+            self.orangeDotView.hidden = NO;
+        }
+    });
 }
 
 - (void)setStateForUser:(WGUser *)user {
