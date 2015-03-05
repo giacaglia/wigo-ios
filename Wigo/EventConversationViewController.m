@@ -147,7 +147,7 @@
             self.buttonCancel.alpha = 0;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, self.buttonCancel.frame.size.height);
             self.upVoteButton.alpha = 0;
-            self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, self.upVoteButton.frame.size.height);
+            self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, self.numberOfVotesLabel.frame.size.height);
             self.numberOfVotesLabel.alpha = 0;
             self.numberOfVotesLabel.transform = CGAffineTransformMakeTranslation(0, self.numberOfVotesLabel.frame.size.height);
             self.backgroundBottom.alpha = 0;
@@ -407,7 +407,7 @@
     
     self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , self.view.frame.size.height - 52, 56, 52)];
     [self.view addSubview:self.upVoteButton];
-    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(3, 24, 22, 18)];
+    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 24, 22, 18)];
     self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
     [self.upVoteButton addSubview:self.upvoteImageView];
     [self.upVoteButton addTarget:self action:@selector(upvotePressed) forControlEvents:UIControlEventTouchUpInside];

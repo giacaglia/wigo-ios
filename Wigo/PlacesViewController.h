@@ -54,7 +54,7 @@
 #import "HighlightsCollectionView.h"
 
 @interface EventCell : UITableViewCell
-+ (CGFloat) heightIsPeeking:(BOOL)isPeeking;
++ (CGFloat) heightIsFullCell:(BOOL)isFullCell;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UIImageView *privacyLockImageView;

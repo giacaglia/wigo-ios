@@ -64,10 +64,6 @@
 // Events By Days
 @property (nonatomic, strong) NSMutableArray *pastDays;
 
-//Go Elsewhere
-@property (nonatomic, strong) GoOutNewPlaceHeader *goElsewhereView;
-
-
 @property (nonatomic, strong) UIView *blackViewOnTop;
 @property (nonatomic ,strong) UIView *eventDetails;
 @property (nonatomic, strong) PrivateSwitchView *privateSwitchView;
@@ -139,8 +135,6 @@ BOOL firstTimeLoading;
         self.shouldReloadEvents = YES;
     }
     [self fetchUserInfo];
-    [self shouldShowCreateButton];
-    [self showOnlyOnePlusButton];
 }
 
 - (void)showReferral {
@@ -151,17 +145,6 @@ BOOL firstTimeLoading;
     }
 }
 
-- (BOOL) shouldShowCreateButton {
-    if ([self isPeeking]) {
-        self.goElsewhereView.hidden = YES;
-        self.goElsewhereView.plusButton.enabled = NO;
-        return NO;
-    } else {
-        self.goElsewhereView.hidden = NO;
-        self.goElsewhereView.plusButton.enabled = YES;
-        return YES;
-    }
-}
 
 - (BOOL) isPeeking {
     if (WGProfile.currentUser.group.id &&
@@ -877,30 +860,21 @@ BOOL firstTimeLoading;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-//    if (section == kTodaySection) {
-//        self.goElsewhereView = [GoOutNewPlaceHeader init];
-//        if (self.events.count > 0) [self.goElsewhereView setupWithMoreThanOneEvent:YES];
-//        else [self.goElsewhereView setupWithMoreThanOneEvent:NO];
-//        [self.goElsewhereView.addEventButton addTarget: self action: @selector(goingSomewhereElsePressed) forControlEvents: UIControlEventTouchUpInside];
-//        [self shouldShowCreateButton];
-//        return self.goElsewhereView;
-//    }
-//    
+
     return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-//    if (section == kTodaySection) {
-//        return [GoOutNewPlaceHeader height];
-//    }
     return 0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
+        WGEvent *event = [self getEventAtIndexPath:indexPath];
+        BOOL isFullCell = [self isFullCellForEvent:event];
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
-            return [EventCell heightIsPeeking:[self isPeeking]];
+            return [EventCell heightIsFullCell:isFullCell];
         }
         if (indexPath.row == self.events.count + 1 &&
             [self.allEvents.hasNextPage boolValue] &&
@@ -912,9 +886,8 @@ BOOL firstTimeLoading;
             [self shouldShowAggregatePrivateEvents] == 1) {
            return 1;
         }
-        WGEvent *event = [self getEventAtIndexPath:indexPath];
         if (event == nil) return 1;
-        return [EventCell heightIsPeeking:[self isPeeking]];
+        return [EventCell heightIsFullCell:isFullCell];
     }
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
@@ -950,12 +923,6 @@ BOOL firstTimeLoading;
         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
-        if ([self isPeeking]) {
-            cell.grayView.transform = CGAffineTransformMakeTranslation(0, - cell.goingHereButton.frame.size.height);
-        }
-        else {
-            cell.grayView.transform = CGAffineTransformMakeTranslation(0, 0);
-        }
         //Cleanup
         cell.highlightsCollectionView.event = nil;
         cell.highlightsCollectionView.eventMessages = nil;
@@ -971,9 +938,11 @@ BOOL firstTimeLoading;
             cell.eventPeopleScrollView.groupID = self.groupNumberID;
             cell.eventPeopleScrollView.placesDelegate = self;
             cell.placesDelegate = self;
+            cell.goingHereButton.hidden = YES;
             if (![self.eventOffsetDictionary objectForKey:[self.aggregateEvent.id stringValue]]) {
                 cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
             }
+            cell.grayView.transform = CGAffineTransformMakeTranslation(0, - cell.goingHereButton.frame.size.height);
             [cell updateUI];
             return cell;
         }
@@ -994,6 +963,14 @@ BOOL firstTimeLoading;
         
         WGEvent *event = [self getEventAtIndexPath:indexPath];
         if (event == nil) return cell;
+        if ([self isFullCellForEvent:event]) {
+            cell.grayView.transform = CGAffineTransformMakeTranslation(0, - cell.goingHereButton.frame.size.height);
+            cell.goingHereButton.hidden = YES;
+        }
+        else {
+            cell.grayView.transform = CGAffineTransformMakeTranslation(0, 0);
+            cell.goingHereButton.hidden = NO;
+        }
         cell.event = event;
         cell.eventPeopleScrollView.groupID = self.groupNumberID;
         cell.eventPeopleScrollView.placesDelegate = self;
@@ -1002,18 +979,7 @@ BOOL firstTimeLoading;
             cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
         cell.goingHereButton.tag = indexPath.row;
-        if (cell.event.id && [WGProfile.currentUser.eventAttending.id isEqual:cell.event.id]) {
-            [cell.goingHereButton removeTarget:nil
-                               action:NULL
-                     forControlEvents:UIControlEventAllEvents];
-            [cell.goingHereButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
-        }
-        else {
-            [cell.goingHereButton removeTarget:nil
-                                        action:NULL
-                              forControlEvents:UIControlEventAllEvents];
-            [cell.goingHereButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
-        }
+        [cell.goingHereButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
         [cell updateUI];
         return cell;
     } else if (indexPath.section == kHighlightsEmptySection) {
@@ -1057,6 +1023,10 @@ BOOL firstTimeLoading;
     return nil;
 }
 
+- (BOOL)isFullCellForEvent:(WGEvent *)event {
+    return [self isPeeking] || (event.id && [WGProfile.currentUser.eventAttending.id isEqual:event.id]);
+}
+
 - (WGEvent *)getEventAtIndexPath:(NSIndexPath *)indexPath {
     WGEvent *event;
     if (_isSearching) {
@@ -1097,12 +1067,6 @@ BOOL firstTimeLoading;
             eventCell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
         [eventCell.eventPeopleScrollView saveScrollPosition];
-    }
-}
-
-- (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section {
-    if (view == self.goElsewhereView) {
-        isLoaded = YES;
     }
 }
 
@@ -1357,7 +1321,7 @@ BOOL firstTimeLoading;
 
 - (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
     float fractionalPage;
-    CGFloat pageHeight = [EventCell heightIsPeeking:[self isPeeking]];
+    CGFloat pageHeight = [EventCell heightIsFullCell:[self isPeeking]];
     fractionalPage = (self.placesTableView.contentOffset.y) / pageHeight;
     NSInteger page;
     if (leftBoolean) {
@@ -1381,11 +1345,15 @@ BOOL firstTimeLoading;
         dispatch_async(dispatch_get_main_queue(), ^{
             if (animated) {
                 [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                    [self.placesTableView setContentOffset:CGPointMake(0.0f, [EventCell heightIsPeeking:[self isPeeking]] * page) animated:NO];
+                    [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:page inSection:0]
+                                                atScrollPosition:UITableViewScrollPositionTop
+                                                 animated:NO];
                 } completion:nil];
             }
             else {
-                [self.placesTableView setContentOffset:CGPointMake(0.0f, [EventCell heightIsPeeking:[self isPeeking]] * page) animated:NO];
+                [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:page inSection:0]
+                                            atScrollPosition:UITableViewScrollPositionTop
+                                                    animated:NO];
             }
             
         });
@@ -1393,32 +1361,6 @@ BOOL firstTimeLoading;
 }
 
 
-#pragma mark - UIScrollView Delegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-
-    if (scrollView == self.placesTableView) {
-        if (!self.goElsewhereView) {
-            return;
-        }
-        if (![self shouldShowCreateButton]) {
-            return;
-        }
-        [self showOnlyOnePlusButton];
-    }
-}
-
-- (void)showOnlyOnePlusButton {
-    // convert label frame
-    CGRect comparisonFrame = [self.placesTableView convertRect: self.goElsewhereView.frame toView:self.view];
-    // check if label is contained in self.view
-    
-    CGRect viewFrame = self.view.frame;
-    BOOL isContainedInView = CGRectContainsRect(viewFrame, comparisonFrame);
-    if ([self isPeeking] || (isContainedInView && isLoaded)) {
-        self.goElsewhereView.plusButton.hidden = NO;
-    }
-}
 #pragma mark - Network Asynchronous Functions
 
 - (void) fetchEventsFirstPage {
@@ -1678,8 +1620,8 @@ BOOL firstTimeLoading;
 
 @implementation EventCell
 
-+ (CGFloat)heightIsPeeking:(BOOL)isPeeking {
-    if (isPeeking) {
++ (CGFloat)heightIsFullCell:(BOOL)isFullCell {
+    if (isFullCell) {
         return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 100 + 10;
     }
     return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 100 + 10 + [UIScreen mainScreen].bounds.size.width/5.3;
@@ -1694,7 +1636,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell heightIsPeeking:NO]);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell heightIsFullCell:NO]);
     self.contentView.frame = self.frame;
     self.backgroundColor = RGB(247, 247, 247);
     self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -1756,7 +1698,7 @@ BOOL firstTimeLoading;
     self.goingHereButton.titleLabel.font = [FontProperties openSansSemibold:14.0f];
     [self.contentView addSubview:self.goingHereButton];
     
-    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height, self.frame.size.width, [EventCell heightIsPeeking:NO] - (self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height))];
+    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height, self.frame.size.width, [EventCell heightIsFullCell:NO] - (self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height))];
     self.grayView.backgroundColor = RGB(217, 217, 217);
     [self.contentView addSubview:self.grayView];
 }
@@ -1765,16 +1707,9 @@ BOOL firstTimeLoading;
     self.highlightsCollectionView.event = self.event;
     self.eventNameLabel.text = self.event.name;
     self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", self.event.numAttending];
-    if (self.event.id && [WGProfile.currentUser.eventAttending.id isEqual:self.event.id]) {
-        self.goingHereButton.backgroundColor = UIColor.whiteColor;
-        [self.goingHereButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-        [self.goingHereButton setTitle:@"INVITE MORE PEOPLE" forState:UIControlStateNormal];
-    }
-    else {
-        self.goingHereButton.backgroundColor = [FontProperties getBlueColor];
-        [self.goingHereButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-        [self.goingHereButton setTitle:@"GO HERE" forState:UIControlStateNormal];
-    }
+    self.goingHereButton.backgroundColor = [FontProperties getBlueColor];
+    [self.goingHereButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    [self.goingHereButton setTitle:@"GO HERE" forState:UIControlStateNormal];
 
     self.numberOfHighlightsLabel.text = @"The Buzz";
     self.privacyLockImageView.hidden = !self.event.isPrivate;
