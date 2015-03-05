@@ -1380,19 +1380,19 @@ BOOL firstTimeLoading;
 }
 
 - (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated {
-    page = MAX(page, 0);
-    page = MIN(page, self.events.count - 1);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (animated) {
-            [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+    if (page >= 0 && page < self.events.count) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (animated) {
+                [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                    [self.placesTableView setContentOffset:CGPointMake(0.0f, [EventCell heightIsPeeking:[self isPeeking]] * page) animated:NO];
+                } completion:nil];
+            }
+            else {
                 [self.placesTableView setContentOffset:CGPointMake(0.0f, [EventCell heightIsPeeking:[self isPeeking]] * page) animated:NO];
-            } completion:nil];
-        }
-        else {
-            [self.placesTableView setContentOffset:CGPointMake(0.0f, [EventCell heightIsPeeking:[self isPeeking]] * page) animated:NO];
-        }
-
-    });
+            }
+            
+        });
+    }
 }
 
 
