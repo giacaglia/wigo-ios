@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "cameraBubble.png"
+      "filename" : "cameraAddImage.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "cameraBubble@2x.png"
+      "filename" : "cameraAddImage@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "cameraBubble@3x.png"
+      "filename" : "cameraAddImage@3x.png"
     }
   ],
   "info" : {

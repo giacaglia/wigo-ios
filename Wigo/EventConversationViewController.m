@@ -431,19 +431,17 @@
     }
     
     [WGAnalytics tagEvent:@"Up Vote Tapped"];
-    
-    CGAffineTransform currentTransform = self.upVoteButton.transform;
-    
+        
     [UIView animateWithDuration:0.2f
                      animations:^{
                          self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
-                         self.upVoteButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
+                         self.upvoteImageView.transform = CGAffineTransformMakeScale(1.5, 1.5);
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:0.2f
                                           animations:^{
-                                              self.upVoteButton.transform = currentTransform;
-                                              
+                                              self.upvoteImageView.transform = CGAffineTransformIdentity;
+
                                           } completion:^(BOOL finished) {
                                               [self updateNumberOfVotes:YES];
                                           }];

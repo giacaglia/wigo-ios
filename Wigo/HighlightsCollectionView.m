@@ -78,25 +78,25 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-//    if ([self.event isEqual:WGProfile.currentUser.eventAttending]) {
-//        return 1 + self.eventMessages.count;
-//    }
-//    else {
+    if ([self.event isEqual:WGProfile.currentUser.eventAttending]) {
+        return 1 + self.eventMessages.count;
+    }
+    else {
         return self.eventMessages.count;
-//    }
+    }
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-//    if (indexPath.row == 0 && [self.event isEqual:WGProfile.currentUser.eventAttending]) {
-//        AddPhotoCell *cell  =[collectionView dequeueReusableCellWithReuseIdentifier:kAddPhotoCellName forIndexPath: indexPath];
-//        cell.contentView.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
-//        [self performSelector:@selector(showNavigationBar:) withObject:cell.controller afterDelay:0];
-//        return cell;
-//    }
+    if (indexPath.row == 0 && [self.event isEqual:WGProfile.currentUser.eventAttending]) {
+        HighlightCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
+        cell.contentView.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
+        cell.faceImageView.image = [UIImage imageNamed:@"cameraAddImage"];
+        return cell;
+    }
     HighlightCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
-//    if ([self.event isEqual:WGProfile.currentUser.eventAttending]) {
-//        indexPath = [NSIndexPath indexPathForRow:(indexPath.row - 1) inSection:indexPath.section];   
-//    }
+    if ([self.event isEqual:WGProfile.currentUser.eventAttending]) {
+        indexPath = [NSIndexPath indexPathForRow:(indexPath.row - 1) inSection:indexPath.section];   
+    }
 
     if (indexPath.row + 1 == self.eventMessages.count &&
         [self.eventMessages.hasNextPage boolValue]) {
@@ -298,7 +298,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0.9*[HighlightCell height], 0.9*[HighlightCell height])];
     self.faceImageView.center = self.contentView.center;
-    self.faceImageView.backgroundColor = UIColor.blackColor;
+    self.faceImageView.backgroundColor = UIColor.clearColor;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.faceImageView.layer.masksToBounds = YES;
     [self.contentView addSubview: self.faceImageView];
