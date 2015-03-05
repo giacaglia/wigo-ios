@@ -52,14 +52,6 @@ int imageWidth;
     newOffset = CGPointMake(newOffset.x - 10, newOffset.y);
     self.attendeesPhotosScrollView.contentOffset = newOffset;
     
-//    UIButton *backButtonModal = [[UIButton alloc] initWithFrame:CGRectMake(0, 35, 50, 50)];
-//    backButtonModal.backgroundColor = UIColor.clearColor;
-//    UIImageView *backImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 1, 8.75, 15)];
-//    backImageView.image = [UIImage imageNamed:@"backButtonModal"];
-//    [backButtonModal addSubview:backImageView];
-//    [backButtonModal addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:backButtonModal];
-    
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 54, self.view.frame.size.width - 30, 50)];
     titleLabel.text = self.event.name;
     titleLabel.textColor = UIColor.whiteColor;
@@ -69,10 +61,9 @@ int imageWidth;
     titleLabel.font = [FontProperties openSansRegular:20.0f];
     [self.view addSubview:titleLabel];
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 80, 50, 50)];
-    closeButton.center = CGPointMake(self.view.center.x, closeButton.center.y);
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(8, self.view.frame.size.height - 58, 50, 50)];
     closeButton.backgroundColor = UIColor.clearColor;
-    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(25 - 7.5, 50 - 15, 15, 15)];
+    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, closeButton.frame.size.height - 30, 25, 25)];
     closeImageView.image = [UIImage imageNamed:@"closeModalView"];
     [closeButton addSubview:closeImageView];
     [closeButton addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
@@ -125,19 +116,6 @@ int imageWidth;
     _pointNow = scrollView.contentOffset;
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
-                  willDecelerate:(BOOL)decelerate
-{
-    CGPoint pointNow = _pointNow;
-    if (decelerate) {
-        if (scrollView.contentOffset.x < pointNow.x) {
-            [self stoppedScrollingToLeft:YES forScrollView:scrollView];
-        } else if (scrollView.contentOffset.x >= pointNow.x) {
-            [self stoppedScrollingToLeft:NO forScrollView:scrollView];
-        }
-    }
-}
-
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
                      withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     CGPoint pointNow = _pointNow;
@@ -179,7 +157,14 @@ int imageWidth;
     page = MAX(page, 0);
     page = MIN(page, self.event.attendees.count - 1);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.attendeesPhotosScrollView setContentOffset:CGPointMake(([UIScreen mainScreen].bounds.size.width) * page, 0.0f) animated:animated];
+        if (animated) {
+            [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                [self.attendeesPhotosScrollView setContentOffset:CGPointMake(([UIScreen mainScreen].bounds.size.width) * page, 0.0f) animated:NO];
+            } completion:nil];
+        }
+        else {
+            [self.attendeesPhotosScrollView setContentOffset:CGPointMake(([UIScreen mainScreen].bounds.size.width) * page, 0.0f) animated:NO];
+        }
     });
 }
 

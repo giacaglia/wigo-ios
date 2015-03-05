@@ -521,7 +521,28 @@ BOOL firstTimeLoading;
     ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
     fancyProfileViewController.events = self.events;
+    
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+    
+//    UIView * fromView = self.view;
+//    UIView * toView = fancyProfileViewController.view;
+//    
+//    CGRect viewSize = fromView.frame;
+//    [fromView.superview addSubview:toView];
+//    toView.frame = CGRectMake( -320 , viewSize.origin.y, 320, viewSize.size.height);
+//    
+//    [UIView animateWithDuration:0.4 animations:
+//     ^{
+//         toView.frame =CGRectMake(0, viewSize.origin.y, 320, viewSize.size.height);
+//     }
+//                     completion:^(BOOL finished)
+//     {
+//         if (finished)
+//         {
+//        }
+//     }];
+    
+   
 }
 
 - (void)choseProfile:(id)sender {
@@ -1320,18 +1341,6 @@ BOOL firstTimeLoading;
     self.pointNow = self.placesTableView.contentOffset;
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
-                  willDecelerate:(BOOL)decelerate
-{
-    CGPoint pointNow = self.pointNow;
-    if (decelerate) {
-        if (scrollView.contentOffset.y < pointNow.y) {
-            [self stoppedScrollingToLeft:YES forScrollView:scrollView];
-        } else if (scrollView.contentOffset.y >= pointNow.y) {
-            [self stoppedScrollingToLeft:NO forScrollView:scrollView];
-        }
-    }
-}
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
                      withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
@@ -1374,7 +1383,15 @@ BOOL firstTimeLoading;
     page = MAX(page, 0);
     page = MIN(page, self.events.count - 1);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.placesTableView setContentOffset:CGPointMake(0.0f, [EventCell heightIsPeeking:[self isPeeking]] * page) animated:animated];
+        if (animated) {
+            [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                [self.placesTableView setContentOffset:CGPointMake(0.0f, [EventCell heightIsPeeking:[self isPeeking]] * page) animated:NO];
+            } completion:nil];
+        }
+        else {
+            [self.placesTableView setContentOffset:CGPointMake(0.0f, [EventCell heightIsPeeking:[self isPeeking]] * page) animated:NO];
+        }
+
     });
 }
 

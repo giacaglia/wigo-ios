@@ -145,7 +145,7 @@
             self.facesCollectionView.alpha = 0;
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,-self.facesCollectionView.frame.size.height);
             self.buttonCancel.alpha = 0;
-            self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, -self.buttonCancel.frame.size.height);
+            self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, self.buttonCancel.frame.size.height);
             self.upVoteButton.alpha = 0;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, self.upVoteButton.frame.size.height);
             self.numberOfVotesLabel.alpha = 0;
@@ -241,20 +241,21 @@
     else _collectionViewPointNow = scrollView.contentOffset;
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
-                  willDecelerate:(BOOL)decelerate
-{
-    CGPoint pointNow;
-    if (scrollView == self.mediaScrollView) pointNow = _imagesScrollViewPointNow;
-    else pointNow = _collectionViewPointNow;
-    if (decelerate) {
-        if (scrollView.contentOffset.x < pointNow.x) {
-            [self stoppedScrollingToLeft:YES forScrollView:scrollView];
-        } else if (scrollView.contentOffset.x >= pointNow.x) {
-            [self stoppedScrollingToLeft:NO forScrollView:scrollView];
-        }
-    }
-}
+//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
+//                  willDecelerate:(BOOL)decelerate
+//{
+//    NSLog(@"Second");
+//    CGPoint pointNow;
+//    if (scrollView == self.mediaScrollView) pointNow = _imagesScrollViewPointNow;
+//    else pointNow = _collectionViewPointNow;
+//    if (decelerate) {
+//        if (scrollView.contentOffset.x < pointNow.x) {
+//            [self stoppedScrollingToLeft:YES forScrollView:scrollView];
+//        } else if (scrollView.contentOffset.x >= pointNow.x) {
+//            [self stoppedScrollingToLeft:NO forScrollView:scrollView];
+//        }
+//    }
+//}
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
                      withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
@@ -312,8 +313,16 @@
     [self.mediaScrollView scrolledToPage:(int)page];
     dispatch_async(dispatch_get_main_queue(), ^{
         // Content Offset to the middle (which is the first page minus the number of cells/2
-        [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:animated];
-        [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:animated];
+        if (animated) {
+            [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:NO];
+                [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:NO];
+            } completion:nil];
+        }
+        else {
+            [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:NO];
+            [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:NO];
+        }
     });
     [self hideOrShowFacesForPage:(int)page];
 }
@@ -380,7 +389,7 @@
     self.facesCollectionView.pagingEnabled = NO;
     
     self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 74, 86, 66)];
-    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 51, 15, 15)];
+    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 41, 25, 25)];
     cancelImageView.image = [UIImage imageNamed:@"closeModalView"];
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -398,7 +407,7 @@
     
     self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , self.view.frame.size.height - 52, 56, 52)];
     [self.view addSubview:self.upVoteButton];
-    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 24, 22, 18)];
+    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(3, 24, 22, 18)];
     self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
     [self.upVoteButton addSubview:self.upvoteImageView];
     [self.upVoteButton addTarget:self action:@selector(upvotePressed) forControlEvents:UIControlEventTouchUpInside];

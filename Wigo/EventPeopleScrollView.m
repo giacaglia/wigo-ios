@@ -136,7 +136,7 @@
         scrollCell.profileNameLabel.text = @"Invite";
         scrollCell.profileNameLabel.alpha = 1.0f;
         scrollCell.profileNameLabel.textColor = [FontProperties getOrangeColor];
-        scrollCell.profileNameLabel.font = [FontProperties semiboldFont:12.0f];
+        scrollCell.profileNameLabel.font = [FontProperties openSansSemibold:12.0f];
     }
     else {
         scrollCell.imageButton.tag = indexPath.item;
@@ -221,18 +221,8 @@
     self.profileNameLabel.textColor = UIColor.blackColor;
     if (user.isCurrentUser) {
         self.profileNameLabel.alpha = 1.0f;
-        CGFloat fontSize = 12.0f;
-        CGSize size;
-        while (fontSize > 0.0f)
-        {
-            size = [user.firstName sizeWithAttributes:
-                    @{NSFontAttributeName:[FontProperties openSansSemibold:fontSize]}];
-            //TODO: not use fixed length
-            if (size.width <= self.frame.size.width - 10) break;
-            
-            fontSize -= 1.0;
-        }
-        self.profileNameLabel.font = [FontProperties openSansSemibold:fontSize];
+        self.profileNameLabel.text = @"You";
+        self.profileNameLabel.font = [FontProperties openSansSemibold:12.0f];
     }
     else {
         self.profileNameLabel.alpha = 0.5f;
