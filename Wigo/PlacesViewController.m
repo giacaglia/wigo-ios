@@ -355,7 +355,6 @@ BOOL firstTimeLoading;
 
 - (void) updateViewNotGoingOut {
     [WGProfile currentUser].isGoingOut = @NO;
-    [self updateTitleView];
     [self fetchEventsFirstPage];
 }
 
@@ -379,8 +378,8 @@ BOOL firstTimeLoading;
         fontSize -= 2.0;
     }
     self.schoolButton.titleLabel.font = [FontProperties openSansSemibold:fontSize];
-
-    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, 0, 6, 5)];
+    self.schoolButton.frame = CGRectMake(0, 0, size.width, size.height);
+    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, size.height/2 - 3, 6, 5)];
     [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     triangleImageView.image = [UIImage imageNamed:@"whiteTriangle"];
     [self.schoolButton addSubview:triangleImageView];
@@ -472,7 +471,6 @@ BOOL firstTimeLoading;
             return;
         }
         WGProfile.currentUser.isGoingOut = @YES;
-        [strongSelf updateTitleView];
         [strongSelf fetchEventsFirstPage];
         [strongSelf scrollUp];
     }];
@@ -712,7 +710,6 @@ BOOL firstTimeLoading;
                     [strongOfStrong.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
                     
                     [strongOfStrong dismissKeyboard];
-                    [strongOfStrong updateTitleView];
                     
                     [WGProfile currentUser].isGoingOut = @YES;
                     [WGProfile currentUser].eventAttending = object;
