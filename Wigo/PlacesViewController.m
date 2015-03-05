@@ -870,10 +870,9 @@ BOOL firstTimeLoading;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         WGEvent *event = [self getEventAtIndexPath:indexPath];
-        BOOL isFullCell = [self isFullCellForEvent:event];
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
-            return [EventCell heightIsFullCell:isFullCell];
+            return [EventCell heightIsFullCell:NO];
         }
         if (indexPath.row == self.events.count + 1 &&
             [self.allEvents.hasNextPage boolValue] &&
@@ -886,7 +885,7 @@ BOOL firstTimeLoading;
            return 1;
         }
         if (event == nil) return 1;
-        return [EventCell heightIsFullCell:isFullCell];
+        return [EventCell heightIsFullCell:NO];
     }
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
@@ -1320,7 +1319,7 @@ BOOL firstTimeLoading;
 
 - (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
     float fractionalPage;
-    CGFloat pageHeight = [EventCell heightIsFullCell:[self isPeeking]];
+    CGFloat pageHeight = [EventCell heightIsFullCell:NO];
     fractionalPage = (self.placesTableView.contentOffset.y) / pageHeight;
     NSInteger page;
     if (leftBoolean) {
@@ -1697,7 +1696,7 @@ BOOL firstTimeLoading;
     self.goingHereButton.titleLabel.font = [FontProperties openSansSemibold:14.0f];
     [self.contentView addSubview:self.goingHereButton];
     
-    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height, self.frame.size.width, [EventCell heightIsFullCell:NO] - (self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height))];
+    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.goingHereButton.frame.origin.y + self.goingHereButton.frame.size.height, self.frame.size.width, self.frame.size.height - (self.goingHereButton.frame.origin.y))];
     self.grayView.backgroundColor = RGB(217, 217, 217);
     [self.contentView addSubview:self.grayView];
 }
