@@ -130,6 +130,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 @implementation SchoolCell
 
++ (CGFloat)height {
+    return 43;
+}
+
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -139,9 +143,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 50);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [SchoolCell height]);
     self.backgroundColor = UIColor.clearColor;
-    self.schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.frame.size.width - 25, 50)];
+    self.schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.frame.size.width - 25, [SchoolCell height])];
     self.schoolLabel.textColor = UIColor.whiteColor;
     self.schoolLabel.textAlignment = NSTextAlignmentLeft;
     self.schoolLabel.font = [FontProperties mediumFont:18.0f];
