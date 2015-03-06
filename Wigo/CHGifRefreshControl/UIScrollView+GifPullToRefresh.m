@@ -126,7 +126,7 @@ static char UIScrollViewGifPullToRefresh;
                                       delay:0
                                     options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState
                                  animations:^{
-                                     self.scrollView.contentOffset = CGPointMake(0, -GifRefreshControlHeight - self.originalContentInsectY );
+                                     self.scrollView.contentOffset = CGPointMake(0, -GifRefreshControlHeight - self.originalContentInsectY);
                                      self.scrollView.contentInset = UIEdgeInsetsMake(GifRefreshControlHeight + self.originalContentInsectY , 100.0f, 0.0f, 0.0f);
  
                                  }
@@ -179,7 +179,8 @@ static char UIScrollViewGifPullToRefresh;
 
 - (void)setState:(GifPullToRefreshState)aState{
 	
-	CGFloat offset = -(self.scrollView.contentOffset.y + self.originalContentInsectY);
+	CGFloat offset = -(self.scrollView.contentOffset.y + self.originalContentInsectY + 100
+                       );
     CGFloat percent = 0;
     if (offset < 0) {
         offset = 0;

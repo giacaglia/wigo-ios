@@ -221,7 +221,6 @@
     self.profileNameLabel.textColor = UIColor.blackColor;
     if (user.isCurrentUser) {
         self.profileNameLabel.alpha = 1.0f;
-        self.profileNameLabel.text = @"You";
         self.profileNameLabel.font = [FontProperties openSansSemibold:12.0f];
     }
     else {

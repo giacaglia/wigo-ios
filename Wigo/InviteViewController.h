@@ -16,11 +16,16 @@
 
 @property (nonatomic, strong) UITableView *invitePeopleTableView;
 @property (nonatomic, strong) WGCollection *content;
-@property (nonatomic, strong) WGCollection *filteredContent;
+@property (nonatomic, strong) WGCollection *presentedUsers;
 @property (nonatomic, assign) BOOL isSearching;
 @end
 
 #define kTapCellName @"tapCellName"
+#define kSectionTapCell 0
+#define kFollowCellName @"followCellName"
+#define kSectionFollowCell 1
+#define kInviteMobileCellName @"inviteCellName"
+#define kSectionMobileCell 2
 @interface TapCell : UITableViewCell
 + (CGFloat) height;
 @property (nonatomic, strong) UIImageView *profileImageView;
