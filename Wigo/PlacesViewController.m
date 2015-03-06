@@ -940,7 +940,7 @@ BOOL firstTimeLoading;
             if (![self.eventOffsetDictionary objectForKey:[self.aggregateEvent.id stringValue]]) {
                 cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
             }
-            cell.grayView.transform = CGAffineTransformMakeTranslation(0, - cell.goingHereButton.frame.size.height);
+            cell.grayView.frame = CGRectMake(0, cell.goingHereButton.frame.origin.y, cell.frame.size.width, cell.frame.size.height - (cell.goingHereButton.frame.origin.y));
             [cell updateUI];
             return cell;
         }
@@ -962,11 +962,11 @@ BOOL firstTimeLoading;
         WGEvent *event = [self getEventAtIndexPath:indexPath];
         if (event == nil) return cell;
         if ([self isFullCellForEvent:event]) {
-            cell.grayView.transform = CGAffineTransformMakeTranslation(0, - cell.goingHereButton.frame.size.height);
+            cell.grayView.frame = CGRectMake(0, cell.goingHereButton.frame.origin.y, cell.frame.size.width, cell.frame.size.height - (cell.goingHereButton.frame.origin.y));
             cell.goingHereButton.hidden = YES;
         }
         else {
-            cell.grayView.transform = CGAffineTransformMakeTranslation(0, 0);
+            cell.grayView.frame = CGRectMake(0, cell.goingHereButton.frame.origin.y + cell.goingHereButton.frame.size.height, cell.frame.size.width, cell.frame.size.height - (cell.goingHereButton.frame.origin.y + cell.goingHereButton.frame.size.height));
             cell.goingHereButton.hidden = NO;
         }
         cell.event = event;
