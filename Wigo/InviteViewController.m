@@ -45,6 +45,7 @@
     else chosenPeople = [NSMutableArray new];
     [self getMobileContacts];
     [self fetchFirstPageEveryone];
+    [self fetchSuggestions];
     [self initializeTitle];
     [self initializeSearchBar];
     [self initializeTableInvite];
@@ -131,7 +132,7 @@
         int hasNextPage = ([self.presentedUsers.hasNextPage boolValue] ? 1 : 0);
         return self.presentedUsers.count + hasNextPage;
     } else if (section == kSectionFollowCell) {
-        return 0;
+        return self.suggestions.count;
     } else {
         if (self.isSearching) return filteredMobileContacts.count;
         return mobileContacts.count;
@@ -151,14 +152,31 @@
             if (tag < self.presentedUsers.count) {
                 user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
             }
-            if (self.presentedUsers.count > 5 && [self.presentedUsers.hasNextPage boolValue]) {
-                if (tag == self.presentedUsers.count - 5) [self getNextPage];
+            if (tag == self.presentedUsers.count - 5 &&
+                self.presentedUsers.hasNextPage.boolValue) {
+                [self getNextPage];
             }
         if (user) {
             [cell setUser:user];
             [cell.aroundTapButton removeTarget:nil
                                action:NULL
                      forControlEvents:UIControlEventAllEvents];
+            [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+            cell.aroundTapButton.tag = indexPath.row;
+        }
+    }
+    else if (indexPath.section == kSectionFollowCell) {
+        if (self.suggestions.count == 0) return cell;
+        if (indexPath.row < self.suggestions.count) {
+            if (self.suggestions.hasNextPage.boolValue &&
+                indexPath.row == self.suggestions.count - 5) {
+//                [self fetchNextPageSuggestions];
+            }
+            WGUser *user = (WGUser *)[self.suggestions objectAtIndex:indexPath.row];
+            [cell setUser:user];
+            [cell.aroundTapButton removeTarget:nil
+                                        action:NULL
+                              forControlEvents:UIControlEventAllEvents];
             [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
             cell.aroundTapButton.tag = indexPath.row;
         }
@@ -210,18 +228,31 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (section == 0) {
-        return [[UIView alloc ] init];
-    } else {
+    if (section == kSectionTapCell) {
+        return [[UIView alloc] init];
+    } else if (section == kSectionFollowCell) {
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
-        headerView.backgroundColor = [UIColor whiteColor];
+        headerView.backgroundColor = UIColor.whiteColor;
+        
+        UILabel *tapPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
+        tapPeopleLabel.text = @"Follow";
+        tapPeopleLabel.textAlignment = NSTextAlignmentLeft;
+        tapPeopleLabel.font = [FontProperties lightFont:15.0f];
+        tapPeopleLabel.textColor = [FontProperties getBlueColor];
+        
+        [headerView addSubview:tapPeopleLabel];
+        
+        return headerView;
+    }
+    else {
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+        headerView.backgroundColor = UIColor.whiteColor;
         
         UILabel *tapPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
         tapPeopleLabel.text = @"Tap Contacts";
         tapPeopleLabel.textAlignment = NSTextAlignmentLeft;
         tapPeopleLabel.font = [FontProperties lightFont:15.0f];
         tapPeopleLabel.textColor = [FontProperties getBlueColor];
-        
         [headerView addSubview:tapPeopleLabel];
         
         return headerView;
@@ -231,7 +262,7 @@
 -(CGFloat) tableView:(UITableView *)tableView
 heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 1) return 30;
+    if (section == kSectionFollowCell || section == kSectionMobileCell) return 30;
     else return 0;
 }
 
@@ -367,22 +398,21 @@ heightForHeaderInSection:(NSInteger)section
 }
 
 - (void) getNextPage {
-    __weak typeof(self) weakSelf = self;
-    if ([[self.presentedUsers hasNextPage] boolValue]) {
-        [self.presentedUsers addNextPage:^(BOOL success, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                [strongSelf.presentedUsers removeObject:WGProfile.currentUser];
-                [strongSelf.invitePeopleTableView reloadData];
-            });
-        }];
+    if (!self.presentedUsers.hasNextPage.boolValue) return;
 
-    }
+    __weak typeof(self) weakSelf = self;
+    [self.presentedUsers addNextPage:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            [strongSelf.presentedUsers removeObject:WGProfile.currentUser];
+            [strongSelf.invitePeopleTableView reloadData];
+        });
+    }];
  }
 
 #pragma mark - Network requests
@@ -404,6 +434,43 @@ heightForHeaderInSection:(NSInteger)section
             [strongSelf.invitePeopleTableView reloadData];
         });
     }];
+}
+
+
+- (void)fetchSuggestions {
+    __weak typeof(self) weakSelf = self;
+    [WGUser getSuggestions:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            strongSelf.suggestions = collection;
+            [strongSelf.invitePeopleTableView reloadData];
+        });
+    }];
+}
+
+- (void)fetchNextPageSuggestions {
+    if (!self.presentedUsers.hasNextPage.boolValue) return;
+    
+    __weak typeof(self) weakSelf = self;
+    [self.suggestions addNextPage:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            [strongSelf.suggestions removeObject:WGProfile.currentUser];
+            [strongSelf.invitePeopleTableView reloadData];
+        });
+    }];
+
 }
 
 #pragma mark - Mobile
