@@ -314,16 +314,16 @@
     [self.mediaScrollView scrolledToPage:(int)page];
     dispatch_async(dispatch_get_main_queue(), ^{
         // Content Offset to the middle (which is the first page minus the number of cells/2
-        if (animated) {
-            [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:NO];
-                [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:NO];
-            } completion:nil];
-        }
-        else {
-            [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:NO];
-            [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:NO];
-        }
+//        if (animated) {
+//            [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:animated];
+            [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:animated];
+//            } completion:nil];
+//        }
+//        else {
+//            [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:NO];
+//            [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:NO];
+//        }
     });
     [self hideOrShowFacesForPage:(int)page];
 }

@@ -30,6 +30,7 @@
 @property (nonatomic, assign) int xPosition;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) int widthOfEachCell;
+@property (nonatomic, assign) int rowOfEvent;
 @end
 
 #define kScrollViewHeader @"scrollViewHeader"
@@ -40,6 +41,8 @@
 @property (nonatomic, strong) UIButton *imageButton;
 @property (nonatomic, strong) UIImageView *imgView;
 @property (nonatomic, strong) UILabel *profileNameLabel;
+@property (nonatomic, strong) UIView *blueOverlayView;
+@property (nonatomic, strong) UILabel *goHereLabel;
 - (void)setStateForUser:(WGUser *)user;
 @end
 

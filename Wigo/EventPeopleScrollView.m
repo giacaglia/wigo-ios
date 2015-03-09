@@ -63,7 +63,7 @@
     int tag = (int)buttonSender.tag;
     UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
     imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
-                                                             tintColor:RGBAlpha(0, 0, 0, 0.75)
+                                                             tintColor:RGBAlpha(255, 255, 255, 0.5f)
                                                  saturationDeltaFactor:1.3
                                                              maskImage:nil];
     
@@ -75,6 +75,11 @@
 
 - (void)invitePressed {
     [self.placesDelegate invitePressed];
+}
+
+- (void)goHerePressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    [self.placesDelegate goHerePressed:buttonSender];
 }
 
 
@@ -108,10 +113,7 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     if (section == kInviteSection) {
-        if (self.event.id && [WGProfile.currentUser.eventAttending.id isEqual:self.event.id]) {
-            return 1;
-        }
-        else return 0;
+        return 1;
     }
     else if (section == kPeopleSection) {
         return self.event.attendees.count;
@@ -121,29 +123,44 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 2;
-
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ScrollViewCell *scrollCell = [collectionView dequeueReusableCellWithReuseIdentifier:kScrollViewCellName forIndexPath:indexPath];
     if (indexPath.section == kInviteSection) {
-        [scrollCell.imageButton removeTarget:nil
-                           action:NULL
-                 forControlEvents:UIControlEventAllEvents];
-        [scrollCell.imageButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
-        scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
-        scrollCell.profileNameLabel.text = @"Invite";
-        scrollCell.profileNameLabel.alpha = 1.0f;
-        scrollCell.profileNameLabel.textColor = [FontProperties getOrangeColor];
-        scrollCell.profileNameLabel.font = [FontProperties openSansSemibold:12.0f];
+        if (self.event.id && [self.event.id isEqual:WGProfile.currentUser.eventAttending.id]) {
+            [scrollCell.imageButton removeTarget:nil
+                                          action:NULL
+                                forControlEvents:UIControlEventAllEvents];
+            [scrollCell.imageButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+            scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
+            scrollCell.blueOverlayView.hidden = YES;
+            scrollCell.profileNameLabel.text = @"Invite";
+            scrollCell.profileNameLabel.alpha = 1.0f;
+            scrollCell.profileNameLabel.hidden = NO;
+            scrollCell.profileNameLabel.textColor = [FontProperties getBlueColor];
+            scrollCell.profileNameLabel.font = [FontProperties scMediumFont:10.0f];
+        }
+        else {
+            [scrollCell.imageButton removeTarget:nil
+                                          action:NULL
+                                forControlEvents:UIControlEventAllEvents];
+            scrollCell.imageButton.tag = self.rowOfEvent;
+            [scrollCell.imageButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
+            [scrollCell.imgView setImageWithURL:WGProfile.currentUser.smallCoverImageURL];
+            scrollCell.blueOverlayView.hidden = NO;
+            scrollCell.profileNameLabel.hidden = YES;
+        }
     }
     else {
         scrollCell.imageButton.tag = indexPath.item;
         [scrollCell.imageButton removeTarget:nil
                                       action:NULL
                             forControlEvents:UIControlEventAllEvents];
+        scrollCell.blueOverlayView.hidden = YES;
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
+        scrollCell.profileNameLabel.hidden = NO;
         WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
         [scrollCell setStateForUser:attendee.user];
         if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
@@ -208,10 +225,22 @@
     self.imgView.layer.borderWidth = 1.0f;
     [self.imageButton addSubview:self.imgView];
     
+    self.blueOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
+    self.blueOverlayView.backgroundColor = RGBAlpha(109, 166, 206, 0.8f);
+    self.blueOverlayView.hidden = YES;
+    [self.imgView addSubview:self.blueOverlayView];
+    
+    self.goHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
+    self.goHereLabel.text = @"go here";
+    self.goHereLabel.textAlignment = NSTextAlignmentCenter;
+    self.goHereLabel.font = [FontProperties scMediumFont:12];
+    self.goHereLabel.textColor = UIColor.whiteColor;
+    [self.blueOverlayView addSubview:self.goHereLabel];
+    
     self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 20)];
     self.profileNameLabel.textColor = UIColor.blackColor;
     self.profileNameLabel.textAlignment = NSTextAlignmentCenter;
-    self.profileNameLabel.font = [FontProperties openSansRegular:12.0f];
+    self.profileNameLabel.font = [FontProperties lightFont:12.0f];
     [self.contentView addSubview:self.profileNameLabel];
 }
 
@@ -219,25 +248,19 @@
     [self.imgView setSmallImageForUser:user completed:nil];
     self.profileNameLabel.text = user.firstName;
     self.profileNameLabel.textColor = UIColor.blackColor;
-    if (user.isCurrentUser) {
-        self.profileNameLabel.alpha = 1.0f;
-        self.profileNameLabel.font = [FontProperties openSansSemibold:12.0f];
+    self.profileNameLabel.alpha = 0.5f;
+    CGFloat fontSize = 12.0f;
+    CGSize size;
+    while (fontSize > 0.0f)
+    {
+        size = [user.firstName sizeWithAttributes:
+                @{NSFontAttributeName:[FontProperties lightFont:fontSize]}];
+        //TODO: not use fixed length
+        if (size.width <= self.frame.size.width - 10) break;
+        
+        fontSize -= 1.0;
     }
-    else {
-        self.profileNameLabel.alpha = 0.5f;
-        CGFloat fontSize = 12.0f;
-        CGSize size;
-        while (fontSize > 0.0f)
-        {
-            size = [user.firstName sizeWithAttributes:
-                    @{NSFontAttributeName:[FontProperties openSansRegular:fontSize]}];
-            //TODO: not use fixed length
-            if (size.width <= self.frame.size.width - 10) break;
-            
-            fontSize -= 1.0;
-        }
-        self.profileNameLabel.font = [FontProperties openSansRegular:fontSize];
-    }
+    self.profileNameLabel.font = [FontProperties lightFont:fontSize];
   
 }
 

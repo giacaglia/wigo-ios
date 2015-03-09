@@ -77,28 +77,25 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     return 1;
 }
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    if ([self.event isEqual:WGProfile.currentUser.eventAttending]) {
-        return 1 + self.eventMessages.count;
-    }
-    else {
-        return self.eventMessages.count;
-    }
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {        return 1 + self.eventMessages.count;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     HighlightCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
 
-    if (indexPath.row == 0 && [self.event isEqual:WGProfile.currentUser.eventAttending]) {
+    if (indexPath.row == 0) {
         cell.contentView.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
-        cell.faceImageView.image = [UIImage imageNamed:@"cameraAddImage"];
-        cell.orangeDotView.hidden = YES;
+        [cell.faceImageView setSmallImageForUser:WGProfile.currentUser completed:nil];
+        cell.blackOverlayView.hidden = NO;
+        cell.faceImageView.alpha = 1.0f;
+//        cell.orangeDotView.hidden = YES;
         return cell;
     }
-    if ([self.event isEqual:WGProfile.currentUser.eventAttending]) {
-        indexPath = [NSIndexPath indexPathForRow:(indexPath.row - 1) inSection:indexPath.section];   
-    }
-    cell.orangeDotView.hidden = YES;
+    cell.blackOverlayView.hidden = YES;
+    indexPath = [NSIndexPath indexPathForRow:(indexPath.row - 1) inSection:indexPath.section];
+    
+    cell.faceImageView.alpha = 1.0f;
+//    cell.orangeDotView.hidden = YES;
 
 
     if (indexPath.row + 1 == self.eventMessages.count &&
@@ -306,13 +303,30 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     self.faceImageView.layer.masksToBounds = YES;
     [self.contentView addSubview: self.faceImageView];
     
-    self.orangeDotView = [[UIView alloc] initWithFrame:CGRectMake(0.9*[HighlightCell height] - 3, 0, 15, 15)];
-    self.orangeDotView.backgroundColor = [FontProperties getOrangeColor];
-    self.orangeDotView.layer.borderColor = [UIColor clearColor].CGColor;
-    self.orangeDotView.clipsToBounds = YES;
-    self.orangeDotView.layer.borderWidth = 3;
-    self.orangeDotView.layer.cornerRadius = 7.5;
-    [self.contentView addSubview:self.orangeDotView];
+//    self.orangeDotView = [[UIView alloc] initWithFrame:CGRectMake(0.9*[HighlightCell height] - 3, 0, 15, 15)];
+//    self.orangeDotView.backgroundColor = [FontProperties getOrangeColor];
+//    self.orangeDotView.layer.borderColor = [UIColor clearColor].CGColor;
+//    self.orangeDotView.clipsToBounds = YES;
+//    self.orangeDotView.layer.borderWidth = 3;
+//    self.orangeDotView.layer.cornerRadius = 7.5;
+//    [self.contentView addSubview:self.orangeDotView];
+    
+    self.blackOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.faceImageView.frame.size.width, self.faceImageView.frame.size.height)];
+    self.blackOverlayView.hidden = YES;
+    self.blackOverlayView.backgroundColor = RGBAlpha(0, 0, 0, 0.7);
+    [self.faceImageView addSubview:self.blackOverlayView];
+    
+    UILabel *addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 60, self.faceImageView.frame.size.width, 13)];
+    addPhotoLabel.text = @"Add Photo";
+    addPhotoLabel.textColor = UIColor.whiteColor;
+    addPhotoLabel.textAlignment = NSTextAlignmentCenter;
+    addPhotoLabel.font = [FontProperties scMediumFont:10.0f];
+    [self.blackOverlayView addSubview:addPhotoLabel];
+    
+    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 16)];
+    cameraImageView.center = CGPointMake(self.blackOverlayView.center.x, 40);
+    cameraImageView.image = [UIImage imageNamed:@"cameraPhoto"];
+    [self.blackOverlayView addSubview:cameraImageView];
     
     self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake([HighlightCell height]/4, [HighlightCell height]/4, [HighlightCell height]/2, [HighlightCell height]/2)];
     self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
@@ -359,9 +373,11 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (void)updateUIToRead:(BOOL)read {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (read) {
-            self.orangeDotView.hidden = YES;
+            self.faceImageView.alpha = 0.7f;
+//            self.orangeDotView.hidden = YES;
         } else {
-            self.orangeDotView.hidden = NO;
+            self.faceImageView.alpha = 1.0f;
+//            self.orangeDotView.hidden = NO;
         }
     });
 }

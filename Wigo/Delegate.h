@@ -32,6 +32,7 @@
 - (void)updateEvent:(WGEvent *)newEvent;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
 - (void)invitePressed;
+- (void)goHerePressed:(id)sender;
 @end
 
 @protocol PrivacySwitchDelegate <NSObject>
@@ -72,6 +73,11 @@
 
 @protocol CameraDelegate <NSObject>
 - (void)presentFocusPoint:(CGPoint)focusPoint;
+@end
+
+@protocol InviteCellDelegate
+- (void) inviteTapped;
+@property State userState;
 @end
 
 #endif

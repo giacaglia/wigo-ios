@@ -49,9 +49,7 @@
 @property (nonatomic, strong) UIView *redChatNotification;
 @end
 
-BOOL isUserBlocked;
 BOOL blockShown;
-UIButton *tapButton;
 
 @implementation ProfileViewController
 
@@ -260,9 +258,7 @@ UIButton *tapButton;
 #pragma mark - Go Back
 - (void) goBack {
     if (![self.user isCurrentUser]) {
-        if (isUserBlocked) self.user.isBlocked = [NSNumber numberWithBool:isUserBlocked];
         NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[self.user deserialize]];
-        isUserBlocked = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
     }
     
@@ -753,7 +749,6 @@ UIButton *tapButton;
 }
 
 - (void)dismissAndGoBack {
-    isUserBlocked = [self.user.isBlocked boolValue];
     self.user.isBlocked = @NO;
     [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:^(void){
         [self goBack];
@@ -1525,6 +1520,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     }];
     }];
     }];
-
 }
+
 @end

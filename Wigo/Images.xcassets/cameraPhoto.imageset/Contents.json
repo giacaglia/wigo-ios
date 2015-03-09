@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "inviteButton.png"
+      "filename" : "cameraPhoto-1.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "inviteButton@2x.png"
+      "filename" : "cameraPhoto@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "inviteButton@3x.png"
+      "filename" : "cameraPhoto.png"
     }
   ],
   "info" : {

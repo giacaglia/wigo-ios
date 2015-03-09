@@ -155,7 +155,6 @@
     self.goHereButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
     [self.backgroundScrollview addSubview:self.goHereButton];
     
-    
     if ([self isPeeking] || self.event.isAggregate) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
