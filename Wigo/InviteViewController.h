@@ -48,3 +48,12 @@
 - (void)setCellForContactPerson:(ABRecordRef)contactPerson
                withChosenPeople:(NSArray *)chosenPeople;
 @end
+
+@interface FollowCell : UITableViewCell
++ (CGFloat) height;
+@property (nonatomic, strong) UIButton *profileButton;
+@property (nonatomic, strong) UIImageView *profileImageView;
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIButton *followPersonButton;
+- (void)setStateForUser:(WGUser *)user;
+@end

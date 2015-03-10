@@ -30,7 +30,7 @@ int imageWidth;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    imageWidth = [UIScreen mainScreen].bounds.size.width - kBorderWidth * 2;
+    imageWidth = [UIScreen mainScreen].bounds.size.width - kBorderWidth * 2 - 40;
     
     self.view.backgroundColor = UIColor.clearColor;
     UIImageView* backView = [[UIImageView alloc] initWithFrame:self.view.frame];
@@ -142,7 +142,7 @@ int imageWidth;
 
 - (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
     float fractionalPage;
-    CGFloat pageWidth = [[UIScreen mainScreen] bounds].size.width;
+    CGFloat pageWidth = imageWidth;
     fractionalPage = (self.attendeesPhotosScrollView.contentOffset.x) / pageWidth;
      NSInteger page;
     if (leftBoolean) {
@@ -165,7 +165,7 @@ int imageWidth;
     page = MAX(page, 0);
     page = MIN(page, self.event.attendees.count - 1);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.attendeesPhotosScrollView setContentOffset:CGPointMake(imageWidth * page, 0.0f) animated:animated];
+        [self.attendeesPhotosScrollView setContentOffset:CGPointMake((imageWidth + 10) * page - 20, 0.0f) animated:animated];
 
 //        if (animated) {
 //            [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -247,7 +247,7 @@ int imageWidth;
     [self.contentView addSubview:self.inviteView];
     
     self.layer.borderColor = RGBAlpha(225, 225, 225, 29).CGColor;
-    self.layer.borderWidth = 2.0f;
+    self.layer.borderWidth = 1.0f;
     self.layer.cornerRadius = 10.0f;
 }
 
@@ -269,6 +269,7 @@ int imageWidth;
         self.backgroundNameLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.5f);
     }
     self.profileNameLabel.text = user.firstName;
+    [self.inviteView setLabelsForUser:user];
 }
 
 @end
@@ -300,8 +301,8 @@ int imageWidth;
     self.itemSize = CGSizeMake(imageWidth, imageWidth + 70);
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     self.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
-    self.minimumInteritemSpacing = 15.0;
-    self.minimumLineSpacing = 0.0;
+    self.minimumInteritemSpacing = 10.0;
+    self.minimumLineSpacing = 10.0;
 }
 
 

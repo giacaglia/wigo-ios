@@ -21,7 +21,7 @@
 }
 
 - (void) setLabelsForUser: (WGUser *) user {
-    if ([user isCurrentUser]) {
+    if (user.isCurrentUser) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
         self.titleLabel.hidden = YES;
