@@ -1131,7 +1131,6 @@ BOOL firstTimeLoading;
 }
 
 - (void)presentConversationForUser:(WGUser *)user {
-//    ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:[[ConversationViewController alloc] initWithUser:user] animated:YES];
 }
 
@@ -1147,9 +1146,7 @@ BOOL firstTimeLoading;
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
     conversationViewController.index = [NSNumber numberWithInt:index];
-//    if ([event.id isEqual:WGProfile.currentUser.eventAttending.id]) {
-        eventMessages = [self eventMessagesWithCamera:eventMessages];
-//    }
+    eventMessages = [self eventMessagesWithCamera:eventMessages];
     conversationViewController.eventMessages = eventMessages;
     conversationViewController.isPeeking = [self isPeeking];
     [self presentViewController:conversationViewController animated:YES completion:nil];

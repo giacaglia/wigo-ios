@@ -68,6 +68,7 @@
                                                              maskImage:nil];
     
     self.eventPeopleModalViewController = [[EventPeopleModalViewController alloc] initWithEvent:self.event startIndex:tag andBackgroundImage:imageOfUnderlyingView];
+    self.eventPeopleModalViewController.isPeeking = self.isPeeking;
     self.eventPeopleModalViewController.placesDelegate = self.placesDelegate;
     
     [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];

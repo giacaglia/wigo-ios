@@ -14,15 +14,15 @@
 @interface EventPeopleModalViewController : UIViewController
     <UICollectionViewDataSource, UICollectionViewDelegate,
     EventPeopleModalDelegate>
-
-@property BOOL fetchingEventAttendees;
-@property UIImage *backgroundImage;
-@property int startIndex;
-@property UICollectionView *attendeesPhotosScrollView;
-@property WGEvent *event;
+@property (nonatomic, assign) BOOL isPeeking;
+@property (nonatomic, assign) BOOL fetchingEventAttendees;
+@property (nonatomic, strong) UIImage *backgroundImage;
+@property (nonatomic, assign) int startIndex;
+@property (nonatomic, strong) UICollectionView *attendeesPhotosScrollView;
+@property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) id <PlacesDelegate> placesDelegate;
-- (id)initWithEvent:(WGEvent *)event startIndex:(int)index andBackgroundImage:(UIImage *)image;
 @property (nonatomic, assign) CGPoint pointNow;
+- (id)initWithEvent:(WGEvent *)event startIndex:(int)index andBackgroundImage:(UIImage *)image;
 @end
 
 #define kAttendeesCellName @"attendeesCellName"

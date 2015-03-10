@@ -183,6 +183,8 @@ int imageWidth;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     AttendeesPhotoCell *attendeeCell = [collectionView dequeueReusableCellWithReuseIdentifier:kAttendeesCellName forIndexPath:indexPath];
+    attendeeCell.chatButton.hidden = NO;
+    attendeeCell.inviteView.alpha = 1.0f;
     attendeeCell.imageButton.tag = indexPath.item;
     [attendeeCell.imageButton addTarget:self action:@selector(presentUser:) forControlEvents:UIControlEventTouchUpInside];
     WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
@@ -190,6 +192,11 @@ int imageWidth;
     attendeeCell.chatButton.tag = indexPath.item;
     attendeeCell.eventPeopleModalDelegate = self;
     if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
+    if (self.isPeeking) {
+        attendeeCell.chatButton.hidden = YES;
+        attendeeCell.inviteView.alpha = 0.0f;
+    }
+    
     return attendeeCell;
 }
 
