@@ -63,11 +63,8 @@ int imageWidth;
     self.attendeesPhotosScrollView.dataSource = self;
     [self.attendeesPhotosScrollView registerClass:[AttendeesPhotoCell class] forCellWithReuseIdentifier:kAttendeesCellName];
     [self.view addSubview:self.attendeesPhotosScrollView];
-    
-    [self.attendeesPhotosScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.startIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
-    CGPoint newOffset = self.attendeesPhotosScrollView.contentOffset;
-    newOffset = CGPointMake(newOffset.x - 20, newOffset.y);
-    self.attendeesPhotosScrollView.contentOffset = newOffset;
+
+    self.attendeesPhotosScrollView.contentOffset = CGPointMake((imageWidth + 10) * self.startIndex - 20, 0);
     
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, self.view.frame.size.height - 58, 50, 50)];
     closeButton.backgroundColor = UIColor.clearColor;
@@ -195,6 +192,7 @@ int imageWidth;
     if (self.isPeeking) {
         attendeeCell.chatButton.hidden = YES;
         attendeeCell.inviteView.alpha = 0.0f;
+        attendeeCell.followButton.hidden = YES;
     }
     
     return attendeeCell;
@@ -323,6 +321,10 @@ int imageWidth;
     if (user.isCurrentUser) {
         self.backgroundNameLabel.backgroundColor = [FontProperties getBlueColor];
         self.chatButton.hidden = YES;
+        self.followButton.hidden = YES;
+    }
+    else {
+        self.followButton.hidden = NO;
     }
 //    else {
 //        self.backgroundNameLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.5f);
