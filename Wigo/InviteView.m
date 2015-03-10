@@ -60,7 +60,7 @@
     
     self.tappedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 70.0f)];
     self.tappedLabel.text = @"tapped";
-    self.tappedLabel.font = [FontProperties scMediumFont:24];
+    self.tappedLabel.font = [FontProperties scMediumFont:20];
     self.tappedLabel.textColor = [FontProperties getOrangeColor];
     self.tappedLabel.textAlignment = NSTextAlignmentCenter;
     self.tappedLabel.alpha = 0;

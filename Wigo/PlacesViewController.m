@@ -1492,6 +1492,7 @@ BOOL firstTimeLoading;
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
             [strongSelf initializeNavigationBar];
+            [strongSelf.placesTableView reloadData];
             strongSelf.fetchingUserInfo = NO;
         }];
     }
@@ -1546,6 +1547,7 @@ BOOL firstTimeLoading;
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell heightIsFullCell:NO]);
     self.contentView.frame = self.frame;
     self.backgroundColor = UIColor.whiteColor;
+    self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];

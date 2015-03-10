@@ -47,9 +47,9 @@ int imageWidth;
     [self.view addSubview:titleLabel];
     
     UILabel *numberOfPeopleGoing = [[UILabel alloc] initWithFrame:CGRectMake(15, 74 + 10, self.view.frame.size.width - 30, 20)];
-    numberOfPeopleGoing.text = [NSString stringWithFormat:@"%@ are going", self.event.numAttending.stringValue];
-    numberOfPeopleGoing.font = [FontProperties lightFont:18.0f];
-    numberOfPeopleGoing.textColor = RGB(167, 167, 167);
+    numberOfPeopleGoing.text = [NSString stringWithFormat:@"Going (%@)", self.event.numAttending.stringValue];
+    numberOfPeopleGoing.font = [FontProperties lightFont:16.0f];
+    numberOfPeopleGoing.textColor = UIColor.blackColor;
     numberOfPeopleGoing.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:numberOfPeopleGoing];
     
@@ -241,12 +241,16 @@ int imageWidth;
     self.profileNameLabel.font = [FontProperties lightFont:24.0f];
     [self.contentView addSubview:self.profileNameLabel];
     
-    self.inviteView = [[InviteView alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth/2, 70)];
+    UIView *backgroundWhiteView = [[UIView alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 70)];
+    backgroundWhiteView.backgroundColor = UIColor.whiteColor;
+    [self.contentView addSubview:backgroundWhiteView];
+    
+    self.inviteView = [[InviteView alloc] initWithFrame:CGRectMake(0, 0, imageWidth/2, 70)];
     self.inviteView.backgroundColor = UIColor.whiteColor;
     [self.inviteView setup];
-    [self.contentView addSubview:self.inviteView];
+    [backgroundWhiteView addSubview:self.inviteView];
     
-    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth/2, imageWidth, imageWidth/2, 70)];
+    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth/2, 0, imageWidth/2, 70)];
     [self.chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
     self.chatButton.backgroundColor = UIColor.whiteColor;
     UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 10, 10 + 5, 20, 20)];
@@ -258,7 +262,7 @@ int imageWidth;
     chatLabel.textColor = [FontProperties getOrangeColor];
     chatLabel.font = [FontProperties scMediumFont:16.0f];
     [self.chatButton addSubview:chatLabel];
-    [self addSubview:self.chatButton];
+    [backgroundWhiteView addSubview:self.chatButton];
     
     self.layer.borderColor = RGBAlpha(225, 225, 225, 29).CGColor;
     self.layer.borderWidth = 1.0f;
@@ -266,7 +270,7 @@ int imageWidth;
 }
 
 - (void)chatPressed {
-    
+    NSLog(@"chat pressed");
 }
 
 - (void)setStateForUser:(WGUser *)user {
