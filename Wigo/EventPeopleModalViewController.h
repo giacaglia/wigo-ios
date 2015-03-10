@@ -34,6 +34,7 @@
 - (void)setStateForUser:(WGUser *)user;
 @property (nonatomic, strong) InviteView *inviteView;
 @property (nonatomic, strong) UIButton *chatButton;
+@property (nonatomic, strong) UIButton *followButton;
 @property (nonatomic, assign) id<EventPeopleModalDelegate> eventPeopleModalDelegate;
 @end
 

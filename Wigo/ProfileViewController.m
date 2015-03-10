@@ -461,7 +461,6 @@ BOOL blockShown;
     followLabel.textAlignment = NSTextAlignmentLeft;
     followLabel.textColor = [FontProperties getOrangeColor];
     followLabel.font =  [FontProperties scMediumFont:24.0f];
-    
     [followLabelPlusImage addSubview:followLabel];
     
     UIImageView *plusImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plusPerson"]];

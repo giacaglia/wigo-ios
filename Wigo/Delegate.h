@@ -83,6 +83,7 @@
 
 @protocol EventPeopleModalDelegate
 - (void)chatPressed:(id)sender;
+- (void)followPressed:(id)sender;
 @end
 
 #endif
