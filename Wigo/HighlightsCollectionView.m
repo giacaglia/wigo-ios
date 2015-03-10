@@ -317,7 +317,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self.faceImageView addSubview:self.blackOverlayView];
     
     UILabel *addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 60, self.faceImageView.frame.size.width, 13)];
-    addPhotoLabel.text = @"Add Photo";
+    addPhotoLabel.text = @"Add Buzz";
     addPhotoLabel.textColor = UIColor.whiteColor;
     addPhotoLabel.textAlignment = NSTextAlignmentCenter;
     addPhotoLabel.font = [FontProperties scMediumFont:10.0f];

@@ -14,7 +14,7 @@
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(WGEvent *)event {
-    if (self.widthOfEachCell == 0) self.widthOfEachCell = (float)[[UIScreen mainScreen] bounds].size.width/(float)6.4;
+    if (self.widthOfEachCell == 0) self.widthOfEachCell = (float)[[UIScreen mainScreen] bounds].size.width/(float)5.8;
     self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.widthOfEachCell + 50) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:self.widthOfEachCell]];
     if (self) {
         self.contentSize = CGSizeMake(15, self.widthOfEachCell + 40);

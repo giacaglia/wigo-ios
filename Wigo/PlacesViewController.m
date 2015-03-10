@@ -122,7 +122,7 @@ BOOL firstTimeLoading;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self initializeFlashScreen];
-    if (![WGProfile currentUser].key && !self.presentingLockedView) {
+    if (!WGProfile.currentUser.key && !self.presentingLockedView) {
         [self showFlashScreen];
         [self.signViewController reloadedUserInfo:NO andError:nil];
     }
@@ -147,7 +147,7 @@ BOOL firstTimeLoading;
 
 - (BOOL) isPeeking {
     if (WGProfile.currentUser.group.id &&
-        (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id])){
+        (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id])){
         return NO;
     }
     return YES;
@@ -169,10 +169,10 @@ BOOL firstTimeLoading;
 }
 
 - (void) initializeNavigationBar {
-    if (![WGProfile currentUser].group.id) {
+    if (!WGProfile.currentUser.group.id) {
         self.navigationItem.leftBarButtonItem = nil;
         self.navigationItem.rightBarButtonItem = nil;
-    } else if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:[WGProfile currentUser].group.id]) {
+    } else if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
         CGRect profileFrame = CGRectMake(3, 0, 30, 30);
         UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
@@ -279,7 +279,7 @@ BOOL firstTimeLoading;
 
 - (void)goToChat:(NSNotification *)notification {
     ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
+    [fancyProfileViewController setStateWithUser: WGProfile.currentUser];
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: NO];
     
@@ -290,7 +290,7 @@ BOOL firstTimeLoading;
 
 - (void)goToProfile {
     ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
+    [fancyProfileViewController setStateWithUser: WGProfile.currentUser];
     fancyProfileViewController.events = self.events;
     [self.navigationController pushViewController: fancyProfileViewController animated: NO];
 }
@@ -325,7 +325,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) updateViewNotGoingOut {
-    [WGProfile currentUser].isGoingOut = @NO;
+    WGProfile.currentUser.isGoingOut = @NO;
     [self fetchEventsFirstPage];
 }
 
@@ -342,14 +342,14 @@ BOOL firstTimeLoading;
     while (fontSize > 0.0f)
     {
         size = [self.groupName sizeWithAttributes:
-                @{NSFontAttributeName:[FontProperties mediumFont:fontSize]}];
+                @{NSFontAttributeName:[FontProperties scMediumFont:fontSize]}];
         if (size.width <= 210) break;
         
         fontSize -= 2.0;
     }
     self.schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
     self.schoolButton.frame = CGRectMake(0, 0, size.width, size.height);
-    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 10, size.height/2 - 3, 6, 5)];
+    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, size.height/2 - 2, 6, 5)];
     [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     triangleImageView.image = [UIImage imageNamed:@"whiteTriangle"];
     [self.schoolButton addSubview:triangleImageView];
@@ -404,16 +404,16 @@ BOOL firstTimeLoading;
 
 
 - (void)followPressed {
-    if ([WGProfile currentUser].key) {
+    if (WGProfile.currentUser.key) {
         if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
         self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:[WGProfile currentUser]] animated:YES];
+        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:WGProfile.currentUser] animated:YES];
     }
 }
 
 - (void)invitePressed {
-    if ([WGProfile currentUser].eventAttending.id) {
-        [self presentViewController:[[InviteViewController alloc] initWithEvent:[WGProfile currentUser].eventAttending] animated:YES completion:nil];
+    if (WGProfile.currentUser.eventAttending.id) {
+        [self presentViewController:[[InviteViewController alloc] initWithEvent:WGProfile.currentUser.eventAttending] animated:YES completion:nil];
     }
 }
 
@@ -486,7 +486,7 @@ BOOL firstTimeLoading;
 - (void)profileSegue {
     if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
     ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [fancyProfileViewController setStateWithUser: [WGProfile currentUser]];
+    [fancyProfileViewController setStateWithUser: WGProfile.currentUser];
     fancyProfileViewController.events = self.events;
     
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
@@ -680,15 +680,14 @@ BOOL firstTimeLoading;
                     
                     [strongOfStrong dismissKeyboard];
                     
-                    [WGProfile currentUser].isGoingOut = @YES;
-                    [WGProfile currentUser].eventAttending = object;
+                    WGProfile.currentUser.isGoingOut = @YES;
+                    WGProfile.currentUser.eventAttending = object;
                     
-                    WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : [WGProfile currentUser] }];
+                    WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : WGProfile.currentUser }];
                     
                     if ([strongOfStrong.allEvents containsObject:object]) {
                         WGEvent *joinedEvent = (WGEvent *)[strongOfStrong.allEvents objectWithID:object.id];
                         [joinedEvent.attendees insertObject:attendee atIndex:0];
-//                        [strongOfStrong showStoryForEvent:joinedEvent];
                     } else {
                         if (object.attendees) {
                             [object.attendees insertObject:attendee atIndex:0];
@@ -696,7 +695,6 @@ BOOL firstTimeLoading;
                             WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
                             object.attendees = eventAttendees;
                         }
-//                        [strongOfStrong showStoryForEvent:object];
                     }
                 }];
             }];
@@ -989,7 +987,7 @@ BOOL firstTimeLoading;
         else {
             contentURL = event.highlight.thumbnail;
         }
-        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [[WGProfile currentUser] cdnPrefix], contentURL]];
+        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile.currentUser cdnPrefix], contentURL]];
         [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
         }];
 
@@ -1132,6 +1130,11 @@ BOOL firstTimeLoading;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 
+- (void)presentConversationForUser:(WGUser *)user {
+//    ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
+    [self.navigationController pushViewController:[[ConversationViewController alloc] initWithUser:user] animated:YES];
+}
+
 - (void)showModalAttendees:(UIViewController *)modal {
     self.shouldReloadEvents = NO;
     [self.navigationController presentViewController:modal animated:YES completion:nil];
@@ -1156,7 +1159,7 @@ BOOL firstTimeLoading;
     WGCollection *newEventMessages =  [[WGCollection alloc] initWithType:[WGEventMessage class]];
     [newEventMessages addObjectsFromCollection:eventMessages];
     WGEventMessage *eventMessage = [WGEventMessage serialize:@{
-                                                               @"user": [WGProfile currentUser],
+                                                               @"user": WGProfile.currentUser,
                                                                @"created": [NSDate nowStringUTC],
                                                                @"media_mime_type": kCameraType,
                                                                @"media": @""
@@ -1286,7 +1289,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) fetchEvents {
-    if (!self.fetchingEventAttendees && [WGProfile currentUser].key) {
+    if (!self.fetchingEventAttendees && WGProfile.currentUser.key) {
         self.fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WGSpinnerView addDancingGToCenterView:self.view];
         __weak typeof(self) weakSelf = self;
@@ -1460,8 +1463,8 @@ BOOL firstTimeLoading;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
                 strongSelf.secondTimeFetchingUserInfo = YES;
                 if (
-                    (error || ![[WGProfile currentUser].emailValidated boolValue] ||
-                    [[WGProfile currentUser].group.locked boolValue])
+                    (error || ![WGProfile.currentUser.emailValidated boolValue] ||
+                    [WGProfile.currentUser.group.locked boolValue])
                     
                     &&
                     
@@ -1513,15 +1516,15 @@ BOOL firstTimeLoading;
 - (void)addProfileUserToEventWithNumber:(int)eventID {
     WGEvent *event = (WGEvent *)[self.events objectWithID:[NSNumber numberWithInt:eventID]];
     [self removeProfileUserFromAnyOtherEvent];
-    [event.attendees insertObject:[WGProfile currentUser] atIndex:0];
+    [event.attendees insertObject:WGProfile.currentUser atIndex:0];
     event.numAttending = @([event.numAttending intValue] + 1);
     [self.events exchangeObjectAtIndex:[self.events indexOfObject:event] withObjectAtIndex:0];
 }
 
 -(void) removeProfileUserFromAnyOtherEvent {
     for (WGEvent* event in self.events) {
-        if ([event.attendees containsObject:[WGProfile currentUser]]) {
-            [event.attendees removeObject:[WGProfile currentUser]];
+        if ([event.attendees containsObject:WGProfile.currentUser]) {
+            [event.attendees removeObject:WGProfile.currentUser];
             event.numAttending = @([event.numAttending intValue] - 1);
         }
     }
@@ -1532,7 +1535,7 @@ BOOL firstTimeLoading;
 @implementation EventCell
 
 + (CGFloat)heightIsFullCell:(BOOL)isFullCell {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 20;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 20 + 20;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1578,7 +1581,7 @@ BOOL firstTimeLoading;
     [self.contentView addSubview:self.numberOfPeopleGoingLabel];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.widthOfEachCell = (float)[[UIScreen mainScreen] bounds].size.width/(float)6.4;
+    self.eventPeopleScrollView.widthOfEachCell = (float)[[UIScreen mainScreen] bounds].size.width/(float)5.8;
     self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
@@ -1609,7 +1612,7 @@ BOOL firstTimeLoading;
 //    self.goingHereButton.titleLabel.font = [FontProperties openSansSemibold:14.0f];
 //    [self.contentView addSubview:self.goingHereButton];
     
-    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 40)];
+    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 60)];
     self.grayView.backgroundColor = RGB(237, 237, 237);
     [self.contentView addSubview:self.grayView];
 }

@@ -33,6 +33,7 @@
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
 - (void)invitePressed;
 - (void)goHerePressed:(id)sender;
+- (void)presentConversationForUser:(WGUser *)user;
 @end
 
 @protocol PrivacySwitchDelegate <NSObject>
@@ -78,6 +79,10 @@
 @protocol InviteCellDelegate
 - (void) inviteTapped;
 @property State userState;
+@end
+
+@protocol EventPeopleModalDelegate
+- (void)chatPressed:(id)sender;
 @end
 
 #endif

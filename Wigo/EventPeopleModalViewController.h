@@ -12,7 +12,8 @@
 #import "InviteView.h"
 
 @interface EventPeopleModalViewController : UIViewController
-    <UICollectionViewDataSource, UICollectionViewDelegate>
+    <UICollectionViewDataSource, UICollectionViewDelegate,
+    EventPeopleModalDelegate>
 
 @property BOOL fetchingEventAttendees;
 @property UIImage *backgroundImage;
@@ -33,6 +34,7 @@
 - (void)setStateForUser:(WGUser *)user;
 @property (nonatomic, strong) InviteView *inviteView;
 @property (nonatomic, strong) UIButton *chatButton;
+@property (nonatomic, assign) id<EventPeopleModalDelegate> eventPeopleModalDelegate;
 @end
 
 @interface AttendeesLayout : UICollectionViewFlowLayout

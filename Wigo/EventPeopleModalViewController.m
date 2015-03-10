@@ -166,15 +166,6 @@ int imageWidth;
     page = MIN(page, self.event.attendees.count - 1);
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.attendeesPhotosScrollView setContentOffset:CGPointMake((imageWidth + 10) * page - 20, 0.0f) animated:animated];
-
-//        if (animated) {
-//            [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-//                [self.attendeesPhotosScrollView setContentOffset:CGPointMake(([UIScreen mainScreen].bounds.size.width) * page, 0.0f) animated:NO];
-//            } completion:nil];
-//        }
-//        else {
-//            [self.attendeesPhotosScrollView setContentOffset:CGPointMake(([UIScreen mainScreen].bounds.size.width) * page, 0.0f) animated:NO];
-//        }
     });
 }
 
@@ -196,8 +187,19 @@ int imageWidth;
     [attendeeCell.imageButton addTarget:self action:@selector(presentUser:) forControlEvents:UIControlEventTouchUpInside];
     WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
     [attendeeCell setStateForUser:attendee.user];
+    attendeeCell.chatButton.tag = indexPath.item;
+    attendeeCell.eventPeopleModalDelegate = self;
     if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
     return attendeeCell;
+}
+
+#pragma mark - EventPeopleModal Delegate
+
+- (void)chatPressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:buttonSender.tag];
+    if (attendee) [self.placesDelegate presentConversationForUser:attendee.user];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
@@ -251,14 +253,14 @@ int imageWidth;
     [backgroundWhiteView addSubview:self.inviteView];
     
     self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth/2, 0, imageWidth/2, 70)];
-    [self.chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.chatButton addTarget:self action:@selector(chatPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.chatButton.backgroundColor = UIColor.whiteColor;
     UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 10, 10 + 5, 20, 20)];
     orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
     [self.chatButton addSubview:orangeChatBubbleImageView];
     UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35 - 10 + 10, self.chatButton.frame.size.width, 20)];
     chatLabel.textAlignment = NSTextAlignmentCenter;
-    chatLabel.text = @"chats";
+    chatLabel.text = @"chat";
     chatLabel.textColor = [FontProperties getOrangeColor];
     chatLabel.font = [FontProperties scMediumFont:16.0f];
     [self.chatButton addSubview:chatLabel];
@@ -269,8 +271,8 @@ int imageWidth;
     self.layer.cornerRadius = 10.0f;
 }
 
-- (void)chatPressed {
-    NSLog(@"chat pressed");
+- (void)chatPressed:(id)sender {
+    [self.eventPeopleModalDelegate chatPressed:sender];
 }
 
 - (void)setStateForUser:(WGUser *)user {
@@ -292,7 +294,7 @@ int imageWidth;
         self.backgroundNameLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.5f);
         self.chatButton.hidden = NO;
     }
-    self.profileNameLabel.text = user.firstName;
+    self.profileNameLabel.text = user.fullName;
     [self.inviteView setLabelsForUser:user];
     
 }
