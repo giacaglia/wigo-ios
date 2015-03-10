@@ -32,6 +32,7 @@
 @property (nonatomic, strong) UILabel *profileNameLabel;
 - (void)setStateForUser:(WGUser *)user;
 @property (nonatomic, strong) InviteView *inviteView;
+@property (nonatomic, strong) UIButton *chatButton;
 @end
 
 @interface AttendeesLayout : UICollectionViewFlowLayout

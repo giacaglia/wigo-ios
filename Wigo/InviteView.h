@@ -16,6 +16,5 @@
 + (CGFloat) rowHeight;
 @property (nonatomic, strong) UILabel *tappedLabel;
 @property (nonatomic, strong) UIButton *inviteButton;
-@property (nonatomic, strong) UILabel *titleLabel;
 - (void)setup;
 @end

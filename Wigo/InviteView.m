@@ -24,7 +24,6 @@
     if (user.isCurrentUser) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
-        self.titleLabel.hidden = YES;
         self.tappedLabel.alpha = 0;
         return;
     }
@@ -32,32 +31,22 @@
     if ([self.delegate userState] == OTHER_SCHOOL_USER_STATE) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
-        self.titleLabel.hidden = YES;
         self.tappedLabel.alpha = 0;
     } else {
         if ([user.isTapped boolValue]) {
             self.inviteButton.hidden = YES;
             self.inviteButton.enabled = NO;
-            self.titleLabel.hidden = YES;
             self.tappedLabel.alpha = 1;
             
         } else {
             self.inviteButton.hidden = NO;
-            self.titleLabel.hidden = NO;
-            self.titleLabel.text = kInviteTitleTemplate;
             self.tappedLabel.alpha = 0;
         }
     }
 }
 
 - (void) setup {
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 0, self.frame.size.width, 70)];
-    self.titleLabel.font = [FontProperties lightFont: 24];
-    self.titleLabel.textColor = RGB(207, 207, 207);
-    self.titleLabel.text = @"Tap to see out";
-    [self addSubview:self.titleLabel];
-    
-    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 75 -13, 35 - 17.5, 75, 35)];
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 37, 35 - 17.5, 75, 35)];
     self.inviteButton.backgroundColor = [FontProperties getOrangeColor];
     [self.inviteButton setTitle:@"TAP" forState:UIControlStateNormal];
     [self.inviteButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
@@ -69,10 +58,10 @@
     [self.inviteButton addTarget: self action: @selector(inviteTapped) forControlEvents: UIControlEventTouchUpInside];
     [self addSubview:self.inviteButton];
     
-    self.tappedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f)];
-    self.tappedLabel.text = @"TAPPED";
-    self.tappedLabel.font = [FontProperties lightFont: 24];
-    self.tappedLabel.textColor = UIColor.lightGrayColor;
+    self.tappedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 70.0f)];
+    self.tappedLabel.text = @"tapped";
+    self.tappedLabel.font = [FontProperties scMediumFont:24];
+    self.tappedLabel.textColor = [FontProperties getOrangeColor];
     self.tappedLabel.textAlignment = NSTextAlignmentCenter;
     self.tappedLabel.alpha = 0;
     [self addSubview:self.tappedLabel];
@@ -88,7 +77,6 @@
     orangeBackground.layer.borderColor = UIColor.clearColor.CGColor;
     [self sendSubviewToBack:orangeBackground];
     [self addSubview:orangeBackground];
-    self.titleLabel.hidden = YES;
     self.tappedLabel.textColor = UIColor.whiteColor;
     self.tappedLabel.alpha = 1;
     [self bringSubviewToFront:self.tappedLabel];
@@ -104,7 +92,7 @@
                      } completion:^(BOOL finished) {
                          [UIView animateWithDuration:0.2f animations:^{
                              orangeBackground.backgroundColor = RGB(231, 222, 214);
-                             weakSelf.tappedLabel.textColor = UIColor.lightGrayColor;
+                             weakSelf.tappedLabel.textColor = [FontProperties getOrangeColor];
                          } completion:^(BOOL finished) {
                              [UIView animateWithDuration:0.5f animations:^{
                                  orangeBackground.alpha = 0.0f;

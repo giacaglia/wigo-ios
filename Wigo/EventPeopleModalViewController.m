@@ -66,7 +66,7 @@ int imageWidth;
     
     [self.attendeesPhotosScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.startIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionLeft animated:NO];
     CGPoint newOffset = self.attendeesPhotosScrollView.contentOffset;
-    newOffset = CGPointMake(newOffset.x - 10, newOffset.y);
+    newOffset = CGPointMake(newOffset.x - 20, newOffset.y);
     self.attendeesPhotosScrollView.contentOffset = newOffset;
     
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, self.view.frame.size.height - 58, 50, 50)];
@@ -241,14 +241,32 @@ int imageWidth;
     self.profileNameLabel.font = [FontProperties lightFont:24.0f];
     [self.contentView addSubview:self.profileNameLabel];
     
-    self.inviteView = [[InviteView alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 70)];
+    self.inviteView = [[InviteView alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth/2, 70)];
     self.inviteView.backgroundColor = UIColor.whiteColor;
     [self.inviteView setup];
     [self.contentView addSubview:self.inviteView];
     
+    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth/2, imageWidth, imageWidth/2, 70)];
+    [self.chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.chatButton.backgroundColor = UIColor.whiteColor;
+    UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 10, 10 + 5, 20, 20)];
+    orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
+    [self.chatButton addSubview:orangeChatBubbleImageView];
+    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35 - 10 + 10, self.chatButton.frame.size.width, 20)];
+    chatLabel.textAlignment = NSTextAlignmentCenter;
+    chatLabel.text = @"chats";
+    chatLabel.textColor = [FontProperties getOrangeColor];
+    chatLabel.font = [FontProperties scMediumFont:16.0f];
+    [self.chatButton addSubview:chatLabel];
+    [self addSubview:self.chatButton];
+    
     self.layer.borderColor = RGBAlpha(225, 225, 225, 29).CGColor;
     self.layer.borderWidth = 1.0f;
     self.layer.cornerRadius = 10.0f;
+}
+
+- (void)chatPressed {
+    
 }
 
 - (void)setStateForUser:(WGUser *)user {
@@ -265,11 +283,14 @@ int imageWidth;
     
     if (user.isCurrentUser) {
         self.backgroundNameLabel.backgroundColor = [FontProperties getBlueColor];
+        self.chatButton.hidden = YES;
     } else {
         self.backgroundNameLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.5f);
+        self.chatButton.hidden = NO;
     }
     self.profileNameLabel.text = user.firstName;
     [self.inviteView setLabelsForUser:user];
+    
 }
 
 @end

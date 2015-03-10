@@ -399,8 +399,8 @@ BOOL blockShown;
     
     _orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
     _orangeChatBubbleImageView.center = CGPointMake(_orangeChatBubbleImageView.center.x, _chatButton.center.y - _orangeChatBubbleImageView.frame.size.height/2 + 2);
-    
     [_chatButton addSubview:_orangeChatBubbleImageView];
+    
     _numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _orangeChatBubbleImageView.frame.size.width, _orangeChatBubbleImageView.frame.size.height - 8)];
     _numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
     _numberOfChatsLabel.textColor = UIColor.whiteColor;
