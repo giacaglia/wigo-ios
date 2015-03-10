@@ -215,17 +215,6 @@ BOOL firstTimeLoading;
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
         self.navigationItem.rightBarButtonItem = rightBarButton;
 
-        if ([WGProfile.currentUser.numUnreadUsers intValue] > 0) {
-            self.redDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, 10, 10)];
-            self.redDotLabel.backgroundColor = [FontProperties getOrangeColor];
-            self.redDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
-            self.redDotLabel.clipsToBounds = YES;
-            self.redDotLabel.layer.borderWidth = 3;
-            self.redDotLabel.layer.cornerRadius = 5;
-            [self.rightButton addSubview:self.redDotLabel];
-        } else if (self.redDotLabel) {
-            [self.redDotLabel removeFromSuperview];
-        }
     }
     else if (self.presentingLockedView) {
         self.navigationItem.rightBarButtonItem = nil;
@@ -928,6 +917,7 @@ BOOL firstTimeLoading;
         cell.loadingView.hidden = YES;
         cell.placesDelegate = self;
         cell.eventPeopleScrollView.rowOfEvent = indexPath.row;
+        cell.eventPeopleScrollView.isPeeking = [self isPeeking];
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
             cell.event = self.aggregateEvent;

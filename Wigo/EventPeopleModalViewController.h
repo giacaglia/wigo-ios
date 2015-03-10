@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Globals.h"
 #import "Delegate.h"
+#import "InviteView.h"
 
 @interface EventPeopleModalViewController : UIViewController
     <UICollectionViewDataSource, UICollectionViewDelegate>
@@ -30,6 +31,7 @@
 @property (nonatomic, strong) UILabel *backgroundNameLabel;
 @property (nonatomic, strong) UILabel *profileNameLabel;
 - (void)setStateForUser:(WGUser *)user;
+@property (nonatomic, strong) InviteView *inviteView;
 @end
 
 @interface AttendeesLayout : UICollectionViewFlowLayout

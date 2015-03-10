@@ -21,12 +21,22 @@
 @property (nonatomic, assign) BOOL isSearching;
 @end
 
+#define kSectionTapAllName @"tapAllName"
+#define kSectionTapAllCell 0
 #define kTapCellName @"tapCellName"
-#define kSectionTapCell 0
+#define kSectionTapCell 1
 #define kFollowCellName @"followCellName"
-#define kSectionFollowCell 1
+#define kSectionFollowCell 2
 #define kInviteMobileCellName @"inviteCellName"
-#define kSectionMobileCell 2
+#define kSectionMobileCell 3
+
+@interface TapAllCell : UITableViewCell
++ (CGFloat) height;
+@property (nonatomic, strong) UILabel *tapAllLabel;
+@property (nonatomic, strong) UIButton *tapAllButton;
+@property (nonatomic, strong) UILabel *labelUnderButton;
+@end
+
 @interface TapCell : UITableViewCell
 + (CGFloat) height;
 @property (nonatomic, strong) UIImageView *profileImageView;

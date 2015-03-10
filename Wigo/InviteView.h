@@ -14,7 +14,8 @@
 - (void) setLabelsForUser: (WGUser *) user;
 @property (nonatomic, assign) id<InviteCellDelegate> delegate;
 + (CGFloat) rowHeight;
-@property (nonatomic, strong) IBOutlet UIButton *inviteButton;
-@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *tappedLabel;
+@property (nonatomic, strong) UIButton *inviteButton;
+@property (nonatomic, strong) UILabel *titleLabel;
+- (void)setup;
 @end

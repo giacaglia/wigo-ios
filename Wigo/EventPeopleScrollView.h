@@ -31,6 +31,7 @@
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) int widthOfEachCell;
 @property (nonatomic, assign) int rowOfEvent;
+@property (nonatomic, assign) BOOL isPeeking;
 @end
 
 #define kScrollViewHeader @"scrollViewHeader"

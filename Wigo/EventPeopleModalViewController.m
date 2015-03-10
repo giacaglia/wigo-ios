@@ -37,9 +37,25 @@ int imageWidth;
     backView.image = self.backgroundImage;
     [self.view addSubview:backView];
     
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 24, self.view.frame.size.width - 30, 50)];
+    titleLabel.text = self.event.name;
+    titleLabel.textColor = [FontProperties getBlueColor];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.numberOfLines = 0;
+    titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    titleLabel.font = [FontProperties mediumFont:18.0f];
+    [self.view addSubview:titleLabel];
+    
+    UILabel *numberOfPeopleGoing = [[UILabel alloc] initWithFrame:CGRectMake(15, 74 + 10, self.view.frame.size.width - 30, 20)];
+    numberOfPeopleGoing.text = [NSString stringWithFormat:@"%@ are going", self.event.numAttending.stringValue];
+    numberOfPeopleGoing.font = [FontProperties lightFont:18.0f];
+    numberOfPeopleGoing.textColor = RGB(167, 167, 167);
+    numberOfPeopleGoing.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:numberOfPeopleGoing];
+    
     AttendeesLayout *layout = [AttendeesLayout new];
-    self.attendeesPhotosScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, imageWidth + kNameBarHeight) collectionViewLayout:layout];
-    self.attendeesPhotosScrollView.center = CGPointMake(self.view.center.x, self.view.center.y + 30);
+    self.attendeesPhotosScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, imageWidth + kNameBarHeight + 70) collectionViewLayout:layout];
+    self.attendeesPhotosScrollView.center = CGPointMake(self.view.center.x, self.view.center.y + 10);
     self.attendeesPhotosScrollView.backgroundColor = UIColor.clearColor;
     self.attendeesPhotosScrollView.showsHorizontalScrollIndicator = NO;
     self.attendeesPhotosScrollView.pagingEnabled = YES;
@@ -52,22 +68,6 @@ int imageWidth;
     CGPoint newOffset = self.attendeesPhotosScrollView.contentOffset;
     newOffset = CGPointMake(newOffset.x - 10, newOffset.y);
     self.attendeesPhotosScrollView.contentOffset = newOffset;
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 44, self.view.frame.size.width - 30, 50)];
-    titleLabel.text = self.event.name;
-    titleLabel.textColor = [FontProperties getBlueColor];
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.numberOfLines = 0;
-    titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    titleLabel.font = [FontProperties mediumFont:18.0f];
-    [self.view addSubview:titleLabel];
-    
-    UILabel *numberOfPeopleGoing = [[UILabel alloc] initWithFrame:CGRectMake(15, 94 + 10, self.view.frame.size.width - 30, 20)];
-    numberOfPeopleGoing.text = [NSString stringWithFormat:@"%@ are going", self.event.numAttending.stringValue];
-    numberOfPeopleGoing.font = [FontProperties lightFont:18.0f];
-    numberOfPeopleGoing.textColor = RGB(167, 167, 167);
-    numberOfPeopleGoing.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:numberOfPeopleGoing];
     
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, self.view.frame.size.height - 58, 50, 50)];
     closeButton.backgroundColor = UIColor.clearColor;
@@ -165,7 +165,7 @@ int imageWidth;
     page = MAX(page, 0);
     page = MIN(page, self.event.attendees.count - 1);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.attendeesPhotosScrollView setContentOffset:CGPointMake(([UIScreen mainScreen].bounds.size.width) * page, 0.0f) animated:animated];
+        [self.attendeesPhotosScrollView setContentOffset:CGPointMake(imageWidth * page, 0.0f) animated:animated];
 
 //        if (animated) {
 //            [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -221,8 +221,8 @@ int imageWidth;
     return self;
 }
 
-
 - (void)setup {
+    self.clipsToBounds = YES;
     self.imageButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     [self.contentView addSubview:self.imageButton];
    
@@ -240,6 +240,15 @@ int imageWidth;
     self.profileNameLabel.textAlignment = NSTextAlignmentCenter;
     self.profileNameLabel.font = [FontProperties lightFont:24.0f];
     [self.contentView addSubview:self.profileNameLabel];
+    
+    self.inviteView = [[InviteView alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 70)];
+    self.inviteView.backgroundColor = UIColor.whiteColor;
+    [self.inviteView setup];
+    [self.contentView addSubview:self.inviteView];
+    
+    self.layer.borderColor = RGBAlpha(225, 225, 225, 29).CGColor;
+    self.layer.borderWidth = 2.0f;
+    self.layer.cornerRadius = 10.0f;
 }
 
 - (void)setStateForUser:(WGUser *)user {
@@ -288,10 +297,10 @@ int imageWidth;
 
 - (void)setup
 {
-    self.itemSize = CGSizeMake([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.width);
+    self.itemSize = CGSizeMake(imageWidth, imageWidth + 70);
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     self.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
-    self.minimumInteritemSpacing = 0.0;
+    self.minimumInteritemSpacing = 15.0;
     self.minimumLineSpacing = 0.0;
 }
 

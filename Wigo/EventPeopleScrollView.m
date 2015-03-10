@@ -113,6 +113,7 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     if (section == kInviteSection) {
+        if (self.isPeeking) return 0;
         return 1;
     }
     else if (section == kPeopleSection) {

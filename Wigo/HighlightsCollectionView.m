@@ -373,7 +373,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (void)updateUIToRead:(BOOL)read {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (read) {
-            self.faceImageView.alpha = 0.7f;
+            self.faceImageView.alpha = 1.0f;
 //            self.orangeDotView.hidden = YES;
         } else {
             self.faceImageView.alpha = 1.0f;

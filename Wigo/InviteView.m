@@ -16,7 +16,6 @@
     [self setup];
 }
 
-
 + (CGFloat)rowHeight {
     return 70.0f;
 }
@@ -52,16 +51,23 @@
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
-    self.titleLabel.font = [FontProperties lightFont: 18];
-    self.titleLabel.textColor = UIColor.lightGrayColor;
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 0, self.frame.size.width, 70)];
+    self.titleLabel.font = [FontProperties lightFont: 24];
+    self.titleLabel.textColor = RGB(207, 207, 207);
+    self.titleLabel.text = @"Tap to see out";
+    [self addSubview:self.titleLabel];
     
-    self.inviteButton.titleLabel.font =  [FontProperties lightFont:18.0f];
+    self.inviteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 75 -13, 35 - 17.5, 75, 35)];
+    self.inviteButton.backgroundColor = [FontProperties getOrangeColor];
+    [self.inviteButton setTitle:@"TAP" forState:UIControlStateNormal];
+    [self.inviteButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    self.inviteButton.titleLabel.font =  [FontProperties scMediumFont:18.0f];
     self.inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.inviteButton.layer.borderWidth = 1;
     self.inviteButton.layer.borderColor = UIColor.whiteColor.CGColor;
     self.inviteButton.layer.cornerRadius = 7;
     [self.inviteButton addTarget: self action: @selector(inviteTapped) forControlEvents: UIControlEventTouchUpInside];
+    [self addSubview:self.inviteButton];
     
     self.tappedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f)];
     self.tappedLabel.text = @"TAPPED";
@@ -69,7 +75,6 @@
     self.tappedLabel.textColor = UIColor.lightGrayColor;
     self.tappedLabel.textAlignment = NSTextAlignmentCenter;
     self.tappedLabel.alpha = 0;
-    
     [self addSubview:self.tappedLabel];
 }
 
