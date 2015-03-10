@@ -1125,6 +1125,12 @@ static WGUser *currentUser = nil;
     }];
 }
 
+- (void)tapAllUsersWithHandler:(BoolResultBlock)handler {
+    [WGApi post:@"taps" withParameters:@{ @"following" : @YES } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
+}
+
 -(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler {
     NSMutableArray *taps = [[NSMutableArray alloc] init];
     for (WGUser *user in users) {

@@ -48,17 +48,17 @@
 }
 
 - (void)chooseUser:(id)sender {
-    //    UIButton *buttonSender = (UIButton *)sender;
-    //    int tag = (int)buttonSender.tag;
-    //    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:tag];
-    //    // self.eventOffset = self.contentOffset.x;
-    //    if (self.userSelectDelegate) {
-    //        [self.userSelectDelegate showUser: attendee.user];
-    //    } else {
-    //        [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
-    //                                                     forKey:[self.event.id stringValue]];
-    //        [self.placesDelegate showUser:attendee.user];
-    //    }
+//    UIButton *buttonSender = (UIButton *)sender;
+//    int tag = (int)buttonSender.tag;
+//    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:tag];
+//    // self.eventOffset = self.contentOffset.x;
+//    if (self.userSelectDelegate) {
+//        [self.userSelectDelegate showUser: attendee.user];
+//    } else {
+//        [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
+//                                                     forKey:[self.event.id stringValue]];
+//        [self.placesDelegate showUser:attendee.user];
+//    }
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
     UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];

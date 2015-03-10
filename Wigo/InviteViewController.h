@@ -21,7 +21,7 @@
 @property (nonatomic, assign) BOOL isSearching;
 @end
 
-#define kSectionTapAllName @"tapAllName"
+#define kTapAllName @"tapAllName"
 #define kSectionTapAllCell 0
 #define kTapCellName @"tapCellName"
 #define kSectionTapCell 1
@@ -29,13 +29,6 @@
 #define kSectionFollowCell 2
 #define kInviteMobileCellName @"inviteCellName"
 #define kSectionMobileCell 3
-
-@interface TapAllCell : UITableViewCell
-+ (CGFloat) height;
-@property (nonatomic, strong) UILabel *tapAllLabel;
-@property (nonatomic, strong) UIButton *tapAllButton;
-@property (nonatomic, strong) UILabel *labelUnderButton;
-@end
 
 @interface TapCell : UITableViewCell
 + (CGFloat) height;
@@ -56,4 +49,13 @@
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIButton *followPersonButton;
 - (void)setStateForUser:(WGUser *)user;
+@end
+
+@interface TapAllCell : UITableViewCell
++ (CGFloat) height;
+@property (nonatomic, strong) UILabel *tapAllLabel;
+@property (nonatomic, strong) UIButton *aroundTapButton;
+@property (nonatomic, strong) UIImageView *tapImageView;
+@property (nonatomic, strong) UILabel *labelUnderButton;
+- (void)setStateForEvent:(WGEvent *)event;
 @end

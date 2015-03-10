@@ -676,7 +676,8 @@ BOOL firstTimeLoading;
                     
                     [strongOfStrong removeProfileUserFromAnyOtherEvent];
                     
-                    [strongOfStrong.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+//                    [strongOfStrong.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                    [strongOfStrong.placesTableView reloadData];
                     
                     [strongOfStrong dismissKeyboard];
                     
@@ -1595,23 +1596,18 @@ BOOL firstTimeLoading;
                                      initWithFrame:CGRectMake(0, self.numberOfHighlightsLabel.frame.origin.y + self.numberOfHighlightsLabel.frame.size.height + 5, self.frame.size.width, [HighlightCell height])
                                      collectionViewLayout:[HighlightsFlowLayout new]];
     [self.contentView addSubview:self.highlightsCollectionView];
-    CAGradientLayer *shadow = [CAGradientLayer layer];
-    shadow.frame = CGRectMake(-10, 0, 10, self.highlightsCollectionView.frame.size.height);
-    shadow.startPoint = CGPointMake(1.0, 0.5);
-    shadow.endPoint = CGPointMake(0, 0.5);
-    shadow.colors = [NSArray arrayWithObjects:(id)UIColor.redColor.CGColor, UIColor.grayColor.CGColor, nil];
-    [self.highlightsCollectionView.layer addSublayer:shadow];
-    
-//    self.goingHereButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 10, self.frame.size.width, [UIScreen mainScreen].bounds.size.width/5.3)];
-//    self.goingHereButton.backgroundColor = [FontProperties getBlueColor];
-//    [self.goingHereButton setTitle:@"Go Here" forState:UIControlStateNormal];
-//    [self.goingHereButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-//    self.goingHereButton.titleLabel.font = [FontProperties openSansSemibold:14.0f];
-//    [self.contentView addSubview:self.goingHereButton];
     
     self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 60)];
     self.grayView.backgroundColor = RGB(237, 237, 237);
     [self.contentView addSubview:self.grayView];
+    
+//    CAGradientLayer *shadow = [CAGradientLayer layer];
+//    shadow.frame = CGRectMake(0, self.contentView.frame.size.height - 40, self.contentView.frame.size.width, 8);
+//    shadow.startPoint = CGPointMake(0, 0);
+//    shadow.endPoint = CGPointMake(0, 1);
+//    shadow.colors = [NSArray arrayWithObjects:(id)UIColor.blackColor.CGColor, UIColor.grayColor.CGColor, nil];
+//    [self.contentView.layer addSublayer:shadow];
+
 }
 
 -(void) updateUI {

@@ -136,6 +136,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
+- (void)tapAllUsersWithHandler:(BoolResultBlock)handler;
 -(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler;
 -(void) untap:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) sendInvites:(NSArray *)numbers withHandler:(BoolResultBlock)handler;

@@ -110,6 +110,7 @@
     self.invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 40, self.view.frame.size.width, self.view.frame.size.height - 64 - 40)];
     [self.invitePeopleTableView registerClass:[TapCell class] forCellReuseIdentifier:kTapCellName];
     [self.invitePeopleTableView registerClass:[FollowCell class] forCellReuseIdentifier:kFollowCellName];
+    [self.invitePeopleTableView registerClass:[TapAllCell class] forCellReuseIdentifier:kTapAllName];
     self.invitePeopleTableView.dataSource = self;
     self.invitePeopleTableView.delegate = self;
     [self.invitePeopleTableView setSeparatorColor:[FontProperties getBlueColor]];
@@ -130,7 +131,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kSectionTapAllCell) {
-        return 0;
+        if ([WGProfile.currentUser isEqual:event.owner]) return 1;
+        else return 0;
     }
     if (section == kSectionTapCell) {
         int hasNextPage = ([self.presentedUsers.hasNextPage boolValue] ? 1 : 0);
@@ -144,6 +146,11 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == kSectionTapAllCell) {
+        TapAllCell *tapAllCell = (TapAllCell *)[tableView dequeueReusableCellWithIdentifier:kTapAllName forIndexPath:indexPath];
+        if (event) [tapAllCell setStateForEvent:event];
+        return tapAllCell;
+    }
     if (indexPath.section == kSectionFollowCell) {
         FollowCell *cell = (FollowCell *)[tableView dequeueReusableCellWithIdentifier:kFollowCellName forIndexPath:indexPath];
         cell.profileImageView.image = nil;
@@ -273,8 +280,7 @@ heightForHeaderInSection:(NSInteger)section
 }
 
 
-
-- (void) tapPressed:(id)sender {
+- (void)tapPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
     WGUser *user;
@@ -293,7 +299,7 @@ heightForHeaderInSection:(NSInteger)section
         [WGAnalytics tagEvent:@"Untap User"];
     } else {
 #warning Group these
-        [[WGProfile currentUser] tapUser:user withHandler:^(BOOL success, NSError *error) {
+        [WGProfile.currentUser tapUser:user withHandler:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] logError:error forAction:WGActionSave];
             }
@@ -666,6 +672,70 @@ heightForHeaderInSection:(NSInteger)section
             }
         }
     }
+}
+
+@end
+
+
+@implementation TapAllCell
+
++ (CGFloat) height {
+    return 75;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [TapAllCell height]);
+    self.contentView.frame = self.frame;
+    self.contentView.backgroundColor = UIColor.whiteColor;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    self.aroundTapButton = [[UIButton alloc] initWithFrame:self.frame];
+    [self.aroundTapButton addTarget:self action:@selector(tapAllPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:self.aroundTapButton];
+    
+    self.tapAllLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, [TapAllCell height]/2 - 30, 155, 60)];
+    self.tapAllLabel.textAlignment = NSTextAlignmentLeft;
+    self.tapAllLabel.numberOfLines = 0;
+    self.tapAllLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.tapAllLabel.textColor = UIColor.blackColor;
+    self.tapAllLabel.font = [FontProperties lightFont:18.0f];
+    [self.aroundTapButton addSubview:self.tapAllLabel];
+    
+    self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 15 - 15 - 25, [TapAllCell height] / 2 - 15, 30, 30)];
+    [self.tapImageView setImage:[UIImage imageNamed:@"tapUnselectedInvite"]];
+    [self.aroundTapButton addSubview:self.tapImageView];
+}
+
+- (void)setStateForEvent:(WGEvent *)event {
+    NSLog(@"event name: %@", event.name);
+    NSString *string = [NSString stringWithFormat:@"Tap people you want to see out at %@", event.name];
+    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
+    [text addAttribute:NSForegroundColorAttributeName
+                 value:UIColor.blackColor
+                 range:NSMakeRange(0, 34)];
+
+    [text addAttribute:NSForegroundColorAttributeName
+                 value:[FontProperties getBlueColor]
+                 range:NSMakeRange(34, event.name.length)];
+    self.tapAllLabel.attributedText = text;
+}
+
+- (void)tapAllPressed {
+    self.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+    [WGProfile.currentUser tapAllUsersWithHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            return;
+        }
+    }];
 }
 
 @end
