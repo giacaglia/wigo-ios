@@ -207,6 +207,10 @@ int imageWidth;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)followPressed:(id)sender {
+    NSLog(@"followd");
+}
+
 @end
 
 @implementation AttendeesPhotoCell
@@ -318,20 +322,110 @@ int imageWidth;
         
     }];
     
-    if (user.isCurrentUser) {
-        self.backgroundNameLabel.backgroundColor = [FontProperties getBlueColor];
-        self.chatButton.hidden = YES;
-        self.followButton.hidden = YES;
-    }
-    else {
-        self.followButton.hidden = NO;
-    }
-//    else {
-//        self.backgroundNameLabel.backgroundColor = RGBAlpha(0, 0, 0, 0.5f);
-//        self.chatButton.hidden = NO;
-//    }
     self.profileNameLabel.text = user.fullName;
     [self.inviteView setLabelsForUser:user];
+    [self reloadViewForUser:user];
+}
+
+- (void)reloadViewForUser:(WGUser *)user {
+    
+    if (user.state == OTHER_SCHOOL_USER_STATE) {
+        
+    }
+    else if (user.state == FOLLOWING_USER_STATE ||
+             user.state == ATTENDING_EVENT_FOLLOWING_USER_STATE ||
+             user.state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE) {
+        self.followButton.hidden = YES;
+        self.chatButton.hidden = NO;
+        self.inviteView.alpha = 1.0f;
+    }
+    else if (user.state == NOT_FOLLOWING_PUBLIC_USER_STATE ||
+             user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
+             user.state == BLOCKED_USER_STATE) {
+        self.followButton.hidden = NO;
+        self.chatButton.hidden = YES;
+        self.inviteView.alpha = 0.0f;
+    }
+    else if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+        self.followButton.hidden = YES;
+        self.chatButton.hidden = YES;
+        self.inviteView.alpha = 0.0f;
+    }
+    else if (user.state == PUBLIC_STATE ||
+             user.state == PRIVATE_STATE) {
+        self.followButton.hidden = YES;
+        self.chatButton.hidden = NO;
+        self.inviteView.alpha = 1.0f;
+    }
+//        else if (self.userState == OTHER_SCHOOL_USER_STATE) {
+//            _rightBarBt.enabled = NO;
+//            _rightBarBt.hidden = YES;
+//            _leftProfileButton.enabled = NO;
+//            _leftProfileButton.hidden = YES;
+//            _rightProfileButton.enabled = NO;
+//            _rightProfileButton.hidden = YES;
+//            _chatButton.enabled = NO;
+//            _chatButton.hidden = YES;
+//            _followButton.enabled = NO;
+//            _followButton.hidden = YES;
+//        }
+//        else if (self.userState == NOT_FOLLOWING_PUBLIC_USER_STATE ||
+//                 self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
+//                 self.userState == BLOCKED_USER_STATE) {
+//            _rightBarBt.enabled = YES;
+//            _rightBarBt.hidden = NO;
+//            _leftProfileButton.enabled = NO;
+//            _leftProfileButton.hidden = YES;
+//            _rightProfileButton.enabled = NO;
+//            _rightProfileButton.hidden = YES;
+//            _chatButton.enabled = NO;
+//            _chatButton.hidden = YES;
+//            
+//            _followButton.enabled = YES;
+//            _followButton.hidden = NO;
+//            
+//            if (self.userState == NOT_FOLLOWING_PUBLIC_USER_STATE) {
+//                _privateLogoImageView.hidden = YES;
+//            }
+//            _followRequestLabel.hidden = YES;
+//        }
+//        else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+//            _rightBarBt.enabled = YES;
+//            _rightBarBt.hidden = NO;
+//            _leftProfileButton.enabled = NO;
+//            _leftProfileButton.hidden = YES;
+//            _rightProfileButton.enabled = NO;
+//            _rightProfileButton.hidden = YES;
+//            _chatButton.enabled = NO;
+//            _chatButton.hidden = YES;
+//            
+//            _followButton.enabled = NO;
+//            _followButton.hidden = YES;
+//            
+//            _privateLogoImageView.hidden = YES;
+//            _followRequestLabel.hidden = NO;
+//        }
+//        if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE) {
+//            _rightBarBt.enabled = YES;
+//            _rightBarBt.hidden = NO;
+//            _followButton.enabled = NO;
+//            _followButton.hidden = YES;
+//            _chatButton.enabled = YES;
+//            _chatButton.hidden = NO;
+//            
+//            _leftProfileButton.enabled = YES;
+//            _leftProfileButton.hidden = NO;
+//            _rightProfileButton.enabled = YES;
+//            _rightProfileButton.hidden = NO;
+//            
+//            if (self.userState == PRIVATE_STATE) {
+//                _privateLogoImageView.hidden = NO;
+//            }
+//            else {
+//                _privateLogoImageView.hidden = YES;
+//                _followRequestLabel.hidden = YES;
+//            }
+//        }
     
 }
 

@@ -676,9 +676,6 @@ BOOL firstTimeLoading;
                     
                     [strongOfStrong removeProfileUserFromAnyOtherEvent];
                     
-//                    [strongOfStrong.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-                    [strongOfStrong.placesTableView reloadData];
-                    
                     [strongOfStrong dismissKeyboard];
                     
                     WGProfile.currentUser.isGoingOut = @YES;
@@ -697,6 +694,8 @@ BOOL firstTimeLoading;
                             object.attendees = eventAttendees;
                         }
                     }
+                    [strongOfStrong initializeNavigationBar];
+                    [strongOfStrong fetchEventsFirstPage];
                 }];
             }];
         }];

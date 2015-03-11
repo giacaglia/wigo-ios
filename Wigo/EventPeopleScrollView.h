@@ -32,6 +32,7 @@
 @property (nonatomic, assign) int widthOfEachCell;
 @property (nonatomic, assign) int rowOfEvent;
 @property (nonatomic, assign) BOOL isPeeking;
+@property (nonatomic, strong) UIButton *hiddenInviteButton;
 @end
 
 #define kScrollViewHeader @"scrollViewHeader"
@@ -45,6 +46,7 @@
 @property (nonatomic, strong) UIView *blueOverlayView;
 @property (nonatomic, strong) UILabel *goHereLabel;
 - (void)setStateForUser:(WGUser *)user;
+- (void)setGoHereTarget;
 @end
 
 @interface ScrollViewLayout : UICollectionViewFlowLayout

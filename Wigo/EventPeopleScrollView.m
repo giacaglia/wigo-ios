@@ -21,11 +21,32 @@
         self.showsHorizontalScrollIndicator = NO;
         self.delegate = self;
         self.dataSource = self;
+        self.clipsToBounds = NO;
         self.event = event;
         [self registerClass:[ScrollViewCell class] forCellWithReuseIdentifier:kScrollViewCellName];
         [self registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kScrollViewHeader];
+        [self addInviteButton];
     }
     return self;
+}
+
+- (void)addInviteButton {
+    self.hiddenInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
+    UIImageView *inviteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
+    inviteImageView.image = [UIImage imageNamed:@"inviteButton"];
+    [self.hiddenInviteButton addSubview:inviteImageView];
+    
+    UILabel *inviteLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.widthOfEachCell, self.widthOfEachCell, 25)];
+    inviteLabel.text = @"Invite";
+    inviteLabel.textColor = [FontProperties getBlueColor];
+    inviteLabel.font = [FontProperties scMediumFont:10.0f];
+    inviteLabel.textAlignment = NSTextAlignmentCenter;
+    [self.hiddenInviteButton addSubview:inviteLabel];
+    
+//    inviteLabel.font 
+    self.hiddenInviteButton.hidden = YES;
+    self.hiddenInviteButton.transform = CGAffineTransformMakeScale(0.2f, 0.2f);
+    [self addSubview:self.hiddenInviteButton];
 }
 
 + (CGFloat) containerHeight {
@@ -79,8 +100,24 @@
 }
 
 - (void)goHerePressed:(id)sender {
-    UIButton *buttonSender = (UIButton *)sender;
-    [self.placesDelegate goHerePressed:buttonSender];
+    self.hiddenInviteButton.hidden = NO;
+    ScrollViewCell *scrollCell = (ScrollViewCell *)[self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+       [UIView animateWithDuration:1 animations:^{
+        scrollCell.blueOverlayView.alpha = 1.0f;
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:1 animations:^{
+            self.hiddenInviteButton.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+            scrollCell.blueOverlayView.alpha = 0.0f;
+            scrollCell.profileNameLabel.alpha = 0.5f;
+            scrollCell.profileNameLabel.text = WGProfile.currentUser.firstName;
+            self.transform = CGAffineTransformMakeTranslation(self.widthOfEachCell + 10, 0);
+            self.hiddenInviteButton.transform = CGAffineTransformMakeTranslation(-self.widthOfEachCell, 0);
+        } completion:^(BOOL finished) {
+            UIButton *buttonSender = (UIButton *)sender;
+            [self.placesDelegate goHerePressed:buttonSender];
+//            self.hiddenInviteButton.hidden = YES;
+        }];
+    }];
 }
 
 
@@ -140,7 +177,6 @@
             scrollCell.blueOverlayView.hidden = YES;
             scrollCell.profileNameLabel.text = @"Invite";
             scrollCell.profileNameLabel.alpha = 1.0f;
-            scrollCell.profileNameLabel.hidden = NO;
             scrollCell.profileNameLabel.textColor = [FontProperties getBlueColor];
             scrollCell.profileNameLabel.font = [FontProperties scMediumFont:10.0f];
         }
@@ -152,7 +188,7 @@
             [scrollCell.imageButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
             [scrollCell.imgView setImageWithURL:WGProfile.currentUser.smallCoverImageURL];
             scrollCell.blueOverlayView.hidden = NO;
-            scrollCell.profileNameLabel.hidden = YES;
+            scrollCell.profileNameLabel.alpha = 0.0f;
         }
     }
     else {
@@ -162,7 +198,7 @@
                             forControlEvents:UIControlEventAllEvents];
         scrollCell.blueOverlayView.hidden = YES;
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
-        scrollCell.profileNameLabel.hidden = NO;
+        scrollCell.profileNameLabel.alpha = 1.0f;
         WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
         [scrollCell setStateForUser:attendee.user];
         if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
@@ -228,7 +264,8 @@
     [self.imageButton addSubview:self.imgView];
     
     self.blueOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
-    self.blueOverlayView.backgroundColor = RGBAlpha(109, 166, 206, 0.8f);
+    self.blueOverlayView.backgroundColor = RGB(109, 166, 206);
+    self.blueOverlayView.alpha = 0.8f;
     self.blueOverlayView.hidden = YES;
     [self.imgView addSubview:self.blueOverlayView];
     
