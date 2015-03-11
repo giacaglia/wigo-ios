@@ -48,6 +48,7 @@
 @property (nonatomic, assign) BOOL privacyTurnedOn;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
 @property (nonatomic, assign) CGPoint pointNow;
+
 @end
 
 #import "EventPeopleScrollView.h"
@@ -57,6 +58,7 @@
 + (CGFloat) heightIsFullCell:(BOOL)isFullCell;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) UIButton *privacyLockButton;
 @property (nonatomic, strong) UIImageView *privacyLockImageView;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) UILabel *eventNameLabel;

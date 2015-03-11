@@ -574,7 +574,6 @@
     _explanationLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.visualEffectView addSubview:_explanationLabel];
     
-   
     UIImageView *lockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 12, self.view.frame.size.height/2 + 66, 24, 32)];
     lockImageView.image = [UIImage imageNamed:@"lockImage"];
     lockImageView.hidden = [self.event.owner isEqual:WGProfile.currentUser];

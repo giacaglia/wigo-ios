@@ -577,7 +577,7 @@ BOOL firstTimeLoading;
         [_whereAreYouGoingView addSubview:lineUnderEventName];
         
         self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 40, _whereAreYouGoingView.frame.size.width, 50)];
-        self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Where are you going?" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
+        self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Señor Frogs @ 8pm (3rd & Main)" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
         self.whereAreYouGoingTextField.font = [FontProperties openSansRegular:18.0f];
         self.whereAreYouGoingTextField.textAlignment = NSTextAlignmentCenter;
         self.whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
@@ -1133,9 +1133,19 @@ BOOL firstTimeLoading;
     [self.navigationController pushViewController: fancyProfileViewController animated: YES];
 }
 
+- (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event {
+    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    [fancyProfileViewController setStateWithUser: user];
+    if ([self isPeeking]) fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+
+}
+
 - (void)presentConversationForUser:(WGUser *)user {
     [self.navigationController pushViewController:[[ConversationViewController alloc] initWithUser:user] animated:YES];
 }
+
 
 - (void)showModalAttendees:(UIViewController *)modal {
     self.shouldReloadEvents = NO;
@@ -1265,6 +1275,7 @@ BOOL firstTimeLoading;
     batteryViewController.placesDelegate = self;
     [self presentViewController:batteryViewController animated:YES completion:nil];
 }
+
 
 - (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
     int numberOfEvents = (int)self.events.count;
@@ -1562,12 +1573,15 @@ BOOL firstTimeLoading;
     self.loadingView.hidden = YES;
     [self.contentView addSubview:self.loadingView];
     
-    self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 12 - 10, 32 - 8, 12, 16)];
+    self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 12 - 10, 32 - 8, 12, 16)];
+    [self.contentView addSubview:self.privacyLockButton];
+    
+    self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 12, 16)];
     self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
     self.privacyLockImageView.hidden = YES;
-    [self.contentView addSubview:self.privacyLockImageView];
+    [self.privacyLockButton addSubview:self.privacyLockImageView];
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 17, self.frame.size.width - 15, 30)];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 17, self.frame.size.width - 40, 30)];
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.backgroundColor = UIColor.whiteColor;
@@ -1623,7 +1637,10 @@ BOOL firstTimeLoading;
     self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", self.event.numAttending];
     self.privacyLockImageView.hidden = !self.event.isPrivate;
     self.eventPeopleScrollView.event = self.event;
+
     [self.eventPeopleScrollView updateUI];
+    
+    
 }
 
 

@@ -34,6 +34,7 @@
 - (void)invitePressed;
 - (void)goHerePressed:(id)sender;
 - (void)presentConversationForUser:(WGUser *)user;
+- (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event;
 @end
 
 @protocol PrivacySwitchDelegate <NSObject>

@@ -148,7 +148,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kSectionTapAllCell) {
         TapAllCell *tapAllCell = (TapAllCell *)[tableView dequeueReusableCellWithIdentifier:kTapAllName forIndexPath:indexPath];
-        if (event) [tapAllCell setStateForEvent:event];
         return tapAllCell;
     }
     if (indexPath.section == kSectionFollowCell) {
@@ -707,6 +706,7 @@ heightForHeaderInSection:(NSInteger)section
     self.tapAllLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.tapAllLabel.textColor = UIColor.blackColor;
     self.tapAllLabel.font = [FontProperties lightFont:18.0f];
+    self.tapAllLabel.text = @"Tap All";
     [self.aroundTapButton addSubview:self.tapAllLabel];
     
     self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 15 - 15 - 25, [TapAllCell height] / 2 - 15, 30, 30)];
@@ -719,19 +719,6 @@ heightForHeaderInSection:(NSInteger)section
     [self.aroundTapButton addSubview:self.tapImageView];
 }
 
-- (void)setStateForEvent:(WGEvent *)event {
-    NSLog(@"event name: %@", event.name);
-    NSString *string = [NSString stringWithFormat:@"Tap people you want to see out at %@", event.name];
-    NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:string];
-    [text addAttribute:NSForegroundColorAttributeName
-                 value:UIColor.blackColor
-                 range:NSMakeRange(0, 34)];
-
-    [text addAttribute:NSForegroundColorAttributeName
-                 value:[FontProperties getBlueColor]
-                 range:NSMakeRange(34, event.name.length)];
-    self.tapAllLabel.attributedText = text;
-}
 
 - (void)tapAllPressed {
     WGProfile.tapAll = YES;
