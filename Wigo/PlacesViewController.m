@@ -423,7 +423,7 @@ BOOL firstTimeLoading;
     self.whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
-    [self.placesTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+    [self.placesTableView reloadData];
     [self goOutToEventAtRow:(int)buttonSender.tag];
 }
 
@@ -949,11 +949,12 @@ BOOL firstTimeLoading;
         cell.event = event;
         cell.eventPeopleScrollView.groupID = self.groupNumberID;
         cell.eventPeopleScrollView.placesDelegate = self;
-        cell.highlightsCollectionView.placesDelegate = self;
         if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
             cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
         [cell updateUI];
+        cell.highlightsCollectionView.placesDelegate = self;
+        cell.highlightsCollectionView.isPeeking = [self isPeeking];
         return cell;
     } else if (indexPath.section == kHighlightsEmptySection) {
         return nil;
@@ -1145,8 +1146,13 @@ BOOL firstTimeLoading;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
+    if ([self isPeeking]) {
+        index = index - 1;
+    }
+    else {
+        eventMessages = [self eventMessagesWithCamera:eventMessages];
+    }
     conversationViewController.index = [NSNumber numberWithInt:index];
-    eventMessages = [self eventMessagesWithCamera:eventMessages];
     conversationViewController.eventMessages = eventMessages;
     conversationViewController.isPeeking = [self isPeeking];
     [self presentViewController:conversationViewController animated:YES completion:nil];

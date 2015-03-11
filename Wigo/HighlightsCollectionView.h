@@ -19,6 +19,7 @@
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) BOOL showAddPhoto;
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, assign) BOOL isPeeking;
 @end
 
 @interface AddPhotoCell : UICollectionViewCell  <UIImagePickerControllerDelegate, UINavigationControllerDelegate>

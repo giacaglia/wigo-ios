@@ -115,7 +115,15 @@
         } completion:^(BOOL finished) {
             UIButton *buttonSender = (UIButton *)sender;
             [self.placesDelegate goHerePressed:buttonSender];
-//            self.hiddenInviteButton.hidden = YES;
+            [UIView animateWithDuration:1.0f animations:^{
+            } completion:^(BOOL finished) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    CGAffineTransform t = CGAffineTransformMakeScale(0.2f, 0.2f);
+                    self.hiddenInviteButton.transform = CGAffineTransformTranslate(t, 0, 0);
+                    self.transform = CGAffineTransformMakeTranslation(0, 0);
+                    scrollCell.blueOverlayView.alpha = 0.8f;
+                });
+            }];
         }];
     }];
 }

@@ -257,22 +257,22 @@ int imageWidth;
     [self.contentView addSubview:backgroundWhiteView];
     
     self.inviteView = [[InviteView alloc] initWithFrame:CGRectMake(0, 0, imageWidth/2, 70)];
-//    self.inviteView.backgroundColor = UIColor.whiteColor;
-//    [self.inviteView setup];
+    self.inviteView.backgroundColor = UIColor.whiteColor;
+    [self.inviteView setup];
     [backgroundWhiteView addSubview:self.inviteView];
     
     self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth/2, 0, imageWidth/2, 70)];
-//    [self.chatButton addTarget:self action:@selector(chatPressed:) forControlEvents:UIControlEventTouchUpInside];
-//    self.chatButton.backgroundColor = UIColor.whiteColor;
-//    UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 10, 10 + 5, 20, 20)];
-//    orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
-//    [self.chatButton addSubview:orangeChatBubbleImageView];
-//    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35 - 10 + 10, self.chatButton.frame.size.width, 20)];
-//    chatLabel.textAlignment = NSTextAlignmentCenter;
-//    chatLabel.text = @"chat";
-//    chatLabel.textColor = [FontProperties getOrangeColor];
-//    chatLabel.font = [FontProperties scMediumFont:16.0f];
-//    [self.chatButton addSubview:chatLabel];
+    [self.chatButton addTarget:self action:@selector(chatPressed:) forControlEvents:UIControlEventTouchUpInside];
+    self.chatButton.backgroundColor = UIColor.whiteColor;
+    UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 10, 10 + 5, 20, 20)];
+    orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
+    [self.chatButton addSubview:orangeChatBubbleImageView];
+    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35 - 10 + 10, self.chatButton.frame.size.width, 20)];
+    chatLabel.textAlignment = NSTextAlignmentCenter;
+    chatLabel.text = @"chat";
+    chatLabel.textColor = [FontProperties getOrangeColor];
+    chatLabel.font = [FontProperties scMediumFont:16.0f];
+    [self.chatButton addSubview:chatLabel];
     [backgroundWhiteView addSubview:self.chatButton];
     
     self.layer.borderColor = RGBAlpha(225, 225, 225, 29).CGColor;
@@ -329,7 +329,12 @@ int imageWidth;
 
 - (void)reloadViewForUser:(WGUser *)user {
     
-    if (user.state == OTHER_SCHOOL_USER_STATE) {
+    if (user.isCurrentUser) {
+        self.followButton.hidden = YES;
+        self.chatButton.hidden = YES;
+        self.inviteView.alpha = 0.0f;
+    }
+    else if (user.state == OTHER_SCHOOL_USER_STATE) {
         
     }
     else if (user.state == FOLLOWING_USER_STATE ||

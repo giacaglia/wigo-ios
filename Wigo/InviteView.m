@@ -40,6 +40,7 @@
             
         } else {
             self.inviteButton.hidden = NO;
+            self.inviteButton.enabled = YES;
             self.tappedLabel.alpha = 0;
         }
     }

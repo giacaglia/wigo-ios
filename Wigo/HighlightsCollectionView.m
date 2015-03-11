@@ -64,9 +64,11 @@
 
 - (void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self.placesDelegate showConversationForEvent:self.event
-                                withEventMessages:self.eventMessages
-                                          atIndex:(int)indexPath.row];
+    if (indexPath.row != 0 || !self.isPeeking) {
+        [self.placesDelegate showConversationForEvent:self.event
+                                    withEventMessages:self.eventMessages
+                                              atIndex:(int)indexPath.row];        
+    }
 }
 
 
