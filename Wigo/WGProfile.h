@@ -32,6 +32,8 @@
 +(WGProfile *) currentUser;
 +(void)setPeekingGroupID:(NSNumber *)peekingGroupID;
 +(NSNumber *)peekingGroupID;
++(void)setTapAll:(BOOL)tapAll;
++(BOOL)tapAll;
 -(void) login:(BoolResultBlock)handler;
 -(void) signup:(BoolResultBlock)handler;
 +(void) reload:(BoolResultBlock)handler;

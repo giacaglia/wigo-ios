@@ -28,11 +28,11 @@
         return;
     }
     
-    if ([self.delegate userState] == OTHER_SCHOOL_USER_STATE) {
-        self.inviteButton.hidden = YES;
-        self.inviteButton.enabled = NO;
-        self.tappedLabel.alpha = 0;
-    } else {
+//    if ([self.delegate userState] == OTHER_SCHOOL_USER_STATE) {
+//        self.inviteButton.hidden = YES;
+//        self.inviteButton.enabled = NO;
+//        self.tappedLabel.alpha = 0;
+//    } else {
         if ([user.isTapped boolValue]) {
             self.inviteButton.hidden = YES;
             self.inviteButton.enabled = NO;
@@ -43,7 +43,7 @@
             self.inviteButton.enabled = YES;
             self.tappedLabel.alpha = 0;
         }
-    }
+//    }
 }
 
 - (void) setup {
@@ -81,6 +81,7 @@
     self.tappedLabel.textColor = UIColor.whiteColor;
     self.tappedLabel.alpha = 1;
     [self bringSubviewToFront:self.tappedLabel];
+    
     
     __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.2f

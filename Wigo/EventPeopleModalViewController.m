@@ -185,7 +185,7 @@ int imageWidth;
     attendeeCell.imageButton.tag = indexPath.item;
     [attendeeCell.imageButton addTarget:self action:@selector(presentUser:) forControlEvents:UIControlEventTouchUpInside];
     WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
-    [attendeeCell setStateForUser:attendee.user];
+    attendeeCell.user = attendee.user;
     attendeeCell.chatButton.tag = indexPath.item;
     attendeeCell.eventPeopleModalDelegate = self;
     if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
@@ -197,6 +197,7 @@ int imageWidth;
     
     return attendeeCell;
 }
+
 
 #pragma mark - EventPeopleModal Delegate
 
@@ -259,6 +260,7 @@ int imageWidth;
     self.inviteView = [[InviteView alloc] initWithFrame:CGRectMake(0, 0, imageWidth/2, 70)];
     self.inviteView.backgroundColor = UIColor.whiteColor;
     [self.inviteView setup];
+    self.inviteView.delegate = self;
     [backgroundWhiteView addSubview:self.inviteView];
     
     self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth/2, 0, imageWidth/2, 70)];
@@ -310,54 +312,56 @@ int imageWidth;
     [self.eventPeopleModalDelegate chatPressed:sender];
 }
 
-- (void)setStateForUser:(WGUser *)user {
+- (void)setUser:(WGUser *)user {
+    _user = user;
     __weak typeof(self) weakSelf = self;
-    __weak WGUser *weakUser = user;
-    [self.imgView setSmallImageForUser:user completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-         dispatch_async(dispatch_get_main_queue(), ^{
-             __strong typeof(weakSelf) strongSelf = weakSelf;
-             __strong WGUser* strongUser = weakUser;
-             [strongSelf.imgView setImageWithURL:strongUser.coverImageURL placeholderImage:image imageArea:strongUser.coverImageArea completed:nil];
-         });
+    __weak WGUser *weakUser = _user;
+    [self.imgView setSmallImageForUser:_user completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            __strong WGUser* strongUser = weakUser;
+            [strongSelf.imgView setImageWithURL:strongUser.coverImageURL placeholderImage:image imageArea:strongUser.coverImageArea completed:nil];
+        });
         
     }];
     
-    self.profileNameLabel.text = user.fullName;
-    [self.inviteView setLabelsForUser:user];
-    [self reloadViewForUser:user];
+    self.profileNameLabel.text = _user.fullName;
+    [self.inviteView setLabelsForUser:_user];
+    [self reloadView];
 }
 
-- (void)reloadViewForUser:(WGUser *)user {
+
+- (void)reloadView {
     
-    if (user.isCurrentUser) {
+    if (self.user.isCurrentUser) {
         self.followButton.hidden = YES;
         self.chatButton.hidden = YES;
         self.inviteView.alpha = 0.0f;
     }
-    else if (user.state == OTHER_SCHOOL_USER_STATE) {
+    else if (self.user.state == OTHER_SCHOOL_USER_STATE) {
         
     }
-    else if (user.state == FOLLOWING_USER_STATE ||
-             user.state == ATTENDING_EVENT_FOLLOWING_USER_STATE ||
-             user.state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE) {
+    else if (self.user.state == FOLLOWING_USER_STATE ||
+             self.user.state == ATTENDING_EVENT_FOLLOWING_USER_STATE ||
+             self.user.state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE) {
         self.followButton.hidden = YES;
         self.chatButton.hidden = NO;
         self.inviteView.alpha = 1.0f;
     }
-    else if (user.state == NOT_FOLLOWING_PUBLIC_USER_STATE ||
-             user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
-             user.state == BLOCKED_USER_STATE) {
+    else if (self.user.state == NOT_FOLLOWING_PUBLIC_USER_STATE ||
+             self.user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
+             self.user.state == BLOCKED_USER_STATE) {
         self.followButton.hidden = NO;
         self.chatButton.hidden = YES;
         self.inviteView.alpha = 0.0f;
     }
-    else if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+    else if (self.user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
         self.followButton.hidden = YES;
         self.chatButton.hidden = YES;
         self.inviteView.alpha = 0.0f;
     }
-    else if (user.state == PUBLIC_STATE ||
-             user.state == PRIVATE_STATE) {
+    else if (self.user.state == PUBLIC_STATE ||
+             self.user.state == PRIVATE_STATE) {
         self.followButton.hidden = YES;
         self.chatButton.hidden = NO;
         self.inviteView.alpha = 1.0f;
@@ -432,6 +436,23 @@ int imageWidth;
 //            }
 //        }
     
+}
+
+#pragma mark - InviteView Delegate
+
+- (void)inviteTapped {
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile Card", @"Tap Source", nil];
+    [WGAnalytics tagEvent:@"Tap User" withDetails:options];
+    
+    self.user.isTapped = @YES;
+    [WGProfile.currentUser tapUser:self.user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
+            return;
+        }
+    }];
+
 }
 
 @end

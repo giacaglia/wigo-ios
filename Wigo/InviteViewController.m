@@ -549,7 +549,7 @@ heightForHeaderInSection:(NSInteger)section
     }
     else self.goingOutLabel.text = nil;
    
-    if ([user.isTapped boolValue]) {
+    if (user.isTapped.boolValue || WGProfile.tapAll) {
         [self.tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
     }
     else {
@@ -710,7 +710,12 @@ heightForHeaderInSection:(NSInteger)section
     [self.aroundTapButton addSubview:self.tapAllLabel];
     
     self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 15 - 15 - 25, [TapAllCell height] / 2 - 15, 30, 30)];
-    [self.tapImageView setImage:[UIImage imageNamed:@"tapUnselectedInvite"]];
+    if (WGProfile.tapAll) {
+        [self.tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
+    }
+    else {
+        [self.tapImageView setImage:[UIImage imageNamed:@"tapUnselectedInvite"]];
+    }
     [self.aroundTapButton addSubview:self.tapImageView];
 }
 
@@ -729,6 +734,7 @@ heightForHeaderInSection:(NSInteger)section
 }
 
 - (void)tapAllPressed {
+    WGProfile.tapAll = YES;
     self.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
     [WGProfile.currentUser tapAllUsersWithHandler:^(BOOL success, NSError *error) {
         if (error) {

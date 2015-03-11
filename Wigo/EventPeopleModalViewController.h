@@ -26,16 +26,17 @@
 @end
 
 #define kAttendeesCellName @"attendeesCellName"
-@interface AttendeesPhotoCell : UICollectionViewCell
+@interface AttendeesPhotoCell : UICollectionViewCell <InviteCellDelegate>
 @property (nonatomic, strong) UIButton *imageButton;
 @property (nonatomic, strong) UIImageView *imgView;
 @property (nonatomic, strong) UILabel *backgroundNameLabel;
 @property (nonatomic, strong) UILabel *profileNameLabel;
-- (void)setStateForUser:(WGUser *)user;
 @property (nonatomic, strong) InviteView *inviteView;
 @property (nonatomic, strong) UIButton *chatButton;
 @property (nonatomic, strong) UIButton *followButton;
 @property (nonatomic, assign) id<EventPeopleModalDelegate> eventPeopleModalDelegate;
+@property (nonatomic, strong ) WGUser *user;
+- (void)inviteTapped;
 @end
 
 @interface AttendeesLayout : UICollectionViewFlowLayout

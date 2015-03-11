@@ -78,6 +78,7 @@
 
 @protocol InviteCellDelegate
 - (void) inviteTapped;
+@optional
 @property State userState;
 @end
 

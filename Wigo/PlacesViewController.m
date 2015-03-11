@@ -418,6 +418,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) goHerePressed:(id)sender {
+    WGProfile.tapAll = NO;
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
     [WGAnalytics tagEvent:@"Go Here" withDetails:options];
     self.whereAreYouGoingTextField.text = @"";
@@ -646,6 +647,7 @@ BOOL firstTimeLoading;
 
 - (void)createPressed {
     if ([self.whereAreYouGoingTextField.text length] != 0) {
+        WGProfile.tapAll = NO;
         WGProfile.currentUser.youAreInCharge = NO;
         self.whereAreYouGoingTextField.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;

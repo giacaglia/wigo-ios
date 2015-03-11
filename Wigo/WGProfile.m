@@ -43,6 +43,7 @@
 
 static WGProfile *currentUser = nil;
 static NSNumber *peekingGroupID = nil;
+static BOOL tapAll = NO;
 
 @implementation WGProfile
 
@@ -91,6 +92,14 @@ static NSNumber *peekingGroupID = nil;
 
 + (NSNumber *)peekingGroupID {
     return peekingGroupID;
+}
+
++ (void)setTapAll:(BOOL)newTapAll {
+    tapAll = newTapAll;
+}
+
++ (BOOL)tapAll {
+    return tapAll;
 }
 
 -(void) setKey:(NSString *)key {
