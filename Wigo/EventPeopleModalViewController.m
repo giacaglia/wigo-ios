@@ -145,13 +145,13 @@ int imageWidth;
     fractionalPage = (self.attendeesPhotosScrollView.contentOffset.x + 20) / pageWidth;
     NSInteger page;
     if (leftBoolean) {
-        if (fractionalPage - floor(fractionalPage) < 0.95) {
+        if (fractionalPage - floor(fractionalPage) < 0.9) {
             page = floor(fractionalPage);
         } else {
             page = ceil(fractionalPage);
         }
     } else {
-        if (fractionalPage - floor(fractionalPage) < 0.05) {
+        if (fractionalPage - floor(fractionalPage) < 0.1) {
             page = floor(fractionalPage);
         } else {
             page = ceil(fractionalPage);
@@ -183,6 +183,8 @@ int imageWidth;
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     AttendeesPhotoCell *attendeeCell = [collectionView dequeueReusableCellWithReuseIdentifier:kAttendeesCellName forIndexPath:indexPath];
     attendeeCell.chatButton.hidden = NO;
+    attendeeCell.chatButton.enabled = YES;
+    attendeeCell.userInteractionEnabled = YES;
     attendeeCell.inviteView.alpha = 1.0f;
     attendeeCell.imageButton.tag = indexPath.item;
     [attendeeCell.imageButton addTarget:self action:@selector(presentUser:) forControlEvents:UIControlEventTouchUpInside];
@@ -348,6 +350,7 @@ int imageWidth;
              self.user.state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE) {
         self.followButton.hidden = YES;
         self.chatButton.hidden = NO;
+        self.chatButton.enabled = YES;
         self.inviteView.alpha = 1.0f;
     }
     else if (self.user.state == NOT_FOLLOWING_PUBLIC_USER_STATE ||

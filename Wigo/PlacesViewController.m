@@ -1218,6 +1218,7 @@ BOOL firstTimeLoading;
     __weak typeof(conversationViewController) weakConversationViewController =
     conversationViewController;
     __weak typeof(self) weakSelf = self;
+    __weak typeof(event) weakEvent = event;
     [event getMessages:^(WGCollection *collection, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
@@ -1227,14 +1228,14 @@ BOOL firstTimeLoading;
         
         weakConversationViewController.eventMessages = collection;
         weakConversationViewController.mediaScrollView.eventMessages = collection;
-        [weakConversationViewController.facesCollectionView reloadData];
-        [weakConversationViewController.mediaScrollView reloadData];
-        NSInteger messageIndex = [collection indexOfObject:event.highlight];
+        NSInteger messageIndex = [collection indexOfObject:weakEvent.highlight];
         if (messageIndex == NSNotFound) {
             [weakSelf addNextPageForEventConversationUntilFound:weakConversationViewController
-                                                       forEvent:event];
+                                                       forEvent:weakEvent];
         }
         else {
+            [weakConversationViewController.facesCollectionView reloadData];
+            [weakConversationViewController.mediaScrollView reloadData];
             weakConversationViewController.index = @(messageIndex);
             [weakConversationViewController highlightCellAtPage:messageIndex animated:NO];
         }
@@ -1246,6 +1247,7 @@ BOOL firstTimeLoading;
     
     __weak typeof(eventConversationViewController) weakEventConversation = eventConversationViewController;
     __weak typeof(self) weakSelf = self;
+    __weak  typeof(event) weakEvent = event;
     [eventConversationViewController.eventMessages addNextPage:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
@@ -1253,12 +1255,10 @@ BOOL firstTimeLoading;
             return;
         }
         weakEventConversation.mediaScrollView.eventMessages = weakEventConversation.eventMessages;
-//        [weakEventConversation.facesCollectionView reloadData];
-//        [weakEventConversation.mediaScrollView reloadData];
-        NSInteger messageIndex = [weakEventConversation.eventMessages indexOfObject:event.highlight];
+        NSInteger messageIndex = [weakEventConversation.eventMessages indexOfObject:weakEvent.highlight];
         if (messageIndex == NSNotFound) {
             [weakSelf addNextPageForEventConversationUntilFound:weakEventConversation
-                                                       forEvent:event];
+                                                       forEvent:weakEvent];
         }
         else {
             [weakEventConversation.facesCollectionView reloadData];
@@ -1639,7 +1639,7 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.backgroundColor = UIColor.whiteColor;
-    self.eventNameLabel.font = [UIFont boldSystemFontOfSize:18.0f];
+    self.eventNameLabel.font = [FontProperties mediumFont:18.0f];
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [self.contentView addSubview:self.eventNameLabel];
     
@@ -1650,7 +1650,7 @@ BOOL firstTimeLoading;
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40 + 20, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
-    self.numberOfPeopleGoingLabel.font = [UIFont fontWithName:@"Helvetica-Light" size:15.0];
+    self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
     [self.contentView addSubview:self.numberOfPeopleGoingLabel];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
@@ -1662,7 +1662,7 @@ BOOL firstTimeLoading;
     self.numberOfHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, self.frame.size.width, 20)];
     self.numberOfHighlightsLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfHighlightsLabel.textColor = RGB(119, 119, 119);
-    self.numberOfHighlightsLabel.font = [UIFont fontWithName:@"Helvetica-Light" size:15.0];
+    self.numberOfHighlightsLabel.font = [FontProperties lightFont:15.0f];
     self.numberOfHighlightsLabel.alpha = 1.0f;
     self.numberOfHighlightsLabel.text = @"The Buzz";
     [self.contentView addSubview:self.numberOfHighlightsLabel];
@@ -1673,7 +1673,7 @@ BOOL firstTimeLoading;
     [self.contentView addSubview:self.highlightsCollectionView];
     
     self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 60)];
-    self.grayView.backgroundColor = RGB(224, 231, 235);
+    self.grayView.backgroundColor = RGB(237, 237, 237);
     [self.contentView addSubview:self.grayView];
     
 //    CAGradientLayer *shadow = [CAGradientLayer layer];

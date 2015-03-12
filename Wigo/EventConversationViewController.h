@@ -29,6 +29,7 @@
 
 // Bottom controls
 @property (nonatomic, strong) UIButton *buttonCancel;
+@property (nonatomic, strong) UIButton *buttonTrash;
 @property (nonatomic, strong) UIImageView *backgroundBottom;
 @property (nonatomic, strong) UILabel *numberOfVotesLabel;
 @property (nonatomic, strong) UIButton *upVoteButton;

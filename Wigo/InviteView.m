@@ -56,7 +56,7 @@
     self.inviteButton.layer.borderWidth = 1;
     self.inviteButton.layer.borderColor = UIColor.whiteColor.CGColor;
     self.inviteButton.layer.cornerRadius = 7;
-    [self.inviteButton addTarget: self action: @selector(inviteTapped) forControlEvents: UIControlEventTouchUpInside];
+    [self.inviteButton addTarget:self action: @selector(inviteTapped) forControlEvents: UIControlEventTouchUpInside];
     [self addSubview:self.inviteButton];
     
     self.tappedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 70.0f)];

@@ -13,11 +13,7 @@
 #import "MoreViewController.h"
 #import "PeopleViewController.h"
 #import "ConversationViewController.h"
-
-@protocol InviteCellDelegate
-- (void) inviteTapped;
-@property State userState;
-@end
+#import "Delegate.h"
 
 @interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
 

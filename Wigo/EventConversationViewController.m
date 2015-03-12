@@ -340,6 +340,7 @@
 - (void)hideOrShowFacesForPage:(int)page {
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+        self.buttonTrash.hidden = ![eventMessage.user isEqual:WGProfile.currentUser];
         self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
         if (eventMessage.vote.intValue == 1) {
             self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
@@ -411,6 +412,13 @@
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
+    
+    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 29, self.view.frame.size.height - 65 - 8, 58, 65)];
+    UIImageView *buttonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTrash.frame.size.width/2 - 14, self.buttonTrash.frame.size.height - 32, 29, 32)];
+    buttonImageView.image = [UIImage imageNamed:@"trashIcon"];
+    [self.buttonTrash addSubview:buttonImageView];
+    [self.buttonTrash addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.buttonTrash];
     
     self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40, self.view.frame.size.height - 28, 32, 20)];
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
@@ -485,6 +493,41 @@
         self.numberOfVotesLabel.font = [FontProperties openSansBold:21.0f];
     }
     
+}
+
+- (void)trashPressed {
+    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    
+    if (page < self.eventMessages.count && page >= 0) {
+        [WGAnalytics tagEvent: @"Delete Highlight Tapped"];
+        
+        WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+        if ([eventMessage objectForKey:@"id"]) {
+            [eventMessage remove:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionDelete retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+                    return;
+                }
+                [self.eventMessages removeObject:eventMessage];
+                [self.mediaScrollView.eventMessages removeObject:eventMessage];
+                
+                if (self.eventMessages.count == 0) {
+                    if ([self.event.isExpired boolValue]) {
+                        [self.mediaScrollView closeView];
+                        [self dismissViewControllerAnimated:YES completion:nil];
+                    } else {
+                        [self.facesCollectionView reloadData];
+                        [self.mediaScrollView reloadData];
+                    }
+                } else {
+                    [self.facesCollectionView reloadData];
+                    [self.mediaScrollView reloadData];
+                }
+                [self hideOrShowFacesForPage:(int) MIN(page, self.eventMessages.count - 1)];
+            }];
+        }
+    }
 }
 
 - (void)cancelPressed:(id)sender {
