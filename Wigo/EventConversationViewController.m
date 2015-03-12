@@ -81,6 +81,10 @@
     
     myCell.leftLineEnabled = (indexPath.row > 0);
     myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
+    if (indexPath.row + 1 == self.eventMessages.count &&
+        self.eventMessages.hasNextPage.boolValue) {
+        [self fetchEventMessages];
+    }
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
     
     WGUser *user = eventMessage.user;
@@ -186,7 +190,7 @@
             strongSelf.eventMessages = collection;
             [strongSelf.facesCollectionView reloadData];
         }];
-    } else if ([self.eventMessages.hasNextPage boolValue]) {
+    } else if (self.eventMessages.hasNextPage.boolValue) {
         [self.eventMessages addNextPage:^(BOOL success, NSError *error) {
             __strong typeof(self) strongSelf = weakSelf;
             [strongSelf.facesCollectionView didFinishPullToRefresh];
@@ -195,6 +199,8 @@
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
+            
+            [strongSelf.mediaScrollView reloadData];
             [strongSelf.facesCollectionView reloadData];
         }];
     }

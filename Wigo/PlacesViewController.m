@@ -980,8 +980,7 @@ BOOL firstTimeLoading;
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
         
         WGEvent *event = [eventObjectArray objectAtIndex:[indexPath row]];
-        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCell
-                                       forIndexPath:indexPath];
+        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCell forIndexPath:indexPath];
         cell.event = event;
         cell.placesDelegate = self;
         cell.oldEventLabel.text = event.name;
