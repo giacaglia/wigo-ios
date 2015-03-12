@@ -141,9 +141,9 @@ int imageWidth;
 
 - (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean {
     float fractionalPage;
-    CGFloat pageWidth = imageWidth;
-    fractionalPage = (self.attendeesPhotosScrollView.contentOffset.x) / pageWidth;
-     NSInteger page;
+    CGFloat pageWidth = imageWidth + 10;
+    fractionalPage = (self.attendeesPhotosScrollView.contentOffset.x + 20) / pageWidth;
+    NSInteger page;
     if (leftBoolean) {
         if (fractionalPage - floor(fractionalPage) < 0.95) {
             page = floor(fractionalPage);

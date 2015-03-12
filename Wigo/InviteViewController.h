@@ -57,5 +57,4 @@
 @property (nonatomic, strong) UIButton *aroundTapButton;
 @property (nonatomic, strong) UIImageView *tapImageView;
 @property (nonatomic, strong) UILabel *labelUnderButton;
-- (void)setStateForEvent:(WGEvent *)event;
 @end

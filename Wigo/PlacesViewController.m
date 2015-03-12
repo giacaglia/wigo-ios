@@ -418,6 +418,11 @@ BOOL firstTimeLoading;
     }
 }
 
+- (void)showOverlayForInvite {
+    OverlayViewController *overlayViewController = [OverlayViewController new];
+    [self presentViewController:overlayViewController animated:NO completion:nil];
+}
+
 - (void) goHerePressed:(id)sender {
     WGProfile.tapAll = NO;
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];

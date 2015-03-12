@@ -14,7 +14,8 @@
 
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
-    UIGestureRecognizerDelegate, PlacesDelegate,
+    UIGestureRecognizerDelegate,
+    PlacesDelegate,
     PrivacySwitchDelegate>
 
 @property (nonatomic, strong) NSNumber *groupNumberID;

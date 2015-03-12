@@ -95,10 +95,6 @@
     [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];
 }
 
-- (void)invitePressed {
-    [self.placesDelegate invitePressed];
-}
-
 - (void)goHerePressed:(id)sender {
     self.hiddenInviteButton.hidden = NO;
     ScrollViewCell *scrollCell = (ScrollViewCell *)[self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
@@ -180,7 +176,14 @@
             [scrollCell.imageButton removeTarget:nil
                                           action:NULL
                                 forControlEvents:UIControlEventAllEvents];
-            [scrollCell.imageButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+            if (self.event.isPrivate && ![self.event.owner isEqual:WGProfile.currentUser]) {
+                scrollCell.imageButton.alpha = 0.5f;
+                [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(showOverlayForInvite) forControlEvents:UIControlEventTouchUpInside];
+            }
+            else {
+                scrollCell.imageButton.alpha = 1.0f;
+                [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+            }
             scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
             scrollCell.blueOverlayView.hidden = YES;
             scrollCell.profileNameLabel.text = @"Invite";
