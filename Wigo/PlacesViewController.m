@@ -27,6 +27,7 @@
 #import "ReferalViewController.h"
 #import "PrivateSwitchView.h"
 #import "EventMessagesConstants.h"
+#import "OverlayViewController.h"
 
 
 #define kEventCellName @"EventCell"
@@ -918,6 +919,7 @@ BOOL firstTimeLoading;
         cell.placesDelegate = self;
         cell.eventPeopleScrollView.rowOfEvent = indexPath.row;
         cell.eventPeopleScrollView.isPeeking = [self isPeeking];
+        [cell.privacyLockButton addTarget:self action:@selector(privacyPressed) forControlEvents:UIControlEventTouchUpInside];
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
             cell.event = self.aggregateEvent;
@@ -999,6 +1001,11 @@ BOOL firstTimeLoading;
     return nil;
 }
 
+- (void)privacyPressed {
+    OverlayViewController *overlayViewController = [[OverlayViewController alloc] init];
+    [self presentViewController:overlayViewController animated:YES completion:nil];
+}
+
 - (BOOL)isFullCellForEvent:(WGEvent *)event {
     return [self isPeeking] || (event.id && [WGProfile.currentUser.eventAttending.id isEqual:event.id]);
 }
@@ -1007,8 +1014,8 @@ BOOL firstTimeLoading;
     WGEvent *event;
     if (_isSearching) {
         int sizeOfArray = (int)self.filteredEvents.count;
-        if (sizeOfArray == 0 || sizeOfArray <= [indexPath row]) return nil;
-        event = (WGEvent *)[self.filteredEvents objectAtIndex:[indexPath row]];
+        if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return nil;
+        event = (WGEvent *)[self.filteredEvents objectAtIndex:indexPath.row];
     } else {
         int sizeOfArray = (int)self.events.count;
         if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return nil;
@@ -1551,7 +1558,7 @@ BOOL firstTimeLoading;
 @implementation EventCell
 
 + (CGFloat)heightIsFullCell:(BOOL)isFullCell {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 20 + 20;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 20 + 20 + 30;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1585,30 +1592,30 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.backgroundColor = UIColor.whiteColor;
-    self.eventNameLabel.font = [FontProperties mediumFont:18.0f];
+    self.eventNameLabel.font = [UIFont boldSystemFontOfSize:18.0f];
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [self.contentView addSubview:self.eventNameLabel];
     
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
-    lineView.backgroundColor = RGB(196, 196, 196);
+    lineView.backgroundColor = RGB(119, 119, 119);
     [self.contentView addSubview:lineView];
     
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40 + 20, self.frame.size.width, 20)];
-    self.numberOfPeopleGoingLabel.textColor = RGB(196, 196, 196);
+    self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
-    self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
+    self.numberOfPeopleGoingLabel.font = [UIFont fontWithName:@"Helvetica-Light" size:15.0];
     [self.contentView addSubview:self.numberOfPeopleGoingLabel];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.widthOfEachCell = (float)[[UIScreen mainScreen] bounds].size.width/(float)5.8;
+    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)3.3;
     self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.eventPeopleScrollView];
     
     self.numberOfHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, self.frame.size.width, 20)];
     self.numberOfHighlightsLabel.textAlignment = NSTextAlignmentLeft;
-    self.numberOfHighlightsLabel.textColor = RGB(196, 196, 196);
-    self.numberOfHighlightsLabel.font = [FontProperties lightFont:15.0f];
+    self.numberOfHighlightsLabel.textColor = RGB(119, 119, 119);
+    self.numberOfHighlightsLabel.font = [UIFont fontWithName:@"Helvetica-Light" size:15.0];
     self.numberOfHighlightsLabel.alpha = 1.0f;
     self.numberOfHighlightsLabel.text = @"The Buzz";
     [self.contentView addSubview:self.numberOfHighlightsLabel];
@@ -1619,7 +1626,7 @@ BOOL firstTimeLoading;
     [self.contentView addSubview:self.highlightsCollectionView];
     
     self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 60)];
-    self.grayView.backgroundColor = RGB(237, 237, 237);
+    self.grayView.backgroundColor = RGB(224, 231, 235);
     [self.contentView addSubview:self.grayView];
     
 //    CAGradientLayer *shadow = [CAGradientLayer layer];

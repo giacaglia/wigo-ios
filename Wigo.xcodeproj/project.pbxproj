@@ -363,8 +363,8 @@
 		E9C3402A1A97986500AB069F /* HighlightsCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C340281A97986500AB069F /* HighlightsCollectionView.m */; };
 		E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
 		E9C34A7919F98A2C00D7E9D3 /* MobileDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */; };
-		E9C5CE3A1AB0EFFB0044745B /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C5CE391AB0EFFB0044745B /* OverlayView.m */; };
-		E9C5CE3B1AB0EFFB0044745B /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C5CE391AB0EFFB0044745B /* OverlayView.m */; };
+		E9C5CE3A1AB0EFFB0044745B /* OverlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C5CE391AB0EFFB0044745B /* OverlayViewController.m */; };
+		E9C5CE3B1AB0EFFB0044745B /* OverlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C5CE391AB0EFFB0044745B /* OverlayViewController.m */; };
 		E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CB091419FB062D00B548A6 /* FacebookHelper.m */; };
 		E9CB091619FB062D00B548A6 /* FacebookHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CB091419FB062D00B548A6 /* FacebookHelper.m */; };
 		E9CD47141948E27500AEA17D /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
@@ -810,8 +810,8 @@
 		E9C340281A97986500AB069F /* HighlightsCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HighlightsCollectionView.m; path = Wigo/HighlightsCollectionView.m; sourceTree = SOURCE_ROOT; };
 		E9C34A7619F98A2C00D7E9D3 /* MobileDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileDelegate.h; sourceTree = "<group>"; };
 		E9C34A7719F98A2C00D7E9D3 /* MobileDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileDelegate.m; sourceTree = "<group>"; };
-		E9C5CE381AB0EFFB0044745B /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
-		E9C5CE391AB0EFFB0044745B /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
+		E9C5CE381AB0EFFB0044745B /* OverlayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayViewController.h; sourceTree = "<group>"; };
+		E9C5CE391AB0EFFB0044745B /* OverlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayViewController.m; sourceTree = "<group>"; };
 		E9CB091319FB062D00B548A6 /* FacebookHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FacebookHelper.h; sourceTree = "<group>"; };
 		E9CB091419FB062D00B548A6 /* FacebookHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookHelper.m; sourceTree = "<group>"; };
 		E9CD47121948E27500AEA17D /* UIImageViewShake.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageViewShake.h; sourceTree = "<group>"; };
@@ -1873,8 +1873,8 @@
 		FA85ED991A5C3F93004B0465 /* Main Flow */ = {
 			isa = PBXGroup;
 			children = (
-				E9C5CE381AB0EFFB0044745B /* OverlayView.h */,
-				E9C5CE391AB0EFFB0044745B /* OverlayView.m */,
+				E9C5CE381AB0EFFB0044745B /* OverlayViewController.h */,
+				E9C5CE391AB0EFFB0044745B /* OverlayViewController.m */,
 				E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */,
 				E9CDC43F1AA4EC4200CD0336 /* PlacesViewController.m */,
 				E9AAAFCA193E3DC40069F700 /* User Profiles */,
@@ -2323,7 +2323,7 @@
 				E998C28119D1BF7D0012BF51 /* InviteViewController.m in Sources */,
 				E9203B541A23C4B90086BF73 /* EventConversationViewController.m in Sources */,
 				45D9FADB1A781AFD00D08577 /* JSQMessagesLabel.m in Sources */,
-				E9C5CE3B1AB0EFFB0044745B /* OverlayView.m in Sources */,
+				E9C5CE3B1AB0EFFB0044745B /* OverlayViewController.m in Sources */,
 				C12A112019787BE700D53B1C /* RWBlurImage.m in Sources */,
 				E96F07C619BA654600E858D7 /* GKImagePicker.m in Sources */,
 				E998C26619CB80240012BF51 /* UIImageView+ImageArea.m in Sources */,
@@ -2492,7 +2492,7 @@
 				C14AB1BD1A8017670011C4E5 /* UIImage+Resize.m in Sources */,
 				45D9FAA01A781AFD00D08577 /* UIImage+JSQMessages.m in Sources */,
 				45D9FACA1A781AFD00D08577 /* JSQMessagesCollectionView.m in Sources */,
-				E9C5CE3A1AB0EFFB0044745B /* OverlayView.m in Sources */,
+				E9C5CE3A1AB0EFFB0044745B /* OverlayViewController.m in Sources */,
 				45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */,
 				E900C2B71961EADE00A01F50 /* SDImageCache.m in Sources */,
 				E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */,

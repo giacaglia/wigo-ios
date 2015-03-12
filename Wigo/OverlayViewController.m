@@ -6,56 +6,71 @@
 //  Copyright (c) 2015 Giuliano Giacaglia. All rights reserved.
 //
 
-#import "OverlayView.h"
+#import "OverlayViewController.h"
 #import "Globals.h"
 
-@implementation OverlayView
+@implementation OverlayViewController
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)viewDidLoad {
+    [self setup];
+}
 
 - (void)setup {
-    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+//    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
 //    self = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    self.alpha = 0.0f;
+    self.view.alpha = 1.0f;
+    self.view.backgroundColor = UIColor.whiteColor;
     
-    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 40 - 18, 20, 60, 40)];
+    UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 18, 20, 60, 40)];
     UIImageView *closeButtonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, 10, 24, 24)];
     closeButtonImageView.image = [UIImage imageNamed:@"blueCloseButton"];
     [closeButton addSubview:closeButtonImageView];
     [closeButton addTarget:self action:@selector(closeOverlay) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:closeButton];
+    [self.view addSubview:closeButton];
     
-    UILabel *eventOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 190, self.frame.size.width, 20)];
-    eventOnlyLabel.center = CGPointMake(self.center.x, self.center.y - 10 - 25 - 10);
+    UILabel *eventOnlyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 190, self.view.frame.size.width, 20)];
+    eventOnlyLabel.center = CGPointMake(self.view.center.x, self.view.center.y - 10 - 25 - 10);
     eventOnlyLabel.text = @"This event is invite-only";
     eventOnlyLabel.font = [FontProperties semiboldFont:18];
     eventOnlyLabel.textColor = [FontProperties getBlueColor];
     eventOnlyLabel.textAlignment = NSTextAlignmentCenter;
-    [self addSubview:eventOnlyLabel];
+    [self.view addSubview:eventOnlyLabel];
     
-    self.privateSwitch = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 120, self.frame.size.height/2, 240, 40)];
-    self.privateSwitch.center = CGPointMake(self.privateSwitch.center.x, self.center.y + 10 + 25 + 20);
+    self.privateSwitch = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2, 240, 40)];
+    self.privateSwitch.center = CGPointMake(self.privateSwitch.center.x, self.view.center.y + 10 + 25 + 20);
     self.privateSwitch.privateDelegate = self;
     [self.privateSwitch changeToPrivateState:YES];
-    [self addSubview:self.privateSwitch];
+    [self.view addSubview:self.privateSwitch];
     
-    self.explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.frame.size.height/2 - 32, self.frame.size.width, 40)];
+    self.explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 32, self.view.frame.size.width, 40)];
    
-    self.explanationLabel.center = self.center;
+    self.explanationLabel.center = self.view.center;
     self.explanationLabel.font = [FontProperties mediumFont:15];
     self.explanationLabel.textColor = [FontProperties getBlueColor];
     self.explanationLabel.textAlignment = NSTextAlignmentCenter;
     self.explanationLabel.numberOfLines = 0;
     self.explanationLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [self addSubview:self.explanationLabel];
+    [self.view addSubview:self.explanationLabel];
     
-    
-    self.lockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 12, self.frame.size.height/2 + 66, 24, 32)];
+    self.lockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 12, self.view.frame.size.height/2 + 66, 24, 32)];
     self.lockImageView.image = [UIImage imageNamed:@"lockImage"];
-    [self addSubview:self.lockImageView];
+    [self.view addSubview:self.lockImageView];
+    
+    [self.privateSwitch.closeLockImageView stopAnimating];
+    [self.privateSwitch.openLockImageView stopAnimating];
 }
 
 - (void)closeOverlay {
     [UIView animateWithDuration:0.4 animations:^{
-        self.alpha = 0.0f;
+        self.view.alpha = 0.0f;
     }];
     self.event.isPrivate = NO;
     if (!self.privateSwitch.privacyTurnedOn) {

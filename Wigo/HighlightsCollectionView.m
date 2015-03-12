@@ -79,7 +79,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     return 1;
 }
 
--(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {        return 1 + self.eventMessages.count;
+-(NSInteger)collectionView:(UICollectionView *)collectionView
+    numberOfItemsInSection:(NSInteger)section {
+    return 1 + self.eventMessages.count;
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -90,14 +92,14 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         [cell.faceImageView setSmallImageForUser:WGProfile.currentUser completed:nil];
         cell.blackOverlayView.hidden = NO;
         cell.faceImageView.alpha = 1.0f;
-//        cell.orangeDotView.hidden = YES;
+        cell.orangeDotView.hidden = YES;
         return cell;
     }
     cell.blackOverlayView.hidden = YES;
     indexPath = [NSIndexPath indexPathForRow:(indexPath.row - 1) inSection:indexPath.section];
     
     cell.faceImageView.alpha = 1.0f;
-//    cell.orangeDotView.hidden = YES;
+    cell.orangeDotView.hidden = YES;
 
 
     if (indexPath.row + 1 == self.eventMessages.count &&
@@ -109,7 +111,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     NSString *contentURL;
     if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
     else  contentURL = eventMessage.media;
-    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
+    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, contentURL]];
     [cell.spinner startAnimating];
     __weak HighlightCell *weakCell = cell;
     [cell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
@@ -124,6 +126,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         }
         else [cell updateUIToRead:NO];
     }
+    
     return cell;
 }
 
@@ -274,7 +277,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 @implementation HighlightCell
 
 + (CGFloat)height {
-    return [UIScreen mainScreen].bounds.size.width/2.9;
+    return [UIScreen mainScreen].bounds.size.width/3.3;
 }
 
 - (id) initWithCoder:(NSCoder *)aDecoder {
@@ -303,19 +306,22 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     self.faceImageView.backgroundColor = UIColor.clearColor;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.faceImageView.layer.masksToBounds = YES;
+    self.faceImageView.layer.cornerRadius = 10.0f;
+    self.faceImageView.layer.borderWidth = 1.0f;
+    self.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
     [self.contentView addSubview: self.faceImageView];
     
-//    self.orangeDotView = [[UIView alloc] initWithFrame:CGRectMake(0.9*[HighlightCell height] - 3, 0, 15, 15)];
-//    self.orangeDotView.backgroundColor = [FontProperties getOrangeColor];
-//    self.orangeDotView.layer.borderColor = [UIColor clearColor].CGColor;
-//    self.orangeDotView.clipsToBounds = YES;
-//    self.orangeDotView.layer.borderWidth = 3;
-//    self.orangeDotView.layer.cornerRadius = 7.5;
-//    [self.contentView addSubview:self.orangeDotView];
+    self.orangeDotView = [[UIView alloc] initWithFrame:CGRectMake(0.9*[HighlightCell height] - 3, 0, 15, 15)];
+    self.orangeDotView.backgroundColor = [FontProperties getOrangeColor];
+    self.orangeDotView.layer.borderColor = [UIColor clearColor].CGColor;
+    self.orangeDotView.clipsToBounds = YES;
+    self.orangeDotView.layer.borderWidth = 3;
+    self.orangeDotView.layer.cornerRadius = 7.5;
+    [self.contentView addSubview:self.orangeDotView];
     
     self.blackOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.faceImageView.frame.size.width, self.faceImageView.frame.size.height)];
     self.blackOverlayView.hidden = YES;
-    self.blackOverlayView.backgroundColor = RGBAlpha(0, 0, 0, 0.7);
+    self.blackOverlayView.backgroundColor = RGBAlpha(109, 166, 206, 0.7f);
     [self.faceImageView addSubview:self.blackOverlayView];
     
     UILabel *addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 60, self.faceImageView.frame.size.width, 13)];
@@ -375,11 +381,11 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (void)updateUIToRead:(BOOL)read {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (read) {
-            self.faceImageView.alpha = 1.0f;
-//            self.orangeDotView.hidden = YES;
+//            self.faceImageView.alpha = 1.0f;
+            self.orangeDotView.hidden = YES;
         } else {
-            self.faceImageView.alpha = 1.0f;
-//            self.orangeDotView.hidden = NO;
+//            self.faceImageView.alpha = 1.0f;
+            self.orangeDotView.hidden = NO;
         }
     });
 }

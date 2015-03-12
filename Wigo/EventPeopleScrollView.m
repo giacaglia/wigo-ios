@@ -14,7 +14,7 @@
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(WGEvent *)event {
-    if (self.widthOfEachCell == 0) self.widthOfEachCell = (float)[[UIScreen mainScreen] bounds].size.width/(float)5.8;
+    if (self.widthOfEachCell == 0) self.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)3.3;
     self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.widthOfEachCell + 50) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:self.widthOfEachCell]];
     if (self) {
         self.contentSize = CGSizeMake(15, self.widthOfEachCell + 40);
@@ -266,7 +266,7 @@
     self.imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     self.imgView.contentMode = UIViewContentModeScaleAspectFill;
     self.imgView.clipsToBounds = YES;
-    self.imgView.layer.cornerRadius = self.imgView.frame.size.width/2;
+    self.imgView.layer.cornerRadius = imageWidth/2;
     self.imgView.layer.borderColor = UIColor.clearColor.CGColor;
     self.imgView.layer.borderWidth = 1.0f;
     [self.imageButton addSubview:self.imgView];
