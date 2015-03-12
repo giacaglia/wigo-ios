@@ -26,7 +26,6 @@
 - (void)setup {
 //    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
 //    self = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    self.view.alpha = 1.0f;
     self.view.backgroundColor = UIColor.whiteColor;
     
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40 - 18, 20, 60, 40)];
@@ -47,7 +46,6 @@
     self.privateSwitch = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, self.view.frame.size.height/2, 240, 40)];
     self.privateSwitch.center = CGPointMake(self.privateSwitch.center.x, self.view.center.y + 10 + 25 + 20);
     self.privateSwitch.privateDelegate = self;
-    [self.privateSwitch changeToPrivateState:YES];
     [self.view addSubview:self.privateSwitch];
     
     self.explanationLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 32, self.view.frame.size.width, 40)];
@@ -63,18 +61,20 @@
     self.lockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 12, self.view.frame.size.height/2 + 66, 24, 32)];
     self.lockImageView.image = [UIImage imageNamed:@"lockImage"];
     [self.view addSubview:self.lockImageView];
-    
-    [self.privateSwitch.closeLockImageView stopAnimating];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [self.privateSwitch.openLockImageView stopAnimating];
+    [self.privateSwitch.closeLockImageView stopAnimating];
+    self.privateSwitch.privateString = @"Only the creator can invite people and only\nthose invited can see the event.";
+    self.privateSwitch.publicString =  @"The whole school can see and attend your event.";
+    self.explanationLabel.text = self.privateSwitch.privateString;
 }
 
 - (void)closeOverlay {
-    [UIView animateWithDuration:0.4 animations:^{
-        self.view.alpha = 0.0f;
-    }];
     self.event.isPrivate = NO;
     if (!self.privateSwitch.privacyTurnedOn) {
-//        _privacyImageView.image = [UIImage imageNamed:@"blueUnlocked"];
         [self.event setPrivacyOn:NO andHandler:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] logError:error forAction:WGActionSave];
@@ -82,6 +82,7 @@
             }
         }];
     }
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 - (void)setEvent:(WGEvent *)event {
@@ -94,6 +95,7 @@
     else {
         self.explanationLabel.text = @"Only invited people can see whats going on. Only creator can invite people.";
     }
+    [self.privateSwitch changeToPrivateState:event.isPrivate];
 
 }
 

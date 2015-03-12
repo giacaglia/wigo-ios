@@ -919,7 +919,8 @@ BOOL firstTimeLoading;
         cell.placesDelegate = self;
         cell.eventPeopleScrollView.rowOfEvent = indexPath.row;
         cell.eventPeopleScrollView.isPeeking = [self isPeeking];
-        [cell.privacyLockButton addTarget:self action:@selector(privacyPressed) forControlEvents:UIControlEventTouchUpInside];
+        cell.privacyLockButton.tag = indexPath.row;
+        [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
             cell.event = self.aggregateEvent;
@@ -1001,9 +1002,12 @@ BOOL firstTimeLoading;
     return nil;
 }
 
-- (void)privacyPressed {
-    OverlayViewController *overlayViewController = [[OverlayViewController alloc] init];
+- (void)privacyPressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    WGEvent *event = [self getEventAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
+    OverlayViewController *overlayViewController = [OverlayViewController new];
     [self presentViewController:overlayViewController animated:YES completion:nil];
+    overlayViewController.event = event;
 }
 
 - (BOOL)isFullCellForEvent:(WGEvent *)event {

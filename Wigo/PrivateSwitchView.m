@@ -124,7 +124,7 @@
                  [[sender view] setFrame:CGRectMake(2, [sender view].frame.origin.y, [sender view].frame.size.width, [sender view].frame.size.height)];
             }];
             self.privacyTurnedOn = NO;
-            self.explanationString = @"The whole school can see and attend your event.";
+            self.explanationString = @"The whole school can see and\nattend your event.";
             [self.privateDelegate updateUnderliningText];
             self.publicLabel.hidden = NO;
             [self bringSubviewToFront:self.publicLabel];

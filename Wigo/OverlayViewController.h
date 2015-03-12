@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "PrivateSwitchView.h"
 
-@interface OverlayViewController : UIViewController
+@interface OverlayViewController : UIViewController <PrivacySwitchDelegate>
 
 @property (nonatomic, strong) PrivateSwitchView *privateSwitch;
 @property (nonatomic, strong) UILabel *explanationLabel;

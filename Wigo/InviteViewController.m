@@ -525,7 +525,7 @@ heightForHeaderInSection:(NSInteger)section
     self.fullNameLabel.font = [FontProperties getSubtitleFont];
     [self.aroundTapButton addSubview:self.fullNameLabel];
     
-    self.goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
+    self.goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 170, 20)];
     self.goingOutLabel.font = [FontProperties mediumFont:13.0f];
     self.goingOutLabel.textAlignment = NSTextAlignmentLeft;
     self.goingOutLabel.textColor = [FontProperties getBlueColor];
