@@ -1217,21 +1217,58 @@ BOOL firstTimeLoading;
     [self presentViewController:conversationViewController animated:YES completion:nil];
     __weak typeof(conversationViewController) weakConversationViewController =
     conversationViewController;
+    __weak typeof(self) weakSelf = self;
     [event getMessages:^(WGCollection *collection, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
-        NSInteger messageIndex = [collection indexOfObject:event.highlight];
-        weakConversationViewController.index = @(messageIndex);
         
         weakConversationViewController.eventMessages = collection;
         weakConversationViewController.mediaScrollView.eventMessages = collection;
         [weakConversationViewController.facesCollectionView reloadData];
         [weakConversationViewController.mediaScrollView reloadData];
-        [weakConversationViewController highlightCellAtPage:messageIndex animated:NO];
+        NSInteger messageIndex = [collection indexOfObject:event.highlight];
+        if (messageIndex == NSNotFound) {
+            [weakSelf addNextPageForEventConversationUntilFound:weakConversationViewController
+                                                       forEvent:event];
+        }
+        else {
+            weakConversationViewController.index = @(messageIndex);
+            [weakConversationViewController highlightCellAtPage:messageIndex animated:NO];
+        }
+        
     }];
+}
+
+- (void)addNextPageForEventConversationUntilFound:(EventConversationViewController *)eventConversationViewController forEvent:(WGEvent *)event {
+    
+    __weak typeof(eventConversationViewController) weakEventConversation = eventConversationViewController;
+    __weak typeof(self) weakSelf = self;
+    [eventConversationViewController.eventMessages addNextPage:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        weakEventConversation.mediaScrollView.eventMessages = weakEventConversation.eventMessages;
+//        [weakEventConversation.facesCollectionView reloadData];
+//        [weakEventConversation.mediaScrollView reloadData];
+        NSInteger messageIndex = [weakEventConversation.eventMessages indexOfObject:event.highlight];
+        if (messageIndex == NSNotFound) {
+            [weakSelf addNextPageForEventConversationUntilFound:weakEventConversation
+                                                       forEvent:event];
+        }
+        else {
+            [weakEventConversation.facesCollectionView reloadData];
+            [weakEventConversation.mediaScrollView reloadData];
+            weakEventConversation.index = @(messageIndex);
+            [weakEventConversation highlightCellAtPage:messageIndex animated:NO];
+        }
+    }];
+
+    
 }
 
 - (void)showStoryForEvent:(WGEvent*)event {

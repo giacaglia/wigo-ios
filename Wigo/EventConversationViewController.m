@@ -49,7 +49,10 @@
     } else {
         self.currentActiveCell = nil;
     }
-    [self highlightCellAtPage:[self.index intValue] animated:YES];
+    if (self.index.integerValue == NSNotFound) {
+        NSLog(@"not found");
+    }
+    [self highlightCellAtPage:self.index.intValue animated:YES];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
     [WGAnalytics tagEvent:@"Event Story Detail View" withDetails: @{@"isPeeking": isPeekingString}];
@@ -426,10 +429,10 @@
     [self.upVoteButton addSubview:self.upvoteImageView];
     [self.upVoteButton addTarget:self action:@selector(upvotePressed) forControlEvents:UIControlEventTouchUpInside];
     if (self.index && self.index.intValue >= 0 && self.index.intValue < [self.mediaScrollView numberOfItemsInSection:0]) {
-        [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:[self.index intValue] inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+        [self.mediaScrollView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:self.index.intValue inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
         self.mediaScrollView.index = self.index;
-        self.mediaScrollView.minPage = [self.index intValue];
-        self.mediaScrollView.maxPage = [self.index intValue];
+        self.mediaScrollView.minPage = self.index.intValue;
+        self.mediaScrollView.maxPage = self.index.intValue;
     }
 }
 
