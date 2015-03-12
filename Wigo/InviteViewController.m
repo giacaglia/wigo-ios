@@ -287,8 +287,8 @@ heightForHeaderInSection:(NSInteger)section
         user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
     }
     
-    if ([user.isTapped boolValue]) {
-        [[WGProfile currentUser] untap:user withHandler:^(BOOL success, NSError *error) {
+    if (user.isTapped.boolValue) {
+        [WGProfile.currentUser untap:user withHandler:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] logError:error forAction:WGActionDelete];
             }
@@ -308,9 +308,9 @@ heightForHeaderInSection:(NSInteger)section
         [WGAnalytics tagEvent:@"Tap User" withDetails:options];
     }
     if (tag < self.presentedUsers.count) {
-        user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
+        [self.presentedUsers replaceObjectAtIndex:tag withObject:user];
     }
-    int sizeOfTable = (int)[self.invitePeopleTableView numberOfRowsInSection:0];
+    int sizeOfTable = (int)[self.invitePeopleTableView numberOfRowsInSection:kSectionTapCell];
     if (sizeOfTable > 0 && tag < sizeOfTable && tag >= 0) {
         [self.invitePeopleTableView reloadData];
     }

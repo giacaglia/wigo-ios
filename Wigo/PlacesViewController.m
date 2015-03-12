@@ -418,9 +418,11 @@ BOOL firstTimeLoading;
     }
 }
 
-- (void)showOverlayForInvite {
+- (void)showOverlayForInvite:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
     OverlayViewController *overlayViewController = [OverlayViewController new];
     [self presentViewController:overlayViewController animated:NO completion:nil];
+    overlayViewController.event = [self getEventAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
 }
 
 - (void) goHerePressed:(id)sender {

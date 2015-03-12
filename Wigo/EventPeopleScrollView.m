@@ -178,7 +178,8 @@
                                 forControlEvents:UIControlEventAllEvents];
             if (self.event.isPrivate && ![self.event.owner isEqual:WGProfile.currentUser]) {
                 scrollCell.imageButton.alpha = 0.5f;
-                [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(showOverlayForInvite) forControlEvents:UIControlEventTouchUpInside];
+                scrollCell.imageButton.tag = self.rowOfEvent;
+                [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(showOverlayForInvite:) forControlEvents:UIControlEventTouchUpInside];
             }
             else {
                 scrollCell.imageButton.alpha = 1.0f;

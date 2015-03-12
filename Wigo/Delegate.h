@@ -32,7 +32,7 @@
 - (void)updateEvent:(WGEvent *)newEvent;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
 - (void)invitePressed;
-- (void)showOverlayForInvite;
+- (void)showOverlayForInvite:(id)sender;
 - (void)goHerePressed:(id)sender;
 - (void)presentConversationForUser:(WGUser *)user;
 - (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event;
