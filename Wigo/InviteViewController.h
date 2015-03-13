@@ -48,7 +48,7 @@
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIButton *followPersonButton;
-- (void)setStateForUser:(WGUser *)user;
+@property (nonatomic, strong) WGUser *user;
 @end
 
 @interface TapAllCell : UITableViewCell

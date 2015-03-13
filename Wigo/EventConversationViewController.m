@@ -49,9 +49,7 @@
     } else {
         self.currentActiveCell = nil;
     }
-    if (self.index.integerValue == NSNotFound) {
-        NSLog(@"not found");
-    }
+
     [self highlightCellAtPage:self.index.intValue animated:YES];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
@@ -353,7 +351,7 @@
         }
         if (eventMessage.mediaMimeType && [eventMessage.mediaMimeType isEqualToString:kCameraType]) {
             self.buttonCancel.hidden = YES;
-            self.buttonCancel.enabled = NO;
+            self.buttonTrash.hidden = YES;
             self.facesHidden = NO;
             [self focusOnContent];
         } else if (eventMessage.mediaMimeType && ([eventMessage.mediaMimeType isEqualToString:kFaceImage] || [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost])) {
@@ -362,7 +360,6 @@
             [self focusOnContent];
             
             self.buttonCancel.hidden = NO;
-            self.buttonCancel.enabled = YES;
         }
         NSIndexPath *activeIndexPath = [NSIndexPath indexPathForItem:page  inSection: 0];
 

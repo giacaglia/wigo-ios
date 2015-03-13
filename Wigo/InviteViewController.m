@@ -162,7 +162,9 @@
 //                [self fetchNextPageSuggestions];
 //            }
             WGUser *user = (WGUser *)[self.suggestions objectAtIndex:indexPath.row];
-            [cell setStateForUser:user];
+            cell.followPersonButton.tag = (int)indexPath.row;
+            [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            cell.user = user;
         }
         return cell;
     }
@@ -237,6 +239,53 @@
             }
         }
     }
+}
+
+- (void)followedPersonPressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int row = buttonSender.tag;
+    WGUser *user = (WGUser *)[self.suggestions objectAtIndex:buttonSender.tag];
+    
+    // If it's blocked
+    if (user.isBlocked.boolValue) {
+        user.isBlocked = @NO;
+        [WGProfile.currentUser unblock:user withHandler:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+            }
+        }];
+    }
+    else {
+        if (!user.isFollowing.boolValue || !user.isFollowingRequested.boolValue) {
+            if (user.privacy == PRIVATE) {
+                // If it's not following and it's private
+                user.isFollowingRequested = @YES;
+            } else {
+                // If it's not following and it's public
+                user.isFollowing = @YES;
+            }
+            [WGProfile.currentUser follow:user withHandler:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] logError:error forAction:WGActionPost];
+                }
+            }];
+        }
+        else {
+            // If it's following user
+            user.isFollowing = @NO;
+            user.isFollowingRequested = @NO;
+            [WGProfile.currentUser unfollow:user withHandler:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+                }
+            }];
+        }
+
+    }
+    
+    
+    [self.suggestions replaceObjectAtIndex:row withObject:user];
+    [self.invitePeopleTableView reloadData];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -634,12 +683,12 @@ heightForHeaderInSection:(NSInteger)section
     [self.contentView addSubview:self.followPersonButton];
 }
 
-- (void)setStateForUser:(WGUser *)user {
+- (void)setUser:(WGUser *)user {
+    _user = user;
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text =  user.fullName;
     [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
-    self.followPersonButton.tag = -100;
     
     if (!user.isCurrentUser) {
         if (user.state == BLOCKED_USER_STATE) {
@@ -651,12 +700,10 @@ heightForHeaderInSection:(NSInteger)section
             self.followPersonButton.layer.borderWidth = 1;
             self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             self.followPersonButton.layer.cornerRadius = 3;
-            self.followPersonButton.tag = 50;
         } else {
-            if ([user.isFollowing boolValue]) {
+            if (user.isFollowing.boolValue) {
                 [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
-                self.followPersonButton.tag = 100;
             }
             if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
                 [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
@@ -667,12 +714,11 @@ heightForHeaderInSection:(NSInteger)section
                 self.followPersonButton.layer.borderWidth = 1;
                 self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
                 self.followPersonButton.layer.cornerRadius = 3;
-                self.followPersonButton.tag = 100;
             }
         }
     }
-}
 
+}
 @end
 
 
