@@ -58,7 +58,7 @@ int imageWidth;
     self.attendeesPhotosScrollView.center = CGPointMake(self.view.center.x, self.view.center.y + 10);
     self.attendeesPhotosScrollView.backgroundColor = UIColor.clearColor;
     self.attendeesPhotosScrollView.showsHorizontalScrollIndicator = NO;
-    self.attendeesPhotosScrollView.pagingEnabled = YES;
+    self.attendeesPhotosScrollView.pagingEnabled = NO;
     self.attendeesPhotosScrollView.delegate = self;
     self.attendeesPhotosScrollView.dataSource = self;
     [self.attendeesPhotosScrollView registerClass:[AttendeesPhotoCell class] forCellWithReuseIdentifier:kAttendeesCellName];
@@ -93,9 +93,9 @@ int imageWidth;
 }
 
 - (void)dismissView {
-    [self.placesDelegate.eventOffsetDictionary setObject:@200
-                                                  forKey:self.event.id.stringValue];
-    self.placesDelegate.doNotReloadOffsets = YES;
+//    [self.placesDelegate.eventOffsetDictionary setObject:@200
+//                                                  forKey:self.event.id.stringValue];
+//    self.placesDelegate.doNotReloadOffsets = YES;
     [self willMoveToParentViewController:nil];
     [self.view removeFromSuperview];
     [self removeFromParentViewController];
