@@ -25,6 +25,8 @@
 - (id)initWithEvent:(WGEvent *)event startIndex:(int)index andBackgroundImage:(UIImage *)image;
 @end
 
+#define kPeopleModalViewHeader @"peopleModalViewHeader"
+#define kPeopleModalViewFooter @"peopleModalViewFooter"
 #define kAttendeesCellName @"attendeesCellName"
 @interface AttendeesPhotoCell : UICollectionViewCell <InviteCellDelegate>
 @property (nonatomic, strong) UIButton *imageButton;

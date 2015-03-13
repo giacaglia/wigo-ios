@@ -1681,14 +1681,6 @@ BOOL firstTimeLoading;
     self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 60)];
     self.grayView.backgroundColor = RGB(237, 237, 237);
     [self.contentView addSubview:self.grayView];
-    
-//    CAGradientLayer *shadow = [CAGradientLayer layer];
-//    shadow.frame = CGRectMake(0, self.contentView.frame.size.height - 40, self.contentView.frame.size.width, 8);
-//    shadow.startPoint = CGPointMake(0, 0);
-//    shadow.endPoint = CGPointMake(0, 1);
-//    shadow.colors = [NSArray arrayWithObjects:(id)UIColor.blackColor.CGColor, UIColor.grayColor.CGColor, nil];
-//    [self.contentView.layer addSublayer:shadow];
-
 }
 
 -(void) updateUI {
@@ -1697,9 +1689,7 @@ BOOL firstTimeLoading;
     self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", self.event.numAttending];
     self.privacyLockImageView.hidden = !self.event.isPrivate;
     self.eventPeopleScrollView.event = self.event;
-
     [self.eventPeopleScrollView updateUI];
-
 }
 
 

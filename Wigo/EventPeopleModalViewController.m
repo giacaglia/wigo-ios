@@ -62,9 +62,11 @@ int imageWidth;
     self.attendeesPhotosScrollView.delegate = self;
     self.attendeesPhotosScrollView.dataSource = self;
     [self.attendeesPhotosScrollView registerClass:[AttendeesPhotoCell class] forCellWithReuseIdentifier:kAttendeesCellName];
+    [self.attendeesPhotosScrollView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kPeopleModalViewHeader];
+     [self.attendeesPhotosScrollView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:kPeopleModalViewFooter];
     [self.view addSubview:self.attendeesPhotosScrollView];
 
-    self.attendeesPhotosScrollView.contentOffset = CGPointMake((imageWidth + 10) * self.startIndex - 20, 0);
+    self.attendeesPhotosScrollView.contentOffset = CGPointMake((imageWidth + 10) * self.startIndex, 0);
     
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, self.view.frame.size.height - 58, 50, 50)];
     closeButton.backgroundColor = UIColor.clearColor;
@@ -173,7 +175,7 @@ int imageWidth;
     page = MAX(page, 0);
     page = MIN(page, self.event.attendees.count - 1);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.attendeesPhotosScrollView setContentOffset:CGPointMake((imageWidth + 10) * page - 20, 0.0f) animated:animated];
+        [self.attendeesPhotosScrollView setContentOffset:CGPointMake((imageWidth + 10) * page, 0.0f) animated:animated];
     });
 }
 
@@ -192,8 +194,7 @@ int imageWidth;
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     AttendeesPhotoCell *attendeeCell = [collectionView dequeueReusableCellWithReuseIdentifier:kAttendeesCellName forIndexPath:indexPath];
     attendeeCell.chatButton.hidden = NO;
-    attendeeCell.chatButton.enabled = YES;
-    attendeeCell.userInteractionEnabled = YES;
+    attendeeCell.imageButton.userInteractionEnabled = YES;
     attendeeCell.inviteView.alpha = 1.0f;
     attendeeCell.imageButton.tag = indexPath.item;
     [attendeeCell.imageButton addTarget:self action:@selector(presentUser:) forControlEvents:UIControlEventTouchUpInside];
@@ -210,6 +211,35 @@ int imageWidth;
     
     return attendeeCell;
 }
+
+#pragma mark - UICollectionView Header
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                        withReuseIdentifier:kPeopleModalViewHeader
+                                                                               forIndexPath:indexPath];
+        return cell;
+    }
+    else if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                        withReuseIdentifier:kPeopleModalViewFooter
+                                                                               forIndexPath:indexPath];
+        return cell;
+    }
+    return nil;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    return CGSizeMake(20, 1);
+}
+
+
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
+referenceSizeForFooterInSection:(NSInteger)section {
+    return CGSizeMake(20, 1);
+}
+
 
 
 #pragma mark - EventPeopleModal Delegate
@@ -252,13 +282,15 @@ int imageWidth;
     self.layer.borderWidth = 1.0f;
     self.layer.cornerRadius = 10.0f;
     
-    self.imageButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
-    [self.contentView addSubview:self.imageButton];
-   
     self.imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     self.imgView.contentMode = UIViewContentModeScaleAspectFill;
     self.imgView.clipsToBounds = YES;
-    [self.imageButton addSubview:self.imgView];
+    self.imgView.userInteractionEnabled = NO;
+    [self.contentView addSubview:self.imgView];
+    
+    self.imageButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
+    self.imageButton.backgroundColor = UIColor.clearColor;
+    [self.contentView addSubview:self.imageButton];
     
     UIImageView *blackBackgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, imageWidth - kNameBarHeight + 15, imageWidth, kNameBarHeight - 15)];
     blackBackgroundImageView.image = [UIImage imageNamed:@"backgroundGradient"];
