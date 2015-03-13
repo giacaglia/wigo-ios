@@ -256,7 +256,18 @@
         }];
     }
     else {
-        if (!user.isFollowing.boolValue || !user.isFollowingRequested.boolValue) {
+        if (user.isFollowing.boolValue || user.isFollowingRequested.boolValue) {
+            // If it's following user
+            user.isFollowing = @NO;
+            user.isFollowingRequested = @NO;
+            [WGProfile.currentUser unfollow:user withHandler:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+                }
+            }];
+
+        }
+        else  {
             if (user.privacy == PRIVATE) {
                 // If it's not following and it's private
                 user.isFollowingRequested = @YES;
@@ -270,17 +281,6 @@
                 }
             }];
         }
-        else {
-            // If it's following user
-            user.isFollowing = @NO;
-            user.isFollowingRequested = @NO;
-            [WGProfile.currentUser unfollow:user withHandler:^(BOOL success, NSError *error) {
-                if (error) {
-                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-                }
-            }];
-        }
-
     }
     
     
@@ -515,8 +515,7 @@ heightForHeaderInSection:(NSInteger)section
 }
 
 - (void)fetchNextPageSuggestions {
-    if (!self.presentedUsers.hasNextPage.boolValue) return;
-    
+    if (!self.suggestions.hasNextPage.boolValue) return;
     __weak typeof(self) weakSelf = self;
     [self.suggestions addNextPage:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
