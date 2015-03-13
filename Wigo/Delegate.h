@@ -28,6 +28,7 @@
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 - (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 - (void)showModalAttendees:(UIViewController *)modal;
+- (void)showViewController:(UIViewController *)vc;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 - (void)updateEvent:(WGEvent *)newEvent;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;

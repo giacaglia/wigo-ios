@@ -92,7 +92,7 @@
     self.eventPeopleModalViewController.isPeeking = self.isPeeking;
     self.eventPeopleModalViewController.placesDelegate = self.placesDelegate;
     
-    [self.placesDelegate showModalAttendees:self.eventPeopleModalViewController];
+    [self.placesDelegate showViewController:self.eventPeopleModalViewController];
 }
 
 - (void)goHerePressed:(id)sender {

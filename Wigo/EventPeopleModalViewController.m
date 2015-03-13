@@ -75,6 +75,16 @@ int imageWidth;
     [self.view addSubview:closeButton];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [[self navigationController] setNavigationBarHidden:YES animated:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -84,16 +94,15 @@ int imageWidth;
     [self.placesDelegate.eventOffsetDictionary setObject:@200
                                                   forKey:self.event.id.stringValue];
     self.placesDelegate.doNotReloadOffsets = YES;
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self willMoveToParentViewController:nil];
+    [self.view removeFromSuperview];
+    [self removeFromParentViewController];
 }
 
 - (void)presentUser:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:buttonSender.tag];
     if (attendee) [self.placesDelegate presentUserAferModalView:attendee.user forEvent:self.event];
-    [self dismissViewControllerAnimated:YES completion:^{
-       
-    }];
 }
 
 - (void)fetchEventAttendeesAsynchronous {

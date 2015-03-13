@@ -1169,6 +1169,12 @@ BOOL firstTimeLoading;
     [self.navigationController presentViewController:modal animated:YES completion:nil];
 }
 
+- (void)showViewController:(UIViewController *)vc {
+    [self addChildViewController:vc];
+    [self.view addSubview:vc.view];
+    [vc didMoveToParentViewController:self];
+}
+
 - (void)showConversationForEvent:(WGEvent *)event
                withEventMessages:(WGCollection *)eventMessages
                          atIndex:(int)index {
@@ -1693,8 +1699,7 @@ BOOL firstTimeLoading;
     self.eventPeopleScrollView.event = self.event;
 
     [self.eventPeopleScrollView updateUI];
-    
-    
+
 }
 
 
