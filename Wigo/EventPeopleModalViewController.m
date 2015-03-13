@@ -239,6 +239,10 @@ int imageWidth;
 
 - (void)setup {
     self.clipsToBounds = YES;
+    self.layer.borderColor = RGBAlpha(225, 225, 225, 29).CGColor;
+    self.layer.borderWidth = 1.0f;
+    self.layer.cornerRadius = 10.0f;
+    
     self.imageButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     [self.contentView addSubview:self.imageButton];
    
@@ -281,10 +285,6 @@ int imageWidth;
     [self.chatButton addSubview:chatLabel];
     [backgroundWhiteView addSubview:self.chatButton];
     
-    self.layer.borderColor = RGBAlpha(225, 225, 225, 29).CGColor;
-    self.layer.borderWidth = 1.0f;
-    self.layer.cornerRadius = 10.0f;
-    
     self.followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 80, 10, 160, 50)];
     self.followButton.backgroundColor = [UIColor clearColor];
     self.followButton.layer.cornerRadius = 15;
@@ -305,11 +305,27 @@ int imageWidth;
     plusImageView.frame = CGRectMake(self.followButton.frame.size.width - 28 - 20, self.followButton.frame.size.height/2 - 9, 28, 20);
     plusImageView.tintColor = [FontProperties getOrangeColor];
     [self.followButton addSubview:plusImageView];
+    
+    self.followRequestLabel = [[UILabel alloc] initWithFrame: backgroundWhiteView.frame];
+    self.followRequestLabel.text = @"Your follow request has been sent";
+    self.followRequestLabel.textAlignment = NSTextAlignmentCenter;
+    self.followRequestLabel.textColor = [FontProperties getOrangeColor];
+    self.followRequestLabel.font = [FontProperties scMediumFont:16.0f];
+    self.followRequestLabel.hidden = YES;
+    [backgroundWhiteView addSubview: self.followRequestLabel];
 }
 
 - (void)followPressed:(id)sender {
     self.followButton.hidden = YES;
     self.followButton.enabled = NO;
+    self.user.isFollowing = @YES;
+    self.user.isFollowingRequested = @YES;
+    [WGProfile.currentUser follow:self.user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
+        }
+    }];
+    [self reloadView];
 }
 
 - (void)chatPressed:(id)sender {
@@ -336,111 +352,29 @@ int imageWidth;
 
 
 - (void)reloadView {
-    
-    if (self.user.isCurrentUser) {
-        self.followButton.hidden = YES;
-        self.chatButton.hidden = YES;
-        self.inviteView.alpha = 0.0f;
-    }
-    else if (self.user.state == OTHER_SCHOOL_USER_STATE) {
-        
+    self.followButton.hidden = YES;
+    self.chatButton.hidden = YES;
+    self.inviteView.alpha = 0.0f;
+    self.followRequestLabel.hidden = YES;
+    if (self.user.isCurrentUser || self.user.state == OTHER_SCHOOL_USER_STATE) {
+        // Don't show anything
     }
     else if (self.user.state == FOLLOWING_USER_STATE ||
              self.user.state == ATTENDING_EVENT_FOLLOWING_USER_STATE ||
-             self.user.state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE) {
-        self.followButton.hidden = YES;
+             self.user.state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE ||
+             self.user.state == PUBLIC_STATE ||
+             self.user.state == PRIVATE_STATE) {
         self.chatButton.hidden = NO;
-        self.chatButton.enabled = YES;
         self.inviteView.alpha = 1.0f;
     }
     else if (self.user.state == NOT_FOLLOWING_PUBLIC_USER_STATE ||
              self.user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
              self.user.state == BLOCKED_USER_STATE) {
         self.followButton.hidden = NO;
-        self.chatButton.hidden = YES;
-        self.inviteView.alpha = 0.0f;
     }
     else if (self.user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-        self.followButton.hidden = YES;
-        self.chatButton.hidden = YES;
-        self.inviteView.alpha = 0.0f;
+        self.followRequestLabel.hidden = NO;
     }
-    else if (self.user.state == PUBLIC_STATE ||
-             self.user.state == PRIVATE_STATE) {
-        self.followButton.hidden = YES;
-        self.chatButton.hidden = NO;
-        self.inviteView.alpha = 1.0f;
-    }
-//        else if (self.userState == OTHER_SCHOOL_USER_STATE) {
-//            _rightBarBt.enabled = NO;
-//            _rightBarBt.hidden = YES;
-//            _leftProfileButton.enabled = NO;
-//            _leftProfileButton.hidden = YES;
-//            _rightProfileButton.enabled = NO;
-//            _rightProfileButton.hidden = YES;
-//            _chatButton.enabled = NO;
-//            _chatButton.hidden = YES;
-//            _followButton.enabled = NO;
-//            _followButton.hidden = YES;
-//        }
-//        else if (self.userState == NOT_FOLLOWING_PUBLIC_USER_STATE ||
-//                 self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
-//                 self.userState == BLOCKED_USER_STATE) {
-//            _rightBarBt.enabled = YES;
-//            _rightBarBt.hidden = NO;
-//            _leftProfileButton.enabled = NO;
-//            _leftProfileButton.hidden = YES;
-//            _rightProfileButton.enabled = NO;
-//            _rightProfileButton.hidden = YES;
-//            _chatButton.enabled = NO;
-//            _chatButton.hidden = YES;
-//            
-//            _followButton.enabled = YES;
-//            _followButton.hidden = NO;
-//            
-//            if (self.userState == NOT_FOLLOWING_PUBLIC_USER_STATE) {
-//                _privateLogoImageView.hidden = YES;
-//            }
-//            _followRequestLabel.hidden = YES;
-//        }
-//        else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-//            _rightBarBt.enabled = YES;
-//            _rightBarBt.hidden = NO;
-//            _leftProfileButton.enabled = NO;
-//            _leftProfileButton.hidden = YES;
-//            _rightProfileButton.enabled = NO;
-//            _rightProfileButton.hidden = YES;
-//            _chatButton.enabled = NO;
-//            _chatButton.hidden = YES;
-//            
-//            _followButton.enabled = NO;
-//            _followButton.hidden = YES;
-//            
-//            _privateLogoImageView.hidden = YES;
-//            _followRequestLabel.hidden = NO;
-//        }
-//        if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE) {
-//            _rightBarBt.enabled = YES;
-//            _rightBarBt.hidden = NO;
-//            _followButton.enabled = NO;
-//            _followButton.hidden = YES;
-//            _chatButton.enabled = YES;
-//            _chatButton.hidden = NO;
-//            
-//            _leftProfileButton.enabled = YES;
-//            _leftProfileButton.hidden = NO;
-//            _rightProfileButton.enabled = YES;
-//            _rightProfileButton.hidden = NO;
-//            
-//            if (self.userState == PRIVATE_STATE) {
-//                _privateLogoImageView.hidden = NO;
-//            }
-//            else {
-//                _privateLogoImageView.hidden = YES;
-//                _followRequestLabel.hidden = YES;
-//            }
-//        }
-    
 }
 
 #pragma mark - InviteView Delegate

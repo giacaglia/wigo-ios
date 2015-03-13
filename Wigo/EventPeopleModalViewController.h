@@ -34,6 +34,7 @@
 @property (nonatomic, strong) InviteView *inviteView;
 @property (nonatomic, strong) UIButton *chatButton;
 @property (nonatomic, strong) UIButton *followButton;
+@property (nonatomic, strong) UILabel *followRequestLabel;
 @property (nonatomic, assign) id<EventPeopleModalDelegate> eventPeopleModalDelegate;
 @property (nonatomic, strong ) WGUser *user;
 - (void)inviteTapped;
