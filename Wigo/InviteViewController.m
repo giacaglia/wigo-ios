@@ -138,7 +138,7 @@
         int hasNextPage = ([self.presentedUsers.hasNextPage boolValue] ? 1 : 0);
         return self.presentedUsers.count + hasNextPage;
     } else if (section == kSectionFollowCell) {
-        return self.suggestions.count;
+        return self.suggestions.count + self.everyone.count;
     } else {
         if (self.isSearching) return filteredMobileContacts.count;
         return mobileContacts.count;
@@ -157,13 +157,23 @@
         
         if (self.suggestions.count == 0) return cell;
         if (indexPath.row < self.suggestions.count) {
-//            if (self.suggestions.hasNextPage.boolValue &&
-//                indexPath.row == self.suggestions.count - 5) {
-//                [self fetchNextPageSuggestions];
-//            }
+            if (self.suggestions.hasNextPage.boolValue &&
+                indexPath.row == self.suggestions.count - 5) {
+                [self fetchNextPageSuggestions];
+            }
             WGUser *user = (WGUser *)[self.suggestions objectAtIndex:indexPath.row];
             cell.followPersonButton.tag = (int)indexPath.row;
             [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            cell.user = user;
+        }
+        else {
+            int indexOfUser = indexPath.row - self.suggestions.count;
+            if (indexOfUser >= self.everyone.count) return cell;
+            if (self.everyone.hasNextPage.boolValue &&
+                indexOfUser == self.everyone.count - 5) {
+                [self fetchEveryone];
+            }
+            WGUser *user = (WGUser *)[self.everyone objectAtIndex:indexOfUser];
             cell.user = user;
         }
         return cell;
@@ -531,6 +541,47 @@ heightForHeaderInSection:(NSInteger)section
         });
     }];
 
+}
+
+- (void)fetchEveryone {
+    if (!self.everyone) self.everyone = [[WGCollection alloc] initWithType:[WGUser class]];
+    __weak typeof(self) weakSelf = self;
+    if (!self.everyone) {
+        [WGUser get:^(WGCollection *collection, NSError *error) {
+            __strong typeof(self) strongSelf = weakSelf;
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                    return;
+                }
+                if (strongSelf.suggestions) {
+                    [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.suggestions];
+                }
+                strongSelf.everyone = collection;
+            });
+        }];
+    } else if ([self.everyone.hasNextPage boolValue]) {
+        [self.everyone getNextPage:^(WGCollection *collection, NSError *error) {
+            __strong typeof(self) strongSelf = weakSelf;
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                    return;
+                }
+                
+                if (strongSelf.suggestions) {
+                    [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.suggestions];
+                } else {
+                    [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.everyone];
+                }
+                strongSelf.everyone.hasNextPage = collection.hasNextPage;
+                strongSelf.everyone.nextPage = collection.nextPage;
+                
+            });
+        }];
+    }
 }
 
 #pragma mark - Mobile

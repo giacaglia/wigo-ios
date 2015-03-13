@@ -18,6 +18,7 @@
 @property (nonatomic, strong) WGCollection *content;
 @property (nonatomic, strong) WGCollection *presentedUsers;
 @property (nonatomic, strong) WGCollection *suggestions;
+@property (nonatomic, strong) WGCollection *everyone;
 @property (nonatomic, assign) BOOL isSearching;
 @end
 
