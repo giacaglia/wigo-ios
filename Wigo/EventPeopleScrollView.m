@@ -98,7 +98,7 @@
 - (void)goHerePressed:(id)sender {
     self.hiddenInviteButton.hidden = NO;
     ScrollViewCell *scrollCell = (ScrollViewCell *)[self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-       [UIView animateWithDuration:1 animations:^{
+    [UIView animateWithDuration:1 animations:^{
         scrollCell.blueOverlayView.alpha = 1.0f;
     } completion:^(BOOL finished) {
         [UIView animateWithDuration:1 animations:^{
@@ -110,16 +110,17 @@
             self.hiddenInviteButton.transform = CGAffineTransformMakeTranslation(-self.widthOfEachCell, 0);
         } completion:^(BOOL finished) {
             UIButton *buttonSender = (UIButton *)sender;
-            [self.placesDelegate goHerePressed:buttonSender];
-            [UIView animateWithDuration:1.0f animations:^{
-            } completion:^(BOOL finished) {
+            __weak typeof(self) weakSelf = self;
+            [self.placesDelegate goHerePressed:buttonSender withHandler:^(BOOL success, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     CGAffineTransform t = CGAffineTransformMakeScale(0.2f, 0.2f);
-                    self.hiddenInviteButton.transform = CGAffineTransformTranslate(t, 0, 0);
-                    self.transform = CGAffineTransformMakeTranslation(0, 0);
+                    weakSelf.hiddenInviteButton.transform = CGAffineTransformTranslate(t, 0, 0);
+                    weakSelf.transform = CGAffineTransformMakeTranslation(0, 0);
                     scrollCell.blueOverlayView.alpha = 0.8f;
+                    [weakSelf.placesDelegate scrollUp];
                 });
             }];
+            
         }];
     }];
 }

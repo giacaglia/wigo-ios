@@ -425,34 +425,38 @@ BOOL firstTimeLoading;
     overlayViewController.event = [self getEventAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
 }
 
-- (void) goHerePressed:(id)sender {
+- (void) goHerePressed:(id)sender withHandler:(BoolResultBlock)handler {
     WGProfile.tapAll = NO;
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
     [WGAnalytics tagEvent:@"Go Here" withDetails:options];
     self.whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
-    [self.placesTableView reloadData];
-    [self goOutToEventAtRow:(int)buttonSender.tag];
-}
-
-- (void)goOutToEventAtRow:(int)row {
-    __weak typeof(self) weakSelf = self;
     
-    WGEvent *event = [self getEventAtIndexPath:[NSIndexPath indexPathForItem:row inSection:0]];
+    __weak typeof(self) weakSelf = self;
+    WGEvent *event = [self getEventAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
     if (event == nil) return;
     [WGProfile.currentUser goingToEvent:event withHandler:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            handler(success, error);
             return;
         }
         WGProfile.currentUser.isGoingOut = @YES;
-        [strongSelf fetchEventsFirstPage];
-        [strongSelf scrollUp];
+        if (!strongSelf.doNotReloadOffsets) {
+            for (NSString *key in [strongSelf.eventOffsetDictionary allKeys]) {
+                [strongSelf.eventOffsetDictionary setValue:@0 forKey:key];
+            }
+            strongSelf.doNotReloadOffsets = NO;
+        }
+        strongSelf.aggregateEvent = nil;
+        strongSelf.allEvents = nil;
+        [strongSelf fetchEventsWithHandler:handler];
     }];
 }
+
 
 - (void) goingSomewhereElsePressed {
     [WGAnalytics tagEvent:@"Go Somewhere Else Tapped"];
@@ -945,7 +949,7 @@ BOOL firstTimeLoading;
                 return cell;
             }
         } else if (indexPath.row == self.events.count && [self shouldShowAggregatePrivateEvents] == 0) {
-            [self fetchEvents];
+            [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
             cell.loadingView.hidden = NO;
             [cell.loadingView startAnimating];
             cell.eventNameLabel.text = nil;
@@ -1361,10 +1365,10 @@ BOOL firstTimeLoading;
     }
     self.aggregateEvent = nil;
     self.allEvents = nil;
-    [self fetchEvents];
+    [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
 }
 
-- (void) fetchEvents {
+- (void) fetchEventsWithHandler:(BoolResultBlock)handler {
     if (!self.fetchingEventAttendees && WGProfile.currentUser.key) {
         self.fetchingEventAttendees = YES;
         if (_spinnerAtCenter) [WGSpinnerView addDancingGToCenterView:self.view];
@@ -1377,6 +1381,7 @@ BOOL firstTimeLoading;
                     if (error) {
                         strongSelf.fetchingEventAttendees = NO;
                         strongSelf.shouldReloadEvents = YES;
+                        handler(success, error);
                         return;
                     }
                     
@@ -1414,6 +1419,7 @@ BOOL firstTimeLoading;
                     strongSelf.fetchingEventAttendees = NO;
                     strongSelf.shouldReloadEvents = YES;
                     [strongSelf.placesTableView reloadData];
+                    handler(success, error);
                 }];
             }
         } else if (self.groupNumberID) {
@@ -1425,6 +1431,7 @@ BOOL firstTimeLoading;
                 if (error) {
                     strongSelf.fetchingEventAttendees = NO;
                     strongSelf.shouldReloadEvents = YES;
+                    handler(NO, error);
                     return;
                 }
                 
@@ -1471,6 +1478,7 @@ BOOL firstTimeLoading;
                 [strongSelf fetchedOneParty];
                 strongSelf.fetchingEventAttendees = NO;
                 [strongSelf.placesTableView reloadData];
+                handler(YES, error);
             }];
         } else {
             [WGEvent get:^(WGCollection *collection, NSError *error) {
@@ -1478,6 +1486,7 @@ BOOL firstTimeLoading;
                 [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                 if (error) {
                     strongSelf.fetchingEventAttendees = NO;
+                    handler(NO, error);
                     return;
                 }
                 strongSelf.allEvents = collection;
@@ -1517,6 +1526,7 @@ BOOL firstTimeLoading;
                 [strongSelf fetchedOneParty];
                 strongSelf.fetchingEventAttendees = NO;
                 [strongSelf.placesTableView reloadData];
+                handler(YES, error);
             }];
         }
     }
@@ -1559,7 +1569,7 @@ BOOL firstTimeLoading;
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:^(BOOL didRetry) {
                     if (didRetry) {
                         [strongSelf fetchUserInfo];
-                        [strongSelf fetchEvents];
+                        [strongSelf fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
                     }
                 }];
                 return;
