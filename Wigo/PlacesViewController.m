@@ -1795,7 +1795,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) setup {
-    self.backgroundColor = RGB(241, 241, 241);
+    self.backgroundColor = RGB(237, 237, 237);
 
 }
 
@@ -1816,7 +1816,7 @@ BOOL firstTimeLoading;
     return header;
 }
 - (void) setup {
-    self.backgroundColor = RGB(241, 241, 241);
+    self.backgroundColor = RGB(237, 237, 237);
     
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
