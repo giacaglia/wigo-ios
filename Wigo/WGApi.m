@@ -410,7 +410,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 +(void) startup:(WGStartupResult)handler {
     [WGApi get:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, nil, nil, nil, NO, nil, error);
+            handler(nil, nil, nil, nil, NO, NO, nil, error);
             return;
         }
         NSString *cdnPrefix;
@@ -418,6 +418,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         NSNumber *schoolStatistics;
         NSNumber *privateEvents;
         BOOL videoEnabled;
+        BOOL crossEventPhotosEnabled;
         NSError *dataError;
         NSDictionary *imageProperties;
         @try {
@@ -431,6 +432,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             schoolStatistics = [provisioning objectForKey:@"school_statistics"];
             privateEvents = [provisioning objectForKey:@"private_events"];
             videoEnabled = [[provisioning objectForKey:@"video"] boolValue];
+            crossEventPhotosEnabled = [[provisioning objectForKey:@"cross_event_photos"] boolValue];
             
             NSDictionary *uploadsProperties = [jsonResponse objectForKey:@"uploads"];
             imageProperties = [uploadsProperties objectForKey:@"image"];
@@ -442,10 +444,10 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
         }
         @finally {
             if (dataError) {
-                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, privateEvents, YES, imageProperties, dataError);
+                handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, privateEvents, videoEnabled, crossEventPhotosEnabled,  imageProperties, dataError);
                 return;
             }
-            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, privateEvents, YES, imageProperties, dataError);
+            handler(cdnPrefix, googleAnalyticsEnabled, schoolStatistics, privateEvents, videoEnabled, crossEventPhotosEnabled, imageProperties, dataError);
         }
     }];
 }

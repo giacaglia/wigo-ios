@@ -26,6 +26,7 @@
 @property float imageQuality;
 @property float imageMultiple;
 @property BOOL videoEnabled;
+@property BOOL crossEventPhotosEnabled;
 @property BOOL youAreInCharge;
 
 +(void) setCurrentUser:(WGUser *)user;

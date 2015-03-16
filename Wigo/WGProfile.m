@@ -36,6 +36,7 @@
 #define kLastNotificationReadKey @"last_notification_read"
 #define kLastUserReadKey @"last_user_read"
 #define kVideoEnabled @"video"
+#define kCrossEventPhotosEnabled @"crossEventPhotosEnabled"
 #define kYouAreInCharge @"youAreInCharge"
 #define kPeekingGroupID @"peekingGroupID"
 
@@ -197,6 +198,14 @@ static BOOL tapAll = NO;
 
 -(BOOL)videoEnabled {
     return [[NSUserDefaults standardUserDefaults] boolForKey:kVideoEnabled];
+}
+
+- (void)setCrossEventPhotosEnabled:(BOOL)crossEventPhotosEnabled {
+    [[NSUserDefaults standardUserDefaults] setBool:crossEventPhotosEnabled forKey:kCrossEventPhotosEnabled];
+}
+
+- (BOOL)crossEventPhotosEnabled {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:kCrossEventPhotosEnabled];
 }
 
 - (void)setYouAreInCharge:(BOOL)youAreInCharge {

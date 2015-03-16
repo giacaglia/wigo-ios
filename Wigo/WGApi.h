@@ -13,7 +13,7 @@ typedef void (^SerializedApiResultBlock)(NSURL *sentURL, NSDictionary *jsonRespo
 typedef void (^ApiResultBlock)(NSDictionary *jsonResponse, NSError *error);
 typedef void (^UploadResultBlock)(NSDictionary *jsonResponse, NSDictionary *fields, NSError *error);
 typedef void (^UploadVideoResultBlock)(NSDictionary *jsonResponseVideo, NSDictionary *jsonResponseThumbnail, NSDictionary *videoFields, NSDictionary *thumbnailFields, NSError *error);
-typedef void (^WGStartupResult)(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSNumber *privateEvents, BOOL videoEnabled, NSDictionary *imageProperties, NSError *error);
+typedef void (^WGStartupResult)(NSString *cdnPrefix, NSNumber *googleAnalyticsEnabled, NSNumber *schoolStatistics, NSNumber *privateEvents, BOOL videoEnabled, BOOL crossEventPhotosEnabled, NSDictionary *imageProperties, NSError *error);
 typedef void (^WGAggregateStats)(NSNumber *numMessages, NSNumber *numAttending, NSError *error);
 
 @class WGObject;

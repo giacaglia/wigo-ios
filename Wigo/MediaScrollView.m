@@ -188,10 +188,8 @@
         [self addReadPage:i];
     }
     if (self.eventMessagesRead.count > 0) {
-        __weak typeof(self) weakSelf = self;
         __weak typeof(handler) weakHandler = handler;
         [self.event setMessagesRead:self.eventMessagesRead andHandler:^(BOOL success, NSError *error) {
-            __strong typeof(self) strongSelf = weakSelf;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionSave];
@@ -213,7 +211,6 @@
 
 
 -(void)scrolledToPage:(int)page {
-    
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
     [WGAnalytics tagEvent:@"Event Conversation Scrolled Highlight" withDetails: @{@"isPeeking": isPeekingString}];
     

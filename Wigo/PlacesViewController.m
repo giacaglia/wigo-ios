@@ -1179,7 +1179,7 @@ BOOL firstTimeLoading;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
-    if ([self isPeeking]) {
+    if ([self isPeeking] || !WGProfile.currentUser.crossEventPhotosEnabled) {
         index = index - 1;
     }
     else {
