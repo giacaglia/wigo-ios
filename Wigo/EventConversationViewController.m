@@ -623,14 +623,14 @@
 #pragma mark - EventConversationDelegate
 
 - (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages {
-    WGEventMessage *newEventMessage = [WGEventMessage serialize:@{
-                                                                  @"user": [WGProfile currentUser],
-                                                                  @"created": [NSDate nowStringUTC],
-                                                                  @"media_mime_type": kCameraType,
-                                                                  @"media": @""
-                                                                  }];
-
-    [self.eventMessages addObject:newEventMessage];
+//    WGEventMessage *newEventMessage = [WGEventMessage serialize:@{
+//                                                                  @"user": [WGProfile currentUser],
+//                                                                  @"created": [NSDate nowStringUTC],
+//                                                                  @"media_mime_type": kCameraType,
+//                                                                  @"media": @""
+//                                                                  }];
+//
+//    [self.eventMessages addObject:newEventMessage];
     
     [self.facesCollectionView reloadData];
     self.mediaScrollView.eventMessages = self.eventMessages;
@@ -881,7 +881,6 @@
 
 - (void)setToActiveWithNoAnimation {
     self.faceAndMediaTypeView.alpha = 1.0f;
-
     self.faceImageView.transform = CGAffineTransformIdentity;
     self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
     self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
@@ -890,7 +889,6 @@
 }
 
 - (void) resetToInactive {
-
     self.faceAndMediaTypeView.alpha = 0.5f;
     self.faceImageView.transform = CGAffineTransformMakeScale(0.75, 0.75);
     self.mediaTypeImageView.frame = CGRectMake(0.6*sizeOfEachFaceCell, 0.25*sizeOfEachFaceCell, sizeOfEachFaceCell/6.6, sizeOfEachFaceCell/6.6);

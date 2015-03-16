@@ -559,9 +559,11 @@
                 strongSelf.firstCell = YES;
                 [strongSelf.eventConversationDelegate showCompletedMessage];
                 strongSelf.shownCurrentImage = YES;
-                [strongSelf.eventMessages replaceObjectAtIndex:(strongSelf.eventMessages.count - 2) withObject:object];
                 if (strongSelf.shownCurrentImage) {
-                    [strongSelf.eventMessages removeObjectAtIndex:strongSelf.eventMessages.count - 1];
+                    [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:object];
+                }
+                else {
+                    [strongSelf.eventMessages insertObject:object atIndex:1];
                 }
                 [strongSelf.eventConversationDelegate reloadUIForEventMessages:strongSelf.eventMessages];
         }];
@@ -588,14 +590,14 @@
             [strongSelf.eventConversationDelegate showCompletedMessage];
           
             if (!strongSelf.shownCurrentImage) {
-                [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:strongSelf.object];
+//                [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:strongSelf.object];
+                [strongSelf.eventMessages insertObject:strongSelf.object atIndex:1];
                 [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
                 strongSelf.shownCurrentImage = YES;
             }
             else {
                 if (info == nil){
-                    [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 2) withObject:strongSelf.object];
-                    [strongSelf.eventMessages removeObjectAtIndex:(self.eventMessages.count -1)];
+                    [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:strongSelf.object];
                     [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
                 }
                 strongSelf.shownCurrentImage = NO;
@@ -619,7 +621,7 @@
         WGEventMessage *newEventMessage = [WGEventMessage serialize:mutableDict];
 
         if (!self.shownCurrentImage) {
-            [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:newEventMessage];
+            [self.eventMessages insertObject:newEventMessage atIndex:1];
             [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
             self.shownCurrentImage = YES;
         }
