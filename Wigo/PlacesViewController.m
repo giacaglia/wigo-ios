@@ -1176,7 +1176,12 @@ BOOL firstTimeLoading;
 - (void)showViewController:(UIViewController *)vc {
     [self addChildViewController:vc];
     [self.view addSubview:vc.view];
+    vc.view.alpha = 0.0f;
     [vc didMoveToParentViewController:self];
+
+    [UIView animateWithDuration:0.3 animations:^{
+        vc.view.alpha = 1.0f;
+    }];
 }
 
 - (void)showConversationForEvent:(WGEvent *)event

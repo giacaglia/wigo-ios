@@ -984,7 +984,7 @@
 
     self.controller = [[UIImagePickerController alloc] init];
     self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
-    self.controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+    self.controller.cameraDevice = UIImagePickerControllerCameraDeviceRear;
     self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
     self.controller.videoQuality = UIImagePickerControllerQualityTypeHigh;
     self.controller.delegate = self;
