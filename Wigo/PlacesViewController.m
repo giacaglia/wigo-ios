@@ -338,7 +338,7 @@ BOOL firstTimeLoading;
     [self.schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
     self.schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
   
-    CGFloat fontSize = 16.0f;
+    CGFloat fontSize = 20.0f;
     CGSize size;
     while (fontSize > 0.0f)
     {
