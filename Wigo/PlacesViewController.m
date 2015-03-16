@@ -338,7 +338,7 @@ BOOL firstTimeLoading;
     [self.schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
     self.schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
   
-    CGFloat fontSize = 20.0f;
+    CGFloat fontSize = 16.0f;
     CGSize size;
     while (fontSize > 0.0f)
     {
@@ -572,7 +572,7 @@ BOOL firstTimeLoading;
         eventNameLabel.text = @"Event Name";
         eventNameLabel.textColor = [FontProperties getBlueColor];
         eventNameLabel.textAlignment = NSTextAlignmentCenter;
-        eventNameLabel.font = [FontProperties mediumFont:13.0f];
+        eventNameLabel.font = [FontProperties scMediumFont:15.0f];
         [_whereAreYouGoingView addSubview:eventNameLabel];
         
         UIView *lineUnderEventName = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 40, 90, 1)];

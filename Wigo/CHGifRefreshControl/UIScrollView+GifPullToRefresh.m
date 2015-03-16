@@ -27,7 +27,7 @@
 #import "UIScrollView+GifPullToRefresh.h"
 #import <objc/runtime.h>
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
-#define GifRefreshControlHeight 40.0
+#define GifRefreshControlHeight 50.0
 
 typedef enum
 {
@@ -56,11 +56,11 @@ static char UIScrollViewGifPullToRefresh;
 - (void)addPullToRefreshWithDrawingImgs:(NSArray*)drawingImgs andLoadingImgs:(NSArray*)loadingImgs andActionHandler:(void (^)(void))actionHandler
 {
     
-    CHGifRefreshControl *view = [[CHGifRefreshControl alloc] initWithFrame:CGRectMake(0, -GifRefreshControlHeight, self.bounds.size.width, GifRefreshControlHeight)];
+    CHGifRefreshControl *view = [[CHGifRefreshControl alloc] initWithFrame:CGRectMake(0, -GifRefreshControlHeight, self.bounds.size.width, GifRefreshControlHeight - 10)];
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 7.0) {
         view.originalContentInsectY = 10;
     }
-        
+    
     view.scrollView = self;
     view.pullToRefreshActionHandler = actionHandler;
     view.drawingImgs = drawingImgs;
