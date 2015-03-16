@@ -564,8 +564,12 @@
                 }
                 else {
                     [strongSelf.eventMessages insertObject:object atIndex:1];
+                
                 }
                 [strongSelf.eventConversationDelegate reloadUIForEventMessages:strongSelf.eventMessages];
+            if (!strongSelf.shownCurrentImage) {
+                [strongSelf.eventConversationDelegate highlightCellAtPage:1 animated:YES];
+            }
         }];
     }];
 }
@@ -593,13 +597,14 @@
 //                [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:strongSelf.object];
                 [strongSelf.eventMessages insertObject:strongSelf.object atIndex:1];
                 [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+                [strongSelf.eventConversationDelegate highlightCellAtPage:1 animated:NO];
                 strongSelf.shownCurrentImage = YES;
             }
             else {
-                if (info == nil){
+//                if (info == nil){
                     [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:strongSelf.object];
                     [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
-                }
+//                }
                 strongSelf.shownCurrentImage = NO;
             }
         }];
@@ -622,6 +627,7 @@
 
         if (!self.shownCurrentImage) {
             [self.eventMessages insertObject:newEventMessage atIndex:1];
+            [self.eventConversationDelegate highlightCellAtPage:1 animated:NO];
             [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
             self.shownCurrentImage = YES;
         }

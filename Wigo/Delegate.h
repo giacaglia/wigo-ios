@@ -65,6 +65,7 @@
 - (void)createBlurViewUnderView:(UIView *)view;
 - (void)presentHoleOnTopOfView:(UIView *)view;
 @property (nonatomic, strong) UIButton *buttonCancel;
+- (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated;
 @end
 
 @protocol ConversationCellDelegate <NSObject>
