@@ -39,6 +39,7 @@
 - (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event;
 - (void)scrollUp;
 - (void)showEvent:(WGEvent *)event;
+- (void)fetchEventsFirstPage;
 @end
 
 @protocol PrivacySwitchDelegate <NSObject>

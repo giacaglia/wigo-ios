@@ -45,7 +45,7 @@
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, assign) BOOL cameraPromptAddToStory;
 @property (nonatomic, strong) NSString *filenameString;
--(void) closeView;
+-(void) closeViewWithHandler:(BoolResultBlock)handler;
 -(void) scrolledToPage:(int)page;
 
 - (void)callbackFromUploadWithInfo:(NSDictionary *)callbackInfo

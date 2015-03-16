@@ -112,18 +112,10 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
     else  contentURL = eventMessage.media;
     NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, contentURL]];
-    [cell.spinner startAnimating];
-    __weak HighlightCell *weakCell = cell;
-    [cell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakCell.spinner stopAnimating];
-        });
-    }];
+    [cell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {}];
     
     if (eventMessage.isRead) {
-        if ([eventMessage.isRead boolValue]) {
-            [cell updateUIToRead:YES];
-        }
+        if (eventMessage.isRead.boolValue) [cell updateUIToRead:YES];
         else [cell updateUIToRead:NO];
     }
     
@@ -335,11 +327,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     cameraImageView.center = CGPointMake(self.blackOverlayView.center.x, 40);
     cameraImageView.image = [UIImage imageNamed:@"cameraPhoto"];
     [self.blackOverlayView addSubview:cameraImageView];
-    
-    self.spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake([HighlightCell height]/4, [HighlightCell height]/4, [HighlightCell height]/2, [HighlightCell height]/2)];
-    self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
-    [self.contentView addSubview:self.spinner];
-    
+
     _isActive = NO;
 }
 

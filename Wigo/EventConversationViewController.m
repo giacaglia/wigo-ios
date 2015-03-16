@@ -249,21 +249,6 @@
     else _collectionViewPointNow = scrollView.contentOffset;
 }
 
-//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
-//                  willDecelerate:(BOOL)decelerate
-//{
-//    NSLog(@"Second");
-//    CGPoint pointNow;
-//    if (scrollView == self.mediaScrollView) pointNow = _imagesScrollViewPointNow;
-//    else pointNow = _collectionViewPointNow;
-//    if (decelerate) {
-//        if (scrollView.contentOffset.x < pointNow.x) {
-//            [self stoppedScrollingToLeft:YES forScrollView:scrollView];
-//        } else if (scrollView.contentOffset.x >= pointNow.x) {
-//            [self stoppedScrollingToLeft:NO forScrollView:scrollView];
-//        }
-//    }
-//}
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
                      withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
@@ -511,7 +496,11 @@
                 
                 if (self.eventMessages.count == 0) {
                     if ([self.event.isExpired boolValue]) {
-                        [self.mediaScrollView closeView];
+                        [self.mediaScrollView closeViewWithHandler:^(BOOL success, NSError *error) {
+                            if (success) {
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
+                            }
+                        }];
                         [self dismissViewControllerAnimated:YES completion:nil];
                     } else {
                         [self.facesCollectionView reloadData];
@@ -530,7 +519,11 @@
 - (void)cancelPressed:(id)sender {
     [WGAnalytics tagEvent: @"Close Highlights Tapped"];
     [self.mediaScrollView.lastMoviePlayer stop];
-    [self.mediaScrollView closeView];
+    [self.mediaScrollView closeViewWithHandler:^(BOOL success, NSError *error) {
+        if (success) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
+        }
+    }];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

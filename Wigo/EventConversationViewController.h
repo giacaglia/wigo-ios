@@ -20,14 +20,17 @@
 @property (nonatomic, assign) NSInteger lastPage;
 @property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
 @property (nonatomic, strong) NSNumber *index;
+
+#pragma mark - Delegate objects
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
+
+#pragma mark - Posting objects
 @property (nonatomic, assign) BOOL isFocusing;
 @property (nonatomic, strong) UILabel *postingLabel;
 @property (nonatomic, strong) UIView *loadingBanner;
 @property (nonatomic, assign) BOOL isPeeking;
 
-
-// Bottom controls
+#pragma mark - Posting Buttons
 @property (nonatomic, strong) UIButton *buttonCancel;
 @property (nonatomic, strong) UIButton *buttonTrash;
 @property (nonatomic, strong) UIImageView *backgroundBottom;
