@@ -13,7 +13,6 @@
 #import "ChatViewController.h"
 #import "FXBlurView.h"
 #import "RWBlurPopover.h"
-#import "EventStoryViewController.h"
 #import "FollowRequestsViewController.h"
 
 @interface ProfileViewController()<ImageScrollViewDelegate> {
@@ -135,7 +134,6 @@ BOOL blockShown;
     [super viewDidAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
-
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if (self.user.isCurrentUser) {
         [self fetchUserInfo];
@@ -304,10 +302,10 @@ BOOL blockShown;
     [[RWBlurPopover instance] presentViewController:[[MoreViewController alloc] initWithUser:self.user] withOrigin:0 andHeight:self.view.frame.size.height fromViewController:self.navigationController];
 }
 - (void) editPressed {
-    self.editProfileViewController = [[EditProfileViewController alloc] init];
-    self.editProfileViewController.view.backgroundColor = RGB(235, 235, 235);
+    EditProfileViewController *editProfileViewController = [[EditProfileViewController alloc] init];
+    editProfileViewController.view.backgroundColor = RGB(235, 235, 235);
     
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: self.editProfileViewController];
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: editProfileViewController];
     [self presentViewController: navController animated: YES completion: nil];
 }
 
@@ -959,13 +957,16 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)presentEvent:(WGEvent *)event {
-    if ([self.events containsObject:event] && event.attendees && event.attendees.count > 0) {
-        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-        eventStoryViewController.event = event;
-        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-        [self.navigationController pushViewController: eventStoryViewController animated:YES];
+    if (!self.navigationController || self == self.navigationController.viewControllers[0]) {
+        if (self.placesDelegate) [self.placesDelegate showEvent:event];
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
-    else [self fetchEvent:event];
+    //if presented in a stack
+    else {
+        if (self.placesDelegate) [self.placesDelegate showEvent:event];
+        [self.navigationController popViewControllerAnimated: YES];
+    }
+
 }
 
 - (void)inviteTapped {
@@ -1113,19 +1114,19 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchEvent:(WGEvent *)event {
-    __weak typeof(self) weakSelf = self;
-    [event refresh:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-            return;
-        }
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-        eventStoryViewController.event = event;
-        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-        [strongSelf.navigationController pushViewController: eventStoryViewController animated:YES];
-    }];
+//    __weak typeof(self) weakSelf = self;
+//    [event refresh:^(BOOL success, NSError *error) {
+//        if (error) {
+//            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+//            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+//            return;
+//        }
+//        __strong typeof(weakSelf) strongSelf = weakSelf;
+//        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+//        eventStoryViewController.event = event;
+//        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+//        [strongSelf.navigationController pushViewController: eventStoryViewController animated:YES];
+//    }];
 }
 
 

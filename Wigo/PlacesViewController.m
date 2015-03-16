@@ -300,24 +300,24 @@ BOOL firstTimeLoading;
     NSDictionary *eventInfo = notification.userInfo;
     WGEvent *newEvent = [[WGEvent alloc] initWithJSON:eventInfo];
     if ([self.events containsObject:newEvent]) {
-        WGEvent *presentEvent = (WGEvent *)[self.events objectAtIndex:[self.events indexOfObject:newEvent]];
-        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-        eventStoryViewController.event = presentEvent;
-        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-        [self.navigationController pushViewController: eventStoryViewController animated:YES];
+//        WGEvent *presentEvent = (WGEvent *)[self.events objectAtIndex:[self.events indexOfObject:newEvent]];
+//        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+//        eventStoryViewController.event = presentEvent;
+//        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+//        [self.navigationController pushViewController: eventStoryViewController animated:YES];
     }
     else {
-        [newEvent refresh:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-            eventStoryViewController.event = newEvent;
-            eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-            [self.navigationController pushViewController: eventStoryViewController animated:YES];
-        }];
+//        [newEvent refresh:^(BOOL success, NSError *error) {
+//            if (error) {
+//                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+//                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+//                return;
+//            }
+//            EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
+//            eventStoryViewController.event = newEvent;
+//            eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
+//            [self.navigationController pushViewController: eventStoryViewController animated:YES];
+//        }];
     }
 }
 
@@ -401,6 +401,16 @@ BOOL firstTimeLoading;
     self.placesTableView.backgroundColor = RGB(237, 237, 237);
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self addRefreshToScrollView];
+}
+
+- (void)showEvent:(WGEvent *)event {
+    if (self.events) {
+        NSInteger index = [self.events indexOfObject:event];
+        if ([self.placesTableView numberOfRowsInSection:kTodaySection] > index) {
+            [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:index inSection:kTodaySection] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        }
+
+    }
 }
 
 
@@ -498,31 +508,12 @@ BOOL firstTimeLoading;
 
 - (void)profileSegue {
     if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
-    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [fancyProfileViewController setStateWithUser: WGProfile.currentUser];
-    fancyProfileViewController.events = self.events;
+    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    [profileViewController setStateWithUser: WGProfile.currentUser];
+    profileViewController.placesDelegate = self;
+    profileViewController.events = self.events;
     
-    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
-    
-//    UIView * fromView = self.view;
-//    UIView * toView = fancyProfileViewController.view;
-//    
-//    CGRect viewSize = fromView.frame;
-//    [fromView.superview addSubview:toView];
-//    toView.frame = CGRectMake( -320 , viewSize.origin.y, 320, viewSize.size.height);
-//    
-//    [UIView animateWithDuration:0.4 animations:
-//     ^{
-//         toView.frame =CGRectMake(0, viewSize.origin.y, 320, viewSize.size.height);
-//     }
-//                     completion:^(BOOL finished)
-//     {
-//         if (finished)
-//         {
-//        }
-//     }];
-    
-   
+    [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
 - (void)choseProfile:(id)sender {
@@ -775,8 +766,6 @@ BOOL firstTimeLoading;
 }
 
 #pragma mark - Tablew View Data Source
-#define kTodaySection 0
-#define kHighlightsEmptySection 1
 
 - (int)shouldShowAggregatePrivateEvents {
     BOOL areEventsOfTodayDone = self.oldEvents.count > 0 || ![self.allEvents.hasNextPage boolValue];

@@ -17,14 +17,10 @@
 
 @interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
 
-@property EditProfileViewController *editProfileViewController;
-@property ConversationViewController *conversationViewController;
-@property PeopleViewController *peopleViewController;
-@property MoreViewController *moreViewController;
-
 @property WGUser *user;
 @property State userState;
 
+@property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, assign) BOOL isFetchingNotifications;
 @property (nonatomic, strong) WGCollection *events;
 @property (nonatomic, strong) UILabel *numberOfFollowersLabel;

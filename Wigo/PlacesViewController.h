@@ -17,6 +17,8 @@
     UIGestureRecognizerDelegate,
     PlacesDelegate,
     PrivacySwitchDelegate>
+#define kTodaySection 0
+#define kHighlightsEmptySection 1
 
 @property (nonatomic, strong) NSNumber *groupNumberID;
 @property (nonatomic, strong) NSString *groupName;
