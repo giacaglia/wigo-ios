@@ -138,7 +138,7 @@
         int hasNextPage = ([self.presentedUsers.hasNextPage boolValue] ? 1 : 0);
         return self.presentedUsers.count + hasNextPage;
     } else if (section == kSectionFollowCell) {
-        return self.suggestions.count;
+        return self.presentedSuggestions.count;
     } else {
         if (self.isSearching) return filteredMobileContacts.count;
         return mobileContacts.count;
@@ -155,13 +155,13 @@
         cell.profileImageView.image = nil;
         cell.nameLabel.text = nil;
         
-        if (self.suggestions.count == 0) return cell;
-        if (indexPath.row < self.suggestions.count) {
-            if (self.suggestions.hasNextPage.boolValue &&
-                indexPath.row == self.suggestions.count - 5) {
+        if (self.presentedSuggestions.count == 0) return cell;
+        if (indexPath.row < self.presentedSuggestions.count) {
+            if (self.presentedSuggestions.hasNextPage.boolValue &&
+                indexPath.row == self.presentedSuggestions.count - 5) {
                 [self fetchNextPageSuggestions];
             }
-            WGUser *user = (WGUser *)[self.suggestions objectAtIndex:indexPath.row];
+            WGUser *user = (WGUser *)[self.presentedSuggestions objectAtIndex:indexPath.row];
             cell.followPersonButton.tag = (int)indexPath.row;
             [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
             cell.user = user;
@@ -244,7 +244,7 @@
 - (void)followedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int row = buttonSender.tag;
-    WGUser *user = (WGUser *)[self.suggestions objectAtIndex:buttonSender.tag];
+    WGUser *user = (WGUser *)[self.presentedSuggestions objectAtIndex:buttonSender.tag];
     
     // If it's blocked
     if (user.isBlocked.boolValue) {
@@ -284,7 +284,7 @@
     }
     
     
-    [self.suggestions replaceObjectAtIndex:row withObject:user];
+    [self.presentedSuggestions replaceObjectAtIndex:row withObject:user];
     [self.invitePeopleTableView reloadData];
 }
 
@@ -421,6 +421,7 @@ heightForHeaderInSection:(NSInteger)section
      cancelPreviousRequest:YES];
     } else {
         self.presentedUsers = self.content;
+        self.presentedSuggestions = self.suggestions;
         self.isSearching = NO;
         [self.invitePeopleTableView reloadData];
     }
@@ -449,6 +450,21 @@ heightForHeaderInSection:(NSInteger)section
             strongSelf.isSearching = YES;
             strongSelf.presentedUsers = collection;
             [strongSelf.presentedUsers removeObject:[WGProfile currentUser]];
+            [strongSelf.invitePeopleTableView reloadData];
+        });
+    }];
+    
+    // Folow users
+    [WGProfile.currentUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            strongSelf.presentedSuggestions = collection;
+            [strongSelf.presentedSuggestions removeObject:WGProfile.currentUser];
             [strongSelf.invitePeopleTableView reloadData];
         });
     }];
@@ -509,15 +525,16 @@ heightForHeaderInSection:(NSInteger)section
                 return;
             }
             strongSelf.suggestions = collection;
+            strongSelf.presentedSuggestions = collection;
             [strongSelf.invitePeopleTableView reloadData];
         });
     }];
 }
 
 - (void)fetchNextPageSuggestions {
-    if (!self.suggestions.hasNextPage.boolValue) return;
+    if (!self.presentedSuggestions.hasNextPage.boolValue) return;
     __weak typeof(self) weakSelf = self;
-    [self.suggestions addNextPage:^(BOOL success, NSError *error) {
+    [self.presentedSuggestions addNextPage:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {
@@ -525,7 +542,7 @@ heightForHeaderInSection:(NSInteger)section
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
-            [strongSelf.suggestions removeObject:WGProfile.currentUser];
+            [strongSelf.presentedSuggestions removeObject:WGProfile.currentUser];
             [strongSelf.invitePeopleTableView reloadData];
         });
     }];
