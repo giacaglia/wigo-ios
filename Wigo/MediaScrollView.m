@@ -594,17 +594,14 @@
             [strongSelf.eventConversationDelegate showCompletedMessage];
           
             if (!strongSelf.shownCurrentImage) {
-//                [strongSelf.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:strongSelf.object];
                 [strongSelf.eventMessages insertObject:strongSelf.object atIndex:1];
                 [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
                 [strongSelf.eventConversationDelegate highlightCellAtPage:1 animated:NO];
                 strongSelf.shownCurrentImage = YES;
             }
             else {
-//                if (info == nil){
-                    [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:strongSelf.object];
-                    [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
-//                }
+                [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:strongSelf.object];
+                [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
                 strongSelf.shownCurrentImage = NO;
             }
         }];
