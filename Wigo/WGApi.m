@@ -432,7 +432,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
             schoolStatistics = [provisioning objectForKey:@"school_statistics"];
             privateEvents = [provisioning objectForKey:@"private_events"];
             videoEnabled = [[provisioning objectForKey:@"video"] boolValue];
-            crossEventPhotosEnabled = [[provisioning objectForKey:@"cross_event_photos"] boolValue];
+            crossEventPhotosEnabled = [[provisioning objectForKey:@"cross_event_messages"] boolValue];
             
             NSDictionary *uploadsProperties = [jsonResponse objectForKey:@"uploads"];
             imageProperties = [uploadsProperties objectForKey:@"image"];
