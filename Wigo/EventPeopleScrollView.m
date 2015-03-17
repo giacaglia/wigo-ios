@@ -43,7 +43,6 @@
     inviteLabel.textAlignment = NSTextAlignmentCenter;
     [self.hiddenInviteButton addSubview:inviteLabel];
     
-//    inviteLabel.font 
     self.hiddenInviteButton.hidden = YES;
     self.hiddenInviteButton.transform = CGAffineTransformMakeScale(0.2f, 0.2f);
     [self addSubview:self.hiddenInviteButton];

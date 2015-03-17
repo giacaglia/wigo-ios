@@ -930,7 +930,6 @@ BOOL firstTimeLoading;
             if (![self.eventOffsetDictionary objectForKey:[self.aggregateEvent.id stringValue]]) {
                 cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
             }
-            [cell updateUI];
             return cell;
         }
         if (_isSearching) {
@@ -957,7 +956,6 @@ BOOL firstTimeLoading;
         if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
             cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
-        [cell updateUI];
         cell.highlightsCollectionView.placesDelegate = self;
         cell.highlightsCollectionView.isPeeking = [self isPeeking];
         return cell;
@@ -1441,6 +1439,7 @@ BOOL firstTimeLoading;
                     if (aggregateEvent.isAggregate) {
                         strongSelf.aggregateEvent = aggregateEvent;
                         [strongSelf.allEvents removeObjectAtIndex:0];
+                        
                     }
                     else strongSelf.aggregateEvent = nil;
                 }
@@ -1524,6 +1523,16 @@ BOOL firstTimeLoading;
             }];
         }
     }
+}
+
+
+- (void)setAggregateEvent:(WGEvent *)aggregateEvent {
+    _aggregateEvent = aggregateEvent;
+    if (aggregateEvent == nil) return;
+    __weak typeof(self) weakSelf = self;
+    [WGEvent getAggregateStatsWithHandler:^(NSNumber *numMessages, NSNumber *numAttending, NSError *error) {
+        weakSelf.aggregateEvent.numAttending = numAttending;
+    }];
 }
 
 - (void)fetchedOneParty {
@@ -1612,6 +1621,8 @@ BOOL firstTimeLoading;
 
 @end
 
+#pragma mark - Cells
+
 @implementation EventCell
 
 + (CGFloat)heightIsFullCell:(BOOL)isFullCell {
@@ -1687,19 +1698,24 @@ BOOL firstTimeLoading;
     [self.contentView addSubview:self.grayView];
 }
 
--(void) updateUI {
-    self.highlightsCollectionView.event = self.event;
-    self.eventNameLabel.text = self.event.name;
-    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", self.event.numAttending];
-    self.privacyLockImageView.hidden = !self.event.isPrivate;
-    self.eventPeopleScrollView.event = self.event;
+- (void)setEvent:(WGEvent *)event {
+    _event = event;
+    self.highlightsCollectionView.event = _event;
+    self.eventNameLabel.text = _event.name;
+    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", _event.numAttending];
+    self.privacyLockImageView.hidden = !_event.isPrivate;
+    self.eventPeopleScrollView.event = _event;
     [self.eventPeopleScrollView updateUI];
+    if (_event.isAggregate) {
+        [WGEvent getAggregateStatsWithHandler:^(NSNumber *numMessages, NSNumber *numAttending, NSError *error) {
+            if (error) return;
+            self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", numAttending];
+        }];
+    }
 }
-
 
 @end
 
-#pragma mark - Headers
 @implementation TodayHeader
 
 + (instancetype) initWithDay: (NSDate *) date {

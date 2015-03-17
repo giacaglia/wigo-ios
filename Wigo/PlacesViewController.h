@@ -71,7 +71,6 @@
 @property (nonatomic, strong) UILabel *numberOfNewHighlightsLabel;
 @property (nonatomic, strong) UIButton *goingHereButton;
 @property (nonatomic, strong) UIView *grayView;
-- (void)updateUI;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @end
 
