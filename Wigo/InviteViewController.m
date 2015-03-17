@@ -148,6 +148,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kSectionTapAllCell) {
         TapAllCell *tapAllCell = (TapAllCell *)[tableView dequeueReusableCellWithIdentifier:kTapAllName forIndexPath:indexPath];
+        [tapAllCell.aroundTapButton addTarget:self action:@selector(tapAllPressed) forControlEvents:UIControlEventTouchUpInside];
         return tapAllCell;
     }
     if (indexPath.section == kSectionFollowCell) {
@@ -211,6 +212,22 @@
     
     return cell;
 }
+
+- (void)tapAllPressed {
+    WGProfile.tapAll = YES;
+    TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionTapAllCell]];
+    tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+    __weak typeof(self) weakSelf = self;
+    [WGProfile.currentUser tapAllUsersWithHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            return;
+        }
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [strongSelf.invitePeopleTableView reloadData];
+    }];
+}
+
 
 - (void)inviteMobilePressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
@@ -760,7 +777,6 @@ heightForHeaderInSection:(NSInteger)section
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     self.aroundTapButton = [[UIButton alloc] initWithFrame:self.frame];
-    [self.aroundTapButton addTarget:self action:@selector(tapAllPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.aroundTapButton];
     
     self.tapAllLabel = [[UILabel alloc] initWithFrame:CGRectMake(12, [TapAllCell height]/2 - 30, 155, 60)];
@@ -782,16 +798,5 @@ heightForHeaderInSection:(NSInteger)section
     [self.aroundTapButton addSubview:self.tapImageView];
 }
 
-
-- (void)tapAllPressed {
-    WGProfile.tapAll = YES;
-    self.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
-    [WGProfile.currentUser tapAllUsersWithHandler:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-            return;
-        }
-    }];
-}
 
 @end
