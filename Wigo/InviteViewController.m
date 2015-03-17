@@ -214,18 +214,20 @@
 }
 
 - (void)tapAllPressed {
-    WGProfile.tapAll = YES;
-    TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionTapAllCell]];
-    tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
-    __weak typeof(self) weakSelf = self;
-    [WGProfile.currentUser tapAllUsersWithHandler:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-            return;
-        }
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        [strongSelf.invitePeopleTableView reloadData];
-    }];
+    if (!WGProfile.tapAll) {
+        WGProfile.tapAll = YES;
+        TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionTapAllCell]];
+        tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+        __weak typeof(self) weakSelf = self;
+        [WGProfile.currentUser tapAllUsersWithHandler:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+                return;
+            }
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            [strongSelf.invitePeopleTableView reloadData];
+        }];
+    }
 }
 
 
