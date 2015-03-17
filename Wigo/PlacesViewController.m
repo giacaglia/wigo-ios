@@ -512,7 +512,7 @@ BOOL firstTimeLoading;
     [profileViewController setStateWithUser: WGProfile.currentUser];
     profileViewController.placesDelegate = self;
     profileViewController.events = self.events;
-    
+
     [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
@@ -1187,7 +1187,7 @@ BOOL firstTimeLoading;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
-    if ([self isPeeking] || !WGProfile.currentUser.crossEventPhotosEnabled) {
+    if ([self isPeeking] || (!WGProfile.currentUser.crossEventPhotosEnabled && ![event isEqual:WGProfile.currentUser.eventAttending])) {
         index = index - 1;
     }
     else {
