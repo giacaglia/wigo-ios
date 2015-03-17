@@ -1718,6 +1718,19 @@ BOOL firstTimeLoading;
     else {
         self.numberOfPeopleGoingLabel.text = @"Going";
     }
+
+    CGSize size = [_event.name sizeWithAttributes:
+                @{NSFontAttributeName:[FontProperties mediumFont:18.0f]}];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (size.width > self.eventNameLabel.frame.size.width) {
+                self.eventNameLabel.frame = CGRectMake(10, 3, self.frame.size.width - 40, 50);
+        }
+        else {
+                self.eventNameLabel.frame = CGRectMake(10, 17, self.frame.size.width - 40, 30);
+        }
+    });
+
+
     self.privacyLockImageView.hidden = !_event.isPrivate;
     self.eventPeopleScrollView.event = _event;
     [self.eventPeopleScrollView updateUI];
