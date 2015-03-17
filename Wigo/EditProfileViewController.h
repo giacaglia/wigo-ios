@@ -12,7 +12,5 @@
 
 @interface EditProfileViewController : UIViewController <UITextViewDelegate>
 
-@property PhotoViewController *photoViewController;
-@property ContactUsViewController *contactUsViewController;
 
 @end

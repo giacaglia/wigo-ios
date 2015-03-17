@@ -10,7 +10,6 @@
 #import "Globals.h"
 
 #import "FacebookAlbumTableViewController.h"
-
 #import "AmbassadorViewController.h"
 
 #import "UIButtonAligned.h"
@@ -19,7 +18,6 @@
 @interface EditProfileViewController () <UITextFieldDelegate, UIScrollViewDelegate>
 
 @property UIScrollView *scrollView;
-
 @property UITextView *bioTextView;
 @property UILabel *totalNumberOfCharactersLabel;
 @property UISwitch *privacySwitch;
@@ -44,7 +42,7 @@ UIViewController *webViewController;
     [self.view addSubview:_scrollView];
     
     self.title = @"Edit Profile";
-
+    
     [self initializeBarButton];
     [self initializePhotosSection];
     [self initializeInstagramHandle];
@@ -64,7 +62,6 @@ UIViewController *webViewController;
     
     self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
     self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
-    
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
 }
 
@@ -89,8 +86,8 @@ UIViewController *webViewController;
 - (void)saveDataAndGoBack {
     [WGSpinnerView showOrangeSpinnerAddedTo:self.view];
     WGProfile.currentUser.instaHandle = _instaTextField.text;
-    [WGProfile currentUser].privacy = _privacySwitch.on ? PRIVATE : PUBLIC;
-    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+    WGProfile.currentUser.privacy = _privacySwitch.on ? PRIVATE : PUBLIC;
+    [WGProfile.currentUser save:^(BOOL success, NSError *error) {
         [WGSpinnerView hideSpinnerForView:self.view];
         [self dismissViewControllerAnimated:YES  completion: nil];
     }];
@@ -167,9 +164,9 @@ UIViewController *webViewController;
         [self.navigationController pushViewController:[FacebookAlbumTableViewController new] animated:YES];
     } else if (buttonSender.tag < [[[WGProfile currentUser] images] count]) {
         [self.view endEditing:YES];
-        self.photoViewController = [[PhotoViewController alloc] initWithImage:[[WGProfile currentUser].images objectAtIndex:buttonSender.tag]];
-        self.photoViewController.indexOfImage = (int)buttonSender.tag;
-        [[RWBlurPopover instance] presentViewController:self.photoViewController withOrigin:0 andHeight:[[UIScreen mainScreen] bounds].size.height fromViewController:self.navigationController];
+        PhotoViewController *photoViewController = [[PhotoViewController alloc] initWithImage:[[WGProfile currentUser].images objectAtIndex:buttonSender.tag]];
+        photoViewController.indexOfImage = (int)buttonSender.tag;
+        [[RWBlurPopover instance] presentViewController:photoViewController withOrigin:0 andHeight:[[UIScreen mainScreen] bounds].size.height fromViewController:self.navigationController];
     }
 }
 
@@ -368,8 +365,7 @@ UIViewController *webViewController;
 
 - (void)sendEmail {
     [self.view endEditing:YES];
-    self.contactUsViewController = [[ContactUsViewController alloc] init];
-    [[RWBlurPopover instance] presentViewController:self.contactUsViewController withOrigin:30 andHeight:450 fromViewController:self.navigationController];
+    [[RWBlurPopover instance] presentViewController:[ContactUsViewController new] withOrigin:30 andHeight:450 fromViewController:self.navigationController];
 }
 
 - (void)openTerms {

@@ -9,7 +9,6 @@
 #import "ProfileViewController.h"
 #import <Parse/Parse.h>
 #import "UIButtonAligned.h"
-#import "ImageScrollView.h"
 #import "ChatViewController.h"
 #import "FXBlurView.h"
 #import "RWBlurPopover.h"
@@ -20,7 +19,6 @@
     NSMutableArray *_blurredImages;
 }
 
-@property (nonatomic, strong) ImageScrollView *imageScrollView;
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIView *nameView;
 @property (nonatomic, strong) UIView *headerButtonView;
@@ -333,10 +331,6 @@ BOOL blockShown;
     
     _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 9, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
-    if ((self.userState == ACCEPTED_PRIVATE_USER_STATE || self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE || self.userState == PRIVATE_STATE)) {
-        _privateLogoImageView.hidden = NO;
-    }
-    else _privateLogoImageView.hidden = YES;
     [_nameView addSubview:_privateLogoImageView];
 }
 
@@ -638,6 +632,14 @@ BOOL blockShown;
         [_rightBarBt addTarget:self action: @selector(morePressed) forControlEvents:UIControlEventTouchUpInside];
     }
     [_rightBarBt sizeToFit];
+    
+    if ((self.userState == ACCEPTED_PRIVATE_USER_STATE ||
+         self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE ||
+         self.userState == PRIVATE_STATE)) {
+        _privateLogoImageView.hidden = NO;
+    }
+    else _privateLogoImageView.hidden = YES;
+
     
     [self.tableView reloadData];
 }
@@ -1032,6 +1034,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             strongSelf.numberOfFollowersLabel.text = [strongSelf.user.numFollowers stringValue];
             strongSelf.numberOfFollowingLabel.text = [strongSelf.user.numFollowing stringValue];
             [strongSelf updateNumberOfChats];
+            strongSelf.imageScrollView.user = WGProfile.currentUser;
+            [strongSelf.imageScrollView updateImages];
             _pageControl.numberOfPages = [strongSelf.user.imagesURL count];
             [strongSelf setUserState:WGProfile.currentUser.state];
             [strongSelf reloadViewForUserState];

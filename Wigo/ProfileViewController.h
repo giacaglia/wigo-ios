@@ -13,6 +13,7 @@
 #import "MoreViewController.h"
 #import "PeopleViewController.h"
 #import "ConversationViewController.h"
+#import "ImageScrollView.h"
 #import "Delegate.h"
 
 @interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
@@ -28,6 +29,7 @@
 @property (nonatomic, strong) WGCollection *unexpiredNotifications;
 @property (nonatomic, strong) WGCollection *notifications;
 @property (nonatomic, assign) BOOL isPeeking;
+@property (nonatomic, strong) ImageScrollView *imageScrollView;
 
 
 -(id)initWithUser:(WGUser *)user;
