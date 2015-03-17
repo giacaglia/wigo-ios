@@ -1712,7 +1712,12 @@ BOOL firstTimeLoading;
     _event = event;
     self.highlightsCollectionView.event = _event;
     self.eventNameLabel.text = _event.name;
-    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", _event.numAttending];
+    if (_event.numAttending.intValue > 0) {
+        self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", _event.numAttending];
+    }
+    else {
+        self.numberOfPeopleGoingLabel.text = @"Going";
+    }
     self.privacyLockImageView.hidden = !_event.isPrivate;
     self.eventPeopleScrollView.event = _event;
     [self.eventPeopleScrollView updateUI];
