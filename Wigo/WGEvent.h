@@ -27,18 +27,20 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 @property NSArray *tags;
 @property BOOL isAggregate;
 
-- (WGUser *)owner;
-+(WGEvent *)serialize:(NSDictionary *)json;
+-(WGUser *) owner;
++(WGEvent *) serialize:(NSDictionary *)json;
 
 -(void) addAttendee:(WGEventAttendee *)attendee;
 
-- (void)setPrivacyOn:(BOOL)privacy andHandler:(BoolResultBlock)handler;
+-(void) setPrivacyOn:(BOOL)privacy andHandler:(BoolResultBlock)handler;
 -(void) setRead:(BoolResultBlock)handler;
 -(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResultBlock)handler;
 
 -(void) getMessages:(WGCollectionResultBlock)handler;
+-(void) getMessagesForHighlights:(WGEventMessage *)highlight
+        withHandler:(WGCollectionResultBlock)handler;
 
 +(void) getAggregateStatsWithHandler:(WGAggregateStats)handler;
 +(void) getWithGroupNumber:(NSNumber *)groupNumber andHandler:(WGCollectionResultBlock)handler;
-+(void)createEventWithName:(NSString *)name andPrivate:(BOOL)isPrivate andHandler:(WGEventResultBlock)handler;
++(void) createEventWithName:(NSString *)name andPrivate:(BOOL)isPrivate andHandler:(WGEventResultBlock)handler;
 @end

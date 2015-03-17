@@ -86,6 +86,10 @@
         self.eventMessages.hasNextPage.boolValue) {
         [self fetchEventMessages];
     }
+
+    if (indexPath.row == 0 && self.eventMessages.previousPage) {
+        [self fetchPreviousMessages];
+    }
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
     
     WGUser *user = eventMessage.user;
@@ -205,6 +209,26 @@
             [strongSelf.facesCollectionView reloadData];
         }];
     }
+}
+
+- (void)fetchPreviousMessages {
+    if (self.eventMessages.previousPage) {
+        NSLog(@"called previous page: %@", self.eventMessages.previousPage);
+        __weak typeof(self) weakSelf = self;
+        [self.eventMessages addPreviousPage:^(BOOL success, NSError *error) {
+            __strong typeof(self) strongSelf = weakSelf;
+            [strongSelf.facesCollectionView didFinishPullToRefresh];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            
+            [strongSelf.mediaScrollView reloadData];
+            [strongSelf.facesCollectionView reloadData];
+        }];
+    }
+    
 }
 
 #define kActionPhotoVideo 0

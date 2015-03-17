@@ -21,6 +21,7 @@ typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error
 
 @property NSNumber *hasNextPage;
 @property NSString *nextPage;
+@property NSString *previousPage;
 @property NSNumber *metaNumResults;
 
 -(id) initWithType:(Class)type;
@@ -49,6 +50,7 @@ typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error
 -(NSUInteger) count;
 -(NSArray *) idArray;
 
+-(void) addPreviousPage:(BoolResultBlock)handler;
 -(void) addNextPage:(BoolResultBlock)handler;
 -(void) getNextPage:(WGCollectionResultBlock)handler;
 

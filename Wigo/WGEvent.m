@@ -198,6 +198,32 @@
     return [[WGUser alloc] initWithJSON:[self objectForKey:kOwnerKey]];
 }
 
+- (void)getMessagesForHighlights:(WGEventMessage *)highlight
+                     withHandler:(WGCollectionResultBlock)handler {
+    [WGApi get:@"eventmessages/" withArguments:@{ @"event" : self.id, @"start": highlight.id, @"limit": @10}
+    andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGEventMessage class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+
+}
+
 -(void) getMessages:(WGCollectionResultBlock)handler {
     [WGApi get:@"eventmessages/" withArguments:@{ @"event" : self.id, @"ordering" : @"-id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {

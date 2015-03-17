@@ -1229,28 +1229,31 @@ BOOL firstTimeLoading;
     [self presentViewController:conversationViewController animated:YES completion:nil];
     __weak typeof(conversationViewController) weakConversationViewController =
     conversationViewController;
-    __weak typeof(self) weakSelf = self;
     __weak typeof(event) weakEvent = event;
-    [event getMessages:^(WGCollection *collection, NSError *error) {
+    [event getMessagesForHighlights:event.highlight
+                        withHandler:^(WGCollection *collection, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
-        
         weakConversationViewController.eventMessages = collection;
         weakConversationViewController.mediaScrollView.eventMessages = collection;
         NSInteger messageIndex = [collection indexOfObject:weakEvent.highlight];
-        if (messageIndex == NSNotFound) {
-            [weakSelf addNextPageForEventConversationUntilFound:weakConversationViewController
-                                                       forEvent:weakEvent];
-        }
-        else {
-            [weakConversationViewController.facesCollectionView reloadData];
-            [weakConversationViewController.mediaScrollView reloadData];
-            weakConversationViewController.index = @(messageIndex);
-            [weakConversationViewController highlightCellAtPage:messageIndex animated:NO];
-        }
+        [weakConversationViewController.facesCollectionView reloadData];
+        [weakConversationViewController.mediaScrollView reloadData];
+        weakConversationViewController.index = @(messageIndex);
+        [weakConversationViewController highlightCellAtPage:messageIndex animated:NO];
+//        if (messageIndex == NSNotFound) {
+//            [weakSelf addNextPageForEventConversationUntilFound:weakConversationViewController
+//                                                       forEvent:weakEvent];
+//        }
+//        else {
+//            [weakConversationViewController.facesCollectionView reloadData];
+//            [weakConversationViewController.mediaScrollView reloadData];
+//            weakConversationViewController.index = @(messageIndex);
+//            [weakConversationViewController highlightCellAtPage:messageIndex animated:NO];
+//        }
         
     }];
 }

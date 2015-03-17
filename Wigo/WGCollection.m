@@ -237,6 +237,7 @@
             [strongSelf addObjectsFromCollection:objects notInCollection:strongSelf];
             strongSelf.hasNextPage = objects.hasNextPage;
             strongSelf.nextPage = objects.nextPage;
+            strongSelf.previousPage = objects.previousPage;
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -277,14 +278,49 @@
     }];
 }
 
+- (void)addPreviousPage:(BoolResultBlock)handler {
+    if (!self.previousPage) {
+        handler(NO, [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"no previous page" }]);
+        return;
+    }
+    __weak typeof(self) weakSelf = self;
+    [WGApi get:self.previousPage withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        NSError *dataError;
+        @try {
+            WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:strongSelf.type];
+            [strongSelf addObjectsFromCollectionToBeginning:objects notInCollection:strongSelf];
+            strongSelf.hasNextPage = objects.hasNextPage;
+            strongSelf.nextPage = objects.nextPage;
+            strongSelf.previousPage = objects.previousPage;
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGCollection" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(dataError == nil, dataError);
+        }
+    }];
+}
+
 -(void)setMetaInfo:(NSDictionary *)metaDictionary {
     self.hasNextPage = [metaDictionary objectForKey:@"has_next_page"];
     if (self.hasNextPage && [self.hasNextPage  boolValue]) {
         self.nextPage = [metaDictionary objectForKey:@"next"];
         self.nextPage = [self.nextPage substringFromIndex:5];
+        NSLog(@"next page: %@", self.nextPage);
     }
     if ([metaDictionary objectForKey:@"num_results"]) {
         self.metaNumResults = [metaDictionary objectForKey:@"num_results"];
+    }
+    if ([metaDictionary objectForKey:@"previous"]) {
+        self.previousPage = [metaDictionary objectForKey:@"previous"];
     }
 }
 
