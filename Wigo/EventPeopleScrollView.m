@@ -197,6 +197,7 @@
                                           action:NULL
                                 forControlEvents:UIControlEventAllEvents];
             scrollCell.imageButton.tag = self.rowOfEvent;
+            scrollCell.imageButton.alpha = 1.0f;
             [scrollCell.imageButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
             [scrollCell.imgView setImageWithURL:WGProfile.currentUser.smallCoverImageURL];
             scrollCell.blueOverlayView.hidden = NO;
@@ -209,6 +210,7 @@
                                       action:NULL
                             forControlEvents:UIControlEventAllEvents];
         scrollCell.blueOverlayView.hidden = YES;
+        scrollCell.imageButton.alpha = 1.0f;
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         scrollCell.profileNameLabel.alpha = 1.0f;
         WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];

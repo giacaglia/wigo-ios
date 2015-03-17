@@ -901,7 +901,9 @@
 }
 
 - (void)setStateForUser:(WGUser *)user {
-    [self.faceImageView setSmallImageForUser:user completed:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.faceImageView setSmallImageForUser:user completed:nil];
+    });
     self.user = user;
 }
 

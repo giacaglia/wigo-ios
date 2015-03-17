@@ -46,7 +46,6 @@
 @property (nonatomic, strong) UIView *blueOverlayView;
 @property (nonatomic, strong) UILabel *goHereLabel;
 - (void)setStateForUser:(WGUser *)user;
-- (void)setGoHereTarget;
 @end
 
 @interface ScrollViewLayout : UICollectionViewFlowLayout
