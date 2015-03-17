@@ -237,7 +237,6 @@
             [strongSelf addObjectsFromCollection:objects notInCollection:strongSelf];
             strongSelf.hasNextPage = objects.hasNextPage;
             strongSelf.nextPage = objects.nextPage;
-            strongSelf.previousPage = objects.previousPage;
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -293,9 +292,7 @@
         NSError *dataError;
         @try {
             WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:strongSelf.type];
-            [strongSelf addObjectsFromCollectionToBeginning:objects notInCollection:strongSelf];
-            strongSelf.hasNextPage = objects.hasNextPage;
-            strongSelf.nextPage = objects.nextPage;
+            [strongSelf addObjectsFromCollectionToBeginning:objects];
             strongSelf.previousPage = objects.previousPage;
         }
         @catch (NSException *exception) {
@@ -314,13 +311,13 @@
     if (self.hasNextPage && [self.hasNextPage  boolValue]) {
         self.nextPage = [metaDictionary objectForKey:@"next"];
         self.nextPage = [self.nextPage substringFromIndex:5];
-        NSLog(@"next page: %@", self.nextPage);
     }
     if ([metaDictionary objectForKey:@"num_results"]) {
         self.metaNumResults = [metaDictionary objectForKey:@"num_results"];
     }
     if ([metaDictionary objectForKey:@"previous"]) {
         self.previousPage = [metaDictionary objectForKey:@"previous"];
+        self.previousPage = [self.previousPage substringFromIndex:5];
     }
 }
 
