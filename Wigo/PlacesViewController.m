@@ -865,14 +865,14 @@ BOOL firstTimeLoading;
         if (indexPath.row == self.events.count + 1 &&
             [self.allEvents.hasNextPage boolValue] &&
             [self shouldShowAggregatePrivateEvents] == 1) {
-            return 1;
+            return 0.3;
         }
         if (indexPath.row == self.events.count &&
             [self.allEvents.hasNextPage boolValue] &&
             [self shouldShowAggregatePrivateEvents] == 1) {
-           return 1;
+           return 0.3;
         }
-        if (event == nil) return 1;
+        if (event == nil) return 0.3;
         return [EventCell heightIsFullCell:NO];
     }
     else if (indexPath.section == kHighlightsEmptySection) {
@@ -969,8 +969,11 @@ BOOL firstTimeLoading;
         // past day rows
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
-        
-        WGEvent *event = [eventObjectArray objectAtIndex:[indexPath row]];
+        if (indexPath.row == eventObjectArray.count - 1 &&
+            self.allEvents.hasNextPage.boolValue) {
+            [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
+        }
+        WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
         HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCell forIndexPath:indexPath];
         cell.event = event;
         cell.placesDelegate = self;
