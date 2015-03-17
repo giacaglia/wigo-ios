@@ -1062,6 +1062,13 @@ BOOL firstTimeLoading;
     return !shownHighlights && self.pastDays.count;
 }
 
+#pragma mark - UITableView Delegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (scrollView.contentOffset.x != 0) {
+        scrollView.contentOffset = CGPointMake(0, scrollView.contentOffset.y);
+    }
+}
 
 #pragma mark - ToolTip 
 
@@ -1709,12 +1716,6 @@ BOOL firstTimeLoading;
     self.privacyLockImageView.hidden = !_event.isPrivate;
     self.eventPeopleScrollView.event = _event;
     [self.eventPeopleScrollView updateUI];
-    if (_event.isAggregate) {
-        [WGEvent getAggregateStatsWithHandler:^(NSNumber *numMessages, NSNumber *numAttending, NSError *error) {
-            if (error) return;
-            self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", numAttending];
-        }];
-    }
 }
 
 @end
