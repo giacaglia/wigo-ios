@@ -171,18 +171,19 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ScrollViewCell *scrollCell = [collectionView dequeueReusableCellWithReuseIdentifier:kScrollViewCellName forIndexPath:indexPath];
+    scrollCell.alpha = 1.0f;
     if (indexPath.section == kInviteSection) {
         if (self.event.id && [self.event.id isEqual:WGProfile.currentUser.eventAttending.id]) {
             [scrollCell.imageButton removeTarget:nil
                                           action:NULL
                                 forControlEvents:UIControlEventAllEvents];
             if (self.event.isPrivate && ![self.event.owner isEqual:WGProfile.currentUser]) {
-                scrollCell.imageButton.alpha = 0.5f;
+                scrollCell.alpha = 0.5f;
                 scrollCell.imageButton.tag = self.rowOfEvent;
                 [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(showOverlayForInvite:) forControlEvents:UIControlEventTouchUpInside];
             }
             else {
-                scrollCell.imageButton.alpha = 1.0f;
+                scrollCell.alpha = 1.0f;
                 [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
             }
             scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
@@ -197,7 +198,6 @@
                                           action:NULL
                                 forControlEvents:UIControlEventAllEvents];
             scrollCell.imageButton.tag = self.rowOfEvent;
-            scrollCell.imageButton.alpha = 1.0f;
             [scrollCell.imageButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
             [scrollCell.imgView setImageWithURL:WGProfile.currentUser.smallCoverImageURL];
             scrollCell.blueOverlayView.hidden = NO;
@@ -210,7 +210,6 @@
                                       action:NULL
                             forControlEvents:UIControlEventAllEvents];
         scrollCell.blueOverlayView.hidden = YES;
-        scrollCell.imageButton.alpha = 1.0f;
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         scrollCell.profileNameLabel.alpha = 1.0f;
         WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
