@@ -99,10 +99,12 @@
     ScrollViewCell *scrollCell = (ScrollViewCell *)[self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     [UIView animateWithDuration:1 animations:^{
         scrollCell.blueOverlayView.alpha = 1.0f;
+        scrollCell.goHereLabel.alpha = 1.0f;
     } completion:^(BOOL finished) {
         [UIView animateWithDuration:1 animations:^{
             self.hiddenInviteButton.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
             scrollCell.blueOverlayView.alpha = 0.0f;
+            scrollCell.goHereLabel.alpha = 0.0f;
             scrollCell.profileNameLabel.alpha = 0.5f;
             scrollCell.profileNameLabel.text = WGProfile.currentUser.firstName;
             self.transform = CGAffineTransformMakeTranslation(self.widthOfEachCell + 10, 0);
@@ -117,6 +119,7 @@
                     weakSelf.transform = CGAffineTransformMakeTranslation(0, 0);
                     weakSelf.hiddenInviteButton.hidden = YES;
                     scrollCell.blueOverlayView.alpha = 0.8f;
+                    scrollCell.goHereLabel.alpha = 1.0f;
                     [weakSelf.placesDelegate scrollUp];
                 });
             }];
@@ -190,10 +193,11 @@
             }
             scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
             scrollCell.blueOverlayView.hidden = YES;
+            scrollCell.goHereLabel.hidden = YES;
             scrollCell.profileNameLabel.text = @"Invite";
             scrollCell.profileNameLabel.alpha = 1.0f;
             scrollCell.profileNameLabel.textColor = [FontProperties getBlueColor];
-            scrollCell.profileNameLabel.font = [FontProperties scMediumFont:10.0f];
+            scrollCell.profileNameLabel.font = [FontProperties scMediumFont:12.0f];
         }
         else {
             [scrollCell.imageButton removeTarget:nil
@@ -203,6 +207,7 @@
             [scrollCell.imageButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
             [scrollCell.imgView setImageWithURL:WGProfile.currentUser.smallCoverImageURL];
             scrollCell.blueOverlayView.hidden = NO;
+            scrollCell.goHereLabel.hidden = NO;
             scrollCell.profileNameLabel.alpha = 0.0f;
         }
     }
@@ -212,6 +217,7 @@
                                       action:NULL
                             forControlEvents:UIControlEventAllEvents];
         scrollCell.blueOverlayView.hidden = YES;
+        scrollCell.goHereLabel.hidden = YES;
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         scrollCell.profileNameLabel.alpha = 1.0f;
         WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
@@ -285,11 +291,12 @@
     [self.imgView addSubview:self.blueOverlayView];
     
     self.goHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
-    self.goHereLabel.text = @"go here";
+    self.goHereLabel.text = @"Join";
     self.goHereLabel.textAlignment = NSTextAlignmentCenter;
-    self.goHereLabel.font = [FontProperties scMediumFont:12];
+    self.goHereLabel.font = [FontProperties scMediumFont:20.0f];
     self.goHereLabel.textColor = UIColor.whiteColor;
-    [self.blueOverlayView addSubview:self.goHereLabel];
+    [self.imgView bringSubviewToFront:self.goHereLabel];
+    [self.imgView addSubview:self.goHereLabel];
     
     self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 20)];
     self.profileNameLabel.textColor = UIColor.blackColor;

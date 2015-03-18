@@ -92,7 +92,10 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
     if (indexPath.row == 0) {
         cell.contentView.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
-        [cell.faceImageView setSmallImageForUser:WGProfile.currentUser completed:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            cell.faceImageView.image = nil;
+        });
+//        [cell.faceImageView setSmallImageForUser:WGProfile.currentUser completed:nil];
         cell.blackOverlayView.hidden = NO;
         cell.faceImageView.alpha = 1.0f;
         cell.orangeDotView.hidden = YES;
@@ -315,18 +318,22 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     self.blackOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.faceImageView.frame.size.width, self.faceImageView.frame.size.height)];
     self.blackOverlayView.hidden = YES;
-    self.blackOverlayView.backgroundColor = RGBAlpha(109, 166, 206, 0.7f);
+    self.blackOverlayView.backgroundColor = RGB(242, 247, 252);
+    self.blackOverlayView.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    self.blackOverlayView.layer.borderWidth = 1.0f;
+    self.blackOverlayView.layer.cornerRadius = 10.0f;
     [self.faceImageView addSubview:self.blackOverlayView];
     
     UILabel *addPhotoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 60, self.faceImageView.frame.size.width, 13)];
+    addPhotoLabel.center = CGPointMake(addPhotoLabel.center.x, self.faceImageView.center.y + 15);
     addPhotoLabel.text = @"Add Buzz";
-    addPhotoLabel.textColor = UIColor.whiteColor;
+    addPhotoLabel.textColor = [FontProperties getBlueColor];;
     addPhotoLabel.textAlignment = NSTextAlignmentCenter;
-    addPhotoLabel.font = [FontProperties scMediumFont:10.0f];
+    addPhotoLabel.font = [FontProperties scMediumFont:16.0f];
     [self.blackOverlayView addSubview:addPhotoLabel];
     
-    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 16)];
-    cameraImageView.center = CGPointMake(self.blackOverlayView.center.x, 40);
+    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 40, 32)];
+    cameraImageView.center = CGPointMake(self.blackOverlayView.center.x, self.faceImageView.center.y - 15);
     cameraImageView.image = [UIImage imageNamed:@"cameraPhoto"];
     [self.blackOverlayView addSubview:cameraImageView];
 
