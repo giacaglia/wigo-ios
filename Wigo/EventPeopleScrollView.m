@@ -115,6 +115,7 @@
                     CGAffineTransform t = CGAffineTransformMakeScale(0.2f, 0.2f);
                     weakSelf.hiddenInviteButton.transform = CGAffineTransformTranslate(t, 0, 0);
                     weakSelf.transform = CGAffineTransformMakeTranslation(0, 0);
+                    weakSelf.hiddenInviteButton.hidden = YES;
                     scrollCell.blueOverlayView.alpha = 0.8f;
                     [weakSelf.placesDelegate scrollUp];
                 });
