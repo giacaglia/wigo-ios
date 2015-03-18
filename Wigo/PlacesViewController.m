@@ -437,13 +437,22 @@ BOOL firstTimeLoading;
 
 - (void) startAnimatingAtTop:(id)sender withHandler:(BoolResultBlock)handler {
     UIButton *buttonSender = (UIButton *)sender;
-//    [self.placesTableView beginUpdates];
-//    [self.placesTableView moveRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0] toIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-//    [self.placesTableView endUpdates];
-    [self.events replaceObjectAtIndex:buttonSender.tag withObject:0];
-    [self.placesTableView reloadData];
+    WGEvent *oldEvent = (WGEvent *)[self.events objectAtIndex:0];
+    [self.events replaceObjectAtIndex:0 withObject:[self.events objectAtIndex:buttonSender.tag]];
+    [self.events replaceObjectAtIndex:buttonSender.tag withObject:oldEvent];
+  
+    [self.placesTableView beginUpdates];
+    [self.placesTableView moveRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0] toIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    [self.placesTableView endUpdates];
+   
     [self scrollUp];
     handler(YES, nil);
+}
+
+- (void)tableView:(UITableView *)tableView
+moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
+      toIndexPath:(NSIndexPath *)toIndexPath {
+    NSLog(@"here");
 }
 
 - (void) goHerePressed:(id)sender withHandler:(BoolResultBlock)handler {
