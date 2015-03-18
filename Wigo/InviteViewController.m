@@ -315,7 +315,7 @@
         headerView.backgroundColor = UIColor.whiteColor;
         
         UILabel *tapPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
-        tapPeopleLabel.text = @"Follow";
+        tapPeopleLabel.text = @"Follow Classmates";
         tapPeopleLabel.textAlignment = NSTextAlignmentLeft;
         tapPeopleLabel.font = [FontProperties lightFont:15.0f];
         tapPeopleLabel.textColor = [FontProperties getBlueColor];
@@ -329,7 +329,7 @@
         headerView.backgroundColor = UIColor.whiteColor;
         
         UILabel *tapPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
-        tapPeopleLabel.text = @"Tap Contacts";
+        tapPeopleLabel.text = @"Invite Contacts";
         tapPeopleLabel.textAlignment = NSTextAlignmentLeft;
         tapPeopleLabel.font = [FontProperties lightFont:15.0f];
         tapPeopleLabel.textColor = [FontProperties getBlueColor];
