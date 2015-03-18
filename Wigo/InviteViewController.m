@@ -626,7 +626,7 @@ heightForHeaderInSection:(NSInteger)section
     self.fullNameLabel.text = user.fullName;
     if ([user.isGoingOut boolValue]) {
         if (user.eventAttending.name && !user.eventAttending.isPrivate) {
-            self.goingOutLabel.text = [NSString stringWithFormat:@"Going out to %@", user.eventAttending.name];
+            self.goingOutLabel.text = user.eventAttending.name;
         } else {
             self.goingOutLabel.text = @"Going Out";
         }
