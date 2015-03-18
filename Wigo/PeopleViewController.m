@@ -948,6 +948,7 @@ UIScrollView *suggestedScrollView;
     self.followPersonButton.tag = -100;
     
     if (!user.isCurrentUser) {
+        self.followPersonButton.hidden = NO;
         if (user.state == BLOCKED_USER_STATE) {
             [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [self.followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
@@ -976,6 +977,9 @@ UIScrollView *suggestedScrollView;
                 self.followPersonButton.tag = 100;
             }
         }
+    }
+    else {
+        self.followPersonButton.hidden = YES;
     }
 }
 
