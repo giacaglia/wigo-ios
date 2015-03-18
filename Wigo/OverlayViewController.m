@@ -73,15 +73,18 @@
 }
 
 - (void)closeOverlay {
-    self.event.isPrivate = NO;
-    if (!self.privateSwitch.privacyTurnedOn) {
-        [self.event setPrivacyOn:NO andHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionSave];
-                return;
-            }
-        }];
+    if ([self.event.owner isEqual:WGProfile.currentUser]) {
+        self.event.isPrivate = self.privateSwitch.privacyTurnedOn;
+        if (!self.privateSwitch.privacyTurnedOn) {
+            [self.event setPrivacyOn:NO andHandler:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] logError:error forAction:WGActionSave];
+                    return;
+                }
+            }];
+        }
     }
+
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 

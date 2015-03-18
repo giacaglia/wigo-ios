@@ -89,7 +89,6 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     HighlightCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
     if (self.isPeeking && indexPath.row == 0) cell.alpha = 0.7f;
     else cell.alpha = 1.0f;
-    
 
     if (indexPath.row == 0) {
         cell.contentView.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);

@@ -172,19 +172,18 @@
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ScrollViewCell *scrollCell = [collectionView dequeueReusableCellWithReuseIdentifier:kScrollViewCellName forIndexPath:indexPath];
     scrollCell.alpha = 1.0f;
+    scrollCell.imgView.image = nil;
     if (indexPath.section == kInviteSection) {
         if (self.event.id && [self.event.id isEqual:WGProfile.currentUser.eventAttending.id]) {
             [scrollCell.imageButton removeTarget:nil
                                           action:NULL
                                 forControlEvents:UIControlEventAllEvents];
             if (self.event.isPrivate && ![self.event.owner isEqual:WGProfile.currentUser]) {
-                NSLog(@"%@: private", self.event.name);
                 scrollCell.alpha = 0.5f;
                 scrollCell.imageButton.tag = self.rowOfEvent;
                 [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(showOverlayForInvite:) forControlEvents:UIControlEventTouchUpInside];
             }
             else {
-                NSLog(@"%@: PUBLIC", self.event.name);
                 scrollCell.alpha = 1.0f;
                 [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
             }
@@ -299,8 +298,6 @@
 }
 
 - (void)setStateForUser:(WGUser *)user {
-    [self.imgView setSmallImageForUser:user completed:nil];
-    self.profileNameLabel.text = user.firstName;
     self.profileNameLabel.textColor = UIColor.blackColor;
     self.profileNameLabel.alpha = 0.5f;
     CGFloat fontSize = 12.0f;
@@ -314,8 +311,13 @@
         
         fontSize -= 1.0;
     }
-    self.profileNameLabel.font = [FontProperties lightFont:fontSize];
-  
+    
+    // UI changes
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.imgView setSmallImageForUser:user completed:nil];
+        self.profileNameLabel.text = user.firstName;
+        self.profileNameLabel.font = [FontProperties lightFont:fontSize];
+    });
 }
 
 @end
