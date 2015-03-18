@@ -178,11 +178,13 @@
                                           action:NULL
                                 forControlEvents:UIControlEventAllEvents];
             if (self.event.isPrivate && ![self.event.owner isEqual:WGProfile.currentUser]) {
+                NSLog(@"%@: private", self.event.name);
                 scrollCell.alpha = 0.5f;
                 scrollCell.imageButton.tag = self.rowOfEvent;
                 [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(showOverlayForInvite:) forControlEvents:UIControlEventTouchUpInside];
             }
             else {
+                NSLog(@"%@: PUBLIC", self.event.name);
                 scrollCell.alpha = 1.0f;
                 [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
             }

@@ -87,6 +87,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     HighlightCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:highlightCellName forIndexPath: indexPath];
+    if (self.isPeeking && indexPath.row == 0) cell.alpha = 0.7f;
+    else cell.alpha = 1.0f;
+    
 
     if (indexPath.row == 0) {
         cell.contentView.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
@@ -101,7 +104,6 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     cell.faceImageView.alpha = 1.0f;
     cell.orangeDotView.hidden = YES;
-
 
     if (indexPath.row + 1 == self.eventMessages.count &&
         [self.eventMessages.hasNextPage boolValue]) {

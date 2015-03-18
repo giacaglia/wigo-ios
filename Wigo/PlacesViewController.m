@@ -942,6 +942,8 @@ BOOL firstTimeLoading;
             cell.numberOfPeopleGoingLabel.text = nil;
             cell.privacyLockImageView.hidden = YES;
             [cell.eventPeopleScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+            cell.highlightsCollectionView.placesDelegate = self;
+            cell.highlightsCollectionView.isPeeking = [self isPeeking];
             return cell;
         }
         
