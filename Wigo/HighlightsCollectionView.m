@@ -65,6 +65,10 @@
 - (void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (![self.event isEqual:WGProfile.currentUser.eventAttending] && self.eventMessages.count == 0 && !WGProfile.currentUser.crossEventPhotosEnabled) return;
+    if (indexPath.row == 0 && self.isPeeking) return;
+    if (self.isPeeking){
+        indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
+    }
     if (indexPath.row != 0 || !self.isPeeking || (WGProfile.currentUser.crossEventPhotosEnabled || [self.event isEqual:WGProfile.currentUser.eventAttending])) {
         [self.placesDelegate showConversationForEvent:self.event
                                     withEventMessages:self.eventMessages

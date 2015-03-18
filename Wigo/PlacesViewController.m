@@ -435,17 +435,20 @@ BOOL firstTimeLoading;
     overlayViewController.event = [self getEventAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
 }
 
-- (void) startAnimatingAtTop:(id)sender withHandler:(BoolResultBlock)handler {
+- (void) startAnimatingAtTop:(id)sender
+                 withHandler:(CollectionViewResultBlock)handler {
     UIButton *buttonSender = (UIButton *)sender;
     WGEvent *oldEvent = (WGEvent *)[self.events objectAtIndex:0];
     [self.events replaceObjectAtIndex:0 withObject:[self.events objectAtIndex:buttonSender.tag]];
     [self.events replaceObjectAtIndex:buttonSender.tag withObject:oldEvent];
-  
     [CATransaction begin];
-    
+    EventCell *cell = (EventCell *)[self.placesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
+    __weak typeof(cell) weakCell = cell;
     [CATransaction setCompletionBlock:^{
         // animation has finished
-        handler(YES, nil);
+        UICollectionView *eventPeopleScrollView = weakCell.eventPeopleScrollView;
+        UICollectionViewCell *scrollCell = [eventPeopleScrollView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        handler(scrollCell);
     }];
 
     [self.placesTableView beginUpdates];
@@ -1209,13 +1212,11 @@ BOOL firstTimeLoading;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
-    if ([self isPeeking] | (!WGProfile.currentUser.crossEventPhotosEnabled && ![event isEqual:WGProfile.currentUser.eventAttending])) {
-        index = index - 1;
+    if ([self isPeeking] || (!WGProfile.currentUser.crossEventPhotosEnabled && ![event isEqual:WGProfile.currentUser.eventAttending])) {
     }
     else {
         eventMessages = [self eventMessagesWithCamera:eventMessages];
     }
-    if ([self isPeeking] && index == 0) index += 1;
     conversationViewController.index = [NSNumber numberWithInt:index];
     conversationViewController.eventMessages = eventMessages;
     conversationViewController.isPeeking = [self isPeeking];
