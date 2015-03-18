@@ -494,7 +494,6 @@ BOOL firstTimeLoading;
         
         [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
 
-        //[self dismissKeyboard];
         _ungoOutButton.enabled = NO;
         self.placesTableView.userInteractionEnabled = NO;
         [self textFieldDidChange:self.whereAreYouGoingTextField];
@@ -680,7 +679,6 @@ BOOL firstTimeLoading;
                     }
                     
                     [strongOfStrong removeProfileUserFromAnyOtherEvent];
-                    
                     [strongOfStrong dismissKeyboard];
                     
                     WGProfile.currentUser.isGoingOut = @YES;
@@ -1552,7 +1550,6 @@ BOOL firstTimeLoading;
     _spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [self.placesTableView didFinishPullToRefresh];
      _spinnerAtCenter = NO;
     self.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-    [self dismissKeyboard];
 }
 
 - (void) fetchUserInfo {
