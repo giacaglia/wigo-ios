@@ -213,11 +213,12 @@
 
 - (void)fetchPreviousMessages {
     if (self.eventMessages.previousPage) {
+        NSNumber *numberOfPages = [NSNumber numberWithInt:self.eventMessages.count];
         NSLog(@"called previous page: %@", self.eventMessages.previousPage);
         __weak typeof(self) weakSelf = self;
+        __weak NSNumber *weakNumberOfPages = numberOfPages;
         [self.eventMessages addPreviousPage:^(BOOL success, NSError *error) {
             __strong typeof(self) strongSelf = weakSelf;
-            [strongSelf.facesCollectionView didFinishPullToRefresh];
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
@@ -226,6 +227,12 @@
             
             [strongSelf.mediaScrollView reloadData];
             [strongSelf.facesCollectionView reloadData];
+            
+            int indexBefore = [strongSelf getPageForScrollView:strongSelf.mediaScrollView toLeft:YES];
+            int differenceOfPages = strongSelf.eventMessages.count - weakNumberOfPages.intValue;
+            int newIndex = indexBefore + differenceOfPages;
+            strongSelf.index = @(newIndex);
+            [strongSelf highlightCellAtPage:newIndex animated:NO];
         }];
     }
     
