@@ -35,6 +35,7 @@
 - (void)invitePressed;
 - (void)showOverlayForInvite:(id)sender;
 - (void)goHerePressed:(id)sender withHandler:(BoolResultBlock)handler;
+- (void)startAnimatingAtTop:(id)sender withHandler:(BoolResultBlock)handler;
 - (void)presentConversationForUser:(WGUser *)user;
 - (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event;
 - (void)scrollUp;

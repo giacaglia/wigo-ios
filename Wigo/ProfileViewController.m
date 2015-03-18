@@ -818,7 +818,9 @@ BOOL blockShown;
         [notificationCell.profileImageView setSmallImageForUser:user completed:nil];
         notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];
         
-        if (user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE || user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+        if (user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
+            user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE ||
+            ![user.eventAttending.id isEqual:notification.eventID]) {
             notificationCell.rightPostImageView.hidden = YES;
         } else {
             notificationCell.rightPostImageView.hidden = NO;
@@ -936,7 +938,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
            
             if ([notification.type isEqualToString:@"follow"] || [notification.type isEqualToString:@"follow.accepted"] || [notification.type isEqualToString:@"facebook.follow"]) {
                 [self presentUser:user];
-            } else if ([user state] != NOT_YET_ACCEPTED_PRIVATE_USER_STATE && [user state] != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
+            } else if (user.state != NOT_YET_ACCEPTED_PRIVATE_USER_STATE &&
+                       user.state != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
+                if (![user.eventAttending.id isEqual:notification.eventID]) return;
                 if (user.eventAttending) [self presentEvent:user.eventAttending];
                 else [self presentUser:user];
             }

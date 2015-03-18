@@ -435,6 +435,17 @@ BOOL firstTimeLoading;
     overlayViewController.event = [self getEventAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
 }
 
+- (void) startAnimatingAtTop:(id)sender withHandler:(BoolResultBlock)handler {
+    UIButton *buttonSender = (UIButton *)sender;
+//    [self.placesTableView beginUpdates];
+//    [self.placesTableView moveRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0] toIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+//    [self.placesTableView endUpdates];
+    [self.events replaceObjectAtIndex:buttonSender.tag withObject:0];
+    [self.placesTableView reloadData];
+    [self scrollUp];
+    handler(YES, nil);
+}
+
 - (void) goHerePressed:(id)sender withHandler:(BoolResultBlock)handler {
     WGProfile.tapAll = NO;
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
@@ -1187,12 +1198,13 @@ BOOL firstTimeLoading;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
-    if ([self isPeeking] || (!WGProfile.currentUser.crossEventPhotosEnabled && ![event isEqual:WGProfile.currentUser.eventAttending])) {
+    if ([self isPeeking] | (!WGProfile.currentUser.crossEventPhotosEnabled && ![event isEqual:WGProfile.currentUser.eventAttending])) {
         index = index - 1;
     }
     else {
         eventMessages = [self eventMessagesWithCamera:eventMessages];
     }
+    if ([self isPeeking] && index == 0) index += 1;
     conversationViewController.index = [NSNumber numberWithInt:index];
     conversationViewController.eventMessages = eventMessages;
     conversationViewController.isPeeking = [self isPeeking];
