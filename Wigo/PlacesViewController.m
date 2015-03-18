@@ -441,18 +441,20 @@ BOOL firstTimeLoading;
     [self.events replaceObjectAtIndex:0 withObject:[self.events objectAtIndex:buttonSender.tag]];
     [self.events replaceObjectAtIndex:buttonSender.tag withObject:oldEvent];
   
+    [CATransaction begin];
+    
+    [CATransaction setCompletionBlock:^{
+        // animation has finished
+        handler(YES, nil);
+    }];
+
     [self.placesTableView beginUpdates];
     [self.placesTableView moveRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0] toIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     [self.placesTableView endUpdates];
    
     [self scrollUp];
-    handler(YES, nil);
-}
+    [CATransaction commit];
 
-- (void)tableView:(UITableView *)tableView
-moveRowAtIndexPath:(NSIndexPath *)fromIndexPath
-      toIndexPath:(NSIndexPath *)toIndexPath {
-    NSLog(@"here");
 }
 
 - (void) goHerePressed:(id)sender withHandler:(BoolResultBlock)handler {

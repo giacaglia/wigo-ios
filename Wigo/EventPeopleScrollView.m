@@ -96,38 +96,42 @@
 
 - (void)goHerePressed:(id)sender {
     [self.placesDelegate startAnimatingAtTop:sender
-                                 withHandler:^(BOOL success, NSError *error) {}];
-//    self.hiddenInviteButton.hidden = NO;
-//    ScrollViewCell *scrollCell = (ScrollViewCell *)[self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-//    [UIView animateWithDuration:1 animations:^{
-//        scrollCell.blueOverlayView.alpha = 1.0f;
-//        scrollCell.goHereLabel.alpha = 1.0f;
-//    } completion:^(BOOL finished) {
-//        [UIView animateWithDuration:1 animations:^{
-//            self.hiddenInviteButton.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-//            scrollCell.blueOverlayView.alpha = 0.0f;
-//            scrollCell.goHereLabel.alpha = 0.0f;
-//            scrollCell.profileNameLabel.alpha = 0.5f;
-//            scrollCell.profileNameLabel.text = WGProfile.currentUser.firstName;
-//            self.transform = CGAffineTransformMakeTranslation(self.widthOfEachCell + 10, 0);
-//            self.hiddenInviteButton.transform = CGAffineTransformMakeTranslation(-self.widthOfEachCell, 0);
-//        } completion:^(BOOL finished) {
-//            UIButton *buttonSender = (UIButton *)sender;
-//            __weak typeof(self) weakSelf = self;
-//            [self.placesDelegate goHerePressed:buttonSender withHandler:^(BOOL success, NSError *error) {
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    CGAffineTransform t = CGAffineTransformMakeScale(0.2f, 0.2f);
-//                    weakSelf.hiddenInviteButton.transform = CGAffineTransformTranslate(t, 0, 0);
-//                    weakSelf.transform = CGAffineTransformMakeTranslation(0, 0);
-//                    weakSelf.hiddenInviteButton.hidden = YES;
-//                    scrollCell.blueOverlayView.alpha = 0.8f;
-//                    scrollCell.goHereLabel.alpha = 1.0f;
-//                    [weakSelf.placesDelegate scrollUp];
-//                });
-//            }];
-//            
-//        }];
-//    }];
+                                 withHandler:^(BOOL success, NSError *error) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.hiddenInviteButton.hidden = NO;
+        ScrollViewCell *scrollCell = (ScrollViewCell *)[self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        [UIView animateWithDuration:1 animations:^{
+            scrollCell.blueOverlayView.alpha = 1.0f;
+            scrollCell.goHereLabel.alpha = 1.0f;
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:1 animations:^{
+                self.hiddenInviteButton.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+                scrollCell.blueOverlayView.alpha = 0.0f;
+                scrollCell.goHereLabel.alpha = 0.0f;
+                scrollCell.profileNameLabel.alpha = 0.5f;
+                scrollCell.profileNameLabel.text = WGProfile.currentUser.firstName;
+                self.transform = CGAffineTransformMakeTranslation(self.widthOfEachCell + 10, 0);
+                self.hiddenInviteButton.transform = CGAffineTransformMakeTranslation(-self.widthOfEachCell, 0);
+            } completion:^(BOOL finished) {
+                UIButton *buttonSender = (UIButton *)sender;
+                __weak typeof(self) weakSelf = self;
+                buttonSender.tag = 0;
+                [self.placesDelegate goHerePressed:buttonSender withHandler:^(BOOL success, NSError *error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        CGAffineTransform t = CGAffineTransformMakeScale(0.2f, 0.2f);
+                        weakSelf.hiddenInviteButton.transform = CGAffineTransformTranslate(t, 0, 0);
+                        weakSelf.transform = CGAffineTransformMakeTranslation(0, 0);
+                        weakSelf.hiddenInviteButton.hidden = YES;
+                        scrollCell.blueOverlayView.alpha = 0.8f;
+                        scrollCell.goHereLabel.alpha = 1.0f;
+                        [weakSelf.placesDelegate scrollUp];
+                    });
+                }];
+            }];
+        }];
+    });
+    }];
+
 }
 
 
