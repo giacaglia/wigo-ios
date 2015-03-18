@@ -474,7 +474,7 @@ heightForHeaderInSection:(NSInteger)section
     }];
     
     // Folow users
-    [WGProfile.currentUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
+    [WGUser searchInvites:searchString  withHandler:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {
