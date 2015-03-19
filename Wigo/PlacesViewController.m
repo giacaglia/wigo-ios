@@ -242,10 +242,7 @@ BOOL firstTimeLoading;
 
 
 - (void)initializeNotificationObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateViewNotGoingOut)
-                                                 name:@"updateViewNotGoingOut"
-                                               object:nil];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(scrollUp)
@@ -279,21 +276,21 @@ BOOL firstTimeLoading;
 }
 
 - (void)goToChat:(NSNotification *)notification {
-    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [fancyProfileViewController setStateWithUser: WGProfile.currentUser];
-    fancyProfileViewController.events = self.events;
-    [self.navigationController pushViewController: fancyProfileViewController animated: NO];
+    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    [profileViewController setStateWithUser: WGProfile.currentUser];
+    profileViewController.events = self.events;
+    [self.navigationController pushViewController: profileViewController animated: NO];
     
     ChatViewController *chatViewController = [ChatViewController new];
     chatViewController.view.backgroundColor = UIColor.whiteColor;
-    [fancyProfileViewController.navigationController pushViewController:chatViewController animated:YES];
+    [profileViewController.navigationController pushViewController:chatViewController animated:YES];
 }
 
 - (void)goToProfile {
-    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [fancyProfileViewController setStateWithUser: WGProfile.currentUser];
-    fancyProfileViewController.events = self.events;
-    [self.navigationController pushViewController: fancyProfileViewController animated: NO];
+    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    [profileViewController setStateWithUser: WGProfile.currentUser];
+    profileViewController.events = self.events;
+    [self.navigationController pushViewController: profileViewController animated: NO];
 }
 
 - (void)goToEvent:(NSNotification *)notification {
@@ -326,10 +323,6 @@ BOOL firstTimeLoading;
     [self.placesTableView setContentOffset:CGPointZero animated:YES];
 }
 
-- (void) updateViewNotGoingOut {
-    WGProfile.currentUser.isGoingOut = @NO;
-    [self fetchEventsFirstPage];
-}
 
 - (void) updateTitleView {
     if (!self.groupName) self.groupName = WGProfile.currentUser.group.name;
@@ -1150,11 +1143,11 @@ BOOL firstTimeLoading;
 }
 
 - (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event {
-    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [fancyProfileViewController setStateWithUser: user];
-    if ([self isPeeking]) fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
+    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    [profileViewController setStateWithUser: user];
+    if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+    [self.navigationController pushViewController: profileViewController animated: YES];
 
 }
 
@@ -1492,6 +1485,8 @@ BOOL firstTimeLoading;
         }
         self.doNotReloadOffsets = NO;
     }
+    if (!self.shouldReloadEvents) return;
+    else self.shouldReloadEvents = YES;
     self.aggregateEvent = nil;
     self.allEvents = nil;
     [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
