@@ -1804,7 +1804,7 @@ BOOL firstTimeLoading;
     self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 15, 12, 16)];
     self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
     self.privacyLockImageView.hidden = YES;
-    [self.contentView addSubview:self.privacyLockImageView];
+    [self.privacyLockButton addSubview:self.privacyLockImageView];
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 16.5, self.frame.size.width - 40, 20)];
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
