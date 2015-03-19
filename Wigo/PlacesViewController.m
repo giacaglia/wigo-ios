@@ -1840,9 +1840,6 @@ BOOL firstTimeLoading;
     self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 60)];
     self.grayView.backgroundColor = RGB(237, 237, 237);
     [self.contentView addSubview:self.grayView];
-    
-
-
 }
 
 - (void)setEvent:(WGEvent *)event {

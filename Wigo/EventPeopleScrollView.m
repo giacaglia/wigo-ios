@@ -47,7 +47,6 @@
     self.hiddenInviteButton.hidden = YES;
     self.hiddenInviteButton.transform = CGAffineTransformMakeScale(0.2f, 0.2f);
     [self addSubview:self.hiddenInviteButton];
-    NSLog(@"fuegaugfeiga");
 }
 
 + (CGFloat) containerHeight {
@@ -104,29 +103,30 @@
     [self.placesDelegate startAnimatingAtTop:sender
                       finishAnimationHandler:^(UICollectionViewCell *cell) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        weakSelf.hiddenInviteButton.hidden = NO;
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.hiddenInviteButton.hidden = NO;
         ScrollViewCell *scrollCell = (ScrollViewCell *)cell;
-        [UIView animateWithDuration:1 animations:^{
-            scrollCell.blueOverlayView.alpha = 1.0f;
-            scrollCell.goHereLabel.alpha = 1.0f;
-        } completion:^(BOOL finished) {
-            [UIView animateWithDuration:1 animations:^{
-                weakSelf.hiddenInviteButton.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-                scrollCell.blueOverlayView.alpha = 0.0f;
-                scrollCell.goHereLabel.alpha = 0.0f;
-                scrollCell.profileNameLabel.alpha = 0.5f;
-                scrollCell.profileNameLabel.text = WGProfile.currentUser.firstName;
-                weakSelf.transform = CGAffineTransformMakeTranslation(weakSelf.widthOfEachCell + 10, 0);
-                weakSelf.hiddenInviteButton.transform = CGAffineTransformMakeTranslation(-self.widthOfEachCell, 0);
-            } completion:^(BOOL finished) {
-                UIButton *buttonSender = (UIButton *)sender;
-                __weak typeof(self) weakWeakSelf = weakSelf;
-                buttonSender.tag = 0;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [weakWeakSelf finishAnimationOrNetworkRequestForCell:scrollCell];
-                });
-            }];
-        }];
+//        [UIView animateWithDuration:1 animations:^{
+        scrollCell.blueOverlayView.alpha = 1.0f;
+        scrollCell.goHereLabel.alpha = 1.0f;
+        NSLog(@"here");
+//        } completion:^(BOOL finished) {
+        
+//            [UIView animateWithDuration:1 animations:^{
+//                weakSelf.hiddenInviteButton.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+//                scrollCell.blueOverlayView.alpha = 0.0f;
+//                scrollCell.goHereLabel.alpha = 0.0f;
+//                scrollCell.profileNameLabel.alpha = 0.5f;
+//                scrollCell.profileNameLabel.text = WGProfile.currentUser.firstName;
+//                weakSelf.transform = CGAffineTransformMakeTranslation(weakSelf.widthOfEachCell + 10, 0);
+//                weakSelf.hiddenInviteButton.transform = CGAffineTransformMakeTranslation(-self.widthOfEachCell, 0);
+//            } completion:^(BOOL finished) {
+//                UIButton *buttonSender = (UIButton *)sender;
+//                buttonSender.tag = 0;
+//                [weakSelf finishAnimationOrNetworkRequestForCell:scrollCell];
+            
+//            }];
+//        }];
     });
     } postingHandler:^(BOOL success, NSError *error) {
         [weakSelf finishAnimationOrNetworkRequestForCell:nil];

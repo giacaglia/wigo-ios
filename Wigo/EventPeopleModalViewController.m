@@ -82,7 +82,29 @@ int imageWidth;
     [closeButton addSubview:closeImageView];
     [closeButton addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:closeButton];
+    
+    UIView *topTapView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.attendeesPhotosScrollView.frame.origin.y)];
+    topTapView.backgroundColor = UIColor.clearColor;
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapFrom)];
+    [topTapView addGestureRecognizer:tapGestureRecognizer];
+    [self.view addSubview:topTapView];
+    
+    UIView *bottomTapView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.attendeesPhotosScrollView.frame.origin.y)];
+    bottomTapView.backgroundColor = UIColor.clearColor;
+    UITapGestureRecognizer *bottomTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBottomTap)];
+    [bottomTapView addGestureRecognizer:bottomTapGesture];
+    [self.view addSubview:bottomTapView];
+
 }
+
+-(void) handleTapFrom {
+    [self dismissView];
+}
+
+-(void) handleBottomTap {
+    [self dismissView];
+}
+
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
