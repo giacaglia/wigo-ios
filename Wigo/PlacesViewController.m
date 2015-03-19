@@ -301,7 +301,8 @@ BOOL firstTimeLoading;
     NSDictionary *eventInfo = notification.userInfo;
     WGEvent *newEvent = [[WGEvent alloc] initWithJSON:eventInfo];
     if ([self.events containsObject:newEvent]) {
-//        WGEvent *presentEvent = (WGEvent *)[self.events objectAtIndex:[self.events indexOfObject:newEvent]];
+        NSInteger integer = [self.events indexOfObject:newEvent];
+        [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:integer inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
 //        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
 //        eventStoryViewController.event = presentEvent;
 //        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
