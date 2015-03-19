@@ -1767,7 +1767,7 @@ BOOL firstTimeLoading;
 @implementation EventCell
 
 + (CGFloat)heightIsFullCell:(BOOL)isFullCell {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 20 + 20;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 20;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1843,7 +1843,7 @@ BOOL firstTimeLoading;
                                      collectionViewLayout:[HighlightsFlowLayout new]];
     [self.contentView addSubview:self.highlightsCollectionView];
     
-    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 60)];
+    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 40)];
     self.grayView.backgroundColor = RGB(237, 237, 237);
     [self.contentView addSubview:self.grayView];
 }
