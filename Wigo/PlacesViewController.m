@@ -1405,22 +1405,28 @@ BOOL firstTimeLoading;
     [self.events replaceObjectAtIndex:0 withObject:[self.events objectAtIndex:buttonSender.tag]];
     [self.events replaceObjectAtIndex:buttonSender.tag withObject:oldEvent];
     [CATransaction begin];
-    EventCell *cell = (EventCell *)[self.placesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
-    __weak typeof(cell) weakCell = cell;
+    
     [CATransaction setCompletionBlock:^{
         // animation has finished
-        UICollectionView *eventPeopleScrollView = weakCell.eventPeopleScrollView;
-        UICollectionViewCell *scrollCell = [eventPeopleScrollView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-        handler(scrollCell);
+        [self.placesTableView reloadData];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            EventCell *cell = (EventCell *)[self.placesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+            UICollectionView *eventPeopleScrollView = cell.eventPeopleScrollView;
+            UICollectionViewCell *scrollCell = [eventPeopleScrollView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+            handler(scrollCell);
+        });
+       
     }];
     
     [self.placesTableView beginUpdates];
     [self.placesTableView moveRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0] toIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     [self.placesTableView endUpdates];
-    
     [self scrollUp];
+
     [CATransaction commit];
 }
+
+
 
 - (void)fetchEventsWithoutReloadingWithHandler:(BoolResultBlock)handler {
     if (!self.fetchingEventAttendees && WGProfile.currentUser.key) {
