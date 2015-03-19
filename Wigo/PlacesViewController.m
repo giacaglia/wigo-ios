@@ -1094,7 +1094,7 @@ BOOL firstTimeLoading;
         
         UILabel *tooltipLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, tooltipImageView.frame.size.width - 15, tooltipImageView.frame.size.height - 10)];
         tooltipLabel.numberOfLines = 0;
-        tooltipLabel.textAlignment = NSTextAlignmentLeft;
+        tooltipLabel.textAlignment = NSTextAlignmentCenter;
         NSMutableAttributedString *mutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"Peek at trending\nWigo schools"];
         [mutAttributedString addAttribute:NSForegroundColorAttributeName
                                     value:[FontProperties getBlueColor]
@@ -1105,12 +1105,7 @@ BOOL firstTimeLoading;
         tooltipLabel.attributedText = mutAttributedString;
         [tooltipImageView addSubview:tooltipLabel];
         
-        UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(tooltipImageView.frame.size.width - 23 - 10, tooltipImageView.frame.size.height/2 - 15, 10, 30)];
-        [closeButton setTitle:@"x" forState:UIControlStateNormal];
-        [closeButton setTitleColor:RGB(162, 162, 162) forState:UIControlStateNormal];
-        [closeButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
-        [tooltipImageView addSubview:closeButton];
-        
+
         UIButton *gotItButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 65, 150, 130, 40)];
         [gotItButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
         [gotItButton setTitle:@"GOT IT" forState:UIControlStateNormal];

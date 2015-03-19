@@ -69,7 +69,6 @@ UIImageView *searchIconImageView;
 - (void)tappedView:(UITapGestureRecognizer*)tapSender {
     searchIconImageView.hidden = YES;
     [self.view endEditing:YES];
-    [self searchBarTextDidEndEditing:searchBar];
 }
 
 
