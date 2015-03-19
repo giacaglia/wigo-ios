@@ -95,9 +95,10 @@
 }
 
 - (void)goHerePressed:(id)sender {
+    self.animationState = STARTED_ANIMATION_AND_NETWORK;
     __weak typeof(self) weakSelf = self;
     [self.placesDelegate startAnimatingAtTop:sender
-                                 withHandler:^(UICollectionViewCell *cell) {
+                      finishAnimationHandler:^(UICollectionViewCell *cell) {
     dispatch_async(dispatch_get_main_queue(), ^{
         self.hiddenInviteButton.hidden = NO;
         ScrollViewCell *scrollCell = (ScrollViewCell *)cell;
@@ -125,14 +126,31 @@
                         weakWeakSelf.hiddenInviteButton.hidden = YES;
                         scrollCell.blueOverlayView.alpha = 0.8f;
                         scrollCell.goHereLabel.alpha = 1.0f;
-                        [weakWeakSelf.placesDelegate scrollUp];
+                        [weakWeakSelf finishAnimationOrNetworkRequest];
                     });
                 }];
             }];
         }];
     });
+    } postingHandler:^(BOOL success, NSError *error) {
+        [weakSelf finishAnimationOrNetworkRequest];
     }];
 
+}
+
+- (void)finishAnimationOrNetworkRequest {
+    if (self.animationState == STARTED_ANIMATION_AND_NETWORK) {
+        self.animationState = ONE_OF_THEM_IS_CONCLUDED;
+    }
+    else if (self.animationState == ONE_OF_THEM_IS_CONCLUDED) {
+        self.animationState = BOTH_OF_THEM_ARE_DONE;
+    }
+    
+    
+    if (self.animationState == BOTH_OF_THEM_ARE_DONE) {
+        [self.placesDelegate reloadTable];
+    }
+    
 }
 
 

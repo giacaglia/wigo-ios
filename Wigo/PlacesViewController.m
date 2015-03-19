@@ -436,30 +436,6 @@ BOOL firstTimeLoading;
     overlayViewController.event = [self getEventAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
 }
 
-- (void) startAnimatingAtTop:(id)sender
-                 withHandler:(CollectionViewResultBlock)handler {
-    UIButton *buttonSender = (UIButton *)sender;
-    WGEvent *oldEvent = (WGEvent *)[self.events objectAtIndex:0];
-    [self.events replaceObjectAtIndex:0 withObject:[self.events objectAtIndex:buttonSender.tag]];
-    [self.events replaceObjectAtIndex:buttonSender.tag withObject:oldEvent];
-    [CATransaction begin];
-    EventCell *cell = (EventCell *)[self.placesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
-    __weak typeof(cell) weakCell = cell;
-    [CATransaction setCompletionBlock:^{
-        // animation has finished
-        UICollectionView *eventPeopleScrollView = weakCell.eventPeopleScrollView;
-        UICollectionViewCell *scrollCell = [eventPeopleScrollView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-        handler(scrollCell);
-    }];
-
-    [self.placesTableView beginUpdates];
-    [self.placesTableView moveRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0] toIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-    [self.placesTableView endUpdates];
-   
-    [self scrollUp];
-    [CATransaction commit];
-
-}
 
 - (void) goHerePressed:(id)sender withHandler:(BoolResultBlock)handler {
     WGProfile.tapAll = NO;
@@ -1383,6 +1359,127 @@ BOOL firstTimeLoading;
     eventIndex = uniqueIndex - userIndex * numberOfEvents;
     return @{ @"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex" : [NSNumber numberWithInt:eventIndex] };
 }
+
+#pragma mark - EventPeopleScrollView Delegate
+
+- (void) startAnimatingAtTop:(id)sender
+      finishAnimationHandler:(CollectionViewResultBlock)handler
+              postingHandler:(BoolResultBlock)postHandler
+{
+    
+    // First start doing the network request
+    WGProfile.tapAll = NO;
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
+    [WGAnalytics tagEvent:@"Go Here" withDetails:options];
+    self.whereAreYouGoingTextField.text = @"";
+    [self.view endEditing:YES];
+    UIButton *buttonSender = (UIButton *)sender;
+    
+    __weak typeof(self) weakSelf = self;
+    WGEvent *event = [self getEventAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
+    if (event == nil) return;
+    [WGProfile.currentUser goingToEvent:event withHandler:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            postHandler(success, error);
+            return;
+        }
+        WGProfile.currentUser.isGoingOut = @YES;
+        if (!strongSelf.doNotReloadOffsets) {
+            for (NSString *key in [strongSelf.eventOffsetDictionary allKeys]) {
+                [strongSelf.eventOffsetDictionary setValue:@0 forKey:key];
+            }
+            strongSelf.doNotReloadOffsets = NO;
+        }
+        strongSelf.aggregateEvent = nil;
+        strongSelf.allEvents = nil;
+        [strongSelf fetchEventsWithoutReloadingWithHandler:postHandler];
+    }];
+    
+    
+    // Then start the animations
+    WGEvent *oldEvent = (WGEvent *)[self.events objectAtIndex:0];
+    [self.events replaceObjectAtIndex:0 withObject:[self.events objectAtIndex:buttonSender.tag]];
+    [self.events replaceObjectAtIndex:buttonSender.tag withObject:oldEvent];
+    [CATransaction begin];
+    EventCell *cell = (EventCell *)[self.placesTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0]];
+    __weak typeof(cell) weakCell = cell;
+    [CATransaction setCompletionBlock:^{
+        // animation has finished
+        UICollectionView *eventPeopleScrollView = weakCell.eventPeopleScrollView;
+        UICollectionViewCell *scrollCell = [eventPeopleScrollView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+        handler(scrollCell);
+    }];
+    
+    [self.placesTableView beginUpdates];
+    [self.placesTableView moveRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0] toIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    [self.placesTableView endUpdates];
+    
+    [self scrollUp];
+    [CATransaction commit];
+}
+
+- (void)fetchEventsWithoutReloadingWithHandler:(BoolResultBlock)handler {
+    if (!self.fetchingEventAttendees && WGProfile.currentUser.key) {
+        self.fetchingEventAttendees = YES;
+        __weak typeof(self) weakSelf = self;
+        [WGEvent get:^(WGCollection *collection, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+            if (error) {
+                strongSelf.fetchingEventAttendees = NO;
+                handler(NO, error);
+                return;
+            }
+            strongSelf.allEvents = collection;
+            strongSelf.pastDays = [[NSMutableArray alloc] init];
+            strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+            strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+            strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+            strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+            if (strongSelf.allEvents.count > 0) {
+                WGEvent *aggregateEvent = (WGEvent *)[strongSelf.allEvents objectAtIndex:0];
+                if (aggregateEvent.isAggregate) {
+                    strongSelf.aggregateEvent = aggregateEvent;
+                    [strongSelf.allEvents removeObjectAtIndex:0];
+                }
+                else strongSelf.aggregateEvent = nil;
+            }
+            for (WGEvent *event in strongSelf.allEvents) {
+                if ([event.isExpired boolValue]) {
+                    [strongSelf.oldEvents addObject:event];
+                } else {
+                    [strongSelf.events addObject:event];
+                }
+            }
+            
+            for (WGEvent *event in strongSelf.oldEvents) {
+                if (![event highlight]) {
+                    continue;
+                }
+                NSString *eventDate = [[event expires] deserialize];
+                if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                    [strongSelf.pastDays addObject: eventDate];
+                    [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                }
+                [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+            }
+            
+            strongSelf.fetchingEventAttendees = NO;
+            handler(YES, error);
+        }];
+    }
+    else {
+        handler(NO, nil);
+    }
+}
+
+- (void)reloadTable {
+    [self.placesTableView reloadData];
+}
+
 
 #pragma mark - Network Asynchronous Functions
 

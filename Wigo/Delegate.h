@@ -37,12 +37,15 @@ typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 - (void)invitePressed;
 - (void)showOverlayForInvite:(id)sender;
 - (void)goHerePressed:(id)sender withHandler:(BoolResultBlock)handler;
-- (void)startAnimatingAtTop:(id)sender withHandler:(CollectionViewResultBlock)handler;
+- (void)startAnimatingAtTop:(id)sender
+     finishAnimationHandler:(CollectionViewResultBlock)handler
+             postingHandler:(BoolResultBlock)postHandler;
 - (void)presentConversationForUser:(WGUser *)user;
 - (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event;
 - (void)scrollUp;
 - (void)showEvent:(WGEvent *)event;
 - (void)fetchEventsFirstPage;
+- (void)reloadTable;
 @end
 
 @protocol PrivacySwitchDelegate <NSObject>

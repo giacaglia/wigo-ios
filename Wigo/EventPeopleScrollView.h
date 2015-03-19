@@ -10,6 +10,11 @@
 #import "WGEvent.h"
 #import "Delegate.h"
 #import "EventPeopleModalViewController.h"
+typedef enum  {
+    STARTED_ANIMATION_AND_NETWORK,
+    ONE_OF_THEM_IS_CONCLUDED,
+    BOTH_OF_THEM_ARE_DONE
+} AnimationState;
 
 @interface EventPeopleScrollView : UICollectionView <UICollectionViewDataSource, UICollectionViewDelegate, UIGestureRecognizerDelegate>
 
@@ -33,6 +38,7 @@
 @property (nonatomic, assign) int rowOfEvent;
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) UIButton *hiddenInviteButton;
+@property (nonatomic, assign) AnimationState animationState;
 @end
 
 #define kScrollViewHeader @"scrollViewHeader"
