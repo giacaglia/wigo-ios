@@ -28,7 +28,6 @@
 #import "PrivateSwitchView.h"
 #import "EventMessagesConstants.h"
 #import "OverlayViewController.h"
-#import <QuartzCore/QuartzCore.h>
 
 
 #define kEventCellName @"EventCell"

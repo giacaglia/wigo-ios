@@ -163,7 +163,6 @@ UIImageView *searchIconImageView;
     self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - sizeOfContinueButton);
 }
 
-
 - (void)keyboardDidShow:(NSNotification *)notification {
     NSDictionary* keyboardInfo = [notification userInfo];
     CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -172,8 +171,6 @@ UIImageView *searchIconImageView;
     int sizeOfContinueButton = (_continueButton.isHidden) ? 0 : 50;
     self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - kbFrame.size.height - sizeOfContinueButton);
 }
-
-
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return [ReferalPeopleCell height];
