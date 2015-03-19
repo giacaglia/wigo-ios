@@ -1798,10 +1798,10 @@ BOOL firstTimeLoading;
     self.loadingView.hidden = YES;
     [self.contentView addSubview:self.loadingView];
     
-    self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 17 - 8, 30, 30)];
+    self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
     [self.contentView addSubview:self.privacyLockButton];
     
-    self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 15, 12, 16)];
+    self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 26.5 - 8., 12, 16)];
     self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
     self.privacyLockImageView.hidden = YES;
     [self.privacyLockButton addSubview:self.privacyLockImageView];
