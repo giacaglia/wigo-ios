@@ -84,25 +84,14 @@ int imageWidth;
     [self.view addSubview:closeButton];
     
     UIView *topTapView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.attendeesPhotosScrollView.frame.origin.y)];
-    topTapView.backgroundColor = UIColor.clearColor;
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapFrom)];
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissView)];
     [topTapView addGestureRecognizer:tapGestureRecognizer];
     [self.view addSubview:topTapView];
     
-    UIView *bottomTapView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.attendeesPhotosScrollView.frame.origin.y)];
-    bottomTapView.backgroundColor = UIColor.clearColor;
-    UITapGestureRecognizer *bottomTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleBottomTap)];
+    UIView *bottomTapView = [[UIView alloc] initWithFrame:CGRectMake(0, self.attendeesPhotosScrollView.frame.origin.y + self.attendeesPhotosScrollView.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - (self.attendeesPhotosScrollView.frame.origin.y + self.attendeesPhotosScrollView.frame.size.height))];
+    UITapGestureRecognizer *bottomTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissView)];
     [bottomTapView addGestureRecognizer:bottomTapGesture];
     [self.view addSubview:bottomTapView];
-
-}
-
--(void) handleTapFrom {
-    [self dismissView];
-}
-
--(void) handleBottomTap {
-    [self dismissView];
 }
 
 
