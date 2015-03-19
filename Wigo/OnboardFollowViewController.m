@@ -158,7 +158,8 @@ UIImageView *searchIconImageView;
     
     WGUser *user = [self getUserAtIndex:(int)indexPath.row];
     cell.user = user;
-    cell.labelName.tag = indexPath.row;
+    cell.followPersonButton.tag = indexPath.row;
+    [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
 
     return cell;
 }
@@ -249,12 +250,12 @@ UIImageView *searchIconImageView;
 #pragma mark - Network functions
 
 - (void)fetchFirstPageEveryone {
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [self fetchEveryone];
 }
 
 - (void) fetchEveryone {
     __weak typeof(self) weakSelf = self;
-    [WGSpinnerView addDancingGToCenterView:self.view];
     [WGUser getOnboarding:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -367,7 +368,8 @@ UIImageView *searchIconImageView;
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [OnboardCell height]);
     self.contentView.frame = self.frame;
-    self.contentView.backgroundColor = [UIColor whiteColor];
+    self.contentView.backgroundColor = UIColor.whiteColor;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, [OnboardCell height]/2 - 30, 60, 60)];
     self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;

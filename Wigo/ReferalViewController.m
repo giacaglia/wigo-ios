@@ -320,16 +320,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     searchIconImageView.hidden = YES;
 }
 
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    if (![searchBar.text isEqualToString:@""]) {
-        [UIView animateWithDuration:0.01 animations:^{
-            searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
-        }  completion:^(BOOL finished){
-            searchIconImageView.hidden = NO;
-        }];
-    }
-}
-
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if(searchText.length != 0) {
         [self performBlock:^(void){[self searchTableList];}

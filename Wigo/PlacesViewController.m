@@ -28,6 +28,7 @@
 #import "PrivateSwitchView.h"
 #import "EventMessagesConstants.h"
 #import "OverlayViewController.h"
+#import "OnboardFollowViewController.h"
 
 
 #define kEventCellName @"EventCell"
@@ -135,6 +136,7 @@ BOOL firstTimeLoading;
         self.shouldReloadEvents = YES;
     }
     [self fetchUserInfo];
+    [self presentViewController:[OnboardFollowViewController new] animated:YES completion:nil];
 }
 
 - (void)showReferral {
