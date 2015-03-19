@@ -154,7 +154,7 @@ UIImageView *searchIconImageView;
     cell.profileImageView.image = nil;
     if (self.presentedUsers.count == 0) return cell;
     
-    if (indexPath.row == self.presentedUsers.count - 7) [self getNextPage];
+    if (indexPath.row == self.presentedUsers.count - 1) [self getNextPage];
     
     WGUser *user = [self getUserAtIndex:(int)indexPath.row];
     cell.user = user;
