@@ -919,6 +919,7 @@ BOOL firstTimeLoading;
         cell.placesDelegate = self;
         cell.eventPeopleScrollView.rowOfEvent = indexPath.row;
         cell.eventPeopleScrollView.isPeeking = [self isPeeking];
+        cell.eventPeopleScrollView.hidden = NO;
         cell.privacyLockButton.tag = indexPath.row;
         [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
         if (indexPath.row == self.events.count &&
@@ -943,7 +944,7 @@ BOOL firstTimeLoading;
             cell.eventNameLabel.text = nil;
             cell.numberOfPeopleGoingLabel.text = nil;
             cell.privacyLockImageView.hidden = YES;
-            [cell.eventPeopleScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+            cell.eventPeopleScrollView.hidden = YES;
             cell.highlightsCollectionView.placesDelegate = self;
             cell.highlightsCollectionView.isPeeking = [self isPeeking];
             return cell;
@@ -1869,7 +1870,6 @@ BOOL firstTimeLoading;
 
     self.privacyLockImageView.hidden = !_event.isPrivate;
     self.eventPeopleScrollView.event = _event;
-    [self.eventPeopleScrollView updateUI];
 }
 
 @end

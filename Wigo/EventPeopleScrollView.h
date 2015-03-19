@@ -16,13 +16,26 @@ typedef enum  {
     BOTH_OF_THEM_ARE_DONE
 } AnimationState;
 
+#define kScrollViewHeader @"scrollViewHeader"
+#define kScrollViewCellName @"scrollViewCellName"
+#define kInviteSection 0
+#define kPeopleSection 1
+@interface ScrollViewCell : UICollectionViewCell
+@property (nonatomic, strong) WGUser *user;
+@property (nonatomic, strong) UIButton *imageButton;
+@property (nonatomic, strong) UIImageView *imgView;
+@property (nonatomic, strong) UILabel *profileNameLabel;
+@property (nonatomic, strong) UIView *blueOverlayView;
+@property (nonatomic, strong) UILabel *goHereLabel;
+@end
+
 @interface EventPeopleScrollView : UICollectionView <UICollectionViewDataSource, UICollectionViewDelegate, UIGestureRecognizerDelegate>
 
 -(id) initWithEvent:(WGEvent*)event;
--(void) updateUI;
 +(CGFloat) containerHeight;
 -(void) scrollToSavedPosition;
 -(void) saveScrollPosition;
+
 
 @property EventPeopleModalViewController *eventPeopleModalViewController;
 
@@ -37,22 +50,13 @@ typedef enum  {
 @property (nonatomic, assign) int widthOfEachCell;
 @property (nonatomic, assign) int rowOfEvent;
 @property (nonatomic, assign) BOOL isPeeking;
+
 @property (nonatomic, strong) UIButton *hiddenInviteButton;
 @property (nonatomic, assign) AnimationState animationState;
+@property (nonatomic, strong) ScrollViewCell *scrollCell;
 @end
 
-#define kScrollViewHeader @"scrollViewHeader"
-#define kScrollViewCellName @"scrollViewCellName"
-#define kInviteSection 0
-#define kPeopleSection 1
-@interface ScrollViewCell : UICollectionViewCell
-@property (nonatomic, strong) UIButton *imageButton;
-@property (nonatomic, strong) UIImageView *imgView;
-@property (nonatomic, strong) UILabel *profileNameLabel;
-@property (nonatomic, strong) UIView *blueOverlayView;
-@property (nonatomic, strong) UILabel *goHereLabel;
-- (void)setStateForUser:(WGUser *)user;
-@end
+
 
 @interface ScrollViewLayout : UICollectionViewFlowLayout
 - (id)initWithWidth:(int)width;

@@ -192,7 +192,6 @@
             [self.event.attendees removeObjectAtIndex:0];
             self.event.numAttending = @([self.event.numAttending intValue] - 1);
             self.eventPeopleScrollView.event = self.event;
-            [self.eventPeopleScrollView updateUI];
             
             self.goHereButton.hidden = NO;
             self.goHereButton.enabled = YES;
@@ -215,7 +214,6 @@
     
     // Update UI
     self.eventPeopleScrollView.event = self.event;
-    [self.eventPeopleScrollView updateUI];
     self.goHereButton.hidden = YES;
     self.goHereButton.enabled = NO;
     self.inviteButton.hidden = NO;
@@ -634,7 +632,6 @@
     self.eventPeopleScrollView.event = _event;
     self.eventPeopleScrollView.userSelectDelegate = self;
     self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
-    [self.eventPeopleScrollView updateUI];
     self.eventPeopleScrollView.frame = CGRectMake(0, 10, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
     [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }

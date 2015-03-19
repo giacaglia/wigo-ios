@@ -30,32 +30,36 @@
     return self;
 }
 
+
 - (void)addInviteButton {
     self.hiddenInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
     UIImageView *inviteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
     inviteImageView.image = [UIImage imageNamed:@"inviteButton"];
     [self.hiddenInviteButton addSubview:inviteImageView];
     
-    UILabel *inviteLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.widthOfEachCell, self.widthOfEachCell, 25)];
+    UILabel *inviteLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.widthOfEachCell, self.widthOfEachCell, 20)];
     inviteLabel.text = @"Invite";
     inviteLabel.textColor = [FontProperties getBlueColor];
-    inviteLabel.font = [FontProperties scMediumFont:10.0f];
+    inviteLabel.font = [FontProperties scMediumFont:12.0f];
     inviteLabel.textAlignment = NSTextAlignmentCenter;
     [self.hiddenInviteButton addSubview:inviteLabel];
     
     self.hiddenInviteButton.hidden = YES;
     self.hiddenInviteButton.transform = CGAffineTransformMakeScale(0.2f, 0.2f);
     [self addSubview:self.hiddenInviteButton];
+    NSLog(@"fuegaugfeiga");
 }
 
 + (CGFloat) containerHeight {
     return (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7;
 }
 
--(void) updateUI {
+-(void) setEvent:(WGEvent *)event {
+    _event = event;
     [self reloadData];
     [self scrollToSavedPosition];
 }
+
 
 -(void) scrollToSavedPosition {
     if ([self.placesDelegate.eventOffsetDictionary objectForKey:[self.event.id stringValue]]) {
@@ -100,7 +104,7 @@
     [self.placesDelegate startAnimatingAtTop:sender
                       finishAnimationHandler:^(UICollectionViewCell *cell) {
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.hiddenInviteButton.hidden = NO;
+        weakSelf.hiddenInviteButton.hidden = NO;
         ScrollViewCell *scrollCell = (ScrollViewCell *)cell;
         [UIView animateWithDuration:1 animations:^{
             scrollCell.blueOverlayView.alpha = 1.0f;
@@ -118,36 +122,35 @@
                 UIButton *buttonSender = (UIButton *)sender;
                 __weak typeof(self) weakWeakSelf = weakSelf;
                 buttonSender.tag = 0;
-                [self.placesDelegate goHerePressed:buttonSender withHandler:^(BOOL success, NSError *error) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        CGAffineTransform t = CGAffineTransformMakeScale(0.2f, 0.2f);
-                        weakWeakSelf.hiddenInviteButton.transform = CGAffineTransformTranslate(t, 0, 0);
-                        weakWeakSelf.transform = CGAffineTransformMakeTranslation(0, 0);
-                        weakWeakSelf.hiddenInviteButton.hidden = YES;
-                        scrollCell.blueOverlayView.alpha = 0.8f;
-                        scrollCell.goHereLabel.alpha = 1.0f;
-                        [weakWeakSelf finishAnimationOrNetworkRequest];
-                    });
-                }];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakWeakSelf finishAnimationOrNetworkRequestForCell:scrollCell];
+                });
             }];
         }];
     });
     } postingHandler:^(BOOL success, NSError *error) {
-        [weakSelf finishAnimationOrNetworkRequest];
+        [weakSelf finishAnimationOrNetworkRequestForCell:nil];
     }];
 
 }
 
-- (void)finishAnimationOrNetworkRequest {
+- (void)finishAnimationOrNetworkRequestForCell:(ScrollViewCell *)scrollCell {
     if (self.animationState == STARTED_ANIMATION_AND_NETWORK) {
         self.animationState = ONE_OF_THEM_IS_CONCLUDED;
     }
     else if (self.animationState == ONE_OF_THEM_IS_CONCLUDED) {
         self.animationState = BOTH_OF_THEM_ARE_DONE;
     }
+    if (scrollCell != nil) self.scrollCell = scrollCell;
     
     
     if (self.animationState == BOTH_OF_THEM_ARE_DONE) {
+        CGAffineTransform t = CGAffineTransformMakeScale(0.2f, 0.2f);
+        self.hiddenInviteButton.transform = CGAffineTransformTranslate(t, 0, 0);
+        self.transform = CGAffineTransformMakeTranslation(0, 0);
+        self.hiddenInviteButton.hidden = YES;
+        self.scrollCell.blueOverlayView.alpha = 0.8f;
+        self.scrollCell.goHereLabel.alpha = 1.0f;
         [self.placesDelegate reloadTable];
     }
     
@@ -168,9 +171,8 @@
                     return;
                 }
                 
+                [strongSelf reloadData];
                 [strongSelf saveScrollPosition];
-                [strongSelf updateUI];
-                
                 strongSelf.fetchingEventAttendees = NO;
             }];
         } else {
@@ -246,7 +248,7 @@
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         scrollCell.profileNameLabel.alpha = 1.0f;
         WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
-        [scrollCell setStateForUser:attendee.user];
+        scrollCell.user = attendee.user;
         if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
     }
     return scrollCell;
@@ -330,7 +332,8 @@
     [self.contentView addSubview:self.profileNameLabel];
 }
 
-- (void)setStateForUser:(WGUser *)user {
+- (void)setUser:(WGUser *)user {
+    _user = user;
     self.profileNameLabel.textColor = UIColor.blackColor;
     self.profileNameLabel.alpha = 0.5f;
     CGFloat fontSize = 12.0f;
@@ -351,7 +354,10 @@
         self.profileNameLabel.text = user.firstName;
         self.profileNameLabel.font = [FontProperties lightFont:fontSize];
     });
+
 }
+
+
 
 @end
 

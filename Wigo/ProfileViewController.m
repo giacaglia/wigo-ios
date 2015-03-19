@@ -1219,7 +1219,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.descriptionLabel.center = CGPointMake(self.descriptionLabel.center.x, self.center.y);
     [self.contentView addSubview:self.descriptionLabel];
     
-    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 24, self.frame.size.height/2 - 7, 9, 15)];
+    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
     self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
     self.rightPostImageView.center = CGPointMake(self.rightPostImageView.center.x, self.center.y);
     [self.contentView addSubview:self.rightPostImageView];
