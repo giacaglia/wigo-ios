@@ -239,6 +239,7 @@
         cell.lastMessageImageView.image = blurredImage;
         cell.lastMessageLabel.hidden = YES;
     } else {
+        cell.lastMessageImageView.image = nil;
         cell.lastMessageLabel.textColor = UIColor.blackColor;
         cell.lastMessageLabel.hidden = NO;
     }
