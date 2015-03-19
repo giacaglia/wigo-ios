@@ -65,14 +65,14 @@
 }
 
 -(NSString *)eventName {
-    if (self.properties){
+    if (self.properties && [self.properties class] !=[NSNull class]){
         return [self.properties objectForKey:kEventName];
     }
     return nil;
 }
 
 - (NSNumber *)eventID {
-    if (self.properties) {
+    if (self.properties &&  [self.properties class] !=[NSNull class]) {
         return [self.properties objectForKey:kEventID];
     }
     return nil;
