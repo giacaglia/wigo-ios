@@ -43,7 +43,6 @@
 @property UIImageView *privateLogoImageView;
 @property (nonatomic, strong) UILabel *numberOfChatsLabel;
 @property (nonatomic, strong) UIImageView *orangeChatBubbleImageView;
-@property (nonatomic, strong) UIView *redChatNotification;
 @end
 
 BOOL blockShown;
@@ -348,14 +347,14 @@ BOOL blockShown;
     _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3 + 5, 70);
     [_leftProfileButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     self.numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _leftProfileButton.frame.size.width, 25)];
-    self.numberOfFollowersLabel.textColor = [FontProperties getOrangeColor];
+    self.numberOfFollowersLabel.textColor = RGB(80, 80, 80);
     self.numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
     self.numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
     self.numberOfFollowersLabel.text = [self.user.numFollowers stringValue];
     [_leftProfileButton addSubview:self.numberOfFollowersLabel];
     
     UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _leftProfileButton.frame.size.width, 20)];
-    followersLabel.textColor = [FontProperties getOrangeColor];
+    followersLabel.textColor = RGB(137, 137, 137);
     followersLabel.font = [FontProperties scMediumFont:16];
     followersLabel.textAlignment = NSTextAlignmentCenter;
     followersLabel.text = @"followers";
@@ -366,14 +365,14 @@ BOOL blockShown;
     [_rightProfileButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70);
     self.numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _rightProfileButton.frame.size.width, 25)];
-    self.numberOfFollowingLabel.textColor = [FontProperties getOrangeColor];
+    self.numberOfFollowingLabel.textColor = RGB(80, 80, 80);
     self.numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
     self.numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
     self.numberOfFollowingLabel.text = [self.user.numFollowing stringValue];
     [_rightProfileButton addSubview:self.numberOfFollowingLabel];
     
     UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _rightProfileButton.frame.size.width, 20)];
-    followingLabel.textColor = [FontProperties getOrangeColor];
+    followingLabel.textColor = RGB(137, 137, 137);
     followingLabel.font = [FontProperties scMediumFont:16.0F];
     followingLabel.textAlignment = NSTextAlignmentCenter;
     followingLabel.text = @"following";
@@ -386,7 +385,7 @@ BOOL blockShown;
     chatLabel.textAlignment = NSTextAlignmentCenter;
     if (self.user.isCurrentUser) chatLabel.text = @"chats";
     else chatLabel.text = @"chat";
-    chatLabel.textColor = [FontProperties getOrangeColor];
+    chatLabel.textColor = RGB(137, 137, 137);
     chatLabel.font = [FontProperties scMediumFont:16.0f];
     [_chatButton addSubview:chatLabel];
     
@@ -399,15 +398,7 @@ BOOL blockShown;
     _numberOfChatsLabel.textColor = UIColor.whiteColor;
     _numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
     [_orangeChatBubbleImageView addSubview:_numberOfChatsLabel];
-    
-    _redChatNotification = [[UIView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 + 10, 5, 13, 13)];
-    _redChatNotification.backgroundColor = UIColor.redColor;
-    _redChatNotification.layer.borderColor = [UIColor clearColor].CGColor;
-    _redChatNotification.clipsToBounds = YES;
-    _redChatNotification.layer.borderWidth = 3;
-    _redChatNotification.layer.cornerRadius = 7;
-    _redChatNotification.alpha = 0.0f;
-    [_chatButton addSubview:_redChatNotification];
+ 
     
     [self updateNumberOfChats];
 
@@ -423,11 +414,8 @@ BOOL blockShown;
     if (![unreadChats isEqualToNumber: @0] && [self.user isCurrentUser]) {
         _orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
         _numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
-        [UIView animateWithDuration:1.5f animations:^{
-            _redChatNotification.alpha = 1.0f;
-        }];
+       
     } else {
-        _redChatNotification.alpha = 0.0f;
         _orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
     }
 }
@@ -1231,7 +1219,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.descriptionLabel.center = CGPointMake(self.descriptionLabel.center.x, self.center.y);
     [self.contentView addSubview:self.descriptionLabel];
     
-    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
+    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 24, self.frame.size.height/2 - 7, 9, 15)];
     self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
     self.rightPostImageView.center = CGPointMake(self.rightPostImageView.center.x, self.center.y);
     [self.contentView addSubview:self.rightPostImageView];

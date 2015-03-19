@@ -1692,16 +1692,16 @@ BOOL firstTimeLoading;
     self.privacyLockImageView.hidden = YES;
     [self.privacyLockButton addSubview:self.privacyLockImageView];
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 17, self.frame.size.width - 40, 30)];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 16.5, self.frame.size.width - 40, 20)];
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.backgroundColor = UIColor.whiteColor;
-    self.eventNameLabel.font = [FontProperties mediumFont:18.0f];
+    self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [self.contentView addSubview:self.eventNameLabel];
     
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
-    lineView.backgroundColor = RGB(119, 119, 119);
+    lineView.backgroundColor = RGB(215, 215, 215);
     [self.contentView addSubview:lineView];
     
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40 + 20, self.frame.size.width, 20)];
@@ -1739,20 +1739,20 @@ BOOL firstTimeLoading;
     self.highlightsCollectionView.event = _event;
     self.eventNameLabel.text = _event.name;
     if (_event.numAttending.intValue > 0) {
-        self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"Going (%@)", _event.numAttending];
+        self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ going", _event.numAttending];
     }
     else {
         self.numberOfPeopleGoingLabel.text = @"Going";
     }
 
     CGSize size = [_event.name sizeWithAttributes:
-                @{NSFontAttributeName:[FontProperties mediumFont:18.0f]}];
+                @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (size.width > self.eventNameLabel.frame.size.width) {
             self.eventNameLabel.frame = CGRectMake(10, 3, self.frame.size.width - 40, 50);
         }
         else {
-            self.eventNameLabel.frame = CGRectMake(10, 17, self.frame.size.width - 40, 30);
+            self.eventNameLabel.frame = CGRectMake(10, 16.5, self.frame.size.width - 40, 20);
         }
     });
 
@@ -1900,7 +1900,7 @@ BOOL firstTimeLoading;
     titleLabel.backgroundColor = [UIColor clearColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = [FontProperties scMediumFont: 18.0f];
-    titleLabel.textColor = RGB(210, 210, 210);
+    titleLabel.textColor = [FontProperties getBlueColor];
     titleLabel.text = [dayName lowercaseString];
     titleLabel.center = CGPointMake(self.center.x, titleLabel.center.y);
     [self addSubview: titleLabel];
@@ -1910,7 +1910,7 @@ BOOL firstTimeLoading;
         highlights.backgroundColor = [UIColor clearColor];
         highlights.textAlignment = NSTextAlignmentCenter;
         highlights.font = [FontProperties scMediumFont: 13.0f];
-        highlights.textColor = RGB(210, 210, 210);
+        highlights.textColor = RGB(180, 180, 180);
         highlights.text = @"Highlights From Past";
         [self addSubview: highlights];
         
@@ -1956,18 +1956,13 @@ BOOL firstTimeLoading;
     self.privateIconImageView.hidden = YES;
     [self.contentView addSubview:self.privateIconImageView];
     
-    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.highlightImageView.bounds.size.height - 50, self.frame.size.width - 75, 50)];
+    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.highlightImageView.bounds.size.height - 50, self.frame.size.width - 20, 50)];
     self.oldEventLabel.numberOfLines = 2;
     self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
     self.oldEventLabel.font = [FontProperties mediumFont: 18.0f];
     self.oldEventLabel.textColor = [UIColor whiteColor];
     [self.contentView addSubview:self.oldEventLabel];
     
-    UIImageView *postStoryImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 20, 0, 10, 15)];
-    postStoryImageView.image = [UIImage imageNamed:@"whiteForwardButton"];
-    postStoryImageView.contentMode = UIViewContentModeScaleAspectFit;
-    postStoryImageView.center = CGPointMake(postStoryImageView.center.x, self.oldEventLabel.center.y);
-    [self.contentView addSubview:postStoryImageView];
 }
 
 - (void)loadConversation {

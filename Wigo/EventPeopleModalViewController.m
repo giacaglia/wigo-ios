@@ -37,24 +37,30 @@ int imageWidth;
     backView.image = self.backgroundImage;
     [self.view addSubview:backView];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 24, self.view.frame.size.width - 30, 50)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 50, self.view.frame.size.width - 30, 20)];
+    CGSize size = [self.event.name sizeWithAttributes:
+                   @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
+    if (size.width > self.view.frame.size.width - 30) {
+        titleLabel.frame = CGRectMake(15, 45, self.view.frame.size.width - 30, 42);
+    }
+    
     titleLabel.text = self.event.name;
     titleLabel.textColor = [FontProperties getBlueColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.numberOfLines = 0;
     titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    titleLabel.font = [FontProperties mediumFont:18.0f];
+    titleLabel.font = [FontProperties semiboldFont:18.0f];
     [self.view addSubview:titleLabel];
     
-    UILabel *numberOfPeopleGoing = [[UILabel alloc] initWithFrame:CGRectMake(15, 74 + 10, self.view.frame.size.width - 30, 20)];
-    numberOfPeopleGoing.text = [NSString stringWithFormat:@"Going (%@)", self.event.numAttending.stringValue];
+    UILabel *numberOfPeopleGoing = [[UILabel alloc] initWithFrame:CGRectMake(15, titleLabel.frame.origin.y + titleLabel.frame.size.height + 6, self.view.frame.size.width - 30, 20)];
+    numberOfPeopleGoing.text = [NSString stringWithFormat:@"%@ going", self.event.numAttending.stringValue];
     numberOfPeopleGoing.font = [FontProperties lightFont:16.0f];
-    numberOfPeopleGoing.textColor = UIColor.blackColor;
+    numberOfPeopleGoing.textColor = RGB(119, 119, 119);
     numberOfPeopleGoing.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:numberOfPeopleGoing];
     
     AttendeesLayout *layout = [AttendeesLayout new];
-    self.attendeesPhotosScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, imageWidth + kNameBarHeight + 70) collectionViewLayout:layout];
+    self.attendeesPhotosScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, imageWidth + 70) collectionViewLayout:layout];
     self.attendeesPhotosScrollView.center = CGPointMake(self.view.center.x, self.view.center.y + 10);
     self.attendeesPhotosScrollView.backgroundColor = UIColor.clearColor;
     self.attendeesPhotosScrollView.showsHorizontalScrollIndicator = NO;
@@ -69,8 +75,9 @@ int imageWidth;
     self.attendeesPhotosScrollView.contentOffset = CGPointMake((imageWidth + 10) * self.startIndex, 0);
     
     UIButton *closeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, self.view.frame.size.height - 58, 50, 50)];
+    closeButton.center = CGPointMake(closeButton.center.x, self.view.frame.size.height/2 + self.attendeesPhotosScrollView.frame.size.height/2 + self.attendeesPhotosScrollView.frame.origin.y/2);
     closeButton.backgroundColor = UIColor.clearColor;
-    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12.5, closeButton.frame.size.height - 30, 25, 25)];
+    UIImageView *closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12.5, 12.5, 25, 25)];
     closeImageView.image = [UIImage imageNamed:@"closeProfile"];
     [closeButton addSubview:closeImageView];
     [closeButton addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
@@ -316,7 +323,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
     [self.chatButton addTarget:self action:@selector(chatPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.chatButton.backgroundColor = UIColor.whiteColor;
     UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 10, 10 + 5, 20, 20)];
-    orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
+    orangeChatBubbleImageView.image = [UIImage imageNamed:@"Chats"];
     [self.chatButton addSubview:orangeChatBubbleImageView];
     UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35 - 10 + 10, self.chatButton.frame.size.width, 20)];
     chatLabel.textAlignment = NSTextAlignmentCenter;

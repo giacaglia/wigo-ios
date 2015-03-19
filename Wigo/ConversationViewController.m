@@ -64,8 +64,8 @@ ProfileViewController *profileViewController;
     
     self.automaticallyScrollsToMostRecentMessage = YES;
     
-    UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 1)];
-    bottomLine.backgroundColor = [FontProperties getLightOrangeColor];
+    UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 0.5)];
+    bottomLine.backgroundColor = RGB(180, 180, 180);
     [self.view addSubview:bottomLine];
     
     [[NSNotificationCenter defaultCenter] addObserver:self

@@ -83,7 +83,7 @@
     int tag = (int)buttonSender.tag;
     UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
     imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
-                                                             tintColor:RGBAlpha(255, 255, 255, 0.5f)
+                                                             tintColor:RGBAlpha(255, 255, 255, 0.85f)
                                                  saturationDeltaFactor:1.3
                                                              maskImage:nil];
     

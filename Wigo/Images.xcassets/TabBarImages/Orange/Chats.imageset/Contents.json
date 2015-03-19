@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "chatsImage-2.png"
+      "filename" : "Chats@1x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "chatsImage-1.png"
+      "filename" : "Chats@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "chatsImage.png"
+      "filename" : "Chats.png"
     }
   ],
   "info" : {
