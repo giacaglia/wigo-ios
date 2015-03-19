@@ -322,7 +322,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if(searchText.length != 0) {
-        [self performBlock:^(void){[self searchTableList];}
+        __weak typeof(self) weakSelf = self;
+        [self performBlock:^(void){
+            [weakSelf searchTableList];
+        }
                 afterDelay:0.2
      cancelPreviousRequest:YES];
     } else {
@@ -332,7 +335,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self performBlock:^(void){[self searchTableList];}
+    __weak typeof(self) weakSelf = self;
+    [self performBlock:^(void){
+        [weakSelf searchTableList];
+    }
             afterDelay:0.2
  cancelPreviousRequest:YES];
 }

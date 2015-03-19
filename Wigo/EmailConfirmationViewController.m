@@ -155,7 +155,9 @@ UITextField *emailTextField;
                 } else {
                     if (!strongSelf.showOnboard) {
                         [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
-                        [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
+                        [self dismissViewControllerAnimated:YES completion:nil];
+
+//                        [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
                         strongSelf.showOnboard = YES;
                     }
                 }

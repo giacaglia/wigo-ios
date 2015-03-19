@@ -8,7 +8,6 @@
 
 #import "BatteryViewController.h"
 #import "Globals.h"
-#import "OnboardFollowViewController.h"
 #import "ReferalViewController.h"
 
 NSNumber *currentNumGroups;
@@ -70,7 +69,9 @@ NSNumber *currentNumGroups;
 //                }];
             }
             else {
-                [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
+                [strongSelf dismissViewControllerAnimated:YES completion:nil];
+
+//                [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
             }
         }
     }];
