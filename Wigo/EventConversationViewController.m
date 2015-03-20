@@ -156,6 +156,8 @@
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,-self.facesCollectionView.frame.size.height);
             self.buttonCancel.alpha = 0;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, self.buttonCancel.frame.size.height);
+            self.buttonTrash.alpha = 0;
+            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, self.buttonTrash.frame.size.height);
             self.upVoteButton.alpha = 0;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, self.numberOfVotesLabel.frame.size.height);
             self.numberOfVotesLabel.alpha = 0;
@@ -170,6 +172,8 @@
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,0);
             self.buttonCancel.alpha = 1;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, 0);
+            self.buttonTrash.alpha = 1;
+            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, 0);
             self.upVoteButton.alpha = 1;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, 0);
             self.numberOfVotesLabel.alpha = 1;
