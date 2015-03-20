@@ -605,7 +605,7 @@ BOOL firstTimeLoading;
         lineUnderEventType.backgroundColor = [FontProperties getBlueColor];
         [_eventDetails addSubview:lineUnderEventType];
         
-        _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 50, 240, 40)];
+        _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 40, 240, 40)];
         [_eventDetails addSubview:_privateSwitchView];
         _privateSwitchView.privateString = @"Only you can invite people and only\nthose invited can see the event.";
         _privateSwitchView.publicString =  @"The whole school can see and attend your event.";
@@ -613,13 +613,17 @@ BOOL firstTimeLoading;
         [_privateSwitchView.closeLockImageView stopAnimating];
         [_privateSwitchView.openLockImageView stopAnimating];
         
-        self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 92, self.view.frame.size.width, 30)];
+        self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 82, self.view.frame.size.width, 30)];
         self.invitePeopleLabel.text = _privateSwitchView.explanationString;
         self.invitePeopleLabel.textAlignment = NSTextAlignmentCenter;
         self.invitePeopleLabel.numberOfLines = 2;
         self.invitePeopleLabel.font = [FontProperties openSansRegular:12.0f];
         self.invitePeopleLabel.textColor = [FontProperties getBlueColor];
         [_eventDetails addSubview:self.invitePeopleLabel];
+        
+        if ([UIScreen mainScreen].bounds.size.height == 480) {
+            _eventDetails.frame = CGRectMake(0, 77, self.view.frame.size.width, 30);
+        }
     }
     [_privateSwitchView.closeLockImageView stopAnimating];
     [_privateSwitchView.openLockImageView stopAnimating];

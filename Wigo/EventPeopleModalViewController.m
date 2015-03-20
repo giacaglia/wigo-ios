@@ -71,6 +71,17 @@ int imageWidth;
     [self.attendeesPhotosScrollView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kPeopleModalViewHeader];
      [self.attendeesPhotosScrollView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:kPeopleModalViewFooter];
     [self.view addSubview:self.attendeesPhotosScrollView];
+    
+    // IOS 4
+    if ([UIScreen mainScreen].bounds.size.height == 480) {
+        titleLabel.frame = CGRectMake(15, 25, self.view.frame.size.width - 30, 20);
+        if (size.width > self.view.frame.size.width - 30) {
+            titleLabel.frame = CGRectMake(15, 20, self.view.frame.size.width - 30, 42);
+
+        }
+        numberOfPeopleGoing.frame = CGRectMake(15, titleLabel.frame.origin.y + titleLabel.frame.size.height + 6, self.view.frame.size.width - 30, 20);
+        self.attendeesPhotosScrollView.center = CGPointMake(self.view.center.x, self.view.center.y + 25);
+    }
 
     self.attendeesPhotosScrollView.contentOffset = CGPointMake((imageWidth + 10) * self.startIndex, 0);
     
