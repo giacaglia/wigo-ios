@@ -160,9 +160,7 @@ BOOL blockShown;
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar insertSubview: _gradientImageView atIndex: 0];
     
-    if (!self.pageControl) {
-        [self createPageControl];
-    }
+    if (!self.pageControl) [self createPageControl];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -789,11 +787,10 @@ BOOL blockShown;
             indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
         }
         if (indexPath.row >= self.unexpiredNotifications.count) return notificationCell;
-        WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:[indexPath row]];
+        WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:indexPath.row];
         if (!notification.fromUser.id) return notificationCell;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
-
-        
+        notificationCell.notification = notification;
         return notificationCell;
     } else if (indexPath.section == kImageViewSection) {
         UITableViewCell *imageCell = [tableView dequeueReusableCellWithIdentifier: @"ImageScrollViewCell" forIndexPath:indexPath];
@@ -1195,8 +1192,25 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)setNotification:(WGNotification *)notification {
     _notification = notification;
+    WGUser *user = notification.fromUser;
+    if ([notification.id intValue] > [[WGProfile currentUser].lastNotificationRead intValue]) {
+        self.backgroundColor = [FontProperties getBackgroundLightOrange];
+    } else {
+        self.backgroundColor = UIColor.whiteColor;
+    }
+    [self.profileImageView setSmallImageForUser:user completed:nil];
+    self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];
+    
+    if (user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE || user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+        self.rightPostImageView.hidden = YES;
+    } else {
+        self.rightPostImageView.hidden = NO;
+    }
+    
+    if ([self respondsToSelector:@selector(layoutMargins)]) {
+        self.layoutMargins = UIEdgeInsetsZero;
+    }
 }
-
 
 @end
 

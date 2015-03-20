@@ -7,7 +7,6 @@
 //
 
 #import "ChatViewController.h"
-#import "Globals.h"
 
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
@@ -17,9 +16,6 @@
 @interface ChatViewController () {
     UIView *_lineView;
 }
-
-@property WGCollection *messages;
-@property NSNumber *page;
 @end
 
 
@@ -29,7 +25,7 @@
 {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchFirstPageMessages) name:@"fetchMessages" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchMessages) name:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
 
     for (UIView *view in self.navigationController.navigationBar.subviews) {
@@ -48,7 +44,7 @@
 }
 
 - (void) viewWillAppear:(BOOL)animated {
-    [self fetchFirstPageMessages];
+    [self fetchMessages];
     
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     
@@ -64,7 +60,6 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [WGAnalytics tagEvent:@"Chat View"];
-
 }
 
 - (void) goBack {
@@ -134,53 +129,50 @@
 
 - (void)addRefreshToTableView {
     [WGSpinnerView addDancingGToUIScrollView:self.tableViewOfPeople withHandler:^{
-        [self fetchFirstPageMessages];
+        [self fetchMessages];
     }];
 }
 
 #pragma mark - Network functions
 
-- (void)fetchFirstPageMessages {
-    if (!self.fetchingFirstPage) {
-        self.fetchingFirstPage = YES;
-        [self fetchMessages];
-    }
-}
 
 - (void)fetchMessages {
     __weak typeof(self) weakSelf = self;
-    if (self.fetchingFirstPage) {
-        [WGMessage getConversations:^(WGCollection *collection, NSError *error) {
-            __strong typeof(self) strongSelf = weakSelf;
-            [WGSpinnerView removeDancingGFromCenterView:self.view];
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            strongSelf.messages = collection;
-            strongSelf.fetchingFirstPage = NO;
-            
-            if ([strongSelf.messages count] == 0) {
-                strongSelf.tableViewOfPeople.hidden = YES;
-                strongSelf.chatButton.hidden = NO;
-            } else {
-                strongSelf.tableViewOfPeople.hidden = NO;
-                strongSelf.chatButton.hidden = YES;
-            }
-            strongSelf.fetchingFirstPage = NO;
-            [strongSelf.tableViewOfPeople reloadData];
-            [strongSelf.tableViewOfPeople didFinishPullToRefresh];
-        }];
-    } else if ([_messages.hasNextPage boolValue]) {
-        [_messages addNextPage:^(BOOL success, NSError *error) {
-            __strong typeof(self) strongSelf = weakSelf;
+    if (self.fetchingFirstPage) return;
+
+    self.fetchingFirstPage = YES;
+    [WGMessage getConversations:^(WGCollection *collection, NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        [WGSpinnerView removeDancingGFromCenterView:self.view];
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        strongSelf.messages = collection;
+        if (strongSelf.messages.count == 0) {
+            strongSelf.tableViewOfPeople.hidden = YES;
+            strongSelf.chatButton.hidden = NO;
+        } else {
             strongSelf.tableViewOfPeople.hidden = NO;
             strongSelf.chatButton.hidden = YES;
-            [strongSelf.tableViewOfPeople reloadData];
-            [strongSelf.tableViewOfPeople didFinishPullToRefresh];
-        }];
-    }
+        }
+        strongSelf.fetchingFirstPage = NO;
+        [strongSelf.tableViewOfPeople reloadData];
+        [strongSelf.tableViewOfPeople didFinishPullToRefresh];
+    }];
+    
+}
+
+- (void)fetchNextPage {
+    __weak typeof(self) weakSelf = self;
+    if (!self.messages.hasNextPage.boolValue) return;
+    
+    [self.messages addNextPage:^(BOOL success, NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        [strongSelf.tableViewOfPeople reloadData];
+    }];
+    
 }
 
 - (void)deleteConversationAsynchronusly:(WGMessage *)message {
@@ -207,46 +199,17 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    int hasNextPage = ([_messages.hasNextPage boolValue] ? 1 : 0);
-    return _messages.count + hasNextPage;
+    return self.messages.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kChatCellName forIndexPath:indexPath];
     
-    if (indexPath.row == _messages.count) {
-        [self fetchMessages];
-        return cell;
-    }
-    
-    if (_messages.count  == 0) return cell;
-    WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
-    WGUser *user = [message otherUser];
-   
-    [cell.profileImageView setSmallImageForUser:user completed:nil];
-    cell.nameLabel.text = user.fullName;
-    cell.timeLabel.text = [message.created getUTCTimeStringToLocalTimeString];
-
-    cell.lastMessageLabel.text = message.message;
-    if (message.expired) {
-        cell.lastMessageLabel.textColor = RGB(150, 150, 150);
-        UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[message message]];
-        if (!blurredImage) {
-            blurredImage = [UIImageCrop blurredImageFromImageView:cell.lastMessageImageView withRadius:3.0f];
-            [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:[message message]];
-        }
-        cell.lastMessageImageView.image = blurredImage;
-        cell.lastMessageLabel.hidden = YES;
-    } else {
-        cell.lastMessageImageView.image = nil;
-        cell.lastMessageLabel.textColor = UIColor.blackColor;
-        cell.lastMessageLabel.hidden = NO;
-    }
- 
-    if (![message.isRead boolValue]) cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
-    else cell.contentView.backgroundColor = UIColor.whiteColor;
-    
+    if (indexPath.row == self.messages.count - 1) [self fetchNextPage];
+    if (self.messages.count  == 0) return cell;
+    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
+    cell.message = message;
     return cell;
 }
 
@@ -265,8 +228,8 @@
 
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (_messages.count != 0) {
-        WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
+    if (self.messages.count != 0) {
+        WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
         message.isRead = @YES;
         [self markMessageAsRead:message];
         WGUser *user = [message otherUser];
@@ -277,9 +240,9 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        WGMessage *message = (WGMessage *)[_messages objectAtIndex:[indexPath row]];
+        WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
         [self deleteConversationAsynchronusly:message];
-        [_messages removeObjectAtIndex:[indexPath row]];
+        [self.messages removeObjectAtIndex:[indexPath row]];
         [tableView reloadData];
     }
 }
@@ -362,6 +325,33 @@
     self.lastMessageLabel.numberOfLines = 2;
     self.lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.lastMessageImageView addSubview:self.lastMessageLabel];
+}
+
+- (void)setMessage:(WGMessage *)message {
+    WGUser *user = [message otherUser];
+    
+    [self.profileImageView setSmallImageForUser:user completed:nil];
+    self.nameLabel.text = user.fullName;
+    self.timeLabel.text = [message.created getUTCTimeStringToLocalTimeString];
+    self.lastMessageLabel.text = message.message;
+    
+    if (message.expired) {
+        self.lastMessageLabel.textColor = RGB(150, 150, 150);
+        UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[message message]];
+        if (!blurredImage) {
+            blurredImage = [UIImageCrop blurredImageFromImageView:self.lastMessageImageView withRadius:3.0f];
+            [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:[message message]];
+        }
+        self.lastMessageImageView.image = blurredImage;
+        self.lastMessageLabel.hidden = YES;
+    } else {
+        self.lastMessageImageView.image = nil;
+        self.lastMessageLabel.textColor = UIColor.blackColor;
+        self.lastMessageLabel.hidden = NO;
+    }
+    
+    if (![message.isRead boolValue]) self.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
+    else self.contentView.backgroundColor = UIColor.whiteColor;
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Globals.h"
 
 
 @interface ChatViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
@@ -14,6 +15,7 @@
 @property (nonatomic, strong) UIButton *chatButton;
 @property (nonatomic, assign) BOOL fetchingFirstPage;
 @property (nonatomic, strong) UITableView *tableViewOfPeople;
+@property (nonatomic, strong) WGCollection *messages;
 
 
 @end
@@ -27,5 +29,6 @@
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UILabel *lastMessageLabel;
 @property (nonatomic, strong) UIImageView *lastMessageImageView;
+@property (nonatomic, strong) WGMessage *message;
 
 @end
