@@ -25,6 +25,4 @@
 
 - (UIImage *) getCurrentImage;
 
-- (void)updateImages;
-
 @end

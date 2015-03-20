@@ -23,7 +23,6 @@
 
 - (id)initWithFrame: (CGRect) frame andUser:(WGUser *)user {
     if (self = [super initWithFrame: frame]) {
-        self.user = user;
         
         self.scrollView = [[UIScrollView alloc] initWithFrame: frame];
         self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -31,18 +30,16 @@
         self.scrollView.delegate = self;
         self.scrollView.backgroundColor = UIColor.blackColor;
         self.scrollView.showsHorizontalScrollIndicator = NO;
-    
         [self addSubview: self.scrollView];
-        
+        self.user = user;
         _currentPage = 0;
-        
-        [self updateImages];
     }
     
     return self;
 }
 
-- (void) updateImages {
+- (void)setUser:(WGUser *)user {
+    _user = user;
     [self.scrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
     self.imageViews = [[NSMutableArray alloc] init];
     for (int i = 0; i < [self.user.imagesURL count]; i++) {
@@ -81,7 +78,7 @@
                             [strongSelf.delegate pageChangedTo:0];
                         }
                     });
-        }];
+                }];
         
         [self.imageViews addObject: profileImgView];
         [self.scrollView addSubview:profileImgView];
@@ -113,8 +110,7 @@
     profileImgView.contentMode = UIViewContentModeScaleAspectFill;
     profileImgView.clipsToBounds = YES;
     profileImgView.frame = frame;
-    profileImgView.autoresizingMask = UIViewAutoresizingFlexibleWidth |UIViewAutoresizingFlexibleHeight;
-    
+    profileImgView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     return profileImgView;
 }
 
@@ -166,13 +162,13 @@
     float fractionalPage = self.scrollView.contentOffset.x / pageWidth;
     NSInteger page;
     if (leftBoolean) {
-        if (fractionalPage - floor(fractionalPage) < 0.8) {
+        if (fractionalPage - floor(fractionalPage) < 0.9) {
             page = floor(fractionalPage);
         } else {
             page = ceil(fractionalPage);
         }
     } else {
-        if (fractionalPage - floor(fractionalPage) < 0.2) {
+        if (fractionalPage - floor(fractionalPage) < 0.1) {
             page = floor(fractionalPage);
         } else {
             page = ceil(fractionalPage);

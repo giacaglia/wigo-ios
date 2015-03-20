@@ -124,8 +124,8 @@ BOOL blockShown;
                 else {
                     strongSelf.userState = strongSelf.user.state;
                 }
-                [strongSelf.imageScrollView updateImages];
-                self.pageControl.numberOfPages = [strongSelf.user.imagesURL count];
+                strongSelf.imageScrollView.user = strongSelf.user;
+                strongSelf.pageControl.numberOfPages = strongSelf.user.imagesURL.count;
                 [strongSelf.tableView reloadData];
                 [strongSelf reloadViewForUserState];
             }];
@@ -1000,7 +1000,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             strongSelf.numberOfFollowingLabel.text = [strongSelf.user.numFollowing stringValue];
             [strongSelf updateNumberOfChats];
             strongSelf.imageScrollView.user = WGProfile.currentUser;
-            [strongSelf.imageScrollView updateImages];
             strongSelf.pageControl.numberOfPages = strongSelf.user.imagesURL.count;
             [strongSelf setUserState:WGProfile.currentUser.state];
             [strongSelf reloadViewForUserState];
