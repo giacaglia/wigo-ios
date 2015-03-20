@@ -1359,6 +1359,7 @@ BOOL firstTimeLoading;
       finishAnimationHandler:(CollectionViewResultBlock)handler
               postingHandler:(BoolResultBlock)postHandler
 {
+    if (self.fetchingEventAttendees) return;
     
     // First start doing the network request
     WGProfile.tapAll = NO;
