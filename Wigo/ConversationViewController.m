@@ -287,7 +287,6 @@ ProfileViewController *profileViewController;
 
 - (void)showUser {
     ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser: self.user];
     profileViewController.user = self.user;
     
     self.navigationController.navigationBar.barTintColor = [UIColor clearColor];

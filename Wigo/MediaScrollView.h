@@ -69,7 +69,6 @@
 @property (nonatomic, assign) id <MediaScrollViewDelegate> mediaScrollDelegate;
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) WGEventMessage *eventMessage;
-- (void)updateUI;
 @property (nonatomic, strong) UILabel *numberOfVotesLabel;
 @property (nonatomic, strong) UIButton *upVoteButton;
 @property (nonatomic, strong) UIImageView *upvoteImageView;

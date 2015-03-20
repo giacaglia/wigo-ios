@@ -301,8 +301,7 @@
     WGUser *user = notification.fromUser;
     
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser: user];
-    
+    profileViewController.user = user;    
     [self.navigationController pushViewController: profileViewController animated:YES];
 }
 

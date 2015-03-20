@@ -880,8 +880,7 @@
 - (void)showUser:(WGUser *)user {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ProfileViewController *profileViewController = [sb instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser: user];
-
+    profileViewController.user = user;
     if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     _loadViewFromFront = YES;
     [self.navigationController pushViewController: profileViewController animated: YES];

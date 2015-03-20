@@ -18,7 +18,8 @@
 
 @interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
 
-@property WGUser *user;
+-(id)initWithUser:(WGUser *)user;
+@property (nonatomic, strong) WGUser *user;
 @property State userState;
 
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
@@ -30,11 +31,7 @@
 @property (nonatomic, strong) WGCollection *notifications;
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) ImageScrollView *imageScrollView;
-
-
--(id)initWithUser:(WGUser *)user;
-- (void) setStateWithUser: (WGUser *) user;
-
+@property (nonatomic, strong) UIPageControl *pageControl;
 @end
 
 
@@ -47,10 +44,10 @@
 @interface NotificationCell : UITableViewCell
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UILabel *descriptionLabel;
-
 @property (nonatomic, assign) BOOL isTapped;
 @property (nonatomic, strong) UILabel *tapLabel;
 @property (nonatomic, strong) UIImageView *rightPostImageView;
+@property (nonatomic, strong) WGNotification *notification;
 @end
 
 

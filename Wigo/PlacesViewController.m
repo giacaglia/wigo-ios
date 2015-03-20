@@ -277,7 +277,7 @@ BOOL firstTimeLoading;
 
 - (void)goToChat:(NSNotification *)notification {
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser: WGProfile.currentUser];
+    profileViewController.user = WGProfile.currentUser;
     profileViewController.events = self.events;
     [self.navigationController pushViewController: profileViewController animated: NO];
     
@@ -288,7 +288,7 @@ BOOL firstTimeLoading;
 
 - (void)goToProfile {
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser: WGProfile.currentUser];
+    profileViewController.user = WGProfile.currentUser;
     profileViewController.events = self.events;
     [self.navigationController pushViewController: profileViewController animated: NO];
 }
@@ -503,7 +503,7 @@ BOOL firstTimeLoading;
 - (void)profileSegue {
     if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser: WGProfile.currentUser];
+    profileViewController.user = WGProfile.currentUser;
     profileViewController.placesDelegate = self;
     profileViewController.events = self.events;
 
@@ -1139,16 +1139,16 @@ BOOL firstTimeLoading;
 - (void)showUser:(WGUser *)user {
     self.shouldReloadEvents = NO;
     
-    ProfileViewController *fancyProfileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [fancyProfileViewController setStateWithUser: user];
-    if ([self isPeeking]) fancyProfileViewController.userState = OTHER_SCHOOL_USER_STATE;
+    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    profileViewController.user = user;
+     profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    [self.navigationController pushViewController: fancyProfileViewController animated: YES];
+    [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
 - (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event {
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser: user];
+    profileViewController.user = user;
     if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     [self.navigationController pushViewController: profileViewController animated: YES];

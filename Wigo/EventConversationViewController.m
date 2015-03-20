@@ -678,7 +678,6 @@
     } completion:^(BOOL finished) {
         
         ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-        [profileViewController setStateWithUser: user];
         profileViewController.user = user;
         if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
         
@@ -723,7 +722,6 @@
     if (!_holeView) {
         _holeView = [UIView new];
         ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-        [profileViewController setStateWithUser: WGProfile.currentUser];
         profileViewController.user = WGProfile.currentUser;
         profileViewController.view.backgroundColor = [UIColor clearColor];
         self.modalPresentationStyle = UIModalPresentationCurrentContext;

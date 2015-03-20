@@ -24,8 +24,6 @@
 @property (nonatomic, strong) UIView *headerButtonView;
 @property (nonatomic, strong) UIImageView *nameViewBackground;
 
-@property UIPageControl *pageControl;
-
 @property NSNumber *followRequestSummary;
 
 //favorite
@@ -53,22 +51,17 @@ BOOL blockShown;
 - (id)initWithUser:(WGUser *)user {
     self = [super init];
     if (self) {
-        [self setStateWithUser: user];
+        self.user = user;
+        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
 
-- (void) setStateWithUser: (WGUser *) user {
-    if ([WGProfile currentUser] && user) {
-        self.user = user;
-        self.userState = self.user.state;
-        if (user.isTapped == nil || user.isFollowing == nil) self.userState = NOT_LOADED_STATE;
-        self.view.backgroundColor = [UIColor whiteColor];
-        [self createImageScrollView];
-    }
-   
-    
+- (void)setUser:(WGUser *)user {
+    _user = user;
+    self.userState = user.state;
 }
+
 
 #pragma mark - View Delegate
 - (void) viewDidLoad {
@@ -77,32 +70,13 @@ BOOL blockShown;
     blockShown = NO;
     [self pageChangedTo: 0];
 
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    self.tableView.tableFooterView = [[UIView alloc] initWithFrame: CGRectZero];
-    
-    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
-        [self.tableView setSeparatorInset: UIEdgeInsetsZero];
-    }
-    
-    if ([self.tableView respondsToSelector:@selector(layoutMargins)]) {
-        [self.tableView setLayoutMargins: UIEdgeInsetsMake(0, self.view.frame.size.width, 0, 0)];
-    }
-    
-    self.tableView.separatorColor = RGB(228, 228, 228);
-    self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 0.0f];
-    
-    [self.tableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
-    [self.tableView registerClass:[SummaryCell class] forCellReuseIdentifier:kSummaryCellName];
-    [self.tableView registerClass:[InstaCell class] forCellReuseIdentifier:kInstaCellName];
-    [self.tableView setTableHeaderView: self.imageScrollView];
-    self.tableView.showsVerticalScrollIndicator = NO;
-    
+    [self initializeTableView];
     [self initializeNotificationHandlers];
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
     [self initializeNameOfPerson];
     [self initializeHeaderButtonView];
-    
+
     [self setNeedsStatusBarAppearanceUpdate];
 }
 
@@ -120,8 +94,8 @@ BOOL blockShown;
 
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     
-    [_pageControl removeFromSuperview];
-    _pageControl = nil;
+    [self.pageControl removeFromSuperview];
+    self.pageControl = nil;
     [_gradientImageView removeFromSuperview];
     _gradientImageView = nil;
 }
@@ -151,7 +125,7 @@ BOOL blockShown;
                     strongSelf.userState = strongSelf.user.state;
                 }
                 [strongSelf.imageScrollView updateImages];
-                _pageControl.numberOfPages = [strongSelf.user.imagesURL count];
+                self.pageControl.numberOfPages = [strongSelf.user.imagesURL count];
                 [strongSelf.tableView reloadData];
                 [strongSelf reloadViewForUserState];
             }];
@@ -186,7 +160,7 @@ BOOL blockShown;
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar insertSubview: _gradientImageView atIndex: 0];
     
-    if (!_pageControl) {
+    if (!self.pageControl) {
         [self createPageControl];
     }
     
@@ -203,21 +177,44 @@ BOOL blockShown;
 
 }
 
+- (void)initializeTableView {
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame: CGRectZero];
+    
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset: UIEdgeInsetsZero];
+    }
+    
+    if ([self.tableView respondsToSelector:@selector(layoutMargins)]) {
+        [self.tableView setLayoutMargins: UIEdgeInsetsMake(0, self.view.frame.size.width, 0, 0)];
+    }
+    
+    self.tableView.separatorColor = RGB(228, 228, 228);
+    self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 0.0f];
+    
+    [self.tableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
+    [self.tableView registerClass:[SummaryCell class] forCellReuseIdentifier:kSummaryCellName];
+    [self.tableView registerClass:[InstaCell class] forCellReuseIdentifier:kInstaCellName];
+    [self.tableView setTableHeaderView: self.imageScrollView];
+    self.tableView.showsVerticalScrollIndicator = NO;
+    if (self.user) [self createImageScrollView];
+}
+
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
 }
 
 #pragma mark - Image Scroll View 
 - (void) createPageControl {
-    _pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 20)];
-    _pageControl.enabled = NO;
-    _pageControl.currentPage = 0;
-    _pageControl.currentPageIndicatorTintColor = UIColor.whiteColor;
-    _pageControl.pageIndicatorTintColor = RGBAlpha(255, 255, 255, 0.4f);
-    _pageControl.numberOfPages = [[self.user imagesURL] count];
+    self.pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 20)];
+    self.pageControl.enabled = NO;
+    self.pageControl.currentPage = 0;
+    self.pageControl.currentPageIndicatorTintColor = UIColor.whiteColor;
+    self.pageControl.pageIndicatorTintColor = RGBAlpha(255, 255, 255, 0.4f);
+    self.pageControl.numberOfPages = self.user.imagesURL.count;
   
-    _pageControl.center = CGPointMake(_nameView.center.x, _nameOfPersonLabel.frame.origin.y + _nameOfPersonLabel.frame.size.height);
-    [_nameView addSubview: _pageControl];
+    self.pageControl.center = CGPointMake(_nameView.center.x, _nameOfPersonLabel.frame.origin.y + _nameOfPersonLabel.frame.size.height);
+    [_nameView addSubview: self.pageControl];
 }
 
 - (void) createImageScrollView {
@@ -228,7 +225,7 @@ BOOL blockShown;
 }
 
 - (void)pageChangedTo:(NSInteger)page {
-    _pageControl.currentPage = page;
+    self.pageControl.currentPage = page;
     if (_blurredImages && page < _blurredImages.count) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [_nameViewBackground setImage: [_blurredImages objectAtIndex: page]];
@@ -368,7 +365,7 @@ BOOL blockShown;
     self.numberOfFollowingLabel.textColor = RGB(80, 80, 80);
     self.numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
     self.numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberOfFollowingLabel.text = [self.user.numFollowing stringValue];
+    self.numberOfFollowingLabel.text = self.user.numFollowing.stringValue;
     [_rightProfileButton addSubview:self.numberOfFollowingLabel];
     
     UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _rightProfileButton.frame.size.width, 20)];
@@ -406,7 +403,6 @@ BOOL blockShown;
     [_headerButtonView addSubview:_chatButton];
     [self initializeFollowRequestLabel];
     [self initializeFollowButton];
-
 }
 
 - (void)updateNumberOfChats {
@@ -797,26 +793,6 @@ BOOL blockShown;
         if (!notification.fromUser.id) return notificationCell;
         if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
 
-        WGUser *user = notification.fromUser;
-        if ([notification.id intValue] > [[WGProfile currentUser].lastNotificationRead intValue]) {
-            notificationCell.backgroundColor = [FontProperties getBackgroundLightOrange];
-        } else {
-            notificationCell.backgroundColor = UIColor.whiteColor;
-        }
-        [notificationCell.profileImageView setSmallImageForUser:user completed:nil];
-        notificationCell.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];
-        
-        if (user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
-            user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE ||
-            ![user.eventAttending.id isEqual:notification.eventID]) {
-            notificationCell.rightPostImageView.hidden = YES;
-        } else {
-            notificationCell.rightPostImageView.hidden = NO;
-        }
-        
-        if ([notificationCell respondsToSelector:@selector(layoutMargins)]) {
-            notificationCell.layoutMargins = UIEdgeInsetsZero;
-        }
         
         return notificationCell;
     } else if (indexPath.section == kImageViewSection) {
@@ -946,7 +922,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 -(void) presentUser:(WGUser *)user {
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser:user];
+    profileViewController.user = user;
     profileViewController.events = self.events;
     [self.navigationController pushViewController: profileViewController animated: YES];
 }
@@ -993,7 +969,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     _privateLogoImageView.alpha = MIN(1.0, (defaultLength - scrollView.contentOffset.y)/defaultLength);
     _privateLogoImageView.alpha  = MAX(_privateLogoImageView.alpha, 0);
     
-    _pageControl.alpha = _privateLogoImageView.alpha;
+    self.pageControl.alpha = _privateLogoImageView.alpha;
     _gradientImageView.alpha = _privateLogoImageView.alpha;
     
     _nameViewBackground.alpha = MIN(1.0, lengthFraction);
@@ -1028,7 +1004,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             [strongSelf updateNumberOfChats];
             strongSelf.imageScrollView.user = WGProfile.currentUser;
             [strongSelf.imageScrollView updateImages];
-            _pageControl.numberOfPages = [strongSelf.user.imagesURL count];
+            strongSelf.pageControl.numberOfPages = strongSelf.user.imagesURL.count;
             [strongSelf setUserState:WGProfile.currentUser.state];
             [strongSelf reloadViewForUserState];
         }];
@@ -1108,22 +1084,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber:total];
     }
     
-}
-
-- (void)fetchEvent:(WGEvent *)event {
-//    __weak typeof(self) weakSelf = self;
-//    [event refresh:^(BOOL success, NSError *error) {
-//        if (error) {
-//            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-//            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-//            return;
-//        }
-//        __strong typeof(weakSelf) strongSelf = weakSelf;
-//        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-//        eventStoryViewController.event = event;
-//        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-//        [strongSelf.navigationController pushViewController: eventStoryViewController animated:YES];
-//    }];
 }
 
 
@@ -1232,6 +1192,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.tapLabel.hidden = YES;
     [self.contentView addSubview:self.tapLabel];
 }
+
+- (void)setNotification:(WGNotification *)notification {
+    _notification = notification;
+}
+
 
 @end
 

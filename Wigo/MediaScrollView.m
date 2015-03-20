@@ -101,7 +101,6 @@
         myCell.mediaScrollDelegate = self;
         myCell.eventMessage = eventMessage;
         myCell.isPeeking = self.isPeeking;
-        [myCell updateUI];
         if ([contentURL isKindOfClass:[UIImage class]]) {
             myCell.imageView.image = (UIImage *)contentURL;
         } else {
@@ -156,7 +155,6 @@
         myCell.eventMessage = eventMessage;
         myCell.isPeeking = self.isPeeking;
 
-        [myCell updateUI];
         NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
         if (![thumbnailURL isKindOfClass:[NSNull class]]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
@@ -922,28 +920,27 @@
 
 @implementation MediaCell
 
-- (void)updateUI {
-    if (self.eventMessage.message) {
-        NSString *message = self.eventMessage.message;
+
+- (void)setEventMessage:(WGEventMessage *)eventMessage {
+    _eventMessage = eventMessage;
+    if (eventMessage.message) {
+        NSString *message = eventMessage.message;
         if (message && [message isKindOfClass:[NSString class]]) {
             self.label.hidden = NO;
-            self.label.text = self.eventMessage.message;
+            self.label.text = eventMessage.message;
         }
         else self.label.hidden = YES;
-        if (self.eventMessage.properties) {
-            if (self.eventMessage.properties &&
-                [self.eventMessage.properties isKindOfClass:[NSDictionary class]] &&
-                [[self.eventMessage.properties allKeys] containsObject:@"yPercentage"]) {
-                NSNumber *yPercentage = [self.eventMessage.properties objectForKey:@"yPercentage"];
+        if (eventMessage.properties) {
+            if (eventMessage.properties &&
+                [eventMessage.properties isKindOfClass:[NSDictionary class]] &&
+                [[eventMessage.properties allKeys] containsObject:@"yPercentage"]) {
+                NSNumber *yPercentage = [eventMessage.properties objectForKey:@"yPercentage"];
                 self.label.frame = CGRectMake(0, [yPercentage floatValue]*[[UIScreen mainScreen] bounds].size.height, self.frame.size.width, 40);
             }
         }
     }
     else self.label.hidden = YES;
-    
-    
 }
-
 
 
 - (void)sendVote:(BOOL)upvoteBool {
