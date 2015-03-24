@@ -20,6 +20,8 @@
 @property (nonatomic, assign) NSInteger lastPage;
 @property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
 @property (nonatomic, strong) NSNumber *index;
+@property (nonatomic, strong) NSNumber *numberOfPagesBefore;
+@property (nonatomic, assign) BOOL isFetchingMessages;
 
 #pragma mark - Delegate objects
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;

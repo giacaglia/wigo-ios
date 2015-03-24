@@ -84,7 +84,7 @@
     myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
     if (indexPath.row + 1 == self.eventMessages.count &&
         self.eventMessages.hasNextPage.boolValue) {
-        [self fetchEventMessages];
+        [self fetchNextMessages];
     }
 
     if (indexPath.row == 0 && self.eventMessages.previousPage) {
@@ -185,60 +185,54 @@
     }
 }
 
-- (void)fetchEventMessages {
+
+- (void)fetchNextMessages {
+    if (!self.eventMessages.hasNextPage.boolValue) return;
+    if (self.isFetchingMessages) return;
+    self.isFetchingMessages = YES;
+    
     __weak typeof(self) weakSelf = self;
-    if (!self.eventMessages) {
-        [self.event getMessages:^(WGCollection *collection, NSError *error) {
-            __strong typeof(self) strongSelf = weakSelf;
-            [strongSelf.facesCollectionView didFinishPullToRefresh];
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            strongSelf.eventMessages = collection;
-            [strongSelf.facesCollectionView reloadData];
-        }];
-    } else if (self.eventMessages.hasNextPage.boolValue) {
-        [self.eventMessages addNextPage:^(BOOL success, NSError *error) {
-            __strong typeof(self) strongSelf = weakSelf;
-            [strongSelf.facesCollectionView didFinishPullToRefresh];
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            
-            [strongSelf.mediaScrollView reloadData];
-            [strongSelf.facesCollectionView reloadData];
-        }];
-    }
+    [self.eventMessages addNextPage:^(BOOL success, NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.isFetchingMessages = NO;
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        
+        [strongSelf.mediaScrollView reloadData];
+        [strongSelf.facesCollectionView reloadData];
+    }];
 }
 
 - (void)fetchPreviousMessages {
-    if (self.eventMessages.previousPage) {
-        NSNumber *numberOfPages = [NSNumber numberWithInt:self.eventMessages.count];
-        NSLog(@"called previous page: %@", self.eventMessages.previousPage);
-        __weak typeof(self) weakSelf = self;
-        __weak NSNumber *weakNumberOfPages = numberOfPages;
-        [self.eventMessages addPreviousPage:^(BOOL success, NSError *error) {
-            __strong typeof(self) strongSelf = weakSelf;
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            
-            [strongSelf.mediaScrollView reloadData];
-            [strongSelf.facesCollectionView reloadData];
-            
-            int indexBefore = [strongSelf getPageForScrollView:strongSelf.mediaScrollView toLeft:YES];
-            int differenceOfPages = strongSelf.eventMessages.count - weakNumberOfPages.intValue;
-            int newIndex = indexBefore + differenceOfPages;
-            strongSelf.index = @(newIndex);
-            [strongSelf highlightCellAtPage:newIndex animated:NO];
-        }];
-    }
+    if (!self.eventMessages.previousPage) return;
+    if (self.isFetchingMessages) return;
+    self.isFetchingMessages = YES;
+    
+    self.numberOfPagesBefore = [NSNumber numberWithInt:self.eventMessages.count];
+    __weak typeof(self) weakSelf = self;
+    [self.eventMessages addPreviousPage:^(BOOL success, NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.isFetchingMessages = NO;
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        
+        [strongSelf.mediaScrollView reloadData];
+        [strongSelf.facesCollectionView reloadData];
+        
+        int indexBefore = [strongSelf getPageForScrollView:strongSelf.mediaScrollView toLeft:YES];
+        NSLog(@"index Before: %d", indexBefore);
+        int differenceOfPages = strongSelf.eventMessages.count - strongSelf.numberOfPagesBefore.intValue;
+        int newIndex = indexBefore + differenceOfPages;
+        strongSelf.index = @(newIndex);
+        [strongSelf highlightCellAtPage:newIndex animated:NO];
+    }];
+    
     
 }
 
