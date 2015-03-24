@@ -59,7 +59,6 @@
 
 // Go OUT Button
 @property UIButtonUngoOut *ungoOutButton;
-@property BOOL spinnerAtCenter;
 
 // Events By Days
 @property (nonatomic, strong) NSMutableArray *pastDays;
@@ -95,7 +94,7 @@ BOOL firstTimeLoading;
     }
     
 
-    _spinnerAtCenter = YES;
+    self.spinnerAtCenter = YES;
     [self initializeWhereView];
 }
 
@@ -1255,7 +1254,7 @@ BOOL firstTimeLoading;
     self.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
     self.allEvents = nil;
     [self.placesTableView reloadData];
-    _spinnerAtCenter = YES;
+    self.spinnerAtCenter = YES;
     [self updateTitleView];
     [self fetchEventsFirstPage];
 }
@@ -1302,6 +1301,10 @@ BOOL firstTimeLoading;
     userIndex = uniqueIndex / numberOfEvents;
     eventIndex = uniqueIndex - userIndex * numberOfEvents;
     return @{ @"userIndex": [NSNumber numberWithInt:userIndex], @"eventIndex" : [NSNumber numberWithInt:eventIndex] };
+}
+
+- (void)reloadTable {
+    [self.placesTableView reloadData];
 }
 
 #pragma mark - EventPeopleScrollView Delegate
@@ -1445,10 +1448,12 @@ BOOL firstTimeLoading;
     if (!WGProfile.currentUser.key) handler(NO, nil);
    
     self.fetchingEventAttendees = YES;
-    if (_spinnerAtCenter) [WGSpinnerView addDancingGToCenterView:self.view];
+    if (self.spinnerAtCenter && ![WGSpinnerView isDancingGInCenterView:self.view]) {
+        [WGSpinnerView addDancingGToCenterView:self.view];
+    }
     __weak typeof(self) weakSelf = self;
     if (self.allEvents) {
-        if (!self.allEvents.hasNextPage.boolValue) return;
+        if (!self.allEvents.hasNextPage.boolValue) handler(NO, nil);
        
         [self.allEvents addNextPage:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -1611,8 +1616,8 @@ BOOL firstTimeLoading;
 }
 
 - (void)removeDancingG {
-    _spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [self.placesTableView didFinishPullToRefresh];
-     _spinnerAtCenter = NO;
+    self.spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [self.placesTableView didFinishPullToRefresh];
+     self.spinnerAtCenter = NO;
 }
 
 - (void) fetchUserInfo {
@@ -1668,7 +1673,7 @@ BOOL firstTimeLoading;
     [WGSpinnerView addDancingGToUIScrollView:self.placesTableView
                          withBackgroundColor:RGB(237, 237, 237)
                                  withHandler:^{
-        _spinnerAtCenter = NO;
+        self.spinnerAtCenter = NO;
         [self fetchEventsFirstPage];
         [self fetchUserInfo];
     }];

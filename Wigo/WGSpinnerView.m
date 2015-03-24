@@ -71,6 +71,16 @@
 
 #pragma mark - Dancing G at Center of view
 
++ (BOOL)isDancingGInCenterView:(UIView *)view {
+    for (UIView *subview in [view subviews]) {
+        if ([subview isKindOfClass:[WGImageView class]]) {
+            [(WGImageView *) subview removeFromSuperview];
+            return YES;
+        }
+    }
+    return NO;
+}
+
 + (void)addDancingGToCenterView:(UIView *)view {
     WGImageView *centeredImageView =[[WGImageView alloc] initWithFrame:CGRectMake(view.frame.size.width/2 - 30, view.frame.size.height/2 - 30, 60, 60)];
     NSArray *loadingImages = [WGSpinnerView getLoadingImgs];
