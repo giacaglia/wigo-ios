@@ -491,7 +491,6 @@ BOOL firstTimeLoading;
 
         _ungoOutButton.enabled = NO;
         self.placesTableView.userInteractionEnabled = NO;
-        [self textFieldDidChange:self.whereAreYouGoingTextField];
     }];
 }
 
@@ -580,9 +579,6 @@ BOOL firstTimeLoading;
         self.whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
         [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
         self.whereAreYouGoingTextField.delegate = self;
-        [self.whereAreYouGoingTextField addTarget:self
-                                           action:@selector(textFieldDidChange:)
-                                 forControlEvents:UIControlEventEditingChanged];
         self.whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
         [_whereAreYouGoingView addSubview:self.whereAreYouGoingTextField];
         
@@ -642,7 +638,6 @@ BOOL firstTimeLoading;
 - (void)clearTextField {
     self.placesTableView.userInteractionEnabled = YES;
     self.whereAreYouGoingTextField.text = @"";
-    [self textFieldDidChange:self.whereAreYouGoingTextField];
 }
 
 
@@ -724,24 +719,7 @@ BOOL firstTimeLoading;
     [self.events replaceObjectAtIndex:[self.events indexOfObject:newEvent] withObject:newEvent];
 }
 
-- (void)textFieldDidChange:(UITextField *)textField {
-    [self.filteredEvents removeAllObjects];
-    
-    if([textField.text length] != 0) {
-        _isSearching = YES;
-        [self searchTableList: textField.text];
-        
-        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
-        
-    } else {
-        _isSearching = NO;
-        
-        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
 
-    }
-
-    [self.placesTableView reloadData];
-}
 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -749,18 +727,6 @@ BOOL firstTimeLoading;
     return YES;
 }
 
-- (void)searchTableList:(NSString *)searchString {
-    int index = 0;
-    for (WGEvent *event in self.events) {
-        NSComparisonResult comparisonResult = [event.name compare:searchString options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch ) range:NSMakeRange(0, [searchString length])];
-        
-        if (comparisonResult == NSOrderedSame && ![self.filteredEvents containsObject:event]) {
-            [self.filteredEvents addObject: event];
-        }
-        
-        index += 1;
-    }
-}
 
 #pragma mark - Tablew View Data Source
 
@@ -787,13 +753,8 @@ BOOL firstTimeLoading;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kTodaySection) {
-        if (_isSearching) {
-            int hasNextPage = ([self.filteredEvents.hasNextPage boolValue] ? 1 : 0);
-            return self.filteredEvents.count + hasNextPage;
-        } else {
-            int hasNextPage = ([self.allEvents.hasNextPage boolValue] ? 1 : 0);
-            return self.events.count + hasNextPage + [self shouldShowAggregatePrivateEvents];
-        }
+        int hasNextPage = ([self.allEvents.hasNextPage boolValue] ? 1 : 0);
+        return self.events.count + hasNextPage + [self shouldShowAggregatePrivateEvents];
     }
     else if (section == kHighlightsEmptySection) {
         return 0;
@@ -930,11 +891,7 @@ BOOL firstTimeLoading;
             }
             return cell;
         }
-        if (_isSearching) {
-            if (indexPath.row == self.filteredEvents.count) {
-                return cell;
-            }
-        } else if (indexPath.row == self.events.count && [self shouldShowAggregatePrivateEvents] == 0) {
+        if (indexPath.row == self.events.count && [self shouldShowAggregatePrivateEvents] == 0) {
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
             cell.loadingView.hidden = NO;
             [cell.loadingView startAnimating];
@@ -1016,15 +973,9 @@ BOOL firstTimeLoading;
 
 - (WGEvent *)getEventAtIndexPath:(NSIndexPath *)indexPath {
     WGEvent *event;
-    if (_isSearching) {
-        int sizeOfArray = (int)self.filteredEvents.count;
-        if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return nil;
-        event = (WGEvent *)[self.filteredEvents objectAtIndex:indexPath.row];
-    } else {
-        int sizeOfArray = (int)self.events.count;
-        if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return nil;
-        event = (WGEvent *)[self.events objectAtIndex:indexPath.row];
-    }
+    int sizeOfArray = (int)self.events.count;
+    if (sizeOfArray == 0 || sizeOfArray <= indexPath.row) return nil;
+    event = (WGEvent *)[self.events objectAtIndex:indexPath.row];
     return event;
 }
 
@@ -1422,12 +1373,187 @@ BOOL firstTimeLoading;
 
 
 - (void)fetchEventsWithoutReloadingWithHandler:(BoolResultBlock)handler {
-    if (!self.fetchingEventAttendees && WGProfile.currentUser.key) {
-        self.fetchingEventAttendees = YES;
-        __weak typeof(self) weakSelf = self;
+    if (self.fetchingEventAttendees) handler(NO, nil);
+    if (!WGProfile.currentUser.key)  handler(NO, nil);
+    
+    self.fetchingEventAttendees = YES;
+    __weak typeof(self) weakSelf = self;
+    [WGEvent get:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+        if (error) {
+            strongSelf.fetchingEventAttendees = NO;
+            handler(NO, error);
+            return;
+        }
+        strongSelf.allEvents = collection;
+        strongSelf.pastDays = [[NSMutableArray alloc] init];
+        strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+        strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+        strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+        if (strongSelf.allEvents.count > 0) {
+            WGEvent *aggregateEvent = (WGEvent *)[strongSelf.allEvents objectAtIndex:0];
+            if (aggregateEvent.isAggregate) {
+                strongSelf.aggregateEvent = aggregateEvent;
+                [strongSelf.allEvents removeObjectAtIndex:0];
+            }
+            else strongSelf.aggregateEvent = nil;
+        }
+        for (WGEvent *event in strongSelf.allEvents) {
+            if ([event.isExpired boolValue]) {
+                [strongSelf.oldEvents addObject:event];
+            } else {
+                [strongSelf.events addObject:event];
+            }
+        }
+        
+        for (WGEvent *event in strongSelf.oldEvents) {
+            if (![event highlight]) {
+                continue;
+            }
+            NSString *eventDate = [[event expires] deserialize];
+            if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                [strongSelf.pastDays addObject: eventDate];
+                [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+            }
+            [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+        }
+        
+        strongSelf.fetchingEventAttendees = NO;
+        handler(YES, error);
+    }];
+}
+
+#pragma mark - Network Asynchronous Functions
+
+- (void) fetchEventsFirstPage {
+    if (!self.doNotReloadOffsets) {
+        for (NSString *key in [self.eventOffsetDictionary allKeys]) {
+            [self.eventOffsetDictionary setValue:@0 forKey:key];
+        }
+        self.doNotReloadOffsets = NO;
+    }
+    if (!self.shouldReloadEvents) return;
+    else self.shouldReloadEvents = YES;
+    self.aggregateEvent = nil;
+    self.allEvents = nil;
+    [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
+}
+
+- (void) fetchEventsWithHandler:(BoolResultBlock)handler {
+    if (self.fetchingEventAttendees) return;
+    if (!WGProfile.currentUser.key) return;
+   
+    self.fetchingEventAttendees = YES;
+    if (_spinnerAtCenter) [WGSpinnerView addDancingGToCenterView:self.view];
+    __weak typeof(self) weakSelf = self;
+    if (self.allEvents) {
+        if (!self.allEvents.hasNextPage.boolValue) return;
+       
+        [self.allEvents addNextPage:^(BOOL success, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            [strongSelf removeDancingG];
+            if (error) {
+                strongSelf.fetchingEventAttendees = NO;
+                strongSelf.shouldReloadEvents = YES;
+                handler(success, error);
+                return;
+            }
+            
+            strongSelf.pastDays = [[NSMutableArray alloc] init];
+            strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+            strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+            
+            strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+            for (WGEvent *event in strongSelf.allEvents) {
+                if (event) {
+                    if ([event.isExpired boolValue]) {
+                        [strongSelf.oldEvents addObject:event];
+                    } else {
+                        [strongSelf.events addObject:event];
+                    }
+                }
+            }
+            
+            for (WGEvent *event in strongSelf.oldEvents) {
+                if (![event highlight]) {
+                    continue;
+                }
+                NSString *eventDate = [[event expires] deserialize];
+                if (eventDate) {
+                    if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                        [strongSelf.pastDays addObject: eventDate];
+                        [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                    }
+                    [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                }
+            }
+            
+            strongSelf.fetchingEventAttendees = NO;
+            strongSelf.shouldReloadEvents = YES;
+            [strongSelf.placesTableView reloadData];
+            handler(success, error);
+        }];
+        
+    } else if (self.groupNumberID) {
+        [WGEvent getWithGroupNumber:self.groupNumberID andHandler:^(WGCollection *collection, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            [strongSelf removeDancingG];
+            if (error) {
+                strongSelf.fetchingEventAttendees = NO;
+                strongSelf.shouldReloadEvents = YES;
+                handler(NO, error);
+                return;
+            }
+            
+            strongSelf.allEvents = collection;
+            strongSelf.pastDays = [[NSMutableArray alloc] init];
+            strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
+            strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
+            strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
+            
+            if (strongSelf.allEvents.count > 0) {
+                WGEvent *aggregateEvent = (WGEvent *)[strongSelf.allEvents objectAtIndex:0];
+                if (aggregateEvent.isAggregate) {
+                    strongSelf.aggregateEvent = aggregateEvent;
+                    [strongSelf.allEvents removeObjectAtIndex:0];
+                    
+                }
+                else strongSelf.aggregateEvent = nil;
+            }
+            
+            for (WGEvent *event in strongSelf.allEvents) {
+                if (event) {
+                    if ([event.isExpired boolValue]) {
+                        [strongSelf.oldEvents addObject:event];
+                    } else {
+                        [strongSelf.events addObject:event];
+                    }
+                }
+            }
+            
+            for (WGEvent *event in strongSelf.oldEvents) {
+                if (![event highlight]) {
+                    continue;
+                }
+                NSString *eventDate = [[event expires] deserialize];
+                if (eventDate) {
+                    if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                        [strongSelf.pastDays addObject: eventDate];
+                        [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
+                    }
+                    [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
+                }
+            }
+            
+            strongSelf.fetchingEventAttendees = NO;
+            [strongSelf.placesTableView reloadData];
+            handler(YES, error);
+        }];
+    } else {
         [WGEvent get:^(WGCollection *collection, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
-            [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+            [strongSelf removeDancingG];
             if (error) {
                 strongSelf.fetchingEventAttendees = NO;
                 handler(NO, error);
@@ -1438,7 +1564,6 @@ BOOL firstTimeLoading;
             strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
             strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
             strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-            strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
             if (strongSelf.allEvents.count > 0) {
                 WGEvent *aggregateEvent = (WGEvent *)[strongSelf.allEvents objectAtIndex:0];
                 if (aggregateEvent.isAggregate) {
@@ -1466,200 +1591,13 @@ BOOL firstTimeLoading;
                 }
                 [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
             }
-            
+
             strongSelf.fetchingEventAttendees = NO;
+            [strongSelf.placesTableView reloadData];
             handler(YES, error);
         }];
     }
-    else {
-        handler(NO, nil);
-    }
-}
-
-- (void)reloadTable {
-    [self.placesTableView reloadData];
-}
-
-
-#pragma mark - Network Asynchronous Functions
-
-- (void) fetchEventsFirstPage {
-    if (!self.doNotReloadOffsets) {
-        for (NSString *key in [self.eventOffsetDictionary allKeys]) {
-            [self.eventOffsetDictionary setValue:@0 forKey:key];
-        }
-        self.doNotReloadOffsets = NO;
-    }
-    if (!self.shouldReloadEvents) return;
-    else self.shouldReloadEvents = YES;
-    self.aggregateEvent = nil;
-    self.allEvents = nil;
-    [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
-}
-
-- (void) fetchEventsWithHandler:(BoolResultBlock)handler {
-    if (!self.fetchingEventAttendees && WGProfile.currentUser.key) {
-        self.fetchingEventAttendees = YES;
-        if (_spinnerAtCenter) [WGSpinnerView addDancingGToCenterView:self.view];
-        __weak typeof(self) weakSelf = self;
-        if (self.allEvents) {
-            if ([self.allEvents.hasNextPage boolValue]) {
-                [self.allEvents addNextPage:^(BOOL success, NSError *error) {
-                    __strong typeof(weakSelf) strongSelf = weakSelf;
-                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-                    if (error) {
-                        strongSelf.fetchingEventAttendees = NO;
-                        strongSelf.shouldReloadEvents = YES;
-                        handler(success, error);
-                        return;
-                    }
-                    
-                    strongSelf.pastDays = [[NSMutableArray alloc] init];
-                    strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
-                    strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    
-                    strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                    for (WGEvent *event in strongSelf.allEvents) {
-                        if (event) {
-                            if ([event.isExpired boolValue]) {
-                                [strongSelf.oldEvents addObject:event];
-                            } else {
-                                [strongSelf.events addObject:event];
-                            }
-                        }
-                    }
-                    
-                    for (WGEvent *event in strongSelf.oldEvents) {
-                        if (![event highlight]) {
-                            continue;
-                        }
-                        NSString *eventDate = [[event expires] deserialize];
-                        if (eventDate) {
-                            if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                                [strongSelf.pastDays addObject: eventDate];
-                                [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
-                            }
-                            [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
-                        }
-                    }
-                    
-                    [strongSelf fetchedOneParty];
-                    strongSelf.fetchingEventAttendees = NO;
-                    strongSelf.shouldReloadEvents = YES;
-                    [strongSelf.placesTableView reloadData];
-                    handler(success, error);
-                }];
-            }
-        } else if (self.groupNumberID) {
-            [WGEvent getWithGroupNumber:self.groupNumberID andHandler:^(WGCollection *collection, NSError *error) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-
-                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-
-                if (error) {
-                    strongSelf.fetchingEventAttendees = NO;
-                    strongSelf.shouldReloadEvents = YES;
-                    handler(NO, error);
-                    return;
-                }
-                
-                strongSelf.allEvents = collection;
-                strongSelf.pastDays = [[NSMutableArray alloc] init];
-                strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
-                strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
-                strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                
-                if (strongSelf.allEvents.count > 0) {
-                    WGEvent *aggregateEvent = (WGEvent *)[strongSelf.allEvents objectAtIndex:0];
-                    if (aggregateEvent.isAggregate) {
-                        strongSelf.aggregateEvent = aggregateEvent;
-                        [strongSelf.allEvents removeObjectAtIndex:0];
-                        
-                    }
-                    else strongSelf.aggregateEvent = nil;
-                }
-                
-                for (WGEvent *event in strongSelf.allEvents) {
-                    if (event) {
-                        if ([event.isExpired boolValue]) {
-                            [strongSelf.oldEvents addObject:event];
-                        } else {
-                            [strongSelf.events addObject:event];
-                        }
-                    }
-                }
-                
-                for (WGEvent *event in strongSelf.oldEvents) {
-                    if (![event highlight]) {
-                        continue;
-                    }
-                    NSString *eventDate = [[event expires] deserialize];
-                    if (eventDate) {
-                        if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                            [strongSelf.pastDays addObject: eventDate];
-                            [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
-                        }
-                        [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
-                    }
-                }
-                
-                [strongSelf fetchedOneParty];
-                strongSelf.fetchingEventAttendees = NO;
-                [strongSelf.placesTableView reloadData];
-                handler(YES, error);
-            }];
-        } else {
-            [WGEvent get:^(WGCollection *collection, NSError *error) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-                if (error) {
-                    strongSelf.fetchingEventAttendees = NO;
-                    handler(NO, error);
-                    return;
-                }
-                strongSelf.allEvents = collection;
-                strongSelf.pastDays = [[NSMutableArray alloc] init];
-                strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
-                strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
-                strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                strongSelf.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
-                if (strongSelf.allEvents.count > 0) {
-                    WGEvent *aggregateEvent = (WGEvent *)[strongSelf.allEvents objectAtIndex:0];
-                    if (aggregateEvent.isAggregate) {
-                        strongSelf.aggregateEvent = aggregateEvent;
-                        [strongSelf.allEvents removeObjectAtIndex:0];
-                    }
-                    else strongSelf.aggregateEvent = nil;
-                }
-                for (WGEvent *event in strongSelf.allEvents) {
-                    if ([event.isExpired boolValue]) {
-                        [strongSelf.oldEvents addObject:event];
-                    } else {
-                        [strongSelf.events addObject:event];
-                    }
-                }
-                
-                for (WGEvent *event in strongSelf.oldEvents) {
-                    if (![event highlight]) {
-                        continue;
-                    }
-                    NSString *eventDate = [[event expires] deserialize];
-                    if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
-                        [strongSelf.pastDays addObject: eventDate];
-                        [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
-                    }
-                    [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
-                }
-
-                [strongSelf fetchedOneParty];
-                strongSelf.fetchingEventAttendees = NO;
-                [strongSelf.placesTableView reloadData];
-                handler(YES, error);
-            }];
-        }
-    }
+    
 }
 
 
@@ -1672,58 +1610,56 @@ BOOL firstTimeLoading;
     }];
 }
 
-- (void)fetchedOneParty {
+- (void)removeDancingG {
     _spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [self.placesTableView didFinishPullToRefresh];
      _spinnerAtCenter = NO;
-    self.filteredEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
 }
 
 - (void) fetchUserInfo {
     __weak typeof(self) weakSelf = self;
-    if (!self.fetchingUserInfo && WGProfile.currentUser.key) {
-        self.fetchingUserInfo = YES;
-        [WGProfile reload:^(BOOL success, NSError *error) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            if (!strongSelf.secondTimeFetchingUserInfo) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
-                strongSelf.secondTimeFetchingUserInfo = YES;
-                if (
-                    (error || ![WGProfile.currentUser.emailValidated boolValue] ||
-                    [WGProfile.currentUser.group.locked boolValue])
-                    
-                    &&
-                    
-                    !strongSelf.presentingLockedView )
-                {
-                    strongSelf.fetchingUserInfo = NO;
-                    [strongSelf showFlashScreen];
-                    [strongSelf.signViewController reloadedUserInfo:success andError:error];
-                    return;
-                }
-            }
-            if (error) {
+    if (self.fetchingUserInfo) return;
+    if (!WGProfile.currentUser.key) return;
+    
+    self.fetchingUserInfo = YES;
+    [WGProfile reload:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        
+        
+        if (!strongSelf.secondTimeFetchingUserInfo) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
+            strongSelf.secondTimeFetchingUserInfo = YES;
+            if (
+                (error || ![WGProfile.currentUser.emailValidated boolValue] ||
+                [WGProfile.currentUser.group.locked boolValue])
+                
+                &&
+                
+                !strongSelf.presentingLockedView )
+            {
                 strongSelf.fetchingUserInfo = NO;
-                // Second time fetching user info... already logged in
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:^(BOOL didRetry) {
-                    if (didRetry) {
-                        [strongSelf fetchUserInfo];
-                        [strongSelf fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
-                    }
-                }];
+                [strongSelf showFlashScreen];
+                [strongSelf.signViewController reloadedUserInfo:success andError:error];
                 return;
             }
-            if (!strongSelf.presentingLockedView) {
-                [strongSelf showReferral];
-                [strongSelf showToolTip];
-            }
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
-            [strongSelf initializeNavigationBar];
-            [strongSelf.placesTableView reloadData];
+        }
+        
+        // Second time fetching user info... already logged in
+        if (error) {
             strongSelf.fetchingUserInfo = NO;
-        }];
-    }
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        if (!strongSelf.presentingLockedView) {
+            [strongSelf showReferral];
+            [strongSelf showToolTip];
+        }
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
+        [strongSelf initializeNavigationBar];
+        [strongSelf.placesTableView reloadData];
+        strongSelf.fetchingUserInfo = NO;
+    }];
+   
 }
 
 #pragma mark - Refresh Control
@@ -1779,15 +1715,6 @@ BOOL firstTimeLoading;
     self.backgroundColor = UIColor.whiteColor;
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-//    UIView *whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 161 + 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5 + [HighlightCell height])];
-//    whiteView.backgroundColor = UIColor.whiteColor;
-//    [self.contentView addSubview:whiteView];
-//    
-//    whiteView.layer.shadowColor =  RGB(207, 207, 207).CGColor;
-//    whiteView.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
-//    whiteView.layer.shadowRadius = 6.0f;
-//    whiteView.layer.shadowOpacity = 1.0f;
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
     self.loadingView.hidden = YES;

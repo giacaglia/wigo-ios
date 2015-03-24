@@ -32,7 +32,6 @@
 @property (nonatomic, assign) BOOL fetchingEventAttendees;
 @property (nonatomic, strong) WGCollection *allEvents;
 @property (nonatomic, strong) WGCollection *events;
-@property (nonatomic, strong) WGCollection *filteredEvents;
 @property (nonatomic, strong) WGCollection *oldEvents;
 @property (nonatomic, strong) WGEvent *aggregateEvent;
 @property (nonatomic, strong) NSMutableDictionary *dayToEventObjArray;
