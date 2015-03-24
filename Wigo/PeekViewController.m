@@ -114,9 +114,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchSchools {
+    [WGSpinnerView addDancingGToCenterView:self.view];
     __weak typeof(self) weakSelf = self;
     [WGApi get:@"groups/peek/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (!error) {
             strongSelf.schoolSections = [jsonResponse objectForKey:@"sections"];
             [strongSelf.schoolsTableView reloadData];
