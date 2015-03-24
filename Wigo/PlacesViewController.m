@@ -1441,8 +1441,8 @@ BOOL firstTimeLoading;
 }
 
 - (void) fetchEventsWithHandler:(BoolResultBlock)handler {
-    if (self.fetchingEventAttendees) return;
-    if (!WGProfile.currentUser.key) return;
+    if (self.fetchingEventAttendees) handler(NO, nil);
+    if (!WGProfile.currentUser.key) handler(NO, nil);
    
     self.fetchingEventAttendees = YES;
     if (_spinnerAtCenter) [WGSpinnerView addDancingGToCenterView:self.view];
@@ -1686,7 +1686,7 @@ BOOL firstTimeLoading;
     for (WGEvent* event in self.events) {
         if ([event.attendees containsObject:WGProfile.currentUser]) {
             [event.attendees removeObject:WGProfile.currentUser];
-            event.numAttending = @([event.numAttending intValue] - 1);
+            event.numAttending = @(event.numAttending.intValue - 1);
         }
     }
 }
