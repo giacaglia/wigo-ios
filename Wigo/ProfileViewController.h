@@ -32,6 +32,8 @@
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) ImageScrollView *imageScrollView;
 @property (nonatomic, strong) UIPageControl *pageControl;
+@property (nonatomic, strong) NSNumber *followRequestSummary;
+
 @end
 
 
@@ -39,6 +41,7 @@
 @interface SummaryCell : UITableViewCell
 @property (nonatomic, strong) UILabel *numberOfRequestsLabel;
 @end
+
 
 #define kNotificationCellName @"notificationCellName"
 @interface NotificationCell : UITableViewCell
@@ -52,8 +55,9 @@
 
 
 @interface GoOutsCell: UITableViewCell
-- (void) setLabelsForUser: (WGUser *) user;
 + (CGFloat) rowHeight;
+@property (nonatomic, strong) WGUser *user;
+@property (nonatomic, strong) NSNumber *lastCount;
 @property (nonatomic, strong) UILabel *numberLabel;
 @property (nonatomic, strong) UILabel *titleLabel;
 @end
@@ -61,17 +65,16 @@
 #define kInstaCellName @"instaCellName"
 @interface InstaCell : UITableViewCell
 + (CGFloat) rowHeight;
+@property (nonatomic, strong) WGUser *user;
 @property (nonatomic, strong) UILabel *instaLabel;
-- (void) setLabelForUser: (WGUser *) user;
 - (BOOL)hasInstaTextForUser:(WGUser *)user;
 @end
 
 @interface InviteCell: UITableViewCell
-- (void) setLabelsForUser: (WGUser *) user;
+@property (nonatomic, strong) WGUser *user;
 @property (nonatomic, assign) id<InviteCellDelegate> delegate;
 + (CGFloat) rowHeight;
 @property (nonatomic, strong) IBOutlet UIButton *inviteButton;
 @property (nonatomic, strong) IBOutlet UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *tappedLabel;
-
 @end

@@ -113,6 +113,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(NSDictionary *) smallCoverImageArea;
 -(NSArray *) imagesArea;
 -(NSArray *) imagesURL;
+-(NSArray *) smallImagesURL;
 -(void) addImageURL:(NSString *)imageURL;
 -(void) addImageDictionary:(NSDictionary *)imageDictionary;
 

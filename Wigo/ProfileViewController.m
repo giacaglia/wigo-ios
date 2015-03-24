@@ -24,7 +24,6 @@
 @property (nonatomic, strong) UIView *headerButtonView;
 @property (nonatomic, strong) UIImageView *nameViewBackground;
 
-@property NSNumber *followRequestSummary;
 
 //favorite
 @property UIButton *leftProfileButton;
@@ -125,7 +124,7 @@ BOOL blockShown;
                     strongSelf.userState = strongSelf.user.state;
                 }
                 strongSelf.imageScrollView.user = strongSelf.user;
-                strongSelf.pageControl.numberOfPages = strongSelf.user.imagesURL.count;
+                strongSelf.pageControl.numberOfPages = strongSelf.user.images.count;
                 [strongSelf.tableView reloadData];
                 [strongSelf reloadViewForUserState];
             }];
@@ -167,8 +166,8 @@ BOOL blockShown;
     [self reloadViewForUserState];
     
     if ([self.user isEqual:WGProfile.currentUser]) {
-        _followRequestSummary = @0;
-        [self fetchNotifications];
+        self.followRequestSummary = @0;
+        [self fetchFirstPageNotifications];
         [self updateBadge];
         [self fetchSummaryOfFollowRequests];
     }
@@ -189,13 +188,12 @@ BOOL blockShown;
     
     self.tableView.separatorColor = RGB(228, 228, 228);
     self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 0.0f];
-    
     [self.tableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
     [self.tableView registerClass:[SummaryCell class] forCellReuseIdentifier:kSummaryCellName];
     [self.tableView registerClass:[InstaCell class] forCellReuseIdentifier:kInstaCellName];
-    [self.tableView setTableHeaderView: self.imageScrollView];
     self.tableView.showsVerticalScrollIndicator = NO;
     if (self.user) [self createImageScrollView];
+    [self.tableView reloadData];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -221,6 +219,8 @@ BOOL blockShown;
     self.imageScrollView.delegate = self;
     [self.tableView reloadData];
 }
+
+
 
 - (void)pageChangedTo:(NSInteger)page {
     self.pageControl.currentPage = page;
@@ -710,7 +710,7 @@ BOOL blockShown;
 
 - (BOOL)shouldShowFollowSummary {
     if ((self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) &&
-        (![_followRequestSummary isEqualToNumber:@0] && _followRequestSummary)
+        (![self.followRequestSummary isEqualToNumber:@0] && self.followRequestSummary)
         ) {
         return YES;
     }
@@ -753,55 +753,44 @@ BOOL blockShown;
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kGoOutsSection) {
+    if (indexPath.section == kImageViewSection) {
+        UITableViewCell *imageCell = [tableView dequeueReusableCellWithIdentifier: @"ImageScrollViewCell" forIndexPath:indexPath];
+        [self.imageScrollView removeFromSuperview];
+        [imageCell.contentView addSubview: self.imageScrollView];
+        return imageCell;
+    } else if (indexPath.section == kGoOutsSection) {
         GoOutsCell *goOutsCell = [tableView dequeueReusableCellWithIdentifier: @"GoOutsCell" forIndexPath:indexPath];
-        [goOutsCell setLabelsForUser: self.user];
-        
-        if ([goOutsCell respondsToSelector:@selector(layoutMargins)]) {
-            goOutsCell.layoutMargins = UIEdgeInsetsMake(0, goOutsCell.contentView.frame.size.width, 0, 0);
-        }
-        
+        goOutsCell.user = self.user;
         return goOutsCell;
     } else if (indexPath.section == kNotificationsSection) {
         if ([self isIndexPathASummaryCell:indexPath]) {
             SummaryCell *summaryCell = [tableView dequeueReusableCellWithIdentifier:kSummaryCellName forIndexPath:indexPath];
-            summaryCell.numberOfRequestsLabel.text = [_followRequestSummary stringValue];
-            
-            if ([summaryCell respondsToSelector:@selector(layoutMargins)]) {
-                summaryCell.layoutMargins = UIEdgeInsetsZero;
-            }
-            
+            summaryCell.numberOfRequestsLabel.text = self.followRequestSummary.stringValue;
             return summaryCell;
         }
         if ([self shouldShowInviteCell] && indexPath.row == 0) {
             InviteCell *inviteCell = [tableView dequeueReusableCellWithIdentifier:@"InviteCell" forIndexPath:indexPath];
             inviteCell.delegate = self;
-            [inviteCell setLabelsForUser:self.user];
+            inviteCell.user = self.user;
             return inviteCell;
         }
         if ([self shouldShowInviteCell]) {
              indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
         }
         NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
-        if ([_followRequestSummary intValue] > 0) {
+        if (self.followRequestSummary.intValue > 0) {
             indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
         }
         if (indexPath.row >= self.unexpiredNotifications.count) return notificationCell;
         WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:indexPath.row];
         if (!notification.fromUser.id) return notificationCell;
-        if ([[notification type] isEqualToString:@"group.unlocked"]) return notificationCell;
+        if ([notification.type isEqual:@"group.unlocked"]) return notificationCell;
         notificationCell.notification = notification;
         return notificationCell;
-    } else if (indexPath.section == kImageViewSection) {
-        UITableViewCell *imageCell = [tableView dequeueReusableCellWithIdentifier: @"ImageScrollViewCell" forIndexPath:indexPath];
-        
-        [self.imageScrollView removeFromSuperview];
-        [imageCell.contentView addSubview: self.imageScrollView];
-        return imageCell;
     }
     else if (indexPath.section == kInstagramSection) {
         InstaCell *instaCell = [tableView dequeueReusableCellWithIdentifier: kInstaCellName forIndexPath:indexPath];
-        [instaCell setLabelForUser:self.user];
+        instaCell.user = self.user;
         return instaCell;
     }
     
@@ -847,16 +836,16 @@ BOOL blockShown;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kGoOutsSection) {
+    if (indexPath.section == kImageViewSection) {
+        return self.imageScrollView.frame.size.height - _nameView.frame.size.height;
+    }
+    else if (indexPath.section == kGoOutsSection) {
         return [GoOutsCell rowHeight];
     }
     else if (indexPath.section == kNotificationsSection) {
         return 65;
     }
-    else if (indexPath.section == kImageViewSection) {
-        return self.imageScrollView.frame.size.height - _nameView.frame.size.height;
-    }
-    if (indexPath.section == kInstagramSection) {
+    else if (indexPath.section == kInstagramSection) {
         return [InstaCell rowHeight];
     }
     return 0;
@@ -889,15 +878,17 @@ BOOL blockShown;
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kNotificationsSection && [self.user isCurrentUser]) {
+    if (indexPath.section == kNotificationsSection && self.user.isCurrentUser) {
         if ([self isIndexPathASummaryCell:indexPath]) {
             [self.navigationController pushViewController:[FollowRequestsViewController new] animated:YES];
         } else {
-            if ([_followRequestSummary intValue] > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
+            if (self.followRequestSummary.intValue > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
             WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:indexPath.row];
             WGUser *user = notification.fromUser;
            
-            if ([notification.type isEqualToString:@"follow"] || [notification.type isEqualToString:@"follow.accepted"] || [notification.type isEqualToString:@"facebook.follow"]) {
+            if ([notification.type isEqualToString:@"follow"] ||
+                [notification.type isEqualToString:@"follow.accepted"] ||
+                [notification.type isEqualToString:@"facebook.follow"]) {
                 [self presentUser:user];
             } else if (user.state != NOT_YET_ACCEPTED_PRIVATE_USER_STATE &&
                        user.state != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
@@ -958,7 +949,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (scrollView.contentOffset.y < 0) {
         scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
     }
-    
 
     CGFloat defaultLength = self.imageScrollView.frame.size.height - _nameView.frame.size.height;
     CGFloat lengthFraction = (defaultLength - scrollView.contentOffset.y)/defaultLength;
@@ -991,73 +981,71 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Notifications Network requests
 
 - (void) fetchUserInfo {
-    if ([WGProfile currentUser].key) {
-        __weak typeof(self) weakSelf = self;
-        [WGProfile reload:^(BOOL success, NSError *error) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            strongSelf.user = WGProfile.currentUser;
-            strongSelf.numberOfFollowersLabel.text = [strongSelf.user.numFollowers stringValue];
-            strongSelf.numberOfFollowingLabel.text = [strongSelf.user.numFollowing stringValue];
-            [strongSelf updateNumberOfChats];
-            strongSelf.imageScrollView.user = WGProfile.currentUser;
-            strongSelf.pageControl.numberOfPages = strongSelf.user.imagesURL.count;
-            [strongSelf setUserState:WGProfile.currentUser.state];
-            [strongSelf reloadViewForUserState];
-        }];
-    }
+    if (!WGProfile.currentUser.key) return;
+    
+    __weak typeof(self) weakSelf = self;
+    [WGProfile reload:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.user = WGProfile.currentUser;
+        strongSelf.numberOfFollowersLabel.text = [strongSelf.user.numFollowers stringValue];
+        strongSelf.numberOfFollowingLabel.text = [strongSelf.user.numFollowing stringValue];
+        [strongSelf updateNumberOfChats];
+        strongSelf.imageScrollView.user = WGProfile.currentUser;
+        strongSelf.pageControl.numberOfPages = strongSelf.user.images.count;
+        [strongSelf reloadViewForUserState];
+    }];
+    
 }
 
-- (void)fetchNotifications {
+- (void)fetchFirstPageNotifications {
+    if (self.isFetchingNotifications) return;
+    self.isFetchingNotifications = YES;
+    
     __weak typeof(self) weakSelf = self;
-    if (!self.isFetchingNotifications) {
-        self.isFetchingNotifications = YES;
-        if (!self.notifications || self.notifications.hasNextPage == nil) {
-            [WGNotification get:^(WGCollection *collection, NSError *error) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                strongSelf.isFetchingNotifications = NO;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                strongSelf.notifications = collection;
-                if (!strongSelf.unexpiredNotifications) strongSelf.unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
-                for (WGNotification *notification in strongSelf.notifications) {
-                    if (![notification isFromLastDay]) {
-                        [strongSelf.unexpiredNotifications addObject:notification];
-                    }
-                }
-                strongSelf.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
-                [strongSelf.tableView reloadData];
-                [strongSelf.tableView didFinishPullToRefresh];
-                strongSelf.isFetchingNotifications = NO;
-            }];
-        } else if ([self.notifications.hasNextPage boolValue]) {
-            [self.notifications getNextPage:^(WGCollection *collection, NSError *error) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                strongSelf.isFetchingNotifications = NO;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                for (WGNotification *notification in collection) {
-                    [strongSelf.notifications addObject:notification];
-                    if (![notification isFromLastDay]) {
-                        if (![strongSelf.unexpiredNotifications containsObject:notification]) {
-                            [strongSelf.unexpiredNotifications addObject:notification];
-                        }
-                    }
-                }
-                strongSelf.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
-                [strongSelf.tableView reloadData];
-                [strongSelf.tableView didFinishPullToRefresh];
-                strongSelf.isFetchingNotifications = NO;
-            }];
-        } else {
-            self.isFetchingNotifications = NO;
+    [WGNotification get:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.isFetchingNotifications = NO;
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
         }
-    }
+        strongSelf.notifications = collection;
+        if (!strongSelf.unexpiredNotifications) strongSelf.unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
+        for (WGNotification *notification in strongSelf.notifications) {
+            if (![notification isFromLastDay]) {
+                [strongSelf.unexpiredNotifications addObject:notification];
+            }
+        }
+        strongSelf.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
+        [strongSelf.tableView reloadData];
+        [strongSelf.tableView didFinishPullToRefresh];
+    }];
+}
+
+- (void)fetchNextPageNotifications {
+    if (self.isFetchingNotifications || !self.notifications.hasNextPage.boolValue) return;
+    self.isFetchingNotifications = YES;
+    
+    __weak typeof(self) weakSelf = self;
+    [self.notifications getNextPage:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.isFetchingNotifications = NO;
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        for (WGNotification *notification in collection) {
+            [strongSelf.notifications addObject:notification];
+            if (![notification isFromLastDay]) {
+                if (![strongSelf.unexpiredNotifications containsObject:notification]) {
+                    [strongSelf.unexpiredNotifications addObject:notification];
+                }
+            }
+        }
+        [strongSelf.tableView reloadData];
+    }];
 }
 
 - (void)updateLastNotificationsRead {
@@ -1092,7 +1080,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             return;
         }
         __strong typeof(weakSelf) strongSelf = weakSelf;
-        _followRequestSummary = followRequest;
+        strongSelf.followRequestSummary = followRequest;
         [strongSelf.tableView reloadData];
     }];
 }
@@ -1134,6 +1122,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     rightArrowImageView.frame = CGRectMake(self.frame.size.width - 35, self.frame.size.height/2 - 9, 11, 18);
     rightArrowImageView.center = CGPointMake(rightArrowImageView.center.x, self.center.y);
     [self.contentView addSubview:rightArrowImageView];
+    
+    if ([self respondsToSelector:@selector(layoutMargins)]) {
+        self.layoutMargins = UIEdgeInsetsZero;
+    }
 }
 
 
@@ -1213,75 +1205,71 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 @end
 
-@interface GoOutsCell() {
-    NSNumber *_lastCount;
-}
-
-@end
 @implementation GoOutsCell
 
 #define kTitleTemplate @"times out this semester"
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder: aDecoder];
-    
-    _lastCount = nil;
+    if (self ) {
+        [self setup];
+    }
     
     return self;
 }
 
 
-+ (CGFloat)rowHeight {
-    return 100.0f;
-}
-
-- (void) setLabelsForUser: (WGUser *) user {
-    
-    NSNumber *newCount = (NSNumber *)[user objectForKey:@"period_went_out"];
-    
-    if (_lastCount && [_lastCount isEqualToNumber: newCount]) {
-        return;
-    }
-    
-    newCount = newCount;
-    _lastCount = newCount;
-    
-    for (UIView *subview in self.contentView.subviews) {
-        [subview removeFromSuperview];
-    }
-    
-    
-    UIFont *numberLabelFont = [FontProperties lightFont: 55];
-    
-    NSDictionary *attributes = @{NSFontAttributeName: numberLabelFont};
-    CGSize numberSize = [[newCount stringValue] sizeWithAttributes: attributes];
-
-    CGFloat spacerSize = 10.0f;
-    CGFloat titleWidth = 137.0f;
-
-    CGFloat contentWidth = numberSize.width + spacerSize + titleWidth;
-    CGFloat sideSpacing = (self.contentView.bounds.size.width - contentWidth)/2;
-    
-    self.numberLabel = [[UILabel alloc] initWithFrame: CGRectMake(sideSpacing, 0, numberSize.width, self.contentView.frame.size.height)];
-    self.numberLabel.text = [newCount stringValue];
+- (void)setup {
+    self.lastCount = nil;
+    self.numberLabel = [[UILabel alloc] init];
     self.numberLabel.textAlignment = NSTextAlignmentRight;
-    self.numberLabel.font = numberLabelFont;
+    self.numberLabel.font = [FontProperties lightFont: 55];
     self.numberLabel.textColor = [FontProperties getOrangeColor];
     [self.contentView addSubview: self.numberLabel];
-
-    self.titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(sideSpacing + numberSize.width + spacerSize, 0, titleWidth, self.contentView.frame.size.height)];
+    
+    self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.text = [NSString stringWithFormat: kTitleTemplate];
     self.titleLabel.font = [FontProperties lightFont: 24];
     self.titleLabel.textColor = [UIColor lightGrayColor];
     self.titleLabel.numberOfLines = 2;
     [self.contentView addSubview: self.titleLabel];
+
+    if ([self respondsToSelector:@selector(layoutMargins)]) {
+        self.layoutMargins = UIEdgeInsetsMake(0, self.contentView.frame.size.width, 0, 0);
+    }
+
+}
+
++ (CGFloat)rowHeight {
+    return 100.0f;
+}
+
+- (void)setUser:(WGUser *)user {
+    _user = user;
+    NSNumber *newCount = (NSNumber *)[user objectForKey:@"period_went_out"];
+    
+    if (self.lastCount && [self.lastCount isEqualToNumber: newCount]) {
+        return;
+    }
+    
+    newCount = newCount;
+    self.lastCount = newCount;
+
+    UIFont *numberLabelFont = [FontProperties lightFont: 55];
+    NSDictionary *attributes = @{NSFontAttributeName: numberLabelFont};
+    CGSize numberSize = [[newCount stringValue] sizeWithAttributes: attributes];
+    CGFloat spacerSize = 10.0f;
+    CGFloat titleWidth = 137.0f;
+    CGFloat contentWidth = numberSize.width + spacerSize + titleWidth;
+    CGFloat sideSpacing = (self.contentView.bounds.size.width - contentWidth)/2;
+    self.numberLabel.frame = CGRectMake(sideSpacing, 0, numberSize.width, self.contentView.frame.size.height);
+    self.numberLabel.text = newCount.stringValue;
+    self.titleLabel.frame = CGRectMake(sideSpacing + numberSize.width + spacerSize, 0, titleWidth, self.contentView.frame.size.height);
 }
 
 @end
 
-
 @implementation InstaCell
-
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -1311,7 +1299,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.contentView addSubview:self.instaLabel];
 }
 
-- (void) setLabelForUser: (WGUser *) user {
+- (void)setUser:(WGUser *)user {
+    _user = user;
     if ([self hasInstaTextForUser:user]) {
         NSMutableAttributedString * string = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"Instagram: %@", user.instaHandle]];
         [string addAttribute:NSForegroundColorAttributeName value:UIColor.grayColor range:NSMakeRange(0,10)];
@@ -1319,6 +1308,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         self.instaLabel.attributedText = string;
     }
 }
+
 
 - (BOOL)hasInstaTextForUser:(WGUser *)user {
     return user.instaHandle && user.instaHandle.length > 0 && ![user.instaHandle isEqual:@"@"];
@@ -1334,13 +1324,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self setup];
 }
 
-
 + (CGFloat)rowHeight {
     return 70.0f;
 }
 
-- (void) setLabelsForUser: (WGUser *) user {
-    if ([user isCurrentUser]) {
+- (void)setUser:(WGUser *)user {
+    _user = user;
+    if (user.isCurrentUser) {
         self.inviteButton.hidden = YES;
         self.inviteButton.enabled = NO;
         self.titleLabel.hidden = YES;
@@ -1354,7 +1344,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         self.titleLabel.hidden = YES;
         self.tappedLabel.alpha = 0;
         } else {
-        if ([user.isTapped boolValue]) {
+        if (user.isTapped.boolValue) {
             self.inviteButton.hidden = YES;
             self.inviteButton.enabled = NO;
             self.titleLabel.hidden = YES;

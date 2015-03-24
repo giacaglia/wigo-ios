@@ -322,7 +322,10 @@ static WGUser *currentUser = nil;
 
 -(NSArray *) images {
     NSDictionary *properties = self.properties;
-    return [properties objectForKey:kImagesKey];
+    if ([properties.allKeys containsObject:kImagesKey]) {
+        return [properties objectForKey:kImagesKey];
+    }
+    return [NSArray new];
 }
 
 -(void) setImages:(NSArray *)images {
@@ -496,7 +499,15 @@ static WGUser *currentUser = nil;
         NSArray *images = [self.properties objectForKey:kImagesKey];
         return [images valueForKey:kURLKey];
     }
-    else return [[NSArray alloc] init];
+    return [NSArray new];
+}
+
+-(NSArray *) smallImagesURL {
+    NSArray *images = [self images];
+    if (self.properties && images) {
+        return [images valueForKey:kSmallKey];
+    }
+    return [NSArray new];
 }
 
 -(NSDictionary *) coverImageArea {
