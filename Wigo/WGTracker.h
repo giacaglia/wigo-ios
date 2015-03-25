@@ -7,7 +7,75 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Globals.h"
+
+#ifdef DEBUG
+static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/dev/track";
+#else
+static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/dev/track";
+#endif
+
+// Object keys
+#define kObjectID @"id"
+#define kObjectName @"name"
+
+// User keys
+#define kUserKey @"user"
+#define kTargetUserKey @"target_user"
+#define kUserEmailKey @"email"
+#define kUserGenderKey @"gender"
+#define kUserNumFollowingKey @"num_following"
+#define kUserNumFollowersKey @"num_followers"
+#define kUserPeriodWentOutKey @"period_went_out"
+
+// Group keys
+#define kGroupKey @"group"
+#define kTargetGroupKey @"target_group"
+#define kGroupLockedKey @"locked"
+#define kGroupNumMembersKey @"num_members"
+
+// Client metadata keys
+#define kClientKey @"client"
+#define kRemoteAddress @"remote_addr"
+#define kUserAgent @"user_agent"
+#define kOS @"os"
+
+// Application Information keys
+#define kApplicationKey @"application"
+#define kAppNameKey @"name"
+#define kVersionKey @"version"
+#define kPlatformKey @"platform"
+
+// Form keys
+#define kTimeKey @"time"
+#define kTypeKey @"type"
+#define kCategoryKey @"category"
+#define kSessionKey @"session_id"
+
+//Event keys
+#define kEventKey @"event"
+#define KNumAttendingKey @"num_attending"
+
+//Event Message keys
+#define kEventMesssageKey @"event_message"
+#define kMediaMimeTypeKey @"media_mime_type"
+#define kUpVotesKey @"up_votes"
+
+#define kViewID @"view_id"
+#define kSubviewID @"sub_view_id"
+#define kPreviousViewID @"previous_view_id"
+
 
 @interface WGTracker : NSObject
+
+@property (nonatomic, strong) NSMutableDictionary *mutDict;
+-(void)setValue:(id)value forKey:(NSString *)key;
+-(void)setGroup:(WGGroup *)group;
+-(void)setUser:(WGUser *)user;
+-(void)postViewWithName:(NSString *)viewName;
+-(void)postActionWithName:(NSString *)actionName;
+- (void)postActionWithName:(NSString *)actionName
+               andCategory:(NSString *)category;
++(NSString *)getTimeNow;
 
 @end

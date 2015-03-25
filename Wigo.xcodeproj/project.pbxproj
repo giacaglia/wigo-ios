@@ -336,8 +336,6 @@
 		E9A765941AC2005A00F7C016 /* WGI.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765921AC2005A00F7C016 /* WGI.m */; };
 		E9A765971AC2012C00F7C016 /* WGTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765961AC2012C00F7C016 /* WGTracker.m */; };
 		E9A765981AC2012C00F7C016 /* WGTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765961AC2012C00F7C016 /* WGTracker.m */; };
-		E9A7659B1AC201AD00F7C016 /* WGDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A7659A1AC201AD00F7C016 /* WGDictionary.m */; };
-		E9A7659C1AC201AD00F7C016 /* WGDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A7659A1AC201AD00F7C016 /* WGDictionary.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */; };
@@ -789,8 +787,6 @@
 		E9A765921AC2005A00F7C016 /* WGI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGI.m; sourceTree = "<group>"; };
 		E9A765951AC2012C00F7C016 /* WGTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGTracker.h; sourceTree = "<group>"; };
 		E9A765961AC2012C00F7C016 /* WGTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGTracker.m; sourceTree = "<group>"; };
-		E9A765991AC201AD00F7C016 /* WGDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGDictionary.h; sourceTree = "<group>"; };
-		E9A7659A1AC201AD00F7C016 /* WGDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGDictionary.m; sourceTree = "<group>"; };
 		E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
 		E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileViewController.h; sourceTree = "<group>"; };
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
@@ -1273,8 +1269,6 @@
 				E9A765961AC2012C00F7C016 /* WGTracker.m */,
 				E9A765911AC2005A00F7C016 /* WGI.h */,
 				E9A765921AC2005A00F7C016 /* WGI.m */,
-				E9A765991AC201AD00F7C016 /* WGDictionary.h */,
-				E9A7659A1AC201AD00F7C016 /* WGDictionary.m */,
 			);
 			name = Analytics;
 			sourceTree = "<group>";
@@ -2249,7 +2243,6 @@
 				C1F5B3DC1A654B4D00CAFD95 /* AFURLConnectionOperation.m in Sources */,
 				C1F5B3DD1A654B4D00CAFD95 /* AFURLRequestSerialization.m in Sources */,
 				C1F5B3DE1A654B4D00CAFD95 /* AFURLResponseSerialization.m in Sources */,
-				E9A7659C1AC201AD00F7C016 /* WGDictionary.m in Sources */,
 				45D9FAAD1A781AFD00D08577 /* JSQMessagesBubbleImageFactory.m in Sources */,
 				C1F5B3DF1A654B4D00CAFD95 /* AFURLSessionManager.m in Sources */,
 				C1F5B3D61A654AE300CAFD95 /* NSDate+WGDate.m in Sources */,
@@ -2443,7 +2436,6 @@
 				FAACB6731A2508E00089FD01 /* CampusNotificationViewController.m in Sources */,
 				45D9FBAE1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */,
 				E900C2BA1961EADE00A01F50 /* SDWebImageDownloader.m in Sources */,
-				E9A7659B1AC201AD00F7C016 /* WGDictionary.m in Sources */,
 				45DF86971A5B1F8200DB85AE /* NSDate+WGDate.m in Sources */,
 				E93030C41986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
 				E93DE52A195C82B900079074 /* MessageViewController.m in Sources */,

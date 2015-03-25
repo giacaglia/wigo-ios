@@ -17,6 +17,7 @@
 #import "WGEvent.h"
 #import "PlacesViewController.h"
 #import "RWBlurPopover.h"
+#import "WGI.h"
 #define kImageQuality @"quality"
 #define kImageMultiple @"multiple"
 
@@ -62,6 +63,7 @@ NSDate *firstLoggedTime;
 
     [self addNotificationHandlers];
     [self logFirstTimeLoading];
+    [WGI openedTheApp];
 
     return YES;
 }
@@ -79,6 +81,7 @@ NSDate *firstLoggedTime;
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [WGI closedTheApp];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -86,6 +89,7 @@ NSDate *firstLoggedTime;
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     [self updateGoingOutIfItsAnotherDay];
     [self fetchAppStart];
+    [WGI openedTheApp];
 
 }
 

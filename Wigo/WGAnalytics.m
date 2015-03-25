@@ -7,6 +7,7 @@
 //
 
 #import "WGAnalytics.h"
+#import "WGI.h"
 
 @implementation WGAnalytics
 
@@ -84,15 +85,32 @@
                                                             action:name         // Event action (required)
                                                             label:nil           // Event label
                                                             value:nil] build]];
+    
+    // WGI
+    if (WGProfile.currentUser.isFetched) {
+        WGTracker *wgTracker = [WGI defaultTracker];
+        [wgTracker setGroup:WGProfile.currentUser.group];
+        [wgTracker setUser:WGProfile.currentUser];
+        [wgTracker postActionWithName:name];
+    }
+    
+    
 }
 
 +(void) tagScreen:(NSString *)name {
-    if (![[WGProfile currentUser] isFetched] || [[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
+    if (![[WGProfile currentUser] isFetched] ||
+        [[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
         return;
     }
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     [tracker set:kGAIScreenName value:name];
     [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+    
+    //WGI
+    WGTracker *wgTracker = [WGI defaultTracker];
+    [wgTracker setUser:WGProfile.currentUser];
+    [wgTracker postViewWithName:name];
+    
 }
 
 +(void) setUser:(WGUser *)user {
