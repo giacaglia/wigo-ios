@@ -62,6 +62,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSNumber* lastMessageRead;
 @property NSNumber* lastNotificationRead;
 @property NSNumber* lastUserRead;
+@property NSNumber* periodWentOut;
 
 @property NSDictionary* properties;
 @property NSArray* images;

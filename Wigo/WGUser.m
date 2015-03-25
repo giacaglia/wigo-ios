@@ -64,6 +64,7 @@
 #define kNumFollowersKey @"num_followers" //: 5,
 #define kUsernameKey @"username" //: "jelman"
 #define kIsAttendingKey @"is_attending"
+#define kPeriodWentOutKey @"period_went_out"
 
 #define kGroupKey @"group" //: {},
 #define kGroupLockedKey @"locked"
@@ -218,6 +219,14 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kLastUserReadKey];
 }
 
+-(void)setPeriodWentOut:(NSNumber *)periodWentOut {
+    [self setObject:periodWentOut forKey:kPeriodWentOutKey];
+}
+
+-(NSNumber *)periodWentOut {
+    return [self objectForKey:kPeriodWentOutKey];
+}
+
 -(void) setGender:(Gender)gender {
     NSString *genderName = nil;
     if ([WGUser genderNames].count > gender) {
@@ -304,6 +313,7 @@ static WGUser *currentUser = nil;
 -(void) setProperties:(NSDictionary *)properties {
     [self setObject:properties forKey:kPropertiesKey];
 }
+
 
 -(NSDictionary *) properties {
     return [self objectForKey:kPropertiesKey];

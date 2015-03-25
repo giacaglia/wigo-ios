@@ -52,4 +52,8 @@ typedef void (^WGAggregateStats)(NSNumber *numMessages, NSNumber *numAttending, 
 
 +(void) startup:(WGStartupResult)handler;
 
+
+#pragma mark - Analytics API
+
++(void) postURL:(NSString *)url withParameters:(id)parameters andHandler:(ApiResultBlock)handler;
 @end

@@ -332,6 +332,12 @@
 		E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E471980AB9B008A711B /* libsqlite3.dylib */; };
 		E9A31E4A1980ABB5008A711B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A31E451980AB25008A711B /* AdSupport.framework */; };
 		E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A50CFC19350F13009B73EA /* ConversationViewController.m */; };
+		E9A765931AC2005A00F7C016 /* WGI.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765921AC2005A00F7C016 /* WGI.m */; };
+		E9A765941AC2005A00F7C016 /* WGI.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765921AC2005A00F7C016 /* WGI.m */; };
+		E9A765971AC2012C00F7C016 /* WGTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765961AC2012C00F7C016 /* WGTracker.m */; };
+		E9A765981AC2012C00F7C016 /* WGTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765961AC2012C00F7C016 /* WGTracker.m */; };
+		E9A7659B1AC201AD00F7C016 /* WGDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A7659A1AC201AD00F7C016 /* WGDictionary.m */; };
+		E9A7659C1AC201AD00F7C016 /* WGDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A7659A1AC201AD00F7C016 /* WGDictionary.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */; };
@@ -779,6 +785,12 @@
 		E9A50CFB19350F13009B73EA /* ConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConversationViewController.h; sourceTree = "<group>"; };
 		E9A50CFC19350F13009B73EA /* ConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConversationViewController.m; sourceTree = "<group>"; };
 		E9A695C619B0C7840071067B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		E9A765911AC2005A00F7C016 /* WGI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGI.h; sourceTree = "<group>"; };
+		E9A765921AC2005A00F7C016 /* WGI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGI.m; sourceTree = "<group>"; };
+		E9A765951AC2012C00F7C016 /* WGTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGTracker.h; sourceTree = "<group>"; };
+		E9A765961AC2012C00F7C016 /* WGTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGTracker.m; sourceTree = "<group>"; };
+		E9A765991AC201AD00F7C016 /* WGDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGDictionary.h; sourceTree = "<group>"; };
+		E9A7659A1AC201AD00F7C016 /* WGDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGDictionary.m; sourceTree = "<group>"; };
 		E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
 		E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileViewController.h; sourceTree = "<group>"; };
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
@@ -1257,6 +1269,12 @@
 			children = (
 				45DF86921A5B0B5C00DB85AE /* WGAnalytics.h */,
 				45DF86931A5B0B5C00DB85AE /* WGAnalytics.m */,
+				E9A765951AC2012C00F7C016 /* WGTracker.h */,
+				E9A765961AC2012C00F7C016 /* WGTracker.m */,
+				E9A765911AC2005A00F7C016 /* WGI.h */,
+				E9A765921AC2005A00F7C016 /* WGI.m */,
+				E9A765991AC201AD00F7C016 /* WGDictionary.h */,
+				E9A7659A1AC201AD00F7C016 /* WGDictionary.m */,
 			);
 			name = Analytics;
 			sourceTree = "<group>";
@@ -2231,6 +2249,7 @@
 				C1F5B3DC1A654B4D00CAFD95 /* AFURLConnectionOperation.m in Sources */,
 				C1F5B3DD1A654B4D00CAFD95 /* AFURLRequestSerialization.m in Sources */,
 				C1F5B3DE1A654B4D00CAFD95 /* AFURLResponseSerialization.m in Sources */,
+				E9A7659C1AC201AD00F7C016 /* WGDictionary.m in Sources */,
 				45D9FAAD1A781AFD00D08577 /* JSQMessagesBubbleImageFactory.m in Sources */,
 				C1F5B3DF1A654B4D00CAFD95 /* AFURLSessionManager.m in Sources */,
 				C1F5B3D61A654AE300CAFD95 /* NSDate+WGDate.m in Sources */,
@@ -2345,6 +2364,7 @@
 				E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
 				45D9FA9D1A781AFD00D08577 /* UIColor+JSQMessages.m in Sources */,
 				C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */,
+				E9A765941AC2005A00F7C016 /* WGI.m in Sources */,
 				C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */,
 				45D9FA9F1A781AFD00D08577 /* UIDevice+JSQMessages.m in Sources */,
 				C12A112F19787BE700D53B1C /* ConversationViewController.m in Sources */,
@@ -2366,6 +2386,7 @@
 				C14AB1BE1A8017670011C4E5 /* UIImage+Resize.m in Sources */,
 				E9DFE1701A001142003C5779 /* BatteryViewController.m in Sources */,
 				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
+				E9A765981AC2012C00F7C016 /* WGTracker.m in Sources */,
 				C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */,
 				C14AB1BC1A8017670011C4E5 /* UIImage+Alpha.m in Sources */,
 				C14AB1C01A8017670011C4E5 /* UIImage+RoundedCorner.m in Sources */,
@@ -2415,12 +2436,14 @@
 				45DF86B31A5C5DEB00DB85AE /* AFURLResponseSerialization.m in Sources */,
 				454409581A537F1C00BB3036 /* WGMessage.m in Sources */,
 				E921D6221923967D00361247 /* main.m in Sources */,
+				E9A765931AC2005A00F7C016 /* WGI.m in Sources */,
 				45D9FBBC1A80043000D08577 /* UIImage+ImageEffects.m in Sources */,
 				E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */,
 				E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */,
 				FAACB6731A2508E00089FD01 /* CampusNotificationViewController.m in Sources */,
 				45D9FBAE1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */,
 				E900C2BA1961EADE00A01F50 /* SDWebImageDownloader.m in Sources */,
+				E9A7659B1AC201AD00F7C016 /* WGDictionary.m in Sources */,
 				45DF86971A5B1F8200DB85AE /* NSDate+WGDate.m in Sources */,
 				E93030C41986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
 				E93DE52A195C82B900079074 /* MessageViewController.m in Sources */,
@@ -2493,6 +2516,7 @@
 				45D9FAA01A781AFD00D08577 /* UIImage+JSQMessages.m in Sources */,
 				45D9FACA1A781AFD00D08577 /* JSQMessagesCollectionView.m in Sources */,
 				E9C5CE3A1AB0EFFB0044745B /* OverlayViewController.m in Sources */,
+				E9A765971AC2012C00F7C016 /* WGTracker.m in Sources */,
 				45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */,
 				E900C2B71961EADE00A01F50 /* SDImageCache.m in Sources */,
 				E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */,
