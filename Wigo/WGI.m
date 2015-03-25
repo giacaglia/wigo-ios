@@ -41,7 +41,8 @@ static WGTracker *tracker;
     NSDate *timeNow = [NSDate date];
     [WGTracker getTimeNow];
     NSTimeInterval diff = [timeNow timeIntervalSinceDate:closedAppTime];
-    if (diff > 300) {
+    if (diff > 300 ||
+        closedAppTime == nil) {
         [WGI changeSessionID];
         [WGI setSessionID];
     }

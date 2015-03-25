@@ -61,15 +61,20 @@ static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/
 #define kMediaMimeTypeKey @"media_mime_type"
 #define kUpVotesKey @"up_votes"
 
+#define kTypeKey @"type"
+#define kCategoryKey @"category"
 #define kViewID @"view_id"
+#define kViewName @"view_name"
 #define kSubviewID @"sub_view_id"
+#define kSubviewName @"sub_view_name"
 #define kPreviousViewID @"previous_view_id"
-
+#define kPreviousViewName @"previous_name"
 
 @interface WGTracker : NSObject
 
 @property (nonatomic, strong) NSMutableDictionary *mutDict;
 -(void)setValue:(id)value forKey:(NSString *)key;
+-(void)remove:(NSString *)key;
 -(void)setGroup:(WGGroup *)group;
 -(void)setUser:(WGUser *)user;
 -(void)postViewWithName:(NSString *)viewName;

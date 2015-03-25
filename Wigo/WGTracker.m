@@ -10,6 +10,9 @@
 
 #include <ifaddrs.h>
 #include <arpa/inet.h>
+#define kViewType @"view"
+#define kActionType @"action"
+
 static NSString *previousViewName;
 
 @implementation WGTracker : NSObject
@@ -30,6 +33,10 @@ static NSString *previousViewName;
     }
     if (key == nil || [key isKindOfClass:[NSNull class]]) return;
     [self.mutDict setValue:value forKey:key];
+}
+
+- (void)remove:(NSString *)key {
+    
 }
 
 - (void)setApplicationInformation {
@@ -70,7 +77,6 @@ static NSString *previousViewName;
     NSMutableDictionary *userDict = [NSMutableDictionary new];
     [userDict setValue:user.id forKey:kObjectID];
     [userDict setValue:user.email forKey:kUserEmailKey];
-    [userDict setValue:user.fullName forKey:kObjectName];
     [userDict setValue:user.genderName forKey:kUserGenderKey];
     [userDict setValue:user.numFollowing forKey:kUserNumFollowingKey];
     [userDict setValue:user.numFollowers forKey:kUserNumFollowersKey];
@@ -115,30 +121,33 @@ static NSString *previousViewName;
 
 
 - (void)postActionWithName:(NSString *)actionName {
-    [self setValue:actionName forKey:kTypeKey];
+    [self setValue:kActionType forKey:kTypeKey];
+    [self setValue:actionName forKey:kCategoryKey];
     [self postDictionary];
 }
 
 - (void)postViewWithName:(NSString *)viewName {
+    [self setValue:kViewType forKey:kTypeKey];
     if (previousViewName == nil ||
         [previousViewName isKindOfClass:[NSNull class]]) {
         previousViewName = viewName;
     }
     else {
-        [self setValue:previousViewName forKey:kPreviousViewID];
+        [self setValue:previousViewName forKey:kPreviousViewName];
     }
-    [self setValue:viewName forKey:kViewID];
+    [self setValue:viewName forKey:kViewName];
     [self postDictionary];
 }
 
 
 -(void)postDictionary {
     [self setValue:[WGTracker getTimeNow] forKey:kTimeKey];
-    [WGApi postURL:analyticsString
-    withParameters:self.mutDict
-        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            
-        }];
+    NSLog(@"info: %@", self.mutDict);
+//    [WGApi postURL:analyticsString
+//    withParameters:self.mutDict
+//        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//            
+//        }];
     
 }
 

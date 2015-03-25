@@ -26,6 +26,15 @@
 }
 
 +(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details {
+    // WGI
+    if (WGProfile.currentUser.isFetched) {
+        WGTracker *wgTracker = [WGI defaultTracker];
+        [wgTracker setGroup:WGProfile.currentUser.group];
+        [wgTracker setUser:WGProfile.currentUser];
+        [wgTracker postActionWithName:name];
+    }
+
+    
     if ([[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
         return;
     }
@@ -86,13 +95,6 @@
                                                             label:nil           // Event label
                                                             value:nil] build]];
     
-    // WGI
-    if (WGProfile.currentUser.isFetched) {
-        WGTracker *wgTracker = [WGI defaultTracker];
-        [wgTracker setGroup:WGProfile.currentUser.group];
-        [wgTracker setUser:WGProfile.currentUser];
-        [wgTracker postActionWithName:name];
-    }
     
     
 }
