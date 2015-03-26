@@ -176,38 +176,8 @@ BOOL firstTimeLoading;
 
 - (void) initializeNavigationBar {
     if (!WGProfile.currentUser.group.id) {
-        self.navigationItem.leftBarButtonItem = nil;
         self.navigationItem.rightBarButtonItem = nil;
     } else if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
-        CGRect profileFrame = CGRectMake(3, 0, 30, 30);
-        UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
-        UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-        profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
-        profileImageView.layer.borderWidth = 1.0f;
-        profileImageView.layer.cornerRadius = profileFrame.size.height/2;
-        profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-        profileImageView.clipsToBounds = YES;
-        [profileImageView setSmallImageForUser:WGProfile.currentUser completed:nil];
-        [profileButton addSubview:profileImageView];
-        [profileButton addTarget:self action:@selector(profileSegue)
-                forControlEvents:UIControlEventTouchUpInside];
-        [profileButton setShowsTouchWhenHighlighted:YES];
-        if (!self.leftRedDotLabel) {
-            self.leftRedDotLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, -5, 13, 13)];
-            self.leftRedDotLabel.backgroundColor = [FontProperties getOrangeColor];
-            self.leftRedDotLabel.layer.borderColor = [UIColor clearColor].CGColor;
-            self.leftRedDotLabel.clipsToBounds = YES;
-            self.leftRedDotLabel.layer.borderWidth = 3;
-            self.leftRedDotLabel.layer.cornerRadius = 8;
-        }
-        [profileButton addSubview:self.leftRedDotLabel];
-        if (WGProfile.currentUser.numUnreadNotifications.intValue > 0 || WGProfile.currentUser.numUnreadConversations.intValue > 0) {
-            self.leftRedDotLabel.hidden = NO;
-        } else {
-            self.leftRedDotLabel.hidden = YES;
-        }
-        UIBarButtonItem *profileBarButton = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
-        self.navigationItem.leftBarButtonItem = profileBarButton;
         
         self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
         UIImageView *plusCreateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, 16, 16)];
@@ -220,7 +190,6 @@ BOOL firstTimeLoading;
         [self.rightButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
         self.navigationItem.rightBarButtonItem = rightBarButton;
-
     }
     else if (self.presentingLockedView) {
         self.navigationItem.rightBarButtonItem = nil;
@@ -229,7 +198,11 @@ BOOL firstTimeLoading;
         self.navigationItem.rightBarButtonItem = nil;
     }
 
-    [self updateTitleView];
+    self.schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
+    [self.schoolButton setTitle:@"Wigo" forState:UIControlStateNormal];
+    [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    self.schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.navigationItem.titleView = self.schoolButton;
 }
 
 -(void) initializeFlashScreen {
@@ -304,66 +277,11 @@ BOOL firstTimeLoading;
     if ([self.events containsObject:newEvent]) {
         NSInteger integer = [self.events indexOfObject:newEvent];
         [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:integer inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-//        EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-//        eventStoryViewController.event = presentEvent;
-//        eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-//        [self.navigationController pushViewController: eventStoryViewController animated:YES];
-    }
-    else {
-//        [newEvent refresh:^(BOOL success, NSError *error) {
-//            if (error) {
-//                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-//                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-//                return;
-//            }
-//            EventStoryViewController *eventStoryViewController = [EventStoryViewController new];
-//            eventStoryViewController.event = newEvent;
-//            eventStoryViewController.view.backgroundColor = UIColor.whiteColor;
-//            [self.navigationController pushViewController: eventStoryViewController animated:YES];
-//        }];
     }
 }
 
 - (void)scrollUp {
     [self.placesTableView setContentOffset:CGPointZero animated:YES];
-}
-
-
-- (void) updateTitleView {
-    if (!self.groupName) self.groupName = WGProfile.currentUser.group.name;
-    self.schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    [self.schoolButton setTitle:self.groupName forState:UIControlStateNormal];
-    [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    [self.schoolButton addTarget:self action:@selector(showSchools) forControlEvents:UIControlEventTouchUpInside];
-    self.schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-  
-    CGFloat fontSize = 16.0f;
-    CGSize size;
-    while (fontSize > 0.0f)
-    {
-        size = [self.groupName sizeWithAttributes:
-                @{NSFontAttributeName:[FontProperties scMediumFont:fontSize]}];
-        if (size.width <= 210) break;
-        
-        fontSize -= 2.0;
-    }
-    self.schoolButton.titleLabel.font = [FontProperties scMediumFont:fontSize];
-    self.schoolButton.frame = CGRectMake(0, 0, size.width, size.height);
-    UIImageView *triangleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(size.width + 5, size.height/2 - 2, 6, 5)];
-    [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    triangleImageView.image = [UIImage imageNamed:@"whiteTriangle"];
-    [self.schoolButton addSubview:triangleImageView];
-
-    self.navigationItem.titleView = self.schoolButton;
-    if (self.presentingLockedView) self.schoolButton.enabled = NO;
-    else self.schoolButton.enabled = YES;
-}
-
-- (void)showSchools {
-    if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
-    PeekViewController *peekViewController = [PeekViewController new];
-    peekViewController.placesDelegate = self;
-    [self presentViewController:peekViewController animated:YES completion:nil];
 }
 
 - (void)dismissKeyboard {
@@ -1260,7 +1178,6 @@ BOOL firstTimeLoading;
     self.allEvents = nil;
     [self.placesTableView reloadData];
     self.spinnerAtCenter = YES;
-    [self updateTitleView];
     [self fetchEventsFirstPage];
 }
 
@@ -1810,6 +1727,14 @@ BOOL firstTimeLoading;
 
 @implementation TodayHeader
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
 + (instancetype) initWithDay: (NSDate *) date {
     TodayHeader *header = [[TodayHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TodayHeader height])];
     header.date = date;
@@ -1817,25 +1742,32 @@ BOOL firstTimeLoading;
     
     return header;
 }
+
 - (void) setup {
-    self.backgroundColor = RGB(237, 237, 237);
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TodayHeader height]);
+    self.backgroundColor = RGB(249, 249, 249);
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 30)];
-    titleLabel.backgroundColor = [UIColor clearColor];
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.font = [FontProperties scMediumFont: 18.0f];
-    titleLabel.textColor = [FontProperties getBlueColor];
-    titleLabel.text = @"today";
-    titleLabel.center = self.center;
-    [self addSubview: titleLabel];
+    UILabel *friendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(58, [TodayHeader height] - 22 - 7, 68, 22)];
+    friendsLabel.textAlignment = NSTextAlignmentCenter;
+    friendsLabel.font = [FontProperties lightFont: 18.0f];
+    friendsLabel.textColor = [FontProperties getBlueColor];
+    friendsLabel.text = @"Friends";
+    [self addSubview: friendsLabel];
     
-    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(self.center.x - 50, self.frame.size.height - 0.5f, 100, 0.5f)];
-    lineView.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.4f];
-    [self addSubview: lineView];
+    UIView *lineViewUnderLabel = [[UIView alloc] initWithFrame:CGRectMake(58, [TodayHeader height] - 3, 68, 3)];
+    lineViewUnderLabel.backgroundColor = [FontProperties getBlueColor];
+    [self addSubview:lineViewUnderLabel];
+    
+    UILabel *bostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 58 - 68, [TodayHeader height] - 22 - 7, 68, 22)];
+    bostonLabel.textAlignment = NSTextAlignmentCenter;
+    bostonLabel.font = [FontProperties lightFont:18.0f];
+    bostonLabel.textColor = UIColor.blackColor;
+    bostonLabel.text = @"Boston";
+    [self addSubview: bostonLabel];
 }
 
 + (CGFloat) height {
-    return 0.5;
+    return 36;
 }
 @end
 
