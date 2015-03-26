@@ -437,8 +437,8 @@ BOOL firstTimeLoading;
 
 - (void) goHerePressed:(id)sender withHandler:(BoolResultBlock)handler {
     WGProfile.tapAll = NO;
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
-    [WGAnalytics tagEvent:@"Go Here" withDetails:options];
+
+    [WGAnalytics tagAction:@"go_here" atView:@"where"];
     self.whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
@@ -469,8 +469,7 @@ BOOL firstTimeLoading;
 
 
 - (void) goingSomewhereElsePressed {
-    [WGAnalytics tagEvent:@"Go Somewhere Else Tapped"];
-
+    [WGAnalytics tagAction:@"create_event" atView:@"where"];
     [self scrollUp];
     [self showWhereAreYouGoingView];
 
@@ -1323,8 +1322,7 @@ BOOL firstTimeLoading;
     
     // First start doing the network request
     WGProfile.tapAll = NO;
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
-    [WGAnalytics tagEvent:@"Go Here" withDetails:options];
+    [WGAnalytics tagAction:@"go_here" atView:@"where"];
     self.whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;

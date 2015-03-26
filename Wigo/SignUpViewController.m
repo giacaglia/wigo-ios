@@ -40,7 +40,7 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Sign Up View"];
+    [WGAnalytics tagView:@"sign_up"];
 }
 
 - (void) initializeSignUpLabel {

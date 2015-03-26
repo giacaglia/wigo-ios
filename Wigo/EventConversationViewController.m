@@ -465,8 +465,8 @@
         return;
     }
     
-    [WGAnalytics tagEvent:@"Up Vote Tapped"];
-        
+    [WGAnalytics tagAction:@"up_vote" atView:@"event_conversation"];
+    
     [UIView animateWithDuration:0.2f
                      animations:^{
                          self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
@@ -509,7 +509,7 @@
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     
     if (page < self.eventMessages.count && page >= 0) {
-        [WGAnalytics tagEvent: @"Delete Highlight Tapped"];
+        [WGAnalytics tagAction:@"delete" atView:@"event_conversation"];
         
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
         if ([eventMessage objectForKey:@"id"]) {
@@ -545,7 +545,7 @@
 }
 
 - (void)cancelPressed:(id)sender {
-    [WGAnalytics tagEvent: @"Close Highlights Tapped"];
+    [WGAnalytics tagAction:@"close_highlights" atView:@"event_conversation"];
     [self.mediaScrollView.lastMoviePlayer stop];
     [self.mediaScrollView closeViewWithHandler:^(BOOL success, NSError *error) {
         if (success) {

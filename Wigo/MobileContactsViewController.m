@@ -48,7 +48,7 @@ NSMutableArray *chosenPeople;
     [super viewDidAppear:animated];
     isFiltered = NO;
     if (contactsTableView) [contactsTableView reloadData];
-    [WGAnalytics tagEvent:@"MobileContacts View"];
+    [WGAnalytics tagView:@"mobile_contacts"];
 }
 
 - (void)initializeTitle {
@@ -86,7 +86,7 @@ NSMutableArray *chosenPeople;
             peopleContactList = [NSMutableArray arrayWithArray:mobileArray];
             [contactsTableView reloadData];
         } else {
-            [WGAnalytics tagEvent:@"Decline Apple Contacts"];
+            [WGAnalytics tagAction:@"declined_access_mobile" atView:@"mobile_contacts"];
             [self dismissViewControllerAnimated:NO completion:nil];
         }
     }];

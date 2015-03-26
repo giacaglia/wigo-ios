@@ -83,9 +83,10 @@ static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/
 -(void)setUser:(WGUser *)user;
 -(void)setTargetUser:(WGUser *)user;
 -(void)postViewWithName:(NSString *)viewName;
--(void)postActionWithName:(NSString *)actionName;
-- (void)postActionWithName:(NSString *)actionName
-               andCategory:(NSString *)category;
+-(void)postAction:(NSString *)actionName;
+- (void)postAction:(NSString *)actionName
+            atView:(NSString *)viewName;
+
 +(NSString *)getTimeNow;
 
 @end

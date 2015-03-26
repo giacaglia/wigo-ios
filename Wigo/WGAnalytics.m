@@ -25,7 +25,19 @@
     return @"100+";
 }
 
-+(void)tagView:(NSString *)viewName
+
++ (void)tagView:(NSString *)viewName
+ withTargetUser:(WGUser *)targetUser {
+    if (!WGProfile.currentUser.isFetched) return;
+
+    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
+    [WGI.defaultTracker setUser:WGProfile.currentUser];
+    [WGI.defaultTracker setTargetUser:targetUser];
+    [WGI.defaultTracker postViewWithName:viewName];
+}
+
+
++ (void)tagView:(NSString *)viewName
 withTargetGroup:(WGGroup *)targetGroup
 {
     if (!WGProfile.currentUser.isFetched) return;
@@ -37,7 +49,7 @@ withTargetGroup:(WGGroup *)targetGroup
     [wgTracker postViewWithName:viewName];
 }
 
-+(void)tagView:(NSString *)viewName {
++ (void)tagView:(NSString *)viewName {
     if (!WGProfile.currentUser.isFetched) return;
     
     WGTracker *wgTracker = [WGI defaultTracker];
@@ -47,22 +59,43 @@ withTargetGroup:(WGGroup *)targetGroup
 }
 
 + (void)tagAction:(NSString *)actionName
+           atView:(NSString *)viewName
    withTargetUser:(WGUser *)targetUser {
     if (!WGProfile.currentUser.isFetched) return;
     
-    WGTracker *wgTracker = [WGI defaultTracker];
-    [wgTracker setGroup:WGProfile.currentUser.group];
-    [wgTracker setUser:WGProfile.currentUser];
-    [wgTracker setTargetUser:targetUser];
-    [wgTracker postActionWithName:actionName];
+    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
+    [WGI.defaultTracker setUser:WGProfile.currentUser];
+    [WGI.defaultTracker setTargetUser:targetUser];
+    [WGI.defaultTracker postAction:actionName
+                            atView:viewName];
+}
+
++ (void)tagAction:(NSString *)actionName
+           atView:(NSString *)viewName {
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
+    [WGI.defaultTracker setUser:WGProfile.currentUser];
+    [WGI.defaultTracker postAction:actionName
+                            atView:viewName];
+}
+
++ (void)tagAction:(NSString *)actionName
+   withTargetUser:(WGUser *)targetUser {
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
+    [WGI.defaultTracker setUser:WGProfile.currentUser];
+    [WGI.defaultTracker setTargetUser:targetUser];
+    [WGI.defaultTracker postAction:actionName];
 }
 
 + (void)tagAction:(NSString *)actionName {
     if (!WGProfile.currentUser.isFetched) return;
     
-    WGTracker *wgTracker = [WGI defaultTracker];
-    [wgTracker setUser:WGProfile.currentUser];
-    [wgTracker postActionWithName:actionName];
+    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
+    [WGI.defaultTracker setUser:WGProfile.currentUser];
+    [WGI.defaultTracker postAction:actionName];
 }
 
 +(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details {

@@ -50,7 +50,7 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Follow Requests View"];
+    [WGAnalytics tagView:@"follow_requests"];
 }
 
 - (void) initializeFollowRequestTable {
@@ -72,7 +72,7 @@
 }
 
 - (void)acceptUser:(id)sender {
-    [WGAnalytics tagEvent:@"Follow Request Accepted"];
+    [WGAnalytics tagAction:@"accepted_follow_request" atView:@"follow_requests"];
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
@@ -138,7 +138,7 @@
 }
 
 - (void)rejectUser:(id)sender {
-    [WGAnalytics tagEvent:@"Follow Request Rejected"];
+    [WGAnalytics tagAction:@"follow_request_reject" atView:@"follow_requests"];
     UIButton *buttonSender = (UIButton *)sender;
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
     for (UIView *subview in [cell.contentView subviews]) {

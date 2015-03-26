@@ -9,7 +9,6 @@
 #import "Globals.h"
 
 #import "SignViewController.h"
-#import "OnboardViewController.h"
 #import "BatteryViewController.h"
 #import "KeychainItemWrapper.h"
 #import "FacebookHelper.h"
@@ -67,7 +66,7 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self showOnboard];
     
-    [WGAnalytics tagEvent:@"Sign View"];
+    [WGAnalytics tagView:@"sign"];
 }
 
 -(void) showBarrierError:(NSError *)error {

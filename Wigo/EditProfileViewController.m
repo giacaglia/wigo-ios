@@ -54,7 +54,7 @@ UIViewController *webViewController;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Edit Profile View"];
+    [WGAnalytics tagView:@"edit_profile"];
 }
 
 - (void) viewWillAppear:(BOOL)animated {

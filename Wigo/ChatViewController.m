@@ -59,7 +59,7 @@
 
 
 - (void) viewDidAppear:(BOOL)animated {
-    [WGAnalytics tagEvent:@"Chat View"];
+    [WGAnalytics tagView:@"chat_list"];
 }
 
 - (void) goBack {

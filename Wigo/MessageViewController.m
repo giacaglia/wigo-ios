@@ -75,7 +75,7 @@ int queryQueueInt;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"New Chat View"];
+    [WGAnalytics tagView:@"new_chat"];
 }
 
 - (void)initializeTapHandler {

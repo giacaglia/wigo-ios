@@ -70,7 +70,6 @@
 
     NSString *isPeekingString = ([self isPeeking]) ? @"Yes" : @"No";
     
-    [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
     
     self.eventMessages = nil;
     if (_loadViewFromFront) [self fetchEventMessages];
@@ -181,11 +180,6 @@
 }
 
 - (void)goHerePressed {
-    [WGAnalytics tagEvent: @"Event Story Go Here Tapped"];
-    
-    // Update data
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
-    [WGAnalytics tagEvent:@"Go Here" withDetails:options];
     
     [[WGProfile currentUser] goingToEvent:self.event withHandler:^(BOOL success, NSError *error) {
         if (error) {
@@ -705,8 +699,6 @@
 
 
 - (void)sendPressed {
-    [WGAnalytics tagEvent: @"Event Story Create Highlight Tapped"];
-
     //not going here
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
@@ -803,9 +795,6 @@
 
 
 - (void)showEventConversation:(NSNumber *)index {
-    NSString *isPeekingString = ([self isPeeking]) ? @"Yes" : @"No";
-    [WGAnalytics tagEvent:@"Event Story Highlight Tapped" withDetails: @{ @"isPeeking": isPeekingString }];
-
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     

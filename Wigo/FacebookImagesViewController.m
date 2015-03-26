@@ -52,7 +52,7 @@ NSMutableArray *imagesArray;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Facebook Images View"];
+    [WGAnalytics tagView:@"facebook_images"];
 }
 
 - (void)initializeBackBarButton {

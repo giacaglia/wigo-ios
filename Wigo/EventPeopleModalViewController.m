@@ -450,8 +450,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
 #pragma mark - InviteView Delegate
 
 - (void)inviteTapped {
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile Card", @"Tap Source", nil];
-    [WGAnalytics tagEvent:@"Tap User" withDetails:options];
+    [WGAnalytics tagAction:@"tap" atView:@"event_people_modal"];
     
     self.user.isTapped = @YES;
     [WGProfile.currentUser tapUser:self.user withHandler:^(BOOL success, NSError *error) {

@@ -77,13 +77,13 @@ UIScrollView *suggestedScrollView;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if ([self.currentTab isEqualToNumber:@2]) {
-        [WGAnalytics tagEvent:@"People Suggestions View"];
+        [WGAnalytics tagView:@"school_people"];
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
-        [WGAnalytics tagEvent:@"People Followers View"];
+        [WGAnalytics tagView:@"followers"];
     }
     else if ([self.currentTab isEqualToNumber:@4]) {
-        [WGAnalytics tagEvent:@"People Following View"];
+        [WGAnalytics tagView:@"following"];
     }
 }
 

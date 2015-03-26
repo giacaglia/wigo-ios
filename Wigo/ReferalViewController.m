@@ -46,7 +46,7 @@ UIImageView *searchIconImageView;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Referal View"];
+    [WGAnalytics tagView:@"referal"];
 }
 
 

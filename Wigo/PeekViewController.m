@@ -21,7 +21,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     
-    [WGAnalytics tagEvent: @"Peek View"];
+    [WGAnalytics tagView:@"peek"];
 }
 - (void)viewDidLoad {
     [super viewDidLoad];

@@ -120,17 +120,23 @@ static NSString *previousViewName;
     [self setValue:eventMsgDict forKey:kEventMesssageKey];
 }
 
-- (void)postActionWithName:(NSString *)actionName
-               andCategory:(NSString *)category {
-    [self setValue:category forKey:kCategoryKey];
-    [self postActionWithName:actionName];
-    [self remove:kCategoryKey];
-    [self remove:kTargetGroupKey];
-    [self remove:kTargetUserKey];
+- (void)postAction:(NSString *)actionName
+            atView:(NSString *)viewName {
+    if (previousViewName == nil ||
+        [previousViewName isKindOfClass:[NSNull class]]) {
+        previousViewName = viewName;
+    }
+    else {
+        [self setValue:previousViewName forKey:kPreviousViewName];
+    }
+    [self setValue:viewName forKey:kViewName];
+    [self postAction:actionName];
+    [self remove:kViewName];
+    [self remove:kPreviousViewName];
 }
 
 
-- (void)postActionWithName:(NSString *)actionName {
+- (void)postAction:(NSString *)actionName {
     [self setValue:kActionType forKey:kTypeKey];
     [self setValue:actionName forKey:kCategoryKey];
     [self postDictionary];

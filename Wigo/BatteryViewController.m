@@ -38,7 +38,7 @@ NSNumber *currentNumGroups;
     [super viewDidAppear:animated];
     if (self.fetchTimer) [self.fetchTimer fire];
     
-    [WGAnalytics tagEvent:@"Battery View"];
+    [WGAnalytics tagView:@"battery"];
     if (self.blurredBackgroundImage) {
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
         imageView.image = self.blurredBackgroundImage;
@@ -126,7 +126,7 @@ NSNumber *currentNumGroups;
 }
 
 - (void)sharedPressed {
-    [WGAnalytics tagEvent:@"Share Pressed"];
+    [WGAnalytics tagAction:@"share" atView:@"battery"];
     NSArray *activityItems = @[@"This Wigo app is going to change the game! http://wigo.us/app",[UIImage imageNamed:@"wigoApp" ]];
 
     

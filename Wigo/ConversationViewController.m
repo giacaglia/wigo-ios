@@ -105,7 +105,7 @@ ProfileViewController *profileViewController;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [WGAnalytics tagEvent:@"Conversation View"];
+    [WGAnalytics tagView:@"conversation"];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

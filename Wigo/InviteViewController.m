@@ -53,7 +53,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Invite View"];
+    [WGAnalytics tagView:@"invite"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -362,8 +362,7 @@ heightForHeaderInSection:(NSInteger)section
             }
         }];
         user.isTapped = @NO;
-
-        [WGAnalytics tagEvent:@"Untap User"];
+        [WGAnalytics tagAction:@"untap" atView:@"invite"];
     } else {
 #warning Group these
         [WGProfile.currentUser tapUser:user withHandler:^(BOOL success, NSError *error) {
@@ -373,7 +372,7 @@ heightForHeaderInSection:(NSInteger)section
         }];
         user.isTapped = @YES;
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
-        [WGAnalytics tagEvent:@"Tap User" withDetails:options];
+        [WGAnalytics tagAction:@"tap" atView:@"invite"];
     }
     if (tag < self.presentedUsers.count) {
         [self.presentedUsers replaceObjectAtIndex:tag withObject:user];

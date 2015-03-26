@@ -41,7 +41,7 @@ UITextField *emailTextField;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Email Confirmation View"];
+    [WGAnalytics tagView:@"email_confirmation"];
     [self login];
 }
 

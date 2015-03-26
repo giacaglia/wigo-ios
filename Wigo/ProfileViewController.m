@@ -137,13 +137,13 @@ BOOL blockShown;
     [super viewWillAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
-    NSString *isCurrentUser = ([self.user isEqual:[WGProfile currentUser]]) ? @"Yes" : @"No";
-    NSString *isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE) ? @"Yes" : @"No";
-    self.isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE);
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", isPeeking, @"isPeeking", nil];
-    
-    [WGAnalytics tagView:@"profile"];
-    [WGAnalytics tagEvent:@"Profile View" withDetails:options];
+//    NSString *isCurrentUser = ([self.user isEqual:[WGProfile currentUser]]) ? @"Yes" : @"No";
+//    NSString *isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE) ? @"Yes" : @"No";
+//    self.isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE);
+//    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", isPeeking, @"isPeeking", nil];
+//    [WGAnalytics tagEvent:@"Profile View" withDetails:options];
+
+    [WGAnalytics tagView:@"profile" withTargetUser:self.user];
 
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
@@ -930,9 +930,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)inviteTapped {
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
-    [WGAnalytics tagEvent:@"Tap User" withDetails:options];
-
+//    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
+//    [WGAnalytics tagEvent:@"Tap User" withDetails:options];
+    [WGAnalytics tagAction:@"tap"
+                    atView:@"profile"
+            withTargetUser:self.user];
+    
     self.user.isTapped = @YES;
     [[WGProfile currentUser] tapUser:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
