@@ -22,9 +22,13 @@ static NSString *previousViewName;
     if (self) {
         [self setApplicationInformation];
         [self setClientMetadata];
-        self.dispatchInterval = @30;
+        self.dispatchInterval = 30.0f;
         self.batchedInfo = [NSMutableArray new];
-        self.startTime = [NSDate date];
+        [NSTimer scheduledTimerWithTimeInterval:self.dispatchInterval
+                                         target:self
+                                       selector:@selector(sendInfo)
+                                       userInfo:nil
+                                        repeats:YES];
     }
     return self;
 }
@@ -157,31 +161,28 @@ static NSString *previousViewName;
 
 - (void)postDictionary {
     [self setValue:[WGTracker getTimeNow] forKey:kTimeKey];
-//    NSLog(@"info: %@", self.mutDict);
     [self.batchedInfo addObject:self.mutDict];
     [self queueRequest];
     
 }
 
 - (void)queueRequest {
-    NSDate *nowTime = [NSDate date];
-    NSTimeInterval diff = [nowTime timeIntervalSinceDate:self.startTime];
     [self.batchedInfo addObject:self.mutDict];
+}
 
-    if (diff > self.dispatchInterval.intValue) {
-        [WGApi postURL:analyticsString
-        withParameters:self.batchedInfo
-            andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-
-            }];
-        // RESET SETTINGS
-        self.startTime = nowTime;
-        self.batchedInfo = [NSMutableArray new];
-    }
+- (void)sendInfo {
+    if (self.batchedInfo.count == 0) return;
+    [WGApi postURL:analyticsString
+    withParameters:self.batchedInfo
+        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            
+        }];
+    // RESET SETTINGS
+    self.batchedInfo = [NSMutableArray new];
 }
 
 
-#pragma mark - Helpers 
+#pragma mark - Helpers
 
 + (NSString *)getTimeNow {
     NSDate *date = [NSDate date];

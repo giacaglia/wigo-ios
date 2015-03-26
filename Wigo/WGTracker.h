@@ -74,7 +74,7 @@ static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/
 
 @property (nonatomic, strong) NSDate *startTime;
 @property (nonatomic, strong) NSMutableDictionary *mutDict;
-@property (nonatomic, strong) NSNumber *dispatchInterval; // Time in seconds
+@property (nonatomic, assign) float dispatchInterval; // Time in seconds
 @property (nonatomic, strong) NSMutableArray *batchedInfo;
 -(void)setValue:(id)value forKey:(NSString *)key;
 -(void)remove:(NSString *)key;
