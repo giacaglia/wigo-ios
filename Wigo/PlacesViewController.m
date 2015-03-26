@@ -1775,14 +1775,18 @@ BOOL firstTimeLoading;
 }
 
 - (void)scrollLeft {
-    [UIView animateWithDuration:0.1f animations:^{
+    [UIView animateWithDuration:0.3f animations:^{
         self.lineViewUnderLabel.frame = CGRectMake(58, [TodayHeader height] - 3, 68, 3);
+        self.friendsLabel.textColor = [FontProperties getBlueColor];
+        self.bostonLabel.textColor = UIColor.blackColor;
     }];
 }
 
 - (void)scrollRight {
-    [UIView animateWithDuration:0.1f animations:^{
+    [UIView animateWithDuration:0.3f animations:^{
         self.lineViewUnderLabel.frame = CGRectMake(self.frame.size.width - 58 - 68, [TodayHeader height] - 3, 68, 3);
+        self.friendsLabel.textColor = UIColor.blackColor;
+        self.bostonLabel.textColor = [FontProperties getBlueColor];
     }];
 }
 
