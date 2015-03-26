@@ -79,7 +79,9 @@ static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/
 -(void)setValue:(id)value forKey:(NSString *)key;
 -(void)remove:(NSString *)key;
 -(void)setGroup:(WGGroup *)group;
+-(void)setTargetGroup:(WGGroup *)group;
 -(void)setUser:(WGUser *)user;
+-(void)setTargetUser:(WGUser *)user;
 -(void)postViewWithName:(NSString *)viewName;
 -(void)postActionWithName:(NSString *)actionName;
 - (void)postActionWithName:(NSString *)actionName

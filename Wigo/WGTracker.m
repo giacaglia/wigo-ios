@@ -121,6 +121,8 @@ static NSString *previousViewName;
     [self setValue:category forKey:kCategoryKey];
     [self postActionWithName:actionName];
     [self remove:kCategoryKey];
+    [self remove:kTargetGroupKey];
+    [self remove:kTargetUserKey];
 }
 
 
@@ -130,6 +132,8 @@ static NSString *previousViewName;
     [self postDictionary];
     [self remove:kTypeKey];
     [self remove:kCategoryKey];
+    [self remove:kTargetGroupKey];
+    [self remove:kTargetUserKey];
 }
 
 - (void)postViewWithName:(NSString *)viewName {
@@ -146,6 +150,8 @@ static NSString *previousViewName;
     [self remove:kTypeKey];
     [self remove:kPreviousViewName];
     [self remove:kViewName];
+    [self remove:kTargetGroupKey];
+    [self remove:kTargetUserKey];
 }
 
 

@@ -25,6 +25,18 @@
     return @"100+";
 }
 
++(void)tagView:(NSString *)viewName
+withTargetGroup:(WGGroup *)targetGroup
+{
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    WGTracker *wgTracker = [WGI defaultTracker];
+    [wgTracker setGroup:WGProfile.currentUser.group];
+    [wgTracker setUser:WGProfile.currentUser];
+    [wgTracker setTargetGroup:targetGroup];
+    [wgTracker postViewWithName:viewName];
+}
+
 +(void)tagView:(NSString *)viewName {
     if (!WGProfile.currentUser.isFetched) return;
     
@@ -32,6 +44,17 @@
     [wgTracker setGroup:WGProfile.currentUser.group];
     [wgTracker setUser:WGProfile.currentUser];
     [wgTracker postViewWithName:viewName];
+}
+
++ (void)tagAction:(NSString *)actionName
+   withTargetUser:(WGUser *)targetUser {
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    WGTracker *wgTracker = [WGI defaultTracker];
+    [wgTracker setGroup:WGProfile.currentUser.group];
+    [wgTracker setUser:WGProfile.currentUser];
+    [wgTracker setTargetUser:targetUser];
+    [wgTracker postActionWithName:actionName];
 }
 
 + (void)tagAction:(NSString *)actionName {

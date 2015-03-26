@@ -100,9 +100,13 @@ BOOL firstTimeLoading;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    NSString *isPeeking = ([self isPeeking]) ? @"Yes" : @"No";
     
-    [WGAnalytics tagView:@"where"];
+    if ([self isPeeking] && self.groupNumberID && self.groupName) {
+        [WGAnalytics tagView:@"where" withTargetGroup:[[WGGroup alloc] initWithJSON:@{@"name": self.groupName, @"id": self.groupNumberID}]];
+    }
+    else {
+        [WGAnalytics tagView:@"where"];
+    }
 //    [WGAnalytics tagEvent:@"Where View" withDetails: @{ @"isPeeking": isPeeking }];
 
     self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
