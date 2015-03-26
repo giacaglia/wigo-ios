@@ -10,9 +10,9 @@
 #import "Globals.h"
 
 #ifdef DEBUG
-static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/dev/track";
+static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/dev/track?key=0i9u4r98jfg";
 #else
-static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/dev/track";
+static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/dev/track?key=0i9u4r98jfg";
 #endif
 
 // Object keys
@@ -72,7 +72,10 @@ static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/
 
 @interface WGTracker : NSObject
 
+@property (nonatomic, strong) NSDate *startTime;
 @property (nonatomic, strong) NSMutableDictionary *mutDict;
+@property (nonatomic, strong) NSNumber *dispatchInterval; // Time in seconds
+@property (nonatomic, strong) NSMutableArray *batchedInfo;
 -(void)setValue:(id)value forKey:(NSString *)key;
 -(void)remove:(NSString *)key;
 -(void)setGroup:(WGGroup *)group;

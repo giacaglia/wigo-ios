@@ -226,7 +226,6 @@
         [strongSelf.facesCollectionView reloadData];
         
         int indexBefore = [strongSelf getPageForScrollView:strongSelf.mediaScrollView toLeft:YES];
-        NSLog(@"index Before: %d", indexBefore);
         int differenceOfPages = strongSelf.eventMessages.count - strongSelf.numberOfPagesBefore.intValue;
         int newIndex = indexBefore + differenceOfPages;
         strongSelf.index = @(newIndex);

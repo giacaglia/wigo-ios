@@ -25,16 +25,24 @@
     return @"100+";
 }
 
-+(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details {
-    // WGI
-    if (WGProfile.currentUser.isFetched) {
-        WGTracker *wgTracker = [WGI defaultTracker];
-        [wgTracker setGroup:WGProfile.currentUser.group];
-        [wgTracker setUser:WGProfile.currentUser];
-        [wgTracker postActionWithName:name];
-    }
-
++(void)tagView:(NSString *)viewName {
+    if (!WGProfile.currentUser.isFetched) return;
     
+    WGTracker *wgTracker = [WGI defaultTracker];
+    [wgTracker setGroup:WGProfile.currentUser.group];
+    [wgTracker setUser:WGProfile.currentUser];
+    [wgTracker postViewWithName:viewName];
+}
+
++ (void)tagAction:(NSString *)actionName {
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    WGTracker *wgTracker = [WGI defaultTracker];
+    [wgTracker setUser:WGProfile.currentUser];
+    [wgTracker postActionWithName:actionName];
+}
+
++(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details {
     if ([[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
         return;
     }
@@ -107,11 +115,6 @@
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     [tracker set:kGAIScreenName value:name];
     [tracker send:[[GAIDictionaryBuilder createAppView] build]];
-    
-    //WGI
-    WGTracker *wgTracker = [WGI defaultTracker];
-    [wgTracker setUser:WGProfile.currentUser];
-    [wgTracker postViewWithName:name];
     
 }
 

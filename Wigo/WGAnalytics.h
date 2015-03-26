@@ -13,7 +13,8 @@
 #import "WGProfile.h"
 
 @interface WGAnalytics : NSObject
-
++(void) tagView:(NSString *)viewName;
++(void) tagAction:(NSString *)actionName;
 +(void) tagEvent:(NSString *)name;
 +(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details;
 +(void) tagScreen:(NSString *)name;

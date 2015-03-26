@@ -228,7 +228,9 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [request addValue:contentLength forHTTPHeaderField:kContentLengthKey];
     [request setHTTPMethod:kPOST];
     
-    [WGApi addWigoHeaders:request passKey:NO];
+    BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
+
+    [WGApi addWigoHeaders:request passKey:shouldPassKey];
     
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.responseSerializer = [AFJSONResponseSerializer serializer];

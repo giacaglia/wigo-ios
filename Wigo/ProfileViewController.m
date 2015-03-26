@@ -142,6 +142,7 @@ BOOL blockShown;
     self.isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE);
     NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", isPeeking, @"isPeeking", nil];
     
+    [WGAnalytics tagView:@"profile"];
     [WGAnalytics tagEvent:@"Profile View" withDetails:options];
 
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]

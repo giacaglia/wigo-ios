@@ -22,6 +22,9 @@ static NSString *previousViewName;
     if (self) {
         [self setApplicationInformation];
         [self setClientMetadata];
+        self.dispatchInterval = @60;
+        self.batchedInfo = [NSMutableArray new];
+        self.startTime = [NSDate date];
     }
     return self;
 }
@@ -36,7 +39,7 @@ static NSString *previousViewName;
 }
 
 - (void)remove:(NSString *)key {
-    
+    [self.mutDict removeObjectForKey:key];
 }
 
 - (void)setApplicationInformation {
@@ -117,6 +120,7 @@ static NSString *previousViewName;
                andCategory:(NSString *)category {
     [self setValue:category forKey:kCategoryKey];
     [self postActionWithName:actionName];
+    [self remove:kCategoryKey];
 }
 
 
@@ -124,6 +128,8 @@ static NSString *previousViewName;
     [self setValue:kActionType forKey:kTypeKey];
     [self setValue:actionName forKey:kCategoryKey];
     [self postDictionary];
+    [self remove:kTypeKey];
+    [self remove:kCategoryKey];
 }
 
 - (void)postViewWithName:(NSString *)viewName {
@@ -137,19 +143,40 @@ static NSString *previousViewName;
     }
     [self setValue:viewName forKey:kViewName];
     [self postDictionary];
+    [self remove:kTypeKey];
+    [self remove:kPreviousViewName];
+    [self remove:kViewName];
 }
 
 
--(void)postDictionary {
+- (void)postDictionary {
     [self setValue:[WGTracker getTimeNow] forKey:kTimeKey];
-    NSLog(@"info: %@", self.mutDict);
-//    [WGApi postURL:analyticsString
-//    withParameters:self.mutDict
-//        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-//            
-//        }];
+//    NSLog(@"info: %@", self.mutDict);
+    [self.batchedInfo addObject:self.mutDict];
+    [self queueRequest];
     
 }
+
+- (void)queueRequest {
+    NSDate *nowTime = [NSDate date];
+    NSTimeInterval diff = [nowTime timeIntervalSinceDate:self.startTime];
+    [self.batchedInfo addObject:self.mutDict];
+
+//    if (diff > self.dispatchInterval.intValue) {
+//        NSLog(@"here");
+        [WGApi postURL:analyticsString
+        withParameters:self.mutDict
+            andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+
+            }];
+        // RESET SETTINGS
+        self.startTime = nowTime;
+        self.batchedInfo = [NSMutableArray new];
+//    }
+}
+
+
+#pragma mark - Helpers 
 
 + (NSString *)getTimeNow {
     NSDate *date = [NSDate date];
@@ -159,8 +186,6 @@ static NSString *previousViewName;
     NSString *dateString = [dateFormatter stringFromDate:date];
     return dateString;
 }
-
-#pragma mark - Helpers 
 
 + (NSString *)getIPAddress {
     NSString *address = @"error";

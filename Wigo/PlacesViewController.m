@@ -101,7 +101,9 @@ BOOL firstTimeLoading;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     NSString *isPeeking = ([self isPeeking]) ? @"Yes" : @"No";
-    [WGAnalytics tagEvent:@"Where View" withDetails: @{ @"isPeeking": isPeeking }];
+    
+    [WGAnalytics tagView:@"where"];
+//    [WGAnalytics tagEvent:@"Where View" withDetails: @{ @"isPeeking": isPeeking }];
 
     self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
