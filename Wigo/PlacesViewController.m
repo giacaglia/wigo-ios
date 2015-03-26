@@ -1747,28 +1747,50 @@ BOOL firstTimeLoading;
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TodayHeader height]);
     self.backgroundColor = RGB(249, 249, 249);
     
-    UILabel *friendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(58, [TodayHeader height] - 22 - 7, 68, 22)];
-    friendsLabel.textAlignment = NSTextAlignmentCenter;
-    friendsLabel.font = [FontProperties lightFont: 18.0f];
-    friendsLabel.textColor = [FontProperties getBlueColor];
-    friendsLabel.text = @"Friends";
-    [self addSubview: friendsLabel];
+    UIButton *leftButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width/2, self.frame.size.height)];
+    [leftButton addTarget:self action:@selector(scrollLeft) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:leftButton];
     
-    UIView *lineViewUnderLabel = [[UIView alloc] initWithFrame:CGRectMake(58, [TodayHeader height] - 3, 68, 3)];
-    lineViewUnderLabel.backgroundColor = [FontProperties getBlueColor];
-    [self addSubview:lineViewUnderLabel];
+    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width/2, self.frame.size.height)];
+    [rightButton addTarget:self action:@selector(scrollRight) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:rightButton];
     
-    UILabel *bostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 58 - 68, [TodayHeader height] - 22 - 7, 68, 22)];
-    bostonLabel.textAlignment = NSTextAlignmentCenter;
-    bostonLabel.font = [FontProperties lightFont:18.0f];
-    bostonLabel.textColor = UIColor.blackColor;
-    bostonLabel.text = @"Boston";
-    [self addSubview: bostonLabel];
+    self.friendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(58, [TodayHeader height] - 22 - 7, 68, 22)];
+    self.friendsLabel.textAlignment = NSTextAlignmentCenter;
+    self.friendsLabel.font = [FontProperties lightFont: 18.0f];
+    self.friendsLabel.textColor = [FontProperties getBlueColor];
+    self.friendsLabel.text = @"Friends";
+    [self addSubview: self.friendsLabel];
+    
+    self.lineViewUnderLabel = [[UIView alloc] initWithFrame:CGRectMake(58, [TodayHeader height] - 3, 68, 3)];
+    self.lineViewUnderLabel.backgroundColor = [FontProperties getBlueColor];
+    [self addSubview:self.lineViewUnderLabel];
+    
+    self.bostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 58 - 68, [TodayHeader height] - 22 - 7, 68, 22)];
+    self.bostonLabel.textAlignment = NSTextAlignmentCenter;
+    self.bostonLabel.font = [FontProperties lightFont:18.0f];
+    self.bostonLabel.textColor = UIColor.blackColor;
+    self.bostonLabel.text = @"Boston";
+    [self addSubview: self.bostonLabel];
+}
+
+- (void)scrollLeft {
+    [UIView animateWithDuration:0.1f animations:^{
+        self.lineViewUnderLabel.frame = CGRectMake(58, [TodayHeader height] - 3, 68, 3);
+    }];
+}
+
+- (void)scrollRight {
+    [UIView animateWithDuration:0.1f animations:^{
+        self.lineViewUnderLabel.frame = CGRectMake(self.frame.size.width - 58 - 68, [TodayHeader height] - 3, 68, 3);
+    }];
 }
 
 + (CGFloat) height {
     return 36;
 }
+
+
 @end
 
 @implementation GoOutNewPlaceHeader

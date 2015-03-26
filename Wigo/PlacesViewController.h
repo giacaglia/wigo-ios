@@ -80,6 +80,9 @@
 + (CGFloat) height;
 @property (nonatomic, strong) NSDate *date;
 + (instancetype) initWithDay: (NSDate *) date;
+@property (nonatomic, strong) UILabel *friendsLabel;
+@property (nonatomic, strong) UILabel *bostonLabel;
+@property (nonatomic, strong) UIView *lineViewUnderLabel;
 @end
 
 @interface GoOutNewPlaceHeader : UIView
