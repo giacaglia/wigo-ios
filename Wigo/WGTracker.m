@@ -22,7 +22,7 @@ static NSString *previousViewName;
     if (self) {
         [self setApplicationInformation];
         [self setClientMetadata];
-        self.dispatchInterval = @60;
+        self.dispatchInterval = @30;
         self.batchedInfo = [NSMutableArray new];
         self.startTime = [NSDate date];
     }
@@ -168,17 +168,16 @@ static NSString *previousViewName;
     NSTimeInterval diff = [nowTime timeIntervalSinceDate:self.startTime];
     [self.batchedInfo addObject:self.mutDict];
 
-//    if (diff > self.dispatchInterval.intValue) {
-//        NSLog(@"here");
+    if (diff > self.dispatchInterval.intValue) {
         [WGApi postURL:analyticsString
-        withParameters:self.mutDict
+        withParameters:self.batchedInfo
             andHandler:^(NSDictionary *jsonResponse, NSError *error) {
 
             }];
         // RESET SETTINGS
         self.startTime = nowTime;
         self.batchedInfo = [NSMutableArray new];
-//    }
+    }
 }
 
 

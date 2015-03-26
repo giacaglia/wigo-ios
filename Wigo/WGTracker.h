@@ -68,7 +68,7 @@ static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/
 #define kSubviewID @"sub_view_id"
 #define kSubviewName @"sub_view_name"
 #define kPreviousViewID @"previous_view_id"
-#define kPreviousViewName @"previous_name"
+#define kPreviousViewName @"previous_view_name"
 
 @interface WGTracker : NSObject
 
