@@ -12,12 +12,9 @@
 
 //View Extensions
 #import "UIButtonAligned.h"
-#import "UIButtonUngoOut.h"
-#import "MobileContactsViewController.h"
 #import "InviteViewController.h"
 #import "SignNavigationViewController.h"
 #import "PeekViewController.h"
-#import "EventStoryViewController.h"
 #import "ProfileViewController.h"
 #import "FXBlurView.h"
 #import "ChatViewController.h"
@@ -28,6 +25,8 @@
 #import "PrivateSwitchView.h"
 #import "EventMessagesConstants.h"
 #import "OverlayViewController.h"
+#import "EventConversationViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 
 #define kEventCellName @"EventCell"
@@ -55,10 +54,6 @@
 @property UIScrollView *scrollViewSender;
 @property CGPoint scrollViewPoint;
 
-// Events Summary
-
-// Go OUT Button
-@property UIButtonUngoOut *ungoOutButton;
 
 // Events By Days
 @property (nonatomic, strong) NSMutableArray *pastDays;
@@ -285,7 +280,6 @@ BOOL firstTimeLoading;
 }
 
 - (void)dismissKeyboard {
-    _ungoOutButton.enabled = YES;
     [self.view endEditing:YES];
     [UIView animateWithDuration:0.2 animations:^{
         self.placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
@@ -411,7 +405,6 @@ BOOL firstTimeLoading;
         
         [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
 
-        _ungoOutButton.enabled = NO;
         self.placesTableView.userInteractionEnabled = NO;
     }];
 }
@@ -1153,14 +1146,6 @@ BOOL firstTimeLoading;
     
 }
 
-- (void)showStoryForEvent:(WGEvent*)event {
-    EventStoryViewController *eventStoryController = [self.storyboard instantiateViewControllerWithIdentifier: @"EventStoryViewController"];
-    eventStoryController.placesDelegate = self;
-    eventStoryController.event = event;
-    
-    if (self.groupNumberID) eventStoryController.groupNumberID = self.groupNumberID;
-    [self.navigationController pushViewController:eventStoryController animated:YES];
-}
 
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
     if (![WGProfile.currentUser.group.id isEqual:groupID]) {
@@ -1642,15 +1627,20 @@ BOOL firstTimeLoading;
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 40)];
+    backgroundView.backgroundColor = UIColor.whiteColor;
+//    backgroundView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.9f).CGColor;
+//    backgroundView.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
+//    backgroundView.layer.shadowRadius = 4.0f;
+//    backgroundView.layer.shadowOpacity = 1.0f;
     [self.contentView addSubview:backgroundView];
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
     self.loadingView.hidden = YES;
-    [self.contentView addSubview:self.loadingView];
+    [backgroundView addSubview:self.loadingView];
     
     self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
-    [self.contentView addSubview:self.privacyLockButton];
+    [backgroundView addSubview:self.privacyLockButton];
     
     self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 26.5 - 8., 12, 16)];
     self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
@@ -1663,23 +1653,23 @@ BOOL firstTimeLoading;
     self.eventNameLabel.backgroundColor = UIColor.whiteColor;
     self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
-    [self.contentView addSubview:self.eventNameLabel];
+    [backgroundView addSubview:self.eventNameLabel];
     
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
     lineView.backgroundColor = RGB(215, 215, 215);
-    [self.contentView addSubview:lineView];
+    [backgroundView addSubview:lineView];
     
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40 + 20, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
-    [self.contentView addSubview:self.numberOfPeopleGoingLabel];
+    [backgroundView addSubview:self.numberOfPeopleGoingLabel];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
     self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
     self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
-    [self.contentView addSubview:self.eventPeopleScrollView];
+    [backgroundView addSubview:self.eventPeopleScrollView];
     
     self.numberOfHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, self.frame.size.width, 20)];
     self.numberOfHighlightsLabel.textAlignment = NSTextAlignmentLeft;
@@ -1687,12 +1677,12 @@ BOOL firstTimeLoading;
     self.numberOfHighlightsLabel.font = [FontProperties lightFont:15.0f];
     self.numberOfHighlightsLabel.alpha = 1.0f;
     self.numberOfHighlightsLabel.text = @"The Buzz";
-    [self.contentView addSubview:self.numberOfHighlightsLabel];
+    [backgroundView addSubview:self.numberOfHighlightsLabel];
     
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
                                      initWithFrame:CGRectMake(0, self.numberOfHighlightsLabel.frame.origin.y + self.numberOfHighlightsLabel.frame.size.height + 5, self.frame.size.width, [HighlightCell height])
                                      collectionViewLayout:[HighlightsFlowLayout new]];
-    [self.contentView addSubview:self.highlightsCollectionView];
+    [backgroundView addSubview:self.highlightsCollectionView];
     
     self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 40)];
     self.grayView.backgroundColor = RGB(237, 237, 237);
