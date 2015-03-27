@@ -1606,7 +1606,6 @@ BOOL firstTimeLoading;
             handler(YES, error);
         }];
     }
-    
 }
 
 

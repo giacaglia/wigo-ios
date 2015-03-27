@@ -134,7 +134,8 @@
 }
 
 -(void) addObjectsFromCollectionToBeginning:(WGCollection *)collection {
-    for (WGObject *object in collection) {
+    for (int i = 0; i < collection.count; i++) {
+        WGObject *object = [collection objectAtIndex:(collection.count - i - 1)];
         [self insertObject:object atIndex:0];
     }
 }
