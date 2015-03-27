@@ -336,6 +336,12 @@
 		E9A765941AC2005A00F7C016 /* WGI.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765921AC2005A00F7C016 /* WGI.m */; };
 		E9A765971AC2012C00F7C016 /* WGTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765961AC2012C00F7C016 /* WGTracker.m */; };
 		E9A765981AC2012C00F7C016 /* WGTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765961AC2012C00F7C016 /* WGTracker.m */; };
+		E9A7659F1AC5D23A00F7C016 /* LabelSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A7659E1AC5D23A00F7C016 /* LabelSwitch.m */; };
+		E9A765A01AC5D23A00F7C016 /* LabelSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A7659E1AC5D23A00F7C016 /* LabelSwitch.m */; };
+		E9A765A81AC5EA7A00F7C016 /* WGNetworkFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765A71AC5EA7A00F7C016 /* WGNetworkFetcher.m */; };
+		E9A765A91AC5EA7A00F7C016 /* WGNetworkFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765A71AC5EA7A00F7C016 /* WGNetworkFetcher.m */; };
+		E9A765AC1AC5F06800F7C016 /* WGGetter.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765AB1AC5F06800F7C016 /* WGGetter.m */; };
+		E9A765AD1AC5F06800F7C016 /* WGGetter.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765AB1AC5F06800F7C016 /* WGGetter.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */; };
@@ -787,6 +793,12 @@
 		E9A765921AC2005A00F7C016 /* WGI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGI.m; sourceTree = "<group>"; };
 		E9A765951AC2012C00F7C016 /* WGTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGTracker.h; sourceTree = "<group>"; };
 		E9A765961AC2012C00F7C016 /* WGTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGTracker.m; sourceTree = "<group>"; };
+		E9A7659D1AC5D23A00F7C016 /* LabelSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LabelSwitch.h; sourceTree = "<group>"; };
+		E9A7659E1AC5D23A00F7C016 /* LabelSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LabelSwitch.m; sourceTree = "<group>"; };
+		E9A765A61AC5EA7A00F7C016 /* NetworkFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkFetcher.h; sourceTree = "<group>"; };
+		E9A765A71AC5EA7A00F7C016 /* WGNetworkFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGNetworkFetcher.m; sourceTree = "<group>"; };
+		E9A765AA1AC5F06800F7C016 /* WGGetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGGetter.h; sourceTree = "<group>"; };
+		E9A765AB1AC5F06800F7C016 /* WGGetter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGGetter.m; sourceTree = "<group>"; };
 		E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
 		E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileViewController.h; sourceTree = "<group>"; };
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
@@ -1225,6 +1237,10 @@
 				45DF868D1A5AE1C100DB85AE /* WGError.m */,
 				4544095F1A54A08A00BB3036 /* WGParser.h */,
 				454409601A54A08A00BB3036 /* WGParser.m */,
+				E9A765AA1AC5F06800F7C016 /* WGGetter.h */,
+				E9A765AB1AC5F06800F7C016 /* WGGetter.m */,
+				E9A765A61AC5EA7A00F7C016 /* NetworkFetcher.h */,
+				E9A765A71AC5EA7A00F7C016 /* WGNetworkFetcher.m */,
 			);
 			name = Networking;
 			sourceTree = "<group>";
@@ -1889,6 +1905,8 @@
 				E9C5CE391AB0EFFB0044745B /* OverlayViewController.m */,
 				E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */,
 				E94408C91ABA55DA00E3378D /* PlacesViewController.m */,
+				E9A7659D1AC5D23A00F7C016 /* LabelSwitch.h */,
+				E9A7659E1AC5D23A00F7C016 /* LabelSwitch.m */,
 				E9AAAFCA193E3DC40069F700 /* User Profiles */,
 				FA85ED9A1A5C406A004B0465 /* Inviting */,
 				FA2BE9BA19FAEAFC00CC0E5E /* EventStory */,
@@ -2245,6 +2263,7 @@
 				C1F5B3DE1A654B4D00CAFD95 /* AFURLResponseSerialization.m in Sources */,
 				45D9FAAD1A781AFD00D08577 /* JSQMessagesBubbleImageFactory.m in Sources */,
 				C1F5B3DF1A654B4D00CAFD95 /* AFURLSessionManager.m in Sources */,
+				E9A765A91AC5EA7A00F7C016 /* WGNetworkFetcher.m in Sources */,
 				C1F5B3D61A654AE300CAFD95 /* NSDate+WGDate.m in Sources */,
 				E957CD6B1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */,
 				C1F5B3CA1A654AC800CAFD95 /* WGUser.m in Sources */,
@@ -2391,8 +2410,10 @@
 				C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */,
 				C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */,
 				E9ACDC6A19AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
+				E9A765A01AC5D23A00F7C016 /* LabelSwitch.m in Sources */,
 				C12A113A19787BE700D53B1C /* MKAnnotationView+WebCache.m in Sources */,
 				E998C28919D342C50012BF51 /* PopViewController.m in Sources */,
+				E9A765AD1AC5F06800F7C016 /* WGGetter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2442,6 +2463,7 @@
 				E900C2C11961EADE00A01F50 /* UIImage+WebP.m in Sources */,
 				45DF868E1A5AE1C100DB85AE /* WGError.m in Sources */,
 				E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */,
+				E9A7659F1AC5D23A00F7C016 /* LabelSwitch.m in Sources */,
 				FA5526221A1FE3D800101AE7 /* EngagementGraph.m in Sources */,
 				E94408CA1ABA55DA00E3378D /* PlacesViewController.m in Sources */,
 				45D9FAE61A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.m in Sources */,
@@ -2517,6 +2539,7 @@
 				45D9FBB41A7ED46600D08577 /* EventPeopleModalViewController.m in Sources */,
 				E957CD6A1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */,
 				45D9FAA61A781AFD00D08577 /* JSQMessagesViewController.m in Sources */,
+				E9A765A81AC5EA7A00F7C016 /* WGNetworkFetcher.m in Sources */,
 				FA55260C1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,
 				E990298B196B4E0700192FF2 /* FacebookImagesViewController.m in Sources */,
 				45D9FABC1A781AFD00D08577 /* JSQMediaItem.m in Sources */,
@@ -2561,6 +2584,7 @@
 				E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */,
 				E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */,
 				FA55261C1A1FDB4000101AE7 /* JBChartView.m in Sources */,
+				E9A765AC1AC5F06800F7C016 /* WGGetter.m in Sources */,
 				E9ACDC6919AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
 				E900C2B51961EADE00A01F50 /* MKAnnotationView+WebCache.m in Sources */,
 				E998C28819D342C50012BF51 /* PopViewController.m in Sources */,

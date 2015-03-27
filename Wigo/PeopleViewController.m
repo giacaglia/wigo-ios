@@ -583,6 +583,7 @@ UIScrollView *suggestedScrollView;
     [WGSpinnerView addDancingGToCenterView:self.view];
     if (!self.everyone) self.everyone = [[WGCollection alloc] initWithType:[WGUser class]];
     __weak typeof(self) weakSelf = self;
+    self.suggestions = NetworkFetcher.defaultGetter.suggestions;
     [WGUser getSuggestions:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         dispatch_async(dispatch_get_main_queue(), ^(void) {

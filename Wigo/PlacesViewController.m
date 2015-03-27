@@ -27,7 +27,7 @@
 #import "OverlayViewController.h"
 #import "EventConversationViewController.h"
 #import <QuartzCore/QuartzCore.h>
-
+#import "LabelSwitch.h"
 
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCell @"HighlightOldEventCell"
@@ -91,6 +91,8 @@ BOOL firstTimeLoading;
 
     self.spinnerAtCenter = YES;
     [self initializeWhereView];
+    [NetworkFetcher.defaultGetter fetchMessages];
+    [NetworkFetcher.defaultGetter fetchSuggestions];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -298,7 +300,10 @@ BOOL firstTimeLoading;
 }
 
 - (void)initializeWhereView {
-    self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64) style: UITableViewStyleGrouped];
+    LabelSwitch *labelSwitch = [[LabelSwitch alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, [LabelSwitch height])];
+    [self.view addSubview:labelSwitch];
+    
+    self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 64 + [LabelSwitch height], self.view.frame.size.width, self.view.frame.size.height - 64 - [LabelSwitch height]) style: UITableViewStyleGrouped];
     self.placesTableView.sectionHeaderHeight = 0;
     self.placesTableView.sectionFooterHeight = 0;
     [self.view addSubview:self.placesTableView];
@@ -1737,56 +1742,12 @@ BOOL firstTimeLoading;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TodayHeader height]);
-    self.backgroundColor = RGB(249, 249, 249);
-    
-    UIButton *leftButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width/2, self.frame.size.height)];
-    [leftButton addTarget:self action:@selector(scrollLeft) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:leftButton];
-    
-    UIButton *rightButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width/2, self.frame.size.height)];
-    [rightButton addTarget:self action:@selector(scrollRight) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:rightButton];
-    
-    self.friendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(58, [TodayHeader height] - 22 - 7, 68, 22)];
-    self.friendsLabel.textAlignment = NSTextAlignmentCenter;
-    self.friendsLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0f];
-    self.friendsLabel.textColor = [FontProperties getBlueColor];
-    self.friendsLabel.text = @"Friends";
-    [self addSubview: self.friendsLabel];
-    
-    self.lineViewUnderLabel = [[UIView alloc] initWithFrame:CGRectMake(58, [TodayHeader height] - 3, 68, 3)];
-    self.lineViewUnderLabel.backgroundColor = [FontProperties getBlueColor];
-    [self addSubview:self.lineViewUnderLabel];
-    
-    self.bostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 58 - 68, [TodayHeader height] - 22 - 7, 68, 22)];
-    self.bostonLabel.textAlignment = NSTextAlignmentCenter;
-    self.bostonLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0f];
-    self.bostonLabel.textColor = RGB(179, 179, 179);
-    self.bostonLabel.text = @"Boston";
-    [self addSubview: self.bostonLabel];
-}
 
-- (void)scrollLeft {
-    [UIView animateWithDuration:0.3f animations:^{
-        self.lineViewUnderLabel.frame = CGRectMake(58, [TodayHeader height] - 3, 68, 3);
-        self.friendsLabel.textColor = [FontProperties getBlueColor];
-        self.bostonLabel.textColor = UIColor.blackColor;
-    }];
-}
-
-- (void)scrollRight {
-    [UIView animateWithDuration:0.3f animations:^{
-        self.lineViewUnderLabel.frame = CGRectMake(self.frame.size.width - 58 - 68, [TodayHeader height] - 3, 68, 3);
-        self.friendsLabel.textColor = UIColor.blackColor;
-        self.bostonLabel.textColor = [FontProperties getBlueColor];
-    }];
 }
 
 + (CGFloat) height {
-    return 40;
+    return 0.5f;
 }
-
 
 @end
 

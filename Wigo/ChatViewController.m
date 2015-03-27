@@ -37,6 +37,7 @@
     }
     
     [WGSpinnerView addDancingGToCenterView:self.view];
+    self.messages = NetworkFetcher.defaultGetter.messages;
     [self initializeNewChatButton];
     [self initializeTableOfChats];
     [self initializeLeftBarButton];

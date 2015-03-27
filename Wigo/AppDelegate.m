@@ -90,7 +90,6 @@ NSDate *firstLoggedTime;
     [self updateGoingOutIfItsAnotherDay];
     [self fetchAppStart];
     [WGI openedTheApp];
-
 }
 
 - (void) dismissEverythingWithUserInfo:(NSDictionary *)userInfo {
