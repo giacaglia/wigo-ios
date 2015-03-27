@@ -584,6 +584,9 @@ BOOL firstTimeLoading;
         [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
         self.whereAreYouGoingTextField.delegate = self;
         self.whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
+        [self.whereAreYouGoingTextField addTarget:self
+                                           action:@selector(textFieldDidChange:)
+                                 forControlEvents:UIControlEventEditingChanged];
         [_whereAreYouGoingView addSubview:self.whereAreYouGoingTextField];
         
         CALayer *bottomBorder = [CALayer layer];
@@ -724,6 +727,15 @@ BOOL firstTimeLoading;
 }
 
 
+- (void)textFieldDidChange:(UITextField *)textField {
+    if(textField.text.length != 0) {
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+        
+    } else {
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+    }
+    
+}
 
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
