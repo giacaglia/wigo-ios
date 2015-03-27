@@ -11,6 +11,7 @@
 #import "Delegate.h"
 #import "UIButtonAligned.h"
 #import "SignViewController.h"
+#import "LabelSwitch.h"
 
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
@@ -52,6 +53,8 @@
 @property (nonatomic, assign) CGPoint pointNow;
 @property (nonatomic, assign) BOOL spinnerAtCenter;
 
+@property (nonatomic, strong) LabelSwitch *labelSwitch;
+@property (nonatomic, assign) CGFloat previousScrollViewYOffset;
 @end
 
 #import "EventPeopleScrollView.h"

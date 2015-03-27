@@ -30,7 +30,7 @@
 
 - (void)setup {
     self.backgroundColor = RGB(249, 249, 249);
-    
+    self.clipsToBounds = YES;
     UIButton *leftButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width/2, self.frame.size.height)];
     [leftButton addTarget:self action:@selector(scrollLeft) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:leftButton];
