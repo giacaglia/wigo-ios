@@ -111,10 +111,10 @@
             </objects>
             <point key="canvasLocation" x="1888" y="-2658"/>
         </scene>
-        <!--Profile-->
+        <!--Chats-->
         <scene sceneID="twL-Dd-UjL">
             <objects>
-                <viewController id="Qnu-C5-NeM" sceneMemberID="viewController">
+                <viewController id="Qnu-C5-NeM" customClass="ChatViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="FYU-bn-KR9"/>
                         <viewControllerLayoutGuide type="bottom" id="XBg-4u-Ocz"/>
@@ -124,16 +124,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Profile" id="MwE-5g-eh6"/>
+                    <tabBarItem key="tabBarItem" title="Chats" id="MwE-5g-eh6"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DGC-ZB-xGW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1856" y="-1796"/>
         </scene>
-        <!--Chats-->
+        <!--Friends-->
         <scene sceneID="Bbv-a4-9kz">
             <objects>
-                <viewController id="5uj-2t-qG5" sceneMemberID="viewController">
+                <viewController id="5uj-2t-qG5" customClass="PeopleViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Fis-wz-tE1"/>
                         <viewControllerLayoutGuide type="bottom" id="NMK-6l-jsa"/>
@@ -143,30 +143,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Chats" id="3Dn-dz-PNW"/>
+                    <tabBarItem key="tabBarItem" title="Friends" id="3Dn-dz-PNW"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Lo-Gn-6yd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1828" y="-984"/>
-        </scene>
-        <!--Friends-->
-        <scene sceneID="Lrb-zW-QuV">
-            <objects>
-                <viewController id="VYg-fy-M77" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="QWJ-yr-4lD"/>
-                        <viewControllerLayoutGuide type="bottom" id="hhj-9B-8Rv"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="QGX-dq-C21">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="Friends" id="yZ5-5Z-qML"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="pb7-4N-kM2" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1813" y="-155"/>
+            <point key="canvasLocation" x="1842" y="-1042"/>
         </scene>
         <!--Ambassador View Controller-->
         <scene sceneID="dbT-4j-l2v">
@@ -383,12 +364,12 @@
                         <segue destination="Iyz-LG-mQU" kind="relationship" relationship="viewControllers" id="BDd-8p-8Sx"/>
                         <segue destination="Qnu-C5-NeM" kind="relationship" relationship="viewControllers" id="TYH-Vs-Sz6"/>
                         <segue destination="5uj-2t-qG5" kind="relationship" relationship="viewControllers" id="OYd-Ui-R14"/>
-                        <segue destination="VYg-fy-M77" kind="relationship" relationship="viewControllers" id="PZ0-0d-GvI"/>
+                        <segue destination="4XA-L7-y6d" kind="relationship" relationship="viewControllers" id="ebm-Qt-h5e"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wfZ-BK-knH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="423" y="-698"/>
+            <point key="canvasLocation" x="511" y="-706"/>
         </scene>
         <!--Profile-->
         <scene sceneID="4Co-ES-03f">
@@ -464,7 +445,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zA2-sG-0eV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2766.5" y="-1569.5"/>
+            <point key="canvasLocation" x="1863.5" y="-249.5"/>
         </scene>
         <!--Campus Notification View Controller-->
         <scene sceneID="KRE-xI-MdA">

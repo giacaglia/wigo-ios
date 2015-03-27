@@ -115,7 +115,7 @@
 }
 
 - (void)initializeTableOfChats {
-    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64 - 49)];
     self.tableViewOfPeople.delegate = self;
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.backgroundColor = UIColor.clearColor;
@@ -337,12 +337,12 @@
     
     if (message.expired) {
         self.lastMessageLabel.textColor = RGB(150, 150, 150);
-        UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[message message]];
-        if (!blurredImage) {
-            blurredImage = [UIImageCrop blurredImageFromImageView:self.lastMessageImageView withRadius:3.0f];
-            [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:[message message]];
-        }
-        self.lastMessageImageView.image = blurredImage;
+//        UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[message message]];
+//        if (!blurredImage) {
+//            blurredImage = [UIImageCrop blurredImageFromImageView:self.lastMessageImageView withRadius:3.0f];
+//            [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:[message message]];
+//        }
+//        self.lastMessageImageView.image = blurredImage;
         self.lastMessageLabel.hidden = YES;
     } else {
         self.lastMessageImageView.image = nil;

@@ -104,8 +104,8 @@ BOOL firstTimeLoading;
     }
 //    [WGAnalytics tagEvent:@"Where View" withDetails: @{ @"isPeeking": isPeeking }];
 
-    self.navigationController.navigationBar.barTintColor = RGB(100, 173, 215);
-    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:RGB(100, 173, 215)] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.barTintColor = RGB(144, 194, 252);
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: RGB(144, 194, 252)] forBarMetrics:UIBarMetricsDefault];
 
     [self initializeNavigationBar];
     [self.placesTableView reloadData];
@@ -1750,7 +1750,7 @@ BOOL firstTimeLoading;
     
     self.friendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(58, [TodayHeader height] - 22 - 7, 68, 22)];
     self.friendsLabel.textAlignment = NSTextAlignmentCenter;
-    self.friendsLabel.font = [FontProperties lightFont: 18.0f];
+    self.friendsLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0f];
     self.friendsLabel.textColor = [FontProperties getBlueColor];
     self.friendsLabel.text = @"Friends";
     [self addSubview: self.friendsLabel];
@@ -1761,8 +1761,8 @@ BOOL firstTimeLoading;
     
     self.bostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 58 - 68, [TodayHeader height] - 22 - 7, 68, 22)];
     self.bostonLabel.textAlignment = NSTextAlignmentCenter;
-    self.bostonLabel.font = [FontProperties lightFont:18.0f];
-    self.bostonLabel.textColor = UIColor.blackColor;
+    self.bostonLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0f];
+    self.bostonLabel.textColor = RGB(179, 179, 179);
     self.bostonLabel.text = @"Boston";
     [self addSubview: self.bostonLabel];
 }
@@ -1784,7 +1784,7 @@ BOOL firstTimeLoading;
 }
 
 + (CGFloat) height {
-    return 36;
+    return 40;
 }
 
 
