@@ -26,6 +26,7 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 @property WGEventMessage *highlight;
 @property NSArray *tags;
 @property BOOL isAggregate;
+@property (nonatomic, assign) BOOL isVerified;
 
 -(WGUser *) owner;
 +(WGEvent *) serialize:(NSDictionary *)json;

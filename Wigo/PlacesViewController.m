@@ -1756,6 +1756,11 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [self.contentView addSubview:self.eventNameLabel];
     
+    self.verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 16.5, 20, 20)];
+    self.verifiedImageView.image = [UIImage imageNamed:@"dancingG-0"];
+    self.verifiedImageView.hidden = YES;
+    [self.contentView addSubview:self.verifiedImageView];
+    
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
     lineView.backgroundColor = RGB(215, 215, 215);
     [self.contentView addSubview:lineView];
@@ -1788,6 +1793,8 @@ BOOL firstTimeLoading;
     self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 40)];
     self.grayView.backgroundColor = RGB(237, 237, 237);
     [self.contentView addSubview:self.grayView];
+    
+  
 }
 
 - (void)setEvent:(WGEvent *)event {
@@ -1811,10 +1818,22 @@ BOOL firstTimeLoading;
             self.eventNameLabel.frame = CGRectMake(10, 16.5, self.frame.size.width - 40, 20);
         }
     });
-
-
+    
     self.privacyLockImageView.hidden = !_event.isPrivate;
+    self.privacyLockButton.enabled = _event.isPrivate;
     self.eventPeopleScrollView.event = _event;
+    if (_event.isVerified) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.verifiedImageView.hidden = NO;
+            self.eventNameLabel.transform = CGAffineTransformMakeTranslation(23, 0);
+        });
+    }
+    else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.verifiedImageView.hidden = YES;
+            self.eventNameLabel.transform = CGAffineTransformMakeTranslation(0, 0);
+        });
+    }
 }
 
 @end

@@ -72,6 +72,7 @@
 @property (nonatomic, strong) UIButton *goingHereButton;
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
+@property (nonatomic, strong) UIImageView *verifiedImageView;
 @end
 
 
