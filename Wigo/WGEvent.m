@@ -23,10 +23,7 @@
 #define kOwnerKey @"owner"
 #define kTagsKey @"tags"
 #define kAggregateKey @"aggregate"
-
-@interface WGEvent()
-
-@end
+#define kVerifiedKey @"verified"
 
 @implementation WGEvent
 
@@ -149,6 +146,10 @@
         [mutableTags removeObject:kAggregateKey];
     }
     self.tags = mutableTags;
+}
+
+- (BOOL)isVerified {
+    return self.tags && [self.tags containsObject:kVerifiedKey];
 }
 
 - (WGCollection *)messages {
