@@ -306,15 +306,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)initializeWhereView {
-    self.labelSwitch = [[LabelSwitch alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, [LabelSwitch height])];
-    [self.view addSubview:self.labelSwitch];
-    
-    self.blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
-    self.blueBannerView.backgroundColor = [FontProperties getBlueColor];
-    self.blueBannerView.hidden = YES;
-    [self.view addSubview:self.blueBannerView];
-    
-    self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 64 + [LabelSwitch height], self.view.frame.size.width, self.view.frame.size.height - 64 - [LabelSwitch height]) style: UITableViewStyleGrouped];
+    self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20) style: UITableViewStyleGrouped];
     self.placesTableView.sectionHeaderHeight = 0;
     self.placesTableView.sectionFooterHeight = 0;
     [self.view addSubview:self.placesTableView];
@@ -328,31 +320,39 @@ BOOL firstTimeLoading;
     self.placesTableView.backgroundColor = RGB(237, 237, 237);
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self addRefreshToScrollView];
+    
+    self.labelSwitch = [[LabelSwitch alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, [LabelSwitch height])];
+    [self.view bringSubviewToFront:self.labelSwitch];
+    [self.view addSubview:self.labelSwitch];
+    
+    self.blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
+    self.blueBannerView.backgroundColor = [FontProperties getBlueColor];
+    self.blueBannerView.hidden = YES;
+    [self.view addSubview:self.blueBannerView];
 }
 
 - (void)showEvent:(WGEvent *)event {
-    if (self.events) {
-        NSInteger index = [self.events indexOfObject:event];
-        if ([self.placesTableView numberOfRowsInSection:kTodaySection] > index) {
-            [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:index inSection:kTodaySection] atScrollPosition:UITableViewScrollPositionTop animated:YES];
-        }
-
+    if (!self.events) return;
+    
+    NSInteger index = [self.events indexOfObject:event];
+    if ([self.placesTableView numberOfRowsInSection:kTodaySection] > index) {
+        [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:index inSection:kTodaySection] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
 }
 
 
 - (void)followPressed {
-    if (WGProfile.currentUser.key) {
-        if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
-        self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-        [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:WGProfile.currentUser] animated:YES];
-    }
+    if (!WGProfile.currentUser.key) return;
+    
+    if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:WGProfile.currentUser] animated:YES];
 }
 
 - (void)invitePressed {
-    if (WGProfile.currentUser.eventAttending.id) {
-        [self presentViewController:[[InviteViewController alloc] initWithEvent:WGProfile.currentUser.eventAttending] animated:YES completion:nil];
-    }
+    if (!WGProfile.currentUser.eventAttending.id) return;
+    
+    [self presentViewController:[[InviteViewController alloc] initWithEvent:WGProfile.currentUser.eventAttending] animated:YES completion:nil];
 }
 
 - (void)showOverlayForInvite:(id)sender {
@@ -961,9 +961,6 @@ BOOL firstTimeLoading;
 #pragma mark - UITableView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView.contentOffset.x != 0) {
-        scrollView.contentOffset = CGPointMake(0, scrollView.contentOffset.y);
-    }
     CGRect frame = self.navigationController.navigationBar.frame;
     frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height + self.labelSwitch.frame.size.height);
     CGFloat size = frame.size.height - 20;
@@ -978,10 +975,17 @@ BOOL firstTimeLoading;
     } else if ((scrollOffset + scrollHeight) >= scrollContentSizeHeight) {
         frame.origin.y = -size;
     } else {
-        frame.origin.y = MIN(20, MAX(-size, frame.origin.y - scrollDiff));
+        // HACK to prevent the app to go up and down.
+        if (frame.origin.y == 20 && scrollOffset == - 60) {
+            frame.origin.y = 20;
+        }
+        else {
+            frame.origin.y = MIN(20, MAX(-size, frame.origin.y - scrollDiff));
+        }
     }
-    
+   
     self.navigationController.navigationBar.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height - self.labelSwitch.frame.size.height);
+    
     self.labelSwitch.frame = CGRectMake(frame.origin.x, frame.origin.y + self.navigationController.navigationBar.frame.size.height, self.labelSwitch.frame.size.width, self.labelSwitch.frame.size.height);
     self.labelSwitch.transparency  = 1 - framePercentageHidden;
     
@@ -993,9 +997,11 @@ BOOL firstTimeLoading;
         self.blueBannerView.hidden = YES;
     }
     
-    self.placesTableView.frame = CGRectMake(0, self.labelSwitch.frame.origin.y + self.labelSwitch.frame.size.height, self.placesTableView.frame.size.width, self.view.frame.size.height - self.placesTableView.frame.origin.y - 44);
     [self updateBarButtonItems:(1 - framePercentageHidden)];
     self.previousScrollViewYOffset = scrollOffset;
+    if (scrollView.contentOffset.x != 0) {
+        scrollView.contentOffset = CGPointMake(0, scrollView.contentOffset.y);
+    }
 }
 
 
@@ -1030,19 +1036,6 @@ BOOL firstTimeLoading;
     }];
 }
 
-//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-//{
-//    [self stoppedScrolling];
-//}
-//
-//
-//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
-//                  willDecelerate:(BOOL)decelerate
-//{
-//    if (!decelerate) {
-//        [self stoppedScrolling];
-//    }
-//}
 
 #pragma mark - ToolTip 
 
@@ -1683,8 +1676,11 @@ BOOL firstTimeLoading;
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
+    CGFloat contentInset = 44 + [LabelSwitch height];
+    self.placesTableView.contentInset = UIEdgeInsetsMake(contentInset, 0, 0, 0);
     [WGSpinnerView addDancingGToUIScrollView:self.placesTableView
                          withBackgroundColor:RGB(237, 237, 237)
+                            withContentInset:contentInset
                                  withHandler:^{
         self.spinnerAtCenter = NO;
         [self fetchEventsFirstPage];

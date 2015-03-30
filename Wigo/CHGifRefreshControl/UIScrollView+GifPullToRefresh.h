@@ -31,12 +31,18 @@
 @property (nonatomic, strong) NSArray *drawingImgs;
 @property (nonatomic, strong) NSArray *loadingImgs;
 @property (nonatomic, assign) CGFloat originalContentInsectY;
+@property (nonatomic, assign) CGFloat addedContentInset;
 - (void)endLoading;
 -(void) forceLoad;
 @end
 
 @interface UIScrollView (GifPullToRefresh)
 @property(nonatomic,strong)CHGifRefreshControl *refreshControl;
+
+- (void)addPullToRefreshWithDrawingImgs:(NSArray*)drawingImgs
+                         andLoadingImgs:(NSArray*)loadingImgs
+                        andContentInset:(float)edgeInsetY
+                       andActionHandler:(void (^)(void))actionHandler;
 
 - (void)addPullToRefreshWithDrawingImgs:(NSArray*)drawingImgs andLoadingImgs:(NSArray*)loadingImgs andActionHandler:(void (^)(void))actionHandler;
 - (void)didFinishPullToRefresh;

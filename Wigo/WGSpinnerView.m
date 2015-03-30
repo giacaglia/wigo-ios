@@ -52,6 +52,20 @@
 }
 
 #pragma mark - Dancing G at Top of ScrollView
++ (void)addDancingGToUIScrollView:(UIScrollView *)scrollView
+              withBackgroundColor:(UIColor *)backgroundColor
+                 withContentInset:(float)edgeInsetY
+                      withHandler:(void (^)(void))handler
+{
+    __weak UIScrollView *tempScrollView = scrollView;
+    [tempScrollView addPullToRefreshWithDrawingImgs:[WGSpinnerView getDrawingImgs]
+                                     andLoadingImgs:[WGSpinnerView getLoadingImgs]
+                                    andContentInset:edgeInsetY
+                                   andActionHandler:^{
+                                       handler();
+    }];
+    scrollView.refreshControl.backgroundColor = backgroundColor;
+}
 
 + (void)addDancingGToUIScrollView:(UIScrollView *)scrollView withBackgroundColor:(UIColor *)backgroundColor withHandler:(void (^)(void))handler {
     __weak UIScrollView *tempScrollView = scrollView;
