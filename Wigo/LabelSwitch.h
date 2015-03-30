@@ -11,7 +11,7 @@
 @interface LabelSwitch : UIView
 
 + (CGFloat)height;
-
+@property (nonatomic, assign) CGFloat transparency;
 @property (nonatomic, strong) UILabel *friendsLabel;
 @property (nonatomic, strong) UILabel *bostonLabel;
 @property (nonatomic, strong) UIView *lineViewUnderLabel;

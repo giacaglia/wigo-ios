@@ -79,4 +79,10 @@
     return 40;
 }
 
+- (void)setTransparency:(CGFloat)transparency {
+    self.friendsLabel.alpha = transparency;
+    self.bostonLabel.alpha = transparency;
+    self.lineViewUnderLabel.alpha = transparency;
+}
+
 @end

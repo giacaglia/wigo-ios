@@ -302,6 +302,11 @@ BOOL firstTimeLoading;
     self.labelSwitch = [[LabelSwitch alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, [LabelSwitch height])];
     [self.view addSubview:self.labelSwitch];
     
+    self.blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
+    self.blueBannerView.backgroundColor = RGB(144, 194, 252);
+    self.blueBannerView.hidden = YES;
+    [self.view addSubview:self.blueBannerView];
+    
     self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 64 + [LabelSwitch height], self.view.frame.size.width, self.view.frame.size.height - 64 - [LabelSwitch height]) style: UITableViewStyleGrouped];
     self.placesTableView.sectionHeaderHeight = 0;
     self.placesTableView.sectionFooterHeight = 0;
@@ -939,7 +944,8 @@ BOOL firstTimeLoading;
         scrollView.contentOffset = CGPointMake(0, scrollView.contentOffset.y);
     }
     CGRect frame = self.navigationController.navigationBar.frame;
-    CGFloat size = frame.size.height - 21;
+    frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height + self.labelSwitch.frame.size.height);
+    CGFloat size = frame.size.height - 20;
     CGFloat framePercentageHidden = ((20 - frame.origin.y) / (frame.size.height - 1));
     CGFloat scrollOffset = scrollView.contentOffset.y;
     CGFloat scrollDiff = scrollOffset - self.previousScrollViewYOffset;
@@ -954,10 +960,19 @@ BOOL firstTimeLoading;
         frame.origin.y = MIN(20, MAX(-size, frame.origin.y - scrollDiff));
     }
     
-    [self.navigationController.navigationBar setFrame:frame];
-    self.labelSwitch.alpha = 1 - framePercentageHidden;
-    self.labelSwitch.frame = CGRectMake(0, frame.origin.y + frame.size.height, self.labelSwitch.frame.size.width, self.labelSwitch.frame.size.height);
-    self.placesTableView.frame = CGRectMake(0, self.labelSwitch.frame.origin.y + self.labelSwitch.frame.size.height, self.placesTableView.frame.size.width, self.placesTableView.frame.size.height);
+    self.navigationController.navigationBar.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height - self.labelSwitch.frame.size.height);
+    self.labelSwitch.frame = CGRectMake(frame.origin.x, frame.origin.y + self.navigationController.navigationBar.frame.size.height, self.labelSwitch.frame.size.width, self.labelSwitch.frame.size.height);
+    self.labelSwitch.transparency  = 1 - framePercentageHidden;
+    
+    if (self.navigationController.navigationBar.frame.origin.y +
+        self.navigationController.navigationBar.frame.size.height <= 20) {
+        self.blueBannerView.hidden = NO;
+    }
+    else {
+        self.blueBannerView.hidden = YES;
+    }
+    
+    self.placesTableView.frame = CGRectMake(0, self.labelSwitch.frame.origin.y + self.labelSwitch.frame.size.height, self.placesTableView.frame.size.width, self.view.frame.size.height - self.placesTableView.frame.origin.y - 44);
     [self updateBarButtonItems:(1 - framePercentageHidden)];
     self.previousScrollViewYOffset = scrollOffset;
 }

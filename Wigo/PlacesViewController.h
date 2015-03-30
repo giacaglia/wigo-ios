@@ -53,6 +53,7 @@
 @property (nonatomic, assign) CGPoint pointNow;
 @property (nonatomic, assign) BOOL spinnerAtCenter;
 
+@property (nonatomic, strong) UIView *blueBannerView;
 @property (nonatomic, strong) LabelSwitch *labelSwitch;
 @property (nonatomic, assign) CGFloat previousScrollViewYOffset;
 @end
