@@ -342,6 +342,8 @@
 		E9A765A91AC5EA7A00F7C016 /* WGNetworkFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765A71AC5EA7A00F7C016 /* WGNetworkFetcher.m */; };
 		E9A765AC1AC5F06800F7C016 /* WGGetter.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765AB1AC5F06800F7C016 /* WGGetter.m */; };
 		E9A765AD1AC5F06800F7C016 /* WGGetter.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765AB1AC5F06800F7C016 /* WGGetter.m */; };
+		E9A765B51AC9C03B00F7C016 /* WGNavigateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765B41AC9C03B00F7C016 /* WGNavigateParser.m */; };
+		E9A765B61AC9C03B00F7C016 /* WGNavigateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765B41AC9C03B00F7C016 /* WGNavigateParser.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */; };
@@ -799,6 +801,8 @@
 		E9A765A71AC5EA7A00F7C016 /* WGNetworkFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGNetworkFetcher.m; sourceTree = "<group>"; };
 		E9A765AA1AC5F06800F7C016 /* WGGetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGGetter.h; sourceTree = "<group>"; };
 		E9A765AB1AC5F06800F7C016 /* WGGetter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGGetter.m; sourceTree = "<group>"; };
+		E9A765B31AC9C03B00F7C016 /* WGNavigateParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGNavigateParser.h; sourceTree = "<group>"; };
+		E9A765B41AC9C03B00F7C016 /* WGNavigateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGNavigateParser.m; sourceTree = "<group>"; };
 		E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
 		E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileViewController.h; sourceTree = "<group>"; };
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
@@ -1272,6 +1276,8 @@
 				4563F5201A3F3C6900F8C9C4 /* WGCollection.m */,
 				4544094D1A51EF3000BB3036 /* WGCollectionArray.h */,
 				4544094E1A51EF3000BB3036 /* WGCollectionArray.m */,
+				E9A765B31AC9C03B00F7C016 /* WGNavigateParser.h */,
+				E9A765B41AC9C03B00F7C016 /* WGNavigateParser.m */,
 			);
 			name = "Data Model";
 			sourceTree = "<group>";
@@ -1614,6 +1620,19 @@
 			name = "Popup Helpers";
 			sourceTree = "<group>";
 		};
+		E9A765AE1AC9BFA300F7C016 /* Places */ = {
+			isa = PBXGroup;
+			children = (
+				E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */,
+				E94408C91ABA55DA00E3378D /* PlacesViewController.m */,
+				E9C5CE381AB0EFFB0044745B /* OverlayViewController.h */,
+				E9C5CE391AB0EFFB0044745B /* OverlayViewController.m */,
+				E9A7659D1AC5D23A00F7C016 /* LabelSwitch.h */,
+				E9A7659E1AC5D23A00F7C016 /* LabelSwitch.m */,
+			);
+			name = Places;
+			sourceTree = "<group>";
+		};
 		E9AAAFCA193E3DC40069F700 /* User Profiles */ = {
 			isa = PBXGroup;
 			children = (
@@ -1901,12 +1920,7 @@
 		FA85ED991A5C3F93004B0465 /* Main Flow */ = {
 			isa = PBXGroup;
 			children = (
-				E9C5CE381AB0EFFB0044745B /* OverlayViewController.h */,
-				E9C5CE391AB0EFFB0044745B /* OverlayViewController.m */,
-				E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */,
-				E94408C91ABA55DA00E3378D /* PlacesViewController.m */,
-				E9A7659D1AC5D23A00F7C016 /* LabelSwitch.h */,
-				E9A7659E1AC5D23A00F7C016 /* LabelSwitch.m */,
+				E9A765AE1AC9BFA300F7C016 /* Places */,
 				E9AAAFCA193E3DC40069F700 /* User Profiles */,
 				FA85ED9A1A5C406A004B0465 /* Inviting */,
 				FA2BE9BA19FAEAFC00CC0E5E /* EventStory */,
@@ -2246,6 +2260,7 @@
 				C1F5B3E11A654B8800CAFD95 /* NSMutableDictionary+STHelper.m in Sources */,
 				C1F5B3E21A654B8800CAFD95 /* JPBFloatingTextViewController.m in Sources */,
 				C1F5B3E31A654B8800CAFD95 /* JPBParallaxBlurViewController.m in Sources */,
+				E9A765B61AC9C03B00F7C016 /* WGNavigateParser.m in Sources */,
 				45D9FAA51A781AFD00D08577 /* JSQMessagesKeyboardController.m in Sources */,
 				45D9FAC71A781AFD00D08577 /* JSQVideoMediaItem.m in Sources */,
 				C1F5B3E41A654B8800CAFD95 /* JPBParallaxTableViewController.m in Sources */,
@@ -2464,6 +2479,7 @@
 				45DF868E1A5AE1C100DB85AE /* WGError.m in Sources */,
 				E9D906C819255BB000E39FC8 /* SignViewController.m in Sources */,
 				E9A7659F1AC5D23A00F7C016 /* LabelSwitch.m in Sources */,
+				E9A765B51AC9C03B00F7C016 /* WGNavigateParser.m in Sources */,
 				FA5526221A1FE3D800101AE7 /* EngagementGraph.m in Sources */,
 				E94408CA1ABA55DA00E3378D /* PlacesViewController.m in Sources */,
 				45D9FAE61A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.m in Sources */,

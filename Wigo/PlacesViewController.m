@@ -27,6 +27,7 @@
 #import "OverlayViewController.h"
 #import "EventConversationViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "WGNavigateParser.h"
 
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCell @"HighlightOldEventCell"
@@ -108,7 +109,7 @@ BOOL firstTimeLoading;
     self.navigationController.navigationBar.barTintColor = RGB(144, 194, 252);
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: RGB(144, 194, 252)] forBarMetrics:UIBarMetricsDefault];
 
-    [self initializeNavigationBar];
+    [self updateNavigationBar];
     [self.placesTableView reloadData];
 
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
@@ -170,8 +171,8 @@ BOOL firstTimeLoading;
     return image;
 }
 
-- (void) initializeNavigationBar {
-    if (!WGProfile.currentUser.group.id) {
+- (void) updateNavigationBar {
+    if (!WGProfile.currentUser.group.id || self.presentingLockedView) {
         self.tabBarController.navigationItem.rightBarButtonItem = nil;
     } else if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
         
@@ -187,9 +188,7 @@ BOOL firstTimeLoading;
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
         self.tabBarController.navigationItem.rightBarButtonItem = rightBarButton;
     }
-    else if (self.presentingLockedView) {
-        self.tabBarController.navigationItem.rightBarButtonItem = nil;
-    } else {
+    else {
         self.tabBarController.navigationItem.leftBarButtonItem = nil;
         self.tabBarController.navigationItem.rightBarButtonItem = nil;
     }
@@ -247,7 +246,11 @@ BOOL firstTimeLoading;
                                              selector:@selector(goToEvent:)
                                                  name:@"goToEvent"
                                                object:nil];
-}
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(navigate:)
+                                                 name:@"navigate"
+                                               object:nil];}
 
 - (void)goToChat:(NSNotification *)notification {
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
@@ -273,6 +276,18 @@ BOOL firstTimeLoading;
     if ([self.events containsObject:newEvent]) {
         NSInteger integer = [self.events indexOfObject:newEvent];
         [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:integer inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    }
+}
+
+- (void)navigate:(NSNotification *)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    NSDictionary *objects = [WGNavigateParser objectsFromUserInfo:userInfo];
+    NSString *nameOfObject = [WGNavigateParser nameOfObjectFromUserInfo:userInfo];
+    if ([nameOfObject isEqual:@"eventmessage"]) {
+        
+    }
+    else if ([nameOfObject isEqual:@"event"]) {
+        
     }
 }
 
@@ -419,7 +434,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) cancelledAddEventTapped {
-    [self initializeNavigationBar];
+    [self updateNavigationBar];
     [self dismissKeyboard];
 }
 
@@ -569,61 +584,63 @@ BOOL firstTimeLoading;
 
 
 - (void)createPressed {
-    if ([self.whereAreYouGoingTextField.text length] != 0) {
-        WGProfile.tapAll = NO;
-        WGProfile.currentUser.youAreInCharge = NO;
-        self.whereAreYouGoingTextField.enabled = NO;
-        self.tabBarController.navigationItem.rightBarButtonItem.enabled = NO;
-        [self addLoadingIndicator];
-        __weak typeof(self) weakSelf = self;
-        [WGEvent createEventWithName:self.whereAreYouGoingTextField.text
-                          andPrivate:_privateSwitchView.privacyTurnedOn
-                          andHandler:^(WGEvent *object, NSError *error) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            [UIView animateWithDuration:0.2f animations:^{
-                strongSelf.loadingIndicator.frame = CGRectMake(0, 0, strongSelf.loadingView.frame.size.width, strongSelf.loadingView.frame.size.height);
-            } completion:^(BOOL finished) {
-                if (finished) [strongSelf.loadingView removeFromSuperview];
-                
-                strongSelf.whereAreYouGoingTextField.enabled = YES;
-                strongSelf.tabBarController.navigationItem.rightBarButtonItem.enabled = YES;
+    if (self.whereAreYouGoingTextField.text.length == 0) return;
+    
+    WGProfile.tapAll = NO;
+    WGProfile.currentUser.youAreInCharge = NO;
+    self.whereAreYouGoingTextField.enabled = NO;
+    self.tabBarController.navigationItem.rightBarButtonItem.enabled = NO;
+    [self addLoadingIndicator];
+    __weak typeof(self) weakSelf = self;
+    [WGEvent createEventWithName:self.whereAreYouGoingTextField.text
+                      andPrivate:_privateSwitchView.privacyTurnedOn
+                      andHandler:^(WGEvent *object, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [UIView animateWithDuration:0.2f animations:^{
+            strongSelf.loadingIndicator.frame = CGRectMake(0, 0, strongSelf.loadingView.frame.size.width, strongSelf.loadingView.frame.size.height);
+        } completion:^(BOOL finished) {
+            if (finished) [strongSelf.loadingView removeFromSuperview];
+            
+            [strongSelf updateNavigationBar];
+            strongSelf.whereAreYouGoingTextField.enabled = YES;
+            strongSelf.tabBarController.navigationItem.rightBarButtonItem.enabled = YES;
+            if (error) {
+                return;
+            }
+            __weak typeof(strongSelf) weakOfStrong = strongSelf;
+            [WGProfile.currentUser goingToEvent:object withHandler:^(BOOL success, NSError *error) {
+                __strong typeof(weakOfStrong) strongOfStrong = weakOfStrong;
                 if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionSave];
                     return;
                 }
-                __weak typeof(strongSelf) weakOfStrong = strongSelf;
-                [WGProfile.currentUser goingToEvent:object withHandler:^(BOOL success, NSError *error) {
-                    __strong typeof(weakOfStrong) strongOfStrong = weakOfStrong;
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-                        [[WGError sharedInstance] logError:error forAction:WGActionSave];
-                        return;
-                    }
-                    
-                    [strongOfStrong removeProfileUserFromAnyOtherEvent];
-                    [strongOfStrong dismissKeyboard];
-                    
-                    WGProfile.currentUser.isGoingOut = @YES;
-                    WGProfile.currentUser.eventAttending = object;
-                    
-                    WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : WGProfile.currentUser }];
-                    
-                    if ([strongOfStrong.allEvents containsObject:object]) {
-                        WGEvent *joinedEvent = (WGEvent *)[strongOfStrong.allEvents objectWithID:object.id];
-                        [joinedEvent.attendees insertObject:attendee atIndex:0];
+                
+                [strongOfStrong removeProfileUserFromAnyOtherEvent];
+                [strongOfStrong dismissKeyboard];
+                
+                WGProfile.currentUser.isGoingOut = @YES;
+                WGProfile.currentUser.eventAttending = object;
+                
+                WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : WGProfile.currentUser }];
+                
+                if ([strongOfStrong.allEvents containsObject:object]) {
+                    WGEvent *joinedEvent = (WGEvent *)[strongOfStrong.allEvents objectWithID:object.id];
+                    [joinedEvent.attendees insertObject:attendee atIndex:0];
+                } else {
+                    if (object.attendees) {
+                        [object.attendees insertObject:attendee atIndex:0];
                     } else {
-                        if (object.attendees) {
-                            [object.attendees insertObject:attendee atIndex:0];
-                        } else {
-                            WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
-                            object.attendees = eventAttendees;
-                        }
+                        WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
+                        object.attendees = eventAttendees;
                     }
-                    [strongOfStrong initializeNavigationBar];
-                    [strongOfStrong fetchEventsFirstPage];
-                }];
+                }
+                [strongOfStrong updateNavigationBar];
+                [strongOfStrong fetchEventsFirstPage];
             }];
         }];
-    }
+    }];
+    
 }
 
 - (void)addLoadingIndicator {
@@ -649,10 +666,10 @@ BOOL firstTimeLoading;
 
 - (void)textFieldDidChange:(UITextField *)textField {
     if(textField.text.length != 0) {
-        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+        [self.tabBarController.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
         
     } else {
-        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+        [self.tabBarController.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
     }
     
 }
@@ -1664,7 +1681,7 @@ BOOL firstTimeLoading;
         }
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
-        [strongSelf initializeNavigationBar];
+        [strongSelf updateNavigationBar];
         [strongSelf.placesTableView reloadData];
         strongSelf.fetchingUserInfo = NO;
     }];

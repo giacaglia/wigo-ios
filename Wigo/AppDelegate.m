@@ -18,6 +18,7 @@
 #import "PlacesViewController.h"
 #import "RWBlurPopover.h"
 #import "WGI.h"
+#import "WGNavigateParser.h"
 #define kImageQuality @"quality"
 #define kImageMultiple @"multiple"
 
@@ -120,15 +121,10 @@ NSDate *firstLoggedTime;
     }
     if ([[userInfo allKeys] containsObject:@"navigate"]) {
         NSString *place = [userInfo objectForKey:@"navigate"];
-        NSArray *parsedString = [place componentsSeparatedByString:@"/"];
-        NSLog(@"parsed string: %@", parsedString);
-        NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
-        [f setNumberStyle:NSNumberFormatterDecimalStyle];
-        NSNumber * numberID = [f numberFromString:[parsedString objectAtIndex:2]];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"goToEvent"
-                                                            object:nil
-                                                          userInfo:@{@"id": numberID}];
-
+        NSDictionary *notificationUserInfo = [WGNavigateParser userInfoFromString:place];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"navigate"
+                                                             object:nil
+                                                           userInfo:notificationUserInfo];
     }
 }
 
