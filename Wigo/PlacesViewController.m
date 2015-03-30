@@ -106,8 +106,8 @@ BOOL firstTimeLoading;
     }
 //    [WGAnalytics tagEvent:@"Where View" withDetails: @{ @"isPeeking": isPeeking }];
 
-    self.navigationController.navigationBar.barTintColor = RGB(144, 194, 252);
-    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: RGB(144, 194, 252)] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: [FontProperties getBlueColor]] forBarMetrics:UIBarMetricsDefault];
 
     [self updateNavigationBar];
     [self.placesTableView reloadData];
@@ -318,7 +318,7 @@ BOOL firstTimeLoading;
     [self.view addSubview:self.labelSwitch];
     
     self.blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
-    self.blueBannerView.backgroundColor = RGB(144, 194, 252);
+    self.blueBannerView.backgroundColor = [FontProperties getBlueColor];
     self.blueBannerView.hidden = YES;
     [self.view addSubview:self.blueBannerView];
     
