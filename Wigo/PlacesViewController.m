@@ -1825,13 +1825,12 @@ BOOL firstTimeLoading;
     if (_event.isVerified) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.verifiedImageView.hidden = NO;
-            self.eventNameLabel.transform = CGAffineTransformMakeTranslation(23, 0);
+            self.eventNameLabel.frame = CGRectMake(self.eventNameLabel.frame.origin.x + 23, self.eventNameLabel.frame.origin.y, self.eventNameLabel.frame.size.width, self.eventNameLabel.frame.size.height);
         });
     }
     else {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.verifiedImageView.hidden = YES;
-            self.eventNameLabel.transform = CGAffineTransformMakeTranslation(0, 0);
         });
     }
 }
