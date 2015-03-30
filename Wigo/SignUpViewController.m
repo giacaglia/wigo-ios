@@ -77,6 +77,7 @@
     self.studentTextField.returnKeyType = UIReturnKeyDone;
     [self.studentTextField addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventEditingDidEndOnExit];
     self.studentTextField.delegate = self;
+    self.studentTextField.frame = CGRectMake(40, self.view.frame.size.height/2 - 23, self.view.frame.size.width - 80, 47);
     [self.view addSubview:self.studentTextField];
     
     _errorLabel = [UILabel new];
@@ -96,6 +97,7 @@
     [_continueButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     _continueButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
     [_continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchUpInside];
+    _continueButton.frame =  CGRectMake(0, self.view.frame.size.height - 50, self.view.frame.size.width, 50);
     [self.view addSubview:_continueButton];
 }
 
