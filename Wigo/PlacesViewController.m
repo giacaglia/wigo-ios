@@ -104,7 +104,6 @@ BOOL firstTimeLoading;
     else {
         [WGAnalytics tagView:@"where"];
     }
-//    [WGAnalytics tagEvent:@"Where View" withDetails: @{ @"isPeeking": isPeeking }];
 
     self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: [FontProperties getBlueColor]] forBarMetrics:UIBarMetricsDefault];
@@ -118,8 +117,6 @@ BOOL firstTimeLoading;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-//    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
-//    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:UIColor.whiteColor] forBarMetrics:UIBarMetricsDefault];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -172,10 +169,9 @@ BOOL firstTimeLoading;
 }
 
 - (void) updateNavigationBar {
-    if (!WGProfile.currentUser.group.id || self.presentingLockedView) {
-        self.tabBarController.navigationItem.rightBarButtonItem = nil;
-    } else if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
-        
+    self.tabBarController.navigationItem.leftBarButtonItem = nil;
+    self.tabBarController.navigationItem.rightBarButtonItem = nil;
+    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
         self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
         UIImageView *plusCreateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, 16, 16)];
         plusCreateImageView.image = [UIImage imageNamed:@"plusCreate"];
@@ -187,10 +183,6 @@ BOOL firstTimeLoading;
         [self.rightButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
         self.tabBarController.navigationItem.rightBarButtonItem = rightBarButton;
-    }
-    else {
-        self.tabBarController.navigationItem.leftBarButtonItem = nil;
-        self.tabBarController.navigationItem.rightBarButtonItem = nil;
     }
 
     self.schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];

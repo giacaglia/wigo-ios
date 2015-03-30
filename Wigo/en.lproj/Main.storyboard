@@ -91,7 +91,7 @@
             </objects>
             <point key="canvasLocation" x="3591" y="188"/>
         </scene>
-        <!--HOME-->
+        <!--Home-->
         <scene sceneID="Gvc-5c-Ter">
             <objects>
                 <viewController id="Iyz-LG-mQU" customClass="PlacesViewController" sceneMemberID="viewController">
@@ -104,7 +104,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="HOME" image="homeIcon" id="Xtf-XK-Vso"/>
+                    <tabBarItem key="tabBarItem" title="Home" image="homeIcon" id="Xtf-XK-Vso"/>
                     <navigationItem key="navigationItem" id="imX-MH-rca"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Y51-Qa-bcL" userLabel="First Responder" sceneMemberID="firstResponder"/>
