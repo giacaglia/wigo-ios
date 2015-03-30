@@ -172,7 +172,7 @@ BOOL firstTimeLoading;
 
 - (void) initializeNavigationBar {
     if (!WGProfile.currentUser.group.id) {
-        self.navigationItem.rightBarButtonItem = nil;
+        self.tabBarController.navigationItem.rightBarButtonItem = nil;
     } else if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
         
         self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
@@ -185,20 +185,20 @@ BOOL firstTimeLoading;
                    forControlEvents:UIControlEventTouchUpInside];
         [self.rightButton setShowsTouchWhenHighlighted:YES];
         UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
-        self.navigationItem.rightBarButtonItem = rightBarButton;
+        self.tabBarController.navigationItem.rightBarButtonItem = rightBarButton;
     }
     else if (self.presentingLockedView) {
-        self.navigationItem.rightBarButtonItem = nil;
+        self.tabBarController.navigationItem.rightBarButtonItem = nil;
     } else {
-        self.navigationItem.leftBarButtonItem = nil;
-        self.navigationItem.rightBarButtonItem = nil;
+        self.tabBarController.navigationItem.leftBarButtonItem = nil;
+        self.tabBarController.navigationItem.rightBarButtonItem = nil;
     }
 
     self.schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
     [self.schoolButton setTitle:@"Wigo" forState:UIControlStateNormal];
     [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     self.schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.navigationItem.titleView = self.schoolButton;
+    self.tabBarController.navigationItem.titleView = self.schoolButton;
 }
 
 -(void) initializeFlashScreen {
@@ -396,9 +396,9 @@ BOOL firstTimeLoading;
 
     
     [UIView animateWithDuration: 0.2 animations:^{
-        self.navigationItem.titleView.alpha = 0.0f;
-        self.navigationItem.leftBarButtonItem.customView.alpha = 0.0f;
-        self.navigationItem.rightBarButtonItem.customView.alpha = 0.0f;
+        self.tabBarController.navigationItem.titleView.alpha = 0.0f;
+        self.tabBarController.navigationItem.leftBarButtonItem.customView.alpha = 0.0f;
+        self.tabBarController.navigationItem.rightBarButtonItem.customView.alpha = 0.0f;
         
         [self.whereAreYouGoingTextField becomeFirstResponder];
         _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0, 50);
@@ -406,13 +406,13 @@ BOOL firstTimeLoading;
         
     } completion:^(BOOL finished) {
         
-        [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelledAddEventTapped)] animated: NO];
+        [self.tabBarController.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelledAddEventTapped)] animated: NO];
         
-        [self.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Create" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
+        [self.tabBarController.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Create" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
         
-        [self.navigationItem.leftBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+        [self.tabBarController.navigationItem.leftBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
         
-        [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+        [self.tabBarController.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
 
         self.placesTableView.userInteractionEnabled = NO;
     }];
@@ -570,7 +570,7 @@ BOOL firstTimeLoading;
         WGProfile.tapAll = NO;
         WGProfile.currentUser.youAreInCharge = NO;
         self.whereAreYouGoingTextField.enabled = NO;
-        self.navigationItem.rightBarButtonItem.enabled = NO;
+        self.tabBarController.navigationItem.rightBarButtonItem.enabled = NO;
         [self addLoadingIndicator];
         __weak typeof(self) weakSelf = self;
         [WGEvent createEventWithName:self.whereAreYouGoingTextField.text
@@ -583,7 +583,7 @@ BOOL firstTimeLoading;
                 if (finished) [strongSelf.loadingView removeFromSuperview];
                 
                 strongSelf.whereAreYouGoingTextField.enabled = YES;
-                strongSelf.navigationItem.rightBarButtonItem.enabled = YES;
+                strongSelf.tabBarController.navigationItem.rightBarButtonItem.enabled = YES;
                 if (error) {
                     return;
                 }
@@ -988,13 +988,13 @@ BOOL firstTimeLoading;
 
 - (void)updateBarButtonItems:(CGFloat)alpha
 {
-    [self.navigationItem.leftBarButtonItems enumerateObjectsUsingBlock:^(UIBarButtonItem* item, NSUInteger i, BOOL *stop) {
+    [self.tabBarController.navigationItem.leftBarButtonItems enumerateObjectsUsingBlock:^(UIBarButtonItem* item, NSUInteger i, BOOL *stop) {
         item.customView.alpha = alpha;
     }];
-    [self.navigationItem.rightBarButtonItems enumerateObjectsUsingBlock:^(UIBarButtonItem* item, NSUInteger i, BOOL *stop) {
+    [self.tabBarController.navigationItem.rightBarButtonItems enumerateObjectsUsingBlock:^(UIBarButtonItem* item, NSUInteger i, BOOL *stop) {
         item.customView.alpha = alpha;
     }];
-    self.navigationItem.titleView.alpha = alpha;
+    self.tabBarController.navigationItem.titleView.alpha = alpha;
     self.navigationController.navigationBar.tintColor = [self.navigationController.navigationBar.tintColor colorWithAlphaComponent:alpha];
 }
 
@@ -1263,7 +1263,7 @@ BOOL firstTimeLoading;
     [leftButton addSubview:imageView];
     [leftButton setShowsTouchWhenHighlighted:YES];
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
-    self.navigationItem.leftBarButtonItem = leftBarButton;
+    self.tabBarController.navigationItem.leftBarButtonItem = leftBarButton;
     self.schoolButton.enabled = NO;
 }
 
