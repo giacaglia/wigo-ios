@@ -1480,6 +1480,7 @@ BOOL firstTimeLoading;
             
             strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
             for (WGEvent *event in strongSelf.allEvents) {
+                
                 if (event) {
                     if ([event.isExpired boolValue]) {
                         [strongSelf.oldEvents addObject:event];

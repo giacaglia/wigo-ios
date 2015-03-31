@@ -39,7 +39,6 @@
 
 @property (nonatomic, assign) BOOL isActive;
 @property (nonatomic, strong) UIImageView *faceImageView;
-@property (nonatomic, strong) UIView *blackOverlayView;
 
 // For Transition
 @property (nonatomic, assign) CGFloat startYPosition;
