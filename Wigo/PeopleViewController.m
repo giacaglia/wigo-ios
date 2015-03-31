@@ -291,15 +291,12 @@ UIScrollView *suggestedScrollView;
     self.navigationItem.titleView = nil;
     if ([self.currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageSuggestions];
-        self.title = WGProfile.currentUser.group.name;
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
-        self.title = @"Followers";
     }
     else if ([self.currentTab isEqualToNumber:@4]) {
         [self fetchFirstPageFollowing];
-        self.title = @"Following";
     }
 }
 
