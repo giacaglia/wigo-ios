@@ -2012,12 +2012,12 @@ BOOL firstTimeLoading;
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
     self.contentView.frame = self.frame;
-    self.backgroundColor = RGB(242, 242, 242);
+    self.backgroundColor = RGB(210, 210, 210);
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
-    backgroundView.backgroundColor = UIColor.whiteColor;
+    backgroundView.backgroundColor = RGB(230, 230, 230);
     backgroundView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.1f).CGColor;
     backgroundView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
     backgroundView.layer.shadowRadius = 4.0f;
