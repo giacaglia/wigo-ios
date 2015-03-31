@@ -62,7 +62,7 @@
 #import "HighlightsCollectionView.h"
 
 @interface EventCell : UITableViewCell
-+ (CGFloat) heightIsFullCell:(BOOL)isFullCell;
++ (CGFloat) height;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UIButton *privacyLockButton;
@@ -114,10 +114,25 @@
 @interface HighlightOldEventCell : UITableViewCell
 @property (nonatomic, strong) UIImageView *privateIconImageView;
 @property (nonatomic, strong) UIImageView *highlightImageView;
-@property (nonatomic, strong) WGEvent *event;
-@property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
+
 @property (nonatomic, strong) UILabel *oldEventLabel;
 + (CGFloat) height;
+
+// Properties from Event Cell
+@property (nonatomic, strong) WGEvent *event;
+@property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
+
+@property (nonatomic, strong) UIButton *privacyLockButton;
+@property (nonatomic, strong) UIImageView *privacyLockImageView;
+@property (nonatomic, strong) UILabel *eventNameLabel;
+@property (nonatomic, strong) UILabel *numberOfPeopleGoingLabel;
+@property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
+@property (nonatomic, strong) UILabel *numberOfHighlightsLabel;
+@property (nonatomic, strong) UILabel *numberOfNewHighlightsLabel;
+@property (nonatomic, strong) UIButton *goingHereButton;
+@property (nonatomic, strong) UIView *grayView;
+@property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
+@property (nonatomic, strong) UIImageView *verifiedImageView;
 @end
 
 @interface OldEventShowHighlightsCell : UITableViewCell

@@ -765,7 +765,7 @@ BOOL firstTimeLoading;
         WGEvent *event = [self getEventAtIndexPath:indexPath];
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
-            return [EventCell heightIsFullCell:NO];
+            return [EventCell height];
         }
         if (indexPath.row == self.events.count + 1 &&
             [self.allEvents.hasNextPage boolValue] &&
@@ -778,7 +778,7 @@ BOOL firstTimeLoading;
            return 0.3;
         }
         if (event == nil) return 0.3;
-        return [EventCell heightIsFullCell:NO];
+        return [EventCell height];
     }
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
@@ -877,29 +877,29 @@ BOOL firstTimeLoading;
             self.allEvents.hasNextPage.boolValue) {
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
         }
-        WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
+//        WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
         HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCell forIndexPath:indexPath];
-        cell.event = event;
-        cell.placesDelegate = self;
-        cell.oldEventLabel.text = event.name;
-        if (cell.event.isPrivate) {
-            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(20, 0);
-            cell.privateIconImageView.hidden = NO;
-        }
-        else {
-            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(0, 0);
-            cell.privateIconImageView.hidden = YES;
-        }
-        NSString *contentURL;
-        if ([event.highlight.mediaMimeType isEqual:kImageEventType]) {
-            contentURL = event.highlight.media;
-        }
-        else {
-            contentURL = event.highlight.thumbnail;
-        }
-        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile.currentUser cdnPrefix], contentURL]];
-        [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        }];
+//        cell.event = event;
+//        cell.placesDelegate = self;
+//        cell.oldEventLabel.text = event.name;
+//        if (cell.event.isPrivate) {
+//            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(20, 0);
+//            cell.privateIconImageView.hidden = NO;
+//        }
+//        else {
+//            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(0, 0);
+//            cell.privateIconImageView.hidden = YES;
+//        }
+//        NSString *contentURL;
+//        if ([event.highlight.mediaMimeType isEqual:kImageEventType]) {
+//            contentURL = event.highlight.media;
+//        }
+//        else {
+//            contentURL = event.highlight.thumbnail;
+//        }
+//        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile.currentUser cdnPrefix], contentURL]];
+//        [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+//        }];
 
         return cell;
     }
@@ -1713,7 +1713,7 @@ BOOL firstTimeLoading;
 
 @implementation EventCell
 
-+ (CGFloat)heightIsFullCell:(BOOL)isFullCell {
++ (CGFloat)height {
     return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 10;
 }
 
@@ -1726,7 +1726,7 @@ BOOL firstTimeLoading;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell heightIsFullCell:NO]);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
     self.contentView.frame = self.frame;
     self.backgroundColor = RGB(237, 237, 237);
     self.clipsToBounds = YES;
@@ -1996,6 +1996,10 @@ BOOL firstTimeLoading;
 
 @implementation HighlightOldEventCell
 
++ (CGFloat) height {
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 10;
+}
+
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -2004,32 +2008,72 @@ BOOL firstTimeLoading;
     return self;
 }
 
-- (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [HighlightOldEventCell height]);
-    self.backgroundColor = RGB(241, 241, 241);
 
-    //image view
-    self.highlightImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 1)];
-    self.highlightImageView.clipsToBounds = YES;
-    self.highlightImageView.contentMode = UIViewContentModeScaleAspectFill;
-    [self.contentView addSubview:self.highlightImageView];
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
+    self.contentView.frame = self.frame;
+    self.backgroundColor = RGB(242, 242, 242);
+    self.clipsToBounds = YES;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    //gradient, label, arrow
-    UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame: self.highlightImageView.bounds];
-    gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
-    [self.contentView addSubview:gradientBackground];
+    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
+    backgroundView.backgroundColor = UIColor.whiteColor;
+    backgroundView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.1f).CGColor;
+    backgroundView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
+    backgroundView.layer.shadowRadius = 4.0f;
+    backgroundView.layer.shadowOpacity = 1.0f;
+    [self.contentView addSubview:backgroundView];
     
-    self.privateIconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.highlightImageView.bounds.size.height - 33, 12, 15)];
-    self.privateIconImageView.image = [UIImage imageNamed:@"privateIcon"];
-    self.privateIconImageView.hidden = YES;
-    [self.contentView addSubview:self.privateIconImageView];
+    self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
+    [backgroundView addSubview:self.privacyLockButton];
     
-    self.oldEventLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.highlightImageView.bounds.size.height - 50, self.frame.size.width - 20, 50)];
-    self.oldEventLabel.numberOfLines = 2;
-    self.oldEventLabel.textAlignment = NSTextAlignmentLeft;
-    self.oldEventLabel.font = [FontProperties mediumFont: 18.0f];
-    self.oldEventLabel.textColor = [UIColor whiteColor];
-    [self.contentView addSubview:self.oldEventLabel];
+    self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 26.5 - 8., 12, 16)];
+    self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
+    self.privacyLockImageView.hidden = YES;
+    [self.privacyLockButton addSubview:self.privacyLockImageView];
+    
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 16.5, self.frame.size.width - 40, 20)];
+    self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
+    self.eventNameLabel.text = @"Event name label";
+    self.eventNameLabel.numberOfLines = 2;
+    self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
+    self.eventNameLabel.textColor = UIColor.blackColor;
+    [backgroundView addSubview:self.eventNameLabel];
+    
+    self.verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 16.5, 20, 20)];
+    self.verifiedImageView.image = [UIImage imageNamed:@"dancingG-0"];
+    self.verifiedImageView.hidden = YES;
+    [self.contentView addSubview:self.verifiedImageView];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
+    lineView.backgroundColor = RGB(215, 215, 215);
+    [backgroundView addSubview:lineView];
+    
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40 + 20, self.frame.size.width, 20)];
+    self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
+    self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
+    self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
+    [backgroundView addSubview:self.numberOfPeopleGoingLabel];
+    
+    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
+    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
+    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
+    self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
+    [backgroundView addSubview:self.eventPeopleScrollView];
+    
+    self.numberOfHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, self.frame.size.width, 20)];
+    self.numberOfHighlightsLabel.textAlignment = NSTextAlignmentLeft;
+    self.numberOfHighlightsLabel.textColor = RGB(119, 119, 119);
+    self.numberOfHighlightsLabel.font = [FontProperties lightFont:15.0f];
+    self.numberOfHighlightsLabel.alpha = 1.0f;
+    self.numberOfHighlightsLabel.text = @"The Buzz";
+    [backgroundView addSubview:self.numberOfHighlightsLabel];
+    
+    self.highlightsCollectionView = [[HighlightsCollectionView alloc]
+                                     initWithFrame:CGRectMake(0, self.numberOfHighlightsLabel.frame.origin.y + self.numberOfHighlightsLabel.frame.size.height + 5, self.frame.size.width, [HighlightCell height])
+                                     collectionViewLayout:[HighlightsFlowLayout new]];
+    [backgroundView addSubview:self.highlightsCollectionView];
     
 }
 
@@ -2037,9 +2081,7 @@ BOOL firstTimeLoading;
     [self.placesDelegate showConversationForEvent:self.event];
 }
 
-+ (CGFloat) height {
-    return [UIScreen mainScreen].bounds.size.height * 0.43;
-}
+
 
 @end
 
