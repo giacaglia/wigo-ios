@@ -1728,16 +1728,16 @@ BOOL firstTimeLoading;
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell heightIsFullCell:NO]);
     self.contentView.frame = self.frame;
-    self.backgroundColor = UIColor.whiteColor;
+    self.backgroundColor = RGB(237, 237, 237);
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 40)];
+    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
     backgroundView.backgroundColor = UIColor.whiteColor;
-//    backgroundView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.9f).CGColor;
-//    backgroundView.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
-//    backgroundView.layer.shadowRadius = 4.0f;
-//    backgroundView.layer.shadowOpacity = 1.0f;
+    backgroundView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.1f).CGColor;
+    backgroundView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
+    backgroundView.layer.shadowRadius = 4.0f;
+    backgroundView.layer.shadowOpacity = 1.0f;
     [self.contentView addSubview:backgroundView];
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
@@ -1793,12 +1793,6 @@ BOOL firstTimeLoading;
                                      initWithFrame:CGRectMake(0, self.numberOfHighlightsLabel.frame.origin.y + self.numberOfHighlightsLabel.frame.size.height + 5, self.frame.size.width, [HighlightCell height])
                                      collectionViewLayout:[HighlightsFlowLayout new]];
     [backgroundView addSubview:self.highlightsCollectionView];
-    
-    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.highlightsCollectionView.frame.origin.y + self.highlightsCollectionView.frame.size.height + 12, self.frame.size.width, 40)];
-    self.grayView.backgroundColor = RGB(237, 237, 237);
-    [self.contentView addSubview:self.grayView];
-    
-  
 }
 
 - (void)setEvent:(WGEvent *)event {
