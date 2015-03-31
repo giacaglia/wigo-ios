@@ -192,11 +192,9 @@ BOOL firstTimeLoading;
         self.tabBarController.navigationItem.rightBarButtonItem = rightBarButton;
     }
 
-    self.schoolButton = [[UIButton alloc] initWithFrame:CGRectZero];
-    [self.schoolButton setTitle:@"Wigo" forState:UIControlStateNormal];
-    [self.schoolButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    self.schoolButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.tabBarController.navigationItem.titleView = self.schoolButton;
+    UIImageView *topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 78, 34)];
+    topImageView.image = [UIImage imageNamed:@"topWigoLogo"];
+    self.tabBarController.navigationItem.titleView = topImageView;
 }
 
 -(void) initializeFlashScreen {
@@ -1285,12 +1283,10 @@ BOOL firstTimeLoading;
     [leftButton setShowsTouchWhenHighlighted:YES];
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
     self.tabBarController.navigationItem.leftBarButtonItem = leftBarButton;
-    self.schoolButton.enabled = NO;
 }
 
 - (void)backPressed {
     self.presentingLockedView = NO;
-    self.schoolButton.enabled = YES;
     
     BatteryViewController *batteryViewController = [BatteryViewController new];
     

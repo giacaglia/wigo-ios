@@ -43,7 +43,6 @@
 @property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
 @property (nonatomic, strong) UIView *loadingView;
 @property (nonatomic, strong) UIView *loadingIndicator;
-@property (nonatomic, strong) UIButton *schoolButton;
 @property (nonatomic, assign) BOOL presentingLockedView;
 @property (nonatomic, assign) BOOL shouldReloadEvents;
 @property (nonatomic, strong) UIButton *switchButton;
