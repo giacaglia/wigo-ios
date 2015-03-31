@@ -47,6 +47,14 @@ BOOL blockShown;
 @implementation ProfileViewController
 
 #pragma  mark - Init
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        NSLog(@"here");
+    }
+    return self;
+}
 - (id)initWithUser:(WGUser *)user {
     self = [super init];
     if (self) {

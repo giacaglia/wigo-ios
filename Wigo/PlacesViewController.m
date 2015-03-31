@@ -98,6 +98,10 @@ BOOL firstTimeLoading;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    UITabBarController *tab= self.tabBarController;
+    ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:3];
+    profileVc.user = [WGUser new];
+
     if ([self isPeeking] && self.groupNumberID && self.groupName) {
         [WGAnalytics tagView:@"where" withTargetGroup:[[WGGroup alloc] initWithJSON:@{@"name": self.groupName, @"id": self.groupNumberID}]];
     }
@@ -113,6 +117,7 @@ BOOL firstTimeLoading;
 
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -1672,6 +1677,9 @@ BOOL firstTimeLoading;
         [strongSelf updateNavigationBar];
         [strongSelf.placesTableView reloadData];
         strongSelf.fetchingUserInfo = NO;
+        UITabBarController *tab= self.tabBarController;
+        ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:3];
+        profileVc.user = WGProfile.currentUser;
     }];
    
 }
