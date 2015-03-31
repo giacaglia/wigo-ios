@@ -877,9 +877,9 @@ BOOL firstTimeLoading;
             self.allEvents.hasNextPage.boolValue) {
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
         }
-//        WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
+        WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
         HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCell forIndexPath:indexPath];
-//        cell.event = event;
+        cell.event = event;
 //        cell.placesDelegate = self;
 //        cell.oldEventLabel.text = event.name;
 //        if (cell.event.isPrivate) {
@@ -2008,8 +2008,6 @@ BOOL firstTimeLoading;
     return self;
 }
 
-
-
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
     self.contentView.frame = self.frame;
@@ -2035,7 +2033,6 @@ BOOL firstTimeLoading;
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 16.5, self.frame.size.width - 40, 20)];
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
-    self.eventNameLabel.text = @"Event name label";
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
     self.eventNameLabel.textColor = UIColor.blackColor;
@@ -2079,6 +2076,29 @@ BOOL firstTimeLoading;
 
 - (void)loadConversation {
     [self.placesDelegate showConversationForEvent:self.event];
+}
+
+- (void)setEvent:(WGEvent *)event {
+    _event = event;
+    self.highlightsCollectionView.event = _event;
+    self.eventNameLabel.text = _event.name;
+    if (_event.numAttending.intValue > 0) {
+        self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ going", _event.numAttending];
+    }
+    else {
+        self.numberOfPeopleGoingLabel.text = @"Going";
+    }
+    CGSize size = [_event.name sizeWithAttributes:
+                   @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (size.width > self.eventNameLabel.frame.size.width) {
+            self.eventNameLabel.frame = CGRectMake(10, 3, self.frame.size.width - 40, 50);
+        }
+        else {
+            self.eventNameLabel.frame = CGRectMake(10, 16.5, self.frame.size.width - 40, 20);
+        }
+    });
+    
 }
 
 
