@@ -98,8 +98,9 @@ BOOL blockShown;
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
+    self.tabBarController.navigationItem.titleView.hidden = NO;
+
     
     [self.pageControl removeFromSuperview];
     self.pageControl = nil;
@@ -143,6 +144,7 @@ BOOL blockShown;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.tabBarController.navigationItem.titleView.hidden = YES;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
 //    NSString *isCurrentUser = ([self.user isEqual:[WGProfile currentUser]]) ? @"Yes" : @"No";
