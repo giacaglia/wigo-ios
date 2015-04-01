@@ -77,8 +77,6 @@ NSIndexPath *userIndex;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-
     if (!didProfileSegue) {
         if (!self.currentTab) self.currentTab = @2;
         self.users = [[WGCollection alloc] initWithType:[WGUser class]];
@@ -87,9 +85,6 @@ NSIndexPath *userIndex;
     }
     didProfileSegue = NO;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
-
-    
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 }
 
 
@@ -356,7 +351,7 @@ NSIndexPath *userIndex;
     }
     
     if ([self.currentTab isEqualToNumber:@2] &&
-        [user.id intValue] > [[WGProfile currentUser].lastUserRead intValue]) {
+        user.id.intValue > WGProfile.currentUser.lastUserRead.intValue) {
         cell.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
     }
     else {
@@ -369,7 +364,8 @@ NSIndexPath *userIndex;
 -(CGFloat) tableView:(UITableView *)tableView
 heightForHeaderInSection:(NSInteger)section
 {
-    return 30.0f;
+    if ([self.currentTab isEqual:@2]) return 30.0f;
+    return 0;
 }
 
 -(UIView *) tableView:(UITableView *)tableView
@@ -661,7 +657,7 @@ viewForHeaderInSection:(NSInteger)section
                 strongSelf.fetching = NO;
             });
         }];
-    } else if ([self.followers.hasNextPage boolValue]) {
+    } else if (self.followers.hasNextPage.boolValue) {
         [self.followers addNextPage:^(BOOL success, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^(void) {
                 __strong typeof(self) strongSelf = weakSelf;
@@ -827,21 +823,13 @@ viewForHeaderInSection:(NSInteger)section
 
 @end
 
-@implementation PeopleCell
+@implementation TablePersonCell
 
 + (CGFloat) height {
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
 }
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
-
-- (void) setup {
+- (void)setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [PeopleCell height]);
     self.contentView.frame = self.frame;
     self.contentView.backgroundColor = UIColor.whiteColor;
@@ -876,15 +864,34 @@ viewForHeaderInSection:(NSInteger)section
     self.mutualFriendsLabel.font = [FontProperties lightFont:13.0f];
     self.mutualFriendsLabel.textColor = RGB(181, 181, 181);
     [self.contentView addSubview:self.mutualFriendsLabel];
-    
-    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 75, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 23, 75, 47)];
-    [self.contentView addSubview:self.followPersonButton];
 }
 
 - (void)setUser:(WGUser *)user {
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text =  user.fullName;
     self.mutualFriendsLabel.text = @"37 mutual friends";
+}
+
+@end
+
+@implementation PeopleCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    [super setup];
+    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 75, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 23, 75, 47)];
+    [self.contentView addSubview:self.followPersonButton];
+}
+
+- (void)setUser:(WGUser *)user {
+    super.user = user;
     self.followPersonButton.tag = -100;
     self.followPersonButton.backgroundColor = UIColor.clearColor;
     if (user.gender == FEMALE) {
@@ -928,6 +935,37 @@ viewForHeaderInSection:(NSInteger)section
     }
     else {
         self.followPersonButton.hidden = YES;
+    }
+}
+
+@end
+
+@implementation FollowPeopleCell
+
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+-(void) setup {
+    [super setup];
+    
+    self.acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 148 - 20, 0, 74, 74)];
+    [self.acceptButton setImage:[UIImage imageNamed:@"acceptButton"] forState:UIControlStateNormal];
+    [self.contentView addSubview:self.acceptButton];
+    
+    self.rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 80, 0, 74, 74)];
+    [self.rejectButton setImage:[UIImage imageNamed:@"rejectButton"] forState:UIControlStateNormal];
+    [self.contentView addSubview:self.rejectButton];
+}
+
+- (void)setUser:(WGUser *)user {
+    if (user.id.intValue > WGProfile.currentUser.lastUserRead.intValue) {
+        self.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
     }
 }
 

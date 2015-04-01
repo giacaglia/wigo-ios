@@ -456,43 +456,6 @@ BOOL firstTimeLoading;
     [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
-- (void)choseProfile:(id)sender {
-    _scrollViewPoint = _scrollViewSender.contentOffset;
-    _scrollViewSender = (UIScrollView *)[sender superview];
-    _scrollViewSender.contentOffset = CGPointMake(_scrollViewSender.contentSize.width - 245, 0);
-    _scrollViewSender.scrollEnabled = NO;
-    UITableViewCell *cellSender = (UITableViewCell *)[_scrollViewSender superview];
-
-    UIViewController *newViewController = [[UIViewController alloc] init];
-    newViewController.view = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:cellSender]];
-    newViewController.view.backgroundColor = [UIColor whiteColor];
-
-    UIImageView *privateLineImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 120, 300, 15)];
-    privateLineImageView.image = [UIImage imageNamed:@"privateLine"];
-    [newViewController.view addSubview:privateLineImageView];
-    
-    UILabel *privateExplanation = [[UILabel alloc] initWithFrame:CGRectMake(30, 130, newViewController.view.frame.size.width -  60, 80)];
-    privateExplanation.text = @"These users are private.\n Go here to meet them in person!";
-    privateExplanation.font = [FontProperties getTitleFont];
-    privateExplanation.textAlignment = NSTextAlignmentCenter;
-    privateExplanation.numberOfLines = 0;
-    privateExplanation.lineBreakMode = NSLineBreakByWordWrapping;
-    [newViewController.view addSubview:privateExplanation];
-    
-    UIButton *gotItButton = [[UIButton alloc] initWithFrame:CGRectMake(108, 210, 100, 30)];
-    [gotItButton setTitle:@"Got It" forState:UIControlStateNormal];
-    [gotItButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    gotItButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    gotItButton.titleLabel.font = [FontProperties getTitleFont];
-    gotItButton.backgroundColor = RGB(56, 56, 56);
-    gotItButton.layer.cornerRadius = 5;
-    gotItButton.layer.borderWidth = 1;
-    [gotItButton addTarget:self action:@selector(gotItPressed) forControlEvents:UIControlEventTouchUpInside];
-    [newViewController.view addSubview:gotItButton];
-    
-    [[RWBlurPopover instance] presentViewController:newViewController withOrigin:200 andHeight:250];
-}
-
 - (void) gotItPressed {
     _scrollViewSender.contentOffset = _scrollViewPoint;
     _scrollViewSender.scrollEnabled = YES;

@@ -2,17 +2,18 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "rejectButton.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "InviteButton@2x.png"
+      "filename" : "rejectButton@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "InviteButton@3x.png"
+      "filename" : "rejectButton@3x.png"
     }
   ],
   "info" : {
