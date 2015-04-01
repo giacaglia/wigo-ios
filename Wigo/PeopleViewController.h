@@ -45,22 +45,7 @@
 @property (nonatomic, strong) WGUser *user;
 @end
 
-#define kSuggestedFriendsCellName @"SuggestedFriendsCellName"
-@interface SuggestedCell : UITableViewCell
-+ (CGFloat) height;
-- (void) addInviteButtonToScrollView;
-@property (nonatomic, strong) id<PeopleViewDelegate> peopleViewDelegate;
-@property (nonatomic, strong) WGCollection *suggestions;
-@property (nonatomic, strong) UIView *lineView;
-@property (nonatomic, strong) UILabel *contextLabel;
-@property (nonatomic, strong) UIScrollView *suggestedScrollView;
-@property (nonatomic, strong) UIButton *inviteButton;
-@property (nonatomic, strong) UILabel *inviteMoreFriendsLabel;
-- (void)setStateForCollection:(WGCollection *)collection;
-@end
+#define kFolloePeopleCell @"FollowPeopleCell"
+@interface FollowPeopleCell : UITableViewCell
 
-#define kInvitePeopleCellName @"InvitePeopleCellName"
-@interface InvitePeopleCell : UITableViewCell
-@property (nonatomic, strong) UILabel *lateToThePartyLabel;
-@property (nonatomic, strong) UIButton *inviteButton;
 @end

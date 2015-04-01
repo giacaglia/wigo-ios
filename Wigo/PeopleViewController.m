@@ -13,27 +13,14 @@
 #import "UIImageCrop.h"
 #import "MobileContactsViewController.h"
 
-@interface PeopleViewController () {
-    UIView *_lineView;
-}
-
-// Search Bar Content
+@interface PeopleViewController ()
 @property BOOL isSearching;
 @property UISearchBar *searchBar;
 @property UIImageView *searchIconImageView;
-
-@property ProfileViewController *profileViewController;
-
-@property NSNumber *page;
-
 @end
 
 BOOL didProfileSegue;
-//int userInt;
 NSIndexPath *userIndex;
-int queryQueueInt;
-UIView *secondPartSubview;
-UIScrollView *suggestedScrollView;
 
 @implementation PeopleViewController
 
@@ -42,7 +29,7 @@ UIScrollView *suggestedScrollView;
     if (self) {
         self.user = user;
         self.currentTab = tab;
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -51,7 +38,7 @@ UIScrollView *suggestedScrollView;
     self = [super init];
     if (self) {
         self.user = user;
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -59,7 +46,6 @@ UIScrollView *suggestedScrollView;
 
 - (void)viewDidLoad
 {
-    queryQueueInt = 0;
     [super viewDidLoad];
     didProfileSegue = NO;
     if (!self.currentTab) self.currentTab = @2;
@@ -101,19 +87,11 @@ UIScrollView *suggestedScrollView;
     }
     didProfileSegue = NO;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
-    
-    _lineView= [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
-    _lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
-    [self.navigationController.navigationBar addSubview: _lineView];
+
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 }
 
-- (void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear: animated];
-    
-    [_lineView removeFromSuperview];
-}
 
 - (void)initializeBackBarButton {
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
@@ -260,16 +238,6 @@ UIScrollView *suggestedScrollView;
                 [secondLevelSubview removeFromSuperview];
             }
         }
-    }
-}
-
-- (UIView *)initializeSecondPart {
-    if ([self.currentTab isEqualToNumber:@2]) {
-        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 223)];
-        return secondPartSubview;
-    } else {
-        UIView *secondPartSubview = [[UIView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, 90)];
-        return secondPartSubview;
     }
 }
 
@@ -426,8 +394,8 @@ viewForHeaderInSection:(NSInteger)section
     NSIndexPath *indexPath = [self.tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
     WGUser *user = [self getUserAtIndex:(int)[indexPath row]];
     if (user) [self updateButton:sender withUser:user];
-    if ([indexPath row] < self.users.count) {
-        [self.users replaceObjectAtIndex:[indexPath row] withObject:user];
+    if (indexPath.row < self.users.count) {
+        [self.users replaceObjectAtIndex:indexPath.row withObject:user];
     }
 }
 
@@ -451,8 +419,10 @@ viewForHeaderInSection:(NSInteger)section
         if (user.privacy == PRIVATE) {
             [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
             [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
-            [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            [senderButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
             senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            senderButton.backgroundColor = RGB(223, 223, 223);
             senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
             senderButton.layer.borderWidth = 1;
             senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
@@ -481,7 +451,7 @@ viewForHeaderInSection:(NSInteger)section
             [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
         }
         senderButton.tag = -100;
-        int numFollowing = [self.user.numFollowing intValue];
+        int numFollowing = self.user.numFollowing.intValue;
         user.isFollowing = @NO;
         user.isFollowingRequested = @NO;
         if (user.privacy != PRIVATE && user) {
@@ -498,9 +468,8 @@ viewForHeaderInSection:(NSInteger)section
 }
 
 - (void) updatedCachedProfileUser:(int)numFollowing {
-    if (self.user.isCurrentUser) {
-        WGProfile.currentUser.numFollowing = [NSNumber numberWithInt:numFollowing];
-    }
+    if (!self.user.isCurrentUser) return;
+    WGProfile.currentUser.numFollowing = [NSNumber numberWithInt:numFollowing];
 }
 
 - (WGUser *)getUserAtIndex:(int)index {
@@ -528,6 +497,7 @@ viewForHeaderInSection:(NSInteger)section
         int numberOfRows = (int)[self.tableViewOfPeople numberOfRowsInSection:0];
         int sizeOfArray = (int)self.suggestions.count;
         if (numberOfRows > 0 && userInt >= 0 && sizeOfArray > userInt) {
+            [self.users replaceObjectAtIndex:userInt withObject:user];
             [self.suggestions replaceObjectAtIndex:userInt withObject:user];
             [self.tableViewOfPeople reloadData];
         }
@@ -669,52 +639,52 @@ viewForHeaderInSection:(NSInteger)section
 
 -(void) fetchFollowers {
     __weak typeof(self) weakSelf = self;
-    if (!self.fetching) {
-        self.fetching = YES;
-        if (!self.followers) {
-            [WGFollow getFollowsForFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    __strong typeof(self) strongSelf = weakSelf;
-                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        strongSelf.fetching = NO;
-                        return;
-                    }
-                    strongSelf.followers = collection;
-                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
-                    for (WGFollow *follow in strongSelf.followers) {
-                        [strongSelf.users addObject:follow.user];
-                    }
-                    [strongSelf.tableViewOfPeople reloadData];
+    if (self.fetching) return;
+    self.fetching = YES;
+    if (!self.followers) {
+        [WGFollow getFollowsForFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
+                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     strongSelf.fetching = NO;
-                });
-            }];
-        } else if ([self.followers.hasNextPage boolValue]) {
-            [self.followers addNextPage:^(BOOL success, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    __strong typeof(self) strongSelf = weakSelf;
-                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        strongSelf.fetching = NO;
-                        return;
-                    }
-                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
-                    for (WGFollow *follow in strongSelf.followers) {
-                        [strongSelf.users addObject:follow.user];
-                    }
-                    [strongSelf.tableViewOfPeople reloadData];
+                    return;
+                }
+                strongSelf.followers = collection;
+                strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                for (WGFollow *follow in strongSelf.followers) {
+                    [strongSelf.users addObject:follow.user];
+                }
+                [strongSelf.tableViewOfPeople reloadData];
+                strongSelf.fetching = NO;
+            });
+        }];
+    } else if ([self.followers.hasNextPage boolValue]) {
+        [self.followers addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
+                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     strongSelf.fetching = NO;
-                });
-            }];
-        } else {
-            self.fetching = NO;
-            [WGSpinnerView removeDancingGFromCenterView:self.view];
-        }
+                    return;
+                }
+                strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                for (WGFollow *follow in strongSelf.followers) {
+                    [strongSelf.users addObject:follow.user];
+                }
+                [strongSelf.tableViewOfPeople reloadData];
+                strongSelf.fetching = NO;
+            });
+        }];
+    } else {
+        self.fetching = NO;
+        [WGSpinnerView removeDancingGFromCenterView:self.view];
     }
+
 }
 
 -(void) fetchFirstPageFollowing {
@@ -725,52 +695,51 @@ viewForHeaderInSection:(NSInteger)section
 }
 
 -(void) fetchFollowing {
-    if (!self.fetching) {
-        self.fetching = YES;
-        __weak typeof(self) weakSelf = self;
-        if (!self.following) {
-            [WGFollow getFollowsForUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    __strong typeof(self) strongSelf = weakSelf;
-                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        self.fetching = NO;
-                        return;
-                    }
-                    strongSelf.following = collection;
-                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
-                    for (WGFollow *follow in strongSelf.following) {
-                        [strongSelf.users addObject:follow.follow];
-                    }
-                    [strongSelf.tableViewOfPeople reloadData];
+    if (self.fetching) return;
+    self.fetching = YES;
+    __weak typeof(self) weakSelf = self;
+    if (!self.following) {
+        [WGFollow getFollowsForUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
+                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                    self.fetching = NO;
+                    return;
+                }
+                strongSelf.following = collection;
+                strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                for (WGFollow *follow in strongSelf.following) {
+                    [strongSelf.users addObject:follow.follow];
+                }
+                [strongSelf.tableViewOfPeople reloadData];
+                strongSelf.fetching = NO;
+            });
+        }];
+    } else if ([self.following.hasNextPage boolValue]) {
+        [self.following addNextPage:^(BOOL success, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^(void) {
+                __strong typeof(self) strongSelf = weakSelf;
+                [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+                if (error) {
+                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     strongSelf.fetching = NO;
-                });
-            }];
-        } else if ([self.following.hasNextPage boolValue]) {
-            [self.following addNextPage:^(BOOL success, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    __strong typeof(self) strongSelf = weakSelf;
-                    [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        strongSelf.fetching = NO;
-                        return;
-                    }
-                    strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
-                    for (WGFollow *follow in strongSelf.following) {
-                        [strongSelf.users addObject:follow.follow];
-                    }
-                    [strongSelf.tableViewOfPeople reloadData];
-                    strongSelf.fetching = NO;
-                });
-            }];
-        } else {
-            self.fetching = NO;
-            [WGSpinnerView removeDancingGFromCenterView:self.view];
-        }
+                    return;
+                }
+                strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
+                for (WGFollow *follow in strongSelf.following) {
+                    [strongSelf.users addObject:follow.follow];
+                }
+                [strongSelf.tableViewOfPeople reloadData];
+                strongSelf.fetching = NO;
+            });
+        }];
+    } else {
+        self.fetching = NO;
+        [WGSpinnerView removeDancingGFromCenterView:self.view];
     }
 }
 

@@ -16,8 +16,6 @@
 @property (nonatomic, assign) BOOL fetchingFirstPage;
 @property (nonatomic, strong) UITableView *tableViewOfPeople;
 @property (nonatomic, strong) WGCollection *messages;
-
-
 @end
 
 
