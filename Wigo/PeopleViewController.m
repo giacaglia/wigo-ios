@@ -186,6 +186,7 @@ NSIndexPath *userIndex;
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     [self.tableViewOfPeople registerClass:[PeopleCell class] forCellReuseIdentifier:kPeopleCellName];
+    [self.tableViewOfPeople registerClass:[FollowPeopleCell class] forCellReuseIdentifier:kFollowPeopleCell];
     self.tableViewOfPeople.delegate = self;
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -274,10 +275,16 @@ NSIndexPath *userIndex;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if ([self.currentTab isEqual:@2]) {
+        return 2;
+    }
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == kSectionFollowPeople && [self.currentTab isEqual:@2]) {
+        return 2;
+    }
     if (_isSearching) {
         return (int)self.filteredUsers.count;
     } else {
@@ -300,6 +307,11 @@ NSIndexPath *userIndex;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == kSectionFollowPeople && [self.currentTab isEqual:@2]) {
+        FollowPeopleCell *followPeopleCell = [tableView dequeueReusableCellWithIdentifier:kFollowPeopleCell forIndexPath:indexPath];
+        followPeopleCell.user = WGProfile.currentUser;
+        return followPeopleCell;
+    }
     PeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kPeopleCellName forIndexPath:indexPath];
     cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
 
@@ -371,10 +383,16 @@ heightForHeaderInSection:(NSInteger)section
 -(UIView *) tableView:(UITableView *)tableView
 viewForHeaderInSection:(NSInteger)section
 {
+  
     UIView *sectionHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
     sectionHeaderView.backgroundColor = RGB(248, 248, 248);
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 15, 30)];
-    titleLabel.text= @"Suggested Friends";
+    if (section == kSectionFollowPeople) {
+        titleLabel.text= @"Friend Requests";
+    }
+    else {
+        titleLabel.text = @"Suggested Friends";
+    }
     titleLabel.font = [FontProperties lightFont:14.0f];
     titleLabel.textColor = RGB(150, 150, 150);
     [sectionHeaderView addSubview:titleLabel];
@@ -835,7 +853,7 @@ viewForHeaderInSection:(NSInteger)section
     self.contentView.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    self.lineView = [[UIImageView alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS + 9 - 1, self.contentView.frame.size.width, 1)];
+    self.lineView = [[UIImageView alloc] initWithFrame:CGRectMake(0, PEOPLEVIEW_HEIGHT_OF_CELLS + 9 - 1, self.contentView.frame.size.width, 1)];
     self.lineView.backgroundColor = RGBAlpha(184, 184, 184, 0.3f);
     [self.contentView addSubview:self.lineView];
     
@@ -954,16 +972,19 @@ viewForHeaderInSection:(NSInteger)section
 -(void) setup {
     [super setup];
     
-    self.acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 148 - 20, 0, 74, 74)];
+    self.acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 74 - 20, 0, 37, 37)];
     [self.acceptButton setImage:[UIImage imageNamed:@"acceptButton"] forState:UIControlStateNormal];
+    self.acceptButton.center = CGPointMake(self.acceptButton.center.x, self.contentView.center.y);
     [self.contentView addSubview:self.acceptButton];
     
-    self.rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 80, 0, 74, 74)];
+    self.rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 37 - 10, 0, 37, 37)];
     [self.rejectButton setImage:[UIImage imageNamed:@"rejectButton"] forState:UIControlStateNormal];
+    self.rejectButton.center = CGPointMake(self.rejectButton.center.x, self.contentView.center.y);
     [self.contentView addSubview:self.rejectButton];
 }
 
 - (void)setUser:(WGUser *)user {
+    super.user = user;
     if (user.id.intValue > WGProfile.currentUser.lastUserRead.intValue) {
         self.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
     }
