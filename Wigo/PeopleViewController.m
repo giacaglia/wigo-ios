@@ -398,6 +398,25 @@ UIScrollView *suggestedScrollView;
     return cell;
 }
 
+-(CGFloat) tableView:(UITableView *)tableView
+heightForHeaderInSection:(NSInteger)section
+{
+    return 30.0f;
+}
+
+-(UIView *) tableView:(UITableView *)tableView
+viewForHeaderInSection:(NSInteger)section
+{
+    UIView *sectionHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
+    sectionHeaderView.backgroundColor = RGB(248, 248, 248);
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 15, 30)];
+    titleLabel.text= @"Suggested Friends";
+    titleLabel.font = [FontProperties lightFont:14.0f];
+    titleLabel.textColor = RGB(150, 150, 150);
+    [sectionHeaderView addSubview:titleLabel];
+    return sectionHeaderView;
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [_searchBar endEditing:YES];
 }

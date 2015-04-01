@@ -7,16 +7,9 @@
 //
 
 #import "ChatViewController.h"
-
-#import "UIButtonAligned.h"
 #import "UIImageCrop.h"
 #import "MessageViewController.h"
 #import "ConversationViewController.h"
-
-@interface ChatViewController () {
-    UIView *_lineView;
-}
-@end
 
 
 @implementation ChatViewController
@@ -27,35 +20,14 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchMessages) name:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
-
-    for (UIView *view in self.navigationController.navigationBar.subviews) {
-        for (UIView *view2 in view.subviews) {
-            if ([view2 isKindOfClass:[UIImageView class]]) {
-                [view2 removeFromSuperview];
-            }
-        }
-    }
     
-    [WGSpinnerView addDancingGToCenterView:self.view];
     self.messages = NetworkFetcher.defaultGetter.messages;
     [self initializeNewChatButton];
     [self initializeTableOfChats];
-    [self initializeLeftBarButton];
-    [self initializeRightBarButtonItem];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     [self fetchMessages];
-    
-    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
-    
-    self.navigationItem.title = @"Chats";
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    
-    _lineView= [[UIView alloc] initWithFrame:CGRectMake(0, self.navigationController.navigationBar.frame.size.height - 1, self.view.frame.size.width, 1)];
-    _lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
-
-    [self.navigationController.navigationBar addSubview: _lineView];
 }
 
 
@@ -63,42 +35,22 @@
     [WGAnalytics tagView:@"chat_list"];
 }
 
-- (void) goBack {
-    [self.navigationController popViewControllerAnimated: YES];
-}
-
-- (void) initializeLeftBarButton {
-    UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
-    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
-    [barBt setTitle:@" Back" forState:UIControlStateNormal];
-    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    barBt.titleLabel.font = [FontProperties getSubtitleFont];
-    [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
-    [barItem setCustomView:barBt];
-    self.navigationItem.leftBarButtonItem = barItem;
-}
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    [_lineView removeFromSuperview];
-}
 
 - (void)scrollUp {
     [self.tableViewOfPeople setContentOffset:CGPointZero animated:YES];
 }
 
-- (void)initializeRightBarButtonItem {
-    CGRect profileFrame = CGRectMake(0, 0, 21, 21);
-    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
-    [profileButton setBackgroundImage:[UIImage imageNamed:@"writeIcon"] forState:UIControlStateNormal];
-    [profileButton addTarget:self action:@selector(writeMessage)
-            forControlEvents:UIControlEventTouchUpInside];
-    [profileButton setShowsTouchWhenHighlighted:YES];
-    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
-    self.navigationItem.rightBarButtonItem = profileBarButton;
-
-}
+//- (void)initializeRightBarButtonItem {
+//    CGRect profileFrame = CGRectMake(0, 0, 21, 21);
+//    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
+//    [profileButton setBackgroundImage:[UIImage imageNamed:@"writeIcon"] forState:UIControlStateNormal];
+//    [profileButton addTarget:self action:@selector(writeMessage)
+//            forControlEvents:UIControlEventTouchUpInside];
+//    [profileButton setShowsTouchWhenHighlighted:YES];
+//    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
+//    self.navigationItem.rightBarButtonItem = profileBarButton;
+//
+//}
 
 - (void) writeMessage {
     [self.navigationController pushViewController:[MessageViewController new] animated:YES];
@@ -229,14 +181,14 @@
 
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.messages.count != 0) {
-        WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
-        message.isRead = @YES;
-        [self markMessageAsRead:message];
-        WGUser *user = [message otherUser];
-        ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
-        [self.navigationController pushViewController:conversationViewController animated:YES];
-    }
+    if (self.messages.count == 0) return;
+    
+    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
+    message.isRead = @YES;
+    [self markMessageAsRead:message];
+    WGUser *user = [message otherUser];
+    ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
+    [self.navigationController pushViewController:conversationViewController animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {

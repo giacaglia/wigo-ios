@@ -111,7 +111,7 @@ BOOL firstTimeLoading;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+    self.tabBarController.tabBar.selectedImageTintColor = [FontProperties getBlueColor];
 
     if ([self isPeeking] && self.groupNumberID && self.groupName) {
         [WGAnalytics tagView:@"where" withTargetGroup:[[WGGroup alloc] initWithJSON:@{@"name": self.groupName, @"id": self.groupNumberID}]];
