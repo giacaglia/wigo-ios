@@ -124,7 +124,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Chats" id="MwE-5g-eh6"/>
+                    <tabBarItem key="tabBarItem" title="Chats" image="chatTabIcon" id="MwE-5g-eh6"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DGC-ZB-xGW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -143,7 +143,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Friends" id="3Dn-dz-PNW"/>
+                    <tabBarItem key="tabBarItem" title="Friends" image="friendsIcon" id="3Dn-dz-PNW"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Lo-Gn-6yd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -440,7 +440,7 @@
                             <outlet property="delegate" destination="4XA-L7-y6d" id="zzX-6o-scp"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Profile" id="Q7Z-Kb-1no"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="profileIcon" id="Q7Z-Kb-1no"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zA2-sG-0eV" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -558,8 +558,9 @@
         <!--Where-->
         <scene sceneID="CUn-1Q-ll3">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jCL-wz-cUH" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="gcK-hO-ozh" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Where" image="placesIcon.png" id="Ewa-dt-Zfe"/>
+                    <tabBarItem key="tabBarItem" title="Where" id="Ewa-dt-Zfe"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="7Is-XA-40F">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -567,14 +568,15 @@
                         <segue destination="KEM-pw-qi3" kind="relationship" relationship="rootViewController" id="a3t-dY-Bh3"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jCL-wz-cUH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-368" y="-706"/>
         </scene>
     </scenes>
     <resources>
-        <image name="homeIcon" width="29" height="33"/>
-        <image name="placesIcon.png" width="15" height="21"/>
+        <image name="chatTabIcon" width="40" height="32"/>
+        <image name="friendsIcon" width="35" height="39"/>
+        <image name="homeIcon" width="30" height="34"/>
+        <image name="profileIcon" width="29" height="34"/>
     </resources>
     <color key="tintColor" red="0.95686280729999995" green="0.58431375029999999" blue="0.1764705926" alpha="1" colorSpace="deviceRGB"/>
 </document>
