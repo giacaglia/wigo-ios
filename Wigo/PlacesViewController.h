@@ -12,12 +12,14 @@
 #import "UIButtonAligned.h"
 #import "SignViewController.h"
 #import "LabelSwitch.h"
+#import <CoreLocation/CoreLocation.h>
 
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
     UIGestureRecognizerDelegate,
     PlacesDelegate,
-    PrivacySwitchDelegate>
+    PrivacySwitchDelegate,
+    CLLocationManagerDelegate>
 #define kTodaySection 0
 #define kHighlightsEmptySection 1
 
@@ -55,6 +57,8 @@
 @property (nonatomic, strong) UIView *blueBannerView;
 @property (nonatomic, strong) LabelSwitch *labelSwitch;
 @property (nonatomic, assign) CGFloat previousScrollViewYOffset;
+
+@property (nonatomic,retain) CLLocationManager *locationManager;
 @end
 
 #import "EventPeopleScrollView.h"

@@ -955,6 +955,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C12A114419787BE700D53B1C /* CoreLocation.framework in Frameworks */,
 				E9F7995219D4C727001D5BFC /* CoreData.framework in Frameworks */,
 				E998C25E19C9F7FB0012BF51 /* ParseFacebookUtils.framework in Frameworks */,
 				E9ACCA2919C4CD1700F3EB20 /* AddressBook.framework in Frameworks */,
@@ -971,7 +972,6 @@
 				E9F7995619D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */,
 				C12A114219787BE700D53B1C /* MobileCoreServices.framework in Frameworks */,
 				C12A114319787BE700D53B1C /* libz.dylib in Frameworks */,
-				C12A114419787BE700D53B1C /* CoreLocation.framework in Frameworks */,
 				C12A114619787BE700D53B1C /* CFNetwork.framework in Frameworks */,
 				C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */,
 				C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */,
@@ -988,6 +988,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9D906D319255D9A00E39FC8 /* CoreLocation.framework in Frameworks */,
 				FA438EA919F19F2200AD74C2 /* AVFoundation.framework in Frameworks */,
 				FA438EA719F1998A00AD74C2 /* MediaPlayer.framework in Frameworks */,
 				E9F7995319D4C733001D5BFC /* CoreData.framework in Frameworks */,
@@ -1006,7 +1007,6 @@
 				E9F7995519D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */,
 				E9D906D719255DAB00E39FC8 /* MobileCoreServices.framework in Frameworks */,
 				E9D906D519255DA200E39FC8 /* libz.dylib in Frameworks */,
-				E9D906D319255D9A00E39FC8 /* CoreLocation.framework in Frameworks */,
 				E9D906D119255D8B00E39FC8 /* CFNetwork.framework in Frameworks */,
 				E9D906CF19255D8200E39FC8 /* AudioToolbox.framework in Frameworks */,
 				E9C3401B1A96476000AB069F /* FacebookSDK.framework in Frameworks */,

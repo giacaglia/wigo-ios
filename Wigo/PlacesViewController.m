@@ -28,6 +28,7 @@
 #import "EventConversationViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "WGNavigateParser.h"
+#import <CoreLocation/CoreLocation.h>
 
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCell @"HighlightOldEventCell"
@@ -72,6 +73,7 @@ BOOL firstTimeLoading;
 {
     [super viewDidLoad];
     [self initializeNotificationObservers];
+    
 
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
@@ -88,7 +90,19 @@ BOOL firstTimeLoading;
         }
     }
     
+    UITabBarController *tab= self.tabBarController;
+    ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:3];
+    profileVc.user = [WGUser new];
 
+    
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+    self.locationManager.distanceFilter = 500;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters; // 100 m
+    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self.locationManager requestWhenInUseAuthorization];
+    }
+    [self.locationManager startUpdatingLocation];
     self.spinnerAtCenter = YES;
     [self initializeWhereView];
     [NetworkFetcher.defaultGetter fetchMessages];
@@ -98,9 +112,6 @@ BOOL firstTimeLoading;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    UITabBarController *tab= self.tabBarController;
-    ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:3];
-    profileVc.user = [WGUser new];
 
     if ([self isPeeking] && self.groupNumberID && self.groupName) {
         [WGAnalytics tagView:@"where" withTargetGroup:[[WGGroup alloc] initWithJSON:@{@"name": self.groupName, @"id": self.groupNumberID}]];
@@ -114,7 +125,6 @@ BOOL firstTimeLoading;
 
     [self updateNavigationBar];
     [self.placesTableView reloadData];
-
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
@@ -141,6 +151,7 @@ BOOL firstTimeLoading;
         self.shouldReloadEvents = YES;
     }
     [self fetchUserInfo];
+    NSLog(@"%@", [self deviceLocation]);
 }
 
 - (void)showReferral {
@@ -1680,6 +1691,13 @@ BOOL firstTimeLoading;
    
 }
 
+- (NSString *)deviceLocation
+{
+    NSString *theLocation = [NSString stringWithFormat:@"latitude: %f longitude: %f", self.locationManager.location.coordinate.latitude, self.locationManager.location.coordinate.longitude];
+    return theLocation;
+}
+
+
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
@@ -1711,6 +1729,22 @@ BOOL firstTimeLoading;
         }
     }
 }
+
+#pragma mark - CLLocationManagerDelegate
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    UIAlertView *errorAlert = [[UIAlertView alloc]
+                               initWithTitle:@"Error" message:@"Failed to Get Your Location" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [errorAlert show];
+}
+
+// Wait for location callbacks
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+//    NSLog(@"%@", [locations lastObject]);
+}
+
 
 @end
 
@@ -1760,7 +1794,6 @@ BOOL firstTimeLoading;
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 16.5, self.frame.size.width - 40, 20)];
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
     self.eventNameLabel.numberOfLines = 2;
-    self.eventNameLabel.backgroundColor = UIColor.whiteColor;
     self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [backgroundView addSubview:self.eventNameLabel];
